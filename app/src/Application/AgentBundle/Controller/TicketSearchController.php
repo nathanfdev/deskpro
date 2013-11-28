@@ -1685,7 +1685,6 @@ class TicketSearchController extends AbstractController
 						}
 						$collection->apply(null, $ticket, $this->person);
 						$this->em->persist($ticket);
-						$ticket->_saveTicketLogs();
 						$this->em->flush();
 						$this->db->commit();
 

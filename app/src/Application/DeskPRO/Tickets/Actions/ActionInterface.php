@@ -35,13 +35,14 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 interface ActionInterface
 {
 	/**
 	 * @param Ticket $ticket
-	 * @param ActionContext $context
+	 * @param ExecutorContext $context
 	 * @return void
 	 */
-	public function applyAction(Ticket $ticket, ActionContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context);
 }

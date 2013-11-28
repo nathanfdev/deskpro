@@ -119,9 +119,6 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 		$this->em->flush();
 
 		$this->other_ticket->_markRemoved();
-		$this->other_ticket->setNoLog();
-		$this->other_ticket->unsetTicketLogger();
-
 		$this->em->beginTransaction();
 
 		try {
@@ -131,9 +128,6 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			$this->mergeParticipants();
 			$this->mergeLogs();
 			$this->mergeMisc();
-
-			// dont add logs for new messages etc
-			$this->ticket->resetTicketLogger();
 
 			// non-merged fields that we want to log
 			$lost_log = array(

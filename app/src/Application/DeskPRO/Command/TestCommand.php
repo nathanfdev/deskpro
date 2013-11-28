@@ -35,6 +35,12 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Tickets\Actions\NullAction;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckWorkflow;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
 use Symfony\Component\Console\Input\InputArgument;
@@ -62,7 +68,28 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo __FILE__;
+		/** @var \Application\DeskPRO\Tickets\TicketManager $ticket_manager */
+		$ticket_manager = App::getContainer()->getSystemService('ticket_manager');
+
+		$person = App::getOrm()->find('DeskPRO:Person', 3);
+		$dep    = App::getOrm()->find('DeskPRO:Department', 8);
+		$work   = App::getOrm()->find('DeskPRO:TicketWorkflow', 3);
+
+		$ticket = new Ticket();
+		$ticket->subject    = "Testing 123 - " . uniqid('', true);
+		$ticket->person     = $person;
+		$ticket->department = $dep;
+		$ticket->workflow   = $work;
+
+		$message = new TicketMessage();
+		$message->person = $person;
+		$message->setMessageText("Testing 123 - " . uniqid('', true));
+
+		$ticket->addMessage($message);
+
+		$context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'web');
+		$ticket_manager->saveTicket($ticket, $context);
+
 		echo "\n";
 	}
 }

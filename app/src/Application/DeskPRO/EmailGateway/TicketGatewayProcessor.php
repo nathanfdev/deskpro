@@ -677,7 +677,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
 
 				// Reset some objects so they dont get flushed during next loop
-				$ticket->resetTicketLogger();
 				App::getOrm()->detach($ticket);
 				App::getOrm()->detach($message);
 

@@ -32,114 +32,71 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\DeskPRO\Tickets\Notifications;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketChangelog;
+use Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches;
 
-class TriggerTermComposite implements TriggerTermInterface
+class TicketNotifyList
 {
-	const OP_AND = 'AND';
-	const OP_OR  = 'OR';
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
+	private $ticket;
 
 	/**
-	 * @var TriggerTermInterface[]
+	 * @var \Application\DeskPRO\Tickets\ExecutorContext
 	 */
-	private $terms = array();
+	private $context;
 
 	/**
-	 * @var string
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches
 	 */
-	private $op = 'AND';
-
+	private $filter_detector;
 
 	/**
-	 * @param TriggerTermInterface[] $terms
-	 * @param string $op
+	 * @var \Application\DeskPRO\Entity\TicketFilterSubscription[]
 	 */
-	public function __construct(array $terms = array(), $op = self::OP_AND)
+	private $subs;
+
+	/**
+	 * @var array
+	 */
+	private $notify_list;
+
+	/**
+	 * @param Ticket $ticket
+	 * @param ExecutorContext $context
+	 * @param DetectFilterMatches $filter_detector
+	 * @param \Application\DeskPRO\Entity\TicketFilterSubscription[] $subs
+	 */
+	public function __construct(Ticket $ticket, ExecutorContext $context, DetectFilterMatches $filter_detector, array $subs)
 	{
-		$this->setAll($terms);
-		$this->setOperator($op);
+		$this->ticket          = $ticket;
+		$this->context         = $context;
+		$this->filter_detector = $filter_detector;
+		$this->subs            = $subs;
 	}
 
-
-	/**
-	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
-	 *
-	 * @param string $op
-	 */
-	public function setOperator($op)
+	public function getNotifyList()
 	{
-		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getOperator()
-	{
-		return $this->op;
-	}
-
-
-	/**
-	 * @param TriggerTermInterface $term
-	 */
-	public function add(TriggerTermInterface $term)
-	{
-		$this->terms[] = $term;
-	}
-
-
-	/**
-	 * @param TriggerTermInterface[] $terms
-	 */
-	public function setAll(array $terms)
-	{
-		$this->terms = array();
-		foreach ($terms as $t) {
-			$this->add($t);
-		}
-	}
-
-
-	/**
-	 * @return TriggerTermInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->terms;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
-	{
-		if (!$this->terms) {
-			return true;
+		if ($this->notify_list !== null) {
+			return $this->notify_list;
 		}
 
-		if ($this->op == self::OP_AND) {
-			foreach ($this->terms as $t) {
-				if (!$t->isTriggerMatch($ticket, $context)) {
-					return false;
-				}
-			}
+		$state = $this->ticket->getStateChangeRecorder();
 
-			return true;
-		} else {
-			foreach ($this->terms as $t) {
-				if ($t->isTriggerMatch($ticket, $context)) {
-					return true;
-				}
-			}
-
-			return false;
+		$orig_status = $this->ticket->status_code;
+		if ($state->hasChangedField('status') || $state->hasChangedField('hidden_status')) {
+			$start_status = $this->ticket->status;
+			$statt_hstatus = $this->ticket->hidden_status;
 		}
+
+		$status_change         = $this->ticket->getStateChangeRecorder()->getFi('status');
+		$hstatus_change        = $this->ticket->getStateChangeRecorder()->getChangedProperty('hidden_status');
+		$assign_change         = $this->ticket->getStateChangeRecorder()->getChangedProperty('agent');
+		$assign_team_change    = $this->ticket->getStateChangeRecorder()->getChangedProperty('agent_team');
+		$assign_follow_change  = $this->ticket->getStateChangeRecorder()->getChangedProperty('participants');
 	}
 }

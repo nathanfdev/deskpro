@@ -39,6 +39,7 @@ use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\ActionContext;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 // TODO
 require(DP_ROOT.'/src/Application/DeskPRO/Tickets/Actions/TODO.php');
@@ -97,7 +98,7 @@ class TriggerActions implements \Serializable, ActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ActionContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
 		$this->actions->applyAction($ticket, $context);
 	}

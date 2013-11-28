@@ -148,7 +148,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		$search_text = array_unique($search_text);
 		$search_text = implode(' ', $search_text);
 
-		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$auth_len = Ticket::TAC_AUTHCODE_LEN;
 		$authcode_min_len = $auth_len + 1;
 		$authcode_max_len = $auth_len + 7;
 

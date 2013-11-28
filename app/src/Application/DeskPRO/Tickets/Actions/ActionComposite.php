@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 class ActionComposite implements ActionInterface
 {
@@ -85,7 +86,7 @@ class ActionComposite implements ActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ActionContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
 		foreach ($this->actions as $a) {
 			$a->applyAction($ticket, $context);

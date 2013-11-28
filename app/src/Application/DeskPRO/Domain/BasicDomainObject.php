@@ -36,10 +36,12 @@ namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
-
-use Orb\Util\Util;
+use Application\DeskPRO\ORM\StateChange\StateRecorder;
 
 /**
  * The basic entitiy class
@@ -63,6 +65,16 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 * @var array
 	 */
 	private $_custom_callables = array();
+
+	/**
+	 * @var StateChangeRecorder
+	 */
+	private $_state_recorder;
+
+	/**
+	 * @var object
+	 */
+	private $_state_clone;
 
 	/**
 	 * Special var that should be set during preload in a DataService
@@ -474,6 +486,50 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 
 	/**
+	 * @return StateChangeRecorder
+	 */
+	public function getStateChangeRecorder()
+	{
+		if (!$this->_state_recorder) {
+			$this->_state_recorder = new StateChangeRecorder();
+
+			$this->_state_clone = clone $this;
+			foreach (get_object_vars($this) as $prop => $val) {
+				if ($prop[0] == '_' || !is_object($val) || !($val instanceof Collection)) {
+					continue;
+				}
+
+				$new_coll = new ArrayCollection($val->toArray());
+				$this->_state_clone->__setPropValue__($prop, $new_coll);
+			}
+		}
+
+		return $this->_state_recorder;
+	}
+
+
+	/**
+	 * Resets the state change recorder.
+	 */
+	public function resetStateChangeRecorder()
+	{
+		$this->_state_recorder = null;
+		$this->_state_clone = null;
+	}
+
+
+	/**
+	 * Returns a clone of this entity which represents the state before changes were made to it.
+	 * @return object
+	 */
+	public function getOriginalStateClone()
+	{
+		$this->getStateChangeRecorder();
+		return $this->_state_clone;
+	}
+
+
+	/**
 	 * Notify a prop has changed.
 	 *
 	 * @param string $propName
@@ -487,6 +543,14 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                 $listener->propertyChanged($this, $prop, $old, $new);
             }
         }
+
+		if ($prop[0] != '_' && property_exists($this, $prop)) {
+			if ($this->$prop instanceof Collection) {
+				$this->getStateChangeRecorder()->recordCollection($prop, $new);
+			} else {
+				$this->getStateChangeRecorder()->record($prop, $old, $new);
+			}
+		}
     }
 
 	public function __getPropValue__($k) { return $this->$k; }

@@ -38,20 +38,19 @@ use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
+use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\Common\Collections\ArrayCollection;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
-/**
- * Ticket
- *
- *
- * @property \Application\DeskPRO\Entity\Person $person
- */
-class Ticket extends \Application\DeskPRO\Domain\DomainObject
+class Ticket extends DomainObject
 {
+	const TAC_AUTHCODE_LEN = 15;
+
 	const CREATED_WEB_PERSON        = 'web.person';
 	const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
 	const CREATED_WEB_PERSON_WIDGET = 'web.person.widget';
@@ -63,15 +62,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const CREATED_GATEWAY_AGENT     = 'gateway.agent';
 
 	const STATUS_AWAITING_AGENT = 'awaiting_agent';
-	const STATUS_AWAITING_USER = 'awaiting_user';
-	const STATUS_RESOLVED = 'resolved';
-	const STATUS_CLOSED = 'closed';
-	const STATUS_HIDDEN = 'hidden';
+	const STATUS_AWAITING_USER  = 'awaiting_user';
+	const STATUS_RESOLVED       = 'resolved';
+	const STATUS_CLOSED         = 'closed';
+	const STATUS_HIDDEN         = 'hidden';
 
-	const HIDDEN_STATUS_VALIDATING = 'validating';
-	const HIDDEN_STATUS_SPAM = 'spam';
-	const HIDDEN_STATUS_DELETED = 'deleted';
-	const HIDDEN_STATUS_TEMP = 'temp';
+	const HIDDEN_STATUS_VALIDATING  = 'validating';
+	const HIDDEN_STATUS_SPAM        = 'spam';
+	const HIDDEN_STATUS_DELETED     = 'deleted';
+	const HIDDEN_STATUS_TEMP        = 'temp';
 
 	/**#@+
 	 * These strings in $notify_email_name have special meanings.
@@ -79,7 +78,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * NOTIFY_NAME_PERSON: The person who sent the reply, or if no person (eg auto-response), then the helpdesk
 	 */
 	const NOTIFY_NAME_HELPDESK = '__DP_HELPDESK__';
-	const NOTIFY_NAME_PERSON = '__DP_PERSON__';
+	const NOTIFY_NAME_PERSON   = '__DP_PERSON__';
 	/**#@-*/
 
 	/**
@@ -213,31 +212,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
 	 */
 	protected $email_gateway_address = null;
-
-	/**
-	 * The "from" address to send from
-	 * @var string
-	 */
-	protected $notify_email = '';
-
-	/**
-	 * The name to send from
-	 * @var string
-	 */
-	protected $notify_email_name = '';
-
-	/**
-	 * The "from" address to send from for agent emails
-	 * @var string
-	 */
-	protected $notify_email_agent = '';
-
-	/**
-	 * The name to send from for agent emails
-	 *
-	 * @var string
-	 */
-	protected $notify_email_name_agent = '';
 
 	/**
 	 * @var string
@@ -439,12 +413,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $_reset_slas = false;
 
 	/**
-	 * Ticket logger
-	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
-	 */
-	protected $_ticket_logger;
-
-	/**
 	 * When true the ticket log doesnt run in the post event
 	 * @var bool
 	 */
@@ -473,13 +441,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $_isRemoved;
 
 	/**
-	 * When true the changelog tracker is auto-commited post-flush
-	 *
-	 * @var bool
-	 */
-	protected $_auto_commit_changelog = true;
-
-	/**
 	 * If the tikcet was created from an email just now, then this is the reader
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
 	 */
@@ -492,11 +453,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $email_reader_action;
 
 	/**
-	 * @var null
-	 */
-	public $_old_status = null;
-
-	/**
 	 * Sometimes we need to keep track of certain properties on a
 	 * ticket before they have been saved. e.g., labels has a PK on ticket ID and
 	 * we cant save them as managed entities until after the tikcet is first saved,
@@ -506,33 +462,23 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public $_presave_state = array();
 
-	/**
-	 * To get around scoping issues with TicketSla event callbacks, we set the
-	 * parent ticket log during TriggerExecutor.
-	 */
-	public $inserted_log_row_batch;
 
-	public function __construct($tracker = true)
+
+	public function __construct()
 	{
-		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->charges = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->ticket_slas = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->participants  = new ArrayCollection();
+		$this->messages      = new ArrayCollection();
+		$this->custom_data   = new ArrayCollection();
+		$this->labels        = new ArrayCollection();
+		$this->access_codes  = new ArrayCollection();
+		$this->attachments   = new ArrayCollection();
+		$this->charges       = new ArrayCollection();
+		$this->ticket_slas   = new ArrayCollection();
 
 		$this['date_created'] = new \DateTime();
 		$this['date_status'] = new \DateTime();
 
-		$len = App::getSetting('core_tickets.ptac_auth_code_len');
-		$this['auth'] = Strings::random($len, Strings::CHARS_KEY);
-
-		if ($tracker) {
-			$this->_initTicketLogger();
-			$this->_ticket_logger->recordExtra('ticket_created', true);
-		}
+		$this['auth'] = Strings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
 	}
 
 	/**
@@ -553,21 +499,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_no_log;
 	}
 
-	public function _initTicketLogger()
-	{
-		$this->_old_status = $this->getStatusCode();
-		if ($this->_ticket_logger) {
-			$this->removePropertyChangedListener($this->_ticket_logger);
-		}
-		$ticket_logger = new \Application\DeskPRO\Tickets\TicketChangeTracker($this);
-		$this->_ticket_logger = $ticket_logger;
-		$this->addPropertyChangedListener($ticket_logger);
-	}
-
 	public function getSubject()
 	{
 		if (!$this->subject) {
-			return App::getTranslator()->getPhraseText('user.tickets.no_subject');
+			return '(no subject)';
 		}
 
 		return $this->subject;
@@ -801,10 +736,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->urgency = $new_u;
 
 			$this->_onPropertyChanged('urgency', $old_u, $new_u);
-			if ($reset_on_reply) {
-				$real_diff = $old_u - $new_u;// real mod, taking into account bound()
-				$this->getTicketLogger()->recordExtra('urgency_reset_reply', $real_diff);
-			}
 		}
 	}
 
@@ -1271,17 +1202,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		if (count($message->attachments) && $this->getTicketLogger()) {
-			foreach ($message->attachments as $attach) {
-				$this->getTicketLogger()->recordMultiPropertyChanged('attachments', null, $attach);
-			}
-		}
-
-		$this->_onPropertyChanged('messages', null, $message);
-
-		if ($this->getTicketLogger() && DP_INTERFACE == 'user') {
-			$this->getTicketLogger()->recordExtra('is_user_reply', true);
-		}
+		$this->_onPropertyChanged('messages', null, $this->messages);
 	}
 
 
@@ -1296,9 +1217,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$attach->ticket = $this;
 		$this->attachments->add($attach);
 
-		if ($this->getTicketLogger()) {
-			$this->getTicketLogger()->recordMultiPropertyChanged('attachments', null, $attach);
-		}
+		$this->_onPropertyChanged('attachments', null, $this->attachments);
 	}
 
 
@@ -1400,10 +1319,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($is_new) {
 			$this->addCustomData($custom_data);
-		}
-
-		if ($this->id) {
-			App::getEntityRepository('DeskPRO:Cache')->delete("ticket_custom_fields.{$this->id}");
 		}
 
 		return $custom_data;
@@ -2503,7 +2418,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public static function decodeAccessCode($access_code)
 	{
-		$len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$len = Ticket::TAC_AUTHCODE_LEN;
 		if (strlen($access_code) < ($len+1)) return false;
 
 		$matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
@@ -2517,13 +2432,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'ticket_id' => $ticket_id,
 			'auth'      => $auth
 		);
-	}
-
-	public function __clone()
-	{
-		parent::__clone();
-		$this->_ticket_logger = null;
-		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
@@ -2606,10 +2514,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		if (!$this->_no_log && $this->_ticket_logger) {
-			$this->getTicketLogger()->recordExtra('created', true);
-		}
-
 		if ($this->organization) {
 			$managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($this->organization);
 			foreach ($managers AS $manager) {
@@ -2674,42 +2578,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			// don't need to do the apply trigger here - it will be handled elsewhere
-		}
-	}
-
-	/**
-	 */
-	public function _presaveTicketLogs()
-	{
-		if (!$this->_no_log && $this->_ticket_logger) {
-			$this->_ticket_logger->preDone();
-		}
-	}
-
-	public function resetTicketLogger()
-	{
-		$this->_initTicketLogger();
-		$this->_presave_state = array();
-	}
-
-	public function unsetTicketLogger()
-	{
-		$this->_ticket_logger = null;
-	}
-
-
-	public function _autoSaveTicketLogs()
-	{
-		if ($this->_auto_commit_changelog) {
-			$this->_saveTicketLogs();
-		}
-	}
-
-	public function _saveTicketLogs()
-	{
-		if (!$this->_no_log && $this->_ticket_logger) {
-			$this->_ticket_logger->done();
-			$this->resetTicketLogger();
 		}
 	}
 
@@ -3095,92 +2963,477 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
 		$metadata->setPrimaryTable(array(
-			'name' => 'tickets',
+			'name'    => 'tickets',
 			'indexes' => array(
 				'date_created_idx' => array('columns' => array('date_created')),
-				'date_locked_idx' => array('columns' => array('date_locked')),
-				'status_idx' => array('columns' => array('status')),
+				'date_locked_idx'  => array('columns' => array('date_locked')),
+				'status_idx'       => array('columns' => array('status')),
 			),
 			'uniqueConstraints' => array(
 				'ref_idx' => array('columns' => array('ref'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('_initTicketLogger', 'postLoad');
-		$metadata->addLifecycleCallback('initHashCode', 'prePersist');
-		$metadata->addLifecycleCallback('_preInsert', 'prePersist');
-		$metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
-		$metadata->addLifecycleCallback('_presaveTicketLogs', 'prePersist');
-		$metadata->addLifecycleCallback('_presaveTicketLogs', 'preUpdate');
-		$metadata->addLifecycleCallback('_autoSaveTicketLogs', 'postPersist');
-		$metadata->addLifecycleCallback('_autoSaveTicketLogs', 'postUpdate');
-		$metadata->addLifecycleCallback('_markRemoved', 'preRemove');
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
-		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-		$metadata->mapField(array( 'fieldName' => 'sent_to_address', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sent_to_address', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_name', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email_agent', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_agent', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email_name_agent', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_name_agent', ));
-		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
-		$metadata->mapField(array( 'fieldName' => 'creation_system_option', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system_option', ));
-		$metadata->mapField(array( 'fieldName' => 'ticket_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_hash', ));
-		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
-		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));
-		$metadata->mapField(array( 'fieldName' => 'is_hold', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_hold', ));
-		$metadata->mapField(array( 'fieldName' => 'urgency', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'urgency', ));
-		$metadata->mapField(array( 'fieldName' => 'count_agent_replies', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_agent_replies', ));
-		$metadata->mapField(array( 'fieldName' => 'count_user_replies', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_user_replies', ));
-		$metadata->mapField(array( 'fieldName' => 'feedback_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'feedback_rating', ));
-		$metadata->mapField(array( 'fieldName' => 'date_feedback_rating', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_feedback_rating', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'date_resolved', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_resolved', ));
-		$metadata->mapField(array( 'fieldName' => 'date_closed', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_closed', ));
-		$metadata->mapField(array( 'fieldName' => 'date_first_agent_assign', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_assign', ));
-		$metadata->mapField(array( 'fieldName' => 'date_first_agent_reply', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_last_agent_reply', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_agent_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_last_user_reply', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_user_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_agent_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_agent_waiting', ));
-		$metadata->mapField(array( 'fieldName' => 'date_user_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_user_waiting', ));
-		$metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
-		$metadata->mapField(array( 'fieldName' => 'total_user_waiting', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_user_waiting', ));
-		$metadata->mapField(array( 'fieldName' => 'total_to_first_reply', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_first_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_locked', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_locked', ));
-		$metadata->mapField(array( 'fieldName' => 'has_attachments', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_attachments', ));
-		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
-		$metadata->mapField(array( 'fieldName' => 'original_subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'original_subject', ));
-		$metadata->mapField(array( 'fieldName' => 'properties', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'properties', ));
-		$metadata->mapField(array( 'fieldName' => 'worst_sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'worst_sla_status', ));
-		$metadata->mapField(array( 'fieldName' => 'waiting_times', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'waiting_times', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'priority', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketPriority', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'priority_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'workflow', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketWorkflow', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'workflow_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'product', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'product_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person_email_validating', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmailValidating', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_validating_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'linked_chat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'linked_chat_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'access_codes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAccessCode', 'cascade' => array('persist', 'merge'), 'mappedBy' => 'ticket', 'onDelete' => 'cascade' ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket',  'orderBy' => array( 'date_created' => 'ASC', ), ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataTicket', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true,  'dpApi' => true));
-		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelTicket', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway_address', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_address_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'locked_by_agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'locked_by_agent', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'charges', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCharge', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'ticket_slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSla', 'cascade' => array( 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
+
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'ref',
+			'fieldName'  => 'ref',
+			'type'       => 'string',
+			'length'     => 100,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'auth',
+			'fieldName'  => 'auth',
+			'type'       => 'string',
+			'length'     => 20,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'sent_to_address',
+			'fieldName'  => 'sent_to_address',
+			'type'       => 'string',
+			'length'     => 200,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'creation_system',
+			'fieldName'  => 'creation_system',
+			'type'       => 'string',
+			'length'     => 100,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'creation_system_option',
+			'fieldName'  => 'creation_system_option',
+			'type'       => 'string',
+			'length'     => 1000,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'ticket_hash',
+			'columnName' => 'ticket_hash',
+			'type'       => 'string',
+			'length'     => 40,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'status',
+			'columnName' => 'status',
+			'type'       => 'string',
+			'length'     => 30,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'hidden_status',
+			'columnName' => 'hidden_status',
+			'type'       => 'string',
+			'length'     => 30,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'validating',
+			'columnName' => 'validating',
+			'type'       => 'string',
+			'length'     => 35,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'is_hold',
+			'columnName' => 'is_hold',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'urgency',
+			'columnName' => 'urgency',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'count_agent_replies',
+			'columnName' => 'count_agent_replies',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'count_user_replies',
+			'columnName' => 'count_user_replies',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'feedback_rating',
+			'columnName' => 'feedback_rating',
+			'type'       => 'integer',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_feedback_rating',
+			'columnName' => 'date_feedback_rating',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_created',
+			'columnName' => 'date_created',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_resolved',
+			'columnName' => 'date_resolved',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_closed',
+			'columnName' => 'date_closed',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_first_agent_assign',
+			'columnName' => 'date_first_agent_assign',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_first_agent_reply',
+			'columnName' => 'date_first_agent_reply',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_last_agent_reply',
+			'columnName' => 'date_last_agent_reply',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_last_user_reply',
+			'columnName' => 'date_last_user_reply',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_agent_waiting',
+			'columnName' => 'date_agent_waiting',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_user_waiting',
+			'columnName' => 'date_user_waiting',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_status',
+			'columnName' => 'date_status',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'total_user_waiting',
+			'columnName' => 'total_user_waiting',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'total_to_first_reply',
+			'columnName' => 'total_to_first_reply',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_locked',
+			'columnName' => 'date_locked',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'has_attachments',
+			'columnName' => 'has_attachments',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'subject',
+			'columnName' => 'subject',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'original_subject',
+			'columnName' => 'original_subject',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'properties',
+			'columnName' => 'properties',
+			'type'       => 'array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'worst_sla_status',
+			'columnName' => 'worst_sla_status',
+			'type'       => 'string',
+			'length'     => 20,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'waiting_times',
+			'columnName' => 'waiting_times',
+			'type'       => 'array',
+			'nullable'   => true,
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'language',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Language',
+			'joinColumns'          => array(array(
+				'name'                 => 'language_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'department',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Department',
+			'joinColumns'          => array(array(
+				'name'                 => 'department_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'category',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketCategory',
+			'joinColumns'          => array(array(
+				'name'                 => 'category_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'priority',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketPriority',
+			'joinColumns'          => array(array(
+				'name'                 => 'priority_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'workflow',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketWorkflow',
+			'joinColumns'          => array(array(
+				'name'                 => 'workflow_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'product',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Product',
+			'joinColumns'          => array(array(
+				'name'                 => 'product_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'person',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'          => array(array(
+				'name'                 => 'person_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'person_email',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\PersonEmail',
+			'joinColumns'          => array(array(
+				'name'                 => 'person_email_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'person_email_validating',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\PersonEmailValidating',
+			'joinColumns'          => array(array(
+				'name'                 => 'person_email_validating_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'agent',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'          => array(array(
+				'name'                 => 'agent_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'agent_team',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'joinColumns'          => array(array(
+				'name'                 => 'agent_team_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'organization',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Organization',
+			'joinColumns'          => array(array(
+				'name'                 => 'organization_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'linked_chat',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\ChatConversation',
+			'joinColumns'          => array(array(
+				'name'                 => 'linked_chat_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'attachments',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+			'cascade'              => array('remove', 'persist', 'merge', ),
+			'mappedBy'             => 'ticket',
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'access_codes',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketAccessCode',
+			'cascade'              => array('persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'onDelete'             => 'cascade'
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'messages',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketMessage',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orderBy'              => array( 'date_created' => 'ASC'),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'custom_data',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\CustomDataTicket',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'labels',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\LabelTicket',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'email_gateway',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\EmailGateway',
+			'joinColumns'          => array(array(
+				'name'                 => 'email_gateway_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'email_gateway_address',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress',
+			'joinColumns'          => array(array(
+				'name'                 => 'email_gateway_address_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'locked_by_agent',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'          => array(array(
+				'name'                => 'locked_by_agent',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+				'columnDefinition'     => NULL
+			)),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'participants',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketParticipant',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true,
+			'dpApiDeep'            => true
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'charges',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketCharge',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true,
+			'dpApiDeep'            => true
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'ticket_slas',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketSla',
+			'cascade'              => array('persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true,
+			'dpApiDeep'            => true
+		));
 	}
 }

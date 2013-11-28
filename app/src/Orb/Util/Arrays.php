@@ -409,6 +409,35 @@ class Arrays
 	}
 
 
+	/**
+	 * Just like array_diff except works with === identity checks (good for checking objects).
+	 *
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	public static function arrayDiffIdentity(array $array1, array $array2)
+	{
+		return array_udiff($array1, $array2, function($a, $b) {
+			return $a === $b ? 0 : -1;
+		});
+	}
+
+
+	/**
+	 * Just like array_diff_assoc except works with === identity checks (good for checking objects).
+	 *
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	public static function arrayDiffAssocIdentity(array $array1, array $array2)
+	{
+		return array_udiff_assoc($array1, $array2, function($a, $b) {
+			return $a === $b ? 0 : -1;
+		});
+	}
+
 
 	/**
 	 * Remove all falsey values from an array.

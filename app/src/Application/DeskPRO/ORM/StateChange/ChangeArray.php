@@ -32,114 +32,103 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\DeskPRO\ORM\StateChange;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketChangelog;
-
-class TriggerTermComposite implements TriggerTermInterface
+class ChangeArray implements ChangeInterface
 {
-	const OP_AND = 'AND';
-	const OP_OR  = 'OR';
-
-	/**
-	 * @var TriggerTermInterface[]
-	 */
-	private $terms = array();
-
 	/**
 	 * @var string
 	 */
-	private $op = 'AND';
+	private $field_id;
+
+	/**
+	 * @var array
+	 */
+	private $old;
+
+	/**
+	 * @var array
+	 */
+	private $new;
+
+	/**
+	 * @var bool
+	 */
+	private $is_same = false;
 
 
 	/**
-	 * @param TriggerTermInterface[] $terms
-	 * @param string $op
+	 * @param string $field_id
+	 * @param mixed  $old
+	 * @param mixed  $new
 	 */
-	public function __construct(array $terms = array(), $op = self::OP_AND)
+	public function __construct($field_id, array $old = null, array $new = null)
 	{
-		$this->setAll($terms);
-		$this->setOperator($op);
-	}
+		$this->field_id = $field_id;
+		$this->old      = $old;
+		$this->new      = $new;
 
-
-	/**
-	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
-	 *
-	 * @param string $op
-	 */
-	public function setOperator($op)
-	{
-		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
+		// Check for null
+		if ($old === $new) {
+			$this->is_same = true;
+		} elseif ($old && $new && count($this->old) == count($this->new)) {
+			if (array_diff_assoc($this->old, $this->new) || array_diff_assoc($this->new, $this->old)) {
+				$this->is_same = true;
+			}
+		}
 	}
 
 
 	/**
 	 * @return string
 	 */
-	public function getOperator()
+	public function getField()
 	{
-		return $this->op;
+		return $this->field_id;
 	}
 
 
 	/**
-	 * @param TriggerTermInterface $term
+	 * @return array
 	 */
-	public function add(TriggerTermInterface $term)
+	public function getOld()
 	{
-		$this->terms[] = $term;
+		return $this->old;
 	}
 
 
 	/**
-	 * @param TriggerTermInterface[] $terms
+	 * @return array
 	 */
-	public function setAll(array $terms)
+	public function getNew()
 	{
-		$this->terms = array();
-		foreach ($terms as $t) {
-			$this->add($t);
-		}
+		return $this->new;
 	}
 
 
 	/**
-	 * @return TriggerTermInterface[]
+	 * @return bool
 	 */
-	public function getAll()
+	public function isSame()
 	{
-		return $this->terms;
+		return $this->is_same;
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @return bool
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
+	public function isCollection()
 	{
-		if (!$this->terms) {
-			return true;
-		}
+		return false;
+	}
 
-		if ($this->op == self::OP_AND) {
-			foreach ($this->terms as $t) {
-				if (!$t->isTriggerMatch($ticket, $context)) {
-					return false;
-				}
-			}
 
-			return true;
-		} else {
-			foreach ($this->terms as $t) {
-				if ($t->isTriggerMatch($ticket, $context)) {
-					return true;
-				}
-			}
-
-			return false;
-		}
+	/**
+	 * @return bool
+	 */
+	public function isEntity()
+	{
+		return false;
 	}
 }

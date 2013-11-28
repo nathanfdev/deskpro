@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 class MacroActionComposite implements MacroActionInterface
 {
@@ -86,7 +87,7 @@ class MacroActionComposite implements MacroActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ActionContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
 		$errors = array();
 
@@ -101,7 +102,7 @@ class MacroActionComposite implements MacroActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ActionContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
 		foreach ($this->actions as $act) {
 			$act->applyMacro($person, $ticket, $context);

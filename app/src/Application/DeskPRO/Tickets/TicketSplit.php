@@ -151,7 +151,6 @@ class TicketSplit
 		if ($delete_ticket) {
 			$ticket->_markRemoved();
 			$ticket->setNoLog();
-			$ticket->unsetTicketLogger();
 
 			$this->em->remove($ticket);
 		} else {

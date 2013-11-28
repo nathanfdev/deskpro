@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketChangelog;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 /**
  * This interface is used when a TicketCriteria class can respond to triggers.
@@ -45,8 +45,8 @@ interface TriggerTermInterface
 {
 	/**
 	 * @param  Ticket $ticket
-	 * @param  TicketChangelog $ticket_changelog
+	 * @param  ExecutorContext $context
 	 * @return bool
 	 */
-	public function isTriggerMatch(Ticket $ticket, TicketChangelog $ticket_changelog);
+	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context);
 }

@@ -76,7 +76,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	{
 		$account_pattern = preg_quote($account_pattern, '#');
 
-		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$auth_len = Ticket::TAC_AUTHCODE_LEN;
 		$authcode_min_len = $auth_len + 1;
 		$authcode_max_len = $auth_len + 7;
 

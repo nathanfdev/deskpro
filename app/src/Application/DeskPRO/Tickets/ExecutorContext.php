@@ -32,114 +32,140 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketChangelog;
+use Monolog\Logger;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Person;
+use Orb\Util\OptionsArray;
 
-class TriggerTermComposite implements TriggerTermInterface
+class ExecutorContext implements PersonContextInterface
 {
-	const OP_AND = 'AND';
-	const OP_OR  = 'OR';
+	/**
+	 * @var \Orb\Util\OptionsArray
+	 */
+	private $vars;
 
 	/**
-	 * @var TriggerTermInterface[]
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	private $terms = array();
+	private $person_context;
 
 	/**
 	 * @var string
 	 */
-	private $op = 'AND';
-
+	private $event_type = 'update';
 
 	/**
-	 * @param TriggerTermInterface[] $terms
-	 * @param string $op
+	 * @var string
 	 */
-	public function __construct(array $terms = array(), $op = self::OP_AND)
+	private $event_method = 'system';
+
+	/**
+	 * @var null
+	 */
+	private $event_performer = 'system';
+
+	/**
+	 * @var \Monolog\Logger
+	 */
+	private $logger;
+
+
+	public function __construct(Logger $logger)
 	{
-		$this->setAll($terms);
-		$this->setOperator($op);
+		$this->vars = new OptionsArray();
+		$this->logger = $logger;
 	}
 
 
 	/**
-	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
-	 *
-	 * @param string $op
+	 * @return Logger
 	 */
-	public function setOperator($op)
+	public function getLogger()
 	{
-		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
+		return $this->logger;
+	}
+
+
+	/**
+	 * @param Person $person
+	 * @param bool   $set_performer  Automatically set the event performer based on this user
+	 */
+	public function setPersonContext(Person $person, $set_performer = true)
+	{
+		$this->person_context = $person;
+
+		if ($set_performer) {
+			if ($this->person_context->is_agent) {
+				$this->event_performer = 'agent';
+			} else {
+				$this->event_performer = 'user';
+			}
+		}
+	}
+
+
+	/**
+	 * @return OptionsArray
+	 */
+	public function getVars()
+	{
+		return $this->vars;
+	}
+
+
+	/**
+	 * @param $event_type
+	 */
+	public function setEventType($event_type)
+	{
+		$this->event_type = $event_type;
 	}
 
 
 	/**
 	 * @return string
 	 */
-	public function getOperator()
+	public function getEventType()
 	{
-		return $this->op;
+		return $this->event_type;
 	}
 
 
 	/**
-	 * @param TriggerTermInterface $term
+	 * @param string $event_method
 	 */
-	public function add(TriggerTermInterface $term)
+	public function setEventMethod($event_method)
 	{
-		$this->terms[] = $term;
+		$this->event_method = $event_method;
 	}
 
 
 	/**
-	 * @param TriggerTermInterface[] $terms
+	 * @return string
 	 */
-	public function setAll(array $terms)
+	public function getEventMethod()
 	{
-		$this->terms = array();
-		foreach ($terms as $t) {
-			$this->add($t);
-		}
+		return $this->event_method;
 	}
 
 
 	/**
-	 * @return TriggerTermInterface[]
+	 * @param string $event_performer
 	 */
-	public function getAll()
+	public function setEventPerformer($event_performer)
 	{
-		return $this->terms;
+		$this->event_performer = $event_performer;
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @return string
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
+	public function getEventPerformer()
 	{
-		if (!$this->terms) {
-			return true;
-		}
-
-		if ($this->op == self::OP_AND) {
-			foreach ($this->terms as $t) {
-				if (!$t->isTriggerMatch($ticket, $context)) {
-					return false;
-				}
-			}
-
-			return true;
-		} else {
-			foreach ($this->terms as $t) {
-				if ($t->isTriggerMatch($ticket, $context)) {
-					return true;
-				}
-			}
-
-			return false;
-		}
+		return $this->event_performer;
 	}
 }

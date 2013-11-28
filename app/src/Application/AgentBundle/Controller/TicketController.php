@@ -938,7 +938,6 @@ class TicketController extends AbstractController
 
 		$this->em->persist($ticket);
 		$this->em->flush();
-		$ticket->_saveTicketLogs();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}

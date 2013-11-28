@@ -26,120 +26,82 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @category Entities
+ * @package Orb
+ * @category Logger
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Orb\Logger\Handler;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketChangelog;
+use Monolog\Handler\AbstractHandler;
+use Monolog\Logger;
 
-class TriggerTermComposite implements TriggerTermInterface
+class ArrayHandler extends AbstractHandler
 {
-	const OP_AND = 'AND';
-	const OP_OR  = 'OR';
+	protected $max_size = 5000;
+	protected $messages = array();
+	protected $count    = 0;
 
-	/**
-	 * @var TriggerTermInterface[]
-	 */
-	private $terms = array();
-
-	/**
-	 * @var string
-	 */
-	private $op = 'AND';
-
-
-	/**
-	 * @param TriggerTermInterface[] $terms
-	 * @param string $op
-	 */
-	public function __construct(array $terms = array(), $op = self::OP_AND)
+	public function __construct($max_size = 0, $level = Logger::DEBUG, $bubble = true)
 	{
-		$this->setAll($terms);
-		$this->setOperator($op);
+		parent::__construct($level, $bubble);
+		$this->max_size = $max_size;
 	}
 
 
 	/**
-	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
-	 *
-	 * @param string $op
+	 * {@inheritdoc}
 	 */
-	public function setOperator($op)
+	public function handle(array $record)
 	{
-		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
+		if ($record['level'] < $this->level) {
+			return false;
+		}
+
+		if ($this->max_size > 0 && $this->max_size === $this->count) {
+			array_shift($this->messages);
+			$this->count--;
+		}
+
+		if ($this->processors) {
+			foreach ($this->processors as $processor) {
+				$record = call_user_func($processor, $record);
+			}
+		}
+
+		$this->messages[] = $this->getFormatter()->format($record);
+		$this->count++;
+
+		return false === $this->bubble;
 	}
+
+
+	/**
+	 * Resets messages to empty
+	 */
+	public function reset()
+	{
+		$this->messages = array();
+		$this->count = 0;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function getMessages()
+	{
+		return $this->messages;
+	}
+
 
 
 	/**
 	 * @return string
 	 */
-	public function getOperator()
+	public function getMessagesAsString()
 	{
-		return $this->op;
-	}
-
-
-	/**
-	 * @param TriggerTermInterface $term
-	 */
-	public function add(TriggerTermInterface $term)
-	{
-		$this->terms[] = $term;
-	}
-
-
-	/**
-	 * @param TriggerTermInterface[] $terms
-	 */
-	public function setAll(array $terms)
-	{
-		$this->terms = array();
-		foreach ($terms as $t) {
-			$this->add($t);
-		}
-	}
-
-
-	/**
-	 * @return TriggerTermInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->terms;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
-	{
-		if (!$this->terms) {
-			return true;
-		}
-
-		if ($this->op == self::OP_AND) {
-			foreach ($this->terms as $t) {
-				if (!$t->isTriggerMatch($ticket, $context)) {
-					return false;
-				}
-			}
-
-			return true;
-		} else {
-			foreach ($this->terms as $t) {
-				if ($t->isTriggerMatch($ticket, $context)) {
-					return true;
-				}
-			}
-
-			return false;
-		}
+		return implode("\n", $this->messages);
 	}
 }

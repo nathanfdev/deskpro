@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\Util;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
@@ -80,17 +81,17 @@ abstract class AbstractAction implements ActionDefinitionInterface, ActionInterf
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function applyAction(Ticket $ticket, ActionContext $context);
+	abstract public function applyAction(Ticket $ticket, ExecutorContext $context);
 
 
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function getMacroPermissionErrors(Person $person, Ticket $ticket, ActionContext $context);
+	abstract public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
 
 
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function applyMacro(Person $person, Ticket $ticket, ActionContext $context);
+	abstract public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
 }

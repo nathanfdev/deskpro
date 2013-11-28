@@ -32,114 +32,14 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\DeskPRO\ORM\StateChange;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketChangelog;
-
-class TriggerTermComposite implements TriggerTermInterface
+interface ChangeInterface
 {
-	const OP_AND = 'AND';
-	const OP_OR  = 'OR';
-
-	/**
-	 * @var TriggerTermInterface[]
-	 */
-	private $terms = array();
-
-	/**
-	 * @var string
-	 */
-	private $op = 'AND';
-
-
-	/**
-	 * @param TriggerTermInterface[] $terms
-	 * @param string $op
-	 */
-	public function __construct(array $terms = array(), $op = self::OP_AND)
-	{
-		$this->setAll($terms);
-		$this->setOperator($op);
-	}
-
-
-	/**
-	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
-	 *
-	 * @param string $op
-	 */
-	public function setOperator($op)
-	{
-		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getOperator()
-	{
-		return $this->op;
-	}
-
-
-	/**
-	 * @param TriggerTermInterface $term
-	 */
-	public function add(TriggerTermInterface $term)
-	{
-		$this->terms[] = $term;
-	}
-
-
-	/**
-	 * @param TriggerTermInterface[] $terms
-	 */
-	public function setAll(array $terms)
-	{
-		$this->terms = array();
-		foreach ($terms as $t) {
-			$this->add($t);
-		}
-	}
-
-
-	/**
-	 * @return TriggerTermInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->terms;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
-	{
-		if (!$this->terms) {
-			return true;
-		}
-
-		if ($this->op == self::OP_AND) {
-			foreach ($this->terms as $t) {
-				if (!$t->isTriggerMatch($ticket, $context)) {
-					return false;
-				}
-			}
-
-			return true;
-		} else {
-			foreach ($this->terms as $t) {
-				if ($t->isTriggerMatch($ticket, $context)) {
-					return true;
-				}
-			}
-
-			return false;
-		}
-	}
+	public function getField();
+	public function getOld();
+	public function getNew();
+	public function isSame();
+	public function isCollection();
+	public function isEntity();
 }

@@ -858,8 +858,6 @@ class TicketChangeTracker extends ChangeTracker
 
 		$this->running = true;
 
-		$this->ticket->unsetTicketLogger();
-
 		// Bare delete doesnt update any triggers, it just sends CM's.
 		// Its used in merging where we want to notify clients that the old ticket was removed from lists,
 		// but the actual messages about changing the status to deleted etc arent wanted
