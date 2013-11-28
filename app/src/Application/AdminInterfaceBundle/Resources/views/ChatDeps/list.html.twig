@@ -21,7 +21,7 @@
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 
-					<ul class="dp-item-list sublist" ng-if="dep.children.length"
+					<ul class="dp-item-list sublist" ng-show="dep.children.length"
 						ui-sortable="ListCtrl.sortedListOptions">
 						<li class="with-drag-handle" ng-repeat="subdep in dep.children"
 							dp-state-mark="chat.chat_deps.edit.{{ ng_var('subdep.id') }}"

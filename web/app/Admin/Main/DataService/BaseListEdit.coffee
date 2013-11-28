@@ -1,6 +1,10 @@
 define [
-	'DeskPRO/Util/Angular'
-], (Util_Angular) ->
+	'DeskPRO/Util/Angular',
+	'DeskPRO/Util/Arrays'
+], (
+	Util_Angular,
+	Arrays
+) ->
 	###
     # This is a simple base data service that implements some default functionality for
     # loading the "list" collection, and some methods for keeping the list up to date.
@@ -115,16 +119,52 @@ define [
 			if not @isListLoaded then return
 
 			listModel = null
-			for model in @listModels
+			oldParent = null
+
+			for model, idx in @listModels
+
 				if model[@idProp] == dataModel[@idProp]
 					listModel = model
 					break
 
+				if model.children
+					for child in model.children
+						if child[@idProp] == dataModel[@idProp]
+							oldParent = model
+							listModel = child
+							break
+
 			if listModel != null
+
 				for k, v of listModel
 					if dataModel[k]?
 						listModel[k] = dataModel[k]
+
+				# case of changing the parent AND if model already has parent - have to re-populate sub-tree with children
+
+				if oldParent? and oldParent[@idProp] != dataModel.parent_id
+
+					for model, idx in oldParent.children
+							if model[@idProp] == dataModel[@idProp]
+									removeIdx = idx
+									break
+
+					if removeIdx?
+						oldParent.children.splice(removeIdx, 1)
+
+					if dataModel.parent_id?
+
+						parent = @findListModelById(dataModel.parent_id)
+						parent.children.push(dataModel)
+
+					else
+
+						@listModels.push(dataModel)
+
 			else
+
+				# this is case of model that doens't exist in the list yet - quite easy case
+
 				if dataMapper
 					newListModel = dataMapper(dataModel)
 				else
