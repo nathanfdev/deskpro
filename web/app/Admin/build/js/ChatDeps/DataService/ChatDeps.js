@@ -163,7 +163,7 @@
           promise = this.Api.sendPostJson('/chat_deps/' + dep.id, postData);
         } else {
           promise = this.Api.sendPutJson('/chat_deps', postData).success(function(data) {
-            return dep.id = data.department_id;
+            return dep.id = data.id;
           });
         }
         promise.success(function() {

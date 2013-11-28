@@ -150,7 +150,7 @@ define [
 				promise = @Api.sendPostJson('/chat_deps/' + dep.id, postData)
 			else
 				promise = @Api.sendPutJson('/chat_deps', postData).success( (data) ->
-					dep.id = data.department_id
+					dep.id = data.id
 				)
 
 			promise.success( =>

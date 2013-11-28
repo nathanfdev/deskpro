@@ -68,8 +68,6 @@ define [
 			if not @$scope.form_props.$valid
 				return
 
-			is_new = !@dep.id
-
 			@startSpinner('saving_dep')
 
 			promise = @depData.saveFormModel(@dep, @form)
@@ -79,13 +77,10 @@ define [
 				@origForm = Util.clone(@form, true)
 
 				@stopSpinner('saving_dep').then( =>
-					@Growl.success(@getRegisteredMessage('saved_dep'))
+					@Growl.success(@getRegisteredMessage('saved_dep'), =>
+						@$state.go('chat.chat_deps.edit', {id: @dep.id})
+					)
 				)
-
-				if is_new
-					@$state.go('chat.chat_deps.gocreate')
-				else
-					@$state.go('chat.chat_deps')
 			)
 
 			promise.error( (info, code) =>
