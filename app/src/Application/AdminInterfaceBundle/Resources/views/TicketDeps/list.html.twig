@@ -17,7 +17,7 @@
 						</div>
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
-					<ul class="dp-item-list sublist" ng-if="dep.children.length" ui-sortable="ListCtrl.sortedListOptions">
+					<ul class="dp-item-list sublist" ng-show="dep.children.length" ui-sortable="ListCtrl.sortedListOptions">
 						<li class="with-drag-handle" ng-repeat="subdep in dep.children" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
 							<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
 								<i class="fa fa-bars drag-handle"></i>
