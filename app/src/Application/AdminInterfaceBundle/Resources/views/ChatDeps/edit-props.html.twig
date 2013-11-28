@@ -1,0 +1,68 @@
+<div class="panel panel-fill indent">
+	<div class="panel-body">
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>{{ phrase('agent.general.title') }} *</h3>
+			</div>
+			<div class="col-lg-9">
+				<div class="inner-group" dp-error-class="form_props.title">
+					<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
+						   style="width: 50%;" required
+						   dp-server-validation="department.title.required" autofocus/>
+					<span class="help-block">
+						{{ phrase('adm.departments.title_explain') }}
+					</span>
+				</div>
+
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="EditCtrl.form.enable_user_title" value="1" />
+						<h4>{{ phrase('adm.departments.user_title') }}</h4>
+					</label>
+					<div ng-show="EditCtrl.form.enable_user_title">
+						<input type="text" class="form-control" ng-model="EditCtrl.form.user_title" style="width: 50%;" />
+					</div>
+					<span class="help-block">
+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>{{ phrase('agent.general.parent') }}</h3>
+			</div>
+			<div class="col-lg-9">
+				<select
+					ui-select2
+					ng-model="EditCtrl.form.parent_id"
+					style="min-width: 240px"
+					class="no-search"
+				>
+					<option value="0">No Parent</option>
+					<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in EditCtrl.dep_parent_list">
+						{{ ng_var('dep.title') }}
+					</option>
+				</select>
+				<span class="help-block">
+					{{ phrase('adm.departments.parent_explain') }}
+				</span>
+
+				<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
+					<p>
+						<strong>{{ phrase('adm.departments.parent_not_parent') }}</strong>
+					</p>
+					<ul>
+						<li>
+							{{ phrase('adm.departments.parent_convert', {title: 'ng_var(show_parent_warning.title)' }) }}
+						</li>
+						<li>
+							{{ phrase('adm.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(EditCtrl.form.title)' }) }}
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

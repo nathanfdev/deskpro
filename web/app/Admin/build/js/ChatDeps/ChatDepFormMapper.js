@@ -4,13 +4,17 @@
     return ChatDepFormMapper = (function() {
       function ChatDepFormMapper() {}
 
+      /*
+      		#
+      */
+
+
       ChatDepFormMapper.prototype.getFormFromModel = function(dep, depPerms, agents, agentgroups, usergroups) {
         var agent, form, group, matrix, p, u, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
         form = {
           title: '',
           user_title: '',
           parent_id: '0',
-          email_gateway_id: '0',
           enable_user_title: false
         };
         if (dep.id) {
@@ -54,21 +58,22 @@
         return form;
       };
 
+      /*
+       	#
+      */
+
+
       ChatDepFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var depData, permData, postData, usergroup, _i, _len, _ref;
         depData = {};
         depData.title = formModel.title;
         depData.parent = formModel.parent_id || "0";
-        depData.email_gateway = formModel.email_gateway_id || "0";
         depData.move_tickets_to = 'self';
         if (Util.isBlank(depData.parent)) {
           depData.parent = null;
         }
-        if (Util.isBlank(depData.email_gateway)) {
-          depData.email_gateway = null;
-        }
         if (formModel.enable_user_title) {
-          depData.user_title = formModel.user_titl;
+          depData.user_title = formModel.user_title;
         }
         permData = formModel.agent_perms.getPermsData();
         _ref = formModel.usergroup_perms;
@@ -88,6 +93,11 @@
         };
         return postData;
       };
+
+      /*
+      		#
+      */
+
 
       ChatDepFormMapper.prototype.applyFormToModel = function(dep, formModel) {
         dep.title = formModel.title;

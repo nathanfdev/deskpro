@@ -6,12 +6,16 @@ define [
 	Util
 ) ->
 	class ChatDepFormMapper
+
+		###
+		#
+		###
+
 		getFormFromModel: (dep, depPerms, agents, agentgroups, usergroups) ->
 			form = {
 				title: '',
 				user_title: '',
 				parent_id: '0',
-				email_gateway_id: '0',
 				enable_user_title: false
 			}
 
@@ -47,24 +51,26 @@ define [
 
 			return form
 
+		###
+ 	#
+		###
 
 		getPostDataFromForm: (formModel) ->
+
 			depData = {}
 
 			depData.title           = formModel.title
 			depData.parent          = formModel.parent_id || "0"
-			depData.email_gateway   = formModel.email_gateway_id || "0"
 			depData.move_tickets_to = 'self'
 
 			if Util.isBlank(depData.parent)
 				depData.parent = null
-			if Util.isBlank(depData.email_gateway)
-				depData.email_gateway = null
 
 			if formModel.enable_user_title
-				depData.user_title = formModel.user_titl
+				depData.user_title = formModel.user_title
 
 			permData = formModel.agent_perms.getPermsData()
+
 			for usergroup in formModel.usergroup_perms
 				if usergroup.use
 					permData.push({
@@ -81,8 +87,12 @@ define [
 
 			return postData
 
+		###
+		#
+		###
 
 		applyFormToModel: (dep, formModel) ->
+
 			dep.title = formModel.title
 
 			if not dep.display_order?

@@ -1,5 +1,5 @@
 (function() {
-  define(['DeskPRO/Util/Angular'], function(Util_Angular) {
+  define(['DeskPRO/Util/Angular', 'DeskPRO/Util/Arrays'], function(Util_Angular, Arrays) {
     /*
        # This is a simple base data service that implements some default functionality for
        # loading the "list" collection, and some methods for keeping the list up to date.
@@ -134,7 +134,7 @@
 
 
       Admin_Main_DataService_BaseListEdit.prototype.mergeDataModel = function(dataModel, dataMapper) {
-        var k, listModel, model, newListModel, v, _i, _len, _ref, _results;
+        var child, idx, k, listModel, model, newListModel, oldParent, parent, removeIdx, v, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
         if (dataMapper == null) {
           dataMapper = null;
         }
@@ -142,25 +142,52 @@
           return;
         }
         listModel = null;
+        oldParent = null;
         _ref = this.listModels;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          model = _ref[_i];
+        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+          model = _ref[idx];
           if (model[this.idProp] === dataModel[this.idProp]) {
             listModel = model;
             break;
           }
+          if (model.children) {
+            _ref1 = model.children;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              child = _ref1[_j];
+              if (child[this.idProp] === dataModel[this.idProp]) {
+                oldParent = model;
+                listModel = child;
+                break;
+              }
+            }
+          }
         }
         if (listModel !== null) {
-          _results = [];
           for (k in listModel) {
             v = listModel[k];
             if (dataModel[k] != null) {
-              _results.push(listModel[k] = dataModel[k]);
-            } else {
-              _results.push(void 0);
+              listModel[k] = dataModel[k];
             }
           }
-          return _results;
+          if ((oldParent != null) && oldParent[this.idProp] !== dataModel.parent_id) {
+            _ref2 = oldParent.children;
+            for (idx = _k = 0, _len2 = _ref2.length; _k < _len2; idx = ++_k) {
+              model = _ref2[idx];
+              if (model[this.idProp] === dataModel[this.idProp]) {
+                removeIdx = idx;
+                break;
+              }
+            }
+            if (removeIdx != null) {
+              oldParent.children.splice(removeIdx, 1);
+            }
+            if (dataModel.parent_id != null) {
+              parent = this.findListModelById(dataModel.parent_id);
+              return parent.children.push(dataModel);
+            } else {
+              return this.listModels.push(dataModel);
+            }
+          }
         } else {
           if (dataMapper) {
             newListModel = dataMapper(dataModel);

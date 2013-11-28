@@ -1131,6 +1131,29 @@ define(function() {
 		controller: 'Admin_ChatDeps_Ctrl_List'
 	});
 
+	routes.push({
+		id: 'chat.chat_deps.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', function ($state) {
+			$state.go('chat.chat_deps.create');
+		}]
+	});
+
+	routes.push({
+		id: 'chat.chat_deps.create',
+		url: '/create',
+		templateName: 'ChatDeps/edit.html',
+		controller: 'Admin_ChatDeps_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'chat.chat_deps.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'ChatDeps/edit.html',
+		controller: 'Admin_ChatDeps_Ctrl_Edit'
+	});
+
 	//###
 	//# Fields
 	//###

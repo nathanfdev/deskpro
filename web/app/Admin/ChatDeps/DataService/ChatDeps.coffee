@@ -130,3 +130,32 @@ define [
 
 			promise = @Api.sendPostJson('/chat_deps/display_order', postData)
 			return promise
+
+
+		###
+  # Saves a form model and applies the form model to the dep model
+  # once finished.
+  #
+  # @param {Object} dep The dep model
+  # @param {Object} formModel  The model representing the form
+  # @return {promise}
+		###
+
+		saveFormModel: (dep, formModel) ->
+
+			mapper = @getFormMapper()
+			postData = mapper.getPostDataFromForm(formModel)
+
+			if dep.id
+				promise = @Api.sendPostJson('/chat_deps/' + dep.id, postData)
+			else
+				promise = @Api.sendPutJson('/chat_deps', postData).success( (data) ->
+					dep.id = data.department_id
+				)
+
+			promise.success( =>
+				mapper.applyFormToModel(dep, formModel)
+				@mergeDataModel(dep)
+			)
+
+			return promise

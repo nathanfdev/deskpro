@@ -144,6 +144,35 @@
         return promise;
       };
 
+      /*
+      # Saves a form model and applies the form model to the dep model
+      # once finished.
+      #
+      # @param {Object} dep The dep model
+      # @param {Object} formModel  The model representing the form
+      # @return {promise}
+      */
+
+
+      ChatDeps.prototype.saveFormModel = function(dep, formModel) {
+        var mapper, postData, promise,
+          _this = this;
+        mapper = this.getFormMapper();
+        postData = mapper.getPostDataFromForm(formModel);
+        if (dep.id) {
+          promise = this.Api.sendPostJson('/chat_deps/' + dep.id, postData);
+        } else {
+          promise = this.Api.sendPutJson('/chat_deps', postData).success(function(data) {
+            return dep.id = data.department_id;
+          });
+        }
+        promise.success(function() {
+          mapper.applyFormToModel(dep, formModel);
+          return _this.mergeDataModel(dep);
+        });
+        return promise;
+      };
+
       return ChatDeps;
 
     })(BaseListEdit);
