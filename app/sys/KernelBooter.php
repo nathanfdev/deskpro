@@ -633,19 +633,28 @@ class KernelBooter
 		// Use a file lock for better "cron is still running" detection
 		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 			if (!in_array('-f', $_SERVER['argv']) && !in_array('--force', $_SERVER['argv'])) {
+				$skip_lock_err = false;
 				if (file_exists($lock_file)) {
-					$lock_fp = @fopen($lock_file, 'r+');
-				} else {
-					$lock_fp = @fopen($lock_file, 'w');
+					$t = (int)file_get_contents($lock_file);
+					if ($t < time()-900) {
+						$skip_lock_err = true;
+						@unlink($lock_file);
+					}
 				}
+
+				$lock_fp = @fopen($lock_file, 'c');
+				@chmod($lock_file, 0777);
 				if ($lock_fp) {
 					if (!@flock($lock_fp, \LOCK_EX | \LOCK_NB)) {
 						if (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv'])) {
 							echo "Lock file still locked, cron already running: $lock_file\n";
 						}
-						exit;
+						if (!$skip_lock_err) {
+							exit;
+						}
 					}
 
+					@ftruncate($lock_fp, 0);
 					@fwrite($lock_fp, time());
 				}
 			}
@@ -729,7 +738,7 @@ class KernelBooter
 		$GLOBALS['DP_IS_IN_CLI'] = false;
 
 		if ($lock_fp) {
-			@flock($lock_fp, LOCK_UN);
+			@flock($lock_fp, \LOCK_UN);
 			@fclose($lock_fp);
 			@unlink($lock_file);
 		}
