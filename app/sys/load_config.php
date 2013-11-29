@@ -553,7 +553,7 @@ function dp_get_user_ip_address()
 function dp_get_proxied_ip_address()
 {
 	$ip_address = null;
-	if ($ip_address !== null) return $ip_address ?: null;
+	if ($ip_address !== null) return $ip_address ? $ip_address : null;
 
 	$validate_ip = function($ip) {
 		return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
@@ -580,7 +580,7 @@ function dp_get_proxied_ip_address()
 		$ip_address = false;
 	}
 
-	return $ip_address ?: null;
+	return $ip_address ? $ip_address : null;
 }
 
 
@@ -593,7 +593,7 @@ function dp_get_proxied_ip_address()
 function dp_get_client_ip_address()
 {
 	static $ip_address = null;
-	if ($ip_address !== null) return $ip_address ?: null;
+	if ($ip_address !== null) return $ip_address ? $ip_address : null;
 
 	if (!empty($_SERVER['REMOTE_ADDR'])) {
 		$ip_address = $_SERVER['REMOTE_ADDR'];
@@ -603,7 +603,7 @@ function dp_get_client_ip_address()
 		$ip_address = false;
 	}
 
-	return $ip_address ?: null;
+	return $ip_address ? $ip_address : null;
 }
 
 
