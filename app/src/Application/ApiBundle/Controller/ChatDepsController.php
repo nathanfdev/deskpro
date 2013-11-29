@@ -149,6 +149,37 @@ class ChatDepsController extends AbstractController
 	}
 
 	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+		 */
+
+		$chat_deps = $this->container->getSystemService('chat_departments');
+		$editor    = $this->_getDepartmentEditor();
+		$dep       = $chat_deps->getById($id);
+
+		if (!$dep) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$move_to_dep = $chat_deps->getById($this->in->getUint('move_to'));
+
+		if (!$move_to_dep) {
+
+			throw ValidationException::create("department.move_chat.dep_not_valid");
+		}
+
+		$old_id = $editor->removeDepartment($dep, $move_to_dep);
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
+
+	####################################################################################################################
 	# save-display-order
 	####################################################################################################################
 

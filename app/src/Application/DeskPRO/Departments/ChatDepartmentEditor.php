@@ -94,4 +94,46 @@ class ChatDepartmentEditor
 
 		$this->em->flush();
 	}
+
+	/**
+	 * Deletes the department
+	 */
+
+	public function removeDepartment(Department $dep, Department $move_to_dep)
+	{
+		if ($move_to_dep->id == $dep->id) {
+
+			throw ValidationException::create("department.move_chat.deps_are_same");
+		}
+
+		if (count($move_to_dep->getChildren())) {
+
+			throw ValidationException::create("department.move_chat.dep_is_parent");
+		}
+
+		$old_id = $dep->id;
+		$new_id = $move_to_dep->id;
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->db->executeUpdate(
+				"UPDATE chat_conversations SET department_id = ? WHERE department_id = ?",
+				array($new_id, $old_id)
+			);
+
+			$this->em->remove($dep);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $old_id;
+	}
 }
