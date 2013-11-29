@@ -1647,7 +1647,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 *
 	 * @param {jQuery} el The element to inspect for a route
 	 */
-	runPageRouteFromElement: function(el) {
+	runPageRouteFromElement: function(el, extraData) {
 
 		el = $(el);
 
@@ -1672,7 +1672,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		var extraData = {};
+		extraData = extraData || {};
 		extraData.routeTriggerEl = el;
 		if (el.data('route-title')) {
 			extraData.title = el.data('route-title');
@@ -2464,7 +2464,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', (function(routeData) {
 
-			if (!this.paneVis.list) {
+			if (!this.paneVis.list && !routeData.isBackgroundLoad) {
 				this.setPaneVis('list', true);
 			}
 

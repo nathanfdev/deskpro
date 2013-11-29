@@ -822,7 +822,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					if (!hasCurrentSelection[0]) {
 
 						if (currentRoute) {
-							DeskPRO_Window.runPageRoute(currentRoute);
+							DeskPRO_Window.runPageRoute(currentRoute, { isBackgroundLoad: true });
 						}
 
 					// Update currently viewed list if we're viewing a
@@ -854,9 +854,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 										listPage.delTicket(filterOps[filterId].ticketId);
 									} else {
 										if (li.data('route')) {
-											DeskPRO_Window.runPageRouteFromElement(li);
+											DeskPRO_Window.runPageRouteFromElement(li, { isBackgroundLoad: true });
 										} else {
-											DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'));
+											DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'), { isBackgroundLoad: true });
 										}
 									}
 								}
