@@ -2842,6 +2842,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$data['agent']['display_name_real'] = $this->agent->getDisplayName();
 		}
 
+		$data['access_code'] = $this->getAccessCode();
+		$data['access_code_email_body_token'] = '(#' . $this->getAccessCode() . ')';
+		$data['access_code_email_header_token'] = 'PTAC-' . $this->getAccessCode();
+
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
 		$field_manager->addApiData($this, $data);
