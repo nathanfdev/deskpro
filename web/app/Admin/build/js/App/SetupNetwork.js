@@ -2,20 +2,20 @@
   define(['DeskPRO/Util/Util'], function(Util) {
     return function(Module) {
       Module.factory('dpHttpInterceptor', [
-        function() {
-          var addRunningCount, subCounter, subRunningCount, subTimout, updateTimes;
+        '$q', function($q) {
+          var addRunningCount, subCounter, subRunningCount, subTimeout, updateTimes;
           updateTimes = [];
           window.DP_AJAX_RUNNINGCOUNT = 0;
-          subTimout = null;
+          subTimeout = null;
           subCounter = 0;
           addRunningCount = function() {
             return window.DP_AJAX_RUNNINGCOUNT++;
           };
           subRunningCount = function() {
             subCounter++;
-            if (!subTimout) {
-              return subTimout = setTimeout(function() {
-                subTimout = null;
+            if (!subTimeout) {
+              return subTimeout = setTimeout(function() {
+                subTimeout = null;
                 window.DP_AJAX_RUNNINGCOUNT -= subCounter;
                 return subCounter = 0;
               }, 250);
@@ -58,11 +58,11 @@
             },
             requestError: function(rejection) {
               subRunningCount();
-              return rejection;
+              return $q.reject(rejection);
             },
             responseError: function(rejection) {
               subRunningCount();
-              return rejection;
+              return $q.reject(rejection);
             }
           };
         }

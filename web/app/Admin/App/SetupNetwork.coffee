@@ -1,20 +1,20 @@
 define ['DeskPRO/Util/Util'], (Util) ->
 	return (Module) ->
-		Module.factory('dpHttpInterceptor', [ ->
+		Module.factory('dpHttpInterceptor', ['$q', ($q) ->
 			updateTimes = []
 
 			# This var is used in browser tests so we can
 			# properly wait for a page to be finished loading
 			window.DP_AJAX_RUNNINGCOUNT = 0
-			subTimout = null
+			subTimeout = null
 			subCounter = 0
 			addRunningCount = ->
 				window.DP_AJAX_RUNNINGCOUNT++
 			subRunningCount = ->
 				subCounter++
-				if not subTimout
-					subTimout = setTimeout(->
-						subTimout = null
+				if not subTimeout
+					subTimeout = setTimeout(->
+						subTimeout = null
 						window.DP_AJAX_RUNNINGCOUNT -= subCounter
 						subCounter = 0
 					, 250)
@@ -53,11 +53,11 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 				requestError: (rejection) ->
 					subRunningCount()
-					return rejection
+					return $q.reject(rejection)
 
 				responseError: (rejection) ->
 					subRunningCount()
-					return rejection
+					return $q.reject(rejection)
 			}
 		])
 
