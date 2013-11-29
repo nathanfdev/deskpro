@@ -13,6 +13,8 @@
 	var DESKPRO_PERSON_LANG_ID  = {{ app.user.language.id }};
 	var DESKPRO_DEFAULT_LANG_ID = {{ app.languages.getDefaultId() }};
 
+	var DESKPRO_ENABLE_KB_SHORTCUTS = {% if app.getSetting('core.agent_enable_kb_shortcuts') %}true{% else %}false{% endif %};
+
 	{# {% if app.user.is_admin %} #}
 	var DESKPRO_PERSON_ISADMIN = true;
 	{# {% endif %} #}

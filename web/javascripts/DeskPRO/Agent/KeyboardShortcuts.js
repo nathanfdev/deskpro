@@ -5,6 +5,11 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 	initialize: function() {
 		var self = this;
+
+		if (!DESKPRO_ENABLE_KB_SHORTCUTS) {
+			return;
+		}
+
 		this.isWindows = navigator.platform.toUpperCase().indexOf('WIN') !== -1;
 		this.isMac     = navigator.platform.toUpperCase().indexOf('MAC') !== -1;
 
