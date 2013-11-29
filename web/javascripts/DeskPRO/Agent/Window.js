@@ -2464,7 +2464,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', (function(routeData) {
 
-			if (!this.paneVis.list && !routeData.isBackgroundLoad) {
+			if (!this.paneVis.list && !routeData.noChangePaneVis) {
 				this.setPaneVis('list', true);
 			}
 
