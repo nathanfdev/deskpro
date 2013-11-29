@@ -8,6 +8,7 @@
 	'adm.departments.delete_confirm'                   => 'Are you sure you want to delete this department? Deleting a department cannot be undone.',
 	'adm.departments.delete_department'                => 'Delete Department',
 	'adm.departments.delete_tickets_moved'             => 'Any tickets that are currently in this department will be moved to:',
+	'adm.departments.delete_chat_moved'                => 'Any chat conversations that are currently in this department will be moved to:',
 	'adm.departments.department_settings'              => 'Department Settings',
 	'adm.departments.email_account_required'           => 'Please select an email account to use with this department.',
 	'adm.departments.embed_direct_link'                => 'Direct Link',

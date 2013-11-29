@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/DataService/BaseListEdit', 'Admin/ChatDeps/ChatDepFormMapper', 'DeskPRO/Util/Arrays'], function(BaseListEdit, ChatDepFormMapper, Arrays) {
+  define(['Admin/Main/DataService/BaseListEdit', 'Admin/ChatDeps/ChatDepFormMapper', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(BaseListEdit, ChatDepFormMapper, Arrays, Util) {
     var ChatDeps, _ref;
     return ChatDeps = (function(_super) {
       __extends(ChatDeps, _super);
@@ -169,6 +169,117 @@
         promise.success(function() {
           mapper.applyFormToModel(dep, formModel);
           return _this.mergeDataModel(dep);
+        });
+        return promise;
+      };
+
+      /*
+      # Gets an option array of full-title departments.
+      #
+      # @param {Integer} exclude_id  Dont include this dep in the list
+      # @return {Array}
+      */
+
+
+      ChatDeps.prototype.getLeafOptionsArray = function(exclude_id) {
+        var list, proc;
+        list = [];
+        proc = function(coll, title_seg) {
+          var d, _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = coll.length; _i < _len; _i++) {
+            d = coll[_i];
+            if (exclude_id && d.id === exclude_id) {
+              continue;
+            }
+            if (!title_seg) {
+              title_seg = [];
+            }
+            title_seg.push(d.title);
+            if (d.children && !Util.isEmpty(d.children)) {
+              proc(d.children, title_seg);
+            } else {
+              list.push({
+                id: d.id,
+                title: title_seg.join(" > ")
+              });
+            }
+            _results.push(title_seg.pop());
+          }
+          return _results;
+        };
+        proc(this.listModels);
+        return list;
+      };
+
+      /*
+      # Remove a model from the list by ID.
+      #
+      # @return {Object/null} The removed object or null if object could not be found
+      */
+
+
+      ChatDeps.prototype.removeListModelById = function(id) {
+        var idx, model, removeIdx, result, subModel, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
+        if (!this.isListLoaded) {
+          return;
+        }
+        ChatDeps.__super__.removeListModelById.call(this, id);
+        if (!this.isListLoaded) {
+          return;
+        }
+        removeIdx = null;
+        _ref1 = this.deps;
+        for (idx = _i = 0, _len = _ref1.length; _i < _len; idx = ++_i) {
+          model = _ref1[idx];
+          if (model[this.idProp] === id) {
+            removeIdx = idx;
+            break;
+          }
+        }
+        result = null;
+        if (removeIdx !== null) {
+          result = this.deps.splice(removeIdx, 1);
+          result = result[0];
+        }
+        _ref2 = this.listModels;
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          model = _ref2[_j];
+          if (!model.children.length) {
+            continue;
+          }
+          removeIdx = null;
+          _ref3 = model.children;
+          for (idx = _k = 0, _len2 = _ref3.length; _k < _len2; idx = ++_k) {
+            subModel = _ref3[idx];
+            if (subModel.id === id) {
+              removeIdx = idx;
+              break;
+            }
+          }
+          if (removeIdx) {
+            model.children.splice(removeIdx, 1);
+          }
+        }
+        return result;
+      };
+
+      /*
+      # Remove a department
+       	#
+       	# @param {Integer} id Department id
+       	# @param {Integer} move_to - id to which we want to move department data
+      # @return {promise}
+      */
+
+
+      ChatDeps.prototype.deleteDepartmentById = function(id, move_to) {
+        var promise,
+          _this = this;
+        promise = this.Api.sendDelete('/chat_deps/' + id, {
+          move_to: move_to
+        }).success(function() {
+          return _this.removeListModelById(id);
         });
         return promise;
       };

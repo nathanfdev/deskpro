@@ -2,10 +2,12 @@ define [
 	'Admin/Main/DataService/BaseListEdit',
 	'Admin/ChatDeps/ChatDepFormMapper',
 	'DeskPRO/Util/Arrays',
+	'DeskPRO/Util/Util'
 ], (
 	BaseListEdit,
 	ChatDepFormMapper,
-	Arrays
+	Arrays,
+	Util
 )  ->
 	class ChatDeps extends BaseListEdit
 		@$inject = ['Api', '$q']
@@ -156,6 +158,102 @@ define [
 			promise.success( =>
 				mapper.applyFormToModel(dep, formModel)
 				@mergeDataModel(dep)
+			)
+
+			return promise
+
+		###
+  # Gets an option array of full-title departments.
+  #
+  # @param {Integer} exclude_id  Dont include this dep in the list
+  # @return {Array}
+  ###
+
+		getLeafOptionsArray: (exclude_id) ->
+
+			list = []
+
+			proc = (coll, title_seg) ->
+
+				for d in coll
+					continue if exclude_id and d.id == exclude_id
+
+					if not title_seg then title_seg = []
+
+					title_seg.push(d.title)
+
+					if d.children and !Util.isEmpty(d.children)
+						proc(d.children, title_seg)
+					else
+						list.push({
+							id: d.id,
+							title: title_seg.join(" > ")
+						})
+
+					title_seg.pop()
+
+			proc(@listModels)
+
+			return list
+
+		###
+  # Remove a model from the list by ID.
+  #
+  # @return {Object/null} The removed object or null if object could not be found
+		###
+
+		removeListModelById: (id) ->
+
+			if not @isListLoaded then return
+			super(id)
+
+			if not @isListLoaded then return
+
+			removeIdx = null
+
+			for model, idx in @deps
+				if model[@idProp] == id
+					removeIdx = idx
+					break
+
+			result = null
+
+			if removeIdx != null
+				result = @deps.splice(removeIdx, 1)
+				result = result[0]
+
+			# Remove from children arrays
+
+			for model in @listModels
+				if not model.children.length then continue
+
+				removeIdx = null
+
+				for subModel, idx in model.children
+					if subModel.id == id
+						removeIdx = idx
+						break
+
+				if removeIdx
+					model.children.splice(removeIdx, 1)
+
+			return result
+
+
+		###
+  # Remove a department
+ 	#
+ 	# @param {Integer} id Department id
+ 	# @param {Integer} move_to - id to which we want to move department data
+  # @return {promise}
+		###
+
+		deleteDepartmentById: (id, move_to) ->
+
+			promise = @Api.sendDelete('/chat_deps/' + id, {
+				move_to: move_to
+			}).success( =>
+				@removeListModelById(id)
 			)
 
 			return promise

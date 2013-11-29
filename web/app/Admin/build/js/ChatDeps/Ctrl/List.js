@@ -50,6 +50,67 @@
         return promise;
       };
 
+      /*
+      		# Show the delete dlg
+      */
+
+
+      Admin_ChatDeps_Ctrl_List.prototype.startDelete = function(for_dep_id) {
+        var dep, inst, move_deps_list,
+          _this = this;
+        dep = this.depData.findListModelById(for_dep_id);
+        if (dep.children.length) {
+          this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
+          return;
+        }
+        move_deps_list = this.depData.getLeafOptionsArray(dep.id);
+        if (!move_deps_list.length) {
+          this.showAlert('@no_delete_last');
+          return;
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('ChatDeps/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
+              $scope.move_deps_list = move_deps_list;
+              $scope.selected = {
+                move_to_id: move_deps_list[0].id
+              };
+              $scope.confirm = function() {
+                return $modalInstance.close($scope.selected.move_to_id);
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ],
+          resolve: {
+            move_deps_list: function() {
+              return move_deps_list;
+            }
+          }
+        });
+        return inst.result.then(function(move_to) {
+          return _this.deleteDepartment(dep, move_to);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+      */
+
+
+      Admin_ChatDeps_Ctrl_List.prototype.deleteDepartment = function(for_dep, move_to) {
+        var _this = this;
+        return this.depData.deleteDepartmentById(for_dep.id, move_to).success(function() {
+          if (_this.$state.current.name === 'chat.chat_deps.edit' && parseInt(_this.$state.params.id) === for_dep.id) {
+            return _this.$state.go('chat.chat_deps');
+          }
+        }).error(function(info, code) {
+          return _this.applyErrorResponseToView(info);
+        });
+      };
+
       return Admin_ChatDeps_Ctrl_List;
 
     })(Admin_Ctrl_Base);
