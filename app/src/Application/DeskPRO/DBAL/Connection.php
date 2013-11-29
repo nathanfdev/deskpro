@@ -120,7 +120,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	public function connect()
 	{
 		if (parent::connect()) {
-			$this->exec("SET sql_mode=''");
+			$this->exec("SET sql_mode='', time_zone='+00:00'");
 
 			if ($this->names_charset) {
 				$this->exec("SET NAMES '{$this->names_charset}'");
