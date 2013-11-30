@@ -114,5 +114,21 @@ define [
 					@$scope.show_parent_warning = false
 			)
 
+		###
+ 	#
+		###
+
+		propogatePermission: (obj, perm) ->
+
+					if @_propogatePermission_running then return
+
+					@_propogatePermission_running = true
+					if obj.type == 'group'
+						@form.agent_perms.setGroupPerm(obj.model.id, perm, '&')
+					else
+						@form.agent_perms.setAgentPerm(obj.model.id, perm, '&')
+
+					@_propogatePermission_running = false
+
 
 	Admin_ChatDeps_Ctrl_Edit.EXPORT_CTRL()

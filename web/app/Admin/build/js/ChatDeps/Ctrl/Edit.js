@@ -121,6 +121,24 @@
         });
       };
 
+      /*
+       	#
+      */
+
+
+      Admin_ChatDeps_Ctrl_Edit.prototype.propogatePermission = function(obj, perm) {
+        if (this._propogatePermission_running) {
+          return;
+        }
+        this._propogatePermission_running = true;
+        if (obj.type === 'group') {
+          this.form.agent_perms.setGroupPerm(obj.model.id, perm, '&');
+        } else {
+          this.form.agent_perms.setAgentPerm(obj.model.id, perm, '&');
+        }
+        return this._propogatePermission_running = false;
+      };
+
       return Admin_ChatDeps_Ctrl_Edit;
 
     })(Admin_Ctrl_Base);
