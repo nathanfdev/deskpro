@@ -34,6 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Symfony\Component\Form\Form;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 
@@ -353,26 +355,53 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 *
 	 * @param \Symfony\Component\Form\Form  $form
 	 * @param array $requestData
-	 * @param null  $key
+	 * @param array|string  $keys
 	 *
 	 * @return array
 	 */
 
-	public function deleteExtraDataFromRequest(\Symfony\Component\Form\Form $form, array $requestData, $key = null)
+	public function deleteExtraDataFromRequest(Form $form, array $requestData, $keys = null)
 	{
-		if (is_null($key)) {
+		if (is_null($keys)) {
 
-			$form_data = $form->all();
-			$requestData  = array_intersect_key($requestData, $form_data);
+			$form_data   = $form->all();
+			$requestData = array_intersect_key($requestData, $form_data);
 
 			return $requestData;
 
 		} else {
 
-			$form_data = $form->get($key)->all();
-			$requestData  = array_intersect_key($requestData[$key], $form_data);
+			if(is_string($keys)) {
 
-			return array($key => $requestData);
+				$form_data   = $form->get($keys)->all();
+				$requestData = array_intersect_key($requestData[$keys], $form_data);
+
+				return array($keys => $requestData);
+
+			} else {
+
+				$result = array();
+
+				foreach ($keys as $key) {
+
+					$form_data = $form->get($key)->all();
+
+					// this is workaround for 'collection' type - corresponding form data will be empty array
+
+					if (is_array($form_data) && empty($form_data)) {
+
+						$result[$key] = $requestData[$key];
+
+					} else {
+
+						$resultData = array_intersect_key($requestData[$key], $form_data);
+
+						$result[$key] = $resultData;
+					}
+				}
+
+				return $result;
+			}
 		}
 	}
 
