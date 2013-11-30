@@ -123,17 +123,18 @@ class ChatDepsController extends AbstractController
 		$chat_edit = new ChatDepartmentEdit($dep);
 
 		$form = $this->createForm(new ChatDepartmentType(), $chat_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'department'), true);
+
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, array('department', 'permissions')), true);
 
 		if ($form->isValid()) {
 
 			$chat_edit->save($this->em);
 
-			/*$chat_edit->savePermissions(
+			$chat_edit->savePermissions(
 				$this->em,
 				$this->container->getAgentData()->getAgents(),
 				$this->container->getDataService('Usergroup')->getAll()
-			);*/
+			);
 
 		} else {
 

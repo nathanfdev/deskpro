@@ -97,7 +97,22 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 			$recs[$rec->getPermissionSysId()] = $rec;
 		}
 
-		$existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment($department, 'tickets');
+		if ($department->is_tickets_enabled) {
+
+			$existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
+				$department,
+				'tickets'
+			);
+		}
+
+		if ($department->is_chat_enabled) {
+
+			$existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
+				$department,
+				'chat'
+			);
+		}
+
 		$remove = array();
 
 		foreach ($existing as $rec) {

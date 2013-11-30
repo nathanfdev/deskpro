@@ -118,9 +118,9 @@ class PermissionMatrix
 	 * array('person_id' => 55, 'name' => 'use', 'value' => 1),
 	 * </code>
 	 *
-	 * @param array $records
+	 * @param array|\Doctrine\Common\Collections\ArrayCollection $records
 	 */
-	public function setPermArray(array $records)
+	public function setPermArray($records)
 	{
 		$this->agent_perms      = array();
 		$this->agentgroup_perms = array();
