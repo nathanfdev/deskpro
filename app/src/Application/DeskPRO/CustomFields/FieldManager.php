@@ -161,7 +161,7 @@ class FieldManager
 				return $this->fields;
 			}
 
-			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getFields();
 
 			foreach ($all_fields as $f) {
 
@@ -194,7 +194,7 @@ class FieldManager
 			}
 
 			// Choice fields that have no options are considered disabled
-			foreach ($this->fields as $f) {
+			/*foreach ($this->fields as $f) {
 				if ($f->isChoiceType()) {
 					if (!$this->getFieldChildren($f)) {
 						unset(
@@ -206,7 +206,7 @@ class FieldManager
 						);
 					}
 				}
-			}
+			}*/
 		}
 
 		return $this->fields;
