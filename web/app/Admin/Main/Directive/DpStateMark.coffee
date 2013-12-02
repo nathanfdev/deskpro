@@ -54,7 +54,23 @@ define [
 							currentStateId += '.' + $state.params.type
 
 						if currentStateId.match(myStateIdRe)
-							isOn = true
+
+							###
+ 						# This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
+ 						# In this case both the elements will be highlighted
+ 						#
+ 						# If you will need to understand what is done uncomment following lines of code:
+ 						#
+ 						# console.log currentStateId, myStateIdRe
+ 						# console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
+ 						# console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
+							###
+
+							firstStateOccurrence = currentStateId.split('.')[0]
+							firstRegExpOccurrence = myStateIdRe.toString().split('.')[0]
+							occurrenceFound = firstRegExpOccurrence.indexOf(firstStateOccurrence)
+
+							if occurrenceFound > -1 then isOn = true
 
 					if isOn
 						element.addClass('state-on active')
