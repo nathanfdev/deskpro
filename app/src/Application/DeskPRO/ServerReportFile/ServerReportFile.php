@@ -555,8 +555,17 @@ class ServerReportFile
 
 		foreach($vars as $job) {
 
-			$content .= $job['title'] . '       ' . $job['interval_readable'] . '       ' . date('D, jS M Y g:ia', $job['last_start_date_ts']) . '       ';
-			$content .= date('D, jS M Y g:ia', $job['last_run_date_ts']) . '       ' . $job['next_run_time'];
+			$content .= $job['title'] . '       ' . $job['interval_readable'] . '       ';
+
+			$last_start_date = date('D, jS M Y g:ia', $job['last_start_date_ts']) ?
+				date('D, jS M Y g:ia', $job['last_start_date_ts']) : 'N/A';
+			$content .= $last_start_date . '       ';
+
+			$last_run_date = date('D, jS M Y g:ia', $job['last_run_date_ts']) ?
+							date('D, jS M Y g:ia', $job['last_run_date_ts']) : 'N/A';
+			$content .= $last_run_date . '       ';
+
+			$content .= $job['next_run_time'];
 			$content .= "\n";
 		}
 
