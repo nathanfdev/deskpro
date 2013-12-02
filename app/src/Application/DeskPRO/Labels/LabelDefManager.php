@@ -54,7 +54,7 @@ class LabelDefManager
 		'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
 		'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
 		'feedback'             => array('table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'),
-		'chat'                 => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChat'),
+		'chat'                 => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'),
 		'news'                 => array('table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'),
 		'organizations'        => array('table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'),
 		'people'               => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
