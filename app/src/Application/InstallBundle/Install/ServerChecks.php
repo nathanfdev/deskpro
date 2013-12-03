@@ -354,7 +354,7 @@ class ServerChecks
 		# libxml_ext
 		#------------------------------
 
-		if ($type == 'libxml_ext' || $type == 'all') {
+		if (($type == 'libxml_ext' || $type == 'all') && $this->mode != 'cron') {
 			$this->getLogger()->log("[CHECK] Checking for libxml extension", Logger::DEBUG);
 			if (extension_loaded('libxml')) {
 				$this->getLogger()->log("[OK] libxml extension installed", Logger::DEBUG);
