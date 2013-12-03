@@ -15,9 +15,18 @@
 			</article>
 
 			<article class="padd" ng-if="update_started">
-				<div class="well info-message">
+				<div class="well success-message">
 					Your sort order update has been started. The records will be imported in the background even if you
 					are not connected.
+					<br><br>
+					The current status will be updated here periodically:
+
+					<span dp-status-update="/server_mysql_sort_order_status"
+						  status-update-conditions="update_started"
+						  status-update-default-message="Waiting to start..."
+						  status-update-completed-growl-message="Update of sort order finished"
+						  style="font-style:italic;">
+					</span>
 				</div>
 			</article>
 
@@ -63,7 +72,6 @@
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-							<button class="btn btn-default">{{ phrase('agent.general.reset') }}</button>
 						</div>
 						<div dp-show-spinning="saving">
 							<i class="spinner-flat"></i>

@@ -53,7 +53,7 @@
           return _this.stopSpinner('saving').then(function() {
             _this.$scope.current_sort_order = _this.$scope.all_collations[_this.$scope.server_mysql_sort_order.db_collation];
             _this.$scope.update_started = true;
-            return _this.Growl.success('Saved');
+            return _this.Growl.success('Update of sort order started');
           });
         }).error(function(info, code) {
           _this.stopSpinner('saving', true);

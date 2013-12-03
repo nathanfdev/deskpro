@@ -43,7 +43,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					@$scope.current_sort_order = @$scope.all_collations[@$scope.server_mysql_sort_order.db_collation]
 					@$scope.update_started = true
 
-					@Growl.success('Saved')
+					@Growl.success('Update of sort order started')
 				)
 			).error( (info, code) =>
 
