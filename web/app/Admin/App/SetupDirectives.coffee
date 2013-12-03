@@ -19,6 +19,7 @@ define [
 	'Admin/Main/Directive/DpServerValidation',
 	'Admin/Main/Directive/DpShowSpinning',
 	'Admin/Main/Directive/DpStateMark',
+	'Admin/Main/Directive/DpStatusUpdate',
 	'Admin/Main/Directive/DpSubmitForm',
 	'Admin/Main/Directive/DpTabBody',
 	'Admin/Main/Directive/DpTabBtn',
@@ -50,6 +51,7 @@ define [
 	Admin_Main_Directive_DpServerValidation,
 	Admin_Main_Directive_DpShowSpinning,
 	Admin_Main_Directive_DpStateMark,
+	Admin_Main_Directive_DpStatusUpdate,
 	Admin_Main_Directive_DpSubmitForm,
 	Admin_Main_Directive_DpTabBody,
 	Admin_Main_Directive_DpTabBtn,
@@ -81,6 +83,7 @@ define [
 		Module.directive('dpServerValidation',             Admin_Main_Directive_DpServerValidation)
 		Module.directive('dpShowSpinning',                 Admin_Main_Directive_DpShowSpinning)
 		Module.directive('dpStateMark',                    Admin_Main_Directive_DpStateMark)
+		Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate)
 		Module.directive('dpSubmitForm',                   Admin_Main_Directive_DpSubmitForm)
 		Module.directive('dpTabBody',                      Admin_Main_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       Admin_Main_Directive_DpTabBtn)
