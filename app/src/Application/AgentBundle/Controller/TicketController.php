@@ -131,7 +131,6 @@ class TicketController extends AbstractController
 		$macros = $this->person->Agent->getMacros();
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
-
 		$hidden_data = $this->_getHiddenBarData($ticket);
 
 		// Check if the search adapter

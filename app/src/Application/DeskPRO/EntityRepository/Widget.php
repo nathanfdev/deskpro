@@ -71,12 +71,11 @@ class Widget extends AbstractEntityRepository
 	 */
 	public function getEnabledPageWidgetsGrouped($page)
 	{
+		//TODO plugins
 		$results = $this->getEntityManager()->createQuery('
 			SELECT w
 			FROM DeskPRO:Widget w
-			LEFT JOIN w.plugin p
 			WHERE w.page = :page AND w.enabled = 1
-				AND (p.enabled = 1 OR p.enabled IS NULL)
 		')->execute(array('page' => $page));
 
 		$output = array();
