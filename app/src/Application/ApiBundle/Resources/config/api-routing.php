@@ -2932,6 +2932,12 @@ $collection->create('api_server_mysql_sort_order_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_server_mysql_sort_order_status', array(
+	'path'       => '/server_mysql_sort_order_status',
+	'controller' => 'ApiBundle:Server:getMysqlSortOrderStatus',
+	'methods'    => array('GET'),
+));
+
 ########################################################################################################################
 # Server Error Logs
 ########################################################################################################################

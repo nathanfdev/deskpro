@@ -160,4 +160,62 @@ class ServerMysqlSortOrder
 
 		return isset($collations[$collation]);
 	}
+
+	/**
+	 * @return array
+	 */
+
+	public function getUpdateStatus()
+	{
+		$status    = 'completed';
+		$data      = null;
+		$collation = null;
+
+		if ($this->settings->get('core.db_collation_change')) {
+
+			$status    = 'pending';
+			$collation = $this->settings->get('core.db_collation_change');
+		}
+
+		if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
+
+			$line = @file_get_contents(dp_get_tmp_dir() . '/db-collation-status.txt');
+
+			if ($line && preg_match('/^\[(\d+)\|([a-z0-9_]+)]([a-z0-9_]+):(.*)$/si', $line, $match)) {
+
+				$status    = $match[3];
+				$collation = $match[2];
+				$data      = array(
+					'time'    => $match[1],
+					'message' => $match[4]
+				);
+			}
+		}
+
+		switch ($status) {
+
+			case 'pending':
+				$message = 'Waiting to start...';
+				break;
+
+			case 'table':
+				$message = 'Converting table ' . $data['message'] . '...';
+				break;
+
+			case 'error':
+				$message = 'An error occurred: ' . $data['message'];
+				break;
+
+			default:
+				$message = 'Completed!';
+				break;
+		}
+
+		return array(
+			'status'    => $status,
+			'collation' => $collation,
+			'data'      => $data,
+			'message'   => $message,
+		);
+	}
 }

@@ -147,6 +147,21 @@ class ServerController extends AbstractController
 	}
 
 	####################################################################################################################
+	# get Mysql Sort Order Status
+	####################################################################################################################
+
+	public function getMysqlSortOrderStatusAction()
+	{
+		$server_mysql_sort_order = new ServerMysqlSortOrder($this->settings);
+
+		return $this->createApiResponse(
+			array(
+				 'server_mysql_sort_order' => $server_mysql_sort_order->getUpdateStatus(),
+			)
+		);
+	}
+
+	####################################################################################################################
 	# list Error Logs
 	####################################################################################################################
 
