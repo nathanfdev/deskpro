@@ -3014,6 +3014,12 @@ $collection->create('api_server_switch_file_uploads_storage', array(
 	'methods'    => array('POST'),
 ));
 
+$collection->create('api_server_switch_file_uploads_storage_status', array(
+	'path'       => '/server_file_uploads/switch_status',
+	'controller' => 'ApiBundle:Server:switchFileStorageStatus',
+	'methods'    => array('GET'),
+));
+
 ########################################################################################################################
 # Server File Integrity
 ########################################################################################################################

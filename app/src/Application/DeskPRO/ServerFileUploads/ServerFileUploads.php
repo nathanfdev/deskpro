@@ -285,4 +285,40 @@ class ServerFileUploads
 			'-1'
 		);
 	}
+
+	/**
+	 *
+	 */
+
+	public function switchStorageStatus()
+	{
+		$transfer = $this->getMovingFiles();
+
+		if(!empty($transfer['id'])) {
+
+			$status  = 'progress';
+
+			if ($this->isUsingFileSystem()) {
+
+				$message = 'Currently transferring files from the database to the filesystem. ';
+
+			} else {
+
+				$message = 'Currently transferring files from the filesystem to the database. ';
+			}
+
+			$message .= $transfer['count_done'] . ' of ' .  $transfer['count_todo'];
+			$message .= ' (' . $transfer['count_percentage'] . '%) files have been processed.';
+
+		} else {
+
+			$status  = 'completed';
+			$message = 'Transferring done!';
+		}
+
+		return array(
+			'status'  => $status,
+			'message' => $message
+		);
+	}
 }

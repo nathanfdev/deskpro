@@ -154,11 +154,7 @@ class ServerController extends AbstractController
 	{
 		$server_mysql_sort_order = new ServerMysqlSortOrder($this->settings);
 
-		return $this->createApiResponse(
-			array(
-				 'server_mysql_sort_order' => $server_mysql_sort_order->getUpdateStatus(),
-			)
-		);
+		return $this->createApiResponse($server_mysql_sort_order->getUpdateStatus());
 	}
 
 	####################################################################################################################
@@ -384,6 +380,23 @@ class ServerController extends AbstractController
 		$server_file_uploads->switchStorage();
 
 		return $this->createSuccessResponse();
+	}
+
+	####################################################################################################################
+	# switch file storage mechanism status
+	####################################################################################################################
+
+	public function switchFileStorageStatusAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
+		 */
+
+		$server_file_uploads = $this->container->getSystemService('server_file_uploads');
+
+		$server_file_uploads->switchStorageStatus();
+
+		return $this->createApiResponse($server_file_uploads->switchStorageStatus());
 	}
 
 	####################################################################################################################

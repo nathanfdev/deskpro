@@ -198,7 +198,7 @@ class ServerMysqlSortOrder
 				$message = 'Waiting to start...';
 				break;
 
-			case 'table':
+			case 'progress':
 				$message = 'Converting table ' . $data['message'] . '...';
 				break;
 
