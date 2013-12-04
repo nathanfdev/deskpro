@@ -23,6 +23,7 @@
         this.$scope.fileUploadOptions = {};
         this.$scope.fileUploadResults = null;
         this.$scope.fileSelected = false;
+        this.$scope.fileTransferStarted = false;
         return this.setupUploadListeners();
       };
 
@@ -95,9 +96,12 @@
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.switchStorage = function() {
         var _this = this;
-        return this.Api.sendPost('/server_file_uploads/switch').then(function() {
-          return _this.initialLoad();
+        this.Api.sendPost('/server_file_uploads/switch').then(function() {
+          _this.Growl.success('Transfering of files started');
+          return _this.$scope.fileTransferStarted = true;
         });
+        this.$scope.fileTransferStarted = true;
+        return this.Growl.success('Transfering of files started');
       };
 
       return Admin_ServerFileUploads_Ctrl_ServerFileUploads;

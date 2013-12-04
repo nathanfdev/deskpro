@@ -11,6 +11,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.fileUploadOptions = {}
 			@$scope.fileUploadResults = null
 			@$scope.fileSelected = false
+			@$scope.fileTransferStarted = false
 
 			@setupUploadListeners()
 
@@ -76,7 +77,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@Api.sendPost('/server_file_uploads/switch').then( =>
 
-				@initialLoad()
+				@Growl.success('Transfering of files started')
+				@$scope.fileTransferStarted = true
 			)
 
 	Admin_ServerFileUploads_Ctrl_ServerFileUploads.EXPORT_CTRL()

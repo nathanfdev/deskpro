@@ -65,24 +65,16 @@
 						</td>
 					</tr>
 					<tr>
-						<td ng-if="data.moving_files.id" colspan="2" class="success">
+						<td ng-if="data.moving_files.id || fileTransferStarted" colspan="2" class="success">
 
-							<div ng-if="data.using_file_system">
-
-								Currently transferring files from the database to the filesystem.
-								{{ ng_var('data.moving_files.count_done') }}
-								of {{ ng_var('data.moving_files.count_todo') }}
-								({{ ng_var('data.moving_files.count_percentage') }}%) files have been processed.
-
-							</div>
-							<div ng-if="!data.using_file_system">
-
-								Currently transferring files from the filesystem to the database.
-								{{ ng_var('data.moving_files.count_done') }}
-								of {{ ng_var('data.moving_files.count_todo') }}
-								({{ ng_var('data.moving_files.count_percentage') }}%) files have been processed.
-
-							</div>
+							<span dp-status-update="/server_file_uploads/switch_status"
+								  status-update-conditions="update_started"
+								  status-update-default-message="Requesting transferring status information..."
+								  status-update-completed-growl-message="Transferring of files finished"
+								  status-update-interval="15000"
+								  status-update-immediate="false"
+								  style="font-style:italic;">
+							</span>
 						</td>
 					</tr>
 				</tbody>
