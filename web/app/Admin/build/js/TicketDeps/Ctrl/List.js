@@ -92,7 +92,7 @@
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketDeps/delete-modal.html'),
           controller: [
-            '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance) {
+            '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
               $scope.move_deps_list = move_deps_list;
               $scope.selected = {
                 move_to_id: move_deps_list[0].id
@@ -104,7 +104,12 @@
                 return $modalInstance.dismiss();
               };
             }
-          ]
+          ],
+          resolve: {
+            move_deps_list: function() {
+              return move_deps_list;
+            }
+          }
         });
         return inst.result.then(function(move_to) {
           return _this.deleteDepartment(dep, move_to);
@@ -112,16 +117,19 @@
       };
 
       /*
-      		# Actually do th edelete
+      		# Actually do the delete
       */
 
 
       Admin_TicketDeps_Ctrl_List.prototype.deleteDepartment = function(for_dep, move_to) {
         var _this = this;
-        return this.depData.deleteDepartmentById(for_dep.id, move_to).then(function() {
+        return this.depData.deleteDepartmentById(for_dep.id, move_to).success(function() {
           if (_this.$state.current.name === 'tickets.ticket_deps.edit' && parseInt(_this.$state.params.id) === for_dep.id) {
+            _this.skipDirtyState();
             return _this.$state.go('tickets.ticket_deps');
           }
+        }).error(function(info, code) {
+          return _this.applyErrorResponseToView(info);
         });
       };
 

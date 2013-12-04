@@ -48,8 +48,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		###*
 		# Show the delete dlg
 		###
+
 		startDelete: (for_dep_id) ->
+
 			dep = @depData.findListModelById(for_dep_id)
+
 			if dep.children.length
 				@showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.")
 				return
@@ -62,7 +65,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketDeps/delete-modal.html'),
-				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance) ->
+				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance, move_deps_list) ->
 					$scope.move_deps_list = move_deps_list
 					$scope.selected = {
 						move_to_id: move_deps_list[0].id
@@ -73,7 +76,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 					$scope.dismiss = ->
 						$modalInstance.dismiss();
-				]
+				],
+				resolve: {
+					move_deps_list: =>
+						return move_deps_list
+				}
 			});
 
 			inst.result.then( (move_to) =>
@@ -81,13 +88,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			)
 
 		###
-		# Actually do th edelete
+		# Actually do the delete
 		###
+
 		deleteDepartment: (for_dep, move_to) ->
-			@depData.deleteDepartmentById(for_dep.id, move_to).then(=>
-				# if currently viewing the deleted department, then should need to switch state
+
+			@depData.deleteDepartmentById(for_dep.id, move_to).success( =>
+
 				if @$state.current.name == 'tickets.ticket_deps.edit' and parseInt(@$state.params.id) == for_dep.id
+					@skipDirtyState()
 					@$state.go('tickets.ticket_deps')
+
+			).error( (info, code) =>
+
+				@applyErrorResponseToView(info)
 			)
 
 	Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()

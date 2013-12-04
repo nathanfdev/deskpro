@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/DataService/BaseListEdit', 'Admin/TicketDeps/TicketDepFormMapper', 'DeskPRO/Util/Arrays'], function(BaseListEdit, TicketDepFormMapper, Arrays) {
+  define(['Admin/Main/DataService/BaseListEdit', 'Admin/TicketDeps/TicketDepFormMapper', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(BaseListEdit, TicketDepFormMapper, Arrays, Util) {
     var TicketDeps, _ref;
     return TicketDeps = (function(_super) {
       __extends(TicketDeps, _super);
@@ -131,14 +131,14 @@
       };
 
       /*
-        	# Gets an option array of full-title departments.
-        	#
-        	# @param {Integer} exclude_id  Dont include this dep in the list
-        	# @return {Array}
+      # Gets an option array of full-title departments.
+      #
+      # @param {Integer} exclude_id  Dont include this dep in the list
+      # @return {Array}
       */
 
 
-      TicketDeps.prototype.getLeafOptionsArray = function(exclude) {
+      TicketDeps.prototype.getLeafOptionsArray = function(exclude_id) {
         var list, proc;
         list = [];
         proc = function(coll, title_seg) {
@@ -149,8 +149,11 @@
             if (exclude_id && d.id === exclude_id) {
               continue;
             }
-            title_seg.push(d);
-            if (d.children) {
+            if (!title_seg) {
+              title_seg = [];
+            }
+            title_seg.push(d.title);
+            if (d.children && !Util.isEmpty(d.children)) {
               proc(d.children, title_seg);
             } else {
               list.push({
@@ -167,9 +170,9 @@
       };
 
       /*
-        	# Remove a model from the list by ID.
-        	#
-        	# @return {Object/null} The removed object or null if object could not be found
+      		# Remove a model from the list by ID.
+      		#
+      		# @return {Object/null} The removed object or null if object could not be found
       */
 
 
@@ -219,10 +222,11 @@
       };
 
       /*
-        	# Remove a department
-        	#
-        	# @param {Integer} id Deparetment id
-        	# @return {promise}
+      		# Remove a department
+      		#
+      		# @param {Integer} id Department id
+      		# @param {Integer} move_to - id to which we want to move department data
+      	 # @return {promise}
       */
 
 
@@ -231,7 +235,7 @@
           _this = this;
         promise = this.Api.sendDelete('/ticket_deps/' + id, {
           move_to: move_to
-        }).then(function() {
+        }).success(function() {
           return _this.removeListModelById(id);
         });
         return promise;
