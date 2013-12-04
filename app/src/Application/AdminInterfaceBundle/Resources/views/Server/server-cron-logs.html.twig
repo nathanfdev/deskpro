@@ -106,7 +106,7 @@
 							{{ ng_var('log.message') }}
 						</td>
 						<td>
-							{{ ng_var('log.date_created * 1000 | date: \'EEEE, MMMM d, y h:mm a\'') }}
+							{{ ng_var('log.date_created * 1000 | fulltime') }}
 						</td>
 					</tr>
 				</tbody>

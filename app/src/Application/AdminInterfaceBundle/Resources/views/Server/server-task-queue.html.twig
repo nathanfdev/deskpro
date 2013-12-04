@@ -50,20 +50,20 @@
 							{{ ng_var('task.title') }}
 						</td>
 						<td>
-							<time class="timeago" title="{{ ng_var('task.date_runnable | date:\'yyyy-MM-dd HH:mm:ss Z\'') }}"></time>
+							<time class="timeago" title="{{ ng_var('task.date_runnable | fulltime') }}"></time>
 						</td>
 						<td>
 							<span ng-if="task.status == 'completed'">
 								Completed (
-								<time class="timeago" title="{{ ng_var('task.date_completed | date:\'yyyy-MM-dd HH:mm:ss Z\'') }}"></time>)
+								<time class="timeago" title="{{ ng_var('task.date_completed | fulltime') }}"></time>)
 							</span>
 							<span ng-if="task.status == 'running'">
 								Running (
-								<time class="timeago" title="{{ ng_var('task.date_started | date:\'yyyy-MM-dd HH:mm:ss Z\'') }}"></time>)
+								<time class="timeago" title="{{ ng_var('task.date_started | fulltime') }}"></time>)
 							</span>
 							<span ng-if="task.status == 'errored'">
 								Running (
-								<time class="timeago" title="{{ ng_var('task.date_started | date:\'yyyy-MM-dd HH:mm:ss Z\'') }}"></time>)
+								<time class="timeago" title="{{ ng_var('task.date_started | fulltime') }}"></time>)
 							</span>
 							<span ng-if="task.status == 'queued'">
 								Queued

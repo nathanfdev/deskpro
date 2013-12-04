@@ -44,6 +44,13 @@
           };
         }
       ]);
+      Module.filter('fulltime', [
+        '$filter', function($filter) {
+          return function(timestamp) {
+            return $filter('date')(timestamp, 'EEEE, MMMM d, y h:mm a');
+          };
+        }
+      ]);
       Module.config([
         '$provide', function($provide) {
           var startRunning, stopRunning, subTimout;

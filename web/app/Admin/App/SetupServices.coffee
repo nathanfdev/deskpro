@@ -47,6 +47,11 @@ define [
 				return result
 		])
 
+		Module.filter('fulltime', ['$filter', ($filter) ->
+			return (timestamp) ->
+				return $filter('date')(timestamp, 'EEEE, MMMM d, y h:mm a')
+		])
+
 		# Add logging to digest loop
 		Module.config(['$provide', ($provide) ->
 

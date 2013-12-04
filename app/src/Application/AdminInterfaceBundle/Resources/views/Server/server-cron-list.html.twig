@@ -26,7 +26,7 @@
 							<div ng-if="ListCtrl.server_cron.last_start">
 								&bull; The last time tasks were executed was
 								{{ ng_var('ListCtrl.server_cron.time_since_start_readable') }} ago
-								({{ ng_var('ListCtrl.server_cron.last_start_ms | date: \'EEEE, MMMM d, y h:mm a\'') }}).
+								({{ ng_var('ListCtrl.server_cron.last_start_ms | fulltime') }}).
 								<br/>
 
 								<div ng-if="!ListCtrl.server_cron.last_run">
@@ -36,7 +36,7 @@
 								<div ng-if="ListCtrl.server_cron.last_run">
 									&bull; The last time tasks completed successfully was
 									{{ ng_var('ListCtrl.server_cron.time_since_run_readable') }} ago
-									({{ ng_var('ListCtrl.server_cron.last_run_ms | date: \'EEEE, MMMM d, y h:mm a\'') }}).
+									({{ ng_var('ListCtrl.server_cron.last_run_ms | fulltime') }}).
 								</div>
 
 							</div>
@@ -79,7 +79,7 @@
 						</td>
 						<td>
 							<span ng-if="job.last_start_date_ts">
-								{{ ng_var('job.last_start_date_ts_ms | date: \'EEEE, MMMM d, y h:mm a\'') }}
+								{{ ng_var('job.last_start_date_ts_ms | fulltime') }}
 							</span>
 							<span ng-if="!job.last_start_date_ts">
 								{{ phrase('agent.general.never') }}
@@ -87,7 +87,7 @@
 						</td>
 						<td>
 							<span ng-if="job.last_run_date_ts">
-								{{ ng_var('job.last_run_date_ts_ms | date: \'EEEE, MMMM d, y h:mm a\'') }}
+								{{ ng_var('job.last_run_date_ts_ms | fulltime') }}
 							</span>
 							<span ng-if="!job.last_run_date_ts">
 								{{ phrase('agent.general.never') }}
