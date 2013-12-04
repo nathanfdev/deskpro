@@ -1,5 +1,5 @@
 (function() {
-  define(['DeskPRO/Util/Angular', 'DeskPRO/Util/Arrays'], function(Util_Angular, Arrays) {
+  define(['DeskPRO/Util/Angular', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Util_Angular, Arrays, Util) {
     /*
        # This is a simple base data service that implements some default functionality for
        # loading the "list" collection, and some methods for keeping the list up to date.
@@ -103,6 +103,18 @@
         return null;
       };
 
+      Admin_Main_DataService_BaseListEdit.prototype.returnIndexForModel = function(obj) {
+        var idx, model, _i, _len, _ref;
+        _ref = this.listModels;
+        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+          model = _ref[idx];
+          if (model[this.idProp] === obj[this.idProp]) {
+            return idx;
+          }
+        }
+        return null;
+      };
+
       /*
         	# This method should be overriden.
         	#
@@ -186,6 +198,15 @@
               return parent.children.push(dataModel);
             } else {
               return this.listModels.push(dataModel);
+            }
+          } else {
+            if (dataModel.parent_id != null) {
+              parent = this.findListModelById(dataModel.parent_id);
+              parent.children.push(dataModel);
+              removeIdx = this.returnIndexForModel(dataModel);
+              if (Util.isNumber(removeIdx)) {
+                return this.listModels.splice(removeIdx, 1);
+              }
             }
           }
         } else {

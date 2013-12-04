@@ -1,9 +1,11 @@
 define [
 	'DeskPRO/Util/Angular',
-	'DeskPRO/Util/Arrays'
+	'DeskPRO/Util/Arrays',
+	'DeskPRO/Util/Util'
 ], (
 	Util_Angular,
-	Arrays
+	Arrays,
+	Util
 ) ->
 	###
     # This is a simple base data service that implements some default functionality for
@@ -88,6 +90,15 @@ define [
 
 			return null
 
+		returnIndexForModel: (obj) ->
+
+			for model, idx in @listModels
+
+				if model[@idProp] == obj[@idProp]
+					return idx
+
+			return null
+
 
 		###
     	# This method should be overriden.
@@ -116,6 +127,7 @@ define [
     	# @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
 		###
 		mergeDataModel: (dataModel, dataMapper = null) ->
+
 			if not @isListLoaded then return
 
 			listModel = null
@@ -133,6 +145,8 @@ define [
 							oldParent = model
 							listModel = child
 							break
+
+			# if this model is already in list then we some options
 
 			if listModel != null
 
@@ -160,6 +174,22 @@ define [
 					else
 
 						@listModels.push(dataModel)
+
+				# case of changing the parent AND if model previously didn't have a parent - should add this model as child
+
+				else
+
+					if dataModel.parent_id?
+
+						# first - add new model as child to the parent model
+
+						parent = @findListModelById(dataModel.parent_id)
+						parent.children.push(dataModel)
+
+						# second - delete this child from top-level list
+
+						removeIdx = @returnIndexForModel(dataModel)
+						if Util.isNumber(removeIdx) then @listModels.splice(removeIdx, 1)
 
 			else
 
