@@ -103,6 +103,14 @@
         return null;
       };
 
+      /*
+       	# Returns index of specified model
+       	#
+       	# @param {Object} obj
+       	# @return {Object}
+      */
+
+
       Admin_Main_DataService_BaseListEdit.prototype.returnIndexForModel = function(obj) {
         var idx, model, _i, _len, _ref;
         _ref = this.listModels;

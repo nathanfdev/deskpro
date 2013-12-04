@@ -90,6 +90,13 @@ define [
 
 			return null
 
+		###
+ 	# Returns index of specified model
+ 	#
+ 	# @param {Object} obj
+ 	# @return {Object}
+ 	###
+
 		returnIndexForModel: (obj) ->
 
 			for model, idx in @listModels
