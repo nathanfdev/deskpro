@@ -161,11 +161,10 @@ define [
 
 			return list
 
-
 		###
-		# Remove a model from the list by ID.
-		#
-		# @return {Object/null} The removed object or null if object could not be found
+  # Remove a model from the list by ID.
+  #
+  # @return {Object/null} The removed object or null if object could not be found
 		###
 
 		removeListModelById: (id) ->
@@ -191,7 +190,7 @@ define [
 			# Remove from children arrays
 
 			for model in @listModels
-				if not model.children.length then continue
+				if not model.children?.length then continue
 
 				removeIdx = null
 
@@ -200,7 +199,7 @@ define [
 						removeIdx = idx
 						break
 
-				if removeIdx
+				if Util.isNumber(removeIdx)
 					model.children.splice(removeIdx, 1)
 
 			return result
