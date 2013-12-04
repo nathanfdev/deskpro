@@ -34,9 +34,13 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
+use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -48,11 +52,17 @@ class TicketManager
 	private $em;
 
 	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	private $container;
+
+	/**
 	 * @param EntityManager $em
 	 */
-	public function __construct(EntityManager $em)
+	public function __construct(DeskproContainer $container)
 	{
-		$this->em = $em;
+		$this->container = $container;
+		$this->em = $container->getEm();
 	}
 
 
@@ -73,6 +83,9 @@ class TicketManager
 	 */
 	public function saveTicket(Ticket $ticket, ExecutorContext $context)
 	{
+		$time_start = microtime(true);
+		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
+
 		#----------------------------------------
 		# Triggers
 		#----------------------------------------
@@ -108,17 +121,20 @@ class TicketManager
 		# Ticket Log
 		#----------------------------------------
 
-		$state = $ticket->getStateChangeRecorder();
-
-		foreach ($state->getChanges() as $change) {
-			$context->getLogger()->info(sprintf("[ChageLog] %s", $change->getField()));
-		}
+		$ticketlog_generator = new TicketLogGenerator($ticket, $context);
+		$logs = $ticketlog_generator->getLogEntries();
 
 		#----------------------------------------
 		# Ticket Filter update
 		#----------------------------------------
 
-		$clone = $ticket->getOriginalStateClone();
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFilters();
+		$agents  = $this->em->getRepository('DeskPRO:Person')->getAgents();
+
+		$filter_change_detect = new FilterChangeDetector($ticket, $context, $filters, $agents);
+		$cms = $filter_change_detect->getListUpdateCms();
+
+		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
 	}
 
 
@@ -130,7 +146,7 @@ class TicketManager
 	 */
 	public function createAgentExecutorContext(Person $agent, $event_type, $event_method)
 	{
-		$context = new ExecutorContext($this->createNewLogger());
+		$context = new ExecutorContext($this->container, $this->createNewLogger());
 		$context->setPersonContext($agent);
 		$context->setEventPerformer('agent');
 		$context->setEventType($event_type);
@@ -147,7 +163,7 @@ class TicketManager
 	 */
 	public function createUserExecutorContext(Person $user, $event_type, $event_method)
 	{
-		$context = new ExecutorContext($this->createNewLogger());
+		$context = new ExecutorContext($this->container, $this->createNewLogger());
 		$context->setPersonContext($user);
 		$context->setEventPerformer('user');
 		$context->setEventType($event_type);
@@ -163,7 +179,7 @@ class TicketManager
 	 */
 	public function createSystemExecutorContext($event_type = 'system', $event_method = 'system')
 	{
-		$context = new ExecutorContext($this->createNewLogger());
+		$context = new ExecutorContext($this->container, $this->createNewLogger());
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method);
 		return $context;
@@ -175,7 +191,12 @@ class TicketManager
 	protected function createNewLogger()
 	{
 		$logger = new Logger('tickets');
-		$logger->pushHandler(new StreamHandler('php://stdout', 'DEBUG'));
+
+		$formatter = new LineFormatter("[%datetime%] %message%\n");
+		$stream_handler = new StreamHandler('php://stdout', 'DEBUG');
+		$stream_handler->setFormatter($formatter);
+
+		$logger->pushHandler($stream_handler);
 		return $logger;
 	}
 }

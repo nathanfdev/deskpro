@@ -29,19 +29,48 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRecorder;
 
-class TicketManagerService
+class StateChangeRecorder extends BaseStateChangeRecorder
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
+	private $ticket;
+
+	/**
+	 * @var bool
+	 */
+	private $no_id = false;
+
+	public function __construct(Ticket $ticket)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$this->ticket = $ticket;
+		if (!$ticket->id) {
+			$this->no_id = true;
+		}
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isNewTicket()
+	{
+		// If the ticket is not a proxy object it means it was created
+		// now.
+		// - If there was no ID at the time this state recorder was created,
+		// it means its part of the same state transaction. (eg state recorder wasnt reset)
+		if ($this->no_id && get_class($this) === 'Application\\DeskPRO\\Entity\\Ticket') {
+			return true;
+		}
+
+		return false;
 	}
 }

@@ -32,9 +32,44 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets;
+namespace Application\DeskPRO\Tickets\Actions;
 
-class TicketChangelog
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\ExecutorContext;
+
+class SetAgentTeam extends AbstractAction
 {
-	// TODO: implement with triggers
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		$set_team_id = $this->getActionOption('agent_team_id');
+		$team = $context->getContainer()->getAgentData()->getTeam($set_team_id);
+
+		if (!$team) {
+			return;
+		}
+
+		$ticket->team = $team;
+	}
+
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$set_team_id    = $this->getActionOption('agent_team_id');
+		$ticket_team_id = $ticket->agent_team ? $ticket->agent_team->id : 0;
+
+		if ($ticket_team_id == $set_team_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_team')) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
+	}
 }

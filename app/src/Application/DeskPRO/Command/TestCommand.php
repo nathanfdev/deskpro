@@ -72,7 +72,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		$ticket_manager = App::getContainer()->getSystemService('ticket_manager');
 
 		$person = App::getOrm()->find('DeskPRO:Person', 3);
-		$dep    = App::getOrm()->find('DeskPRO:Department', 8);
+		$dep    = App::getOrm()->find('DeskPRO:Department', 1);
 		$work   = App::getOrm()->find('DeskPRO:TicketWorkflow', 3);
 
 		$ticket = new Ticket();
@@ -80,6 +80,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		$ticket->person     = $person;
 		$ticket->department = $dep;
 		$ticket->workflow   = $work;
+		$ticket->status     = 'awaiting_agent';
 
 		$message = new TicketMessage();
 		$message->person = $person;

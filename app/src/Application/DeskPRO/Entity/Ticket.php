@@ -2957,6 +2957,14 @@ class Ticket extends DomainObject
 		$this->_auto_commit_changelog = false;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Tickets\StateChangeRecorder
+	 */
+	public function getStateChangeRecorder()
+	{
+		return parent::getStateChangeRecorder();
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

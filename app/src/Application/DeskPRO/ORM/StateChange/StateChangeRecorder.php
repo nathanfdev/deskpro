@@ -99,6 +99,25 @@ class StateChangeRecorder
 
 
 	/**
+	 * @param string $field_id
+	 * @param array $data
+	 * @return ChangeDate
+	 */
+	public function recordData($field_id, array $data = array())
+	{
+		$change = new ChangeDate($field_id, $data);
+		$this->changes[] = $change;
+
+		if (!isset($this->changes_by_field[$field_id])) {
+			$this->changes_by_field[$field_id] = array();
+		}
+		$this->changes_by_field[$field_id][] = $change;
+
+		return $change;
+	}
+
+
+	/**
 	 * @param string     $field_id
 	 * @param Collection $coll
 	 * @param bool       $skip_same

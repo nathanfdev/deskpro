@@ -163,7 +163,7 @@ class FilterChangeDetector
 		$old_dep_id = null;
 		$new_dep_id = null;
 		$is_dep_change = false;
-		$is_new_ticket = $this->context->getVars()->has('is_new_ticket');
+		$is_new_ticket = $state->isNewTicket();
 
 		if ($state->hasChangedField('department')) {
 			$old_dep = $state->getOriginalValueForField('department');
@@ -202,7 +202,7 @@ class FilterChangeDetector
 				'filter'     => $filter
 			);
 
-			$this->context->getLogger()->info(sprintf("[FilterChangeDetector] (#%d) ----- BEGIN %s -----", $filter->id, $filter->id));
+			$this->context->getLogger()->info(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -----", $filter->id, $filter->title));
 
 			$agent_scopes = array();
 			if ($filter->is_global) {
@@ -217,8 +217,6 @@ class FilterChangeDetector
 			} else if ($filter->person) {
 				$agent_scopes[] = $filter->person;
 			}
-
-			$this->context->getLogger()->info(sprintf("Agent scope count: %d", count($agent_scopes)));
 
 			if (!$agent_scopes) {
 				continue;
@@ -289,13 +287,6 @@ class FilterChangeDetector
 					$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
 				}
 
-				if (!$orig_match) {
-					$this->context->getLogger()->info(sprintf("[FilterChangeDetector] Orig failed term: %s", $orig_match_failterm));
-				}
-				if (!$new_match) {
-					$this->context->getLogger()->info(sprintf("[FilterChangeDetector] New failed term: %s", $new_match_failterm));
-				}
-
 				if (!$orig_match AND !$new_match) {
 					$this->context->getLogger()->info(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
 				} else if ($orig_match AND $new_match) {
@@ -308,10 +299,17 @@ class FilterChangeDetector
 					$changed[$filter->id]['add'][] = $agent;
 				}
 
+				if (!$orig_match) {
+					$this->context->getLogger()->info(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
+				}
+				if (!$new_match) {
+					$this->context->getLogger()->info(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
+				}
+
 				$scope_counts++;
 			}
 
-			$this->context->getLogger()->info(sprintf("[FilterChangeDetector] (#%d) ----- END %.4fs -----", $filter->id, microtime(true)-$filter_ts));
+			$this->context->getLogger()->info(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
 		}
 
 		$this->changed_filters = array();
@@ -363,6 +361,8 @@ class FilterChangeDetector
 				$messages[] = $cm;
 			}
 		}
+
+		$this->context->getLogger()->info(sprintf("[FilterChangeDetector] %d client message signals", count($messages)));
 
 		return $messages;
 	}

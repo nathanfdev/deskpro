@@ -29,19 +29,50 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
-class TicketManagerService
+class SetAgent extends AbstractAction
 {
-	public static function create(DeskproContainer $container)
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$set_agent_id = $this->getActionOption('agent_id');
+		$agent = $context->getContainer()->getAgentData()->get($set_agent_id);
+
+		if (!$agent) {
+			return;
+		}
+
+		$ticket->agent = $agent;
+	}
+
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$set_agent_id    = $this->getActionOption('agent_id');
+		$ticket_agent_id = $ticket->agent ? $ticket->agent->id : 0;
+
+		if ($ticket_agent_id == $set_agent_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
+			if ($set_agent_id == $person->getId() && $person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
+				return true;
+			}
+			return false;
+		}
+
+		return true;
+	}
+
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
 	}
 }

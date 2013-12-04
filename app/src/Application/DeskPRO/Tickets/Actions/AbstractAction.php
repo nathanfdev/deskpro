@@ -79,6 +79,17 @@ abstract class AbstractAction implements ActionDefinitionInterface, ActionInterf
 
 
 	/**
+	 * @param string $name
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getActionOption($name, $default = null)
+	{
+		return isset($this->options[$name]) ? $this->options[$name] : $default;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	abstract public function applyAction(Ticket $ticket, ExecutorContext $context);

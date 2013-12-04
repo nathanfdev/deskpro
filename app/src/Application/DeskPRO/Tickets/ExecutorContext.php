@@ -39,6 +39,7 @@ use Monolog\Logger;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\OptionsArray;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class ExecutorContext implements PersonContextInterface
 {
@@ -72,9 +73,15 @@ class ExecutorContext implements PersonContextInterface
 	 */
 	private $logger;
 
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	private $container;
 
-	public function __construct(Logger $logger)
+
+	public function __construct(DeskproContainer $container, Logger $logger)
 	{
+		$this->container = $container;
 		$this->vars = new OptionsArray();
 		$this->logger = $logger;
 	}
@@ -104,6 +111,15 @@ class ExecutorContext implements PersonContextInterface
 				$this->event_performer = 'user';
 			}
 		}
+	}
+
+
+	/**
+	 * @return Person
+	 */
+	public function getPersonContext()
+	{
+		return $this->person_context;
 	}
 
 
@@ -167,5 +183,14 @@ class ExecutorContext implements PersonContextInterface
 	public function getEventPerformer()
 	{
 		return $this->event_performer;
+	}
+
+
+	/**
+	 * @return DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return $this->container;
 	}
 }

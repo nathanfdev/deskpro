@@ -36,7 +36,9 @@ namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
+use Application\DeskPRO\Tickets\StateChangeRecorder as TicketStateChangeRecorder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
@@ -491,7 +493,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	public function getStateChangeRecorder()
 	{
 		if (!$this->_state_recorder) {
-			$this->_state_recorder = new StateChangeRecorder();
+			if ($this instanceof Ticket) {
+				$this->_state_recorder = new TicketStateChangeRecorder($this);
+			} else {
+				$this->_state_recorder = new StateChangeRecorder();
+			}
 
 			$this->_state_clone = clone $this;
 			foreach (get_object_vars($this) as $prop => $val) {
