@@ -200,15 +200,16 @@ define [
 
 			else
 
-				# this is case of model that doens't exist in the list yet - quite easy case
+				# this is case of model that doens't exist in the list yet
 
 				if dataMapper
+
 					newListModel = dataMapper(dataModel)
+
 				else
-					newListModel = {
-						id:    dataModel[@idProp]
-						title: dataModel.title
-					}
+
+					newListModel = dataModel
+					newListModel.children = []
 
 				@listModels.push(newListModel)
 

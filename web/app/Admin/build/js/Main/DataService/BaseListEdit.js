@@ -221,10 +221,8 @@
           if (dataMapper) {
             newListModel = dataMapper(dataModel);
           } else {
-            newListModel = {
-              id: dataModel[this.idProp],
-              title: dataModel.title
-            };
+            newListModel = dataModel;
+            newListModel.children = [];
           }
           return this.listModels.push(newListModel);
         }
