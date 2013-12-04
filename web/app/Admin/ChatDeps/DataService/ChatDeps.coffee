@@ -225,7 +225,7 @@ define [
 			# Remove from children arrays
 
 			for model in @listModels
-				if not model.children.length then continue
+				if not model.children?.length then continue
 
 				removeIdx = null
 
@@ -234,7 +234,7 @@ define [
 						removeIdx = idx
 						break
 
-				if removeIdx
+				if Util.isNumber(removeIdx)
 					model.children.splice(removeIdx, 1)
 
 			return result

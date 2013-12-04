@@ -220,7 +220,7 @@
 
 
       ChatDeps.prototype.removeListModelById = function(id) {
-        var idx, model, removeIdx, result, subModel, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
+        var idx, model, removeIdx, result, subModel, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3, _ref4;
         if (!this.isListLoaded) {
           return;
         }
@@ -245,19 +245,19 @@
         _ref2 = this.listModels;
         for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
           model = _ref2[_j];
-          if (!model.children.length) {
+          if (!((_ref3 = model.children) != null ? _ref3.length : void 0)) {
             continue;
           }
           removeIdx = null;
-          _ref3 = model.children;
-          for (idx = _k = 0, _len2 = _ref3.length; _k < _len2; idx = ++_k) {
-            subModel = _ref3[idx];
+          _ref4 = model.children;
+          for (idx = _k = 0, _len2 = _ref4.length; _k < _len2; idx = ++_k) {
+            subModel = _ref4[idx];
             if (subModel.id === id) {
               removeIdx = idx;
               break;
             }
           }
-          if (removeIdx) {
+          if (Util.isNumber(removeIdx)) {
             model.children.splice(removeIdx, 1);
           }
         }
