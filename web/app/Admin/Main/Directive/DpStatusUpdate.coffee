@@ -19,7 +19,9 @@ define ->
  		#	<span dp-status-update="/some_process_status"
  		#				  status-update-conditions="process_started"
  		#				  status-update-default-message="Waiting to start process..."
- 		#				  status-update-completed-growl-message="Process finished">
+ 		#				  status-update-completed-growl-message="Process finished"
+ 		#						status-update-interval="10000"
+ 		#						status-update-immediate="true">
  		#	</span>
  		#
  		#	Parameters
@@ -28,6 +30,8 @@ define ->
  		# 2) 'status-update-conditions' (required parameter) - some scope expression that is used to start process of sending periodic requests to server
  		# 3) 'status-update-default-message' (optional parameter, by default empty string) - will be used as default status text in this directive
  		# 4) 'status-update-completed-growl-message' (optional parameter, by default null) - used to show Growl message if process finished (if needed)
+ 		# 5) 'status-update-interval' (optional parameter, by default 5000) - how often requests will be sent to server (in ms)
+ 		# 6) 'status-update-immediate' (optional paremeter, by default true) - could be used in cases when you it's needed not to start update immediately
    #
 	###
 	Admin_Main_Directive_DpStatusUpdate = ['Api', 'Growl', (Api, Growl) ->
@@ -37,9 +41,11 @@ define ->
 			link: (scope, element, attrs) ->
 
 				statusUpdateUrl = attrs.dpStatusUpdate
-				updateInterval = if attrs.statusUpdateInterval then attrs.statusUpdateInterval else 5000;
-				defaultMessage = if attrs.statusUpdateDefaultMessage then attrs.statusUpdateDefaultMessage else '';
-				updateCompletedGrowlMessage = if attrs.statusUpdateCompletedGrowlMessage then attrs.statusUpdateCompletedGrowlMessage else null;
+				updateInterval = if attrs.statusUpdateInterval then attrs.statusUpdateInterval else 5000
+				defaultMessage = if attrs.statusUpdateDefaultMessage then attrs.statusUpdateDefaultMessage else ''
+				updateCompletedGrowlMessage = if attrs.statusUpdateCompletedGrowlMessage then attrs.statusUpdateCompletedGrowlMessage else null
+
+				updateImmediate = if attrs.statusUpdateImmediate then attrs.statusUpdateImmediate = (attrs.statusUpdateImmediate == 'true') else true
 
 				scope.status_update_message = defaultMessage
 				scope.update_in_progress = false
@@ -47,7 +53,7 @@ define ->
 				# these are backend statuses when we won't clear interval - this means that requests will be continued
 				# for all other statuses - interval will be cleared and requesting the backend will be stopped
 
-				validStatuses = ['pending', 'table'];
+				validStatuses = ['pending', 'progress'];
 
 				scope.$watch(attrs.statusUpdateConditions, (newVal, oldVal) =>
 
@@ -57,7 +63,7 @@ define ->
 
 						Api.sendGet(statusUpdateUrl).then((res) =>
 
-							data = res.data.server_mysql_sort_order
+							data = res.data
 
 							status = data.status
 							message = data.message
@@ -71,8 +77,9 @@ define ->
 								clearInterval(interval)
 						)
 
-					interval = setInterval(doGetRequest, updateInterval);
-					doGetRequest()
+					interval = setInterval(doGetRequest, updateInterval)
+
+					if updateImmediate then doGetRequest()
 				);
 		}
 	]
