@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -150,6 +149,13 @@ class Ticket extends DomainObject
 	 * @var int
 	 */
 	protected $id = null;
+
+	/**
+	 * The original id (eg before a delete was made)
+	 *
+	 * @var int
+	 */
+	protected $_original_id;
 
 	/**
 	 * @var string
@@ -488,6 +494,7 @@ class Ticket extends DomainObject
 
 	public function __construct()
 	{
+		$this->_original_id  = null;
 		$this->participants  = new ArrayCollection();
 		$this->messages      = new ArrayCollection();
 		$this->custom_data   = new ArrayCollection();
@@ -509,6 +516,15 @@ class Ticket extends DomainObject
 	public function getId()
 	{
 		return $this->id;
+	}
+
+
+	/**
+	 * @return int|null
+	 */
+	public function getOriginalId()
+	{
+		return $this->_original_id;
 	}
 
 
@@ -2828,6 +2844,72 @@ class Ticket extends DomainObject
 
 
 	/**
+	 * Returns the data as it would be returned from the database
+	 *
+	 * @return array
+	 */
+	public function getDbRow()
+	{
+		$row_data = array(
+			'id'                           => $this->id,
+			'language_id'                  => $this->language ? $this->language->id : null,
+			'department_id'                => $this->department ? $this->department->id : null,
+			'category_id'                  => $this->category ? $this->category->id : null,
+			'priority_id'                  => $this->priority ? $this->priority->id : null,
+			'workflow_id'                  => $this->workflow ? $this->workflow->id : null,
+			'product_id'                   => $this->product ? $this->product->id : null,
+			'person_id'                    => $this->person ? $this->person->id : null,
+			'person_email_id'              => $this->person_email ? $this->person_email->id : null,
+			'person_email_validating_id'   => $this->person_email_validating ? $this->person_email_validating->id : null,
+			'agent_id'                     => $this->agent ? $this->agent->id : null,
+			'agent_team_id'                => $this->agent_team ? $this->agent_team->id : null,
+			'organization_id'              => $this->organization ? $this->organization->id : null,
+			'linked_chat_id'               => $this->linked_chat ? $this->linked_chat->id : null,
+			'email_gateway_id'             => $this->email_gateway ? $this->email_gateway->id : null,
+			'email_gateway_address_id'     => $this->email_gateway_address ? $this->email_gateway_address->id : null,
+			'locked_by_agent'              => $this->locked_by_agent ? $this->locked_by_agent->id : null,
+			'ref'                          => $this->ref,
+			'auth'                         => $this->auth,
+			'sent_to_address'              => $this->sent_to_address,
+			'creation_system'              => $this->creation_system,
+			'creation_system_option'       => $this->creation_system_option,
+			'ticket_hash'                  => $this->ticket_hash,
+			'status'                       => $this->status,
+			'hidden_status'                => $this->hidden_status,
+			'validating'                   => $this->validating,
+			'is_hold'                      => $this->is_hold,
+			'urgency'                      => $this->urgency,
+			'count_agent_replies'          => $this->count_agent_replies,
+			'count_user_replies'           => $this->count_user_replies,
+			'feedback_rating'              => $this->feedback_rating,
+			'date_feedback_rating'         => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
+			'date_created'                 => $this->date_created->format('Y-m-d H:i:s'),
+			'date_resolved'                => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
+			'date_closed'                  => $this->date_closed ? $this->date_closed->format('Y-m-d H:i:s') : null,
+			'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
+			'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
+			'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
+			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
+			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
+			'date_agent_waiting'           => $this->date_agent_waiting ? $this->date_agent_waiting->format('Y-m-d H:i:s') : null,
+			'date_user_waiting'            => $this->date_user_waiting ? $this->date_user_waiting->format('Y-m-d H:i:s') : null,
+			'date_status'                  => $this->date_status->format('Y-m-d H:i:s'),
+			'total_user_waiting'           => $this->total_user_waiting,
+			'total_to_first_reply'         => $this->total_to_first_reply,
+			'date_locked'                  => $this->date_locked ? $this->date_locked->format('Y-m-d H:i:s') : null,
+			'has_attachments'              => $this->has_attachments,
+			'subject'                      => $this->subject,
+			'original_subject'             => $this->original_subject,
+			'properties'                   => $this->properties ? serialize($this->properties) : null,
+			'worst_sla_status'             => $this->worst_sla_status,
+			'waiting_times'                => $this->waiting_times ? serialize($this->waiting_times) : null,
+		);
+
+		return $row_data;
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Tickets\StateChangeRecorder
 	 */
 	public function getStateChangeRecorder()
@@ -2840,12 +2922,18 @@ class Ticket extends DomainObject
 	# Doctrine Metadata
 	############################################################################
 
+	public function _setOriginalId()
+	{
+		$this->_original_id = $this->id;
+	}
+
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
+		$metadata->addLifecycleCallback('_setOriginalId', 'postLoad');
 		$metadata->setPrimaryTable(array(
 			'name'    => 'tickets',
 			'indexes' => array(

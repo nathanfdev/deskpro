@@ -90,6 +90,20 @@ class TicketManager
 	 */
 	public function saveTicket(Ticket $ticket, ExecutorContext $context)
 	{
+		$this->db->beginTransaction();
+		try {
+			$ret = $this->doSaveTicket($ticket, $context);
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $ret;
+	}
+
+	private function doSaveTicket(Ticket $ticket, ExecutorContext $context)
+	{
 		$time_start = microtime(true);
 		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
 
@@ -264,6 +278,12 @@ class TicketManager
 		}
 
 		#----------------------------------------
+		# Initial flush
+		#----------------------------------------
+
+		$this->em->flush();
+
+		#----------------------------------------
 		# Ticket Log
 		#----------------------------------------
 
@@ -289,22 +309,17 @@ class TicketManager
 		}
 
 		#----------------------------------------
+		# Update search
+		#----------------------------------------
+
+		$search_updater = new TicketSearchUpdater($this->db, $ticket);
+		$search_updater->update();
+
+		#----------------------------------------
 		# Done
 		#----------------------------------------
 
-		$save_time = microtime(true);
-
-		$this->db->beginTransaction();
-		try {
-			$this->em->flush();
-			$this->db->commit();
-			$context->getLogger()->info(sprintf("DB commit done -- %.4fs", microtime(true) - $save_time));
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			$context->getLogger()->info(sprintf("DB commit failed -- %s", $e->getMessage()));
-			throw $e;
-		}
-
+		$this->em->flush();
 		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
 
 		$ticket->resetStateChangeRecorder();
