@@ -47,6 +47,69 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
+/**
+ * Class Ticket
+ *
+ * @property int $id
+ * @property string $ref
+ * @property string $auth
+ * @property Language $language
+ * @property Department $department
+ * @property TicketCategory $category
+ * @property TicketWorkflow $workflow
+ * @property TicketPriority $priority
+ * @property Product $product
+ * @property Person $person
+ * @property PersonEmail $person_email
+ * @property PersonEmailValidating $person_email_validating
+ * @property Person $agent
+ * @property AgentTeam $agent_team
+ * @property Organization $organization
+ * @property ChatConversation $linked_chat
+ * @property TicketAttachment[] $attachment
+ * @property TicketAccessCode[] $access_codes
+ * @property TicketMessage[] $messages
+ * @property CustomDataTicket[] $custom_data
+ * @property LabelTicket[] $labels
+ * @property string $sent_to_address
+ * @property EmailGateway $email_gateway
+ * @property EmailGatewayAddress $email_gateway_address
+ * @property string $creation_system
+ * @property string $creation_system_option
+ * @property string $ticket_hash
+ * @property string $status
+ * @property string $hidden_status
+ * @property string $validating
+ * @property bool $is_hold
+ * @property int $urgency
+ * @property int $feedback_rating
+ * @property \DateTime $date_feedback_rating
+ * @property \DateTime $date_created
+ * @property \DateTime $date_resolved
+ * @property \DateTime $date_closed
+ * @property \DateTime $date_first_agent_assign
+ * @property \DateTime $date_first_agent_reply
+ * @property \DateTime $date_last_agent_reply
+ * @property \DateTime $date_last_user_reply
+ * @property \DateTime $date_agent_waiting
+ * @property \DateTime $date_user_waiting
+ * @property \DateTime $date_status
+ * @property int $total_user_waiting
+ * @property int $total_to_first_reply
+ * @property Person $locked_by_agent
+ * @property \DateTime $date_locked
+ * @property bool $has_attachments
+ * @property string $subject
+ * @property string $original_subject
+ * @property array $properties
+ * @property int $count_agent_replies
+ * @property int $count_user_replies
+ * @property string|null $worst_sla_status
+ * @property array $waiting_times
+ * @property TicketParticipant[] $participants
+ * @property TicketCharge[] $charges
+ * @property TicketSla[] $ticket_slas
+ */
 class Ticket extends DomainObject
 {
 	const TAC_AUTHCODE_LEN = 15;
@@ -58,6 +121,8 @@ class Ticket extends DomainObject
 	const CREATED_WEB_AGENT         = 'web.agent';
 	const CREATED_WEB_AGENT_PORTAL  = 'web.agent.portal';
 	const CREATED_WEB_API           = 'web.api';
+	const CREATED_WEB_API_PERSON    = 'web.api.person';
+	const CREATED_WEB_API_AGENT     = 'web.api.agent';
 	const CREATED_GATEWAY_PERSON    = 'gateway.person';
 	const CREATED_GATEWAY_AGENT     = 'gateway.agent';
 
@@ -169,6 +234,7 @@ class Ticket extends DomainObject
 	protected $attachments;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $access_codes;
 
@@ -186,11 +252,6 @@ class Ticket extends DomainObject
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $labels;
-
-	/**
-	 * @var string[]
-	 */
-	protected $original_labels = null;
 
 	/**
 	 * The email address the ticket was sent to if it came in via a gateway
@@ -389,9 +450,6 @@ class Ticket extends DomainObject
 	 */
 	protected $_user_participants;
 
-	public $part_add_ids = array();
-	public $part_del_ids = array();
-
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
@@ -401,28 +459,6 @@ class Ticket extends DomainObject
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $ticket_slas;
-
-	/**
-	 * @var bool
-	 */
-	protected $_recalculate_slas = false;
-
-	/**
-	 * @var bool
-	 */
-	protected $_reset_slas = false;
-
-	/**
-	 * When true the ticket log doesnt run in the post event
-	 * @var bool
-	 */
-	public $_no_log = false;
-
-	/**
-	 * Parts that were originally on the ticket (before any changes)
-	 * @var array
-	 */
-	protected $_loaded_part_ids = array();
 
 	/**
 	 * An exploded version of sent_to_addresses
@@ -438,8 +474,6 @@ class Ticket extends DomainObject
 	 */
 	protected $_work_hours_set = null;
 
-	public $_isRemoved;
-
 	/**
 	 * If the tikcet was created from an email just now, then this is the reader
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
@@ -451,18 +485,6 @@ class Ticket extends DomainObject
 	 * @var string
 	 */
 	public $email_reader_action;
-
-	/**
-	 * Sometimes we need to keep track of certain properties on a
-	 * ticket before they have been saved. e.g., labels has a PK on ticket ID and
-	 * we cant save them as managed entities until after the tikcet is first saved,
-	 * but labels added need to be saved somewhere so we can test them during triggers.
-	 *
-	 * @var array
-	 */
-	public $_presave_state = array();
-
-
 
 	public function __construct()
 	{
@@ -489,16 +511,10 @@ class Ticket extends DomainObject
 		return $this->id;
 	}
 
-	public function setNoLog()
-	{
-		$this->_no_log = true;
-	}
 
-	public function isLoggingDisabled()
-	{
-		return $this->_no_log;
-	}
-
+	/**
+	 * @return string
+	 */
 	public function getSubject()
 	{
 		if (!$this->subject) {
@@ -561,6 +577,9 @@ class Ticket extends DomainObject
 	}
 
 
+	/**
+	 * @param string $subject
+	 */
 	public function setSubject($subject)
 	{
 		$subject = Strings::standardEol($subject);
@@ -591,9 +610,11 @@ class Ticket extends DomainObject
 	}
 
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Person[]
+	 */
 	public function getUserParticipants()
 	{
-		$this->getOriginalParticipantIds();
 		$ret = array();
 
 		foreach ($this['participants'] as $p) {
@@ -605,10 +626,12 @@ class Ticket extends DomainObject
 		return $ret;
 	}
 
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person[]
+	 */
 	public function getAgentParticipants()
 	{
-		$this->getOriginalParticipantIds();
-
 		$ret = array();
 		foreach ($this->participants as $p) {
 			if ($p->person['is_agent']) {
@@ -617,26 +640,6 @@ class Ticket extends DomainObject
 		}
 
 		return $ret;
-	}
-
-	/**
-	 * The ticket tracker needs to know who was originally added on the ticket, to properly
-	 * determine if the pre-updated ticket used to match a filter. So the change tracker uses this construct
-	 * the "original ticket" object
-	 *
-	 * @return array
-	 */
-	public function getOriginalParticipantIds()
-	{
-		if ($this->_loaded_part_ids !== null) {
-			return $this->_loaded_part_ids;
-		}
-
-		$this->_loaded_part_ids = array();
-		foreach ($this->participants as $part) {
-			$this->_loaded_part_ids[$part->person->getId()] = $part->person->getId();
-		}
-		return $this->_loaded_part_ids;
 	}
 
 
@@ -649,7 +652,6 @@ class Ticket extends DomainObject
 	 */
 	public function setAgentParticipants(array $agents)
 	{
-		$this->getOriginalParticipantIds();
 		$current_agent_ids = array();
 		foreach ($this->participants as $p) {
 			if ($p->person->is_agent) {
@@ -725,9 +727,8 @@ class Ticket extends DomainObject
 	 * Modify urgency by $mod, which can be positive or negative.
 	 *
 	 * @param int $mod
-	 * @param bool $reset_on_reply True to reset this urgency after the next reply
 	 */
-	public function modifyUrgency($mod, $reset_on_reply = false)
+	public function modifyUrgency($mod)
 	{
 		$old_u = $this->urgency;
 		$new_u = \Orb\Util\Numbers::bound($old_u + $mod, 1, 10);
@@ -766,6 +767,7 @@ class Ticket extends DomainObject
 		$this->setModelField('date_feedback_rating', new \DateTime());
 	}
 
+
 	/**
 	 * @return string
 	 */
@@ -784,25 +786,12 @@ class Ticket extends DomainObject
 	 */
 	public function getParticipantPeopleIds()
 	{
-		$this->getOriginalParticipantIds();
 		$ids = array();
 		foreach ($this->getParticipants() as $p) {
 			$ids[] = $p['person']['id'];
 		}
 
 		return $ids;
-	}
-
-	public function getRawParticipants()
-	{
-		$this->getOriginalParticipantIds();
-		return $this->participants;
-	}
-
-	public function setRawParticipants($parts)
-	{
-		$this->getOriginalParticipantIds();
-		$this->participants = $parts;
 	}
 
 
@@ -841,7 +830,6 @@ class Ticket extends DomainObject
 	 */
 	public function hasParticipantPerson($person_or_id)
 	{
-		$this->getOriginalParticipantIds();
 		$person_id = $person_or_id;
 		if ($person_or_id instanceof Person) {
 			$person_id = $person_or_id['id'];
@@ -871,7 +859,6 @@ class Ticket extends DomainObject
 	 */
 	public function addParticipantPerson($person_or_id)
 	{
-		$this->getOriginalParticipantIds();
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
@@ -893,15 +880,12 @@ class Ticket extends DomainObject
 		$ticket_part['person'] = $person;
 		$ticket_part['ticket'] = $this;
 		$this->participants->add($ticket_part);
-		$this->part_add_ids[] = $person->getId();
-
-		if ($this->getTicketLogger()) {
-			$this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $person);
-		}
 
 		if ($this->_user_participants !== null AND !$person['is_agent']) {
 			$this->_user_participants[] = $ticket_part;
 		}
+
+		$this->_onPropertyChanged('participants', null, $this->participants);
 
 		return $ticket_part;
 	}
@@ -916,7 +900,6 @@ class Ticket extends DomainObject
 	 */
 	public function removeParticipantPerson($person_or_id)
 	{
-		$this->getOriginalParticipantIds();
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
@@ -928,9 +911,8 @@ class Ticket extends DomainObject
 
 		foreach ($this->participants as $k => $p) {
 			if ($p['person']->getId() == $person->getId()) {
-				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $p['person'], null);
+				$this->_onPropertyChanged('participants', null, $this->participants);
 				$this->participants->remove($k);
-				$this->part_del_ids[] = $person->getId();
 				return $p;
 			}
 		}
@@ -938,13 +920,15 @@ class Ticket extends DomainObject
 		return null;
 	}
 
+
+	/**
+	 * @param TicketParticipant $part
+	 */
 	public function addParticipant(TicketParticipant $part)
 	{
-		$this->getOriginalParticipantIds();
 		$part->ticket = $this;
 		$this->participants->add($part);
-		$this->part_add_ids[] = $part->person->getId();
-		if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $part->person);
+		$this->_onPropertyChanged('participants', null, $this->participants);
 	}
 
 
@@ -957,7 +941,6 @@ class Ticket extends DomainObject
 	 */
 	public function setParticipantAgentIds(array $set_agent_ids)
 	{
-		$this->getOriginalParticipantIds();
 		$got_agent_ids = array();
 		$remove_ks = array();
 
@@ -986,7 +969,7 @@ class Ticket extends DomainObject
 
 		foreach ($remove_ks as $k) {
 			App::getOrm()->remove($participants[$k]);
-			if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $participants[$k], null);
+			$this->_onPropertyChanged('participants', null, $this->participants);
 		}
 
 		$new_agent_ids = array_diff($set_agent_ids, $got_agent_ids);
@@ -997,7 +980,6 @@ class Ticket extends DomainObject
 				$part['person_id'] = $agent_id;
 
 				$this->addParticipant($part);
-				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $part);
 			}
 		}
 	}
@@ -1014,7 +996,6 @@ class Ticket extends DomainObject
 	 */
 	public function setParticipantUserIds(array $set_user_ids)
 	{
-		$this->getOriginalParticipantIds();
 		$got_user_ids = array();
 
 		$set_user_ids_info = array();
@@ -1067,6 +1048,14 @@ class Ticket extends DomainObject
 		}
 	}
 
+
+	/**
+	 * @param Person $agent
+	 * @param int $time
+	 * @param int $amount
+	 * @param string $comment
+	 * @return TicketCharge|null
+	 */
 	public function addCharge(Person $agent, $time, $amount = null, $comment = '')
 	{
 		if ($time !== null) {
@@ -1083,7 +1072,7 @@ class Ticket extends DomainObject
 		}
 
 		if ($time === null && $amount === null) {
-			return false;
+			return null;
 		}
 
 		$charge = new TicketCharge();
@@ -1097,9 +1086,16 @@ class Ticket extends DomainObject
 
 		$this->charges->add($charge);
 
+		$this->_onPropertyChanged('charges', null, $this->charges);
+
 		return $charge;
 	}
 
+
+	/**
+	 * @param Sla $sla
+	 * @return TicketSla
+	 */
 	public function addSla(Sla $sla)
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
@@ -1113,15 +1109,22 @@ class Ticket extends DomainObject
 		$ticket_sla->sla = $sla;
 
 		$this->ticket_slas->add($ticket_sla);
+		$this->_onPropertyChanged('ticket_slas', null, $this->participants);
 
 		return $ticket_sla;
 	}
 
+
+	/**
+	 * @param Sla $sla
+	 * @return bool
+	 */
 	public function removeSla(Sla $sla)
 	{
 		foreach ($this->ticket_slas AS $k => $ticket_sla) {
 			if ($ticket_sla->sla->id == $sla->id) {
 				$this->ticket_slas->remove($k);
+				$this->_onPropertyChanged('ticket_slas', null, $this->participants);
 				$this->updateWorstSlaStatus();
 				return true;
 			}
@@ -1130,15 +1133,21 @@ class Ticket extends DomainObject
 		return false;
 	}
 
+	/**
+	 * Remove all SLAs from ticket
+	 */
 	public function removeAllSlas()
 	{
-		foreach ($this->ticket_slas AS $k => $ticket_sla) {
-			$this->ticket_slas->remove($k);
-		}
+		$this->ticket_slas->clear();
+		$this->_onPropertyChanged('ticket_slas', null, $this->participants);
 
 		$this->setModelField('worst_sla_status', null);
 	}
 
+	/**
+	 * @param Sla $sla
+	 * @return bool
+	 */
 	public function hasSla(Sla $sla)
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
@@ -1150,6 +1159,11 @@ class Ticket extends DomainObject
 		return false;
 	}
 
+
+	/**
+	 * @param $sla_id
+	 * @return null
+	 */
 	public function getSlaById($sla_id)
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
@@ -1161,6 +1175,10 @@ class Ticket extends DomainObject
 		return null;
 	}
 
+
+	/**
+	 * @return array
+	 */
 	public function getSlaIds()
 	{
 		$ids = array();
@@ -1191,8 +1209,6 @@ class Ticket extends DomainObject
 
 				if (!$this->date_first_agent_reply) {
 					$this['date_first_agent_reply'] = $now;
-					$this->_recalculate_slas = true; // may have a "first reply" sla
-
 					$this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
 				}
 			}
@@ -1321,9 +1337,15 @@ class Ticket extends DomainObject
 			$this->addCustomData($custom_data);
 		}
 
+		$this->_onPropertyChanged('custom_data', null, $this->participants);
+
 		return $custom_data;
 	}
 
+
+	/**
+	 * @param $field
+	 */
 	public function removeCustomDataForField($field)
 	{
 		$parent_id = null;
@@ -1332,10 +1354,16 @@ class Ticket extends DomainObject
 			$parent_id = $field->parent['id'];
 		}
 
+		$change = false;
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+				$change = true;
 				$this->custom_data->removeElement($data);
 			}
+		}
+
+		if ($change) {
+			$this->_onPropertyChanged('custom_data', null, $this->participants);
 		}
 	}
 
@@ -1348,6 +1376,8 @@ class Ticket extends DomainObject
 	{
 		$this->custom_data->add($data);
 		$data['ticket'] = $this;
+
+		$this->_onPropertyChanged('custom_data', null, $this->participants);
 	}
 
 
@@ -1463,32 +1493,6 @@ class Ticket extends DomainObject
 		} else {
 			$this['department'] = null;
 		}
-	}
-
-	public function setDepartment(Department $dep = null)
-	{
-		// Dep check
-		if ($dep) {
-			// For backwards compat, with TicketChangeTracker::getOriginalTicket,
-			// dont apply for that
-			if (!$this->_isNoPersist()) {
-				if (!$dep->is_tickets_enabled) {
-					$e = new \InvalidArgumentException("Department is not a ticket department");
-					KernelErrorHandler::logException($e, true, 'ticket_dep_err1');
-					return;
-				}
-
-				if (count($dep->children)) {
-					$e = new \InvalidArgumentException("Department is a parent");
-					KernelErrorHandler::logException($e, true, 'ticket_dep_err2');
-					return;
-				}
-			}
-		}
-
-		$old_dep = $this->department;
-		$this->department = $dep;
-		$this->_onPropertyChanged('department', $old_dep, $dep);
 	}
 
 	public function isLangSet()
@@ -2073,9 +2077,6 @@ class Ticket extends DomainObject
 		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
 		}
-
-		$this->_reset_slas = true;
-		$this->_recalculate_slas = true;
 	}
 
 	public function setHiddenStatus($hstatus)
@@ -2105,22 +2106,6 @@ class Ticket extends DomainObject
 			$this->setModelField('is_hold', true);
 		} else {
 			$this->setModelField('is_hold', false);
-		}
-	}
-
-	public function recalculateSlaDates()
-	{
-		foreach ($this->ticket_slas AS $ticket_sla) {
-			$ticket_sla->calculateSlaDates();
-		}
-	}
-
-	public function resetSlaStatuses()
-	{
-		foreach ($this->ticket_slas AS $ticket_sla) {
-			if (!$ticket_sla->is_completed_set) {
-				$ticket_sla->is_completed = false;
-			}
 		}
 	}
 
@@ -2487,109 +2472,6 @@ class Ticket extends DomainObject
 		$this->recomputeHash();
 	}
 
-
-	/**
-	 */
-	public function _preInsert()
-	{
-		// Get the new ref
-		if (!$this->ref) {
-			try {
-				$this['ref'] = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
-			} catch (\Exception $e) {
-				KernelErrorHandler::logException($e);
-
-				// Using a custom format.
-				// We just ran into a collision which means the pattern is not a good pattern.
-				// We are going to append a random number automatically if it isn't part of the pattern already
-				if (App::getSetting('core.ref_pattern') && strpos(App::getSetting('core.ref_pattern'), '<?>') === -1 && strpos(App::getSetting('core.ref_pattern'), '<A>') === -1) {
-					$set_pattern = App::getSetting('core.ref_pattern');
-					$set_pattern .= '-<A><A><A>';
-					App::getContainer()->getSettingsHandler()->setSetting('core.ref_pattern', $set_pattern);
-				}
-
-				// Log and fallback to a random ref
-				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
-				$this['ref'] = $ref;
-			}
-		}
-
-		if ($this->organization) {
-			$managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($this->organization);
-			foreach ($managers AS $manager) {
-				if ($manager->getPref('org.manager_auto_add')) {
-					$this->addParticipantPerson($manager);
-				}
-			}
-		}
-
-		$this->_applySlas();
-	}
-
-	public function _preUpdate()
-	{
-		$self = $this;
-		$reset = $this->_reset_slas;
-
-		if ($this->_recalculate_slas) {
-			$orm = App::getOrm();
-
-			if (method_exists($orm, 'delayedUpdate')) {
-				$orm->delayedUpdate(function($em) use ($self, $reset) {
-					// this is deferred until all changes are done to ensure everything is correct
-					if ($reset) {
-						$self->resetSlaStatuses();
-					}
-					$self->recalculateSlaDates();
-				});
-			}
-		}
-
-		$this->_reset_slas = false;
-		$this->_recalculate_slas = false;
-	}
-
-	public function _applySlas()
-	{
-		if ($this->status == 'hidden') {
-			return;
-		}
-
-		$slas = App::getEntityRepository('DeskPRO:Sla')->getAllSlas();
-		foreach ($slas AS $sla) {
-			if ($sla->apply_type == 'all') {
-				$this->addSla($sla);
-				continue;
-			}
-
-			if ($sla->apply_type == 'priority' && $sla->apply_priority && $this->priority && $sla->apply_priority->id == $this->priority->id) {
-				$this->addSla($sla);
-				continue;
-			}
-
-			if ($sla->apply_type == 'people_orgs' && $sla->appliesToPerson($this->person)) {
-				$this->addSla($sla);
-				continue;
-			}
-
-			if ($sla->apply_type == 'people_orgs' && $this->organization && $sla->appliesToOrganization($this->organization)) {
-				$this->addSla($sla);
-				continue;
-			}
-
-			// don't need to do the apply trigger here - it will be handled elsewhere
-		}
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Tickets\TicketChangeTracker
-	 */
-	public function getTicketLogger()
-	{
-		return $this->_ticket_logger;
-	}
-
-
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
@@ -2671,14 +2553,6 @@ class Ticket extends DomainObject
 
 		return 0;
 	}
-
-
-	public function _markRemoved()
-	{
-		$this->_isRemoved = $this->getId();
-	}
-
-
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
@@ -2952,16 +2826,13 @@ class Ticket extends DomainObject
 		);
 	}
 
-	public function disableChangetrackerAutocommit()
-	{
-		$this->_auto_commit_changelog = false;
-	}
 
 	/**
 	 * @return \Application\DeskPRO\Tickets\StateChangeRecorder
 	 */
 	public function getStateChangeRecorder()
 	{
+		//This is overridden just so phpcod returns proper subclass
 		return parent::getStateChangeRecorder();
 	}
 

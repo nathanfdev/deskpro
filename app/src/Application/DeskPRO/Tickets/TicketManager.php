@@ -35,21 +35,27 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Orb\Util\Strings;
 
 class TicketManager
 {
 	/**
-	 * @var
+	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
 	private $em;
+
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	private $db;
 
 	/**
 	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -63,6 +69,7 @@ class TicketManager
 	{
 		$this->container = $container;
 		$this->em = $container->getEm();
+		$this->db = $container->getDb();
 	}
 
 
@@ -85,6 +92,107 @@ class TicketManager
 	{
 		$time_start = microtime(true);
 		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
+
+		$state = $ticket->getStateChangeRecorder();
+
+		$this->em->persist($ticket);
+
+		#----------------------------------------
+		# Set the creation system
+		#----------------------------------------
+
+		if (!$ticket->creation_system) {
+			if ($context->getEventMethod() == 'email') {
+				$creation_system = 'gateway.';
+
+				if ($context->getEventPerformer() == 'agent') {
+					$creation_system .= 'agent';
+				} else {
+					$creation_system .= 'person';
+				}
+			} else if ($context->getEventMethod() == 'api') {
+				$creation_system = 'web.api.';
+
+				if ($context->getEventPerformer() == 'agent') {
+					$creation_system .= 'agent';
+				} else {
+					$creation_system .= 'person';
+				}
+			} else {
+				$creation_system = 'web.';
+
+				if ($context->getEventPerformer() == 'agent') {
+					$creation_system .= 'agent.portal';
+				} else {
+					if ($context->getEventMethodOption('is_widget')) {
+						$creation_system .= 'person.widget';
+					} else if ($context->getEventMethodOption('is_embedded')) {
+						$creation_system .= 'person.embed';
+					} else {
+						$creation_system .= 'person.portal';
+					}
+				}
+			}
+
+			$ticket->creation_system = $creation_system;
+
+			if ($context->getEventMethodOption('origin_url')) {
+				$ticket->creation_system_option = $context->getEventMethodOption('origin_url');
+			}
+		}
+
+		#----------------------------------------
+		# Set or verify the department
+		#----------------------------------------
+
+		/** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
+		$ticket_deps = $this->container->getSystemService('TicketDepartments');
+
+		if (!$ticket->department) {
+			$ticket->department = $ticket_deps->getDefaultDepartment();
+		}
+
+		if ($ticket_deps->getChildren($ticket->department)) {
+			$ticket->department = $ticket_deps->getDefaultDepartment();
+		}
+
+		#----------------------------------------
+		# Sort out ref
+		#----------------------------------------
+
+		if (!$ticket->ref) {
+			try {
+				$ticket->ref = $this->container->getRefGenerator()->generateReference('DeskPRO:Ticket');
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e);
+
+				// Using a custom format.
+				// We just ran into a collision which means the pattern is not a good pattern.
+				// We are going to append a random number automatically if it isn't part of the pattern already
+				if (App::getSetting('core.ref_pattern') && strpos(App::getSetting('core.ref_pattern'), '<?>') === -1 && strpos(App::getSetting('core.ref_pattern'), '<A>') === -1) {
+					$set_pattern = App::getSetting('core.ref_pattern');
+					$set_pattern .= '-<A><A><A>';
+					$this->container->getSettingsHandler()->setSetting('core.ref_pattern', $set_pattern);
+				}
+
+				// Log and fallback to a random ref
+				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+				$ticket->ref = $ref;
+			}
+		}
+
+		#----------------------------------------
+		# Automtically add org managers of the ticket
+		#----------------------------------------
+
+		if ($ticket->organization) {
+			$managers = $this->em->getRepository('DeskPRO:Organization')->getManagers($this->organization);
+			foreach ($managers AS $manager) {
+				if ($manager->getPref('org.manager_auto_add')) {
+					$ticket->addParticipantPerson($manager);
+				}
+			}
+		}
 
 		#----------------------------------------
 		# Triggers
@@ -118,11 +226,53 @@ class TicketManager
 		}
 
 		#----------------------------------------
+		# Recalculate SLAs
+		#----------------------------------------
+
+		if ($state->isNewTicket() && !$ticket->hidden_status) {
+			$reset_slas = false;
+			$recalculate_slas = false;
+
+			if ($state->hasChangedField('status') || $state->hasChangedField('hidden_status')) {
+				$reset_slas = true;
+				$recalculate_slas = true;
+			}
+
+			if ($state->hasChangedField('messages')) {
+				$recalculate_slas = true;
+			}
+
+			if ($reset_slas || $recalculate_slas) {
+				foreach ($ticket->ticket_slas AS $ticket_sla) {
+					if ($reset_slas && !$ticket_sla->is_completed_set) {
+						$ticket_sla->is_completed = false;
+					}
+					if ($recalculate_slas) {
+						$ticket_sla->calculateSlaDates();
+					}
+					$this->em->persist($ticket_sla);
+				}
+			}
+		}
+
+		#----------------------------------------
+		# Calculate ticket hash
+		#----------------------------------------
+
+		if (!$ticket->ticket_hash) {
+			$ticket->recomputeHash();
+		}
+
+		#----------------------------------------
 		# Ticket Log
 		#----------------------------------------
 
 		$ticketlog_generator = new TicketLogGenerator($ticket, $context);
 		$logs = $ticketlog_generator->getLogEntries();
+
+		foreach ($logs as $l) {
+			$this->em->persist($l);
+		}
 
 		#----------------------------------------
 		# Ticket Filter update
@@ -132,9 +282,32 @@ class TicketManager
 		$agents  = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
 		$filter_change_detect = new FilterChangeDetector($ticket, $context, $filters, $agents);
-		$cms = $filter_change_detect->getListUpdateCms();
+		$client_messages = $filter_change_detect->getListUpdateClientMessages();
+
+		foreach ($client_messages as $cm) {
+			$this->em->persist($cm);
+		}
+
+		#----------------------------------------
+		# Done
+		#----------------------------------------
+
+		$save_time = microtime(true);
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->flush();
+			$this->db->commit();
+			$context->getLogger()->info(sprintf("DB commit done -- %.4fs", microtime(true) - $save_time));
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			$context->getLogger()->info(sprintf("DB commit failed -- %s", $e->getMessage()));
+			throw $e;
+		}
 
 		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
+
+		$ticket->resetStateChangeRecorder();
 	}
 
 
@@ -144,13 +317,13 @@ class TicketManager
 	 * @param string $event_method
 	 * @return \Application\DeskPRO\Tickets\ExecutorContext
 	 */
-	public function createAgentExecutorContext(Person $agent, $event_type, $event_method)
+	public function createAgentExecutorContext(Person $agent, $event_type, $event_method, array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->container, $this->createNewLogger());
 		$context->setPersonContext($agent);
 		$context->setEventPerformer('agent');
 		$context->setEventType($event_type);
-		$context->setEventMethod($event_method);
+		$context->setEventMethod($event_method, $event_method_options);
 		return $context;
 	}
 
@@ -161,13 +334,13 @@ class TicketManager
 	 * @param string $event_method
 	 * @return \Application\DeskPRO\Tickets\ExecutorContext
 	 */
-	public function createUserExecutorContext(Person $user, $event_type, $event_method)
+	public function createUserExecutorContext(Person $user, $event_type, $event_method, array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->container, $this->createNewLogger());
 		$context->setPersonContext($user);
 		$context->setEventPerformer('user');
 		$context->setEventType($event_type);
-		$context->setEventMethod($event_method);
+		$context->setEventMethod($event_method, $event_method_options);
 		return $context;
 	}
 
@@ -177,11 +350,11 @@ class TicketManager
 	 * @param string $event_method
 	 * @return \Application\DeskPRO\Tickets\ExecutorContext
 	 */
-	public function createSystemExecutorContext($event_type = 'system', $event_method = 'system')
+	public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->container, $this->createNewLogger());
 		$context->setEventType($event_type);
-		$context->setEventMethod($event_method);
+		$context->setEventMethod($event_method, $event_method_options);
 		return $context;
 	}
 

@@ -346,80 +346,17 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _postInsert()
 	{
-		if (!$this->ticket || $this->ticket->isLoggingDisabled()) {
-			return;
-		}
-
 		$this->_sendClientMessages();
-
-		$person = App::getCurrentPerson();
-		if ($person && $person->id && !$person->is_agent) {
-			// only agents are the ones to manually apply an SLA
-			$person = null;
-		}
-		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaAdded($this);
-
-		$ticket_log = new TicketLog();
-		$ticket_log['person'] = ($person && $person->id) ? $person : null;
-		$ticket_log['ticket'] = $this->ticket;
-		$ticket_log['action_type'] = $action->getLogName();
-		$ticket_log['details'] = $action->getLogDetails();
-
-		if ($ticket_log['details']) {
-			if (!$this->ticket->inserted_log_row_batch) {
-				$this->ticket->inserted_log_row_batch = array();
-			}
-			$this->ticket->inserted_log_row_batch[] = $ticket_log;
-		}
 	}
 
 	public function _postUpdate()
 	{
-		if (!$this->ticket || $this->ticket->isLoggingDisabled()) {
-			return;
-		}
-
 		$this->_sendClientMessages();
-
-		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaUpdated($this);
-
-		$ticket_log = new TicketLog();
-		$ticket_log['person'] = null; // SLA updates are always done by the system
-		$ticket_log['ticket'] = $this->ticket;
-		$ticket_log['action_type'] = $action->getLogName();
-		$ticket_log['details'] = $action->getLogDetails();
-
-		if ($ticket_log['details']) {
-			if (!$this->ticket->inserted_log_row_batch) {
-				$this->ticket->inserted_log_row_batch = array();
-			}
-			$this->ticket->inserted_log_row_batch[] = $ticket_log;
-		}
 	}
 
 	public function _postRemove()
 	{
-		if (!$this->ticket || $this->ticket->isLoggingDisabled()) {
-			return;
-		}
-
 		$this->_sendClientMessages(true);
-
-		$person = App::getCurrentPerson();
-		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaRemoved($this);
-
-		$ticket_log = new TicketLog();
-		$ticket_log['person'] = ($person && $person->id) ? $person : null;
-		$ticket_log['ticket'] = $this->ticket;
-		$ticket_log['action_type'] = $action->getLogName();
-		$ticket_log['details'] = $action->getLogDetails();
-
-		if ($ticket_log['details']) {
-			$orm = App::getOrm();
-			if (method_exists($orm, 'delayedInsert')) {
-				App::getOrm()->delayedInsert($ticket_log);
-			}
-		}
 	}
 
 	############################################################################

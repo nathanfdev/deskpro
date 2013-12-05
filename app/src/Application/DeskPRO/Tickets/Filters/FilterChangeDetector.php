@@ -330,9 +330,14 @@ class FilterChangeDetector
 	 *
 	 * @return \Application\DeskPRO\Entity\ClientMessage[]
 	 */
-	public function getListUpdateCms()
+	public function getListUpdateClientMessages()
 	{
 		$messages = array();
+
+		#------------------------------
+		# CMs for filters
+		#------------------------------
+
 		foreach ($this->getUpdatedFilters() as $change_info) {
 			$filter = $change_info['filter'];
 

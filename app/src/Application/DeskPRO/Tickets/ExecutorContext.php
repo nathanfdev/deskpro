@@ -64,6 +64,11 @@ class ExecutorContext implements PersonContextInterface
 	private $event_method = 'system';
 
 	/**
+	 * @var array
+	 */
+	private $event_method_options = array();
+
+	/**
 	 * @var null
 	 */
 	private $event_performer = 'system';
@@ -151,11 +156,13 @@ class ExecutorContext implements PersonContextInterface
 
 
 	/**
-	 * @param string $event_method
+	 * @param string $event_method          Event method (email, api, or web)
+	 * @param array  $event_method_options  Event options (eg a URL etc)
 	 */
-	public function setEventMethod($event_method)
+	public function setEventMethod($event_method, array $event_method_options = array())
 	{
 		$this->event_method = $event_method;
+		$this->event_method_options = $event_method_options;
 	}
 
 
@@ -165,6 +172,25 @@ class ExecutorContext implements PersonContextInterface
 	public function getEventMethod()
 	{
 		return $this->event_method;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getEventMethodOptions()
+	{
+		return $this->event_method_options;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getEventMethodOption($name)
+	{
+		return isset($this->event_method_options[$name]) ? $this->event_method_options[$name] : null;
 	}
 
 
