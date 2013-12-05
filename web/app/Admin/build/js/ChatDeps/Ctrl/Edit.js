@@ -73,8 +73,9 @@
 
 
       Admin_ChatDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var promise,
+        var is_new, promise,
           _this = this;
+        is_new = !this.dep.id;
         if (!this.$scope.form_props.$valid) {
           return;
         }
@@ -82,13 +83,14 @@
         promise = this.depData.saveFormModel(this.dep, this.form);
         promise.success(function() {
           _this.origForm = Util.clone(_this.form, true);
-          return _this.stopSpinner('saving_dep').then(function() {
-            return _this.Growl.success(_this.getRegisteredMessage('saved_dep'), function() {
-              return _this.$state.go('chat.chat_deps.edit', {
-                id: _this.dep.id
-              });
-            });
+          _this.stopSpinner('saving_dep', true).then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_dep'));
           });
+          if (is_new) {
+            return _this.$state.go('chat.chat_deps.gocreate');
+          } else {
+            return _this.$state.go('chat.chat_deps.gocreate');
+          }
         });
         promise.error(function(info, code) {
           _this.stopSpinner('saving_dep');
