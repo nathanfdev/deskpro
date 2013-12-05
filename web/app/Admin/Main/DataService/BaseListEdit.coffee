@@ -91,6 +91,23 @@ define [
 			return null
 
 		###
+		# Find children of specified object
+ 	#
+ 	# @param {Object} obj - specified object in which we'll search
+ 	# @param {Integet} id - id of children we want to search
+ 	###
+
+		findChildModelById: (obj, id) ->
+
+			if obj.children
+				for model in obj.children
+					if model[@idProp] == id
+						return model
+
+			return null
+
+
+		###
  	# Returns index of specified model
  	#
  	# @param {Object} obj
@@ -188,10 +205,12 @@ define [
 
 					if dataModel.parent_id?
 
-						# first - add new model as child to the parent model
+						# first - add new model as child to the parent model (if it's not already there - this is for cases when parent not changed)
 
 						parent = @findListModelById(dataModel.parent_id)
-						parent.children.push(dataModel)
+					 existingChild =  @findChildModelById(parent, dataModel.id)
+
+						if !existingChild then parent.children.push(dataModel)
 
 						# second - delete this child from top-level list
 

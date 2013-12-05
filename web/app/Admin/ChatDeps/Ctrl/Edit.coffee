@@ -84,8 +84,6 @@ define [
 
 				if is_new
 					@$state.go('chat.chat_deps.gocreate')
-				else
-					@$state.go('chat.chat_deps')
 			)
 
 			promise.error( (info, code) =>

@@ -104,6 +104,28 @@
       };
 
       /*
+      		# Find children of specified object
+       	#
+       	# @param {Object} obj - specified object in which we'll search
+       	# @param {Integet} id - id of children we want to search
+      */
+
+
+      Admin_Main_DataService_BaseListEdit.prototype.findChildModelById = function(obj, id) {
+        var model, _i, _len, _ref;
+        if (obj.children) {
+          _ref = obj.children;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            model = _ref[_i];
+            if (model[this.idProp] === id) {
+              return model;
+            }
+          }
+        }
+        return null;
+      };
+
+      /*
        	# Returns index of specified model
        	#
        	# @param {Object} obj
@@ -154,7 +176,7 @@
 
 
       Admin_Main_DataService_BaseListEdit.prototype.mergeDataModel = function(dataModel, dataMapper) {
-        var child, idx, k, listModel, model, newListModel, oldParent, parent, removeIdx, v, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+        var child, existingChild, idx, k, listModel, model, newListModel, oldParent, parent, removeIdx, v, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
         if (dataMapper == null) {
           dataMapper = null;
         }
@@ -210,7 +232,10 @@
           } else {
             if (dataModel.parent_id != null) {
               parent = this.findListModelById(dataModel.parent_id);
-              parent.children.push(dataModel);
+              existingChild = this.findChildModelById(parent, dataModel.id);
+              if (!existingChild) {
+                parent.children.push(dataModel);
+              }
               removeIdx = this.returnIndexForModel(dataModel);
               if (Util.isNumber(removeIdx)) {
                 return this.listModels.splice(removeIdx, 1);

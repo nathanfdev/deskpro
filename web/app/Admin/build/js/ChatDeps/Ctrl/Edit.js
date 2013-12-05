@@ -88,8 +88,6 @@
           });
           if (is_new) {
             return _this.$state.go('chat.chat_deps.gocreate');
-          } else {
-            return _this.$state.go('chat.chat_deps.gocreate');
           }
         });
         promise.error(function(info, code) {
