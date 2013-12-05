@@ -59,7 +59,7 @@
         var dep, inst, move_deps_list,
           _this = this;
         dep = this.depData.findListModelById(for_dep_id);
-        if (dep.children.length) {
+        if (dep.children && dep.children.length) {
           this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
           return;
         }

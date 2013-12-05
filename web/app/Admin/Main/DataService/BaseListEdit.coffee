@@ -230,6 +230,7 @@ define [
 					if dataModel.parent_id?
 
 						parent = @findListModelById(dataModel.parent_id)
+						if !parent.children then parent.children = []
 						parent.children.push(dataModel)
 
 					else

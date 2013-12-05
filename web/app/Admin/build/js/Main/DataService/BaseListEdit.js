@@ -248,6 +248,9 @@
           } else {
             if (dataModel.parent_id != null) {
               parent = this.findListModelById(dataModel.parent_id);
+              if (!parent.children) {
+                parent.children = [];
+              }
               parent.children.push(dataModel);
             } else {
               newListModel = dataModel;
