@@ -208,10 +208,17 @@ define [
 
 				else
 
-					newListModel = dataModel
-					newListModel.children = []
+					if dataModel.parent_id?
 
-				@listModels.push(newListModel)
+						parent = @findListModelById(dataModel.parent_id)
+						parent.children.push(dataModel)
+
+					else
+
+						newListModel = dataModel
+						newListModel.children = []
+
+				@listModels.push(newListModel) if newListModel
 
 
 		###

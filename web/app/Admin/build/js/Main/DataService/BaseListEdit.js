@@ -221,10 +221,17 @@
           if (dataMapper) {
             newListModel = dataMapper(dataModel);
           } else {
-            newListModel = dataModel;
-            newListModel.children = [];
+            if (dataModel.parent_id != null) {
+              parent = this.findListModelById(dataModel.parent_id);
+              parent.children.push(dataModel);
+            } else {
+              newListModel = dataModel;
+              newListModel.children = [];
+            }
           }
-          return this.listModels.push(newListModel);
+          if (newListModel) {
+            return this.listModels.push(newListModel);
+          }
         }
       };
 
