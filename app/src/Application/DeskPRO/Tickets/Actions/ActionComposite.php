@@ -89,6 +89,12 @@ class ActionComposite implements ActionInterface
 	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
 		foreach ($this->actions as $a) {
+			if ($a instanceof NoopableInterface) {
+				if ($a->isNoop($ticket, $context)) {
+					continue;
+				}
+			}
+
 			$a->applyAction($ticket, $context);
 		}
 	}
