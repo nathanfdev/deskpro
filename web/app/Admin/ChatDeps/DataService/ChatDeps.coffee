@@ -109,6 +109,8 @@ define [
 					data.usergroups
 				)
 
+				data.dep.original_parent_id = data.dep.parent_id
+
 				deferred.resolve(data)
 			)
 

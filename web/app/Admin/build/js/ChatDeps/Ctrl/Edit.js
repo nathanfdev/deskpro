@@ -79,6 +79,10 @@
         if (!this.$scope.form_props.$valid) {
           return;
         }
+        if (this.depData.hasChildrenAndChangedParent(this.dep, this.form)) {
+          this.showAlert("You cannot change parent of this department as it has sub-departments. Move or delete the sub-departments first.");
+          return;
+        }
         this.startSpinner('saving_dep');
         promise = this.depData.saveFormModel(this.dep, this.form);
         promise.success(function() {

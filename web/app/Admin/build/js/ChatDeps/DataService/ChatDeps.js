@@ -114,6 +114,7 @@
           data.agentgroups = result.agentgroupsInfo.agentgroups;
           data.usergroups = result.usergroupsInfo.usergroups;
           data.form = _this.getFormMapper().getFormFromModel(data.dep, data.depPerms, data.agents, data.agentgroups, data.usergroups);
+          data.dep.original_parent_id = data.dep.parent_id;
           return deferred.resolve(data);
         });
         return deferred.promise;

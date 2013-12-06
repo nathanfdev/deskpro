@@ -70,6 +70,12 @@ define [
 			if not @$scope.form_props.$valid
 				return
 
+			# @form is used due to the reason that upon clicking on submit button parent_id still has old value
+
+			if @depData.hasChildrenAndChangedParent(@dep, @form)
+				@showAlert("You cannot change parent of this department as it has sub-departments. Move or delete the sub-departments first.")
+				return
+
 			@startSpinner('saving_dep')
 
 			promise = @depData.saveFormModel(@dep, @form)

@@ -123,6 +123,41 @@ define [
 
 			return null
 
+		###
+ 	# Checks whether an object has children or not
+ 	#
+ 	# @param {Object} obj
+ 	# @return {Boolean}
+ 	###
+
+		hasChildren: (obj) ->
+
+			model = @findListModelById(obj.id)
+
+			if model and model.children and model.children.length
+				return true
+
+			return false
+
+		###
+ 	# Checks whether obj has children and form changed its value since it was created, could be useful in some cases
+ 	#
+ 	#	@param {Object} obj - model object
+ 	# @param {Object} form - form object
+ 	# @return {Boolean}
+ 	###
+
+		hasChildrenAndChangedParent: (obj, form) ->
+
+			value1 = obj.original_parent_id
+			value1 = "0" if value1 == null
+
+			value2 = form.parent_id
+
+			if @hasChildren(obj) and parseInt(value1) != parseInt(value2)
+				return true
+
+			return false
 
 		###
     	# This method should be overriden.

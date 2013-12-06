@@ -146,6 +146,45 @@
       };
 
       /*
+       	# Checks whether an object has children or not
+       	#
+       	# @param {Object} obj
+       	# @return {Boolean}
+      */
+
+
+      Admin_Main_DataService_BaseListEdit.prototype.hasChildren = function(obj) {
+        var model;
+        model = this.findListModelById(obj.id);
+        if (model && model.children && model.children.length) {
+          return true;
+        }
+        return false;
+      };
+
+      /*
+       	# Checks whether obj has children and form changed its value since it was created, could be useful in some cases
+       	#
+       	#	@param {Object} obj - model object
+       	# @param {Object} form - form object
+       	# @return {Boolean|
+      */
+
+
+      Admin_Main_DataService_BaseListEdit.prototype.hasChildrenAndChangedParent = function(obj, form) {
+        var value1, value2;
+        value1 = obj.original_parent_id;
+        if (value1 === null) {
+          value1 = "0";
+        }
+        value2 = form.parent_id;
+        if (this.hasChildren(obj) && parseInt(value1) !== parseInt(value2)) {
+          return true;
+        }
+        return false;
+      };
+
+      /*
         	# This method should be overriden.
         	#
         	# This method needs to load the list data and needs to
