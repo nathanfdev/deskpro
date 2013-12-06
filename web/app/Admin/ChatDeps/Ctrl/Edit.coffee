@@ -117,7 +117,7 @@ define [
 
 				parent = @depData.findListModelById(newVal)
 
-				if parent and not parent.children.length
+				if parent and parent.children and not parent.children.length
 					@$scope.show_parent_warning = parent
 				else
 					@$scope.show_parent_warning = false

@@ -117,7 +117,7 @@
             return;
           }
           parent = _this.depData.findListModelById(newVal);
-          if (parent && !parent.children.length) {
+          if (parent && parent.children && !parent.children.length) {
             return _this.$scope.show_parent_warning = parent;
           } else {
             return _this.$scope.show_parent_warning = false;
