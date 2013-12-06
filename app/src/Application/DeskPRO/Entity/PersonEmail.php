@@ -45,6 +45,14 @@ use Application\DeskPRO\App;
  * Email addresses attached to a person. This is a separate entity because emails are
  * roughly tied to identity (ie local login uses email as identity), and are integral
  * in many cases (notifications etc).
+ *
+ * @property int $id
+ * @property Person $person
+ * @property string $email
+ * @property string $email_domain
+ * @property bool $is_validated
+ * @property string $comment
+ * @property \DateTime $date_created
  */
 class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 {

@@ -51,6 +51,55 @@ use Application\DeskPRO\Entity;
  * A "person" is a record in the database that stores information about a person.
  * Every person is capable of logging in, though it may be the case that many wont (ie they are just contact cards).
  *
+ * @property int $id
+ * @property Blob $picture_blob
+ * @property bool $disable_picture
+ * @property string $gravatar_url
+ * @property bool $is_contact
+ * @property bool $is_user
+ * @property bool $is_agent
+ * @property bool $was_agent
+ * @property bool $can_agent
+ * @property bool $can_admin
+ * @property bool $can_billing
+ * @property bool $can_reports
+ * @property bool $is_vacation_mode
+ * @property bool $disable_autoresponses
+ * @property string $disable_autoresponses_log
+ * @property bool $is_confirmed
+ * @property bool $is_agent_confirmed
+ * @property bool $is_deleted
+ * @property bool $is_disabled
+ * @property int $importance
+ * @property string $creation_system
+ * @property string $name
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $title_prefix
+ * @property string $override_display_name
+ * @property string $summary
+ * @property string $secret_string
+ * @property Language $language
+ * @property Organization $organization
+ * @property string $organization_position
+ * @property bool $organization_manager
+ * @property string $timezone
+ * @property string $password
+ * @property string $password_scheme
+ * @property string $salt
+ * @property PersonEmail $primary_email
+ * @property PersonEmail[] $emails
+ * @property LabelPerson[] $labels
+ * @property CustomDataPerson[] $custom_data
+ * @property PersonContactData[] $contact_data
+ * @property Usergroup[] $usergroups
+ * @property TwitterAccount[] $twitter_accounts
+ * @property TwitterUser[] $twitter_users
+ * @property PersonPref[] $preferences
+ * @property PersonUsersourceAssoc[] $usersource_assoc
+ * @property \DateTime $date_created
+ * @property \DateTime $date_last_login
+ * @property \DateTime $date_picture_check
  */
 class Person extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -354,11 +403,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $usersource_assoc;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $slas;
-
-	/**
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
@@ -503,7 +547,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->slas                   = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -2215,17 +2258,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$organization_position = '';
 		}
 		$this->setModelField('organization_position', $organization_position);
-	}
-
-	public function hasSla(Sla $sla)
-	{
-		foreach ($this->slas AS $person_sla) {
-			if ($person_sla->id == $sla->id) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 
