@@ -81,33 +81,6 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
 	}
 
 	/**
-	 * @return bool
-	 */
-	private function doesNeedMove()
-	{
-		$old = $this->old_parent;
-		$new = $this->department->parent;
-
-		// No parent, nothing to verify
-		if (!$new) {
-			return false;
-			// Not changed, nothing to verify
-		} else if (($old && $new && $old == $new) || (!$old && !$new)) {
-			return false;
-			// New enabled
-		} else if (!$old && $new) {
-			return true;
-
-			// Changed
-		} else if ($old != $new) {
-			return true;
-		}
-
-		return false;
-	}
-
-
-	/**
 	 * @param EntityManager $em
 	 */
 
@@ -135,29 +108,34 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
 	# Validation Metadata
 	############################################################################
 
-	public function validateParent(ExecutionContextInterface $context)
+	/**
+	 * @param ExecutionContextInterface $context
+	 */
+
+	public function validateChangingOfParent(ExecutionContextInterface $context)
 	{
-		if ($this->doesNeedMove()) {
-			/*if (!$this->old_parent) {
+		if(!$this->old_parent) {
+
+			if (sizeof($this->department->getChildren()) > 0 && $this->department->getParentId() != 0) {
+
 				$context->addViolationAt(
-					'move_department',
-					'Setting a new parent, must specify new department to move existing tickets to'
+					'edit_department',
+					'department.edit_chat.changing_parent_when_have_children'
 				);
-			} else if (count($this->old_parent->children)) {
-				$context->addViolationAt('move_department', 'New department must not be a parent itself');
-			}*/
+			}
 		}
 	}
 
+	/**
+	 * @param ValidatorClassMetadata $metadata
+	 */
+
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
-		// Symfony\Component\Validator\Exception\ConstraintDefinitionException:
-		// The constraint Symfony\Component\Validator\Constraints\Callback cannot be put on properties or getters
-
 		$metadata->addConstraint(
 			new Callback(
 				array(
-					 'methods' => array('validateParent')
+					 'methods' => array('validateChangingOfParent')
 				)
 			)
 		);
