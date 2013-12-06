@@ -29,34 +29,76 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Sets a flag for a ticket. In a trigger context, this sets on every agent account.
+ * In a macro context, only sets the flag on the current agent.
+ *
+ * @option string color
+ */
+class SetFlag extends AbstractAction implements ActionInterface, MacroActionInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
+	 * @param Connection $db
 	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * @param Person $person
+	 * @param string $color
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	private function saveFlag(Connection $db, $ticket, $person, $color)
+	{
+		$db->replace('tickets_flagged', array(
+			'person_id' => $person->id,
+			'ticket_id' => $ticket->id,
+			'color'     => $color,
+		));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		foreach ($context->getContainer()->getAgentData()->getAgents() as $agent) {
+			if ($agent->PermissionsManager->TicketChecker->canView($ticket)) {
+				$this->saveFlag(
+					$context->getContainer()->getDb(),
+					$ticket,
+					$agent,
+					$this->getActionOption('color')
+				);
+			}
+		}
+	}
 
 
 	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		return false;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->saveFlag(
+			$context->getContainer()->getDb(),
+			$ticket,
+			$person,
+			$this->getActionOption('color')
+		);
+	}
 }

@@ -29,7 +29,7 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
@@ -38,13 +38,21 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-class SetAgentTeam extends AbstractAction
+/**
+ * Sets the assigned agent team
+ *
+ * @option int agent_team_id
+ */
+class SetAgentTeam extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
 		$set_team_id = $this->getActionOption('agent_team_id');
-		$team = $context->getContainer()->getAgentData()->getTeam($set_team_id);
 
+		$team = $context->getContainer()->getAgentData()->getTeam($set_team_id);
 		if (!$team) {
 			return;
 		}
@@ -52,7 +60,11 @@ class SetAgentTeam extends AbstractAction
 		$ticket->team = $team;
 	}
 
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isNoop(Ticket $ticket, ExecutorContext $context)
 	{
 		$set_team_id    = $this->getActionOption('agent_team_id');
 		$ticket_team_id = $ticket->agent_team ? $ticket->agent_team->id : 0;
@@ -61,13 +73,31 @@ class SetAgentTeam extends AbstractAction
 			return true;
 		}
 
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_team')) {
-			return false;
+		$team = $context->getContainer()->getAgentData()->getTeam($set_team_id);
+		if (!$team) {
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_team')) {
+			return array('assign_team');
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
 		$this->applyAction($ticket, $context);

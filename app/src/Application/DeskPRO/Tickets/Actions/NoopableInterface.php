@@ -34,29 +34,22 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+interface NoopableInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
+	 * Check if the current action wolud result in a no-op.
 	 *
-	 * @param Person $person
+	 * For example, if the action is set to change the department to ID 5 and
+	 * the ticket is already in department 5, then it would be a no-op.
+	 *
+	 * We skip no-op actions.
+	 *
 	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * @param ExecutorContext $context
+	 * @return bool
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
-
-
-	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function isNoop(Ticket $ticket, ExecutorContext $context);
 }

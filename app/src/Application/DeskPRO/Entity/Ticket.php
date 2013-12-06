@@ -927,8 +927,8 @@ class Ticket extends DomainObject
 
 		foreach ($this->participants as $k => $p) {
 			if ($p['person']->getId() == $person->getId()) {
-				$this->_onPropertyChanged('participants', null, $this->participants);
 				$this->participants->remove($k);
+				$this->_onPropertyChanged('participants', null, $this->participants);
 				return $p;
 			}
 		}
@@ -1445,8 +1445,71 @@ class Ticket extends DomainObject
 	 */
 	public function addLabel(LabelTicket $label)
 	{
-		$label['ticket'] = $this;
+		if ($ret = $this->findLabelByString($label->label)) {
+			return $ret;
+		}
+
+		$label->ticket = $this;
 		$this->labels->add($label);
+		$this->_onPropertyChanged('labels', null, $this->labels);
+		return $label;
+	}
+
+
+	/**
+	 * @param string $l
+	 * @return LabelTicket
+	 */
+	public function addLabelByString($l)
+	{
+		if ($ret = $this->findLabelByString($l)) {
+			return $ret;
+		}
+
+		$label = new LabelTicket();
+		$label->label = $l;
+		$label->ticket = $this;
+		$this->labels->add($label);
+		$this->_onPropertyChanged('labels', null, $this->labels);
+
+		return $label;
+	}
+
+
+	/**
+	 * @param string $l
+	 * @return LabelTicket|null
+	 */
+	public function removeLabelByString($l)
+	{
+		$x = new LabelTicket();
+		$x->label = $l;
+
+		if (($idx = $this->labels->indexOf($x->label)) !== false) {
+			$label = $this->labels->get($idx);
+			$this->labels->removeKey($idx);
+			$this->_onPropertyChanged('labels', null, $this->labels);
+			return $label;
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @param string $l
+	 * @return LabelTicket|null
+	 */
+	public function findLabelByString($l)
+	{
+		$x = new LabelTicket();
+		$x->label = $l;
+
+		if (($idx = $this->labels->indexOf($x->label)) !== false) {
+			return $this->labels->get($idx);
+		}
+
+		return null;
 	}
 
 	public function getPersonId()

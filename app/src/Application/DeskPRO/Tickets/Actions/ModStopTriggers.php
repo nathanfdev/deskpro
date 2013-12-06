@@ -29,34 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Stops the trigger loop by setting the `stop_triggers` flag on the context.
+ */
+class ModStopTriggers extends AbstractAction implements ActionInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
-
-
-	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		$context->getVars()->set('stop_triggers', true);
+	}
 }

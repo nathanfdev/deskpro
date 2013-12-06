@@ -29,34 +29,77 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Set the department.
+ *
+ * @option int department_id
+ */
+class SetDepartment extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		$set_dep_id = $this->getActionOption('department_id');
+		$dep = $context->getContainer()->getSystemService('ticket_departments')->getSettableById($set_dep_id);
+
+		if (!$dep) {
+			return;
+		}
+
+		$ticket->department = $dep;
+	}
 
 
 	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	{
+		$set_dep_id    = $this->getActionOption('department_id');
+		$ticket_dep_id = $ticket->department ? $ticket->department->id : 0;
+
+		if ($ticket_dep_id == $set_dep_id) {
+			return true;
+		}
+
+		$dep = $context->getContainer()->getSystemService('ticket_departments')->getSettableById($set_dep_id);
+		if (!$dep) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'department')) {
+			return array('department');
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
+	}
 }

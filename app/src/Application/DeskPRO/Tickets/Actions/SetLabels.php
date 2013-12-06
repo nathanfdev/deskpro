@@ -29,34 +29,71 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Adds and removes lables from tickets.
+ *
+ * @option string[] remove_labels  Array of labels to remove from the ticket
+ * @option string[] add_labels     Array of labels to add to the ticket
+ */
+class SetLabels extends AbstractAction implements ActionInterface, MacroActionInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		#--------------------
+		# Add labels
+		#--------------------
+
+		$add_labels = $this->getActionOption('add_labels');
+		$add_labels = array_map(function($l) { return strtolower(trim($l)); }, $add_labels);
+
+		foreach ($add_labels as $l) {
+			$ticket->addLabelByString($l);
+		}
+
+		#--------------------
+		# Remove labels
+		#--------------------
+
+		$remove_labels = $this->getActionOption('remove_labels');
+		$remove_labels = array_map(function($l) { return strtolower(trim($l)); }, $remove_labels);
+
+		foreach ($remove_labels as $l) {
+			$ticket->removeLabelByString($l);
+		}
+	}
 
 
 	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'labels')) {
+			return array('labels');
+		}
+
+		return array();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
+	}
 }

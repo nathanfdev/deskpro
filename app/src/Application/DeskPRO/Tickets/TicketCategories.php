@@ -91,6 +91,24 @@ class TicketCategories extends LazyPreloadedHierarchy
 	}
 
 
+	/**
+	 * Returns a settable object. That is an entity that is not a parent.
+	 * Returns null if the passed $id is invalid or is not a valid settable.
+	 *
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\TicketCategory|null
+	 */
+	public function getSettableById($id)
+	{
+		$obj = $this->getById($id);
+		if (!$obj || $this->getChildren($obj)) {
+			return null;
+		}
+
+		return $obj;
+	}
+
+
 	####################################################################################################################
 	// implementing these just for better auto-complete in the IDE (due to @return) :-)
 

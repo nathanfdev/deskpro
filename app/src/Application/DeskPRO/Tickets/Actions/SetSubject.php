@@ -29,34 +29,62 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Set the subject.
+ *
+ * @option string subject
+ */
+class SetSubject extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		$ticket->subject = $this->getActionOption('subject');
+	}
 
 
 	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	{
+		if ($ticket->subject == $this->getActionOption('subject')) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return array('fields');
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
+	}
 }

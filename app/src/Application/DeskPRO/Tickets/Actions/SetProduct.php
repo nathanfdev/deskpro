@@ -29,34 +29,77 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Set the product.
+ *
+ * @option int product_id
+ */
+class SetProduct extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		$set_prod_id = $this->getActionOption('product_id');
+
+		$prod = $context->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
+		if (!$prod) {
+			return;
+		}
+
+		$ticket->product = $prod;
+	}
 
 
 	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	{
+		$set_prod_id    = $this->getActionOption('product_id');
+		$ticket_prod_id = $ticket->product ? $ticket->product->id : 0;
+
+		if ($ticket_prod_id == $set_prod_id) {
+			return true;
+		}
+
+		$prod = $context->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
+		if (!$prod) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return array('fields');
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
+	}
 }

@@ -42,6 +42,24 @@ use Orb\Util\Arrays;
 
 class TicketChecker extends AbstractChecker
 {
+	public static $modify_ops = array(
+		'set_closed',
+		'department',
+		'fields',
+		'assign_agent',
+		'assign_team',
+		'assign_self',
+		'cc',
+		'merge',
+		'labels',
+		'notes',
+		'set_hold',
+		'set_awaiting_user',
+		'set_awaiting_agent',
+		'set_resolved',
+		'followed',
+	);
+
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
@@ -267,6 +285,9 @@ class TicketChecker extends AbstractChecker
 			return false;
 		}
 
+		if (!in_array($op, self::$modify_ops)) {
+			throw new \InvalidArgumentException("Invalid modify permission op: $op");
+		}
 
 		#------------------------------
 		# Figure out which set of permissions

@@ -29,7 +29,7 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
@@ -38,13 +38,21 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-class SetAgent extends AbstractAction
+/**
+ * Set the assigned agent.
+ *
+ * @option int agent_id
+ */
+class SetAgent extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
 		$set_agent_id = $this->getActionOption('agent_id');
-		$agent = $context->getContainer()->getAgentData()->get($set_agent_id);
 
+		$agent = $context->getContainer()->getAgentData()->get($set_agent_id);
 		if (!$agent) {
 			return;
 		}
@@ -52,7 +60,11 @@ class SetAgent extends AbstractAction
 		$ticket->agent = $agent;
 	}
 
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isNoop(Ticket $ticket, ExecutorContext $context)
 	{
 		$set_agent_id    = $this->getActionOption('agent_id');
 		$ticket_agent_id = $ticket->agent ? $ticket->agent->id : 0;
@@ -61,16 +73,39 @@ class SetAgent extends AbstractAction
 			return true;
 		}
 
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
-			if ($set_agent_id == $person->getId() && $person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-				return true;
-			}
-			return false;
+		$agent = $context->getContainer()->getAgentData()->get($set_agent_id);
+		if (!$agent) {
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$set_agent_id = $this->getActionOption('agent_id');
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
+			if ($set_agent_id == $person->getId()) {
+				if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
+					return null;
+				}
+				return array('assign_self');
+			}
+
+			return array('assign_agent');
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
 		$this->applyAction($ticket, $context);

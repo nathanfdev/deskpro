@@ -29,66 +29,123 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Orb\Util\Util;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 /**
- * Base class for action defs. Each action still needs to implement
- * ActionInterface and/or MacroActionInterface interfaces.
+ * Set the urgency.
+ *
+ * `mode` can be any of:
+ * - set: Sets a specific urgency
+ * - add: Adds to urgency
+ * - sub: Subtract from urgency
+ * - raise: Raises urgency to X if it is lower
+ * - lower: Lowers urgency to X if it higher
+ *
+ * @option int urgency
+ * @option int mode
  */
-abstract class AbstractAction implements ActionDefinitionInterface
+class SetUrgency extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * @var array
-	 */
-	private $options;
+	const MODE_SET   = 'set';
+	const MODE_ADD   = 'add';
+	const MODE_SUB   = 'sub';
+	const MODE_RAISE = 'raise';
+	const MODE_LOWER = 'lower';
 
-
 	/**
-	 * @param array  $options
+	 * @param string $mode
+	 * @param int $num
+	 * @param int $current_urgency
+	 * @return int
 	 */
-	public function __construct(array $options)
+	private function getUrgencyResult($mode, $num, $current_urgency)
 	{
-		$this->options = $options;
+		switch ($mode) {
+			case self::MODE_SET:
+				return $num;
+
+			case self::MODE_ADD:
+				return max(10, $current_urgency+$num);
+
+			case self::MODE_SUB:
+				return max(1, $current_urgency-$num);
+
+			case self::MODE_RAISE:
+				if ($current_urgency > $num) {
+					return $current_urgency;
+				}
+				return $num;
+
+			case self::MODE_LOWER:
+				if ($current_urgency < $num) {
+					return $current_urgency;
+				}
+				return $num;
+		}
+
+		return $current_urgency;
 	}
 
 
 	/**
-	 * Gets the type name of the criteria
-	 *
-	 * @return string
+	 * {@inheritDoc}
 	 */
-	public function getActionType()
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
-		return Util::getBaseClassname($this);
+		$target_urgency = $this->getUrgencyResult(
+			$this->getActionOption('mode'),
+			$this->getActionOption('urgency'),
+			$ticket->urgency
+		);
+
+		$ticket->urgency = $target_urgency;
 	}
 
 
 	/**
-	 * Get's an array of options
-	 *
-	 * @return array
+	 * {@inheritDoc}
 	 */
-	public function getActionOptions()
+	public function isNoop(Ticket $ticket, ExecutorContext $context)
 	{
-		return $this->options;
+		$target_urgency = $this->getUrgencyResult(
+			$this->getActionOption('mode'),
+			$this->getActionOption('urgency'),
+			$ticket->urgency
+		);
+
+		if ($ticket->urgency == $target_urgency) {
+			return true;
+		}
+
+		return false;
 	}
 
 
 	/**
-	 * @param string $name
-	 * @param mixed $default
-	 * @return mixed
+	 * {@inheritDoc}
 	 */
-	public function getActionOption($name, $default = null)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
-		return isset($this->options[$name]) ? $this->options[$name] : $default;
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return array('fields');
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
 	}
 }

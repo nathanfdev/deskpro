@@ -29,34 +29,76 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Adds and removes agent followers from the ticket.
+ *
+ * @option int[] add_agent_ids     Array of agent IDs to add
+ * @option int[] remove_agent_ids  Array of agent IDs to remove
+ */
+class SetAgentFollowers extends AbstractAction implements ActionInterface, MacroActionInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		#--------------------
+		# Add followers
+		#--------------------
+
+		foreach ($this->getActionOption('add_agent_ids') as $agent_id) {
+			$agent = $context->getContainer()->getAgentData()->get($agent_id);
+			if (!$agent) {
+				continue;
+			}
+
+			if (!$ticket->participants->contains($agent)) {
+				$ticket->addParticipantPerson($agent);
+			}
+		}
+
+		#--------------------
+		# Remove followers
+		#--------------------
+
+		foreach ($this->getActionOption('remove_agent_ids') as $agent_id) {
+			$agent = $context->getContainer()->getAgentData()->get($agent_id);
+			if (!$agent) {
+				continue;
+			}
+
+			$ticket->removeParticipantPerson($agent);
+		}
+	}
 
 
 	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
+			return array('cc');
+		}
+
+		return array();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
+	}
 }

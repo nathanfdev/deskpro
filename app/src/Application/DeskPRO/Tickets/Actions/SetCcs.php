@@ -29,34 +29,89 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-interface MacroActionInterface
+/**
+ * Adds and removed CC'ed users to the ticket, creating users as necessary.
+ *
+ * @option string[] add_emails      Array of email addresses of users to add
+ * @option string[] remove_emails   Array of email addresses of users to remove
+ */
+class SetCcs extends AbstractAction implements ActionInterface, MacroActionInterface
 {
 	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array or null means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return array|null
+	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	{
+		#------------------------------
+		# Add people
+		#------------------------------
+
+		$reg_closed = $context->getContainer()->getSetting('core.user_mode') == 'closed';
+		foreach ($this->getActionOption('add_emails') as $email) {
+			if ($ticket->hasParticipantEmailAddress($email)) {
+				continue;
+			}
+
+			$person = $context->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
+			if ($person) {
+				$ticket->addParticipantPerson($person);
+			} else {
+				if ($reg_closed) {
+					continue;
+				}
+				$person_processor = new PersonFromEmailProcessor();
+
+				$eml = new EmailAddress();
+				$eml->email = $email;
+				$person = $person_processor->createPerson($eml, false);
+
+				if ($person) {
+					$ticket->addParticipantPerson($person);
+				}
+			}
+		}
+
+		#------------------------------
+		# Remove people
+		#------------------------------
+
+		foreach ($this->getActionOption('remove_emails') as $email) {
+			foreach ($ticket->participants as $k => $p) {
+				if ($p->person->findEmailAddress($email)) {
+					$ticket->removeParticipantPerson($p->person);
+				}
+			}
+		}
+	}
 
 
 	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ActionContext $context
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
+			return array('cc');
+		}
+
+		return array();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
+	}
 }

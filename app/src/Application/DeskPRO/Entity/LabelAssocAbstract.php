@@ -57,6 +57,15 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
 	protected $label;
 
 
+	/**
+	 * @param string $label
+	 */
+	public function setLabel($label)
+	{
+		$label = trim(strtolower($label));
+		$this->label = $label;
+	}
+
 
 	/**
 	 * After a new association is made, we need to make sure the def table has this
