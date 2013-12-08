@@ -90,6 +90,38 @@ class ApiKeys
 		return $this->em->getRepository('DeskPRO:ApiKey')->get($id);
 	}
 
+	/**
+	 * @param int $id
+	 *
+	 * @return array
+	 */
+
+	public function getWithUserById($id)
+	{
+		$api_key = $this->em->getRepository('DeskPRO:ApiKey')->get($id);
+
+		$resultData = array();
+
+		if ($api_key) {
+
+			$data['id']                        = $api_key->id;
+			$data['note']                      = $api_key->note;
+			$data['code']                      = $api_key->code;
+			$data['keyString']                 = $api_key->keyString;
+
+			if ($api_key->person) {
+
+				$data['user']['picture_url'] = $api_key->person->getPictureUrl(33);
+				$data['user']['name']        = $api_key->person->getDisplayName();
+				$data['user']['id']          = $api_key->person->getId();
+			}
+
+			$resultData = $data;
+		}
+
+		return $resultData;
+	}
+
     /**
      * @return \Application\DeskPRO\Entity\ApiKey[]
      */
@@ -122,6 +154,7 @@ class ApiKeys
 
 				$data['user']['picture_url'] = $api_key->person->getPictureUrl(33);
 				$data['user']['name']        = $api_key->person->getDisplayName();
+				$data['user']['id']          = $api_key->person->getId();
 			}
 
 			$resultData[] = $data;

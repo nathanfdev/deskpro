@@ -38,6 +38,8 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\Exception\ValidationException;
 
 use Application\DeskPRO\ApiKeys\ApiKeys;
+use Application\DeskPRO\ApiKeys\ApiKeyEdit;
+use Application\DeskPRO\ApiKeys\Form\Type\ApiKeyType;
 
 class ApiKeysController extends AbstractController
 {
@@ -56,6 +58,83 @@ class ApiKeysController extends AbstractController
 		return $this->createApiResponse(
 			array(
 				 'api_keys' => $api_keys->getAllWithUserAsArray()
+			)
+		);
+	}
+
+	###################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
+		 */
+
+		$api_keys = $this->container->getSystemService('api_keys');
+		$api_key  = $api_keys->getWithUserById($id);
+
+		if (!$api_key) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$returnedData               = $api_key;
+		$returnedData['all_agents'] = $api_keys->getAllAgents();
+
+		return $this->createApiResponse(
+			array(
+				 'api_key' => $returnedData
+			)
+		);
+	}
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
+		 */
+
+		$api_keys = $this->container->getSystemService('api_keys');
+
+		if ($id) {
+
+			$api_key = $api_keys->getById($id);
+
+			if (!$api_key) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$api_key = $api_keys->createNew();
+		}
+
+		$postData = $this->in->getAll('post');
+
+		$api_key_edit = new ApiKeyEdit($api_key);
+
+		$form = $this->createForm(new ApiKeyType(), $api_key_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'api_key'), true);
+
+		if ($form->isValid()) {
+
+			$api_key_edit->save($this->em);
+
+		} else {
+
+			throw ValidationException::create($this->getFormValidationErrorsString($form));
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $api_key->id,
 			)
 		);
 	}
