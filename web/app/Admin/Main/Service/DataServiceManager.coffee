@@ -12,6 +12,7 @@ define [
 	'Admin/TicketTriggers/DataService/TriggersReply',
 	'Admin/TicketTriggers/DataService/TriggersUpdate',
 	'Admin/TwitterAccounts/DataService/TwitterAccounts',
+	'Admin/ApiKeys/DataService/ApiKeys',
 ], (
 	Strings,
 	DataService_TicketFields,
@@ -26,6 +27,7 @@ define [
 	DataService_TriggersReply,
 	DataService_TriggersUpdate,
 	DataService_TwitterAccounts,
+	DataService_ApiKeys,
 ) ->
 	###
 	# A simple wrapper around the data services

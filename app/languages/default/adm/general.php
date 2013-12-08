@@ -43,4 +43,5 @@
 	'adm.general.x_ticket_filters'                   => '{{count}} Ticket Filter|{{count}} Ticket Filters',
 	'adm.general.x_ticket_escalations'               => '{{count}} Ticket Escalation|{{count}} Ticket Escalations',
 	'adm.general.x_twitter_accounts'                 => '{{count}} Twitter Account|{{count}} Twitter Accounts',
+	'adm.general.x_api_keys'                         => '{{count}} Api Key|{{count}} Api Keys',
 );

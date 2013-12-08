@@ -1297,8 +1297,8 @@ define(function() {
 	routes.push({
 		id: 'apps.api_keys',
 		url: '/api_keys',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ApiKeys/list.html',
+		controller: 'Admin_ApiKeys_Ctrl_List'
 	});
 
 	//##################################################################################################################
