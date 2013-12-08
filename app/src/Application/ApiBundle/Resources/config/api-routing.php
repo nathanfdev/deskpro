@@ -3147,6 +3147,41 @@ $collection->create('api_chat_deps_remove', array(
 ));
 
 ########################################################################################################################
+# Api Keys
+########################################################################################################################
+
+$collection->create('api_api_keys', array(
+	'path'       => '/api_keys',
+	'controller' => 'ApiBundle:ApiKeys:list',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_api_keys_create', array(
+	'path'        => '/api_keys',
+	'controller'  => 'ApiBundle:ApiKeys:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_api_keys_get', array(
+	'path'        => '/api_keys/{id}',
+	'controller'  => 'ApiBundle:ApiKeys:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_api_keys_save', array(
+	'path'        => '/api_keys/{id}',
+	'controller'  => 'ApiBundle:ApiKeys:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_api_keys_delete', array(
+	'path'        => '/api_keys/{id}',
+	'controller'  => 'ApiBundle:ApiKeys:remove',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 

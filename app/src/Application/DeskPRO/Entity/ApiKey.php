@@ -35,13 +35,23 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
+
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-class ApiKey extends \Application\DeskPRO\Domain\DomainObject
+/**
+ * @property int $id
+ * @property string $code
+ * @property string note
+ * @property string $keyString
+ * @property Person $person
+ */
+
+class ApiKey extends DomainObject
 {
 	/**
 	 * The unique ID.
@@ -49,16 +59,19 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 *
 	 */
+
 	protected $id = null;
 
 	/**
 	 * @var string
 	 */
+
 	protected $code;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
+
 	protected $person;
 
 	/**
@@ -66,28 +79,25 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
-	protected $note = '';
 
+	protected $note = '';
 
 	public function __construct()
 	{
 		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
 	}
 
-
-
 	/**
 	 * Get a "key string". This is a combined ID and code like id:code
-	 * that is used in auth lookups.
+	 * that is used in auth lookup.
 	 *
 	 * @return string
 	 */
+
 	public function getKeyString()
 	{
 		return $this->id . ':' . $this->code;
 	}
-
-
 
 	############################################################################
 	# Doctrine Metadata
@@ -97,12 +107,57 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiKey';
-		$metadata->setPrimaryTable(array( 'name' => 'api_keys', ));
+		$metadata->setPrimaryTable(array('name' => 'api_keys',));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'code', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'code', ));
-		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'id',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'id',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'code',
+				 'type'       => 'string',
+				 'length'     => 25,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'code',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'note',
+				 'type'       => 'text',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'note',
+			)
+		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(
+			array(
+				 'fieldName'    => 'person',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+				 'mappedBy'     => null,
+				 'inversedBy'   => null,
+				 'joinColumns'  => array(
+					 0 => array(
+						 'name'                 => 'person_id',
+						 'referencedColumnName' => 'id',
+						 'nullable'             => true,
+						 'onDelete'             => 'cascade',
+						 'columnDefinition'     => null,
+					 ),
+				 ),
+			)
+		);
 	}
 }

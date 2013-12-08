@@ -33,17 +33,18 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
-use Doctrine\ORM\EntityRepository;
+
 use Application\DeskPRO\App;
 
 class ApiKey extends AbstractEntityRepository
 {
 	/**
 	 * Find an API key based off of a key string. A key string is: "id:code"
-	 * 
-	 * @param string $key_str
+	 *
+	 * @param string $key_string
 	 * @return ApiKey
 	 */
+
 	public function findByKeyString($key_string)
 	{
 		if (strpos($key_string, ':') === false) return null;
@@ -57,6 +58,10 @@ class ApiKey extends AbstractEntityRepository
 		return $apikey;
 	}
 
+	/**
+	 * @return ApiKey[]
+	 */
+
 	public function getAllApiKeys()
 	{
 		return $this->_em->createQuery('
@@ -66,6 +71,12 @@ class ApiKey extends AbstractEntityRepository
 			ORDER BY p.name
 		')->execute();
 	}
+
+	/**
+	 * @param array $ids
+	 *
+	 * @return array
+	 */
 
 	public function getApiKeyTitles(array $ids = null)
 	{
@@ -80,6 +91,10 @@ class ApiKey extends AbstractEntityRepository
 		return $output;
 	}
 
+	/**
+	 * @return mixed
+	 */
+
 	public function countApiKeys()
 	{
 		return App::getDb()->fetchColumn('
@@ -88,42 +103,61 @@ class ApiKey extends AbstractEntityRepository
 		');
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Entity\ApiKey $api_key
+	 *
+	 * @return array
+	 */
+
 	public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiKey $api_key)
 	{
-		$rate_limit = App::getDb()->fetchAssoc("
-			SELECT *
-			FROM api_key_rate_limit
-			WHERE api_key_id = ?
-		", array($api_key->id));
+		$rate_limit = App::getDb()->fetchAssoc(
+			"
+						SELECT *
+						FROM api_key_rate_limit
+						WHERE api_key_id = ?
+					",
+			array($api_key->id)
+		);
 
 		if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
-			App::getDb()->delete('api_key_rate_limit', array(
-				'api_key_id' => $api_key->id
-			));
+			App::getDb()->delete(
+				'api_key_rate_limit',
+				array(
+					 'api_key_id' => $api_key->id
+				)
+			);
 		}
 
 		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
 			$rate_limit = array(
-				'api_key_id' => $api_key->id,
-				'hits' => 0,
+				'api_key_id'    => $api_key->id,
+				'hits'          => 0,
 				'created_stamp' => time(),
-				'reset_stamp' => time() + 3600
+				'reset_stamp'   => time() + 3600
 			);
 		}
 
 		return $rate_limit;
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Entity\ApiKey $api_key
+	 */
+
 	public function updateRateLimit(\Application\DeskPRO\Entity\ApiKey $api_key)
 	{
 		$time = time();
 
-		App::getDb()->executeUpdate("
-			INSERT INTO api_key_rate_limit
-				(api_key_id, hits, created_stamp, reset_stamp)
-			VALUES
-				(?, 1, ?, ?)
-			ON DUPLICATE KEY UPDATE hits = hits + 1
-		", array($api_key->id, $time, $time + 3600));
+		App::getDb()->executeUpdate(
+			"
+						INSERT INTO api_key_rate_limit
+							(api_key_id, hits, created_stamp, reset_stamp)
+						VALUES
+							(?, 1, ?, ?)
+						ON DUPLICATE KEY UPDATE hits = hits + 1
+					",
+			array($api_key->id, $time, $time + 3600)
+		);
 	}
 }
