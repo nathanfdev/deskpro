@@ -200,7 +200,8 @@ requirejs([
 	'Admin/ChatSetup/Ctrl/ChatSetup',
 	'Admin/ChatDeps/Ctrl/List',
 	'Admin/ChatDeps/Ctrl/Edit',
-	'Admin/ApiKeys/Ctrl/List'
+	'Admin/ApiKeys/Ctrl/List',
+	'Admin/ApiKeys/Ctrl/Edit'
 ], function(angular) {
 	'use strict';
 

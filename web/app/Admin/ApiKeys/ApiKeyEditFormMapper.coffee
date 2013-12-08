@@ -14,17 +14,20 @@ define [
 
 			form = {}
 
+			form.isSuperUser = true
+
 			form.id = model.api_key.id
+			form.note = model.api_key.note
+			form.code = model.api_key.code
+			form.keyString = model.api_key.keyString
 
-			form.user = {}
+			if model.api_key.user
+				form.isSuperUser = false
+				form.user = {}
+				form.user.id = model.api_key.user.id
+				form.user.name = model.api_key.user.name
+
 			form.agents = model.all_agents
-
-			form.selected_agents = {}
-
-			ids = _.pluck(form.user.agents, 'id')
-
-			for id in ids
-				form.selected_agents[id] = true
 
 			return form
 
@@ -36,6 +39,7 @@ define [
 		applyFormToModel: (model, formModel) ->
 
 			model.id = formModel.id
+			model.note = formModel.note
 
 		###
 			#
@@ -44,6 +48,13 @@ define [
 
 		getPostDataFromForm: (formModel) ->
 
-			postData = formModel
+			postData = {}
+
+			postData.id = formModel.id
+			postData.note = formModel.note
+
+			if !formModel.isSuperUser
+				postData.person = formModel.user.id
+
 
 			return postData

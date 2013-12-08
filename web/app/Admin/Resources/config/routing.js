@@ -1301,6 +1301,29 @@ define(function() {
 		controller: 'Admin_ApiKeys_Ctrl_List'
 	});
 
+	routes.push({
+		id: 'apps.api_keys.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('apps.api_keys.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'apps.api_keys.create',
+		url: '/create',
+		templateName: 'ApiKeys/edit.html',
+		controller: 'Admin_ApiKeys_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'apps.api_keys.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'ApiKeys/edit.html',
+		controller: 'Admin_ApiKeys_Ctrl_Edit'
+	});
+
 	//##################################################################################################################
 	// Server
 	//##################################################################################################################

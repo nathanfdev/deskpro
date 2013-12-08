@@ -11,17 +11,20 @@
 
 
       ApiKeyEditFormMapper.prototype.getFormFromModel = function(model) {
-        var form, id, ids, _i, _len;
+        var form;
         form = {};
+        form.isSuperUser = true;
         form.id = model.api_key.id;
-        form.user = {};
-        form.agents = model.all_agents;
-        form.selected_agents = {};
-        ids = _.pluck(form.user.agents, 'id');
-        for (_i = 0, _len = ids.length; _i < _len; _i++) {
-          id = ids[_i];
-          form.selected_agents[id] = true;
+        form.note = model.api_key.note;
+        form.code = model.api_key.code;
+        form.keyString = model.api_key.keyString;
+        if (model.api_key.user) {
+          form.isSuperUser = false;
+          form.user = {};
+          form.user.id = model.api_key.user.id;
+          form.user.name = model.api_key.user.name;
         }
+        form.agents = model.all_agents;
         return form;
       };
 
@@ -32,7 +35,8 @@
 
 
       ApiKeyEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
-        return model.id = formModel.id;
+        model.id = formModel.id;
+        return model.note = formModel.note;
       };
 
       /*
@@ -43,7 +47,12 @@
 
       ApiKeyEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var postData;
-        postData = formModel;
+        postData = {};
+        postData.id = formModel.id;
+        postData.note = formModel.note;
+        if (!formModel.isSuperUser) {
+          postData.person = formModel.user.id;
+        }
         return postData;
       };
 
