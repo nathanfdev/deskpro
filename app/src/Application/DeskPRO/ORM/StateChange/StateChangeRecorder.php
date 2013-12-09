@@ -36,9 +36,20 @@ namespace Application\DeskPRO\ORM\StateChange;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\Collection;
+use Orb\Util\Util;
 
 class StateChangeRecorder
 {
+	/**
+	 * @var int
+	 */
+	private static $global_state_version = 0;
+
+	/**
+	 * @var int
+	 */
+	private $state_version;
+
 	/**
 	 * @var \Application\DeskPRO\ORM\StateChange\ChangeInterface[]
 	 */
@@ -48,6 +59,21 @@ class StateChangeRecorder
 	 * @var array[]
 	 */
 	private $changes_by_field = array();
+
+
+	/**
+	 * An incrementing counter that increases every time any change is made
+	 * to this object. When this state is higher, it means some kind of change
+	 * was made (eg you can compare it with a previous value to see if any changes were made).
+	 *
+	 * This exists for the lifetime of the current request; it is not persisted anywhere.
+	 *
+	 * @return int
+	 */
+	public function getStateVersion()
+	{
+		return $this->state_version;
+	}
 
 
 	/**
@@ -94,6 +120,9 @@ class StateChangeRecorder
 		}
 		$this->changes_by_field[$field_id][] = $change;
 
+		self::$global_state_version++;
+		$this->state_version = self::$global_state_version;
+
 		return $change;
 	}
 
@@ -112,6 +141,9 @@ class StateChangeRecorder
 			$this->changes_by_field[$field_id] = array();
 		}
 		$this->changes_by_field[$field_id][] = $change;
+
+		self::$global_state_version++;
+		$this->state_version = self::$global_state_version;
 
 		return $change;
 	}
@@ -136,6 +168,9 @@ class StateChangeRecorder
 			$this->changes_by_field[$field_id] = array();
 		}
 		$this->changes_by_field[$field_id] = $change;
+
+		self::$global_state_version++;
+		$this->state_version = self::$global_state_version;
 
 		return $change;
 	}
@@ -167,6 +202,53 @@ class StateChangeRecorder
 	public function getChangesForField($field_id)
 	{
 		return isset($this->changes_by_field[$field_id]) ? $this->changes_by_field[$field_id] : array();
+	}
+
+
+	/**
+	 * For fields that were changed multiple times, this returns
+	 * a change where the old is the first old, and the new is the last new
+	 * (eg multiple changes made inbetween are not included).
+	 *
+	 * @param string $field_id
+	 * @return ChangeInterface
+	 */
+	public function getCombinedChangeForField($field_id)
+	{
+		if (!isset($this->changes_by_field[$field_id])) {
+			return null;
+		}
+
+		$changes = $this->changes_by_field[$field_id];
+		$first = array_shift($changes);
+		$last  = array_pop($last);
+
+		// Only the one change, so
+		// can just return that
+		if ($last === null) {
+			return $first;
+		}
+
+		$class = get_class($first);
+
+		switch ($class) {
+			case 'Application\\DeskPRO\\ORM\\StateChange\\ChangeDate':
+			case 'Application\\DeskPRO\\ORM\\StateChange\\ChangeEntity':
+			case 'Application\\DeskPRO\\ORM\\StateChange\\ChangeObject':
+			case 'Application\\DeskPRO\\ORM\\StateChange\\ChangeSimple':
+				$change = new $class($first->getOld(), $last->getNew());
+				return $change;
+
+			case 'Application\\DeskPRO\\ORM\\StateChange\\ChangeData':
+				return $first;
+
+			case 'Application\\DeskPRO\\ORM\\StateChange\\ChangeArray':
+			case 'Application\\DeskPRO\\ORM\\StateChange\\ChangeCollection':
+				$change = new $class($first->getOld(), $last->getNew());
+				return $change;
+		}
+
+		return $first;
 	}
 
 

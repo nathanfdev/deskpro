@@ -73,4 +73,176 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
 		return false;
 	}
+
+
+	/**
+	 * Check if there has been a new reply of type
+	 *
+	 * @param string $type
+	 * @return bool
+	 */
+	private function hasNewMessageOfType($type)
+	{
+		if (!$this->hasChangedField('messages')) {
+			return false;
+		}
+
+		foreach (array_reverse($this->getChangesForField('messages')) as $change) {
+			/** @var \Application\DeskPRO\ORM\StateChange\ChangeCollection $change */
+			foreach ($change->getNew() as $message) {
+				switch ($type) {
+					case 'agent_reply':
+						if (!$message->is_agent_note && $message->person->is_agent) {
+							return true;
+						}
+						break;
+					case 'agent_note':
+						if ($message->is_agent_note) {
+							return true;
+						}
+						break;
+					case 'user_reply':
+						if (!$message->is_agent_note && !$message->person->is_agent) {
+							return true;
+						}
+						break;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Get new messages of type
+	 *
+	 * @param string $type
+	 * @return bool
+	 */
+	private function getNewMessagesOfType($type = 'any')
+	{
+		if (!$this->hasChangedField('messages')) {
+			return array();
+		}
+
+		$messages = array();
+
+		foreach (array_reverse($this->getChangesForField('messages')) as $change) {
+			/** @var \Application\DeskPRO\ORM\StateChange\ChangeCollection $change */
+			foreach ($change->getNew() as $message) {
+				switch ($type) {
+					case 'any':
+						$messages[] = $message;
+						break;
+
+					case 'agent_reply':
+						if (!$message->is_agent_note && $message->person->is_agent) {
+							$messages[] = $message;
+						}
+						break;
+					case 'agent_note':
+						if ($message->is_agent_note) {
+							$messages[] = $message;
+						}
+						break;
+					case 'user_reply':
+						if (!$message->is_agent_note && !$message->person->is_agent) {
+							$messages[] = $message;
+						}
+						break;
+				}
+			}
+		}
+
+		return $messages;
+	}
+
+
+	/**
+	 * Has there been a new agent reply?
+	 *
+	 * @return bool
+	 */
+	public function hasNewReply()
+	{
+		return $this->hasChangedField('messages');
+	}
+
+
+	/**
+	 * Has there been a new agent reply?
+	 *
+	 * @return bool
+	 */
+	public function hasNewAgentReply()
+	{
+		return $this->hasNewMessageOfType('agent_reply');
+	}
+
+
+	/**
+	 * Has there been a new agent note?
+	 *
+	 * @return bool
+	 */
+	public function hasNewAgentNote()
+	{
+		return $this->hasNewMessageOfType('agent_note');
+	}
+
+
+	/**
+	 * Has there been a new user reply?
+	 *
+	 * @return bool
+	 */
+	public function hasNewUserReply()
+	{
+		return $this->hasNewMessageOfType('user_reply');
+	}
+
+
+	/**
+	 * Get an array of any new repies
+	 *
+	 * @return \Application\DeskPRO\Entity\TicketMessage[]
+	 */
+	public function getNewReplies()
+	{
+		return $this->getNewMessagesOfType('any');
+	}
+
+
+	/**
+	 * Get an array of any new agent replies
+	 *
+	 * @return \Application\DeskPRO\Entity\TicketMessage[]
+	 */
+	public function getNewAgentReplies()
+	{
+		return $this->getNewMessagesOfType('agent_reply');
+	}
+
+
+	/**
+	 * Get an array of any new agent notes
+	 *
+	 * @return \Application\DeskPRO\Entity\TicketMessage[]
+	 */
+	public function getNewAgentNotes()
+	{
+		return $this->getNewMessagesOfType('agent_note');
+	}
+
+
+	/**
+	 * Get an array of any new user replies
+	 *
+	 * @return \Application\DeskPRO\Entity\TicketMessage[]
+	 */
+	public function getNewUserReplies()
+	{
+		return $this->getNewMessagesOfType('user_reply');
+	}
 }

@@ -29,74 +29,54 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\Tickets\Notifications;
+namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches;
+use Application\DeskPRO\Tickets\SnippetFormatter;
 
-class TicketNotifyList
+/**
+ * Adds a reply to the ticket
+ *
+ * @option string reply_text
+ * @option int    by_agent_id
+ * @option bool   by_assigned_agent
+ */
+class AddAgentReply extends AbstractAction implements ActionInterface
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
-	private $ticket;
-
-	/**
-	 * @var \Application\DeskPRO\Tickets\ExecutorContext
-	 */
-	private $context;
-
-	/**
-	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches
-	 */
-	private $filter_detector;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketFilterSubscription[]
-	 */
-	private $subs;
-
-	/**
-	 * @var array
-	 */
-	private $notify_list;
-
-	/**
-	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
-	 * @param DetectFilterMatches $filter_detector
-	 * @param \Application\DeskPRO\Entity\TicketFilterSubscription[] $subs
-	 */
-	public function __construct(Ticket $ticket, ExecutorContext $context, DetectFilterMatches $filter_detector, array $subs)
+	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
-		$this->ticket          = $ticket;
-		$this->context         = $context;
-		$this->filter_detector = $filter_detector;
-		$this->subs            = $subs;
-	}
-
-	public function getNotifyList()
-	{
-		if ($this->notify_list !== null) {
-			return $this->notify_list;
+		$agent = null;
+		if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
+			$agent = $ticket->agent;
+		}
+		if (!$agent) {
+			$agent = $context->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
 		}
 
-		$state = $this->ticket->getStateChangeRecorder();
-
-		$orig_status = $this->ticket->status_code;
-		if ($state->hasChangedField('status') || $state->hasChangedField('hidden_status')) {
-			$start_status = $this->ticket->status;
-			$statt_hstatus = $this->ticket->hidden_status;
+		if (!$agent) {
+			return;
 		}
 
-		$status_change         = $this->ticket->getStateChangeRecorder()->getFi('status');
-		$hstatus_change        = $this->ticket->getStateChangeRecorder()->getChangedProperty('hidden_status');
-		$assign_change         = $this->ticket->getStateChangeRecorder()->getChangedProperty('agent');
-		$assign_team_change    = $this->ticket->getStateChangeRecorder()->getChangedProperty('agent_team');
-		$assign_follow_change  = $this->ticket->getStateChangeRecorder()->getChangedProperty('participants');
+		$em = $context->getContainer()->getEm();
+
+		$message = new TicketMessage();
+		$message->person = $agent;
+		$message->date_created = new \DateTime('+1 second');
+
+		$reply_text = $this->getActionOption('reply_text');
+		$formatter = new SnippetFormatter($context->getContainer()->get('twig'));
+		$reply_text = $formatter->formatText($reply_text, $ticket);
+		$message->setMessageText($reply_text);
+
+		$ticket->addMessage($message);
+		$em->persist($message);
 	}
 }

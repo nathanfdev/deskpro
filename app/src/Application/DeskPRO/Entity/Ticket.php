@@ -1125,7 +1125,7 @@ class Ticket extends DomainObject
 		$ticket_sla->sla = $sla;
 
 		$this->ticket_slas->add($ticket_sla);
-		$this->_onPropertyChanged('ticket_slas', null, $this->participants);
+		$this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
 
 		return $ticket_sla;
 	}
@@ -1133,20 +1133,20 @@ class Ticket extends DomainObject
 
 	/**
 	 * @param Sla $sla
-	 * @return bool
+	 * @return TicketSla|null
 	 */
 	public function removeSla(Sla $sla)
 	{
 		foreach ($this->ticket_slas AS $k => $ticket_sla) {
 			if ($ticket_sla->sla->id == $sla->id) {
 				$this->ticket_slas->remove($k);
-				$this->_onPropertyChanged('ticket_slas', null, $this->participants);
+				$this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
 				$this->updateWorstSlaStatus();
-				return true;
+				return $ticket_sla;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -1155,7 +1155,7 @@ class Ticket extends DomainObject
 	public function removeAllSlas()
 	{
 		$this->ticket_slas->clear();
-		$this->_onPropertyChanged('ticket_slas', null, $this->participants);
+		$this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
 
 		$this->setModelField('worst_sla_status', null);
 	}
@@ -2849,62 +2849,6 @@ class Ticket extends DomainObject
 		$this->_onPropertyChanged('properties', $old, $this->properties);
 	}
 
-	public function recountStats()
-	{
-		$agent_ids_in = implode(',', App::getDataService('Agent')->getIds());
-
-		$this['count_agent_replies'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*) FROM tickets_messages
-			WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
-		", array($this->id));
-
-		$this['count_user_replies'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*) FROM tickets_messages
-			WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
-		", array($this->id));
-	}
-
-	public function getFromAddress($context = 'user', array $options = null)
-	{
-		if ($context == 'user' && $this->notify_email) {
-			$from_email = $this->notify_email;
-		} elseif ($context == 'agent' && $this->notify_email_agent) {
-			$from_email = $this->notify_email_agent;
-		} elseif ($this->email_gateway && $this->email_gateway->getPrimaryEmailAddress() && $this->email_gateway->is_enabled) {
-			$from_email = $this->email_gateway->getPrimaryEmailAddress();
-		} else {
-			$from_email = App::getSetting('core.default_from_email');
-			$default_address = App::getDb()->fetchColumn("
-				SELECT match_pattern
-				FROM email_gateway_addresses
-				WHERE match_type = 'exact'
-				ORDER BY run_order ASC, id ASC
-				LIMIT 1
-			");
-
-			if ($default_address) {
-				$from_email = $default_address;
-			}
-		}
-
-		if ($context == 'user' && $this->notify_email_name) {
-			$from_name = $this->notify_email_name;
-		} elseif ($context == 'agent' && $this->notify_email_name_agent) {
-			$from_name = $this->notify_email_name_agent;
-		} else {
-			$from_name = App::getSetting('core.deskpro_name');
-
-			if ($options && isset($options['default_from']) && $options['default_from']) {
-				$from_name = $options['default_from'];
-			}
-		}
-
-		return array(
-			'email' => $from_email,
-			'name'  => $from_name
-		);
-	}
-
 
 	/**
 	 * Returns the data as it would be returned from the database
@@ -2929,7 +2873,6 @@ class Ticket extends DomainObject
 			'organization_id'              => $this->organization ? $this->organization->id : null,
 			'linked_chat_id'               => $this->linked_chat ? $this->linked_chat->id : null,
 			'email_gateway_id'             => $this->email_gateway ? $this->email_gateway->id : null,
-			'email_gateway_address_id'     => $this->email_gateway_address ? $this->email_gateway_address->id : null,
 			'locked_by_agent'              => $this->locked_by_agent ? $this->locked_by_agent->id : null,
 			'ref'                          => $this->ref,
 			'auth'                         => $this->auth,
@@ -3412,16 +3355,6 @@ class Ticket extends DomainObject
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\EmailGateway',
 			'joinColumns'          => array(array(
 				'name'                 => 'email_gateway_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'set null',
-			)),
-		));
-		$metadata->mapManyToOne(array(
-			'fieldName'            => 'email_gateway_address',
-			'targetEntity'         => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress',
-			'joinColumns'          => array(array(
-				'name'                 => 'email_gateway_address_id',
 				'referencedColumnName' => 'id',
 				'nullable'             => true,
 				'onDelete'             => 'set null',

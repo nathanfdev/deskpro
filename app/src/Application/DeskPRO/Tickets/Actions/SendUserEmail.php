@@ -43,9 +43,10 @@ use Application\DeskPRO\Tickets\TicketEmail;
  * Send an email to the user
  *
  * @option bool template     The template to send
+ * @option bool from_name    Who to send the email from
  * @option bool do_cc_users  True to CC the email to other user parts in the ticket
  */
-class SendUserEmail extends AbstractAction implements ActionInterface
+class SendUserEmail extends AbstractAction implements ActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -60,5 +61,18 @@ class SendUserEmail extends AbstractAction implements ActionInterface
 		);
 
 		$ticket_email->send($context);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	{
+		if ($context->getVars()->get('mute_user_emails')) {
+			return true;
+		}
+
+		return false;
 	}
 }

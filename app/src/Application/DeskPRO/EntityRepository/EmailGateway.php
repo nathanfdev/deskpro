@@ -50,12 +50,13 @@ class EmailGateway extends AbstractEntityRepository
 			$this->_gateway_names = array();
 
 			$recs = App::getDb()->fetchAll("
-				SELECT id, email_address
-				FROM email_gateways
-				ORDER BY email_address DESC
+				SELECT e.id, a.match_pattern
+				FROM email_gateways AS e
+				LEFT JOIN email_gateway_addresses AS a ON (a.id = e.primary_address_id)
+				ORDER BY id ASC
 			");
 			foreach ($recs as $rec) {
-				$this->_gateway_names[$rec['id']] = $rec['email_address'];
+				$this->_gateway_names[$rec['id']] = $rec['match_pattern'] ?: 'EmailGateway:' . $rec['id'];
 			}
 		}
 
@@ -106,7 +107,7 @@ class EmailGateway extends AbstractEntityRepository
 			SELECT g
 			FROM DeskPRO:EmailGateway g
 			WHERE g.is_enabled = true
-			ORDER BY g.email_address ASC
+			ORDER BY g.id ASC
 		")->execute();
 	}
 
@@ -119,9 +120,10 @@ class EmailGateway extends AbstractEntityRepository
 			SELECT acc
 			FROM DeskPRO:EmailGateway acc
 			LEFT JOIN acc.linked_transport tr
-			LEFT JOIN acc.addresses addr
+			LEFT JOIN acc.primary_address addr
+			LEFT JOIN acc.addresses addresses
 			WHERE acc.gateway_type = 'tickets'
-			ORDER BY acc.email_address ASC
+			ORDER BY acc.id ASC
 		")->execute();
 	}
 

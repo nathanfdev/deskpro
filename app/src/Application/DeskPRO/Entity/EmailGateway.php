@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -42,6 +43,18 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 /**
  * An email gateway contains info about how to read emails from an email account.
  *
+ * @property int $id
+ * @property string $connection_type
+ * @property array $connection_options
+ * @property string $gateway_type
+ * @property bool $is_enabled
+ * @property \DateTime|null $start_date_limit
+ * @property bool $keep_read
+ * @property EmailGatewayAddress $primary_address
+ * @property EmailGatewayAddress[] $addresses
+ * @property \DateTime|null $date_last_check
+ * @property EmailTransport $linked_transport
+ * @property array|null $processor_extras
  */
 class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -57,13 +70,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 */
 	protected $id = null;
-
-	/**
-	 * The human name of the account.
-	 *
-	 * @var string
-	 */
-	protected $email_address = '';
 
 	/**
 	 * The type of connection this class represents
@@ -101,6 +107,11 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	protected $keep_read = false;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
+	 */
+	protected $primary_address;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $addresses;
@@ -117,7 +128,10 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $linked_transport;
 
-	protected $processor_extras = array();
+	/**
+	 * @var array
+	 */
+	protected $processor_extras = null;
 
 	/**
 	 * @var \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
@@ -129,16 +143,20 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public static function createTicketAccount()
 	{
-		$acc = new self();
-		$acc->gateway_type = self::GATEWAY_TICKETS;
-
+		$acc = new self(self::GATEWAY_TICKETS);
 		return $acc;
 	}
 
-	public function __construct()
+
+	/**
+	 * @param string $gateway_type
+	 */
+	public function __construct($gateway_type)
 	{
-		$this->addresses = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->addresses = new ArrayCollection();
+		$this->gateway_type = $gateway_type;
 	}
+
 
 	/**
 	 * @return int
@@ -154,7 +172,16 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getTitle()
 	{
-		return $this->email_address;
+		$addr = $this->getPrimaryEmailAddress(false);
+		if ($addr) {
+			return $addr;
+		}
+
+		if ($this->id) {
+			return "EmailGateway:{$this->id}";
+		}
+
+		return "EmailGateway:new";
 	}
 
 
@@ -250,6 +277,11 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		return $proc;
 	}
 
+
+	/**
+	 * @return string
+	 * @throws \InvalidArgumentException
+	 */
 	public function getSourceObjectType()
 	{
 		switch ($this->gateway_type) {
@@ -261,6 +293,12 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
+	/**
+	 * @param string $name
+	 * @param mixed  $default
+	 * @return mixed
+	 */
 	public function getProcessorExtra($name, $default = null)
 	{
 		if (is_array($this->processor_extras) && array_key_exists($name, $this->processor_extras)) {
@@ -270,6 +308,11 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 */
 	public function setProcessorExtra($name, $value)
 	{
 		if (!is_array($this->processor_extras)) {
@@ -283,10 +326,12 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
 	/**
 	 * Get an instance of the fetcher class
 	 *
 	 * @return \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
+	 * @throws \InvalidArgumentException
 	 */
 	public function getFetcher()
 	{
@@ -368,7 +413,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array( 'name' => 'email_gateways', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'email_address', 'type' => 'text', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_address', ));
 		$metadata->mapField(array( 'fieldName' => 'connection_type', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'connection_type', ));
 		$metadata->mapField(array( 'fieldName' => 'connection_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'connection_options', ));
 		$metadata->mapField(array( 'fieldName' => 'gateway_type', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gateway_type', ));
@@ -378,6 +422,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_last_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_check', ));
 		$metadata->mapField(array( 'fieldName' => 'processor_extras', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'processor_extras', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapManyToOne(array( 'fieldName' => 'primary_address', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_address_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'addresses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'gateway', 'orderBy' => array('run_order' => 'ASC') ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'linked_transport', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailTransport', 'cascade' => array('persist'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'linked_transport_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'SET NULL', 'columnDefinition' => NULL, ), ),  ));
 	}

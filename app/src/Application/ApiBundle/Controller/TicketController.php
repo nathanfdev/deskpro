@@ -706,16 +706,6 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		if (!$split->wasOldTicketDeleted()) {
-			$ticket->recountStats();
-			$this->em->persist($ticket);
-		}
-
-		if ($new_ticket) {
-			$new_ticket->recountStats();
-			$this->em->persist($new_ticket);
-		}
-
 		$this->em->flush();
 
 		return $this->createApiResponse(array(

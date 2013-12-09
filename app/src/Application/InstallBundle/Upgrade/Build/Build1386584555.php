@@ -29,80 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\Actions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketEmail;
-
-/**
- * Send an email to one or more agents
- *
- * @option bool template     The template to send
- * @option bool agent_ids    Agents to send to
- */
-class SendAgentEmail extends AbstractAction implements ActionInterface, NoopableInterface
+class Build1386584555 extends AbstractBuild
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function run()
 	{
-		#-------------------------
-		# Build list of agents to send to
-		#-------------------------
-
-		$agents = array();
-
-		foreach ($this->getActionOption('agent_ids') as $agent_id) {
-			if ($agent_id == -1) {
-				if ($ticket->agent) {
-					$agent_id = $ticket->agent->id;
-				} else {
-					continue;
-				}
-			}
-
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
-			if ($agent) {
-				$agents[] = $agent;
-			}
-		}
-
-		if (!$agent) {
-			return;
-		}
-
-		#-------------------------
-		# Send emails
-		#-------------------------
-
-		foreach ($agents as $agent) {
-			$ticket_email = new TicketEmail(
-				$ticket,
-				$agent,
-				TicketEmail::MODE_AGENT,
-				$this->getActionOption('template')
-			);
-
-			$ticket_email->send($context);
-		}
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
-	{
-		if ($context->getVars()->get('mute_agent_emails')) {
-			return true;
-		}
-
-		return false;
+		$this->execMutateSql("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4F2598614");
+		$this->execMutateSql("DROP INDEX IDX_54469DF4F2598614 ON tickets");
+		$this->execMutateSql("ALTER TABLE tickets DROP email_gateway_address_id");
 	}
 }

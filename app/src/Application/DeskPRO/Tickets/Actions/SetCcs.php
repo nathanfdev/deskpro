@@ -72,7 +72,7 @@ class SetCcs extends AbstractAction implements ActionInterface, MacroActionInter
 
 				$eml = new EmailAddress();
 				$eml->email = $email;
-				$person = $person_processor->createPerson($eml, false);
+				$person = $person_processor->createPerson($eml, true);
 
 				if ($person) {
 					$ticket->addParticipantPerson($person);

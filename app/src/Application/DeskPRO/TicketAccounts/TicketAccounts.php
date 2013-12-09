@@ -33,8 +33,10 @@
 
 namespace Application\DeskPRO\TicketAccounts;
 
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\EmailGateway;
+use Orb\Util\Arrays;
 
 class TicketAccounts
 {
@@ -66,6 +68,29 @@ class TicketAccounts
 			$this->accounts[$acc->id] = $acc;
 		}
 	}
+
+
+	/**
+	 * Get the default account to use. This is just the first defined account.
+	 *
+	 * @return \Application\DeskPRO\Entity\EmailGateway|null
+	 */
+	public function getDefaultAccount()
+	{
+		$this->preload();
+
+		$accounts = $this->getEnabledAccounts();
+		if (!$accounts) {
+			$this->getAllAccounts();
+		}
+
+		if ($accounts) {
+			return Arrays::getFirstItem($accounts);
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\EmailGateway[]
@@ -142,5 +167,33 @@ class TicketAccounts
 	{
 		$this->preload();
 		return count($this->getEnabledAccounts());
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 */
+	public function getAccountForTicket(Ticket $ticket)
+	{
+		if ($ticket->email_gateway && $ticket->email_gateway->is_enabled) {
+			return $ticket->email_gateway;
+		}
+
+		return $this->getDefaultAccount();
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 */
+	public function getEmailAddressForTicket(Ticket $ticket)
+	{
+		$account = $this->getAccountForTicket($ticket);
+
+		if (!$account) {
+			return null;
+		}
+
+		return $account->getPrimaryEmailAddress();
 	}
 }

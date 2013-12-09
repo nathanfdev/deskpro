@@ -50,6 +50,7 @@ class TicketChecker extends AbstractChecker
 		'assign_team',
 		'assign_self',
 		'cc',
+		'slas',
 		'merge',
 		'labels',
 		'notes',
@@ -265,9 +266,9 @@ class TicketChecker extends AbstractChecker
 			return false;
 
 		}
-		if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'modify_set_awaiting_user') || $this->canModify($ticket, 'modify_set_awaiting_agent'))) {
+		if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'set_awaiting_user') || $this->canModify($ticket, 'set_awaiting_agent'))) {
 			return true;
-		} elseif ($this->canModify($ticket, 'modify_set_resolved')) {
+		} elseif ($this->canModify($ticket, 'set_resolved')) {
 			return true;
 		}
 

@@ -298,10 +298,7 @@ class TicketManager
 		# Ticket Filter update
 		#----------------------------------------
 
-		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFilters();
-		$agents  = $this->em->getRepository('DeskPRO:Person')->getAgents();
-
-		$filter_change_detect = new FilterChangeDetector($ticket, $context, $filters, $agents);
+		$filter_change_detect = $context->createFilterChangeDetector($ticket);
 		$client_messages = $filter_change_detect->getListUpdateClientMessages();
 
 		foreach ($client_messages as $cm) {
@@ -314,6 +311,34 @@ class TicketManager
 
 		$search_updater = new TicketSearchUpdater($this->db, $ticket);
 		$search_updater->update();
+
+		#----------------------------------------
+		# Recount stats
+		#----------------------------------------
+
+		if ($state->isNewTicket()) {
+			$ticket->count_agent_replies = count($state->getNewAgentReplies());
+			$ticket->count_user_replies  = count($state->getNewUserReplies());
+		} else if ($state->hasChangedField('messages')) {
+			$agent_ids_in = implode(',', $this->container->getAgentData()->getIds());
+
+			$ticket->count_agent_replies = $this->db->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets_messages
+				WHERE
+					ticket_id = ?
+					AND is_agent_note = 0
+					AND person_id IN ($agent_ids_in)
+			", array($ticket->id));
+
+			$this->count_user_replies = $this->db->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets_messages
+				WHERE
+					ticket_id = ?
+					AND person_id NOT IN ($agent_ids_in)
+			", array($ticket->id));
+		}
 
 		#----------------------------------------
 		# Done

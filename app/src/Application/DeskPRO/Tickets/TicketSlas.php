@@ -29,80 +29,52 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
  */
 
-namespace Application\DeskPRO\Tickets\Actions;
+namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketEmail;
+use Application\DeskPRO\Collection\LazyCollection;
 
-/**
- * Send an email to one or more agents
- *
- * @option bool template     The template to send
- * @option bool agent_ids    Agents to send to
- */
-class SendAgentEmail extends AbstractAction implements ActionInterface, NoopableInterface
+class TicketSlas extends LazyCollection
 {
 	/**
-	 * {@inheritDoc}
+	 * @return array
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	protected function loadRecords()
 	{
-		#-------------------------
-		# Build list of agents to send to
-		#-------------------------
+		return $this->em->getRepository('DeskPRO:Sla')->findAll();
+	}
 
-		$agents = array();
 
-		foreach ($this->getActionOption('agent_ids') as $agent_id) {
-			if ($agent_id == -1) {
-				if ($ticket->agent) {
-					$agent_id = $ticket->agent->id;
-				} else {
-					continue;
-				}
-			}
+	####################################################################################################################
+	// implementing these just for better auto-complete in the IDE (due to @return) :-)
 
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
-			if ($agent) {
-				$agents[] = $agent;
-			}
-		}
-
-		if (!$agent) {
-			return;
-		}
-
-		#-------------------------
-		# Send emails
-		#-------------------------
-
-		foreach ($agents as $agent) {
-			$ticket_email = new TicketEmail(
-				$ticket,
-				$agent,
-				TicketEmail::MODE_AGENT,
-				$this->getActionOption('template')
-			);
-
-			$ticket_email->send($context);
-		}
+	/**
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\Sla[]
+	 */
+	public function getById($id)
+	{
+		return parent::getById($id);
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param array $ids
+	 * @param bool $keyed
+	 * @return \Application\DeskPRO\Entity\Sla[]
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function getByIds(array $ids, $keyed = false)
 	{
-		if ($context->getVars()->get('mute_agent_emails')) {
-			return true;
-		}
+		return parent::getByIds($ids, $keyed);
+	}
 
-		return false;
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Sla[]
+	 */
+	public function getAll()
+	{
+		return parent::getAll();
 	}
 }

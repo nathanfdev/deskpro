@@ -2581,7 +2581,6 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		$ticket->recountStats();
 		$this->em->persist($ticket);
 		$this->em->flush();
 
@@ -2631,16 +2630,6 @@ class TicketController extends AbstractController
 			$this->em->rollback();
 
 			throw $e;
-		}
-
-		if (!$split->wasOldTicketDeleted()) {
-			$ticket->recountStats();
-			$this->em->persist($ticket);
-		}
-
-		if ($new_ticket) {
-			$new_ticket->recountStats();
-			$this->em->persist($new_ticket);
 		}
 
 		$this->em->flush();

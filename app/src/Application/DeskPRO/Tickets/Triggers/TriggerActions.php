@@ -41,9 +41,6 @@ use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-// TODO
-require(DP_ROOT.'/src/Application/DeskPRO/Tickets/Actions/TODO.php');
-
 /**
  * This is a wrapper around an ActionComposite that is able to serialize.
  * Used as the serialized object in TicketTrigger records.

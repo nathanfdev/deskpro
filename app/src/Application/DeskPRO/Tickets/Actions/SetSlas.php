@@ -37,59 +37,53 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketEmail;
 
 /**
- * Send an email to one or more agents
+ * Adds or removes SLAs on a ticket.
  *
- * @option bool template     The template to send
- * @option bool agent_ids    Agents to send to
+ * @option int[] add_sla_ids     Array of SLA IDs to add
+ * @option int[] remove_sla_ids  Array of SLA IDs to remove
  */
-class SendAgentEmail extends AbstractAction implements ActionInterface, NoopableInterface
+class SetSlas extends AbstractAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContext $context)
 	{
-		#-------------------------
-		# Build list of agents to send to
-		#-------------------------
+		$em = $context->getContainer()->getEm();
+		$ticket_slas = $context->getContainer()->getSystemService('ticket_slas');
 
-		$agents = array();
+		#--------------------
+		# Add SLAs
+		#--------------------
 
-		foreach ($this->getActionOption('agent_ids') as $agent_id) {
-			if ($agent_id == -1) {
-				if ($ticket->agent) {
-					$agent_id = $ticket->agent->id;
-				} else {
-					continue;
-				}
+		foreach ($this->getActionOption('add_sla_ids') as $sla_id) {
+			$sla = $ticket_slas->getById($sla_id);
+			if (!$sla) {
+				continue;
 			}
 
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
-			if ($agent) {
-				$agents[] = $agent;
+			if (!$ticket->hasSla($sla)) {
+				$ticket_sla = $ticket->addSla($sla);
+				$em->persist($ticket_sla);
 			}
 		}
 
-		if (!$agent) {
-			return;
-		}
+		#--------------------
+		# Remove SLAs
+		#--------------------
 
-		#-------------------------
-		# Send emails
-		#-------------------------
+		foreach ($this->getActionOption('remove_sla_ids') as $sla_id) {
+			$sla = $ticket_slas->getById($sla_id);
+			if (!$sla) {
+				continue;
+			}
 
-		foreach ($agents as $agent) {
-			$ticket_email = new TicketEmail(
-				$ticket,
-				$agent,
-				TicketEmail::MODE_AGENT,
-				$this->getActionOption('template')
-			);
-
-			$ticket_email->send($context);
+			if (!$ticket->hasSla($sla)) {
+				$ticket_sla = $ticket->removeSla($sla);
+				$em->remove($ticket_sla);
+			}
 		}
 	}
 
@@ -97,12 +91,21 @@ class SendAgentEmail extends AbstractAction implements ActionInterface, Noopable
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
-		if ($context->getVars()->get('mute_agent_emails')) {
-			return true;
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
+			return array('slas');
 		}
 
-		return false;
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	{
+		$this->applyAction($ticket, $context);
 	}
 }

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
 use Orb\Util\Strings;
@@ -53,6 +54,11 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 * @var \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
 	 */
 	protected $templating;
+
+	/**
+	 * @var \Application\DeskPRO\TicketAccounts\TicketAccounts
+	 */
+	protected $ticket_accounts;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -438,5 +444,15 @@ class Mailer extends \Swift_Mailer implements Loggable
 	public function sendNow(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		return parent::send($message, $failedRecipients);
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 * @return null|string
+	 */
+	public function getFromAddressForTicket(Ticket $ticket)
+	{
+		return $this->ticket_accounts->getEmailAddressForTicket($ticket);
 	}
 }
