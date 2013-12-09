@@ -40,6 +40,7 @@ use Orb\Auth\Identity;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class PersonFieldManager extends FieldManager
 {
@@ -52,6 +53,23 @@ class PersonFieldManager extends FieldManager
 	public function getDefinedFields()
 	{
 		return array_values($this->em->getRepository('DeskPRO:CustomDefPerson')->getTopFields());
+	}
+
+	/**
+	 * @param string $id
+	 * @param bool   $enabled
+	 */
+
+	public function setFieldEnabledById($id, $enabled = true)
+	{
+		if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
+
+			$field             = $this->em->find('DeskPRO:CustomDefPerson', $custom_field_id);
+			$field->is_enabled = $enabled;
+
+			$this->em->persist($field);
+			$this->em->flush($field);
+		}
 	}
 
 	public function copyUsersourceData(Person $person, Identity $identity, Usersource $usersource)
