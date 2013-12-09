@@ -138,4 +138,42 @@ class ApiKeysController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
+		 */
+
+		$api_keys = $this->container->getSystemService('api_keys');
+		$api_key  = $api_keys->getById($id);
+
+		if (!$api_key) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $api_key->id;
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->em->remove($api_key);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
 }
