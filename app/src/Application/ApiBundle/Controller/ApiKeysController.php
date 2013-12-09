@@ -176,4 +176,31 @@ class ApiKeysController extends AbstractController
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
+
+
+	####################################################################################################################
+	# regenerate
+	####################################################################################################################
+
+	public function regenerateAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
+		 */
+
+		$api_keys = $this->container->getSystemService('api_keys');
+		$api_key  = $api_keys->getById($id);
+
+		if (!$api_key) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$api_key->regenerateApiKey();
+
+		$this->em->persist($api_key);
+		$this->em->flush();
+
+		return $this->createSuccessResponse(array('code' => $api_key->code, 'keyString' => $api_key->keyString));
+	}
 }

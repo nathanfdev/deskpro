@@ -63,6 +63,18 @@
         });
       };
 
+      /*
+       	#
+      */
+
+
+      Admin_ApiKeys_Ctrl_Edit.prototype.regenerateApiKey = function() {
+        var _this = this;
+        return this.keyData.regenerateApiKey(this.api_key, this.form).success(function() {
+          return _this.Growl.success("API Key regenerated");
+        });
+      };
+
       return Admin_ApiKeys_Ctrl_Edit;
 
     })(Admin_Ctrl_Base);

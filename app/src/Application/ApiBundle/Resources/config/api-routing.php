@@ -3181,6 +3181,13 @@ $collection->create('api_api_keys_delete', array(
 	'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_api_keys_regenerate', array(
+	'path'        => '/api_keys/regenerate/{id}',
+	'controller'  => 'ApiBundle:ApiKeys:regenerate',
+	'methods'     => array('POST'),
+));
+
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################

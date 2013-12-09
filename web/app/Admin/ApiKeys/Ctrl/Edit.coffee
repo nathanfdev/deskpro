@@ -48,4 +48,15 @@ define [
 					@$state.go('apps.api_keys.gocreate')
 			)
 
+		###
+ 	#
+		###
+
+		regenerateApiKey: ->
+
+			@keyData.regenerateApiKey(@api_key, @form).success( =>
+
+				@Growl.success("API Key regenerated")
+			)
+
 	Admin_ApiKeys_Ctrl_Edit.EXPORT_CTRL()

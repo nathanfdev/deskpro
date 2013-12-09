@@ -132,6 +132,26 @@
         return promise;
       };
 
+      /*
+      		# Generate new API key code
+       	#
+       	# @param {Object} model api_key model
+       	# @param {Object} formModel  The model representing the form
+       	# @return {promise}
+      */
+
+
+      ApiKeys.prototype.regenerateApiKey = function(model, formModel) {
+        var promise,
+          _this = this;
+        promise = this.Api.sendPostJson('/api_keys/regenerate/' + model.id);
+        promise.success(function(data) {
+          formModel.code = data.code;
+          return formModel.keyString = data.keyString;
+        });
+        return promise;
+      };
+
       return ApiKeys;
 
     })(BaseListEdit);

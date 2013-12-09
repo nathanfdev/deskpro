@@ -119,3 +119,23 @@ define [
 			)
 
 			return promise
+
+		###
+		# Generate new API key code
+ 	#
+ 	# @param {Object} model api_key model
+ 	# @param {Object} formModel  The model representing the form
+ 	# @return {promise}
+ 	###
+
+		regenerateApiKey: (model, formModel) ->
+
+			promise = @Api.sendPostJson('/api_keys/regenerate/' + model.id)
+
+			promise.success( (data) =>
+
+				formModel.code = data.code
+				formModel.keyString = data.keyString
+			)
+
+			return promise

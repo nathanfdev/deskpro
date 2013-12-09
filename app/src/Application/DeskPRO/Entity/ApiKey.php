@@ -87,9 +87,22 @@ class ApiKey extends DomainObject
 		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
 	}
 
+	/**
+	 * @return ApiKey
+	 */
+
 	public static function createApiKey()
 	{
 		return new self();
+	}
+
+	/**
+	 *
+	 */
+
+	public function regenerateApiKey()
+	{
+		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
 	}
 
 	/**
