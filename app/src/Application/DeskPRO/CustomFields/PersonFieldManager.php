@@ -36,8 +36,6 @@ namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
 
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\Person;
@@ -45,6 +43,17 @@ use Orb\Util\Arrays;
 
 class PersonFieldManager extends FieldManager
 {
+	/**
+	 * Get an array of all defined fields (by doing a query).
+	 *
+	 * @return array
+	 */
+
+	public function getDefinedFields()
+	{
+		return array_values($this->em->getRepository('DeskPRO:CustomDefPerson')->getTopFields());
+	}
+
 	public function copyUsersourceData(Person $person, Identity $identity, Usersource $usersource)
 	{
 		$save_data = array();

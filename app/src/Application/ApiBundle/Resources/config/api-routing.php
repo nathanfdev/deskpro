@@ -3187,6 +3187,42 @@ $collection->create('api_api_keys_regenerate', array(
 	'methods'     => array('POST'),
 ));
 
+########################################################################################################################
+# CRM User Fields
+########################################################################################################################
+
+$collection->create('api_user_fields_get', array(
+	'path'         => '/user_fields/{id}',
+	'controller'   => 'ApiBundle:UserFields:getCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_user_fields_create', array(
+	'path'       => '/user_fields',
+	'controller' => 'ApiBundle:UserFields:saveCustomField',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_user_fields_save', array(
+	'path'         => '/user_fields/{id}',
+	'controller'   => 'ApiBundle:UserFields:saveCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_user_fields', array(
+	'path'        => '/user_fields',
+	'controller'  => 'ApiBundle:UserFields:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_user_fields_setenabled', array(
+	'path'        => '/user_fields/set-enabled/{field_id}/{is_enabled}',
+	'controller'  => 'ApiBundle:UserFields:toggleField',
+	'methods'     => array('POST'),
+));
 
 ########################################################################################################################
 # Languages
