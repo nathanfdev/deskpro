@@ -1,0 +1,37 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav class="dp-controls">
+				<span dp-ping-flash="fields_enabled" class="saved-ping">
+					<i class="fa fa-check-square-o-square"></i>
+					{{ phrase('agent.general.saved') }}
+				</span>
+			</nav>
+
+			<h3 ng-pluralize count="ListCtrl.custom_fields.length || 0"
+				when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="field in ListCtrl.custom_fields"
+					dp-state-mark="crm.org_fields.edit.{{ ng_var('field.id') }}"
+					data-id="{{ ng_var('field.id') }}">
+					<a href="{{ ng_href('crm.org_fields.edit', '{id: field.id}') }}">
+						<button dp-toggle-switch ng-model="field.is_enabled"
+								ng-change="ListCtrl.updateCustomFieldEnabledState(field)"></button>
+						<h4><span class="title-text">{{ ng_var('field.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('crm.org_fields.gocreate') }}"
+				   ng-class="{'active': isStateActive('.create') }">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}

@@ -124,6 +124,7 @@ requirejs([
 	'Admin/CustomFields/Tickets/Ctrl/Edit',
 	'Admin/CustomFields/Chat/Ctrl/Edit',
 	'Admin/CustomFields/User/Ctrl/Edit',
+	'Admin/CustomFields/Org/Ctrl/Edit',
 	'Admin/Labels/Base/Ctrl/List',
 	'Admin/Labels/Base/Ctrl/Edit',
 	'Admin/Labels/Person/Ctrl/List',
@@ -203,7 +204,8 @@ requirejs([
 	'Admin/ChatDeps/Ctrl/Edit',
 	'Admin/ApiKeys/Ctrl/List',
 	'Admin/ApiKeys/Ctrl/Edit',
-	'Admin/UserFields/Ctrl/List'
+	'Admin/UserFields/Ctrl/List',
+	'Admin/OrgFields/Ctrl/List'
 ], function(angular) {
 	'use strict';
 

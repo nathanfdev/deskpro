@@ -786,8 +786,31 @@ define(function() {
 	routes.push({
 		id: 'crm.org_fields',
 		url: '/org_fields',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'OrgFields/list.html',
+		controller: 'Admin_OrgFields_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'crm.org_fields.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.org_fields.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'crm.org_fields.create',
+		url: '/create',
+		templateName: 'CustomFields/Org/edit.html',
+		controller: 'Admin_CustomFields_Org_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.org_fields.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'CustomFields/Org/edit.html',
+		controller: 'Admin_CustomFields_Org_Ctrl_Edit'
 	});
 
 	//###
