@@ -753,8 +753,31 @@ define(function() {
 	routes.push({
 		id: 'crm.user_fields',
 		url: '/user_fields',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'UserFields/list.html',
+		controller: 'Admin_UserFields_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'crm.user_fields.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.user_fields.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'crm.user_fields.create',
+		url: '/create',
+		templateName: 'CustomFields/User/edit.html',
+		controller: 'Admin_CustomFields_User_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.user_fields.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'CustomFields/User/edit.html',
+		controller: 'Admin_CustomFields_User_Ctrl_Edit'
 	});
 
 	//###
