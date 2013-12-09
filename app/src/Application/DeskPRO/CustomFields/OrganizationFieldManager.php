@@ -29,28 +29,40 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\CustomFields;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\OrganizationFieldManager;
+use Orb\Util\Strings;
 
-class OrgFieldsManagerService
+class OrganizationFieldManager extends FieldManager
 {
-	public static function create(DeskproContainer $container)
-	{
-		$m = new OrganizationFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefOrganization',
-				'entity_name'        => 'DeskPRO:CustomDefOrganization',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataOrganization',
-				'data_entity_name'   => 'DeskPRO:CustomDataOrganization',
-			)
-		);
+	/**
+	 * Get an array of all defined fields (by doing a query).
+	 *
+	 * @return array
+	 */
 
-		return $m;
+	public function getDefinedFields()
+	{
+		return array_values($this->em->getRepository('DeskPRO:CustomDefOrganization')->getTopFields());
+	}
+
+	/**
+	 * @param string $id
+	 * @param bool   $enabled
+	 */
+
+	public function setFieldEnabledById($id, $enabled = true)
+	{
+		if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
+
+			$field             = $this->em->find('DeskPRO:CustomDefOrganization', $custom_field_id);
+			$field->is_enabled = $enabled;
+
+			$this->em->persist($field);
+			$this->em->flush($field);
+		}
 	}
 }

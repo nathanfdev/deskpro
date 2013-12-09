@@ -3225,6 +3225,43 @@ $collection->create('api_user_fields_setenabled', array(
 ));
 
 ########################################################################################################################
+# CRM Organization Fields
+########################################################################################################################
+
+$collection->create('api_org_fields_get', array(
+	'path'         => '/org_fields/{id}',
+	'controller'   => 'ApiBundle:OrgFields:getCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_org_fields_create', array(
+	'path'       => '/org_fields',
+	'controller' => 'ApiBundle:OrgFields:saveCustomField',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_org_fields_save', array(
+	'path'         => '/org_fields/{id}',
+	'controller'   => 'ApiBundle:OrgFields:saveCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_org_fields', array(
+	'path'        => '/org_fields',
+	'controller'  => 'ApiBundle:OrgFields:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_org_fields_setenabled', array(
+	'path'        => '/org_fields/set-enabled/{field_id}/{is_enabled}',
+	'controller'  => 'ApiBundle:OrgFields:toggleField',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 
