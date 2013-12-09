@@ -38,7 +38,6 @@ define [
 
 		applyFormToModel: (model, formModel) ->
 
-			model.id = formModel.id
 			model.note = formModel.note
 
 		###

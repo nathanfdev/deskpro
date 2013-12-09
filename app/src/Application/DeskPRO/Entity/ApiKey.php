@@ -87,6 +87,11 @@ class ApiKey extends DomainObject
 		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
 	}
 
+	public static function createApiKey()
+	{
+		return new self();
+	}
+
 	/**
 	 * Get a "key string". This is a combined ID and code like id:code
 	 * that is used in auth lookup.

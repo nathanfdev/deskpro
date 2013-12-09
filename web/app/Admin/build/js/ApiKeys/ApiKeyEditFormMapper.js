@@ -35,7 +35,6 @@
 
 
       ApiKeyEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
-        model.id = formModel.id;
         return model.note = formModel.note;
       };
 

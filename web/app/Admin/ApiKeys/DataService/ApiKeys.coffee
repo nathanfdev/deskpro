@@ -76,17 +76,19 @@ define [
 
 			else
 
-				data = {}
-				data.api_key = {
-					id: null,
-					verified: false,
-					user: {
-					}
-				}
+				@Api.sendGet('/agents').then( (result) =>
 
-				data.form = @getFormMapper().getFormFromModel(data)
+					data = {}
 
-				deferred.resolve(data)
+					data.api_key = {user: {}}
+					data.all_agents = result.data.agents
+
+					data.form = @getFormMapper().getFormFromModel(data)
+
+					deferred.resolve(data)
+				, ->
+					deferred.reject()
+				)
 
 			return deferred.promise
 
