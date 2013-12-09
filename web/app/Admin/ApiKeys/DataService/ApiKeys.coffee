@@ -30,7 +30,7 @@ define [
 
 		deleteApiKeyById: (id) ->
 
-			promise = @Api.sendDelete('/api_keys/' + id).then(=>
+			promise = @Api.sendDelete('/api_keys/' + id).success( =>
 				@removeListModelById(id)
 			)
 

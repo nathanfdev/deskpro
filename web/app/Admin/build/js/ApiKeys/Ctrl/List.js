@@ -34,6 +34,49 @@
         return promise;
       };
 
+      /*
+      		# Show the delete dlg
+      */
+
+
+      Admin_ApiKeys_Ctrl_List.prototype.startDelete = function(for_key_id) {
+        var inst, key,
+          _this = this;
+        key = this.keyData.findListModelById(for_key_id);
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('ApiKeys/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.deleteApiKey(key);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+      */
+
+
+      Admin_ApiKeys_Ctrl_List.prototype.deleteApiKey = function(for_key) {
+        var _this = this;
+        return this.keyData.deleteApiKeyById(for_key.id).success(function() {
+          if (_this.$state.current.name === 'apps.api_keys.edit' && parseInt(_this.$state.params.id) === for_key.id) {
+            return _this.$state.go('apps.api_keys');
+          }
+        }).error(function(info, code) {
+          return _this.applyErrorResponseToView(info);
+        });
+      };
+
       return Admin_ApiKeys_Ctrl_List;
 
     })(Admin_Ctrl_Base);

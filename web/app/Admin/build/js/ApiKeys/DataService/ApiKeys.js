@@ -39,7 +39,7 @@
       ApiKeys.prototype.deleteApiKeyById = function(id) {
         var promise,
           _this = this;
-        promise = this.Api.sendDelete('/api_keys/' + id).then(function() {
+        promise = this.Api.sendDelete('/api_keys/' + id).success(function() {
           return _this.removeListModelById(id);
         });
         return promise;
