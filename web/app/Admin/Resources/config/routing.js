@@ -893,8 +893,54 @@ define(function() {
 	routes.push({
 		id: 'crm.banning',
 		url: '/banning',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Banning/list.html',
+		controller: 'Admin_Banning_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'crm.banning.create_ip',
+		url: '/create/ip',
+		templateName: 'Banning/edit-ip.html',
+		controller: 'Admin_Banning_Ctrl_EditIp'
+	});
+
+	routes.push({
+		id: 'crm.banning.gocreate_ip',
+		url: '/go-create/ip',
+		templateName: '',
+		controller: ['$state', function ($state) {
+			$state.go('crm.banning.create_ip');
+		}]
+	});
+
+	routes.push({
+		id: 'crm.banning.edit_ip',
+		url: '/{ip:.*}',
+		templateName: 'Banning/edit-ip.html',
+		controller: 'Admin_Banning_Ctrl_EditIp'
+	});
+
+	routes.push({
+		id: 'crm.banning.create_email',
+		url: '/create/email',
+		templateName: 'Banning/edit-email.html',
+		controller: 'Admin_Banning_Ctrl_EditEmail'
+	});
+
+	routes.push({
+		id: 'crm.banning.gocreate_email',
+		url: '/go-create/email',
+		templateName: '',
+		controller: ['$state', function ($state) {
+			$state.go('crm.banning.create_email');
+		}]
+	});
+
+	routes.push({
+		id: 'crm.banning.edit_email',
+		url: '/{email:.*}',
+		templateName: 'Banning/edit-email.html',
+		controller: 'Admin_Banning_Ctrl_EditEmail'
 	});
 
 	//###

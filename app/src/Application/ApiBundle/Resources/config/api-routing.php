@@ -3265,6 +3265,67 @@ $collection->create('api_org_fields_setenabled', array(
 ));
 
 ########################################################################################################################
+# CRM Banning
+########################################################################################################################
+
+$collection->create('api_banning', array(
+	'path'        => '/banning',
+	'controller'  => 'ApiBundle:Banning:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_banning_ip_create', array(
+	'path'        => '/banning_ip',
+	'controller'  => 'ApiBundle:Banning:saveIp',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_banning_email_create', array(
+	'path'        => '/banning_email',
+	'controller'  => 'ApiBundle:Banning:saveEmail',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_banning_ip_get', array(
+	'path'        => '/banning_ip/{id}',
+	'controller'  => 'ApiBundle:Banning:getIp',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_banning_email_get', array(
+	'path'        => '/banning_email/{id}',
+	'controller'  => 'ApiBundle:Banning:getEmail',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_banning_ip_save', array(
+	'path'        => '/banning_ip/{id}',
+	'controller'  => 'ApiBundle:Banning:saveIp',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_banning_email_save', array(
+	'path'        => '/banning_email/{id}',
+	'controller'  => 'ApiBundle:Banning:saveEmail',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_banning_ip_remove', array(
+	'path'        => '/banning_ip/{id}',
+	'controller'  => 'ApiBundle:Banning:removeIp',
+	'methods'     => array('DELETE'),
+));
+
+$collection->create('api_banning_email_remove', array(
+	'path'        => '/banning_email/{id}',
+	'controller'  => 'ApiBundle:Banning:removeEmail',
+	'methods'     => array('DELETE'),
+));
+
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 
