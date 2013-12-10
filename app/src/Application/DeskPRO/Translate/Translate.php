@@ -49,9 +49,8 @@ use Application\DeskPRO\Entity\Person;
 
 use Application\DeskPRO\EventDispatcher\DataEvent;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
 use Application\DeskPRO\HttpFoundation\Session;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class is responsible for loading phrases from a language stored in the database.
@@ -139,10 +138,10 @@ class Translate implements PersonContextInterface
 
 
 	/**
-	 * @param string $language The default language to use
-	 * @param LoaderInterface $loader A loader that'll load phrases from somehwere
+	 * @param LoaderInterface $loader
+	 * @param EventDispatcherInterface $event_dispatcher
 	 */
-	public function __construct(LoaderInterface $loader, EventDispatcher $event_dispatcher = null)
+	public function __construct(LoaderInterface $loader, EventDispatcherInterface $event_dispatcherr = null)
 	{
 		$this->setLanguage(SystemLanguage::getInstance(), false);
 		$this->loader = $loader;
@@ -151,7 +150,7 @@ class Translate implements PersonContextInterface
             \DpShutdown::add(array($this, 'reportMissingPhrases'));
         }
 
-		$this->_event_dispatcher = $event_dispatcher;
+		$this->_event_dispatcher = $event_dispatcherr;
 	}
 
 
