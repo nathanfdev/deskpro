@@ -97,6 +97,10 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 			if (empty($params['driver'])) {
 				$params['driver'] = 'pdo_mysql';
 			}
+
+			if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing' && !empty($GLOBALS['DP_TESTING_USEDB'])) {
+				$params['dbname'] = $GLOBALS['DP_TESTING_USEDB'];
+			}
 		}
 
 		// Sometimes in a pre-boot handler like serve_file.php we might
