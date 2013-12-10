@@ -2071,6 +2071,7 @@ $label_types = array(
 	array('route' => 'feedback', 'route_url' => 'feedback', 'controller' => 'FeedbackLabels'),
 	array('route' => 'chat',     'route_url' => 'chat',     'controller' => 'ChatLabels'),
 	array('route' => 'kb',       'route_url' => 'kb',       'controller' => 'KbLabels'),
+	array('route' => 'news',     'route_url' => 'news',     'controller' => 'NewsLabels'),
 );
 
 foreach ($label_types as $info) {

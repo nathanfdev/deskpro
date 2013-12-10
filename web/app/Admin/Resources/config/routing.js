@@ -1035,11 +1035,35 @@ define(function() {
 	//###
 	//# News::Labels
 	//###
+
 	routes.push({
 		id: 'portal.news_labels',
 		url: '/news/labels',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Labels/News/list.html',
+		controller: 'Admin_Labels_News_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'portal.news_labels.create',
+		url: '/create/',
+		templateName: 'Labels/News/edit.html',
+		controller: 'Admin_Labels_News_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'portal.news_labels.gocreate',
+		url: '/go-create/',
+		templateName: 'Labels/News/edit.html',
+		controller: ['$state', function ($state) {
+			$state.go('portal.news_labels.create');
+		}]
+	});
+
+	routes.push({
+		id: 'portal.news_labels.edit',
+		url: '/{label:.*}/',
+		templateName: 'Labels/News/edit.html',
+		controller: 'Admin_Labels_News_Ctrl_Edit'
 	});
 
 	//###
