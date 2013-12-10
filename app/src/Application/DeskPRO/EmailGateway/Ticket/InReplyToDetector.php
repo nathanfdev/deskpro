@@ -150,7 +150,7 @@ class InReplyToDetector implements TicketDetectorInterface
 	 *
 	 * @return void
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return true;
 	}

@@ -72,7 +72,6 @@ use Orb\Util\Util;
  * @property LabelTicket[] $labels
  * @property string $sent_to_address
  * @property EmailGateway $email_gateway
- * @property EmailGatewayAddress $email_gateway_address
  * @property string $creation_system
  * @property string $creation_system_option
  * @property string $ticket_hash
@@ -272,13 +271,6 @@ class Ticket extends DomainObject
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 */
 	protected $email_gateway = null;
-
-	/**
-	 * The gateway email address the ticket matched
-	 *
-	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
-	 */
-	protected $email_gateway_address = null;
 
 	/**
 	 * @var string

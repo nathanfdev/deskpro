@@ -47,7 +47,7 @@ use Orb\Log\Loggable;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class CodeTicketDetector implements TicketDetectorInterface, Loggable
+class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterface, TacPersonDetectorInterface, Loggable
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAccessCode
@@ -85,7 +85,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -240,8 +240,9 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		return null;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -254,20 +255,18 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Person|null
+	 * {@inheritDoc}
 	 */
-	public function getTacPerson()
+	public function findTacPerson(AbstractReader $reader)
 	{
 		return $this->_tac_person;
 	}
 
 
 	/**
-	 * Unknown people are added as CC's. If you know the P/TAC then it's as good as a passowrd.
-	 *
-	 * @return bool
+	 * {@inheritDoc}
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return true;
 	}
@@ -281,6 +280,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 	{
 		$this->logger = $logger;
 	}
+
 
 	/**
 	 * @return \Orb\Log\Logger

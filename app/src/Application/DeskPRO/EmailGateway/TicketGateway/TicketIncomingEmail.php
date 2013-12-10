@@ -29,92 +29,63 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category EmailGateway
  */
 
-namespace Application\DeskPRO\EmailGateway\Ticket;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use Application\DeskPRO\Entity\Ticket;
-
-use Orb\Util\Strings;
+namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 /**
- * Detects a ticket based off of REF codes in the subject
+ * A simple struct for keeping track of some ticket email properties
  */
-class SubjectRefMatchDetector implements TicketDetectorInterface
+class TicketIncomingEmail
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
 	 */
-	protected $_found_person = null;
+	public $reader;
 
 	/**
-	 * @var int
+	 * @var \Application\DeskPRO\Entity\Ticket|null
 	 */
-	protected $_time_cutoff = 0;
-
+	public $ticket;
 
 	/**
-	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
+	 * @var \Application\DeskPRO\Entity\Person|null
 	 */
-	public function __construct($time_cutoff = 604800 /* 7 days */)
-	{
-		$this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
-	}
-
+	public $person;
 
 	/**
-	 * {@inheritDoc}
+	 * @var \Application\DeskPRO\Entity\Person|null
 	 */
-	public function findExistingTicket(AbstractReader $reader)
-	{
-		$this->_found_person = null;
-
-		$subject = trim($reader->getSubject()->subject);
-
-		$ticket_refs = App::getSystemService('RefGenerator')->extractRefs($subject);
-		if (!$ticket_refs) return null;
-
-		foreach ($ticket_refs as $ref) {
-			try {
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ref);
-			} catch (\Exception $e) {
-				continue;
-			}
-
-			if (!$ticket) {
-				continue;
-			}
-
-			if (!$ticket->isArchived() && $p = $ticket->findUserByEmail($reader->getFromAddress()->getEmail())) {
-				$this->_found_person = $p;
-				return $ticket;
-			}
-		}
-
-		return null;
-	}
-
+	public $tac_person;
 
 	/**
-	 * {@inheritDoc}
+	 * @var bool
 	 */
-	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		if ($this->_found_person) {
-			return $this->_found_person;
-		}
-
-		return null;
-	}
-
+	public $is_bounce;
 
 	/**
-	 * {@inheritDoc}
+	 * @var bool
 	 */
-	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		return false;
-	}
+	public $force_reply_cutter = false;
+
+	/**
+	 * @var array|null
+	 */
+	public $reply_actions;
+
+	/**
+	 * @var string
+	 */
+	public $email_body_html;
+
+	/**
+	 * @var string
+	 */
+	public $email_body_text;
+
+	/**
+	 * @var bool
+	 */
+	public $is_dp3_reply = false;
 }

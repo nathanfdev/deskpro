@@ -87,7 +87,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -121,8 +121,9 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		return null;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -133,7 +134,11 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		return null;
 	}
 
-	public function canAddUnknownPerson()
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return true;
 	}

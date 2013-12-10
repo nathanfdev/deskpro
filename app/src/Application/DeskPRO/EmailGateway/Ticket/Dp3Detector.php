@@ -50,7 +50,7 @@ class Dp3Detector implements TicketDetectorInterface
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -262,7 +262,7 @@ class Dp3Detector implements TicketDetectorInterface
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -271,9 +271,9 @@ class Dp3Detector implements TicketDetectorInterface
 
 
 	/**
-	 * @return bool
+	 * {@inheritDoc}
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return false;
 	}

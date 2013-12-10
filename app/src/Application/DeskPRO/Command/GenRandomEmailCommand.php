@@ -52,7 +52,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		$this->addOption('with-owl', null, InputOption::VALUE_NONE);
 		$this->addOption('owl-size', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('real-send', null, InputOption::VALUE_NONE);
-		$this->addOption('subject', null, InputOption::VALUE_NONE);
+		$this->addOption('subject', null, InputOption::VALUE_REQUIRED);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -75,7 +75,8 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-Test Subject - 2012-12-10 19:15:29
+Test Message
+%MSG_UID%
 
 -- Christopher
 
@@ -87,7 +88,7 @@ Content-Disposition: inline
 
 
 <div>Test Message</div>
-%MSG_UID%
+<div>%MSG_UID%</div>
 
 --50c634de_3222e7cd_af2f--
 
@@ -665,7 +666,8 @@ Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
 <div>Test Message</div>
-%MSG_UID%
+<div>%MSG_UID%</div>
+
 
 --50c77e34_1d4ed43b_dfd0--
 

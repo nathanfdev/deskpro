@@ -33,88 +33,17 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 
-use Orb\Util\Strings;
-
 /**
- * Detects a ticket based off of REF codes in the subject
+ * A detector class may also be able to detect people from a TAC code.
  */
-class SubjectRefMatchDetector implements TicketDetectorInterface
+interface TacPersonDetectorInterface
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
+	 * @param AbstractReader $reader
+	 * @return \Application\DeskPRO\Entity\Person|null
 	 */
-	protected $_found_person = null;
-
-	/**
-	 * @var int
-	 */
-	protected $_time_cutoff = 0;
-
-
-	/**
-	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
-	 */
-	public function __construct($time_cutoff = 604800 /* 7 days */)
-	{
-		$this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findExistingTicket(AbstractReader $reader)
-	{
-		$this->_found_person = null;
-
-		$subject = trim($reader->getSubject()->subject);
-
-		$ticket_refs = App::getSystemService('RefGenerator')->extractRefs($subject);
-		if (!$ticket_refs) return null;
-
-		foreach ($ticket_refs as $ref) {
-			try {
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ref);
-			} catch (\Exception $e) {
-				continue;
-			}
-
-			if (!$ticket) {
-				continue;
-			}
-
-			if (!$ticket->isArchived() && $p = $ticket->findUserByEmail($reader->getFromAddress()->getEmail())) {
-				$this->_found_person = $p;
-				return $ticket;
-			}
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		if ($this->_found_person) {
-			return $this->_found_person;
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		return false;
-	}
+	public function findTacPerson(AbstractReader $reader);
 }

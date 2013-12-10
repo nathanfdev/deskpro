@@ -44,6 +44,11 @@ abstract class AbstractGatewayProcessor
 	const EVENT_PROCESS_BLOBS       = 'DeskPRO_onEmailGatewayProcessBlobs';
 
 	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	protected $container;
+
+	/**
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
 	 */
 	protected $reader;
@@ -92,12 +97,13 @@ abstract class AbstractGatewayProcessor
 	protected $cleaner;
 
 	/**
-	 * @var \Orb\Log\Writer\Stream
+	 * @var \Orb\Log\Logger
 	 */
 	public $logger;
 
 	public function __construct(Entity\EmailGateway $gateway, AbstractReader $reader, array $options = array())
 	{
+		$this->container    = App::getContainer();
 		$this->gateway      = $gateway;
 		$this->reader       = $reader;
 		$this->options      = $options;
@@ -230,6 +236,24 @@ abstract class AbstractGatewayProcessor
 	public function getReader()
 	{
 		return $this->reader;
+	}
+
+
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getEm()
+	{
+		return $this->container->getEm();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->container->getDb();
 	}
 
 
