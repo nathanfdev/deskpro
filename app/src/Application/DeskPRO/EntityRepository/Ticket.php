@@ -559,7 +559,7 @@ class Ticket extends AbstractEntityRepository
 	{
 		App::getDb()->exec("TRUNCATE TABLE tickets_search_active");
 		App::getDb()->exec("
-			INSERT INTO tickets_search_active (
+			INSERT IGNORE INTO tickets_search_active (
 				`id`, `language_id`, `department_id`, `category_id`,
 				`priority_id`, `workflow_id`, `product_id`, `person_id`, `email_gateway_id`,
 				`agent_id`, `agent_team_id`, `organization_id`, `creation_system`, `status`, `is_hold`,
@@ -575,8 +575,8 @@ class Ticket extends AbstractEntityRepository
 				`total_to_first_reply`
 			FROM tickets
 			WHERE status IN ('awaiting_agent', 'awaiting_user', 'resolved')
+			ORDER BY id ASC
 		");
-
 		$this->_em->getConnection()->executeQuery("REPLACE INTO settings SET name = 'core.last_searchtables_refill', value = '".time()."'");
 		$this->_em->getConnection()->executeQuery("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '0'");
 	}
