@@ -60,6 +60,7 @@ class LabelDefManager
 		'people'               => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
 		'tasks'                => array('table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'),
 		'tickets'              => array('table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'),
+		'kb'                   => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
 	);
 
 	/**

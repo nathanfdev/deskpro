@@ -137,6 +137,8 @@ requirejs([
 	'Admin/Labels/Feedback/Ctrl/Edit',
 	'Admin/Labels/Chat/Ctrl/List',
 	'Admin/Labels/Chat/Ctrl/Edit',
+	'Admin/Labels/Kb/Ctrl/List',
+	'Admin/Labels/Kb/Ctrl/Edit',
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/Templates/Ctrl/EmailTemplateEditor',
 	'Admin/TicketAccounts/Ctrl/List',

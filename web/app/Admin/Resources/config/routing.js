@@ -971,11 +971,35 @@ define(function() {
 	//###
 	//# Kb::Labels
 	//###
+
 	routes.push({
 		id: 'portal.kb_labels',
 		url: '/kb/labels',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Labels/Kb/list.html',
+		controller: 'Admin_Labels_Kb_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'portal.kb_labels.create',
+		url: '/create/',
+		templateName: 'Labels/Kb/edit.html',
+		controller: 'Admin_Labels_Kb_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'portal.kb_labels.gocreate',
+		url: '/go-create/',
+		templateName: 'Labels/Kb/edit.html',
+		controller: ['$state', function ($state) {
+			$state.go('portal.kb_labels.create');
+		}]
+	});
+
+	routes.push({
+		id: 'portal.kb_labels.edit',
+		url: '/{label:.*}/',
+		templateName: 'Labels/Kb/edit.html',
+		controller: 'Admin_Labels_Kb_Ctrl_Edit'
 	});
 
 	//###
