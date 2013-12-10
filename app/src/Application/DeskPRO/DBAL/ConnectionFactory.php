@@ -80,6 +80,8 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 		$host = $params['host'];
 		$m = null;
 		$dp_global_key = null;
+		$recreate_retry = false;
+
 		if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
 			$key = $m[1];
 			$dp_global_key = $key;
@@ -100,6 +102,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 
 			if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing' && !empty($GLOBALS['DP_TESTING_USEDB'])) {
 				$params['dbname'] = $GLOBALS['DP_TESTING_USEDB'];
+				$recreate_retry = true;
 			}
 		}
 
@@ -111,6 +114,29 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 
 		/** @var $conn \Doctrine\DBAL\Connection */
 		$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
+
+		if ($recreate_retry) {
+			try {
+				$conn->connect();
+			} catch (\PDOException $err) {
+				if (strpos($err->getMessage(), 'Unknown database') !== false) {
+					$params_2 = $params;
+					unset($params_2['dbname']);
+					try {
+						$conn2 = parent::createConnection($params_2);
+						$conn2->exec("CREATE DATABASE `{$params['dbname']}`");
+
+						$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
+						$conn->connect();
+					} catch (\Exception $e) {
+						error_log("Could not create test database: {$e->getMessage()}");
+						throw $err;
+					}
+				} else {
+					throw $err;
+				}
+			}
+		}
 
 		$evm = $conn->getEventManager();
 
