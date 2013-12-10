@@ -13,7 +13,6 @@
 		"monolog/monolog": ">=1.0.0",
 		"pda/pheanstalk": "2.1.*",
 		"leth/ip-address": "dev-master",
-		"kriswallsmith/spork": "dev-master",
 		"symfony/symfony": "~2.3",
 		"symfony/monolog-bundle": "*",
 		"friendsofsymfony/jsrouting-bundle": "~1.3",
@@ -25,14 +24,8 @@
 		"zendframework/zend-queue": "dev-master",
 		"squizlabs/php_codesniffer": "1.4.7",
 		"phpmd/phpmd": "1.5.0",
-
-		"phpunit/phpunit": "3.7.*",
-		"behat/behat": "2.4.*@stable",
-        "behat/mink": "1.4.*@stable",
-        "behat/mink-extension": "*",
-        "behat/mink-goutte-driver": "*",
-        "behat/mink-selenium2-driver": "*",
-		"satooshi/php-coveralls": "~0.6"
+		"satooshi/php-coveralls": "~0.6",
+		"codeception/codeception": "*"
 	},
 	"scripts": {
 		"pre-update-cmd":   ["rm -rf vendor/", "mkdir vendor"],

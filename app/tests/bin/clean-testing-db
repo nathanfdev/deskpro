@@ -1,5 +1,0 @@
-#!/usr/bin/env php
-<?php
-require(__DIR__.'/../bootstrap.php');
-DpTestConfig::initTestDb('FreshDb', true);
-echo "\n";

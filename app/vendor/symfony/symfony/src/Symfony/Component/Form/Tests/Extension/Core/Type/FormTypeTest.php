@@ -534,6 +534,21 @@ class FormTypeTest extends BaseTypeTest
         $this->assertFalse($view->vars['valid']);
     }
 
+    public function testViewSubmittedNotSubmitted()
+    {
+        $form = $this->factory->create('form');
+        $view = $form->createView();
+        $this->assertFalse($view->vars['submitted']);
+    }
+
+    public function testViewSubmittedSubmitted()
+    {
+        $form = $this->factory->create('form');
+        $form->submit(array());
+        $view = $form->createView();
+        $this->assertTrue($view->vars['submitted']);
+    }
+
     public function testDataOptionSupersedesSetDataCalls()
     {
         $form = $this->factory->create('form', null, array(
@@ -544,6 +559,18 @@ class FormTypeTest extends BaseTypeTest
         $form->setData('foobar');
 
         $this->assertSame('default', $form->getData());
+    }
+
+    public function testDataOptionSupersedesSetDataCallsIfNull()
+    {
+        $form = $this->factory->create('form', null, array(
+            'data' => null,
+            'compound' => false,
+        ));
+
+        $form->setData('foobar');
+
+        $this->assertNull($form->getData());
     }
 
     public function testNormDataIsPassedToView()
