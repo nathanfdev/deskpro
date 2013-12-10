@@ -141,6 +141,8 @@ requirejs([
 	'Admin/Labels/Kb/Ctrl/Edit',
 	'Admin/Labels/News/Ctrl/List',
 	'Admin/Labels/News/Ctrl/Edit',
+	'Admin/Labels/Downloads/Ctrl/List',
+	'Admin/Labels/Downloads/Ctrl/Edit',
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/Templates/Ctrl/EmailTemplateEditor',
 	'Admin/TicketAccounts/Ctrl/List',

@@ -1015,12 +1015,37 @@ define(function() {
 	//###
 	//# Downloads::Labels
 	//###
+
 	routes.push({
 		id: 'portal.downloads_labels',
 		url: '/downloads/labels',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Labels/Downloads/list.html',
+		controller: 'Admin_Labels_Downloads_Ctrl_List'
 	});
+
+	routes.push({
+		id: 'portal.downloads_labels.create',
+		url: '/create/',
+		templateName: 'Labels/Downloads/edit.html',
+		controller: 'Admin_Labels_Downloads_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'portal.downloads_labels.gocreate',
+		url: '/go-create/',
+		templateName: 'Labels/Downloads/edit.html',
+		controller: ['$state', function ($state) {
+			$state.go('portal.downloads_labels.create');
+		}]
+	});
+
+	routes.push({
+		id: 'portal.downloads_labels.edit',
+		url: '/{label:.*}/',
+		templateName: 'Labels/Downloads/edit.html',
+		controller: 'Admin_Labels_Downloads_Ctrl_Edit'
+	});
+
 
 	//###
 	//# News::Settings

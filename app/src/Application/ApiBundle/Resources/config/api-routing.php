@@ -2065,13 +2065,14 @@ $collection->create('api_get_activity', array(
 ########################################################################################################################
 
 $label_types = array(
-	array('route' => 'ticket',   'route_url' => 'ticket',   'controller' => 'TicketLabels'),
-	array('route' => 'person',   'route_url' => 'person',   'controller' => 'PersonLabels'),
-	array('route' => 'org',      'route_url' => 'org',      'controller' => 'OrgLabels'),
-	array('route' => 'feedback', 'route_url' => 'feedback', 'controller' => 'FeedbackLabels'),
-	array('route' => 'chat',     'route_url' => 'chat',     'controller' => 'ChatLabels'),
-	array('route' => 'kb',       'route_url' => 'kb',       'controller' => 'KbLabels'),
-	array('route' => 'news',     'route_url' => 'news',     'controller' => 'NewsLabels'),
+	array('route' => 'ticket',    'route_url' => 'ticket',    'controller' => 'TicketLabels'),
+	array('route' => 'person',    'route_url' => 'person',    'controller' => 'PersonLabels'),
+	array('route' => 'org',       'route_url' => 'org',       'controller' => 'OrgLabels'),
+	array('route' => 'feedback',  'route_url' => 'feedback',  'controller' => 'FeedbackLabels'),
+	array('route' => 'chat',      'route_url' => 'chat',      'controller' => 'ChatLabels'),
+	array('route' => 'kb',        'route_url' => 'kb',        'controller' => 'KbLabels'),
+	array('route' => 'news',      'route_url' => 'news',      'controller' => 'NewsLabels'),
+	array('route' => 'downloads', 'route_url' => 'downloads', 'controller' => 'DownloadsLabels'),
 );
 
 foreach ($label_types as $info) {
