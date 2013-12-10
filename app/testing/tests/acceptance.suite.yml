@@ -1,8 +1,10 @@
 class_name: WebGuy
 modules:
     enabled:
-        - PhpBrowser
+        - DpControlHelper
+        - WebDriver
         - WebHelper
     config:
-        PhpBrowser:
+        WebDriver:
             url: 'http://localhost:8888/'
+            browser: firefox
