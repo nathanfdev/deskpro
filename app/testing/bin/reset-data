@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+define('DP_BOOT_MODE', 'testing');
+require(__DIR__. '/../../../index.php');
+require(__DIR__. '/../src/DpTestEnv.php');
+DpTestEnv::init();
+
+$db = DpTestEnv::getContainer()->getDb();
+$db_names = $db->fetchAllCol("SHOW DATABASES");
+foreach ($db_names as $db_name) {
+	if (strpos($db_name, 'dp_test_') === 0) {
+		echo "DROP DATABASE $db_name ... ";
+		$db->exec("DROP DATABASE $db_name");
+		echo "Done\n";
+	}
+}
+
+echo "Removing testing/data/dbset-cache ... ";
+$db_set_cache = DP_ROOT.'/testing/data/dbset-cache';
+`rm -rf $db_set_cache`;
+echo "Done\n";

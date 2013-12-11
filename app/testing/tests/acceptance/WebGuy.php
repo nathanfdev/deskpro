@@ -2769,6 +2769,25 @@ class WebGuy extends \Codeception\AbstractGuy
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
+     * Starts a new admin
+     * @see Codeception\Module\WebHelper::startAgentSession()
+     * @return \Codeception\Maybe
+     */
+    public function startAgentSession($agent_email) {
+        $this->scenario->addStep(new \Codeception\Step\Action('startAgentSession', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
      * @return \Codeception\Module\DpControlHelper
      * @see Codeception\Module\WebHelper::getDpControlHelper()
      * @return \Codeception\Maybe

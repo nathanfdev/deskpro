@@ -100,9 +100,14 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 				$params['driver'] = 'pdo_mysql';
 			}
 
+			// When in testing mode, the db might be changed by overwriting a var
 			if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing' && !empty($GLOBALS['DP_TESTING_USEDB'])) {
 				$params['dbname'] = $GLOBALS['DP_TESTING_USEDB'];
 				$recreate_retry = true;
+
+			// When testing a web request (eg selenium), there might exist a file that contains a different db name
+			} else if (isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'] && file_exists(DP_WEB_ROOT.'/testing_db_name')) {
+				$params['dbname'] = trim(file_get_contents(DP_WEB_ROOT.'/testing_db_name'));
 			}
 		}
 

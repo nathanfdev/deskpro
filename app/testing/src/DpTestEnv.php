@@ -60,7 +60,7 @@ class DpTestEnv
 			require_once(DP_ROOT . '/testing/src/DbSet/'.$set_name.'.php');
 		}
 
-		$cache_path = DP_ROOT.'/testing/data';
+		$cache_path = DP_ROOT.'/testing/data/dbset-cache';
 		if (!is_dir($cache_path)) {
 			mkdir($cache_path, 0777, true);
 			chmod($cache_path, 0777);
@@ -80,6 +80,11 @@ class DpTestEnv
 			'mysqldump'
 		);
 		$set->install($reset);
+
+		@file_put_contents(DP_WEB_ROOT.'/testing_db_name', $GLOBALS['DP_TESTING_USEDB']);
+		register_shutdown_function(function() {
+			@unlink(DP_WEB_ROOT.'/testing_db_name');
+		});
 	}
 
 
@@ -89,8 +94,9 @@ class DpTestEnv
 	 * So the next time you fetch the container, you'll get a conn
 	 * to the default db.
 	 */
-	public static function restoreDefaultDb()
+	public static function enableDefaultDb()
 	{
 		unset($GLOBALS['DP_TESTING_USEDB']);
+		@unlink(DP_WEB_ROOT.'/testing_db_name');
 	}
 }

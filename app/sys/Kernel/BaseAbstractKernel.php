@@ -166,8 +166,25 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	{
 		// Make sure the cache dirs exist
 		$env_dir = realpath($this->getCacheDir() . '/../');
-		if (!file_exists($env_dir . '/doctrine-proxies')) mkdir($env_dir . '/doctrine-proxies', 0777, true);
-		if (!file_exists($env_dir . '/twig-compiled')) mkdir($env_dir . '/twig-compiled', 0777, true);
+		if (!is_dir($this->getCacheDir())) {
+			mkdir($this->getCacheDir(), 0777, true);
+		}
+		if (!file_exists($env_dir . '/doctrine-proxies')) {
+			mkdir($env_dir . '/doctrine-proxies', 0777, true);
+		}
+		if (!file_exists($env_dir . '/twig-compiled')) {
+			@mkdir($env_dir . '/twig-compiled', 0777, true);
+		}
+
+		@chmod($this->getCacheDir(), 0777);
+		@chmod($env_dir . '/doctrine-proxies', 0777);
+		@chmod($env_dir . '/twig-compiled', 0777);
+
+		// Clear the dql cache when the container is regenerated as well
+		$dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
+		if (file_exists($dql_cache)) {
+			@unlink($dql_cache);
+		}
 
 		// cache the container
 		$dumper = new PhpDumper($container);
@@ -181,7 +198,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		// Correct double slash paths
 		$content = str_replace('prod//', 'prod/', $content);
 		// Empty logs dir that isn't used (we get it from conf)
-		$content = preg_replace("#'kernel\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
+		$content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
 
 		$cache->write($content, $container->getResources());
 	}

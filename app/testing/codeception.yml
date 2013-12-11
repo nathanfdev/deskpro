@@ -1,6 +1,6 @@
 paths:
     tests: tests
-    log: log
+    log: logs
     data: data
     helpers: helpers
 settings:
