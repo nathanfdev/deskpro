@@ -14,6 +14,7 @@
         this.listModels = [];
         this.idProp = 'id';
         this.orderField = 'display_order';
+        this.subLists = [];
         this.init();
       }
 
@@ -59,19 +60,57 @@
       };
 
       /*
-        	# Sets ist data on the @listModels object
+       	# This is useful if we need to store 2 or more lists instead of default one
+       	# Call this method somewhere ( init() method of data servcie is preferrable) and use array of names of sub lists
+       	#
+       	# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
+      */
+
+
+      Admin_Main_DataService_BaseListEdit.prototype.setSubLists = function(subLists) {
+        if (Util.isArray(subLists)) {
+          return this.subLists = subLists;
+        }
+      };
+
+      /*
+      # Sets ist data on the @listModels object
       */
 
 
       Admin_Main_DataService_BaseListEdit.prototype._setListData = function(listModels) {
-        var model, _i, _len, _results;
+        var model, subModel, _i, _j, _len, _len1, _ref, _results, _results1;
         this.listModels.length = 0;
-        _results = [];
-        for (_i = 0, _len = listModels.length; _i < _len; _i++) {
-          model = listModels[_i];
-          _results.push(this.listModels.push(model));
+        if (this.subLists.length) {
+          this.listModels = {};
+          _ref = this.subLists;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            subModel = _ref[_i];
+            this.listModels[subModel] = [];
+            if (!listModels[subModel]) {
+              throw new Error("There is no values with key " + subModel + " in data returned by server");
+            }
+            _results.push((function() {
+              var _j, _len1, _ref1, _results1;
+              _ref1 = listModels[subModel];
+              _results1 = [];
+              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                model = _ref1[_j];
+                _results1.push(this.listModels[subModel].push(model));
+              }
+              return _results1;
+            }).call(this));
+          }
+          return _results;
+        } else {
+          _results1 = [];
+          for (_j = 0, _len1 = listModels.length; _j < _len1; _j++) {
+            model = listModels[_j];
+            _results1.push(this.listModels.push(model));
+          }
+          return _results1;
         }
-        return _results;
       };
 
       /*
@@ -167,7 +206,7 @@
        	#
        	#	@param {Object} obj - model object
        	# @param {Object} form - form object
-       	# @return {Boolean|
+       	# @return {Boolean}
       */
 
 

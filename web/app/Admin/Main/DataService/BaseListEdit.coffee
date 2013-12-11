@@ -19,6 +19,7 @@ define [
 			@listModels        = []
 			@idProp            = 'id'
 			@orderField        = 'display_order'
+			@subLists          = []
 			@init()
 
 
@@ -60,14 +61,40 @@ define [
 
 			return @loadListPromise
 
+		###
+ 	# This is useful if we need to store 2 or more lists instead of default one
+ 	# Call this method somewhere ( init() method of data servcie is preferrable) and use array of names of sub lists
+ 	#
+ 	# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
+ 	###
+
+		setSubLists: (subLists) ->
+
+			if Util.isArray(subLists) then @subLists = subLists
 
 		###
-    	# Sets ist data on the @listModels object
-    	###
+  # Sets ist data on the @listModels object
+  ###
+
 		_setListData: (listModels) ->
+
 			@listModels.length = 0
-			for model in listModels
-				@listModels.push(model)
+
+			if @subLists.length
+
+				@listModels = {}
+				for subModel in @subLists
+					@listModels[subModel] = []
+
+					if !listModels[subModel] then throw new Error("There is no values with key #{subModel} in data returned by server")
+
+					for model in listModels[subModel]
+						@listModels[subModel].push(model)
+
+			else
+
+				for model in listModels
+					@listModels.push(model)
 
 
 		###
