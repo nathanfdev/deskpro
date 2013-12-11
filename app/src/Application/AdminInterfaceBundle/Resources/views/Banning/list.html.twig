@@ -1,0 +1,59 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.list.ip_bans.length || 0"
+				when="{{ ng_plural_phrase('adm.general.x_ip_bans') }}">
+
+			</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.ip_bans"
+					dp-state-mark="crm.banning.edit_ip.ban">
+					<a href="{{ ng_href('crm.banning.edit_ip', '{ban: ban}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('ban') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
+				   href="{{ ng_href('crm.banning.gocreate_ip') }}">
+					<i class="fa fa-plus"></i> New IP Ban
+				</a>
+			</div>
+		</article>
+	</section>
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.list.email_bans.length || 0"
+				when="{{ ng_plural_phrase('adm.general.x_email_bans') }}">
+
+			</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.email_bans"
+					dp-state-mark="crm.banning.edit_email.ban">
+					<a href="{{ ng_href('crm.banning.edit_email', '{ban: ban}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('ban') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
+				   href="{{ ng_href('crm.banning.gocreate_email') }}">
+					<i class="fa fa-plus"></i> New Email Ban
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:Banning:help-page.html.twig' %}
+{% endblock %}

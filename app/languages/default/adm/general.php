@@ -44,4 +44,6 @@
 	'adm.general.x_ticket_escalations'               => '{{count}} Ticket Escalation|{{count}} Ticket Escalations',
 	'adm.general.x_twitter_accounts'                 => '{{count}} Twitter Account|{{count}} Twitter Accounts',
 	'adm.general.x_api_keys'                         => '{{count}} Api Key|{{count}} Api Keys',
+	'adm.general.x_ip_bans'                          => '{{count}} IP Ban|{{count}} IP Bans',
+	'adm.general.x_email_bans'                       => '{{count}} Email Ban|{{count}} Email Bans',
 );
