@@ -230,8 +230,9 @@ abstract class AbstractDbSet
 	 * - Applies the set that installs any additional data on the database
 	 *
 	 * @param bool $force   True to force resetting the DB even if the set is already installed (e.g., resetting after every test)
+	 * @param bool $reset_after  Reset the database after (eg next time it is used). Use this to reset the db after a destructive test.
 	 */
-	public function install($force = false)
+	public function install($force = false, $reset_after = false)
 	{
 		$do_install = false;
 
@@ -242,6 +243,11 @@ abstract class AbstractDbSet
 				$installed_set = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.dp_testing_dbset'");
 				if (!$installed_set || $installed_set != $this->getCacheName()) {
 					$do_install = true;
+				}
+
+				$is_marked_reset = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.dp_testing_dbset_resetafter'");
+				if ($is_marked_reset) {
+					$is_marked_reset = true;
 				}
 			} catch (\Exception $e) {
 				$do_install = true;
@@ -265,6 +271,13 @@ abstract class AbstractDbSet
 				REPLACE INTO `settings` (`name`, `value`)
 				VALUES ('core.dp_testing_dbset', '" . $this->getCacheName() . "')
 			");
+
+			if ($reset_after) {
+				$this->getDb()->exec("
+					REPLACE INTO `settings` (`name`, `value`)
+					VALUES ('core.dp_testing_dbset_resetafter', '1')
+				");
+			}
 		}
 	}
 

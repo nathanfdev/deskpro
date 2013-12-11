@@ -73,14 +73,35 @@ class CodeGuy extends \Codeception\AbstractGuy
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
-     * Sets the database set to a fresh version of the set (eg it is re-created if it already exists).
+     * Like enableDatabaseSet but will always use a freshly built db.
 	 *
 	 * @param string $set_name
-     * @see Codeception\Module\DpControlHelper::resetDatabaseSet()
+     * @see Codeception\Module\DpControlHelper::enableFreshDatabaseSet()
      * @return \Codeception\Maybe
      */
-    public function resetDatabaseSet($set_name) {
-        $this->scenario->addStep(new \Codeception\Step\Action('resetDatabaseSet', func_get_args()));
+    public function enableFreshDatabaseSet($set_name) {
+        $this->scenario->addStep(new \Codeception\Step\Action('enableFreshDatabaseSet', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     * Like enableDatabaseSet except this will reset the database set afterwards.
+	 *
+	 * @param string $set_name
+     * @see Codeception\Module\DpControlHelper::enableDestructiveDatabaseSet()
+     * @return \Codeception\Maybe
+     */
+    public function enableDestructiveDatabaseSet($set_name, $reset = null) {
+        $this->scenario->addStep(new \Codeception\Step\Action('enableDestructiveDatabaseSet', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
             return new Maybe($result);
@@ -100,6 +121,28 @@ class CodeGuy extends \Codeception\AbstractGuy
      */
     public function useDefaultDatabase() {
         $this->scenario->addStep(new \Codeception\Step\Action('useDefaultDatabase', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     * Loads fixtures into the current database.
+	 * Note that this will mark the database to be reset.
+	 *
+	 * @param array $fixtures
+     * @see Codeception\Module\DpControlHelper::loadFixtures()
+     * @return \Codeception\Maybe
+     */
+    public function loadFixtures($fixtures) {
+        $this->scenario->addStep(new \Codeception\Step\Action('loadFixtures', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
             return new Maybe($result);

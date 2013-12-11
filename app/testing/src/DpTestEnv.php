@@ -27,6 +27,16 @@
 
 class DpTestEnv
 {
+	/**
+	 * @var array
+	 */
+	private static $reset_db_sets = array();
+
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	private static $last_container = null;
+
 	public static function init()
 	{
 		static $has_init;
@@ -44,17 +54,37 @@ class DpTestEnv
 	 */
 	public static function getContainer()
 	{
+		if (self::$last_container !== null) {
+			return self::$last_container;
+		}
 		$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
 		$kernel->boot('cli');
+
+		self::$last_container = $kernel->getContainer();
 		return $kernel->getContainer();
 	}
 
 
 	/**
-	 * Enables the current database set. $reset will reset the database if it already exists.
+	 * Resets the container so next time it'll be re-created.
 	 */
-	public static function enableDatabaseSet($set_name = 'FreshDb', $reset = false)
+	public static function resetContainer()
 	{
+		self::$last_container = null;
+	}
+
+
+	/**
+	 * Enables the current database set. $reset will reset the database if it already exists.
+	 *
+	 * @param string $set_name     The set name to restore
+	 * @param bool   $reset        Force reset the database even if it already exists
+	 * @param bool   $reset_after  Reset the database after (eg next time it is used). Use this to reset the db after a destructive test.
+	 */
+	public static function enableDatabaseSet($set_name = 'FreshDb', $reset = false, $reset_after = false)
+	{
+		self::resetContainer();
+
 		require_once(DP_ROOT . '/testing/src/DbSet/AbstractDbSet.php');
 		if (file_exists(DP_ROOT . '/testing/src/DbSet/'.$set_name.'.php')) {
 			require_once(DP_ROOT . '/testing/src/DbSet/'.$set_name.'.php');
@@ -79,7 +109,7 @@ class DpTestEnv
 			'mysql',
 			'mysqldump'
 		);
-		$set->install($reset);
+		$set->install($reset, $reset_after);
 
 		@file_put_contents(DP_WEB_ROOT.'/testing_db_name', $GLOBALS['DP_TESTING_USEDB']);
 		register_shutdown_function(function() {

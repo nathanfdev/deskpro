@@ -7,25 +7,43 @@ use Orb\Util\Util;
 class WebHelper extends \Codeception\Module
 {
 	/**
-	 * Starts a new admin
+	 * Opens admin interface
 	 */
-	public function startAgentSession($agent_email)
+	public function openAdminInterface($as_agent_email = null)
 	{
+		if ($this->getModule('WebDriver')->grabCookie('dptest-has-agent-sid') && preg_match('#/admin/#', $this->getModule('WebDriver')->grabFromCurrentUrl())) {
+			return;
+		}
+
+		$this->getModule('WebDriver')->resizeWindow(1430, 800);
+
+		// Browser must be open to the page so cookies are set on the proper domain/path
+		$this->getModule('WebDriver')->amOnPage("/");
+
 		$container = $this->getDpControlHelper()->getSymfonyContainer();
 		$db = $container->getDb();
 
-		$agent_id = $db->fetchColumn("
-			SELECT people.id
-			FROM people
-			LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-			WHERE people.is_agent = 1 AND people_emails.email = ?
-			LIMIT 1
-		", array($agent_email));
+		if ($as_agent_email === null) {
+			$agent_id = $db->fetchColumn("
+				SELECT people.id
+				FROM people
+				WHERE people.is_agent = 1 AND people.can_admin = 1
+				LIMIT 1
+			");
+		} else {
+			$agent_id = $db->fetchColumn("
+				SELECT people.id
+				FROM people
+				LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+				WHERE people.is_agent = 1 AND people_emails.email = ?
+				LIMIT 1
+			", array($as_agent_email));
+		}
 
 		session_start();
 		$_SESSION = array(
 			'_sf2_attributes' => array(
-				'dp_interface' => 'admin',
+				'dp_interface' => 'agent',
 				'auth_person_id' => $agent_id,
 			),
 			'_sf2_flashes' => array(),
@@ -55,8 +73,33 @@ class WebHelper extends \Codeception\Module
 		$id = $db->lastInsertId();
 
 		$id_enc = Util::baseEncode($id, Util::BASE36_ALPHABET) . '-HDJWW7T8CWRZ2NN';
-		$this->getModule('WebDriver')->resetCookie('dpsid-agent');
 		$this->getModule('WebDriver')->setCookie('dpsid-agent', $id_enc);
+		$this->getModule('WebDriver')->setCookie('dptest-has-agent-sid', '1');
+		$this->getModule('WebDriver')->amOnPage('/admin');
+		$this->waitForAdminLoad();
+	}
+
+
+	/**
+	 * Wait for admin to finish loading whatever is going right now.
+	 */
+	public function waitForAdminLoad()
+	{
+		$this->getModule('WebDriver')->waitForJS('return (window.DP_IS_BOOTED === true && window.DP_DIGEST_RUNNING === false && window.DP_AJAX_RUNNINGCOUNT === 0)', 15);
+		$this->getModule('WebDriver')->wait(0.2);
+	}
+
+
+	/**
+	 * @param string $page
+	 */
+	public function amOnAdminPage($page)
+	{
+		$page = "/" . ltrim($page, '/');
+		$this->getModule('WebDriver')->executeJS('parent.location.hash = "'. addslashes($page) . '";');
+		$this->getModule('WebDriver')->executeJS('window.DP_NO_DIRTYSTATE_CONFIRM = true;');
+		$this->getModule('WebDriver')->wait(0.1);
+		$this->waitForAdminLoad();
 	}
 
 

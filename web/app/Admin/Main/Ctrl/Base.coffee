@@ -107,7 +107,7 @@ define ['angular'], (angular) ->
 					@_state_cont_ignore = false
 					return
 
-				if not @_state_cont_go and @isDirtyState()
+				if not @_state_cont_go and not window.DP_NO_DIRTYSTATE_CONFIRM and @isDirtyState()
 					ev.preventDefault();
 
 					# - The window hash has changed at this point so we
