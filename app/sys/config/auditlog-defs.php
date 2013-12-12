@@ -5,12 +5,13 @@
 	'api_keys' => array(
 		'fields' => array('code', 'note', 'person')
 	),
-	'ban_emails' => array(
+	// @TODO - need to return to this, should work, for now throws {"error_code":"http_error.500","error_message":"Method `getid` is undefined"}
+	/*'ban_emails' => array(
 		'fields' => array('banned_email')
 	),
 	'ban_ips' => array(
 		'fields' => array('banned_ip')
-	),
+	),*/
 	'custom_def_ticket' => array(
 		'fields' => array('title', 'description', 'handler_class', 'options', 'is_user_enabled', 'is_enabled', 'default_value', 'is_agent_field')
 	),
