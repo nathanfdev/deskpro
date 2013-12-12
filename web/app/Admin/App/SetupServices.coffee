@@ -58,19 +58,10 @@ define [
 			# This var is used in browser tests so we can
 			# properly wait for a page to be finished rendering
 			window.DP_DIGEST_RUNNING = false
-			subTimout = null
 			startRunning = ->
 				window.DP_DIGEST_RUNNING = true
-				if subTimout
-					clearTimeout(subTimout)
-					subTimout = null
-
 			stopRunning = ->
-				if not subTimout
-					subTimout = setTimeout(->
-						subTimout = null
-						window.DP_DIGEST_RUNNING = false
-					, 250)
+				window.DP_DIGEST_RUNNING = false
 
 			$provide.decorator('$rootScope', ['dpInterfaceTimer', '$delegate', (dpInterfaceTimer, $delegate) ->
 				origDigest = $delegate.$digest

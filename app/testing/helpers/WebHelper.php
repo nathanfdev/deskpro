@@ -6,14 +6,21 @@ use Orb\Util\Util;
 
 class WebHelper extends \Codeception\Module
 {
+	private $openAdminInterface_containerCount = null;
+
 	/**
 	 * Opens admin interface
 	 */
 	public function openAdminInterface($as_agent_email = null)
 	{
-		if ($this->getModule('WebDriver')->grabCookie('dptest-has-agent-sid') && preg_match('#/admin/#', $this->getModule('WebDriver')->grabFromCurrentUrl())) {
+		// We dont need to refresh the page and regenerate a new session
+		// if we already have a session and the db has not changed
+		$container_count = $this->getDpControlHelper()->getContainerCounter();
+		if ($container_count === $this->openAdminInterface_containerCount && $this->getModule('WebDriver')->grabCookie('dptest-has-agent-sid') && preg_match('#/admin/#', $this->getModule('WebDriver')->grabFromCurrentUrl())) {
 			return;
 		}
+
+		$this->openAdminInterface_containerCount = $container_count;
 
 		$this->getModule('WebDriver')->resizeWindow(1430, 800);
 
@@ -40,7 +47,7 @@ class WebHelper extends \Codeception\Module
 			", array($as_agent_email));
 		}
 
-		session_start();
+		@session_start();
 		$_SESSION = array(
 			'_sf2_attributes' => array(
 				'dp_interface' => 'agent',
@@ -85,7 +92,7 @@ class WebHelper extends \Codeception\Module
 	 */
 	public function waitForAdminLoad()
 	{
-		$this->getModule('WebDriver')->waitForJS('return (window.DP_IS_BOOTED === true && window.DP_DIGEST_RUNNING === false && window.DP_AJAX_RUNNINGCOUNT === 0)', 60);
+		$this->getModule('WebDriver')->waitForJS('return (window.DP_IS_BOOTED === true && window.DP_DIGEST_RUNNING === false && window.DP_AJAX_RUNNINGCOUNT === 0);', 20);
 		$this->getModule('WebDriver')->wait(0.2);
 	}
 

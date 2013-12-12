@@ -53,23 +53,13 @@
       ]);
       Module.config([
         '$provide', function($provide) {
-          var startRunning, stopRunning, subTimout;
+          var startRunning, stopRunning;
           window.DP_DIGEST_RUNNING = false;
-          subTimout = null;
           startRunning = function() {
-            window.DP_DIGEST_RUNNING = true;
-            if (subTimout) {
-              clearTimeout(subTimout);
-              return subTimout = null;
-            }
+            return window.DP_DIGEST_RUNNING = true;
           };
           stopRunning = function() {
-            if (!subTimout) {
-              return subTimout = setTimeout(function() {
-                subTimout = null;
-                return window.DP_DIGEST_RUNNING = false;
-              }, 250);
-            }
+            return window.DP_DIGEST_RUNNING = false;
           };
           return $provide.decorator('$rootScope', [
             'dpInterfaceTimer', '$delegate', function(dpInterfaceTimer, $delegate) {

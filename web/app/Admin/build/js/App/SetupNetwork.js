@@ -3,22 +3,16 @@
     return function(Module) {
       Module.factory('dpHttpInterceptor', [
         '$q', function($q) {
-          var addRunningCount, subCounter, subRunningCount, subTimeout, updateTimes;
+          var addRunningCount, subRunningCount, updateTimes;
           updateTimes = [];
           window.DP_AJAX_RUNNINGCOUNT = 0;
-          subTimeout = null;
-          subCounter = 0;
           addRunningCount = function() {
             return window.DP_AJAX_RUNNINGCOUNT++;
           };
           subRunningCount = function() {
-            subCounter++;
-            if (!subTimeout) {
-              return subTimeout = setTimeout(function() {
-                subTimeout = null;
-                window.DP_AJAX_RUNNINGCOUNT -= subCounter;
-                return subCounter = 0;
-              }, 250);
+            window.DP_AJAX_RUNNINGCOUNT--;
+            if (window.DP_AJAX_RUNNINGCOUNT < 0) {
+              return window.DP_AJAX_RUNNINGCOUNT = 0;
             }
           };
           return {

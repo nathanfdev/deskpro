@@ -6,18 +6,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			# This var is used in browser tests so we can
 			# properly wait for a page to be finished loading
 			window.DP_AJAX_RUNNINGCOUNT = 0
-			subTimeout = null
-			subCounter = 0
 			addRunningCount = ->
 				window.DP_AJAX_RUNNINGCOUNT++
 			subRunningCount = ->
-				subCounter++
-				if not subTimeout
-					subTimeout = setTimeout(->
-						subTimeout = null
-						window.DP_AJAX_RUNNINGCOUNT -= subCounter
-						subCounter = 0
-					, 250)
+				window.DP_AJAX_RUNNINGCOUNT--
+				if window.DP_AJAX_RUNNINGCOUNT < 0
+					window.DP_AJAX_RUNNINGCOUNT = 0
 
 			return {
 				request: (config) ->

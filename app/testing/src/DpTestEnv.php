@@ -37,6 +37,11 @@ class DpTestEnv
 	 */
 	private static $last_container = null;
 
+	/**
+	 * @var int
+	 */
+	private static $container_count = 0;
+
 	public static function init()
 	{
 		static $has_init;
@@ -61,7 +66,18 @@ class DpTestEnv
 		$kernel->boot('cli');
 
 		self::$last_container = $kernel->getContainer();
+		self::$container_count++;
+
 		return $kernel->getContainer();
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public static function getCountainerCounter()
+	{
+		return self::$container_count;
 	}
 
 

@@ -16,6 +16,15 @@ class DpControlHelper extends \Codeception\Module
 
 
 	/**
+	 * @return int
+	 */
+	public function getContainerCounter()
+	{
+		return \DpTestEnv::getCountainerCounter();
+	}
+
+
+	/**
 	 * Sets the database set to a version of the set. If it already exists,
 	 * it will be re-used (not recreated).
 	 *
