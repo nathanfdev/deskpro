@@ -87,7 +87,7 @@ class IpBanEdit
 
 			$this->db->executeUpdate(
 				"DELETE FROM ban_ips WHERE banned_ip = ?",
-				array($this->new_ip)
+				array($new_ip)
 			);
 
 			$ip_ban            = new BanIp();
