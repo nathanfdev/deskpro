@@ -131,9 +131,11 @@ define [
 			sendData[@type + '_ban'] = postData
 
 			if model['banned_' + @type]
-				promise = @Api.sendPostJson('/banning_' + @type + '/' + model['banned_' + @type], sendData)
+				promise = @Api.sendPostJson('/banning_' + @type + '/' + model['banned_' + @type], sendData).success( (data) =>
+					model['banned_' + @type] = data['banned_' + @type]
+				)
 			else
-				promise = @Api.sendPutJson('/banning_' + @type, sendData).success( (data) ->
+				promise = @Api.sendPutJson('/banning_' + @type, sendData).success( (data) =>
 					model['banned_' + @type] = data['banned_' + @type]
 				)
 

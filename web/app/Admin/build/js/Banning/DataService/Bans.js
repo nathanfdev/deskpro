@@ -142,10 +142,12 @@
         sendData = {};
         sendData[this.type + '_ban'] = postData;
         if (model['banned_' + this.type]) {
-          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + model['banned_' + this.type], sendData);
+          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + model['banned_' + this.type], sendData).success(function(data) {
+            return model['banned_' + _this.type] = data['banned_' + _this.type];
+          });
         } else {
           promise = this.Api.sendPutJson('/banning_' + this.type, sendData).success(function(data) {
-            return model['banned_' + this.type] = data['banned_' + this.type];
+            return model['banned_' + _this.type] = data['banned_' + _this.type];
           });
         }
         promise.success(function() {

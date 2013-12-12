@@ -60,6 +60,10 @@
           _this.skipDirtyState();
           if (is_new) {
             return _this.$state.go('crm.banning.gocreate_ip');
+          } else {
+            return _this.$state.go('crm.banning.edit_ip', {
+              ban: _this.ip_ban.banned_ip
+            });
           }
         });
       };

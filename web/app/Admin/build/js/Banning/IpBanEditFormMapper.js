@@ -23,9 +23,7 @@
       */
 
 
-      IpBanEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
-        return model.banned_ip = formModel.banned_ip;
-      };
+      IpBanEditFormMapper.prototype.applyFormToModel = function(model, formModel) {};
 
       /*
       			#

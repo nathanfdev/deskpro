@@ -47,6 +47,8 @@ define [
 				@skipDirtyState()
 				if is_new
 					@$state.go('crm.banning.gocreate_ip')
+				else
+					@$state.go('crm.banning.edit_ip', {ban: @ip_ban.banned_ip})
 			)
 
 	Admin_Banning_Ctrl_EditIp.EXPORT_CTRL()
