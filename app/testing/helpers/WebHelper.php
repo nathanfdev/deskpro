@@ -85,7 +85,7 @@ class WebHelper extends \Codeception\Module
 	 */
 	public function waitForAdminLoad()
 	{
-		$this->getModule('WebDriver')->waitForJS('return (window.DP_IS_BOOTED === true && window.DP_DIGEST_RUNNING === false && window.DP_AJAX_RUNNINGCOUNT === 0)', 30);
+		$this->getModule('WebDriver')->waitForJS('return (window.DP_IS_BOOTED === true && window.DP_DIGEST_RUNNING === false && window.DP_AJAX_RUNNINGCOUNT === 0)', 60);
 		$this->getModule('WebDriver')->wait(0.2);
 	}
 
