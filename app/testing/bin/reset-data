@@ -31,11 +31,12 @@ echo "Done\n";
 
 echo "Installing FreshDb into deskpro_testing ... ";
 
+unset($GLOBALS['DP_TESTING_USEDB']);
+$db->exec("CREATE DATABASE IF NOT EXISTS " . DP_DATABASE_NAME);
+
 require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
 require_once(DP_ROOT . '/testing/data/DpDbSets/FreshDb.php');
 $set = new \DpDbSets\FreshDb(\DpTestEnv::getContainer());
-
-unset($GLOBALS['DP_TESTING_USEDB']);
 
 $cache_path = DP_ROOT.'/testing/data/dbset-cache';
 if (!is_dir($cache_path)) {
