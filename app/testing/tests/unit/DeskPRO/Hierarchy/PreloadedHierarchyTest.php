@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group CodeTests
- */
 class Testing_Unit_CodeTests_DeskPRO_Hierarchy_PreloadedHierarchyTest extends PHPUnit_Framework_TestCase
 {
 	/**

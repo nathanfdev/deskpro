@@ -111,19 +111,13 @@ abstract class AbstractDbSet
 	 */
 	private function clearDatabase()
 	{
-		$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
-
-		$tables = $this->getDb()->fetchAllCol("SHOW TABLES");
-		foreach ($tables as $t) {
-			$this->getDb()->exec("DROP TABLE $t");
-		}
-
-		$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
+		$this->getDb()->exec("DROP DATABASE {$this->getDatabaseName()}");
+		$this->getDb()->exec("CREATE DATABASE {$this->getDatabaseName()}");
 
 		// Clear the ORM
 		$this->getEm()->clear();
 
-		return count($tables);
+		return 1;
 	}
 
 
@@ -178,7 +172,7 @@ abstract class AbstractDbSet
 			escapeshellarg(3306),
 			escapeshellarg(DP_DATABASE_USER),
 			DP_DATABASE_PASSWORD,
-			escapeshellarg(DP_DATABASE_NAME),
+			escapeshellarg($this->getDatabaseName()),
 			escapeshellarg($this->getCachePath())
 		);
 
@@ -201,18 +195,13 @@ abstract class AbstractDbSet
 	 */
 	private function installFromCache()
 	{
-		$db_name = DP_DATABASE_NAME;
-		if (isset($GLOBALS['DP_TESTING_USEDB'])) {
-			$db_name = $GLOBALS['DP_TESTING_USEDB'];
-		}
-
 		$cmd = sprintf(
 			'%s -h%s -u%s -p%s %s < %s',
 			$this->mysql_bin_path,
 			escapeshellarg(DP_DATABASE_HOST),
 			escapeshellarg(DP_DATABASE_USER),
 			escapeshellarg(DP_DATABASE_PASSWORD),
-			escapeshellarg($db_name),
+			escapeshellarg($this->getDatabaseName()),
 			escapeshellarg($this->getCachePath())
 		);
 
@@ -448,6 +437,20 @@ abstract class AbstractDbSet
 		$count++;
 
 		return $count;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	private function getDatabaseName()
+	{
+		$db_name = DP_DATABASE_NAME;
+		if (isset($GLOBALS['DP_TESTING_USEDB'])) {
+			$db_name = $GLOBALS['DP_TESTING_USEDB'];
+		}
+
+		return $db_name;
 	}
 
 

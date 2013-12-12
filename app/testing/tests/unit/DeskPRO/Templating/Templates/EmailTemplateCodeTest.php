@@ -2,9 +2,6 @@
 
 use \Application\DeskPRO\Templating\Templates\EmailTemplateCode;
 
-/**
- * @group CodeTests
- */
 class Testing_Unit_CodeTests_DeskPRO_Templating_Templates_EmailTemplateCodeTest extends PHPUnit_Framework_TestCase
 {
 	public function testSimple()

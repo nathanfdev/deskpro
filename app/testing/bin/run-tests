@@ -20,6 +20,21 @@ if [[ $? -ne 0 ]] ; then
 fi
 
 if [ $IS_ERROR -ne 1 ] ; then
+	echo ""
+	echo "=========================="
+	echo "Running Integration Tests"
+	echo "=========================="
+	echo ""
+
+	bin/codecept run integration --steps
+
+	if [[ $? -ne 0 ]] ; then
+		echo "!!! Unit Integration Failure !!!"
+		IS_ERROR=1
+	fi
+fi
+
+if [ $IS_ERROR -ne 1 ] ; then
 
 	# phpunit will have created cache dirs owned by the cli user
 	# but we'll be making web requests now, so we need to make sure
@@ -32,10 +47,25 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "========================"
 	echo ""
 
-	bin/codecept run acceptance -g StateTests --steps
+	bin/codecept run acceptance --steps
 
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Acceptance Tests Failure !!!"
+		IS_ERROR=1
+	fi
+fi
+
+if [ $IS_ERROR -ne 1 ] ; then
+	echo ""
+	echo "========================"
+	echo "Running Product Tests"
+	echo "========================"
+	echo ""
+
+	bin/codecept run product --steps
+
+	if [[ $? -ne 0 ]] ; then
+		echo "!!! Product Tests Failure !!!"
 		IS_ERROR=1
 	fi
 fi

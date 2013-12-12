@@ -23,7 +23,7 @@ use Codeception\Module\CodeHelper;
  * @method void offsetUnset($offset)
 */
 
-class CodeGuy extends \Codeception\AbstractGuy
+class IntegrationGuy extends \Codeception\AbstractGuy
 {
     
     /**

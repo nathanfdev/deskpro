@@ -25,7 +25,7 @@ use Codeception\Module\WebHelper;
  * @method void offsetUnset($offset)
 */
 
-class WebGuy extends \Codeception\AbstractGuy
+class ProductGuy extends \Codeception\AbstractGuy
 {
     
     /**

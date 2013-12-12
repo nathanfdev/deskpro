@@ -1,0 +1,10 @@
+class_name: ProductGuy
+modules:
+    enabled:
+        - DpControlHelper
+        - WebDriver
+        - WebHelper
+    config:
+        WebDriver:
+            url: 'http://localhost:8888/'
+            browser: firefox
