@@ -241,43 +241,66 @@
 
       /*
       		# Takes a data model and updates the list.
-        	# For example, you would use this when you want to apply changes from the Edit pane into the List pane.
-        	# By merging the data model, this will either 1) update the list model (eg the title) or 2) create
-        	# a new list model and append it to the list.
-        	#
-        	# You should always supply a dataMapper. The default implementation is to just get the id/title properties
-        	# from teh dataModel which may not be sufficient.
-        	#
-        	# @param {Object} dataModel
-        	# @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+      # For example, you would use this when you want to apply changes from the Edit pane into the List pane.
+      # By merging the data model, this will either 1) update the list model (eg the title) or 2) create
+      # a new list model and append it to the list.
+      #
+      # You should always supply a dataMapper. The default implementation is to just get the id/title properties
+      # from teh dataModel which may not be sufficient.
+      #
+      # @param {Object} dataModel
+      # @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+      		# @param {String} subList Optional parameter in case we want to update only sub list
       */
 
 
-      Admin_Main_DataService_BaseListEdit.prototype.mergeDataModel = function(dataModel, dataMapper) {
-        var child, existingChild, idx, k, listModel, model, newListModel, oldParent, parent, removeIdx, v, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+      Admin_Main_DataService_BaseListEdit.prototype.mergeDataModel = function(dataModel, dataMapper, subList) {
+        var child, existingChild, idx, k, listModel, model, newListModel, oldParent, parent, removeIdx, v, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
         if (dataMapper == null) {
           dataMapper = null;
+        }
+        if (subList == null) {
+          subList = null;
         }
         if (!this.isListLoaded) {
           return;
         }
         listModel = null;
         oldParent = null;
-        _ref = this.listModels;
-        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          model = _ref[idx];
-          if (model[this.idProp] === dataModel[this.idProp]) {
-            listModel = model;
-            break;
+        if (subList) {
+          _ref = this.listModels[subList];
+          for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+            model = _ref[idx];
+            if (model[this.idProp] === dataModel[this.idProp]) {
+              listModel = model;
+              break;
+            }
+            if (dataModel.old_id && model[this.idProp] === dataModel.old_id) {
+              listModel = model;
+              break;
+            }
           }
-          if (model.children) {
-            _ref1 = model.children;
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              child = _ref1[_j];
-              if (child[this.idProp] === dataModel[this.idProp]) {
-                oldParent = model;
-                listModel = child;
-                break;
+        } else {
+          _ref1 = this.listModels;
+          for (idx = _j = 0, _len1 = _ref1.length; _j < _len1; idx = ++_j) {
+            model = _ref1[idx];
+            if (model[this.idProp] === dataModel[this.idProp]) {
+              listModel = model;
+              break;
+            }
+            if (dataModel.old_id && model[this.idProp] === dataModel.old_id) {
+              listModel = model;
+              break;
+            }
+            if (model.children) {
+              _ref2 = model.children;
+              for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                child = _ref2[_k];
+                if (child[this.idProp] === dataModel[this.idProp]) {
+                  oldParent = model;
+                  listModel = child;
+                  break;
+                }
               }
             }
           }
@@ -290,9 +313,9 @@
             }
           }
           if ((oldParent != null) && oldParent[this.idProp] !== dataModel.parent_id) {
-            _ref2 = oldParent.children;
-            for (idx = _k = 0, _len2 = _ref2.length; _k < _len2; idx = ++_k) {
-              model = _ref2[idx];
+            _ref3 = oldParent.children;
+            for (idx = _l = 0, _len3 = _ref3.length; _l < _len3; idx = ++_l) {
+              model = _ref3[idx];
               if (model[this.idProp] === dataModel[this.idProp]) {
                 removeIdx = idx;
                 break;
@@ -303,9 +326,9 @@
             }
             if (dataModel.parent_id != null) {
               parent = this.findListModelById(dataModel.parent_id);
-              return parent.children.push(dataModel);
+              parent.children.push(dataModel);
             } else {
-              return this.listModels.push(dataModel);
+              this.listModels.push(dataModel);
             }
           } else {
             if (dataModel.parent_id != null) {
@@ -316,7 +339,7 @@
               }
               removeIdx = this.returnIndexForModel(dataModel);
               if (Util.isNumber(removeIdx)) {
-                return this.listModels.splice(removeIdx, 1);
+                this.listModels.splice(removeIdx, 1);
               }
             }
           }
@@ -336,8 +359,11 @@
             }
           }
           if (newListModel) {
-            return this.listModels.push(newListModel);
+            this.listModels.push(newListModel);
           }
+        }
+        if (dataModel.old_id) {
+          return dataModel.old_id = dataModel[this.idProp];
         }
       };
 

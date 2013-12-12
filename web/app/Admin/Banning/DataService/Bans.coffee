@@ -92,8 +92,8 @@ define [
 				@Api.sendGet('/banning_' + @type + '/' + id).then( (result) =>
 
 					data = {}
-					data.old_id = result.data[@type + '_ban'][@idProp]
 					data[@type + '_ban'] = result.data[@type + '_ban']
+					data[@type + '_ban'].old_id = result.data[@type + '_ban'][@idProp]
 
 					data.form = @getFormMapper().getFormFromModel(data)
 
@@ -139,7 +139,7 @@ define [
 
 			promise.success( =>
 				mapper.applyFormToModel(model, formModel)
-				@mergeDataModel(model)
+				@mergeDataModel(model, null, @type + '_bans')
 			)
 
 			return promise

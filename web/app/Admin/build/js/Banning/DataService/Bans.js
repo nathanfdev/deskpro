@@ -109,8 +109,8 @@
           this.Api.sendGet('/banning_' + this.type + '/' + id).then(function(result) {
             var data;
             data = {};
-            data.old_id = result.data[_this.type + '_ban'][_this.idProp];
             data[_this.type + '_ban'] = result.data[_this.type + '_ban'];
+            data[_this.type + '_ban'].old_id = result.data[_this.type + '_ban'][_this.idProp];
             data.form = _this.getFormMapper().getFormFromModel(data);
             return deferred.resolve(data);
           }, function() {
@@ -150,7 +150,7 @@
         }
         promise.success(function() {
           mapper.applyFormToModel(model, formModel);
-          return _this.mergeDataModel(model);
+          return _this.mergeDataModel(model, null, _this.type + '_bans');
         });
         return promise;
       };

@@ -202,35 +202,51 @@ define [
 
 		###
 		# Takes a data model and updates the list.
-    	# For example, you would use this when you want to apply changes from the Edit pane into the List pane.
-    	# By merging the data model, this will either 1) update the list model (eg the title) or 2) create
-    	# a new list model and append it to the list.
-    	#
-    	# You should always supply a dataMapper. The default implementation is to just get the id/title properties
-    	# from teh dataModel which may not be sufficient.
-    	#
-    	# @param {Object} dataModel
-    	# @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+  # For example, you would use this when you want to apply changes from the Edit pane into the List pane.
+  # By merging the data model, this will either 1) update the list model (eg the title) or 2) create
+  # a new list model and append it to the list.
+  #
+  # You should always supply a dataMapper. The default implementation is to just get the id/title properties
+  # from teh dataModel which may not be sufficient.
+  #
+  # @param {Object} dataModel
+  # @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+		# @param {String} subList Optional parameter in case we want to update only sub list
 		###
-		mergeDataModel: (dataModel, dataMapper = null) ->
+
+		mergeDataModel: (dataModel, dataMapper = null, subList = null) ->
 
 			if not @isListLoaded then return
 
 			listModel = null
 			oldParent = null
 
-			for model, idx in @listModels
+			if subList
+				for model, idx in @listModels[subList]
+					if model[@idProp] == dataModel[@idProp]
+						listModel = model
+						break
+					if dataModel.old_id and model[@idProp] == dataModel.old_id
+						listModel = model
+						break
 
-				if model[@idProp] == dataModel[@idProp]
-					listModel = model
-					break
+			else
 
-				if model.children
-					for child in model.children
-						if child[@idProp] == dataModel[@idProp]
-							oldParent = model
-							listModel = child
-							break
+				for model, idx in @listModels
+
+					if model[@idProp] == dataModel[@idProp]
+						listModel = model
+						break
+					if dataModel.old_id and model[@idProp] == dataModel.old_id
+						listModel = model
+						break
+
+					if model.children
+						for child in model.children
+							if child[@idProp] == dataModel[@idProp]
+								oldParent = model
+								listModel = child
+								break
 
 			# if this model is already in list then we some options
 
@@ -281,7 +297,7 @@ define [
 
 			else
 
-				# this is case of model that doens't exist in the list yet
+				# this is case of model that doesn't exist in the list yet
 
 				if dataMapper
 
@@ -302,6 +318,7 @@ define [
 
 				@listModels.push(newListModel) if newListModel
 
+			if dataModel.old_id then dataModel.old_id = dataModel[@idProp]
 
 		###
     	# Remove a model from the list by ID.
