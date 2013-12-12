@@ -30,6 +30,7 @@ echo ""
 
 for f in $TEST_LOGS ; do
 	if [[ $f =~ \.png$ ]] ; then
+		true
 	else
 		echo ""
 		echo "[Test Log] $f"
