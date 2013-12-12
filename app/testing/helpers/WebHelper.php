@@ -103,8 +103,8 @@ class WebHelper extends \Codeception\Module
 	public function amOnAdminPage($page)
 	{
 		$page = "/" . ltrim($page, '/');
-		$this->getModule('WebDriver')->executeJS('parent.location.hash = "'. addslashes($page) . '";');
 		$this->getModule('WebDriver')->executeJS('window.DP_NO_DIRTYSTATE_CONFIRM = true;');
+		$this->getModule('WebDriver')->executeJS('parent.location.hash = "'. addslashes($page) . '";');
 		$this->getModule('WebDriver')->wait(0.1);
 		$this->waitForAdminLoad();
 	}

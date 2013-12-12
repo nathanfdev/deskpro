@@ -34,7 +34,6 @@ for f in $TEST_LOGS ; do
 	else
 		echo ""
 		echo "[Test Log] $f"
-		echo ""
 		echo "======================================================="
 		echo ""
 		cat $f

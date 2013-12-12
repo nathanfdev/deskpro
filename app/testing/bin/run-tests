@@ -20,7 +20,7 @@ echo "Running Unit Tests"
 echo "=========================="
 echo ""
 
-bin/codecept run unit
+bin/codecept run unit --steps
 
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Unit Test Failure !!!"
@@ -40,10 +40,10 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "========================"
 	echo ""
 
-	bin/codecept run acceptance -g StateTests
+	bin/codecept run acceptance -g StateTests --steps
 
 	if [[ $? -ne 0 ]] ; then
-		echo "!!! Behat Test Failure !!!"
+		echo "!!! Acceptance Tests Failure !!!"
 		IS_ERROR=1
 	fi
 fi
