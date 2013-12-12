@@ -22,15 +22,15 @@ echo "--> Done"
 
 echo "Creating config.php"
 rm config.php
-cp app/tests/travis-ci/deskpro-config.php config.php
+cp app/testing/travis-ci/deskpro-config.php config.php
 echo "--> Done"
 
 echo "Creating config.testing.php"
-cp app/tests/travis-ci/deskpro-config.php config.testing.php
+cp app/testing/travis-ci/deskpro-config.php config.testing.php
 echo "--> Done"
 
-echo "Installing Clean Test DB"
-app/tests/bin/clean-testing-db
+echo "Cleaning test env"
+app/testing/bin/reset-data
 echo "--> Done"
 
 echo "Ensuring permissions"
@@ -44,8 +44,8 @@ sudo apt-get install -y apache2
 sudo a2enmod actions
 sudo a2enmod rewrite
 echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
-cat app/tests/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
-cat app/tests/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+cat app/testing/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
+cat app/testing/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
 echo "Listen 8888" | sudo tee -a /etc/apache2/ports.conf
 sudo service apache2 restart
 

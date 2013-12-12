@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Tests\DbSet;
+namespace DpDbSets;
 
 use Application\DeskPRO\ORM\EntityManager;
 use Orb\Util\Util;

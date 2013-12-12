@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Tests\DbSet;
+namespace DpDbSets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\ORM\EntityManager;
@@ -201,13 +201,18 @@ abstract class AbstractDbSet
 	 */
 	private function installFromCache()
 	{
+		$db_name = DP_DATABASE_NAME;
+		if (isset($GLOBALS['DP_TESTING_USEDB'])) {
+			$db_name = $GLOBALS['DP_TESTING_USEDB'];
+		}
+
 		$cmd = sprintf(
 			'%s -h%s -u%s -p%s %s < %s',
 			$this->mysql_bin_path,
 			escapeshellarg(DP_DATABASE_HOST),
 			escapeshellarg(DP_DATABASE_USER),
 			escapeshellarg(DP_DATABASE_PASSWORD),
-			escapeshellarg(DP_DATABASE_NAME),
+			escapeshellarg($db_name),
 			escapeshellarg($this->getCachePath())
 		);
 
@@ -247,7 +252,7 @@ abstract class AbstractDbSet
 
 				$is_marked_reset = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.dp_testing_dbset_resetafter'");
 				if ($is_marked_reset) {
-					$is_marked_reset = true;
+					$do_install = true;
 				}
 			} catch (\Exception $e) {
 				$do_install = true;

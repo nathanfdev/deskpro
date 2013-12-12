@@ -85,9 +85,9 @@ class DpTestEnv
 	{
 		self::resetContainer();
 
-		require_once(DP_ROOT . '/testing/src/DbSet/AbstractDbSet.php');
-		if (file_exists(DP_ROOT . '/testing/src/DbSet/'.$set_name.'.php')) {
-			require_once(DP_ROOT . '/testing/src/DbSet/'.$set_name.'.php');
+		require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
+		if (file_exists(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php')) {
+			require_once(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php');
 		}
 
 		$cache_path = DP_ROOT.'/testing/data/dbset-cache';
@@ -96,7 +96,7 @@ class DpTestEnv
 			chmod($cache_path, 0777);
 		}
 
-		$set_class = "DeskPRO\\Tests\\DbSet\\$set_name";
+		$set_class = "DpDbSets\\$set_name";
 		if (!class_exists($set_class)) {
 			throw new \InvalidArgumentException("Invalid set name: $set_name ($set_class)");
 		}
