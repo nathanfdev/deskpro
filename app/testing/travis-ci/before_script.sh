@@ -59,17 +59,17 @@ firefox > /var/log/firefox.log 2>&1 &
 echo "--> Done"
 
 echo "Downloading Selenium"
-wget -O /tmp/selenium-server-standalone-2.31.0.jar http://selenium.googlecode.com/files/selenium-server-standalone-2.31.0.jar
+wget -O /tmp/selenium-server-standalone-2.38.0.jar http://selenium.googlecode.com/files/selenium-server-standalone-2.38.0.jar
 echo "--> Done"
 
 echo "Starting Selenium Hub"
-java -jar /tmp/selenium-server-standalone-2.31.0.jar -role hub > /var/log/selenium-hub.log 2>&1 &
+java -jar /tmp/selenium-server-standalone-2.38.0.jar -role hub > /var/log/selenium-hub.log 2>&1 &
 echo "."
 sleep 3
 echo "--> Done"
 
 echo "Starting Selenium Node"
-java -jar /tmp/selenium-server-standalone-2.31.0.jar -role node -hub http://localhost:4444/grid/register > /var/log/selenium-node.log 2>&1 &
+java -jar /tmp/selenium-server-standalone-2.38.0.jar -role node -hub http://localhost:4444/grid/register > /var/log/selenium-node.log 2>&1 &
 echo "."
 sleep 3
 echo "--> Done"

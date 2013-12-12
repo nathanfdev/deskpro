@@ -96,10 +96,11 @@
       ]);
       Module.factory('$exceptionHandler', [
         'jsErrorLogger', function(jsErrorLogger) {
+          window.DP_JS_ERROR_LOGGER = jsErrorLogger;
           if (!window.DP_IS_DEBUG || window.DP_IS_TESTING) {
-            window.onerror(function() {
+            window.onerror = function(message, url, linenumber) {
               return jsErrorLogger.logScriptError(message, url, linenumber);
-            });
+            };
           }
           return function(exception, cause) {
             return window.setTimeout(function() {

@@ -76,11 +76,13 @@ define [
 		])
 
 		Module.factory('$exceptionHandler', [ 'jsErrorLogger', (jsErrorLogger) ->
+			window.DP_JS_ERROR_LOGGER = jsErrorLogger
 
+			# only enable when not in dev/testing
+			# while in dev, native browser (eg firebug etc) is better for onerrors
 			if !window.DP_IS_DEBUG || window.DP_IS_TESTING
-				window.onerror(->
+				window.onerror = (message, url, linenumber) ->
 					jsErrorLogger.logScriptError(message, url, linenumber)
-				)
 
 			return (exception, cause) ->
 				window.setTimeout(->
