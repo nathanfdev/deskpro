@@ -7,7 +7,7 @@ after_success:
   - app/testing/travis-ci/after_success.sh
 script: app/testing/bin/run-tests
 addons:
-  firefox: '21.0'
+  firefox: '25.0'
 notifications:
   hipchat:
     rooms:
