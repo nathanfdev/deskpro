@@ -11,9 +11,9 @@
 			<ul class="dp-item-list">
 				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.ip_bans"
 					dp-state-mark="crm.banning.edit_ip.ban">
-					<a href="{{ ng_href('crm.banning.edit_ip', '{ban: ban}') }}">
+					<a href="{{ ng_href('crm.banning.edit_ip', '{ban: ban.banned_ip}') }}">
 						<h4>
-							<span class="title-text">{{ ng_var('ban') }}</span>
+							<span class="title-text">{{ ng_var('ban.banned_ip') }}</span>
 						</h4>
 					</a>
 				</li>
@@ -37,9 +37,9 @@
 			<ul class="dp-item-list">
 				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.email_bans"
 					dp-state-mark="crm.banning.edit_email.ban">
-					<a href="{{ ng_href('crm.banning.edit_email', '{ban: ban}') }}">
+					<a href="{{ ng_href('crm.banning.edit_email', '{ban: ban.banned_email}') }}">
 						<h4>
-							<span class="title-text">{{ ng_var('ban') }}</span>
+							<span class="title-text">{{ ng_var('ban.banned_email') }}</span>
 						</h4>
 					</a>
 				</li>

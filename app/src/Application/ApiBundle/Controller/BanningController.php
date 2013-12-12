@@ -60,7 +60,7 @@ class BanningController extends AbstractController
 		return $this->createApiResponse(
 			array(
 				 'bans' => array(
-					 'ip_bans'    => $ip_bans->getAll(),
+					 'ip_bans'    => $ip_bans->getAllAsNestedArray(),
 					 'email_bans' => array(),
 				 )
 			)

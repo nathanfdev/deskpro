@@ -102,6 +102,24 @@ class IpBans
     }
 
 	/**
+	 * @return array
+	 */
+
+	public function getAllAsNestedArray()
+	{
+		$this->preload();
+
+		$result = array();
+
+		foreach ($this->ip_bans as $ip_ban) {
+
+			$result[] = array('banned_ip' => $ip_ban);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @return int
 	 */
 
