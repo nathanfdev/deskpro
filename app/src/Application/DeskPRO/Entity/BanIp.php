@@ -75,6 +75,15 @@ class BanIp extends DomainObject
 
 	protected $ip_end;
 
+	/**
+	 * @return BanIp
+	 */
+
+	public static function createBanIp()
+	{
+		return new self();
+	}
+
 	public function setBannedIp($ip)
 	{
 		// Dont include wildcard at the ned

@@ -358,8 +358,11 @@
               newListModel.children = [];
             }
           }
-          if (newListModel) {
+          if (newListModel && !subList) {
             this.listModels.push(newListModel);
+          }
+          if (newListModel && subList) {
+            this.listModels[subList].push(newListModel);
           }
         }
         if (dataModel.old_id) {

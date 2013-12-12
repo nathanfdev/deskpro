@@ -129,4 +129,13 @@ class IpBans
 
 		return count($this->ip_bans);
 	}
+
+	/**
+	 * @return BanIp
+	 */
+
+	public function createNew()
+	{
+		return BanIp::createBanIp();
+	}
 }

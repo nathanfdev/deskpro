@@ -316,7 +316,8 @@ define [
 						newListModel = dataModel
 						newListModel.children = []
 
-				@listModels.push(newListModel) if newListModel
+				@listModels.push(newListModel) if newListModel and !subList
+				@listModels[subList].push(newListModel) if newListModel and subList
 
 			if dataModel.old_id then dataModel.old_id = dataModel[@idProp]
 
