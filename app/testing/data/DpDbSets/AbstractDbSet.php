@@ -107,12 +107,22 @@ abstract class AbstractDbSet
 
 
 	/**
+	 * @return DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
+
+	/**
 	 * @return int Number of tables dropped
 	 */
 	private function clearDatabase()
 	{
 		$this->getDb()->exec("DROP DATABASE {$this->getDatabaseName()}");
 		$this->getDb()->exec("CREATE DATABASE {$this->getDatabaseName()}");
+		$this->getDb()->exec("USE {$this->getDatabaseName()}");
 
 		// Clear the ORM
 		$this->getEm()->clear();
@@ -253,7 +263,7 @@ abstract class AbstractDbSet
 			if ($this->isCached()) {
 				$this->installFromCache();
 			} else {
-				$this->installDeskpro();
+				$this->installDatabase();
 				$this->installSet();
 
 				if ($this->cache_dir) {
@@ -281,10 +291,8 @@ abstract class AbstractDbSet
 	 *
 	 * @return int The number of queries executed
 	 */
-	private function installDeskpro()
+	private function installDatabase()
 	{
-		$em = $this->getEm();
-
 		$base_schema_cache = null;
 		if ($this->cache_dir) {
 			$base_schema_cache = $this->cache_dir . '/base_schema.php';
@@ -329,112 +337,6 @@ abstract class AbstractDbSet
 			$count++;
 			$this->getDb()->exec($q);
 		}
-
-		#------------------------------
-		# Init data
-		#------------------------------
-
-		$agent = new \Application\DeskPRO\Entity\Person();
-		$agent->first_name = 'Admin';
-		$agent->last_name = 'Admin';
-		$agent->setEmail('admin@example.com', true);
-		$agent->setPassword('password');
-		$agent->is_user = true;
-		$agent->is_confirmed = true;
-		$agent->is_agent_confirmed = true;
-		$agent->is_agent = true;
-		$agent->can_agent = true;
-		$agent->can_admin = true;
-		$agent->can_billing = true;
-		$agent->can_reports = true;
-
-		$em->persist($agent);
-		$em->flush();
-
-		$this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
-
-		// Install data stuff
-		$AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
-		$USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-		$AGENT = $agent; // can be used in data.php
-		$WEB_INSTALL = true;
-		$IMPORT_INSTALL = false;
-
-		$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-		$translate = $this->container->get('deskpro.core.translate');
-
-		foreach ($install_data as $php) {
-			eval($php);
-		}
-
-		$em->flush();
-
-		\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
-
-		// For the all agent group, fetch permissions from the template
-		if ($AGENTGROUP_ALL) {
-			$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
-			foreach ($scanner->getNames() as $p_name) {
-				$p = new \Application\DeskPRO\Entity\Permission();
-				$p->usergroup = $AGENTGROUP_ALL;
-				$p->name = $p_name;
-				$p->value = 1;
-				$em->persist($p);
-			}
-			$em->flush();
-
-			$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
-			$ch->setCollection(array($AGENTGROUP_ALL));
-			$em->persist($agent);
-			$em->flush();
-		}
-
-		if ($USERGROUP_EVERYONE) {
-			$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-			foreach ($scanner->getNames() as $p_name) {
-				$p = new \Application\DeskPRO\Entity\Permission();
-				$p->usergroup = $USERGROUP_EVERYONE;
-				$p->name = $p_name;
-				$p->value = 1;
-				$em->persist($p);
-			}
-			$em->flush();
-		}
-
-		$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
-		$data_init->admin_user = $agent;
-		$data_init->run();
-
-		// Initial settings that mark as as "installed"
-		$this->getDb()->exec("
-			REPLACE INTO `settings` (`name`, `value`)
-			VALUES
-				('core.app_secret', 'YXI5Z2HSQ9IF8KROQQ63GL4FB4CV57ZIIZ7CZO68FUDYBZIP2M'),
-				('core.cron_logreport.cli-phperr.log', '1380716762'),
-				('core.default_from_email', 'noreply@example.com'),
-				('core.default_timezone', 'UTC'),
-				('core.deskpro_build', '".time()."'),
-				('core.deskpro_build_num', '0'),
-				('core.deskpro_url', 'http://localhost:8888/'),
-				('core.deskpro_version', '20131002122551'),
-				('core.done_data_initializer', '1'),
-				('core.done_rewrite_urls_check', '".time()."'),
-				('core.install_build', '".time()."'),
-				('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-				('core.install_timestamp', '".time()."'),
-				('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-				('core.last_cron_run', '".time()."'),
-				('core.last_cron_start', '".time()."'),
-				('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
-				('core.rewrite_urls', '1'),
-				('core.setup_initial', '1'),
-				('core.task_completed_add_ticketfield', '".time()."'),
-				('core.twitter_last_cleanup', '".time()."'),
-				('core.use_agent_team', '1'),
-				('core_tickets.enable_like_search_auto', '1'),
-				('user.kb_subscriptions_last', '".time()."');
-		");
-		$count++;
 
 		return $count;
 	}

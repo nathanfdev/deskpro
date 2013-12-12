@@ -30,5 +30,7 @@ class SimpleDepartmentData extends AbstractFixture
 		$dep2->title = "Department 2";
 		$dep2->display_order = 40;
 		$manager->persist($dep2);
+
+		$manager->flush();
 	}
 }

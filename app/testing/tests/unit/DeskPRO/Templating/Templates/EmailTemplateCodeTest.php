@@ -1,8 +1,10 @@
 <?php
+namespace DpUnitTests\DeskPRO\Templating\Templates;
 
-use \Application\DeskPRO\Templating\Templates\EmailTemplateCode;
+use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
+use Orb\Util\Strings;
 
-class Testing_Unit_CodeTests_DeskPRO_Templating_Templates_EmailTemplateCodeTest extends PHPUnit_Framework_TestCase
+class EmailTemplateCodeTest extends \DpUnitTestCase
 {
 	public function testSimple()
 	{
@@ -24,8 +26,8 @@ class Testing_Unit_CodeTests_DeskPRO_Templating_Templates_EmailTemplateCodeTest 
 	{
 		$email_code = new EmailTemplateCode($this->getMultilineCode());
 
-		$subj = \Orb\Util\Strings::implodeLines($email_code->getSubject());
-		$body = \Orb\Util\Strings::implodeLines($email_code->getBody());
+		$subj = Strings::implodeLines($email_code->getSubject());
+		$body = Strings::implodeLines($email_code->getBody());
 
 		$this->assertEquals($subj, "This is a multi-line subject.");
 		$this->assertEquals($body, "This is a multi-line body.");
@@ -35,8 +37,8 @@ class Testing_Unit_CodeTests_DeskPRO_Templating_Templates_EmailTemplateCodeTest 
 	{
 		$email_code = new EmailTemplateCode($this->getMixedContentCode());
 
-		$subj = \Orb\Util\Strings::implodeLines($email_code->getSubject());
-		$body = \Orb\Util\Strings::implodeLines($email_code->getBody());
+		$subj = Strings::implodeLines($email_code->getSubject());
+		$body = Strings::implodeLines($email_code->getBody());
 
 		$this->assertEquals($subj, "This is the subject.");
 		$this->assertEquals($body, "This is a body with subject in the middle.");

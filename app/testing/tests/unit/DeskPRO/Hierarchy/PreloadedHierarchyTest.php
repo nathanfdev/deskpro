@@ -1,6 +1,9 @@
 <?php
+namespace DpUnitTests\DeskPRO\Hierarchy;
 
-class Testing_Unit_CodeTests_DeskPRO_Hierarchy_PreloadedHierarchyTest extends PHPUnit_Framework_TestCase
+use Application\DeskPRO\Hierarchy\PreloadedHierarchy;
+
+class PreloadedHierarchyTest extends \DpUnitTestCase
 {
 	/**
 	 * @var TestCategory[]
@@ -12,7 +15,7 @@ class Testing_Unit_CodeTests_DeskPRO_Hierarchy_PreloadedHierarchyTest extends PH
 	 */
 	private $hierarchy;
 
-	public function setUp()
+	public function runBefore()
 	{
 		$cats = array();
 		$cats[1] = new TestCategory(1, null, 'CatA');
@@ -26,7 +29,7 @@ class Testing_Unit_CodeTests_DeskPRO_Hierarchy_PreloadedHierarchyTest extends PH
 		$cats[9] = new TestCategory(9, null, 'CatD');
 
 		$this->cats = $cats;
-		$this->hierarchy = new \Application\DeskPRO\Hierarchy\PreloadedHierarchy($cats);
+		$this->hierarchy = new PreloadedHierarchy($cats);
 	}
 
 	public function testCounts()
