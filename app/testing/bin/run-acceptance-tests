@@ -1,0 +1,27 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+cd ..
+
+IS_ERROR=0
+
+sudo chmod -R 0777 ../sys/cache
+
+echo ""
+echo "========================"
+echo "Running Acceptance Tests"
+echo "========================"
+echo ""
+
+bin/codecept run acceptance -g StateTests --steps
+
+if [[ $? -ne 0 ]] ; then
+	echo "!!! Acceptance Tests Failure !!!"
+	IS_ERROR=1
+fi
+
+if [ $IS_ERROR -ne 0 ] ; then
+	exit 1
+fi
+exit 0

@@ -4,14 +4,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 cd ..
 
-if [ -d build ]; then
-	echo "Resetting build files"
-	rm -rf build
-	echo "--> Done"
-fi
-
-mkdir build
-
 IS_ERROR=0
 
 echo ""
