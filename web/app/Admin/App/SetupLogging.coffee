@@ -76,6 +76,12 @@ define [
 		])
 
 		Module.factory('$exceptionHandler', [ 'jsErrorLogger', (jsErrorLogger) ->
+
+			if !window.DP_IS_DEBUG || window.DP_IS_TESTING
+				window.onerror(->
+					jsErrorLogger.logScriptError(message, url, linenumber)
+				)
+
 			return (exception, cause) ->
 				window.setTimeout(->
 					jsErrorLogger.logException(exception)

@@ -129,6 +129,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::isDebug();
 	}
 
+	public function isTesting()
+	{
+		return isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'];
+	}
+
 	public function getStyle()
 	{
 		return App::getSystemService('style');

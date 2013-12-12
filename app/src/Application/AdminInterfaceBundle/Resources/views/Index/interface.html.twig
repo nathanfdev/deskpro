@@ -103,6 +103,8 @@ window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
 window.DP_PERSON_ID      = {{ app.user.id }};
 window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
 window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
+window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
+window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
 
 {% if inhelp_states %}
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
