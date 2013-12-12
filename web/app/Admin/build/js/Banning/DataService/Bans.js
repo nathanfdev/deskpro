@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/DataService/BaseListEdit'], function(BaseListEdit) {
+  define(['Admin/Main/DataService/BaseListEdit', 'Admin/Banning/IpBanEditFormMapper', 'Admin/Banning/EmailBanEditFormMapper'], function(BaseListEdit, IpBanEditFormMapper, EmailBanEditFormMapper) {
     var Bans, _ref;
     return Bans = (function(_super) {
       __extends(Bans, _super);
@@ -52,7 +52,28 @@
 
 
       Bans.prototype.setType = function(type) {
-        return this.type = type;
+        this.type = type;
+        return this.idProp = 'banned_' + this.type;
+      };
+
+      /*
+      		# Get the form mapper
+      		#
+      		# @return {IpBanEditFormMapper|EmailBanEditFormMapper}
+      */
+
+
+      Bans.prototype.getFormMapper = function() {
+        if (this.formMapper) {
+          return this.formMapper;
+        }
+        if (this.type === 'ip') {
+          this.formMapper = new IpBanEditFormMapper();
+        }
+        if (this.type === 'email') {
+          this.formMapper = new EmailBanEditFormMapper();
+        }
+        return this.formMapper;
       };
 
       /*
@@ -75,35 +96,31 @@
       /*
       # Get all data needed for the edit page
       #
-      # @param {Integer} id
+      # @param {String} id
       # @return {promise}
       */
 
 
       Bans.prototype.loadEditBanData = function(id) {
-        var deferred,
+        var data, deferred,
           _this = this;
         deferred = this.$q.defer();
         if (id) {
           this.Api.sendGet('/banning_' + this.type + '/' + id).then(function(result) {
             var data;
             data = {};
+            data.old_id = result.data[_this.type + '_ban'][_this.idProp];
             data[_this.type + '_ban'] = result.data[_this.type + '_ban'];
-            data.form = data;
+            data.form = _this.getFormMapper().getFormFromModel(data);
             return deferred.resolve(data);
           }, function() {
             return deferred.reject();
           });
         } else {
-          this.Api.sendGet('/banning_' + this.type).then(function(result) {
-            var data;
-            data = {};
-            data[_this.type + '_ban'] = {};
-            data.form = data;
-            return deferred.resolve(data);
-          }, function() {
-            return deferred.reject();
-          });
+          data = {};
+          data[this.type + '_ban'] = {};
+          data.form = this.getFormMapper().getFormFromModel(data);
+          deferred.resolve(data);
         }
         return deferred.promise;
       };
@@ -118,19 +135,21 @@
 
 
       Bans.prototype.saveFormModel = function(model, formModel) {
-        var postData, promise, sendData,
+        var mapper, postData, promise, sendData,
           _this = this;
-        postData = formModel;
+        mapper = this.getFormMapper();
+        postData = mapper.getPostDataFromForm(formModel);
         sendData = {};
         sendData[this.type + '_ban'] = postData;
-        if (model.id) {
-          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + model.id, sendData);
+        if (model['banned_' + this.type]) {
+          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + model['banned_' + this.type], sendData);
         } else {
           promise = this.Api.sendPutJson('/banning_' + this.type, sendData).success(function(data) {
-            return model.id = data.id;
+            return model['banned_' + this.type] = data['banned_' + this.type];
           });
         }
         promise.success(function() {
+          mapper.applyFormToModel(model, formModel);
           return _this.mergeDataModel(model);
         });
         return promise;

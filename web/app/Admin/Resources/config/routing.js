@@ -907,7 +907,7 @@ define(function() {
 	routes.push({
 		id: 'crm.banning.gocreate_ip',
 		url: '/go-create/ip',
-		templateName: '',
+		templateName: 'Banning/edit-ip.html',
 		controller: ['$state', function ($state) {
 			$state.go('crm.banning.create_ip');
 		}]
@@ -930,7 +930,7 @@ define(function() {
 	routes.push({
 		id: 'crm.banning.gocreate_email',
 		url: '/go-create/email',
-		templateName: '',
+		templateName: 'Banning/edit-email.html',
 		controller: ['$state', function ($state) {
 			$state.go('crm.banning.create_email');
 		}]

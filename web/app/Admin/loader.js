@@ -212,7 +212,8 @@ requirejs([
 	'Admin/ApiKeys/Ctrl/Edit',
 	'Admin/UserFields/Ctrl/List',
 	'Admin/OrgFields/Ctrl/List',
-	'Admin/Banning/Ctrl/List'
+	'Admin/Banning/Ctrl/List',
+	'Admin/Banning/Ctrl/EditIp'
 ], function(angular) {
 	'use strict';
 

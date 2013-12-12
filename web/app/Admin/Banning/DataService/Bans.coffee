@@ -1,7 +1,11 @@
 define [
-	'Admin/Main/DataService/BaseListEdit'
+	'Admin/Main/DataService/BaseListEdit',
+	'Admin/Banning/IpBanEditFormMapper',
+	'Admin/Banning/EmailBanEditFormMapper',
 ], (
 	BaseListEdit,
+	IpBanEditFormMapper,
+	EmailBanEditFormMapper,
 )  ->
 	class Bans extends BaseListEdit
 		@$inject = ['Api', '$q']
@@ -40,6 +44,22 @@ define [
 		setType: (type) ->
 
 			@type = type
+			@idProp = 'banned_' + @type # there is no 'id' in database, primary key is another field
+
+		###
+		# Get the form mapper
+		#
+		# @return {IpBanEditFormMapper|EmailBanEditFormMapper}
+		###
+
+		getFormMapper: ->
+
+			if @formMapper then return @formMapper
+
+			if @type == 'ip' then @formMapper = new IpBanEditFormMapper()
+			if @type == 'email' then @formMapper = new EmailBanEditFormMapper()
+
+			return @formMapper
 
 		###
   # Remove a model
@@ -59,7 +79,7 @@ define [
 		###
   # Get all data needed for the edit page
   #
-  # @param {Integer} id
+  # @param {String} id
   # @return {promise}
 		###
 
@@ -72,8 +92,10 @@ define [
 				@Api.sendGet('/banning_' + @type + '/' + id).then( (result) =>
 
 					data = {}
+					data.old_id = result.data[@type + '_ban'][@idProp]
 					data[@type + '_ban'] = result.data[@type + '_ban']
-					data.form = data
+
+					data.form = @getFormMapper().getFormFromModel(data)
 
 					deferred.resolve(data)
 				, ->
@@ -82,16 +104,12 @@ define [
 
 			else
 
-				@Api.sendGet('/banning_' + @type).then( (result) =>
+				data = {}
+				data[@type + '_ban'] = {}
 
-					data = {}
-					data[@type + '_ban'] = {}
-					data.form = data
+				data.form = @getFormMapper().getFormFromModel(data)
 
-					deferred.resolve(data)
-				, ->
-					deferred.reject()
-				)
+				deferred.resolve(data)
 
 			return deferred.promise
 
@@ -105,19 +123,22 @@ define [
 
 		saveFormModel: (model, formModel) ->
 
-			postData = formModel
+			mapper = @getFormMapper()
+
+			postData = mapper.getPostDataFromForm(formModel)
 
 			sendData = {}
 			sendData[@type + '_ban'] = postData
 
-			if model.id
-				promise = @Api.sendPostJson('/banning_' + @type + '/' + model.id, sendData)
+			if model['banned_' + @type]
+				promise = @Api.sendPostJson('/banning_' + @type + '/' + model['banned_' + @type], sendData)
 			else
 				promise = @Api.sendPutJson('/banning_' + @type, sendData).success( (data) ->
-					model.id = data.id
+					model['banned_' + @type] = data['banned_' + @type]
 				)
 
 			promise.success( =>
+				mapper.applyFormToModel(model, formModel)
 				@mergeDataModel(model)
 			)
 
