@@ -22,6 +22,13 @@ $db_set_cache = DP_ROOT.'/testing/data/dbset-cache';
 `rm -rf $db_set_cache`;
 echo "Done\n";
 
+echo "Removing testing/logs ... ";
+$logs_dir = DP_ROOT.'/testing/logs';
+`rm -rf $logs_dir`;
+`mkdir $logs_dir`;
+`chmod 0755 $logs_dir`;
+echo "Done\n";
+
 echo "Installing FreshDb into deskpro_testing ... ";
 
 require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
