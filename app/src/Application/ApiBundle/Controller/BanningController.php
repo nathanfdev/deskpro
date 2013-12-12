@@ -140,4 +140,42 @@ class BanningController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeIpAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Banning\IpBans $ip_bans
+		 */
+
+		$ip_bans = $this->container->getSystemService('ip_bans');
+		$ip_ban  = $ip_bans->getById($id);
+
+		if (!$ip_ban) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $ip_ban->banned_ip;
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->em->remove($ip_ban);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
 }

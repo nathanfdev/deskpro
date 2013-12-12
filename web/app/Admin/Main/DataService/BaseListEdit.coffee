@@ -98,22 +98,32 @@ define [
 
 
 		###
-    	# Find a model that has been loaded into the list
-    	#
-    	# @param {Integer} id
-    	# @return {Object}
-    	###
+  # Find a model that has been loaded into the list
+  #
+  # @param {Integer} id
+  # @return {Object}
+  ###
+
 		findListModelById: (id) ->
 
-			for model in @listModels
+			if @subLists.length
 
-				if model[@idProp] == id
-					return model
+				for subModel in @subLists
+					for model in @listModels[subModel]
+						if model[@idProp] == id
+							return model
 
-				if model.children
-					for child in model.children
-						if child[@idProp] == id
-							return child
+			else
+
+				for model in @listModels
+
+					if model[@idProp] == id
+						return model
+
+					if model.children
+						for child in model.children
+							if child[@idProp] == id
+								return child
 
 			return null
 
@@ -322,21 +332,39 @@ define [
 			if dataModel.old_id then dataModel.old_id = dataModel[@idProp]
 
 		###
-    	# Remove a model from the list by ID.
-    	#
-    	# @return {Object/null} The removed object or null if object could not be found
+  # Remove a model from the list by ID.
+  #
+  # @return {Object/null} The removed object or null if object could not be found
 		###
+
 		removeListModelById: (id) ->
+
 			if not @isListLoaded then return
+
 			removeIdx = null
-			for model, idx in @listModels
-				if model[@idProp] == id
-					removeIdx = idx
-					break
+			subModelIdx = null
+
+			if @subLists.length
+
+				for subModel in @subLists
+					for model, idx in @listModels[subModel]
+						if model[@idProp] == id
+							removeIdx = idx
+							subModelIdx = subModel
+							break
+
+			else
+
+				for model, idx in @listModels
+					if model[@idProp] == id
+						removeIdx = idx
+						break
 
 			result = null
+
 			if removeIdx != null
-				result = @listModels.splice(removeIdx, 1)
+				result = @listModels[subModelIdx].splice(removeIdx, 1) if subModelIdx
+				result = @listModels.splice(removeIdx, 1) if not subModelIdx
 				result = result[0]
 
 			return result

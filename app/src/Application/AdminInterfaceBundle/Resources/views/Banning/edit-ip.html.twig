@@ -35,9 +35,9 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.ip_ban.id">
+					<div class="dp-delete-control" ng-if="EditCtrl.ip_ban.banned_ip">
 						<button class="btn btn-danger"
-								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.ip_ban.id);">
+								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.ip_ban.banned_ip);">
 							Delete
 						</button>
 					</div>

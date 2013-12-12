@@ -114,27 +114,41 @@
       };
 
       /*
-        	# Find a model that has been loaded into the list
-        	#
-        	# @param {Integer} id
-        	# @return {Object}
+      # Find a model that has been loaded into the list
+      #
+      # @param {Integer} id
+      # @return {Object}
       */
 
 
       Admin_Main_DataService_BaseListEdit.prototype.findListModelById = function(id) {
-        var child, model, _i, _j, _len, _len1, _ref, _ref1;
-        _ref = this.listModels;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          model = _ref[_i];
-          if (model[this.idProp] === id) {
-            return model;
-          }
-          if (model.children) {
-            _ref1 = model.children;
+        var child, model, subModel, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
+        if (this.subLists.length) {
+          _ref = this.subLists;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            subModel = _ref[_i];
+            _ref1 = this.listModels[subModel];
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              child = _ref1[_j];
-              if (child[this.idProp] === id) {
-                return child;
+              model = _ref1[_j];
+              if (model[this.idProp] === id) {
+                return model;
+              }
+            }
+          }
+        } else {
+          _ref2 = this.listModels;
+          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+            model = _ref2[_k];
+            if (model[this.idProp] === id) {
+              return model;
+            }
+            if (model.children) {
+              _ref3 = model.children;
+              for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+                child = _ref3[_l];
+                if (child[this.idProp] === id) {
+                  return child;
+                }
               }
             }
           }
@@ -371,29 +385,51 @@
       };
 
       /*
-        	# Remove a model from the list by ID.
-        	#
-        	# @return {Object/null} The removed object or null if object could not be found
+      # Remove a model from the list by ID.
+      #
+      # @return {Object/null} The removed object or null if object could not be found
       */
 
 
       Admin_Main_DataService_BaseListEdit.prototype.removeListModelById = function(id) {
-        var idx, model, removeIdx, result, _i, _len, _ref;
+        var idx, model, removeIdx, result, subModel, subModelIdx, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
         if (!this.isListLoaded) {
           return;
         }
         removeIdx = null;
-        _ref = this.listModels;
-        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          model = _ref[idx];
-          if (model[this.idProp] === id) {
-            removeIdx = idx;
-            break;
+        subModelIdx = null;
+        if (this.subLists.length) {
+          _ref = this.subLists;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            subModel = _ref[_i];
+            _ref1 = this.listModels[subModel];
+            for (idx = _j = 0, _len1 = _ref1.length; _j < _len1; idx = ++_j) {
+              model = _ref1[idx];
+              if (model[this.idProp] === id) {
+                removeIdx = idx;
+                subModelIdx = subModel;
+                break;
+              }
+            }
+          }
+        } else {
+          _ref2 = this.listModels;
+          for (idx = _k = 0, _len2 = _ref2.length; _k < _len2; idx = ++_k) {
+            model = _ref2[idx];
+            if (model[this.idProp] === id) {
+              removeIdx = idx;
+              break;
+            }
           }
         }
         result = null;
         if (removeIdx !== null) {
-          result = this.listModels.splice(removeIdx, 1);
+          if (subModelIdx) {
+            result = this.listModels[subModelIdx].splice(removeIdx, 1);
+          }
+          if (!subModelIdx) {
+            result = this.listModels.splice(removeIdx, 1);
+          }
           result = result[0];
         }
         return result;

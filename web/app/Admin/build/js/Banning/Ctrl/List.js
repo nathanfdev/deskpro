@@ -34,6 +34,49 @@
         return promise;
       };
 
+      /*
+      		# Show the delete dlg
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.startDelete = function(for_ban_id) {
+        var inst, key,
+          _this = this;
+        key = this.banData.findListModelById(for_ban_id);
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Banning/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.deleteBan(key);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.deleteBan = function(for_ban) {
+        var _this = this;
+        return this.banData.deleteBanById(for_ban.banned_ip).success(function() {
+          if (_this.$state.current.name === 'crm.banning.edit_ip' && parseInt(_this.$state.params.ban) === for_ban.ban) {
+            return _this.$state.go('crm.banning');
+          }
+        }).error(function(info, code) {
+          return _this.applyErrorResponseToView(info);
+        });
+      };
+
       return Admin_Banning_Ctrl_List;
 
     })(Admin_Ctrl_Base);
