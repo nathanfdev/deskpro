@@ -69,4 +69,5 @@
 /app/src/Cloud/Resources/cloud_serve/_sys/config.php
 /app/src/Cloud/Resources/cloud_serve/_sys/dp-config.php
 /app/testing/logs/*
+!/app/testing/logs/.gitkeep
 /app/testing/data/dbset-cache
