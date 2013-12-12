@@ -1,5 +1,6 @@
 # IDE project files
 /.idea/
+/web/app/.idea/
 /nbproject/
 /catalog.xml
 /.settings/
@@ -8,11 +9,14 @@
 /.tags
 *.komodoproject
 *.sublime*
+*.map
+/running_tests.trigger
 
 # cache and log files
 /app/sys/cache/*
 /app/sys/bootstrap.php
 /app/sys/compiled.php
+/app/sys/config/build-time.php
 /app/sys/config/build-num.php
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php
@@ -51,13 +55,10 @@
 /data/emailstore
 
 /web/build
-/web/app/Admin/build
 /web/stylesheets/agent
 /web/stylesheets/admin
 /web/stylesheets/report
 /app/sys/config/changed-files.php
-/web/app/node_modules
-/web/app/build
 
 # Place devs can use as scratch space
 /_dev
@@ -67,3 +68,10 @@
 /config.testing.php
 /app/src/Cloud/Resources/cloud_serve/_sys/config.php
 /app/src/Cloud/Resources/cloud_serve/_sys/dp-config.php
+/app/testing/logs/*
+!/app/testing/logs/.gitkeep
+/app/testing/data/dbset-cache
+
+# From other branch
+/app/testing
+/web/app
