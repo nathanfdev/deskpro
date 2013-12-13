@@ -67,9 +67,16 @@
 
 
       Admin_Banning_Ctrl_List.prototype.deleteBan = function(for_ban) {
-        var _this = this;
-        return this.banData.deleteBanById(for_ban.banned_ip).success(function() {
-          if (_this.$state.current.name === 'crm.banning.edit_ip' && parseInt(_this.$state.params.ban) === for_ban.ban) {
+        var key,
+          _this = this;
+        if (for_ban.banned_ip) {
+          key = 'ip';
+        }
+        if (for_ban.banned_email) {
+          key = 'email';
+        }
+        return this.banData.deleteBanById(for_ban['banned_' + key]).success(function() {
+          if (_this.$state.current.name === ('crm.banning.edit_' + key) && parseInt(_this.$state.params.ban) === for_ban.ban) {
             return _this.$state.go('crm.banning');
           }
         }).error(function(info, code) {

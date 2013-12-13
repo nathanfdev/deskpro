@@ -221,7 +221,7 @@ class BanningController extends AbstractController
 	}
 
 	####################################################################################################################
-	# remove
+	# remove IP
 	####################################################################################################################
 
 	public function removeIpAction($id)
@@ -245,6 +245,44 @@ class BanningController extends AbstractController
 		try {
 
 			$this->em->remove($ip_ban);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
+
+	####################################################################################################################
+	# remove Email
+	####################################################################################################################
+
+	public function removeEmailAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Banning\EmailBans $email_bans
+		 */
+
+		$email_bans = $this->container->getSystemService('email_bans');
+		$email_ban  = $email_bans->getById($id);
+
+		if (!$email_ban) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $email_ban->banned_email;
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->em->remove($email_ban);
 			$this->em->flush();
 
 			$this->db->commit();
