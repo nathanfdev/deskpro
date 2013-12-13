@@ -37,7 +37,8 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Banning\IpBanEdit;
 use Application\DeskPRO\Banning\Form\Type\IpBanType;
-use Application\DeskPRO\Banning\Form\Type\IpBanPropsType;
+use Application\DeskPRO\Banning\EmailBanEdit;
+use Application\DeskPRO\Banning\Form\Type\EmailBanType;
 
 use Orb\Util\Arrays;
 
@@ -96,6 +97,31 @@ class BanningController extends AbstractController
 		);
 	}
 
+	###################################################################################################################
+	# get Email
+	####################################################################################################################
+
+	public function getEmailAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Banning\EmailBans $email_bans
+		 */
+
+		$email_bans = $this->container->getSystemService('email_bans');
+		$email_ban  = $email_bans->getById($id);
+
+		if (!$email_ban) {
+
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'email_ban' => $this->getApiData($email_ban)
+			)
+		);
+	}
+
 	####################################################################################################################
 	# save IP
 	####################################################################################################################
@@ -141,6 +167,55 @@ class BanningController extends AbstractController
 			array(
 				 'success'   => true,
 				 'banned_ip' => $ip_ban->banned_ip
+			)
+		);
+	}
+
+	####################################################################################################################
+	# save Email
+	####################################################################################################################
+
+	public function saveEmailAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Banning\EmailBans $email_bans
+		 */
+
+		$email_bans = $this->container->getSystemService('email_bans');
+
+		if ($id) {
+
+			$email_ban = $email_bans->getById($id);
+
+			if (!$email_ban) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$email_ban = $email_bans->createNew();
+		}
+
+		$postData = $this->in->getAll('post');
+
+		$email_ban_edit = new EmailBanEdit($email_ban);
+
+		$form = $this->createForm(new EmailBanType(), $email_ban_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'email_ban'), true);
+
+		if ($form->isValid()) {
+
+			$email_ban_edit->save($this->em);
+
+		} else {
+
+			throw ValidationException::create($this->getFormValidationErrorsString($form));
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success'      => true,
+				 'banned_email' => $email_ban->banned_email
 			)
 		);
 	}
