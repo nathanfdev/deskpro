@@ -23,9 +23,7 @@
       */
 
 
-      EmailBanEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
-        return model.banned_email = formModel.banned_email;
-      };
+      EmailBanEditFormMapper.prototype.applyFormToModel = function(model, formModel) {};
 
       /*
       			#

@@ -25,7 +25,7 @@ define [
 
 		applyFormToModel: (model, formModel) ->
 
-			model.banned_email = formModel.banned_email
+			# we use data from backend, so no need in applying of form data to list model
 
 		###
 			#

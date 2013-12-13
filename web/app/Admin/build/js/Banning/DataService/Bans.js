@@ -64,9 +64,6 @@
 
 
       Bans.prototype.getFormMapper = function() {
-        if (this.formMapper) {
-          return this.formMapper;
-        }
         if (this.type === 'ip') {
           this.formMapper = new IpBanEditFormMapper();
         }

@@ -54,8 +54,6 @@ define [
 
 		getFormMapper: ->
 
-			if @formMapper then return @formMapper
-
 			if @type == 'ip' then @formMapper = new IpBanEditFormMapper()
 			if @type == 'email' then @formMapper = new EmailBanEditFormMapper()
 
