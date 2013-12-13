@@ -29,90 +29,113 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\DeskPRO\Banning;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\Entity\BanIp;
+use Doctrine\ORM\EntityManager;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Domain\DomainObject;
-
-use Orb\Util\Strings;
-use Orb\Util\Numbers;
-
-/**
- * Ban an email address
- *
- * @property string $banned_email
- * @property boolean $is_pattern
- */
-class BanEmail extends DomainObject
+class EmailBans
 {
 	/**
-	 * The banned email address
-	 *
-	 * @var string
+	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
 
-	protected $banned_email;
+	protected $em;
 
-	/**
-	 * True if this is a pattern rather than a specific address
-	 *
-	 * @var bool
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\BanEmail[]
+     */
 
-	protected $is_pattern = false;
+    protected $email_bans;
 
-
-	/**
-	 * @param string $email
-	 */
-
-	public function setBannedEmail($email)
+	public function __construct(EntityManager $em)
 	{
-		if (strpos($email, '*') !== false) {
-
-			$this['is_pattern'] = true;
-		}
-
-		$this->setModelField('banned_email', $email);
+		$this->em = $em;
 	}
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+	/**
+	 * Loads twitter accounts data from the database
+	 */
 
-	public static function loadMetadata(ClassMetadata $metadata)
+	private function preload()
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanEmail';
-		$metadata->setPrimaryTable(array('name' => 'ban_emails',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'banned_email',
-				 'type'       => 'string',
-				 'length'     => 255,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'banned_email',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'is_pattern',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'is_pattern',
-			)
-		);
+		if ($this->email_bans !== null) {
+
+			return;
+		}
+
+		$this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList();
+	}
+
+
+	/**
+	 * Resets this repository so the next time data is requested form it, it will
+	 * be queried again.
+	 */
+
+	public function reset()
+	{
+		$this->email_bans = null;
+	}
+
+	/**
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\BanEmail
+	 */
+
+	public function getById($id)
+	{
+		return $this->em->getRepository('DeskPRO:BanEmail')->get($id);
+	}
+
+    /**
+     * @return \Application\DeskPRO\Entity\BanEmail[]
+     */
+
+    public function getAll()
+    {
+        $this->preload();
+
+        return $this->email_bans;
+    }
+
+	/**
+	 * @return array
+	 */
+
+	public function getAllAsNestedArray()
+	{
+		$this->preload();
+
+		$result = array();
+
+		foreach ($this->email_bans as $ip_ban) {
+
+			$result[] = array('banned_email' => $ip_ban);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @return int
+	 */
+
+	public function count()
+	{
+		$this->preload();
+
+		return count($this->email_bans);
+	}
+
+	/**
+	 * @return BanIp
+	 */
+
+	public function createNew()
+	{
+		return BanIp::createEmailIp();
 	}
 }

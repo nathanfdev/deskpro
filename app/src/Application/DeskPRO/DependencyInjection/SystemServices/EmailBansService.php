@@ -29,90 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Banning\EmailBans;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Domain\DomainObject;
-
-use Orb\Util\Strings;
-use Orb\Util\Numbers;
-
-/**
- * Ban an email address
- *
- * @property string $banned_email
- * @property boolean $is_pattern
- */
-class BanEmail extends DomainObject
+class EmailBansService
 {
-	/**
-	 * The banned email address
-	 *
-	 * @var string
-	 */
-
-	protected $banned_email;
-
-	/**
-	 * True if this is a pattern rather than a specific address
-	 *
-	 * @var bool
-	 */
-
-	protected $is_pattern = false;
-
-
-	/**
-	 * @param string $email
-	 */
-
-	public function setBannedEmail($email)
+	public static function create(DeskproContainer $container)
 	{
-		if (strpos($email, '*') !== false) {
-
-			$this['is_pattern'] = true;
-		}
-
-		$this->setModelField('banned_email', $email);
-	}
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanEmail';
-		$metadata->setPrimaryTable(array('name' => 'ban_emails',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'banned_email',
-				 'type'       => 'string',
-				 'length'     => 255,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'banned_email',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'is_pattern',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'is_pattern',
-			)
-		);
+        $x = new EmailBans($container->getEm());
+        return $x;
 	}
 }

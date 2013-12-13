@@ -55,13 +55,17 @@ class BanningController extends AbstractController
 
 		$ip_bans = $this->container->getSystemService('ip_bans');
 
+		/**
+		 * @var \Application\DeskPRO\Banning\EmailBans $email_bans
+		 */
 
+		$email_bans = $this->container->getSystemService('email_bans');
 
 		return $this->createApiResponse(
 			array(
 				 'bans' => array(
 					 'ip_bans'    => $ip_bans->getAllAsNestedArray(),
-					 'email_bans' => array(),
+					 'email_bans' => $email_bans->getAllAsNestedArray(),
 				 )
 			)
 		);

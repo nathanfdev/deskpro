@@ -915,7 +915,7 @@ define(function() {
 
 	routes.push({
 		id: 'crm.banning.edit_ip',
-		url: '/{ban:.*}',
+		url: '/ip/{ban:.*}',
 		templateName: 'Banning/edit-ip.html',
 		controller: 'Admin_Banning_Ctrl_EditIp'
 	});
@@ -938,7 +938,7 @@ define(function() {
 
 	routes.push({
 		id: 'crm.banning.edit_email',
-		url: '/{ban:.*}',
+		url: '/email/{ban:.*}',
 		templateName: 'Banning/edit-email.html',
 		controller: 'Admin_Banning_Ctrl_EditEmail'
 	});
