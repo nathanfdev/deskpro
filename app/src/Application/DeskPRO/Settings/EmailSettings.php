@@ -29,71 +29,77 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Controller
  */
 
-namespace Application\DeskPRO\ResourceScanner;
+namespace Application\DeskPRO\Settings;
+use Orb\Util\Util;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
-
-/**
- * Defines which settings are to be displayed in the 'advanced' page
- */
-class AdvancedSettings extends SettingFiles
+class EmailSettings
 {
-	public function getShowSettings()
+	/**
+	 * @var Settings
+	 */
+	private $settings;
+
+	public $add_agent_ccs;
+	public $process_agent_fwd;
+	public $gateway_max_email;
+
+	/**
+	 * @param Settings $settings
+	 */
+	public function __construct(Settings $settings)
 	{
-		$settings = parent::getAllSettings();
+		$this->settings = $settings;
+		$this->resetSettings();
+	}
 
-		$accept_settings = array(
-			'agent.max_login_attempts',
-			'agent.login_lockout_time',
-			'agent.notify_self_login',
-			'agent.notify_login_emaillist',
-			'agent_notify_list_login',
-			'agent_notify_list_failed_login',
-			'agent_notify_list_adminlogin',
-			'agent_notify_list_failed_adminlogin',
-			'core_chat.assign_ack_timeout',
-			'core_chat.agent_timeout',
-			'core_chat.user_timeout',
-			'core_chat.require_department',
-			'core.bcc_all_emails',
-			'core.drafts_lifetime',
-			'core.store_sent_mail_days',
-			'core.site_id',
-			'core.sessions_lifetime',
-			'core.email_source_storetime',
-			'core_email.failed_email_attempts_notify',
-			'core_email.antiflood_newtickets',
-			'core_email.antiflood_newtickets_warn',
-			'core_email.antiflood_newreplies',
-			'core_email.antiflood_newreplies_warn',
-			'core_misc.cleanup_visitors',
-			'core_misc.cleanup_login_logs',
-			'core_misc.cleanup_gateway_sources',
-			'core_misc.cleanup_gateway_sources_onlyclosed',
-			'core_misc.cleanup_task_logs',
-			'core.allow_arbitrary_gateway_address',
-			'core_tickets.gateway_agent_require_marker',
-			'core_tickets.gateway_enable_subject_match',
-			'core.agent_translate_debug',
-			'core_email.enable_date_limit_rejection',
+
+	/**
+	 * Resets settings based on stored values.
+	 */
+	public function resetSettings()
+	{
+		$this->add_agent_ccs     = (bool)$this->settings->get('core_tickets.add_agent_ccs');
+		$this->process_agent_fwd = (bool)$this->settings->get('core_tickets.process_agent_fwd');
+		$this->gateway_max_email = (int)$this->settings->get('core.gateway_max_email');
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		$export_settings = array(
+			'add_agent_ccs'     => $this->add_agent_ccs,
+			'process_agent_fwd' => $this->process_agent_fwd,
+			'gateway_max_email' => $this->gateway_max_email,
 		);
+		return $export_settings;
+	}
 
-		if (!defined('DPC_IS_CLOUD')) {
-			$accept_settings[] = 'core.api_rate_limit';
-		}
 
-		$ret = array();
-
-		foreach ($accept_settings as $k) {
-			if (isset($settings[$k])) {
-				$ret[$k] = $settings[$k];
+	/**
+	 * @param array $set_settings
+	 */
+	public function setArray(array $set_settings)
+	{
+		foreach ($set_settings as $s => $val) {
+			if (property_exists($this, $s)) {
+				$this->$s = $val;
 			}
 		}
+	}
 
-		return $ret;
+
+	/**
+	 * Persists settings
+	 */
+	public function saveSettings()
+	{
+		$this->settings->setSetting('core_tickets.add_agent_ccs', Util::boolInt($this->add_agent_ccs));
+		$this->settings->setSetting('core_tickets.process_agent_fwd', Util::boolInt($this->process_agent_fwd));
+		$this->settings->setSetting('core.gateway_max_email', ((int)$this->gateway_max_email) ?: null);
 	}
 }

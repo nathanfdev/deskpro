@@ -32,6 +32,15 @@ label {
 	color: #888;
 }
 
+.dp-clear {
+	display: block;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	visibility: hidden;
+	clear: both;
+}
+
 .dp-grayed-placeholder {
 	min-height: 300px;
 	position: relative;
@@ -3321,5 +3330,34 @@ section#portal_colors .style-row.color.dual .desc {
 		border: none;
 		outline: none;
 		box-shadow: none;
+	}
+}
+
+.dp-slider-control {
+	border: 1px solid #ccc;
+	padding: 0px 5px;
+	border-radius: 2px;
+	width: 410px;
+
+	label {
+		display: inline-block;
+		width: 80px;
+		text-align: center;
+	}
+
+	.slider-wrap {
+		display: inline-block;
+		width: 300px;
+	}
+	.pointer:after {
+		display: none;
+	}
+
+	.slider-note {
+		padding: 3px;
+		background: #efefef;
+		font-size: 11px;
+		margin-bottom: 3px;
+		text-align: center;
 	}
 }

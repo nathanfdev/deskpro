@@ -149,7 +149,7 @@
             _this._state_cont_ignore = false;
             return;
           }
-          if (!_this._state_cont_go && _this.isDirtyState()) {
+          if (!_this._state_cont_go && !window.DP_NO_DIRTYSTATE_CONFIRM && _this.isDirtyState()) {
             ev.preventDefault();
             resetHash = _this.$state.href(fromState, fromParams);
             _this._state_cont_ignore = true;

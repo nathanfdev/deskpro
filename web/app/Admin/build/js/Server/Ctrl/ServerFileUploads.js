@@ -96,12 +96,10 @@
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.switchStorage = function() {
         var _this = this;
-        this.Api.sendPost('/server_file_uploads/switch').then(function() {
+        return this.Api.sendPost('/server_file_uploads/switch').then(function() {
           _this.Growl.success('Transfering of files started');
           return _this.$scope.fileTransferStarted = true;
         });
-        this.$scope.fileTransferStarted = true;
-        return this.Growl.success('Transfering of files started');
       };
 
       return Admin_ServerFileUploads_Ctrl_ServerFileUploads;

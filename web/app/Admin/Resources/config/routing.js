@@ -114,13 +114,23 @@ define(function() {
 	//##################################################################################################################
 
 	//###
-	//# Setup
+	//# Settings
 	//###
 	routes.push({
 		id: 'setup.settings',
 		url: '/settings',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		templateName: 'Settings/general-settings.html',
+		controller: 'Admin_Settings_Ctrl_GeneralSettings'
+	});
+
+	//###
+	//# Advanced Settings
+	//###
+	routes.push({
+		id: 'setup.settings_advanced',
+		url: '/settings_advanced',
+		templateName: 'Settings/adv-settings.html',
+		controller: 'Admin_Settings_Ctrl_AdvancedSettings'
 	});
 
 	//###
@@ -689,6 +699,14 @@ define(function() {
 		target: "appbody@tickets"
 	});
 
+	routes.push({
+		id: 'tickets.ticket_accounts.settings',
+		url: '/settings',
+		templateName: 'Settings/email-settings.html',
+		controller: 'Admin_Settings_Ctrl_EmailSettings',
+		target: "appbody@tickets"
+	});
+
 	//##################################################################################################################
 	// CRM
 	//##################################################################################################################
@@ -967,6 +985,16 @@ define(function() {
 		controller: 'Admin_Portal_Ctrl_PortalEditor'
 	});
 
+	//###
+	//# Portal Settings
+	//###
+	routes.push({
+		id: 'portal.settings',
+		url: '/settings',
+		templateName: 'Settings/portal-settings.html',
+		controller: 'Admin_Settings_Ctrl_PortalSettings'
+	});
+
 	routes.push({
 		id: 'portal.portal_editor_go',
 		url: '/go-portal-editor',
@@ -989,16 +1017,6 @@ define(function() {
 	//###
 	routes.push({
 		id: 'portal.theme',
-		url: '/theme',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
-	});
-
-	//###
-	//# Settings
-	//###
-	routes.push({
-		id: 'portal.settings',
 		url: '/theme',
 		templateName: 'Index/blank.html',
 		controller: 'Admin_Main_Ctrl_BareList'
@@ -1492,6 +1510,16 @@ define(function() {
 	//##################################################################################################################
 	// Server
 	//##################################################################################################################
+
+	//###
+	//# Server Settingss
+	//###
+	routes.push({
+		id: 'server.server_settings',
+		url: '/settings',
+		templateName: 'Settings/server-settings.html',
+		controller: 'Admin_Settings_Ctrl_ServerSettings'
+	});
 
 	//###
 	//# Server Requirements

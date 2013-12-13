@@ -2,6 +2,13 @@
 {% block nav_content %}
 	<nav class="dp-appnav">
 		<ul>
+			<li dp-state-mark="server.server_settings">
+				<a href="{{ ng_href('server.server_settings') }}">
+					<i class="fa fa-cog"></i>
+					<span>Server Settings</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
 			<li dp-state-mark="server.report_file">
 				<a href="{{ ng_href('server.report_file') }}">
 					<i class="fa fa-download"></i>

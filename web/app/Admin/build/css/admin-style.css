@@ -7555,6 +7555,15 @@ label {
   color: #888;
 }
 
+.dp-clear {
+  display: block;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clear: both;
+  visibility: hidden;
+}
+
 .dp-grayed-placeholder {
   position: relative;
   display: block;
@@ -11026,4 +11035,34 @@ section#portal_colors .style-row.color.dual .desc {
   border: none;
   outline: none;
   box-shadow: none;
+}
+
+.dp-slider-control {
+  width: 410px;
+  padding: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+.dp-slider-control label {
+  display: inline-block;
+  width: 80px;
+  text-align: center;
+}
+
+.dp-slider-control .slider-wrap {
+  display: inline-block;
+  width: 300px;
+}
+
+.dp-slider-control .pointer:after {
+  display: none;
+}
+
+.dp-slider-control .slider-note {
+  padding: 3px;
+  margin-bottom: 3px;
+  font-size: 11px;
+  text-align: center;
+  background: #efefef;
 }

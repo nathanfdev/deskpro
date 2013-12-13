@@ -3,6 +3,13 @@
 	<nav class="dp-appnav">
 		<ul>
 			<li dp-state-mark="portal.portal_editor"><a href="#/portal/portal_editor"><i class="fa fa-columns"></i> <span>Portal Editor</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="setup.settings">
+				<a href="{{ ng_href('portal.settings') }}">
+					<i class="fa fa-cog"></i>
+					<span>Settings</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
 			<li dp-state-mark="portal.embed"><a href="#/portal/embed"><i class="fa fa-code"></i> <span>Embed</span><i class="fa fa-caret-right"></i></a></li>
 			<li dp-state-mark="portal.theme"><a href="#/portal/theme"><i class="fa fa-picture"></i> <span>Theme</span><i class="fa fa-caret-right"></i></a></li>
 			<li dp-state-mark="portal.kb">

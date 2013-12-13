@@ -33,7 +33,13 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\TicketSettings;
+use Application\DeskPRO\Settings\ServerSettings;
+use Application\DeskPRO\Settings\GeneralSettings;
+use Application\DeskPRO\Settings\EmailSettings;
+use Application\DeskPRO\Settings\PortalSettings;
+use Orb\Util\Env;
 
 class SettingsController extends AbstractController
 {
@@ -90,6 +96,181 @@ class SettingsController extends AbstractController
 		$ticket_settings = new TicketSettings($this->settings);
 		$ticket_settings->setArray($this->in->getArrayValue('ticket_settings'));
 		$ticket_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
+	# server-settings
+	####################################################################################################################
+
+	public function serverSettingsAction()
+	{
+		$server_settings = new ServerSettings($this->settings);
+
+		return $this->createApiResponse(array(
+			'server_settings' => $server_settings->toArray(),
+		));
+	}
+
+
+	####################################################################################################################
+	# save-server-settings
+	####################################################################################################################
+
+	public function saveServerSettingsAction()
+	{
+		$server_settings = new ServerSettings($this->settings);
+		$server_settings->setArray($this->in->getArrayValue('server_settings'));
+		$server_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
+
+	####################################################################################################################
+	# general-settings
+	####################################################################################################################
+
+	public function generalSettingsAction()
+	{
+		$general_settings = new GeneralSettings($this->settings);
+
+		return $this->createApiResponse(array(
+			'general_settings' => $general_settings->toArray(),
+			'max_filesize'     => Env::getEffectiveMaxUploadSize(),
+		));
+	}
+
+
+	####################################################################################################################
+	# save-general-settings
+	####################################################################################################################
+
+	public function saveGeneralSettingsAction()
+	{
+		$general_settings = new GeneralSettings($this->settings);
+		$general_settings->setArray($this->in->getArrayValue('general_settings'));
+		$general_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
+	# email-settings
+	####################################################################################################################
+
+	public function emailSettingsAction()
+	{
+		$email_settings = new EmailSettings($this->settings);
+
+		return $this->createApiResponse(array(
+			'email_settings' => $email_settings->toArray(),
+		));
+	}
+
+
+	####################################################################################################################
+	# save-email-settings
+	####################################################################################################################
+
+	public function saveEmailSettingsAction()
+	{
+		$email_settings = new EmailSettings($this->settings);
+		$email_settings->setArray($this->in->getArrayValue('email_settings'));
+		$email_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
+	# portal-settings
+	####################################################################################################################
+
+	public function portalSettingsAction()
+	{
+		$portal_settings = new PortalSettings($this->settings);
+
+		return $this->createApiResponse(array(
+			'portal_settings' => $portal_settings->toArray(),
+		));
+	}
+
+
+	####################################################################################################################
+	# save-portal-settings
+	####################################################################################################################
+
+	public function savePortalSettingsAction()
+	{
+		$portal_settings = new PortalSettings($this->settings);
+		$portal_settings->setArray($this->in->getArrayValue('portal_settings'));
+		$portal_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
+	# all-settings-raw
+	####################################################################################################################
+
+	public function allSettingsRawAction()
+	{
+		$settings_files = new AdvancedSettings();
+		$all_settings = array();
+
+		foreach ($settings_files->getAllSettings() as $name => $default_value) {
+			$value = $set = $this->container->getSetting($name);
+
+			if ($default_value === true) $default_value = 1;
+			if ($value === true) $value = 1;
+			if ($default_value === false) $default_value = 0;
+			if ($value === false) $value = 0;
+			if ($default_value === null) $default_value = '';
+			if ($value === null) $value = '';
+
+			if ($value === '' && $default_value != '') {
+				$value = '<BLANK>';
+			}
+
+			$all_settings[] = array(
+				'name'          => $name,
+				'default_value' => $default_value,
+				'value'         => $value,
+			);
+		}
+
+		return $this->createApiResponse(array(
+			'all_settings' => $all_settings,
+		));
+	}
+
+	####################################################################################################################
+	# save-all-settings-raw
+	####################################################################################################################
+
+	public function saveAllSettingsRawAction()
+	{
+		$settings_files = new AdvancedSettings();
+		$set_settings = $this->in->getArrayValue('all_settings');
+
+		foreach ($settings_files->getAllSettings() as $name => $default_value) {
+			if (!isset($set_settings[$name])) {
+				continue;
+			}
+
+			$value = trim($set_settings[$name]);
+			if ($value === '' || $value == $default_value) {
+				$this->settings->setSetting($name, null);
+			} else if ($value == '<BLANK>') {
+				$this->settings->setSetting($name, '');
+			} else {
+				$this->settings->setSetting($name, $value);
+			}
+		}
 
 		return $this->createSuccessResponse();
 	}

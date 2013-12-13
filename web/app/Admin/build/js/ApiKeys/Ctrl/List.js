@@ -57,7 +57,7 @@
           ]
         });
         return inst.result.then(function() {
-          return _this.deleteBan(key);
+          return _this.deleteApiKey(key);
         });
       };
 
@@ -66,7 +66,7 @@
       */
 
 
-      Admin_ApiKeys_Ctrl_List.prototype.deleteBan = function(for_key) {
+      Admin_ApiKeys_Ctrl_List.prototype.deleteApiKey = function(for_key) {
         var _this = this;
         return this.keyData.deleteApiKeyById(for_key.id).success(function() {
           if (_this.$state.current.name === 'apps.api_keys.edit' && parseInt(_this.$state.params.id) === for_key.id) {

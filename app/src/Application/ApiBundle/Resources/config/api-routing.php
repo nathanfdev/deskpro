@@ -2124,6 +2124,86 @@ $collection->create('api_settings_values_set', array(
 ));
 
 ########################################################################################################################
+# Server Settings
+########################################################################################################################
+
+$collection->create('api_server_settings', array(
+	'path'        => '/server_settings',
+	'controller'  => 'ApiBundle:Settings:serverSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_server_settings_save', array(
+	'path'        => '/server_settings',
+	'controller'  => 'ApiBundle:Settings:saveServerSettings',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# General Settings
+########################################################################################################################
+
+$collection->create('api_general_settings', array(
+	'path'        => '/general_settings',
+	'controller'  => 'ApiBundle:Settings:generalSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_general_settings_save', array(
+	'path'        => '/general_settings',
+	'controller'  => 'ApiBundle:Settings:saveGeneralSettings',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# Email Settings
+########################################################################################################################
+
+$collection->create('api_email_settings', array(
+	'path'        => '/email_settings',
+	'controller'  => 'ApiBundle:Settings:emailSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_email_settings_save', array(
+	'path'        => '/email_settings',
+	'controller'  => 'ApiBundle:Settings:saveEmailSettings',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# Portal Settings
+########################################################################################################################
+
+$collection->create('api_portal_settings', array(
+	'path'        => '/portal_settings',
+	'controller'  => 'ApiBundle:Settings:portalSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_portal_settings_save', array(
+	'path'        => '/portal_settings',
+	'controller'  => 'ApiBundle:Settings:savePortalSettings',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# Advanced Settings
+########################################################################################################################
+
+$collection->create('api_all_settings_raw', array(
+	'path'        => '/all_settings_raw',
+	'controller'  => 'ApiBundle:Settings:allSettingsRaw',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_all_settings_raw_save', array(
+	'path'        => '/all_settings_raw',
+	'controller'  => 'ApiBundle:Settings:saveAllSettingsRaw',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Ticket Settings
 ########################################################################################################################
 

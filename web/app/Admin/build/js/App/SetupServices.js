@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState'], function(Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState) {
+  define(['DeskPRO/Util/Util', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState'], function(Util, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState) {
     return function(Module) {
       Module.service('AppState', [
         '$rootScope', '$state', function($rootScope, $state) {
@@ -32,11 +32,31 @@
       ]);
       Module.filter('filesize_display', [
         function() {
-          return function(bytes) {
+          return function(bytes, precision) {
             var exp, result, symbols;
+            if (precision == null) {
+              precision = 2;
+            }
+            if (!bytes) {
+              bytes = 0;
+            }
+            if (!Util.isNumber(bytes)) {
+              if (Util.isString(bytes)) {
+                bytes = parseFloat(bytes);
+                if (!bytes) {
+                  bytes = 0;
+                }
+              } else {
+                bytes = 0;
+              }
+            }
+            if (bytes === 0) {
+              return '0 B';
+            }
             symbols = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
             exp = Math.floor(Math.log(bytes) / Math.log(1024));
             result = bytes / Math.pow(1024, Math.floor(exp));
+            result = result.toFixed(precision);
             if (symbols[exp]) {
               result += ' ' + symbols[exp];
             }

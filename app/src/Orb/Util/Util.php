@@ -738,4 +738,14 @@ class Util
 			return str_repeat("\t", $d) . $var;
 		}
 	}
+
+
+	/**
+	 * @param mixed $value
+	 * @return int
+	 */
+	public function boolInt($value)
+	{
+		return $value ? 1 : 0;
+	}
 }

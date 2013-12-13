@@ -12,6 +12,8 @@ requirejs.config({
 		angularUiSortable:               DP_ASSET_URL+'/app/bower_components/angular-ui-sortable/src/sortable',
 		angularMoment:                   DP_ASSET_URL+'/app/bower_components/angular-moment/angular-moment.min',
 		angularFileUpload:               DP_ASSET_URL+'/app/bower_components/blueimp-file-upload/js/jquery.fileupload-angular',
+		angularSlider:                   DP_ASSET_URL+'/app/bower_components/angular-slider/angular-slider.min',
+		angularGrid:                     DP_ASSET_URL+'/app/bower_components/angular-grid/build/ng-grid.min',
 
 		moment:                          DP_ASSET_URL+'/app/bower_components/momentjs/min/moment-with-langs.min',
 		aceEditor:                       DP_ASSET_URL+'/app/bower_components/ace-builds/src-min-noconflict/ace',
@@ -59,6 +61,8 @@ requirejs.config({
 		'angularUiSortable':    ['angular'],
 		'angularMoment':        ['angular'],
 		'angularFileUpload':    ['jquery'],
+		angularSlider:          ['angular'],
+		angularGrid:          ['angular'],
 
 		'jqueryUi':             ['jquery'],
 		'ColorPicker':          ['jquery'],
@@ -88,6 +92,8 @@ requirejs([
 	'angularUiSortable',
 	'angularMoment',
 	'angularFileUpload',
+	'angularSlider',
+	'angularGrid',
 
 	'moment',
 	'aceEditor',
@@ -199,6 +205,11 @@ requirejs([
 	'Admin/Server/Ctrl/ServerFileUploads',
 	'Admin/Server/Ctrl/ServerFileCheck',
 	'Admin/Server/Ctrl/ServerReportFile',
+	'Admin/Settings/Ctrl/AdvancedSettings',
+	'Admin/Settings/Ctrl/EmailSettings',
+	'Admin/Settings/Ctrl/GeneralSettings',
+	'Admin/Settings/Ctrl/PortalSettings',
+	'Admin/Settings/Ctrl/ServerSettings',
 	'Admin/UserGroups/Ctrl/List',
 	'Admin/UserGroups/Ctrl/Edit',
 	'Admin/UserReg/Ctrl/Settings',

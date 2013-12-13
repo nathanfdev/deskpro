@@ -11,6 +11,8 @@
     "angular-ui-ace": "latest",
     "angular-ui-router": "latest",
     "angular-ui-select2": "latest",
+	"angular-slider": "latest",
+	"angular-grid": "latest",
     "font-awesome": "~4.0",
     "jquery": "2.0",
     "jquery-ui": "latest",

@@ -1,0 +1,125 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<section class="dp-paneblock dp-listpane">
+	<header>
+		<h3>Portal Settings</h3>
+	</header>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>Published Content Settings</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-12">
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="show_ratings_opt" />
+							<h4>Show ratings publicly</h4>
+						</label>
+						<div ng-show="show_ratings_opt">
+							Show ratings publicly in the portal after there have been <input type="text" class="form-control" ng-model="settings.show_ratings" style="width: 80px;" /> votes.
+						</div>
+					</div>
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.publish_comments" />
+							<h4>Enable comments on published content</h4>
+						</label>
+						<span class="help-block">
+							Enable comments on articles, news and downloads. (This setting does not affect Feedback; discussons on feedback is always enabled).
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>CAPTCHA Settings</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="settings.register_captcha" />
+						<h4>Enable CAPTCHA on the registration form</h4>
+					</label>
+				</div>
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="settings.publish_captcha" />
+						<h4>Enable CAPTCHA on new feedback and new comment forms</h4>
+					</label>
+				</div>
+				<div class="inner-group" ng-show="settings.publish_captcha">
+					<label>
+						<input type="checkbox" ng-model="settings.always_show_captcha" />
+						<h4>Always show a CAPTCHA even for registered users who are logged in.</h4>
+					</label>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>User Notifications</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="settings.feedback_notify_comments" />
+						<h4>Notify users when feedback is updated</h4>
+					</label>
+					<span class="help-block">
+						When enabled, any user who participated in a feedback discussion will be notified when it is updated (new replies or status changes).
+					</span>
+				</div>
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="settings.kb_subscriptions" />
+						<h4>Enable knowledgebase subscriptions</h4>
+					</label>
+					<span class="help-block">
+						When enabled, users can subscribe to knowledgebase categories or specific articles so they can be notified of updates.
+					</span>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<footer>
+		<div class="dp-content">
+			<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+				<div dp-hide-spinning="saving">
+					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+					<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+				</div>
+				<div dp-show-spinning="saving">
+					<i class="spinner-flat"></i>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</section>
+	</form>
+	<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

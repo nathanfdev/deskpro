@@ -1,9 +1,11 @@
 define [
+	'DeskPRO/Util/Util',
 	'Admin/Main/Service/AppState',
 	'Admin/Main/Service/DpApi',
 	'Admin/Main/Service/Growl',
 	'Admin/Main/Service/InhelpState',
 ], (
+	Util,
 	Admin_Main_Service_AppState,
 	Admin_Main_Service_DpApi,
 	Admin_Main_Service_Growl,
@@ -36,11 +38,25 @@ define [
 		])
 
 		Module.filter('filesize_display', [ ->
-			return (bytes) ->
+			return (bytes, precision = 2) ->
+				if not bytes
+					bytes = 0
+				if not Util.isNumber(bytes)
+					if Util.isString(bytes)
+						bytes = parseFloat(bytes)
+						if not bytes
+							bytes = 0
+					else
+						bytes = 0
+
+				if bytes == 0
+					return '0 B'
+
 				symbols = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
 				exp = Math.floor(Math.log(bytes) / Math.log(1024))
-				result = bytes / Math.pow(1024, Math.floor(exp));
+				result = bytes / Math.pow(1024, Math.floor(exp))
+				result = result.toFixed(precision)
 
 				if symbols[exp] then result += ' ' + symbols[exp]
 
