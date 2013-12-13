@@ -67,6 +67,14 @@ class BanEmail extends DomainObject
 
 	protected $is_pattern = false;
 
+	/**
+	 * @return BanEmail
+	 */
+
+	public static function createEmailBan()
+	{
+		return new self();
+	}
 
 	/**
 	 * @param string $email

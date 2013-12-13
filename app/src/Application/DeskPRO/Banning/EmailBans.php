@@ -33,7 +33,7 @@
 
 namespace Application\DeskPRO\Banning;
 
-use Application\DeskPRO\Entity\BanIp;
+use Application\DeskPRO\Entity\BanEmail;
 use Doctrine\ORM\EntityManager;
 
 class EmailBans
@@ -111,9 +111,9 @@ class EmailBans
 
 		$result = array();
 
-		foreach ($this->email_bans as $ip_ban) {
+		foreach ($this->email_bans as $email_ban) {
 
-			$result[] = array('banned_email' => $ip_ban);
+			$result[] = array('banned_email' => $email_ban);
 		}
 
 		return $result;
@@ -131,11 +131,11 @@ class EmailBans
 	}
 
 	/**
-	 * @return BanIp
+	 * @return BanEmail
 	 */
 
 	public function createNew()
 	{
-		return BanIp::createEmailIp();
+		return BanEmail::createEmailBan();
 	}
 }
