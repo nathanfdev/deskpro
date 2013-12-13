@@ -1,0 +1,59 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Email Address Pattern</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.banned_email">
+									<input type="text" class="form-control" name="banned_email"
+										   ng-model="EditCtrl.form.banned_email"
+										   style="width: 50%;" required autofocus/>
+									<span class="help-block">
+										Examples: baduser@example.com, *@spammy-domain.com, *@spammy-domain.*
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.banned_email.$error.required">Please set Email Address Pattern</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.email_ban.banned_email">
+						<button class="btn btn-danger"
+								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.email_ban.banned_email);">
+							Delete
+						</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+		</section>
+	</form>
+
+{% endblock %}
