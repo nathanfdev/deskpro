@@ -76,7 +76,7 @@
           key = 'email';
         }
         return this.banData.deleteBanById(for_ban['banned_' + key]).success(function() {
-          if (_this.$state.current.name === ('crm.banning.edit_' + key) && parseInt(_this.$state.params.ban) === for_ban.ban) {
+          if (_this.$state.current.name === ('crm.banning.edit_' + key) && _this.$state.params.ban === for_ban['banned_' + key]) {
             return _this.$state.go('crm.banning');
           }
         }).error(function(info, code) {

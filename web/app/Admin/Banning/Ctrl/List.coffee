@@ -52,7 +52,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@banData.deleteBanById(for_ban['banned_' + key]).success( =>
 
-				if @$state.current.name == ('crm.banning.edit_' + key) and parseInt(@$state.params.ban) == for_ban.ban
+				if @$state.current.name == ('crm.banning.edit_' + key) and @$state.params.ban == for_ban['banned_' + key]
 					@$state.go('crm.banning')
 
 			).error((info, code) =>
