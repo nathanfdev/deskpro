@@ -45,6 +45,40 @@
 	</div>
 {% endblock %}
 {% block fillpage_content %}
+
+	<div class="dp-interface-buttons">
+		<ul>
+			<li>
+				<article><a href="#/back_to_agent">
+					<div class="title-wrap"><h3>Agent Interface</h3></div>
+					<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
+					<strong>
+						Reply to tickets and manage helpdesk content.
+					</strong>
+				</a></article>
+			</li>
+			<li>
+				<article><a href="/{{ path('user')|trim('/') }}reports">
+					<div class="title-wrap"><h3>Reports Interface</h3></div>
+					<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
+					<strong>
+						View and create reports.
+					</strong>
+				</a></article>
+			</li>
+			<li>
+				<article><a href="">
+					<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
+					<div class="img-wrap"><img src="{{ asset('images/admin/blank-screen.gif') }}" /></div>
+					<strong>
+						Manage your DeskPRO license.
+					</strong>
+				</a></article>
+			</li>
+		</ul>
+	</div>
+
+
 	<div class="dp-dashboard">
 		<div class="row">
 			<div class="col-xs-6">
