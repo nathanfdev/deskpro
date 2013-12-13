@@ -150,6 +150,7 @@ requirejs([
 	'Admin/Labels/Downloads/Ctrl/List',
 	'Admin/Labels/Downloads/Ctrl/Edit',
 	'Admin/Languages/Ctrl/TranslateModal',
+	'Admin/License/Ctrl/License',
 	'Admin/Templates/Ctrl/EmailTemplateEditor',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',

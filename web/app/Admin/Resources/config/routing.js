@@ -31,6 +31,13 @@ define(function() {
 		controller: 'Admin_Main_Ctrl_Home'
 	});
 
+	routes.push({
+		id: 'license',
+		url: '/license',
+		templateName: 'License/license.html',
+		controller: 'Admin_License_Ctrl_License'
+	});
+
 	//##################################################################################################################
 	// Main Nav
 	//##################################################################################################################
