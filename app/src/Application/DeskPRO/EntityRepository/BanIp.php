@@ -42,18 +42,36 @@ class BanIp extends AbstractEntityRepository
 {
 	/**
 	 * Get a list of IPs suitable for display
+	 * @param int    $from
+	 * @param int    $limit
+	 *
+	 * @return array
 	 */
-	public function getList()
+
+	public function getList($from = 0, $limit = 20)
 	{
 		$list = App::getDb()->fetchAllCol("
 			SELECT banned_ip
 			FROM ban_ips
 			ORDER BY ip_start ASC
+			LIMIT " . $from . ", " . $limit . "
 		");
 
 		return $list;
 	}
 
+	/**
+	 * @param int $per_page
+	 *
+	 * @return int
+	 */
+
+	public function getPageCount($per_page = 20)
+	{
+		$count = App::getDb()->count('ban_ips');
+
+		return ceil($count / $per_page);
+	}
 
 	/**
 	 * @param $ip

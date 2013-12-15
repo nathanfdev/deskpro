@@ -50,13 +50,29 @@ class IpBans
 
     protected $ip_bans;
 
+	/**
+	 * @var int
+	 */
+
+	protected $per_page = 20;
+
+	/**
+	 * @var int
+	 */
+
+	protected $from;
+
+	/**
+	 * @param EntityManager $em
+	 */
+
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
 	}
 
 	/**
-	 * Loads twitter accounts data from the database
+	 * Loads ip bans data from the database
 	 */
 
 	private function preload()
@@ -66,7 +82,7 @@ class IpBans
 			return;
 		}
 
-		$this->ip_bans = $this->em->getRepository('DeskPRO:BanIp')->getList();
+		$this->ip_bans = $this->em->getRepository('DeskPRO:BanIp')->getList($this->from, $this->per_page);
 	}
 
 
@@ -102,11 +118,19 @@ class IpBans
     }
 
 	/**
+	 * @param int $page
+	 *
 	 * @return array
 	 */
 
-	public function getAllAsNestedArray()
+	public function getAllAsNestedArray($page = 1)
 	{
+		if ($page == 0) {
+
+			$page = 1;
+		}
+
+		$this->from = ($page - 1) * $this->per_page;
 		$this->preload();
 
 		$result = array();
@@ -117,6 +141,15 @@ class IpBans
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return int
+	 */
+
+	public function getPageCount()
+	{
+		return $this->em->getRepository('DeskPRO:BanIp')->getPageCount($this->per_page);
 	}
 
 	/**
