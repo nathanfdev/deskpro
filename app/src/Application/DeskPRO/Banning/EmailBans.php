@@ -63,12 +63,58 @@ class EmailBans
 	protected $from;
 
 	/**
+	 * @var string
+	 */
+
+	protected $search_phrase;
+
+	/**
 	 * @param EntityManager $em
 	 */
 
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
+	}
+
+	/**
+	 * @param int $per_page
+	 *
+	 * @return $this
+	 */
+
+	public function setPerPage($per_page)
+	{
+		$this->per_page = $per_page;
+
+		return $this;
+	}
+
+	/**
+	 * @param int $page
+	 *
+	 * @return $this
+	 */
+
+	public function setPage($page)
+	{
+		if ($page == 0) {
+
+			$page = 1;
+		}
+
+		$this->from = ($page - 1) * $this->per_page;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $search_phrase
+	 */
+
+	public function setSearchPhrase($search_phrase)
+	{
+		$this->search_phrase = $search_phrase;
 	}
 
 	/**
@@ -82,7 +128,11 @@ class EmailBans
 			return;
 		}
 
-		$this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList($this->from, $this->per_page);
+		$this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList(
+			$this->from,
+			$this->per_page,
+			$this->search_phrase
+		);
 	}
 
 
@@ -118,19 +168,11 @@ class EmailBans
     }
 
 	/**
-	 * @param int $page
-	 *
 	 * @return array
 	 */
 
-	public function getAllAsNestedArray($page = 1)
+	public function getAllAsNestedArray()
 	{
-		if ($page == 0) {
-
-			$page = 1;
-		}
-
-		$this->from = ($page - 1) * $this->per_page;
 		$this->preload();
 
 		$result = array();

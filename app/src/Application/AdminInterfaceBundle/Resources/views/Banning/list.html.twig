@@ -66,6 +66,13 @@
 			</h3>
 		</header>
 		<article>
+
+			<div class="alert">
+				<input type="text" ng-model="ListCtrl.search_phrase.email_ban" style="width: 200px; display: inline-block;"
+					   class="form-control">
+				<button class="btn btn-primary" ng-click="ListCtrl.reloadList(false, true)">Search</button>
+			</div>
+
 			<ul class="dp-item-list">
 				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.email_bans"
 					dp-state-mark="crm.banning.edit_email.ban">
