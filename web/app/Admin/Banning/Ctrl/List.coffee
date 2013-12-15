@@ -16,6 +16,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 				@list = list
 				@pagination = @banData.getPagination()
+				@search_phrase = @banData.getSearchPhrase()
 
 				@initializeScopeWatching()
 			)
@@ -24,30 +25,47 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		###
 		#	Here we watching scope 'page' variable in order to load new page of results
+ 	# Reason - 'ng-change' is not working for ui-select2
 		###
 
 		initializeScopeWatching: ->
 
 			@$scope.$watch('ListCtrl.pagination', (newVal, oldVal) =>
 
-				if parseInt(newVal.ip_bans.page) == parseInt(oldVal.ip_bans.page) and parseInt(newVal.email_bans.page) == parseInt(oldVal.email_bans.page)
+				ip_bans_page_old = parseInt(oldVal.ip_bans.page)
+				ip_bans_page_new = parseInt(newVal.ip_bans.page)
+				email_bans_page_old = parseInt(newVal.email_bans.page)
+				email_bans_page_new = parseInt(oldVal.email_bans.page)
+
+				if ip_bans_page_old == ip_bans_page_new and email_bans_page_old == email_bans_page_new
 					return undefined
 
-				if isNaN(parseInt(newVal.ip_bans.page)) and isNaN(parseInt(newVal.email_bans.page))
+				if isNaN(ip_bans_page_new) and isNaN(email_bans_page_new)
 					return undefined
 
-				@startSpinner('paginating_ip_bans') if newVal.ip_bans.page != oldVal.ip_bans.page
-				@startSpinner('paginating_email_bans') if newVal.email_bans.page != oldVal.email_bans.page
+				@reloadList(ip_bans_page_old != ip_bans_page_new, email_bans_page_old != email_bans_page_new)
 
-				@banData.refreshList().then( (list) =>
-
-					@stopSpinner('paginating_ip_bans', true) if newVal.ip_bans.page != oldVal.ip_bans.page
-					@stopSpinner('paginating_email_bans', true) if newVal.email_bans.page != oldVal.email_bans.page
-
-					@list = list
-					@pagination = @banData.getPagination()
-				)
 			, true)
+
+		###
+ 	# Reloads the lists with bans taking into current page & search phrase
+ 	#
+		# @param {Boolean} reload_ip - whether we want to reload list with ip bans
+ 	# @param {Boolean} reload_email - whether we want to reload list with email bans
+		###
+
+		reloadList: (reload_ip, reload_email) ->
+
+			@startSpinner('paginating_ip_bans') if reload_ip
+			@startSpinner('paginating_email_bans') if reload_email
+
+			@banData.refreshList().then((list) =>
+				@stopSpinner('paginating_ip_bans', true) if reload_ip
+				@stopSpinner('paginating_email_bans', true) if reload_email
+
+				@list = list
+				@pagination = @banData.getPagination()
+			)
 
 		###
  	#

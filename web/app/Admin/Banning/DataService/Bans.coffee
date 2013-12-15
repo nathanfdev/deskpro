@@ -17,6 +17,10 @@ define [
 
 		init: ->
 			@setSubLists ['ip_bans', 'email_bans']
+			@search_phrase = {
+				ip_ban: '',
+				email_ban: ''
+			}
 
 		###
  	#
@@ -44,7 +48,15 @@ define [
 
 			deferred = @$q.defer()
 
-			@Api.sendGet('/banning', {ip_ban_page: @pagination.ip_bans.page, email_ban_page: @pagination.email_bans.page}).success((data) =>
+			@Api.sendGet('/banning', {
+
+				ip_ban_page: @pagination.ip_bans.page,
+				email_ban_page: @pagination.email_bans.page,
+				ip_ban_search_phrase: @search_phrase.ip_ban
+				email_ban_search_phrase: @search_phrase.email_ban
+
+			}).success( (data) =>
+
 				models = data.bans
 				deferred.resolve(models)
 			, (data, status, headers, config) ->
@@ -52,6 +64,14 @@ define [
 			)
 
 			return deferred.promise
+
+		###
+ 	# Returns object representing the search string defined via user UI
+ 	###
+
+		getSearchPhrase: ->
+
+			return @search_phrase
 
 		###
  	# Sets type of ban that is used for create / update / delete operations

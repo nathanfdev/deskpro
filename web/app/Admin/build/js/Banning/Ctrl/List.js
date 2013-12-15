@@ -31,6 +31,7 @@
         promise = this.banData.loadList().then(function(list) {
           _this.list = list;
           _this.pagination = _this.banData.getPagination();
+          _this.search_phrase = _this.banData.getSearchPhrase();
           return _this.initializeScopeWatching();
         });
         return promise;
@@ -38,35 +39,54 @@
 
       /*
       		#	Here we watching scope 'page' variable in order to load new page of results
+       	# Reason - 'ng-change' is not working for ui-select2
       */
 
 
       Admin_Banning_Ctrl_List.prototype.initializeScopeWatching = function() {
         var _this = this;
         return this.$scope.$watch('ListCtrl.pagination', function(newVal, oldVal) {
-          if (parseInt(newVal.ip_bans.page) === parseInt(oldVal.ip_bans.page) && parseInt(newVal.email_bans.page) === parseInt(oldVal.email_bans.page)) {
+          var email_bans_page_new, email_bans_page_old, ip_bans_page_new, ip_bans_page_old;
+          ip_bans_page_old = parseInt(oldVal.ip_bans.page);
+          ip_bans_page_new = parseInt(newVal.ip_bans.page);
+          email_bans_page_old = parseInt(newVal.email_bans.page);
+          email_bans_page_new = parseInt(oldVal.email_bans.page);
+          if (ip_bans_page_old === ip_bans_page_new && email_bans_page_old === email_bans_page_new) {
             return void 0;
           }
-          if (isNaN(parseInt(newVal.ip_bans.page)) && isNaN(parseInt(newVal.email_bans.page))) {
+          if (isNaN(ip_bans_page_new) && isNaN(email_bans_page_new)) {
             return void 0;
           }
-          if (newVal.ip_bans.page !== oldVal.ip_bans.page) {
-            _this.startSpinner('paginating_ip_bans');
-          }
-          if (newVal.email_bans.page !== oldVal.email_bans.page) {
-            _this.startSpinner('paginating_email_bans');
-          }
-          return _this.banData.refreshList().then(function(list) {
-            if (newVal.ip_bans.page !== oldVal.ip_bans.page) {
-              _this.stopSpinner('paginating_ip_bans', true);
-            }
-            if (newVal.email_bans.page !== oldVal.email_bans.page) {
-              _this.stopSpinner('paginating_email_bans', true);
-            }
-            _this.list = list;
-            return _this.pagination = _this.banData.getPagination();
-          });
+          return _this.reloadList(ip_bans_page_old !== ip_bans_page_new, email_bans_page_old !== email_bans_page_new);
         }, true);
+      };
+
+      /*
+       	# Reloads the lists with bans taking into current page & search phrase
+       	#
+      		# @param {Boolean} reload_ip - whether we want to reload list with ip bans
+       	# @param {Boolean} reload_email - whether we want to reload list with email bans
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.reloadList = function(reload_ip, reload_email) {
+        var _this = this;
+        if (reload_ip) {
+          this.startSpinner('paginating_ip_bans');
+        }
+        if (reload_email) {
+          this.startSpinner('paginating_email_bans');
+        }
+        return this.banData.refreshList().then(function(list) {
+          if (reload_ip) {
+            _this.stopSpinner('paginating_ip_bans', true);
+          }
+          if (reload_email) {
+            _this.stopSpinner('paginating_email_bans', true);
+          }
+          _this.list = list;
+          return _this.pagination = _this.banData.getPagination();
+        });
       };
 
       /*

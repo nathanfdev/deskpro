@@ -8,6 +8,13 @@
 			</h3>
 		</header>
 		<article>
+
+			<div class="alert">
+				<input type="text" ng-model="ListCtrl.search_phrase.ip_ban" style="width: 200px; display: inline-block;"
+					   class="form-control">
+				<button class="btn btn-primary" ng-click="ListCtrl.reloadList(true, false)">Search</button>
+			</div>
+
 			<ul class="dp-item-list">
 				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.ip_bans"
 					dp-state-mark="crm.banning.edit_ip.ban">

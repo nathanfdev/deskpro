@@ -22,7 +22,11 @@
 
 
       Bans.prototype.init = function() {
-        return this.setSubLists(['ip_bans', 'email_bans']);
+        this.setSubLists(['ip_bans', 'email_bans']);
+        return this.search_phrase = {
+          ip_ban: '',
+          email_ban: ''
+        };
       };
 
       /*
@@ -55,7 +59,9 @@
         deferred = this.$q.defer();
         this.Api.sendGet('/banning', {
           ip_ban_page: this.pagination.ip_bans.page,
-          email_ban_page: this.pagination.email_bans.page
+          email_ban_page: this.pagination.email_bans.page,
+          ip_ban_search_phrase: this.search_phrase.ip_ban,
+          email_ban_search_phrase: this.search_phrase.email_ban
         }).success(function(data) {
           var models;
           models = data.bans;
@@ -64,6 +70,15 @@
           return deferred.reject();
         });
         return deferred.promise;
+      };
+
+      /*
+       	# Returns object representing the search string defined via user UI
+      */
+
+
+      Bans.prototype.getSearchPhrase = function() {
+        return this.search_phrase;
       };
 
       /*
