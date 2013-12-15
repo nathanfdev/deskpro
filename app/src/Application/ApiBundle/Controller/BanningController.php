@@ -50,14 +50,19 @@ class BanningController extends AbstractController
 
 	public function listAction()
 	{
-		$ip_ban_page    = $this->in->getUint('ip_ban_page');
-		$email_ban_page = $this->in->getUint('email_ban_page');
+		$ip_ban_page          = $this->in->getUint('ip_ban_page');
+		$email_ban_page       = $this->in->getUint('email_ban_page');
+		$ip_ban_search_phrase = $this->in->getUint('ip_ban_search_phrase');
+		$ip_ban_email_phrase  = $this->in->getUint('email_ban_search_phrase');
 
 		/**
 		 * @var \Application\DeskPRO\Banning\IpBans $ip_bans
 		 */
 
 		$ip_bans = $this->container->getSystemService('ip_bans');
+		$ip_bans
+			->setPage($ip_ban_page)
+			->setSearchPhrase($ip_ban_search_phrase);
 
 		/**
 		 * @var \Application\DeskPRO\Banning\EmailBans $email_bans
@@ -78,7 +83,7 @@ class BanningController extends AbstractController
 							 'page'      => $email_ban_page,
 						 ),
 					 ),
-					 'ip_bans'    => $ip_bans->getAllAsNestedArray($ip_ban_page),
+					 'ip_bans'    => $ip_bans->getAllAsNestedArray(),
 					 'email_bans' => $email_bans->getAllAsNestedArray($email_ban_page),
 				 )
 			)
