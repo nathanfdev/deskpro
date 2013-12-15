@@ -192,7 +192,7 @@ class IpBans
 
 	public function getPageCount()
 	{
-		return $this->em->getRepository('DeskPRO:BanIp')->getPageCount($this->per_page);
+		return $this->em->getRepository('DeskPRO:BanIp')->getPageCount($this->per_page, $this->search_phrase);
 	}
 
 	/**

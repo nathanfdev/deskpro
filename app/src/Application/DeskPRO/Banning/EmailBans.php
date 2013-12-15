@@ -191,7 +191,7 @@ class EmailBans
 
 	public function getPageCount()
 	{
-		return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page);
+		return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page, $this->search_phrase);
 	}
 
 	/**

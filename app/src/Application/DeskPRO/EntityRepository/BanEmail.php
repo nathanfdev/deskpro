@@ -64,13 +64,21 @@ class BanEmail extends AbstractEntityRepository
 
 	/**
 	 * @param int $per_page
+	 * @param string $search_phrase
 	 *
 	 * @return int
 	 */
 
-	public function getPageCount($per_page = 20)
+	public function getPageCount($per_page = 20, $search_phrase = '')
 	{
-		$count = App::getDb()->count('ban_emails');
+		$where = '';
+
+		if (!empty($search_phrase)) {
+
+			$where = "banned_email LIKE '%" . $search_phrase . "%'";
+		}
+
+		$count = App::getDb()->count('ban_emails', $where);
 
 		return ceil($count / $per_page);
 	}
