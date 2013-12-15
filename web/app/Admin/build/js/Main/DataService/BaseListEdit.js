@@ -82,7 +82,7 @@
 
       /*
        	# This is useful if we need to store 2 or more lists instead of default one
-       	# Call this method somewhere ( init() method of data servcie is preferrable) and use array of names of sub lists
+       	# Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
        	#
        	# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
       */
@@ -151,6 +151,7 @@
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             subModel = _ref[_i];
+            this.pagination[subModel].page = this.pagination[subModel].page || "1";
             this.pagination[subModel].page_nums = [];
             _results.push((function() {
               var _j, _ref1, _results1;

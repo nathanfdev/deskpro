@@ -43,18 +43,18 @@
 
       Admin_Banning_Ctrl_List.prototype.initializeScopeWatching = function() {
         var _this = this;
-        return this.$scope.$watch('ListCtrl.pagination.ip_bans.page', function(newVal, oldVal) {
-          if (parseInt(newVal) === parseInt(oldVal)) {
+        return this.$scope.$watch('ListCtrl.pagination', function(newVal, oldVal) {
+          if (parseInt(newVal.ip_bans.page) === parseInt(oldVal.ip_bans.page)) {
             return void 0;
           }
-          if (isNaN(parseInt(newVal))) {
+          if (isNaN(parseInt(newVal.ip_bans.page))) {
             return void 0;
           }
           return _this.banData.refreshList().then(function(list) {
             _this.list = list;
             return _this.pagination = _this.banData.getPagination();
           });
-        });
+        }, true);
       };
 
       /*

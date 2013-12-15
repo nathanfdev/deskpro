@@ -44,7 +44,7 @@ define [
 
 			deferred = @$q.defer()
 
-			@Api.sendGet('/banning', {ip_ban_page: @pagination.ip_bans.page}).success((data) =>
+			@Api.sendGet('/banning', {ip_ban_page: @pagination.ip_bans.page, email_ban_page: @pagination.email_bans.page}).success((data) =>
 				models = data.bans
 				deferred.resolve(models)
 			, (data, status, headers, config) ->

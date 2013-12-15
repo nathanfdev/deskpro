@@ -28,12 +28,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		initializeScopeWatching: ->
 
-			@$scope.$watch('ListCtrl.pagination.ip_bans.page', (newVal, oldVal) =>
+			@$scope.$watch('ListCtrl.pagination', (newVal, oldVal) =>
 
-				if parseInt(newVal) == parseInt(oldVal)
+				if parseInt(newVal.ip_bans.page) == parseInt(oldVal.ip_bans.page)
 					return undefined
 
-				if isNaN(parseInt(newVal))
+				if isNaN(parseInt(newVal.ip_bans.page))
 					return undefined
 
 				@banData.refreshList().then( (list) =>
@@ -41,7 +41,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					@list = list
 					@pagination = @banData.getPagination()
 				)
-			)
+			, true)
 
 		###
 		# Show the delete dlg

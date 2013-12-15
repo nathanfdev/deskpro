@@ -84,7 +84,7 @@ define [
 
 		###
  	# This is useful if we need to store 2 or more lists instead of default one
- 	# Call this method somewhere ( init() method of data servcie is preferrable) and use array of names of sub lists
+ 	# Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
  	#
  	# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
  	###
@@ -132,6 +132,7 @@ define [
 			if @subLists.length
 
 				for subModel in @subLists
+					@pagination[subModel].page = @pagination[subModel].page || "1"
 					@pagination[subModel].page_nums = []
 					for i in [0...@pagination[subModel].num_pages]
 						@pagination[subModel].page_nums.push(i + 1)
