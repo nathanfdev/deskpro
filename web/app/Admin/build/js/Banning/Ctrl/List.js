@@ -70,6 +70,42 @@
       };
 
       /*
+       	#
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.goNextIpBanPage = function() {
+        return this.pagination.ip_bans.page++;
+      };
+
+      /*
+      		#
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.goPrevIpBanPage = function() {
+        return this.pagination.ip_bans.page--;
+      };
+
+      /*
+       	#
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.goNextEmailBanPage = function() {
+        return this.pagination.email_bans.page++;
+      };
+
+      /*
+      		#
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.goPrevEmailBanPage = function() {
+        return this.pagination.email_bans.page--;
+      };
+
+      /*
       		# Show the delete dlg
       */
 

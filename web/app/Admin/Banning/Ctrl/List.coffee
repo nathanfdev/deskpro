@@ -50,6 +50,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			, true)
 
 		###
+ 	#
+ 	###
+
+		goNextIpBanPage: ->
+
+			@pagination.ip_bans.page++
+
+		###
+		#
+		###
+
+		goPrevIpBanPage: ->
+
+			@pagination.ip_bans.page--
+
+		###
+ 	#
+ 	###
+
+		goNextEmailBanPage: ->
+
+			@pagination.email_bans.page++
+
+		###
+		#
+		###
+
+		goPrevEmailBanPage: ->
+
+			@pagination.email_bans.page--
+
+		###
 		# Show the delete dlg
 		###
 
