@@ -43,15 +43,29 @@ class BanEmail extends AbstractEntityRepository
 	/**
 	 * Get a list of emails suitable for display
 	 */
-	public function getList()
+	public function getList($from = 0, $limit = 20)
 	{
 		$list = App::getDb()->fetchAllCol("
 			SELECT banned_email
 			FROM ban_emails
 			ORDER BY banned_email ASC
+			LIMIT " . $from . ", " . $limit . "
 		");
 
 		return $list;
+	}
+
+	/**
+	 * @param int $per_page
+	 *
+	 * @return int
+	 */
+
+	public function getPageCount($per_page = 20)
+	{
+		$count = App::getDb()->count('ban_emails');
+
+		return ceil($count / $per_page);
 	}
 
 	public function getPatterns($reload = false)

@@ -74,7 +74,7 @@ class BanningController extends AbstractController
 							 'page'      => $ip_ban_page,
 						 ),
 						 'email_bans' => array(
-							 'num_pages' => 2,
+							 'num_pages' => $email_bans->getPageCount(),
 							 'page'      => $email_ban_page,
 						 ),
 					 ),

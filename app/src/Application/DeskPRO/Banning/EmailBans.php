@@ -50,6 +50,22 @@ class EmailBans
 
     protected $email_bans;
 
+	/**
+	 * @var int
+	 */
+
+	protected $per_page = 20;
+
+	/**
+	 * @var int
+	 */
+
+	protected $from;
+
+	/**
+	 * @param EntityManager $em
+	 */
+
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
@@ -66,7 +82,7 @@ class EmailBans
 			return;
 		}
 
-		$this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList();
+		$this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList($this->from, $this->per_page);
 	}
 
 
@@ -102,11 +118,19 @@ class EmailBans
     }
 
 	/**
+	 * @param int $page
+	 *
 	 * @return array
 	 */
 
-	public function getAllAsNestedArray()
+	public function getAllAsNestedArray($page = 1)
 	{
+		if ($page == 0) {
+
+			$page = 1;
+		}
+
+		$this->from = ($page - 1) * $this->per_page;
 		$this->preload();
 
 		$result = array();
@@ -117,6 +141,15 @@ class EmailBans
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return int
+	 */
+
+	public function getPageCount()
+	{
+		return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page);
 	}
 
 	/**
