@@ -44,10 +44,10 @@
       Admin_Banning_Ctrl_List.prototype.initializeScopeWatching = function() {
         var _this = this;
         return this.$scope.$watch('ListCtrl.pagination', function(newVal, oldVal) {
-          if (parseInt(newVal.ip_bans.page) === parseInt(oldVal.ip_bans.page)) {
+          if (parseInt(newVal.ip_bans.page) === parseInt(oldVal.ip_bans.page) && parseInt(newVal.email_bans.page) === parseInt(oldVal.email_bans.page)) {
             return void 0;
           }
-          if (isNaN(parseInt(newVal.ip_bans.page))) {
+          if (isNaN(parseInt(newVal.ip_bans.page)) && isNaN(parseInt(newVal.email_bans.page))) {
             return void 0;
           }
           return _this.banData.refreshList().then(function(list) {

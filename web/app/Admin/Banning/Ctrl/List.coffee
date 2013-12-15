@@ -30,10 +30,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@$scope.$watch('ListCtrl.pagination', (newVal, oldVal) =>
 
-				if parseInt(newVal.ip_bans.page) == parseInt(oldVal.ip_bans.page)
+				if parseInt(newVal.ip_bans.page) == parseInt(oldVal.ip_bans.page) and parseInt(newVal.email_bans.page) == parseInt(oldVal.email_bans.page)
 					return undefined
 
-				if isNaN(parseInt(newVal.ip_bans.page))
+				if isNaN(parseInt(newVal.ip_bans.page)) and isNaN(parseInt(newVal.email_bans.page))
 					return undefined
 
 				@banData.refreshList().then( (list) =>

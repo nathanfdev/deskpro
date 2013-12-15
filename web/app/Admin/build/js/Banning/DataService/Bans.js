@@ -55,7 +55,7 @@
         deferred = this.$q.defer();
         this.Api.sendGet('/banning', {
           ip_ban_page: this.pagination.ip_bans.page,
-          email_ban_page: this.pagination.ip_bans.page
+          email_ban_page: this.pagination.email_bans.page
         }).success(function(data) {
           var models;
           models = data.bans;
