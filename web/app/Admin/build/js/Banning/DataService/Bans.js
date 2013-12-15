@@ -45,6 +45,27 @@
       };
 
       /*
+      		#
+      */
+
+
+      Bans.prototype._doRefreshList = function() {
+        var deferred,
+          _this = this;
+        deferred = this.$q.defer();
+        this.Api.sendGet('/banning', {
+          ip_ban_page: this.pagination.ip_bans.page
+        }).success(function(data) {
+          var models;
+          models = data.bans;
+          return deferred.resolve(models);
+        }, function(data, status, headers, config) {
+          return deferred.reject();
+        });
+        return deferred.promise;
+      };
+
+      /*
        	# Sets type of ban that is used for create / update / delete operations
       		#
        	# @param {string} type

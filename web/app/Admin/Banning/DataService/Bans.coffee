@@ -23,10 +23,28 @@ define [
  	###
 
 		_doLoadList: ->
+
 			deferred = @$q.defer()
 
 			@Api.sendGet('/banning').success( (data) =>
 
+				models = data.bans
+				deferred.resolve(models)
+			, (data, status, headers, config) ->
+				deferred.reject()
+			)
+
+			return deferred.promise
+
+		###
+		#
+		###
+
+		_doRefreshList: () ->
+
+			deferred = @$q.defer()
+
+			@Api.sendGet('/banning', {ip_ban_page: @pagination.ip_bans.page}).success((data) =>
 				models = data.bans
 				deferred.resolve(models)
 			, (data, status, headers, config) ->

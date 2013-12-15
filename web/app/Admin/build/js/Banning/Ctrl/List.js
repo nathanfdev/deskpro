@@ -29,9 +29,32 @@
         var promise,
           _this = this;
         promise = this.banData.loadList().then(function(list) {
-          return _this.list = list;
+          _this.list = list;
+          _this.pagination = _this.banData.getPagination();
+          return _this.initializeScopeWatching();
         });
         return promise;
+      };
+
+      /*
+      		#	Here we watching scope 'page' variable in order to load new page of results
+      */
+
+
+      Admin_Banning_Ctrl_List.prototype.initializeScopeWatching = function() {
+        var _this = this;
+        return this.$scope.$watch('ListCtrl.pagination.ip_bans.page', function(newVal, oldVal) {
+          if (parseInt(newVal) === parseInt(oldVal)) {
+            return void 0;
+          }
+          if (isNaN(parseInt(newVal))) {
+            return void 0;
+          }
+          return _this.banData.refreshList().then(function(list) {
+            _this.list = list;
+            return _this.pagination = _this.banData.getPagination();
+          });
+        });
       };
 
       /*

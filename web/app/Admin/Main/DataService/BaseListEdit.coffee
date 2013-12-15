@@ -20,6 +20,7 @@ define [
 			@idProp            = 'id'
 			@orderField        = 'display_order'
 			@subLists          = []
+			@pagination        = {}
 			@init()
 
 
@@ -54,12 +55,32 @@ define [
 			@_doLoadList().then( (models) =>
 				@isListLoaded = true
 				@_setListData(models)
+				@_setPaginationData(models)
 				deferred.resolve(@listModels)
 			, =>
 				deferred.reject()
 			)
 
 			return @loadListPromise
+
+		###
+ 	###
+
+		refreshList: () ->
+
+			deferred = @$q.defer()
+			@loadListPromise = deferred.promise
+
+			@_doRefreshList().then((models) =>
+				@_setListData(models)
+				@_setPaginationData(models)
+				deferred.resolve(@listModels)
+			, =>
+					deferred.reject()
+			)
+
+			return @loadListPromise
+
 
 		###
  	# This is useful if we need to store 2 or more lists instead of default one
@@ -96,6 +117,38 @@ define [
 				for model in listModels
 					@listModels.push(model)
 
+		###
+ 	# Sets pagination data for current data service
+ 	#
+ 	# @param {Object} listModels - object representing the list
+ 	###
+
+		_setPaginationData: (listModels) ->
+
+			# we assume that backend returned appropriate pagination info and doesn't check its correctness here
+
+			@pagination = listModels.pagination if listModels.pagination
+
+			if @subLists.length
+
+				for subModel in @subLists
+					@pagination[subModel].page_nums = []
+					for i in [0...@pagination[subModel].num_pages]
+						@pagination[subModel].page_nums.push(i + 1)
+
+			else
+
+				@pagination.page_nums = []
+				for i in [0..@pagination.num_pages]
+					@pagination.page_nums.push(i + 1)
+
+		###
+ 	#	@return {Object} returns information about pagination
+ 	###
+
+		getPagination: ->
+
+			return @pagination
 
 		###
   # Find a model that has been loaded into the list

@@ -13,10 +13,35 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		initialLoad: ->
 
 			promise = @banData.loadList().then( (list) =>
+
 				@list = list
+				@pagination = @banData.getPagination()
+
+				@initializeScopeWatching()
 			)
 
 			return promise
+
+		###
+		#	Here we watching scope 'page' variable in order to load new page of results
+		###
+
+		initializeScopeWatching: ->
+
+			@$scope.$watch('ListCtrl.pagination.ip_bans.page', (newVal, oldVal) =>
+
+				if parseInt(newVal) == parseInt(oldVal)
+					return undefined
+
+				if isNaN(parseInt(newVal))
+					return undefined
+
+				@banData.refreshList().then( (list) =>
+
+					@list = list
+					@pagination = @banData.getPagination()
+				)
+			)
 
 		###
 		# Show the delete dlg

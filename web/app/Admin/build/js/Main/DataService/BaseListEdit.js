@@ -15,6 +15,7 @@
         this.idProp = 'id';
         this.orderField = 'display_order';
         this.subLists = [];
+        this.pagination = {};
         this.init();
       }
 
@@ -52,6 +53,26 @@
         this._doLoadList().then(function(models) {
           _this.isListLoaded = true;
           _this._setListData(models);
+          _this._setPaginationData(models);
+          return deferred.resolve(_this.listModels);
+        }, function() {
+          return deferred.reject();
+        });
+        return this.loadListPromise;
+      };
+
+      /*
+      */
+
+
+      Admin_Main_DataService_BaseListEdit.prototype.refreshList = function() {
+        var deferred,
+          _this = this;
+        deferred = this.$q.defer();
+        this.loadListPromise = deferred.promise;
+        this._doRefreshList().then(function(models) {
+          _this._setListData(models);
+          _this._setPaginationData(models);
           return deferred.resolve(_this.listModels);
         }, function() {
           return deferred.reject();
@@ -111,6 +132,53 @@
           }
           return _results1;
         }
+      };
+
+      /*
+       	# Sets pagination data for current data service
+       	#
+       	# @param {Object} listModels - object representing the list
+      */
+
+
+      Admin_Main_DataService_BaseListEdit.prototype._setPaginationData = function(listModels) {
+        var i, subModel, _i, _j, _len, _ref, _ref1, _results, _results1;
+        if (listModels.pagination) {
+          this.pagination = listModels.pagination;
+        }
+        if (this.subLists.length) {
+          _ref = this.subLists;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            subModel = _ref[_i];
+            this.pagination[subModel].page_nums = [];
+            _results.push((function() {
+              var _j, _ref1, _results1;
+              _results1 = [];
+              for (i = _j = 0, _ref1 = this.pagination[subModel].num_pages; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+                _results1.push(this.pagination[subModel].page_nums.push(i + 1));
+              }
+              return _results1;
+            }).call(this));
+          }
+          return _results;
+        } else {
+          this.pagination.page_nums = [];
+          _results1 = [];
+          for (i = _j = 0, _ref1 = this.pagination.num_pages; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+            _results1.push(this.pagination.page_nums.push(i + 1));
+          }
+          return _results1;
+        }
+      };
+
+      /*
+       	#	@return {Object} returns information about pagination
+      */
+
+
+      Admin_Main_DataService_BaseListEdit.prototype.getPagination = function() {
+        return this.pagination;
       };
 
       /*

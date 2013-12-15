@@ -18,6 +18,31 @@
 					</a>
 				</li>
 			</ul>
+
+			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.ip_bans">
+				<span dp-show-spinning="ListCtrl.pagination.ip_bans.loading_now">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="ListCtrl.pagination.ip_bans.page > 1" ng-click="ListCtrl.goPrevIpBanPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="ListCtrl.pagination.ip_bans.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in ListCtrl.pagination.ip_bans.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="ListCtrl.pagination.ip_bans.page < ListCtrl.pagination.ip_bans.num_pages"
+						ng-click="ListCtrl.goNextIpBanPage()">
+					Next &gt;
+				</button>
+			</div>
+
+			<div class="clearfix"></div>
+
 			<div class="dp-add-control">
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create_ip') }"
 				   href="{{ ng_href('crm.banning.gocreate_ip') }}">
