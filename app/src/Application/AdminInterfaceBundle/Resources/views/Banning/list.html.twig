@@ -20,7 +20,7 @@
 			</ul>
 
 			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.ip_bans">
-				<span dp-show-spinning="ListCtrl.pagination.ip_bans.loading_now">
+				<span dp-show-spinning="paginating_ip_bans">
 					<i class="spinner-flat"></i>
 				</span>
 				<button class="btn" ng-show="ListCtrl.pagination.ip_bans.page > 1" ng-click="ListCtrl.goPrevIpBanPage()">
@@ -71,7 +71,7 @@
 			</ul>
 
 			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.email_bans">
-				<span dp-show-spinning="ListCtrl.pagination.email_bans.loading_now">
+				<span dp-show-spinning="paginating_email_bans">
 					<i class="spinner-flat"></i>
 				</span>
 				<button class="btn" ng-show="ListCtrl.pagination.email_bans.page > 1"

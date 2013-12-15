@@ -36,7 +36,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				if isNaN(parseInt(newVal.ip_bans.page)) and isNaN(parseInt(newVal.email_bans.page))
 					return undefined
 
+				@startSpinner('paginating_ip_bans') if newVal.ip_bans.page != oldVal.ip_bans.page
+				@startSpinner('paginating_email_bans') if newVal.email_bans.page != oldVal.email_bans.page
+
 				@banData.refreshList().then( (list) =>
+
+					@stopSpinner('paginating_ip_bans', true) if newVal.ip_bans.page != oldVal.ip_bans.page
+					@stopSpinner('paginating_email_bans', true) if newVal.email_bans.page != oldVal.email_bans.page
 
 					@list = list
 					@pagination = @banData.getPagination()

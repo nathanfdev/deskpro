@@ -50,7 +50,19 @@
           if (isNaN(parseInt(newVal.ip_bans.page)) && isNaN(parseInt(newVal.email_bans.page))) {
             return void 0;
           }
+          if (newVal.ip_bans.page !== oldVal.ip_bans.page) {
+            _this.startSpinner('paginating_ip_bans');
+          }
+          if (newVal.email_bans.page !== oldVal.email_bans.page) {
+            _this.startSpinner('paginating_email_bans');
+          }
           return _this.banData.refreshList().then(function(list) {
+            if (newVal.ip_bans.page !== oldVal.ip_bans.page) {
+              _this.stopSpinner('paginating_ip_bans', true);
+            }
+            if (newVal.email_bans.page !== oldVal.email_bans.page) {
+              _this.stopSpinner('paginating_email_bans', true);
+            }
             _this.list = list;
             return _this.pagination = _this.banData.getPagination();
           });
