@@ -2463,7 +2463,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.row-item');
-			statusMenu.open.open(ev);
+			statusMenu.open(ev);
 		});
 		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
 			$(this).addClass('has-init');
