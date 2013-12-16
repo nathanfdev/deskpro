@@ -1169,7 +1169,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	updateSlaCounts: function(data) {
-		if (!data.counts) {
+		if (!data || !data.counts) {
 			return;
 		}
 
