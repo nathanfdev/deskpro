@@ -683,6 +683,30 @@ class KernelErrorHandler
 				return true;
 			}
 
+			if (strpos($exception->getMessage(), 'Lost connection to MySQL') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'not allowed to connect to this MySQL server') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'reading initial communication packet') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'sending authentication information') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'Can\'t create/write to file') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'Error writing file') !== false) {
+				return true;
+			}
+
 			if (strpos($exception->getMessage(), 'MySQL server has gone away') !== false) {
 				return true;
 			}
@@ -856,6 +880,7 @@ class KernelErrorHandler
 		if (
 			strpos($errstr, 'stream_socket_enable_crypto():') !== false
 			|| strpos($errstr, 'SSL: Broken pipe') !== false
+			|| strpos($errstr, 'SSL: Connection reset by peer') !== false
 			|| strpos($errstr, 'SSL operation failed') !== false
 			|| strpos($errstr, 'errno=32 Broken pipe')
 			|| strpos($errstr, 'SSL: An established connection was aborted') !== false
