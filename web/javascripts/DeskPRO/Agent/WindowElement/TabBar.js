@@ -511,7 +511,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 						// a new tab (e.g., after ticket reply)
 						var self = this;
 						window.setTimeout(function(){
-							var last_tab_id = Object.keys(this.tabs).getLast();
+							var last_tab_id = Object.keys(self.tabs).getLast();
 							if (!last_tab_id) {
 								DeskPRO_Window.paneVis.list = true;
 								DeskPRO_Window.paneVis.tabs = false;
