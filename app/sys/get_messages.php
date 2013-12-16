@@ -490,6 +490,8 @@ class AgentMessagesLoader extends LoaderAbstract
 		$channels[] = 'agent.ui.new-pending';
 		$channels[] = 'agent.ui.reload';
 		$channels[] = 'agent.ui.user-chat-status';
+		$channels[] = 'agent.person.added';
+		$channels[] = 'agent.org.added';
 
 		$channels[] = 'agent.filter-update';
 

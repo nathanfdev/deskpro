@@ -3380,7 +3380,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				break;
 
 			case 'people_section':
-				url = BASE_URL + 'agent/people-search/get-section-data.json';
+				url = BASE_URL + 'agent/people/get-section-data.json';
 				break;
 
 			case 'feedback_section':

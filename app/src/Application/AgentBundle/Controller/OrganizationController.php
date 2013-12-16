@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\Entity;
@@ -710,6 +711,12 @@ class OrganizationController extends AbstractController
 			$org = $neworg->getOrganization();
 
 			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.neworg', $this->person->id);
+
+			// Notify about new org
+			foreach (PeopleClientMessages::createNewOrgMessages($org) as $cm) {
+				$this->em->persist($cm);
+			}
+			$this->em->flush();
 
 			return $this->createJsonResponse(array(
 				'success' => true,
