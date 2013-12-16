@@ -53,7 +53,7 @@ class ChatChecker extends AbstractChecker
 	 */
 	public function canView(ChatConversation $convo)
 	{
-		if (!$this->person->hasPerm('agent_chat.view_transcripts')) {
+		if ($convo->status == ChatConversation::STATUS_ENDED && !$this->person->hasPerm('agent_chat.view_transcripts')) {
 			return false;
 		}
 
