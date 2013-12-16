@@ -3147,7 +3147,7 @@ class TicketController extends AbstractController
 			// - So the act of an agent manually selecting the account to create a new ticket for them should
 			// essentially validate the account.
 			// - This is needed or else the ticket will be created as validating, and no emails (not even to the user) would be sent
-			if (isset($check_person) && $check_person && (!$check_person->is_confirmed || $check_person->is_agent_confirmed)) {
+			if (isset($check_person) && $check_person && !$check_person->id != $this->person->id && (!$check_person->is_confirmed || !$check_person->is_agent_confirmed)) {
 				$check_person->is_confirmed = true;
 				$check_person->is_agent_confirmed = true;
 
@@ -3162,7 +3162,7 @@ class TicketController extends AbstractController
 					$email->is_validated = true;
 				}
 
-				// Clear any sessions for the user to avoid potential data leaks to do with
+				// Clear any $check_persons for the user to avoid potential data leaks to do with
 				// validating them now
 				$this->db->delete('sessions', array('person_id' => $check_person->id));
 			}
