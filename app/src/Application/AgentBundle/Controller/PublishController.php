@@ -671,7 +671,11 @@ class PublishController extends AbstractController
 			$results = $this->em->getRepository($entity)->getByIds($ids);
 			foreach ($results as $r) {
 				if ($action == 'approve') {
-					$r->status = 'approve';
+					if ($type == 'feedback') {
+						$r->status = 'new';
+					} else {
+						$r->status = 'publish';
+					}
 				} else {
 					if ($reason) {
 						$this_reason = $reason . ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
