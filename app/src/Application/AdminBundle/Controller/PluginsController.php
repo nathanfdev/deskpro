@@ -135,7 +135,7 @@ class PluginsController extends AbstractController
 	public function installAction($plugin_id, $step = 1)
 	{
 		if ($plugin_id == 'MicrosoftTranslator') {
-			if (1 || !extension_loaded('curl')) {
+			if (!extension_loaded('curl')) {
 				return $this->renderStandardError("Microsoft Translator cannot beinstalled: The cURL PHP extension must be installed for this plugin.");
 			}
 		}
