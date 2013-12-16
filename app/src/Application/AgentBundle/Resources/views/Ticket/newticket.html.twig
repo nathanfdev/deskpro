@@ -308,22 +308,24 @@ pageMeta.baseId = '{{ baseId }}';
 									{% endfor %}
 								</select>
 
-								<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select x" data-select-nogrouptitle="1">
-									<option value="0" {% if not app.getSetting('core_tickets.new_assignteam') %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
-									{% if app.user.getAgent().getTeams()|length %}
-									<optgroup label="{{ phrase('agent.general.your_teams') }}">
-										{% for team in app.user.getAgent().getTeams() %}
-											<option value="{{ team.id }}" {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
-										{% endfor %}
-									</optgroup>
-									{% endif %}
-
-									{% for id,name in app.agent_teams.getTeamNames() %}
-										{% if id not in app.user.getAgent().getTeamIds() %}
-											<option value="{{ id }}">{{ name }}</option>
+								{% if app.agent_teams.getTeamNames()|length %}
+									<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select x" data-select-nogrouptitle="1">
+										<option value="0" {% if not app.getSetting('core_tickets.new_assignteam') %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
+										{% if app.user.getAgent().getTeams()|length %}
+										<optgroup label="{{ phrase('agent.general.your_teams') }}">
+											{% for team in app.user.getAgent().getTeams() %}
+												<option value="{{ team.id }}" {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
+											{% endfor %}
+										</optgroup>
 										{% endif %}
-									{% endfor %}
-								</select>
+
+										{% for id,name in app.agent_teams.getTeamNames() %}
+											{% if id not in app.user.getAgent().getTeamIds() %}
+												<option value="{{ id }}">{{ name }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								{% endif %}
 							</div>
 						</li>
 						<li id="{{baseId}}_cc_row" class="cc-row is-hidden" style="display: none;">
