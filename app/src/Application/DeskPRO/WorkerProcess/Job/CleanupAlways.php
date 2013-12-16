@@ -78,13 +78,16 @@ class CleanupAlways extends AbstractJob
 			)
 		", array($datetime, $datetime2));
 		if ($ids) {
-			$num = App::getDb()->executeUpdate("
-				DELETE FROM client_messages
-				WHERE id IN (" . implode(',', $ids) . ")
-			");
+			$batch_ids = array_chunk($ids, 25, false);
+			foreach ($batch_ids as $ids) {
+				$num = App::getDb()->executeUpdate("
+					DELETE FROM client_messages
+					WHERE id IN (" . implode(',', $ids) . ")
+				");
 
-			if ($num) {
-				$this->logStatus("Cleaned up $num old client messages");
+				if ($num) {
+					$this->logStatus("Cleaned up $num old client messages");
+				}
 			}
 		}
 
