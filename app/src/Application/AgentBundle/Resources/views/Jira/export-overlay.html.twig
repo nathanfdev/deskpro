@@ -1,0 +1,132 @@
+<form method="POST" class="actions-overlay export-jira" style="width: 650px; height: 500px;">
+	<div class="overlay-title">
+		<h4>{{ phrase('agent.jira.export_jira') }}</h4>
+	</div>
+	<div class="overlay-content">
+		<div style="display: inline-block; width: 19%; float: left;">
+			<label for="jira-issue-title">{{ phrase('agent.jira.fields.title')}} *</label>
+		</div>
+		<div style="display: inline-block; width: 77%; float: left; padding: 5px;">
+			<input style="width: 100%" type="text" name="jira_issue_title" id="jira-issue-title" value="[{{ticket.ref}}] {{ticket.subject}}"/>
+		</div>
+		<br/>
+		<br/>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-project">{{ phrase('agent.jira.fields.project')}} *</label>
+			<select class="dpe_select"  style="width: 60%; float: right;" name="jira_issue_project" id="jira-issue-project">
+				{% for project in projects %}
+					<option value={{project.key}}>{{ project.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-type">{{ phrase('agent.jira.fields.type')}} *</label>
+			<select class="dpe_select" style="width: 60%; float: right;" name="jira_issue_type" id="jira-issue-type"  data-style-type="icons" data-select-icon-size="22"></select>
+		</div>
+		<br/>
+		<br/>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-priority">{{ phrase('agent.jira.fields.priority')}} *</label>
+			<select class="dpe_select"  style="width: 60%; float: right;" name="jira_issue_priority" id="jira-issue-priority"></select>
+		</div>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-assignee">{{ phrase('agent.jira.fields.assignee')}} *</label>
+			<select class="dpe_select" style="width: 60%; float: right;" name="jira_issue_assignee" id="jira-issue-assignee"  data-style-type="icons" data-select-icon-size="22"></select>
+		</div>
+		<br/>	
+		<br/>	
+		<div class="row">
+			<label for="description">{{ phrase('agent.jira.fields.description') }}</label>
+			<p>{{ phrase('agent.jira.fields.description.warning') }}</p>
+			<textarea style="width: 97%; height: 260px;" id="description" name="description">{{description}}</textarea>
+		</div>
+	</div>
+	<div class="overlay-footer">
+		<div class="is-not-loading">
+			<button class="save-new-trigger clean-white">{{ phrase('agent.general.add') }}</button>
+		</div>
+		<div class="is-loading">
+			<i class="flat-spinner"></i>
+		</div>
+	</div>
+</form>
+<script>
+	$(document).off('change', '#jira-issue-project').on('change', '#jira-issue-project', lookupMeta);
+	
+	function selectProject(key)
+	{
+		$("#jira-issue-project").val(key);
+		
+		lookupMeta();
+	}
+	
+	function lookupMeta()
+	{
+		var projectDropdown	= $('#jira-issue-project');
+		
+		var typeDropdown		= $('#jira-issue-type');
+		var priorityDropdown	= $('#jira-issue-priority');
+		var assigneeDropdown	= $('#jira-issue-assignee');
+		
+		typeDropdown.prop('disabled', true);
+		typeDropdown.select2({
+			enabled: false
+		});
+		
+		priorityDropdown.prop('disabled', true);
+		priorityDropdown.select2({
+			enabled: false
+		});
+		
+		assigneeDropdown.prop('disabled', true);
+		assigneeDropdown.select2({
+			enabled: false
+		});
+		
+		var projectKey		= projectDropdown.val();
+		
+		var jqxhr = $.getJSON( "{{ path('jira_lookup') }}",{
+			'projectkey': projectKey
+		}, function() {
+			console.log( "success" );
+		})
+		.done(function(data) {
+			if (data) {
+			
+				typeDropdown.html("");
+				
+				$.each(data.issuetypes, function(index, issuetype){
+					typeDropdown.append("<option data-icon='" + issuetype.iconUrl + "' value='" + issuetype.id + "'>" + issuetype.name + "</option>");
+				});
+				
+				priorityDropdown.html("");
+				
+				$.each(data.priorities, function(index, priority){
+					priorityDropdown.append("<option data-icon='" + priority.iconUrl + "' value='" + priority.id + "'>" + priority.name + "</option>");
+				});
+				
+				assigneeDropdown.html("");
+				
+				$.each(data.assignee, function(index, assignee){
+					assigneeDropdown.append("<option data-icon='" + (assignee.avatarUrls.xsmall) + "' value='" + assignee.id + "'>" + assignee.name + "</option>");
+				});
+			}
+		})
+		.fail(function() {
+			console.log( "error" );
+		})
+		.always(function() {
+			typeDropdown.prop('disabled', false);
+			priorityDropdown.prop('disabled', false);
+			assigneeDropdown.prop('disabled', false);
+			
+			$(".export-jira select.dpe_select").select2({
+				formatResult: format,
+				formatSelection: format,
+				escapeMarkup: function(m) { return m; }
+			});
+			
+			//$("select.").select2();
+		});
+	}
+</script>

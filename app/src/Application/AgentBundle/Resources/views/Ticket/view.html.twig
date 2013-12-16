@@ -59,6 +59,9 @@ pageMeta.lang = {{ {
 	'search': phrase('agent.general.search'),
 }|json_encode|raw }};
 </script>
+{% if app.getsetting('core.apps_jira') %}
+	{% include 'AgentBundle:Jira:widget.html.twig' %}
+{% endif %}
 <div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
 <div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">

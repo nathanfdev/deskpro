@@ -1,0 +1,43 @@
+<style>
+	label {
+		font-weight: bold;
+	}
+	
+	a.select2-choice img.icon {
+		padding: 0px;
+		margin: 5px 5px 0px 0px;
+		float: left;
+	}
+	.select2-result-label img.icon {
+		padding: 0px;
+		margin: 0px 5px 0px 0px;
+		float: left;
+	}
+	
+	.dpe_select {
+		float: right;
+		padding-right: 10px;
+	}
+</style>
+<script>
+	$("#" + pageMeta.baseId + "_actions_menu_trigger").after("<li data-action='export-jira'><i class=\"icon-share\"></i> {{ phrase('agent.jira.export_jira') }}</li>");
+
+	$("*[data-action='export-jira']").on("click", function(){
+		var overlay = new DeskPRO.UI.Overlay({
+			//contentElement: $("#export-jira")
+			contentMethod: 'ajax',
+			contentAjax: { url: BASE_URL + 'agent/jira/export/' + pageMeta.ticket_id },
+			onOverlayOpened: function() {	
+				selectProject("{{ app.getSetting('core.apps_jira.defaultProject') }}");
+			}
+		});
+
+		overlay.open();
+	});	
+	
+	function format(state) {
+		var originalOption = state.element;
+
+		return "<img class='icon' src='" + $(originalOption).data('icon') + "' />" + state.text;
+	}
+</script>
