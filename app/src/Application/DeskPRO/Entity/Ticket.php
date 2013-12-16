@@ -3067,8 +3067,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$default_address = App::getDb()->fetchColumn("
 				SELECT match_pattern
 				FROM email_gateway_addresses
-				WHERE match_type = 'exact'
-				ORDER BY run_order ASC, id ASC
+				LEFT JOIN email_gateways ON (email_gateways.id = email_gateway_addresses.email_gateway_id)
+				WHERE match_type = 'exact' AND email_gateways.gateway_type = 'tickets'
+				ORDER BY email_gateway_addresses.run_order ASC, email_gateway_addresses.id ASC
 				LIMIT 1
 			");
 
