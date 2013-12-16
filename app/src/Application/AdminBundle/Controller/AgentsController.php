@@ -1040,7 +1040,10 @@ class AgentsController extends AbstractController
 			#------------------------------
 
 			$dep_matrix = $this->in->getCleanValueArray('agent.departments', 'raw', 'uint');
+			$dep_matrix = Arrays::removeFalsey($dep_matrix);
+
 			$dep_assign_matrix = $this->in->getCleanValueArray('agent.departments_assign', 'raw', 'uint');
+			$dep_assign_matrix = Arrays::removeFalsey($dep_assign_matrix);
 
 			$this->db->delete('department_permissions', array(
 				'person_id' => $agent->id,
@@ -1082,6 +1085,7 @@ class AgentsController extends AbstractController
 			#------------------------------
 
 			$ug_perm_matrix = $this->in->getCleanValueArray('permissions', 'raw', 'raw');
+			$ug_perm_matrix = Arrays::removeFalsey($ug_perm_matrix);
 			$overrides = \Application\DeskPRO\People\Util::resolveOverridePermissions($ug_perm_matrix, $usergroups, $all_ug_perms);
 
 			// Save overrides
@@ -1235,6 +1239,10 @@ class AgentsController extends AbstractController
 		$this->session->save();
 
 		$this->sendAgentReloadSignal();
+
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('edit_url' => $this->generateUrl('admin_agents_edit', array('person_id' => $agent->id))));
+		}
 
 		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
 	}
