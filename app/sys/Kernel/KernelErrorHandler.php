@@ -535,6 +535,16 @@ class KernelErrorHandler
 			if (!empty($exception->_dp_query_params)) {
 				$context_data .= "\n\n" . self::varToString($exception->_dp_query_params);
 			}
+
+			try {
+				if (class_exists('Application\\DeskPRO\\App', false)) {
+					$status = App::getDb()->fetchAssoc("SHOW ENGINE INNODB STATUS");
+					if (!empty($status['Status'])) {
+						$status = $status['Status'];
+						$context_data .= "\n\nINNODB STATUS: $status";
+					}
+				}
+			} catch (\Exception $e) {}
 		}
 
 		if (!$context_data && isset($exception->_dp_context_data)) {
