@@ -1572,7 +1572,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 				if (count($dep->children)) {
 					$e = new \InvalidArgumentException("Department is a parent");
-					KernelErrorHandler::logException($e, true, 'ticket_dep_err2');
+					KernelErrorHandler::logException($e, false, 'ticket_dep_err2');
 					return;
 				}
 			}

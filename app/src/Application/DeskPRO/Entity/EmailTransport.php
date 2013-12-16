@@ -142,6 +142,9 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 				return true;
 
 			case self::MATCH_TYPE_DOMAIN:
+				if (strpos($from_address, '@') === false) {
+					$from_address = "@$from_address";
+				}
 				list (, $domain) = explode('@', $from_address);
 				if (Strings::utf8_strtolower($this->match_pattern) == $domain) {
 					return true;
