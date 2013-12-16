@@ -405,6 +405,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			this.getEl('no_results').hide();
 			this.getEl('is_results').show();
 
+			// If no results helper, then this view
+			// has been destroyed (but this callback was called before)
+			if (!this.resultsHelper) {
+				return;
+			}
+
 			var lowerBounds = ((this.resultsHelper.currentPage-1) * this.resultsHelper.options.perPage) + 1;
 			var upperBounds = (lowerBounds-1) + showing;
 			if (upperBounds > this.countTotal) {
