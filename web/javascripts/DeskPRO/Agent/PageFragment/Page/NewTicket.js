@@ -1390,10 +1390,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					}, {
 						strict_variables: true
 					});
+					if (!result) {
+						result = useText;
+					}
 				} catch(e) {
 					console.log("Snippet render failed: %o", e);
 					result = useText;
 				}
+
+				if (!result) result = '';
 
 				var redactor = self.getEl('message').data('redactor');
 				if (redactor) {

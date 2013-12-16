@@ -395,7 +395,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 					useText = defaultText;
 				}
 
-				result = useText;
+				result = useText || '';
 
 				if (isWysiwyg && textarea.data('redactor')) {
 					try {

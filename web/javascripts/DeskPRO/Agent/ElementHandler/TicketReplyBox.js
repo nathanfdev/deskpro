@@ -586,6 +586,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}, {
 							strict_variables: false
 						});
+						if (!result) {
+							result = useText;
+						}
 					} else {
 						result = useText;
 					}
@@ -593,6 +596,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					console.log("Snippet render failed: %o", e);
 					result = useText;
 				}
+
+				if (!result) result = '';
 
 				if (isWysiwyg && textarea.data('redactor')) {
 					try {
