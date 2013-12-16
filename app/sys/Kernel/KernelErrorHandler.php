@@ -713,6 +713,10 @@ class KernelErrorHandler
 				return true;
 			}
 
+			if (strpos($exception->getMessage(), 'marked as crashed') !== false) {
+				return true;
+			}
+
 			if (strpos($exception->getMessage(), 'Error writing file') !== false) {
 				return true;
 			}
