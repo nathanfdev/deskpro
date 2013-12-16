@@ -331,7 +331,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 		}
 
 		$cookie_name = 'frontend';
-		if (empty($cookies[$cookie_name]) && !is_string($cookies[$cookie_name])) {
+		if (empty($cookies[$cookie_name]) || !is_string($cookies[$cookie_name])) {
 			return false;
 		}
 
