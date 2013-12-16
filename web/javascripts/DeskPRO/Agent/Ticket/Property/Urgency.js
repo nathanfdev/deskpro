@@ -8,7 +8,7 @@ DeskPRO.Agent.Ticket.Property.Urgency = new Class({
 
 		var layoutDiv = this.ticketPage.wrapper.find('div.layout-content');
 
-		if (!this.getInterfaceElement()[0]) {
+		if (!this.getInterfaceElement()[0] || !layoutDiv[0]) {
 			return;
 		}
 
