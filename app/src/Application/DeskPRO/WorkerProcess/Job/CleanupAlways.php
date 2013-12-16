@@ -78,7 +78,7 @@ class CleanupAlways extends AbstractJob
 			)
 		", array($datetime, $datetime2));
 		if ($ids) {
-			$batch_ids = array_chunk($ids, 25, false);
+			$batch_ids = array_chunk($ids, 50, false);
 			foreach ($batch_ids as $ids) {
 				$num = App::getDb()->executeUpdate("
 					DELETE FROM client_messages
