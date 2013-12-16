@@ -12,7 +12,7 @@
 			<em class="counter list-counter"
 				id="kb_cat_count_{{ cat.id }}"
 				data-count="{{ counts[cat.id ~"_total"]|default(0) }}"
-			>{{ counts[cat.id ~"_total"]|default(0) }}</em>
+			>{% if counts[cat.id]|default(0) != counts[cat.id~"_total"]|default(0) %}{{ counts[cat.id]|default(0) }}/{{ counts[cat.id~"_total"]|default(0) }}{% else %}{{ counts[cat.id]|default(0) }}{% endif %}</em>
 		</div>
 		{% if download_repo.getChildren(cat)|length %}
 			<ul class="nav-list nav-list-small indented" style="display: none;">
