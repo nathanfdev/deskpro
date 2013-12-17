@@ -43,6 +43,7 @@ class FeedbackSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_STATUS          = 'status';
+	const TERM_DELETED         ='deleted';
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_CATEGORY        = 'category';
 	const TERM_CATEGORY_SPECIFIC = 'category_specific';
@@ -166,7 +167,7 @@ class FeedbackSearch extends SearcherAbstract
 			$sql .= $where_perm . ' AND ';
 		}
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -223,7 +224,7 @@ class FeedbackSearch extends SearcherAbstract
 			$sql .= $where_perm . ' AND ';
 		}
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -343,6 +344,14 @@ class FeedbackSearch extends SearcherAbstract
 						$wheres[] = '(feedback.hidden_status IS NULL OR ' . $this->_stringMatch('feedback.hidden_status', $op, $choice) . ')';
 					} else {
 						$wheres[] = $this->_stringMatch('feedback.hidden_status', $op, $choice);
+					}
+					break;
+
+				case self::TERM_DELETED:
+					if ($op == self::OP_IS) {
+						$wheres[] = 'feedback.hidden_status = \'deleted\'';
+					} else {
+						$wheres[] = 'feedback.hidden_status != \'deleted\' OR feedback.hidden_status IS NULL';
 					}
 					break;
 

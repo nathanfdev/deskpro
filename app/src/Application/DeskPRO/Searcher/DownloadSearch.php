@@ -43,6 +43,7 @@ class DownloadSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_CATEGORY        = 'category';
+	const TERM_DELETED         = 'deleted';
 	const TERM_CATEGORY_SPECIFIC = 'category_specific';
 	const TERM_DOWNLOADS       = 'num_downloads';
 	const TERM_DATE_CREATED    = 'date_created';
@@ -169,7 +170,7 @@ class DownloadSearch extends SearcherAbstract
 			}
 		}
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -238,7 +239,7 @@ class DownloadSearch extends SearcherAbstract
 			}
 		}
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -363,6 +364,14 @@ class DownloadSearch extends SearcherAbstract
                     else {
                         $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
                     }
+					break;
+
+				case self::TERM_DELETED:
+					if ($op == self::OP_IS) {
+						$wheres[] = 'downloads.hidden_status = \'deleted\'';
+					} else {
+						$wheres[] = 'downloads.hidden_status != \'deleted\' OR downloads.hidden_status IS NULL';
+					}
 					break;
 
 				case self::TERM_CATEGORY:

@@ -1150,24 +1150,28 @@ class PublishController extends AbstractController
 		switch ($type) {
 			case 'articles':
 				$searcher = new ArticleSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'ArticleResults';
 				$cats = $this->in->getCleanValueArray('article_categories', 'uint', 'discard');
 				break;
 
 			case 'news':
 				$searcher = new NewsSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'NewsResults';
 				$cats = $this->in->getCleanValueArray('news_categories', 'uint', 'discard');
 				break;
 
 			case 'downloads':
 				$searcher = new DownloadSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'DownloadResults';
 				$cats = $this->in->getCleanValueArray('downloads_categories', 'uint', 'discard');
 				break;
 
 			case 'feedback':
 				$searcher = new FeedbackSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'FeedbackResults';
 				$cats = $this->in->getCleanValueArray('feedback_categories', 'uint', 'discard');
 				break;
