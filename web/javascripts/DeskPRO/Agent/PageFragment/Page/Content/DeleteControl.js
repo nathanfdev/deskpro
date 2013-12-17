@@ -38,6 +38,33 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 				},
 				success: function(html) {
 					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.content_deleted.' + page.TYPENAME);
+
+					if (self.options.reloadSelf && self.page && self.page.meta.refreshUrl) {
+						DeskPRO_Window.loadPage(self.page.meta.refreshUrl, {ignoreExist:true});
+						self.page.closeSelf();
+					}
+				}
+			});
+		});
+
+		this.undeleteBtn.on('click', function() {
+			self.handleUndelete();
+			$.ajax({
+				url: self.options.ajaxSaveUrl,
+				data: { action: 'un' + self.options.type },
+				type: 'GET',
+				dataType: 'json',
+				error: function() {
+					// just revert UI elements
+					self.handleDelete();
+				},
+				success: function(html) {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.content_undeleted.' + page.TYPENAME);
+
+					if (self.options.reloadSelf && self.page && self.page.meta.refreshUrl) {
+						DeskPRO_Window.loadPage(self.page.meta.refreshUrl, {ignoreExist:true});
+						self.page.closeSelf();
+					}
 				}
 			});
 		});

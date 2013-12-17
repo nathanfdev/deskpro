@@ -25,7 +25,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <div class="delete-notice" {% if news.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.category') }}</button>
+	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
 {% if news.status_code == "hidden.validating" %}

@@ -395,6 +395,10 @@ class FeedbackController extends AbstractController
 				}
 				break;
 
+			case 'undelete':
+				$feedback['status_code'] = 'new';
+				break;
+
 			case 'title':
 				$feedback['title'] = $this->in->getString('title');
 

@@ -232,6 +232,10 @@ class NewsController extends AbstractController
 			case 'delete':
 				$news->status_code = 'hidden.deleted';
 				break;
+
+			case 'undelete':
+				$news->status_code = 'published';
+				break;
 		}
 
 		$this->em->persist($news);

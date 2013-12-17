@@ -32,6 +32,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			self.reload();
 		});
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.content_undeleted.*', function() {
+			self.reload();
+		});
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.new-pending', function() {
 			self.reload();
 		});

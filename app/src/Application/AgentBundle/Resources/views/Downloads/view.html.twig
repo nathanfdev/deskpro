@@ -8,6 +8,7 @@ pageMeta.permalink = '{{ url('user_downloads_file', {'slug': download.url_slug }
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'downloads'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_downloads_ajax_labels_save', {'download_id': download.id}) }}';
 pageMeta.obj_code = 'download_{{ download.id }}';
+pageMeta.refreshUrl = '{{ path('agent_downloads_view', {'download_id': download.id}) }}';
 
 {% if download.hidden_status == 'validating' %}
 pageMeta.isValidating = true;
@@ -26,7 +27,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <div class="delete-notice" {% if download.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.category') }}</button>
+	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
 {% if download.status_code == "hidden.validating" %}

@@ -410,6 +410,10 @@ class KbController extends AbstractController
 				$article->status_code = 'hidden.deleted';
 				break;
 
+			case 'undelete':
+				$article->status_code = 'published';
+				break;
+
 			case 'categories':
 				$cat_ids = $this->in->getCleanValueArray('category_ids', 'uint', 'discard');
 				$cats = $this->em->getRepository('DeskPRO:ArticleCategory')->getByIds($cat_ids);
