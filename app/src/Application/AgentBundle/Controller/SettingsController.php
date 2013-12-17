@@ -210,6 +210,11 @@ class SettingsController extends AbstractController
 			}
 		}
 
+		$this->db->delete('drafts', array(
+			'person_id' => $this->person->id,
+			'content_type' => 'ticket',
+		));
+
 		$this->person->setPreference('agent.ticket_signature', $signature);
 		$this->person->setPreference('agent.ticket_signature_html', $signature_html);
 
