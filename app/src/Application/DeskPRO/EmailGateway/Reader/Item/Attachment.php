@@ -46,6 +46,7 @@ class Attachment
 	public $file_name;
 	public $file_name_utf8;
 	public $mime_type;
+	public $original_charset; // with Rfc822 types
 	public $content_id;
 
 	public function getFileContents()

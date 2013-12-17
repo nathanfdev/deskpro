@@ -1717,6 +1717,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	{
 		$user_raw_source = $has_eml_attach->getFileContents();
 		$user_reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		if ($has_eml_attach->original_charset) {
+			$user_reader->setProperty('override_from_charset', $has_eml_attach->original_charset);
+		}
 		$user_reader->setRawSource($user_raw_source);
 		$user_reader->setProperty('email_source', $user_raw_source);
 

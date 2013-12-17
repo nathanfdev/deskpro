@@ -306,8 +306,11 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			return 1;
 		}
 
+		$attach = $attaches[$idx];
+
 		$r = new EzcReader();
-		$r->setRawSource($attaches[$idx]->getFileContents());
+		$r->setProperty('override_from_charset', $attach->original_charset);
+		$r->setRawSource($attach->getFileContents());
 		$this->reader = $r;
 
 		return $this->outputStandard($input, $output);
