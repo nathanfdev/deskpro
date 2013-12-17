@@ -162,7 +162,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		var opt = {
 			resultIds: this.meta.ticketResultIds,
-			perPage: this.meta.perPage || 50
+			perPage: this.meta.perPage || 50,
+			currentPage: this.meta.currentPage || 1
 		};
 		if (this.meta.viewType == 'list') {
 			opt.resultRowSelector = 'tr.row-item';
@@ -216,6 +217,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	},
 
 	handleAutoAdd: function(ticketId) {
+		if (this.resultsHelper) this.resultsHelper.options.refreshMode = true;
 		var self = this;
 		self.reloadIfStale = false;
 		var row = $('article.ticket-' + ticketId, self.contentWrapper);
@@ -353,6 +355,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 	delTicket: function(ticket_id) {
 		var self = this;
+		if (this.resultsHelper) this.resultsHelper.options.refreshMode = true;
 		var el = $('.ticket-' + ticket_id, this.contentWrapper);
 
 		if (this.autoAddAjax[ticket_id]) {

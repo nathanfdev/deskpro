@@ -48,6 +48,7 @@
 	{% if filter.sys_name == 'unassigned' %}pageMeta.groupingIgnore=["agent"];{% endif %}
 
 	pageMeta.perPage = {{ per_page }};
+	pageMeta.currentPage = {{ page|default(1) }};
 	pageMeta.ticketResultIds = {{ ticket_ids|json_encode|raw }};
 
 	pageMeta.view_name = '{{ view_name }}';
