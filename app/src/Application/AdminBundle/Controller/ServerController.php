@@ -801,16 +801,24 @@ class ServerController extends AbstractController
 			$failed = array();
 
 			$send_when = $this->in->getString('send_when');
-			if ($send_when == 'queued') {
-				$message->enableQueueHint();
-				$this->container->getMailer()->send($message, $failed);
-			} else {
-				$message->setForceTransport($tr->getTransport());
-				$this->container->getMailer()->sendNow($message, $failed);
+			$exception = null;
+			try {
+				if ($send_when == 'queued') {
+					$message->enableQueueHint();
+					$this->container->getMailer()->send($message, $failed);
+				} else {
+					$message->setForceTransport($tr->getTransport());
+					$this->container->getMailer()->sendNow($message, $failed);
+				}
+			} catch (\Exception $e) {
+				$exception = $e;
 			}
 
-
 			$log = implode("\n", $this->container->getMailer()->getLogMessages());
+
+			if ($exception) {
+				$log .= "\n\nException: {$$exception->getCode()} {$$exception->getMessage()}";
+			}
 
 			return $this->render('AdminBundle:Server:test-email-result.html.twig', array(
 				'failed'    => $failed,
