@@ -273,6 +273,24 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 			}
 		});
 
+		// Zone buttons
+		var chkAdmin = $('input[name="agent[can_admin]"]');
+		var chkBilling = $('input[name="agent[can_billing]"]');
+
+		var updateZoneChk = function(admin_checked) {
+			if (admin_checked) {
+				chkBilling.prop('checked', true);
+				chkBilling.prop('disabled', true);
+			} else {
+				chkBilling.prop('disabled', false);
+			}
+		};
+
+		chkAdmin.on('click', function() {
+			updateZoneChk(this.checked);
+		});
+		updateZoneChk(chkAdmin.prop('checked'));
+
 		this._pageLoaded = true;
 	},
 

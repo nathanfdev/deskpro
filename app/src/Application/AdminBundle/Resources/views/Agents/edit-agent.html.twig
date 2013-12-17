@@ -237,13 +237,13 @@
 						</label><br />
 
 						<label style="line-height: 24px">
-							<input type="checkbox" name="agent[can_reports]" value="1" {% if agent.can_reports %}checked="checked"{% endif %} />
-							<span class="with-icon zone-reports">{{ phrase('admin.agents.can_access_reports') }}</span>
+							<input type="checkbox" name="agent[can_billing]" value="1" {% if agent.getRealCanBilling() %}checked="checked"{% endif %} />
+							<span class="with-icon zone-billing">{{ phrase('admin.agents.can_access_billing') }}</span>
 						</label><br />
 
 						<label style="line-height: 24px">
-							<input type="checkbox" name="agent[can_billing]" value="1" {% if agent.getRealCanBilling() %}checked="checked"{% endif %} />
-							<span class="with-icon zone-billing">{{ phrase('admin.agents.can_access_billing') }}</span>
+							<input type="checkbox" name="agent[can_reports]" value="1" {% if agent.can_reports %}checked="checked"{% endif %} />
+							<span class="with-icon zone-reports">{{ phrase('admin.agents.can_access_reports') }}</span>
 						</label><br />
 					</div>
 				</div>
