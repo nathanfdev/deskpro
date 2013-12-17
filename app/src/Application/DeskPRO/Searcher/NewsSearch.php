@@ -111,14 +111,16 @@ class NewsSearch extends SearcherAbstract
 			return '0';
 		}
 
+		$where = '(news.status != \'hidden\')';
+
 		$dis_ids = $this->person->PermissionsManager->NewsCategories->getDisallowedCategories();
 		if (!$dis_ids) {
-			return '';
+			return $where;
 		}
 
 		$dis_ids = implode(',', $dis_ids);
 
-		return '(news.category_id NOT IN(' . $dis_ids . '))';
+		return '('.$where.' AND news.category_id NOT IN(' . $dis_ids . '))';
 	}
 
 
@@ -306,8 +308,18 @@ class NewsSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("news.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+
+					if ($op == self::OP_CONTAINS || is_array($choice)) {
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+						$wheres[] = $this->_choiceMatch('news.id', 'is', $choice);
+					} else {
+						$wheres[] = $this->_rangeMatch("news.id", $op, $choice, true);
+						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+					}
 					break;
 
 				case self::TERM_STATUS:

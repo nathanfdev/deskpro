@@ -115,14 +115,16 @@ class DownloadSearch extends SearcherAbstract
 			return '0';
 		}
 
+		$where = '(downloads.status != \'hidden\')';
+
 		$dis_ids = $this->person->PermissionsManager->DownloadCategories->getDisallowedCategories();
 		if (!$dis_ids) {
-			return '';
+			return $where;
 		}
 
 		$dis_ids = implode(',', $dis_ids);
 
-		return '(downloads.category_id NOT IN(' . $dis_ids . '))';
+		return '('.$where.' AND downloads.category_id NOT IN(' . $dis_ids . '))';
 	}
 
 
@@ -318,8 +320,18 @@ class DownloadSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("downloads.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+
+					if ($op == self::OP_CONTAINS || is_array($choice)) {
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+						$wheres[] = $this->_choiceMatch('downloads.id', 'is', $choice);
+					} else {
+						$wheres[] = $this->_rangeMatch("downloads.id", $op, $choice, true);
+						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+					}
 					break;
 
 				case self::TERM_STATUS:

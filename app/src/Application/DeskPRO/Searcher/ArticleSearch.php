@@ -116,14 +116,16 @@ class ArticleSearch extends SearcherAbstract
 			return '0';
 		}
 
+		$where = '(articles.status != \'hidden\')';
+
 		$dis_ids = $this->person->PermissionsManager->ArticleCategories->getDisallowedCategories();
 		if (!$dis_ids) {
-			return '';
+			return $where;
 		}
 
 		$dis_ids = implode(',', $dis_ids);
 
-		return '(catperm.category_id NOT IN(' . $dis_ids . '))';
+		return '('.$where.' AND catperm.category_id NOT IN(' . $dis_ids . '))';
 	}
 
 
@@ -319,7 +321,17 @@ class ArticleSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
+					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+
+					if ($op == self::OP_CONTAINS || is_array($choice)) {
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+						$wheres[] = $this->_choiceMatch('articles.id', 'is', $choice);
+					} else {
+						$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
+					}
 					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
 

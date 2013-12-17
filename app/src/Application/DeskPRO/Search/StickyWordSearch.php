@@ -34,6 +34,10 @@
 
 namespace Application\DeskPRO\Search;
 
+use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\DownloadSearch;
+use Application\DeskPRO\Searcher\FeedbackSearch;
+use Application\DeskPRO\Searcher\NewsSearch;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
@@ -120,9 +124,73 @@ class StickyWordSearch implements PersonContextInterface
 			LIMIT 1000
 		", $words);
 
+		if (!$results_raw) {
+			return array();
+		}
+
+		#------------------------------
+		# Need to verify the user can see
+		# the results that we matched
+		#------------------------------
+
+		$check_ids = array(
+			'DeskPRO:Article'  => array(),
+			'DeskPRO:News'     => array(),
+			'DeskPRO:Download' => array(),
+			'DeskPRO:Feedback' => array(),
+		);
+		$valid_ids = $check_ids; //copy structure
+
+		if ($this->person_context) {
+			foreach ($results_raw as $r) {
+				$check_ids[$r['object_type']][] = $r['object_id'];
+			}
+
+			if ($check_ids['DeskPRO:Article']) {
+				$search = new ArticleSearch();
+				$search->setPersonContext($this->person_context);
+				$search->addTerm(ArticleSearch::TERM_ID, ArticleSearch::OP_CONTAINS, $check_ids['DeskPRO:Article']);
+				$valid_ids['DeskPRO:Article'] = $search->getMatches();
+			}
+			if ($check_ids['DeskPRO:News']) {
+				$search = new NewsSearch();
+				$search->setPersonContext($this->person_context);
+				$search->addTerm(NewsSearch::TERM_ID, NewsSearch::OP_CONTAINS, $check_ids['DeskPRO:News']);
+				$valid_ids['DeskPRO:News'] = $search->getMatches();
+			}
+			if ($check_ids['DeskPRO:Download']) {
+				$search = new DownloadSearch();
+				$search->setPersonContext($this->person_context);
+				$search->addTerm(DownloadSearch::TERM_ID, DownloadSearch::OP_CONTAINS, $check_ids['DeskPRO:Download']);
+				$valid_ids['DeskPRO:Download'] = $search->getMatches();
+			}
+			if ($check_ids['DeskPRO:Feedback']) {
+				$search = new FeedbackSearch();
+				$search->setPersonContext($this->person_context);
+				$search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:Feedback']);
+				$valid_ids['DeskPRO:Feedback'] = $search->getMatches();
+			}
+		} else {
+			// No person context means any of the matches are valid
+			// (the user interface will always have a context though)
+			$valid_ids = $check_ids;
+		}
+
+		// Key them for isset() lookups below
+		$valid_ids = array_map(function($v) { return $v ? array_combine($v, $v) : $v; }, $valid_ids);
+
+		#------------------------------
+		# Get and sort the results
+		#------------------------------
+
 		// Count matches
 		$results_ranked = array();
 		foreach ($results_raw as $r) {
+			// Make sure the result is within the list of valid
+			// ids we got back from our search verify above
+			if (!isset($valid_ids[$r['object_type']][$r['object_id']])) {
+				continue;
+			}
 			$k = "{$r['object_type']}-{$r['object_id']}";
 			if (!isset($results_ranked[$k])) {
 				$results_ranked[$k] = $r;

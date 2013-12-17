@@ -109,14 +109,16 @@ class FeedbackSearch extends SearcherAbstract
 			return '0';
 		}
 
+		$where = '(feedback.status != \'hidden\')';
+
 		$dis_ids = $this->person->PermissionsManager->FeedbackCategories->getDisallowedCategories();
 		if (!$dis_ids) {
-			return '';
+			return $where;
 		}
 
 		$dis_ids = implode(',', $dis_ids);
 
-		return '(feedback.category_id NOT IN(' . $dis_ids . '))';
+		return '('.$where.' AND feedback.category_id NOT IN(' . $dis_ids . '))';
 	}
 
 
@@ -323,7 +325,17 @@ class FeedbackSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("feedback.id", $op, $choice, true);
+					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+
+					if ($op == self::OP_CONTAINS || is_array($choice)) {
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+						$wheres[] = $this->_choiceMatch('feedback.id', 'is', $choice);
+					} else {
+						$wheres[] = $this->_rangeMatch("feedback.id", $op, $choice, true);
+					}
 					break;
 
 				case self::TERM_HIDDEN_STATUS:

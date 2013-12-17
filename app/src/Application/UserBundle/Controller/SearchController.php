@@ -88,6 +88,7 @@ class SearchController extends AbstractController
 			$results    = $search->getResultSetObjects($result_set, true);
 
 			$sticky_search  = new StickyWordSearch($this->em);
+			$sticky_search->setPersonContext($this->person);
 			$sticky_results = $sticky_search->getResults($q, 5);
 
 			if ($sticky_results) {
