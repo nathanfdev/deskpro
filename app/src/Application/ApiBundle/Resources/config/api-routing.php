@@ -3436,6 +3436,43 @@ $collection->create('api_banning_email_remove', array(
 
 
 ########################################################################################################################
+# CRM User Groups
+########################################################################################################################
+
+$collection->create('api_user_groups', array(
+	'path'        => '/user_groups',
+	'controller'  => 'ApiBundle:Usergroups:listAll',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_user_groups_get', array(
+	'path'         => '/user_groups/{id}',
+	'controller'   => 'ApiBundle:Usergroups:get',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_user_groups_create', array(
+	'path'       => '/user_groups',
+	'controller' => 'ApiBundle:Usergroups:save',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_user_groups_save', array(
+	'path'         => '/user_groups/{id}',
+	'controller'   => 'ApiBundle:Usergroups:save',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_user_groups_setenabled', array(
+	'path'        => '/user_groups/set-enabled/{user_group_id}/{is_enabled}',
+	'controller'  => 'ApiBundle:Usergroups:toggleUsergroup',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 

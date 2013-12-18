@@ -29,58 +29,86 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\DeskPRO\Usergroups;
 
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Usergroup;
+use Doctrine\ORM\EntityManager;
 
-class UsergroupsController extends AbstractController
+class Usergroups
 {
-	public function listAction($type)
+	/**
+	 * @var \Application\DeskPRO\ORM\EntityManager
+	 */
+
+	protected $em;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup[]
+     */
+
+    protected $usergroups;
+
+	public function __construct(EntityManager $em)
 	{
-		$data = array();
-
-		if ($type == 'agent') {
-			$ugs = $this->em->createQuery("
-				SELECT ug
-				FROM DeskPRO:Usergroup ug
-				WHERE ug.is_agent_group = true
-				ORDER BY ug.title ASC
-			")->execute();
-
-			$data['agentgroups'] = $this->getApiData($ugs);
-		} else {
-			$ugs = $this->em->createQuery("
-				SELECT ug
-				FROM DeskPRO:Usergroup ug
-				WHERE ug.is_agent_group = false
-				ORDER BY ug.title ASC
-			")->execute();
-
-			$data['usergroups'] = $this->getApiData($ugs);
-		}
-
-		return $this->createApiResponse($data);
+		$this->em = $em;
 	}
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+	/**
+	 * Loads twitter accounts data from the database
+	 */
 
-	public function listAllAction()
+	private function preload()
 	{
-		/**
-		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
-		 */
+		if ($this->usergroups !== null) {
 
-		$usergroups = $this->container->getSystemService('usergroups');
+			return;
+		}
 
-		return $this->createApiResponse(
-			array(
-				 'user_groups' => $this->getApiData(Arrays::flatten($usergroups->getAll())),
-			)
-		);
+		$this->usergroups = $this->em->getRepository('DeskPRO:Usergroup')->getUserUsergroups();
+	}
+
+
+	/**
+	 * Resets this repository so the next time data is requested form it, it will
+	 * be queried again.
+	 */
+
+	public function reset()
+	{
+		$this->usergroups = null;
+	}
+
+	/**
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\Usergroup
+	 */
+
+	public function getById($id)
+	{
+		return $this->em->getRepository('DeskPRO:Usergroup')->get($id);
+	}
+
+    /**
+     * @return \Application\DeskPRO\Entity\Usergroup[]
+     */
+
+    public function getAll()
+    {
+        $this->preload();
+
+        return $this->usergroups;
+    }
+
+	/**
+	 * @return int
+	 */
+
+	public function count()
+	{
+		$this->preload();
+
+		return count($this->usergroups);
 	}
 }

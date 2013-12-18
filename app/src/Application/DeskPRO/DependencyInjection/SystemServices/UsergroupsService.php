@@ -29,58 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
+ * @category DependencyInjection
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Orb\Util\Arrays;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Usergroups\Usergroups;
 
-class UsergroupsController extends AbstractController
+class UsergroupsService
 {
-	public function listAction($type)
+	public static function create(DeskproContainer $container)
 	{
-		$data = array();
-
-		if ($type == 'agent') {
-			$ugs = $this->em->createQuery("
-				SELECT ug
-				FROM DeskPRO:Usergroup ug
-				WHERE ug.is_agent_group = true
-				ORDER BY ug.title ASC
-			")->execute();
-
-			$data['agentgroups'] = $this->getApiData($ugs);
-		} else {
-			$ugs = $this->em->createQuery("
-				SELECT ug
-				FROM DeskPRO:Usergroup ug
-				WHERE ug.is_agent_group = false
-				ORDER BY ug.title ASC
-			")->execute();
-
-			$data['usergroups'] = $this->getApiData($ugs);
-		}
-
-		return $this->createApiResponse($data);
-	}
-
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
-	public function listAllAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
-		 */
-
-		$usergroups = $this->container->getSystemService('usergroups');
-
-		return $this->createApiResponse(
-			array(
-				 'user_groups' => $this->getApiData(Arrays::flatten($usergroups->getAll())),
-			)
-		);
+        $x = new Usergroups($container->getEm());
+        return $x;
 	}
 }
