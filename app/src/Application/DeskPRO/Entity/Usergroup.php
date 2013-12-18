@@ -36,7 +36,9 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Collections\ArrayCollection;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -45,8 +47,15 @@ use Orb\Util\Arrays;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
+ * @property int $id
+ * @property string $title
+ * @property string $note
+ * @property boolean $is_agent_group
+ * @property string $sys_name
+ * @property boolean $is_enabled
+ * @property Permission[] $permissions
  */
-class Usergroup extends \Application\DeskPRO\Domain\DomainObject
+class Usergroup extends DomainObject
 {
 	const EVERYONE_NAME = 'everyone';
 	const EVERYONE_ID   = 1;
@@ -59,6 +68,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 *
 	 */
+
 	protected $id = null;
 
 	/**
@@ -66,6 +76,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
+
 	protected $title;
 
 	/**
@@ -73,6 +84,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
+
 	protected $note = '';
 
 	/**
@@ -80,6 +92,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var bool
 	 */
+
 	protected $is_agent_group = false;
 
 	/**
@@ -87,6 +100,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var bool
 	 */
+
 	protected $sys_name = null;
 
 	/**
@@ -94,11 +108,28 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var bool
 	 */
+
 	protected $is_enabled = true;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+
+	protected $permissions;
+
+	/**
+	 * Constructor
+	 */
+
+	public function __construct()
+	{
+		$this->permissions = new ArrayCollection();
+	}
 
 	/**
 	 * @return int
 	 */
+
 	public function getId()
 	{
 		return $this->id;
@@ -225,6 +256,13 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 				 'scale'      => 0,
 				 'nullable'   => false,
 				 'columnName' => 'is_enabled',
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				 'fieldName'    => 'permissions',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Permission',
+				 'mappedBy'     => 'usergroup',
 			)
 		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
