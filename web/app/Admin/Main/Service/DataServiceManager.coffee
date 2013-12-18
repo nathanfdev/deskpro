@@ -16,6 +16,7 @@ define [
 	'Admin/TwitterAccounts/DataService/TwitterAccounts',
 	'Admin/ApiKeys/DataService/ApiKeys',
 	'Admin/Banning/DataService/Bans',
+	'Admin/UserGroups/DataService/UserGroups',
 ], (
 	Strings,
 	DataService_TicketFields,
@@ -34,6 +35,7 @@ define [
 	DataService_TwitterAccounts,
 	DataService_ApiKeys,
 	DataService_Bans,
+	DataService_UserGroups,
 ) ->
 	###
 	# A simple wrapper around the data services

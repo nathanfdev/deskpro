@@ -18,7 +18,39 @@
 
       Admin_UserGroups_Ctrl_List.DEPS = [];
 
-      Admin_UserGroups_Ctrl_List.prototype.init = function() {};
+      Admin_UserGroups_Ctrl_List.prototype.init = function() {
+        this.ugData = this.DataService.get('UserGroups');
+        return this.system_groups_enabled = {};
+      };
+
+      /*
+      		# Loads the list
+      */
+
+
+      Admin_UserGroups_Ctrl_List.prototype.initialLoad = function() {
+        var promise,
+          _this = this;
+        promise = this.ugData.loadList().then(function(list) {
+          return _this.list = list;
+        });
+        return promise;
+      };
+
+      /*
+       	# @param {Object} user_group - usergroup model which enabled / disabled state we want to toggle
+      */
+
+
+      Admin_UserGroups_Ctrl_List.prototype.toggleUserGroup = function(user_group) {
+        var val;
+        if (user_group.is_enabled) {
+          val = '1';
+        } else {
+          val = '0';
+        }
+        return this.Api.sendPost('/user_groups/set-enabled/usergroup_' + user_group.id + '/' + val);
+      };
 
       return Admin_UserGroups_Ctrl_List;
 
