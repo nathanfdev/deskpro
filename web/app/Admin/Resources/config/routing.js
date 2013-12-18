@@ -1020,11 +1020,11 @@ define(function() {
 	});
 
 	//###
-	//# Theme
+	//# Templates
 	//###
 	routes.push({
-		id: 'portal.theme',
-		url: '/theme',
+		id: 'portal.templates',
+		url: '/templates',
 		templateName: 'Index/blank.html',
 		controller: 'Admin_Main_Ctrl_BareList'
 	});
@@ -1042,7 +1042,6 @@ define(function() {
 	//###
 	//# Kb::Labels
 	//###
-
 	routes.push({
 		id: 'portal.kb_labels',
 		url: '/kb/labels',
@@ -1086,7 +1085,6 @@ define(function() {
 	//###
 	//# Downloads::Labels
 	//###
-
 	routes.push({
 		id: 'portal.downloads_labels',
 		url: '/downloads/labels',
@@ -1131,7 +1129,6 @@ define(function() {
 	//###
 	//# News::Labels
 	//###
-
 	routes.push({
 		id: 'portal.news_labels',
 		url: '/news/labels',
@@ -1268,7 +1265,6 @@ define(function() {
 	//###
 	//# Feedback::Labels
 	//###
-
 	routes.push({
 		id: 'portal.feedback_labels',
 		url: '/feedback/labels',
