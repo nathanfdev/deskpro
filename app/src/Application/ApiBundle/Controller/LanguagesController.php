@@ -36,6 +36,9 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\Languages\LangPackInfo;
+use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 class LanguagesController extends AbstractController
 {
@@ -51,11 +54,74 @@ class LanguagesController extends AbstractController
 			ORDER BY l.title ASC
 		")->execute();
 
+		$installed_packs = array();
+		foreach ($langs as $l) $installed_packs[$l->getSysName()] = $l->getSysName();
+
+		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
+		$pack_titles = $langpacks->getLangTitles();
+		$pack_local_titles = $langpacks->getLangTitles(true);
+
+		foreach ($pack_titles as $id => $title) {
+			$flag = $langpacks->getLangInfo($id, 'flag_image');
+			$r = array(
+				'id'           => $id,
+				'title'        => $title,
+				'local_title'  => $pack_local_titles[$id],
+				'flag'         => $flag,
+				'is_installed' => isset($installed_packs[$id])
+			);
+
+			$all_packs[] = $r;
+		}
+
 		$data['languages']       = $this->getApiData($langs);
+		$data['packs']           = $all_packs;
 		$data['default_lang_id'] = $this->container->getLanguageData()->getDefaultId();
 		$data['is_multi_lang']   = $this->container->getLanguageData()->isMultiLang();
 
 		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# get-lang
+	####################################################################################################################
+
+	public function getLangAction($id)
+	{
+		$langpacks = new LangPackInfo();
+
+		if (Numbers::isInteger($id)) {
+			$lang = $this->container->getLanguageData()->get($id);
+			if (!$lang) {
+				return $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($lang->sys_name);
+		} else {
+			if (!$langpacks->hasLang($id)) {
+				return $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($id);
+			$lang = null;
+
+			foreach ($this->container->getLanguageData()->getAll() as $l) {
+				if ($l->sys_name == $lang_info['id']) {
+					$lang = $l;
+					break;
+				}
+			}
+		}
+
+		if ($lang) {
+			$lang_info['is_installed'] = true;
+		}
+
+		return $this->createApiResponse(array(
+			'pack' => $lang_info,
+			'language' => $lang ? $lang->toApiData() : null,
+		));
 	}
 
 
@@ -97,6 +163,96 @@ class LanguagesController extends AbstractController
 		}
 
 		return $this->createApiResponse($data);
+	}
+
+	####################################################################################################################
+	# install-lang
+	####################################################################################################################
+
+	public function installLangAction($id)
+	{
+		$langpacks = new LangPackInfo();
+
+		if (!$langpacks->hasLang($id)) {
+			return $this->createNotFoundException();
+		}
+
+		$lang_info = $langpacks->getLangInfo($id);
+
+		foreach ($this->container->getLanguageData()->getAll() as $l) {
+			if ($l->sys_name == $lang_info['id']) {
+				return $this->createApiErrorResponse('exists', "$id is already installed");
+			}
+		}
+
+		$lang = $langpacks->newLanguageEntity($id);
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($lang);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+		}
+
+		return $this->createApiCreateResponse(array(
+			'pack_id' => $id,
+			'language_id' => $lang->id
+		), $this->generateUrl('api_langs_getinfo', array('id' => $lang->id)));
+	}
+
+
+	####################################################################################################################
+	# uninstall-lang
+	####################################################################################################################
+
+	public function uninstallLangAction($id)
+	{
+		$langpacks = new LangPackInfo();
+
+		if (Numbers::isInteger($id)) {
+			$lang = $this->container->getLanguageData()->get($id);
+			if (!$lang) {
+				return $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($lang->sys_name);
+
+		} else {
+			if (!$langpacks->hasLang($id)) {
+				return $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($id);
+			$lang = null;
+
+			foreach ($this->container->getLanguageData()->getAll() as $l) {
+				if ($l->sys_name == $lang_info['id']) {
+					$lang = $l;
+					break;
+				}
+			}
+
+			if (!$lang) {
+				return $this->createNotFoundException();
+			}
+		}
+
+		$default_id = $this->container->getLanguageData()->getDefaultId();
+		if ($default_id == $lang->id) {
+			return $this->createApiErrorResponse('no_delete_default', 'You cannot delete the default language');
+		}
+
+		$old_lang_id = $lang->id;
+
+		$this->em->remove($lang);
+		$this->em->flush();
+
+		return $this->createSuccessResponse(array(
+			'old_pack_id'    => $lang_info['id'],
+			'old_language_id'=> $old_lang_id
+		));
 	}
 
 

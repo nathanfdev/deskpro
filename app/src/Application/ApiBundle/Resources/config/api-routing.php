@@ -3445,6 +3445,27 @@ $collection->create('api_langs', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_langs_getinfo', array(
+	'path'         => '/langs/{id}',
+	'controller'   => 'ApiBundle:Languages:getLang',
+	'methods'      => array('GET'),
+	'requirements' => array('id' => '\d+|[a-z]+')
+));
+
+$collection->create('api_langs_install', array(
+	'path'         => '/langs/{id}/install',
+	'controller'   => 'ApiBundle:Languages:installLang',
+	'methods'      => array('GET'),
+	'requirements' => array('id' => '[a-z]+')
+));
+
+$collection->create('api_langs_delete', array(
+	'path'         => '/langs/{id}/uninstall',
+	'controller'   => 'ApiBundle:Languages:uninstallLang',
+	'methods'      => array('GET'),
+	'requirements' => array('id' => '\d+|[a-z]+')
+));
+
 $collection->create('api_langs_getphrase', array(
 	'path'        => '/langs/phrases/{phrase_id}/{for_lang}',
 	'controller'  => 'ApiBundle:Languages:getPhrase',

@@ -146,8 +146,22 @@ define(function() {
 	routes.push({
 		id: 'setup.languages',
 		url: '/languages',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Languages/list.html',
+		controller: 'Admin_Languages_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'setup.languages.edit',
+		url: '/{id:[a-z]+}',
+		templateName: 'Languages/edit.html',
+		controller: 'Admin_Languages_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'setup.languages.install',
+		url: '/{id:install\\-[a-z]+}',
+		templateName: 'Languages/install.html',
+		controller: 'Admin_Languages_Ctrl_Install'
 	});
 
 	//###

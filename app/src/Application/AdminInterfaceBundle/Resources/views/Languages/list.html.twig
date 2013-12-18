@@ -1,0 +1,45 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Installed Languages</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="pack in ListCtrl.installedPacks">
+					<a href="{{ ng_href('setup.languages.edit', '{id: pack.id}') }}" dp-state-mark="setup.languages.edit.{{ ng_var('pack.id') }}">
+						<h4>
+							<span class="title-text">
+								<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
+								{{ ng_var('pack.title') }} / {{ ng_var('pack.local_title') }}
+							</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.availablePacks.length">
+		<header>
+			<h3>Other Installable Languages</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="pack in ListCtrl.availablePacks">
+					<a href="{{ ng_href('setup.languages.install', "{id: 'install-' + pack.id}") }}" dp-state-mark="setup.languages.install.install-{{ ng_var('pack.id') }}">
+						<h4>
+							<span class="title-text">
+								<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
+								{{ ng_var('pack.title') }} / {{ ng_var('pack.local_title') }}
+							</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}
+{% endblock %}

@@ -9,8 +9,12 @@
 					<i class="fa fa-caret-right"></i>
 				</a>
 			</li>
-			<li dp-state-mark="setup.languages"><a href="#/setup/languages">Languages</a></li>
-			<li dp-state-mark="setup.outgoing_email"><a href="#/setup/outgoing_email">Outgoing Email</a></li>
+			<li dp-state-mark="setup.languages">
+				<a href="{{ ng_href('setup.languages') }}">
+					<i class="fa fa-globe"></i>
+					<span>Languages</span>
+				</a>
+			</li>
 		</ul>
 	</nav>
 {% endblock %}
