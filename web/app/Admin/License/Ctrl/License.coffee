@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 	class Admin_License_Ctrl_License extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_License_Ctrl_License'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = []
+		@DEPS      = ['$window']
 
 		init: ->
 			@license          = null
@@ -28,19 +28,34 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 		initialLoad: ->
 			return @reloadLicData()
 
+		downloadKeyfile: ->
+			@$window.location = @Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + @Api.api_token
+
+		goToMembersArea: ->
+			@$window.location = 'https://www.deskpro.com/members/'
+			return
+
 		saveLicenseCode: ->
 			postData = {
-				license_code: @license.license_code
+				license_code: @lic_code
 			}
 
+			@$scope.lic_error_code = false
+			@$scope.show_lic_error = false
 			@startSpinner('saving')
 			@Api.sendPost("dp_license", postData).success(=>
 				@reloadLicData().then(=>
-					@stopSpinner('saving', true)
-					@Growl.success(@getRegisteredMessage('saved_lic'))
+					@stopSpinner('saving').then(=>
+						@Growl.success(@getRegisteredMessage('saved_lic'))
+					)
 				)
-			).error(=>
-				@Growl.error(@getRegisteredMessage('lic_error'))
+			).error( (data) =>
+				@stopSpinner('saving', true)
+				@$scope.lic_error_code = false
+				if data and data.error_code
+					@$scope.lic_error_code = data.error_code
+
+				@$scope.show_lic_error = true
 			)
 
 		save: ->

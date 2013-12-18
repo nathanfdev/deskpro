@@ -130,13 +130,17 @@
 						</div>
 						<div class="col-lg-10">
 							<div class="inner-group">
-								<textarea class="form-control" style="width: 40%; height: 160px; font-family: Monaco, Consolas, monospace; font-size: 11px;" ng-model="Ctrl.license.licenseCode"></textarea>
+								<textarea class="form-control" style="width: 40%; height: 160px; font-family: Monaco, Consolas, monospace; font-size: 11px;" ng-model="Ctrl.lic_code"></textarea>
 								<br/>
-								<div ng-show="Ctrl.lic_code != Ctrl.license.licenseCode" style="padding-top: 3px;">
+								<div dp-hide-spinning="saving" ng-show="Ctrl.lic_code != Ctrl.license.licenseCode" style="padding-top: 3px;">
 									<button class="btn btn-primary" ng-click="$event.preventDefault(); Ctrl.saveLicenseCode()"><i class="fa fa-save"></i> Update License Code</button>
 								</div>
-								<div dp-show-spinning="saving_dep">
+								<div dp-show-spinning="saving" style="padding: 5px;">
 									<i class="spinner-flat"></i>
+								</div>
+								<div class="alert alert-danger" ng-show="show_lic_error" style="margin-top: 4px;">
+									The license code you entered appears to be invalid. Contact <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+									if you need assistance. <span ng-show="lic_error_code">(Error code: {{ ng_var('lic_error_code') }})</span>
 								</div>
 							</div>
 						</div>
@@ -155,7 +159,7 @@
 								so your license code can be generally by a DeskPRO agent.
 
 								<div style="padding-top: 3px;">
-									<button class="btn btn-default">
+									<button class="btn btn-default" ng-click="Ctrl.downloadKeyfile()">
 										<i class="fa fa-key"></i>
 										Download Key File
 									</button>
@@ -169,5 +173,4 @@
 		</section>
 	</form>
 	<div dp-register-message="saved_lic">Your license was saved successfully.</div>
-	<div dp-register-message="lic_error">The license code you entered appears to be invalid.</div>
 {% endblock %}

@@ -2219,6 +2219,13 @@ $collection->create('api_dp_license_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_dp_keyfile', array(
+	'path'         => '/dp_license/keyfile.{_format}',
+	'controller'   => 'ApiBundle:License:downloadKeyfile',
+	'methods'      => array('GET'),
+	'requirements' => array('_format' => 'txt|json'),
+));
+
 ########################################################################################################################
 # Ticket Settings
 ########################################################################################################################

@@ -141,8 +141,10 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get some data from the extra array
 	 */
-	public function getData($key, $default = null)
+	public function getData($key = null, $default = null)
 	{
+		if ($key === null) return $this->data;
+
 		return (isset($this->data[$key]) ? $this->data[$key] : $default);
 	}
 

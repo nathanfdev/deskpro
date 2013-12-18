@@ -41,7 +41,7 @@ use Orb\Util\Dates;
 
 class LicenseController extends AbstractController
 {
-	###################################################################################################################
+	####################################################################################################################
 	# get-license
 	####################################################################################################################
 
@@ -84,23 +84,18 @@ class LicenseController extends AbstractController
 				'licenseCode' => $lic->getLicenseCode(),
 			),
 			'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
-			'ma_token'         => $ma_token,
+			'ma_token'         => $ma_token->toApiData(),
 			'ma_login_url'     => $ma_login_url,
 		));
 	}
 
-	###################################################################################################################
-	# save-license
+	####################################################################################################################
+	# set-license
 	####################################################################################################################
 
-	public function saveLicenseAction()
+	public function setLicenseAction()
 	{
 		$license_code = $this->in->getString('license_code');
-		error_log($license_code);
-
-		return $this->createApiResponse(array(
-			'success' => true
-		));
 
 		$lic = License::create($license_code, $this->settings->get('core.install_key'));
 		if ($lic->isLicenseCodeError()) {
@@ -119,5 +114,51 @@ class LicenseController extends AbstractController
 		return $this->createApiResponse(array(
 			'success' => true
 		));
+	}
+
+	####################################################################################################################
+	# download-keyfile
+	####################################################################################################################
+
+	public function downloadKeyfileAction($_format = 'txt')
+	{
+		$email_address = $this->in->getString('email_address');
+		if (!$email_address) {
+			$email_address = $this->person->getPrimaryEmailAddress();
+		}
+
+		$install_data = array();
+		$install_data['install_key']           = $this->settings->get('core.install_key');
+		$install_data['install_token']         = $this->settings->get('core.install_token');
+		$install_data['request_email_address'] = $this->person->getPrimaryEmailAddress();
+		$install_data['email_address']         = $email_address;
+		$install_data['url']                   = $this->request->getUriForPath('/');
+
+		$install_data = json_encode($install_data);
+		$install_data = base64_encode($install_data);
+
+		$file = <<<FILE
+Email this file to support@deskpro.com and our agents will generate a license code for you
+==============================DP_INSTALLKEY_BGN==============================
+$install_data
+==============================DP_INSTALLKEY_END==============================
+FILE;
+
+		$file = trim($file);
+		$file .= "\n";
+
+		if ($_format == 'txt') {
+			$res = $this->createResponse($file);
+			$res->headers->set('Content-Disposition', 'attachment; filename=deskpro-keyfile.txt');
+			$res->headers->set('Content-Type', 'plain/text; filename=deskpro-keyfile.txt');
+			return $res;
+		} else {
+			return $this->createJsonResponse(array(
+				'filename'     => 'deskpro-keyfile.txt',
+				'filesize'     => strlen($file),
+				'content_type' => 'plain/text',
+				'data'         => $file
+			));
+		}
 	}
 }

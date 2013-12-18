@@ -16,7 +16,7 @@
 
       Admin_License_Ctrl_License.CTRL_AS = 'Ctrl';
 
-      Admin_License_Ctrl_License.DEPS = [];
+      Admin_License_Ctrl_License.DEPS = ['$window'];
 
       Admin_License_Ctrl_License.prototype.init = function() {
         this.license = null;
@@ -45,20 +45,36 @@
         return this.reloadLicData();
       };
 
+      Admin_License_Ctrl_License.prototype.downloadKeyfile = function() {
+        return this.$window.location = this.Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + this.Api.api_token;
+      };
+
+      Admin_License_Ctrl_License.prototype.goToMembersArea = function() {
+        this.$window.location = 'https://www.deskpro.com/members/';
+      };
+
       Admin_License_Ctrl_License.prototype.saveLicenseCode = function() {
         var postData,
           _this = this;
         postData = {
-          license_code: this.license.license_code
+          license_code: this.lic_code
         };
+        this.$scope.lic_error_code = false;
+        this.$scope.show_lic_error = false;
         this.startSpinner('saving');
         return this.Api.sendPost("dp_license", postData).success(function() {
           return _this.reloadLicData().then(function() {
-            _this.stopSpinner('saving', true);
-            return _this.Growl.success(_this.getRegisteredMessage('saved_lic'));
+            return _this.stopSpinner('saving').then(function() {
+              return _this.Growl.success(_this.getRegisteredMessage('saved_lic'));
+            });
           });
-        }).error(function() {
-          return _this.Growl.error(_this.getRegisteredMessage('lic_error'));
+        }).error(function(data) {
+          _this.stopSpinner('saving', true);
+          _this.$scope.lic_error_code = false;
+          if (data && data.error_code) {
+            _this.$scope.lic_error_code = data.error_code;
+          }
+          return _this.$scope.show_lic_error = true;
         });
       };
 
