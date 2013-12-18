@@ -31,6 +31,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			else
 				val = '0'
 
-			@Api.sendPost('/user_groups/set-enabled/usergroup_' + user_group.id + '/' + val)
+			@Api.sendPost('/user_groups/set-enabled/' + user_group.id + '/' + val)
 
 	Admin_UserGroups_Ctrl_List.EXPORT_CTRL()

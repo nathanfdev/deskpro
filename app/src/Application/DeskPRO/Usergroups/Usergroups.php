@@ -111,4 +111,18 @@ class Usergroups
 
 		return count($this->usergroups);
 	}
+
+	/**
+	 * @param string $id
+	 * @param bool   $enabled
+	 *
+	 */
+
+	public function setFieldEnabledById($id, $enabled = true)
+	{
+		$usergroup             = $this->em->find('DeskPRO:Usergroup', $id);
+		$usergroup->is_enabled = $enabled;
+		$this->em->persist($usergroup);
+		$this->em->flush($usergroup);
+	}
 }

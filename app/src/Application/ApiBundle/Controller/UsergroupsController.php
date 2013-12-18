@@ -83,4 +83,21 @@ class UsergroupsController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# toggleUsergroup
+	####################################################################################################################
+
+	public function toggleUsergroupAction($user_group_id, $is_enabled)
+	{
+		/**
+		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
+		 */
+
+		$usergroups = $this->container->getSystemService('usergroups');
+		$usergroups->setFieldEnabledById($user_group_id, $is_enabled);
+
+		return $this->createSuccessResponse();
+	}
+
 }

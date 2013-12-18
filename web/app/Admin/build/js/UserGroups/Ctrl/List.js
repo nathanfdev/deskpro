@@ -49,7 +49,7 @@
         } else {
           val = '0';
         }
-        return this.Api.sendPost('/user_groups/set-enabled/usergroup_' + user_group.id + '/' + val);
+        return this.Api.sendPost('/user_groups/set-enabled/' + user_group.id + '/' + val);
       };
 
       return Admin_UserGroups_Ctrl_List;
