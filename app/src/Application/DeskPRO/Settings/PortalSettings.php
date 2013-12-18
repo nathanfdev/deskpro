@@ -41,6 +41,10 @@ class PortalSettings
 	 */
 	private $settings;
 
+	public $portal_enabled;
+	public $favicon_blob_url;
+	public $favicon_blob_id;
+
 	public $show_ratings;
 	public $publish_comments;
 
@@ -66,6 +70,11 @@ class PortalSettings
 	 */
 	public function resetSettings()
 	{
+		$this->portal_enabled   = (bool)$this->settings->get('user.portal_enabled');
+
+		$this->favicon_blob_id  = (int)$this->settings->get('core.favicon_blob_id');
+		$this->favicon_blob_url = $this->settings->get('core.favicon_blob_url') ?: null;
+
 		$this->show_ratings     = (int)$this->settings->get('user.show_ratings');
 		$this->publish_comments = (bool)$this->settings->get('user.publish_comments');
 
@@ -84,6 +93,9 @@ class PortalSettings
 	public function toArray()
 	{
 		$export_settings = array(
+			'portal_enabled'           => $this->portal_enabled,
+			'favicon_blob_id'          => $this->favicon_blob_id,
+			'favicon_blob_url'         => $this->favicon_blob_url,
 			'show_ratings'             => $this->show_ratings,
 			'publish_comments'         => $this->publish_comments,
 			'register_captcha'         => $this->register_captcha,
@@ -115,6 +127,14 @@ class PortalSettings
 	public function saveSettings()
 	{
 		$this->settings->setSetting("user.show_ratings", (int)$this->show_ratings);
+
+		if ($this->favicon_blob_id && $this->favicon_blob_url) {
+			$this->settings->setSetting('core.favicon_blob_id', (int)$this->favicon_blob_id);
+			$this->settings->setSetting('core.favicon_blob_url', (int)$this->favicon_blob_url);
+		} else {
+			$this->settings->setSetting('core.favicon_blob_id', null);
+			$this->settings->setSetting('core.favicon_blob_url', null);
+		}
 
 		foreach (array(
 			'publish_comments', 'register_captcha', 'publish_captcha',

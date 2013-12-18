@@ -1,5 +1,3 @@
-
-
 <div class="dp-layout-appbody-white-matte">
 	<div ng-if="!Portal.portal_enabled">
 		<div class="dp-portal-editor-frame">
@@ -23,10 +21,11 @@
 		<div dp-portal-editor>
 			<header>
 				<div class="lines"><i class="fa fa-align-justify"></i></div>
-				<div class="address-bar">{{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</div>
+				<div class="address-bar"><img ng-src="{{ ng_var('Portal.favicon_url') }}" class="favicon" ng-click="Portal.openFaviconEditor()" /> {{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</div>
 				<div class="control-bar">
 					<button class="btn btn-default btn-xs" ng-click="Portal.startTogglePortal()"><i class="fa fa-power-off"></i> Disable Portal</button>
 					<button class="btn btn-default btn-xs" id="portal_colors_trigger"><i class="fa fa-th"></i> Color Chooser</button>
+					<button class="btn btn-default btn-xs" ng-click="Portal.openFaviconEditor()"><i class="fa fa-picture-o"></i> Change Favicon</button>
 				</div>
 			</header>
 			<article>
@@ -83,3 +82,4 @@
 		</div>
 	</div>
 </div>
+{{ ng_tpl('AdminInterfaceBundle:PortalEditor:change-favicon-modal.html.twig') }}

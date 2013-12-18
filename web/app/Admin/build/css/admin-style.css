@@ -10926,6 +10926,19 @@ table.table > tbody > tr > td.dp-id-col {
   border-radius: 5px;
 }
 
+.dp-portal-editor-frame > header .address-bar .favicon {
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.dp-portal-editor-frame > header .address-bar .favicon:hover {
+  opacity: 0.6;
+}
+
 .dp-portal-editor-frame > header .lines {
   position: relative;
   top: -2px;
@@ -11130,4 +11143,28 @@ section#portal_colors .style-row.color.dual .desc {
   font-size: 11px;
   text-align: center;
   background: #efefef;
+}
+
+.favicon-modal .opt-row {
+  padding: 10px;
+  margin: 0 0 10px 0;
+  border: 1px solid transparent;
+}
+
+.favicon-modal .opt-row label {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.favicon-modal .opt-row.row-on {
+  border: 1px solid #ccc;
+}
+
+.favicon-modal .favicon {
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  margin-left: 2px;
+  overflow: hidden;
+  border-radius: 2px;
 }

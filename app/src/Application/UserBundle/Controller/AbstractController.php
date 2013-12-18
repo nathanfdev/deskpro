@@ -33,6 +33,7 @@
 
 namespace Application\UserBundle\Controller;
 
+use Application\AgentBundle\Controller\Helper\CarryAdminSession;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -111,7 +112,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				$this->person = new \Application\DeskPRO\People\PersonGuest();;
 			}
 
-			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+			$cas = new CarryAdminSession($this);
 			$cas->process();
 
 			// With admin portal controls, give permission to the sections even if we dont usually

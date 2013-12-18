@@ -33,6 +33,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\TicketSettings;
 use Application\DeskPRO\Settings\ServerSettings;
@@ -40,6 +41,7 @@ use Application\DeskPRO\Settings\GeneralSettings;
 use Application\DeskPRO\Settings\EmailSettings;
 use Application\DeskPRO\Settings\PortalSettings;
 use Orb\Util\Env;
+use Orb\Util\Strings;
 
 class SettingsController extends AbstractController
 {
@@ -208,6 +210,75 @@ class SettingsController extends AbstractController
 		$portal_settings = new PortalSettings($this->settings);
 		$portal_settings->setArray($this->in->getArrayValue('portal_settings'));
 		$portal_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
+
+	public function saveCustomFaviconAction($blob_id, $blob_auth)
+	{
+		$blob = null;
+		if ($blob_id) {
+			$blob = $this->em->find('DeskPRO:Blob', $blob_id);
+			if (!$blob || $blob->authcode != $blob_auth) {
+				return $this->createNotFoundException();
+			}
+		}
+
+		if ($blob) {
+
+			$ext = strtolower(Strings::getExtension($blob->getFilename()));
+			if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg', 'ico'))) {
+				return $this->createNotFoundException();
+			}
+
+			$file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+
+			if ($blob->content_type != 'image/x-icon' && $blob->content_type != 'image/vnd.microsoft.icon') {
+				if (class_exists('Imagick')) {
+					$im = new \Imagick();
+					try {
+						$im->readimageblob($file, $blob->getFilename());
+					} catch (\Exception $e) {
+						return $this->createNotFoundException();
+					}
+					$im->scaleImage(16, 16, true);
+					$im->setImageFormat('ico');
+					$file_content = $im->getImageBlob();
+				} else {
+					$gd = @imagecreatefromstring($file);
+					if (!$gd) {
+						return $this->createNotFoundException();
+					}
+					$width = imagesx($gd);
+					$height = imagesy($gd);
+
+					$gd_dest = imagecreatetruecolor(16, 16);
+					imagecopyresampled($gd_dest, $gd, 0, 0, 0, 0, 16, 16, $width, $height);
+
+					$file_content = \phpthumb_ico::GD2ICOstring(array($gd_dest));
+				}
+			} else {
+				$file_content = $file;
+			}
+
+			$use_blob = $this->container->getBlobStorage()->createBlobRecordFromString(
+				$file_content,
+				'favicon.ico',
+				'image/x-icon'
+			);
+			$blob_id = $use_blob->getId();
+			$url = trim($blob->getDownloadUrl(true, false), '/');
+
+			$this->settings->setSetting('core.favicon_blob_id', $blob_id);
+			$this->settings->setSetting('core.favicon_blob_url', $url);
+
+		} else {
+			$this->settings->setSetting('core.favicon_blob_id', null);
+			$this->settings->setSetting('core.favicon_blob_url', null);
+		}
+
+		$cache = new UserPageCache();
+		$cache->invalidateAll();
 
 		return $this->createSuccessResponse();
 	}

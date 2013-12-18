@@ -29,50 +29,59 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage ApiBundle
  */
 
-namespace Application\AgentBundle\Controller\Helper;
+namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
 
-class CarryAdminSession
+class BlobsController extends AbstractController
 {
-	protected $controller;
-	protected $cookie_name;
+	####################################################################################################################
+	# upload
+	####################################################################################################################
 
-	public function __construct($controller, $cookie_name = 'dpsid-agent')
+	/**
+	 * Uploads a new temp file. Note that temp files are removed automatically after some time,
+	 * so whatever process that uses the file upload must toggle the temp status off.
+	 */
+	public function uploadAction()
 	{
-		$this->controller = $controller;
-		$this->cookie_name = $cookie_name;
+		$file = $this->request->files->get('upfile');
+		$accept = $this->container->getAttachmentAccepter();
+
+		$context = 'agent';
+		if ($this->in->getString('context') == 'user') {
+			$context = 'user';
+		}
+
+		$error = $accept->getError($file, $context);
+		if ($error) {
+			$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+			return $this->createApiErrorResponse($error['error_code'], $message);
+		}
+
+		$blob = $accept->accept($file, true);
+
+		return $this->createApiCreateResponse(array(
+			'blob' => $blob->toApiData()
+		), $this->generateUrl('api'));
 	}
 
-	public function process()
+
+	####################################################################################################################
+	# get-info
+	####################################################################################################################
+
+	public function getInfoAction($id, $auth)
 	{
-		if (!$this->controller->person->id) {
-			$admin_session_code = !empty($_COOKIE[$this->cookie_name]) ? $_COOKIE[$this->cookie_name] : false;
-			$admin_session = null;
-			if ($admin_session_code) {
-				$admin_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($admin_session_code);
-				if (!$admin_session || !$admin_session->person || !$admin_session->person->is_agent) {
-					$admin_session = null;
-				}
-
-				if ($admin_session) {
-					$this->controller->session->set('auth_person_id', $admin_session->person->id);
-					\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
-					$this->controller->session->set('dp_interface', DP_INTERFACE);
-
-					// Set their status to available by default
-					$this->controller->session->set('active_status', 'available');
-					$this->controller->session->set('is_chat_available', 1);
-
-					$this->controller->session->save();
-
-					$this->controller->person = $admin_session->person;
-					App::setCurrentPerson($admin_session->person);
-				}
-			}
+		$blob = $this->em->find('DeskPRO:Blob', $id);
+		if (!$blob || $blob->authcode != $auth) {
+			return $this->createNotFoundException();
 		}
+
+		return $this->createApiResponse(array(
+			'blob' => $blob->toApiData()
+		));
 	}
 }

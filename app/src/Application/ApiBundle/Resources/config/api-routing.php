@@ -2187,6 +2187,13 @@ $collection->create('api_portal_settings_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_portal_settings_setfavicon', array(
+	'path'         => '/portal_settings/favicon/{blob_id}/{blob_auth}',
+	'controller'   => 'ApiBundle:Settings:saveCustomFavicon',
+	'methods'      => array('POST'),
+	'requirements' => array('blob_id' => '\\d+', 'blob_auth' => '[a-zA-Z0-9]+'),
+));
+
 ########################################################################################################################
 # Advanced Settings
 ########################################################################################################################
@@ -3497,6 +3504,22 @@ $collection->create('api_plugins_package_getinstaller', array(
 	'path'         => '/plugins/packages/{name}/installer',
 	'controller'   => 'ApiBundle:Plugins:getPackageInstaller',
 	'requirements' => array('name' => '[a-z0-9\._]+'),
+	'methods'      => array('GET'),
+));
+
+########################################################################################################################
+# Blobs
+########################################################################################################################
+
+$collection->create('api_blobs_upload', array(
+	'path'         => '/blobs',
+	'controller'   => 'ApiBundle:Blobs:upload',
+	'methods'      => array('PUT', 'POST'),
+));
+
+$collection->create('api_blobs_get', array(
+	'path'         => '/blobs/{id}/{auth}',
+	'controller'   => 'ApiBundle:Blobs:getInfo',
 	'methods'      => array('GET'),
 ));
 
