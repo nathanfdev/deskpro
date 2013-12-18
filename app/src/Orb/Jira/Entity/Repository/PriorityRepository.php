@@ -1,8 +1,8 @@
 <?php
 
-namespace Jira\Entity\Repository;
+namespace Orb\Jira\Entity\Repository;
 
-use Jira\Repository;
+use Orb\Jira\Repository;
 
 /**
  * Issue Priority Repository
@@ -25,8 +25,8 @@ class PriorityRepository extends Repository
 	protected $_endPoint = 'priority';
 	
 	/** {@inheritdoc} */
-	protected function _create(\Jira\Entity\Entity $entity, \Jira\Service $client){}
+	protected function _create(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client){}
 	
 	/** {@inheritdoc} */
-	protected function _update(\Jira\Entity\Entity $entity, \Jira\Service $client){}
+	protected function _update(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client){}
 }

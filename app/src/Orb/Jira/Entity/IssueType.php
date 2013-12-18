@@ -1,8 +1,8 @@
 <?php
 
-namespace Jira\Entity;
+namespace Orb\Jira\Entity;
 
-use Jira\Entity;
+use Orb\Jira\Entity;
 
 /**
  * The IssueType Class
@@ -57,7 +57,7 @@ class IssueType extends Entity
 	/**
 	 * Sets this to be a subtask
 	 * 
-	 * @return \Jira\Entity\IssueType
+	 * @return \Orb\Jira\Entity\IssueType
 	 */
 	public function setSubTask()
 	{

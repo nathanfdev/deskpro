@@ -1,6 +1,6 @@
 <?php
 
-namespace Jira;
+namespace Orb\Jira;
 
 /**
  * The Base Entity class

@@ -11,6 +11,10 @@ class JiraController extends AbstractController
 {
 	public function exportAction($ticket_id)
 	{
+		if ('POST' === $this->request->getMethod()) {
+			return $this->_processPost();
+		}
+		
 		$service = $this->_getService();
 		
 		$meta = $service->getCreateMeta(); 
@@ -18,7 +22,7 @@ class JiraController extends AbstractController
 		$projects = array();
 		
 		foreach ($meta[$meta['expand']] as $projectParams) {
-			$projects[] = \Application\DeskPRO\Entity\JiraProject::initFromArray($projectParams);
+			$projects[] = \Orb\Jira\Entity\Project::fromArray($projectParams);
 		}
 		
 		//$ticket_id = (int) $ticket_id;
@@ -135,6 +139,28 @@ class JiraController extends AbstractController
 		$service = $this->_getService();
 		
 		return $service->lookupPriorities($projectKey);
+	}
+	
+	protected function _processPost()
+	{
+		$service = $this->_getService();
+		
+		$postParams = $this->request->request->all();
+			
+		$newIssue = new \Orb\Jira\Entity\Issue();
+
+		$newIssue->setDescription($postParams['description'])
+				->setType($service->findIssueType($postParams['issuetype']))
+				->setTitle($postParams['title'])
+				->setProject($service->findProject($postParams['project']))
+				->setPriority($service->findPriority($postParams['priority']))
+				->setLabels(explode(',', $postParams['labels']));
+		
+		//var_dump($newIssue); die;
+
+		$response = $service->persist($newIssue);
+		
+		return $this->createJsonResponse($response);
 	}
 
 

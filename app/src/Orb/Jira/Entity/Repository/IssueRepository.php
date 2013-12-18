@@ -1,8 +1,8 @@
 <?php
 
-namespace Jira\Entity\Repository;
+namespace Orb\Jira\Entity\Repository;
 
-use Jira\Repository;
+use Orb\Jira\Repository;
 
 /**
  * IssueRepository
@@ -27,22 +27,27 @@ class IssueRepository extends Repository
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function _create(\Jira\Entity\Entity $issue, \Jira\Service $client)
+	protected function _create(\Orb\Jira\Entity $issue, \Orb\Jira\Service $client)
 	{
 		$fields = array(
 			'project' => array(
 				'key' => $issue->getProject()->getKey()
 			),
-			'summary' => $issue->getSummary(),
+			'description'	=> $issue->getDescription(),
+			
+			'summary' => $issue->getTitle(),
 			
 			'issuetype' => array(
 				'id' => $issue->getType()->getId()
 			),
 			'priority' => array(
-				'id' => $issue->getPrriority()->getId()
+				'id' => $issue->getPriority()->getId()
 			),
-			'labels' => $client->getLabels()
+			'labels' => $issue->getLabels()
+			//'labels' => array('test', 'test1', 'test2')
 		);
+		
+		//var_dump($fields); die;
 		
 		return $client->postJson($this->getEndpoint(), array(
 			'fields'	=> $fields
@@ -52,7 +57,7 @@ class IssueRepository extends Repository
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function _update(\Jira\Entity\Entity $issue, \Jira\Service $client)
+	protected function _update(\Orb\Jira\Entity $issue, \Orb\Jira\Service $client)
 	{
 		$fields = array(
 			'project' => array(

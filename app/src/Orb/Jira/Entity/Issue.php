@@ -1,8 +1,8 @@
 <?php
 
-namespace Jira\Entity;
+namespace Orb\Jira\Entity;
 
-use Jira\Entity;
+use Orb\Jira\Entity;
 
 /**
  * The Issue Class
@@ -63,6 +63,14 @@ class Issue extends Entity
 	protected $_updated;
 	
 	/**
+	 * Issue labels
+	 * 
+	 * @var array An array of labels
+	 */
+	protected $_labels;
+
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function __construct(array $params = array())
@@ -106,6 +114,19 @@ class Issue extends Entity
 		return $this;
 	}
 	
+	public function getTitle()
+	{
+		return $this->_name;
+	}
+	
+	public function setTitle($title)
+	{
+		$this->_name = $title;
+		
+		return $this;
+	}
+
+
 	/**
 	 * Gets the Description.
 	 * 
@@ -120,7 +141,7 @@ class Issue extends Entity
 	 * Sets the description
 	 * 
 	 * @param String $summary The new Description to set
-	 * @return \Jira\Issue
+	 * @return \Orb\Jira\Issue
 	 */
 	public function setSummary($summary)
 	{
@@ -140,8 +161,8 @@ class Issue extends Entity
 	/**
 	 * Sets the issue type
 	 * 
-	 * @param \Jira\Entity\IssueType $type The issue type to set
-	 * @return \Jira\Entity\Issue
+	 * @param \Orb\Jira\Entity\IssueType $type The issue type to set
+	 * @return \Orb\Jira\Entity\Issue
 	 */
 	public function setType(IssueType $type)
 	{
@@ -163,8 +184,8 @@ class Issue extends Entity
 	/**
 	 * Sets the issue project
 	 * 
-	 * @param \Jira\Entity\Project $project The project to set
-	 * @return \Jira\Entity\Issue
+	 * @param \Orb\Jira\Entity\Project $project The project to set
+	 * @return \Orb\Jira\Entity\Issue
 	 */
 	public function setProject(Project $project)
 	{
@@ -186,8 +207,8 @@ class Issue extends Entity
 	/**
 	 * Sets the issue priority
 	 * 
-	 * @param \Jira\Entity\Priority $priority The issue priority to set
-	 * @return \Jira\Entity\Issue
+	 * @param \Orb\Jira\Entity\Priority $priority The issue priority to set
+	 * @return \Orb\Jira\Entity\Issue
 	 */
 	public function setPriority(Priority $priority)
 	{
@@ -210,7 +231,7 @@ class Issue extends Entity
 	 * Sets the due date
 	 * 
 	 * @param String $dueDate The new due date
-	 * @return \Jira\Entity\Issue
+	 * @return \Orb\Jira\Entity\Issue
 	 */
 	public function setDueDate($dueDate)
 	{
@@ -237,5 +258,41 @@ class Issue extends Entity
 	public function getUpdated()
 	{
 		return $this->_updated;
+	}
+	
+	/**
+	 * Adds an issue label
+	 * 
+	 * @param String $label label to add
+	 * @return \Orb\Jira\Entity\Issue
+	 */
+	public function addLabel($label)
+	{
+		$this->_labels[] = $label;
+		
+		return $this;
+	}
+	
+	/**
+	 * Sets the issue labels
+	 * 
+	 * @param array $labels
+	 * @return \Orb\Jira\Entity\Issue
+	 */
+	public function setLabels(array $labels)
+	{
+		$this->_labels = $labels;
+		
+		return $this;
+	}
+	
+	/**
+	 * Get Labels
+	 * 
+	 * @return array An array of labels
+	 */
+	public function getLabels()
+	{
+		return $this->_labels;
 	}
 }

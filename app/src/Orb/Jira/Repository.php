@@ -1,6 +1,6 @@
 <?php
 
-namespace Jira;
+namespace Orb\Jira;
 
 /**
  * Entity Repository
@@ -34,9 +34,9 @@ abstract class Repository
 	/**
 	 * The default constructor 
 	 * 
-	 * @param \JIRA\Service $client The JIRA Service client
+	 * @param \Orb\Jira\Service $client The JIRA Service client
 	 */
-	public function __construct(\JIRA\Service $client)
+	public function __construct(\Orb\Jira\Service $client)
 	{
 		$this->_client = $client;
 	}
@@ -49,7 +49,7 @@ abstract class Repository
 	 */
 	public function getEntityClass()
 	{
-		return '\JIRA\\Entity\\' . $this->_entityClass;
+		return '\Orb\\Jira\\Entity\\' . $this->_entityClass;
 	}
 
 	/**
@@ -66,7 +66,7 @@ abstract class Repository
 	 * Finds an entity
 	 * 
 	 * @param String|int $id The ID of the entity to find
-	 * @return boolean|\JIRA\Entity\Repository\class
+	 * @return boolean|\Orb\Jira\Entity\Repository\class
 	 */
 	public function find($id)
 	{
@@ -120,11 +120,11 @@ abstract class Repository
 	/**
 	 * Persists an entity to the JIRA REST Service
 	 * 
-	 * @param \JIRA\Entity\Entity $entity The entity to persist
-	 * @param \JIRA\Service $client The JIRA Service client
-	 * @return \JIRA\Entity\Entity|bool The persisted entity on success and "FALSE" otherwise
+	 * @param \Orb\Jira\Entity\Entity $entity The entity to persist
+	 * @param \Orb\Jira\Service $client The JIRA Service client
+	 * @return array | bool The persisted entity on success and "FALSE" otherwise
 	 */
-	public function persist(\JIRA\Entity\Entity $entity, \JIRA\Service $client)
+	public function persist(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client)
 	{
 		if (!$entity->getId()) {
 			$response = $this->_create($entity, $client);
@@ -132,39 +132,35 @@ abstract class Repository
 			$response = $this->_update($entity, $client);
 		}
 		
-		if ($response && $response->isSuccessful()) {
-			return $entity;
-		}
-		
-		return false;
+		return $response;
 	}
 	
 	/**
 	 * Persists a new entity to the JIRA REST Service
 	 * 
-	 * @param \JIRA\Entity\Entity $entity The entity to persist
-	 * @param \JIRA\Service $client The JIRA Service client
-	 * @return \JIRA\Entity\Entity|bool The persisted entity on success and "FALSE" otherwise
+	 * @param \Orb\Jira\Entity $entity The entity to persist
+	 * @param \Orb\Jira\Service $client The JIRA Service client
+	 * @return \Orb\Jira\Entity\Entity|bool The persisted entity on success and "FALSE" otherwise
 	 */
-	abstract protected function _create(\JIRA\Entity\Entity $entity, \JIRA\Service $client);
+	abstract protected function _create(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client);
 	
 	/**
 	 * Persists an existing entity to the JIRA REST Service
 	 * 
-	 * @param \JIRA\Entity\Entity $entity The entity to persist
-	 * @param \JIRA\Service $client The JIRA Service client
-	 * @return \JIRA\Entity\Entity|bool The persisted entity on success and "FALSE" otherwise
+	 * @param \Orb\Jira\Entity $entity The entity to persist
+	 * @param \Orb\Jira\Service $client The JIRA Service client
+	 * @return \Orb\Jira\Entity|bool The persisted entity on success and "FALSE" otherwise
 	 */
-	abstract protected function _update(\JIRA\Entity\Entity $entity, \JIRA\Service $client);
+	abstract protected function _update(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client);
 	
 	/**
 	 * Deletes an entity from the JIRA REST Service
 	 * 
-	 * @param \JIRA\Entity\Entity $entity The entity to remove
-	 * @param \JIRA\Service $client
+	 * @param \Orb\Jira\Entity $entity The entity to remove
+	 * @param \Orb\Jira\Service $client
 	 * @return bool "TRUE" on success and "FALSE" otherwise
 	 */
-	public function remove(\JIRA\Entity\Issue $issue, \JIRA\Service $client)
+	public function remove(\Orb\Jira\Entity\Issue $issue, \Orb\Jira\Service $client)
 	{
 		return $client->delete($this->getEndpoint() . '/' . $issue->getId());
 	}
@@ -173,10 +169,10 @@ abstract class Repository
 	 * Gets the repository
 	 * 
 	 * @param String $repositoryClass The Repository class name
-	 * @param \JIRA\Service $client The JIRA Service client
-	 * @return \JIRA\Entity\Repository\repositoryClass
+	 * @param \Orb\Jira\Service $client The JIRA Service client
+	 * @return \Orb\Jira\Entity\Repository\Repository
 	 */
-	final static public function getRepository($repositoryClass, \JIRA\Service $client)
+	final static public function getRepository($repositoryClass, \Orb\Jira\Service $client)
 	{
 		return new $repositoryClass($client);
 	}

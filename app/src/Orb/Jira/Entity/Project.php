@@ -1,8 +1,8 @@
 <?php
 
-namespace Jira\Entity;
+namespace Orb\Jira\Entity;
 
-use Jira\Entity;
+use Orb\Jira\Entity;
 
 /**
  * Jira Project wrapper

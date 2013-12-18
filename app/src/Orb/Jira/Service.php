@@ -356,7 +356,7 @@ class Service
 	 * @param \JIRA\Entity\Entity $entity The entity to persist
 	 * @return \JIRA\Entity\Entity | boolean The persisted entity on success and "FALSE" otherwise
 	 */
-	public function persist(\JIRA\Entity\Entity $entity)
+	public function persist(\Orb\Jira\Entity $entity)
 	{
 		$repository = $this->getRepository($entity);
 		
@@ -386,7 +386,7 @@ class Service
 	
 	public function getCreateMeta()
 	{
-		return $this->get('rest/api/2/issue/createmeta', array(), array(
+		return $this->get('issue/createmeta', array(), array(
 			'timeout'         => 2,
 			'connect_timeout' => 1
 		));
@@ -394,23 +394,29 @@ class Service
 	
 	public function lookupAssignees($projectKey)
 	{
-		$request = $this->_client->get('rest/api/2/user/assignable/search?project=' . $projectKey);
+		$request = $this->_client->get('user/assignable/search?project=' . $projectKey);
 		
 		return $this->_send($request);
 	}
 	
 	public function lookupIssueType($projectKey)
 	{
-		$request = $this->_client->get('rest/api/2/issue/createmeta?projectKeys=' . $projectKey);
+		$request = $this->_client->get('issue/createmeta?projectKeys=' . $projectKey);
 		
 		$response = $this->_send($request);
+		
+		foreach($response[$response['expand']][0]['issuetypes'] as $index => $issuetype) {
+			if ($issuetype['subtask']) {
+				unset($response[$response['expand']][0]['issuetypes'][$index]);
+			}
+		}
 		
 		return ($response[$response['expand']][0]['issuetypes']);
 	}
 	
 	public function lookupPriorities($projectKey)
 	{
-		$request = $this->_client->get('rest/api/2/priority?project=' . $projectKey);
+		$request = $this->_client->get('priority?project=' . $projectKey);
 		
 		return $this->_send($request);
 	}

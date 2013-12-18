@@ -1,49 +1,66 @@
-<form method="POST" class="actions-overlay export-jira" style="width: 650px; height: 500px;">
+<!-- script src="http://code.jquery.com/jquery-1.10.1.min.js"></script -->
+
+<form method="POST" class="actions-overlay export-jira" data-target="{{ path('jira_export', {'ticket_id': ticket.id}) }}" style="width: 650px; height: 570px;">
 	<div class="overlay-title">
 		<h4>{{ phrase('agent.jira.export_jira') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div style="display: inline-block; width: 19%; float: left;">
-			<label for="jira-issue-title">{{ phrase('agent.jira.fields.title')}} *</label>
+			<label for="jira-issue-title">{{ phrase('agent.jira.labels.title')}} *</label>
 		</div>
 		<div style="display: inline-block; width: 77%; float: left; padding: 5px;">
-			<input style="width: 100%" type="text" name="jira_issue_title" id="jira-issue-title" value="[{{ticket.ref}}] {{ticket.subject}}"/>
+			<input style="width: 100%" type="text" name="title" id="jira-issue-title" value="[{{ticket.ref}}] {{ticket.subject}}"/>
 		</div>
 		<br/>
 		<br/>
 		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-project">{{ phrase('agent.jira.fields.project')}} *</label>
-			<select class="dpe_select"  style="width: 60%; float: right;" name="jira_issue_project" id="jira-issue-project">
+			<label for="jira-issue-project">{{ phrase('agent.jira.labels.project')}} *</label>
+			<select class="dpe_select"  style="width: 60%; float: right;" name="project" id="jira-issue-project">
 				{% for project in projects %}
 					<option value={{project.key}}>{{ project.name }}</option>
 				{% endfor %}
 			</select>
 		</div>
 		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-type">{{ phrase('agent.jira.fields.type')}} *</label>
-			<select class="dpe_select" style="width: 60%; float: right;" name="jira_issue_type" id="jira-issue-type"  data-style-type="icons" data-select-icon-size="22"></select>
+			<label for="jira-issue-type">{{ phrase('agent.jira.labels.type')}} *</label>
+			<select class="dpe_select" style="width: 60%; float: right;" name="issuetype" id="jira-issue-type"  data-style-type="icons" data-select-icon-size="22"></select>
 		</div>
 		<br/>
 		<br/>
 		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-priority">{{ phrase('agent.jira.fields.priority')}} *</label>
-			<select class="dpe_select"  style="width: 60%; float: right;" name="jira_issue_priority" id="jira-issue-priority"></select>
+			<label for="jira-issue-priority">{{ phrase('agent.jira.labels.priority')}} *</label>
+			<select class="dpe_select"  style="width: 60%; float: right;" name="priority" id="jira-issue-priority"></select>
 		</div>
 		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-assignee">{{ phrase('agent.jira.fields.assignee')}} *</label>
-			<select class="dpe_select" style="width: 60%; float: right;" name="jira_issue_assignee" id="jira-issue-assignee"  data-style-type="icons" data-select-icon-size="22"></select>
+			<label for="jira-issue-assignee">{{ phrase('agent.jira.labels.assignee')}} *</label>
+			<select class="dpe_select" style="width: 60%; float: right;" name="assignee" id="jira-issue-assignee"  data-style-type="icons" data-select-icon-size="22"></select>
 		</div>
 		<br/>	
-		<br/>	
+		<br/>
 		<div class="row">
-			<label for="description">{{ phrase('agent.jira.fields.description') }}</label>
-			<p>{{ phrase('agent.jira.fields.description.warning') }}</p>
-			<textarea style="width: 97%; height: 260px;" id="description" name="description">{{description}}</textarea>
+			<div class="left" style="width: 20%">
+				<label for="description">{{ phrase('agent.jira.labels.description') }} *</label>
+			</div>
+			<div class="right" style="width: 100%">
+				<textarea id="description" name="description">{{description}}</textarea><br/>
+				<p class="instruction">{{ phrase('agent.jira.labels.description.warning') }}. {{ phrase('agent.jira.labels.smarttags') }}</p>
+				<ul class="instruction">
+					<li><span class="bold">#agent</span>: The current agent</li>
+					<li>#ticket: The current ticket</li>
+					<li>#customer: The customer</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<label for="label">{{ phrase('agent.jira.labels.labels') }}</label>
+			<input type="text" style="width: 97%;" id="labels" name="labels"/>
+			<p class="instruction">{{ phrase('agent.jira.labels.labels.instrcution') }}</p>
 		</div>
 	</div>
 	<div class="overlay-footer">
 		<div class="is-not-loading">
-			<button class="save-new-trigger clean-white">{{ phrase('agent.general.add') }}</button>
+			<button id="jira-form-submit" class="close  clean-white">{{ phrase('agent.general.cancel') }}</button>
+			<button id="jira-form-cancel" class="export clean-white">{{ phrase('agent.jira.labels.export') }}</button>
 		</div>
 		<div class="is-loading">
 			<i class="flat-spinner"></i>
@@ -52,6 +69,30 @@
 </form>
 <script>
 	$(document).off('change', '#jira-issue-project').on('change', '#jira-issue-project', lookupMeta);
+	
+	$(document).off('submit', 'form.export-jira').on('submit', 'form.export-jira', function(event){
+		//return true;
+		$("form.export-jira button").prop("disabled", true);
+		
+		var form	= $(this).closest('form');
+		
+		var url		= form.data('target');
+		
+		var formData = form.serialize();
+		
+		var jQxhr = $.post(url, formData, "json").done(function(data) {
+			alert("Issue " + data.key + " created successfully");
+			form.find("a.close").click();
+		}).fail(function(xhr) {
+			var response = jQuery.parseJSON(xhr.responseText);
+			
+			alert(response.message);
+		}).always(function(){
+			$("form.export-jira button").prop("disabled", false);
+		});
+		
+		return false;
+	});
 	
 	function selectProject(key)
 	{
@@ -69,19 +110,28 @@
 		var assigneeDropdown	= $('#jira-issue-assignee');
 		
 		typeDropdown.prop('disabled', true);
-		typeDropdown.select2({
-			enabled: false
-		});
+		
+		try {
+			typeDropdown.select2({
+				enabled: false
+			});
+		} catch(err) {};
 		
 		priorityDropdown.prop('disabled', true);
-		priorityDropdown.select2({
-			enabled: false
-		});
+		
+		try {
+			priorityDropdown.select2({
+				enabled: false
+			});
+		} catch(err) {};
 		
 		assigneeDropdown.prop('disabled', true);
-		assigneeDropdown.select2({
-			enabled: false
-		});
+		
+		try {
+			assigneeDropdown.select2({
+				enabled: false
+			});
+		} catch(err) {};
 		
 		var projectKey		= projectDropdown.val();
 		
@@ -108,12 +158,12 @@
 				assigneeDropdown.html("");
 				
 				$.each(data.assignee, function(index, assignee){
-					assigneeDropdown.append("<option data-icon='" + (assignee.avatarUrls.xsmall) + "' value='" + assignee.id + "'>" + assignee.name + "</option>");
+					assigneeDropdown.append("<option data-icon='" + (assignee.avatarUrls.xsmall) + "' value='" + assignee.id + "'>" + assignee.displayName + "</option>");
 				});
 			}
 		})
 		.fail(function() {
-			console.log( "error" );
+			alert("{{ phrase('agent.jira.error') }}")
 		})
 		.always(function() {
 			typeDropdown.prop('disabled', false);
@@ -125,8 +175,6 @@
 				formatSelection: format,
 				escapeMarkup: function(m) { return m; }
 			});
-			
-			//$("select.").select2();
 		});
 	}
 </script>
