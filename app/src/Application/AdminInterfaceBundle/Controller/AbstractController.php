@@ -91,7 +91,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (!$this->_userHasPermissions()) {
-			return $this->redirectRoute('agent');
+			return $this->redirectRoute('agent_login', array('return' => $return));
 		}
 
 		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
