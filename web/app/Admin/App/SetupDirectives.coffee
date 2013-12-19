@@ -4,7 +4,7 @@ define [
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpCommaSeparated',
-	'Admin/Main/Directive/DpDevbar',
+	'Admin/Main/Directive/DpDevBar',
 	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpHelpPage',
 	'Admin/Main/Directive/DpHideSpinning',
