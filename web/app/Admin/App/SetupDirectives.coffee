@@ -36,7 +36,7 @@ define [
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpCommaSeparated,
-	Admin_Main_Directive_DpDevbar,
+	Admin_Main_Directive_DpDevBar,
 	Admin_Main_Directive_DpErrorClass,
 	Admin_Main_Directive_DpHelpPage,
 	Admin_Main_Directive_DpHideSpinning,
@@ -68,7 +68,7 @@ define [
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
 		Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated)
-		Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevbar)
+		Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar)
 		Module.directive('dpErrorClass',                   Admin_Main_Directive_DpErrorClass)
 		Module.directive('dpHelpPage',                     Admin_Main_Directive_DpHelpPage)
 		Module.directive('dpHideSpinning',                 Admin_Main_Directive_DpHideSpinning)

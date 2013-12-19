@@ -1,0 +1,40 @@
+(function() {
+  define(['DeskPRO/Directive/DpTimeWithUnit', 'Admin/Main/Directive/Autofocus', 'Admin/Main/Directive/BgImg', 'Admin/Main/Directive/DpCommaSeparated', 'Admin/Main/Directive/DpDevbar', 'Admin/Main/Directive/DpErrorClass', 'Admin/Main/Directive/DpHelpPage', 'Admin/Main/Directive/DpHideSpinning', 'Admin/Main/Directive/DpInhelpBody', 'Admin/Main/Directive/DpInhelpBtn', 'Admin/Main/Directive/DpListAutoload', 'Admin/Main/Directive/DpNavSubnav', 'Admin/Main/Directive/DpOpenPhraseEditor', 'Admin/Main/Directive/DpOrderMenu', 'Admin/Main/Directive/DpPingFlash', 'Admin/Main/Directive/DpRegisterMessage', 'Admin/Main/Directive/DpServerValidation', 'Admin/Main/Directive/DpShowSpinning', 'Admin/Main/Directive/DpStateMark', 'Admin/Main/Directive/DpStatusUpdate', 'Admin/Main/Directive/DpSubmitForm', 'Admin/Main/Directive/DpTabBody', 'Admin/Main/Directive/DpTabBtn', 'Admin/Main/Directive/DpToggleSwitch', 'Admin/Main/Directive/DpTristateCheck', 'Admin/Main/Directive/DpWorkingHours', 'Admin/Portal/Directive/PortalEditor', 'Admin/TicketDeps/Directive/LayoutEditor', 'Admin/TicketDeps/Directive/LayoutEditorField'], function(DeskPRO_Directive_DpTimeWithUnit, Admin_Main_Directive_Autofocus, Admin_Main_Directive_BgImg, Admin_Main_Directive_DpCommaSeparated, Admin_Main_Directive_DpDevbar, Admin_Main_Directive_DpErrorClass, Admin_Main_Directive_DpHelpPage, Admin_Main_Directive_DpHideSpinning, Admin_Main_Directive_DpInhelpBody, Admin_Main_Directive_DpInhelpBtn, Admin_Main_Directive_DpListAutoload, Admin_Main_Directive_DpNavSubnav, Admin_Main_Directive_DpOpenPhraseEditor, Admin_Main_Directive_DpOrderMenu, Admin_Main_Directive_DpPingFlash, Admin_Main_Directive_DpRegisterMessage, Admin_Main_Directive_DpServerValidation, Admin_Main_Directive_DpShowSpinning, Admin_Main_Directive_DpStateMark, Admin_Main_Directive_DpStatusUpdate, Admin_Main_Directive_DpSubmitForm, Admin_Main_Directive_DpTabBody, Admin_Main_Directive_DpTabBtn, Admin_Main_Directive_DpToggleSwitch, Admin_Main_Directive_DpTristateCheck, Admin_Main_Directive_DpWorkingHours, Admin_Portal_Directive_PortalEditor, Admin_TicketDeps_Directive_LayoutEditor, Admin_TicketDeps_Directive_LayoutEditorField) {
+    return function(Module) {
+      Module.directive('dpTimeWithUnit', DeskPRO_Directive_DpTimeWithUnit);
+      Module.directive('autofocus', Admin_Main_Directive_Autofocus);
+      Module.directive('bgImg', Admin_Main_Directive_BgImg);
+      Module.directive('dpCommaSeparated', Admin_Main_Directive_DpCommaSeparated);
+      Module.directive('dpDevbar', Admin_Main_Directive_DpDevbar);
+      Module.directive('dpErrorClass', Admin_Main_Directive_DpErrorClass);
+      Module.directive('dpHelpPage', Admin_Main_Directive_DpHelpPage);
+      Module.directive('dpHideSpinning', Admin_Main_Directive_DpHideSpinning);
+      Module.directive('dpInhelpBody', Admin_Main_Directive_DpInhelpBody);
+      Module.directive('dpInhelpBtn', Admin_Main_Directive_DpInhelpBtn);
+      Module.directive('dpListAutoload', Admin_Main_Directive_DpListAutoload);
+      Module.directive('dpNavSubnav', Admin_Main_Directive_DpNavSubnav);
+      Module.directive('dpOpenPhraseEditor', Admin_Main_Directive_DpOpenPhraseEditor);
+      Module.directive('dpOrderMenu', Admin_Main_Directive_DpOrderMenu);
+      Module.directive('dpPingFlash', Admin_Main_Directive_DpPingFlash);
+      Module.directive('dpRegisterMessage', Admin_Main_Directive_DpRegisterMessage);
+      Module.directive('dpServerValidation', Admin_Main_Directive_DpServerValidation);
+      Module.directive('dpShowSpinning', Admin_Main_Directive_DpShowSpinning);
+      Module.directive('dpStateMark', Admin_Main_Directive_DpStateMark);
+      Module.directive('dpStatusUpdate', Admin_Main_Directive_DpStatusUpdate);
+      Module.directive('dpSubmitForm', Admin_Main_Directive_DpSubmitForm);
+      Module.directive('dpTabBody', Admin_Main_Directive_DpTabBody);
+      Module.directive('dpTabBtn', Admin_Main_Directive_DpTabBtn);
+      Module.directive('dpToggleSwitch', Admin_Main_Directive_DpToggleSwitch);
+      Module.directive('dpTristateCheck', Admin_Main_Directive_DpTristateCheck);
+      Module.directive('dpWorkingHours', Admin_Main_Directive_DpWorkingHours);
+      Module.directive('dpPortalEditor', Admin_Portal_Directive_PortalEditor);
+      Module.directive('dpTicketLayoutEditor', Admin_TicketDeps_Directive_LayoutEditor);
+      return Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
+    };
+  });
+
+}).call(this);
+
+/*
+//@ sourceMappingURL=SetupDirectives.js.map
+*/
