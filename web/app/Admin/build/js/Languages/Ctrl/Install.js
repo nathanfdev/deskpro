@@ -33,6 +33,7 @@
           _this.pack = result.data.pack;
           return _this.lang = result.data.language;
         });
+        return promise;
       };
 
       Admin_Languages_Ctrl_Install.prototype.doInstall = function() {

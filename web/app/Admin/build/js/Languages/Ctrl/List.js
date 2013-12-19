@@ -17,12 +17,19 @@
       Admin_Languages_Ctrl_List.CTRL_AS = 'ListCtrl';
 
       Admin_Languages_Ctrl_List.prototype.init = function() {
+        var _this = this;
         this.$scope.isInstalled = function(pack) {
           return pack.is_installed;
         };
-        return this.$scope.notInstalled = function(pack) {
+        this.$scope.notInstalled = function(pack) {
           return !pack.is_installed;
         };
+        this.default_lang_id = null;
+        return this.$scope.$watch('ListCtrl.default_lang_id', function(oldVal, newVal) {
+          if (oldVal && newVal && parseInt(oldVal) !== parseInt(newVal)) {
+            return _this.updateDefaultLang();
+          }
+        });
       };
 
       Admin_Languages_Ctrl_List.prototype.initialLoad = function() {
@@ -32,6 +39,7 @@
           _this.packs = result.data.packs;
           _this.installedPacks = [];
           _this.availablePacks = [];
+          _this.default_lang_id = result.data.default_lang_id;
           return _this.resortPacks();
         });
         return promise;
@@ -70,7 +78,7 @@
         _results = [];
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           pack = _ref1[_i];
-          pack.flag_image = DP_ASSET_URL + '/images/flags/' + pack.flag;
+          pack.flag_image = DP_ASSET_URL + '/images/flags/' + pack.show_flag;
           if (pack.is_installed) {
             _results.push(this.installedPacks.push(pack));
           } else {
@@ -90,7 +98,7 @@
       Admin_Languages_Ctrl_List.prototype.installLang = function(pack_id) {
         var promise,
           _this = this;
-        promise = this.Api.sendGet("/langs/" + pack_id + "/install").then(function(result) {
+        promise = this.Api.sendPost("/langs/" + pack_id + "/install").then(function(result) {
           var pack;
           pack = _this._getPackByPackId(result.data.pack_id);
           pack.is_installed = true;
@@ -109,13 +117,46 @@
       Admin_Languages_Ctrl_List.prototype.uninstallLang = function(id) {
         var promise,
           _this = this;
-        promise = this.Api.sendGet("/langs/" + id + "/uninstall").then(function(result) {
+        promise = this.Api.sendPost("/langs/" + id + "/uninstall").then(function(result) {
           var pack;
           pack = _this._getPackByPackId(result.data.old_pack_id);
           pack.is_installed = false;
           return _this.resortPacks();
         });
         return promise;
+      };
+
+      /*
+        	# Save a language
+        	#
+        	# @return promise
+      */
+
+
+      Admin_Languages_Ctrl_List.prototype.saveLanguage = function(id, details) {
+        var pack, postData, promise,
+          _this = this;
+        pack = this._getPackByPackId(id);
+        postData = {
+          language: details
+        };
+        promise = this.Api.sendPostJson("/langs/" + id, postData).then(function(result) {
+          pack.show_title = details.title;
+          pack.locale = details.locale;
+          pack.show_flag = details.flag_image;
+          return _this.resortPacks();
+        });
+        return promise;
+      };
+
+      Admin_Languages_Ctrl_List.prototype.updateDefaultLang = function() {
+        var _this = this;
+        if (this.default_lang_id && this.hasLoaded()) {
+          this.startSpinner('saving_default_lang');
+          return this.Api.sendPost("/langs/" + this.default_lang_id + "/set-default").then(function() {
+            return _this.stopSpinner('saving_default_lang');
+          });
+        }
       };
 
       return Admin_Languages_Ctrl_List;

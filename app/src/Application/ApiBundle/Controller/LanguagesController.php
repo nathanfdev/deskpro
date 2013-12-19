@@ -55,20 +55,24 @@ class LanguagesController extends AbstractController
 		")->execute();
 
 		$installed_packs = array();
-		foreach ($langs as $l) $installed_packs[$l->getSysName()] = $l->getSysName();
+		foreach ($langs as $l) $installed_packs[$l->getSysName()] = $l;
 
 		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 		$pack_titles = $langpacks->getLangTitles();
 		$pack_local_titles = $langpacks->getLangTitles(true);
 
 		foreach ($pack_titles as $id => $title) {
+			$lang = isset($installed_packs[$id]) ? $installed_packs[$id] : null;
 			$flag = $langpacks->getLangInfo($id, 'flag_image');
 			$r = array(
-				'id'           => $id,
-				'title'        => $title,
-				'local_title'  => $pack_local_titles[$id],
-				'flag'         => $flag,
-				'is_installed' => isset($installed_packs[$id])
+				'id'                    => $id,
+				'title'                 => $title,
+				'show_title'            => $lang ? $lang->title : $pack_local_titles[$id],
+				'local_title'           => $pack_local_titles[$id],
+				'flag'                  => $flag,
+				'show_flag'             => $lang ? $lang->flag_image : $flag,
+				'is_installed'          => $lang ? true : false,
+				'installed_language_id' => $lang ? $lang->id : null,
 			);
 
 			$all_packs[] = $r;
@@ -82,6 +86,44 @@ class LanguagesController extends AbstractController
 		return $this->createApiResponse($data);
 	}
 
+	####################################################################################################################
+	# set-default-lang
+	####################################################################################################################
+
+	public function setDefaultLangAction($id)
+	{
+		$langpacks = new LangPackInfo();
+
+		if (Numbers::isInteger($id)) {
+			$lang = $this->container->getLanguageData()->get($id);
+			if (!$lang) {
+				return $this->createNotFoundException();
+			}
+
+		} else {
+			if (!$langpacks->hasLang($id)) {
+				return $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($id);
+			$lang = null;
+
+			foreach ($this->container->getLanguageData()->getAll() as $l) {
+				if ($l->sys_name == $lang_info['id']) {
+					$lang = $l;
+					break;
+				}
+			}
+
+			if (!$lang) {
+				return $this->createNotFoundException();
+			}
+		}
+
+		$this->settings->setSetting('core.default_language_id', $lang->id);
+
+		return $this->createSuccessResponse();
+	}
 
 	####################################################################################################################
 	# get-lang
@@ -117,6 +159,13 @@ class LanguagesController extends AbstractController
 		if ($lang) {
 			$lang_info['is_installed'] = true;
 		}
+
+		$flag = $langpacks->getLangInfo($id, 'flag_image');
+		$pack_local_titles = $langpacks->getLangTitles(true);
+		$lang_info['show_title']  = $lang ? $lang->title : $pack_local_titles[$lang_info['id']];
+		$lang_info['local_title'] = $pack_local_titles[$id];
+		$lang_info['flag']        = $flag;
+		$lang_info['show_flag']   = $lang ? $lang->flag_image : $lang_info['flag'];
 
 		return $this->createApiResponse(array(
 			'pack' => $lang_info,
@@ -253,6 +302,57 @@ class LanguagesController extends AbstractController
 			'old_pack_id'    => $lang_info['id'],
 			'old_language_id'=> $old_lang_id
 		));
+	}
+
+
+	####################################################################################################################
+	# save-lang
+	####################################################################################################################
+
+	public function saveLangAction($id)
+	{
+		$langpacks = new LangPackInfo();
+
+		if (Numbers::isInteger($id)) {
+			$lang = $this->container->getLanguageData()->get($id);
+			if (!$lang) {
+				return $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($lang->sys_name);
+
+		} else {
+			if (!$langpacks->hasLang($id)) {
+				return $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($id);
+			$lang = null;
+
+			foreach ($this->container->getLanguageData()->getAll() as $l) {
+				if ($l->sys_name == $lang_info['id']) {
+					$lang = $l;
+					break;
+				}
+			}
+
+			if (!$lang) {
+				return $this->createNotFoundException();
+			}
+		}
+
+		$lang->title      = $this->in->getString('language.title') ?: $lang_info['title'];
+		$lang->locale     = $this->in->getString('language.locale') ?: $lang['locale'];
+		$lang->flag_image = $this->in->getString('language.flag_image') ?: $lang['flag_image'];
+
+		if (!file_exists(DP_WEB_ROOT.'/web/images/flags/' . $lang->flag_image)) {
+			$lang->flag_image = $lang['flag_image'];
+		}
+
+		$this->em->persist($lang);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
 	}
 
 

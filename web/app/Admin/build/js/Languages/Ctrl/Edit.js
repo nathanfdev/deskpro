@@ -20,7 +20,6 @@
         var format;
         this.id = this.$stateParams.id;
         format = function(flag) {
-          console.log(flag);
           if (!flag || !flag.text) {
             return '';
           }
@@ -54,6 +53,46 @@
           };
         });
         return promise;
+      };
+
+      Admin_Languages_Ctrl_Edit.prototype.startUninstall = function() {
+        var inst,
+          _this = this;
+        if (this.lang.id === parseInt(this.$scope.$parent.ListCtrl.default_lang_id)) {
+          this.showAlert('@no_delete_default');
+          return;
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Languages/uninstall-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          _this.startSpinner('saving');
+          return _this.$scope.$parent.ListCtrl.uninstallLang(_this.id).then(function() {
+            return _this.$state.go('setup.languages');
+          });
+        });
+      };
+
+      Admin_Languages_Ctrl_Edit.prototype.doSave = function() {
+        var _this = this;
+        this.startSpinner('saving');
+        return this.$scope.$parent.ListCtrl.saveLanguage(this.id, {
+          title: this.form.title,
+          flag_image: this.form.flag_image,
+          locale: this.form.locale
+        }).then(function() {
+          return _this.stopSpinner('saving', true);
+        });
       };
 
       return Admin_Languages_Ctrl_Edit;

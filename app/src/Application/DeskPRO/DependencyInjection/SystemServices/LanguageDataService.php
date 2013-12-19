@@ -71,7 +71,7 @@ class LanguageDataService extends BaseRepositoryService
 
 	public function init()
 	{
-		$this->default_lang_id = $this->options->get('default_lang_id');
+		$this->default_lang_id = (int)$this->options->get('default_lang_id');
 	}
 
 

@@ -15,7 +15,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@pack = result.data.pack
 				@lang = result.data.language
 			)
-			return
+			return promise
 
 		doInstall: ->
 			@startSpinner('saving')

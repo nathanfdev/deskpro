@@ -3482,6 +3482,26 @@ $collection->create('api_langs', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_langs_setdefault', array(
+	'path'        => '/langs/{id}/set-default',
+	'controller'  => 'ApiBundle:Languages:setDefaultLang',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_langs_install', array(
+	'path'         => '/langs/{id}/install',
+	'controller'   => 'ApiBundle:Languages:installLang',
+	'methods'      => array('POST'),
+	'requirements' => array('id' => '[a-z]+')
+));
+
+$collection->create('api_langs_delete', array(
+	'path'         => '/langs/{id}/uninstall',
+	'controller'   => 'ApiBundle:Languages:uninstallLang',
+	'methods'      => array('POST'),
+	'requirements' => array('id' => '\d+|[a-z]+')
+));
+
 $collection->create('api_langs_getinfo', array(
 	'path'         => '/langs/{id}',
 	'controller'   => 'ApiBundle:Languages:getLang',
@@ -3489,17 +3509,10 @@ $collection->create('api_langs_getinfo', array(
 	'requirements' => array('id' => '\d+|[a-z]+')
 ));
 
-$collection->create('api_langs_install', array(
-	'path'         => '/langs/{id}/install',
-	'controller'   => 'ApiBundle:Languages:installLang',
-	'methods'      => array('GET'),
-	'requirements' => array('id' => '[a-z]+')
-));
-
-$collection->create('api_langs_delete', array(
-	'path'         => '/langs/{id}/uninstall',
-	'controller'   => 'ApiBundle:Languages:uninstallLang',
-	'methods'      => array('GET'),
+$collection->create('api_langs_saveinfo', array(
+	'path'         => '/langs/{id}',
+	'controller'   => 'ApiBundle:Languages:saveLang',
+	'methods'      => array('POST'),
 	'requirements' => array('id' => '\d+|[a-z]+')
 ));
 

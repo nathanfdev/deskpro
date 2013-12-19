@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="EditCtrl.save()">
+	<form role="form" name="form_props" ng-submit="EditCtrl.doSave()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 
@@ -120,10 +120,9 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.dep.id">
-						<button class="btn btn-danger"
-								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.pack.id);">
-							Delete
+					<div class="dp-delete-control">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.startUninstall();">
+							Uninstall Language
 						</button>
 					</div>
 
@@ -142,4 +141,8 @@
 		</section>
 	</form>
 	<div dp-register-message="saved_dep">{{ phrase('adm.departments.saved_dep_x_success', {title: 'ng_var(EditCtrl.form.title)'}) }}</div>
+	{{ ng_tpl('AdminInterfaceBundle:Languages:uninstall-modal.html.twig') }}
+	<div dp-register-message="no_delete_default">
+		You cannot uninstall the default language. Choose a different default language first, then try again.
+	</div>
 {% endblock %}

@@ -168,19 +168,24 @@
         this.init();
         this.has_init = true;
         this.$scope.state_loading = false;
+        this._has_loaded = false;
         ret = this.initialLoad();
+        me = this;
         if (ret) {
           this.$scope.state_loading = true;
           this.dpInterfaceTimer.startControllerLoad(this);
           ret.then(function() {
             _this.dpInterfaceTimer.endControllerLoad(_this);
             _this.$scope.state_loading = false;
+            _this._has_loaded = true;
             if (_this.$state.current.name.split('.').length === 2 && _this.$scope._autoload_links) {
               return _this.$timeout(function() {
                 return _this.runNextAutoload();
               });
             }
           });
+        } else {
+          this._has_loaded = true;
         }
       }
 
@@ -364,6 +369,17 @@
 
 
       Admin_Ctrl_Base.prototype.initialLoad = function() {};
+
+      /*
+        	# Has the initial load finished?
+        	#
+        	# @return {Boolean}
+      */
+
+
+      Admin_Ctrl_Base.prototype.hasLoaded = function() {
+        return this._has_loaded;
+      };
 
       /**
       		* Given an error response from the server, apply it to the view. This is typically

@@ -136,19 +136,24 @@ define ['angular'], (angular) ->
 			@has_init = true
 
 			@$scope.state_loading = false
+			@_has_loaded = false
 			ret = @initialLoad()
+			me = @
 			if ret
 				@$scope.state_loading = true
 				@dpInterfaceTimer.startControllerLoad(@)
 				ret.then( =>
 					@dpInterfaceTimer.endControllerLoad(@)
 					@$scope.state_loading = false
+					@_has_loaded = true
 
 					if @$state.current.name.split('.').length == 2 and @$scope._autoload_links
 						@$timeout(=>
 							@runNextAutoload()
 						)
 				)
+			else
+				@_has_loaded = true
 
 		###
     	# Loads the next section
@@ -296,6 +301,15 @@ define ['angular'], (angular) ->
 		###
 		initialLoad: ->
 			return
+
+
+		###
+    	# Has the initial load finished?
+    	#
+    	# @return {Boolean}
+    	###
+		hasLoaded: ->
+			return @_has_loaded
 
 
 		###*

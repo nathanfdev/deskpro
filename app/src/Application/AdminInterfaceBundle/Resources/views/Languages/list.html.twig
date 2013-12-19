@@ -11,12 +11,26 @@
 						<h4>
 							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
 							<span class="title-text">
-								{{ ng_var('pack.local_title') }} ({{ ng_var('pack.title') }})
+								{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})
 							</span>
 						</h4>
 					</a>
 				</li>
 			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Default Language</h3>
+		</header>
+		<article>
+			<div style="padding: 0 14px;">
+				<select ui-select2 ng-model="ListCtrl.default_lang_id" style="width: 60%">
+					<option ng-repeat="pack in ListCtrl.installedPacks" value="{{ ng_var('pack.installed_language_id') }}" data-flag-image="{{ ng_var('pack.flag_image') }}">{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})</option>
+				</select>
+				<span dp-show-spinning="saving_default_lang"><i class="spinner-flat"></i></span>
+			</div>
 		</article>
 	</section>
 
@@ -31,7 +45,7 @@
 						<h4>
 							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
 							<span class="title-text">
-								{{ ng_var('pack.local_title') }} ({{ ng_var('pack.title') }})
+								{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})
 							</span>
 						</h4>
 					</a>

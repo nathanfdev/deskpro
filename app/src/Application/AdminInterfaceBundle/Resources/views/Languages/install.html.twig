@@ -6,7 +6,15 @@
 				<div class="panel panel-fill indent">
 					<div class="panel-body">
 
-						<h3>{{ ng_var('EditCtrl.pack.title') }}</h3>
+						<h3 style="margin-bottom: 10px;">Do you want to install {{ ng_var('EditCtrl.pack.show_title') }} ({{ ng_var('EditCtrl.pack.title') }})?</h3>
+
+						<p>
+							This language pack has translations for the following areas:
+						</p>
+						<ul>
+							<li>The user portal</li>
+							<li>User emails and notifications</li>
+						</ul>
 
 						<br/>
 						<div dp-show-spinning="saving">
