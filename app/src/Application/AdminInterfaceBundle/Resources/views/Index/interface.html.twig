@@ -112,10 +112,8 @@ window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
 {% endif %}
 </script>
-<script
-	type="text/javascript"
-	data-main="{{ asset('app/Admin/loader.js') }}"
-	src="{{ asset('app/bower_components/requirejs/require.js') }}"
+<script	type="text/javascript" src="{{ asset('app/Admin/preboot.js') }}"></script>
+<script	type="text/javascript" data-main="{{ asset('app/Admin/loader.js') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"
 ></script>
 </body>
 </html>
