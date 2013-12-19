@@ -151,6 +151,14 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'setup.languages.settings',
+		url: '/settings',
+		templateName: 'Languages/settings.html',
+		controller: 'Admin_Languages_Ctrl_Settings',
+		target: "appbody@setup"
+	});
+
+	routes.push({
 		id: 'setup.languages.edit',
 		url: '/{id:[a-z]+}',
 		templateName: 'Languages/edit.html',

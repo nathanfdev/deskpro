@@ -152,6 +152,7 @@ requirejs([
 	'Admin/Languages/Ctrl/Edit',
 	'Admin/Languages/Ctrl/Install',
 	'Admin/Languages/Ctrl/List',
+	'Admin/Languages/Ctrl/Settings',
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/License/Ctrl/License',
 	'Admin/Templates/Ctrl/EmailTemplateEditor',

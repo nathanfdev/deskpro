@@ -401,4 +401,68 @@ class LanguagesController extends AbstractController
 
 		return $this->createSuccessResponse();
 	}
+
+	############################################################################
+	# mass-update-tickets
+	############################################################################
+
+	public function massUpdateTicketsAction()
+	{
+		$from_lang_id = $this->in->getUint('from_lang');
+		$to_lang_id   = $this->in->getUint('to_lang');
+
+		if (
+			($from_lang_id && !$this->container->getLanguageData()->get($from_lang_id))
+			|| ($to_lang_id && !$this->container->getLanguageData()->get($to_lang_id))
+		) {
+			throw $this->createNotFoundException();
+		}
+
+		$use_to_id = $to_lang_id;
+		if (!$use_to_id) {
+			$use_to_id = 'NULL';
+		}
+
+		$sql = "UPDATE tickets SET language_id = $use_to_id";
+		if ($from_lang_id) $sql .= " WHERE language_id = $from_lang_id";
+		$count = $this->db->executeUpdate($sql);
+
+		$sql = "UPDATE tickets_search_active SET language_id = $use_to_id";
+		if ($from_lang_id) $sql .= " WHERE language_id = $from_lang_id";
+		$this->db->executeUpdate($sql);
+
+		return $this->createSuccessResponse(array(
+			'count' => $count
+		));
+	}
+
+	############################################################################
+	# mass-update-users
+	############################################################################
+
+	public function massUpdateUsersAction()
+	{
+		$from_lang_id = $this->in->getUint('from_lang');
+		$to_lang_id   = $this->in->getUint('to_lang');
+
+		if (
+			($from_lang_id && !$this->container->getLanguageData()->get($from_lang_id))
+			|| ($to_lang_id && !$this->container->getLanguageData()->get($to_lang_id))
+		) {
+			throw $this->createNotFoundException();
+		}
+
+		$use_to_id = $to_lang_id;
+		if (!$use_to_id) {
+			$use_to_id = 'NULL';
+		}
+
+		$sql = "UPDATE people SET language_id = $use_to_id";
+		if ($from_lang_id) $sql .= " WHERE language_id = $from_lang_id";
+		$count = $this->db->executeUpdate($sql);
+
+		return $this->createSuccessResponse(array(
+			'count' => $count
+		));
+	}
 }

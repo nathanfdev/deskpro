@@ -3482,6 +3482,18 @@ $collection->create('api_langs', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_langs_masstickets', array(
+	'path'        => '/langs/tools/mass-update-tickets',
+	'controller'  => 'ApiBundle:Languages:massUpdateTickets',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_langs_massusers', array(
+	'path'        => '/langs/tools/mass-update-users',
+	'controller'  => 'ApiBundle:Languages:massUpdateUsers',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_langs_setdefault', array(
 	'path'        => '/langs/{id}/set-default',
 	'controller'  => 'ApiBundle:Languages:setDefaultLang',
