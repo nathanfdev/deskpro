@@ -17,9 +17,21 @@
       Admin_Languages_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
       Admin_Languages_Ctrl_Edit.prototype.init = function() {
+        var format;
         this.id = this.$stateParams.id;
-        return this.form = {
-          flag_image: 'us'
+        format = function(flag) {
+          console.log(flag);
+          if (!flag || !flag.text) {
+            return '';
+          }
+          return "<img src='" + DP_ASSET_URL + "/images/flags/" + flag.id.toLowerCase() + "' style='margin-right: 2px;' />" + flag.text;
+        };
+        return this.$scope.select2Flag = {
+          formatResult: format,
+          formatSelection: format,
+          escapeMarkup: function(m) {
+            return m;
+          }
         };
       };
 
@@ -41,6 +53,7 @@
             locale: _this.lang.locale
           };
         });
+        return promise;
       };
 
       return Admin_Languages_Ctrl_Edit;

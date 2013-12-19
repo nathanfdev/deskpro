@@ -5,8 +5,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@id = @$stateParams.id
-			@form = {
-				flag_image: 'us',
+
+			format = (flag) ->
+				console.log(flag)
+				if not flag or not flag.text then return ''
+				return "<img src='"+DP_ASSET_URL+"/images/flags/" + flag.id.toLowerCase() + "' style='margin-right: 2px;' />" + flag.text;
+
+			@$scope.select2Flag = {
+				formatResult: format,
+				formatSelection: format,
+				escapeMarkup: (m) -> return m
 			}
 
 		initialLoad: ->
@@ -23,6 +31,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					locale: @lang.locale
 				}
 			)
-			return
+			return promise
 
 	Admin_Languages_Ctrl_Edit.EXPORT_CTRL()

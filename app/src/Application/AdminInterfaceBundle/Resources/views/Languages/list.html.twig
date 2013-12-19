@@ -9,9 +9,9 @@
 				<li ng-repeat="pack in ListCtrl.installedPacks">
 					<a href="{{ ng_href('setup.languages.edit', '{id: pack.id}') }}" dp-state-mark="setup.languages.edit.{{ ng_var('pack.id') }}">
 						<h4>
+							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
 							<span class="title-text">
-								<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
-								{{ ng_var('pack.title') }} / {{ ng_var('pack.local_title') }}
+								{{ ng_var('pack.local_title') }} ({{ ng_var('pack.title') }})
 							</span>
 						</h4>
 					</a>
@@ -29,9 +29,9 @@
 				<li ng-repeat="pack in ListCtrl.availablePacks">
 					<a href="{{ ng_href('setup.languages.install', "{id: 'install-' + pack.id}") }}" dp-state-mark="setup.languages.install.install-{{ ng_var('pack.id') }}">
 						<h4>
+							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
 							<span class="title-text">
-								<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
-								{{ ng_var('pack.title') }} / {{ ng_var('pack.local_title') }}
+								{{ ng_var('pack.local_title') }} ({{ ng_var('pack.title') }})
 							</span>
 						</h4>
 					</a>
