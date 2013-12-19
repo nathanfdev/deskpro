@@ -196,6 +196,7 @@ requirejs([
 	'Admin/TwitterAccounts/Ctrl/Edit',
 	'Admin/Plugins/Ctrl/List',
 	'Admin/Plugins/Ctrl/Install',
+	'Admin/Portal/Ctrl/Embeds',
 	'Admin/Portal/Ctrl/PortalEditor',
 	'Admin/Server/Ctrl/ServerReqs',
 	'Admin/Server/Ctrl/ServerPhpInfo',

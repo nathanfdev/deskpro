@@ -1035,10 +1035,10 @@ define(function() {
 	//# Embed
 	//###
 	routes.push({
-		id: 'portal.embed',
-		url: '/embed',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		id: 'portal.embeds',
+		url: '/embeds',
+		templateName: 'Portal/embeds.html',
+		controller: 'Admin_Portal_Ctrl_Embeds'
 	});
 
 	//###

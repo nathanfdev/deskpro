@@ -183,7 +183,22 @@ define ->
 
 			return str
 
-
+		###
+    	# Escapes control characters in strings
+    	#
+    	# @param {String} str
+    	# @return {String}
+    	###
+		addslashes: (str) ->
+			return str.
+				replace(/\\/g, '\\\\').
+				replace(/\u0008/g, '\\b').
+				replace(/\t/g, '\\t').
+				replace(/\n/g, '\\n').
+				replace(/\f/g, '\\f').
+				replace(/\r/g, '\\r').
+				replace(/'/g, '\\\'').
+				replace(/"/g, '\\"')
 
 		###
     	# Generate a MurmurHash3 hash. This is a very very fast non-crypto hash (eg can be used for hash tables etc)
