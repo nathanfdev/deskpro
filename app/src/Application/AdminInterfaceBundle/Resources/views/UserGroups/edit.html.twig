@@ -1,257 +1,28 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveLabel()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
+			<nav class="dp-blocktabs">
+				<ul>
+					<li class="active" dp-tab-btn="main.props">
+						<a href="#">
+							<i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}
+						</a>
+					</li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.perms">
+						<a href="#"><i class="fa fa-key"></i> Permission Overrides</a>
+					</li>
+				</ul>
+			</nav>
+
 			<article class="form-horizontal dp-form">
-				<div class="panel panel-fill indent">
-					<div class="panel-body">
-						<div class="form-group">
-							<div class="col-lg-3">
-								<h3>Title</h3>
-							</div>
-							<div class="col-lg-9">
-								<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title" style="width: 50%;" required autofocus />
-							</div>
-						</div>
-					</div>
+				<div dp-tab-body="main.props">
+					{% include 'AdminInterfaceBundle:UserGroups:edit-props.html.twig' %}
 				</div>
-				<div class="panel panel-innertable">
-					<div class="panel-heading">
-						<h3>
-							<span><i class="fa fa-envelope icon-22x text-middle"></i> Ticket Permissions</span>
-						</h3>
-					</div>
-					<table class="table table-hover">
-						<tbody>
-							<tr>
-								<td width="100%">
-									<span class="text-middle">Can use tickets</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.77E121D1E8924AEDBBAEEDA3832D5AF8"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">Can re-open resolved tickets</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.B3D6CBC87CC24EEABB0DB447666E4F4C"></button>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									<div style="float:right">
-										<button class="btn btn-xs btn-default">Edit Department Permissions</button>
-									</div>
-									3 Departments Enabled
-								</td>
-							</tr>
-						</tbody>
-					</table>
+				<div dp-tab-body="main.perms">
+					{% include 'AdminInterfaceBundle:UserGroups:edit-perms.html.twig' %}
 				</div>
-
-				<div class="panel panel-innertable">
-					<div class="panel-heading">
-						<h3>
-							<span><i class="fa fa-comment icon-22x text-middle"></i> Chat Permissions</span>
-						</h3>
-					</div>
-					<table class="table table-hover">
-						<tbody>
-							<tr>
-								<td width="100%">
-									<span class="text-middle">Can use chat</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.D4094B5F47674F23BB481203C6BA18FE"></button>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									<div style="float:right">
-										<button class="btn btn-xs btn-default">Edit Department Permissions</button>
-									</div>
-									3 Departments Enabled
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<div class="panel panel-innertable">
-					<div class="panel-heading">
-						<h3>
-							<span><i class="fa fa-lightbulb-o icon-22x text-middle"></i> Feedback Permissions</span>
-						</h3>
-					</div>
-					<table class="table table-hover">
-						<tbody>
-							<tr>
-								<td width="100%">
-									<span class="text-middle">Can use feedback</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.C046111458EA4D1E936A44DA3DB20DFD"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can submit new feedback
-										<label>&nbsp;<input type="checkbox" ng-model="EditCtrl.form.perms.78792143FC17404B9CED91F0D3C66939"> require agent validation</label>
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.173C38699E01492DB8ADC4A485732A4C"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">Can vote on feedback</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.751799D4563E4B99BC727256828C0CB1"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can submit comments on feedback
-										<label>&nbsp;<input type="checkbox" ng-model="EditCtrl.form.perms.91FDF8EE0F1B4591878167365B8B061C"> require agent validation</label>
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.9A7EE906AFDC4F3F8E10BA80682A1AFE"></button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<div class="panel panel-innertable">
-					<div class="panel-heading">
-						<h3>
-							<span><i class="fa fa-file-text icon-22x text-middle"></i> Article Permissions</span>
-						</h3>
-					</div>
-					<table class="table table-hover">
-						<tbody>
-							<tr>
-								<td width="100%">
-									<span class="text-middle">Can use the knowledgebase</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.30EDCA0F61C1461F89D4E689AD14AF54"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can rate articles
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.173C38699E01492DB8ADC4A485732A4C"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can submit comments on articles
-										<label>&nbsp;<input type="checkbox" ng-model="EditCtrl.form.perms.91FDF8EE0F1B4591878167365B8B061C"> require agent validation</label>
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.9A7EE906AFDC4F3F8E10BA80682A1AFE"></button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<div class="panel panel-innertable">
-					<div class="panel-heading">
-						<h3>
-							<span><i class="fa fa-download icon-22x text-middle"></i> Downloads Permissions</span>
-						</h3>
-					</div>
-					<table class="table table-hover">
-						<tbody>
-							<tr>
-								<td width="100%">
-									<span class="text-middle">Can use the downloads section</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.20DA3AE7FE6F419EBF4E7F3EE90D2E5F"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can rate downloads
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.CF73255C8463409091B3114BC7DDF28F"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can submit comments on downloads
-										<label>&nbsp;<input type="checkbox" ng-model="EditCtrl.form.perms.B4850C98AE5446CD9721A551CF30423D"> require agent validation</label>
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.2F10697BB6BE4017BCB0525D13F84B4A"></button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<div class="panel panel-innertable">
-					<div class="panel-heading">
-						<h3>
-							<span><i class="fa fa-clipboard icon-22x text-middle"></i> News Permissions</span>
-						</h3>
-					</div>
-					<table class="table table-hover">
-						<tbody>
-							<tr>
-								<td width="100%">
-									<span class="text-middle">Can use the news section</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.7F0ED2724F68407EB56723DDCCD56808"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can rate news posts
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.AC4B07D3124547B38008FB310DC7B2E6"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="text-middle">
-										Can submit comments on news posts
-										<label>&nbsp;<input type="checkbox" ng-model="EditCtrl.form.perms.566C1757F8F14381B2345194F58A3CDC"> require agent validation</label>
-									</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="EditCtrl.form.perms.46B0E4D5CB644DEE8601621C9E5ADAEC"></button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
 			</article>
 
 			<footer>
@@ -259,7 +30,8 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
-							<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+							<li ng-show="form_props.note.$error.required">You must enter a valid note / description</li>
 						</ul>
 					</div>
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">

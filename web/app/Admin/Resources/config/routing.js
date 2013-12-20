@@ -781,6 +781,15 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'crm.groups.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.groups.create', $stateParams);
+		}]
+	});
+
+	routes.push({
 		id: 'crm.groups.create',
 		url: '/create',
 		templateName: 'UserGroups/edit.html',

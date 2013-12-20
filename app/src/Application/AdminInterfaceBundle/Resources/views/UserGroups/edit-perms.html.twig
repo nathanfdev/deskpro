@@ -1,0 +1,234 @@
+<div class="panel panel-innertable">
+	<nav class="dp-tabletabs">
+		<ul>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#">Tickets</a></li>
+			{% if app.getSetting('core.apps_chat') %}
+				<li dp-tab-btn="main.perms.chat"><a href="#">Chat</a></li>
+			{% endif %}
+			<li dp-tab-btn="main.perms.feedback"><a href="#">Feedback</a></li>
+			<li dp-tab-btn="main.perms.articles"><a href="#">Articles</a></li>
+			<li dp-tab-btn="main.perms.downloads"><a href="#">Downloads</a></li>
+			<li dp-tab-btn="main.perms.news"><a href="#">News</a></li>
+		</ul>
+	</nav>
+
+	{# TICKETS PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.tickets">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_tickets') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[tickets.use]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">Can re-open resolved tickets</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[tickets.reopen_resolved]"></button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{# /TICKETS PERMISSIONS #}
+
+	{# CHAT PERMISSIONS #}
+
+	{% if app.getSetting('core.apps_chat') %}
+
+		<table class="table table-hover" dp-tab-body="main.perms.chat">
+			<tbody>
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.can_use_chat') }}</td>
+					<td>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[chat.use]"></button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	{% endif %}
+
+	{# /CHAT PERMISSIONS #}
+
+	{# FEEDBACK PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.feedback">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_feedback') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.use]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_feedback') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.submit]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.no_submit_validate]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_feedback') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.rate]"></button>
+				</td>
+			</tr>
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
+					<td>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.comment]"></button>
+					</td>
+				</tr>
+
+			{% endif %}
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td>
+						<button dp-toggle-switch
+								ng-model="EditCtrl.form.permissions[feedback.no_comment_validate]"></button>
+					</td>
+				</tr>
+
+			{% endif %}
+
+		</tbody>
+	</table>
+
+	{# /FEEDBACK PERMISSIONS #}
+
+	{# ARTICLES PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.articles">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_knowledgebase') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[articles.use]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_rate_articles') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[articles.rate]"></button>
+				</td>
+			</tr>
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
+					<td>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[articles.comment]"></button>
+					</td>
+				</tr>
+
+			{% endif %}
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td>
+						<button dp-toggle-switch
+								ng-model="EditCtrl.form.permissions[articles.no_comment_validate]"></button>
+					</td>
+				</tr>
+
+			{% endif %}
+
+		</tbody>
+	</table>
+
+	{# /ARTICLES PERMISSIONS #}
+
+	{# DOWNLOADS PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.downloads">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_downloads') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.use]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_rate_downloads') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.rate]"></button>
+				</td>
+			</tr>
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
+					<td>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.comment]"></button>
+					</td>
+				</tr>
+
+			{% endif %}
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.no_comment_validate]"></button>
+					</td>
+				</tr>
+
+			{% endif %}
+
+		</tbody>
+	</table>
+
+	{# /DOWNLOADS PERMISSIONS #}
+
+	{# NEWS PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.news">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('agent.general.news') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.use]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_rate_news_posts') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.rate]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.submit_new_post_comments') }}</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.comment]"></button>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+				<td>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.no_comment_validate]"></button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{# /NEWS PERMISSIONS #}
+
+</div>

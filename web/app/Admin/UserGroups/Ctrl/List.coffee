@@ -6,7 +6,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@ugData = @DataService.get('UserGroups')
-			@system_groups_enabled = {}
 
 		###
 		# Loads the list

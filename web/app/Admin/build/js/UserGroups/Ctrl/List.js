@@ -19,8 +19,7 @@
       Admin_UserGroups_Ctrl_List.DEPS = [];
 
       Admin_UserGroups_Ctrl_List.prototype.init = function() {
-        this.ugData = this.DataService.get('UserGroups');
-        return this.system_groups_enabled = {};
+        return this.ugData = this.DataService.get('UserGroups');
       };
 
       /*
