@@ -34,6 +34,11 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Usergroups\UsergroupEdit;
+use Application\DeskPRO\Usergroups\Usergroups;
+use Application\DeskPRO\Usergroups\Form\Type\UsergroupType;
+use Application\DeskPRO\Exception\ValidationException;
+
 use Orb\Util\Arrays;
 
 class UsergroupsController extends AbstractController
@@ -84,6 +89,34 @@ class UsergroupsController extends AbstractController
 		);
 	}
 
+	###################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
+		 */
+
+		$usergroups = $this->container->getSystemService('user_groups');
+		$usergroup  = $usergroups->getById($id);
+
+		$returnedData                = $this->getApiData($usergroup);
+		$returnedData['permissions'] = $usergroups->getPermissionsById($id);
+
+		if (!$usergroup) {
+
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'user_group' => $returnedData,
+			)
+		);
+	}
+
 	####################################################################################################################
 	# toggleUsergroup
 	####################################################################################################################
@@ -100,4 +133,52 @@ class UsergroupsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
+		 */
+
+		$usergroups = $this->container->getSystemService('usergroups');
+
+		if ($id) {
+
+			$usergroup = $usergroups->getById($id);
+
+			if (!$usergroup) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$usergroup = $usergroups->createNew();
+		}
+
+		$postData = $this->in->getAll('post');
+
+		$usergroup_edit = new UsergroupEdit($usergroup);
+
+		$form = $this->createForm(new UsergroupType(), $usergroup_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_group'), true);
+
+		if ($form->isValid()) {
+
+			$usergroup_edit->save($this->em);
+
+		} else {
+
+			throw ValidationException::create($this->getFormValidationErrorsString($form));
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $usergroup->id,
+			)
+		);
+	}
 }

@@ -33,44 +33,31 @@
 
 namespace Application\DeskPRO\Usergroups\Form\Type;
 
-use Application\DeskPRO\Form\Type\PermissionRowType;
+use Application\DeskPRO\Usergroups\Form\Type\UsergroupPropsType;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class UsergroupPropsType extends AbstractType
+class UsergroupType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('title', 'text');
-		$builder->add('note', 'text', array('required' => true));
-		$builder->add('is_agent_group', 'checkbox');
-		$builder->add('sys_name', 'text', array('required' => false));
-		$builder->add('is_enabled', 'checkbox');
-
-		$builder->add(
-			'permissions',
-			'collection',
-			array(
-				 'type'         => new PermissionRowType(),
-				 'allow_add'    => true,
-				 'allow_delete' => true
-			)
-		);
+		$builder->add('user_group', new UsergroupPropsType());
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(
 			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\Usergroup',
+				 'data_class'         => 'Application\\DeskPRO\\Usergroups\\UsergroupEdit',
+				 'cascade_validation' => true
 			)
 		);
 	}
 
 	public function getName()
 	{
-		return 'usergroup';
+		return 'usergroup_edit';
 	}
 }

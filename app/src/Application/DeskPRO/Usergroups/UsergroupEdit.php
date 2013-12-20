@@ -34,124 +34,29 @@
 namespace Application\DeskPRO\Usergroups;
 
 use Application\DeskPRO\Entity\Usergroup;
+
 use Doctrine\ORM\EntityManager;
 
-class Usergroups
+class UsergroupEdit
 {
 	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
+	 * @var \Application\DeskPRO\Entity\Usergroup
 	 */
 
-	protected $em;
+	public $user_group;
 
-    /**
-     * @var \Application\DeskPRO\Entity\Usergroup[]
-     */
-
-    protected $usergroups;
-
-	public function __construct(EntityManager $em)
+	public function __construct(Usergroup $user_group)
 	{
-		$this->em = $em;
+		$this->user_group = $user_group;
 	}
 
 	/**
-	 * Loads twitter accounts data from the database
+	 * @param EntityManager $em
 	 */
 
-	private function preload()
+	public function save(EntityManager $em)
 	{
-		if ($this->usergroups !== null) {
-
-			return;
-		}
-
-		$this->usergroups = $this->em->getRepository('DeskPRO:Usergroup')->getUserUsergroups();
-	}
-
-
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
-
-	public function reset()
-	{
-		$this->usergroups = null;
-	}
-
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Usergroup
-	 */
-
-	public function getById($id)
-	{
-		$usergroup        = $this->em->getRepository('DeskPRO:Usergroup')->get($id);
-
-		return $usergroup;
-	}
-
-	/**
-	 * @param int $id
-	 *
-	 * @return array
-	 */
-
-	public function getPermissionsById($id)
-	{
-		$usergroup        = $this->em->getRepository('DeskPRO:Usergroup')->get($id);
-		$permissionsArray = array();
-
-		foreach ($usergroup->permissions as $permission) {
-
-			$data = array();
-
-			$data['id']           = $permission->id;
-			$data['usergroup_id'] = $permission->usergroup_id;
-			$data['person_id']    = $permission->person_id;
-			$data['name']         = $permission->name;
-			$data['value']        = $permission->value;
-
-			$permissionsArray[] = $data;
-		}
-
-		return $permissionsArray;
-	}
-
-    /**
-     * @return \Application\DeskPRO\Entity\Usergroup[]
-     */
-
-    public function getAll()
-    {
-        $this->preload();
-
-        return $this->usergroups;
-    }
-
-	/**
-	 * @return int
-	 */
-
-	public function count()
-	{
-		$this->preload();
-
-		return count($this->usergroups);
-	}
-
-	/**
-	 * @param string $id
-	 * @param bool   $enabled
-	 *
-	 */
-
-	public function setFieldEnabledById($id, $enabled = true)
-	{
-		$usergroup             = $this->em->find('DeskPRO:Usergroup', $id);
-		$usergroup->is_enabled = $enabled;
-		$this->em->persist($usergroup);
-		$this->em->flush($usergroup);
+		$em->persist($this->user_group);
+		$em->flush();
 	}
 }
