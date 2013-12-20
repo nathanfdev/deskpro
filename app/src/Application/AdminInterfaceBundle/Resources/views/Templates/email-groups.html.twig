@@ -1,0 +1,36 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li>
+					<a href="{{ ng_href('tickets.email_templates.list_layout') }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">Layout (Header, footer, CSS)</span>
+						</h4>
+					</a>
+				</li>
+				<li>
+					<a href="{{ ng_href('tickets.email_templates.list_users') }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">Emails sent to users</span>
+						</h4>
+					</a>
+				</li>
+				<li>
+					<a href="{{ ng_href('tickets.email_templates.list_agents') }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">Emails sent to agents</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}

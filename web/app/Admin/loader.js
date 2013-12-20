@@ -156,6 +156,8 @@ requirejs([
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/License/Ctrl/License',
 	'Admin/Templates/Ctrl/EmailTemplateEditor',
+	'Admin/Templates/Ctrl/EmailGroupList',
+	'Admin/Templates/Ctrl/EmailList',
 	'Admin/Templates/Ctrl/TemplateEditor',
 	'Admin/Templates/Ctrl/TemplateGroupList',
 	'Admin/Templates/Ctrl/TemplateList',
