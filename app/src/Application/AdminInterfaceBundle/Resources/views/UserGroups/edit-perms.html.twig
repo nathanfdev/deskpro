@@ -19,13 +19,13 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_tickets') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[tickets.use]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.tickets_use"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">Can re-open resolved tickets</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[tickets.reopen_resolved]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.tickets_reopen_resolved"></button>
 				</td>
 			</tr>
 		</tbody>
@@ -42,7 +42,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.can_use_chat') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[chat.use]"></button>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.chat_use"></button>
 					</td>
 				</tr>
 			</tbody>
@@ -59,25 +59,25 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_feedback') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.use]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_use"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_feedback') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.submit]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_submit"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.no_submit_validate]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_no_submit_validate"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_feedback') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.rate]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_rate"></button>
 				</td>
 			</tr>
 
@@ -86,7 +86,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[feedback.comment]"></button>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_comment"></button>
 					</td>
 				</tr>
 
@@ -98,7 +98,7 @@
 					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<td>
 						<button dp-toggle-switch
-								ng-model="EditCtrl.form.permissions[feedback.no_comment_validate]"></button>
+								ng-model="EditCtrl.form.permissions.feedback_no_comment_validate"></button>
 					</td>
 				</tr>
 
@@ -116,13 +116,13 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_knowledgebase') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[articles.use]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.articles_use"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_rate_articles') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[articles.rate]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.articles_rate"></button>
 				</td>
 			</tr>
 
@@ -131,7 +131,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[articles.comment]"></button>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.articles_comment"></button>
 					</td>
 				</tr>
 
@@ -143,7 +143,7 @@
 					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<td>
 						<button dp-toggle-switch
-								ng-model="EditCtrl.form.permissions[articles.no_comment_validate]"></button>
+								ng-model="EditCtrl.form.permissions.articles_no_comment_validate"></button>
 					</td>
 				</tr>
 
@@ -161,13 +161,13 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_downloads') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.use]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_use"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_rate_downloads') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.rate]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_rate"></button>
 				</td>
 			</tr>
 
@@ -176,7 +176,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.comment]"></button>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_comment"></button>
 					</td>
 				</tr>
 
@@ -187,7 +187,7 @@
 				<tr>
 					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions[downloads.no_comment_validate]"></button>
+						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_no_comment_validate"></button>
 					</td>
 				</tr>
 
@@ -205,25 +205,25 @@
 			<tr>
 				<td width="100%">{{ phrase('agent.general.news') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.use]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_use"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_rate_news_posts') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.rate]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_rate"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.submit_new_post_comments') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.comment]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_comment"></button>
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions[news.no_comment_validate]"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_no_comment_validate"></button>
 				</td>
 			</tr>
 		</tbody>
