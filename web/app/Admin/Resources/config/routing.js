@@ -1056,8 +1056,16 @@ define(function() {
 	routes.push({
 		id: 'portal.templates',
 		url: '/templates',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Templates/groups.html',
+		data: { type: 'user' },
+		controller: 'Admin_Templates_Ctrl_TemplateGroupList'
+	});
+
+	routes.push({
+		id: 'portal.templates.list',
+		url: '/{groupName:.*?}',
+		templateName: 'Templates/listing.html',
+		controller: 'Admin_Templates_Ctrl_TemplateList'
 	});
 
 	//###

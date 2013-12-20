@@ -21,7 +21,8 @@
               route.templateProvider = makeProvider(route.templateName);
             }
             opts = {
-              url: url
+              url: url,
+              data: route.data || null
             };
             if (route.views) {
               opts.views = route.views;

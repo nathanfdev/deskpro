@@ -162,6 +162,39 @@ div.info-message {
 	}
 }
 
+.linked-text {
+	cursor: pointer;
+
+	em {
+		font-style: normal;
+		color: @link-color;
+	}
+
+	&:hover em {
+		color: @link-hover-color;
+		text-decoration: underline;
+	}
+
+	i.fa {
+		color: #888;
+	}
+	.hovershow {
+		visibility: hidden;
+	}
+	&:hover .hovershow {
+		visibility: visible;
+	}
+}
+
+.label.uc {
+	text-transform: uppercase;
+	font-size: 9px;
+}
+
+.label.label-faded {
+	color: #ccc;
+}
+
 //######################################################################################################################
 //# Page Header
 //######################################################################################################################

@@ -7707,6 +7707,41 @@ div.info-message.well {
   margin-bottom: 0;
 }
 
+.linked-text {
+  cursor: pointer;
+}
+
+.linked-text em {
+  font-style: normal;
+  color: #428bca;
+}
+
+.linked-text:hover em {
+  color: #2a6496;
+  text-decoration: underline;
+}
+
+.linked-text i.fa {
+  color: #888;
+}
+
+.linked-text .hovershow {
+  visibility: hidden;
+}
+
+.linked-text:hover .hovershow {
+  visibility: visible;
+}
+
+.label.uc {
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.label.label-faded {
+  color: #ccc;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;

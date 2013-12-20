@@ -3545,6 +3545,12 @@ $collection->create('api_langs_savephrase', array(
 # Templates
 ########################################################################################################################
 
+$collection->create('api_templates_getinfo', array(
+	'path'        => '/templates-info',
+	'controller'  => 'ApiBundle:Templates:getTemplateInfo',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_templates_get', array(
 	'path'        => '/templates/{name}',
 	'controller'  => 'ApiBundle:Templates:getTemplate',
@@ -3555,6 +3561,12 @@ $collection->create('api_templates_update', array(
 	'path'        => '/templates/{name}',
 	'controller'  => 'ApiBundle:Templates:setTemplate',
 	'methods'     => array('POST'),
+));
+
+$collection->create('api_templates_delete', array(
+	'path'        => '/templates/{name}',
+	'controller'  => 'ApiBundle:Templates:deleteTemplate',
+	'methods'     => array('DELETE'),
 ));
 
 $collection->create('api_templates_create_random_variant', array(

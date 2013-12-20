@@ -1,0 +1,20 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="group in ListCtrl.groups">
+					<a href="{{ ng_href('portal.templates.list', '{groupName: group.id}') }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">{{ ng_var('group.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}

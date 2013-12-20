@@ -33,16 +33,31 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
-use Application\DeskPRO\Templating\Templates\TemplateCode;
+use Application\DeskPRO\ResourceScanner\TemplateFiles;
+use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
-
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 class TemplatesController extends AbstractController
 {
+	####################################################################################################################
+	# get-template-info
+	####################################################################################################################
+
+	public function getTemplateInfoAction()
+	{
+		$tplfiles = new TemplateFiles();
+		$map = $tplfiles->getUserTemplates();
+
+		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
+
+		$list = $tplfiles->groupMap($map, $custom_templates);
+
+		return $this->createApiResponse(array(
+			'list'             => $list,
+			'custom_templates' => $custom_templates,
+		));
+	}
+
 	####################################################################################################################
 	# get-template
 	####################################################################################################################
@@ -98,7 +113,7 @@ class TemplatesController extends AbstractController
 		$set = $this->getTemplateSet();
 
 		try {
-			$template = $set->getTemplate($name);
+			$template = $set->getCustomTemplate($name);
 		} catch (\InvalidArgumentException $e) {
 			throw $this->createNotFoundException();
 		}
@@ -117,6 +132,36 @@ class TemplatesController extends AbstractController
 		}
 
 		$set->saveTemplate($template);
+
+		return $this->createSuccessResponse(array(
+			'name' => $template->getName(),
+		));
+	}
+
+
+	####################################################################################################################
+	# delete-template
+	####################################################################################################################
+
+	public function deleteTemplateAction($name)
+	{
+		$set = $this->getTemplateSet();
+
+		try {
+			$template = $set->getTemplate($name);
+		} catch (\InvalidArgumentException $e) {
+			throw $this->createNotFoundException();
+		}
+
+		if (!($template instanceof TemplateCustom)) {
+			return $this->createNotFoundException();
+		}
+
+		$set->deleteTemplate($template);
+
+		return $this->createSuccessResponse(array(
+			'old_name' => $name,
+		));
 	}
 
 
@@ -127,7 +172,8 @@ class TemplatesController extends AbstractController
 	{
 		$set = new TemplateSet(
 			$this->em,
-			$this->container->get('twig')
+			$this->container->get('twig'),
+			$this->container->getSystemService('style')
 		);
 		return $set;
 	}

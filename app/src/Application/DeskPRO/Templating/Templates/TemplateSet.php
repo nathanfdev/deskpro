@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Templating\Templates;
 
+use Application\DeskPRO\Entity\Style;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
@@ -53,12 +54,18 @@ class TemplateSet
 	private $twig;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Style
+	 */
+	private $style;
+
+	/**
 	 * @param EntityManager $em
 	 */
-	public function __construct(EntityManager $em, Twig_Environment $twig)
+	public function __construct(EntityManager $em, Twig_Environment $twig, Style $style)
 	{
 		$this->em = $em;
 		$this->twig = $twig;
+		$this->style = $style;
 	}
 
 
@@ -77,6 +84,7 @@ class TemplateSet
 		$set_name = implode(':', $parts) . ':custom_' . $id . '.html.twig';
 
 		$entity = new TemplateEntity();
+		$entity->style = $this->style;
 		$entity->variant_of = $name;
 		$entity->name = $set_name;
 
@@ -111,7 +119,42 @@ class TemplateSet
 
 
 	/**
+	 * Returns a custom template.
+	 *
+	 * This is the same as getTemplate except we create a new TemplateCustom wrapper around
+	 * a TemplateFile if the template isn't custom (e.g., we are saving a customised version of a file
+	 * template for the fist time.)
+	 *
+	 * @param string $name
+	 * @return TemplateCustom
+	 */
+	public function getCustomTemplate($name)
+	{
+		$template = $this->getTemplate($name);
+		if ($template instanceof TemplateCustom) {
+			return $template;
+		}
+
+		$entity = new TemplateEntity();
+		$entity->style = $this->style;
+		$entity->name = $template->getName();
+
+		$custom = TemplateCustom::createFromEntity($entity);
+		$custom->getTemplateCode()->setCode($template->getTemplateCode()->getCode());
+
+		$entity->setTemplate(
+			$custom->getTemplateCode()->getCode(),
+			$this->compileTemplate($custom)
+		);
+
+		return $custom;
+	}
+
+
+	/**
 	 * Persists code saved in the template_code
+	 *
+	 * @param TemplateCustom $template
 	 */
 	public function saveTemplate(TemplateCustom $template)
 	{
@@ -128,6 +171,20 @@ class TemplateSet
 		}
 
 		$this->em->persist($entity);
+		$this->em->flush();
+	}
+
+
+	/**
+	 * Delete a template
+	 *
+	 * @param TemplateCustom $template
+	 */
+	public function deleteTemplate(TemplateCustom $template)
+	{
+		$entity = $template->getEntity();
+
+		$this->em->remove($entity);
 		$this->em->flush();
 	}
 
@@ -206,8 +263,8 @@ class TemplateSet
 
 		if ($tr) {
 			$key = 'admin.emailtpl_desc.' . strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
-			$data['display_title'] = $tr->phrase($key.'_title');
-			$data['display_description'] = $tr->phrase($key.'_desc');
+			$data['display_title'] = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : null;
+			$data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc') : null;
 		}
 
 		if ($tr && $replace_phrases) {

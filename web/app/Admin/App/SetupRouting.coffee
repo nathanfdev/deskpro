@@ -21,7 +21,10 @@ define [
 				if route.templateName?
 					route.templateProvider = makeProvider(route.templateName)
 
-				opts = { url: url }
+				opts = {
+					url: url,
+					data: route.data || null
+				}
 
 				if route.views
 					opts.views = route.views

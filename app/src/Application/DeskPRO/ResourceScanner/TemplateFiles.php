@@ -206,4 +206,54 @@ class TemplateFiles
 
 		return $grouped;
 	}
+
+
+	/**
+	 * @param array $map
+	 * @param array $custom_templates
+	 * @return array
+	 */
+	public function groupMap(array $map, array $custom_templates)
+	{
+		$grouped = array();
+
+		foreach ($map as $k => $v) {
+			preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
+			$bundle = $m[1];
+			$dir = $m[2];
+			if (!$dir) {
+				$dir = 'TOP';
+			}
+
+			if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
+			if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+
+			$v['name'] = $k;
+			$v['shortname'] = str_replace('.twig', '', $m[3]);
+
+			if (isset($custom_templates[$k])) {
+				$v['is_custom'] = true;
+				$grouped[$bundle][$dir]['count_changed']++;
+
+				$time = strtotime($custom_templates[$k]['date_updated']);
+				if ($time < $v['last_updated']) {
+					$grouped[$bundle][$dir]['count_outdated']++;
+					$v['is_outdated'] = true;
+				}
+			} else {
+				$v['is_custom'] = false;
+				$v['is_outdated'] = false;
+			}
+
+			$grouped[$bundle][$dir]['templates'][] = $v;
+		}
+
+		ksort($grouped, \SORT_STRING);
+
+		foreach ($grouped as &$bundle_dirs) {
+			ksort($bundle_dirs, \SORT_STRING);
+		}
+
+		return $grouped;
+	}
 }
