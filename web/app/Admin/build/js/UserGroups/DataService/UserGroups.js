@@ -84,7 +84,10 @@
           });
         } else {
           data = {};
-          data.user_group = {};
+          data.user_group = {
+            is_enabled: true
+          };
+          data.user_group.permissions = {};
           data.form = this.getFormMapper().getFormFromModel(data);
           deferred.resolve(data);
         }

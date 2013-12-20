@@ -140,6 +140,15 @@ class Usergroups
 	}
 
 	/**
+	 * @return \Application\DeskPRO\Entity\Usergroup
+	 */
+
+	public function createNew()
+	{
+		return Usergroup::createUsergroup();
+	}
+
+	/**
 	 * @param string $id
 	 * @param bool   $enabled
 	 *

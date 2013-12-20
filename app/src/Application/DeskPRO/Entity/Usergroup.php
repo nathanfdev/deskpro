@@ -127,6 +127,15 @@ class Usergroup extends DomainObject
 	}
 
 	/**
+	 * @return Usergroup
+	 */
+
+	public static function createUsergroup()
+	{
+		return new self();
+	}
+
+	/**
 	 * @param $permission
 	 */
 
