@@ -127,6 +127,24 @@ class Usergroup extends DomainObject
 	}
 
 	/**
+	 * @param $permission
+	 */
+
+	public function addPermission($permission)
+	{
+		$this->permissions->add($permission);
+	}
+
+	/**
+	 * @param $permission
+	 */
+
+	public function removePermission($permission)
+	{
+		$this->permissions->removeElement($permission);
+	}
+
+	/**
 	 * @return int
 	 */
 

@@ -54,7 +54,8 @@ class UsergroupPropsType extends AbstractType
 			array(
 				 'type'         => new PermissionRowType(),
 				 'allow_add'    => true,
-				 'allow_delete' => true
+				 'allow_delete' => true,
+				 'by_reference' => false,
 			)
 		);
 	}
