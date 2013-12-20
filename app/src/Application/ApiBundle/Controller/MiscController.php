@@ -68,14 +68,35 @@ class MiscController extends AbstractController
 
 	public function helpdeskInfoAction()
 	{
-		$data = array(
-			'helpdesk_url' => $this->settings->get('core.deskpro_url')
-		);
+		$data = array();
 
-		if ($this->settings->get('core.rewrite_urls')) {
-			$data['api_url'] = $this->settings->get('core.deskpro_url') . '/api/';
+		// The home page for the helpdesk (used in links and such)
+		$data['helpdesk_url'] = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/') . '/';
+
+		// The base URL for deskpro URLs (will include /index.php/ if required)
+		$data['deskpro_url']  = $data['helpdesk_url'];
+
+		if (defined('DPC_SITE_DOMAIN')) {
+			$data['api_url']    = 'https://' . DPC_SITE_DOMAIN . '/index.php/api/';
+			$data['asset_url']  = '//' . DPC_SITE_DOMAIN . '/web/';
+			$data['widget_url'] = '//' . DPC_SITE_DOMAIN . '/';
 		} else {
-			$data['api_url'] = $this->settings->get('core.deskpro_url') . '/index.php/api/';
+			$data['api_url'] = $data['helpdesk_url'] . 'index.php/api/';
+
+			$data['asset_url'] = dp_get_config('assets_full_url');
+			if (!$data['asset_url']) {
+				$data['asset_url'] = $this->container->getSetting('core.deskpro_url');
+				$data['asset_url'] = trim(str_replace('/index.php', '', $data['asset_url']), '/');
+				$data['asset_url'] .= (dp_get_config('static_path') ?: '/web') . '/';
+			}
+			$data['asset_url'] = preg_replace('#^https?://#', '//', $data['asset_url']);
+
+			if (!$this->container->getSetting('core.rewrite_urls')) {
+				$data['deskpro_url'] .= 'index.php/';
+			}
+
+			$data['widget_url'] = $data['deskpro_url'];
+			$data['widget_url'] = preg_replace('#^https?://#', '//', $data['widget_url']);
 		}
 
 		return $this->createApiResponse($data);

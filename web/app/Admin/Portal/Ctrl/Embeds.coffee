@@ -7,12 +7,14 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 			@$scope.code_snippets = {
 				overlay: '',
 				chat: '',
-				form_frame: ''
+				form_frame: '',
+				iframe: ''
 			}
 
 			@$scope.overlay_options = {
 				title: 'Support & Feedback',
-				position: 'left'
+				position: 'left',
+				lang_id: '0'
 			}
 
 			@$scope.chat_options = {
@@ -23,19 +25,29 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 				resume_phrase: 'Open your chat',
 				offline_phrase: 'Click here to contact us',
 				open_window_phrase: 'Open this chat in a new window',
-				language_id: '0'
+				lang_id: '0'
+			}
+
+			@$scope.form_frame_options = {
+				lang_id: '0',
+				dep_id: '0'
 			}
 
 			@$scope.iframe_options = {
 				simple_mode: true,
-				initial_load: ''
+				initial_load: '',
+				lang_id: '0'
 			}
 
+		initCode: ->
 			@$scope.$watch('overlay_options', =>
 				@updateWebsiteTabCode()
 			, true)
 			@$scope.$watch('chat_options', =>
 				@updateChatCode()
+			, true)
+			@$scope.$watch('form_frame_options', =>
+				@updateFormFrameCode()
 			, true)
 			@$scope.$watch('iframe_options', =>
 				@updateIframeCode()
@@ -50,11 +62,21 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 			@updateIframeCode()
 
 		initialLoad: ->
-			return null
 			promise = @Api.sendDataGet({
-
+				hdinfo:      '/deskpro/info',
+				ticket_deps: '/ticket_deps',
+				langs:       '/langs'
 			}).then( (res) =>
+				@hdinfo = res.data.hdinfo
+				@langs  = res.data.langs.languages
+				@deps   = []
 
+				for d in res.data.ticket_deps.departments
+					if not d.has_children
+						d.title = d.title_parts.join(' > ')
+						@deps.push(d)
+
+				@initCode()
 			)
 			return promise
 
@@ -66,15 +88,15 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 		updateWebsiteTabCode: ->
 			btn_title = Strings.addslashes(@$scope.overlay_options.title || 'Support')
 			btn_pos   = @$scope.overlay_options.position || 'left'
+			lang_id   = @$scope.overlay_options.lang_id || 0
 
 			code = """
 				<!-- DeskPRO Widget -->
 				<script type="text/javascript">
 					var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
-					DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-					DpOverlayWidget_Options.deskproUrl = DpOverlayWidget_Options.protocol + '://';
 					DpOverlayWidget_Options.phrase = '#{btn_title}';
 					DpOverlayWidget_Options.tabLocation = '#{btn_pos}';
+					DpOverlayWidget_Options.languageId = #{lang_id};
 					DpOverlayWidget_Options.topPosition = '200px';
 					DpOverlayWidget_Options.btnStyle = {
 						bgColor: '#3F3F3F',
@@ -84,12 +106,14 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 						font: 'bold 13px Arial, sans-serif'
 					};
 
+					DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+					DpOverlayWidget_Options.deskproUrl = DpOverlayWidget_Options.protocol + ':#{@hdinfo.widget_url}';
 					if (document.getElementsByTagName) {
 						(function() {
 							var scr   = document.createElement('script');
 							scr.type  = 'text/javascript';
 							scr.async = true;
-							scr.src   = DpOverlayWidget_Options.protocol + '://javascripts/DeskPRO/User/WebsiteWidget/Overlay.js';
+							scr.src   = DpOverlayWidget_Options.protocol + ':#{@hdinfo.asset_url}javascripts/DeskPRO/User/WebsiteWidget/Overlay.js';
 							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 						})();
 					}
@@ -110,6 +134,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 			offline_phrase     = Strings.addslashes(@$scope.chat_options.offline_phrase || 'Click here to contact us')
 			open_window_phrase = Strings.addslashes(@$scope.chat_options.open_window_phrase || 'Open this chat in a new window')
 			btn_pos            = @$scope.chat_options.position || 'right'
+			lang_id            = @$scope.chat_options.lang_id || 0
 
 			offline_url_code = ''
 			if @$scope.chat_options.show_offline
@@ -125,7 +150,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
 					DpChatWidget_Options.openInWindowPhrase = '#{open_window_phrase}';
 					DpChatWidget_Options.resumePhrase = '#{resume_phrase}';
-					DpChatWidget_Options.languageId = 0;
+					DpChatWidget_Options.languageId = #{lang_id};
 
 					/**
 					 * Style for the chat button
@@ -148,7 +173,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 					};
 
 					DpChatWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-					DpChatWidget_Options.deskproUrl = DpChatWidget_Options.protocol + '://';
+					DpChatWidget_Options.deskproUrl = DpChatWidget_Options.protocol + ':#{@hdinfo.widget_url}';
 					DpChatWidget_Options.currentPageUrl = window.location;
 					DpChatWidget_Options.referrerPageUrl = document.referrer;
 					if (document.getElementsByTagName) {
@@ -156,7 +181,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 							var scr   = document.createElement('script');
 							scr.type  = 'text/javascript';
 							scr.async = true;
-							scr.src   = DpChatWidget_Options.protocol + '://javascripts/DeskPRO/User/ChatWidget/ChatWidget.js';
+							scr.src   = DpChatWidget_Options.protocol + ':#{@hdinfo.asset_url}javascripts/DeskPRO/User/ChatWidget/ChatWidget.js';
 							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 						})();
 					}
@@ -171,22 +196,16 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 		################################################################################################################
 
 		updateFormFrameCode: ->
+			lang_id = @$scope.form_frame_options.lang_id || 0
+			dep_id  = @$scope.form_frame_options.dep_id || 0
 
 			code = """
 				<!-- DeskPRO Ticket Form -->
 				<div id="dp_newticket_form" style="display: none;"></div>
 				<script type="text/javascript">
 				var DpNewTicket_Options = DpNewTicket_Options || {};
-				DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-				DpNewTicket_Options.deskproUrl = DpNewTicket_Options.protocol + '://support.deskpro.com/';
-				DpNewTicket_Options.initialHeight = 700;
-				DpNewTicket_Options.containerId = 'dp_newticket_form';
-				DpNewTicket_Options.departmentId = 0;
-
-				/**
-				* The Language ID to load for users with no language preference
-				*/
-				DpNewTicket_Options.languageId = 0;
+				DpNewTicket_Options.departmentId = #{dep_id};
+				DpNewTicket_Options.languageId = #{lang_id};
 
 				/**
 				* If the user name is already known, you can set it here.
@@ -200,12 +219,17 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 				*/
 				DpNewTicket_Options.formUserEmail = '';
 
+				DpNewTicket_Options.containerId = 'dp_newticket_form';
+				DpNewTicket_Options.initialHeight = 700;
+
+				DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+				DpNewTicket_Options.deskproUrl = DpNewTicket_Options.protocol + ':#{@hdinfo.widget_url}';
 				if (document.getElementsByTagName) {
 					(function() {
 						var scr = document.createElement('script');
 						scr.type = 'text/javascript';
 						scr.async = true;
-						scr.src = DpNewTicket_Options.protocol + '://javascripts/DeskPRO/User/TicketFormWidget/TicketFormWidget.js';
+						scr.src = DpNewTicket_Options.protocol + ':#{@hdinfo.asset_url}javascripts/DeskPRO/User/TicketFormWidget/TicketFormWidget.js';
 						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 					})();
 				}
@@ -221,8 +245,9 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
 		updateIframeCode: ->
 
-			simple_mode = if @$scope.iframe_options.simple_mode then 'true' else 'false'
+			simple_mode       = if @$scope.iframe_options.simple_mode then 'true' else 'false'
 			initial_load_path = '/' + @$scope.iframe_options.initial_load
+			lang_id           = @$scope.iframe_options.lang_id || 0
 
 			code = """
 				<!-- DeskPRO Helpdesk Embed -->
@@ -231,23 +256,19 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 					var DpHelpdesk_Options = DpHelpdesk_Options || {};
 					DpHelpdesk_Options.simpleMode = #{simple_mode};
 					DpHelpdesk_Options.loadPath = '#{initial_load_path}';
+					DpHelpdesk_Options.languageId = #{lang_id};
 
-					/**
-					 * The Language ID to load for users with no language preference
-					 */
-					DpHelpdesk_Options.languageId = 0;
-
-					DpHelpdesk_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-					DpHelpdesk_Options.deskproUrl = DpHelpdesk_Options.protocol + '://';
 					DpHelpdesk_Options.initialHeight = 700;
 					DpHelpdesk_Options.containerId = 'dp_helpdesk';
 
+					DpHelpdesk_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+					DpHelpdesk_Options.deskproUrl = DpHelpdesk_Options.protocol + ':#{@hdinfo.widget_url}';
 					if (document.getElementsByTagName) {
 						(function() {
 							var scr   = document.createElement('script');
 							scr.type  = 'text/javascript';
 							scr.async = true;
-							scr.src   = DpHelpdesk_Options.protocol + '://javascripts/DeskPRO/User/HelpdeskWidget/HelpdeskWidget.js';
+							scr.src   = DpHelpdesk_Options.protocol + ':#{@hdinfo.asset_url}javascripts/DeskPRO/User/HelpdeskWidget/HelpdeskWidget.js';
 							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 						})();
 					}

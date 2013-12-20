@@ -9783,6 +9783,10 @@ button.toast-close-button {
   border-radius: 2px;
 }
 
+.ace-tm .ace_print-margin {
+  display: none !important;
+}
+
 .dp-ob {
   border: 1px solid #ccc;
   border-radius: 2px;

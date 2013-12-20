@@ -110,12 +110,6 @@
 	'core.site_name' => '',
 
 	/**
-	 * The full URL to assets. These are hot-linked from remote sources like widgets.
-	 * If not specified, the /web/ directory of deskpro_url above is used.
-	 */
-	'core.deskpro_assets_full_url' => '',
-
-	/**
 	 * The secret string used for this installation used when generating various hashes
 	 */
 	'core.app_secret' => 'APP_SECRET',

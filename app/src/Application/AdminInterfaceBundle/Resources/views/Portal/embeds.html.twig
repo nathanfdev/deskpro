@@ -23,8 +23,14 @@
 									<option value="right">Right</option>
 								</select>
 							</p>
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="overlay_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
 
-							<div class="editor-row">
+							<div class="editor-row" style="width: 60%">
 								<div class="editor-wrap">
 									<div class="editor" ng-model="code_snippets.overlay" ui-ace="{
 									mode: 'html',
@@ -66,6 +72,12 @@
 									<option value="right">Bottom right</option>
 								</select>
 							</p>
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="chat_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
 							<p>
 								<label><input type="checkbox" ng-model="chat_options.show_offline" /> Show button even when chat is offline</label>
 								<div style="padding-top: 3px;" ng-show="chat_options.show_offline">
@@ -76,7 +88,7 @@
 								</div>
 							</p>
 
-							<div class="editor-row">
+							<div class="editor-row" style="width: 60%">
 								<div class="editor-wrap">
 									<div class="editor" ng-model="code_snippets.chat" ui-ace="{
 									mode: 'html',
@@ -109,10 +121,21 @@
 							<p>
 								Embed a contact form directly in to any web page.
 							</p>
-
-							<div class="editor-row">
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="form_frame_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
+							<p ng-show="Embeds.deps.length > 1">
+								Department: <select ng-model="form_frame_options.dep_id" ui-select2 style="width: 200px;">
+									<option value="0">Let the user choose</option>
+									<option ng-repeat="d in Embeds.deps" value="{{ ng_var('d.id') }}">{{ ng_var('d.title') }}</option>
+								</select>
+							</p>
+							<div class="editor-row" style="width: 60%">
 								<div class="editor-wrap">
-									<div class="editor" ng-model="code_snippets.chat" ui-ace="{
+									<div class="editor" ng-model="code_snippets.form_frame" ui-ace="{
 									mode: 'html',
 									useWrapMode: false,
 									showGutter: false,
@@ -159,8 +182,13 @@
 									<option value="feedback">Feedback</option>
 								</select>
 							</p>
-
-							<div class="editor-row">
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="iframe_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
+							<div class="editor-row" style="width: 60%">
 								<div class="editor-wrap">
 									<div class="editor" ng-model="code_snippets.iframe" ui-ace="{
 									mode: 'html',
