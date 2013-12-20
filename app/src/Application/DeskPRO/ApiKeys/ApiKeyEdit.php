@@ -45,9 +45,9 @@ class ApiKeyEdit
 
 	public $api_key;
 
-	public function __construct(ApiKey $twitter_account)
+	public function __construct(ApiKey $api_key)
 	{
-		$this->api_key = $twitter_account;
+		$this->api_key = $api_key;
 	}
 
 	/**
