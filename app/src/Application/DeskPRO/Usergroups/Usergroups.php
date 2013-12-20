@@ -108,8 +108,6 @@ class Usergroups
 			$data = array();
 
 			$data['id']           = $permission->id;
-			$data['usergroup_id'] = $permission->usergroup_id;
-			$data['person_id']    = $permission->person_id;
 			$data['name']         = $permission->name;
 			$data['value']        = $permission->value;
 
