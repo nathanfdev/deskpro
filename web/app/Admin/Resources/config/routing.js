@@ -1026,8 +1026,8 @@ define(function() {
 	routes.push({
 		id: 'crm.import',
 		url: '/import',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		templateName: 'ImportCsv/import-csv.html',
+		controller: 'Admin_ImportCsv_Ctrl_ImportCsv'
 	});
 
 	//##################################################################################################################

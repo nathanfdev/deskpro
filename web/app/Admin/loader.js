@@ -236,7 +236,8 @@ requirejs([
 	'Admin/OrgFields/Ctrl/List',
 	'Admin/Banning/Ctrl/List',
 	'Admin/Banning/Ctrl/EditIp',
-	'Admin/Banning/Ctrl/EditEmail'
+	'Admin/Banning/Ctrl/EditEmail',
+	'Admin/ImportCsv/Ctrl/ImportCsv'
 ], function(angular) {
 	'use strict';
 
