@@ -11,12 +11,12 @@ class JiraController extends AbstractController
 {
 	public function exportAction($ticket_id)
 	{
-		if ('POST' === $this->request->getMethod()) {
-			return $this->_processPost();
-		}
-		
 		$service = $this->_getService();
 		
+		$em = $this->__get('em');
+		
+		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+				
 		$meta = $service->getCreateMeta(); 
 		
 		$projects = array();
@@ -37,6 +37,10 @@ class JiraController extends AbstractController
 			} else {
 				throw $e;
 			}
+		}
+		
+		if ('POST' === $this->request->getMethod()) {
+			return $this->_processPost($ticket);
 		}
 		
 		$description = array();
@@ -141,7 +145,7 @@ class JiraController extends AbstractController
 		return $service->lookupPriorities($projectKey);
 	}
 	
-	protected function _processPost()
+	protected function _processPost(\Application\DeskPRO\Entity\Ticket $ticket)
 	{
 		$service = $this->_getService();
 		
@@ -160,7 +164,31 @@ class JiraController extends AbstractController
 
 		$response = $service->persist($newIssue);
 		
-		return $this->createJsonResponse($response);
+		if ($response && isset($response['id'])) {
+			$newIssue->setId($response['id']);
+			
+			$newIssue->setKey($response['key']);
+			
+			$jiraIssue = new \Application\DeskPRO\Entity\JiraIssue();
+			
+			$jiraIssue->ticket = $ticket;
+
+			$jiraIssue->issue = $newIssue->getId();
+
+			$em = $this->__get('em');
+			
+			$em->persist($jiraIssue);
+			
+			$em->flush();
+
+			return $this->createJsonResponse($response);	
+				
+		}
+			
+		return $this->createJsonResponse(
+			array(
+				'message'	=> 'There was an error in creatign the issue, please try again'
+		), 500);
 	}
 
 
@@ -213,5 +241,84 @@ class JiraController extends AbstractController
 		}
 
 		return $ticket;
+	}
+	
+	public function getAssociatedIssuesAction($ticket_id = null)
+	{
+		$service = $this->_getService();
+		
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		$repository = $this->__get('em')->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$jiraIssues = $repository->findBy(
+			array('ticket' => $ticket
+		));
+		
+		$transformedIssues = array();
+		
+		foreach ($jiraIssues as $issue) {
+			$transformedIssues[] = $service->findIssue($issue->issue);
+		}
+		
+		return $this->render('AgentBundle:Jira:issues-table.html.twig', array(
+			'jirabaseurl'	=> \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
+			'issues'		=> $transformedIssues
+		));
+	}
+	
+	public function postCommentAction($issue_id = null)
+	{
+		$service = $this->_getService();
+		
+		$repository = $this->__get('em')->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$success = 0;
+		
+		$jiraIssues = $repository->findOneBy(
+			array('issue' => $issue_id
+		));
+		
+		if ($jiraIssues && $jiraIssues instanceof \Application\DeskPRO\Entity\JiraIssue) {
+			
+			if ('POST' === $this->request->getMethod()) {
+				$postParams = $this->request->request->all();
+				
+				if (!isset($postParams['comment'])) {
+					throw new \Exception('Comment can not be empty');
+				}
+				
+				$comment = $postParams['comment'];
+				
+				$repository	= $service->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+				
+				$issue		= $service->findIssue($issue_id);
+				
+				$response = $repository->postComment($issue, $comment);
+				
+				if ($response) {
+					$success = 1;
+				}
+				return $this->createJsonResponse(array(
+					'success'	=> $success
+				));
+			}
+
+			return $this->render('AgentBundle:Jira:post-comment.html.twig', array(
+				'issue_id'	=> $issue_id
+			));
+		}
+		
+		throw $this->createNotFoundException('Invalid Issue ID');
 	}
 }

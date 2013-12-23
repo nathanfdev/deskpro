@@ -3,6 +3,7 @@
 return array(
 	'agent.jira.error'				=> 'Error occured',
 	'agent.jira.export_jira'		=> 'Export to JIRA',
+	'agent.jira.post_comment'		=> 'Add a comment',
 	
 	// Form labels
 	'agent.jira.labels.title'		=> 'Issue Title',
@@ -13,9 +14,11 @@ return array(
 	'agent.jira.labels.priority'	=> 'Priority',
 	'agent.jira.labels.description'	=> 'Description',
 	'agent.jira.labels.labels'		=> 'Labels',
+	'agent.jira.labels.reset'		=> 'Reset to defaults',
 	'agent.jira.labels.export'		=> 'Export',
+	'agent.jira.labels.comment'		=> 'Comment',
 	
-	'agent.jira.labels.smarttags'	=> 'You can also use the following "smart tags" to add DeskPRO relevant information to the issue.',
+	'agent.jira.labels.smarttags'	=> 'You can also use the following "smart tags" to add DeskPRO relevant information to this issue.',
 	
 	'agent.jira.labels.description.warning'	=> 'Please be sure to check the contents for any confidential information before exporting',
 	'agent.jira.labels.labels.instrcution'	=> 'Add some tags/labels to better classify this issue',

@@ -62,6 +62,16 @@ class Service
 	}
 	
 	/**
+	 * Gets the base URL
+	 * 
+	 * @return String The base URL
+	 */
+	public function getBaseUrl()
+	{
+		return $this->_client->getBaseUrl();
+	}
+	
+	/**
 	 * Gets all the errors occured in the current instance
 	 * 
 	 * @return array An array of errors 
@@ -373,7 +383,7 @@ class Service
 	 * @param \JIRA\Entity\Entity $entity The entity to persist
 	 * @return boolean "TRUE" on success and "FALSE" otherwise
 	 */
-	public function remove(\JIRA\Entity\Entity $entity)
+	public function remove(\Orb\Jira\Entity $entity)
 	{
 		$repository = $this->getRepository($entity);
 		
@@ -386,7 +396,7 @@ class Service
 	
 	public function getCreateMeta()
 	{
-		return $this->get('issue/createmeta', array(), array(
+		return $this->get('rest/api/latest/issue/createmeta', array(), array(
 			'timeout'         => 2,
 			'connect_timeout' => 1
 		));
@@ -394,14 +404,14 @@ class Service
 	
 	public function lookupAssignees($projectKey)
 	{
-		$request = $this->_client->get('user/assignable/search?project=' . $projectKey);
+		$request = $this->_client->get('rest/api/latest/user/assignable/search?project=' . $projectKey);
 		
 		return $this->_send($request);
 	}
 	
 	public function lookupIssueType($projectKey)
 	{
-		$request = $this->_client->get('issue/createmeta?projectKeys=' . $projectKey);
+		$request = $this->_client->get('rest/api/latest/issue/createmeta?projectKeys=' . $projectKey);
 		
 		$response = $this->_send($request);
 		
@@ -416,7 +426,7 @@ class Service
 	
 	public function lookupPriorities($projectKey)
 	{
-		$request = $this->_client->get('priority?project=' . $projectKey);
+		$request = $this->_client->get('rest/api/latest/priority?project=' . $projectKey);
 		
 		return $this->_send($request);
 	}

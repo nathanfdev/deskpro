@@ -1,5 +1,9 @@
 <script>
 	$("#" + pageMeta.baseId + "_actions_menu_trigger").after("<li data-action='export-jira'><i class=\"icon-share\"></i> {{ phrase('agent.jira.export_jira') }}</li>");
+	
+	$("#" + pageMeta.baseId + "_tasks_wrap_tab").after('<li class="off" data-tab-for="#' + pageMeta.baseId + '_jira_wrap" id="' + pageMeta.baseId + '_jira_wrap_tab">JIRA (<span id="' + pageMeta.baseId + '_jira_count">0</span>)</li>');
+	
+	$("#" + pageMeta.baseId + "_tasks_wrap").after('<article id="' + pageMeta.baseId + '_jira_wrap" style="display: none;" class="">Please wait while we fetch the latest JIRA activities on this ticket.</article>');
 
 	$("*[data-action='export-jira']").on("click", function(){
 		var overlay = new DeskPRO.UI.Overlay({
@@ -12,7 +16,15 @@
 		});
 
 		overlay.open();
-	});	
+	});
+	
+	$("#" + pageMeta.baseId + "_jira_wrap_tab").click(function() {
+		$("#" + pageMeta.baseId + "_jira_wrap").html("<h1 style='text-align: center;'>Loading . . .Please wait</h1>");
+		$("#" + pageMeta.baseId + "_jira_wrap").load(BASE_URL + 'agent/jira/issues/1', function(){
+			$("#" + pageMeta.baseId + "_jira_wrap_tab").children('span').text($("#" + pageMeta.baseId + "_jira_wrap #issue-count").text());
+		});
+		
+	});
 	
 	function format(state) {
 		var originalOption = state.element;

@@ -78,4 +78,11 @@ class IssueRepository extends Repository
 			'fields'	=> $fields
 		));
 	}
+	
+	public function postComment(\Orb\Jira\Entity\Issue $issue, $body)
+	{
+		return $this->_client->postJson($this->getEndpoint() . '/' . $issue->getId() . '/comment', array(
+			'body'	=> $body
+		));
+	}
 }

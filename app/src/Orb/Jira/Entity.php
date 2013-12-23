@@ -76,6 +76,19 @@ abstract class Entity
     {
         return $this->_id;
     }
+	
+	/**
+	 * Set the ID
+	 * 
+	 * @param type $id
+	 * @return \Orb\Jira\Entity
+	 */
+    public function setId($id)
+    {
+        $this->_id = $id;
+		
+		return $this;
+    }
     
     /**
      * Get the Key

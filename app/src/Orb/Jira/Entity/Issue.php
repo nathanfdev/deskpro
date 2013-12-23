@@ -44,9 +44,9 @@ class Issue extends Entity
 	/**
 	 * The issue assignee
 	 * 
-	 * @var Person The issue assignee
+	 * @var String The issue assignee
 	 */
-	protected $_assgignee;
+	protected $_assignee;
 	
 	/**
 	 * Issue Creation Date/time
@@ -68,6 +68,13 @@ class Issue extends Entity
 	 * @var array An array of labels
 	 */
 	protected $_labels;
+	
+	/**
+	 * Issue Status
+	 * 
+	 * @var String
+	 */
+	protected $_status;
 
 
 	/**
@@ -109,6 +116,14 @@ class Issue extends Entity
 		
 		if (isset($params['fields']['priority'])) {
 			$this->setPriority(Priority::fromArray($params['fields']['priority']));
+		}
+		
+		if (isset($params['fields']['status'])) {
+			$this->setStatus($params['fields']['status']['name']);
+		}
+		
+		if (isset($params['fields']['assignee'])) {
+			$this->setAssignee($params['fields']['assignee']['displayName']);
 		}
 		
 		return $this;
@@ -294,5 +309,51 @@ class Issue extends Entity
 	public function getLabels()
 	{
 		return $this->_labels;
+	}
+	
+	/**
+	 * Get the issue status
+	 * 
+	 * @return String issue status
+	 */
+	public function getStatus()
+	{
+		return $this->_status;
+	}
+	
+	/**
+	 * Sets the status
+	 * 
+	 * @param String $status The new staus
+	 * @return \Orb\Jira\Entity\Issue
+	 */
+	public function setStatus($status)
+	{
+		$this->_status = $status;
+		
+		return $this;
+	}
+	
+	/**
+	 * Gets the assignee
+	 * 
+	 * @return String the assignee
+	 */
+	public function getAssignee()
+	{
+		return $this->_assignee;
+	}
+	
+	/**
+	 * Sets the assignee
+	 * 
+	 * @param String $assignee
+	 * @return \Orb\Jira\Entity\Issue
+	 */
+	public function setAssignee($assignee)
+	{
+		$this->_assignee = $assignee;
+		
+		return $this;
 	}
 }

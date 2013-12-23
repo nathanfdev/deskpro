@@ -2147,6 +2147,20 @@ if (Application\DeskPRO\App::getSetting('core.apps_jira')) {
 		'path'          => '/jira/lookup',
 		'controller'    => 'AgentBundle:Jira:lookup',
 	));
+	
+	$collection->create('associated_issues', array(
+		'path'          => '/jira/issues/{ticket_id}',
+		'controller'    => 'AgentBundle:Jira:getAssociatedIssues',
+		'defaults'		=> array('ticket_id' => '-1'),
+		'requirements'  => array('ticket_id' => '\\d+'),
+	));
+	
+	$collection->create('post_comment', array(
+		'path'          => '/jira/comment/{issue_id}',
+		'controller'    => 'AgentBundle:Jira:postComment',
+		'defaults'		=> array('issue_id' => '-1'),
+		'requirements'  => array('issue_id' => '\\d+'),
+	));
 }
 
 return $collection;

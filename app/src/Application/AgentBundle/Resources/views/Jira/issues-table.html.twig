@@ -1,0 +1,60 @@
+<style>
+	th {
+		background: none repeat scroll 0 0 #CCCCCC !important;
+		border-left: 1px solid #BBBBBB;
+		padding: 5px 10px !important;
+		text-align: justify;
+	}
+	tr {
+		border-bottom: 1px solid #CCCCCC !important;
+	}
+	.icon-comment, .icon-remove {
+		cursor: pointer;
+	}
+</style>
+<div id="issue-count" style="display:none;">{{ issues | length }}</div>
+<div style="padding:15px;">
+	<table width="100%" cellspacing="0" cellpadding="5" border="0">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Issue Key</th>
+				<th>Status</th>
+				<th>Assigned to</th>
+				<th>Last action on</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for issue in issues %}
+				<tr>
+					<td>{{ loop.index }}.</td>
+					<td><a target="_blank" href="{{ jirabaseurl }}/browse/{{ issue.key }}">{{ issue.key }}</a></td>
+					<td>{{ issue.status }}</td>
+					<td>
+						{% if issue.assignee is null %}
+							Not Assigned yet
+						{% else %}
+							{{ issue.assignee }}
+						{% endif %}
+					</td>
+					<td>{{ issue.updated | date('D, jS M \'y g:ia')}}</td>
+					<td><i class="issue-comment icon-comment" data-issue_id="{{ issue.id }}"></i> | <i class="icon-remove"></i></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+<script>
+	$(".issue-comment").click(function(){
+		var issue_id = $(this).data('issue_id');
+		
+		var overlay = new DeskPRO.UI.Overlay({
+			destroyOnClose: true,
+			contentMethod: 'ajax',
+			contentAjax: { url: BASE_URL + 'agent/jira/comment/' + issue_id }
+		});
+
+		overlay.open();
+	});
+</script>

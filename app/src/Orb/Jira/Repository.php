@@ -57,8 +57,12 @@ abstract class Repository
 	 * 
 	 * @return String the REST endpoint
 	 */
-	public function getEndpoint()
+	public function getEndpoint($full = true)
 	{
+		if ($full) {
+			return 'rest/api/latest/' . $this->_endPoint;
+		}
+		
 		return $this->_endPoint;
 	}
 	

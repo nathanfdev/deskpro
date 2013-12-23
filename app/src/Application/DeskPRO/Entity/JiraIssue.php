@@ -33,7 +33,7 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 	 * 
 	 * @var \Jira\Entity\Issue Associate JIRA issue
 	 */
-	protected $_issue;
+	protected $issue;
 	
 	/**
 	 * Export time
@@ -41,6 +41,11 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int Timestamp
 	 */
 	protected $created;
+	
+	public function __construct()
+	{
+		$this->created = time();
+	}
 	
 	############################################################################
 	# Doctrine Metadata

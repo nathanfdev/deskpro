@@ -316,7 +316,7 @@
 	/**
 	 * JIRA Base URL
 	 */
-	'core.apps_jira.baseUrl'	=> 'http://192.168.0.100:8080/rest/api/latest',
+	'core.apps_jira.baseUrl'	=> 'http://192.168.0.100:8080/',
 	
 	/**
 	 * JIRA username
@@ -332,6 +332,11 @@
 	 * Default Project
 	 */
 	'core.apps_jira.defaultProject' => 'DJI',
+	
+	/**
+	 * Default tags to add to exported issues
+	 */
+	'core.apps_jira.defaultTags'	=> 'Helpdesk, DeskPRO',
 
 	/**
 	 * Max email size to read from gateways
