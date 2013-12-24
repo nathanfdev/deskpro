@@ -11,17 +11,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.fileUploadResults = null
 			@$scope.fileSelected = false
 
-			@$scope.importSettings = {fieldMappings:[], skipFirst: 1}
+			@$scope.importSettings = {fieldMappings:[], skipFirst: 1, showExtraMappings: {}}
+			@showExtraMappingsCases = [
+				'organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city',
+				'state', 'post_code', 'country', 'new_custom'
+			]
+
+			for key in @showExtraMappingsCases
+				@$scope.importSettings.showExtraMappings[key] = []
 
 			@setupUploadListeners()
-
-			return
-
-		###
- 	#
-		###
-
-		initialLoad: ->
 
 			return
 
@@ -48,11 +47,19 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			)
 
 		###
+ 	# Handler for selection of field mapping
+ 	# Shows / hides appropriate extra mapping for mappings table, could add extra functionality here later
  	#
+ 	# @param {Integer} column_id - id of column from the table with mapping
+ 	# @param {String} selected_field - name of field sent by 'ng-change'
 		###
 
 		selectMapping: (column_id, selected_field) ->
 
-			alert column_id + ' ' + selected_field
+			for key of @$scope.importSettings.showExtraMappings
+				@$scope.importSettings.showExtraMappings[key][column_id] = false
+
+			if @showExtraMappingsCases.indexOf(selected_field) > -1
+				@$scope.importSettings.showExtraMappings[selected_field][column_id] = true
 
 	Admin_ImportCsv_Ctrl_ImportCsv.EXPORT_CTRL()

@@ -68,7 +68,7 @@
 							<td class="alt dp-id-col">
 								{{ ng_var('column_title') }}
 							</td>
-							<td>
+							<td  class="alt dp-id-col">
 								{{ ng_var('fileUploadResults.examples[column_id]') }}
 							</td>
 							<td>
@@ -110,9 +110,112 @@
 												ng-value="field.id">
 											{{ ng_var('field.title') }}
 										</option>
-										<option value="new_custom_field">New Custom Field</option>
+										<option value="new_custom">New Custom Field</option>
 									</optgroup>
 								</select>
+								<span ng-if="importSettings.showExtraMappings.organization[column_id]">
+									<label>
+										<input type="checkbox"
+											   ng-model="importSettings.fieldMappings[column_id][create_auto]" value="1"
+											   checked="checked">
+										Create if does not exist
+									</label>
+								</span>
+								<span ng-if="importSettings.showExtraMappings.phone[column_id]">
+									<select
+										ui-select2
+										ng-model="importSettings.fieldMappings[column_id][type]"
+										style="min-width: 120px"
+										class="no-search"
+									>
+										<option value="phone">Phone</option>
+										<option value="mobile">Mobile</option>
+										<option value="fax">Fax</option>
+									</select>
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.website[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.im[column_id]">
+									<select
+										ui-select2
+										ng-model="importSettings.fieldMappings[column_id][type]"
+										style="min-width: 120px"
+										class="no-search"
+									>
+										<option value="aim">AIM</option>
+										<option value="msn">MSN</option>
+										<option value="yim">YIM</option>
+										<option value="icq">ICQ</option>
+										<option value="skype">Skype</option>
+										<option value="gtalk">GTalk</option>
+										<option value="other">Other</option>
+									</select>
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.twitter[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+										placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.linkedin[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.facebook[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.address1[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.address2[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.city[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.state[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.post_code[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.country[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][label]"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.new_custom[column_id]">
+									<input type="text" ng-model="importSettings.fieldMappings[column_id][title]"
+											placeholder="Title">
+									<select
+										ui-select2
+										ng-model="importSettings.fieldMappings[column_id][handler_class]"
+										style="min-width: 120px"
+										class="no-search"
+									>
+										<option value="Application\DeskPRO\CustomFields\Handler\Text">
+											Text
+										</option>
+										<option value="Application\DeskPRO\CustomFields\Handler\Textarea">
+											Textarea
+										</option>
+										<option value="Application\DeskPRO\CustomFields\Handler\Choice">
+											Choice
+										</option>
+										<option value="Application\DeskPRO\CustomFields\Handler\Date">
+											Date
+										</option>
+									</select>
+								</span>
 							</td>
 						</tr>
 					</tbody>

@@ -19,6 +19,7 @@
       Admin_ImportCsv_Ctrl_ImportCsv.DEPS = [];
 
       Admin_ImportCsv_Ctrl_ImportCsv.prototype.init = function() {
+        var key, _i, _len, _ref1;
         this.$scope.fileUploadOptions = {
           url: window.DP_BASE_API_URL + '/import_csv_upload'
         };
@@ -26,17 +27,17 @@
         this.$scope.fileSelected = false;
         this.$scope.importSettings = {
           fieldMappings: [],
-          skipFirst: 1
+          skipFirst: 1,
+          showExtraMappings: {}
         };
+        this.showExtraMappingsCases = ['organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city', 'state', 'post_code', 'country', 'new_custom'];
+        _ref1 = this.showExtraMappingsCases;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          key = _ref1[_i];
+          this.$scope.importSettings.showExtraMappings[key] = [];
+        }
         this.setupUploadListeners();
       };
-
-      /*
-       	#
-      */
-
-
-      Admin_ImportCsv_Ctrl_ImportCsv.prototype.initialLoad = function() {};
 
       /*
       		#
@@ -63,12 +64,22 @@
       };
 
       /*
+       	# Handler for selection of field mapping
+       	# Shows / hides appropriate extra mapping for mappings table, could add extra functionality here later
        	#
+       	# @param {Integer} column_id - id of column from the table with mapping
+       	# @param {String} selected_field - name of field sent by 'ng-change'
       */
 
 
       Admin_ImportCsv_Ctrl_ImportCsv.prototype.selectMapping = function(column_id, selected_field) {
-        return alert(column_id + ' ' + selected_field);
+        var key;
+        for (key in this.$scope.importSettings.showExtraMappings) {
+          this.$scope.importSettings.showExtraMappings[key][column_id] = false;
+        }
+        if (this.showExtraMappingsCases.indexOf(selected_field) > -1) {
+          return this.$scope.importSettings.showExtraMappings[selected_field][column_id] = true;
+        }
       };
 
       return Admin_ImportCsv_Ctrl_ImportCsv;
