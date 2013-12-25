@@ -11,7 +11,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.fileUploadResults = null
 			@$scope.fileSelected = false
 
-			@$scope.importSettings = {fieldMappings:[], skipFirst: 1, showExtraMappings: {}}
+			@$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, showExtraMappings: {}}
 			@showExtraMappingsCases = [
 				'organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city',
 				'state', 'post_code', 'country', 'new_custom'
@@ -34,6 +34,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@$scope.fileUploadResults = data.result
 				@$scope.fileSelected = false
 				@$scope.fileUploadResults.upload_failed = true if @$scope.fileUploadResults.error
+
+				if !@$scope.fileUploadResults.upload_failed
+					for key, idx in @$scope.fileUploadResults.columns
+						@$scope.importSettings.additionalMappings[idx] = {}
 			)
 
 			@$scope.$on('fileuploadfail', (e, data) =>

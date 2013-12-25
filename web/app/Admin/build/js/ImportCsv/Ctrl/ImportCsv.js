@@ -27,6 +27,7 @@
         this.$scope.fileSelected = false;
         this.$scope.importSettings = {
           fieldMappings: [],
+          additionalMappings: [],
           skipFirst: 1,
           showExtraMappings: {}
         };
@@ -47,10 +48,20 @@
       Admin_ImportCsv_Ctrl_ImportCsv.prototype.setupUploadListeners = function() {
         var _this = this;
         this.$scope.$on('fileuploaddone', function(e, data) {
+          var idx, key, _i, _len, _ref1, _results;
           _this.$scope.fileUploadResults = data.result;
           _this.$scope.fileSelected = false;
           if (_this.$scope.fileUploadResults.error) {
-            return _this.$scope.fileUploadResults.upload_failed = true;
+            _this.$scope.fileUploadResults.upload_failed = true;
+          }
+          if (!_this.$scope.fileUploadResults.upload_failed) {
+            _ref1 = _this.$scope.fileUploadResults.columns;
+            _results = [];
+            for (idx = _i = 0, _len = _ref1.length; _i < _len; idx = ++_i) {
+              key = _ref1[idx];
+              _results.push(_this.$scope.importSettings.additionalMappings[idx] = {});
+            }
+            return _results;
           }
         });
         this.$scope.$on('fileuploadfail', function(e, data) {
