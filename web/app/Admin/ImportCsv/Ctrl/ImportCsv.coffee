@@ -3,7 +3,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		@CTRL_ID   = 'Admin_ImportCsv_Ctrl_ImportCsv'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = []
+		@DEPS      = ['Api', 'Growl']
 
 		init: ->
 
@@ -48,6 +48,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@$scope.$on('fileuploadchange', (e, data) =>
 				@$scope.fileSelected = true
+			)
+
+		###
+ 	# Sends requests to launch a task for starting CSV import
+ 	###
+
+		startImport: ->
+
+			field_maps = []
+
+			# construct field mappings
+
+			for value, key in @$scope.importSettings.fieldMappings
+
+				obj = {map: value}
+				for key2, value2 of @$scope.importSettings.additionalMappings[key]
+					obj[key2] = value2
+
+				field_maps.push(obj)
+
+			# construct other needed variables
+
+			user_filename = @$scope.fileUploadResults.user_filename
+			skip_first = @$scope.importSettings.skipFirst
+			filename = @$scope.fileUploadResults.filename
+
+			@Api.sendPostJson('import_csv_import', {
+				field_maps: field_maps
+				user_filename: user_filename
+				skip_first: skip_first
+				filename: filename
+			}).then((result) =>
 			)
 
 		###

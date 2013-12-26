@@ -16,7 +16,7 @@
 
       Admin_ImportCsv_Ctrl_ImportCsv.CTRL_AS = 'Ctrl';
 
-      Admin_ImportCsv_Ctrl_ImportCsv.DEPS = [];
+      Admin_ImportCsv_Ctrl_ImportCsv.DEPS = ['Api', 'Growl'];
 
       Admin_ImportCsv_Ctrl_ImportCsv.prototype.init = function() {
         var key, _i, _len, _ref1;
@@ -72,6 +72,39 @@
         return this.$scope.$on('fileuploadchange', function(e, data) {
           return _this.$scope.fileSelected = true;
         });
+      };
+
+      /*
+       	# Sends requests to launch a task for starting CSV import
+      */
+
+
+      Admin_ImportCsv_Ctrl_ImportCsv.prototype.startImport = function() {
+        var field_maps, filename, key, key2, obj, skip_first, user_filename, value, value2, _i, _len, _ref1, _ref2,
+          _this = this;
+        field_maps = [];
+        _ref1 = this.$scope.importSettings.fieldMappings;
+        for (key = _i = 0, _len = _ref1.length; _i < _len; key = ++_i) {
+          value = _ref1[key];
+          obj = {
+            map: value
+          };
+          _ref2 = this.$scope.importSettings.additionalMappings[key];
+          for (key2 in _ref2) {
+            value2 = _ref2[key2];
+            obj[key2] = value2;
+          }
+          field_maps.push(obj);
+        }
+        user_filename = this.$scope.fileUploadResults.user_filename;
+        skip_first = this.$scope.importSettings.skipFirst;
+        filename = this.$scope.fileUploadResults.filename;
+        return this.Api.sendPostJson('import_csv_import', {
+          field_maps: field_maps,
+          user_filename: user_filename,
+          skip_first: skip_first,
+          filename: filename
+        }).then(function(result) {});
       };
 
       /*

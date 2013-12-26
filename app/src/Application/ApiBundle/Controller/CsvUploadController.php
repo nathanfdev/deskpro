@@ -53,4 +53,26 @@ class CsvUploadController extends AbstractController
 
 		return $this->createApiResponse($result);
 	}
+
+	####################################################################################################################
+	# import
+	####################################################################################################################
+
+	public function importAction()
+	{
+		$field_maps    = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
+		$user_filename = $this->in->getString('user_filename');
+		$skip_first    = $this->in->getBool('skip_first');
+		$filename      = $this->in->getUint('filename');
+
+		/**
+		 * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+		 */
+
+		$csv_upload = $this->container->getSystemService('csv_upload');
+
+		$result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first);
+
+		return $this->createApiResponse($result);
+	}
 }

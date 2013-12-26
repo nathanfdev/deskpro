@@ -94,6 +94,57 @@ class CsvUpload
 	}
 
 	/**
+	 * @param array $field_maps
+	 * @param string $filename
+	 * @param string $user_filename
+	 * @param boolean $skip_first
+	 *
+	 * @return array
+	 */
+
+	public function startImportTask($field_maps, $filename, $user_filename, $skip_first)
+	{
+		$has_email = false;
+
+		foreach ($field_maps AS $map_field) {
+
+			if ($map_field['map'] == 'primary_email') {
+
+				$has_email = true;
+				break;
+			}
+		}
+
+		if (!$has_email) {
+
+			return array('error' => 'no_email');
+		}
+
+		$blob = App::getOrm()->find('DeskPRO:Blob', $filename);
+
+		if (!$blob) {
+
+			return array('error' => 'no_move');
+		}
+
+		$task_data = array(
+			'blob_id'       => $blob->getId(),
+			'field_maps'    => $field_maps,
+			'skip_first'    => $skip_first,
+			'welcome_email' => false,
+			'user_filename' => $user_filename
+		);
+
+		$task = $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
+			'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
+			$task_data,
+			'data_import'
+		);
+
+		return array('success' => 'task_started');
+	}
+
+	/**
 	 * @param string $filename
 	 * @param string $user_filename
 	 *

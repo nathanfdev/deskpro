@@ -3482,6 +3482,12 @@ $collection->create('api_import_csv_upload', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_import_csv_import', array(
+	'path'        => '/import_csv_import',
+	'controller'  => 'ApiBundle:CsvUpload:import',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################
