@@ -75,4 +75,21 @@ class CsvUploadController extends AbstractController
 
 		return $this->createApiResponse($result);
 	}
+
+	####################################################################################################################
+	# status
+	####################################################################################################################
+
+	public function statusAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+		 */
+
+		$csv_upload = $this->container->getSystemService('csv_upload');
+
+		$result = $csv_upload->returnStatusOfImport();
+
+		return $this->createApiResponse($result);
+	}
 }

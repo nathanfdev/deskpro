@@ -11,6 +11,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.fileUploadResults = null
 			@$scope.fileSelected = false
 			@$scope.importErrors = {}
+			@$scope.importStarted = false
 
 			@$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, showExtraMappings: {}}
 			@showExtraMappingsCases = [
@@ -95,6 +96,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 						@$scope.importErrors.no_move = true if result.data.error == 'no_move'
 
 					if result.data.success
+						@$scope.importStarted = true
 						@$scope.importErrors = {}
 						@Growl.success("Importing started")
 				)

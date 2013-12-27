@@ -46,6 +46,24 @@
 				</div>
 			</form>
 
+			<article class="padd" ng-if="importStarted">
+				<div class="well success-message">
+					Your CSV import request has been started. The records will be imported in the background even if you
+					are not connected.
+					<br><br>
+					The current status will be updated here periodically:
+
+					<span dp-status-update="/import_csv_status"
+						  status-update-conditions="importStarted"
+						  status-update-default-message="Waiting to start..."
+						  status-update-completed-growl-message="CSV Import finished"
+						  status-update-interval="8000"
+						  status-update-immediate="false"
+						  style="font-style:italic;">
+					</span>
+				</div>
+			</article>
+
 			<div class="well danger-message upload-message" ng-if="importErrors.no_move">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
 				Problems with uploaded file appeared. Please, refresh the page and try again.

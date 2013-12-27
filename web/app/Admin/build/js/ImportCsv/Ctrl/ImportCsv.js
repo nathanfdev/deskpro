@@ -26,6 +26,7 @@
         this.$scope.fileUploadResults = null;
         this.$scope.fileSelected = false;
         this.$scope.importErrors = {};
+        this.$scope.importStarted = false;
         this.$scope.importSettings = {
           fieldMappings: [],
           additionalMappings: [],
@@ -117,6 +118,7 @@
               }
             }
             if (result.data.success) {
+              _this.$scope.importStarted = true;
               _this.$scope.importErrors = {};
               return _this.Growl.success("Importing started");
             }

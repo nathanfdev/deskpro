@@ -145,6 +145,33 @@ class CsvUpload
 	}
 
 	/**
+	 * @return array
+	 */
+
+	public function returnStatusOfImport()
+	{
+		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import');
+
+		if (!count($tasks)) {
+
+			return array(
+				'status'  => 'completed',
+				'message' => 'CSV Import done',
+			);
+
+		} else {
+
+			$task   = reset($tasks);
+			$runner = $task->getRunner();
+
+			return array(
+				'status'  => 'progress',
+				'message' => $runner->getTitle(),
+			);
+		}
+	}
+
+	/**
 	 * @param string $filename
 	 * @param string $user_filename
 	 *
