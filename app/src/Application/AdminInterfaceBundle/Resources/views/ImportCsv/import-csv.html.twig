@@ -11,40 +11,42 @@
 
 		<article class="padd">
 
-			<h4>Choose CSV File</h4>
+			<div ng-show="!processStarted">
+				<h4>Choose CSV File</h4>
 
-			<form id="fileupload"
-				  method="POST"
-				  enctype="multipart/form-data"
-				  file-upload="fileUploadOptions"
-				  action="{{ ng_var('fileUploadOptions.url') }}">
+				<form id="fileupload"
+					  method="POST"
+					  enctype="multipart/form-data"
+					  file-upload="fileUploadOptions"
+					  action="{{ ng_var('fileUploadOptions.url') }}">
 
-				<div class="fileinput-button btn btn-success" ng-show="!active() && !fileSelected">
-					<span>Select CSV File</span>
-					<input type="file" name="file">
-				</div>
-
-				<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
-
-				<div class="pull-left" ng-show="!active() && fileSelected">
-					<button type="button" class="btn btn-warning" ng-click="submit();queue=[];">
-						<span>Click here to upload file</span>
-					</button>
-				</div>
-
-				<div class="pull-left file-upload-cancel" ng-show="!active() && fileSelected">
-					<a href="#" class="file-upload-cancel" ng-click="$event.preventDefault();">cancel</a>
-				</div>
-
-				<div class="clearfix"></div>
-
-				<div class="file-upload-progress-block" ng-show="active() && fileSelected">
-					<div class="progress progress-striped active" file-upload-progress="progress()">
-						<div class="progress-bar progress-bar-success"
-							 ng-style="{width: num + '%'}"></div>
+					<div class="fileinput-button btn btn-success" ng-show="!active() && !fileSelected">
+						<span>Select CSV File</span>
+						<input type="file" name="file">
 					</div>
-				</div>
-			</form>
+
+					<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
+
+					<div class="pull-left" ng-show="!active() && fileSelected">
+						<button type="button" class="btn btn-warning" ng-click="submit();queue=[];">
+							<span>Click here to upload file</span>
+						</button>
+					</div>
+
+					<div class="pull-left file-upload-cancel" ng-show="!active() && fileSelected">
+						<a href="#" class="file-upload-cancel" ng-click="$event.preventDefault();">cancel</a>
+					</div>
+
+					<div class="clearfix"></div>
+
+					<div class="file-upload-progress-block" ng-show="active() && fileSelected">
+						<div class="progress progress-striped active" file-upload-progress="progress()">
+							<div class="progress-bar progress-bar-success"
+								 ng-style="{width: num + '%'}"></div>
+						</div>
+					</div>
+				</form>
+			</div>
 
 			<article class="padd" ng-if="importStarted">
 				<div class="well success-message">
@@ -78,7 +80,7 @@
 				<br><i class="spinner-flat"></i>
 			</div>
 
-			<div ng-if="fileUploadResults && !fileUploadResults.upload_failed || importEmailError" dp-hide-spinning="saving">
+			<div ng-if="fileUploadResults && !fileUploadResults.upload_failed && !importStarted" dp-hide-spinning="saving">
 				<h4>Configure Importing:</h4>
 
 				<table class="table">

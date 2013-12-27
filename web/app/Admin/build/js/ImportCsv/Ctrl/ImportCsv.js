@@ -25,6 +25,7 @@
         };
         this.$scope.fileUploadResults = null;
         this.$scope.fileSelected = false;
+        this.$scope.processStarted = false;
         this.$scope.importErrors = {};
         this.$scope.importStarted = false;
         this.$scope.importSettings = {
@@ -57,6 +58,7 @@
             _this.$scope.fileUploadResults.upload_failed = true;
           }
           if (!_this.$scope.fileUploadResults.upload_failed) {
+            _this.$scope.processStarted = true;
             _ref1 = _this.$scope.fileUploadResults.columns;
             _results = [];
             for (idx = _i = 0, _len = _ref1.length; _i < _len; idx = ++_i) {

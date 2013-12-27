@@ -10,6 +10,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.fileUploadOptions = {url: window.DP_BASE_API_URL + '/import_csv_upload'}
 			@$scope.fileUploadResults = null
 			@$scope.fileSelected = false
+			@$scope.processStarted = false
 			@$scope.importErrors = {}
 			@$scope.importStarted = false
 
@@ -38,6 +39,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@$scope.fileUploadResults.upload_failed = true if @$scope.fileUploadResults.error
 
 				if !@$scope.fileUploadResults.upload_failed
+					@$scope.processStarted = true
 					for key, idx in @$scope.fileUploadResults.columns
 						@$scope.importSettings.additionalMappings[idx] = {}
 			)
