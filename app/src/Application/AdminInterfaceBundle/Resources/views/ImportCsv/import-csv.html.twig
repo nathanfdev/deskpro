@@ -46,7 +46,21 @@
 				</div>
 			</form>
 
-			<div ng-if="fileUploadResults && !fileUploadResults.upload_failed">
+			<div class="well danger-message upload-message" ng-if="importErrors.no_move">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				Problems with uploaded file appeared. Please, refresh the page and try again.
+			</div>
+
+			<div class="well danger-message upload-message" ng-if="importErrors.no_email">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				You must select a field that maps to the primary email.
+			</div>
+
+			<div dp-show-spinning="saving">
+				<br><i class="spinner-flat"></i>
+			</div>
+
+			<div ng-if="fileUploadResults && !fileUploadResults.upload_failed || importEmailError" dp-hide-spinning="saving">
 				<h4>Configure Importing:</h4>
 
 				<table class="table">

@@ -10,6 +10,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.fileUploadOptions = {url: window.DP_BASE_API_URL + '/import_csv_upload'}
 			@$scope.fileUploadResults = null
 			@$scope.fileSelected = false
+			@$scope.importErrors = {}
 
 			@$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, showExtraMappings: {}}
 			@showExtraMappingsCases = [
@@ -74,12 +75,29 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			skip_first = @$scope.importSettings.skipFirst
 			filename = @$scope.fileUploadResults.filename
 
+			# sending the request and doing other actions like showing / hiding indicators etc.
+
+			@startSpinner('saving')
+
 			@Api.sendPostJson('import_csv_import', {
+
 				field_maps: field_maps
 				user_filename: user_filename
 				skip_first: skip_first
 				filename: filename
-			}).then((result) =>
+
+			}).then( (result) =>
+
+				@stopSpinner('saving', true).then( =>
+
+					if result.data.error
+						@$scope.importErrors.no_email = true if result.data.error == 'no_email'
+						@$scope.importErrors.no_move = true if result.data.error == 'no_move'
+
+					if result.data.success
+						@$scope.importErrors = {}
+						@Growl.success("Importing started")
+				)
 			)
 
 		###

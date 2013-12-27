@@ -25,6 +25,7 @@
         };
         this.$scope.fileUploadResults = null;
         this.$scope.fileSelected = false;
+        this.$scope.importErrors = {};
         this.$scope.importSettings = {
           fieldMappings: [],
           additionalMappings: [],
@@ -99,12 +100,28 @@
         user_filename = this.$scope.fileUploadResults.user_filename;
         skip_first = this.$scope.importSettings.skipFirst;
         filename = this.$scope.fileUploadResults.filename;
+        this.startSpinner('saving');
         return this.Api.sendPostJson('import_csv_import', {
           field_maps: field_maps,
           user_filename: user_filename,
           skip_first: skip_first,
           filename: filename
-        }).then(function(result) {});
+        }).then(function(result) {
+          return _this.stopSpinner('saving', true).then(function() {
+            if (result.data.error) {
+              if (result.data.error === 'no_email') {
+                _this.$scope.importErrors.no_email = true;
+              }
+              if (result.data.error === 'no_move') {
+                _this.$scope.importErrors.no_move = true;
+              }
+            }
+            if (result.data.success) {
+              _this.$scope.importErrors = {};
+              return _this.Growl.success("Importing started");
+            }
+          });
+        });
       };
 
       /*
