@@ -69,13 +69,13 @@
 
 
       UserRules.prototype.loadEditUserRuleData = function(id) {
-        var data, deferred,
+        var deferred,
           _this = this;
         deferred = this.$q.defer();
         if (id) {
           this.Api.sendDataGet({
             user_rule: "/user_rules/" + id,
-            usergroups: 'non_sys_usergroups'
+            usergroups: '/non_sys_usergroups'
           }).then(function(result) {
             var data;
             data = {};
@@ -87,10 +87,16 @@
             return deferred.reject();
           });
         } else {
-          data = {};
-          data.user_rule = {};
-          data.form = this.getFormMapper().getFormFromModel(data);
-          deferred.resolve(data);
+          this.Api.sendGet('/non_sys_usergroups').then(function(result) {
+            var data;
+            data = {};
+            data.user_rule = {};
+            data.all_usergroups = result.data.usergroups;
+            data.form = _this.getFormMapper().getFormFromModel(data);
+            return deferred.resolve(data);
+          }, function() {
+            return deferred.reject();
+          });
         }
         return deferred.promise;
       };

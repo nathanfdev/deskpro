@@ -88,6 +88,15 @@ class UserRule extends DomainObject
 	protected $run_order = 0;
 
 	/**
+	 * @return UserRule
+	 */
+
+	public static function createUserRule()
+	{
+		return new self();
+	}
+
+	/**
 	 * @return int
 	 */
 

@@ -63,7 +63,7 @@ define [
 
 				@Api.sendDataGet({
 				 user_rule: "/user_rules/#{id}"
-					usergroups: 'non_sys_usergroups'
+					usergroups: '/non_sys_usergroups'
 				}).then( (result) =>
 
 					data = {}
@@ -79,12 +79,19 @@ define [
 
 			else
 
-				data = {}
-				data.user_rule = {}
+				@Api.sendGet('/non_sys_usergroups').then( (result) =>
 
-				data.form = @getFormMapper().getFormFromModel(data)
+					data = {}
 
-				deferred.resolve(data)
+					data.user_rule = {}
+					data.all_usergroups = result.data.usergroups
+
+					data.form = @getFormMapper().getFormFromModel(data)
+
+					deferred.resolve(data)
+				, ->
+					deferred.reject()
+				)
 
 			return deferred.promise
 
