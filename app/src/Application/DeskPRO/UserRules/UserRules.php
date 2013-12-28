@@ -29,48 +29,95 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\UserRules;
 
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\UserRule;
+use Doctrine\ORM\EntityManager;
 
-use Application\DeskPRO\App;
-
-class UserRule extends AbstractEntityRepository
+class UserRules
 {
 	/**
-	 * @return UserRule[]
+	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
 
-	public function getAllUserRules()
+	protected $em;
+
+    /**
+     * @var \Application\DeskPRO\Entity\UserRule[]
+     */
+
+    protected $user_rules;
+
+	public function __construct(EntityManager $em)
 	{
-		return $this->_em->createQuery('
-			SELECT u
-			FROM DeskPRO:UserRule u
-			LEFT JOIN u.add_usergroup ug
-		')->execute();
+		$this->em = $em;
 	}
 
 	/**
-	 * Find all matching rules on an email address
-	 *
-	 * @param $email_address
-	 * @return array
+	 * Loads data from the database
 	 */
-	public function getMatching($email_address)
+
+	private function preload()
 	{
-		$all = $this->findAll();
+		if ($this->user_rules !== null) {
 
-		$matching = array();
-
-		foreach ($all as $p) {
-			if ($p->isEmailMatch($email_address)) {
-				$matching[] = $p;
-			}
+			return;
 		}
 
-		return $matching;
+		$this->user_rules = $this->em->getRepository('DeskPRO:UserRule')->getAllUserRules();
+	}
+
+
+	/**
+	 * Resets this repository so the next time data is requested form it, it will
+	 * be queried again.
+	 */
+
+	public function reset()
+	{
+		$this->user_rules = null;
+	}
+
+	/**
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\UserRule
+	 */
+
+	public function getById($id)
+	{
+		return $this->em->getRepository('DeskPRO:UserRule')->get($id);
+	}
+
+    /**
+     * @return \Application\DeskPRO\Entity\UserRule[]
+     */
+
+    public function getAll()
+    {
+        $this->preload();
+
+        return $this->user_rules;
+    }
+
+	/**
+	 * @return int
+	 */
+
+	public function count()
+	{
+		$this->preload();
+
+		return count($this->user_rules);
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Entity\UserRule
+	 */
+
+	public function createNew()
+	{
+		return UserRule::createUserRule();
 	}
 }

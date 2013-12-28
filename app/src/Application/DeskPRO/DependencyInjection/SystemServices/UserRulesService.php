@@ -29,48 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Orb\Util\Arrays;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\UserRules\UserRules;
 
-use Application\DeskPRO\App;
-
-class UserRule extends AbstractEntityRepository
+class UserRulesService
 {
-	/**
-	 * @return UserRule[]
-	 */
-
-	public function getAllUserRules()
+	public static function create(DeskproContainer $container)
 	{
-		return $this->_em->createQuery('
-			SELECT u
-			FROM DeskPRO:UserRule u
-			LEFT JOIN u.add_usergroup ug
-		')->execute();
-	}
-
-	/**
-	 * Find all matching rules on an email address
-	 *
-	 * @param $email_address
-	 * @return array
-	 */
-	public function getMatching($email_address)
-	{
-		$all = $this->findAll();
-
-		$matching = array();
-
-		foreach ($all as $p) {
-			if ($p->isEmailMatch($email_address)) {
-				$matching[] = $p;
-			}
-		}
-
-		return $matching;
+        $x = new UserRules($container->getEm());
+        return $x;
 	}
 }

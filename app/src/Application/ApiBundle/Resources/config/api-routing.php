@@ -3495,6 +3495,41 @@ $collection->create('api_import_csv_status', array(
 ));
 
 ########################################################################################################################
+# CRM User Rules
+########################################################################################################################
+
+$collection->create('api_user_rules', array(
+	'path'       => '/user_rules',
+	'controller' => 'ApiBundle:UserRules:list',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_user_rules_create', array(
+	'path'        => '/user_rules',
+	'controller'  => 'ApiBundle:UserRules:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_user_rules_get', array(
+	'path'        => '/user_rules/{id}',
+	'controller'  => 'ApiBundle:UserRules:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_user_rules_save', array(
+	'path'        => '/user_rules/{id}',
+	'controller'  => 'ApiBundle:UserRules:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_user_rules_delete', array(
+	'path'        => '/user_rules/{id}',
+	'controller'  => 'ApiBundle:UserRules:remove',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 

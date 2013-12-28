@@ -29,48 +29,32 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\ApiBundle\Controller;
 
 use Orb\Util\Arrays;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Exception\ValidationException;
 
-class UserRule extends AbstractEntityRepository
+class UserRulesController extends AbstractController
 {
-	/**
-	 * @return UserRule[]
-	 */
+	####################################################################################################################
+	# list
+	####################################################################################################################
 
-	public function getAllUserRules()
+	public function listAction()
 	{
-		return $this->_em->createQuery('
-			SELECT u
-			FROM DeskPRO:UserRule u
-			LEFT JOIN u.add_usergroup ug
-		')->execute();
-	}
+		/**
+		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+		 */
 
-	/**
-	 * Find all matching rules on an email address
-	 *
-	 * @param $email_address
-	 * @return array
-	 */
-	public function getMatching($email_address)
-	{
-		$all = $this->findAll();
+		$user_rules = $this->container->getSystemService('user_rules');
 
-		$matching = array();
-
-		foreach ($all as $p) {
-			if ($p->isEmailMatch($email_address)) {
-				$matching[] = $p;
-			}
-		}
-
-		return $matching;
+		return $this->createApiResponse(
+			array(
+				 'user_rules' => $this->getApiData($user_rules->getAll()),
+			)
+		);
 	}
 }

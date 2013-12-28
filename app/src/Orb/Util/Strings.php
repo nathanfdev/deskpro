@@ -215,9 +215,9 @@ class Strings
 
 
 	/**
-	 * Replaces all linebreaks with a space character, making it a single line of text
+	 * Replaces all line breaks with a space character, making it a single line of text
 	 *
-	 * @param  sstring $string The string to work on
+	 * @param  string $string The string to work on
 	 * @return string
 	 */
 	public static function removeLineBreaks($string)
