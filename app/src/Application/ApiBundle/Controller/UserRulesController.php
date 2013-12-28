@@ -35,6 +35,8 @@ namespace Application\ApiBundle\Controller;
 
 use Orb\Util\Arrays;
 
+use Application\DeskPRO\UserRules\UserRuleEdit;
+use Application\DeskPRO\UserRules\Form\Type\UserRuleType;
 use Application\DeskPRO\Exception\ValidationException;
 
 class UserRulesController extends AbstractController
@@ -54,6 +56,80 @@ class UserRulesController extends AbstractController
 		return $this->createApiResponse(
 			array(
 				 'user_rules' => $this->getApiData($user_rules->getAll()),
+			)
+		);
+	}
+
+	###################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+		 */
+
+		$user_rules = $this->container->getSystemService('user_rules');
+		$user_rule  = $user_rules->getWithUsergroup($id);
+
+		if (!$user_rule) {
+
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'user_rule' => $user_rule
+			)
+		);
+	}
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+		 */
+
+		$user_rules = $this->container->getSystemService('user_rules');
+
+		if ($id) {
+
+			$user_rule = $user_rules->getById($id);
+
+			if (!$user_rule) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$user_rule = $user_rules->createNew();
+		}
+
+		$postData = $this->in->getAll('post');
+
+		$user_rule_edit = new UserRuleEdit($user_rule);
+
+		$form = $this->createForm(new UserRuleType(), $user_rule_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_rule'), true);
+
+		if ($form->isValid()) {
+
+			$user_rule_edit->save($this->em);
+
+		} else {
+
+			throw ValidationException::create($this->getFormValidationErrorsString($form));
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $user_rule->id,
 			)
 		);
 	}

@@ -34,120 +34,29 @@
 namespace Application\DeskPRO\UserRules;
 
 use Application\DeskPRO\Entity\UserRule;
+
 use Doctrine\ORM\EntityManager;
 
-class UserRules
+class UserRuleEdit
 {
 	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
+	 * @var \Application\DeskPRO\Entity\UserRule
 	 */
 
-	protected $em;
+	public $user_rule;
 
-    /**
-     * @var \Application\DeskPRO\Entity\UserRule[]
-     */
-
-    protected $user_rules;
-
-	public function __construct(EntityManager $em)
+	public function __construct(UserRule $user_rule)
 	{
-		$this->em = $em;
+		$this->user_rule = $user_rule;
 	}
 
 	/**
-	 * Loads data from the database
+	 * @param EntityManager $em
 	 */
 
-	private function preload()
+	public function save(EntityManager $em)
 	{
-		if ($this->user_rules !== null) {
-
-			return;
-		}
-
-		$this->user_rules = $this->em->getRepository('DeskPRO:UserRule')->getAllUserRules();
-	}
-
-
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
-
-	public function reset()
-	{
-		$this->user_rules = null;
-	}
-
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\UserRule
-	 */
-
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:UserRule')->get($id);
-	}
-
-	/**
-	 * @param int $id
-	 *
-	 * @return array
-	 */
-
-	public function getWithUsergroup($id)
-	{
-		$user_rule = $this->em->getRepository('DeskPRO:UserRule')->get($id);
-
-		$resultData = array();
-
-		if ($user_rule) {
-
-			$data['id']             = $user_rule->id;
-			$data['email_patterns'] = $user_rule->email_patterns;
-			$data['run_order']      = $user_rule->run_order;
-
-			if ($user_rule->add_usergroup) {
-
-				$data['usergroup']['id']    = $user_rule->add_usergroup->id;
-				$data['usergroup']['title'] = $user_rule->add_usergroup->title;
-			}
-
-			$resultData = $data;
-		}
-
-		return $resultData;
-	}
-
-    /**
-     * @return \Application\DeskPRO\Entity\UserRule[]
-     */
-
-    public function getAll()
-    {
-        $this->preload();
-
-        return $this->user_rules;
-    }
-
-	/**
-	 * @return int
-	 */
-
-	public function count()
-	{
-		$this->preload();
-
-		return count($this->user_rules);
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\UserRule
-	 */
-
-	public function createNew()
-	{
-		return UserRule::createUserRule();
+		$em->persist($this->user_rule);
+		$em->flush();
 	}
 }

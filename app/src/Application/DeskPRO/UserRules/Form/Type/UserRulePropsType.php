@@ -31,123 +31,47 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\UserRules;
+namespace Application\DeskPRO\UserRules\Form\Type;
 
-use Application\DeskPRO\Entity\UserRule;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
-class UserRules
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class UserRulePropsType extends AbstractType
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
-
-	protected $em;
-
-    /**
-     * @var \Application\DeskPRO\Entity\UserRule[]
-     */
-
-    protected $user_rules;
-
-	public function __construct(EntityManager $em)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$this->em = $em;
+		$builder->add('email_patterns', 'text', array('required' => true));
+		$builder->add(
+			'add_usergroup',
+			'entity',
+			array(
+				 'class'         => 'DeskPRO:Usergroup',
+				 'required'      => false,
+				 'multiple'      => false,
+				 'property'      => 'title',
+				 'query_builder' => function (EntityRepository $er) {
+					 return $er->createQueryBuilder('u')->where(
+						 'u.is_agent_group = 0 AND u.sys_name IS NULL'
+					 );
+				 }
+			)
+		);
 	}
 
-	/**
-	 * Loads data from the database
-	 */
-
-	private function preload()
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		if ($this->user_rules !== null) {
-
-			return;
-		}
-
-		$this->user_rules = $this->em->getRepository('DeskPRO:UserRule')->getAllUserRules();
+		$resolver->setDefaults(
+			array(
+				 'data_class' => 'Application\\DeskPRO\\Entity\\UserRule',
+			)
+		);
 	}
 
-
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
-
-	public function reset()
+	public function getName()
 	{
-		$this->user_rules = null;
-	}
-
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\UserRule
-	 */
-
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:UserRule')->get($id);
-	}
-
-	/**
-	 * @param int $id
-	 *
-	 * @return array
-	 */
-
-	public function getWithUsergroup($id)
-	{
-		$user_rule = $this->em->getRepository('DeskPRO:UserRule')->get($id);
-
-		$resultData = array();
-
-		if ($user_rule) {
-
-			$data['id']             = $user_rule->id;
-			$data['email_patterns'] = $user_rule->email_patterns;
-			$data['run_order']      = $user_rule->run_order;
-
-			if ($user_rule->add_usergroup) {
-
-				$data['usergroup']['id']    = $user_rule->add_usergroup->id;
-				$data['usergroup']['title'] = $user_rule->add_usergroup->title;
-			}
-
-			$resultData = $data;
-		}
-
-		return $resultData;
-	}
-
-    /**
-     * @return \Application\DeskPRO\Entity\UserRule[]
-     */
-
-    public function getAll()
-    {
-        $this->preload();
-
-        return $this->user_rules;
-    }
-
-	/**
-	 * @return int
-	 */
-
-	public function count()
-	{
-		$this->preload();
-
-		return count($this->user_rules);
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\UserRule
-	 */
-
-	public function createNew()
-	{
-		return UserRule::createUserRule();
+		return 'user_rule';
 	}
 }
