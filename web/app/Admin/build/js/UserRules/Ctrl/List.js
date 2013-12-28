@@ -34,6 +34,49 @@
         return promise;
       };
 
+      /*
+      		# Show the delete dlg
+      */
+
+
+      Admin_UserRules_Ctrl_List.prototype.startDelete = function(for_rule_id) {
+        var inst, rule,
+          _this = this;
+        rule = this.userRulesData.findListModelById(for_rule_id);
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('UserRules/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.deleteUserRule(rule);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+      */
+
+
+      Admin_UserRules_Ctrl_List.prototype.deleteUserRule = function(for_rule) {
+        var _this = this;
+        return this.userRulesData.deleteUserRuleById(for_rule.id).success(function() {
+          if (_this.$state.current.name === 'crm.rules.edit' && parseInt(_this.$state.params.id) === for_rule.id) {
+            return _this.$state.go('crm.rules');
+          }
+        }).error(function(info, code) {
+          return _this.applyErrorResponseToView(info);
+        });
+      };
+
       return Admin_UserRules_Ctrl_List;
 
     })(Admin_Ctrl_Base);

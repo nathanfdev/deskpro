@@ -133,4 +133,42 @@ class UserRulesController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+		 */
+
+		$user_rules = $this->container->getSystemService('user_rules');
+		$user_rule  = $user_rules->getById($id);
+
+		if (!$user_rule) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $user_rule->id;
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->em->remove($user_rule);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
 }
