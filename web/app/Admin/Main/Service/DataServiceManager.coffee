@@ -17,6 +17,7 @@ define [
 	'Admin/ApiKeys/DataService/ApiKeys',
 	'Admin/Banning/DataService/Bans',
 	'Admin/UserGroups/DataService/UserGroups',
+	'Admin/UserRules/DataService/UserRules',
 ], (
 	Strings,
 	DataService_TicketFields,
@@ -36,6 +37,7 @@ define [
 	DataService_ApiKeys,
 	DataService_Bans,
 	DataService_UserGroups,
+	DataService_UserRules,
 ) ->
 	###
 	# A simple wrapper around the data services

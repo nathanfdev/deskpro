@@ -896,8 +896,31 @@ define(function() {
 	routes.push({
 		id: 'crm.rules',
 		url: '/rules',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'UserRules/list.html',
+		controller: 'Admin_UserRules_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'crm.rules.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.rules.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'crm.rules.create',
+		url: '/create',
+		templateName: 'UserRules/edit.html',
+		controller: 'Admin_UserRules_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.rules.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'UserRules/edit.html',
+		controller: 'Admin_UserRules_Ctrl_Edit'
 	});
 
 	//###

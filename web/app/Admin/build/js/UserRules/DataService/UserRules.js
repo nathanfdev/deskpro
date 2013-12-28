@@ -1,0 +1,135 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/Main/DataService/BaseListEdit', 'Admin/UserRules/UserRuleEditFormMapper'], function(BaseListEdit, UserRuleEditFormMapper) {
+    var UserRules, _ref;
+    return UserRules = (function(_super) {
+      __extends(UserRules, _super);
+
+      function UserRules() {
+        _ref = UserRules.__super__.constructor.apply(this, arguments);
+        return _ref;
+      }
+
+      UserRules.$inject = ['Api', '$q'];
+
+      UserRules.prototype._doLoadList = function() {
+        var deferred,
+          _this = this;
+        deferred = this.$q.defer();
+        this.Api.sendGet('/user_rules').success(function(data) {
+          var models;
+          models = data.user_rules;
+          return deferred.resolve(models);
+        }, function(data, status, headers, config) {
+          return deferred.reject();
+        });
+        return deferred.promise;
+      };
+
+      /*
+      # Remove a model
+      #
+      # @param {Integer} id
+      # @return {promise}
+      */
+
+
+      UserRules.prototype.deleteUserRuleById = function(id) {
+        var promise,
+          _this = this;
+        promise = this.Api.sendDelete('/user_rules/' + id).success(function() {
+          return _this.removeListModelById(id);
+        });
+        return promise;
+      };
+
+      /*
+      		# Get the form mapper
+      		#
+      		# @return {UserRuleEditFormMapper}
+      */
+
+
+      UserRules.prototype.getFormMapper = function() {
+        if (this.formMapper) {
+          return this.formMapper;
+        }
+        this.formMapper = new UserRuleEditFormMapper();
+        return this.formMapper;
+      };
+
+      /*
+      # Get all data needed for the edit page
+      #
+      # @param {Integer} id
+      # @return {promise}
+      */
+
+
+      UserRules.prototype.loadEditUserRuleData = function(id) {
+        var data, deferred,
+          _this = this;
+        deferred = this.$q.defer();
+        if (id) {
+          this.Api.sendGet('/user_rules/' + id).then(function(result) {
+            var data;
+            data = {};
+            data.user_rule = result.data.user_rule;
+            data.form = _this.getFormMapper().getFormFromModel(data);
+            return deferred.resolve(data);
+          }, function() {
+            return deferred.reject();
+          });
+        } else {
+          data = {};
+          data.user_rule = {};
+          data.form = this.getFormMapper().getFormFromModel(data);
+          deferred.resolve(data);
+        }
+        return deferred.promise;
+      };
+
+      /*
+      # Saves a form model and merges model with list data
+      #
+      # @param {Object} model user_rule model
+       	# @param {Object} formModel  The model representing the form
+      # @return {promise}
+      */
+
+
+      UserRules.prototype.saveFormModel = function(model, formModel) {
+        var mapper, postData, promise,
+          _this = this;
+        mapper = this.getFormMapper();
+        postData = mapper.getPostDataFromForm(formModel);
+        if (model.id) {
+          promise = this.Api.sendPostJson('/user_rules/' + model.id, {
+            user_rule: postData
+          });
+        } else {
+          promise = this.Api.sendPutJson('/user_rules', {
+            user_rule: postData
+          }).success(function(data) {
+            return model.id = data.id;
+          });
+        }
+        promise.success(function() {
+          mapper.applyFormToModel(model, formModel);
+          return _this.mergeDataModel(model);
+        });
+        return promise;
+      };
+
+      return UserRules;
+
+    })(BaseListEdit);
+  });
+
+}).call(this);
+
+/*
+//@ sourceMappingURL=UserRules.js.map
+*/
