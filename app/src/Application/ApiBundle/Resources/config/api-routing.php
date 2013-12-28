@@ -800,6 +800,13 @@ $collection->create('api_usergroups_list', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_usergroups_non_sys_list', array(
+	'path'        => '/non_sys_usergroups',
+	'controller'  => 'ApiBundle:Usergroups:list',
+	'defaults'    => array('type' => 'non_sys_user'),
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_combiner', array(
 	'path'        => '/api_caller',
 	'controller'  => 'ApiBundle:ApiCombiner:get',

@@ -48,6 +48,7 @@ class UsergroupsController extends AbstractController
 		$data = array();
 
 		if ($type == 'agent') {
+
 			$ugs = $this->em->createQuery("
 				SELECT ug
 				FROM DeskPRO:Usergroup ug
@@ -56,7 +57,13 @@ class UsergroupsController extends AbstractController
 			")->execute();
 
 			$data['agentgroups'] = $this->getApiData($ugs);
+
+		} elseif ($type == 'non_sys_user') {
+
+			$data['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+
 		} else {
+
 			$ugs = $this->em->createQuery("
 				SELECT ug
 				FROM DeskPRO:Usergroup ug
