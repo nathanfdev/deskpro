@@ -61,10 +61,14 @@ define [
 
 			if id
 
-				@Api.sendGet('/user_rules/' + id).then( (result) =>
+				@Api.sendDataGet({
+				 user_rule: "/user_rules/#{id}"
+					usergroups: 'non_sys_usergroups'
+				}).then( (result) =>
 
 					data = {}
-					data.user_rule = result.data.user_rule
+					data.user_rule = result.data.user_rule.user_rule
+					data.all_usergroups = result.data.usergroups.usergroups
 
 					data.form = @getFormMapper().getFormFromModel(data)
 

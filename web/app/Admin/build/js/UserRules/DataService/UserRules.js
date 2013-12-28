@@ -73,10 +73,14 @@
           _this = this;
         deferred = this.$q.defer();
         if (id) {
-          this.Api.sendGet('/user_rules/' + id).then(function(result) {
+          this.Api.sendDataGet({
+            user_rule: "/user_rules/" + id,
+            usergroups: 'non_sys_usergroups'
+          }).then(function(result) {
             var data;
             data = {};
-            data.user_rule = result.data.user_rule;
+            data.user_rule = result.data.user_rule.user_rule;
+            data.all_usergroups = result.data.usergroups.usergroups;
             data.form = _this.getFormMapper().getFormFromModel(data);
             return deferred.resolve(data);
           }, function() {

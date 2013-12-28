@@ -238,7 +238,8 @@ requirejs([
 	'Admin/Banning/Ctrl/EditIp',
 	'Admin/Banning/Ctrl/EditEmail',
 	'Admin/ImportCsv/Ctrl/ImportCsv',
-	'Admin/UserRules/Ctrl/List'
+	'Admin/UserRules/Ctrl/List',
+	'Admin/UserRules/Ctrl/Edit'
 ], function(angular) {
 	'use strict';
 
