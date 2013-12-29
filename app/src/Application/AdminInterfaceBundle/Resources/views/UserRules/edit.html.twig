@@ -45,6 +45,17 @@
 								</span>
 							</div>
 						</div>
+						<div class="form-group">
+							<span ng-if="!EditCtrl.apply_started" class="btn btn-success"
+								  ng-click="EditCtrl.applyRuleToUsers()">
+								Click here to apply this rule to all existing users
+							</span>
+
+							<div ng-if="EditCtrl.apply_started" class="well info-message"
+								 ng-bind-html="EditCtrl.apply_log"
+								 style="overflow: auto; width: 300px; height: 100px;">
+							</div>
+						</div>
 					</div>
 				</div>
 			</article>

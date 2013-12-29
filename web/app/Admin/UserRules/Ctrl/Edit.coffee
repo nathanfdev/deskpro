@@ -6,11 +6,13 @@ define [
 	class Admin_UserRules_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_UserRules_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$stateParams']
+		@DEPS      = ['$stateParams', 'Api']
 
 		init: ->
 			@userRulesData = @DataService.get('UserRules')
 			@user_rule = null
+			@apply_log = ''
+			@apply_started = false
 
 		###
  	#
@@ -47,5 +49,33 @@ define [
 				if is_new
 					@$state.go('crm.rules.gocreate')
 			)
+
+		###
+ 	# Applying current user rule to all users
+		###
+
+		applyRuleToUsers: ->
+
+			page = -1
+			@apply_started = true
+
+			doRequest = =>
+
+				page++
+
+				@Api.sendGet('/user_rules_apply/' + @user_rule.id + '/page_' + page).success( (result) =>
+
+					if !result.completed and result.success
+						@apply_log += 'Done batch #' + (page + 1) + ' ...<br>'
+						doRequest()
+					else
+						@apply_log += 'Completed<br>'
+
+				).error( =>
+
+					@apply_log = 'Error occurred<br>'
+				)
+
+			doRequest()
 
 	Admin_UserRules_Ctrl_Edit.EXPORT_CTRL()

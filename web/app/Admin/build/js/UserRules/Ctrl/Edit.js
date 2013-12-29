@@ -16,11 +16,13 @@
 
       Admin_UserRules_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_UserRules_Ctrl_Edit.DEPS = ['$stateParams'];
+      Admin_UserRules_Ctrl_Edit.DEPS = ['$stateParams', 'Api'];
 
       Admin_UserRules_Ctrl_Edit.prototype.init = function() {
         this.userRulesData = this.DataService.get('UserRules');
-        return this.user_rule = null;
+        this.user_rule = null;
+        this.apply_log = '';
+        return this.apply_started = false;
       };
 
       /*
@@ -58,9 +60,35 @@
           });
           _this.skipDirtyState();
           if (is_new) {
-            return _this.$state.go('crm..gocreate');
+            return _this.$state.go('crm.rules.gocreate');
           }
         });
+      };
+
+      /*
+       	# Applying current user rule to all users
+      */
+
+
+      Admin_UserRules_Ctrl_Edit.prototype.applyRuleToUsers = function() {
+        var doRequest, page,
+          _this = this;
+        page = -1;
+        this.apply_started = true;
+        doRequest = function() {
+          page++;
+          return _this.Api.sendGet('/user_rules_apply/' + _this.user_rule.id + '/page_' + page).success(function(result) {
+            if (!result.completed && result.success) {
+              _this.apply_log += 'Done batch #' + (page + 1) + ' ...<br>';
+              return doRequest();
+            } else {
+              return _this.apply_log += 'Completed<br>';
+            }
+          }).error(function() {
+            return _this.apply_log = 'Error occurred<br>';
+          });
+        };
+        return doRequest();
       };
 
       return Admin_UserRules_Ctrl_Edit;

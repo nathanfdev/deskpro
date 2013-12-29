@@ -33,7 +33,9 @@
 
 namespace Application\DeskPRO\UserRules;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\UserRule;
+
 use Doctrine\ORM\EntityManager;
 
 class UserRules
@@ -149,5 +151,74 @@ class UserRules
 	public function createNew()
 	{
 		return UserRule::createUserRule();
+	}
+
+	/**
+	 * @param UserRule $user_rule
+	 * @param int      $page
+	 *
+	 * @return array
+	 */
+
+	public function applyRuleToUsers(UserRule $user_rule, $page)
+	{
+		$per_page = 1;
+
+		$email_to_user = App::getDb()->fetchAllKeyValue("
+			SELECT email, person_id
+			FROM people_emails
+			WHERE is_validated = 1
+			ORDER BY id ASC
+			LIMIT $page, $per_page
+		");
+
+		if (!$email_to_user) {
+
+			return array('completed' => true);
+		}
+
+		$did_user = array();
+		$batch    = array();
+
+		foreach ($email_to_user as $email => $user_id) {
+
+			if (isset($did_user[$user_id])) {
+
+				continue;
+			}
+
+			if ($user_rule->isEmailMatch($email)) {
+
+				$did_user[$user_id] = true;
+
+				if ($user_rule->add_organization) {
+					App::getDb()->update(
+						'people',
+						array(
+							 'organization_id' => $user_rule->add_organization->id
+						),
+						array('id' => $user_id)
+					);
+				}
+
+				if ($user_rule->add_usergroup) {
+
+					$batch[] = array(
+						'person_id'    => $user_id,
+						'usergroup_id' => $user_rule->add_usergroup->id
+					);
+				}
+			}
+		}
+
+		if ($batch) {
+
+			App::getDb()->batchInsert('person2usergroups', $batch, true);
+		}
+
+		return array(
+			'completed' => false,
+			'success'   => true,
+		);
 	}
 }

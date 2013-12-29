@@ -151,7 +151,14 @@ class UserRule extends DomainObject
 	{
 		$email_address = Strings::utf8_strtolower($email_address);
 
-		foreach ($this->email_patterns as $pattern) {
+		$patterns = $this->email_patterns;
+
+		if(!is_array($patterns)) {
+
+			$patterns = explode("\n", $this->email_patterns);
+		}
+
+		foreach ($patterns as $pattern) {
 			if (Strings::isStarMatch($pattern, $email_address)) {
 				return true;
 			}

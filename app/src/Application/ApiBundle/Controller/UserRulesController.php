@@ -171,4 +171,25 @@ class UserRulesController extends AbstractController
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
+
+	####################################################################################################################
+	# apply
+	####################################################################################################################
+
+	public function applyAction($id, $page_id)
+	{
+		/**
+		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+		 */
+
+		$user_rules = $this->container->getSystemService('user_rules');
+		$user_rule  = $user_rules->getById($id);
+
+		if (!$user_rule) {
+
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse($user_rules->applyRuleToUsers($user_rule, $page_id));
+	}
 }

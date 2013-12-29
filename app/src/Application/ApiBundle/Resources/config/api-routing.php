@@ -3536,6 +3536,12 @@ $collection->create('api_user_rules_delete', array(
 	'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_user_rules_apply', array(
+	'path'        => '/user_rules_apply/{id}/page_{page_id}',
+	'controller'  => 'ApiBundle:UserRules:apply',
+	'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################
