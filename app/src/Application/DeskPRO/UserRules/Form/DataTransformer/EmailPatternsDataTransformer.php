@@ -31,54 +31,60 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\UserRules\Form\Type;
+namespace Application\DeskPRO\UserRules\Form\DataTransformer;
 
-use Application\DeskPRO\UserRules\Form\DataTransformer\EmailPatternsDataTransformer;
-use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\DataTransformerInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
-class UserRulePropsType extends AbstractType
+class EmailPatternsDataTransformer implements DataTransformerInterface
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	/**
+	 * Transforms an array representation of email_patterns to a string representation
+	 *
+	 * @param  array $email_patterns_array
+	 *
+	 * @return string
+	 */
+
+	public function transform($email_patterns_array)
 	{
-		$transformer = new EmailPatternsDataTransformer();
-
-		$builder->add(
-			$builder->create('email_patterns', 'text')
-				->addModelTransformer($transformer)
-		);
-
-		$builder->add(
-			'add_usergroup',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Usergroup',
-				 'required'      => false,
-				 'multiple'      => false,
-				 'property'      => 'title',
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('u')->where(
-						 'u.is_agent_group = 0 AND u.sys_name IS NULL'
-					 );
-				 }
-			)
-		);
+		return implode("\n", $email_patterns_array);
 	}
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+
+	/**
+	 * Transforms email_patterns string (email_patterns from from) to an array representation
+	 * This array representation is used inside UserRule entity
+	 *
+	 * @param  string $email_patterns_string
+	 *
+	 * @return array
+	 */
+
+	public function reverseTransform($email_patterns_string)
 	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\UserRule',
-			)
-		);
+		if (!$email_patterns_string) {
+
+			return array();
+		}
+
+		$items = array();
+
+		$patterns = Strings::standardEol($email_patterns_string);
+		$patterns = explode("\n", $patterns);
+
+		foreach ($patterns as $p) {
+
+			$p       = Strings::utf8_strtolower($p);
+			$items[] = trim($p);
+		}
+
+		$items = Arrays::removeFalsey($items);
+
+		return $items;
 	}
 
-	public function getName()
-	{
-		return 'user_rule';
-	}
 }
