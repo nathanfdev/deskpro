@@ -12,7 +12,7 @@
 			</h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions">
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload>
 				<li class="with-drag-handle" ng-repeat="user_rule in ListCtrl.list"
 					dp-state-mark="crm.rules.edit.{{ ng_var('user_rule.id') }}" data-id="{{ ng_var('user_rule.id') }}">
 					<a href="{{ ng_href('crm.rules.edit', '{id: user_rule.id}') }}">
@@ -24,7 +24,7 @@
 			</ul>
 			<div class="dp-add-control">
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
-				   href="{{ ng_href('crm.rules.gocreate') }}">
+				   href="{{ ng_href('crm.rules.gocreate') }}" dp-list-autoload autoload-priority="2">
 					<i class="fa fa-plus"></i> Add New Rule
 				</a>
 			</div>
