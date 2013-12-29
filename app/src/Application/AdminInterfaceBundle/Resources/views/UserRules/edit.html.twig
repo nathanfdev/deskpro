@@ -45,7 +45,7 @@
 								</span>
 							</div>
 						</div>
-						<div class="form-group">
+						<div ng-if="EditCtrl.user_rule.id" class="form-group">
 							<span ng-if="!EditCtrl.apply_started" class="btn btn-success"
 								  ng-click="EditCtrl.applyRuleToUsers()">
 								Click here to apply this rule to all existing users
