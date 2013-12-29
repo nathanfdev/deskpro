@@ -55,7 +55,7 @@ class UserRulesController extends AbstractController
 
 		return $this->createApiResponse(
 			array(
-				 'user_rules' => $this->getApiData($user_rules->getAll()),
+				 'user_rules' => $user_rules->getAllAsArray(),
 			)
 		);
 	}

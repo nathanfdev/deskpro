@@ -139,6 +139,15 @@ class UserRules
     }
 
 	/**
+	 * @return array
+	 */
+
+	public function getAllAsArray()
+	{
+		return $this->em->getRepository('DeskPRO:UserRule')->getAllUserRulesAsArray();
+	}
+
+	/**
 	 * @return int
 	 */
 
