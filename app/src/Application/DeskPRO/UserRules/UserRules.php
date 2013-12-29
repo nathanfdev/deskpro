@@ -110,6 +110,11 @@ class UserRules
 			$data['email_patterns'] = $user_rule->email_patterns;
 			$data['run_order']      = $user_rule->run_order;
 
+			if (is_array($data['email_patterns'])) {
+
+				$data['email_patterns'] = implode("\n", $user_rule->email_patterns);
+			}
+
 			if ($user_rule->add_usergroup) {
 
 				$data['usergroup']['id']    = $user_rule->add_usergroup->id;
