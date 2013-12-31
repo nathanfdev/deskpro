@@ -211,6 +211,16 @@ define(function() {
 	});
 
 	//###
+	//# Agent Login Log
+	//###
+	routes.push({
+		id: 'agents.login_log',
+		url: '/login_log',
+		templateName: 'Agents/logs.html',
+		controller: 'Admin_Agents_Ctrl_Logs'
+	});
+
+	//###
 	//# Teams
 	//###
 	routes.push({

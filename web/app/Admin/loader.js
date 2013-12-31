@@ -115,6 +115,7 @@ requirejs([
 
 	'Admin/Agents/Ctrl/Edit',
 	'Admin/Agents/Ctrl/List',
+	'Admin/Agents/Ctrl/Logs',
 	'Admin/AgentGroups/Ctrl/Edit',
 	'Admin/AgentGroups/Ctrl/List',
 	'Admin/AgentTeams/Ctrl/Edit',
