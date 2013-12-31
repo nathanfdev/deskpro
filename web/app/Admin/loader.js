@@ -240,7 +240,11 @@ requirejs([
 	'Admin/Banning/Ctrl/EditEmail',
 	'Admin/ImportCsv/Ctrl/ImportCsv',
 	'Admin/UserRules/Ctrl/List',
-	'Admin/UserRules/Ctrl/Edit'
+	'Admin/UserRules/Ctrl/Edit',
+	'Admin/KbSettings/Ctrl/KbSettings',
+	'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
+	'Admin/NewsSettings/Ctrl/NewsSettings',
+	'Admin/FeedbackSettings/Ctrl/FeedbackSettings'
 ], function(angular) {
 	'use strict';
 

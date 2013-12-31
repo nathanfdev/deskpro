@@ -1,0 +1,22 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="ChatSetup.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>Feedback Settings</h3>
+			</header>
+
+			<article>
+				<div class="panel panel-innertable">
+					<div class="form-group">
+						<button dp-toggle-switch ng-model="status" ng-change="Ctrl.toggle()">
+
+						</button>
+						<h4><span class="title-text">Enable / Disable Feedback</span></h4>
+					</div>
+				</div>
+			</article>
+
+		</section>
+	</form>
+{% endblock %}

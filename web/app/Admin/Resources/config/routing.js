@@ -1128,8 +1128,8 @@ define(function() {
 	routes.push({
 		id: 'portal.kb_settings',
 		url: '/kb/settings',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'KbSettings/kb-settings.html',
+		controller: 'Admin_KbSettings_Ctrl_KbSettings'
 	});
 
 	//###
@@ -1171,8 +1171,8 @@ define(function() {
 	routes.push({
 		id: 'portal.downloads_settings',
 		url: '/downloads/settings',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'DownloadsSettings/downloads-settings.html',
+		controller: 'Admin_DownloadsSettings_Ctrl_DownloadsSettings'
 	});
 
 	//###
@@ -1215,8 +1215,8 @@ define(function() {
 	routes.push({
 		id: 'portal.news_settings',
 		url: '/news/settings',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'NewsSettings/news-settings.html',
+		controller: 'Admin_NewsSettings_Ctrl_NewsSettings'
 	});
 
 	//###
@@ -1258,8 +1258,8 @@ define(function() {
 	routes.push({
 		id: 'portal.feedback_settings',
 		url: '/feedback/settings',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'FeedbackSettings/feedback-settings.html',
+		controller: 'Admin_FeedbackSettings_Ctrl_FeedbackSettings'
 	});
 
 	//###

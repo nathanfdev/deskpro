@@ -3666,6 +3666,22 @@ $collection->create('api_savelog_logjserror', array(
 ));
 
 ########################################################################################################################
+# Enable / Disable Apps
+########################################################################################################################
+
+$collection->create('api_enable_settings_values_get', array(
+	'path'        => '/enable_settings/app_{app}',
+	'controller'  => 'ApiBundle:EnableSettings:getStatus',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_enable_settings_values_set', array(
+	'path'        => '/enable_settings/app_{app}/toggle/{is_enabled}',
+	'controller'  => 'ApiBundle:EnableSettings:toggle',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Plugins
 ########################################################################################################################
 
