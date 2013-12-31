@@ -51,15 +51,56 @@
 						</p>
 					</div>
 
-					<div class="editor-row">
-						<div class="editor-wrap">
-							<div class="editor" ng-model="embed_code" ui-ace="{
-								mode: 'html',
-								useWrapMode: false,
-								showGutter: false,
-								theme: 'textmate',
-								onLoad: embedEditorLoaded
-							}" style="height: 220px;"></div>
+					<div class="inner-group">
+
+						<p>
+							Tab title: <input type="text" class="form-control" style="width: 275px;"
+											  ng-model="chat_options.start_phrase">
+						</p>
+
+						<p>
+							Tab position:
+							<select ng-model="chat_options.position" ui-select2 style="width: 160px;">
+								<option value="left">Bottom left</option>
+								<option value="right">Bottom right</option>
+							</select>
+						</p>
+						<p ng-show="Embeds.langs.length > 1">
+							Language: <select ng-model="chat_options.lang_id" ui-select2 style="width: 200px;">
+								<option value="0">Default</option>
+								<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">
+									{{ ng_var('l.title') }}
+								</option>
+							</select>
+						</p>
+						<p>
+							<label><input type="checkbox" ng-model="chat_options.show_offline"/> Show button even when
+								chat is offline</label>
+
+						<div style="padding-top: 3px;" ng-show="chat_options.show_offline">
+							Offline tab title:
+							<input type="text" class="form-control" style="width: 275px;"
+								   ng-model="chat_options.offline_phrase">
+						</div>
+						<div style="padding-top: 3px;" ng-show="chat_options.show_offline">
+							URL the button goes to when offline:
+							<input type="text" class="form-control"
+								   style="width: 275px;"
+								   ng-model="chat_options.offline_url"
+								   ng-init="chat_options.offline_url = '{{ url_full('user_tickets_new') }}'">
+						</div>
+						<div class="editor-row" style="width: 60%">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_snippets.chat" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+									}" style="height: 220px;">
+
+								</div>
+							</div>
 						</div>
 					</div>
 
