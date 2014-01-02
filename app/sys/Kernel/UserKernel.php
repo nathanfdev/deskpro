@@ -89,13 +89,13 @@ class UserKernel extends AbstractKernel
 		// Dont auto-redirect these URLs that are used
 		// in widgets and callbacks
 		if (
-			!preg_match('#^/widget/#', $request->getPathInfo())
-			&& !preg_match('#^/chat/#', $request->getPathInfo())
-			&& !preg_match('#^/tickets/new-simple#', $request->getPathInfo())
-			&& !preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
-			&& !preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
-			&& !preg_match('#^/logout#', $request->getPathInfo())
-			&& !preg_match('#^/login#', $request->getPathInfo())
+			preg_match('#^/widget/#', $request->getPathInfo())
+			|| preg_match('#^/chat/#', $request->getPathInfo())
+			|| preg_match('#^/tickets/new-simple#', $request->getPathInfo())
+			|| preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
+			|| preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
+			|| preg_match('#^/logout#', $request->getPathInfo())
+			|| preg_match('#^/login#', $request->getPathInfo())
 		) {
 			return false;
 		}
