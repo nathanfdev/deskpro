@@ -97,6 +97,7 @@
 	'type': 'feedback',
 	'comments': comments,
 	'form_action': path('user_feedback_newcomment', {'feedback_id': feedback.id}),
+	'login_return': path('user_feedback_view', {'slug': feedback.url_slug}),
 	'check_perm': 'feedback.comment',
 	'no_comment_form': (feedback.status == 'closed')
 } %}

@@ -23,7 +23,7 @@
 					{% if not no_comment_form %}
 						{% if not app.user.id and app.getSetting('core.interact_require_login') %}
 							<li class="new-comment no-nav">
-								{{ phrase('user.general.comments-login-or-register', {'login_link':path('user_login'),'register_link':path('user_register')}) }}
+								{{ phrase('user.general.comments-login-or-register', {'login_link':path('user_login', {return: login_return}),'register_link':path('user_register', {return: login_return})}) }}
 							</li>
 						{% elseif app.user.hasPerm(check_perm) %}
 						<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
