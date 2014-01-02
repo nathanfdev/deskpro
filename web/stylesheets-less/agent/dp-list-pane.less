@@ -332,6 +332,11 @@
 	position: relative;
 }
 
+.ipad .list-listing .row-item, .iphone .list-listing .row-item {
+	/* this fixes some weird wrapping issues on ios */
+	display: inline-block;
+}
+
 .item-hover-over-indicator {
 	display: none;
 }
