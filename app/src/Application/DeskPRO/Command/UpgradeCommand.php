@@ -55,6 +55,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		$this->setName('dp:upgrade')
 		     ->addOption('info', null, InputOption::VALUE_NONE, 'Set this flag to get info about your current instance')
 		     ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
+		     ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
 		     ->setHelp("This command executes the upgrader to bring your database to the same version the filesystem is");
 	}
 
@@ -98,13 +99,24 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			return 0;
 		}
 
-		if (!$manager->getNextBuildId()) {
-			$output->writeln("You are all up to date!");
+		#------------------------------
+		# Want to run post scripts only
+		#------------------------------
+
+		if ($input->getOption('runsync')) {
+			$output->writeln("<info>Running post scripts</info>");
+			$manager->postUpgrade();
+			$output->writeln("<info>Done All</info>");
+			return 0;
 		}
 
 		#------------------------------
 		# Runs a build script
 		#------------------------------
+
+		if (!$manager->getNextBuildId()) {
+			$output->writeln("You are all up to date!");
+		}
 
 		if ($input->getOption('dobuildrun')) {
 			$manager->runBuild($input->getOption('dobuildrun'));
