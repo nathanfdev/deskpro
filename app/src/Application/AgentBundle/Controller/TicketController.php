@@ -3337,7 +3337,7 @@ class TicketController extends AbstractController
 
 				$this->db->commit();
 			} catch (\Application\DeskPRO\Tickets\DuplicateTicketException $e) {
-				$this->db->rollback();
+				$this->db->rollback(false);
 				return $this->createJsonResponse(array(
 					'error' => true,
 					'is_dupe' => true,
