@@ -78,11 +78,13 @@
         promise = this.Api.sendDataGet({
           hdinfo: '/deskpro/info',
           ticket_deps: '/ticket_deps',
-          langs: '/langs'
+          langs: '/langs',
+          widget_selections: '/widget/selections'
         }).then(function(res) {
           var d, _i, _len, _ref1;
           _this.hdinfo = res.data.hdinfo;
           _this.langs = res.data.langs.languages;
+          _this.widget_selections = res.data.widget_selections;
           _this.deps = [];
           _ref1 = res.data.ticket_deps.departments;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -95,6 +97,36 @@
           return _this.initCode();
         });
         return promise;
+      };
+
+      /*
+       	#
+      */
+
+
+      Admin_Portal_Ctrl_Embeds.prototype.updateSelections = function() {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Portal/selections-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', 'widget_selections', function($scope, $modalInstance, widget_selections) {
+              $scope.widget_selections = widget_selections;
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ],
+          resolve: {
+            widget_selections: function() {
+              return _this.widget_selections;
+            }
+          }
+        });
+        return inst.result.then(function() {});
       };
 
       Admin_Portal_Ctrl_Embeds.prototype.updateWebsiteTabCode = function() {

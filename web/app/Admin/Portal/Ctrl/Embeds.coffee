@@ -63,13 +63,15 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
 		initialLoad: ->
 			promise = @Api.sendDataGet({
-				hdinfo:      '/deskpro/info',
-				ticket_deps: '/ticket_deps',
-				langs:       '/langs'
+				hdinfo:             '/deskpro/info',
+				ticket_deps:        '/ticket_deps',
+				langs:              '/langs',
+				widget_selections:  '/widget/selections',
 			}).then( (res) =>
 				@hdinfo = res.data.hdinfo
-				@langs  = res.data.langs.languages
-				@deps   = []
+				@langs = res.data.langs.languages
+				@widget_selections = res.data.widget_selections
+				@deps = []
 
 				for d in res.data.ticket_deps.departments
 					if not d.has_children
@@ -79,6 +81,34 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 				@initCode()
 			)
 			return promise
+
+		###
+ 	#
+ 	###
+
+		updateSelections: ->
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Portal/selections-modal.html'),
+				controller: ['$scope', '$modalInstance',	'widget_selections', ($scope, $modalInstance, widget_selections) ->
+
+						$scope.widget_selections = widget_selections
+
+						$scope.confirm = ->
+							$modalInstance.close();
+
+						$scope.dismiss = ->
+							$modalInstance.dismiss();
+				],
+				resolve: {
+					widget_selections: =>
+						return @widget_selections
+				}
+			});
+
+			inst.result.then( =>
+				#send request to save selections
+			)
 
 
 		################################################################################################################
