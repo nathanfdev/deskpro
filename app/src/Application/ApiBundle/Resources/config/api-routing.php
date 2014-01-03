@@ -3682,6 +3682,22 @@ $collection->create('api_enable_settings_values_set', array(
 ));
 
 ########################################################################################################################
+# Widget Selections
+########################################################################################################################
+
+$collection->create('api_widget_selections', array(
+	'path'        => '/widget/selections',
+	'controller'  => 'ApiBundle:WidgetSelections:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_widget_selections_save', array(
+	'path'        => '/widget/selections',
+	'controller'  => 'ApiBundle:WidgetSelections:save',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Plugins
 ########################################################################################################################
 
