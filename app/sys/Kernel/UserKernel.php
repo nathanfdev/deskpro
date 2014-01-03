@@ -86,6 +86,12 @@ class UserKernel extends AbstractKernel
 
 	protected function shouldApplyUrlCorrections(Request $request)
 	{
+		// Dont apply redirects on URLs loaded from widget
+		// (eg loading an article iframe)
+		if (isset($_GET['parent_url'])) {
+			return false;
+		}
+
 		// Dont auto-redirect these URLs that are used
 		// in widgets and callbacks
 		if (
