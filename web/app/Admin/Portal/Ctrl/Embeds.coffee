@@ -2,6 +2,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 	class Admin_Portal_Ctrl_Embeds extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_Portal_Ctrl_Embeds'
 		@CTRL_AS = 'Embeds'
+		@DEPS    = ['Api']
 
 		init: ->
 			@$scope.code_snippets = {
@@ -71,6 +72,24 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 				@hdinfo = res.data.hdinfo
 				@langs = res.data.langs.languages
 				@widget_selections = res.data.widget_selections
+
+				selections = {
+					articles: {}
+					downloads: {}
+					news: {}
+				}
+
+				for key in @widget_selections.selections.articles
+					selections.articles[key] = true
+
+				for key in @widget_selections.selections.downloads
+					selections.downloads[key] = true
+
+				for key in @widget_selections.selections.news
+					selections.news[key] = true
+
+				@widget_selections.selections = selections
+
 				@deps = []
 
 				for d in res.data.ticket_deps.departments
@@ -95,10 +114,10 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 						$scope.widget_selections = widget_selections
 
 						$scope.confirm = ->
-							$modalInstance.close();
+							$modalInstance.close($scope.widget_selections.selections)
 
 						$scope.dismiss = ->
-							$modalInstance.dismiss();
+							$modalInstance.dismiss()
 				],
 				resolve: {
 					widget_selections: =>
@@ -106,8 +125,24 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 				}
 			});
 
-			inst.result.then( =>
-				#send request to save selections
+			inst.result.then( (selections_data) =>
+
+				postData = {
+					articles: []
+					downloads: []
+					news: []
+				}
+
+				for key, value of selections_data.articles
+					postData.articles.push(key) if value
+
+				for key, value of selections_data.downloads
+					postData.downloads.push(key) if value
+
+				for key, value of selections_data.news
+					postData.news.push(key) if value
+
+				@Api.sendPostJson('/widget/selections', {selections: postData})
 			)
 
 

@@ -55,4 +55,22 @@ class WidgetSelectionsController extends AbstractController
 			$widget_selections->getWidgetSelections()
 		);
 	}
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction()
+	{
+		$selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
+
+		/**
+		 * @var \Application\DeskPRO\WidgetSelections\WidgetSelections $widget_selections
+		 */
+
+		$widget_selections = $this->container->getSystemService('widget_selections');
+		$widget_selections->saveSelections($selections);
+
+		return $this->createSuccessResponse();
+	}
 }

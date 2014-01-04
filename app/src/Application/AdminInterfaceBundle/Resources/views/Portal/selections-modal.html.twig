@@ -4,8 +4,8 @@
 			<button type="button" class="close" ng-click="dismiss()">&times;</button>
 			<h4 class="modal-title">Content</h4>
 		</div>
-		<div class="modal-body">
-			<div ng-if="widget_selections.articles" class="dp-paneblock pull-left" style="padding-right:6px;">
+		<div class="modal-body" id="selections-form">
+			<div ng-if="widget_selections.articles"  class="dp-paneblock pull-left" style="padding-right:6px;">
 				<header>
 					<h3>Articles</h3>
 				</header>
@@ -19,10 +19,8 @@
 							 ng-style="{'margin-left': (5 * (cat.depth + 1) + 6) + 'px'}">
 							<label>
 								<input type="checkbox"
-									   name="selections[articles][]"
-									   ng-model=""
-									   ng-value="item_id"
-									   ng-checked="widget_selections.selections[item_id]">
+									   ng-model="widget_selections.selections.articles[item_id]"
+									   ng-value="item_id">
 								{{ ng_var('widget_selections.articles[item_id]') }}
 							</label>
 						</div>
@@ -36,9 +34,8 @@
 								 ng-style="{'margin-left': (5 * (cat_child.depth + 1) + 6) + 'px'}">
 								<label>
 									<input type="checkbox"
-										   name="selections[articles][]"
-										   ng-value="item_id_child"
-										   ng-checked="widget_selections.selections[item_id_child]">
+										   ng-model="widget_selections.selections.articles[item_id_child]"
+										   ng-value="item_id_child">
 									{{ ng_var('widget_selections.articles[item_id_child]') }}
 								</label>
 							</div>
@@ -60,9 +57,8 @@
 							 ng-style="{'margin-left': (5 * (cat.depth + 1) + 6) + 'px'}">
 							<label>
 								<input type="checkbox"
-									   name="selections[downloads][]"
-									   ng-value="item_id"
-									   ng-checked="widget_selections.selections[item_id]">
+									   ng-model="widget_selections.selections.downloads[item_id]"
+									   ng-value="item_id">
 								{{ ng_var('widget_selections.downloads[item_id]') }}
 							</label>
 						</div>
@@ -76,9 +72,8 @@
 								 ng-style="{'margin-left': (5 * (cat_child.depth + 1) + 6) + 'px'}">
 								<label>
 									<input type="checkbox"
-										   name="selections[downloads][]"
-										   ng-value="item_id_child"
-										   ng-checked="widget_selections.selections[item_id_child]">
+										   ng-model="widget_selections.selections.downloads[item_id_child]"
+										   ng-value="item_id_child">
 									{{ ng_var('widget_selections.downloads[item_id_child]') }}
 								</label>
 							</div>
@@ -100,9 +95,8 @@
 							 ng-style="{'margin-left': (5 * (cat.depth + 1) + 6) + 'px'}">
 							<label>
 								<input type="checkbox"
-									   name="selections[news][]"
-									   ng-value="item_id"
-									   ng-checked="widget_selections.selections[item_id]">
+									   ng-model="widget_selections.selections.news[item_id]"
+									   ng-value="item_id">
 								{{ ng_var('widget_selections.news[item_id]') }}
 							</label>
 						</div>
@@ -116,9 +110,8 @@
 								 ng-style="{'margin-left': (5 * (cat_child.depth + 1) + 6) + 'px'}">
 								<label>
 									<input type="checkbox"
-										   name="selections[news][]"
-										   ng-value="item_id_child"
-										   ng-checked="widget_selections.selections[item_id_child]">
+										   ng-model="widget_selections.selections.news[item_id_child]"
+										   ng-value="item_id_child">
 									{{ ng_var('widget_selections.news[item_id_child]') }}
 								</label>
 							</div>

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\WidgetSelections;
 use Doctrine\ORM\EntityManager;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CacheInvalidator\UserPageCache;
 
 class WidgetSelections
 {
@@ -125,5 +126,17 @@ class WidgetSelections
 			'download_cat_map'    => $download_cat_map,
 			'news_cat_map'        => $news_cat_map
 		);
+	}
+
+	public function saveSelections($selections)
+	{
+		$ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
+		$ds->setData('selections', $selections);
+
+		$this->em->persist($ds);
+		$this->em->flush();
+
+		$cache = new UserPageCache();
+		$cache->invalidateAll();
 	}
 }

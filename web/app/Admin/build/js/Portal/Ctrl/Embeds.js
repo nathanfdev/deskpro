@@ -16,6 +16,8 @@
 
       Admin_Portal_Ctrl_Embeds.CTRL_AS = 'Embeds';
 
+      Admin_Portal_Ctrl_Embeds.DEPS = ['Api'];
+
       Admin_Portal_Ctrl_Embeds.prototype.init = function() {
         this.$scope.code_snippets = {
           overlay: '',
@@ -81,14 +83,35 @@
           langs: '/langs',
           widget_selections: '/widget/selections'
         }).then(function(res) {
-          var d, _i, _len, _ref1;
+          var d, key, selections, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref1, _ref2, _ref3, _ref4;
           _this.hdinfo = res.data.hdinfo;
           _this.langs = res.data.langs.languages;
           _this.widget_selections = res.data.widget_selections;
-          _this.deps = [];
-          _ref1 = res.data.ticket_deps.departments;
+          selections = {
+            articles: {},
+            downloads: {},
+            news: {}
+          };
+          _ref1 = _this.widget_selections.selections.articles;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            d = _ref1[_i];
+            key = _ref1[_i];
+            selections.articles[key] = true;
+          }
+          _ref2 = _this.widget_selections.selections.downloads;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            key = _ref2[_j];
+            selections.downloads[key] = true;
+          }
+          _ref3 = _this.widget_selections.selections.news;
+          for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
+            key = _ref3[_k];
+            selections.news[key] = true;
+          }
+          _this.widget_selections.selections = selections;
+          _this.deps = [];
+          _ref4 = res.data.ticket_deps.departments;
+          for (_l = 0, _len3 = _ref4.length; _l < _len3; _l++) {
+            d = _ref4[_l];
             if (!d.has_children) {
               d.title = d.title_parts.join(' > ');
               _this.deps.push(d);
@@ -113,7 +136,7 @@
             '$scope', '$modalInstance', 'widget_selections', function($scope, $modalInstance, widget_selections) {
               $scope.widget_selections = widget_selections;
               $scope.confirm = function() {
-                return $modalInstance.close();
+                return $modalInstance.close($scope.widget_selections.selections);
               };
               return $scope.dismiss = function() {
                 return $modalInstance.dismiss();
@@ -126,7 +149,38 @@
             }
           }
         });
-        return inst.result.then(function() {});
+        return inst.result.then(function(selections_data) {
+          var key, postData, value, _ref1, _ref2, _ref3;
+          postData = {
+            articles: [],
+            downloads: [],
+            news: []
+          };
+          _ref1 = selections_data.articles;
+          for (key in _ref1) {
+            value = _ref1[key];
+            if (value) {
+              postData.articles.push(key);
+            }
+          }
+          _ref2 = selections_data.downloads;
+          for (key in _ref2) {
+            value = _ref2[key];
+            if (value) {
+              postData.downloads.push(key);
+            }
+          }
+          _ref3 = selections_data.news;
+          for (key in _ref3) {
+            value = _ref3[key];
+            if (value) {
+              postData.news.push(key);
+            }
+          }
+          return _this.Api.sendPostJson('/widget/selections', {
+            selections: postData
+          });
+        });
       };
 
       Admin_Portal_Ctrl_Embeds.prototype.updateWebsiteTabCode = function() {
