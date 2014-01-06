@@ -19,10 +19,15 @@
       Admin_Settings_Ctrl_GeneralSettings.DEPS = [];
 
       Admin_Settings_Ctrl_GeneralSettings.prototype.init = function() {
-        return this.settings = {
+        this.settings = {
           default_timezone: 'UTC',
-          task_reminder_time: '09:30'
+          task_reminder_time: '09:30',
+          attach_agent_must_exts: [],
+          attach_agent_not_exts: [],
+          attach_user_must_exts: [],
+          attach_user_not_exts: []
         };
+        return this.$scope.settings = this.settings;
       };
 
       Admin_Settings_Ctrl_GeneralSettings.prototype.initialLoad = function() {

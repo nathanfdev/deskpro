@@ -175,7 +175,7 @@
 						</h4>
 					</label>
 					<div ng-show="attach_user_exts_limitmode == 'allow'">
-						<input type="text" ui-select2="{multiple: true, simple_tags: true}" ng-model="core.attach_user_must_exts" style="width: 350px;" />
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_must_exts" style="width: 350px;" />
 					</div>
 					<label>
 						<h4>
@@ -184,7 +184,7 @@
 						</h4>
 					</label>
 					<div ng-show="attach_user_exts_limitmode == 'disallow'">
-						<input type="text" ui-select2="{multiple: true, simple_tags: true}" ng-model="settings.attach_user_not_exts" style="width: 350px;" />
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_not_exts" style="width: 350px;" />
 					</div>
 				</div>
 				<div class="inner-group">
@@ -227,7 +227,7 @@
 						</h4>
 					</label>
 					<div ng-show="attach_agent_exts_limitmode == 'allow'">
-						<input type="text" ui-select2="{multiple: true, simple_tags: true}" ng-model="settings.attach_agent_must_exts" style="width: 350px;" />
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_must_exts" style="width: 350px;" />
 					</div>
 					<label>
 						<h4>
@@ -236,7 +236,7 @@
 						</h4>
 					</label>
 					<div ng-show="attach_agent_exts_limitmode == 'disallow'">
-						<input type="text" ui-select2="{multiple: true, simple_tags: true}" ng-model="core.attach_agent_not_exts" style="width: 350px;" />
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_not_exts" style="width: 350px;" />
 					</div>
 				</div>
 				<div class="inner-group">
