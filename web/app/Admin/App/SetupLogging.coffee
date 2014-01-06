@@ -78,18 +78,28 @@ define [
 		Module.factory('$exceptionHandler', [ 'jsErrorLogger', (jsErrorLogger) ->
 			window.DP_JS_ERROR_LOGGER = jsErrorLogger
 
-			# only enable when not in dev/testing
-			# while in dev, native browser (eg firebug etc) is better for onerrors
+			# prod: log errors and uncaught exceptions
 			if !window.DP_IS_DEBUG || window.DP_IS_TESTING
 				window.onerror = (message, url, linenumber) ->
 					jsErrorLogger.logScriptError(message, url, linenumber)
+					return true #dont run browser error
 
-			return (exception, cause) ->
-				window.setTimeout(->
-					jsErrorLogger.logException(exception)
-					exception._dpNoLog = true
+				return (exception, cause) ->
+					if !window.DP_IS_DEBUG || window.DP_IS_TESTING
+						window.setTimeout(->
+							jsErrorLogger.logException(exception)
+							exception._dpNoLog = true
+						, 1)
+
+			# dev: use browser to handle errors (eg firebug/console is better)
+			else
+				# We set a low-level error handler before booting angular,
+				# we should unset that now
+				window.onerror = -> return false
+
+				return (exception, cause) ->
 					throw exception
-				, 1)
+
 		])
 
 		Module.factory('dpInterfaceTimer', [ '$log', ($log) ->

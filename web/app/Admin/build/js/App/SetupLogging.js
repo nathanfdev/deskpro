@@ -99,16 +99,25 @@
           window.DP_JS_ERROR_LOGGER = jsErrorLogger;
           if (!window.DP_IS_DEBUG || window.DP_IS_TESTING) {
             window.onerror = function(message, url, linenumber) {
-              return jsErrorLogger.logScriptError(message, url, linenumber);
+              jsErrorLogger.logScriptError(message, url, linenumber);
+              return true;
+            };
+            return function(exception, cause) {
+              if (!window.DP_IS_DEBUG || window.DP_IS_TESTING) {
+                return window.setTimeout(function() {
+                  jsErrorLogger.logException(exception);
+                  return exception._dpNoLog = true;
+                }, 1);
+              }
+            };
+          } else {
+            window.onerror = function() {
+              return false;
+            };
+            return function(exception, cause) {
+              throw exception;
             };
           }
-          return function(exception, cause) {
-            return window.setTimeout(function() {
-              jsErrorLogger.logException(exception);
-              exception._dpNoLog = true;
-              throw exception;
-            }, 1);
-          };
         }
       ]);
       Module.factory('dpInterfaceTimer', [
