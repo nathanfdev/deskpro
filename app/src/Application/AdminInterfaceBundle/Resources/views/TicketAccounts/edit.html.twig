@@ -31,12 +31,12 @@
 						<div class="col-lg-9">
 							<div class="inner-group" style="padding-top: 3px;">
 								<select
-										ui-select2
-										ng-model="form.connection_type"
-										style="min-width: 240px"
-										>
+									ui-select2
+									ng-model="form.connection_type"
+									style="min-width: 240px"
+								>
+									<option value="">Select Type</option>
 									<option value="pop3">POP3</option>
-									<option value="imap">IMAP</option>
 									<option value="gmail">GMail or Google Apps</option>
 								</select>
 							</div>
@@ -149,10 +149,11 @@
 						<div class="col-lg-9">
 							<div class="inner-group" style="padding-top: 3px;">
 								<select
-										ui-select2
-										ng-model="form.email_transport.transport_type"
-										style="min-width: 240px"
-										>
+									ui-select2
+									ng-model="form.email_transport.transport_type"
+									style="min-width: 240px"
+								>
+									<option value="">Select type</option>
 									<option value="mail">Send mail using PHP mail()</option>
 									<option value="smtp">SMTP</option>
 									<option value="gmail">GMail or Google Apps</option>
@@ -164,7 +165,7 @@
 										<tr>
 											<th width="75">PHP Mail</th>
 											<td>
-												Send mail through the server <code><a href="http://www.php.net/mail">mail()</a></code> function.
+												Send mail through the server <code><a href="http://www.php.net/mail" target="_blank">mail()</a></code> function.
 											</td>
 										</tr>
 										<tr>

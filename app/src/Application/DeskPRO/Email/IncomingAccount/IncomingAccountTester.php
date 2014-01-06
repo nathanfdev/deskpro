@@ -148,7 +148,8 @@ class IncomingAccountTester
 
 			$this->is_success = true;
 		} catch (\Exception $e) {
-			$this->logger->logError(sprintf("An exception occurred: [%s:%s] %s", get_class($e), $e->getCode(), $e->getMessage()));
+			$this->logger->logError(sprintf("Error:", $e->getMessage()));
+			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
 			$this->is_success = false;
 		}
 	}

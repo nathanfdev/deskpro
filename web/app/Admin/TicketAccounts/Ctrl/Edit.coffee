@@ -29,16 +29,19 @@ define [
 			if not @$stateParams.id
 				@account = {
 					email_address: '',
-					connection_type: 'pop3',
+					connection_type: '',
 					in_pop3_account: {},
 					in_imap_account: {},
 					in_gmial_account: {},
 					linked_transport: {
-						transport_type: 'smtp',
+						transport_type: '',
 						transport_options: {}
 					}
 				}
+
 				@form_model = new EditTicketAccountModel(@account)
+				@form_model.form.connection_type = ''
+				@form_model.form.email_transport.transport_type = ''
 				@$scope.form = @form_model.form
 
 				return @$q.all([dep_promise]);
