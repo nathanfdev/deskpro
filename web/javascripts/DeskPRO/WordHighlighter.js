@@ -77,13 +77,13 @@ DeskPRO.WordHighlighter = {
 
 						middlebit.parentNode.replaceChild(spannode, middlebit);
 
-						proc_node.push(endbit);
+						proc_node.unshift(endbit);
 					}
 				}
 			} else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
 				var children = $.makeArray(node.childNodes);
 				for (i = 0; i < children.length; i++) {
-					proc_node.push(children[i]);
+					proc_node.unshift(children[i]);
 				}
 			}
 		}
