@@ -140,28 +140,35 @@
           }
           return _this.$state.href(route, params);
         };
-        this.$scope.$on('$stateChangeStart', function(ev, toState, toParams, fromState, fromParams) {
-          var resetHash;
-          if (ev.defaultPrevented) {
-            return;
-          }
-          if (_this._state_cont_ignore) {
-            _this._state_cont_ignore = false;
-            return;
-          }
-          if (!_this._state_cont_go && !window.DP_NO_DIRTYSTATE_CONFIRM && _this.isDirtyState()) {
-            ev.preventDefault();
-            resetHash = _this.$state.href(fromState, fromParams);
-            _this._state_cont_ignore = true;
-            window.location.hash = resetHash;
-            setTimeout(function() {
-              return _this._state_cont_ignore = false;
-            }, 140);
-            _this._state_cont_state = toState.name;
-            _this._state_cont_state_params = toParams;
-            return _this._showStateConfirmLeave();
-          }
-        });
+        /*
+        			@$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
+        				if ev.defaultPrevented then return
+        				if @_state_cont_ignore
+        					@_state_cont_ignore = false
+        					return
+        
+        				if not @_state_cont_go and not window.DP_NO_DIRTYSTATE_CONFIRM and @isDirtyState()
+        					ev.preventDefault();
+        
+        					# - The window hash has changed at this point so we
+        					# need to reset it back to what it was
+        					# - But we want to ignore the change event next time
+        					# or else we'd pop-up unlimited number of boxes
+        					# about switching state even though we're "switching"
+        					# back to the currently active view
+        					resetHash = @$state.href(fromState, fromParams)
+        					@_state_cont_ignore = true
+        					window.location.hash = resetHash
+        					setTimeout(=>
+        						@_state_cont_ignore = false
+        					, 140)
+        
+        					@_state_cont_state = toState.name
+        					@_state_cont_state_params = toParams
+        					@_showStateConfirmLeave()
+        			)
+        */
+
         this.$scope.dp_ctrl_elemnt_ping = {};
         this._saved_state = {};
         this.has_init = false;
