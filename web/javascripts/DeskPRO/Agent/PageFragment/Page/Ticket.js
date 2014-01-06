@@ -1657,9 +1657,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			triggerElement: this.getEl('actions_menu_trigger'),
 			menuElement: this.getEl('actions_menu'),
 			onBeforeMenuOpened: function(info) {
-				alert('wtf!');
-				console.log(self.getEl('actions_menu_trigger'));
-				console.log(self.getEl('actions_menu'));
 				var status = self.getEl('status_code').val();
 				if (status == 'awaiting_agent') {
 					if (self.getEl('value_form').find('.is_hold').val()) {

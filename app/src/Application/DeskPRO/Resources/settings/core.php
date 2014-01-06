@@ -316,7 +316,7 @@
 	/**
 	 * JIRA Base URL
 	 */
-	'core.apps_jira.baseUrl'	=> 'http://192.168.0.100:8080/',
+	'core.apps_jira.baseUrl'	=> 'http://192.168.0.192:8080/',
 	
 	/**
 	 * JIRA username

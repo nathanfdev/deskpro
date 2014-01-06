@@ -2155,8 +2155,15 @@ if (Application\DeskPRO\App::getSetting('core.apps_jira')) {
 		'requirements'  => array('ticket_id' => '\\d+'),
 	));
 	
+	$collection->create('comments', array(
+		'path'          => '/jira/{issue_id}/comments',
+		'controller'    => 'AgentBundle:Jira:getComments',
+		'defaults'		=> array('issue_id' => '-1'),
+		'requirements'  => array('issue_id' => '\\d+'),
+	));
+	
 	$collection->create('post_comment', array(
-		'path'          => '/jira/comment/{issue_id}',
+		'path'          => '/jira/{issue_id}/comment',
 		'controller'    => 'AgentBundle:Jira:postComment',
 		'defaults'		=> array('issue_id' => '-1'),
 		'requirements'  => array('issue_id' => '\\d+'),

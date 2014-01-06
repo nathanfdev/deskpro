@@ -1,3 +1,4 @@
+<script src="http://momentjs.com/downloads/moment.min.js"></script>
 <style>
 	th {
 		background: none repeat scroll 0 0 #CCCCCC !important;
@@ -18,27 +19,27 @@
 		<thead>
 			<tr>
 				<th>#</th>
-				<th>Issue Key</th>
-				<th>Status</th>
-				<th>Assigned to</th>
-				<th>Last action on</th>
-				<th>Actions</th>
+				<th>{{ phrase('agent.jira.issuekey') }}</th>
+				<th>{{ phrase('agent.jira.status') }}</th>
+				<th>{{ phrase('agent.jira.assignedto') }}</th>
+				<th>{{ phrase('agent.jira.lastactivity') }}</th>
+				<th>{{ phrase('agent.jira.actions') }}</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for issue in issues %}
 				<tr>
 					<td>{{ loop.index }}.</td>
-					<td><a target="_blank" href="{{ jirabaseurl }}/browse/{{ issue.key }}">{{ issue.key }}</a></td>
+					<td><a target="_blank" href="{{ jirabaseurl }}browse/{{ issue.key }}">{{ issue.key }}</a></td>
 					<td>{{ issue.status }}</td>
 					<td>
 						{% if issue.assignee is null %}
-							Not Assigned yet
+							{{ phrase('agent.jira.nobody') }}
 						{% else %}
 							{{ issue.assignee }}
 						{% endif %}
 					</td>
-					<td>{{ issue.updated | date('D, jS M \'y g:ia')}}</td>
+					<td class="issue-table-modified">{{ issue.updated }}</td>
 					<td><i class="issue-comment icon-comment" data-issue_id="{{ issue.id }}"></i> | <i class="icon-remove"></i></td>
 				</tr>
 			{% endfor %}
@@ -57,4 +58,11 @@
 
 		overlay.open();
 	});
+	$(".issue-table-modified").each(function(index, td){
+		var row = $(td);
+		
+		var day = moment(row.text());
+		
+		row.text(day.fromNow());
+	})
 </script>

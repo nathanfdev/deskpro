@@ -25,4 +25,12 @@ return array(
 		
 	// Form default values/labels
 	'agent.jira.select.project'		=> 'Select Project',
+	'agent.jira.nobody'				=> 'Nobody',
+	
+	// Issue table headers
+	'agent.jira.issuekey'			=> 'Issue Key',
+	'agent.jira.status'				=> 'Status',
+	'agent.jira.assignedto'			=> 'Assigned To',
+	'agent.jira.lastactivity'		=> 'Last Activity',
+	'agent.jira.actions'			=> 'Actions',
 );

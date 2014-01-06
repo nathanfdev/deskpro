@@ -277,6 +277,60 @@ class JiraController extends AbstractController
 		));
 	}
 	
+	public function getCommentsAction($issue_id = null)
+	{
+		$service	= $this->_getService();
+		
+		$issue		= $service->findIssue($issue_id);
+		
+		$jiraRepository	= $service->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+		
+		$comments = $jiraRepository->getComments($issue);
+		
+		$jiraIssueRepository = $this->__get('em')->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$success = 0;
+		
+		$jiraIssues = $jiraIssueRepository->findBy(
+			array('issue' => $issue_id
+		));
+		
+		foreach ($jiraIssues as $jiraIssue) {
+			$ticket = $jiraIssue->ticket;
+			
+			foreach ($comments as $comment) {
+				$ticketNote						= new \Application\DeskPRO\Entity\TicketMessage();
+				
+				$ticketNote['ticket']			= $ticket;
+				
+				$ticketNote['message']			= $this->person;
+				
+				$ticketNote['ip_address']		= dp_get_user_ip_address();
+				
+				$ticketNote['creation_system']	= 'app.jira';
+				
+				$ticketNote['person']			= $this->person;
+				
+				$ticketNote->message			= $comment['body'] . '<br/><br/>' . 
+						' by <a target="_blank" href="' . $service->getBaseUrl() . 'secure/ViewProfile.jspa?name=' . $comment['author']['name'] . '">' . $comment['author']['displayName'] . '</a><br/>' . 
+						' in <a target="_blank" href="' . $service->getBaseUrl() . 'browse/' . $issue->getKey() . '">' . $issue->getKey() . '</a><br/>' . 
+						' - JIRA';
+				
+				$ticketNote['is_agent_note']	= true;
+				
+				$ticketNote['date_created']		= new \DateTime($comment['updated']);
+				
+				$ticket->addMessage($ticketNote);
+				
+				$this->__get('em')->persist($ticket);
+			}
+		}
+		
+		$this->__get('em')->flush();
+		
+		var_dump($comments); die;
+	}
+	
 	public function postCommentAction($issue_id = null)
 	{
 		$service = $this->_getService();

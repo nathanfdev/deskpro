@@ -85,4 +85,13 @@ class IssueRepository extends Repository
 			'body'	=> $body
 		));
 	}
+	
+	public function getComments(\Orb\Jira\Entity\Issue $issue)
+	{
+		$response = $this->_client->get($this->getEndpoint() . '/' . $issue->getId() . '/comment');
+		
+		if ($response && isset($response['comments'])) {
+			return $response['comments'];
+		}
+	}
 }
