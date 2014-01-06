@@ -11207,3 +11207,93 @@ section#portal_colors .style-row.color.dual .desc {
   overflow: hidden;
   border-radius: 2px;
 }
+
+table.phrases-table tr.phrase-custom td {
+  background-color: #fef9d5;
+}
+
+table.phrases-table td.phrase-id {
+  font-size: 11px;
+  word-wrap: normal;
+  white-space: nowrap;
+  text-wrap: none;
+}
+
+table.phrases-table td.phrase-id span {
+  display: block;
+  padding-top: 3px;
+  word-wrap: normal;
+  white-space: nowrap;
+  text-wrap: none;
+}
+
+table.phrases-table td.phrase-default,
+table.phrases-table td.phrase-translation {
+  width: 50%;
+}
+
+table.phrases-table td.phrase-default textarea,
+table.phrases-table td.phrase-translation textarea {
+  width: 100%;
+  height: 55px;
+  padding: 3px;
+  margin: 0;
+  overflow: auto;
+  font-size: 11px;
+  color: #888;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: none;
+  resize: none;
+}
+
+table.phrases-table tr:hover td.phrase-default textarea,
+table.phrases-table tr:hover td.phrase-translation textarea,
+table.phrases-table td.phrase-default textarea:focus,
+table.phrases-table td.phrase-translation textarea:focus {
+  overflow: auto;
+  color: #444;
+  background: #fff;
+  border: 1px solid #888;
+  outline: none;
+  resize: both;
+}
+
+table.phrases-restable td.phrase-title > span {
+  display: inline-block;
+  padding-top: 3px;
+}
+
+table.phrases-restable td.phrase-title span.indent {
+  color: #888;
+}
+
+table.phrases-restable td.phrase-title span.indent span {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+table.phrases-restable td.phrase-user-title {
+  text-align: right;
+}
+
+table.phrases-restable td.phrase-user-title input[type="text"] {
+  width: 200px;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+  color: #888;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+table.phrases-restable tr:hover td.phrase-user-title input[type="text"],
+table.phrases-restable td.phrase-user-title input[type="text"]:focus {
+  color: #444;
+  background: #fff;
+  border: 1px solid #888;
+  outline: none;
+}

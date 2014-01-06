@@ -126,8 +126,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->setModelField('name', $name);
 
-		$groupname = Strings::rexplode('.', $name, 2);
-		$groupname = array_shift($groupname);
+		$groupname = self::getGroupFromName($name);
 
 		if ($groupname) {
 			$this->setModelField('groupname', $groupname);
@@ -142,6 +141,18 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	public function __toString()
 	{
 		return $this->phrase;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return string
+	 */
+	public static function getGroupFromName($name)
+	{
+		$groupname = Strings::rexplode('.', $name, 2);
+		$groupname = array_shift($groupname);
+		return $groupname;
 	}
 
 

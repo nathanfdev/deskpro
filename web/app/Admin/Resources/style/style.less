@@ -3506,3 +3506,100 @@ section#portal_colors .style-row.color.dual .desc {
 		margin-left: 2px;
 	}
 }
+
+//######################################################################################################################
+//# Phrase Editor
+//######################################################################################################################
+
+table.phrases-table {
+	tr.phrase-custom td {
+		background-color: #fef9d5;
+	}
+
+	td.phrase-id {
+		font-size: 11px;
+		text-wrap: none;
+		word-wrap: normal;
+		white-space: nowrap;
+
+		span {
+			display: block;
+			text-wrap: none;
+			word-wrap: normal;
+			white-space: nowrap;
+			padding-top: 3px;
+		}
+	}
+
+	td.phrase-default, td.phrase-translation {
+		width: 50%;
+		textarea {
+			margin: 0;
+			padding: 3px;
+			font-size: 11px;
+			border: 1px solid transparent;
+			box-shadow: none;
+			border-radius: 3px;
+			background: transparent;
+			color: #888;
+			overflow: auto;
+			resize: none;
+
+			width: 100%;
+			height: 55px;
+		}
+	}
+
+	tr:hover td.phrase-default textarea,
+	tr:hover td.phrase-translation textarea,
+	td.phrase-default textarea:focus,
+	td.phrase-translation textarea:focus {
+		border: 1px solid #888;
+		color: #444;
+		outline: none;
+		overflow: auto;
+		resize: both;
+		background: #fff;
+	}
+}
+
+table.phrases-restable {
+	td.phrase-title {
+		> span {
+			display: inline-block;
+			padding-top: 3px;
+		}
+
+		span.indent {
+			color: #888;
+			span {
+				display: inline-block;
+				margin-right: 5px;
+			}
+		}
+	}
+
+	td.phrase-user-title {
+		text-align: right;
+		input[type="text"] {
+			margin: 0;
+			padding: 3px;
+			font-size: 11px;
+			border: 1px solid transparent;
+			box-shadow: none;
+			border-radius: 3px;
+			background: transparent;
+			color: #888;
+
+			width: 200px;
+		}
+	}
+
+	tr:hover td.phrase-user-title input[type="text"],
+	td.phrase-user-title input[type="text"]:focus {
+		border: 1px solid #888;
+		color: #444;
+		outline: none;
+		background: #fff;
+	}
+}

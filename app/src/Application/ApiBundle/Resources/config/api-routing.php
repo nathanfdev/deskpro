@@ -3608,6 +3608,26 @@ $collection->create('api_langs_saveinfo', array(
 	'requirements' => array('id' => '\d+|[a-z]+')
 ));
 
+$collection->create('api_langs_savephrases', array(
+	'path'         => '/langs/{id}/phrases',
+	'controller'   => 'ApiBundle:Languages:savePhraseSet',
+	'methods'      => array('POST'),
+	'requirements' => array('id' => '\d+|[a-z]+')
+));
+
+$collection->create('api_langs_getphrasegroups', array(
+	'path'        => '/langs/phrases-groups',
+	'controller'  => 'ApiBundle:Languages:getPhraseGroups',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_langs_getphrases', array(
+	'path'         => '/langs/{id}/{group_id}',
+	'controller'   => 'ApiBundle:Languages:getPhrases',
+	'methods'      => array('GET'),
+	'requirements' => array('id' => '\d+|[a-z]+', 'group_id' => '[a-zA-Z0-9\-_\.]+')
+));
+
 $collection->create('api_langs_getphrase', array(
 	'path'        => '/langs/phrases/{phrase_id}/{for_lang}',
 	'controller'  => 'ApiBundle:Languages:getPhrase',

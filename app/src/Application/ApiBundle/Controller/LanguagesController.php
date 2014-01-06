@@ -35,8 +35,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Languages\LangPackInfo;
+use Application\DeskPRO\Languages\PhraseData;
+use Application\DeskPRO\ResourceScanner\LanguagePhrases;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -97,12 +100,12 @@ class LanguagesController extends AbstractController
 		if (Numbers::isInteger($id)) {
 			$lang = $this->container->getLanguageData()->get($id);
 			if (!$lang) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 		} else {
 			if (!$langpacks->hasLang($id)) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$lang_info = $langpacks->getLangInfo($id);
@@ -116,7 +119,7 @@ class LanguagesController extends AbstractController
 			}
 
 			if (!$lang) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		}
 
@@ -136,13 +139,13 @@ class LanguagesController extends AbstractController
 		if (Numbers::isInteger($id)) {
 			$lang = $this->container->getLanguageData()->get($id);
 			if (!$lang) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$lang_info = $langpacks->getLangInfo($lang->sys_name);
 		} else {
 			if (!$langpacks->hasLang($id)) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$lang_info = $langpacks->getLangInfo($id);
@@ -223,7 +226,7 @@ class LanguagesController extends AbstractController
 		$langpacks = new LangPackInfo();
 
 		if (!$langpacks->hasLang($id)) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$lang_info = $langpacks->getLangInfo($id);
@@ -263,14 +266,14 @@ class LanguagesController extends AbstractController
 		if (Numbers::isInteger($id)) {
 			$lang = $this->container->getLanguageData()->get($id);
 			if (!$lang) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$lang_info = $langpacks->getLangInfo($lang->sys_name);
 
 		} else {
 			if (!$langpacks->hasLang($id)) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$lang_info = $langpacks->getLangInfo($id);
@@ -284,7 +287,7 @@ class LanguagesController extends AbstractController
 			}
 
 			if (!$lang) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		}
 
@@ -316,14 +319,14 @@ class LanguagesController extends AbstractController
 		if (Numbers::isInteger($id)) {
 			$lang = $this->container->getLanguageData()->get($id);
 			if (!$lang) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$lang_info = $langpacks->getLangInfo($lang->sys_name);
 
 		} else {
 			if (!$langpacks->hasLang($id)) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$lang_info = $langpacks->getLangInfo($id);
@@ -337,7 +340,7 @@ class LanguagesController extends AbstractController
 			}
 
 			if (!$lang) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		}
 
@@ -401,6 +404,281 @@ class LanguagesController extends AbstractController
 
 		return $this->createSuccessResponse();
 	}
+
+	####################################################################################################################
+	# save-phrase-set
+	####################################################################################################################
+
+	public function savePhraseSetAction($id)
+	{
+		if (Numbers::isInteger($id)) {
+			$lang = $this->container->getLanguageData()->get($id);
+			if (!$lang) {
+				throw $this->createNotFoundException();
+			}
+
+		} else {
+			$langpacks = new LangPackInfo();
+			if (!$langpacks->hasLang($id)) {
+				throw $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($id);
+			$lang = null;
+
+			foreach ($this->container->getLanguageData()->getAll() as $l) {
+				if ($l->sys_name == $lang_info['id']) {
+					$lang = $l;
+					break;
+				}
+			}
+
+			if (!$lang) {
+				throw $this->createNotFoundException();
+			}
+		}
+
+		$adds = array();
+		$phrase_ids = array();
+
+		foreach ($this->in->getArrayValue('phrases') as $phrase_info) {
+			if (empty($phrase_info['name']) || !preg_match('#^[a-zA-Z0-9\.\-_]+$#', $phrase_info['name'])) {
+				continue;
+			}
+
+			if (!isset($phrase_info['phrase'])) {
+				$phrase_info['phrase'] = null;
+			}
+
+			$phrase_id = $phrase_info['name'];
+			$phrase    = $phrase_info['phrase'];
+
+			$phrase_ids[] = $phrase_id;
+			if ($phrase != "" && $phrase !== null) {
+				$p = new Phrase();
+				$p->setName($phrase_id);
+				$p->phrase = $phrase;
+
+				$adds[] = array(
+					'language_id'     => $lang->id,
+					'name'            => $p->name,
+					'groupname'       => $p->groupname,
+					'phrase'          => $p->phrase,
+					'original_phrase' => $p->original_phrase,
+					'original_hash'   => $p->original_hash,
+					'is_outdated'     => (int)$p->is_outdated,
+					'created_at'      => $p->created_at ? $p->created_at->format('Y-m-d H:i:s') : null,
+					'updated_at'      => $p->updated_at ? $p->updated_at->format('Y-m-d H:i:s') : null,
+				);
+			}
+		}
+
+		if ($phrase_ids) {
+			$this->db->deleteIn('phrases', $phrase_ids, 'name', false, "language_id = {$lang->id}");
+
+			if ($adds) {
+				$this->db->batchInsert('phrases', $adds, true);
+			}
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+
+	############################################################################
+	# get-phrase-groups
+	############################################################################
+
+	public function getPhraseGroupsAction()
+	{
+		#------------------------------
+		# Special object groups
+		#------------------------------
+
+		$object_groups = array();
+		$object_groups[] = array('id' => 'ticket_departments',  'title' => 'Ticket Departments');
+		$object_groups[] = array('id' => 'chat_departments',    'title' => 'Chat Departments');
+
+		if ($this->settings->get('core.use_product')) {
+			$object_groups[] = array('id' => 'products',            'title' => 'Products');
+		}
+		if ($this->settings->get('core.use_ticket_category')) {
+			$object_groups[] = array('id' => 'ticket_categories',   'title' => 'Ticket Categories');
+		}
+		if ($this->settings->get('core.use_ticket_priority')) {
+			$object_groups[] = array('id' => 'ticket_priorities',   'title' => 'Ticket Priorities');
+		}
+		if ($this->settings->get('core.use_ticket_workflow')) {
+			$object_groups[] = array('id' => 'ticket_workflows',    'title' => 'Ticket Workflows');
+		}
+
+		$object_groups[] = array('id' => 'feedback_statuses',   'title' => 'Feedback Statuses');
+		$object_groups[] = array('id' => 'feedback_types',      'title' => 'Feedback Types');
+		$object_groups[] = array('id' => 'kb_categories',       'title' => 'Knowledgebase Categories');
+
+		if ($this->container->getSystemService('ticket_fields_manager')->count()) {
+			$object_groups[] = array('id' => 'ticket_fields',       'title' => 'Ticket Fields');
+		}
+		if ($this->container->getSystemService('person_fields_manager')->count()) {
+			$object_groups[] = array('id' => 'person_fields',       'title' => 'Person Fields');
+		}
+		if ($this->container->getSystemService('org_fields_manager')->count()) {
+			$object_groups[] = array('id' => 'org_fields',          'title' => 'Organization Fields');
+		}
+
+		#------------------------------
+		# Phrase groups
+		#------------------------------
+
+		$groups_reader = new LanguagePhrases();
+		$tr = $this->container->getTranslator();
+		$phrase_groups = array();
+
+		foreach ($groups_reader->getGroups() as $type => $groups) {
+			$phrase_groups[$type] = array();
+
+			foreach ($groups as $group) {
+				$phrase_id = "admin.languages.phrasegroup_{$type}_{$group}";
+				$title = $tr->hasPhrase($phrase_id) ? $tr->phrase($phrase_id) : ucfirst("$type $group");
+
+				$phrase_groups[$type][] = array('id' => "{$type}.{$group}", 'title' => $title);
+			}
+		}
+
+		return $this->createJsonResponse(array(
+			'phrase_groups' => array(
+				'object' => $object_groups,
+				'user'   => $phrase_groups['user'],
+				'agent'  => $phrase_groups['agent'],
+				'admin'  => $phrase_groups['admin'],
+			)
+		));
+	}
+
+
+	############################################################################
+	# get-phrases
+	############################################################################
+
+	public function getPhrasesAction($id, $group_id)
+	{
+		if (Numbers::isInteger($id)) {
+			$lang = $this->container->getLanguageData()->get($id);
+			if (!$lang) {
+				throw $this->createNotFoundException();
+			}
+
+		} else {
+			$langpacks = new LangPackInfo();
+			if (!$langpacks->hasLang($id)) {
+				throw $this->createNotFoundException();
+			}
+
+			$lang_info = $langpacks->getLangInfo($id);
+			$lang = null;
+
+			foreach ($this->container->getLanguageData()->getAll() as $l) {
+				if ($l->sys_name == $lang_info['id']) {
+					$lang = $l;
+					break;
+				}
+			}
+
+			if (!$lang) {
+				$lang = null;
+			}
+		}
+
+		/** @var \Application\DeskPRO\EntityRepository\Phrase $repos */
+		$repos = $this->em->getRepository('DeskPRO:Phrase');
+
+		$phrase_data = new PhraseData($repos, DP_ROOT.'/languages');
+
+		switch ($group_id) {
+			case 'ticket_departments':
+				$phrases = $phrase_data->getTicketDepartmentPhrases(
+					$this->container->getSystemService('ticket_departments'),
+					$lang
+				);
+				break;
+
+			case 'ticket_categories':
+				$phrases = $phrase_data->getTicketCategoryPhrases(
+					$this->container->getSystemService('ticket_categories'),
+					$lang
+				);
+				break;
+
+			case 'ticket_priorities':
+				$phrases = $phrase_data->getTicketPriorityPhrases(
+					$this->container->getSystemService('ticket_priorities'),
+					$lang
+				);
+				break;
+
+			case 'chat_departments':
+				$phrases = $phrase_data->getChatDepartmentPhrases(
+					$this->container->getSystemService('chat_departments'),
+					$lang
+				);
+				break;
+
+			case 'products':
+				$phrases = $phrase_data->getProductPhrases(
+					$this->container->getSystemService('products'),
+					$lang
+				);
+				break;
+
+			case 'ticket_fields':
+				$phrases = $phrase_data->getFieldPhrases(
+					$this->container->getSystemService('ticket_fields_manager'),
+					$lang
+				);
+				break;
+
+			case 'person_fields':
+				$phrases = $phrase_data->getFieldPhrases(
+					$this->container->getSystemService('person_fields_manager'),
+					$lang
+				);
+				break;
+
+			case 'org_fields':
+				$phrases = $phrase_data->getFieldPhrases(
+					$this->container->getSystemService('org_fields_manager'),
+					$lang
+				);
+				break;
+
+			case 'feedback_statuses':
+				$phrases = $phrase_data->getFeedbackStatusPhrases($lang);
+				break;
+
+			case 'feedback_types':
+				$phrases = $phrase_data->getFeedbackTypePhrases($lang);
+				break;
+
+			case 'kb_categories':
+				/** @var \Application\DeskPRO\EntityRepository\ArticleCategory $repos */
+				$repos = $this->em->getRepository('DeskPRO:ArticleCategory');
+				$phrases = $phrase_data->getKbCategoryPhrases($repos, $lang);
+				break;
+
+			case 'custom':
+				$phrases = $phrase_data->loadCustom($lang);
+				break;
+
+			default:
+				$phrases = $phrase_data->loadGroup($lang, $group_id);
+				break;
+		}
+
+		return $this->createJsonResponse(array(
+			'phrases' => $phrases
+		));
+	}
+
 
 	############################################################################
 	# mass-update-tickets

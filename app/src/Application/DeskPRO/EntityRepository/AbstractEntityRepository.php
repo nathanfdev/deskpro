@@ -91,6 +91,19 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 
 	/**
+	 * @return array
+	 */
+	public function getAllIndexedById()
+	{
+		$class = $this->getName();
+		return $this->getEntityManager()->createQuery("
+			SELECT o
+			FROM {$class} o INDEX BY o.id
+		")->execute();
+	}
+
+
+	/**
 	 * Alias for find
 	 *
 	 * @param int $id

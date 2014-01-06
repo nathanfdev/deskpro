@@ -173,6 +173,30 @@ define(function() {
 	});
 
 	//###
+	//# Phrases
+	//###
+	routes.push({
+		id: 'setup.phrases',
+		url: '/{id:phrases\\-[a-z]+}',
+		templateName: 'Languages/phrases-list.html',
+		controller: 'Admin_Languages_Ctrl_PhraseList'
+	});
+
+	routes.push({
+		id: 'setup.phrases.viewresgroup',
+		url: '/{groupId:res\\-[a-zA-Z0-9\\._]+}',
+		templateName: 'Languages/phrases-viewresgroup.html',
+		controller: 'Admin_Languages_Ctrl_PhraseResGroup'
+	});
+
+	routes.push({
+		id: 'setup.phrases.viewgroup',
+		url: '/{groupId:[a-zA-Z0-9\\._]+}',
+		templateName: 'Languages/phrases-viewgroup.html',
+		controller: 'Admin_Languages_Ctrl_PhraseGroup'
+	});
+
+	//###
 	//# Outgoing Email
 	//###
 	routes.push({

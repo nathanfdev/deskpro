@@ -532,9 +532,10 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $table
 	 * @param array $ids
 	 * @param string $field
+	 * @param array|string $other_wheres
 	 * @return int
 	 */
-	public function deleteIn($table, array $ids, $field = 'id', $not = false)
+	public function deleteIn($table, array $ids, $field = 'id', $not = false, $other_wheres = '')
 	{
 		if (!$ids) {
 			return 0;
@@ -546,7 +547,17 @@ class Connection extends \Doctrine\DBAL\Connection
 			$not = '';
 		}
 
-		return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (" . $this->quoteIn($ids) . ")");
+		$more_where = '';
+		if ($other_wheres) {
+			if (is_array($other_wheres)) {
+				$more_where = 'AND ' . implode(' AND ', $other_wheres);
+			} else {
+				$more_where = 'AND ' . $other_wheres;
+			}
+
+		}
+
+		return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (" . $this->quoteIn($ids) . ") $more_where");
 	}
 
 

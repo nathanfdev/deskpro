@@ -70,6 +70,11 @@ class Phrase extends AbstractEntityRepository
 	}
 
 
+	/**
+	 * @param \Application\DeskPRO\Entity\Language $language
+	 * @param string $group
+	 * @return array
+	 */
 	public function getPhrasesInGroup($language, $group)
 	{
 		$parts = explode('.', $group);

@@ -1,0 +1,60 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('setup.languages.edit', '{id: ListCtrl.pack.id}') }}" dp-state-mark="setup.languages.edit.{{ ng_var('ListCtrl.pack.id') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Language: {{ ng_var('ListCtrl.pack.show_title') }} ({{ ng_var('ListCtrl.pack.title') }})</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Resources</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li>
+					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'custom'}") }}" dp-state-mark="setup.phrases.viewgroup.custom">
+						<h4>
+							<span class="title-text">
+								All Custom Phrases
+							</span>
+						</h4>
+					</a>
+				</li>
+				<li ng-repeat="group in ListCtrl.phraseGroups.object">
+					<a href="{{ ng_href('setup.phrases.viewresgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'res-' + group.id}") }}" dp-state-mark="setup.phrases.viewgroup.{{ ng_var('group.id') }}">
+						<h4>
+							<span class="title-text">
+								{{ ng_var('group.title') }}
+							</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>User Interface Phrases</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="group in ListCtrl.phraseGroups.user">
+					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: group.id}") }}" dp-state-mark="setup.phrases.viewgroup.{{ ng_var('group.id') }}">
+						<h4>
+							<span class="title-text">
+								{{ ng_var('group.title') }}
+							</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+{% endblock %}
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}
+{% endblock %}

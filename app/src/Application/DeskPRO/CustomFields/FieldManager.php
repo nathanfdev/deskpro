@@ -126,6 +126,33 @@ class FieldManager
 
 
 	/**
+	 * @return string
+	 */
+	public function getEntityClass()
+	{
+		return $this->options->get('entity_class');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getEntityName()
+	{
+		return $this->options->get('entity_name');
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->getFields());
+	}
+
+
+	/**
 	 * Creates a new field def entity. This entity will be unmanaged by this
 	 * manager. You will need to persist, flush and then reset this object to have the new field added
 	 * to this manager.
