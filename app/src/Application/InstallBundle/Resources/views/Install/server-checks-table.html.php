@@ -98,6 +98,29 @@
 <tr>
 	<td>
 		<?php $failed = false ?>
+		<?php if (!isset($errors['libxml_ext']) && !isset($errors['libxml_version'])): ?>
+			<span class="label success" style="float:right">OK</span>
+		<?php else: $failed = true; $failed_phpini = true; ?>
+			<span class="label important" style="float:right">FAIL</span>
+		<?php endif ?>
+		Check that the <a href="http://php.net/manual/en/book.libxml.php">libxml</a> extension is installed
+		<?php if ($failed): ?>
+			<div class="alert-message block-message error">
+				<?php if (isset($errors['libxml_ext'])): ?>
+					DeskPRO requires the <a href="http://php.net/manual/en/book.libxml.php">libxml extension</a>. You
+					will need to rebuild PHP with libxml enabled.
+				<?php elseif (isset($errors['libxml_version'])): ?>
+					Your version of PHP was built against a very old version of libxml (libxml is used by the <a href="http://php.net/manual/en/book.libxml.php">libxml extension</a>).
+					Older versions of libxml contain bugs that can lead to problems parsing HTML email. You need to update the version of <a href="http://xmlsoft.org/">libxml</a> on your server, and then re-build PHP.
+				<?php endif ?>
+			</div>
+		<?php endif ?>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<?php $failed = false ?>
 		<?php if (!isset($errors['iconv_ext']) && !isset($errors['iconv_ext'])): ?>
 		<span class="label success" style="float:right">OK</span>
 		<?php else: $failed = true; $failed_phpini = true; ?>

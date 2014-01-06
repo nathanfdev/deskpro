@@ -371,4 +371,5 @@
 	'core.visitor_cleanup_bogus_time' => 1800,
 
 	'core.agent_translate_debug' => false,
+	'core.agent_enable_kb_shortcuts' => true,
 );

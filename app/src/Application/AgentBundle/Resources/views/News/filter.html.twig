@@ -141,7 +141,7 @@
 		<header><h1>{{ phrase('agent.publish.reorder_category_title') }}</h1></header>
 		<article>
 			<div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
-			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" value="" name="category_structure" />
+			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" name="category_structure" name="category_structure" value="" />
 		</article>
 	</section>
 

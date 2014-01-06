@@ -12,11 +12,11 @@
 			<em class="counter list-counter"
 				id="kb_cat_count_{{ cat.id }}"
 				data-count="{{ counts[cat.id]|default(0) }}"
-			>{{ counts[cat.id]|default(0) }}</em>
+					>{% if counts[cat.id]|default(0) != counts[cat.id~"_total"]|default(0) %}{{ counts[cat.id]|default(0) }}/{{ counts[cat.id~"_total"]|default(0) }}{% else %}{{ counts[cat.id]|default(0) }}{% endif %}</em>
 		</div>
 		{% if news_repo.getChildren(cat)|length %}
 			<ul class="nav-list nav-list-small indented" style="display: none;">
-				{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_repo.getChildren(cat), 'counts': counts, 'depth': depth+1 } %}
+				{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': download_repo.getChildren(cat), 'counts': counts, 'depth': depth+1 } %}
 			</ul>
 		{% endif %}
 	</li>

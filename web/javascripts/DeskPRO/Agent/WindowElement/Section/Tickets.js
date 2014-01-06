@@ -456,6 +456,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	modFilterCount: function(filter_id, op) {
 		filter_id = parseInt(filter_id);
 		var isTilde = $('#ticket_filter_' + filter_id + '_count').text().indexOf('~') !== -1;
+		var isPlus = $('#ticket_filter_' + filter_id + '_count').text().indexOf('+') !== -1;
 		var count = parseInt($('#ticket_filter_' + filter_id + '_count').data('count'));
 
 		if (op == 'add') {
@@ -473,8 +474,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			countStr = '~' + count;
 		}
 
-		var el = $('#ticket_filter_' + filter_id + '_count').html(countStr).data('count', count);
-		$('#ticket_filter_' + filter_id + '_count2').html(count);
+		// "10000+" should not change when +1'ing
+		if (isPlus) {
+			$('#ticket_filter_' + filter_id + '_count').data('count', count);
+		} else {
+			$('#ticket_filter_' + filter_id + '_count').html(countStr).data('count', count);
+			$('#ticket_filter_' + filter_id + '_count2').html(count);
+		}
 	},
 
 	setFilterCount: function(filter_id, count) {
@@ -485,7 +491,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var count_str_real = count_str;
 		if (count >= 10000) count_str = '10000+';
 
-		if (this.archiveTableFilterIds.indexOf(filter_id) != -1 && count > 0) {
+		if (this.archiveTableFilterIds.indexOf(filter_id) != -1 && count > 0 && count < 10000) {
 			count_str = '~' + count;
 		}
 
@@ -816,7 +822,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					if (!hasCurrentSelection[0]) {
 
 						if (currentRoute) {
-							DeskPRO_Window.runPageRoute(currentRoute);
+							DeskPRO_Window.runPageRoute(currentRoute, { noChangePaneVis: true });
 						}
 
 					// Update currently viewed list if we're viewing a
@@ -848,9 +854,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 										listPage.delTicket(filterOps[filterId].ticketId);
 									} else {
 										if (li.data('route')) {
-											DeskPRO_Window.runPageRouteFromElement(li);
+											DeskPRO_Window.runPageRouteFromElement(li, { noChangePaneVis: true });
 										} else {
-											DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'));
+											DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'), { noChangePaneVis: true });
 										}
 									}
 								}
@@ -1163,7 +1169,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	updateSlaCounts: function(data) {
-		if (!data.counts) {
+		if (!data || !data.counts) {
 			return;
 		}
 

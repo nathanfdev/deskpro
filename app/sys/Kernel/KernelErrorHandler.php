@@ -535,6 +535,16 @@ class KernelErrorHandler
 			if (!empty($exception->_dp_query_params)) {
 				$context_data .= "\n\n" . self::varToString($exception->_dp_query_params);
 			}
+
+			try {
+				if (class_exists('Application\\DeskPRO\\App', false)) {
+					$status = App::getDb()->fetchAssoc("SHOW ENGINE INNODB STATUS");
+					if (!empty($status['Status'])) {
+						$status = $status['Status'];
+						$context_data .= "\n\nINNODB STATUS: $status";
+					}
+				}
+			} catch (\Exception $e) {}
 		}
 
 		if (!$context_data && isset($exception->_dp_context_data)) {
@@ -680,6 +690,34 @@ class KernelErrorHandler
 
 			// table is full
 			if (strpos($exception->getMessage(), 'General error: 1114 The table') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'Lost connection to MySQL') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'not allowed to connect to this MySQL server') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'reading initial communication packet') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'sending authentication information') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'Can\'t create/write to file') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'marked as crashed') !== false) {
+				return true;
+			}
+
+			if (strpos($exception->getMessage(), 'Error writing file') !== false) {
 				return true;
 			}
 
@@ -856,6 +894,7 @@ class KernelErrorHandler
 		if (
 			strpos($errstr, 'stream_socket_enable_crypto():') !== false
 			|| strpos($errstr, 'SSL: Broken pipe') !== false
+			|| strpos($errstr, 'SSL: Connection reset by peer') !== false
 			|| strpos($errstr, 'SSL operation failed') !== false
 			|| strpos($errstr, 'errno=32 Broken pipe')
 			|| strpos($errstr, 'SSL: An established connection was aborted') !== false

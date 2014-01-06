@@ -587,6 +587,7 @@ class MainController extends AbstractController
 				} else {
 					$people = array();
 
+					$q = preg_replace('#\s+#', ' ', $q);
 					$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
 					if ($this->settings->get('core_tablecounts.people') < 15000) {
@@ -600,9 +601,10 @@ class MainController extends AbstractController
 								OR people.first_name LIKE ?
 								OR people.last_name LIKE ?
 								OR people_emails.email LIKE ?
+								OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
 							ORDER BY people.id DESC
 							LIMIT 15
-						", array($q_search, $q_search, $q_search, $q_search));
+						", array($q_search, $q_search, $q_search, $q_search, $q_search));
 					} else {
 						$people_ids = $this->db->fetchAllCol("
 							SELECT people.id
@@ -616,10 +618,11 @@ class MainController extends AbstractController
 									OR people.first_name LIKE ?
 									OR people.last_name LIKE ?
 									OR people_emails.email LIKE ?
+									OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
 								)
 							ORDER BY tickets.id DESC
 							LIMIT 15
-						", array($after_id, $q_search, $q_search, $q_search, $q_search));
+						", array($after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
 					}
 
 					if ($people_ids) {

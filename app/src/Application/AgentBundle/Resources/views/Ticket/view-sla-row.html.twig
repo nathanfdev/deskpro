@@ -9,14 +9,14 @@
 	</td>
 	<td class="warn-date">
 		{% if ticket_sla.warn_date %}
-			<time class="timeago" datetime="{{ticket_sla.warn_date|date('c', 'UTC')}}"></time>
+			<span title="{{ticket_sla.warn_date|date('fulltime')}}"><time class="timeago" datetime="{{ticket_sla.warn_date|date('c', 'UTC')}}"></time></span>
 		{% else %}
 			{{ phrase('agent.general.na') }}
 		{% endif %}
 	</td>
 	<td class="fail-date">
 		{% if ticket_sla.fail_date %}
-			<time class="timeago" datetime="{{ticket_sla.fail_date|date('c', 'UTC')}}"></time>
+			<span title="{{ticket_sla.fail_date|date('fulltime')}}"><time class="timeago" datetime="{{ticket_sla.fail_date|date('c', 'UTC')}}"></time></span>
 		{% else %}
 			{{ phrase('agent.general.na') }}
 		{% endif %}

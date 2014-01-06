@@ -71,7 +71,7 @@ class RegisterValidator extends AbstractValidator
 			$this->addError('name.short');
 		}
 
-		if (!\Orb\Validator\StringEmail::isValueValid($this->register->email)) {
+		if (!App::getSystemService('email_address_validator')->isValidUserEmail($this->register->email)) {
 			$this->addError('email.invalid');
 		} else {
 			$check_exist = App::getDb()->fetchColumn("
@@ -80,10 +80,6 @@ class RegisterValidator extends AbstractValidator
 				WHERE email = ?
 			", array($this->register->email));
 			if ($check_exist) {
-				$this->addError('email.in_use');
-			}
-
-			if (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->register->email)) {
 				$this->addError('email.in_use');
 			}
 		}

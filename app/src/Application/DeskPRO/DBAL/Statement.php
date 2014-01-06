@@ -38,6 +38,13 @@ class Statement extends \Doctrine\DBAL\Statement
 {
 	public function execute($params = null)
 	{
+		if ($this->sql == 'INSERT INTO labels_tickets (label, ticket_id) VALUES (?, ?)') {
+			// easiest way to avoid problems with simultaneous labelling requests
+			// no easy way to make doctrine do this on the entity-level,
+			// and we dont want to resort to table locking.
+			// future: add in official doctrine support for replace into/insert ignore?
+			$this->sql = 'INSERT IGNORE INTO labels_tickets (label, ticket_id) VALUES (?, ?)';
+		}
 		try {
 			parent::execute($params);
 		} catch (\Doctrine\DBAL\DBALException $e) {

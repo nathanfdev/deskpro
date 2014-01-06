@@ -50,6 +50,7 @@ use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -131,6 +132,7 @@ class TicketController extends AbstractController
 		$macros = $this->person->Agent->getMacros();
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
+
 		$hidden_data = $this->_getHiddenBarData($ticket);
 
 		// Check if the search adapter
@@ -270,6 +272,45 @@ class TicketController extends AbstractController
 		}
 
 		#------------------------------
+		# Linked tickets
+		#------------------------------
+
+		$linked_tickets = array(
+			'parent'   => null,
+			'siblings' => array(),
+			'children' => array(),
+			'count'    => 0
+		);
+
+		if ($ticket->parent_ticket && $ticket->parent_ticket->status != 'hidden' && $this->checkPerm($ticket->parent_ticket, 'view')) {
+			$linked_tickets['parent'] = $ticket->parent_ticket;
+
+			// Find siblings
+			$linked_tickets['siblings'] = $this->permCheckArray(
+				$this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket->parent_ticket),
+				'view'
+			);
+			$linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function($t) use ($ticket) {
+				if ($t->id == $ticket->id) {
+					return false;
+				} else {
+					return true;
+				}
+			});
+		}
+
+		$linked_tickets['children'] = $this->permCheckArray(
+			$this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket),
+			'view'
+		);
+
+		$linked_tickets['count'] = array_sum(array(
+			$linked_tickets['parent'] ? 1 : 0,
+			count($linked_tickets['siblings']),
+			count($linked_tickets['children'])
+		));
+
+		#------------------------------
 		# Pre-load person and org
 		#------------------------------
 
@@ -308,6 +349,7 @@ class TicketController extends AbstractController
 			'custom_fields'              => $custom_fields,
 
 			'show_related_content'       => $show_related_content,
+			'linked_tickets'             => $linked_tickets,
 
 			'ticket_messages_block'      => $ticket_messages_block,
 			'logs_block'                 => $logs_block_info['rendered'],
@@ -409,6 +451,32 @@ class TicketController extends AbstractController
 		return $this->createResponse($info['rendered']);
 	}
 
+	public function loadAttachListAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
+		$attach_to_message = array();
+
+		foreach ($ticket_attachments as $attach) {
+			if ($attach->message) {
+				$attach_to_message[$attach->id] = $attach->message;
+			}
+		}
+
+		$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket, array());
+		$counts = $this->em->getRepository('DeskPRO:TicketLog')->countTicketLogTypes($all_ticket_logs);
+		$counts['attach'] = count($ticket_attachments);
+
+		return $this->render('AgentBundle:Ticket:ticket-attach-list.html.twig', array(
+			'ticket'              => $ticket,
+			'filter'              => 'attach',
+			'counts'              => $counts,
+			'attachments'         => $ticket_attachments,
+			'attach_to_message'   => $attach_to_message,
+		));
+	}
+
 	protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false)
 	{
 		if ($filter) {
@@ -424,6 +492,7 @@ class TicketController extends AbstractController
 		$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket, $options);
 
 		$counts = $this->em->getRepository('DeskPRO:TicketLog')->countTicketLogTypes($all_ticket_logs);
+		$counts['attach'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets_attachments WHERE ticket_id = ?", array($ticket->id));
 
 		if ($filter) {
 			$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->filterTicketLogs($all_ticket_logs, $filter);
@@ -937,6 +1006,7 @@ class TicketController extends AbstractController
 
 		$this->em->persist($ticket);
 		$this->em->flush();
+		$ticket->_saveTicketLogs();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -961,7 +1031,11 @@ class TicketController extends AbstractController
 			return $this->createJsonResponse(array('error' => 'no_message'));
 		}
 
-		$ticket = $this->getTicketOr404($ticket_id, 'reply');
+		if ($this->in->getBool('options.is_note')) {
+			$ticket = $this->getTicketOr404($ticket_id, 'modify_notes');
+		} else {
+			$ticket = $this->getTicketOr404($ticket_id, 'reply');
+		}
 
 		$action_type = $this->in->getString('options.action');
 		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
@@ -2575,12 +2649,15 @@ class TicketController extends AbstractController
 			$merge = new TicketMerge($this->person, $ticket, $other_ticket);
 			$merge->merge();
 			$this->em->commit();
+		} catch (\InvalidArgumentException $e) {
+			throw $this->createNotFoundException("You cannot merge a ticket with itself");
 		} catch (\Exception $e) {
 			$this->em->rollback();
 
 			throw $e;
 		}
 
+		$ticket->recountStats();
 		$this->em->persist($ticket);
 		$this->em->flush();
 
@@ -2630,6 +2707,16 @@ class TicketController extends AbstractController
 			$this->em->rollback();
 
 			throw $e;
+		}
+
+		if (!$split->wasOldTicketDeleted()) {
+			$ticket->recountStats();
+			$this->em->persist($ticket);
+		}
+
+		if ($new_ticket) {
+			$new_ticket->recountStats();
+			$this->em->persist($new_ticket);
 		}
 
 		$this->em->flush();
@@ -2902,17 +2989,49 @@ class TicketController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		$ticket = new \Application\DeskPRO\Entity\Ticket();
+		if ($this->in->getUint('ticket_id')) {
+			$ticket = $this->getTicketOr404($this->in->getUint('ticket_id'));
+
+			$message = null;
+			if ($this->in->getUint('message_id')) {
+				$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($this->in->getUint('message_id'));
+			}
+			if (!$message || $message->ticket != $ticket) {
+				$message = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
+			}
+		} else {
+			$ticket = new \Application\DeskPRO\Entity\Ticket();
+			$message = null;
+
+			if ($this->settings->get('core.default_ticket_dep')) {
+				$ticket->setDepartmentId($this->settings->get('core.default_ticket_dep'));
+			}
+			if ($this->settings->get('core.default_ticket_cat')) {
+				$ticket->setCategoryId($this->settings->get('core.default_ticket_cat'));
+			}
+			if ($this->settings->get('core.default_ticket_pri')) {
+				$ticket->setPriorityId($this->settings->get('core.default_ticket_pri'));
+			}
+			if ($this->settings->get('core.default_ticket_work')) {
+				$ticket->setWorkflowId($this->settings->get('core.default_ticket_work'));
+			}
+			if ($this->settings->get('core.default_prod_id')) {
+				$ticket->setProductId($this->settings->get('core.default_prod_id'));
+			}
+		}
+
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
-			'agents' => $agents,
-			'agent_signature' => $this->person->getSignature(),
-	        'agent_signature_html' => $this->person->getSignatureHtml(),
-			'agent_teams' => $agent_teams,
-			'ticket_options' => $ticket_options,
-			'custom_fields' => $custom_fields,
+			'ticket'                 => $ticket,
+			'message'                => $message,
+			'agents'                 => $agents,
+			'agent_signature'        => $this->person->getSignature(),
+	        'agent_signature_html'   => $this->person->getSignatureHtml(),
+			'agent_teams'            => $agent_teams,
+			'ticket_options'         => $ticket_options,
+			'custom_fields'          => $custom_fields,
 		));
 	}
 
@@ -3032,8 +3151,25 @@ class TicketController extends AbstractController
 			// - So the act of an agent manually selecting the account to create a new ticket for them should
 			// essentially validate the account.
 			// - This is needed or else the ticket will be created as validating, and no emails (not even to the user) would be sent
-			$person->is_confirmed = true;
-			$person->is_agent_confirmed = true;
+			if (isset($check_person) && $check_person && !$check_person->id != $this->person->id && (!$check_person->is_confirmed || !$check_person->is_agent_confirmed)) {
+				$check_person->is_confirmed = true;
+				$check_person->is_agent_confirmed = true;
+
+				$email = null;
+				if (isset($new_email) && $new_email) {
+					$email = $check_person->findEmailAddress($new_email);
+				} else {
+					$email = $check_person->primary_email;
+				}
+
+				if ($email) {
+					$email->is_validated = true;
+				}
+
+				// Clear any $check_persons for the user to avoid potential data leaks to do with
+				// validating them now
+				$this->db->delete('sessions', array('person_id' => $check_person->id));
+			}
 
 			// Validate based on department...
 			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
@@ -3088,6 +3224,15 @@ class TicketController extends AbstractController
 
 				$newticket->save();
 				$ticket = $newticket->getTicket();
+
+				if ($this->in->getUint('parent_ticket_id')) {
+					$parent_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('parent_ticket_id'));
+					if ($parent_ticket) {
+						$ticket->parent_ticket = $parent_ticket;
+						$this->em->flush($ticket);
+						$this->em->flush();
+					}
+				}
 
 				$this->em->flush();
 
@@ -3513,6 +3658,18 @@ class TicketController extends AbstractController
 		}
 
 		return true;
+	}
+
+	public function permCheckArray($tickets, $check_perm)
+	{
+		if ($tickets instanceof ArrayCollection) {
+			$tickets = $tickets->toArray();
+		}
+
+		$self = $this;
+		return array_filter($tickets, function($t) use ($self, $check_perm) {
+			return $self->checkPerm($t, $check_perm);
+		});
 	}
 
 	/**

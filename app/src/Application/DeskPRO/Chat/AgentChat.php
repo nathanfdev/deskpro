@@ -85,6 +85,11 @@ class AgentChat
 			$part_ids[] = $part['id'];
 		}
 
+		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+			$em->persist($conversation);
+			$em->flush();
+		});
+
 		foreach ($conversation->participants as $part) {
 			if ($part['id'] == $this->person['id']) {
 				continue;
@@ -113,17 +118,12 @@ class AgentChat
 			$client_messages[] = $cm;
 		}
 
-		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-			$em->persist($conversation);
-
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
+		if ($client_messages) {
+			foreach ($client_messages as $cm) {
+				App::getOrm()->persist($cm);
 			}
-
-			$em->flush();
-		});
+			App::getOrm()->flush();
+		}
 
 		// If any of the targets are not online, we might need to nofigy them of the message via email
 		if (!$this->suppress_offline_email && !$chat_message->is_sys) {

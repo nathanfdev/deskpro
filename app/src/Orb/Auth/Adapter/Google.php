@@ -103,6 +103,8 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
 		$googleLogin = GoogleOpenID::getResponse();
+		$user_id = $user_email = null;
+
 		if($googleLogin->success()) {
 			$user_id = $googleLogin->identity();
 			$user_email = $googleLogin->email();

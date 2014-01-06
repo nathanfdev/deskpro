@@ -100,7 +100,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this._initMenus();
 		this._initAssignControl();
-		this._initUpload();
 		this._initBlock();
 		this._initLabels();
 
@@ -503,6 +502,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 			});
 		}
+
+		// Init upload after RTE was added (it has an upload field on the 'attach' button)
+		this._initUpload();
 	},
 
 	handleNewMessageCm: function(data, name) {

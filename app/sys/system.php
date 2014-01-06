@@ -377,7 +377,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		if ($response->headers->get('Content-Type') == 'text/html') {
 			$content = $response->getContent();
-			$content = str_replace('<head>', "<head>\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />", $content);
+			$content = str_replace('</head>', "\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />\n\t</head>", $content);
 
 			if ($this instanceof UserKernel) {
 				$website_url = isset($GLOBALS['DP_WEBSITE_URL']) ? $GLOBALS['DP_WEBSITE_URL'] : '';
@@ -855,9 +855,11 @@ final class License
 		}
 
 		$html = <<<STR
+<!-- DeskPRO Copyright -->
 <div class="dp-copy">
 	<a href="http://www.deskpro.com/">$powered_by_deskpro</a>
 </div>
+<!-- DeskPRO Copyright -->
 STR;
 
 		return $html;

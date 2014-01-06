@@ -189,7 +189,12 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			});
 		}
 
-		chatWin.showMessage(info.author_id, info.message, info.time);
+		chatWin.showMessage({
+			agentId: info.author_id,
+			messageId: info.message_id,
+			message: info.message,
+			time: info.time
+		});
 		chatWin.open();
 	},
 

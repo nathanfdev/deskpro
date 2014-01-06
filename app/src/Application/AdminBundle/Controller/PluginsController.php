@@ -134,6 +134,12 @@ class PluginsController extends AbstractController
 	 */
 	public function installAction($plugin_id, $step = 1)
 	{
+		if ($plugin_id == 'MicrosoftTranslator') {
+			if (!extension_loaded('curl')) {
+				return $this->renderStandardError("Microsoft Translator cannot beinstalled: The cURL PHP extension must be installed for this plugin.");
+			}
+		}
+
 		$plugin_info = $this->_getPluginInfoOr404($plugin_id);
 
 		$plugin = new \Application\DeskPRO\Entity\Plugin();

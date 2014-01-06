@@ -253,6 +253,19 @@
 	</div>
 </div>
 <div class="setting_field_row">
+	<h4>Keyboard Shortcuts</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<input type="hidden" name="set_settings_falseable[]" value="core.agent_enable_kb_shortcuts" />
+			<label>
+				<input type="checkbox" name="settings[core.agent_enable_kb_shortcuts]" {% if app.getSetting('core.agent_enable_kb_shortcuts') %}checked="checked"{% endif %} />
+				Enable keyboard shortcuts in the agent interface.
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Keyboard shortcuts make it faster to access often used features of the interface. For example, press 't' to open the New Ticket form. A complete list is displayed in the Help menu in the agent interface. Depending on your computer input preferences, these keyboard shortcuts may conflict with special language input so you may want to disable them."></span>
+			</label>
+		</div>
+	</div>
+</div>
+<div class="setting_field_row">
 	<h4>{{ phrase('agent.general.misc') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">

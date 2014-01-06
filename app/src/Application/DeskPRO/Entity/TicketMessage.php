@@ -303,7 +303,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			$m = null;
 			$changed = false;
 
-			if (preg_match('#\[attach:(.*?):(.*?):(.*?)\]#', $message, $m)) {
+			if (preg_match('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $message, $m)) {
 				$changed = true;
 				$pos = strpos($message, $m[0]);
 				$before = substr($message, 0, $pos);
@@ -339,7 +339,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getUsedSignatureImageBlobs()
 	{
-		preg_match_all('#\[attach:signature_image:(.*?):(.*?)\]#', $this->message, $matches, PREG_SET_ORDER);
+		preg_match_all('#\[attach:signature_image:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $this->message, $matches, PREG_SET_ORDER);
 		$auth_codes = array();
 		foreach ($matches AS $match) {
 			$auth_codes[] = $match[1];

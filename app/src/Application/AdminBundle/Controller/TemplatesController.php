@@ -358,7 +358,8 @@ class TemplatesController extends AbstractController
 		}
 
 		if ($name == 'UserBundle::layout.html.twig' && !\DeskPRO\Kernel\License::getLicense()->isCopyfree()) {
-			if (!preg_match('#\{\{\s*dp_copyright\(\)\s*\}\}#', $code)) {
+			$code_test = strip_tags($code);
+			if (!preg_match('#\{\{\s*dp_copyright\(\)\s*\}\}#', $code_test)) {
 				return $this->createJsonResponse(array(
 					'error' => true,
 					'error_code' => 'missing_copyright',

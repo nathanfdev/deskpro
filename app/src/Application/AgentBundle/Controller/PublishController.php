@@ -35,10 +35,12 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
 
+use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
 
@@ -669,7 +671,11 @@ class PublishController extends AbstractController
 			$results = $this->em->getRepository($entity)->getByIds($ids);
 			foreach ($results as $r) {
 				if ($action == 'approve') {
-					$r->status = 'approve';
+					if ($type == 'feedback') {
+						$r->status = 'new';
+					} else {
+						$r->status = 'publish';
+					}
 				} else {
 					if ($reason) {
 						$this_reason = $reason . ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
@@ -759,6 +765,17 @@ class PublishController extends AbstractController
 				} elseif ($action == 'publish') {
 					$r->setStatusCode('published');
 					$affected_content[] = array('typename' => $type, 'contentId' => $r->id);
+				}
+
+				if ($r instanceof Article && !count($r->categories)) {
+					$cat = $this->em->createQuery("
+						SELECT c
+						FROM DeskPRO:ArticleCategory c
+						ORDER BY c.id ASC
+					")->setMaxResults(1)->getOneOrNullResult();
+					if ($cat) {
+						$r->addToCategory($cat);
+					}
 				}
 			}
 		}
@@ -942,6 +959,7 @@ class PublishController extends AbstractController
 		}
 
 		$this->container->getSystemService('publish_structure_cache')->flush();
+		PermissionUtil::cleanPermissions();
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -1077,6 +1095,7 @@ class PublishController extends AbstractController
 
 		$repos->repair();
 		$this->container->getSystemService('publish_structure_cache')->flush();
+		PermissionUtil::cleanPermissions();
 
 		return $this->createJsonResponse(array(
 			'id' => $cat->id
@@ -1131,24 +1150,28 @@ class PublishController extends AbstractController
 		switch ($type) {
 			case 'articles':
 				$searcher = new ArticleSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'ArticleResults';
 				$cats = $this->in->getCleanValueArray('article_categories', 'uint', 'discard');
 				break;
 
 			case 'news':
 				$searcher = new NewsSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'NewsResults';
 				$cats = $this->in->getCleanValueArray('news_categories', 'uint', 'discard');
 				break;
 
 			case 'downloads':
 				$searcher = new DownloadSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'DownloadResults';
 				$cats = $this->in->getCleanValueArray('downloads_categories', 'uint', 'discard');
 				break;
 
 			case 'feedback':
 				$searcher = new FeedbackSearch();
+				$searcher->addTerm('deleted', 'not', 1);
 				$helper = 'FeedbackResults';
 				$cats = $this->in->getCleanValueArray('feedback_categories', 'uint', 'discard');
 				break;

@@ -1141,7 +1141,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.getEl('signature_value_html').val() || "";
 			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
-			if (sig) {
+			if (sig && parseInt(this.getEl('parent_ticket_id').val()) === 0) {
 				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
 			}
 
@@ -1343,6 +1343,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			onSnippetClick: function(info) {
 
 				var ticketLangId = self.getEl('value_form').find('.language_id').val();
+				if (!ticketLangId) {
+					ticketLangId = info.language_id == DESKPRO_DEFAULT_LANG_ID;
+				}
 				var snippetId    = info.snippetId;
 				var snippetCode  = info.snippetCode;
 
@@ -1353,16 +1356,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var result;
 
 				Array.each(snippetCode, function(info) {
-					if (info.language_id == ticketLangId) {
-						wantText = info.value;
+					if (info.value) {
+						if (info.language_id == ticketLangId) {
+							wantText = info.value;
+						}
+						if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+							agentText = info.value;
+						}
+						if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+							defaultText = info.value;
+						}
+						useText = info.value;
 					}
-					if (info.language_id == DESKPRO_PERSON_LANG_ID) {
-						agentText = info.value;
-					}
-					if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-						defaultText = info.value;
-					}
-					useText = info.value;
 				});
 
 				if (wantText) {
@@ -1385,10 +1390,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					}, {
 						strict_variables: true
 					});
+					if (!result) {
+						result = useText;
+					}
 				} catch(e) {
 					console.log("Snippet render failed: %o", e);
 					result = useText;
 				}
+
+				if (!result) result = '';
 
 				var redactor = self.getEl('message').data('redactor');
 				if (redactor) {

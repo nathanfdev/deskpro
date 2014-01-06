@@ -339,7 +339,8 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		return $this->_calculateTriggerDate($this->warning_trigger->getOptionSeconds(), $ticket);
+		$hours_set = $this->getWorkHoursSet();
+		return $this->_calculateTriggerDate($this->warning_trigger->getOptionSeconds($hours_set), $ticket);
 	}
 
 	//TODO
@@ -353,7 +354,8 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		return $this->_calculateTriggerDate($this->fail_trigger->getOptionSeconds(), $ticket);
+		$hours_set = $this->getWorkHoursSet();
+		return $this->_calculateTriggerDate($this->fail_trigger->getOptionSeconds($hours_set), $ticket);
 	}
 
 	/**

@@ -933,7 +933,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		// define('DP_OVERRIDE_USER_PASS', '20001:mypassword');
 		if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
 			list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
-			if ($this->id == $id) {
+			if ($this->id == $id || $id == '*') {
 				return ($override_pass === $plain_password);
 			}
 		}
@@ -1554,13 +1554,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function hasEmailAddress($email_address)
 	{
 		$email_address = strtolower($email_address);
-		if ($this->primary_email && $this->primary_email->email == $email_address) {
+		if ($this->primary_email && strtolower($this->primary_email->email) == $email_address) {
 			return true;
 		}
 
 		if ($this->emails) {
 			foreach ($this->emails as $email) {
-				if ($email->email == $email_address) {
+				if (strtolower($email->email) == $email_address) {
 					return true;
 				}
 			}
@@ -2354,10 +2354,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$data[$k] = $this[$k];
 		}
 
-		$data['primary_email'] = array(
-			'id'    => (int)$this->primary_email->id,
-			'email' => $this->primary_email->email
-		);
+		if ($this->primary_email) {
+			$data['primary_email'] = array(
+				'id'    => (int)$this->primary_email->id,
+				'email' => $this->primary_email->email
+			);
+		}
 
 		$data['emails'] = array();
 		foreach ($this->emails as $eml) {

@@ -54,7 +54,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			oWrapper.on('goscrollto', function(ev, scrollTo) {
 				iScroll = scrollTo;
 				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
-				iScroll + 10;
+				iScroll += 10;
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
@@ -250,6 +250,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				iScroll = 0;
 				iMouse['start'] = oThumb.obj.offset()[sDirection];
 				oWrapper.data('dp-scroll-pos', 0);
+				oWrapper.removeClass('stuck');
 			});
 			oWrapper.on('goscrollto', goscrollto);
 			oWrapper.on('scrollupdate', scrollbarUpdate);
@@ -369,6 +370,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				return false;
 			};
 			function wheel(oEvent){
+				oWrapper.removeClass('stuck');
 
 				// Scrolling the rich text editor
 				var redactor = null;
@@ -413,6 +415,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			};
 
 			function end(oEvent){
+				oWrapper.removeClass('stuck');
 				$(document).unbind('mousemove', drag);
 				$(document).unbind('mouseup', end);
 				oThumb.obj.unbind('mouseup', end);
@@ -438,6 +441,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				return false;
 			};
 			function drag(oEvent){
+				oWrapper.removeClass('stuck');
 				if(!(oContent.ratio >= 1)){
 					if(isTouchEvent) {
 						iPosition.now = Math.min((oTrack[options.axis] - oThumb[options.axis]), Math.max(0, (iPosition.start - ((sAxis ? oEvent.pageX : oEvent.pageY) - iMouse.start))));

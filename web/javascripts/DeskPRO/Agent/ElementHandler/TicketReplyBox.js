@@ -114,51 +114,53 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (textarea.data('redactor')) {
 				var ed = textarea.getEditor();
 				var lastH = ed.height();
-				ed.on('keyup', function(ev) {
-					var isCtrl = false;
-					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
-						isCtrl = true;
-					} else if (ev.altKey) {
-						isCtrl = true;
-					}
+				if (DESKPRO_ENABLE_KB_SHORTCUTS) {
+					ed.on('keyup', function(ev) {
+						var isCtrl = false;
+						if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+							isCtrl = true;
+						} else if (ev.altKey) {
+							isCtrl = true;
+						}
 
-					if (isCtrl) {
-						if (isCtrl && (ev.which == 85)) {
-							ev.preventDefault();
-							self.page.shortcutReplySetAwaitingUser();
-							return;
+						if (isCtrl) {
+							if (isCtrl && (ev.which == 85)) {
+								ev.preventDefault();
+								self.page.shortcutReplySetAwaitingUser();
+								return;
+							}
+							if (isCtrl && (ev.which == 65)) {
+								ev.preventDefault();
+								self.page.shortcutReplySetAwaitingAgent();
+								return;
+							}
+							if (isCtrl && (ev.which == 68)) {
+								ev.preventDefault();
+								self.page.shortcutReplySetResolved();
+								return;
+							}
+							if (isCtrl && (ev.which == 82)) {
+								ev.preventDefault();
+								self.page.shortcutSendReply();
+								return;
+							}
+							if (isCtrl && (ev.which == 83)) {
+								ev.preventDefault();
+								window.setTimeout(function() {
+									self.page.shortcutOpenSnippets();
+								}, 10);
+								return;
+							}
+							if (isCtrl && (ev.which == 79)) {
+								ev.preventDefault();
+								window.setTimeout(function() {
+									self.page.shortcutReplyOpenProperties();
+								}, 10);
+								return;
+							}
 						}
-						if (isCtrl && (ev.which == 65)) {
-							ev.preventDefault();
-							self.page.shortcutReplySetAwaitingAgent();
-							return;
-						}
-						if (isCtrl && (ev.which == 68)) {
-							ev.preventDefault();
-							self.page.shortcutReplySetResolved();
-							return;
-						}
-						if (isCtrl && (ev.which == 82)) {
-							ev.preventDefault();
-							self.page.shortcutSendReply();
-							return;
-						}
-						if (isCtrl && (ev.which == 83)) {
-							ev.preventDefault();
-							window.setTimeout(function() {
-								self.page.shortcutOpenSnippets();
-							}, 10);
-							return;
-						}
-						if (isCtrl && (ev.which == 79)) {
-							ev.preventDefault();
-							window.setTimeout(function() {
-								self.page.shortcutReplyOpenProperties();
-							}, 10);
-							return;
-						}
-					}
-				});
+					});
+				}
 				var heightUp = function() {
 					textarea.addClass('touched');
 
@@ -176,7 +178,21 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 								if (sEl && sEl[0]) {
 									sEl.get(0).scrollTop = sEl.get(0).scrollTop + hDiff;
 								}
-								self.page.updateUi();
+
+								var focus = textarea.getObject().getFocus();
+								if (focus && focus[0]) {
+									if (focus[0].nodeType == 3) {
+										var focusEl = $(focus[0].parentNode);
+									} else {
+										var focusEl = $(focus[0]);
+									}
+									var focusPos = focusEl.offset();
+									if (focusPos.top+focusEl.height() > $('#dp_window').height()) {
+										self.page.updateUi(newH);
+									}
+								} else {
+									self.page.updateUi();
+								}
 							}
 						}, 60);
 					}
@@ -570,6 +586,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}, {
 							strict_variables: false
 						});
+						if (!result) {
+							result = useText;
+						}
 					} else {
 						result = useText;
 					}
@@ -577,6 +596,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					console.log("Snippet render failed: %o", e);
 					result = useText;
 				}
+
+				if (!result) result = '';
 
 				if (isWysiwyg && textarea.data('redactor')) {
 					try {
@@ -1111,6 +1132,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				window.DESKPRO_MACRO_LABELS.push([macro_id, label.toLowerCase()])
 				statusMacroListMap[macro_id] = this;
 			});
+		}
+
+		// Depending on perms, the note tab might be already on
+		// And we need ot run certain other hide/show actions
+		if (this.el.hasClass('dp-note-on')) {
+			this.getElById('replybox_notetab_btn').click();
 		}
 	},
 

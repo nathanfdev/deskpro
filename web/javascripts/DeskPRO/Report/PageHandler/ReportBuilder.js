@@ -118,7 +118,7 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 			}).fail(failure).always(function() {
 				loadingBlock.hide();
 			});
-		}, {unescape: '/'});
+		}, {unescape: '/?'});
 
 		$(document.body).delegate('a[rel=report-page-body]', 'click', function(e) {
 			var $this = $(this), href = $this.data('report-original-href') || $this.attr('href');

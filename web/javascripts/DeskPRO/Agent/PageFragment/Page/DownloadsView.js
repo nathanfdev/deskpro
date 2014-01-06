@@ -307,7 +307,8 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 			this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
 				ajaxSaveUrl: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-				statusMenu: this.statusMenu
+				statusMenu: this.statusMenu,
+				reloadSelf: true
 			});
 			this.ownObject(this.deleteHelper);
 		}

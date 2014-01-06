@@ -120,7 +120,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	public function connect()
 	{
 		if (parent::connect()) {
-			$this->exec("SET sql_mode=''");
+			$this->exec("SET sql_mode='', time_zone='+00:00'");
 
 			if ($this->names_charset) {
 				$this->exec("SET NAMES '{$this->names_charset}'");
@@ -449,7 +449,7 @@ class Connection extends \Doctrine\DBAL\Connection
 			return parent::executeUpdate($query, $params, $types);
 		} catch (\Doctrine\DBAL\DBALException $e) {
 
-			if ($is_retry <= 2 && stripos($e->getMessage(), 'deadlock') !== false) {
+			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
 				usleep(500000);
 				return $this->executeUpdate($query, $params, $types, $is_retry+1);
 			}
@@ -663,7 +663,7 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 	}
 
-	public function rollback()
+	public function rollback($is_unexpected = true)
 	{
 		try {
 			parent::rollback();
@@ -673,34 +673,36 @@ class Connection extends \Doctrine\DBAL\Connection
 			return;
 		}
 
-		// Set in SearchUpdater::run
-		// - This flag means we've updated records in the search tables.
-		// - Search tables are no innodb which means they cant be rolled back
-		// - So we have to set this reset flag so the cron job will regenerate them next turn
-		if (isset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'])) {
-			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
-			try {
-				$this->executeUpdate("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '1'");
-
-				$e = new \RuntimeException("Rollback will result in corrupted search tables");
-				KernelErrorHandler::logException($e, false);
-			} catch (\Exception $e) {}
-		}
-
 		$level = $this->getTransactionNestingLevel();
 
-		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
-			$this->running_trans_event = true;
-			$eventArgs = new Event\PostCommit($this);
-			$this->_eventManager->dispatchEvent(self::EVENT_POST_ROLLBACK, $eventArgs);
-			$this->running_trans_event = false;
-		}
+		if ($is_unexpected) {
+			// Set in SearchUpdater::run
+			// - This flag means we've updated records in the search tables.
+			// - Search tables are no innodb which means they cant be rolled back
+			// - So we have to set this reset flag so the cron job will regenerate them next turn
+			if (isset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'])) {
+				unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
+				try {
+					$this->executeUpdate("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '1'");
 
-		if ($this->transaction_logger) {
-			$e = new \Exception();
-			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
-			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION ROLLED BACK\n$backtrace");
+					$e = new \RuntimeException("Rollback will result in corrupted search tables");
+					KernelErrorHandler::logException($e, false);
+				} catch (\Exception $e) {}
+			}
+
+			if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
+				$this->running_trans_event = true;
+				$eventArgs = new Event\PostCommit($this);
+				$this->_eventManager->dispatchEvent(self::EVENT_POST_ROLLBACK, $eventArgs);
+				$this->running_trans_event = false;
+			}
+
+			if ($this->transaction_logger) {
+				$e = new \Exception();
+				$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+				$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
+				$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION ROLLED BACK\n$backtrace");
+			}
 		}
 
 		if (!$level) {

@@ -667,7 +667,7 @@ class TicketTerms
 					return false;
 				}
 
-				$header = $ticket->email_reader->getHeader('xxx');
+				$header = $ticket->email_reader->getHeader($choice['header_name']);
 				if (!$header) {
 					return false;
 				}
@@ -675,7 +675,7 @@ class TicketTerms
 
 				$match = false;
 				foreach ($header as $h) {
-					if ($this->_testChoiceMatch($h, $op, $choice)) {
+					if ($this->_testStringMatch($h, $op, $choice['header_value'])) {
 						$match = true;
 						break;
 					}

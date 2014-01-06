@@ -141,6 +141,14 @@ class KbController extends AbstractController
 
 		$trans_data = $this->container->getObjectLangRepository()->getLoadedRecs($article);
 
+		if (!count($article->categories)) {
+			$first = Arrays::getFirstKey($article_categories);
+			$cat = $this->em->getRepository('DeskPRO:ArticleCategory')->find($first);
+			$article->addToCategory($cat);
+			$this->em->persist($article);
+			$this->em->flush($article);
+		}
+
         $vars = array(
             'article'              => $article,
 			'trans_langs'          => $trans_langs,
@@ -400,6 +408,10 @@ class KbController extends AbstractController
 
 			case 'delete':
 				$article->status_code = 'hidden.deleted';
+				break;
+
+			case 'undelete':
+				$article->status_code = 'published';
 				break;
 
 			case 'categories':
@@ -941,6 +953,8 @@ class KbController extends AbstractController
 
 		$formType = new \Application\AgentBundle\Form\Type\NewArticle();
 		$form = $this->get('form.factory')->create($formType, $newarticle);
+
+		$this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", array($this->person->id));
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->handleRequest($this->get('request'));

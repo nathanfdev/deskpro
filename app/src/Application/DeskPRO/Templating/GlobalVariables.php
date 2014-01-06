@@ -321,6 +321,42 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getContainer()->getPlugins()->getPluginService($id);
 	}
 
+	public function getFullAssetUrl()
+	{
+		if (defined('DPC_SITE_DOMAIN')) {
+			return '//' . DPC_SITE_DOMAIN . '/web/';
+		} else {
+			$asset_url = dp_get_config('assets_full_url');
+			if (!$asset_url) {
+				$asset_url = $this->container->getSetting('core.deskpro_url');
+				$asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
+				$asset_url .= (dp_get_config('static_path') ?: '/web') . '/';
+			}
+			$asset_url = preg_replace('#^https?://#', '//', $asset_url);
+
+			return $asset_url;
+		}
+	}
+
+	public function getFullWidgetUrl()
+	{
+		if (defined('DPC_SITE_DOMAIN')) {
+			return '//' . DPC_SITE_DOMAIN . '/';
+		} else {
+			$helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/') . '/';
+			$deskpro_url  = $helpdesk_url;
+
+			if (!$this->container->getSetting('core.rewrite_urls')) {
+				$deskpro_url .= 'index.php/';
+			}
+
+			$widget_url = $deskpro_url;
+			$widget_url = preg_replace('#^https?://#', '//', $widget_url);
+
+			return $widget_url;
+		}
+	}
+
 	public function __toString()
 	{
 		return '[app]';

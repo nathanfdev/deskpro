@@ -195,10 +195,6 @@ abstract class LoaderAbstract
 			require DP_ROOT . '/sys/KernelBooter.php';
 			\DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
-			// Used in the connection factory for the doctrine connection,
-			// so it doesnt try and connect twice
-			$GLOBALS['DP_DEFAULT_CONNECTION_PDO'] = $this->getPdo();
-
 			if (!$kernel_class) {
 				$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			}

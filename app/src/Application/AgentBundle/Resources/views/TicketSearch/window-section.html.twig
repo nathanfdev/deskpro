@@ -4,6 +4,7 @@
 	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-ticket"></i> {{ phrase('agent.chrome.nav_tickets') }}</li>
 {% endblock %}
 {% block pane_content %}
+	{% macro render_filter_count(count) %}{% if count >= 10000 %}10000+{% else %}{{ count|default(0) }}{% endif %}{% endmacro %}
 	<div class="pane-content pane-content-main">
 
 		<section class="pane-section sys-filters-section">
@@ -29,7 +30,7 @@
 									<h3>
 										{{ filter.title }}
 									</h3>
-									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="filter_counts[filter.id]|default(0)">{{ filter_counts[filter.id]|default(0) }}</em></div>
+									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="filter_counts[filter.id]|default(0)">{{ _self.render_filter_count(filter_counts[filter.id]) }}</em></div>
 								</div>
 								<div class="item-form" style="display: none;">
 									<div class="select-value-wrap">
@@ -79,7 +80,7 @@
 									<h3>
 										{{ filter.title }}
 									</h3>
-									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ filter_counts[filter.id]|default(0) }}">{{ filter_counts[filter.id]|default(0) }}</em></div>
+									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ filter_counts[filter.id]|default(0) }}">{{ _self.render_filter_count(filter_counts[filter.id]) }}</em></div>
 								</div>
 								<div class="item-form" style="display: none;">
 									<div class="select-value-wrap">
@@ -141,7 +142,7 @@
 							>
 								<div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 									<h3>{{ filter.title }}</h3>
-									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ filter_counts[filter.id]|default(0) }}">{{ filter_counts[filter.id]|default(0) }}</em></div>
+									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ filter_counts[filter.id]|default(0) }}">{{ _self.render_filter_count(filter_counts[filter.id]) }}</em></div>
 								</div>
 							</li>
 						{% endfor %}

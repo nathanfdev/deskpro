@@ -7,6 +7,7 @@
 			<li class="trigger-update-filter {% if not filter or filter == 'all' %}on{% endif %}" data-typename="all"><em>{{ phrase('agent.general.all') }} ({{ counts.all|default('0') }})</em></li>
 			{% if counts.message %}<li class="trigger-update-filter {% if filter == 'message' %}on{% endif %}" data-typename="message"><em>{{ phrase('agent.tickets.messages') }} ({{ counts.message|default('0') }})</em></li>{% endif %}
 			{% if counts.note %}<li class="trigger-update-filter {% if filter == 'note' %}on{% endif %}" data-typename="note"><em>{{ phrase('agent.tickets.notes') }} ({{ counts.note|default('0') }})</em></li>{% endif %}
+			{% if counts.attach %}<li class="trigger-update-filter {% if filter == 'attach' %}on{% endif %}" data-typename="attach"><em>{{ phrase('agent.tickets.attachments') }} ({{ counts.attach|default('0') }})</em></li>{% endif %}
 			{% if counts.notif %}<li class="trigger-update-filter {% if filter == 'notif' %}on{% endif %}" data-typename="notif"><em>{{ phrase('agent.tickets.notifications') }} ({{ counts.notif|default('0') }})</em></li>{% endif %}
 			{% if counts.assign %}<li class="trigger-update-filter {% if filter == 'assign' %}on{% endif %}" data-typename="assign"><em>{{ phrase('agent.tickets.assignments') }} ({{ counts.assign|default('0') }})</em></li>{% endif %}
 			{% if counts.slas %}<li class="trigger-update-filter {% if filter == 'slas' %}on{% endif %}" data-typename="slas"><em>{{ phrase('agent.general.slas') }} ({{ counts.slas|default('0') }})</em></li>{% endif %}

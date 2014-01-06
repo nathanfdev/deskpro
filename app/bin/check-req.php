@@ -11,12 +11,20 @@ date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
 
 require_once DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
+require_once DP_ROOT . '/src/Orb/Util/Numbers.php';
+require_once DP_ROOT . '/src/Orb/Util/Env.php';
 
 $fatal = array();
 
 foreach (deskpro_install_check_reqs() as $type => $level) {
 	if ($level == 'fatal') {
 		$fatal[] = $type;
+	}
+}
+
+if (!$fatal) {
+	if (\Orb\Util\Env::isFunctionDisabled('exec')) {
+		$fatal[] = "Your server has disabled the PHP exec() function. The automatic upgrader requires this function.";
 	}
 }
 

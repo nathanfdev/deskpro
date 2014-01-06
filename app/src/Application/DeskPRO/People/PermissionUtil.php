@@ -109,8 +109,8 @@ class PermissionUtil
 					WHERE usergroup_id = ? AND name IN (" . App::getDb()->quoteIn($bad_perms) . ")
 				", array($usergroup_id));
 			}
-
-			App::getDb()->exec("DELETE FROM permissions_cache");
 		}
+
+		App::getDb()->exec("DELETE FROM permissions_cache");
 	}
 }

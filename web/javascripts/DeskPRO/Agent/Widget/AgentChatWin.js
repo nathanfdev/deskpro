@@ -209,9 +209,20 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 				if (data.messages) {
 					Array.each(data.messages, function(messageInfo) {
 						if (messageInfo.agent_id == DESKPRO_PERSON_ID) {
-							this.showMyMessage(messageInfo.message);
+							this.showMyMessage({
+								id: messageInfo.id,
+								message: messageInfo.message,
+								time: messageInfo.time,
+								history: true
+							});
 						} else {
-							this.showMessage(messageInfo.agent_id, messageInfo.message, messageInfo.time);
+							this.showMessage({
+								messageId: messageInfo.id,
+								agentId: messageInfo.agent_id,
+								message: messageInfo.message,
+								time: messageInfo.time,
+								history: true
+							});
 						}
 					}, this);
 				}
@@ -242,7 +253,10 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			return;
 		}
 
-		var messageBlock = this.showMyMessage(msg);
+		var messageBlock = this.showMyMessage({
+			message: msg,
+			time: '...'
+		});
 		this.sendMessage(msg, messageBlock);
 	},
 
@@ -328,25 +342,43 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 * @param message
 	 * @param time
 	 */
-	showMessage: function(agent_id, message, time) {
+	showMessage: function(messageInfo) {
 
-		var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
+		// messageInfo = { agentId: 1, messageId: 1, message: XYZ, time: '1:19' }
 
+		var agentInfo = DeskPRO_Window.getAgentInfo(messageInfo.agentId);
 		if (!agentInfo) {
 			return;
 		}
 
+		if (messageInfo.messageId) {
+			if ($('.messages-container', this.wrapper).find('.message-' + messageInfo.messageId)[0]) {
+				return;
+			}
+		}
+
 		var newMessage = $.tmpl('agent_chat_message', {
-			author_id: agent_id,
+			author_id: messageInfo.agentId,
 			author_name: agentInfo.name,
 			author_picture: agentInfo.pictureUrlSizable.replace(/_SIZE_/g, 25),
 			message: '',
-			time: time || ''
+			messageId: messageInfo.messageId || 0,
+			time: messageInfo.time || ''
 		});
 
-		newMessage.find('span.message-text').html(this.formatMessage(message));
+		newMessage.find('span.message-text').html(this.formatMessage(messageInfo.message));
+		if (messageInfo.messageId) {
+			newMessage.addClass('message-' + messageInfo.messageId);
+		}
+		if (!messageInfo.time) {
+			newMessage.find('time').remove();
+		}
 
-		$('.messages-container', this.wrapper).append(newMessage);
+		if (messageInfo.history) {
+			$('.rec-messages-history', this.wrapper).append(newMessage);
+		} else {
+			$('.rec-messages', this.wrapper).append(newMessage);
+		}
 		$('.messages-box').scrollTop(100000);
 	},
 
@@ -363,11 +395,11 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			'i': {title: 'Feedback', url: BASE_URL + 'agent/feedback/view/'}
 		};
 		Object.each(idMap, function(info, prefix) {
-			var re = new RegExp('\{\{\s*' + prefix + '\-([0-9]+)\s*\}\}', 'g');
+			var re = new RegExp('\\{\\{\\s*' + prefix + '\\-([0-9]+)\\s*\\}\\}', 'g');
 			message = message.replace(re, '<a data-route="page:'+info.url+'$1">'+info.title+' #$1</a>');
 		});
 
-		var re = new RegExp('\{\{\s*tw\-([0-9]+)\s*\}\}', 'g');
+		var re = new RegExp('\\{\\{\\s*tw\\-([0-9]+)\\s*\\}\\}', 'g');
 		message = message.replace(re, '<a data-route="poppage:' + BASE_URL + 'agent/twitter/status/tweet-overlay?account_status_id=$1">Tweet #$1</a>');
 
 		message = message.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
@@ -381,11 +413,29 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 *
 	 * @param message
 	 */
-	showMyMessage: function(message) {
-		var newMessage = $.tmpl('agent_chat_message_me', { message: '', time: '...' });
-		newMessage.find('span.message-text').html(this.formatMessage(message));
+	showMyMessage: function(messageInfo) {
 
-		$('.messages-container', this.wrapper).append(newMessage);
+		if (messageInfo.id) {
+			if ($('.messages-container', this.wrapper).find('.message-' + messageInfo.id)[0]) {
+				return;
+			}
+		}
+
+		var message = messageInfo.message
+		var newMessage = $.tmpl('agent_chat_message_me', { message: '', time: messageInfo.time || '' });
+		newMessage.find('span.message-text').html(this.formatMessage(message));
+		if (messageInfo.id) {
+			newMessage.addClass('.message-' + messageInfo.id);
+		}
+		if (!messageInfo.time) {
+			newMessage.find('time').remove();
+		}
+
+		if (messageInfo.history) {
+			$('.rec-messages-history', this.wrapper).append(newMessage);
+		} else {
+			$('.rec-messages', this.wrapper).append(newMessage);
+		}
 		$('.messages-box').scrollTop(100000);
 
 		return newMessage;

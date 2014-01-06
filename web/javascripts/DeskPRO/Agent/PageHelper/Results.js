@@ -257,7 +257,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 
 		if (this.options.refreshMode) {
 			var url = this.page.meta.refreshUrl;
-			url = Orb.appendQueryData(url, 'p', pageNum);
+			url = Orb.appendQueryData(url, 'page', pageNum);
 			DeskPRO_Window.runPageRoute('listpane:' + url);
 			return;
 		}

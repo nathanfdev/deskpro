@@ -463,7 +463,7 @@ class Translate implements PersonContextInterface
 			if ($null_on_notfound) {
 				return null;
 			} else {
-				if (strpos($phrase_name, 'obj') === false) {
+				if (strpos($phrase_name, 'obj') === false && strpos($phrase_name, 'custom') === false && preg_match('#^(user|agent|admin)\.#', $phrase_name)) {
 					$e = new \InvalidArgumentException("Missing phrase: $phrase_name");
 
 					if (dp_get_config('debug.dev')) {

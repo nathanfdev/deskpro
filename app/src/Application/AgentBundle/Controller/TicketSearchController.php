@@ -1244,6 +1244,11 @@ class TicketSearchController extends AbstractController
             'labels'
         );
 
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		foreach ($field_manager->getFields() as $f) {
+			$display_fields[] = 'ticket_fields['.$f->id.']';
+		}
+
         $temp = fopen('php://memory', 'rw');
         $row = array();
 
@@ -1274,7 +1279,11 @@ class TicketSearchController extends AbstractController
                     $row[] = preg_replace('/id$/' , 'name', $display_field);
                     break;
                 default:
-                    $row[] = $display_field;
+					if ($field_id = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $display_field)) {
+						$row[] = $field_manager->getFieldFromId($field_id)->title;
+					} else {
+						$row[] = $display_field;
+					}
                     break;
             }
         }
@@ -1301,6 +1310,7 @@ class TicketSearchController extends AbstractController
 
         while(!empty($tickets)) {
             $ticket = array_shift($tickets);
+			$custom_text_data = $field_manager->getRenderedToTextForObject($ticket);
             $row = array();
 
             foreach($display_fields as $display_field) {
@@ -1369,7 +1379,13 @@ class TicketSearchController extends AbstractController
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
                     default:
-                        if(preg_match('/^(.*)_id$/', $display_field, $matches)) {
+						if ($field_id = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $display_field)) {
+							if (isset($custom_text_data[$field_id])) {
+								$row[] = $custom_text_data[$field_id]['rendered'];
+							} else {
+								$row[] = '';
+							}
+						} elseif(preg_match('/^(.*)_id$/', $display_field, $matches)) {
                             list(, $name) = $matches;
                             $entity = $ticket->{$name};
 
@@ -1414,7 +1430,7 @@ class TicketSearchController extends AbstractController
                     $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
                 }
 
-                $got += $tickets;
+                $got += count($tickets);
             }
         }
 

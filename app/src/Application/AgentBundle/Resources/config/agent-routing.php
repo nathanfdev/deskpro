@@ -766,6 +766,12 @@ $collection->create('agent_ticket_loadlogs', array(
 	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
+$collection->create('agent_ticket_loadattachlist', array(
+	'path'          => '/tickets/{ticket_id}/load-attach-list',
+	'controller'    => 'AgentBundle:Ticket:loadAttachList',
+	'requirements'  => array('ticket_id' => '\\d+'),
+));
+
 $collection->create('agent_ticket_download_debug_report', array(
 	'path'          => '/tickets/{ticket_id}/download-debug-report',
 	'controller'    => 'AgentBundle:Ticket:downloadTicketDebug',

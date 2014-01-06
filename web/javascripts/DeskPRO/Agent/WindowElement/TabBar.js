@@ -505,9 +505,19 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 					this.activateTabById(last_tab_id);
 				} else {
 					if (!DeskPRO_Window.paneVis.list) {
-						DeskPRO_Window.paneVis.list = true;
-						DeskPRO_Window.paneVis.tabs = false;
-						DeskPRO_Window.layout.doResize(true);
+						// If list view isnt active, then after a small timeout
+						// make it visiable.
+						// The timeout is in case we have other routines that auto-open
+						// a new tab (e.g., after ticket reply)
+						var self = this;
+						window.setTimeout(function(){
+							var last_tab_id = Object.keys(self.tabs).getLast();
+							if (!last_tab_id) {
+								DeskPRO_Window.paneVis.list = true;
+								DeskPRO_Window.paneVis.tabs = false;
+								DeskPRO_Window.layout.doResize(true);
+							}
+						}, 100);
 					}
 				}
 			}

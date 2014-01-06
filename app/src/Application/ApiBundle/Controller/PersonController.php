@@ -249,6 +249,15 @@ class PersonController extends AbstractController
 			throw $e;
 		}
 
+		if ($this->in->getBool('send_email')) {
+			$message = App::getMailer()->createMessage();
+			$message->setToPerson($person);
+			$message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
+				'person' => $person
+			));
+			App::getMailer()->send($message);
+		}
+
 		return $this->createApiCreateResponse(
 			array('id' => $person->id),
 			$this->generateUrl('api_people_person', array('person_id' => $person->id), true)
@@ -347,6 +356,10 @@ class PersonController extends AbstractController
 				$person->organization = null;
 				$person->organization_position = '';
 			}
+		}
+
+		if ($this->in->checkIsset('password')) {
+			$person->setPassword($this->in->getString('password'));
 		}
 
 		if ($this->in->checkIsset('organization_position') && $person->organization) {

@@ -129,7 +129,7 @@ class PersonEditManager implements PersonContextInterface
 			// Clear out old preferences
 			$this->db->executeUpdate("
 				DELETE FROM people_prefs
-				WHERE person_id = ? AND `name` LIKE 'agent_notif.%'
+				WHERE person_id = ? AND `name` LIKE 'agent_notif.%' AND `name` NOT IN ('agent_notif.no_allow_set_email', 'agent_notif.no_allow_set_browser')
 			", array($person->id));
 
 			// Rebuild new ones

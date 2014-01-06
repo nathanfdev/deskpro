@@ -167,6 +167,13 @@ class Ticket extends DomainObject
 	protected $auth;
 
 	/**
+	 * Parent ticket
+	 *
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
+	protected $parent_ticket = null;
+	
+	/**
 	 * The language the ticket is in
 	 *
 	 * @var \Application\DeskPRO\Entity\Language
@@ -495,6 +502,9 @@ class Ticket extends DomainObject
 		$this->attachments   = new ArrayCollection();
 		$this->charges       = new ArrayCollection();
 		$this->ticket_slas   = new ArrayCollection();
+
+		// Default ref (is reset with ref generator)
+		$this->ref = Strings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
 
 		$this['date_created'] = new \DateTime();
 		$this['date_status'] = new \DateTime();
@@ -2648,6 +2658,10 @@ class Ticket extends DomainObject
 			$data['agent']['display_name_real'] = $this->agent->getDisplayName();
 		}
 
+		$data['access_code'] = $this->getAccessCode();
+		$data['access_code_email_body_token'] = '(#' . $this->getAccessCode() . ')';
+		$data['access_code_email_header_token'] = 'PTAC-' . $this->getAccessCode();
+
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
 		$field_manager->addApiData($this, $data);
@@ -3168,6 +3182,16 @@ class Ticket extends DomainObject
 			'nullable'   => true,
 		));
 
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'parent_ticket',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+			'joinColumns'  => array(array(
+				'name'                 => 'parent_ticket_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null'
+			))
+		));
 		$metadata->mapManyToOne(array(
 			'fieldName'            => 'language',
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Language',

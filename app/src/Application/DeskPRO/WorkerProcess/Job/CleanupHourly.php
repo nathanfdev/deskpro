@@ -86,36 +86,46 @@ class CleanupHourly extends AbstractJob
 		}
 
 		#------------------------------
-		# Old visitors
+		# Visitors
 		#------------------------------
 
 		$datesnip = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM visitors
+		$datesnip2 = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
+
+		// old
+		$ids = App::getDb()->fetchAllCol("
+			SELECT id
+			FROM visitors
 			WHERE date_last < ?
+			LIMIT 1500
 		", array($datesnip));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale visitors");
-		}
-
-		#------------------------------
-		# Bogus visitors
-		#------------------------------
-
-		$datesnip = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM visitors
+		// bogus
+		$ids = array_merge($ids, App::getDb()->fetchAllCol("
+			SELECT id
+			FROM visitors
 			WHERE
 				date_last < ?
 				AND (
 					visitors.hint_hidden = 1
 					OR visitors.last_track_id IS NULL
 				)
-		", array($datesnip));
+		", array($datesnip2)));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num bogus visitors");
+		$ids = array_unique($ids);
+
+		if ($ids) {
+			$batch_ids = array_chunk($ids, 50);
+			foreach ($batch_ids as $ids) {
+				$num = App::getDb()->executeUpdate("
+					DELETE FROM visitors
+					WHERE id IN (" . implode(',', $ids) . ")
+				");
+
+				if ($num) {
+					$this->logStatus("Cleaned up $num stale visitors");
+				}
+			}
 		}
 
 		#------------------------------

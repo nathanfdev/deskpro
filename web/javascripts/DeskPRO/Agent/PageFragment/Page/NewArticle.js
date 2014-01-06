@@ -95,6 +95,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
 
 		this.stateSaver.stop();
+		this.stateSaver.resetState();
 		this.wrapper.addClass('loading');
 
 		$.ajax({

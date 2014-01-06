@@ -94,12 +94,8 @@ class Purger implements PersonContextInterface
 	public function purgeTickets()
 	{
 		$ticket_ids = $this->db->fetchAllCol("
-			SELECT id FROM tickets WHERE person_id = ? AND hidden_status != 'deleted'
+			SELECT id FROM tickets WHERE person_id = ?
 		", array($this->person->getId()));
-
-		if (!$ticket_ids) {
-			return;
-		}
 
 		#------------------------------
 		# Insert delete logs
@@ -119,7 +115,9 @@ class Purger implements PersonContextInterface
 			$inserts[] = array('ticket_id' => $ticket_id, 'by_person_id' => $by_person_id, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => $reason_str);
 		}
 
-		$this->db->batchInsert('tickets_deleted', $inserts);
+		if ($inserts) {
+			$this->db->batchInsert('tickets_deleted', $inserts);
+		}
 
 		#------------------------------
 		# Clear out the search tables

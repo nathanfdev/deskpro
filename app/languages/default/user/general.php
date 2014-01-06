@@ -41,6 +41,7 @@
 	'user.general.set_as_unhelpful'              => 'This page was unhelpful',
 	'user.general.signing_in'                    => 'Signing in...',
 	'user.general.signing_in_please_wait'        => 'Signing in. Please wait.',
+	'user.general.title'                         => 'Title',
 	'user.general.upload'                        => 'Upload',
 	'user.general.upload-drag'                   => 'Drop your file here to upload it',
 	'user.general.upload_a_file'                 => 'Upload a file',
@@ -52,4 +53,5 @@
 	'user.general.your_comment_agent_validation' => 'Your comment is awaiting agent validation before it appears publicly',
 	'user.general.your_email_address'            => 'Your Email Address',
 	'user.general.your_name'                     => 'Your Name',
+	'user.general.comments-login-or-register'    => '<a href="{{login_link}}">Login</a> or <a href="{{register_link}}">Register</a> to add a comment.'
 );

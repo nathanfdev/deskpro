@@ -7,7 +7,7 @@
 
 	<div class="pane-content pane-content-main">
 
-		<section class="pane-section" id="people_pending_section">
+		<section class="pane-section" id="people_pending_section" {% if not validating_count_agent and not validating_count %}style="display: none;"{% endif %}>
 			<header>
 				<h1>{{ phrase('agent.general.pending') }}</h1>
 			</header>

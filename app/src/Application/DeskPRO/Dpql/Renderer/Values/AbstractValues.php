@@ -135,6 +135,10 @@ abstract class AbstractValues
 					return $this->escapeValue($value);
 				}
 
+			case 'percent':
+				return sprintf("%.2f", $value);
+				break;
+
 			case 'string':
 			default:
 				return $this->escapeValue($value);

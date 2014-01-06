@@ -955,7 +955,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.cancelHashLoad = 0;
 			}
 			return;
-		}
+			}
 
 		if (!browserHash.length) {
 			return;
@@ -1704,7 +1704,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		var extraData = {};
+		extraData = extraData || {};
 		extraData.routeTriggerEl = el;
 		if (el.data('route-title')) {
 			extraData.title = el.data('route-title');
@@ -2321,7 +2321,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + data.errorMessage + '</div>'));
 				return;
 			} else {
-				this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+				// All 403's should be json responses that are caught above,
+				// but this is to catch other edge cases (e.g., an agent was just made a non-agent)
+				if (xhr.responseText && xhr.responseText.indexOf('DeskPRO')) {
+					this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+
+				// This would mean the actual server responded with a 403--DeskPRO was not involved
+				} else {
+					// On cloud, a 403 generally means CF is blocking the request because it thinks we are a bot.
+					if (DPC_IS_CLOUD) {
+						if (DpErrorLog) {
+							DpErrorLog.hasSentReport = true; // dont ask to report, just send it
+							DpErrorLog.logError(
+								"CloudFlare Network Error: " + message,
+								'URL: ' + ajaxOptions.url,
+								'agent',
+								1
+							);
+						}
+						// Try reloading the interface
+						// In case of CF blocks, this would result in the user seeing a "challenge" response
+						// which will let them whitelist themselves
+						this.util.reloadInterface();
+					} else {
+						this.showAlert($('<div><strong>Server Error</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+					}
+				}
+
 				return;
 			}
 		}
@@ -2653,11 +2679,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (DESKPRO_PERSON_PERMS['agent_tickets.create']) {
+			var self = this;
 			this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/tickets/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/tickets/new',
 				autostart: autostart
 			});
+			this.newTicketLoader.newLinkedTicket = function(ticket_id, message_id) {
+				self.newTicketLoader.nextParams = {
+					ticket_id: ticket_id,
+					message_id: message_id || 0
+				};
+				self.newTicketLoader.open();
+			};
 			$('#create_ticket_btn').on('click', function() { DeskPRO_Window.newTicketLoader.toggle(); });
 		}
 
@@ -3378,7 +3412,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				break;
 
 			case 'people_section':
-				url = BASE_URL + 'agent/people-search/get-section-data.json';
+				url = BASE_URL + 'agent/people/get-section-data.json';
 				break;
 
 			case 'feedback_section':

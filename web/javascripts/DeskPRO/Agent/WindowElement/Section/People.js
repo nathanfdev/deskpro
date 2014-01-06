@@ -11,10 +11,12 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 		this.setSectionElement($('<section id="people_outline"></section>'));
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_registration', function(info) { this.reloadCounts(); }, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.added', function(info) { this.reloadCounts(); }, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.confirmed', function(info) { this.reloadCounts(); }, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) { this.reloadCounts(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_registration', function(info) { this.reload(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.confirmed', function(info) { this.reload(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.added', function(info) { this.reload(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) { this.reload(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.org.added', function(info) { this.reload(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.org.removed', function(info) { this.reload(); }, this);
 
 		this.reload();
 	},
@@ -88,6 +90,12 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 			} else {
 				el.show();
 			}
+		}
+
+		if (!parseInt(countData.validating_count) && !parseInt(countData.validating_count_agent)) {
+			$('#people_pending_section').hide();
+		} else {
+			$('#people_pending_section').show();
 		}
 	},
 

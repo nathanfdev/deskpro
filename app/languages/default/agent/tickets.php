@@ -30,6 +30,7 @@
 	'agent.tickets.assign_to_agent_action'              => 'Assign agent to {{agent}}',
 	'agent.tickets.assignments'                         => 'Assignments',
 	'agent.tickets.attachment'                          => 'Attachment',
+	'agent.tickets.attachments'                         => 'Attachments',
 	'agent.tickets.attachment_deleted'                  => 'Attachment deleted',
 	'agent.tickets.billing'                             => 'Billing',
 	'agent.tickets.billing_add_charge'                  => 'Add Charge',
@@ -77,7 +78,7 @@
 	'agent.tickets.date_opened_newerolder'              => 'Date Opened (Newer-Older)',
 	'agent.tickets.date_opened_oldernewer'              => 'Date Opened (Older-Newer)',
 	'agent.tickets.debug_file'                          => 'Debug File',
-	'agent.tickets.debug_file_download'                 => 'Downlaod Debug File',
+	'agent.tickets.debug_file_download'                 => 'Download Debug File',
 	'agent.tickets.debug_file_explain'                  => 'A DeskPRO support agent may ask you to provide this file to help diagnose issues.',
 	'agent.tickets.decrease_urgency_action'             => 'Decrease urgency by {{amount}}',
 	'agent.tickets.delete_attach'                       => 'Delete Attachments',
@@ -383,4 +384,6 @@
 	'agent.tickets.you_have_locked'                     => 'You have locked this ticket. Other agents will not be able to edit the ticket until it is unlocked.',
 	'agent.tickets.your_teams_tickets'                  => 'Your teams tickets',
 	'agent.tickets.your_tickets'                        => 'Your tickets',
+	'agent.tickets.create_linked_ticket'                => 'Create Linked Ticket',
+	'agent.tickets.linked_tickets'                      => 'Linked Tickets',
 );

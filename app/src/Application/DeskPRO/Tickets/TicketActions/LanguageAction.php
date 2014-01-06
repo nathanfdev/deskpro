@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class LanguageAction extends AbstractAction
+class LanguageAction extends AbstractAction implements PermissionableAction
 {
 	protected $language_id;
 
@@ -58,6 +58,23 @@ class LanguageAction extends AbstractAction
 	public function apply(Ticket $ticket)
 	{
 		$ticket['language_id'] = $this->language_id;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if ($ticket->getLanguageId() == $this->language_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

@@ -65,6 +65,11 @@ class NewsController extends AbstractController
 	public function viewAction($news_id)
 	{
 		$news = $this->em->find('DeskPRO:News', $news_id);
+
+		if (!$news) {
+			throw $this->createNotFoundException();
+		}
+
 		$news_comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 
 		$related_finder = new RelatedContentFinder($this->person, $news);
@@ -227,6 +232,10 @@ class NewsController extends AbstractController
 			case 'delete':
 				$news->status_code = 'hidden.deleted';
 				break;
+
+			case 'undelete':
+				$news->status_code = 'published';
+				break;
 		}
 
 		$this->em->persist($news);
@@ -367,6 +376,8 @@ class NewsController extends AbstractController
 
 		$formType = new \Application\AgentBundle\Form\Type\NewNews();
 		$form = $this->get('form.factory')->create($formType, $newnews);
+
+		$this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", array($this->person->id));
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->handleRequest($this->get('request'));

@@ -39,6 +39,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getEl('replybox_wrap').data('page', this);
 		this.hasReplyFocused = false;
 
+		if (this.getEl('linked_count').data('count') == "0") {
+			this.getEl('linked_wrap_tab').hide();
+		}
+
 		try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 			if (flashEnabled) {
@@ -539,9 +543,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-		if (this.meta.ticket_perms.reply) {
-			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
-		}
+		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
@@ -670,17 +672,31 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			postData.push({name: 'page', value: 1});
 
 			logsNav.addClass('dp-loading-on');
-			$.ajax({
-				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
-				data: postData,
-				complete: function() {
-					logsNav.removeClass('dp-loading-on');
-				},
-				success: function(html) {
-					logsWrap.html(html);
-					self.updateUi();
-				}
-			});
+			if (filter == 'attach') {
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-attach-list',
+					data: postData,
+					complete: function() {
+						logsNav.removeClass('dp-loading-on');
+					},
+					success: function(html) {
+						logsWrap.html(html);
+						self.updateUi();
+					}
+				});
+			} else {
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
+					data: postData,
+					complete: function() {
+						logsNav.removeClass('dp-loading-on');
+					},
+					success: function(html) {
+						logsWrap.html(html);
+						self.updateUi();
+					}
+				});
+			}
 		});
 
 		logsWrap.on('click', '.trigger-next-page', function(ev) {
@@ -1224,7 +1240,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.refreshLogTypes();
 	},
 
-	updateUi: function() {
+	updateUi: function(toReplyHeight) {
 		var x;
 		if (!this.IS_ACTIVE) {
 			return;
@@ -1243,6 +1259,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (this.doScrollBottom) {
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
+			} else if (toReplyHeight) {
+				var oWrap = this.wrapper.find('div.layout-content').first();
+				oWrap.trigger('goscrollto', toReplyHeight+10);
 			}
 
 			this.getEl('labels_wrap').find('.select2-input').width('95%');
@@ -1703,6 +1722,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						self.setHold(false);
 						break;
 
+					case 'linked_ticket':
+						DeskPRO_Window.newTicketLoader.newLinkedTicket(self.meta.ticket_id);
+						break;
+
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {
 							var el = self.getEl('pending_add');
@@ -2015,6 +2038,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			case 'split':
 				this.showSplitOverlay(messageId);
+				break;
+
+			case 'linked_ticket':
+				DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
 				break;
 
 			case 'fwd':
@@ -2436,7 +2463,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.row-item');
-			statusMenu.open.open(ev);
+			statusMenu.open(ev);
 		});
 		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
 			$(this).addClass('has-init');

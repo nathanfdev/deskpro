@@ -326,8 +326,14 @@ class CategoryEdit
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$counts = $repos->getAllCounts(App::getCurrentPerson(), null);
-		if (count($cat->children) || isset($counts[$cat['id']]) && $counts[$cat['id']]) {
+		$counts = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM article_to_categories
+			WHERE category_id = ?
+			LIMIT 1
+		", array($category_id));
+
+		if (count($cat->children) || $counts) {
 			throw new \OutOfBoundsException("Category is not empty");
 		}
 

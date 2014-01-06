@@ -168,5 +168,23 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 				}
 			});
 		});
+
+		allUg = catEl.find('.ug-check');
+		ugEveryone = allUg.filter('.ug-1');
+		ugOther    = allUg.not('.ug-1');
+
+		var updateChecks = function(checked) {
+			if (checked) {
+				ugOther.prop('checked', true);
+				ugOther.prop('disabled', true);
+			} else {
+				ugOther.prop('disabled', false);
+			}
+		};
+
+		ugEveryone.on('click', function() {
+			updateChecks(this.checked);
+		});
+		updateChecks(ugEveryone.prop('checked'));
 	}
 });

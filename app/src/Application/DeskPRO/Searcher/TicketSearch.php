@@ -2262,7 +2262,14 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_DEPARTMENT:
 					if (count($choice) == 1) $choice = Arrays::getFirstItem($choice);
-					$choice = App::getDataService('Department')->getIdsInTree($choice, true);
+					if (!is_array($choice)) {
+						$choice = array($choice);
+					}
+
+					foreach ($choice as $id) {
+						$choice = array_merge($choice, App::getDataService('Department')->getIdsInTree($id, true));
+					}
+					$choice = array_unique($choice, \SORT_NUMERIC);
 
 					if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
 					break;

@@ -152,6 +152,16 @@ class WorkHoursSet
 		return $this->work_holidays;
 	}
 
+	public function getSecondsPerDay()
+	{
+		return $this->work_end - $this->work_start;
+	}
+
+	public function getSecondsPerWeek()
+	{
+		return count($this->work_days) * $this->getSecondsPerDay();
+	}
+
 	public function calculateWorkHoursDelay(\DateTime $date_start, $delay)
 	{
 		if ($this->active_time == 'all') {

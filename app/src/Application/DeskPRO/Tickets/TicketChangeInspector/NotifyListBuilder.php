@@ -284,7 +284,7 @@ class NotifyListBuilder
 						|| ($filter->sys_name == 'agent_team' && $assign_team_change && $sub->alert_leave)
 						|| ($filter->sys_name == 'participant' && $assign_follow_change && $sub->alert_leave)
 					) {
-						$types[] = 'email';
+						$types[] = 'alert';
 					}
 				}
 

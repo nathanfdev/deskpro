@@ -925,10 +925,14 @@ class TermSummary
 		}
 
 		if ($date1 AND !($date1 instanceof \DateTime)) {
-			$date1 = new \DateTime("@{$date1}");
+			try {
+				$date1 = new \DateTime("@{$date1}");
+			} catch (\Exception $e) { $date1 = null; }
 		}
 		if ($date2 AND !($date2 instanceof \DateTime)) {
-			$date2 = new \DateTime("@{$date2}");
+			try {
+				$date2 = new \DateTime("@{$date2}");
+			} catch (\Exception $e) { $date2 = null; }
 		}
 
 		// There should always be at least one date

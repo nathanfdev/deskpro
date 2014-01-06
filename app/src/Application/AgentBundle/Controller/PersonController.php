@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\Entity;
@@ -1284,6 +1285,12 @@ class PersonController extends AbstractController
 			$person = $newperson->getPerson();
 
 			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+
+			// Notify about new person
+			foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
+				$this->em->persist($cm);
+			}
+			$this->em->flush();
 
 			return $this->createJsonResponse(array(
 				'success' => true,

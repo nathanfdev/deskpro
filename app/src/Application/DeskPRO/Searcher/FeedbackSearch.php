@@ -43,6 +43,7 @@ class FeedbackSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_STATUS          = 'status';
+	const TERM_DELETED         ='deleted';
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_CATEGORY        = 'category';
 	const TERM_CATEGORY_SPECIFIC = 'category_specific';
@@ -109,14 +110,16 @@ class FeedbackSearch extends SearcherAbstract
 			return '0';
 		}
 
+		$where = '(feedback.status != \'hidden\')';
+
 		$dis_ids = $this->person->PermissionsManager->FeedbackCategories->getDisallowedCategories();
 		if (!$dis_ids) {
-			return '';
+			return $where;
 		}
 
 		$dis_ids = implode(',', $dis_ids);
 
-		return '(feedback.category_id NOT IN(' . $dis_ids . '))';
+		return '('.$where.' AND feedback.category_id NOT IN(' . $dis_ids . '))';
 	}
 
 
@@ -164,7 +167,7 @@ class FeedbackSearch extends SearcherAbstract
 			$sql .= $where_perm . ' AND ';
 		}
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -221,7 +224,7 @@ class FeedbackSearch extends SearcherAbstract
 			$sql .= $where_perm . ' AND ';
 		}
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -323,7 +326,17 @@ class FeedbackSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("feedback.id", $op, $choice, true);
+					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+
+					if ($op == self::OP_CONTAINS || is_array($choice)) {
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+						$wheres[] = $this->_choiceMatch('feedback.id', 'is', $choice);
+					} else {
+						$wheres[] = $this->_rangeMatch("feedback.id", $op, $choice, true);
+					}
 					break;
 
 				case self::TERM_HIDDEN_STATUS:
@@ -331,6 +344,14 @@ class FeedbackSearch extends SearcherAbstract
 						$wheres[] = '(feedback.hidden_status IS NULL OR ' . $this->_stringMatch('feedback.hidden_status', $op, $choice) . ')';
 					} else {
 						$wheres[] = $this->_stringMatch('feedback.hidden_status', $op, $choice);
+					}
+					break;
+
+				case self::TERM_DELETED:
+					if ($op == self::OP_IS) {
+						$wheres[] = 'feedback.hidden_status = \'deleted\'';
+					} else {
+						$wheres[] = 'feedback.hidden_status != \'deleted\' OR feedback.hidden_status IS NULL';
 					}
 					break;
 

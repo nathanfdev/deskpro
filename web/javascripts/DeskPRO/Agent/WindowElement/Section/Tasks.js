@@ -48,12 +48,7 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 		DeskPRO_Window.getSectionData('tasks_section', (function(data) {
 			this._initSection(data);
 
-			// Get button count now
-			var count = 0;
-			$('span.count-in-badge', this.contentEl).each(function() {
-				count += parseInt($(this).text()) || 0;
-			});
-			this.updateBadge(count);
+			this.recalcBadge();
 
 			if (selectedCountId) {
 				var countEl = $('#' + selectedCountId);
@@ -76,6 +71,11 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 
 			}
 		}).bind(this));
+	},
+
+	recalcBadge: function() {
+		var total = parseInt($.trim($('#tasks_counter_all_total').text()));
+		this.modBadgeCount('=', total);
 	},
 
 	markUnloadPage: function() {

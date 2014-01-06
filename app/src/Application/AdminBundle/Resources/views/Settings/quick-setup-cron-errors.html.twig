@@ -40,15 +40,23 @@
 				You will need to activate one of these extensions in php.ini.
 			{% elseif code == 'json_ext' %}
 				{% set show_phpini = true %}
-				PHP does not have the <a href="http://php.net/manual/en/json.installation.php">json extension</a> extension enabled.
+				PHP does not have the <a href="http://php.net/manual/en/json.installation.php">json extension</a> enabled.
 				You will need to activate this extension in php.ini.
+			{% elseif code == 'libxml_ext' %}
+				{% set show_phpini = true %}
+				PHP does not have the <a href="http://php.net/manual/en/book.libxml.php">libxml extension</a> enabled.
+				You will need to rebuild PHP with libxml enabled.
+			{% elseif code == 'libxml_version' %}
+				{% set show_phpini = true %}
+				Your version of PHP was built against a very old version of libxml (libxml is used by the <a href="http://php.net/manual/en/book.libxml.php">libxml extension</a>).
+				Older versions of libxml contain bugs that can lead to problems parsing HTML email. You need to update the version of <a href="http://xmlsoft.org/">libxml</a> on your server, and then re-build PHP.
 			{% elseif code == 'ctype_ext' %}
 				{% set show_phpini = true %}
-				PHP does not have the <a href="http://php.net/manual/en/ctype.installation.php">ctype extension</a> extension enabled.
+				PHP does not have the <a href="http://php.net/manual/en/ctype.installation.php">ctype extension</a> enabled.
 				You will need to activate this extension in php.ini.
 			{% elseif code == 'tokenizer_ext' %}
 				{% set show_phpini = true %}
-				PHP does not have the <a href="http://php.net/manual/en/tokenizer.installation.php">tokenizer extension</a> extension enabled.
+				PHP does not have the <a href="http://php.net/manual/en/tokenizer.installation.php">tokenizer extension</a> enabled.
 				You will need to activate this extension in php.ini.
 			{% elseif code == 'memory_limit' %}
 				{% set show_phpini = true %}

@@ -44,6 +44,7 @@ class ArticleSearch extends SearcherAbstract
 	const TERM_ID                  = 'id';
 	const TERM_STATUS              = 'status';
 	const TERM_HIDDEN_STATUS       = 'hidden_status';
+	const TERM_DELETED             = 'deleted';
 	const TERM_CATEGORY            = 'category';
 	const TERM_CATEGORY_SPECIFIC   = 'category_specific';
 	const TERM_DATE_CREATED        = 'date_created';
@@ -116,14 +117,16 @@ class ArticleSearch extends SearcherAbstract
 			return '0';
 		}
 
+		$where = '(articles.status != \'hidden\')';
+
 		$dis_ids = $this->person->PermissionsManager->ArticleCategories->getDisallowedCategories();
 		if (!$dis_ids) {
-			return '';
+			return $where;
 		}
 
 		$dis_ids = implode(',', $dis_ids);
 
-		return '(catperm.category_id NOT IN(' . $dis_ids . '))';
+		return '('.$where.' AND catperm.category_id NOT IN(' . $dis_ids . '))';
 	}
 
 
@@ -168,7 +171,7 @@ class ArticleSearch extends SearcherAbstract
 			}
 		}
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -239,7 +242,7 @@ class ArticleSearch extends SearcherAbstract
 		}
 
 		if ($parts['wheres']) {
-			$sql .= implode(" AND ", $parts['wheres']);
+			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
 		} else {
 			$sql .= '1';
 		}
@@ -319,8 +322,26 @@ class ArticleSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
+					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+
+					if ($op == self::OP_CONTAINS || is_array($choice)) {
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+						$wheres[] = $this->_choiceMatch('articles.id', 'is', $choice);
+					} else {
+						$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
+					}
 					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+					break;
+
+				case self::TERM_DELETED:
+					if ($op == self::OP_IS) {
+						$wheres[] = 'articles.hidden_status = \'deleted\'';
+					} else {
+						$wheres[] = 'articles.hidden_status != \'deleted\' OR articles.hidden_status IS NULL';
+					}
 					break;
 
 				case self::TERM_HIDDEN_STATUS:

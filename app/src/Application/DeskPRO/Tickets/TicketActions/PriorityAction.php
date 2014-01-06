@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class PriorityAction extends AbstractAction
+class PriorityAction extends AbstractAction implements PermissionableAction
 {
 	protected $priority_id;
 
@@ -58,6 +58,23 @@ class PriorityAction extends AbstractAction
 	public function apply(Ticket $ticket)
 	{
 		$ticket['priority_id'] = $this->priority_id;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if ($ticket->getPriorityId() == $this->priority_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

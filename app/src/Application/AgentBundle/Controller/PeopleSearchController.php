@@ -375,6 +375,9 @@ class PeopleSearchController extends AbstractController
 			if ($search_val = $this->in->getString('person_name')) {
 				$searcher->addTerm('person_name', 'contains', $search_val);
 			}
+			if ($search_val = $this->in->getString('person_contact_phone')) {
+				$searcher->addTerm('person_contact_phone', 'contains', $search_val);
+			}
 			if ($search_val = $this->in->getString('person_email')) {
 				$searcher->addTerm('person_email', 'contains', $search_val);
 			}

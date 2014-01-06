@@ -166,7 +166,7 @@ Orb.findHighestZindex = function(els) {
 	var highest = 0;
 	els.each(function() {
 		var z = parseInt($(this).css('z-index'));
-		if (z > highest) {
+		if (z < 1000000000 && z > highest) {
 			highest = z;
 		}
 	});

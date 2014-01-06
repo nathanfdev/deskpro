@@ -32,13 +32,16 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 			self.el.addClass('loading');
 
 			// We also need to send the ajax verify too
-			var postData = self.el.serializeArray();
+			var postData = self.el.serializeJSON();
 			$('#errors_container').hide();
 			$.ajax({
 				url: self.el.data('validate-url'),
+				headers: {
+					'Content-Type': 'application/json'
+				},
 				type: 'POST',
 				dataType: 'json',
-				data: postData
+				data: JSON.stringify(postData)
 			}).always(function() {
 				self.el.removeClass('loading');
 			}).done(function(data) {
@@ -46,7 +49,21 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 					// When really submitting, still show the spinner to prevent double-posts
 					self.el.addClass('loading');
 					self.okSubmit = true;
-					self.el.submit();
+					$.ajax({
+						url: self.el.prop('action'),
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						type: 'POST',
+						dataType: 'json',
+						data: JSON.stringify(postData)
+					}).success(function(data) {
+						console.log("Redirecting to: %s", data.edit_url);
+						window.location = data.edit_url;
+					}).error(function() {
+						console.log("AJAX error %o", arguments);
+						self.el.submit();
+					});
 				} else {
 					$(document).scrollTop(0);
 					$('#errors_container').show().find('ul').empty();
@@ -255,6 +272,24 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 				li.remove();
 			}
 		});
+
+		// Zone buttons
+		var chkAdmin = $('input[name="agent[can_admin]"]');
+		var chkBilling = $('input[name="agent[can_billing]"]');
+
+		var updateZoneChk = function(admin_checked) {
+			if (admin_checked) {
+				chkBilling.prop('checked', true);
+				chkBilling.prop('disabled', true);
+			} else {
+				chkBilling.prop('disabled', false);
+			}
+		};
+
+		chkAdmin.on('click', function() {
+			updateZoneChk(this.checked);
+		});
+		updateZoneChk(chkAdmin.prop('checked'));
 
 		this._pageLoaded = true;
 	},

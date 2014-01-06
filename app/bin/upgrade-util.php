@@ -769,7 +769,7 @@ class Upgrade
 
 		} catch (\Exception $e) {
 			$write_status("error_backup_files", $e->getMessage());
-			$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+			$fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 			$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
@@ -778,7 +778,7 @@ class Upgrade
 		}
 
 		if (!$is_quiet) $this->out("Turning helpdesk off");
-		$fileutil->touch(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 		$write_status('helpdesk_offline');
 
 		try {
@@ -798,7 +798,7 @@ class Upgrade
 
 		} catch (\Exception $e) {
 			$write_status("error_backup_db", $e->getMessage());
-			$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+			$fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 			$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
@@ -860,7 +860,7 @@ class Upgrade
 
 			if (!$is_error_halt) {
 				$write_status("reverting_files");
-				$fileutil->touch(dp_get_data_dir().'/auto-update-is-running.trigger');
+				$fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 			}
 
 			$e = new \RuntimeException("Error during upgrade");
@@ -870,7 +870,7 @@ class Upgrade
 		}
 
 		if (!$is_quiet) $this->out("-> Done");
-		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		if (!$is_quiet) $this->out("Helpdesk turned on");
@@ -904,7 +904,7 @@ class Upgrade
 			$this->restoreDbFromZip($this->db_backup);
 		}
 
-		unlink(dp_get_data_dir().'/auto-update-is-running.trigger');
+		unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 		@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		$this->revert_checkpoint = null;
@@ -2076,7 +2076,7 @@ function Upgrade_Shutdown_Function()
 	}
 
 	try {
-		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 	} catch (\Exception $e) {}
 
@@ -2677,7 +2677,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->upgrade->log(sprintf("(Done gathering input: answer_backup_files=%d, answer_backup_db=%d)", $this->answer_backup_files, $this->answer_backup_db));
 
 		$fileutil = new FilesystemUtil();
-		$fileutil->touch(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 
 		#------------------------------
 		# Backup files
@@ -2757,7 +2757,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->errorExit("There was a problem installing the database updates");
 		}
 
-		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		$this->outHeader("DONE");
@@ -2854,7 +2854,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			}
 
 			$fileutil = new FilesystemUtil();
-			$fileutil->touch(dp_get_data_dir().'/auto-update-is-running.trigger');
+			$fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 
 			#------------------------------
 			# Backup database
@@ -2942,7 +2942,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		*/
 
 		$fileutil = new FilesystemUtil();
-		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
 		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		$e = new \Exception($message);

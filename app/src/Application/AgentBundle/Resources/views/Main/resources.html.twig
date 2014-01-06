@@ -91,7 +91,7 @@
 			options.error = function(innerJqXhr, textStatus, httpError) {
 				var retryable = false;
 
-				if (textStatus === "error" && options.retryCodes.indexOf(innerJqXhr.status) !== -1) {
+				if (textStatus === "error" && options.retryCodes.indexOf(innerJqXhr.status) !== -1 && (!options.type || options.type.toUpperCase() == 'GET')) {
 					retryable = true;
 				}
 

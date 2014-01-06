@@ -54,7 +54,7 @@ class AgentHoursController extends AbstractController
 
 		$dt = new \DateTime();
 		$dt->setTimezone($this->person->getDateTimezone());
-		$dt->setDate($year, $month, $day);
+		$dt->setDate((int)$year, (int)$month, (int)$day);
 		$dt->setTime(0,0,0);
 
 		$dt2 = null;
@@ -62,7 +62,7 @@ class AgentHoursController extends AbstractController
 			list($year, $month, $day) = explode('-', $date2);
 			$dt2 = new \DateTime();
 			$dt2->setTimezone($this->person->getDateTimezone());
-			$dt2->setDate($year, $month, $day);
+			$dt2->setDate((int)$year, (int)$month, (int)$day);
 			$dt2->setTime(0,0,0);
 
 			if ($dt->format('Y-m-d H:i:s') == $dt2->format('Y-m-d H:i:s')) {

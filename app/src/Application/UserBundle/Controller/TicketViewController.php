@@ -116,10 +116,24 @@ class TicketViewController extends AbstractController
 
 							$tpl_globals = $this->container->get('templating.globals');
 
-							if ($ticket->person_email) {
-								$tpl_globals->setVariable('login_with_email', $ticket->person_email->email);
-							} elseif ($ticket->person && $ticket->person->getPrimaryEmailAddress()) {
-								$tpl_globals->setVariable('login_with_email', $ticket->person->getPrimaryEmailAddress());
+							// If they have a password it means
+							// they have a local DeskPRO account
+							if ($ticket->person->password) {
+								if ($ticket->person_email) {
+									$tpl_globals->setVariable('login_with_email', $ticket->person_email->email);
+								} elseif ($ticket->person && $ticket->person->getPrimaryEmailAddress()) {
+									$tpl_globals->setVariable('login_with_email', $ticket->person->getPrimaryEmailAddress());
+								}
+
+							// Otherwise, they might have an account
+							// from elsewhere (eg active directory)
+							} else {
+								foreach ($ticket->person->usersource_assoc as $us) {
+									if ($us->identity_friendly) {
+										$tpl_globals->setVariable('login_with_email', $us->identity_friendly);
+										break;
+									}
+								}
 							}
 
 							$type = 'login';

@@ -135,6 +135,12 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 				this.searchboxEl.removeClass('loading');
 			},
 			success: function(html) {
+				if (html.indexOf('<body') !== -1 || html.indexOf('<html') !== -1) {
+					// If its a full document then its not a proper
+					// response. (e.g., was a redirect to login)
+					return;
+				}
+
 				var wrap = $(html);
 				this.resultsEl.empty();
 

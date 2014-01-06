@@ -12,7 +12,9 @@
 	<div class="content">
 		<header>
 			<span class="edit-gear comment-edit-btn"></span>
-			<span class="message-counter">#{{ loop.index }}</span>
+			{% if comment_num %}
+				<span class="message-counter">#{{ comment_num }}</span>
+			{% endif %}
 			{% if comment.status == 'validating' or (comment.status == 'visible' and comment.is_reviewed == 0) %}<span class="comment-validate-btn count tipped" title="{{ phrase('agent.publish.validating_comment_manage_tip') }}">{{ phrase('agent.general.validate') }}</span>{% endif %}
 			{% if comment.person %}
 				<h4

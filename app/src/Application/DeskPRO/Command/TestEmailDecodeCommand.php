@@ -35,6 +35,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,7 +52,15 @@ use Symfony\Component\Routing\Route;
 
 class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected $reader;
+	/**
+	 * @var \Application\DeskPRO\EmailGateway\Reader\EzcReader
+	 */
+	private $reader;
+
+	/**
+	 * @var string
+	 */
+	private $file;
 
 	protected function configure()
 	{
@@ -65,16 +74,18 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
 		$this->addOption('forward', null, InputOption::VALUE_NONE, 'Test splitting as a forwarded message');
 		$this->addOption('save-attach', null, InputOption::VALUE_NONE, 'This will save attachments from the email in the same directory as the file');
+		$this->addOption('show-cutters', null, InputOption::VALUE_NONE, 'Displays the cutters that were used');
+		$this->addOption('output-attach', null, InputOption::VALUE_REQUIRED, 'Output the raw contents of an attachment at index');
+		$this->addOption('output-attach-email', null, InputOption::VALUE_REQUIRED, 'Decode the attachment at index as an email');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$save_attach = $input->getOption('save-attach');
+		$this->file = $input->getArgument('file');
 
-		$file = $input->getArgument('file');
 		if ($input->getOption('source')) {
 
-			$source_obj = App::getOrm()->find('DeskPRO:EmailSource', $file);
+			$source_obj = App::getOrm()->find('DeskPRO:EmailSource', $this->file);
 			if (!$source_obj || !$source_obj->blob) {
 				$output->writeln("<error>Invalid source ID</error>");
 				return 1;
@@ -83,23 +94,42 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			$source = App::getSystemService('BlobStorage')->copyBlobRecordToString($source_obj->blob);
 
 		} else {
-			if ($file && !is_file($file)) {
-				if (is_file(getcwd() . '/' . $file)) {
-					$file = getcwd() . '/' . $file;
+			if ($this->file && !is_file($this->file)) {
+				if (is_file(getcwd() . '/' . $this->file)) {
+					$this->file = getcwd() . '/' . $this->file;
 				}
 			}
-			if (!$file || !is_file($file)) {
+			if (!$this->file || !is_file($this->file)) {
 				$output->writeln("<error>Invalid file specified</error>");
 				return 1;
 			}
 
-			$source = file_get_contents($file);
+			$source = file_get_contents($this->file);
 		}
 
-		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$r = new EzcReader();
 		$r->setRawSource($source);
-
 		$this->reader = $r;
+
+		$output_attach       = $input->getOption('output-attach');
+		$output_attach_email = $input->getOption('output-attach-email');
+
+		if ($output_attach !== null) {
+			return $this->outputAttachment($output_attach, $input, $output);
+		} else if ($output_attach_email !== null) {
+			return $this->outputAttachmentEmail($output_attach_email, $input, $output);
+		} else {
+			return $this->outputStandard($input, $output);
+		}
+	}
+
+	####################################################################################################################
+
+	private function outputStandard(InputInterface $input, OutputInterface $output)
+	{
+		$save_attach = $input->getOption('save-attach');
+
+		$r = $this->reader;
 
 		echo "Subject: " . $r->getSubject()->getSubjectUtf8();
 		echo "\n";
@@ -137,9 +167,9 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		if ($attaches = $r->getAttachments()) {
 			foreach ($attaches as $k => $attach) {
 				if ($save_attach) {
-					file_put_contents(dirname($file) . '/' . $k . '-' . $attach->getFileName(), $attach->getFileContents());
+					file_put_contents(dirname($this->file) . '/' . $k . '-' . $attach->getFileName(), $attach->getFileContents());
 				}
-				echo "Attachment: " . $attach->getFileName();
+				echo "Attachment[$k]: " . $attach->getFileName();
 				echo "\n";
 			}
 		}
@@ -191,6 +221,15 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 					$body = $cutter->cutQuoteBlock($body, true);
 					$body .= $generic_cutter->cutBottomBlock($raw_body, true);
+
+					if ($input->getOption('show-cutters')) {
+						$got = $cutter->getMatchedPatterns();
+						if ($got) {
+							foreach ($got as $p) {
+								echo "[Matched Cutter] {$p->getPattern()}\n";
+							}
+						}
+					}
 				}
 
 				$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
@@ -199,6 +238,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
+				$GLOBALS['doit'] = 1;
 				$body = Strings::trimHtmlAdvanced($body);
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
 
@@ -232,7 +272,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		return 0;
 	}
 
-	public function cleanBodyText($text)
+	private function cleanBodyText($text)
 	{
 		if ($this->reader->isOutlookMailer()) {
 			$text = \Orb\Util\Strings::standardEol($text);
@@ -240,5 +280,39 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		}
 
 		return $text;
+	}
+
+	####################################################################################################################
+
+	private function outputAttachment($idx, InputInterface $input, OutputInterface $output)
+	{
+		$attaches = $this->reader->getAttachments();
+		if (!isset($attaches[$idx])) {
+			$output->writeln("Error: No attachment at index $idx");
+			return 1;
+		}
+
+		echo $attaches[$idx]->getFileContents();
+		return 0;
+	}
+
+	####################################################################################################################
+
+	private function outputAttachmentEmail($idx, InputInterface $input, OutputInterface $output)
+	{
+		$attaches = $this->reader->getAttachments();
+		if (!isset($attaches[$idx])) {
+			$output->writeln("Error: No attachment at index $idx");
+			return 1;
+		}
+
+		$attach = $attaches[$idx];
+
+		$r = new EzcReader();
+		$r->setProperty('override_from_charset', $attach->original_charset);
+		$r->setRawSource($attach->getFileContents());
+		$this->reader = $r;
+
+		return $this->outputStandard($input, $output);
 	}
 }

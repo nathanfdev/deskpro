@@ -41,8 +41,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				DeskPRO_Window.util.modCountEl($(el), op);
 			});
 
-			var total = parseInt($.trim($('#tasks_counter_all_total').text()));
-			DeskPRO_Window.sections.tasks_section.modBadgeCount('=', total);
+			DeskPRO_Window.sections.tasks_section.recalcBadge();
 
 			self.fireEvent('updateCount', [op, row]);
 		};

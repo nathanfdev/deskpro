@@ -28,7 +28,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <div class="delete-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.properties') }}</button>
+	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
 {% if article.status_code == "hidden.validating" %}
@@ -40,11 +40,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<div style="float:left; padding-left: 8px;">
 		<select id="{{ baseId }}_status">
 			<option {% if article.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
-			<option {% if article.getStatusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
+			<option {% if article.getStatusCode() == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 			<option {% if article.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
-			{% if article.person.id == app.user.id %}
-				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
-			{% endif %}
+			<option {% if article.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 		</select>
 	</div>
 	<h1>
@@ -307,6 +305,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="full-deskpro-tab-item">
 						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
 							{% for comment in article_comments %}
+								{% set comment_num = loop.index %}
 								{% include 'AgentBundle:Kb:view-comment.html.twig' %}
 							{% endfor %}
 						</div>

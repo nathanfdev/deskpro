@@ -62,6 +62,11 @@ class DownloadsController extends AbstractController
 	public function viewAction($download_id)
 	{
 		$download = $this->em->find('DeskPRO:Download', $download_id);
+
+		if (!$download) {
+			return $this->createNotFoundException();
+		}
+
 		$download_comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
 
 		$related_finder = new RelatedContentFinder($this->person, $download);
@@ -208,6 +213,10 @@ class DownloadsController extends AbstractController
 
 			case 'delete':
 				$download['status_code'] = 'hidden.deleted';
+				break;
+
+			case 'undelete':
+				$download['status_code'] = 'published';
 				break;
 
 			case 'title':
@@ -436,6 +445,8 @@ class DownloadsController extends AbstractController
 
 		$formType = new \Application\AgentBundle\Form\Type\NewDownload();
 		$form = $this->get('form.factory')->create($formType, $newdownload);
+
+		$this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newdownload' AND person_id = ?", array($this->person->id));
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->handleRequest($this->get('request'));

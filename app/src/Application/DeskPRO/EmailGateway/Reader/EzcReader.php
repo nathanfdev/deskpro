@@ -69,7 +69,7 @@ class EzcReader extends AbstractReader
 		static $has_set_convert = false;
 		if (!$has_set_convert) {
 			$has_set_convert = true;
-			\ezcMailCharsetConverter::setConvertMethod(function($text) {
+			\ezcMailCharsetConverter::setConvertMethod(function($text, $fromCharset) {
 				return $text;
 			});
 		}
@@ -248,6 +248,34 @@ class EzcReader extends AbstractReader
 					}
 
 				} elseif ($part instanceof \ezcMailRfc822Digest) {
+
+					// ezC doesnt keep track of the raw sources while walking
+					// the parts. So we need to 'generateBody' which basically
+					// re-constructs the message based on the parsed message.
+
+					// ezC also has auto-charset conversion to utf-8.
+					// we nullify that operation because we generally want to keep
+					// track of that sort of thing ourself (eg within ticket gateway code).
+					// But internally ezc considers the $part utf8
+
+					// So we have this case of ezc thinking $part is utf-8, but
+					// we nullified the charset conversion so it's not actually utf-8
+
+					// This is fine except when it comes to these embedded digests.
+					// ezC thinks its utf-8, but the source is actually say iso-8895-1
+					// But when 'generateBody' to reconstruct the body, it'll output content-type:utf-8
+
+					// *then* if we were to try and re-process the message (eg agent forwarded attachment)
+					// it'll try to decode as utf-8 but the body is actually iso-8895-1
+
+					// And that is why we store this original charset. When we need to process
+					// digests, we need to override the charset to the real original.
+
+					if (isset($part->mail->body->originalCharset)) {
+						$body_charset = $part->mail->body->originalCharset;
+						$attach->original_charset = $body_charset;
+					}
+
 					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
 					file_put_contents($attach->tmp_file, $part->generateBody());
 
@@ -319,6 +347,10 @@ class EzcReader extends AbstractReader
 				$originalCharset = $part->originalCharset;
 				if (!$originalCharset) $originalCharset = 'us-ascii';
 
+				if ($this->hasProperty('override_from_charset')) {
+					$originalCharset = $this->getProperty('override_from_charset');
+				}
+
 				$body = new Item\BodyHtml();
 				$body->body = Strings::standardEol($part->text);
 				$body->body_utf8 = Strings::convertToUtf8(Strings::standardEol($part->text), $originalCharset);
@@ -342,6 +374,10 @@ class EzcReader extends AbstractReader
 			if ($part->subType == 'plain') {
 				$originalCharset = $part->originalCharset;
 				if (!$originalCharset) $originalCharset = 'us-ascii';
+
+				if ($this->hasProperty('override_from_charset')) {
+					$originalCharset = $this->getProperty('override_from_charset');
+				}
 
 				$body = new Item\BodyText();
 				$body->body = $part->text;

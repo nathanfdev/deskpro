@@ -142,14 +142,15 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			}
 
 			$standard_prop_names = array(
-				'agent' => 'name',
-				'agent_team' => 'name',
-				'department' => 'full_title',
-				'language' => 'title',
-				'category' => 'title',
-				'product' => 'title',
-				'workflow' => 'title',
-				'priority' => 'title'
+				'agent'         => 'name',
+				'agent_team'    => 'name',
+				'department'    => 'full_title',
+				'language'      => 'title',
+				'category'      => 'title',
+				'product'       => 'title',
+				'workflow'      => 'title',
+				'priority'      => 'title',
+				'parent_ticket' => 'subject',
 			);
 			foreach ($standard_prop_names as $prop_name => $title_field) {
 				if ($this->ticket[$prop_name] && $this->other_ticket[$prop_name]) {
@@ -160,6 +161,12 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				$prop_standard->setProperty($prop_name);
 				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
 				$prop_standard->merge();
+			}
+
+			if ($this->ticket->parent_ticket) {
+				if ($this->ticket->parent_ticket == $this->ticket || $this->ticket->parent_ticket == $this->other_ticket) {
+					$this->ticket->parent_ticket = null;
+				}
 			}
 
 			ksort($this->data_lost);
