@@ -18,6 +18,7 @@ define [
 	'Admin/Main/Directive/DpRegisterMessage',
 	'Admin/Main/Directive/DpServerValidation',
 	'Admin/Main/Directive/DpShowSpinning',
+	'Admin/Main/Directive/DpSliderSwitch',
 	'Admin/Main/Directive/DpStateMark',
 	'Admin/Main/Directive/DpStatusUpdate',
 	'Admin/Main/Directive/DpSubmitForm',
@@ -50,6 +51,7 @@ define [
 	Admin_Main_Directive_DpRegisterMessage,
 	Admin_Main_Directive_DpServerValidation,
 	Admin_Main_Directive_DpShowSpinning,
+	Admin_Main_Directive_DpSliderSwitch,
 	Admin_Main_Directive_DpStateMark,
 	Admin_Main_Directive_DpStatusUpdate,
 	Admin_Main_Directive_DpSubmitForm,
@@ -82,6 +84,7 @@ define [
 		Module.directive('dpRegisterMessage',              Admin_Main_Directive_DpRegisterMessage)
 		Module.directive('dpServerValidation',             Admin_Main_Directive_DpServerValidation)
 		Module.directive('dpShowSpinning',                 Admin_Main_Directive_DpShowSpinning)
+		Module.directive('dpSliderSwitch',                 Admin_Main_Directive_DpSliderSwitch)
 		Module.directive('dpStateMark',                    Admin_Main_Directive_DpStateMark)
 		Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate)
 		Module.directive('dpSubmitForm',                   Admin_Main_Directive_DpSubmitForm)
