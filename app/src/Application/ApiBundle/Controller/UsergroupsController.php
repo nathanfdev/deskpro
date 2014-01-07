@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\DeskPRO\Usergroups\UsergroupEdit;
 use Application\DeskPRO\Usergroups\Usergroups;
 use Application\DeskPRO\Usergroups\Form\Type\UsergroupType;
@@ -122,6 +123,31 @@ class UsergroupsController extends AbstractController
 				 'user_group' => $returnedData,
 			)
 		);
+	}
+
+	###################################################################################################################
+	# get-agentgroup-perms
+	####################################################################################################################
+
+	public function getAgentgroupPermsAction()
+	{
+		$ugs = $this->em->createQuery("
+			SELECT ug
+			FROM DeskPRO:Usergroup ug
+			WHERE ug.is_agent_group = true
+			ORDER BY ug.title ASC
+		")->execute();
+
+		$loader = new GroupsDbLoader($ugs, $this->em);
+
+		$group_data = array();
+		foreach ($ugs as $ug) {
+			$group_data[] = array(
+				'group' => array('id' => $ug->id, 'title' => $ug->title),
+				'perms' => $loader->getGroupPermissions($ug->id)->toArray(),
+			);
+		}
+		return $this->createApiResponse(array('groups' => $group_data));
 	}
 
 	####################################################################################################################

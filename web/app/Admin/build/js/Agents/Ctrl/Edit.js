@@ -1,13 +1,16 @@
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  define(['Admin/Main/Ctrl/Base', 'Admin/Agents/FormModel/EditAgentModel', 'Admin/Agents/FormModel/EditAgentNotifPrefs'], function(Admin_Ctrl_Base, EditAgentModel, EditAgentNotifPrefs) {
     var Admin_Agents_Ctrl_Edit, _ref;
     Admin_Agents_Ctrl_Edit = (function(_super) {
       __extends(Admin_Agents_Ctrl_Edit, _super);
 
       function Admin_Agents_Ctrl_Edit() {
+        this.updateEffectiveUgPerms = __bind(this.updateEffectiveUgPerms, this);
         _ref = Admin_Agents_Ctrl_Edit.__super__.constructor.apply(this, arguments);
         return _ref;
       }
@@ -19,6 +22,7 @@
       Admin_Agents_Ctrl_Edit.DEPS = [];
 
       Admin_Agents_Ctrl_Edit.prototype.init = function() {
+        this.agentId = this.$stateParams.id;
         this.form = {};
       };
 
@@ -26,13 +30,104 @@
         var promise,
           _this = this;
         promise = this.Api.sendDataGet({
-          agent: "/agents/" + this.$stateParams.id,
+          agent: "/agents/" + this.agentId,
           teams: "/agent_teams",
-          groups: "/agentgroups"
+          groups: "/agentgroups",
+          groupPerms: "/agentgroups/permissions",
+          notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables"
         }).then(function(result) {
           _this.agent = result.data.agent.agent;
           _this.teams = result.data.teams.agent_teams;
-          return _this.groups = result.data.groups.agentgroups;
+          _this.groups = result.data.groups.agentgroups;
+          _this.groupPerms = result.data.groupPerms.groups;
+          _this.agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
+          _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
+          _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams);
+          _this.form = _this.agentFormModel.form;
+          _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
+            return _this.updateEffectiveUgPerms();
+          }, true);
+          return _this.perm_form = _this.agent.perms;
+        });
+      };
+
+      Admin_Agents_Ctrl_Edit.prototype.updateEffectiveUgPerms = function() {
+        var group, groupIds, info, perms, pname, pval, type, _i, _j, _len, _len1, _ref1, _ref2, _ref3, _results;
+        this.ugEffectivePerms = {
+          ticket: {},
+          people: {},
+          org: {},
+          chat: {},
+          publish: {},
+          general: {}
+        };
+        groupIds = [];
+        _ref1 = this.form.agent_groups;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          group = _ref1[_i];
+          if (group.value) {
+            groupIds.push(group.id);
+          }
+        }
+        _ref2 = this.groupPerms;
+        _results = [];
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          info = _ref2[_j];
+          if (_ref3 = info.group.id, __indexOf.call(groupIds, _ref3) >= 0) {
+            _results.push((function() {
+              var _ref4, _results1;
+              _ref4 = info.perms;
+              _results1 = [];
+              for (type in _ref4) {
+                if (!__hasProp.call(_ref4, type)) continue;
+                perms = _ref4[type];
+                _results1.push((function() {
+                  var _results2;
+                  _results2 = [];
+                  for (pname in perms) {
+                    if (!__hasProp.call(perms, pname)) continue;
+                    pval = perms[pname];
+                    if (pval) {
+                      _results2.push(this.ugEffectivePerms[type][pname] = pval);
+                    } else {
+                      _results2.push(void 0);
+                    }
+                  }
+                  return _results2;
+                }).call(this));
+              }
+              return _results1;
+            }).call(this));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      Admin_Agents_Ctrl_Edit.prototype.getFormData = function() {
+        var formData;
+        formData = {
+          agent: this.agentFormModel.getFormData(),
+          filter_subs: this.agentNotifPrefsModel.getFilterSubs(),
+          other_subs: this.agentNotifPrefsModel.getOtherSubs(),
+          perm_overrides: this.perm_form
+        };
+        return formData;
+      };
+
+      Admin_Agents_Ctrl_Edit.prototype.saveAgent = function() {
+        var postData, promise,
+          _this = this;
+        this.startSpinner('saving');
+        postData = this.getFormData();
+        if (this.agentId) {
+          promise = this.Api.sendPostJson("/agents/" + this.agentId, postData);
+        } else {
+          promise = this.Api.sendPutJson("/agents", postData);
+        }
+        return promise.then(function() {
+          return _this.stopSpinner('saving');
         });
       };
 

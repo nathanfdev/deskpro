@@ -74,6 +74,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
+		$return = '';
 		if (!$this->person['id']) {
 			if ($this->isPostRequest()) {
 				$return = $this->get('router')->generate('adm');

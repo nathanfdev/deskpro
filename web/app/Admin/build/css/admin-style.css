@@ -8336,6 +8336,11 @@ nav.dp-tabletabs ul li:hover a {
   border-bottom: none;
 }
 
+.dp-tabletabs-contentwrap {
+  padding: 6px;
+  border: 1px solid #bbb;
+}
+
 .pane-fullpage {
   background: #fff;
 }
@@ -11296,4 +11301,45 @@ table.phrases-restable td.phrase-user-title input[type="text"]:focus {
   background: #fff;
   border: 1px solid #888;
   outline: none;
+}
+
+table.notify-pref-table th.pref-col {
+  text-align: center;
+  word-wrap: none;
+  white-space: nowrap;
+  text-wrap: none;
+}
+
+table.notify-pref-table td.pref-col {
+  text-align: center;
+  word-wrap: none;
+  white-space: nowrap;
+  text-wrap: none;
+}
+
+table.notify-pref-table td.pref-col .tooltip {
+  word-wrap: normal;
+  white-space: normal;
+  text-wrap: normal;
+}
+
+table.notify-pref-table td.pref-title {
+  width: 100%;
+}
+
+table.notify-pref-table div.pref-opt + div.pref-opt {
+  padding-left: 2px;
+}
+
+table.agent-perms-table tr.nested span.title {
+  display: inline-block;
+  padding-left: 30px;
+}
+
+table.agent-perms-table .toggle-wrap {
+  margin-left: 4px;
+  font-size: 18px;
+  color: #555;
+  vertical-align: middle;
+  cursor: pointer;
 }

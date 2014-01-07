@@ -16,7 +16,7 @@
 						<h4>Display a different name to end-users</h4>
 					</label>
 					<div ng-show="EditCtrl.form.enable_display_name">
-						<input type="text" class="form-control" ng-model="EditCtrl.form.display_name" style="width: 50%;" />
+						<input type="text" class="form-control" ng-model="EditCtrl.form.override_display_name" style="width: 50%;" />
 					</div>
 				</div>
 			</div>
@@ -26,15 +26,7 @@
 				<h3>Email Address</h3>
 			</div>
 			<div class="col-lg-9">
-				<input type="text" class="form-control" name="email" ng-model="EditCtrl.form.email" style="width: 50%;" />
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-lg-3">
-				<h3>Reset Password</h3>
-			</div>
-			<div class="col-lg-9">
-				<input type="text" class="form-control" name="reset_password" ng-model="EditCtrl.form.reset_password" placeholder="Leave blank to keep current password" style="width: 50%;" />
+				<input type="text" class="form-control" name="email" ng-model="EditCtrl.form.primary_email_address" style="width: 50%;" />
 			</div>
 		</div>
 		<div class="form-group">
@@ -45,13 +37,13 @@
 				<ul class="checkbox-list" style="min-width: 250px">
 					<li>
 						<label>
-							<input type="checkbox" ng-model="EditCtrl.form.zones[admin]" />
+							<input type="checkbox" ng-model="EditCtrl.form.zones.admin" />
 							<span>Admin Interface</span>
 						</label>
 					</li>
 					<li>
 						<label>
-							<input type="checkbox" ng-model="EditCtrl.form.zones[reports]" />
+							<input type="checkbox" ng-model="EditCtrl.form.zones.reports" />
 							<span>Reports Interface</span>
 						</label>
 					</li>
@@ -64,9 +56,9 @@
 			</div>
 			<div class="col-lg-9">
 				<ul class="checkbox-list" style="min-width: 250px">
-					<li ng-repeat="team in EditCtrl.teams">
+					<li ng-repeat="team in EditCtrl.form.teams">
 						<label>
-							<input type="checkbox" ng-model="EditCtrl.form.teams[team.id]" />
+							<input type="checkbox" ng-model="team.value" />
 							<span>{{ ng_var('team.name') }}</span>
 						</label>
 					</li>
@@ -79,9 +71,9 @@
 			</div>
 			<div class="col-lg-9">
 				<ul class="checkbox-list" style="min-width: 250px">
-					<li ng-repeat="group in EditCtrl.groups">
+					<li ng-repeat="group in EditCtrl.form.agent_groups">
 						<label>
-							<input type="checkbox" ng-model="EditCtrl.form.groups[group.id]" />
+							<input type="checkbox" ng-model="group.value" />
 							<span>{{ ng_var('group.title') }}</span>
 						</label>
 					</li>

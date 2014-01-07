@@ -1,12 +1,16 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveLabel()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveAgent()">
 		<section class="dp-paneblock dp-editpane">
 			<nav class="dp-blocktabs">
 				<ul>
 					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
 					<li class="pipe">|</li>
 					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-key"></i> Permission Overrides</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.notif_prefs"><a href="#"><i class="fa fa-envelope"></i> Ticket Notifications</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.othernotif_prefs"><a href="#"><i class="fa fa-envelope-o"></i> Other Notifications</a></li>
 				</ul>
 			</nav>
 			<article class="form-horizontal dp-form">
@@ -15,6 +19,12 @@
 				</div>
 				<div dp-tab-body="main.perms">
 					{% include 'AdminInterfaceBundle:Agents:edit-perms.html.twig' %}
+				</div>
+				<div dp-tab-body="main.notif_prefs">
+					{% include 'AdminInterfaceBundle:Agents:edit-ticket-notifs.html.twig' %}
+				</div>
+				<div dp-tab-body="main.othernotif_prefs">
+					{% include 'AdminInterfaceBundle:Agents:edit-other-notifs.html.twig' %}
 				</div>
 			</article>
 			<footer>
@@ -26,10 +36,10 @@
 						</ul>
 					</div>
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_label">
+						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 						</div>
-						<div dp-show-spinning="saving_label">
+						<div dp-show-spinning="saving">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>

@@ -780,6 +780,25 @@ $collection->create('api_agents_get', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_agents_save', array(
+	'path'        => '/agents/{id}',
+	'controller'  => 'ApiBundle:Agents:saveAgent',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_agents_create', array(
+	'path'        => '/agents',
+	'controller'  => 'ApiBundle:Agents:saveAgent',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_agents_notifyprefs_gettables', array(
+	'path'        => '/agents/{id}/notify-prefs/get-tables',
+	'controller'  => 'ApiBundle:Agents:getNotifyPrefs',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_agentsteams_list', array(
 	'path'        => '/agent_teams',
 	'controller'  => 'ApiBundle:Agents:listTeams',
@@ -790,6 +809,13 @@ $collection->create('api_agentgroups_list', array(
 	'path'        => '/agentgroups',
 	'controller'  => 'ApiBundle:Usergroups:list',
 	'defaults'    => array('type' => 'agent'),
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_agentgroups_getperms', array(
+	'path'        => '/agentgroups/permissions',
+	'controller'  => 'ApiBundle:Usergroups:getAgentgroupPerms',
+	'defaults'    => array(),
 	'methods'     => array('GET'),
 ));
 

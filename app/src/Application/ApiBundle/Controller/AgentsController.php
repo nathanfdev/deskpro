@@ -35,7 +35,9 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
-use Orb\Util\Arrays;
+use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
+use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
+use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 
 class AgentsController extends AbstractController
 {
@@ -71,8 +73,17 @@ class AgentsController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
+		$agent_data = $agent->toApiData();
+		$agent_data['teams'] = array();
+		foreach ($this->container->getAgentData()->getTeamsByIds($agent->getHelper('AgentTeam')->getAgentTeamIds()) as $t) {
+			$agent_data['teams'][] = $t->toApiData();
+		}
+
+		$perm_loader = new AgentPermsPersonDbLoader($this->person, $this->em);
+
 		return $this->createApiResponse(array(
-			'agent' => $agent
+			'agent'           => $agent_data,
+			'perms'           => $perm_loader->getEffectivePermissions()->toArray(),
 		));
 	}
 
@@ -91,7 +102,17 @@ class AgentsController extends AbstractController
 			}
 		} else {
 			$agent = new Person();
+			$agent->can_agent = true;
 		}
+
+		$agent->setName($this->in->getString('agent.name'));
+		$agent->override_display_name = $this->in->getString('agent.override_display_name') ?: '';
+		$agent->can_admin   = $this->in->getBool('agent.zones.admin');
+		$agent->can_billing = $agent->can_admin;
+		$agent->can_reports = $this->in->getBool('agent.zones.reports');
+
+		$this->em->persist($agent);
+		$this->em->flush();
 
 		return $this->createApiCreateResponse(array(
 			'agent_id' => $agent->id
@@ -112,5 +133,63 @@ class AgentsController extends AbstractController
 		}
 
 		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# get-notify-prefs-tables
+	####################################################################################################################
+
+	public function getNotifyPrefsAction($id)
+	{
+		$agent = $this->container->getAgentData()->get($id);
+
+		if (!$agent) {
+			throw $this->createNotFoundException();
+		}
+
+		$loader    = new AgentNotifPrefsLoader($agent, $this->em);
+		$prefs     = $loader->getPrefs();
+		$table_gen = new AgentNotifPrefsTable($prefs, $this->container->getTranslator());
+
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
+
+		$sys_filters = array();
+		$custom_filters = array();
+
+		foreach ($filters as $f) {
+			if ($f->sys_name) {
+				if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) continue;
+				$sys_filters[] = $f;
+			} else {
+				$custom_filters[] = $f;
+			}
+		}
+
+		$tables = array();
+		$tables['sys_filters_email'] = $table_gen->buildSystemFiltersTable('email', $sys_filters);
+		$tables['sys_filters_alert'] = $table_gen->buildSystemFiltersTable('alert', $sys_filters);
+
+		if ($custom_filters) {
+			$tables['custom_filters_email'] = $table_gen->buildCustomFiltersTable('email', $sys_filters);
+			$tables['custom_filters_alert'] = $table_gen->buildCustomFiltersTable('alert', $sys_filters);
+		}
+
+		$tables['chat']     = $table_gen->buildChatTable();
+		$tables['task']     = $table_gen->buildTaskTable();
+		$tables['twitter']  = $table_gen->buildTwitterTable();
+		$tables['feedback'] = $table_gen->buildFeedbackTable();
+		$tables['publish']  = $table_gen->buildPublishTable();
+		$tables['crm']      = $table_gen->buildCrmTable();
+		$tables['account']  = $table_gen->buildAccountTable();
+
+		return $this->createApiResponse(array(
+			'subs'         => $tables,
+			'sub_options'  => array(
+				'email' => $prefs->getFilterNotifyPrefs('email'),
+				'alert' => $prefs->getFilterNotifyPrefs('alert'),
+			),
+			'mention_mode' => $prefs->getEmailMentionMode(),
+		));
 	}
 }

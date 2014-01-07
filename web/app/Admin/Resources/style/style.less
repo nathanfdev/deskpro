@@ -806,6 +806,11 @@ nav.dp-tabletabs {
 	}
 }
 
+.dp-tabletabs-contentwrap {
+	border: 1px solid #bbb;
+	padding: 6px;
+}
+
 //######################################################################################################################
 //# Pane Styles
 //######################################################################################################################
@@ -3601,5 +3606,55 @@ table.phrases-restable {
 		color: #444;
 		outline: none;
 		background: #fff;
+	}
+}
+
+//######################################################################################################################
+//# Phrase Editor
+//######################################################################################################################
+
+table.notify-pref-table {
+	th.pref-col {
+		text-align: center;
+		text-wrap: none;
+		word-wrap: none;
+		white-space: nowrap;
+	}
+	td.pref-col {
+		text-align: center;
+		text-wrap: none;
+		word-wrap: none;
+		white-space: nowrap;
+
+		.tooltip {
+			text-wrap: normal;
+			word-wrap: normal;
+			white-space: normal;
+		}
+	}
+
+	td.pref-title {
+		width: 100%;
+	}
+
+	div.pref-opt + div.pref-opt {
+		padding-left: 2px;
+	}
+}
+
+table.agent-perms-table {
+	tr.nested {
+		span.title {
+			display: inline-block;
+			padding-left: 30px;
+		}
+	}
+
+	.toggle-wrap {
+		margin-left: 4px;
+		font-size: 18px;
+		cursor: pointer;
+		color: #555;
+		vertical-align: middle;
 	}
 }
