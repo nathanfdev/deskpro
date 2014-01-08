@@ -3,6 +3,16 @@
 	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveAgent()">
 		<section class="dp-paneblock dp-editpane">
 			<nav class="dp-blocktabs">
+				<menu>
+					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+					<ul class="dropdown-menu pull-right">
+						<li><a ng-click="EditCtrl.showCopySettings()"><i class="fa fa-copy"></i> Copy settings from another agent</a></li>
+						<li class="divider"></li>
+						<li><a ng-click="EditCtrl.showResetPassword()"><i class="fa fa-asterisk"></i> Reset password</a></li>
+						<li><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this agent</a></li>
+						<li><a ng-click="EditCtrl.showDelete()"><i class="fa fa-trash-o"></i> Delete agent</a></li>
+					</ul>
+				</menu>
 				<ul>
 					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
 					<li class="pipe">|</li>
@@ -47,4 +57,8 @@
 			</footer>
 		</section>
 	</form>
+	{{ ng_tpl('AdminInterfaceBundle:Agents:reset-password-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:copy-settings-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:delete-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:login-as-modal.html.twig') }}
 {% endblock %}

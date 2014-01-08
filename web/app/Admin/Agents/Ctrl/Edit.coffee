@@ -1,8 +1,10 @@
 define [
+	'DeskPRO/Util/Strings',
 	'Admin/Main/Ctrl/Base',
 	'Admin/Agents/FormModel/EditAgentModel',
 	'Admin/Agents/FormModel/EditAgentNotifPrefs'
 ], (
+	Strings,
 	Admin_Ctrl_Base,
 	EditAgentModel,
 	EditAgentNotifPrefs
@@ -100,6 +102,103 @@ define [
 				for own permName, value of perms
 					perms[permName] = false
 			@hasPermOverrides = false
+
+
+		###
+    	# Shows the password reset modal
+    	###
+		showResetPassword: ->
+			doReset = (setPassword) =>
+				if not setPassword or not Strings.trim(setPassword)
+					setPassword = ''
+
+				return @Api.sendPostJson("/agents/#{@agentId}/reset-password", {
+					set_password: setPassword
+				})
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Agents/reset-password-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.password = {
+						mode: 'random',
+						manual: ''
+					}
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+
+					$scope.saveResetPassword = ->
+						$scope.is_saving = true
+						if $scope.password.mode == 'set'
+							doReset($scope.password.manual).then(=> $modalInstance.close())
+						else
+							doReset(false).then(=> $modalInstance.close())
+				]
+			});
+
+			return inst
+
+		###
+    	# Shows the copy settings modal
+    	###
+		showCopySettings: ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Agents/copy-settings-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+				]
+			});
+
+			inst.result.then(=>
+
+			)
+
+
+		###
+    	# Shows the copy settings modal
+    	###
+		showLoginAs: ->
+			agentName = @form.name
+			agentId = @agentId
+			Api = @Api
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Agents/login-as-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+
+					$scope.agentName = agentName
+					$scope.is_loading = true
+
+					Api.sendGet("/agents/#{agentId}/login-token").then( (res) ->
+						$scope.is_loading = false
+						$scope.login_token = res.data.login_token
+					)
+				]
+			});
+
+			inst.result.then(=>
+
+			)
+
+
+		###
+    	# Shows the copy settings modal
+    	###
+		showDelete: ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Agents/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+				]
+			});
+
+			inst.result.then(=>
+
+			)
 
 
 		###

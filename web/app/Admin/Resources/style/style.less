@@ -101,6 +101,14 @@ label {
 	margin: 15px;
 }
 
+.dropdown-menu a {
+	cursor: pointer;
+	i.fa {
+		position: relative;
+		left: -6px;
+	}
+}
+
 em.dp-id {
 	display: inline-block;
 	line-height: 100%;
@@ -727,7 +735,7 @@ div.dp-appalt-section {
 //######################################################################################################################
 
 nav.dp-blocktabs {
-	ul {
+	> ul {
 		list-style-type: none;
 		margin: 0 16px;
 		padding: 10px 0 12px 0;
@@ -762,6 +770,30 @@ nav.dp-blocktabs {
 		li.pipe {
 			color: #ccc;
 			padding-right: 11px;
+		}
+	}
+
+	menu {
+		float: right;
+		position: relative;
+		top: -4px;
+		padding-right: 18px;
+		button {
+			padding: 4px;
+			border-radius: 25px;
+			i.fa-caret-down {
+				vertical-align: middle;
+			}
+			span {
+				margin-left: 4px;
+				margin-right: 4px;
+				color: #444;
+				i {
+					font-size: 20px;
+					line-height: 100%;
+					vertical-align: middle;
+				}
+			}
 		}
 	}
 }

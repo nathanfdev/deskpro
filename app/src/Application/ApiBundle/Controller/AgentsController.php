@@ -35,9 +35,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Orb\Util\Strings;
 
 class AgentsController extends AbstractController
 {
@@ -117,6 +119,76 @@ class AgentsController extends AbstractController
 		return $this->createApiCreateResponse(array(
 			'agent_id' => $agent->id
 		), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
+	}
+
+
+	####################################################################################################################
+	# reset-password
+	####################################################################################################################
+
+	public function resetPasswordAction($id)
+	{
+		$agent = $this->container->getAgentData()->get($id);
+
+		if (!$agent) {
+			throw $this->createNotFoundException();
+		}
+
+		$password = $this->in->getString('set_password');
+		if (!$password) {
+			$password = Strings::randomPronounceable(20);
+		}
+
+		$agent->setPassword($password);
+		$this->em->persist($agent);
+		$this->em->flush();
+
+		// Clear possible active sessions
+		$this->db->delete('sessions', array('person_id' => $agent->id));
+
+		$did_email = false;
+		if (!$this->in->getBool('skip_email')) {
+			$did_email = $agent->getPrimaryEmailAddress();
+			$message = $this->container->getMailer()->createMessage();
+			$message->setToPerson($agent);
+			$message->setTemplate('DeskPRO:emails_agent:password-reset-alert.html.twig', array(
+				'agent'        => $agent,
+				'performer'    => $this->person,
+				'new_password' => $password,
+			));
+			$this->container->getMailer()->send($message);
+		}
+
+		return $this->createSuccessResponse(array(
+			'emailed' => $did_email
+		));
+	}
+
+
+	####################################################################################################################
+	# generate-login-token
+	####################################################################################################################
+
+	public function generateLoginTokenAction($id)
+	{
+		$agent = $this->container->getAgentData()->get($id);
+
+		if (!$agent) {
+			throw $this->createNotFoundException();
+		}
+
+		$tmp = TmpData::create('admin_agent_login', array(
+			'admin_id' => $this->person->getId(),
+			'agent_id' => $agent->id
+		), '+5 minutes');
+		$this->em->persist($tmp);
+		$this->em->flush();
+
+		return $this->createApiResponse(array(
+			'login_token'    => $tmp->getCode(),
+			'valid_until'    => $tmp->date_expire->format('Y-m-d H:i:s'),
+			'valid_until_ts' => $tmp->date_expire->getTimestamp(),
+		));
 	}
 
 

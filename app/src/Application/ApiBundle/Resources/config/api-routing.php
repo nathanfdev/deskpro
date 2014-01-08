@@ -786,6 +786,18 @@ $collection->create('api_agents_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_agents_resetpassword', array(
+	'path'        => '/agents/{id}/reset-password',
+	'controller'  => 'ApiBundle:Agents:resetPassword',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_agents_getlogintoken', array(
+	'path'        => '/agents/{id}/login-token',
+	'controller'  => 'ApiBundle:Agents:generateLoginToken',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_agents_create', array(
 	'path'        => '/agents',
 	'controller'  => 'ApiBundle:Agents:saveAgent',

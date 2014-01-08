@@ -4,7 +4,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(['Admin/Main/Ctrl/Base', 'Admin/Agents/FormModel/EditAgentModel', 'Admin/Agents/FormModel/EditAgentNotifPrefs'], function(Admin_Ctrl_Base, EditAgentModel, EditAgentNotifPrefs) {
+  define(['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base', 'Admin/Agents/FormModel/EditAgentModel', 'Admin/Agents/FormModel/EditAgentNotifPrefs'], function(Strings, Admin_Ctrl_Base, EditAgentModel, EditAgentNotifPrefs) {
     var Admin_Agents_Ctrl_Edit, _ref;
     Admin_Agents_Ctrl_Edit = (function(_super) {
       __extends(Admin_Agents_Ctrl_Edit, _super);
@@ -162,6 +162,124 @@
           }
         }
         return this.hasPermOverrides = false;
+      };
+
+      /*
+        	# Shows the password reset modal
+      */
+
+
+      Admin_Agents_Ctrl_Edit.prototype.showResetPassword = function() {
+        var doReset, inst,
+          _this = this;
+        doReset = function(setPassword) {
+          if (!setPassword || !Strings.trim(setPassword)) {
+            setPassword = '';
+          }
+          return _this.Api.sendPostJson("/agents/" + _this.agentId + "/reset-password", {
+            set_password: setPassword
+          });
+        };
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Agents/reset-password-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.password = {
+                mode: 'random',
+                manual: ''
+              };
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              return $scope.saveResetPassword = function() {
+                var _this = this;
+                $scope.is_saving = true;
+                if ($scope.password.mode === 'set') {
+                  return doReset($scope.password.manual).then(function() {
+                    return $modalInstance.close();
+                  });
+                } else {
+                  return doReset(false).then(function() {
+                    return $modalInstance.close();
+                  });
+                }
+              };
+            }
+          ]
+        });
+        return inst;
+      };
+
+      /*
+        	# Shows the copy settings modal
+      */
+
+
+      Admin_Agents_Ctrl_Edit.prototype.showCopySettings = function() {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Agents/copy-settings-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {});
+      };
+
+      /*
+        	# Shows the copy settings modal
+      */
+
+
+      Admin_Agents_Ctrl_Edit.prototype.showLoginAs = function() {
+        var Api, agentId, agentName, inst,
+          _this = this;
+        agentName = this.form.name;
+        agentId = this.agentId;
+        Api = this.Api;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Agents/login-as-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              $scope.agentName = agentName;
+              $scope.is_loading = true;
+              return Api.sendGet("/agents/" + agentId + "/login-token").then(function(res) {
+                $scope.is_loading = false;
+                return $scope.login_token = res.data.login_token;
+              });
+            }
+          ]
+        });
+        return inst.result.then(function() {});
+      };
+
+      /*
+        	# Shows the copy settings modal
+      */
+
+
+      Admin_Agents_Ctrl_Edit.prototype.showDelete = function() {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Agents/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {});
       };
 
       /*

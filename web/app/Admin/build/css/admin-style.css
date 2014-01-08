@@ -7632,6 +7632,15 @@ label {
   margin: 15px;
 }
 
+.dropdown-menu a {
+  cursor: pointer;
+}
+
+.dropdown-menu a i.fa {
+  position: relative;
+  left: -6px;
+}
+
 em.dp-id {
   display: inline-block;
   padding: 2px;
@@ -8248,20 +8257,20 @@ div.dp-appalt-section > section header h3 {
   border-bottom: 2px solid #aaa;
 }
 
-nav.dp-blocktabs ul {
+nav.dp-blocktabs > ul {
   padding: 10px 0 12px 0;
   margin: 0 16px;
   list-style-type: none;
   border-bottom: 1px dotted #ccc;
 }
 
-nav.dp-blocktabs ul li {
+nav.dp-blocktabs > ul li {
   display: inline-block;
   padding-right: 11px;
   cursor: pointer;
 }
 
-nav.dp-blocktabs ul li a {
+nav.dp-blocktabs > ul li a {
   padding: 0 0 2px 0;
   font-size: 130%;
   font-weight: normal;
@@ -8270,19 +8279,47 @@ nav.dp-blocktabs ul li a {
   border-bottom: 3px solid transparent;
 }
 
-nav.dp-blocktabs ul li a i.fa {
+nav.dp-blocktabs > ul li a i.fa {
   font-size: 11pt;
   color: #777;
 }
 
-nav.dp-blocktabs ul li.active a,
-nav.dp-blocktabs ul li:hover a {
+nav.dp-blocktabs > ul li.active a,
+nav.dp-blocktabs > ul li:hover a {
   border-bottom: 3px solid #999999;
 }
 
-nav.dp-blocktabs ul li.pipe {
+nav.dp-blocktabs > ul li.pipe {
   padding-right: 11px;
   color: #ccc;
+}
+
+nav.dp-blocktabs menu {
+  position: relative;
+  top: -4px;
+  float: right;
+  padding-right: 18px;
+}
+
+nav.dp-blocktabs menu button {
+  padding: 4px;
+  border-radius: 25px;
+}
+
+nav.dp-blocktabs menu button i.fa-caret-down {
+  vertical-align: middle;
+}
+
+nav.dp-blocktabs menu button span {
+  margin-right: 4px;
+  margin-left: 4px;
+  color: #444;
+}
+
+nav.dp-blocktabs menu button span i {
+  font-size: 20px;
+  line-height: 100%;
+  vertical-align: middle;
 }
 
 nav.dp-tabletabs ul {
