@@ -2914,6 +2914,11 @@ class TicketController extends AbstractController
 	public function viewMessageWindowAction($message_id, $type = 'normal')
 	{
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		if (!$message) {
+			throw $this->createNotFoundException();
+		}
+
 		$ticket = $message->ticket;
 
 		$vars = array(
