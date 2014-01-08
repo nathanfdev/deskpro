@@ -15,6 +15,7 @@ define [
 		init: ->
 			@agentId = @$stateParams.id;
 			@form = {}
+			@hasPermOverrides = false
 			return
 
 		initialLoad: ->
@@ -41,10 +42,15 @@ define [
 				, true)
 
 				@perm_form = @agent.perms
+				@updateHasPermOverridesStatus()
 			)
-			return
+			return promise
 
-		updateEffectiveUgPerms: =>
+
+		###
+		# When usergroups are changed, we need to update the effective list of permissions
+		###
+		updateEffectiveUgPerms: ->
 			@ugEffectivePerms = {
 				ticket: {},
 				people: {},
@@ -53,6 +59,8 @@ define [
 				publish: {},
 				general: {}
 			}
+
+			if not @form.agent_groups then return
 
 			groupIds = []
 			for group in @form.agent_groups
@@ -67,6 +75,36 @@ define [
 								@ugEffectivePerms[type][pname] = pval
 
 
+		###
+    	# When a permission is updated, we need to update the hasPermOverrides status.
+    	# This is done by an ngChange on the permission toggles. We dont use a watch because
+    	# it can become too slow to watch the large graph of permissions.
+		###
+		updateHasPermOverridesStatus: ->
+			@updateEffectiveUgPerms()
+
+			@hasPermOverrides = false
+			for own type, perms of @perm_form
+				for own permName, value of perms
+					if value
+						if not @ugEffectivePerms[type]?[permName]? or not @ugEffectivePerms[type][permName]
+							@hasPermOverrides = true
+							return
+
+
+		###
+    	# This does the actual removal of all perm overrides
+		###
+		clearPermOverrides: =>
+			for own type, perms of @perm_form
+				for own permName, value of perms
+					perms[permName] = false
+			@hasPermOverrides = false
+
+
+		###
+    	# Returns an object hash of the complete form data
+		###
 		getFormData: ->
 			formData = {
 				agent:           @agentFormModel.getFormData(),
@@ -77,6 +115,10 @@ define [
 
 			return formData
 
+
+		###
+    	# Saves the agent
+		###
 		saveAgent: ->
 			@startSpinner('saving')
 
@@ -90,5 +132,7 @@ define [
 			promise.then(=>
 				@stopSpinner('saving')
 			)
+
+			return promise
 
 	Admin_Agents_Ctrl_Edit.EXPORT_CTRL()

@@ -10,7 +10,7 @@
       __extends(Admin_Agents_Ctrl_Edit, _super);
 
       function Admin_Agents_Ctrl_Edit() {
-        this.updateEffectiveUgPerms = __bind(this.updateEffectiveUgPerms, this);
+        this.clearPermOverrides = __bind(this.clearPermOverrides, this);
         _ref = Admin_Agents_Ctrl_Edit.__super__.constructor.apply(this, arguments);
         return _ref;
       }
@@ -24,6 +24,7 @@
       Admin_Agents_Ctrl_Edit.prototype.init = function() {
         this.agentId = this.$stateParams.id;
         this.form = {};
+        this.hasPermOverrides = false;
       };
 
       Admin_Agents_Ctrl_Edit.prototype.initialLoad = function() {
@@ -47,9 +48,16 @@
           _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
             return _this.updateEffectiveUgPerms();
           }, true);
-          return _this.perm_form = _this.agent.perms;
+          _this.perm_form = _this.agent.perms;
+          return _this.updateHasPermOverridesStatus();
         });
+        return promise;
       };
+
+      /*
+      		# When usergroups are changed, we need to update the effective list of permissions
+      */
+
 
       Admin_Agents_Ctrl_Edit.prototype.updateEffectiveUgPerms = function() {
         var group, groupIds, info, perms, pname, pval, type, _i, _j, _len, _len1, _ref1, _ref2, _ref3, _results;
@@ -61,6 +69,9 @@
           publish: {},
           general: {}
         };
+        if (!this.form.agent_groups) {
+          return;
+        }
         groupIds = [];
         _ref1 = this.form.agent_groups;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -105,6 +116,59 @@
         return _results;
       };
 
+      /*
+        	# When a permission is updated, we need to update the hasPermOverrides status.
+        	# This is done by an ngChange on the permission toggles. We dont use a watch because
+        	# it can become too slow to watch the large graph of permissions.
+      */
+
+
+      Admin_Agents_Ctrl_Edit.prototype.updateHasPermOverridesStatus = function() {
+        var permName, perms, type, value, _ref1, _ref2;
+        this.updateEffectiveUgPerms();
+        this.hasPermOverrides = false;
+        _ref1 = this.perm_form;
+        for (type in _ref1) {
+          if (!__hasProp.call(_ref1, type)) continue;
+          perms = _ref1[type];
+          for (permName in perms) {
+            if (!__hasProp.call(perms, permName)) continue;
+            value = perms[permName];
+            if (value) {
+              if ((((_ref2 = this.ugEffectivePerms[type]) != null ? _ref2[permName] : void 0) == null) || !this.ugEffectivePerms[type][permName]) {
+                this.hasPermOverrides = true;
+                return;
+              }
+            }
+          }
+        }
+      };
+
+      /*
+        	# This does the actual removal of all perm overrides
+      */
+
+
+      Admin_Agents_Ctrl_Edit.prototype.clearPermOverrides = function() {
+        var permName, perms, type, value, _ref1;
+        _ref1 = this.perm_form;
+        for (type in _ref1) {
+          if (!__hasProp.call(_ref1, type)) continue;
+          perms = _ref1[type];
+          for (permName in perms) {
+            if (!__hasProp.call(perms, permName)) continue;
+            value = perms[permName];
+            perms[permName] = false;
+          }
+        }
+        return this.hasPermOverrides = false;
+      };
+
+      /*
+        	# Returns an object hash of the complete form data
+      */
+
+
       Admin_Agents_Ctrl_Edit.prototype.getFormData = function() {
         var formData;
         formData = {
@@ -116,6 +180,11 @@
         return formData;
       };
 
+      /*
+        	# Saves the agent
+      */
+
+
       Admin_Agents_Ctrl_Edit.prototype.saveAgent = function() {
         var postData, promise,
           _this = this;
@@ -126,9 +195,10 @@
         } else {
           promise = this.Api.sendPutJson("/agents", postData);
         }
-        return promise.then(function() {
+        promise.then(function() {
           return _this.stopSpinner('saving');
         });
+        return promise;
       };
 
       return Admin_Agents_Ctrl_Edit;

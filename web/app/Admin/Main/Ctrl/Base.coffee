@@ -97,9 +97,31 @@ define ['angular'], (angular) ->
 			@$scope.isStateActive = (stateId, stateParams = null) =>
 				return @$state.isStateActive(stateId, stateParams)
 
-
 			@$scope.state_path = (route, params = {}) =>
 				return @$state.href(route, params)
+
+			# Allow showAlert(message, callback) to be called from code
+			@$scope.showAlert = (message, fn) =>
+				if message.title
+					title = message.title
+					message = title
+				else
+					title = 'Alert'
+
+				inst = @showAlert(message, title)
+				if fn
+					inst.result.then(=> fn() )
+
+			@$scope.showConfirm = (message, fnTrue) =>
+				if message.title
+					title = message.title
+					message = title
+				else
+					title = 'Confirm'
+
+				inst = @showConfirm(message, title)
+				if fnTrue
+					inst.result.then(=> fnTrue() )
 
 			###
 			@$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>

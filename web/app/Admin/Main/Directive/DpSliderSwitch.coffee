@@ -14,16 +14,18 @@ define ->
     # * is-locked:    Expression to evaluate when checking if the locked symbol is on
     # * is-on:        Expression to evaluate when showing this as 'on'. When ng-model is true or when this is true, then it shows on
     # * ng-model:     The on/off model
+    # * locked-tip:   A string for the locked tooltop
+    # * locked-top-e: An expression that returns a string
     #
     # Example View
     # ------------
-    # <span
-    #     dp-toggle-switch
-    #     locked-model="groupObj.perms.assign.locked"
-    #     ng-model="groupObj.perms.assign.state"
-    #     ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')"
+    # <input
+    #     dp-slider-switch
+    #     ng-model="myModel"
+    #     is-on="myOtherModel.showAsOn"
+    #     is-locked="myOtherModel.isLocked"
     #     locked-tip="This is locked because the 'full' permission is enabled"
-    # ></span>
+    # />
     ###
 	Admin_Main_Directive_DpToggleSwitch = [ ->
 		return {
@@ -106,19 +108,19 @@ define ->
 					ngModel.$render()
 				)
 
-				if attrs.lockedTip
+				if attrs.lockedTip or attrs.lockedTipE
 					tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>')
-					tipTarget.attr('title', attrs.lockedTip)
 					tipTarget.appendTo(element)
 					tipTarget.tooltip({
 						placement: 'auto top',
 						trigger: 'hover',
-						container: 'body'
+						container: 'body',
+						title: ->
+							if attrs.lockedTipE
+								return scope.$eval(attrs.lockedTipE)
+							else
+								return attrs.lockedTip
 					})
-
-					scope.$watch(attrs.lockedTip, (newVal) ->
-						tipTarget.attr('title', newVal)
-					)
 		}
 	]
 

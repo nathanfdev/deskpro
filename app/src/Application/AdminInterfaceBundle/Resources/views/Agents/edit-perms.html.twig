@@ -28,14 +28,48 @@
 			<input
 				dp-slider-switch
 				ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
+				ng-change="EditCtrl.updateHasPermOverridesStatus()"
 				is-on="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
 				is-locked="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
+				{% if opts.toggleName %}
+					locked-tip-e="(EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}) && 'This permission is locked because you have enabled the parent permission' || 'This permission is locked because this agent is part of a usergroup with this perimssion'"
+				{% else %}
+					locked-tip="This permission is locked because this agent is part of a usergroup with this perimssion"
+				{% endif %}
 			/>
 		</td>
 	</tr>
 {% endmacro %}
 
 <div class="panel panel-innertable">
+
+	<div class="alert alert-info">
+		<p>
+			Permission groups are pre-defined sets of permissions you can easily apply to multiple agents.
+		</p>
+		<p>
+			Select the permission groups to apply to this agent:
+		</p>
+		<ul class="checkbox-list" style="min-width: 250px">
+			<li ng-repeat="group in EditCtrl.form.agent_groups">
+				<label>
+					<input type="checkbox" ng-model="group.value" />
+					<span>{{ ng_var('group.title') }}</span>
+				</label>
+			</li>
+		</ul>
+	</div>
+
+	<div ng-show="EditCtrl.hasPermOverrides">
+		<div class="alert alert-warning">
+			<p>
+				<span class="fa fa-exclamation-triangle"></span>
+				There are permission overrides set on this agent. Manage permission overrides below.
+				<button class="btn btn-default btn-xs" ng-click="$event.preventDefault(); showConfirm('Are you sure you want to unset all permission overrides?', EditCtrl.clearPermOverrides);" style="float:right">Click here to remove overrides</button>
+			</p>
+		</div>
+	</div>
+
 	<nav class="dp-tabletabs">
 		<ul>
 			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#">Tickets</a></li>
@@ -167,7 +201,7 @@
 	{% if app.getSetting('core.apps_chat') %}
 		<table class="table table-hover" dp-tab-body="main.perms.chat">
 			<tbody>
-				{{ _self.perm_row('chat', 'use', {first: true}) }}
+				{{ _self.perm_row('chat', 'use') }}
 				{{ _self.perm_row('chat', 'view_transcripts') }}
 				{{ _self.perm_row('chat', 'view_unassigned') }}
 				{{ _self.perm_row('chat', 'view_others') }}
@@ -180,7 +214,7 @@
 	{# PUBLISH PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.publish">
 		<tbody>
-			{{ _self.perm_row('publish', 'create', {first: true}) }}
+			{{ _self.perm_row('publish', 'create') }}
 			{{ _self.perm_row('publish', 'delete') }}
 			{{ _self.perm_row('publish', 'edit') }}
 			{{ _self.perm_row('publish', 'validate') }}

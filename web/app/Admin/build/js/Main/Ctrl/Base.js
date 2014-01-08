@@ -140,6 +140,36 @@
           }
           return _this.$state.href(route, params);
         };
+        this.$scope.showAlert = function(message, fn) {
+          var inst, title;
+          if (message.title) {
+            title = message.title;
+            message = title;
+          } else {
+            title = 'Alert';
+          }
+          inst = _this.showAlert(message, title);
+          if (fn) {
+            return inst.result.then(function() {
+              return fn();
+            });
+          }
+        };
+        this.$scope.showConfirm = function(message, fnTrue) {
+          var inst, title;
+          if (message.title) {
+            title = message.title;
+            message = title;
+          } else {
+            title = 'Confirm';
+          }
+          inst = _this.showConfirm(message, title);
+          if (fnTrue) {
+            return inst.result.then(function() {
+              return fnTrue();
+            });
+          }
+        };
         /*
         			@$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
         				if ev.defaultPrevented then return

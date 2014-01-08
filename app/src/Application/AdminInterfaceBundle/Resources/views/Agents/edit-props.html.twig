@@ -78,6 +78,15 @@
 						</label>
 					</li>
 				</ul>
+				<span class="help-block">
+					<div ng-show="EditCtrl.hasPermOverrides">
+						<span class="fa fa-exclamation-triangle"></span>
+						This agent has permission overrides on the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab.
+					</div>
+					<div ng-show="!EditCtrl.hasPermOverrides">
+						Switch to the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab to manage permission overrides.
+					</div>
+				</span>
 			</div>
 		</div>
 	</div>
