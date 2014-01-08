@@ -96,7 +96,7 @@ class AgentChat
 			}
 
 			$date = clone $chat_message['date_created'];
-			$date->setTimeZone(App::getCurrentPerson()->getDateTimezone());
+			$date->setTimeZone($part->getDateTimezone());
 			$time = App::getContainer()->getTranslator()->date('g:ia', $date, 'agent.time');
 
 			$cm = new ClientMessage();
