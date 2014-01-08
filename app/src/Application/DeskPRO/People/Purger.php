@@ -116,7 +116,7 @@ class Purger implements PersonContextInterface
 		}
 
 		if ($inserts) {
-			$this->db->batchInsert('tickets_deleted', $inserts);
+			$this->db->batchInsert('tickets_deleted', $inserts, true);
 		}
 
 		#------------------------------
