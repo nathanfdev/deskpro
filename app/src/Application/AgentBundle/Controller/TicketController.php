@@ -2293,8 +2293,9 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_sla = $ticket->addSla($sla);
+		$ticket_sla->calculateSlaDates(false);
 		if ($ticket_sla && !$ticket_sla->id) {
-			$this->em->persist($ticket);
+			$this->em->persist($ticket_sla);
 			$this->em->flush();
 
 			$data = array(
