@@ -22,7 +22,7 @@
       Admin_Agents_Ctrl_Edit.DEPS = [];
 
       Admin_Agents_Ctrl_Edit.prototype.init = function() {
-        this.agentId = this.$stateParams.id;
+        this.agentId = parseInt(this.$stateParams.id);
         this.form = {};
         this.hasPermOverrides = false;
       };
@@ -216,19 +216,135 @@
 
 
       Admin_Agents_Ctrl_Edit.prototype.showCopySettings = function() {
-        var inst,
+        var agents, copySettings, inst, _ref1, _ref2,
           _this = this;
-        inst = this.$modal.open({
+        agents = (_ref1 = this.$scope.$parent) != null ? (_ref2 = _ref1.ListCtrl) != null ? _ref2.agents : void 0 : void 0;
+        if (!agents) {
+          return false;
+        }
+        if (agents.length === 1) {
+          this.showAlert('There are no other agents to copy settings from');
+          return false;
+        }
+        agents = agents.filter(function(x) {
+          return x.id !== _this.agentId;
+        });
+        copySettings = function(settings) {
+          var promise;
+          promise = _this.Api.sendDataGet({
+            agent: "/agents/" + settings.agent_id,
+            notif_prefs_table: "/agents/" + _this.agentId + "/notify-prefs/get-tables",
+            teams: "/agent_teams",
+            groups: "/agentgroups"
+          }).then(function(result) {
+            var agent, agentFormModel, agentNotifPrefsModel, form, gids, group, groups, n, notif_prefs, permName, perms, team, teams, tids, type, value, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref10, _ref11, _ref12, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+            agent = result.data.agent.agent;
+            teams = result.data.teams.agent_teams;
+            groups = result.data.groups.agentgroups;
+            agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
+            notif_prefs = agentNotifPrefsModel.prefsTable;
+            agentFormModel = new EditAgentModel(agent, groups, teams);
+            form = agentFormModel.form;
+            if (settings.zones) {
+              _this.form.zones.admin = form.zones.admin;
+              _this.form.zones.reports = form.zones.reports;
+            }
+            if (settings.teams) {
+              tids = [];
+              _ref3 = form.teams;
+              for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+                team = _ref3[_i];
+                if (team.value) {
+                  tids.push(team.id);
+                }
+              }
+              _ref4 = _this.form.teams;
+              for (_j = 0, _len1 = _ref4.length; _j < _len1; _j++) {
+                team = _ref4[_j];
+                team.value = (_ref5 = team.id, __indexOf.call(tids, _ref5) >= 0);
+              }
+            }
+            if (settings.groups) {
+              gids = [];
+              _ref6 = form.agent_groups;
+              for (_k = 0, _len2 = _ref6.length; _k < _len2; _k++) {
+                group = _ref6[_k];
+                if (group.value) {
+                  gids.push(group.id);
+                }
+              }
+              _ref7 = _this.form.agent_groups;
+              for (_l = 0, _len3 = _ref7.length; _l < _len3; _l++) {
+                group = _ref7[_l];
+                group.value = (_ref8 = group.id, __indexOf.call(gids, _ref8) >= 0);
+              }
+            }
+            if (settings.perms) {
+              _ref9 = agent.perms;
+              for (type in _ref9) {
+                if (!__hasProp.call(_ref9, type)) continue;
+                perms = _ref9[type];
+                for (permName in perms) {
+                  if (!__hasProp.call(perms, permName)) continue;
+                  value = perms[permName];
+                  if (((_ref10 = _this.perm_form[type]) != null ? _ref10[permName] : void 0) == null) {
+                    continue;
+                  }
+                  _this.perm_form[type][permName] = value;
+                }
+              }
+            }
+            if (settings.ticket_notifs) {
+              _ref11 = ['sys_filters_email', 'sys_filters_alert', 'custom_filters_email', 'custom_filters_alert'];
+              for (_m = 0, _len4 = _ref11.length; _m < _len4; _m++) {
+                n = _ref11[_m];
+                if ((_this.notif_prefs.subs[n] != null) && (notif_prefs.subs[n] != null)) {
+                  _this.notif_prefs.subs[n] = notif_prefs.subs[n];
+                }
+              }
+            }
+            if (settings.other_notifs) {
+              _ref12 = ['chat', 'task', 'twitter', 'feedback', 'publish', 'crm', 'account'];
+              _results = [];
+              for (_n = 0, _len5 = _ref12.length; _n < _len5; _n++) {
+                n = _ref12[_n];
+                if ((_this.notif_prefs.subs[n] != null) && (notif_prefs.subs[n] != null)) {
+                  _results.push(_this.notif_prefs.subs[n] = notif_prefs.subs[n]);
+                } else {
+                  _results.push(void 0);
+                }
+              }
+              return _results;
+            }
+          });
+          return promise;
+        };
+        return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('Agents/copy-settings-modal.html'),
           controller: [
             '$scope', '$modalInstance', function($scope, $modalInstance) {
-              return $scope.dismiss = function() {
+              $scope.dismiss = function() {
                 return $modalInstance.dismiss();
+              };
+              $scope.agents = agents;
+              $scope.options = {
+                agent_id: agents[0].id + "",
+                zones: false,
+                teams: false,
+                groups: false,
+                perms: false,
+                ticket_notifs: false,
+                other_notifs: false
+              };
+              return $scope.doCopySettings = function(settings) {
+                $scope.is_loading = true;
+                return copySettings(settings).then(function() {
+                  return $modalInstance.dismiss();
+                });
               };
             }
           ]
         });
-        return inst.result.then(function() {});
       };
 
       /*

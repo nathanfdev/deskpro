@@ -15,7 +15,7 @@ define [
 		@DEPS      = []
 
 		init: ->
-			@agentId = @$stateParams.id;
+			@agentId = parseInt(@$stateParams.id)
 			@form = {}
 			@hasPermOverrides = false
 			return
@@ -142,17 +142,107 @@ define [
     	# Shows the copy settings modal
     	###
 		showCopySettings: ->
+
+			#------------------------------
+			# Get agent options
+			#------------------------------
+
+			# The list pane is open right now and has the list of agents we can use
+			agents = @$scope.$parent?.ListCtrl?.agents
+			if not agents then return false
+
+			if agents.length == 1
+				@showAlert('There are no other agents to copy settings from')
+				return false
+
+			# Dont include ourself in the list
+			agents = agents.filter((x) => x.id != @agentId)
+
+			#------------------------------
+			# Function callback that loads and applies the settings
+			#------------------------------
+
+			copySettings = (settings) =>
+				promise = @Api.sendDataGet({
+					agent: "/agents/#{settings.agent_id}",
+					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
+					teams: "/agent_teams",
+					groups: "/agentgroups",
+				}).then( (result) =>
+					agent  = result.data.agent.agent
+					teams  = result.data.teams.agent_teams
+					groups = result.data.groups.agentgroups
+
+					agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)
+					notif_prefs = agentNotifPrefsModel.prefsTable
+
+					agentFormModel = new EditAgentModel(agent, groups, teams)
+					form = agentFormModel.form
+
+					if settings.zones
+						@form.zones.admin   = form.zones.admin
+						@form.zones.reports = form.zones.reports
+
+					if settings.teams
+						tids = []
+						for team in form.teams
+							if team.value then tids.push(team.id)
+						for team in @form.teams
+							team.value = team.id in tids
+
+					if settings.groups
+						gids = []
+						for group in form.agent_groups
+							if group.value then gids.push(group.id)
+						for group in @form.agent_groups
+							group.value = group.id in gids
+
+					if settings.perms
+						for own type, perms of agent.perms
+							for own permName, value of perms
+								continue if not @perm_form[type]?[permName]?
+								@perm_form[type][permName] = value
+
+					if settings.ticket_notifs
+						for n in ['sys_filters_email', 'sys_filters_alert', 'custom_filters_email', 'custom_filters_alert']
+							if @notif_prefs.subs[n]? and notif_prefs.subs[n]?
+								@notif_prefs.subs[n] = notif_prefs.subs[n]
+
+					if settings.other_notifs
+						for n in ['chat', 'task', 'twitter', 'feedback', 'publish', 'crm', 'account']
+							if @notif_prefs.subs[n]? and notif_prefs.subs[n]?
+								@notif_prefs.subs[n] = notif_prefs.subs[n]
+				)
+				return promise
+
+			#------------------------------
+			# Show the modal
+			#------------------------------
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('Agents/copy-settings-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 					$scope.dismiss = ->
 						$modalInstance.dismiss()
+
+					$scope.agents = agents
+					$scope.options = {
+						agent_id: agents[0].id+"",
+						zones: false,
+						teams: false,
+						groups: false,
+						perms: false,
+						ticket_notifs: false,
+						other_notifs: false
+					}
+
+					$scope.doCopySettings = (settings) ->
+						$scope.is_loading = true
+						copySettings(settings).then(->
+							$modalInstance.dismiss()
+						)
 				]
 			});
-
-			inst.result.then(=>
-
-			)
 
 
 		###

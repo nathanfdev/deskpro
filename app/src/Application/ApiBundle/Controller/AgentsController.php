@@ -77,6 +77,12 @@ class AgentsController extends AbstractController
 
 		$agent_data = $agent->toApiData();
 		$agent_data['teams'] = array();
+
+		$agent->loadHelper('Agent');
+		$agent->loadHelper('AgentTeam');
+		$agent->loadHelper('AgentPermissions');
+		$agent->loadHelper('PermissionsManager');
+
 		foreach ($this->container->getAgentData()->getTeamsByIds($agent->getHelper('AgentTeam')->getAgentTeamIds()) as $t) {
 			$agent_data['teams'][] = $t->toApiData();
 		}
