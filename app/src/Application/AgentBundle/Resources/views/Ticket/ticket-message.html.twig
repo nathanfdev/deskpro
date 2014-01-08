@@ -15,13 +15,13 @@
 		<header>
 			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
 			<div class="message-header-extra-controls">
-				<div class="message-translate-controls">
-					<div class="translate-controls-off">
-						<span>{{ phrase('agent.general.translation') }}</span>
-						<i class="icon-globe"></i>
-					</div>
-					<div class="translate-controls-on">
-						{% if app.isPluginInstalled('MicrosoftTranslator') %}
+				{% if app.isPluginInstalled('MicrosoftTranslator') %}
+					<div class="message-translate-controls">
+						<div class="translate-controls-off">
+							<span>{{ phrase('agent.general.translation') }}</span>
+							<i class="icon-globe"></i>
+						</div>
+						<div class="translate-controls-on">
 							<div class="dp-is-loading">
 								<i class="flat-spinner"></i>
 							</div>
@@ -63,9 +63,9 @@
 									</div>
 								</a>
 							</div>
-						{% endif %}
+						</div>
 					</div>
-				</div>
+				{% endif %}
 			</div>
 			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
 			{% if message.getGeoCountry() %}
