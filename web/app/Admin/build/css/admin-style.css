@@ -9252,6 +9252,59 @@ ul.checkbox-list > li label input {
   border: none;
 }
 
+ul.big-option-list {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+ul.big-option-list > li {
+  padding: 15px;
+  margin: 0;
+  border: 1px solid transparent;
+}
+
+ul.big-option-list > li:first-child {
+  margin-top: 0;
+}
+
+ul.big-option-list > li:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+ul.big-option-list > li h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+ul.big-option-list > li h3 label {
+  padding: 0;
+  margin: 0;
+  line-height: 100%;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+ul.big-option-list > li h3 .title {
+  display: inline-block;
+  line-height: 100%;
+  vertical-align: middle;
+  border-bottom: 2px solid #ccc;
+}
+
+ul.big-option-list > li h3 input {
+  margin-right: 4px;
+  vertical-align: text-top;
+}
+
+ul.big-option-list > li.active {
+  background: #ededed;
+  border: 1px solid #ccc;
+}
+
 table.inner-form-table th {
   padding: 6px 8px;
   font-weight: normal;

@@ -7,10 +7,9 @@
 					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
 						<li><a ng-click="EditCtrl.showCopySettings()"><i class="fa fa-copy"></i> Copy settings from another agent</a></li>
-						<li class="divider"></li>
-						<li><a ng-click="EditCtrl.showResetPassword()"><i class="fa fa-asterisk"></i> Reset password</a></li>
-						<li><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this agent</a></li>
-						<li><a ng-click="EditCtrl.showDelete()"><i class="fa fa-trash-o"></i> Delete agent</a></li>
+						<li ng-if="EditCtrl.agent.id" class="divider"></li>
+						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showResetPassword()"><i class="fa fa-asterisk"></i> Reset password</a></li>
+						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this agent</a></li>
 					</ul>
 				</menu>
 				<ul>
@@ -45,6 +44,11 @@
 							<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
 						</ul>
 					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.agent.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
+					</div>
+
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>

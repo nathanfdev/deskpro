@@ -780,6 +780,20 @@ $collection->create('api_agents_get', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_agents_delete', array(
+	'path'        => '/agents/{id}/delete',
+	'controller'  => 'ApiBundle:Agents:deleteAgent',
+	'defaults'    => array('mode' => 'delete'),
+	'methods'     => array('DELETE'),
+));
+
+$collection->create('api_agents_deletetouse', array(
+	'path'        => '/agents/{id}/delete/to-user',
+	'controller'  => 'ApiBundle:Agents:deleteAgent',
+	'defaults'    => array('mode' => 'user'),
+	'methods'     => array('DELETE'),
+));
+
 $collection->create('api_agents_save', array(
 	'path'        => '/agents/{id}',
 	'controller'  => 'ApiBundle:Agents:saveAgent',

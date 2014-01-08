@@ -29,6 +29,34 @@
         return promise;
       };
 
+      Admin_Agents_Ctrl_List.prototype.removeAgentFromList = function(id) {
+        return this.agents = this.agents.filter(function(x) {
+          return x.id !== id;
+        });
+      };
+
+      Admin_Agents_Ctrl_List.prototype.updateAgent = function(agent) {
+        var a, _i, _len, _ref1, _results;
+        _ref1 = this.agents;
+        _results = [];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          a = _ref1[_i];
+          if (a.id === agent.id) {
+            _results.push(a.display_name = agent.display_name);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      Admin_Agents_Ctrl_List.prototype.addAgent = function(id, name) {
+        return this.agents.push({
+          id: id,
+          display_name: name
+        });
+      };
+
       return Admin_Agents_Ctrl_List;
 
     })(Admin_Ctrl_Base);

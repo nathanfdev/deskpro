@@ -21,14 +21,34 @@ define [
 			return
 
 		initialLoad: ->
-			promise = @Api.sendDataGet({
-				agent: "/agents/#{@agentId}",
-				teams: "/agent_teams",
-				groups: "/agentgroups",
-				groupPerms: "/agentgroups/permissions",
-				notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables"
-			}).then( (result) =>
-				@agent  = result.data.agent.agent
+			if @agentId
+				promise = @Api.sendDataGet({
+					agent: "/agents/#{@agentId}",
+					teams: "/agent_teams",
+					groups: "/agentgroups",
+					groupPerms: "/agentgroups/permissions",
+					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables"
+				})
+			else
+				promise = @Api.sendDataGet({
+					teams: "/agent_teams",
+					groups: "/agentgroups",
+					groupPerms: "/agentgroups/permissions",
+					notif_prefs_table: "/agents/0/notify-prefs/get-tables"
+				})
+
+			promise.then( (result) =>
+				if @agentId
+					@agent = result.data.agent.agent
+				else
+					@agent = {
+						id: 0,
+						name: '',
+						primary_email: {},
+						teams: [],
+						usergroups: []
+					}
+
 				@teams  = result.data.teams.agent_teams
 				@groups = result.data.groups.agentgroups
 				@groupPerms = result.data.groupPerms.groups
@@ -278,17 +298,36 @@ define [
     	# Shows the copy settings modal
     	###
 		showDelete: ->
+
+			deleteAgent = (settings) =>
+				if settings.method == 'user'
+					target = "/agents/#{@agentId}/delete/to-user"
+				else
+					target = "/agents/#{@agentId}/delete"
+
+				p = @Api.sendDelete(target)
+				p.then(=>
+					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.removeAgentFromList(@agentId)
+					@$state.go('agents.agents')
+				)
+
+				return p
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('Agents/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 					$scope.dismiss = ->
 						$modalInstance.dismiss()
+
+					$scope.options = {
+						method: 'user'
+					}
+
+					$scope.doDelete = (options) ->
+						$scope.is_loading = true
+						deleteAgent(options).then(-> $modalInstance.dismiss())
 				]
 			});
-
-			inst.result.then(=>
-
-			)
 
 
 		###
@@ -318,7 +357,15 @@ define [
 			else
 				promise = @Api.sendPutJson("/agents", postData)
 
-			promise.then(=>
+			promise.then( (res) =>
+				@agent.display_name = @form.name
+
+				if @agentId
+					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.updateAgent(@agent)
+				else
+					@$state.go('agents.agents.edit', {id: res.data.person_id})
+					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.addAgent(res.data.person_id, @agent.display_name)
+
 				@stopSpinner('saving')
 			)
 

@@ -1731,6 +1731,58 @@ ul.checkbox-list {
 	border: none;
 }
 
+ul.big-option-list {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+
+	> li {
+		padding: 15px;
+		margin: 0;
+		border: 1px solid transparent;
+
+		&:first-child {
+			margin-top: 0;
+		}
+		&:last-child {
+			border-bottom: none;
+			margin-bottom: 0;
+		}
+
+		h3 {
+			margin: 0 0 8px 0;
+			font-size: 15px;
+			font-weight: bold;
+			vertical-align: middle;
+
+			label {
+				margin: 0;
+				padding: 0;
+				line-height: 100%;
+				vertical-align: middle;
+				cursor: pointer;
+			}
+
+			.title {
+				display: inline-block;
+				border-bottom: 2px solid #ccc;
+				line-height: 100%;
+				vertical-align: middle;
+			}
+
+			input {
+				margin-right: 4px;
+				vertical-align: text-top;
+			}
+		}
+
+		&.active {
+			background: #ededed;
+			border: 1px solid #ccc;
+		}
+	}
+}
+
 //######################################################################################################################
 //# Inner Form Table
 //######################################################################################################################

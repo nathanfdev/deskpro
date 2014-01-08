@@ -36,9 +36,11 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Application\DeskPRO\People\Agents\AgentDelete;
 use Orb\Util\Strings;
 
 class AgentsController extends AbstractController
@@ -103,14 +105,23 @@ class AgentsController extends AbstractController
 	public function saveAgentAction($id = null)
 	{
 		if ($id) {
+			$is_new = false;
 			$agent = $this->container->getAgentData()->get($id);
 
 			if (!$agent) {
 				throw $this->createNotFoundException();
 			}
 		} else {
+			$is_new = true;
 			$agent = new Person();
+
+			$agent->is_user = true;
+			$agent->is_confirmed = true;
+			$agent->is_agent = true;
 			$agent->can_agent = true;
+			$agent->setPassword(Strings::random(20));
+
+			$agent->addEmailAddressString($this->in->getString('agent.primary_email_address'));
 		}
 
 		$agent->setName($this->in->getString('agent.name'));
@@ -122,9 +133,21 @@ class AgentsController extends AbstractController
 		$this->em->persist($agent);
 		$this->em->flush();
 
-		return $this->createApiCreateResponse(array(
-			'agent_id' => $agent->id
-		), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
+		if ($is_new) {
+			// Send welcome email
+			$message = $this->container->getMailer()->createMessage();
+			$message->setToPerson($agent);
+			$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+			$this->container->getMailer()->send($message);
+		}
+
+		if ($is_new) {
+			return $this->createApiCreateResponse(array(
+				'person_id' => $agent->id
+			), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
+		} else {
+			return $this->createSuccessResponse();
+		}
 	}
 
 
@@ -168,6 +191,37 @@ class AgentsController extends AbstractController
 		return $this->createSuccessResponse(array(
 			'emailed' => $did_email
 		));
+	}
+
+
+	####################################################################################################################
+	# delete-agent
+	####################################################################################################################
+
+	public function deleteAgentAction($id, $mode)
+	{
+		$agent = $this->container->getAgentData()->get($id);
+
+		if (!$agent) {
+			throw $this->createNotFoundException();
+		}
+
+		$deleter = new AgentDelete($agent, $this->em);
+
+		switch ($mode) {
+			case 'user':
+				$deleter->deleteToUser();
+				break;
+
+			case 'delete':
+				$deleter->softDelete();
+				break;
+
+			default:
+				throw $this->createNotFoundException();
+		}
+
+		return $this->createSuccessResponse();
 	}
 
 
@@ -220,17 +274,22 @@ class AgentsController extends AbstractController
 
 	public function getNotifyPrefsAction($id)
 	{
-		$agent = $this->container->getAgentData()->get($id);
+		if ($id) {
+			$agent = $this->container->getAgentData()->get($id);
 
-		if (!$agent) {
-			throw $this->createNotFoundException();
+			if (!$agent) {
+				throw $this->createNotFoundException();
+			}
+
+			$loader    = new AgentNotifPrefsLoader($agent, $this->em);
+			$prefs     = $loader->getPrefs();
+			$filters   = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
+		} else {
+			$prefs = new AgentNotifPrefs();
+			$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
 		}
 
-		$loader    = new AgentNotifPrefsLoader($agent, $this->em);
-		$prefs     = $loader->getPrefs();
 		$table_gen = new AgentNotifPrefsTable($prefs, $this->container->getTranslator());
-
-		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
 
 		$sys_filters = array();
 		$custom_filters = array();

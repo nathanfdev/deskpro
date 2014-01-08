@@ -30,14 +30,34 @@
       Admin_Agents_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendDataGet({
-          agent: "/agents/" + this.agentId,
-          teams: "/agent_teams",
-          groups: "/agentgroups",
-          groupPerms: "/agentgroups/permissions",
-          notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables"
-        }).then(function(result) {
-          _this.agent = result.data.agent.agent;
+        if (this.agentId) {
+          promise = this.Api.sendDataGet({
+            agent: "/agents/" + this.agentId,
+            teams: "/agent_teams",
+            groups: "/agentgroups",
+            groupPerms: "/agentgroups/permissions",
+            notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables"
+          });
+        } else {
+          promise = this.Api.sendDataGet({
+            teams: "/agent_teams",
+            groups: "/agentgroups",
+            groupPerms: "/agentgroups/permissions",
+            notif_prefs_table: "/agents/0/notify-prefs/get-tables"
+          });
+        }
+        promise.then(function(result) {
+          if (_this.agentId) {
+            _this.agent = result.data.agent.agent;
+          } else {
+            _this.agent = {
+              id: 0,
+              name: '',
+              primary_email: {},
+              teams: [],
+              usergroups: []
+            };
+          }
           _this.teams = result.data.teams.agent_teams;
           _this.groups = result.data.groups.agentgroups;
           _this.groupPerms = result.data.groupPerms.groups;
@@ -383,19 +403,43 @@
 
 
       Admin_Agents_Ctrl_Edit.prototype.showDelete = function() {
-        var inst,
+        var deleteAgent, inst,
           _this = this;
-        inst = this.$modal.open({
+        deleteAgent = function(settings) {
+          var p, target;
+          if (settings.method === 'user') {
+            target = "/agents/" + _this.agentId + "/delete/to-user";
+          } else {
+            target = "/agents/" + _this.agentId + "/delete";
+          }
+          p = _this.Api.sendDelete(target);
+          p.then(function() {
+            if (_this.$scope.$parent.ListCtrl != null) {
+              _this.$scope.$parent.ListCtrl.removeAgentFromList(_this.agentId);
+            }
+            return _this.$state.go('agents.agents');
+          });
+          return p;
+        };
+        return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('Agents/delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', function($scope, $modalInstance) {
-              return $scope.dismiss = function() {
+              $scope.dismiss = function() {
                 return $modalInstance.dismiss();
+              };
+              $scope.options = {
+                method: 'user'
+              };
+              return $scope.doDelete = function(options) {
+                $scope.is_loading = true;
+                return deleteAgent(options).then(function() {
+                  return $modalInstance.dismiss();
+                });
               };
             }
           ]
         });
-        return inst.result.then(function() {});
       };
 
       /*
@@ -429,7 +473,20 @@
         } else {
           promise = this.Api.sendPutJson("/agents", postData);
         }
-        promise.then(function() {
+        promise.then(function(res) {
+          _this.agent.display_name = _this.form.name;
+          if (_this.agentId) {
+            if (_this.$scope.$parent.ListCtrl != null) {
+              _this.$scope.$parent.ListCtrl.updateAgent(_this.agent);
+            }
+          } else {
+            _this.$state.go('agents.agents.edit', {
+              id: res.data.person_id
+            });
+            if (_this.$scope.$parent.ListCtrl != null) {
+              _this.$scope.$parent.ListCtrl.addAgent(res.data.person_id, _this.agent.display_name);
+            }
+          }
           return _this.stopSpinner('saving');
         });
         return promise;
