@@ -29,6 +29,25 @@
         return promise;
       };
 
+      Admin_AgentTeams_Ctrl_List.prototype.addTeam = function(team) {
+        return this.teams.push(team);
+      };
+
+      Admin_AgentTeams_Ctrl_List.prototype.removeTeamById = function(teamId) {
+        teamId = parseInt(teamId);
+        return this.teams = this.teams.filter(function(x) {
+          return x.id !== teamId;
+        });
+      };
+
+      Admin_AgentTeams_Ctrl_List.prototype.renameTeamById = function(teamId, name) {
+        return this.teams.filter(function(x) {
+          return x.id === teamId;
+        }).map(function(x) {
+          return x.name = name;
+        });
+      };
+
       return Admin_AgentTeams_Ctrl_List;
 
     })(Admin_Ctrl_Base);

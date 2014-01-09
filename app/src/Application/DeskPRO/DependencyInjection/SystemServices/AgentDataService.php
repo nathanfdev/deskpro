@@ -109,6 +109,7 @@ class AgentDataService
 		}
 
 		$this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
+		$this->agent_teams = Arrays::keyFromData($this->agent_teams, 'id');
 		$this->team_ids = array_keys($this->agent_teams);
 	}
 

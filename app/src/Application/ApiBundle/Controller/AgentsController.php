@@ -345,7 +345,14 @@ class AgentsController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		return $this->createApiResponse(array('team' => $team->toApiData()));
+		$data = $team->toApiData();
+		$data['members'] = array();
+
+		foreach ($team->members as $agent) {
+			$data['members'][] = $agent->toApiData(false, false);
+		}
+
+		return $this->createApiResponse(array('team' => $data));
 	}
 
 
@@ -365,7 +372,7 @@ class AgentsController extends AbstractController
 		$this->em->remove($team);
 		$this->em->flush();
 
-		$this->createApiDeleteResponse(array(
+		return $this->createApiDeleteResponse(array(
 			'old_team_id' => $old_id
 		));
 	}
@@ -410,7 +417,7 @@ class AgentsController extends AbstractController
 		if ($is_new) {
 			$current_members = array();
 		} else {
-			$current_members = $this->db->fetchColumn("SELECT person_id FROM agent_team_members WHERE team_id = ?", $team->id);
+			$current_members = $this->db->fetchAllCol("SELECT person_id FROM agent_team_members WHERE team_id = ?", array($team->id));
 		}
 
 		$new_members = $this->in->getArrayOfUInts('team.person_ids');
@@ -438,12 +445,12 @@ class AgentsController extends AbstractController
 		}
 
 		if ($is_new) {
-			$this->createApiCreateResponse(
+			return $this->createApiCreateResponse(
 				array('team_id' => $team->id),
 				$this->generateUrl('api_agent_teams_get', array('id' => $team->id), true)
 			);
 		} else {
-			$this->createApiSuccessResponse(array('team_id' => $team->id));
+			return $this->createApiSuccessResponse(array('team_id' => $team->id));
 		}
 	}
 }

@@ -11,7 +11,7 @@
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group">
-									<input type="text" class="form-control" name="title" ng-model="EditCtrl.team.name" style="width: 50%;" required />
+									<input type="text" class="form-control" name="name" ng-model="EditCtrl.team.name" dp-server-validation="name.not_blank" style="width: 50%;" required />
 								</div>
 							</div>
 						</div>
@@ -38,7 +38,7 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
-							<li ng-show="form_props.title.$error.required">Please enter a name</li>
+							<li ng-show="form_props.name.$error.required || form_props.name.$error.not_blank">Please enter a name</li>
 						</ul>
 					</div>
 
@@ -58,4 +58,6 @@
 			</footer>
 		</section>
 	</form>
+	<div dp-register-message="saved_team">{{ ng_var('EditCtrl.team.name') }} was saved successfully</div>
+	{{ ng_tpl('AdminInterfaceBundle:AgentTeams:delete-modal.html.twig') }}
 {% endblock %}

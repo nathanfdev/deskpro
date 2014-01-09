@@ -425,25 +425,26 @@
 
 
       Admin_Ctrl_Base.prototype.applyErrorResponseToView = function(result) {
-        var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
+        var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
         if ((result != null ? result.error_code : void 0) !== 'validation_error') {
           return;
         }
         error_codes = [];
-        if (result.error_codes != null) {
-          error_codes = result.error_codes;
-        } else if (((_ref = result.detail) != null ? _ref.code_name : void 0) != null) {
-          _ref1 = result.detail.code_name.split(',');
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            code = _ref1[_i];
+        if (((_ref = result.errors) != null ? _ref.error_codes : void 0) != null) {
+          error_codes = result.errors.error_codes;
+        } else if (((_ref1 = result.detail) != null ? _ref1.code_name : void 0) != null) {
+          _ref2 = result.detail.code_name.split(',');
+          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+            code = _ref2[_i];
             error_codes.push(code);
           }
         }
+        console.log("applyErrorResponseToView error_codes: %o", error_codes);
         handled_codes = [];
-        _ref2 = this.$scope;
-        for (form_key in _ref2) {
-          if (!__hasProp.call(_ref2, form_key)) continue;
-          form = _ref2[form_key];
+        _ref3 = this.$scope;
+        for (form_key in _ref3) {
+          if (!__hasProp.call(_ref3, form_key)) continue;
+          form = _ref3[form_key];
           if (form_key.indexOf('form_') !== 0) {
             continue;
           }
@@ -455,9 +456,9 @@
             }
             for (_j = 0, _len1 = error_codes.length; _j < _len1; _j++) {
               code = error_codes[_j];
-              _ref3 = field.dpServerValidationKeys;
-              for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-                check_code = _ref3[_k];
+              _ref4 = field.dpServerValidationKeys;
+              for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+                check_code = _ref4[_k];
                 if (check_code.indexOf(code) === 0) {
                   code_segs = code.split('.');
                   last_seg = code_segs.pop();
@@ -466,7 +467,12 @@
                       field.$setValidity('required', false);
                       break;
                     default:
-                      code_safe = code.replace(/\./g, '_');
+                      if (code.indexOf('.') !== -1) {
+                        code_safe = code.replace(/^.*\.(.*)$/, '$1');
+                      } else {
+                        code_safe = code;
+                      }
+                      code_safe = code_safe.replace(/\./g, '_');
                       field.$setValidity(code_safe, false);
                   }
                   handled_codes.push(code);
@@ -722,7 +728,8 @@
 
 
       Admin_Ctrl_Base.prototype.sendFormSaveApiCall = function(method, url, data, spinner_name) {
-        var promise;
+        var promise,
+          _this = this;
         if (spinner_name == null) {
           spinner_name = 'form_saving';
         }
@@ -743,13 +750,14 @@
           default:
             throw new Exception("Invalid method type");
         }
-        promise = this.Api[method](url, data).then(function(res) {
-          return this.stopSpinner(spinner_name);
+        promise = this.Api[method](url, data);
+        promise.then(function(res) {
+          return _this.stopSpinner(spinner_name);
         }, function(res) {
           var _ref;
-          this.stopSpinner(spinner_name, true);
-          if ((((_ref = res.data) != null ? _ref.error_code : void 0) != null) === 'validation_error') {
-            return this.applyErrorResponseToView(res.data);
+          _this.stopSpinner(spinner_name, true);
+          if (((_ref = res.data) != null ? _ref.error_code : void 0) === 'validation_error') {
+            return _this.applyErrorResponseToView(res.data);
           }
         });
         return promise;
