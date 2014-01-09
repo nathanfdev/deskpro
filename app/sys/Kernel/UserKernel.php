@@ -91,6 +91,10 @@ class UserKernel extends AbstractKernel
 		if (isset($_GET['parent_url'])) {
 			return false;
 		}
+		// Set when viewing through an iframe
+		if (!empty($_COOKIE['dp_o_uri']) || !empty($_GET['dp_website_url'])) {
+			return false;
+		}
 
 		// Dont auto-redirect these URLs that are used
 		// in widgets and callbacks
