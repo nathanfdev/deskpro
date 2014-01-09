@@ -34,14 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
+
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\Entity;
 
 /**
@@ -99,6 +96,15 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('members', $this->members, $this->members);
 	}
 
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('name', new NotBlank());
+	}
 
 
 	############################################################################

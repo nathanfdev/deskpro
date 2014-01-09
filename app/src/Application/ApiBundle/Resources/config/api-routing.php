@@ -825,10 +825,35 @@ $collection->create('api_agents_notifyprefs_gettables', array(
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_agentsteams_list', array(
+$collection->create('api_agent_teams_list', array(
 	'path'        => '/agent_teams',
 	'controller'  => 'ApiBundle:Agents:listTeams',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_agent_teams_get', array(
+	'path'        => '/agent_teams/{id}',
+	'controller'  => 'ApiBundle:Agents:getTeam',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_agent_teams_update', array(
+	'path'        => '/agent_teams/{id}',
+	'controller'  => 'ApiBundle:Agents:saveTeam',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_agent_teams_create', array(
+	'path'        => '/agent_teams',
+	'controller'  => 'ApiBundle:Agents:saveTeam',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_agent_teams_delete', array(
+	'path'        => '/agent_teams/{id}',
+	'controller'  => 'ApiBundle:Agents:deleteTeam',
+	'methods'     => array('DELETE'),
 ));
 
 $collection->create('api_agentgroups_list', array(

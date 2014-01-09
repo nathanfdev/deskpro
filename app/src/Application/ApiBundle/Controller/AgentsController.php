@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
@@ -41,6 +42,7 @@ use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoa
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\People\Agents\AgentDelete;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class AgentsController extends AbstractController
@@ -253,22 +255,6 @@ class AgentsController extends AbstractController
 
 
 	####################################################################################################################
-	# list-teams
-	####################################################################################################################
-
-	public function listTeamsAction()
-	{
-		$data = array('agent_teams' => array());
-
-		foreach ($this->container->getDataService('AgentTeam')->getTeams() as $agent_team) {
-			$data['agent_teams'][] = $agent_team->toApiData();
-		}
-
-		return $this->createApiResponse($data);
-	}
-
-
-	####################################################################################################################
 	# get-notify-prefs-tables
 	####################################################################################################################
 
@@ -328,5 +314,136 @@ class AgentsController extends AbstractController
 			),
 			'mention_mode' => $prefs->getEmailMentionMode(),
 		));
+	}
+
+
+	####################################################################################################################
+	# list-teams
+	####################################################################################################################
+
+	public function listTeamsAction()
+	{
+		$data = array('agent_teams' => array());
+
+		foreach ($this->container->getDataService('AgentTeam')->getTeams() as $agent_team) {
+			$data['agent_teams'][] = $agent_team->toApiData();
+		}
+
+		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# get-team
+	####################################################################################################################
+
+	public function getTeamAction($id)
+	{
+		$team = $this->getContainer()->getAgentData()->getTeam($id);
+
+		if (!$team) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(array('team' => $team->toApiData()));
+	}
+
+
+	####################################################################################################################
+	# delete-team
+	####################################################################################################################
+
+	public function deleteTeamAction($id)
+	{
+		$team = $this->getContainer()->getAgentData()->getTeam($id);
+
+		if (!$team) {
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $team->id;
+		$this->em->remove($team);
+		$this->em->flush();
+
+		$this->createApiDeleteResponse(array(
+			'old_team_id' => $old_id
+		));
+	}
+
+
+	####################################################################################################################
+	# save-team
+	####################################################################################################################
+
+	public function saveTeamAction($id)
+	{
+		if ($id) {
+			$is_new = false;
+			$team = $this->getContainer()->getAgentData()->getTeam($id);
+
+			if (!$team) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$is_new = true;
+			$team = new AgentTeam();
+		}
+
+		$team->name = $this->in->getString('team.name');
+
+		$errors = $this->container->getValidator()->validate($team);
+		if (count($errors)) {
+			return $this->createApiValidationErrorResponse($errors);
+		}
+
+		#------------------------------
+		# Save team
+		#------------------------------
+
+		$this->em->persist($team);
+		$this->em->flush();
+
+		#------------------------------
+		# Save members
+		#------------------------------
+
+		if ($is_new) {
+			$current_members = array();
+		} else {
+			$current_members = $this->db->fetchColumn("SELECT person_id FROM agent_team_members WHERE team_id = ?", $team->id);
+		}
+
+		$new_members = $this->in->getArrayOfUInts('team.person_ids');
+		$new_members = array_unique($new_members);
+		$new_members = Arrays::removeFalsey($new_members);
+		if ($new_members) {
+			$agent_data = $this->container->getAgentData();
+			$new_members = array_filter($new_members, function($a) use ($agent_data) {
+				return $agent_data->get($a) ? true : false;
+			});
+		}
+
+		$del_members = array_diff($current_members, $new_members);
+		$new_members = array_diff($new_members, $current_members);
+
+		if (!$is_new && $del_members) {
+			$this->db->deleteIn('agent_team_members', $del_members, 'person_id', "team_id = {$team->id}");
+		}
+		if ($new_members) {
+			$ins = array();
+			foreach ($new_members as $pid) {
+				$ins[] = array('team_id' => $team->id, 'person_id' => $pid);
+			}
+			$this->db->batchInsert('agent_team_members', $ins, true);
+		}
+
+		if ($is_new) {
+			$this->createApiCreateResponse(
+				array('team_id' => $team->id),
+				$this->generateUrl('api_agent_teams_get', array('id' => $team->id), true)
+			);
+		} else {
+			$this->createApiSuccessResponse(array('team_id' => $team->id));
+		}
 	}
 }
