@@ -34,15 +34,15 @@
           promise = this.Api.sendDataGet({
             agent: "/agents/" + this.agentId,
             teams: "/agent_teams",
-            groups: "/agentgroups",
-            groupPerms: "/agentgroups/permissions",
+            groups: "/agent_groups",
+            groupPerms: "/agent_groups/all/permissions",
             notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables"
           });
         } else {
           promise = this.Api.sendDataGet({
             teams: "/agent_teams",
-            groups: "/agentgroups",
-            groupPerms: "/agentgroups/permissions",
+            groups: "/agent_groups",
+            groupPerms: "/agent_groups/all/permissions",
             notif_prefs_table: "/agents/0/notify-prefs/get-tables"
           });
         }
@@ -59,7 +59,7 @@
             };
           }
           _this.teams = result.data.teams.agent_teams;
-          _this.groups = result.data.groups.agentgroups;
+          _this.groups = result.data.groups.groups;
           _this.groupPerms = result.data.groupPerms.groups;
           _this.agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
           _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;

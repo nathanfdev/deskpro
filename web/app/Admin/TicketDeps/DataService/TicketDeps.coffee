@@ -60,7 +60,7 @@ define [
 				promise = @Api.sendDataGet({
 					depInfo:            "/ticket_deps/#{id}",
 					agentsInfo:         '/agents',
-					agentgroupsInfo:    '/agentgroups',
+					agentgroupsInfo:    '/agent_groups',
 					usergroupsInfo:     '/usergroups',
 					ticketAccountsInfo: '/ticket_accounts',
 					defaultLayoutInfo:  '/ticket_layouts/default',
@@ -69,7 +69,7 @@ define [
 			else
 				promise = @Api.sendDataGet({
 					agentsInfo:         '/agents',
-					agentgroupsInfo:    '/agentgroups',
+					agentgroupsInfo:    '/agent_groups',
 					usergroupsInfo:     '/usergroups',
 					ticketAccountsInfo: '/ticket_accounts',
 					defaultLayoutInfo:  '/ticket_layouts/default',
@@ -103,7 +103,7 @@ define [
 							break
 
 				data.agents          = result.agentsInfo.agents
-				data.agentgroups     = result.agentgroupsInfo.agentgroups
+				data.agentgroups     = result.agentgroupsInfo.groups
 				data.usergroups      = result.usergroupsInfo.usergroups
 
 				layouts = {

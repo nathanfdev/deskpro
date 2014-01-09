@@ -24,8 +24,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@team   = res.data.team.team
 
 				# value=true on agents that are members
-				teamIds = @team.members.map((x) -> x.id)
-				@agents.map((x) -> if x.id in teamIds then x.value = true)
+				memberIds = @team.members.map((x) -> x.id)
+				@agents.map((x) -> if x.id in memberIds then x.value = true)
 			)
 			return promise
 

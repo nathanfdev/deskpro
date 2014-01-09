@@ -62,13 +62,13 @@ define [
 				promise = @Api.sendDataGet({
 					depInfo:            "/chat_deps/#{id}",
 					agentsInfo:         '/agents',
-					agentgroupsInfo:    '/agentgroups',
+					agentgroupsInfo:    '/agent_groups',
 					usergroupsInfo:     '/usergroups',
 				})
 			else
 				promise = @Api.sendDataGet({
 					agentsInfo:         '/agents',
-					agentgroupsInfo:    '/agentgroups',
+					agentgroupsInfo:    '/agent_groups',
 					usergroupsInfo:     '/usergroups',
 				})
 
@@ -98,7 +98,7 @@ define [
 							break
 
 				data.agents          = result.agentsInfo.agents
-				data.agentgroups     = result.agentgroupsInfo.agentgroups
+				data.agentgroups     = result.agentgroupsInfo.groups
 				data.usergroups      = result.usergroupsInfo.usergroups
 
 				data.form = @getFormMapper().getFormFromModel(

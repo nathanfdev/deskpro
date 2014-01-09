@@ -73,13 +73,13 @@
           promise = this.Api.sendDataGet({
             depInfo: "/chat_deps/" + id,
             agentsInfo: '/agents',
-            agentgroupsInfo: '/agentgroups',
+            agentgroupsInfo: '/agent_groups',
             usergroupsInfo: '/usergroups'
           });
         } else {
           promise = this.Api.sendDataGet({
             agentsInfo: '/agents',
-            agentgroupsInfo: '/agentgroups',
+            agentgroupsInfo: '/agent_groups',
             usergroupsInfo: '/usergroups'
           });
         }
@@ -111,7 +111,7 @@
             }
           }
           data.agents = result.agentsInfo.agents;
-          data.agentgroups = result.agentgroupsInfo.agentgroups;
+          data.agentgroups = result.agentgroupsInfo.groups;
           data.usergroups = result.usergroupsInfo.usergroups;
           data.form = _this.getFormMapper().getFormFromModel(data.dep, data.depPerms, data.agents, data.agentgroups, data.usergroups);
           data.dep.original_parent_id = data.dep.parent_id;

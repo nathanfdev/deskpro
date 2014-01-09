@@ -281,15 +281,15 @@ define(function() {
 	routes.push({
 		id: 'agents.groups.create',
 		url: '/create',
-		templateName: 'AgentTeams/edit.html',
-		controller: 'Admin_AgentTeams_Ctrl_Edit'
+		templateName: 'AgentGroups/edit.html',
+		controller: 'Admin_AgentGroups_Ctrl_Edit'
 	});
 
 	routes.push({
 		id: 'agents.groups.edit',
 		url: '/{id:[0-9]+}',
-		templateName: 'AgentTeams/edit.html',
-		controller: 'Admin_AgentTeams_Ctrl_Edit'
+		templateName: 'AgentGroups/edit.html',
+		controller: 'Admin_AgentGroups_Ctrl_Edit'
 	});
 
 	//##################################################################################################################

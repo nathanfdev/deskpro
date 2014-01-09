@@ -44,22 +44,15 @@ use Orb\Util\Arrays;
 
 class UsergroupsController extends AbstractController
 {
+	####################################################################################################################
+	# list
+	####################################################################################################################
+
 	public function listAction($type)
 	{
 		$data = array();
 
-		if ($type == 'agent') {
-
-			$ugs = $this->em->createQuery("
-				SELECT ug
-				FROM DeskPRO:Usergroup ug
-				WHERE ug.is_agent_group = true
-				ORDER BY ug.title ASC
-			")->execute();
-
-			$data['agentgroups'] = $this->getApiData($ugs);
-
-		} elseif ($type == 'non_sys_user') {
+		if ($type == 'non_sys_user') {
 
 			$data['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
@@ -79,7 +72,7 @@ class UsergroupsController extends AbstractController
 	}
 
 	####################################################################################################################
-	# list
+	# list-all
 	####################################################################################################################
 
 	public function listAllAction()
@@ -123,31 +116,6 @@ class UsergroupsController extends AbstractController
 				 'user_group' => $returnedData,
 			)
 		);
-	}
-
-	###################################################################################################################
-	# get-agentgroup-perms
-	####################################################################################################################
-
-	public function getAgentgroupPermsAction()
-	{
-		$ugs = $this->em->createQuery("
-			SELECT ug
-			FROM DeskPRO:Usergroup ug
-			WHERE ug.is_agent_group = true
-			ORDER BY ug.title ASC
-		")->execute();
-
-		$loader = new GroupsDbLoader($ugs, $this->em);
-
-		$group_data = array();
-		foreach ($ugs as $ug) {
-			$group_data[] = array(
-				'group' => array('id' => $ug->id, 'title' => $ug->title),
-				'perms' => $loader->getGroupPermissions($ug->id)->toArray(),
-			);
-		}
-		return $this->createApiResponse(array('groups' => $group_data));
 	}
 
 	####################################################################################################################

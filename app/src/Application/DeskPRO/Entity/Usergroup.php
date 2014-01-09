@@ -38,11 +38,10 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\App;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
+use Application\DeskPRO\Domain\DomainObject;
 
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
@@ -209,6 +208,16 @@ class Usergroup extends DomainObject
 		}
 
 		return md5(implode(',', $usergroup_ids));
+	}
+
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new NotBlank());
 	}
 
 

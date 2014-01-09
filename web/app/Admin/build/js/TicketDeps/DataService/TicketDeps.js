@@ -73,7 +73,7 @@
           promise = this.Api.sendDataGet({
             depInfo: "/ticket_deps/" + id,
             agentsInfo: '/agents',
-            agentgroupsInfo: '/agentgroups',
+            agentgroupsInfo: '/agent_groups',
             usergroupsInfo: '/usergroups',
             ticketAccountsInfo: '/ticket_accounts',
             defaultLayoutInfo: '/ticket_layouts/default',
@@ -82,7 +82,7 @@
         } else {
           promise = this.Api.sendDataGet({
             agentsInfo: '/agents',
-            agentgroupsInfo: '/agentgroups',
+            agentgroupsInfo: '/agent_groups',
             usergroupsInfo: '/usergroups',
             ticketAccountsInfo: '/ticket_accounts',
             defaultLayoutInfo: '/ticket_layouts/default'
@@ -117,7 +117,7 @@
             }
           }
           data.agents = result.agentsInfo.agents;
-          data.agentgroups = result.agentgroupsInfo.agentgroups;
+          data.agentgroups = result.agentgroupsInfo.groups;
           data.usergroups = result.usergroupsInfo.usergroups;
           layouts = {
             default_layout: result.defaultLayoutInfo.layout,

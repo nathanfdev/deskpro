@@ -37,15 +37,15 @@
           });
         }
         promise.then(function(res) {
-          var teamIds;
+          var memberIds;
           _this.agents = res.data.agents.agents;
           _this.team = res.data.team.team;
-          teamIds = _this.team.members.map(function(x) {
+          memberIds = _this.team.members.map(function(x) {
             return x.id;
           });
           return _this.agents.map(function(x) {
             var _ref1;
-            if (_ref1 = x.id, __indexOf.call(teamIds, _ref1) >= 0) {
+            if (_ref1 = x.id, __indexOf.call(memberIds, _ref1) >= 0) {
               return x.value = true;
             }
           });

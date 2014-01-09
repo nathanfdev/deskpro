@@ -67,9 +67,9 @@
                 locked: false
               };
               if (modelValue) {
-                val.on = true;
+                val.checked = true;
               } else {
-                val.on = false;
+                val.checked = false;
               }
               return val;
             });

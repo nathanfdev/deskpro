@@ -827,45 +827,83 @@ $collection->create('api_agents_notifyprefs_gettables', array(
 
 $collection->create('api_agent_teams_list', array(
 	'path'        => '/agent_teams',
-	'controller'  => 'ApiBundle:Agents:listTeams',
+	'controller'  => 'ApiBundle:AgentTeams:listTeams',
 	'methods'     => array('GET'),
 ));
 
 $collection->create('api_agent_teams_get', array(
 	'path'        => '/agent_teams/{id}',
-	'controller'  => 'ApiBundle:Agents:getTeam',
+	'controller'  => 'ApiBundle:AgentTeams:getTeam',
 	'methods'     => array('GET'),
 ));
 
 $collection->create('api_agent_teams_update', array(
 	'path'        => '/agent_teams/{id}',
-	'controller'  => 'ApiBundle:Agents:saveTeam',
+	'controller'  => 'ApiBundle:AgentTeams:saveTeam',
 	'methods'     => array('POST'),
 ));
 
 $collection->create('api_agent_teams_create', array(
 	'path'        => '/agent_teams',
-	'controller'  => 'ApiBundle:Agents:saveTeam',
+	'controller'  => 'ApiBundle:AgentTeams:saveTeam',
 	'defaults'    => array('id' => '0'),
 	'methods'     => array('PUT'),
 ));
 
 $collection->create('api_agent_teams_delete', array(
 	'path'        => '/agent_teams/{id}',
-	'controller'  => 'ApiBundle:Agents:deleteTeam',
+	'controller'  => 'ApiBundle:AgentTeams:deleteTeam',
 	'methods'     => array('DELETE'),
 ));
 
 $collection->create('api_agentgroups_list', array(
-	'path'        => '/agentgroups',
-	'controller'  => 'ApiBundle:Usergroups:list',
-	'defaults'    => array('type' => 'agent'),
+	'path'        => '/agent_groups',
+	'controller'  => 'ApiBundle:AgentGroups:list',
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_agentgroups_get', array(
+	'path'        => '/agent_groups/{id}',
+	'controller'  => 'ApiBundle:AgentGroups:getGroup',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_agentgroups_save', array(
+	'path'        => '/agent_groups/{id}',
+	'controller'  => 'ApiBundle:AgentGroups:saveGroup',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_agentgroups_create', array(
+	'path'        => '/agent_groups',
+	'controller'  => 'ApiBundle:AgentGroups:saveGroup',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_agentgroups_del', array(
+	'path'        => '/agent_groups/{id}',
+	'controller'  => 'ApiBundle:AgentGroups:deleteGroup',
+	'methods'     => array('DELETE'),
+));
+
+$collection->create('api_agentgroups_enable', array(
+	'path'        => '/agent_groups/{id}/enable',
+	'controller'  => 'ApiBundle:AgentGroups:toggleGroup',
+	'defaults'    => array('is_enabled' => true),
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_agentgroups_disable', array(
+	'path'        => '/agent_groups/{id}/disable',
+	'controller'  => 'ApiBundle:AgentGroups:toggleGroup',
+	'defaults'    => array('is_enabled' => false),
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_agentgroups_getperms', array(
-	'path'        => '/agentgroups/permissions',
-	'controller'  => 'ApiBundle:Usergroups:getAgentgroupPerms',
+	'path'        => '/agent_groups/all/permissions',
+	'controller'  => 'ApiBundle:AgentGroups:getAllPerms',
 	'defaults'    => array(),
 	'methods'     => array('GET'),
 ));

@@ -8,9 +8,19 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			return
 
 		initialLoad: ->
-			promise = @Api.sendGet('/agentgroups').then( (result) =>
-				@groups = result.data.agentgroups
+			promise = @Api.sendGet('/agent_groups').then( (result) =>
+				@groups = result.data.groups
 			)
 			return promise
+
+		addGroup: (group) ->
+			@groups.push(group)
+
+		removeGroupById: (groupId) ->
+			groupId = parseInt(groupId)
+			@groups = @groups.filter((x) -> x.id != groupId)
+
+		renameGroupById: (groupId, title) ->
+			@groups.filter((x) -> x.id == groupId).map((x) -> x.title = title)
 
 	Admin_AgentGroups_Ctrl_List.EXPORT_CTRL()

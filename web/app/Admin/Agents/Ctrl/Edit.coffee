@@ -25,15 +25,15 @@ define [
 				promise = @Api.sendDataGet({
 					agent: "/agents/#{@agentId}",
 					teams: "/agent_teams",
-					groups: "/agentgroups",
-					groupPerms: "/agentgroups/permissions",
+					groups: "/agent_groups",
+					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables"
 				})
 			else
 				promise = @Api.sendDataGet({
 					teams: "/agent_teams",
-					groups: "/agentgroups",
-					groupPerms: "/agentgroups/permissions",
+					groups: "/agent_groups",
+					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/0/notify-prefs/get-tables"
 				})
 
@@ -50,7 +50,7 @@ define [
 					}
 
 				@teams  = result.data.teams.agent_teams
-				@groups = result.data.groups.agentgroups
+				@groups = result.data.groups.groups
 				@groupPerms = result.data.groupPerms.groups
 
 				@agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)

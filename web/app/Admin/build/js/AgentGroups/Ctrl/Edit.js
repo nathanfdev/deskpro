@@ -1,6 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     var Admin_AgentGroups_Ctrl_Edit, _ref;
@@ -16,11 +17,140 @@
 
       Admin_AgentGroups_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_AgentGroups_Ctrl_Edit.DEPS = [];
+      Admin_AgentGroups_Ctrl_Edit.prototype.init = function() {
+        this.groupId = parseInt(this.$stateParams.id);
+      };
 
-      Admin_AgentGroups_Ctrl_Edit.prototype.init = function() {};
+      Admin_AgentGroups_Ctrl_Edit.prototype.initialLoad = function() {
+        var promise,
+          _this = this;
+        if (this.groupId) {
+          promise = this.Api.sendDataGet({
+            group: "/agent_groups/" + this.groupId,
+            agents: "/agents"
+          });
+        } else {
+          promise = this.Api.sendDataGet({
+            agents: "/agents"
+          });
+        }
+        promise.then(function(res) {
+          var memberIds;
+          _this.agents = res.data.agents.agents;
+          if (_this.groupId) {
+            _this.group = res.data.group.group;
+          } else {
+            _this.group = {
+              id: 0,
+              title: '',
+              members: []
+            };
+          }
+          memberIds = _this.group.members.map(function(x) {
+            return x.id;
+          });
+          _this.agents.map(function(x) {
+            var _ref1;
+            if (_ref1 = x.id, __indexOf.call(memberIds, _ref1) >= 0) {
+              return x.value = true;
+            }
+          });
+          return _this.perm_form = _this.group.perms;
+        });
+        return promise;
+      };
 
-      Admin_AgentGroups_Ctrl_Edit.prototype.initialLoad = function() {};
+      Admin_AgentGroups_Ctrl_Edit.prototype.saveForm = function() {
+        var a, p, postData, _i, _len, _ref1,
+          _this = this;
+        postData = {
+          group: {
+            title: this.group.title,
+            perms: this.perm_form,
+            person_ids: []
+          }
+        };
+        _ref1 = this.agents;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          a = _ref1[_i];
+          if (a.value) {
+            postData.group.person_ids.push(a.id);
+          }
+        }
+        if (this.groupId) {
+          p = this.sendFormSaveApiCall('POST', "/agent_groups/" + this.groupId, postData);
+        } else {
+          p = this.sendFormSaveApiCall('PUT', "/agent_groups", postData);
+        }
+        p.then(function(res) {
+          _this.Growl.success(_this.getRegisteredMessage('saved_group'));
+          if (_this.groupId) {
+            return _this.getGroupListCtrl().renameGroupById(_this.groupId, _this.group.title);
+          } else {
+            _this.groupId = res.data.group_id;
+            _this.getGroupListCtrl().addGroup({
+              id: _this.groupId,
+              title: _this.group.title
+            });
+            return _this.$state.go('agents.groups.edit', {
+              id: _this.groupId
+            });
+          }
+        });
+      };
+
+      /*
+        	# Shows the copy settings modal
+      */
+
+
+      Admin_AgentGroups_Ctrl_Edit.prototype.showDelete = function() {
+        var deleteGroup, inst,
+          _this = this;
+        deleteGroup = function() {
+          var p;
+          p = _this.Api.sendDelete("/agent_groups/" + _this.groupId);
+          p.then(function() {
+            _this.getGroupListCtrl().removeGroupById(_this.groupId);
+            return _this.$state.go('agents.agents');
+          });
+          return p;
+        };
+        return inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('AgentGroups/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              return $scope.doDelete = function(options) {
+                $scope.is_loading = true;
+                return deleteGroup().then(function() {
+                  return $modalInstance.dismiss();
+                });
+              };
+            }
+          ]
+        });
+      };
+
+      /*
+        	# Gets a reference to the parent list view which we need to update with the new details
+      */
+
+
+      Admin_AgentGroups_Ctrl_Edit.prototype.getGroupListCtrl = function() {
+        var _ref1;
+        if (((_ref1 = this.$scope.$parent) != null ? _ref1.ListCtrl : void 0) != null) {
+          return this.$scope.$parent.ListCtrl;
+        } else {
+          return {
+            addGroup: function() {},
+            removeGroupById: function() {},
+            renameGroupById: function() {}
+          };
+        }
+      };
 
       return Admin_AgentGroups_Ctrl_Edit;
 

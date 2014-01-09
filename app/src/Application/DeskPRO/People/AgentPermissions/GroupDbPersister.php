@@ -29,91 +29,81 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category People
+ * @category Entities
  */
 
 namespace Application\DeskPRO\People\AgentPermissions;
 
-use Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions;
-use Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions;
-use Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions;
-use Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions;
-use Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions;
-use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
+use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Usergroup;
 
-class AgentPermissions
+class GroupDbPersister
 {
 	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions
+	 * @var \Doctrine\ORM\EntityManager
 	 */
-	public $chat;
+	private $em;
 
 	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
-	public $general;
+	private $db;
 
 	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions
+	 * @param EntityManager $em
 	 */
-	public $org;
-
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions
-	 */
-	public $people;
-
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions
-	 */
-	public $publish;
-
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions
-	 */
-	public $ticket;
-
-	public function __construct()
+	public function __construct(EntityManager $em)
 	{
-		$this->chat    = new ChatPermissions();
-		$this->general = new GeneralPermissions();
-		$this->org     = new OrgPermissions();
-		$this->people  = new PeoplePermissions();
-		$this->publish = new PublishPermissions();
-		$this->ticket  = new TicketPermissions();
+		$this->em        = $em;
+		$this->db        = $em->getConnection();
 	}
 
-
 	/**
-	 * @return array
+	 * @param Usergroup $group
+	 * @param AgentPermissions $perms
+	 * @return bool
+	 * @throws \Exception
 	 */
-	public function toArray()
+	public function savePerms(Usergroup $group, AgentPermissions $perms)
 	{
-		$arr = array();
-		foreach (array('chat', 'general', 'org', 'people', 'publish', 'ticket') as $prop) {
-			$arr[$prop] = array();
-			foreach ($this->$prop->getNames() as $name) {
-				$arr[$prop][$name] = (bool)$this->$prop->$name;
+		$current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE usergroup_id = ?", array($group->id));
+
+		$set_perms = array();
+		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+			$obj = $perms->$coll_name;
+			foreach ($obj->getNames() as $prop) {
+				if ($obj->$prop) {
+					$set_perms[] = $real_name . '.' . $prop;
+				}
 			}
 		}
 
-		return $arr;
-	}
+		$del_perms = array_diff($current_perms, $set_perms);
+		$new_perms = array_diff($set_perms, $current_perms);
 
-
-	/**
-	 * Reads perms in from an array
-	 *
-	 * @param array $perms
-	 */
-	public function fromArray(array $perms)
-	{
-		foreach (array('chat', 'general', 'org', 'people', 'publish', 'ticket') as $prop) {
-			if (!isset($perms[$prop])) continue;
-
-			foreach ($this->$prop->getNames() as $name) {
-				$this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
+		$ins = array();
+		if ($new_perms) {
+			foreach ($new_perms as $p) {
+				$ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
 			}
+
 		}
+
+		$this->db->beginTransaction();
+		try {
+			if ($del_perms) {
+				$this->db->deleteIn('permissions', $del_perms, 'name', false, "usergroup_id = {$group->id}");
+			}
+			if ($ins) {
+				$this->db->batchInsert('permissions', $ins, true);
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return true;
 	}
 }

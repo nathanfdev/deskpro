@@ -56,9 +56,9 @@ define ->
 				ngModel.$formatters.push( (modelValue) ->
 					val = ngModel.$viewValue || { checked: false, on: false, locked: false }
 					if modelValue
-						val.on = true
+						val.checked = true
 					else
-						val.on = false
+						val.checked = false
 
 					return val
 				)

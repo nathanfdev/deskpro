@@ -61,7 +61,7 @@ class GroupsDbLoader
 	/**
 	 * @var array
 	 */
-	private static $prefix_map = array(
+	public static $prefix_map = array(
 		'agent_tickets' => 'ticket',
 		'agent_people'  => 'people',
 		'agent_org'     => 'org',
