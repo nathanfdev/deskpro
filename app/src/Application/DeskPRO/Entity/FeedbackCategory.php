@@ -116,14 +116,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
-		$metadata->addPropertyConstraint(
-			'title',
-			new NotBlank(
-				array(
-					 'message' => 'feedback_type.title.not_blank'
-				)
-			)
-		);
+		$metadata->addPropertyConstraint('title', new NotBlank());
 	}
 
 	############################################################################

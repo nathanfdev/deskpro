@@ -425,21 +425,25 @@
 
 
       Admin_Ctrl_Base.prototype.applyErrorResponseToView = function(result) {
-        var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+        var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
         if ((result != null ? result.error_code : void 0) !== 'validation_error') {
           return;
         }
         error_codes = [];
-        _ref = result.detail.code_name.split(',');
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          code = _ref[_i];
-          error_codes.push(code);
+        if (result.error_codes != null) {
+          error_codes = result.error_codes;
+        } else if (((_ref = result.detail) != null ? _ref.code_name : void 0) != null) {
+          _ref1 = result.detail.code_name.split(',');
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            code = _ref1[_i];
+            error_codes.push(code);
+          }
         }
         handled_codes = [];
-        _ref1 = this.$scope;
-        for (form_key in _ref1) {
-          if (!__hasProp.call(_ref1, form_key)) continue;
-          form = _ref1[form_key];
+        _ref2 = this.$scope;
+        for (form_key in _ref2) {
+          if (!__hasProp.call(_ref2, form_key)) continue;
+          form = _ref2[form_key];
           if (form_key.indexOf('form_') !== 0) {
             continue;
           }
@@ -451,9 +455,9 @@
             }
             for (_j = 0, _len1 = error_codes.length; _j < _len1; _j++) {
               code = error_codes[_j];
-              _ref2 = field.dpServerValidationKeys;
-              for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-                check_code = _ref2[_k];
+              _ref3 = field.dpServerValidationKeys;
+              for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
+                check_code = _ref3[_k];
                 if (check_code.indexOf(code) === 0) {
                   code_segs = code.split('.');
                   last_seg = code_segs.pop();
@@ -704,6 +708,51 @@
           this._wait_ent_promise[id] = this.$q.defer();
         }
         return this._wait_ent_promise[id].resolve(true);
+      };
+
+      /*
+        	# Sends an API call and handle it as a stadnard form save. This starts a
+        	# spinner and will handle validation_errors by applyin the error reponse to the view.
+        	#
+        	# @param {String} method   POST/PUT/DELETE (also GET, but probably never used here)
+        	# @param {String} url      The service to call
+        	# @param {Object} data     The data to send
+        	# @param {String} spinner_name The spinner to manage automatically
+      */
+
+
+      Admin_Ctrl_Base.prototype.sendFormSaveApiCall = function(method, url, data, spinner_name) {
+        var promise;
+        if (spinner_name == null) {
+          spinner_name = 'form_saving';
+        }
+        this.startSpinner(spinner_name);
+        switch (method.toUpperCase()) {
+          case 'GET':
+            method = 'sendGet';
+            break;
+          case 'POST':
+            method = 'sendPostJson';
+            break;
+          case 'PUT':
+            method = 'sendPutJson';
+            break;
+          case 'DELETE':
+            method = 'sendDelete';
+            break;
+          default:
+            throw new Exception("Invalid method type");
+        }
+        promise = this.Api[method](url, data).then(function(res) {
+          return this.stopSpinner(spinner_name);
+        }, function(res) {
+          var _ref;
+          this.stopSpinner(spinner_name, true);
+          if ((((_ref = res.data) != null ? _ref.error_code : void 0) != null) === 'validation_error') {
+            return this.applyErrorResponseToView(res.data);
+          }
+        });
+        return promise;
       };
 
       return Admin_Ctrl_Base;

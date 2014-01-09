@@ -34,10 +34,12 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Validator\ViolationApiRenderer;
 use Symfony\Component\Form\Form;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * Base API controller.
@@ -287,13 +289,82 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 
+	/**
+	 * Creates an API success response
+	 *
+	 * @param array $extra
+	 * @param int $status
+	 * @return Response
+	 */
+	public function createApiSuccessResponse(array $extra = array(), $status = 200)
+	{
+		return $this->createApiResponse(array('success' => true) + $extra, $status);
+	}
 
+
+	/**
+	 * Create API response for after anew resource was created
+	 *
+	 * @param array $data
+	 * @param $url
+	 * @return Response
+	 */
 	public function createApiCreateResponse(array $data, $url)
 	{
 		$response = $this->createApiResponse($data, 201);
 		$response->headers->add(array('Location' => $url));
 
 		return $response;
+	}
+
+
+	/**
+	 * Creates an API response to return after a resource is deleted. Typically you should return the 'old id' in $extra.
+	 *
+	 * @param array $extra
+	 * @param int $status
+	 * @return Response
+	 */
+	public function createApiDeleteResponse(array $extra = array(), $status = 200)
+	{
+		return $this->createApiResponse(array('success' => true) + $extra, $status);
+	}
+
+
+
+	/**
+	 * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
+	 * @param array                                             $extra  Any other extra data you want to return
+	 * @param int                                               $status The HTTP status code to return
+	 * @return Response
+	 * @throws \InvalidArgumentException
+	 */
+	public function createApiValidationErrorResponse($errors, array $extra = null, $status = 400)
+	{
+		$renderer = new ViolationApiRenderer();
+
+		if ($errors instanceof ConstraintViolationList) {
+			$info = $renderer->renderViolationList($errors);
+		} else if (is_array($errors)) {
+			foreach ($errors as $k => $v) {
+				if (!is_string($k) || !($v instanceof ConstraintViolationList)) {
+					throw new \InvalidArgumentException('$errors should be a single ConstraintViolationList, or an array of key=>ConstraintViolationList');
+				}
+			}
+			$info = $renderer->renderCombinedViolationList($errors);
+		}
+
+		$data = array(
+			'error_code'    => 'validation_error',
+			'error_message' => 'One or more validation errors occurred. Your request was not processed.',
+			'errors'        => $info,
+		);
+
+		if ($extra) {
+			$data = array_merge($data, $extra);
+		}
+
+		return $this->createApiResponse($info, $status);
 	}
 
 

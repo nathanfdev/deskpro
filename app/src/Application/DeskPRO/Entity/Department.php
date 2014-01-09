@@ -464,7 +464,7 @@ class Department extends DomainObject implements HasPhraseName
 		if (!$this->parent) return;
 
 		if ($this->parent == $this) {
-			$context->addViolationAt('parent', 'Parent cannot be set to self');
+			$context->addViolationAt('parent', '[ParentNotSelf] Parent cannot be set to self');
 		}
 	}
 

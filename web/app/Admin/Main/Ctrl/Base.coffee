@@ -345,8 +345,11 @@ define ['angular'], (angular) ->
 
 			error_codes = []
 
-			for code in result.detail.code_name.split(',')
-				error_codes.push(code)
+			if result.error_codes?
+				error_codes = result.error_codes
+			else if result.detail?.code_name?
+				for code in result.detail.code_name.split(',')
+					error_codes.push(code)
 
 			handled_codes = []
 
@@ -553,3 +556,33 @@ define ['angular'], (angular) ->
 				@_wait_ent_promise[id] = @$q.defer()
 
 			@_wait_ent_promise[id].resolve(true)
+
+
+		###
+    	# Sends an API call and handle it as a stadnard form save. This starts a
+    	# spinner and will handle validation_errors by applyin the error reponse to the view.
+    	#
+    	# @param {String} method   POST/PUT/DELETE (also GET, but probably never used here)
+    	# @param {String} url      The service to call
+    	# @param {Object} data     The data to send
+    	# @param {String} spinner_name The spinner to manage automatically
+		###
+		sendFormSaveApiCall: (method, url, data, spinner_name = 'form_saving') ->
+			@startSpinner(spinner_name)
+
+			switch method.toUpperCase()
+				when 'GET'     then method = 'sendGet'
+				when 'POST'    then method = 'sendPostJson'
+				when 'PUT'     then method = 'sendPutJson'
+				when 'DELETE'  then method = 'sendDelete'
+				else throw new Exception("Invalid method type")
+
+			promise = @Api[method](url, data).then( (res) ->
+				@stopSpinner(spinner_name)
+			, (res) ->
+				@stopSpinner(spinner_name, true)
+				if res.data?.error_code? == 'validation_error'
+					@applyErrorResponseToView(res.data)
+			)
+
+			return promise

@@ -1,18 +1,33 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveLabel()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
 					<div class="panel-body">
 						<div class="form-group">
 							<div class="col-lg-3">
-								<h3>XXX</h3>
+								<h3>Team Name</h3>
 							</div>
 							<div class="col-lg-9">
-								<p>
-									YYY
-								</p>
+								<div class="inner-group">
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.team.name" style="width: 50%;" required />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Members</h3>
+							</div>
+							<div class="col-lg-9">
+								<ul class="checkbox-list" style="min-width: 250px">
+									<li ng-repeat="agent in EditCtrl.agents">
+										<label>
+											<input type="checkbox" ng-model="agent.value" />
+											<span>{{ ng_var('agent.display_name') }}</span>
+										</label>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -23,14 +38,19 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
-							<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
+							<li ng-show="form_props.title.$error.required">Please enter a name</li>
 						</ul>
 					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.team.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
+					</div>
+
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_label">
+						<div dp-hide-spinning="form_saving">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 						</div>
-						<div dp-show-spinning="saving_label">
+						<div dp-show-spinning="form_saving">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>

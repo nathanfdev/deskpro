@@ -337,6 +337,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Symfony\Component\Validator\Validator
+	 */
+	public function getValidator()
+	{
+		return $this->get('validator');
+	}
+
+
+	/**
 	 * Get the app event dispatcher
 	 *
 	 * @return \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
