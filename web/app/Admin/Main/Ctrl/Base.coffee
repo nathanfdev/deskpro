@@ -345,12 +345,13 @@ define ['angular'], (angular) ->
 
 			error_codes = []
 
-			if result.error_codes?
-				error_codes = result.error_codes
+			if result.errors?.error_codes?
+				error_codes = result.errors.error_codes
 			else if result.detail?.code_name?
 				for code in result.detail.code_name.split(',')
 					error_codes.push(code)
 
+			console.log("applyErrorResponseToView error_codes: %o", error_codes)
 			handled_codes = []
 
 			for own form_key, form of @$scope
@@ -368,7 +369,11 @@ define ['angular'], (angular) ->
 									when 'required'
 										field.$setValidity('required', false)
 									else
-										code_safe = code.replace(/\./g, '_')
+										if code.indexOf('.') != -1
+											code_safe = code.replace(/^.*\.(.*)$/, '$1')
+										else
+											code_safe = code
+										code_safe = code_safe.replace(/\./g, '_')
 										field.$setValidity(code_safe, false)
 
 								handled_codes.push(code)
@@ -577,11 +582,12 @@ define ['angular'], (angular) ->
 				when 'DELETE'  then method = 'sendDelete'
 				else throw new Exception("Invalid method type")
 
-			promise = @Api[method](url, data).then( (res) ->
+			promise = @Api[method](url, data)
+			promise.then( (res) =>
 				@stopSpinner(spinner_name)
-			, (res) ->
+			, (res) =>
 				@stopSpinner(spinner_name, true)
-				if res.data?.error_code? == 'validation_error'
+				if res.data?.error_code == 'validation_error'
 					@applyErrorResponseToView(res.data)
 			)
 

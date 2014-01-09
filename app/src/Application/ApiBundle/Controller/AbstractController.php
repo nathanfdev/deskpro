@@ -364,7 +364,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$data = array_merge($data, $extra);
 		}
 
-		return $this->createApiResponse($info, $status);
+		return $this->createApiResponse($data, $status);
 	}
 
 

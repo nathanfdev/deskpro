@@ -47,7 +47,12 @@
                 _ref1 = ngModel.dpServerValidationKeys;
                 for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
                   code = _ref1[_i];
-                  code_safe = code.replace(/\./g, '_');
+                  if (code.indexOf('.') !== -1) {
+                    code_safe = code.replace(/^.*\.(.*)$/, '$1');
+                  } else {
+                    code_safe = code;
+                  }
+                  code_safe = code_safe.replace(/\./g, '_');
                   if (error_code === code_safe) {
                     code_segs = code.split('.');
                     last_seg = code_segs.pop();
