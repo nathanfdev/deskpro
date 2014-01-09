@@ -24,6 +24,7 @@
 	'generic_5_it'                       => '#^Il .*? ha scritto:\s*$#m',
 
 	'generic_6'                          => '#^.*? wrote on [0-9/]+ [0-9:]+( (am|AM|pm|PM))?:#im',
+	'generic_7'                          => '#^.*? wrote:\n>#m',
 
 	'mutt'                               => '#On \d{4}\-\d{2}\-\d{2} \d{2}:\d{2}, (.*?) wrote:#i',
 );
