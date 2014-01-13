@@ -681,6 +681,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					},
 					success: function(html) {
 						logsWrap.html(html);
+						DeskPRO_Window.initInterfaceServices(logsWrap);
 						self.updateUi();
 					}
 				});
@@ -693,6 +694,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					},
 					success: function(html) {
 						logsWrap.html(html);
+						DeskPRO_Window.initInterfaceServices(logsWrap);
 						self.updateUi();
 					}
 				});
@@ -883,6 +885,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: postData,
 			success: function(html) {
 				logsWrap.html(html);
+				DeskPRO_Window.initInterfaceServices(logsWrap);
 				self.updateUi();
 			}
 		});
