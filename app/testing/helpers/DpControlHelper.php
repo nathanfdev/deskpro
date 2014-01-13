@@ -14,6 +14,57 @@ class DpControlHelper extends \Codeception\Module
 		return \DpTestEnv::getContainer();
 	}
 
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+
+	public function getEm()
+	{
+		return \DpTestEnv::getContainer()->getEm();
+	}
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+
+	public function getDb()
+	{
+		return \DpTestEnv::getContainer()->getDb();
+	}
+
+	/**
+	 * @return \Symfony\Component\Validator\Validator
+	 */
+
+	public function getValidator()
+	{
+		return \DpTestEnv::getContainer()->getValidator();
+	}
+
+	/**
+	 * @param string|\Symfony\Component\Form\FormTypeInterface $type
+	 * @param mixed  $data
+	 * @param array $options
+	 *
+	 * @return mixed
+	 */
+
+	public function createForm($type, $data = null, array $options = array())
+	{
+		return \DpTestEnv::getContainer()->get('form.factory')->create($type, $data, $options);
+	}
+
+	/**
+	 * @param $obj
+	 *
+	 * @return \Symfony\Component\Validator\ConstraintViolationList[]
+	 */
+
+	protected function validateObject($obj)
+	{
+		$validator = \DpTestEnv::getContainer()->getValidator();
+		return $validator->validate($obj);
+	}
 
 	/**
 	 * @return int

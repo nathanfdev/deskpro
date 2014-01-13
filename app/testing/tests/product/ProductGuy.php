@@ -52,6 +52,86 @@ class ProductGuy extends \Codeception\AbstractGuy
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
+     * @return \Doctrine\ORM\EntityManager
+     * @see Codeception\Module\DpControlHelper::getEm()
+     * @return \Codeception\Maybe
+     */
+    public function getEm() {
+        $this->scenario->addStep(new \Codeception\Step\Action('getEm', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     * @return \Application\DeskPRO\DBAL\Connection
+     * @see Codeception\Module\DpControlHelper::getDb()
+     * @return \Codeception\Maybe
+     */
+    public function getDb() {
+        $this->scenario->addStep(new \Codeception\Step\Action('getDb', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     * @return \Symfony\Component\Validator\Validator
+     * @see Codeception\Module\DpControlHelper::getValidator()
+     * @return \Codeception\Maybe
+     */
+    public function getValidator() {
+        $this->scenario->addStep(new \Codeception\Step\Action('getValidator', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     * @param string|\Symfony\Component\Form\FormTypeInterface $type
+	 * @param mixed  $data
+	 * @param array $options
+	 *
+	 * @return mixed
+     * @see Codeception\Module\DpControlHelper::createForm()
+     * @return \Codeception\Maybe
+     */
+    public function createForm($type, $data = null, $options = null) {
+        $this->scenario->addStep(new \Codeception\Step\Action('createForm', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
      * @return int
      * @see Codeception\Module\DpControlHelper::getContainerCounter()
      * @return \Codeception\Maybe
