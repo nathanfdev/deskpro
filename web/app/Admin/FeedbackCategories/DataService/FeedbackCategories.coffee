@@ -73,6 +73,9 @@ define [
 
 			# case of 'no parent'
 
+			if not model.options
+				model.options = {parent_id: 0}
+
 			if not model.options.parent_id or model.options.parent_id == "0"
 				model.options.parent_id = 0
 

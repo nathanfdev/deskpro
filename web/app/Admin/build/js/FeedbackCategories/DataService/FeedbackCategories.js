@@ -70,6 +70,11 @@
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.updateModel = function(model) {
         var new_model;
+        if (!model.options) {
+          model.options = {
+            parent_id: 0
+          };
+        }
         if (!model.options.parent_id || model.options.parent_id === "0") {
           model.options.parent_id = 0;
         }

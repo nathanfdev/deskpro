@@ -116,12 +116,12 @@ class FeedbackCategoriesController extends AbstractController
 		try {
 
 			$postData  = $this->in->getAll('post');
-			$parent_id = $postData['feedback_category']['options']['parent_id'];
 
-			if(!$parent_id) {
+			// @TODO should be refactored to usage of symfony form mechanism later, this one is quite ugly
 
-				$parent_id = '';
-			}
+			$parent_id =
+				isset($postData['feedback_category']['options']) ?
+				$postData['feedback_category']['options']['parent_id'] : '';
 
 			$feedback_category->title  = $postData['feedback_category']['title'];
 			$feedback_category->parent = $feedback_categories->getParentCategory();
