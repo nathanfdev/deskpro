@@ -64,7 +64,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			for category in feedback_categories
 
-				if category.parent_id
+				if parseInt(category.parent_id, 10)
 
 					if not @child_data[category.parent_id]
 						@child_data[category.parent_id] = []

@@ -73,7 +73,7 @@
         _results = [];
         for (_i = 0, _len = feedback_categories.length; _i < _len; _i++) {
           category = feedback_categories[_i];
-          if (category.parent_id) {
+          if (parseInt(category.parent_id, 10)) {
             if (!this.child_data[category.parent_id]) {
               this.child_data[category.parent_id] = [];
             }
