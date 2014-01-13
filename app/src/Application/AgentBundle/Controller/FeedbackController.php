@@ -755,6 +755,7 @@ class FeedbackController extends AbstractController
 		$result_cache = $result_helper->getResultCache();
 
 		$page = $this->in->getUint('p');
+		if (!$page) $page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
 		$feedback = $result_helper->getFeedbackForPage($page);
