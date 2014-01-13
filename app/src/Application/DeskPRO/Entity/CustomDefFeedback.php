@@ -42,6 +42,11 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
+ * @property CustomDefFeedback $parent
+ * @property int $display_order
+ * @property string $title
+ * @property string $sys_name
+ * @property CustomDefFeedback $parent
  */
 class CustomDefFeedback extends CustomDefAbstract
 {

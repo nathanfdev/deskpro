@@ -49,6 +49,7 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
+ * @property int $display_order
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
