@@ -302,3 +302,11 @@ if ($errors) {
 	exit;
 }
 unset($errors);
+
+//==BEGIN:MONITORING==
+if (extension_loaded('newrelic')) {
+	if (defined('DPC_SITE_DOMAIN')) newrelic_add_custom_parameter('dpc_domain', DPC_SITE_DOMAIN);
+	newrelic_capture_params(true);
+	if (!empty($_SERVER['X-Requested-With']) && strtolower($_SERVER['X-Requested-With']) == 'xmlhttprequest') newrelic_disable_autorum();
+}
+//==END:MONITORING==

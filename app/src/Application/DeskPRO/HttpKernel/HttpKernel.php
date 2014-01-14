@@ -114,6 +114,16 @@ class HttpKernel extends \Symfony\Bundle\FrameworkBundle\HttpKernel
 		$arguments = $this->resolver->getArguments($request, $controller);
 
 		if (isset($controller[0]) AND $controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller) {
+
+			//==BEGIN:MONITORING==
+			if (extension_loaded('newrelic')) {
+				$ctrl_name = preg_replace('#^Application\\\\(.*?)(?:Bundle)?\\\\Controller\\\\(.*?)Controller$#', '$1:$2', get_class($controller[0]));
+				$ctrl_name .= ':' . preg_replace('#Action$#', '', $controller[1]);
+				newrelic_name_transaction($ctrl_name);
+				newrelic_add_custom_parameter('route_params', implode(', ', $arguments));
+			}
+			//==END:MONITORING==
+
 			// Run pre event
 			$event = new PrePostEvent(array(
 				'request_type' => $type,
