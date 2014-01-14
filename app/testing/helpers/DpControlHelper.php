@@ -46,7 +46,7 @@ class DpControlHelper extends \Codeception\Module
 	 * @param mixed  $data
 	 * @param array $options
 	 *
-	 * @return mixed
+	 * @return \Symfony\Component\Form\Form
 	 */
 
 	public function createForm($type, $data = null, array $options = array())
@@ -60,7 +60,7 @@ class DpControlHelper extends \Codeception\Module
 	 * @return \Symfony\Component\Validator\ConstraintViolationList[]
 	 */
 
-	protected function validateObject($obj)
+	public function validateObject($obj)
 	{
 		$validator = \DpTestEnv::getContainer()->getValidator();
 		return $validator->validate($obj);

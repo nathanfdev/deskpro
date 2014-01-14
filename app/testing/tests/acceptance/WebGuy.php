@@ -113,12 +113,33 @@ class WebGuy extends \Codeception\AbstractGuy
 	 * @param mixed  $data
 	 * @param array $options
 	 *
-	 * @return mixed
+	 * @return \Symfony\Component\Form\Form
      * @see Codeception\Module\DpControlHelper::createForm()
      * @return \Codeception\Maybe
      */
     public function createForm($type, $data = null, $options = null) {
         $this->scenario->addStep(new \Codeception\Step\Action('createForm', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     * @param $obj
+	 *
+	 * @return \Symfony\Component\Validator\ConstraintViolationList[]
+     * @see Codeception\Module\DpControlHelper::validateObject()
+     * @return \Codeception\Maybe
+     */
+    public function validateObject($obj) {
+        $this->scenario->addStep(new \Codeception\Step\Action('validateObject', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
             return new Maybe($result);
