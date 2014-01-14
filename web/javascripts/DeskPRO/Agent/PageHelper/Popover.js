@@ -324,6 +324,15 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			height = contentH;
 		}
 
+		// Prevents "jumping" height
+		if (!this.posMaxHeight || this.posMaxHeight < height) {
+			this.posMaxHeight = height
+		}
+
+		if (height < this.posMaxHeight) {
+			height = this.posMaxHeight;
+		}
+
 		// Beside
 		if (this.options.positionMode == 'side') {
 			if (DeskPRO_Window.paneVis.source && DeskPRO_Window.paneVis.list) {
