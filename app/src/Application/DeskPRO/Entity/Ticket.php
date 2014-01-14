@@ -1188,6 +1188,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_sla->ticket = $this;
 		$ticket_sla->sla = $sla;
 
+		$ticket_sla->calculateSlaDates(false);
+
 		$this->ticket_slas->add($ticket_sla);
 
 		return $ticket_sla;
