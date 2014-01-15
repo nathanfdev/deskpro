@@ -41,6 +41,12 @@ use Doctrine\ORM\EntityRepository;
 
 class TicketPageDisplay extends AbstractEntityRepository
 {
+	/**
+	 * @see getSectionData
+	 * @var array
+	 */
+	private $section_data_cache;
+
 	public function getFromZone($zone, $department_context = null)
 	{
 		if ($department_context) {
@@ -195,27 +201,25 @@ class TicketPageDisplay extends AbstractEntityRepository
 
 	public function getSectionData($department, $zone, $section = 'default')
 	{
-		if ($department === null) {
-			$data = App::getDb()->fetchColumn("
-				SELECT data
-				FROM ticket_page_display
-				WHERE department_id IS NULL AND zone = ? AND section = ?
-			", array($zone, $section));
-		} else {
-			if (is_array($department) || is_object($department)) {
-				$department = $department['id'];
-			}
-			$data = App::getDb()->fetchColumn("
-				SELECT data
-				FROM ticket_page_display
-				WHERE department_id = ? AND zone = ? AND section = ?
-			", array($department, $zone, $section));
+		if ($this->section_data_cache === null) {
+			$this->loadSectionDataCache();
 		}
 
-		if (!$data) {
+		if ($department === null) {
+			$did = 0;
+		} else {
+			if (is_array($department) || is_object($department)) {
+				$did = 0;
+			} else {
+				$did = $department;
+			}
+		}
+
+		if (empty($this->section_data_cache[$did][$zone][$section])) {
 			return null;
 		}
 
+		$data = $this->section_data_cache[$did][$zone][$section];
 		if ($data) {
 			$data = unserialize($data);
 		}
@@ -225,6 +229,32 @@ class TicketPageDisplay extends AbstractEntityRepository
 		}
 
 		return $data;
+	}
+
+	private function loadSectionDataCache()
+	{
+		$datas = App::getDb()->fetchAll("
+			SELECT department_id, data, zone, section
+			FROM ticket_page_display
+		");
+
+		$this->section_data_cache = array();
+		foreach ($datas as $d) {
+			if (!$d['department_id']) $d['department_id'] = 0;
+
+			$did  = $d['department_id'];
+			$zone = $d['zone'];
+			$sect = $d['section'];
+
+			if (!isset($this->section_data_cache[$did])) {
+				$this->section_data_cache[$did] = array();
+			}
+			if (!isset($this->section_data_cache[$did][$zone])) {
+				$this->section_data_cache[$did][$zone] = array();
+			}
+
+			$this->section_data_cache[$did][$zone][$sect] = $d['data'];
+		}
 	}
 
 	public function getOrCreate($department, $zone, $section)
