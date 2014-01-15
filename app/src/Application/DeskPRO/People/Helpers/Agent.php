@@ -372,6 +372,14 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
 		$this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
 
+		$snippets_flat = array();
+		foreach ($this->_snippets as $group) {
+			$snippets_flat = array_merge($snippets_flat, $group['snippets']);
+		}
+		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+			App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $snippets_flat);
+		}
+
 		return $this->_snippets;
 	}
 
