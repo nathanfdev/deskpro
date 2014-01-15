@@ -176,6 +176,19 @@ class Download extends ContentAbstract
 
 
 	/**
+	 * @return string
+	 */
+	public function getFilenameSafe()
+	{
+		$filename_safe = Strings::utf8_accents_to_ascii($this->getFileName());
+		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+		$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+
+		return $filename_safe;
+	}
+
+
+	/**
 	 * @return int|string
 	 */
 	public function getFileSize()
