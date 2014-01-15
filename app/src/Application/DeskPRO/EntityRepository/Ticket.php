@@ -230,8 +230,9 @@ class Ticket extends AbstractEntityRepository
 		$ids = array_values($ids);
 
 		$tickets = $this->getEntityManager()->createQuery("
-			SELECT t
+			SELECT t, slas
 			FROM DeskPRO:Ticket t INDEX BY t.id
+			LEFT JOIN t.ticket_slas slas
 			WHERE t.id IN(?1)
 			ORDER BY t.id ASC
 		")->setParameter(1, $ids)->execute();
