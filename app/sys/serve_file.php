@@ -213,7 +213,7 @@ class FilestorageLoader extends LoaderAbstract
 		$is_rtl = !empty($_GET['rtl']);
 		$blob_column = $is_rtl ? 'css_blob_rtl_id' : 'css_blob_id';
 
-		$sth = $this->getPdo()->prepare("
+		$sth = $this->getPdoRead()->prepare("
 			SELECT blobs.*
 			FROM styles
 			INNER JOIN blobs ON (blobs.id = styles.$blob_column)
@@ -382,7 +382,7 @@ class FilestorageLoader extends LoaderAbstract
 
 			$container->getDb()->update('styles', array($blob_column => $blob_id), array('id' => 1));
 
-			$sth = $this->getPdo()->prepare("
+			$sth = $this->getPdoRead()->prepare("
 				SELECT blobs.*
 				FROM blobs
 				WHERE blobs.id =?
@@ -493,7 +493,7 @@ class FilestorageLoader extends LoaderAbstract
 	 */
 	public function sitemapXmlAction()
 	{
-		$sth = $this->getPdo()->prepare("
+		$sth = $this->getPdoRead()->prepare("
 			SELECT *
 			FROM blobs
 			WHERE sys_name = 'sitemap_xml'
@@ -523,7 +523,7 @@ class FilestorageLoader extends LoaderAbstract
 	 */
 	public function personAvatarAction($person_id)
 	{
-		$sth = $this->getPdo()->prepare("
+		$sth = $this->getPdoRead()->prepare("
 			SELECT *
 			FROM blobs
 			LEFT JOIN people ON (blobs.id = people.picture_blob_id)
@@ -554,7 +554,7 @@ class FilestorageLoader extends LoaderAbstract
 	 */
 	public function orgAvatarAction($org_id)
 	{
-		$sth = $this->getPdo()->prepare("
+		$sth = $this->getPdoRead()->prepare("
 			SELECT *
 			FROM blobs
 			LEFT JOIN organizations ON (blobs.id = organizations.picture_blob_id)
@@ -587,7 +587,7 @@ class FilestorageLoader extends LoaderAbstract
 			$name = 'picture-default-agent';
 		}
 
-		$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+		$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
 		$sth->execute(array('sys_name' => $name));
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -622,7 +622,7 @@ class FilestorageLoader extends LoaderAbstract
 	{
 		$name = 'orgpicture-default';
 
-		$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+		$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
 		$sth->execute(array('sys_name' => $name));
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -687,7 +687,7 @@ class FilestorageLoader extends LoaderAbstract
 		if ($check_namehash != $namehash) {
 			$this->addLogMessage("Hash mismatch: %s !=", $check_namehash, $namehash);
 
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE id = :id");
 			$sth->execute(array('id' => $blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -709,14 +709,14 @@ class FilestorageLoader extends LoaderAbstract
 
 		// The file doesnt exist on disk
 		if (!file_exists($filepath)) {
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE id = :id");
 			$sth->execute(array('id' => $blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
 			// Try to detect bad css file and reload it automatically
 			if ($filename == 'main.css') {
 				$is_css = false;
-				$q = $this->getPdo()->query("SELECT css_blob_id FROM styles");
+				$q = $this->getPdoRead()->query("SELECT css_blob_id FROM styles");
 				while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
 					if ($r['css_blob_id'] == $blob_id) {
 						$is_css = true;
@@ -806,7 +806,7 @@ class FilestorageLoader extends LoaderAbstract
 
 			$this->addLogMessage("Loading blob %d", $blob_id);
 
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE id = :id");
 			$sth->execute(array('id' => $blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -821,7 +821,7 @@ class FilestorageLoader extends LoaderAbstract
 				// (See TicketMessage::procInlineAttach)
 				$okay = false;
 				if (!empty($_GET['sc'])) {
-					$sth = $this->getPdo()->prepare("SELECT value FROM settings WHERE name = 'core.install_token'");
+					$sth = $this->getPdoRead()->prepare("SELECT value FROM settings WHERE name = 'core.install_token'");
 					$sth->execute();
 					$install_token = $sth->fetchColumn(0);
 
@@ -874,7 +874,7 @@ class FilestorageLoader extends LoaderAbstract
 				$this->addLogMessage("Is fit: %d", $is_fit);
 			}
 
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
+			$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
 			$sth->execute(array('original_blob_id' => $blob_id, 'sys_name' => $this->getSizedBlobSysName($blob_id, $size, $is_fit)));
 			$sub_blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -916,7 +916,7 @@ class FilestorageLoader extends LoaderAbstract
 		if ($blob['storage_loc'] == 'fs') {
 			$this->sendFromFilesystem($blob);
 		} else {
-			$this->sendFromDatabase($blob, $this->getPdo());
+			$this->sendFromDatabase($blob, $this->getPdoRead());
 		}
 	}
 
@@ -993,7 +993,7 @@ class FilestorageLoader extends LoaderAbstract
 	{
 		$this->sendHeaders($blob);
 
-		$sth = $this->getPdo()->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC");
+		$sth = $this->getPdoRead()->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC");
 		$sth->execute(array('blob_id' => $blob['id']));
 
 		while (($seg = $sth->fetchColumn(0)) !== false) {

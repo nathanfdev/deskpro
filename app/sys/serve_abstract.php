@@ -58,6 +58,11 @@ abstract class LoaderAbstract
 	protected $pdo;
 
 	/**
+	 * @var \PDO
+	 */
+	protected $pdo_read;
+
+	/**
 	 * @var array
 	 */
 	protected $settings;
@@ -234,6 +239,38 @@ abstract class LoaderAbstract
 		$this->pdo->exec("SET NAMES 'UTF8'");
 
 		return $this->pdo;
+	}
+
+
+	/**
+	 * @return \PDO
+	 */
+	public function getPdoRead()
+	{
+		if ($this->pdo_read) {
+			return $this->pdo_read;
+		}
+
+		global $DP_CONFIG;
+
+		if (!empty($DP_CONFIG['db_read']['host'])) {
+			$key = 'db_read';
+		} else {
+			$key = 'db';
+		}
+
+		$port = '';
+		if (isset($DP_CONFIG[$key]['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG[$key]['host'], $m)) {
+			$DP_CONFIG[$key]['host'] = $m[1];
+			$port = ";port={$m[2]};";
+		}
+
+		$this->pdo_read = new \PDO("mysql:dbname={$DP_CONFIG[$key]['dbname']};host={$DP_CONFIG[$key]['host']}$port", $DP_CONFIG[$key]['user'], $DP_CONFIG[$key]['password']);
+		$this->pdo_read->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+		$this->pdo_read->exec("SET sql_mode=''");
+		$this->pdo_read->exec("SET NAMES 'UTF8'");
+
+		return $this->pdo_read;
 	}
 
 

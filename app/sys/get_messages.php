@@ -68,9 +68,9 @@ class AgentMessagesLoader extends LoaderAbstract
 			list ($session_id, ) = explode('-', $agent_session_id, 2);
 			$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
-			$db = $this->getPdo();
+			$db = $this->getPdoRead();
 
-			$agent_session = $this->getPdo()->query("
+			$agent_session = $this->getPdoRead()->query("
 				SELECT sessions.*, people.is_agent, people_prefs.value_str AS last_message_id
 				FROM sessions
 				INNER JOIN people ON (sessions.person_id = people.id)
@@ -158,33 +158,40 @@ class AgentMessagesLoader extends LoaderAbstract
 				}
 			}
 
-			// We save the last message we know a user got because we need to know
-			// to deliver offline messages (such as chats) the next time the user logs in
-			if ($new_since && $new_since > $last_since) {
-				$q = $db->prepare("
+			// See if we should update last activity time
+			if ($activity_time && $activity_time > (time()-330)) {
+				// We save the last message we know a user got because we need to know
+				// to deliver offline messages (such as chats) the next time the user logs in
+				if ($new_since && $new_since > $last_since) {
+					$q = $this->getPdo()->prepare("
 					REPLACE INTO people_prefs
 						(person_id, name, value_str, value_array, date_expire)
 					VALUES
 						(?, ?, ?, NULL, NULL);
 				");
-				$q->execute(array($agent_session['person_id'], 'agent.ui.last_message_id', $new_since));
-			}
+					$q->execute(array($agent_session['person_id'], 'agent.ui.last_message_id', $new_since));
+				}
 
-			// See if we should update last activity time
-			if ($activity_time && $activity_time > (time()-330)) {
 				// This bit makes sure theres only one record per 5 minute block
 				$date_active = new \DateTime('@' . $activity_time);
 				list($hour, $minute) = explode(':', $date_active->format('H:i'));
 				$minute = intval($minute / 5) * 5;
 				$date_active->setTime($hour, $minute, 0);
 
-				$q = $db->prepare("
+				$q = $this->getPdo()->prepare("
 					INSERT IGNORE INTO agent_activity
 						(agent_id, date_active)
 					VALUES
 						(?,?)
 				");
 				$q->execute(array($agent_session['person_id'], $date_active->format('Y-m-d H:i:s')));
+
+				$q = $this->getPdo()->prepare("
+					UPDATE sessions
+					SET date_last = ?
+					WHERE id = ?
+				");
+					$q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
 			}
 
 			$secret = $this->_getSetting('core.app_secret');
@@ -194,13 +201,6 @@ class AgentMessagesLoader extends LoaderAbstract
 
 			$token = md5($agent_session['id'] . $agent_session['auth'] . $secret . 'request_token');
 			$data['request_token'] = Util::generateStaticSecurityToken($token, 10800);
-
-			$q = $db->prepare("
-				UPDATE sessions
-				SET date_last = ?
-				WHERE id = ?
-			");
-			$q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
 
 			if (!empty($_REQUEST['recent_tabs'])) {
 
@@ -254,7 +254,7 @@ class AgentMessagesLoader extends LoaderAbstract
 				}
 
 				$recent_tabs = serialize($recent_tabs);
-				$db->prepare("
+				$this->getPdo()->prepare("
 					REPLACE INTO people_prefs
 					SET
 						person_id = ?,
@@ -280,14 +280,14 @@ class AgentMessagesLoader extends LoaderAbstract
 
 				if ($ids) {
 					if (in_array('-1', $ids)) {
-						$db->exec("
+						$this->getPdo()->exec("
 							UPDATE agent_alerts
 							SET is_dismissed = 1
 							WHERE person_id = {$agent_session['person_id']}
 						");
 					} else {
 						$ids_in = implode(',', $ids);
-						$db->exec("
+						$this->getPdo()->exec("
 							UPDATE agent_alerts
 							SET is_dismissed = 1
 							WHERE person_id = {$agent_session['person_id']} AND id IN ($ids_in)
@@ -328,7 +328,7 @@ class AgentMessagesLoader extends LoaderAbstract
 				}
 
 				if ($count == 100 && $last_alert_id) {
-					$db->exec("
+					$this->getPdo()->exec("
 						UPDATE agent_alerts
 						SET is_dismissed = 1
 						WHERE person_id = {$agent_session['person_id']} AND id < $last_alert_id
@@ -390,7 +390,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$all_messages = false;
 
 		if (!$since) {
-			$last_id = $this->getPdo()->query("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1")->fetchColumn();
+			$last_id = $this->getPdoRead()->query("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1")->fetchColumn();
 			if ($last_id) {
 				$data['last_id'] = $last_id;
 			} else {
@@ -503,7 +503,7 @@ class AgentMessagesLoader extends LoaderAbstract
 			}
 		}
 
-		$q = $this->getPdo()->prepare("
+		$q = $this->getPdoRead()->prepare("
 			SELECT c.id
 			FROM chat_conversations c
 			LEFT JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
@@ -536,7 +536,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$names = implode(',', $names);
 		$names_like = implode(' OR ', $names_like);
 
-		$q = $this->getPdo()->prepare("
+		$q = $this->getPdoRead()->prepare("
 			SELECT *
 			FROM client_messages
 			WHERE (channel IN ($names) OR ($names_like))
@@ -552,7 +552,7 @@ class AgentMessagesLoader extends LoaderAbstract
 
 	public function getInitialMessagesForPerson($person_id, $since_id)
 	{
-		$db = $this->getPdo();
+		$db = $this->getPdoRead();
 
 		$q = $db->prepare("
 			SELECT *
@@ -701,7 +701,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$timeout = $this->_getSetting('core_chat.user_online_time', 600);
 		$cutoff = date('Y-m-d H:i:s', time() - $timeout);
 
-		$q = $this->getPdo()->prepare("
+		$q = $this->getPdoRead()->prepare("
 			SELECT COUNT(*)
 			FROM visitors
 			WHERE date_last > ? AND last_track_id IS NOT NULL AND hint_hidden = 0
@@ -723,7 +723,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$timeout = $this->_getSetting('core_chat.agent_timeout', 20);
 		$cutoff = date('Y-m-d H:i:s', time() - $timeout);
 
-		$q = $this->getPdo()->prepare("
+		$q = $this->getPdoRead()->prepare("
 			SELECT DISTINCT s.person_id
 			FROM sessions s
 			INNER JOIN people p ON (s.person_id = p.id)
@@ -737,7 +737,7 @@ class AgentMessagesLoader extends LoaderAbstract
 			$online_agents[] = $row['person_id'];
 		}
 
-		$q = $this->getPdo()->prepare("
+		$q = $this->getPdoRead()->prepare("
 			SELECT DISTINCT person_id
 			FROM sessions
 			WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1 AND interface = 'agent'
@@ -761,7 +761,7 @@ class AgentMessagesLoader extends LoaderAbstract
 	{
 		if (!$this->_settings) {
 			$this->_settings = array();
-			$q = $this->getPdo()->prepare("
+			$q = $this->getPdoRead()->prepare("
 				SELECT name, value
 				FROM settings
 			");
