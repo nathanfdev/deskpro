@@ -386,19 +386,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $_set_plain_password = null;
 
 	/**
-	 * An array of name=>value for loaded preferences. These are not obejcts.
-	 * @var array
-	 */
-	protected $_pref_values = array();
-
-	/**
-	 * AN array of names we've loaded. This is because values can be null if they
-	 * dont exist, but we dont want to keep trying ot laod them every time they're requested.
-	 * @var array
-	 */
-	protected $_pref_loaded = array();
-
-	/**
 	 * Label manager for adding/removing labels
 	 * @var \Application\DeskPRO\Labels\LabelManager
 	 */
@@ -1027,8 +1014,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$pref['value'] = $value;
-		$this->_pref_loaded[] = $pref_name;
-		$this->_pref_values[$pref_name] = $value;
 
 		return $pref;
 	}
@@ -1044,12 +1029,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getPref($name, $default = null)
 	{
-		if (!in_array($name, $this->_pref_loaded)) {
-			$this->_pref_values[$name] = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId($name, $this->id);
-		}
-
-		if (isset($this->_pref_values[$name])) {
-			return $this->_pref_values[$name];
+		foreach ($this->preferences as $pref) {
+			if ($pref->name == $name) {
+				return $pref->getValue();
+			}
 		}
 
 		if ($default === null && $name == 'agent.ticket_reverse_order') {
@@ -1076,24 +1059,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$names = func_get_args();
 		}
 
-		// Filter out ones we already have
-		$loaded = $this->_pref_loaded;
-		$names_get = array_filter($names, function ($v) use ($loaded) {
-			if (in_array($v, $loaded)) {
-				return false;
-			}
-			return true;
-		});
-
-		if ($names_get) {
-			$got = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId($names_get, $this->id);
-			$this->_pref_values = array_merge($this->_pref_values, $got);
-			$this->_pref_loaded = array_merge($this->_pref_loaded, array_keys($got));
-		}
-
+		$names = array_fill_keys(array_values($names), true);
 		$ret = array();
-		foreach ($names as $n) {
-			$ret[$n] = isset($this->_pref_values[$n]) ? $this->_pref_values[$n] : null;
+
+		foreach ($this->preferences as $pref) {
+			if (isset($names[$pref->name])) {
+				$ret[$pref->name] = $pref->getValue();
+			}
 		}
 
 		return $ret;
@@ -1187,13 +1159,18 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function loadPrefGroup($pref_group)
 	{
-		$group = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId($pref_group, $this->id, false);
-		$this->_pref_values = array_merge(
-			$this->_pref_values,
-			$group
-		);
+		$pref_group = rtrim($pref_group, '.'); // incase it was supplied with dot
+		$pref_group_len = strlen($pref_group) + 1; // used with trimming below
 
-		return $group;
+		$ret = array();
+		foreach ($this->preferences as $pref) {
+			if (strpos($pref->name, $pref_group) === 0) {
+				$pref_name = substr($pref->name, $pref_group_len);
+				$ret[$pref_name] = $pref->getValue();
+			}
+		}
+
+		return $ret;
 	}
 
 
