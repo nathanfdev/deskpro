@@ -56,10 +56,16 @@
 						</ul>
 					</div>
 
+					<div class="dp-delete-control" ng-if="FeedbackTypesEdit.feedback_type.id">
+						<button class="btn btn-danger"
+								ng-click="$event.preventDefault(); $parent.FeedbackTypesList.startDelete(FeedbackTypesEdit.feedback_type);">
+							Delete
+						</button>
+					</div>
+
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving_feedback_type">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-							<button class="btn btn-default" ng-click="FeedbackTypesEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 						</div>
 						<div dp-show-spinning="saving_feedback_type">
 							<i class="spinner-flat"></i>
