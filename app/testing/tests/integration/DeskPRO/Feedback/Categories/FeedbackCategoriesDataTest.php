@@ -18,7 +18,7 @@ class FeedbackCategoriesDataTest extends \DpIntegrationTestCase
 		$this->feedback_categories = $this->helper->getSymfonyContainer()->getSystemService('feedback_categories');
 	}
 
-	public function testGetEntities()
+	public function testGetFeedbackCategoryEntities()
 	{
 		$this->assertNull($this->feedback_categories->getById(100));
 		$this->assertNotNull($this->feedback_categories->getById(2));
@@ -28,7 +28,7 @@ class FeedbackCategoriesDataTest extends \DpIntegrationTestCase
 		$this->assertEquals(4, $this->feedback_categories->count());
 	}
 
-	public function testGettingOfParentCategory()
+	public function testGettingOfParentFeedbackCategory()
 	{
 		$this->assertInstanceOf(
 			'Application\DeskPRO\FeedbackCategories\FeedbackCategories',
@@ -43,7 +43,7 @@ class FeedbackCategoriesDataTest extends \DpIntegrationTestCase
 		$this->assertEquals(1, $this->feedback_categories->getParentCategory()->getId());
 	}
 
-	public function testUpdatingOfDisplayOrders()
+	public function testUpdatingOfFeedbackCategoryDisplayOrders()
 	{
 		$this->feedback_categories->updateDisplayOrders(
 			array(4, 5, 2, 3)

@@ -1,5 +1,5 @@
 <?php
-namespace DpUnitTests\DeskPRO\Feedback\Statuses;
+namespace DpIntegrationTests\DeskPRO\Feedback\Statuses;
 
 use Application\DeskPRO\FeedbackStatuses\FeedbackStatusEdit;
 use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusType;
@@ -28,7 +28,7 @@ class FeedbackStatusTypeTest extends \DpIntegrationTestCase
 		$this->form            = $this->helper->createForm(new FeedbackStatusType(), $feedback_status_edit);
 	}
 
-	public function testSuccessfulValidationOfForm()
+	public function testSuccessfulValidationOfFeedbackStatusForm()
 	{
 		$this->assertFalse($this->form->isValid());
 
@@ -38,7 +38,7 @@ class FeedbackStatusTypeTest extends \DpIntegrationTestCase
 		$this->assertTrue($this->form->isSynchronized());
 	}
 
-	public function testUnsuccessfulValidationOfForm()
+	public function testUnsuccessfulValidationOfFeedbackStatusForm()
 	{
 		$this->assertFalse($this->form->isValid());
 

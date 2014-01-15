@@ -10,7 +10,7 @@ class DepartmentDataTest extends \DpIntegrationTestCase
 		$this->helper->loadFixtures('General/SimpleDepartmentData');
 	}
 
-	public function testService()
+	public function testTicketDepartmentService()
 	{
 		/** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
 		$ticket_deps = $this->helper->getSymfonyContainer()->getSystemService('ticket_departments');
