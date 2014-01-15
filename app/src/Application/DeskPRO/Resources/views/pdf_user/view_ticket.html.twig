@@ -107,7 +107,7 @@ body {
                     <li>
                         {% if ticket_attach.blob.isImage() %}
                             <a href="{{ ticket_attach.blob.download_url }}" target="_blank">
-                                <img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" />
+                                <img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" />
                             </a>
                         {% endif %}
                             <a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>

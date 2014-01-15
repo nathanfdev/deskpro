@@ -310,7 +310,7 @@ class Download extends ContentAbstract
 		$data['filesize'] = $this->getFileSize();
 		if ($this->blob) {
 			$data['downloadurl'] = App::getRouter()->generate(
-				'serve_blob', array('blob_auth_id' => $this->blob->auth_id, 'filename' => $this->filename), true
+				'serve_blob', array('blob_auth_id' => $this->blob->auth_id, 'filename' => $this->getFilenameSafe()), true
 			);
 		}
 

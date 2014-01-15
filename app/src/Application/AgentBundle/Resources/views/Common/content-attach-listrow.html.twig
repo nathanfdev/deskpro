@@ -1,6 +1,6 @@
 <li class="blob-{{ blob.id }}" data-blob-id="{{ blob.id }}">
 	{% if blob.isImage() %}
-		<img src="{{ path('serve_blob', {'blob_auth_id': blob.auth_id, 'filename': blob.filename, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" />
+		<img src="{{ path('serve_blob', {'blob_auth_id': blob.auth_id, 'filename': blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" />
 	{% endif %}
 	<a href="{{ blob.download_url }}" target="_blank">{{ blob.display_title }}</a>
 	<span class="size">({{ blob.readable_filesize }})</span>
