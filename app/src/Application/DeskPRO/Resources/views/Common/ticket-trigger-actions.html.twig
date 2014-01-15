@@ -251,7 +251,7 @@
 	</div>
 </div>
 
-{% if app.user.Agent.getGroupedSnippets()|length %}
+{% if show_snippets and app.user.Agent.getGroupedSnippets()|length %}
 	<div class="builder-type" title="Add reply from snippet" data-rule-type="reply_snippet" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="snippet_id" class="select2">

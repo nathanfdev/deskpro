@@ -40,7 +40,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="search-terms"></div>
 					<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_action_term') }}</div>
 				</div>
-				{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_actions_tpl', 'term_options': ticket_options, 'event_group': 'macro' } %}
+				{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_actions_tpl', 'term_options': ticket_options, 'event_group': 'macro', show_snippets: true } %}
 			</div>
 		</div>
 	</div>
