@@ -119,6 +119,8 @@ class TicketController extends AbstractController
 			$ticket->agent_id = $agentId;
 		}
 
+		$this->db->beginTransaction();
+
 		// make this check as late as possible to reduce race conditions
 		if ($this->in->checkIsset('person_id')) {
 			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($this->in->getInt('person_id'));
@@ -191,8 +193,6 @@ class TicketController extends AbstractController
 
 		// need to ensure we treat things as the message owner
 		App::setCurrentPerson($message->person);
-
-		$this->db->beginTransaction();
 
 		try {
 			if ($org && !$org->id) {
