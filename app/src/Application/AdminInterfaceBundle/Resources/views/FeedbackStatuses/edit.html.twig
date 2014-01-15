@@ -16,8 +16,8 @@
 											class="form-control"
 											name="title"
 											ng-model="FeedbackStatusesEdit.feedback_status.title"
-											dp-server-validation="feedback_status.title.min_length"
-											style="width: 50%;" required autofocus>
+											dp-server-validation="title.not_blank,title.length"
+											style="width: 50%;" autofocus>
 								<span class="help-block">
 									{{ phrase('adm.feedback_statuses.title_explain') }}
 								</span>
@@ -32,8 +32,12 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
-							<li ng-show="form_props.title.$error.required">{{ phrase('adm.feedback_statuses.title_error') }}</li>
-							<li ng-show="form_props.title.$error.feedback_status_title_min_length">Title can't be less than 2 symbols</li>
+							<li ng-show="form_props.title.$error.required || form_props.title.$error.not_blank">
+								{{ phrase('adm.feedback_statuses.title_error') }}
+							</li>
+							<li ng-show="form_props.title.$error.length">
+								Title can't be less than 2 symbols
+							</li>
 						</ul>
 					</div>
 

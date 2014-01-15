@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Validator\Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory as BaseClassMetadataFactory;
+use Symfony\Component\Validator\Exception\NoSuchMetadataException;
 
 /**
  * This custom factory is the same as the default, except we intercept constraints and prefix the default
@@ -104,7 +105,25 @@ class ClassMetadataFactory extends BaseClassMetadataFactory
 			if (($prop == 'message' || preg_match('#Message$#', $prop)) && is_string($val)) {
 				$name = Util::getBaseClassname($constraint);
 				$name = Strings::camelCaseToUnderscore($name);
-				$constraint->$prop = '[' . $name . '] ' . $val;
+
+				// This is for case when we have pluralization cases for constraint message that are divided by '|'
+
+				if (strpos($val, '|') !== false) {
+
+					$parts = explode('|', $val);
+
+					foreach ($parts as $key => $part) {
+
+						$parts[$key] = '[' . $name . '] ' . $part;
+					}
+
+					$val = implode('|', $parts);
+
+					$constraint->$prop = $val;
+				} else {
+
+					$constraint->$prop = '[' . $name . '] ' . $val;
+				}
 			}
 		}
 	}

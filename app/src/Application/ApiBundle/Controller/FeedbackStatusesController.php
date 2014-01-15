@@ -126,7 +126,9 @@ class FeedbackStatusesController extends AbstractController
 		}
 		else {
 
-			throw ValidationException::create($this->getFormValidationErrorsString($form));
+			return $this->createApiValidationErrorResponse(
+				$this->container->getValidator()->validate($feedback_status)
+			);
 		}
 
 		return $this->createApiResponse(
