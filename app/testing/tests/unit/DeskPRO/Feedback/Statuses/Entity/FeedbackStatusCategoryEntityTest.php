@@ -23,7 +23,7 @@ class FeedbackStatusCategoryEntityTest extends \DpUnitTestCase
 		$this->validator = $this->helper->getValidator();
 	}
 
-	public function testSuccessfulValidationOfEntity()
+	public function testSuccessfulValidationOfFeedbackStatusCategoryEntity()
 	{
 		$this->entity->title       = 'test title';
 		$this->entity->status_type = 'active';
@@ -32,7 +32,7 @@ class FeedbackStatusCategoryEntityTest extends \DpUnitTestCase
 		$this->assertEquals(0, sizeof($errors));
 	}
 
-	public function testUnsuccessfulValidationOfEntity()
+	public function testUnsuccessfulValidationOfFeedbackStatusCategoryEntity()
 	{
 		$this->entity->title       = '';
 		$this->entity->status_type = 'some invalid type';
