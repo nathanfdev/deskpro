@@ -219,8 +219,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			LIMIT $start, $per_page
 		";
 
-		$total        = App::getDb()->fetchColumn($count_query, array($label_where));
-		$results_raw  = App::getDb()->fetchAll($select_query, array($label_where,$label_where));
+		$total        = App::getDbRead()->fetchColumn($count_query, array($label_where));
+		$results_raw  = App::getDbRead()->fetchAll($select_query, array($label_where,$label_where));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {
@@ -332,9 +332,9 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 				LIMIT $start, $per_page
 			";
 
-			$total = App::getDb()->fetchColumn($count_query, $params);
+			$total = App::getDbRead()->fetchColumn($count_query, $params);
 
-			$results_raw  = App::getDb()->fetchAll($select_query, $params);
+			$results_raw  = App::getDbRead()->fetchAll($select_query, $params);
 			$results      = array();
 
 			foreach ($results_raw as $result_raw) {
