@@ -209,7 +209,7 @@ class TicketPageDisplay extends AbstractEntityRepository
 			$did = 0;
 		} else {
 			if (is_array($department) || is_object($department)) {
-				$did = 0;
+				$did = $department['id'];
 			} else {
 				$did = $department;
 			}
