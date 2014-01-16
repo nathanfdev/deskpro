@@ -146,7 +146,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			'blob_auth'         => $blob->authcode,
 			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
 			'download_url'      => $blob->getDownloadUrl(true, false),
-			'download_url_scaled' => $blob->getThumbnailUrl(100),
+			'download_url_scaled' => $blob->getThumbnailUrl('360x100') . '&size-fit=1',
 			'filename'          => $blob['filename'],
 			'filesize_readable' => $blob->getReadableFilesize(),
 			'is_image'          => $blob->isImage()
