@@ -53,8 +53,8 @@ class ChatDepsController extends AbstractController
 	{
 		$data = array();
 
-		$ticket_deps = $this->container->getSystemService('chat_departments');
-		$flat_array  = $ticket_deps->getFlatArray();
+		$chat_deps   = $this->container->getSystemService('chat_departments');
+		$flat_array  = $chat_deps->getFlatArray();
 
 		$deps = array();
 
@@ -75,11 +75,11 @@ class ChatDepsController extends AbstractController
 	public function getAction($id)
 	{
 		/**
-		 * @var \Application\DeskPRO\Departments\ChatDepartments $ticket_deps
+		 * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
 		 */
 
-		$ticket_deps = $this->container->getSystemService('chat_departments');
-		$dep         = $ticket_deps->getById($id);
+		$chat_deps = $this->container->getSystemService('chat_departments');
+		$dep       = $chat_deps->getById($id);
 
 		if (!$dep || !$dep->is_chat_enabled) {
 
@@ -88,7 +88,7 @@ class ChatDepsController extends AbstractController
 
 		$data                = array();
 		$data['department']  = $this->getApiData($dep);
-		$data['permissions'] = $ticket_deps->getPermissionsInfo($dep);
+		$data['permissions'] = $chat_deps->getPermissionsInfo($dep);
 
 		return $this->createApiResponse($data);
 	}
