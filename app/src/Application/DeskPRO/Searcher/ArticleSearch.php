@@ -80,7 +80,7 @@ class ArticleSearch extends SearcherAbstract
 	 */
 	public function getMatches(array $limit = null)
 	{
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.articles');
 
 		$article_ids = $db->fetchAllCol($this->getSql($limit));
 
@@ -176,7 +176,7 @@ class ArticleSearch extends SearcherAbstract
 			$sql .= '1';
 		}
 
-		$count = App::getDbRead()->fetchColumn($sql);
+		$count = App::getDbRead('search.filter.articles')->fetchColumn($sql);
 
 		return $count;
 	}
@@ -305,7 +305,7 @@ class ArticleSearch extends SearcherAbstract
 	{
 		if ($this->sql_parts !== null) return $this->sql_parts;
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.articles');
 		$tr = App::getTranslator();
 
 		$wheres = array();

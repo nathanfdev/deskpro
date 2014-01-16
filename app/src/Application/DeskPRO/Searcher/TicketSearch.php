@@ -395,7 +395,7 @@ class TicketSearch extends SearcherAbstract
 		$this->getLogger()->logDebug("Search Query: " . $sql);
 		$time = microtime(true);
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.tickets');
 
 		try {
 			$ticket_ids = $db->fetchAllCol($sql);
@@ -592,7 +592,7 @@ class TicketSearch extends SearcherAbstract
 		$this->getLogger()->logDebug("Search Count Query: " . $count_sql);
 		$time = microtime(true);
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.tickets');
 
 		try {
 			$result = $db->fetchColumn($count_sql);
@@ -995,7 +995,7 @@ class TicketSearch extends SearcherAbstract
 
 		$tickets_table = 'tickets';
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.tickets');
 		$tr = App::getTranslator();
 
 		$wheres = array();
@@ -1096,7 +1096,7 @@ class TicketSearch extends SearcherAbstract
 							"LEFT JOIN content_search AS $join_name ON ($join_name.object_type = 'ticket' AND $join_name.object_id = tickets.id)"
 						);
 
-						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDbRead()->quote($choice) . ")";
+						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDbRead('search.filter.tickets')->quote($choice) . ")";
 
 						$this->summary[] = "Ticket content matches: " . $choice;
 						break;

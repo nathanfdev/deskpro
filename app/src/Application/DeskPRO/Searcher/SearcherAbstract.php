@@ -473,7 +473,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$choice = Arrays::getFirstItem($choice);
 		}
 
-		$db = App::getDbRead();
+		$db = App::getDb();
 		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
 			array_walk($choices_in, function(&$v, $k) use ($db) {
@@ -520,7 +520,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	protected function _stringSearch($field, $op, $string, $type = 'or')
 	{
 		$string = Strings::utf8_strtolower($string);
-		$db = App::getDbRead();
+		$db = App::getDb();
 
 		if ($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) {
 			$op_like = 'NOT LIKE';
@@ -572,7 +572,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$not = 'NOT';
 		}
 
-		$string_q = App::getDbRead()->quote($string, \PDO::PARAM_STR);
+		$string_q = App::getDb()->quote($string, \PDO::PARAM_STR);
 		return "( $not MATCH ($field) AGAINST ($string_q IN BOOLEAN MODE) )";
 	}
 
@@ -809,7 +809,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	protected function _choiceMatch($field, $op, $choice, $is_id = false)
 	{
-		$db = App::getDbRead();
+		$db = App::getDb();
 		$where = '';
 
 		if (is_array($choice) AND count($choice) == 1) {

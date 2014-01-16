@@ -86,8 +86,8 @@ class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
 			LIMIT $start, $per_page
 		";
 
-		$total        = App::getDbRead()->fetchColumn($count_query, array($query));
-		$results_raw  = App::getDbRead()->fetchAll($select_query, array($query, $query));
+		$total        = App::getDbRead('search.searcher.tickets')->fetchColumn($count_query, array($query));
+		$results_raw  = App::getDbRead('search.searcher.tickets')->fetchAll($select_query, array($query, $query));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {

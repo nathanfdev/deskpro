@@ -79,7 +79,7 @@ class DownloadSearch extends SearcherAbstract
 	 */
 	public function getMatches(array $limit = null)
 	{
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.downloads');
 
 		$download_ids = $db->fetchAllCol($this->getSql($limit));
 
@@ -175,7 +175,7 @@ class DownloadSearch extends SearcherAbstract
 			$sql .= '1';
 		}
 
-		$count = App::getDbRead()->fetchColumn($sql);
+		$count = App::getDbRead('search.filter.downloads')->fetchColumn($sql);
 
 		return $count;
 	}
@@ -306,7 +306,7 @@ class DownloadSearch extends SearcherAbstract
 	{
 		if ($this->sql_parts !== null) return $this->sql_parts;
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.downloads');
 		$tr = App::getTranslator();
 
 		$wheres = array();

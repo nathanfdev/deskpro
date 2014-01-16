@@ -252,7 +252,7 @@ class Display
 	public function getResults()
 	{
 		$results = new Results();
-		$db = App::getDbRead();
+		$db = App::getDbRead('reports');
 
 		$db->query("SET time_zone = '+0:00'");
 

@@ -103,7 +103,7 @@ class PersonSearch extends SearcherAbstract
 	 */
 	public function getMatches()
 	{
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.people');
 
 		$people_ids = $db->fetchAllCol($this->getSql());
 
@@ -280,7 +280,7 @@ class PersonSearch extends SearcherAbstract
 
 		$people_table = 'people';
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.people');
 		$tr = App::getTranslator();
 
 		$wheres = array();
@@ -335,7 +335,7 @@ class PersonSearch extends SearcherAbstract
 					});
 
 					$choice = array_map('intval', (array)$choice);
-					$person_ids = App::getDbRead()->fetchAllCol("
+					$person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
 						SELECT person_id
 						FROM person2usergroups
 						WHERE usergroup_id IN (" . implode(',', $choice) . ")
@@ -344,7 +344,7 @@ class PersonSearch extends SearcherAbstract
 					if (!$person_ids) {
 						$person_ids = array(0);
 					}
-					$org_ids = App::getDbRead()->fetchAllCol("
+					$org_ids = App::getDbRead('search.filter.people')->fetchAllCol("
 						SELECT organization_id
 						FROM organization2usergroups
 						WHERE usergroup_id IN (" . implode(',', $choice) . ")
