@@ -67,6 +67,13 @@ class PersonFieldManager extends FieldManager
 				continue;
 			}
 
+			// Automatically flatten arrays
+			// E.g., LDAP will return attributes as an array, often with only one item
+			// Without this we'd need to document that you need to specify attrName.0
+			if (is_array($val)) {
+				$val = implode("\n\n", $val);
+			}
+
 			$save_data['field_' . $field->getId()] = $val;
 		}
 
