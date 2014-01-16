@@ -714,6 +714,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
+		// If it is a bounce and its in reply to the
+		// latest agent reply, we should switch the status
+		// so the agent knows about the bounce
+		if ($this->is_bounce) {
+			$last = App::getOrm()->getRepository('DeskPRO:TicketMessage')->getLastReply($ticket);
+			if ($last->person->is_agent) {
+				$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
+			}
+		}
+
 		$this->applyChangesArray($ticket);
 
 		// If we didnt add a message, then it was an actions-only message

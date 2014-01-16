@@ -61,6 +61,29 @@ class TicketMessage extends AbstractEntityRepository
 	}
 
 	/**
+	 * Gets the last reply on the ticket (last non-note by either agent or user)
+	 *
+	 * @param $ticket
+	 * @return mixed
+	 */
+	public function getLastReply($ticket)
+	{
+		if (!($ticket instanceof Entity\Ticket)) {
+			$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
+		}
+
+		return $this->getEntityManager()->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			LEFT JOIN m.person p
+			WHERE
+				m.ticket = ?1
+				AND m.is_agent_note = 0
+			ORDER BY m.id DESC
+		")->setMaxResults(1)->setParameters(array(1=> $ticket))->getOneOrNullResult();
+	}
+
+	/**
 	 * Fetch the first message of a ticket.
 	 *
 	 * @throws NoResultException If there is no message. This shouldn't happen
