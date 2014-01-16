@@ -599,6 +599,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			this.getEl('editname_start').click();
 		}
 
+		this.initUsEditor();
 		this.initUgEditor();
 		this.initSlaEditor();
 
@@ -876,6 +877,88 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					sect.reloadLabels();
 				}
 			}
+		});
+	},
+
+	initUsEditor: function() {
+		var self = this;
+		var usbox = this.getEl('us_box');
+
+		if (!usbox[0]) {
+			return;
+		}
+
+		var editBtn   = usbox.find('.edit-trigger');
+		var cancelBtn = usbox.find('.cancel-trigger');
+
+		var displayBox = this.getEl('us_display_box');
+		var editBox    = this.getEl('us_edit_box');
+
+		var doneInitEdit = false;
+
+		var showEdit = function() {
+			usbox.removeClass('loading');
+			editBtn.hide();
+
+			cancelBtn.show();
+			displayBox.hide();
+			editBox.show();
+			usbox.removeClass('no-section').find('> section').show();
+
+			if (!doneInitEdit) {
+				doneInitEdit = true;
+				editBox.find('.remove-trigger').on('click', function(ev) {
+					ev.preventDefault();
+					var me = $(this), li = me.closest('li');
+					if (confirm(me.data('confirm'))) {
+						var formData = []
+						formData.push({ name: 'action', value: 'remove-usersource'} );
+						formData.push({ name: 'usersource_id', value: li.data('us-id') });
+
+						showSaving();
+						$.ajax({
+							url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+							type: 'POST',
+							dataType: 'json',
+							data: formData,
+							context: this,
+							complete: function() {
+								showNormal();
+							},
+							success: function(data) {
+
+								usbox.find('.us-' + li.data('us-id')).remove();
+								showNormal();
+
+								if (!displayBox.find('li').length) {
+									usbox.hide();
+								}
+							}
+						});
+					}
+				});
+			}
+		};
+		var showSaving = function() {
+			usbox.addClass('loading');
+			editBtn.hide();
+			cancelBtn.hide();
+			displayBox.show();
+			editBox.hide();
+		};
+		var showNormal = function() {
+			usbox.removeClass('loading');
+			editBtn.show();
+			cancelBtn.hide();
+			displayBox.show();
+			editBox.hide();
+		};
+
+		editBtn.on('click', function() {
+			showEdit();
+		});
+		cancelBtn.on('click', function() {
+			showNormal();
 		});
 	},
 
