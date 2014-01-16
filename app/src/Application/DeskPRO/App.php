@@ -388,31 +388,16 @@ class App
 		return self::get(self::SERVICE_DB, self::DEFAULT_NAME);
 	}
 
-	protected static $db_read;
 
 	/**
 	 * Gets a read-only DB connect
 	 *
+	 * @param string $type
 	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
-	public static function getDbRead()
+	public static function getDbRead($type = 'default')
 	{
-		if (self::$db_read === null) {
-			$read = self::getConfig('db_read');
-			if ($read && !empty($read['host']) & !empty($read['dbname'])) {
-				self::$db_read = self::getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
-					'driver'        => 'pdo_mysql',
-					'host'          => $read['host'],
-					'user'          => $read['user'],
-					'password'      => $read['password'],
-					'dbname'        => $read['dbname']
-				));
-			} else {
-				self::$db_read = self::getDb();
-			}
-		}
-
-		return self::$db_read;
+		return self::getContainer()->getDbRead($type);
 	}
 
 

@@ -81,6 +81,11 @@ class DeskproContainer extends Container
 	 */
 	protected $system_services = array();
 
+	/**
+	 * @var array
+	 */
+	protected $db_read_conns = array();
+
 
 	/**
 	 * @return \DeskPRO\Kernel\BaseAbstractKernel
@@ -243,6 +248,88 @@ class DeskproContainer extends Container
 	public function getDb()
 	{
 		return $this->get(self::SERVICE_DB);
+	}
+
+
+	/**
+	 * Gets a DB reader.
+	 *
+	 * There can be many types of readers:
+	 * - reports
+	 * - search
+	 * - search.tickets
+	 * etc
+	 *
+	 * In config.php you can define connection params for each type.
+	 * db_read is the main fallback connection for all readers.
+	 *
+	 * You can get more specific by naming:
+	 * - getDbRead('reports') gets params from config db_read_reports
+	 * - getDbRead('search') gets params from config db_read_search
+	 * - getDbRead('search.tickets') gets params from config db_read_search_tickets,
+	 * and falls back on db_read_search if it doesnt exist.
+	 *
+	 * If the config value is an array of arrays, then it's expected that there are multiple
+	 * databases to choose from and one is selected at random.
+	 *
+	 * @param string $type
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDbRead($type = 'default')
+	{
+		// Already initialised
+		if (isset($this->db_read_conns[$type])) {
+			return $this->db_read_conns[$type];
+		}
+
+		// Get an appropriate connection
+		$parts = explode('.', $type);
+		do {
+			$config_key = 'db_read_' . implode('_', $parts);
+			$config_key = rtrim($config_key, '_');
+
+			$type_key = implode('.', $parts);
+			if (!$type_key) {
+				$type_key = 'default';
+			}
+
+			if (isset($this->db_read_conns[$type_key])) {
+				// Assign to the speciifc type so next time we can return earlier
+				$this->db_read_conns[$type] = $this->db_read_conns[$type_key];
+				return $this->db_read_conns[$type];
+			}
+
+			// Init the connection
+			$read_configs = dp_get_config($config_key);
+			if ($read_configs) {
+				$read = null;
+
+				// Single config
+				if (isset($read_configs['host']) || isset($read_configs['dbname'])) {
+					$read = $read_configs;
+
+				// Multiple config, choose one at random
+				} else {
+					$read = $read_configs[array_rand($read_configs)];
+				}
+
+				if ($read && !empty($read['host']) && !empty($read['dbname'])) {
+					$db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
+						'driver'        => 'pdo_mysql',
+						'host'          => $read['host'],
+						'user'          => $read['user'],
+						'password'      => $read['password'],
+						'dbname'        => $read['dbname']
+					));
+					$this->db_read_conns[$type] = $db;
+					return $db;
+				}
+			}
+		} while (array_pop($parts));
+
+		// No read config, return default connection
+		$this->db_read_conns[$type] = $this->getDb();
+		return $this->db_read_conns[$type];
 	}
 
 
