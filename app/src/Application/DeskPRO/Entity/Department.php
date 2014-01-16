@@ -50,6 +50,14 @@ use Application\DeskPRO\Translate\Translate;
 /**
  * Departments
  *
+ * @property string title
+ * @property string $user_title
+ * @property boolean $is_tickets_enabled
+ * @property boolean $is_chat_enabled
+ * @property int $display_order
+ * @property Department $parent
+ * @property Department $children
+ *
  */
 class Department extends DomainObject implements HasPhraseName
 {
