@@ -61,4 +61,18 @@
 
 	<br />
 {% endif %}
+
+{% if pageinfo.last != 1 %}
+	<br/>
+	{% set page_url = path('user_tickets_organization') ~ '?p=' %}
+	<div class="dp-pagination">
+		<ul>
+			{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">{{ language_arrow('left') }} {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+			{% for p in pageinfo.pages %}
+			<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
+				{% endfor %}
+			{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.next') }} {{ language_arrow('right') }}</a></li>{% endif %}
+		</ul>
+	</div>
+{% endif %}
 {% endblock %}
