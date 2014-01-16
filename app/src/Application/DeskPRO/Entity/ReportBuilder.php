@@ -139,7 +139,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 				}
 			}*/
 
-			if ($component) {
+			if ($component && is_array($paramSet[$component])) {
 				return reset($paramSet[$component]);
 			} else {
 				return reset($paramSet);
