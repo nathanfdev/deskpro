@@ -2279,7 +2279,7 @@ $collection->add('agent_feedback_status', new Route(
 $collection->add('agent_feedback_label', new Route(
 	'/feedback/label/{label}',
 	array('_controller' => 'AgentBundle:Feedback:labelList'),
-	array(),
+	array('label' => '.*'),
     array('fragment_name' => 'label', 'fragment_type' => 'list')
 ));
 
