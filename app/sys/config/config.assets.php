@@ -281,7 +281,7 @@ $CONFIG['agent_element_handlers'] = array(
 $CONFIG['agent_common'] = array(
 	'out' => 'js/agent-common.js',
 	'files' => array(
-		'javascripts/DeskPRO/Agent/ToucheClicker.js',
+		'javascripts/DeskPRO/Agent/TouchClicker.js',
 
 		'javascripts/DeskPRO/DP.js',
 		'javascripts/DeskPRO/ErrorLogger.js',
