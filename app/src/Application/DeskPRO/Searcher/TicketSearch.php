@@ -2112,19 +2112,13 @@ class TicketSearch extends SearcherAbstract
 						$this->affected_fields[] = 'ticket.total_user_waiting';
 						$now = time();
 
-						$choice = $this->normalizeWaitingTime($choice);
-
 						// Need the check on waiting_time because it could be date1/date2 instead
 						if (is_array($choice) && isset($choice['waiting_time'])) {
 							$this->summary[] = 'Total waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 							$choice = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
 						}
 
-						if ($choice && is_array($choice)) {
-							$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", 'between', $choice);
-						} elseif ($choice) {
-							$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", $op, $choice);
-						}
+						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting))))", $op, $choice);
 						break;
 
 					case self::TERM_CREATION_SYSTEM:
