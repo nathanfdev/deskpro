@@ -50,9 +50,9 @@
 	'email_transports' => array(
 		'fields' => array('match_pattern', 'transport_type', 'transport_options'),
 	),
-	'label_defs' => array(
+	/*'label_defs' => array(
 		'fields' => array('label_type', 'label'),
-	),
+	),*/
 	'languages' => array(
 		'fields' => array('title'),
 	),
