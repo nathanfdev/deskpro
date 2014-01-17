@@ -16,11 +16,11 @@ module.exports = function(grunt) {
 			admin_style: {
 				src: ['Admin/Resources/style/admin-style.less'],
 				dest: 'Admin/build/css/admin-style.css'
+			},
+			reports_style: {
+				src: ['Reports/Resources/style/reports-style.less'],
+				dest: 'Reports/build/css/reports-style.css'
 			}
-			//reports_style: {
-			//	src: ['Reports/Resources/style/reports-style.less'],
-			//	dest: 'Reports/build/css/reports-style.css'
-			//}
 		},
 
 		coffee: {
@@ -74,11 +74,11 @@ module.exports = function(grunt) {
 			admin_js: {
 				files: 'Admin/**/*.coffee',
 				tasks: ['coffee']
+			},
+			reports_recess: {
+				files: 'Reports/Resources/style/*.less',
+				tasks: ['recess']
 			}
-			//reports_recess: {
-			//	files: 'Reports/Resources/style/*.less',
-			//	tasks: ['recess']
-			//},
 			//reports_js: {
 			//	files: 'Reports/**/*.coffee',
 			//	tasks: ['coffee']
