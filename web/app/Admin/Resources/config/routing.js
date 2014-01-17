@@ -816,7 +816,7 @@ define(function() {
 		id: 'crm.reg',
 		url: '/registration',
 		templateName: 'UserReg/settings.html',
-		controller: 'Admin_UserReg_Ctrl_Settings'
+		controller: 'Admin_Settings_Ctrl_RegSettings'
 	});
 
 	//###

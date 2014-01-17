@@ -35,6 +35,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
+use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\TicketSettings;
 use Application\DeskPRO\Settings\ServerSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
@@ -353,11 +354,12 @@ class SettingsController extends AbstractController
 
 	public function registrationSettingsAction()
 	{
-		return $this->createApiResponse(array(
+		$reg_settings = new RegistrationSettings($this->settings, $this->em);
 
+		return $this->createApiResponse(array(
+			'registration_settings' => $reg_settings->toArray(),
 		));
 	}
-
 
 	####################################################################################################################
 	# save-registration-settings
@@ -365,6 +367,10 @@ class SettingsController extends AbstractController
 
 	public function saveRegistrationSettingsAction()
 	{
+		$reg_settings = new RegistrationSettings($this->settings, $this->em);
+		$reg_settings->setArray($this->in->getArrayValue('registration_settings'));
+		$reg_settings->saveSettings();
+
 		return $this->createSuccessResponse();
 	}
 }

@@ -2312,6 +2312,23 @@ $collection->create('api_email_settings_save', array(
 ));
 
 ########################################################################################################################
+# Registration Settings
+########################################################################################################################
+
+$collection->create('api_reg_settings', array(
+	'path'        => '/registration_settings',
+	'controller'  => 'ApiBundle:Settings:registrationSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reg_settings_save', array(
+	'path'        => '/registration_settings',
+	'controller'  => 'ApiBundle:Settings:saveRegistrationSettings',
+	'methods'     => array('POST'),
+));
+
+
+########################################################################################################################
 # Portal Settings
 ########################################################################################################################
 

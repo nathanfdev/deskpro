@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="PageCtrl.save()">
+<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<h3>Registration</h3>
@@ -13,28 +13,28 @@
 				<div class="form-group">
 					<div class="labels-group">
 						<label>
-							<input type="radio" ng-model="reg_mode" value="open" />
+							<input type="radio" ng-model="settings.user_mode" value="open" />
 							<h4>Open Helpdesk</h4>
 							<p ng-show="reg_mode == 'open'">
 								With an open helpdesk, anyone can use the helpdesk. New profiles are created for users automatically when they submit new content.
 							</p>
 						</label>
 						<label>
-							<input type="radio" ng-model="reg_mode" value="require_reg" />
+							<input type="radio" ng-model="settings.user_mode" value="require_reg" />
 							<h4>Require Registration</h4>
 							<p ng-show="reg_mode == 'require_reg'">
 								With this mode, the helpdesk is readable by everyone but users must register or log in to submit content such as new tickets, new feedback, or new comments.
 							</p>
 						</label>
 						<label>
-							<input type="radio" ng-model="reg_mode" value="require_reg_agent_validation" />
+							<input type="radio" ng-model="settings.user_mode" value="require_reg_agent_validation" />
 							<h4>Require Registration with Agent Validation</h4>
 							<p ng-show="reg_mode == 'require_reg_agent_validation'">
 								This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk.
 							</p>
 						</label>
 						<label>
-							<input type="radio" ng-model="reg_mode" value="closed" />
+							<input type="radio" ng-model="settings.user_mode" value="closed" />
 							<h4>No Registration</h4>
 							<p ng-show="reg_mode == 'closed'">
 								With a closed helpdesk, registration is closed so users must already exist in an external user-source or their accounts must be created manually by an agent.
@@ -50,7 +50,7 @@
 				<div class="form-group">
 					<div class="inner-group">
 						<label>
-							<input type="checkbox" ng-model="settings.email_validation.register" />
+							<input type="checkbox" ng-model="settings.email_validation" />
 							<h4>Enable email validation for new registrations from the web portal</h4>
 						</label>
 						<span class="help-block">
@@ -67,9 +67,9 @@
 					<div class="inner-group">
 						<h4>
 							Enable email validation for new users submitting tickets from
-							<input type="checkbox" ng-model="settings.email_validation.newticket_web" /> portal
-							<input type="checkbox" ng-model="settings.email_validation.newticket_email" /> email
-							<input type="checkbox" ng-model="settings.email_validation.newticket_widget" /> website widget
+							<input type="checkbox" ng-model="settings.email_validation_trigger_web" /> portal
+							<input type="checkbox" ng-model="settings.email_validation_trigger_email" /> email
+							<input type="checkbox" ng-model="settings.email_validation_trigger_widget" /> website widget
 						</h4>
 						<span class="help-block">
 							These email validation settings apply only to new users submitting new tickets.
@@ -84,7 +84,7 @@
 				<div class="form-group">
 					<div class="inner-group">
 						<label>
-
+							<input type="checkbox" ng-model="settings.existing_account_login" />
 							<h4>Require existing users to log in before accepting new tickets, comments or feedback</h4>
 						</label>
 						<span class="help-block">
@@ -101,7 +101,7 @@
 				<div class="form-group">
 					<div class="inner-group">
 						<label>
-							<input type="checkbox" ng-model="settings.everyone_group" />
+							<input type="checkbox" ng-model="settings.everyone_group_enabled" />
 							<h4>Enable the "Everyone" Group</h4>
 						</label>
 						<span class="help-block">

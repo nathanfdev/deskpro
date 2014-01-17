@@ -1,14 +1,21 @@
 define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-	class Admin_UserReg_Ctrl_Settings extends Admin_Ctrl_Base
-		@CTRL_ID   = 'Admin_UserReg_Ctrl_Settings'
-		@CTRL_AS   = 'PageCtrl'
+	class Admin_Settings_Ctrl_RegSettings extends Admin_Ctrl_Base
+		@CTRL_ID   = 'Admin_Settings_Ctrl_RegSettings'
+		@CTRL_AS   = 'Settings'
 		@DEPS      = []
 
 		init: ->
 			@settings = null
 
 		initialLoad: ->
-			return
+			data_promise = @Api.sendDataGet({
+				'settings': '/registration_settings'
+			}).then( (res) =>
+				@$scope.settings = res.data.settings.registration_settings
+				@settings = angular.copy(@$scope.settings)
+			)
+
+			return @$q.all([data_promise])
 
 		isDirtyState: ->
 			if not @settings then return false
@@ -19,7 +26,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		save: ->
 			postData = {
-
+				registration_settings: @$scope.settings
 			}
 
 			@startSpinner('saving')
@@ -34,4 +41,4 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				@applyErrorResponseToView(info)
 			)
 
-	Admin_UserReg_Ctrl_Settings.EXPORT_CTRL()
+	Admin_Settings_Ctrl_RegSettings.EXPORT_CTRL()
