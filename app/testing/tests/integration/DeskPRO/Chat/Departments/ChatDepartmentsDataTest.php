@@ -15,7 +15,7 @@ class ChatDepartmentsDataTest extends \DpIntegrationTestCase
 	public function runBefore()
 	{
 		$this->helper->enableDatabaseSet('EmptyDb');
-		$this->helper->loadFixtures('General/SimpleChatDepartmentsData');
+		$this->helper->loadFixtures('General/ChatDepartmentsWithPermissionsData');
 
 		$this->chat_departments = $this->helper->getSymfonyContainer()->getSystemService('chat_departments');
 	}
@@ -59,5 +59,22 @@ class ChatDepartmentsDataTest extends \DpIntegrationTestCase
 		$this->assertEquals(2, sizeof($this->chat_departments->getChildren(1)));
 
 		$this->assertEquals(2, sizeof($this->chat_departments->getRoots()));
+	}
+
+	public function testChatDepartmentsPermissionsInfo()
+	{
+		$permissions = $this->chat_departments->getPermissionsInfo($this->chat_departments->getById(1));
+
+		$this->assertEquals(1, $permissions['usergroups'][0]['usergroup_id']);
+		$this->assertEquals('full', $permissions['usergroups'][0]['perm_name']);
+
+		$this->assertEquals(2, $permissions['usergroups'][1]['usergroup_id']);
+		$this->assertEquals('full', $permissions['usergroups'][1]['perm_name']);
+
+		$this->assertEquals(1, $permissions['agents'][0]['agent_id']);
+		$this->assertEquals('full', $permissions['agents'][0]['perm_name']);
+
+		$this->assertEquals(2, $permissions['agents'][1]['agent_id']);
+		$this->assertEquals('full', $permissions['agents'][1]['perm_name']);
 	}
 }
