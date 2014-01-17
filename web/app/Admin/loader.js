@@ -114,6 +114,8 @@ requirejs([
 	'Admin/App/App',
 
 	'Admin/Agents/Ctrl/Edit',
+	'Admin/Agents/Ctrl/DeletedList',
+	'Admin/Agents/Ctrl/DeletedRestore',
 	'Admin/Agents/Ctrl/List',
 	'Admin/Agents/Ctrl/Logs',
 	'Admin/AgentGroups/Ctrl/Edit',

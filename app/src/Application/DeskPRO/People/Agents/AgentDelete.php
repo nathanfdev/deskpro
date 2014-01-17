@@ -149,6 +149,9 @@ class AgentDelete
 			WHERE agent_id = ? AND status IN ('awaiting_agent')
 		", array($this->agent->id));
 
+		$this->em->persist($this->agent);
+		$this->em->flush();
+
 		return true;
 	}
 }

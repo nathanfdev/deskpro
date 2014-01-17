@@ -55,12 +55,29 @@ class AgentsController extends AbstractController
 	{
 		$data = array('agents' => array());
 
-
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
 			$agent_data = $agent->toApiData();
 			$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
 
 			$data['agents'][] = $agent_data;
+		}
+
+		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# list-deleted-agents
+	####################################################################################################################
+
+	public function listDeletedAgentsAction()
+	{
+		$deleted_agents = $this->em->getRepository('DeskPRO:Person')->getDeletedAgents();
+
+		$data = array('agents' => array());
+
+		foreach ($deleted_agents as $agent) {
+			$data['agents'][] = $agent->toApiData();
 		}
 
 		return $this->createApiResponse($data);
@@ -76,6 +93,39 @@ class AgentsController extends AbstractController
 		$agent = $this->container->getAgentData()->get($id);
 
 		if (!$agent) {
+			throw $this->createNotFoundException();
+		}
+
+		$agent_data = $agent->toApiData();
+		$agent_data['teams'] = array();
+
+		$agent->loadHelper('Agent');
+		$agent->loadHelper('AgentTeam');
+		$agent->loadHelper('AgentPermissions');
+		$agent->loadHelper('PermissionsManager');
+
+		foreach ($this->container->getAgentData()->getTeamsByIds($agent->getHelper('AgentTeam')->getAgentTeamIds()) as $t) {
+			$agent_data['teams'][] = $t->toApiData();
+		}
+
+		$perm_loader = new AgentPermsPersonDbLoader($this->person, $this->em);
+
+		return $this->createApiResponse(array(
+			'agent'           => $agent_data,
+			'perms'           => $perm_loader->getEffectivePermissions()->toArray(),
+		));
+	}
+
+
+	####################################################################################################################
+	# get-deleted-agent
+	####################################################################################################################
+
+	public function getDeletedAgentAction($id)
+	{
+		$agent = $this->em->find('DeskPRO:Person', $id);
+
+		if (!$agent || !$agent->is_agent || !$agent->is_deleted) {
 			throw $this->createNotFoundException();
 		}
 
@@ -224,6 +274,26 @@ class AgentsController extends AbstractController
 		}
 
 		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
+	# undelete-agent
+	####################################################################################################################
+
+	public function undeleteAgentAction($id)
+	{
+		$agent = $this->em->find('DeskPRO:Person', $id);
+
+		if (!$agent || !$agent->is_agent || !$agent->is_deleted) {
+			throw $this->createNotFoundException();
+		}
+
+		$agent->is_deleted = false;
+		$this->em->persist($agent);
+		$this->em->flush();
+
+		return $this->createSuccessResponse(array('person_id' => $agent->id));
 	}
 
 

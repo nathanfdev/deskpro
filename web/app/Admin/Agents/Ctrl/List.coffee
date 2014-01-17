@@ -8,13 +8,18 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			return
 
 		initialLoad: ->
-			promise = @Api.sendGet('/agents').then( (result) =>
-				@agents = result.data.agents
+			promise = @Api.sendDataGet({
+				agents: '/agents',
+				deleted_agents: '/agents/deleted'
+			}).then( (result) =>
+				@agents = result.data.agents.agents
+				@deletedCount = result.data.deleted_agents.agents.length
 			)
 			return promise
 
 		removeAgentFromList: (id) ->
 			@agents = @agents.filter((x) -> x.id != id)
+			@deletedCount++
 
 		updateAgent: (agent) ->
 			for a in @agents

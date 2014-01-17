@@ -774,6 +774,24 @@ $collection->create('api_agents_list', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_agents_list_deleted', array(
+	'path'        => '/agents/deleted',
+	'controller'  => 'ApiBundle:Agents:listDeletedAgents',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_agents_get_deleted', array(
+	'path'        => '/agents/deleted/{id}',
+	'controller'  => 'ApiBundle:Agents:getDeletedAgent',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_agents_undelete', array(
+	'path'        => '/agents/deleted/{id}/undelete',
+	'controller'  => 'ApiBundle:Agents:undeleteAgent',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_agents_get', array(
 	'path'        => '/agents/{id}',
 	'controller'  => 'ApiBundle:Agents:getAgent',

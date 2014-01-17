@@ -80,6 +80,18 @@ class Person extends AbstractEntityRepository
 		return isset($agents[$id]) ? $agents[$id] : null;
 	}
 
+	public function getDeletedAgents()
+	{
+		$deleted_agents = $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p INDEX BY p.id
+			WHERE p.is_agent = true AND p.is_deleted = true
+			ORDER BY p.first_name ASC, p.last_name ASC
+		")->execute();
+
+		return $deleted_agents;
+	}
+
 	public function findAgentByName($name)
 	{
 		try {

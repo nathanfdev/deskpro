@@ -234,6 +234,20 @@ define(function() {
 		controller: 'Admin_Agents_Ctrl_Edit'
 	});
 
+	routes.push({
+		id: 'agents.agents_deleted',
+		url: '/deleted',
+		templateName: 'Agents/deleted-list.html',
+		controller: 'Admin_Agents_Ctrl_DeletedList'
+	});
+
+	routes.push({
+		id: 'agents.agents_deleted.restore',
+		url: '/{id:[0-9]+}',
+		templateName: 'Agents/deleted-restore.html',
+		controller: 'Admin_Agents_Ctrl_DeletedRestore'
+	});
+
 	//###
 	//# Agent Login Log
 	//###

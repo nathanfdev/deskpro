@@ -23,16 +23,21 @@
       Admin_Agents_Ctrl_List.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendGet('/agents').then(function(result) {
-          return _this.agents = result.data.agents;
+        promise = this.Api.sendDataGet({
+          agents: '/agents',
+          deleted_agents: '/agents/deleted'
+        }).then(function(result) {
+          _this.agents = result.data.agents.agents;
+          return _this.deletedCount = result.data.deleted_agents.agents.length;
         });
         return promise;
       };
 
       Admin_Agents_Ctrl_List.prototype.removeAgentFromList = function(id) {
-        return this.agents = this.agents.filter(function(x) {
+        this.agents = this.agents.filter(function(x) {
           return x.id !== id;
         });
+        return this.deletedCount++;
       };
 
       Admin_Agents_Ctrl_List.prototype.updateAgent = function(agent) {

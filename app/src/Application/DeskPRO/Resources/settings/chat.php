@@ -14,8 +14,9 @@
 
 	/**
 	 * Number of seconds until the agent times out and the chat is unassigned
+	 * Needs to be high enough not to provide false positives (e.g., cron needs to run regularly etc)
 	 */
-	'core_chat.agent_timeout' => 20,
+	'core_chat.agent_timeout' => 120,
 
 	/**
 	 * Number of seconds until the user times out
