@@ -1054,14 +1054,15 @@ class PersonController extends AbstractController
 	{
 		$person = $this->_getPersonOr404($person_id, 'edit');
 
-		foreach ($person->contact_data AS $key => $contact) {
+		foreach ($person->contact_data AS $contact) {
 			if ($contact->id == $contact_id) {
-				unset($person->contact_data[$key]);
-				$this->em->persist($person);
-				$this->em->flush();
+				$this->em->remove($contact);
+				$this->em->persist($contact);
 				break;
 			}
 		}
+
+		$this->em->flush();
 
 		return $this->createSuccessResponse();
 	}
