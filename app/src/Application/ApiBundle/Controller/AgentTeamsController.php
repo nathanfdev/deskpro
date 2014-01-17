@@ -34,6 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Orb\Util\Arrays;
+
 class AgentTeamsController extends AbstractController
 {
 	####################################################################################################################

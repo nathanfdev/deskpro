@@ -373,7 +373,7 @@ class AgentDataService
 		foreach ($ids as $id) {
 			$id = (int)$id;
 			if (isset($this->agent_teams[$id])) {
-				$agents[$id] = $this->agent_teams[$id];
+				$teams[$id] = $this->agent_teams[$id];
 			}
 		}
 
