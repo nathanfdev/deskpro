@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>{{ phrase('admin.general.deskpro_admin_interface') }}</title>
+	<title>{{ phrase('admin.general.deskpro_reports_interface') }}</title>
 	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
 
 	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
@@ -39,7 +39,15 @@ window.DP_BASE_REPORTS_URL = '{{ path('reports')|rtrim('/') }}';
 window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
 window.DP_PERSON_ID      = '{{ app.user.id }}';
 window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
+window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
+window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
+window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
+
+{% if inhelp_states %}
+window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
+{% endif %}
 </script>
+<script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
 <script
 	type="text/javascript"
 	data-main="{{ asset('app/Reports/loader.js') }}"

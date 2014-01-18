@@ -40,6 +40,7 @@
 	'admin.general.default_value'                       => 'Default Value',
 	'admin.general.departments'                         => 'Departments',
 	'admin.general.deskpro_admin_interface'             => 'DeskPRO Admin Interface',
+	'admin.general.deskpro_reports_interface'           => 'DeskPRO Reports Interface',
 	'admin.general.deskpro_version'                     => 'DeskPRO Version',
 	'admin.general.discard_changes_continue'            => 'Discard unsaved changes and continue',
 	'admin.general.download_raw_source'                 => 'Download Raw Source',
