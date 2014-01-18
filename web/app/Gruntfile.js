@@ -46,17 +46,17 @@ module.exports = function(grunt) {
 					dest: 'Admin/build/js',
 					ext: '.js'
 				}]
+			},
+			reports_js: {
+				files: [{
+					expand: true,
+					flatten: false,
+					cwd: 'Reports/',
+					src: ['**/*.coffee'],
+					dest: 'Reports/build/js',
+					ext: '.js'
+				}]
 			}
-			//reports_js: {
-			//	files: [{
-			//		expand: true,
-			//		flatten: false,
-			//		cwd: 'Reports/',
-			//		src: ['**/*.coffee'],
-			//		dest: 'Reports/build/js',
-			//		ext: '.js'
-			//	}]
-			//}
 		},
 
 		watch: {
@@ -78,11 +78,11 @@ module.exports = function(grunt) {
 			reports_recess: {
 				files: 'Reports/Resources/style/*.less',
 				tasks: ['recess']
+			},
+			reports_js: {
+				files: 'Reports/**/*.coffee',
+				tasks: ['coffee']
 			}
-			//reports_js: {
-			//	files: 'Reports/**/*.coffee',
-			//	tasks: ['coffee']
-			//}
 		}
 	});
 
