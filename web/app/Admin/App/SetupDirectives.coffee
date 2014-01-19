@@ -1,5 +1,6 @@
 define [
 	'DeskPRO/Directive/DpTimeWithUnit',
+	'DeskPRO/Directive/DpStateMark',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -19,7 +20,6 @@ define [
 	'Admin/Main/Directive/DpServerValidation',
 	'Admin/Main/Directive/DpShowSpinning',
 	'Admin/Main/Directive/DpSliderSwitch',
-	'DeskPRO/Directive/DpStateMark',
 	'Admin/Main/Directive/DpStatusUpdate',
 	'Admin/Main/Directive/DpSubmitForm',
 	'Admin/Main/Directive/DpTabBody',
@@ -33,6 +33,7 @@ define [
 	'Admin/TicketDeps/Directive/LayoutEditorField',
 ], (
 	DeskPRO_Directive_DpTimeWithUnit,
+	DeskPRO_Directive_DpStateMark,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -52,7 +53,6 @@ define [
 	Admin_Main_Directive_DpServerValidation,
 	Admin_Main_Directive_DpShowSpinning,
 	Admin_Main_Directive_DpSliderSwitch,
-	Admin_Main_Directive_DpStateMark,
 	Admin_Main_Directive_DpStatusUpdate,
 	Admin_Main_Directive_DpSubmitForm,
 	Admin_Main_Directive_DpTabBody,
@@ -67,6 +67,8 @@ define [
 ) ->
 	return (Module) ->
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
+		Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)
+
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
 		Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated)
@@ -85,7 +87,6 @@ define [
 		Module.directive('dpServerValidation',             Admin_Main_Directive_DpServerValidation)
 		Module.directive('dpShowSpinning',                 Admin_Main_Directive_DpShowSpinning)
 		Module.directive('dpSliderSwitch',                 Admin_Main_Directive_DpSliderSwitch)
-		Module.directive('dpStateMark',                    Admin_Main_Directive_DpStateMark)
 		Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate)
 		Module.directive('dpSubmitForm',                   Admin_Main_Directive_DpSubmitForm)
 		Module.directive('dpTabBody',                      Admin_Main_Directive_DpTabBody)
