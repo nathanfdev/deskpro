@@ -1,0 +1,15 @@
+<div class="modal-dialog">
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">{{ phrase('agent.general.unsaved_changes') }}</h4>
+	</div>
+	<div class="modal-body">
+		{{ phrase('adm.general.tabchange_unsaved_changes_warning') }}
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-success" ng-click="dismiss()"><i class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}</button>
+		<button class="btn btn-danger" ng-click="continue()"><i class="fa fa-share-square-o"></i> {{ phrase('adm.general.discard_changes_continue') }}</button>
+	</div>
+</div>
+</div>
