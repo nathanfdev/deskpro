@@ -74,7 +74,8 @@ define [
 
 					if isOn
 						element.addClass('state-on active')
-						element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
+						if element.closest('[dp-nav-subnav]')
+							element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
 					else
 						element.removeClass('state-on active')
 

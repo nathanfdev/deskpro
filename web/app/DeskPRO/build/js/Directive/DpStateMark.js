@@ -75,7 +75,9 @@
               }
               if (isOn) {
                 element.addClass('state-on active');
-                return element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
+                if (element.closest('[dp-nav-subnav]')) {
+                  return element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
+                }
               } else {
                 return element.removeClass('state-on active');
               }
