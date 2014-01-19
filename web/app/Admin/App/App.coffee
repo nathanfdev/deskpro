@@ -4,10 +4,10 @@ define [
 
 	'Admin/App/SetupDataServices',
 	'Admin/App/SetupDirectives',
-	'Admin/App/SetupLogging',
-	'Admin/App/SetupNetwork',
+	'DeskPRO/App/SetupLogging',
+	'DeskPRO/App/SetupNetwork',
 	'Admin/App/SetupRouting',
-	'Admin/App/SetupServices',
+	'DeskPRO/App/SetupServices',
 	'Admin/App/SetupTemplates',
 ], (
 	angular,
