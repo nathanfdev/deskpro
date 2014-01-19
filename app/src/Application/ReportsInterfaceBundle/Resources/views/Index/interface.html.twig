@@ -28,7 +28,38 @@
 	</div>
 </header>
 
-TODO.
+<div id="dp_main_view" ng-controller="Reports_Main_Ctrl_MainPage">
+	<!-- Left Navigation Column -->
+	<nav class="dp-appstrip">
+		<ul>
+			<li tooltip="Overview" tooltip-append-to-body="true" tooltip-placement="right"
+				dp-state-mark="home" class="state-on">
+				<a class="app-icon app-icon-home" href="#/"></a>
+			</li>
+			<li tooltip="Report Builder" tooltip-append-to-body="true" tooltip-placement="right"
+				dp-state-mark="report_builder">
+				<a class="app-icon app-icon-cog" href="#/report_builder"></a>
+			</li>
+			<li tooltip="Billing" tooltip-append-to-body="true"
+				tooltip-placement="right" dp-state-mark="billing">
+				<a class="app-icon app-icon-chat" href="#/billing"></a>
+			</li>
+			<li tooltip="Agent Activity" tooltip-append-to-body="true"
+				tooltip-placement="right" dp-state-mark="agent_activity">
+				<a class="app-icon app-icon-ticket" href="#/agent_activity"></a>
+			</li>
+			<li tooltip="Agent Hours" tooltip-append-to-body="true" tooltip-placement="right"
+				dp-state-mark="agent_hours">
+				<a class="app-icon app-icon-crm" href="#/agent_hours"></a>
+			</li>
+			<li tooltip="Ticket Satisfaction" tooltip-append-to-body="true"
+				tooltip-placement="right" dp-state-mark="ticket_satisfaction">
+				<a class="app-icon app-icon-publish" href="#/ticket_satisfaction"></a>
+			</li>
+		</ul>
+	</nav>
+	<div class="dp-layout" ui-view></div>
+</div>
 
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';

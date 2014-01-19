@@ -101,7 +101,12 @@ requirejs([
 	'DeskPRO/OptionBuilder/Module',
 	'DeskPRO/CategoryBuilder/Module',
 
-	'Reports/App/App'
+	'Reports/App/App',
+
+	'Reports/Main/Ctrl/MainPage',
+	'Reports/Main/Ctrl/Bare',
+
+	'Reports/Overview/Ctrl/Overview'
 ], function(angular) {
 	'use strict';
 
