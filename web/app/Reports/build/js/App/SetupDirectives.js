@@ -1,7 +1,8 @@
 (function() {
-  define(['DeskPRO/Directive/DpTimeWithUnit'], function(DeskPRO_Directive_DpTimeWithUnit) {
+  define(['DeskPRO/Directive/DpTimeWithUnit', 'DeskPRO/Directive/DpStateMark'], function(DeskPRO_Directive_DpTimeWithUnit, DeskPRO_Directive_DpStateMark) {
     return function(Module) {
-      return Module.directive('dpTimeWithUnit', DeskPRO_Directive_DpTimeWithUnit);
+      Module.directive('dpTimeWithUnit', DeskPRO_Directive_DpTimeWithUnit);
+      return Module.directive('dpStateMark', DeskPRO_Directive_DpStateMark);
     };
   });
 

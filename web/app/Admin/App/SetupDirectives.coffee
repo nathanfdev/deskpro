@@ -19,7 +19,7 @@ define [
 	'Admin/Main/Directive/DpServerValidation',
 	'Admin/Main/Directive/DpShowSpinning',
 	'Admin/Main/Directive/DpSliderSwitch',
-	'Admin/Main/Directive/DpStateMark',
+	'DeskPRO/Directive/DpStateMark',
 	'Admin/Main/Directive/DpStatusUpdate',
 	'Admin/Main/Directive/DpSubmitForm',
 	'Admin/Main/Directive/DpTabBody',

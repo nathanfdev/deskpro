@@ -24,7 +24,7 @@ define [
     # ------------
     # <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
     ###
-	Admin_Main_Directive_DpStateMark = ['$rootScope', '$state', ($rootScope, $state) ->
+	DeskPRO_Directive_DpStateMark = ['$rootScope', '$state', ($rootScope, $state) ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
@@ -86,4 +86,4 @@ define [
 		}
 	]
 
-	return Admin_Main_Directive_DpStateMark
+	return DeskPRO_Directive_DpStateMark
