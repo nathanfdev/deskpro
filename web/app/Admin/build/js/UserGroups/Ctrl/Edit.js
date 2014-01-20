@@ -19,6 +19,7 @@
       Admin_UserGroups_Ctrl_Edit.DEPS = ['$stateParams'];
 
       Admin_UserGroups_Ctrl_Edit.prototype.init = function() {
+        this.groupId = parseInt(this.$stateParams.id) || 0;
         this.ugData = this.DataService.get('UserGroups');
         return this.group = null;
       };
@@ -27,7 +28,7 @@
         var promise,
           _this = this;
         promise = this.ugData.loadEditUserGroupData(this.$stateParams.id || null).then(function(data) {
-          var _ref1, _ref2;
+          var _ref1, _ref2, _ref3, _ref4;
           _this.group = data.group;
           _this.form = data.form;
           _this.perm_form = _this.group.perms;
@@ -37,7 +38,7 @@
           } else {
             _this.perm_form_reg = null;
           }
-          if (_this.perm_form.ticket.reopen_resolved_createnew || ((_ref1 = _this.perm_form_reg) != null ? (_ref2 = _ref1.ticket) != null ? _ref2.reopen_resolved_createnew : void 0 : void 0)) {
+          if (((_ref1 = _this.perm_form) != null ? (_ref2 = _ref1.ticket) != null ? _ref2.reopen_resolved_createnew : void 0 : void 0) || ((_ref3 = _this.perm_form_reg) != null ? (_ref4 = _ref3.ticket) != null ? _ref4.reopen_resolved_createnew : void 0 : void 0)) {
             return _this.perm_form.options.reopen_resolved_createnew = 'new_ticket';
           } else {
             return _this.perm_form.options.reopen_resolved_createnew = 'reject';
@@ -63,6 +64,42 @@
           if (is_new) {
             return _this.$state.go('crm.groups.gocreate');
           }
+        });
+      };
+
+      /*
+        	# Shows the copy settings modal
+      */
+
+
+      Admin_UserGroups_Ctrl_Edit.prototype.showDelete = function() {
+        var deleteGroup, group, inst,
+          _this = this;
+        deleteGroup = function() {
+          var p;
+          p = _this.ugData.removeGroupById(_this.groupId);
+          p.then(function() {
+            return _this.$state.go('crm.groups');
+          });
+          return p;
+        };
+        group = this.group;
+        return inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('UserGroups/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.group = group;
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              return $scope.doDelete = function(options) {
+                $scope.is_loading = true;
+                return deleteGroup().then(function() {
+                  return $modalInstance.dismiss();
+                });
+              };
+            }
+          ]
         });
       };
 

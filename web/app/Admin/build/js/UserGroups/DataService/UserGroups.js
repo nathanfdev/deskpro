@@ -133,6 +133,24 @@
         return promise;
       };
 
+      /*
+        	# Removes group by id
+        	#
+        	# @param {Integer} groupId
+        	# @return promise
+      */
+
+
+      UserGroups.prototype.removeGroupById = function(groupId) {
+        var p,
+          _this = this;
+        p = this.Api.sendDelete("/user_groups/" + groupId);
+        p.then(function() {
+          return _this.removeListModelById(groupId);
+        });
+        return p;
+      };
+
       return UserGroups;
 
     })(BaseListEdit);

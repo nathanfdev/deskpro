@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS    = ['$stateParams']
 
 		init: ->
+			@groupId = parseInt(@$stateParams.id) || 0
 			@ugData = @DataService.get('UserGroups')
 			@group = null
 
@@ -20,7 +21,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				else
 					@perm_form_reg = null
 
-				if @perm_form.ticket.reopen_resolved_createnew || @perm_form_reg?.ticket?.reopen_resolved_createnew
+				if @perm_form?.ticket?.reopen_resolved_createnew || @perm_form_reg?.ticket?.reopen_resolved_createnew
 					@perm_form.options.reopen_resolved_createnew = 'new_ticket'
 				else
 					@perm_form.options.reopen_resolved_createnew = 'reject'
@@ -44,5 +45,30 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				if is_new
 					@$state.go('crm.groups.gocreate')
 			)
+
+		###
+    	# Shows the copy settings modal
+    	###
+		showDelete: ->
+			deleteGroup = =>
+				p = @ugData.removeGroupById(@groupId)
+				p.then(=>
+					@$state.go('crm.groups')
+				)
+				return p
+
+			group = @group
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('UserGroups/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.group = group
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+
+					$scope.doDelete = (options) ->
+						$scope.is_loading = true
+						deleteGroup().then(-> $modalInstance.dismiss())
+				]
+			});
 
 	Admin_UserGroups_Ctrl_Edit.EXPORT_CTRL()

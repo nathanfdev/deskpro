@@ -3603,6 +3603,13 @@ $collection->create('api_user_groups_get', array(
 	'methods'      => array('GET'),
 ));
 
+$collection->create('api_user_groups_delete', array(
+	'path'         => '/user_groups/{id}',
+	'controller'   => 'ApiBundle:Usergroups:delete',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
 $collection->create('api_user_groups_create', array(
 	'path'       => '/user_groups',
 	'controller' => 'ApiBundle:Usergroups:save',
@@ -3615,12 +3622,6 @@ $collection->create('api_user_groups_save', array(
 	'controller'   => 'ApiBundle:Usergroups:save',
 	'requirements' => array('id' => '\\d+'),
 	'methods'      => array('POST'),
-));
-
-$collection->create('api_user_groups_setenabled', array(
-	'path'        => '/user_groups/set-enabled/{user_group_id}/{is_enabled}',
-	'controller'  => 'ApiBundle:Usergroups:toggleUsergroup',
-	'methods'     => array('POST'),
 ));
 
 ########################################################################################################################

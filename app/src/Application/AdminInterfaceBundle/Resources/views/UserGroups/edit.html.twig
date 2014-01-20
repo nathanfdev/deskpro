@@ -34,6 +34,11 @@
 							<li ng-show="form_props.note.$error.required">You must enter a valid note / description</li>
 						</ul>
 					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.group.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
+					</div>
+
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
@@ -46,4 +51,5 @@
 			</footer>
 		</section>
 	</form>
+	{{ ng_tpl('AdminInterfaceBundle:UserGroups:delete-modal.html.twig') }}
 {% endblock %}

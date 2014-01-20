@@ -103,3 +103,18 @@ define [
 			)
 
 			return promise
+
+
+		###
+    	# Removes group by id
+    	#
+    	# @param {Integer} groupId
+    	# @return promise
+		###
+		removeGroupById: (groupId) ->
+			p = @Api.sendDelete("/user_groups/#{groupId}")
+			p.then(=>
+				@removeListModelById(groupId)
+			)
+
+			return p

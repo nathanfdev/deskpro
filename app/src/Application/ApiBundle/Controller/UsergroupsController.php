@@ -87,17 +87,32 @@ class UsergroupsController extends AbstractController
 		return $this->createApiResponse(array('group' => $data));
 	}
 
-	####################################################################################################################
-	# toggleUsergroup
+
+	###################################################################################################################
+	# delete
 	####################################################################################################################
 
-	public function toggleUsergroupAction($user_group_id, $is_enabled)
+	public function deleteAction($id)
 	{
-		$usergroups = $this->container->getSystemService('usergroups');
-		$usergroups->setFieldEnabledById($user_group_id, $is_enabled);
+		$usergroups = $this->container->getSystemService('user_groups');
+		$usergroup  = $usergroups->getById($id);
 
-		return $this->createSuccessResponse();
+		if (!$usergroup || $usergroup->is_agent_group) {
+			throw $this->createNotFoundException();
+		}
+
+		if ($usergroup->sys_name) {
+			return $this->createApiErrorResponse('no_delete_sys', 'You cannot delete built-in user groups');
+		}
+
+		$this->em->remove($usergroup);
+		$this->em->flush();
+
+		$this->db->executeUpdate("DELETE FROM permissions_cache");
+
+		return $this->createApiDeleteResponse(array('old_group_id' => (int)$id));
 	}
+
 
 	####################################################################################################################
 	# save
