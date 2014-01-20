@@ -63,11 +63,7 @@ define [
 
 			return @loadListPromise
 
-		###
- 	###
-
-		refreshList: () ->
-
+		refreshList: ->
 			deferred = @$q.defer()
 			@loadListPromise = deferred.promise
 
@@ -76,33 +72,28 @@ define [
 				@_setPaginationData(models)
 				deferred.resolve(@listModels)
 			, =>
-					deferred.reject()
+				deferred.reject()
 			)
-
 			return @loadListPromise
 
 
 		###
- 	# This is useful if we need to store 2 or more lists instead of default one
- 	# Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
- 	#
- 	# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
- 	###
-
+		# This is useful if we need to store 2 or more lists instead of default one
+		# Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
+		#
+		# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
+		###
 		setSubLists: (subLists) ->
-
 			if Util.isArray(subLists) then @subLists = subLists
 
+
 		###
-  # Sets ist data on the @listModels object
-  ###
-
+		# Sets ist data on the @listModels object
+		###
 		_setListData: (listModels) ->
-
 			@listModels.length = 0
 
 			if @subLists.length
-
 				@listModels = {}
 				for subModel in @subLists
 					@listModels[subModel] = []
@@ -111,26 +102,22 @@ define [
 
 					for model in listModels[subModel]
 						@listModels[subModel].push(model)
-
 			else
-
 				for model in listModels
 					@listModels.push(model)
 
-		###
- 	# Sets pagination data for current data service
- 	#
- 	# @param {Object} listModels - object representing the list
- 	###
 
+		###
+		# Sets pagination data for current data service
+		#
+		# @param {Object} listModels - object representing the list
+		###
 		_setPaginationData: (listModels) ->
 
 			# we assume that backend returned appropriate pagination info and doesn't check its correctness here
-
 			@pagination = listModels.pagination if listModels.pagination
 
 			if @subLists.length
-
 				for subModel in @subLists
 					@pagination[subModel].page = @pagination[subModel].page || "1"
 					@pagination[subModel].page_nums = []
@@ -138,56 +125,45 @@ define [
 						@pagination[subModel].page_nums.push(i + 1)
 
 			else
-
 				@pagination.page_nums = []
 				for i in [0..@pagination.num_pages]
 					@pagination.page_nums.push(i + 1)
 
 		###
- 	#	@return {Object} returns information about pagination
- 	###
-
+		#	@return {Object} returns information about pagination
+		###
 		getPagination: ->
-
 			return @pagination
 
 		###
-  # Find a model that has been loaded into the list
-  #
-  # @param {Integer} id
-  # @return {Object}
-  ###
-
+		# Find a model that has been loaded into the list
+		#
+		# @param {Integer} id
+		# @return {Object}
+		###
 		findListModelById: (id) ->
-
 			if @subLists.length
-
 				for subModel in @subLists
 					for model in @listModels[subModel]
 						if model[@idProp] == id
 							return model
 
 			else
-
 				for model in @listModels
-
 					if model[@idProp] == id
 						return model
-
 					if model.children
 						for child in model.children
 							if child[@idProp] == id
 								return child
-
 			return null
 
 		###
 		# Find children of specified object
- 	#
- 	# @param {Object} obj - specified object in which we'll search
- 	# @param {Integet} id - id of children we want to search
- 	###
-
+		#
+		# @param {Object} obj - specified object in which we'll search
+		# @param {Integet} id - id of children we want to search
+		###
 		findChildModelById: (obj, id) ->
 
 			if obj.children
@@ -197,14 +173,12 @@ define [
 
 			return null
 
-
 		###
- 	# Returns index of specified model
- 	#
- 	# @param {Object} obj
- 	# @return {Object}
- 	###
-
+		# Returns index of specified model
+		#
+		# @param {Object} obj
+		# @return {Object}
+		###
 		returnIndexForModel: (obj) ->
 
 			for model, idx in @listModels
@@ -215,12 +189,11 @@ define [
 			return null
 
 		###
- 	# Checks whether an object has children or not
- 	#
- 	# @param {Object} obj
- 	# @return {Boolean}
- 	###
-
+		# Checks whether an object has children or not
+		#
+		# @param {Object} obj
+		# @return {Boolean}
+		###
 		hasChildren: (obj) ->
 
 			model = @findListModelById(obj.id)
@@ -231,13 +204,12 @@ define [
 			return false
 
 		###
- 	# Checks whether obj has children and form changed its value since it was created, could be useful in some cases
- 	#
- 	#	@param {Object} obj - model object
- 	# @param {Object} form - form object
- 	# @return {Boolean}
- 	###
-
+		# Checks whether obj has children and form changed its value since it was created, could be useful in some cases
+		#
+		#	@param {Object} obj - model object
+		# @param {Object} form - form object
+		# @return {Boolean}
+		###
 		hasChildrenAndChangedParent: (obj, form) ->
 
 			value1 = obj.original_parent_id
@@ -266,18 +238,17 @@ define [
 
 		###
 		# Takes a data model and updates the list.
-  # For example, you would use this when you want to apply changes from the Edit pane into the List pane.
-  # By merging the data model, this will either 1) update the list model (eg the title) or 2) create
-  # a new list model and append it to the list.
-  #
-  # You should always supply a dataMapper. The default implementation is to just get the id/title properties
-  # from teh dataModel which may not be sufficient.
-  #
-  # @param {Object} dataModel
-  # @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+		# For example, you would use this when you want to apply changes from the Edit pane into the List pane.
+		# By merging the data model, this will either 1) update the list model (eg the title) or 2) create
+		# a new list model and append it to the list.
+		#
+		# You should always supply a dataMapper. The default implementation is to just get the id/title properties
+		# from teh dataModel which may not be sufficient.
+		#
+		# @param {Object} dataModel
+		# @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
 		# @param {String} subList Optional parameter in case we want to update only sub list
 		###
-
 		mergeDataModel: (dataModel, dataMapper = null, subList = null) ->
 
 			if not @isListLoaded then return
@@ -295,9 +266,7 @@ define [
 						break
 
 			else
-
 				for model, idx in @listModels
-
 					if model[@idProp] == dataModel[@idProp]
 						listModel = model
 						break
@@ -313,17 +282,13 @@ define [
 								break
 
 			# if this model is already in list then we some options
-
 			if listModel != null
-
 				for k, v of listModel
 					if dataModel[k]?
 						listModel[k] = dataModel[k]
 
 				# case of changing the parent AND if model already has parent - have to re-populate sub-tree with children
-
 				if oldParent? and oldParent[@idProp] != dataModel.parent_id
-
 					for model, idx in oldParent.children
 							if model[@idProp] == dataModel[@idProp]
 									removeIdx = idx
@@ -333,50 +298,37 @@ define [
 						oldParent.children.splice(removeIdx, 1)
 
 					if dataModel.parent_id?
-
 						parent = @findListModelById(dataModel.parent_id)
 						parent.children.push(dataModel)
 
 					else
-
 						@listModels.push(dataModel)
 
 				# case of changing the parent AND if model previously didn't have a parent - should add this model as child
-
 				else
-
 					if dataModel.parent_id?
-
 						# first - add new model as child to the parent model (if it's not already there - this is for cases when parent not changed)
-
 						parent = @findListModelById(dataModel.parent_id)
-					 existingChild =  @findChildModelById(parent, dataModel.id)
+						existingChild =  @findChildModelById(parent, dataModel.id)
 
 						if !existingChild then parent.children.push(dataModel)
 
 						# second - delete this child from top-level list
-
 						removeIdx = @returnIndexForModel(dataModel)
 						if Util.isNumber(removeIdx) then @listModels.splice(removeIdx, 1)
 
 			else
-
 				# this is case of model that doesn't exist in the list yet
-
 				if dataMapper
-
 					newListModel = dataMapper(dataModel)
 
 				else
-
 					if dataModel.parent_id?
-
 						parent = @findListModelById(dataModel.parent_id)
 						if !parent.children then parent.children = []
 						parent.children.push(dataModel)
 
 					else
-
 						newListModel = dataModel
 						newListModel.children = []
 
@@ -385,12 +337,12 @@ define [
 
 			if dataModel.old_id then dataModel.old_id = dataModel[@idProp]
 
-		###
-  # Remove a model from the list by ID.
-  #
-  # @return {Object/null} The removed object or null if object could not be found
-		###
 
+		###
+		# Remove a model from the list by ID.
+		#
+		# @return {Object/null} The removed object or null if object could not be found
+		###
 		removeListModelById: (id) ->
 
 			if not @isListLoaded then return
@@ -399,7 +351,6 @@ define [
 			subModelIdx = null
 
 			if @subLists.length
-
 				for subModel in @subLists
 					for model, idx in @listModels[subModel]
 						if model[@idProp] == id
@@ -408,7 +359,6 @@ define [
 							break
 
 			else
-
 				for model, idx in @listModels
 					if model[@idProp] == id
 						removeIdx = idx

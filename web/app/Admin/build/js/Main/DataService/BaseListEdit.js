@@ -61,10 +61,6 @@
         return this.loadListPromise;
       };
 
-      /*
-      */
-
-
       Admin_Main_DataService_BaseListEdit.prototype.refreshList = function() {
         var deferred,
           _this = this;
@@ -81,10 +77,10 @@
       };
 
       /*
-       	# This is useful if we need to store 2 or more lists instead of default one
-       	# Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
-       	#
-       	# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
+      		# This is useful if we need to store 2 or more lists instead of default one
+      		# Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
+      		#
+      		# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
       */
 
 
@@ -95,7 +91,7 @@
       };
 
       /*
-      # Sets ist data on the @listModels object
+      		# Sets ist data on the @listModels object
       */
 
 
@@ -135,9 +131,9 @@
       };
 
       /*
-       	# Sets pagination data for current data service
-       	#
-       	# @param {Object} listModels - object representing the list
+      		# Sets pagination data for current data service
+      		#
+      		# @param {Object} listModels - object representing the list
       */
 
 
@@ -174,7 +170,7 @@
       };
 
       /*
-       	#	@return {Object} returns information about pagination
+      		#	@return {Object} returns information about pagination
       */
 
 
@@ -183,10 +179,10 @@
       };
 
       /*
-      # Find a model that has been loaded into the list
-      #
-      # @param {Integer} id
-      # @return {Object}
+      		# Find a model that has been loaded into the list
+      		#
+      		# @param {Integer} id
+      		# @return {Object}
       */
 
 
@@ -227,9 +223,9 @@
 
       /*
       		# Find children of specified object
-       	#
-       	# @param {Object} obj - specified object in which we'll search
-       	# @param {Integet} id - id of children we want to search
+      		#
+      		# @param {Object} obj - specified object in which we'll search
+      		# @param {Integet} id - id of children we want to search
       */
 
 
@@ -248,10 +244,10 @@
       };
 
       /*
-       	# Returns index of specified model
-       	#
-       	# @param {Object} obj
-       	# @return {Object}
+      		# Returns index of specified model
+      		#
+      		# @param {Object} obj
+      		# @return {Object}
       */
 
 
@@ -268,10 +264,10 @@
       };
 
       /*
-       	# Checks whether an object has children or not
-       	#
-       	# @param {Object} obj
-       	# @return {Boolean}
+      		# Checks whether an object has children or not
+      		#
+      		# @param {Object} obj
+      		# @return {Boolean}
       */
 
 
@@ -285,11 +281,11 @@
       };
 
       /*
-       	# Checks whether obj has children and form changed its value since it was created, could be useful in some cases
-       	#
-       	#	@param {Object} obj - model object
-       	# @param {Object} form - form object
-       	# @return {Boolean}
+      		# Checks whether obj has children and form changed its value since it was created, could be useful in some cases
+      		#
+      		#	@param {Object} obj - model object
+      		# @param {Object} form - form object
+      		# @return {Boolean}
       */
 
 
@@ -324,15 +320,15 @@
 
       /*
       		# Takes a data model and updates the list.
-      # For example, you would use this when you want to apply changes from the Edit pane into the List pane.
-      # By merging the data model, this will either 1) update the list model (eg the title) or 2) create
-      # a new list model and append it to the list.
-      #
-      # You should always supply a dataMapper. The default implementation is to just get the id/title properties
-      # from teh dataModel which may not be sufficient.
-      #
-      # @param {Object} dataModel
-      # @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+      		# For example, you would use this when you want to apply changes from the Edit pane into the List pane.
+      		# By merging the data model, this will either 1) update the list model (eg the title) or 2) create
+      		# a new list model and append it to the list.
+      		#
+      		# You should always supply a dataMapper. The default implementation is to just get the id/title properties
+      		# from teh dataModel which may not be sufficient.
+      		#
+      		# @param {Object} dataModel
+      		# @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
       		# @param {String} subList Optional parameter in case we want to update only sub list
       */
 
@@ -454,9 +450,9 @@
       };
 
       /*
-      # Remove a model from the list by ID.
-      #
-      # @return {Object/null} The removed object or null if object could not be found
+      		# Remove a model from the list by ID.
+      		#
+      		# @return {Object/null} The removed object or null if object could not be found
       */
 
 
