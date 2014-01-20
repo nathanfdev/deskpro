@@ -43,22 +43,22 @@ class PreloadedHierarchy
 	/**
 	 * @var array
 	 */
-	protected $root_ids;
+	protected $root_ids = array();
 
 	/**
 	 * @var array
 	 */
-	protected $child_to_parent;
+	protected $child_to_parent = array();
 
 	/**
 	 * @var array
 	 */
-	protected $parent_to_children;
+	protected $parent_to_children = array();
 
 	/**
 	 * @var int
 	 */
-	protected $count;
+	protected $count = 0;
 
 	/**
 	 * @var int
