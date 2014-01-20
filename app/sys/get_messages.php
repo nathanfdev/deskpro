@@ -133,9 +133,10 @@ class AgentMessagesLoader extends LoaderAbstract
 			if ($count < 0) {
 				$count = 0;
 			}
-			if ($count && $count % 2 === 0 || 1) {
+			if (($count && $count % 2 === 0) || $count == 1) {
 				$dos[] = 'get-online-agents';
-			} elseif ($count && $count % 3 === 0) {
+			}
+			if ($count && $count % 3 === 0) {
 				$dos[] = 'get-online-visitors';
 			}
 
