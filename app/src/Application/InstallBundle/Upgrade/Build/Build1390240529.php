@@ -29,21 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\Filters\Terms;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Tickets\ExecutorContext;
-
-/**
- * This interface is used when a TicketCriteria class can be used with filters and escalations.
- * Filter criteria is used to build up raw SQL queries.
- */
-interface FilterTermInterface
+class Build1390240529 extends AbstractBuild
 {
-	/**
-	 * @return FilterQuery|null
-	 */
-	public function getFilterQuery(ExecutorContext $context = null);
+	public function run()
+	{
+		$this->execMutateSql("ALTER TABLE ticket_filters CHANGE terms terms LONGBLOB NOT NULL COMMENT '(DC2Type:object)'");
+	}
 }

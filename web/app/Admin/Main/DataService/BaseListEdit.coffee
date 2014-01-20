@@ -321,7 +321,6 @@ define [
 				# this is case of model that doesn't exist in the list yet
 				if dataMapper
 					newListModel = dataMapper(dataModel)
-
 				else
 					if dataModel.parent_id?
 						parent = @findListModelById(dataModel.parent_id)

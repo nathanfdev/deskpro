@@ -79,10 +79,7 @@ class FilterQuery
 		static $count = 0;
 		$count++;
 
-		if ($type == 'param') $type = 'p';
-		else if ($type == 'join') $type = 'j';
-
-		return $base . "_{$type}_" . Util::baseEncode($count, 'letters');
+		return "__dp{$type}_{$base}_" . Util::baseEncode($count, 'letters') . '__';
 	}
 
 	/**
@@ -95,16 +92,18 @@ class FilterQuery
 	{
 		$m = null;
 		$input_alias = $alias;
+		$alias = null;
 		if (preg_match('#unique:([0-9a-zA-Z_]+])#', $alias, $m)) {
 			$alias = $this->getUniqueName($m[1], 'join');
 			$this->var_renamed["{table.{$input_alias}}"] = $alias;
 		}
 
 		$this->joins[$input_alias] = array(
-			'fromAlias' => $fromAlias,
-			'join'      => $join,
-			'alias'     => $alias,
-			'condition' => $condition
+			'fromAlias'   => $fromAlias,
+			'join'        => $join,
+			'input_alias' => $input_alias,
+			'alias'       => $alias,
+			'condition'   => $condition
 		);
 	}
 
@@ -115,6 +114,58 @@ class FilterQuery
 	public function andWhere($where)
 	{
 		$this->wheres_and[] = $where;
+	}
+
+
+	/**
+	 * Generates the proper 'where in(?,?,?)' code
+	 *
+	 * @param $field_name
+	 * @param array $params
+	 * @param bool $not
+	 */
+	public function andWhereIn($field_name, array $params, $not = false)
+	{
+		if (!$params) {
+			if ($not) $this->andWhere("1");
+			else $this->andWhere("0");
+			return;
+		}
+
+		$names = array();
+		foreach (array_values($params) as $k => $p) {
+			$names[] = "{param.in$k}";
+			$this->setParameter("in$k", $p);
+		}
+
+		$not_str = $not ? "NOT " : "";
+		$this->andWhere("$field_name {$not_str}IN (" . implode(',', $names) . ")");
+	}
+
+
+	/**
+	 * Generates the proper 'where in(?,?,?)' code
+	 *
+	 * @param $field_name
+	 * @param array $params
+	 * @param bool $not
+	 */
+	public function orWhereIn($field_name, array $params, $not = false)
+	{
+		if (!$params) {
+			if ($not) $this->andWhere("1");
+			else $this->andWhere("0");
+			return;
+		}
+
+		$names = array();
+		foreach (array_values($params) as $k => $p) {
+			$names[] = "{param.in$k}";
+			$this->setParameter("in$k", $p);
+		}
+
+		$not_str = $not ? "NOT " : "";
+		$this->orWhere("$field_name {$not_str}IN (" . implode(',', $names) . ")");
 	}
 
 
@@ -142,9 +193,10 @@ class FilterQuery
 		}
 
 		$this->params[$name] = array(
-			'name'      => $input_name,
-			'value'     => $value,
-			'type'      => $type
+			'name'       => $name,
+			'input_name' => $input_name,
+			'value'      => $value,
+			'type'       => $type
 		);
 	}
 
@@ -165,6 +217,12 @@ class FilterQuery
 		$where_or = null;
 		if ($this->wheres_or) {
 			$where_or = '(' . implode(') OR (', $this->wheres_or) . ')';
+		}
+
+		foreach ($joins as &$j) {
+			if ($j['condition']) {
+				$j['condition'] = str_replace(array_keys($this->var_renamed), array_values($this->var_renamed), $j['condition']);
+			}
 		}
 
 		if ($where_or || $where_and) {

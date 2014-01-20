@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Tickets\Filters\FilterTerms;
 
 class TicketFiltersController extends AbstractController
 {
@@ -103,9 +104,27 @@ class TicketFiltersController extends AbstractController
 			$filter = new TicketFilter();
 		}
 
-		return $this->createSuccessResponse(array(
-			'filter_id' => $filter->id
-		));
+		$filter->title = $this->in->getString('filter.title');
+		if (!$filter->person) {
+			$filter->person = $this->person;
+		}
+
+		$filter->terms = new FilterTerms();
+		foreach ($this->in->getArrayValue('filter.terms') as $term_info) {
+			$filter->terms->addTermFromArray($term_info);
+		}
+
+		$this->em->persist($filter);
+		$this->em->flush();
+
+		if ($id) {
+			return $this->createSuccessResponse();
+		} else {
+			return $this->createApiCreateResponse(
+				array('filter_id' => $filter->id),
+				$this->generateUrl('api_ticket_filters_get', array('id' => $filter->id))
+			);
+		}
 	}
 
 	####################################################################################################################

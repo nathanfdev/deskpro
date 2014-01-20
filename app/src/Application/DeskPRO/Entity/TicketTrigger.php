@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
+
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -41,10 +43,19 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Arrays;
 
 /**
- * Ticket triggers
- *
+ * @property int $id
+ * @property Department $department
+ * @property EmailGateway $email_gateway
+ * @property string $title
+ * @property bool $is_enabled
+ * @property string $event_trigger
+ * @property string $by_agent_mode
+ * @property string $by_user_mode
+ * @property \Application\DeskPRO\Tickets\Triggers\TriggerTerms $terms
+ * @property \Application\DeskPRO\Tickets\Triggers\TriggerActions $actions
+ * @property int $run_order
  */
-class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
+class TicketTrigger extends DomainObject
 {
 	const EVENT_TYPE_NEWTICKET                  = 'newticket';
 	const EVENT_TYPE_NEWREPLY                   = 'newreply';

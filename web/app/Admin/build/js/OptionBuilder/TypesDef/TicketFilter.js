@@ -86,7 +86,7 @@
         });
         options.push({
           title: 'Is disabled',
-          value: 'FilterPersonIsDisabled'
+          value: 'FilterUserIsDisabled'
         });
         set_options.push({
           title: 'User Criteria',
@@ -107,7 +107,7 @@
         });
         options.push({
           title: 'Linked Usergroup',
-          value: 'FilterOrgUsergroups'
+          value: 'FilterOrgGroups'
         });
         set_options.push({
           title: 'Organization Criteria',
@@ -252,72 +252,6 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailSubject = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'subject';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailBody = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'body';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailToName = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'to_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailToAddress = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'to_address';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailFromName = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'from_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailFromAddress = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'from_address';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterCcAddress = function(options) {
         var def;
         if (options == null) {
@@ -443,7 +377,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'usergroup_ids';
+        options.propName = 'group_ids';
         options.dataName = 'usergroups';
         def = this.getStandardSelect(options);
         return def;
@@ -470,7 +404,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterPersonIsDisabled = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserIsDisabled = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -513,12 +447,12 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgUsergroups = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgGroups = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'usergroup_ids';
+        options.propName = 'group_ids';
         options.dataName = 'usergroups';
         options.operators = ['is', 'not'];
         def = this.getStandardSelect(options);

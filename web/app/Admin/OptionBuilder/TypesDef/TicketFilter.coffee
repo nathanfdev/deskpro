@@ -98,7 +98,7 @@ define [
 
 			options.push({
 				title: 'Is disabled',
-				value: 'FilterPersonIsDisabled'
+				value: 'FilterUserIsDisabled'
 			})
 
 			set_options.push({
@@ -129,7 +129,7 @@ define [
 
 			options.push({
 				title: 'Linked Usergroup',
-				value: 'FilterOrgUsergroups'
+				value: 'FilterOrgGroups'
 			})
 
 			set_options.push({
@@ -230,42 +230,6 @@ define [
 			def = @getStandardSelect(options)
 			return def
 
-		getFilterEmailSubject: (options = {}) ->
-			options.propName = 'subject'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getFilterEmailBody: (options = {}) ->
-			options.propName = 'body'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getFilterEmailToName: (options = {}) ->
-			options.propName = 'to_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getFilterEmailToAddress: (options = {}) ->
-			options.propName = 'to_address'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getFilterEmailFromName: (options = {}) ->
-			options.propName = 'from_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getFilterEmailFromAddress: (options = {}) ->
-			options.propName = 'from_address'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
 		getFilterCcAddress: (options = {}) ->
 			options.propName = 'cc_address'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
@@ -332,7 +296,7 @@ define [
 			return def
 
 		getFilterUserUsergroups: (options = {}) ->
-			options.propName = 'usergroup_ids'
+			options.propName = 'group_ids'
 			options.dataName = 'usergroups'
 			def = @getStandardSelect(options)
 			return def
@@ -348,7 +312,7 @@ define [
 			def = @getStandardIs(options)
 			return def
 
-		getFilterPersonIsDisabled: (options = {}) ->
+		getFilterUserIsDisabled: (options = {}) ->
 			options.propName = 'is_disabled'
 			def = @getStandardIs(options)
 			return def
@@ -371,8 +335,8 @@ define [
 			def = @getStandardInput(options)
 			return def
 
-		getFilterOrgUsergroups: (options = {}) ->
-			options.propName  = 'usergroup_ids'
+		getFilterOrgGroups: (options = {}) ->
+			options.propName  = 'group_ids'
 			options.dataName  = 'usergroups'
 			options.operators = ['is', 'not']
 			def = @getStandardSelect(options)

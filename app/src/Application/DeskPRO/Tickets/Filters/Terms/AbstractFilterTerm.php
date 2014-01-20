@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
+use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\Arrays;
 use Orb\Util\Util;
 
 abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermInterface
@@ -110,8 +112,111 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFilterQuery()
+	public function getFilterQuery(ExecutorContext $context = null)
 	{
 		return null;
+	}
+
+	/**
+	 * Gets the matching trigger term for this filter term
+	 * (aka the term that checks a Ticket in PHP-land whereas these filters check in MySQL-lang)
+	 *
+	 * @return \Application\DeskPRO\Tickets\Triggers\Terms\AbstractTriggerTerm
+	 */
+	public function getTriggerTerm()
+	{
+		return null;
+	}
+
+
+	/**
+	 * @param string $field_name
+	 * @param array $check_ids
+	 * @return FilterQuery
+	 * @throws \InvalidArgumentException
+	 */
+	protected function getIdMatchQuery($field_name, array $check_ids)
+	{
+		$op = $this->getTermOperator();
+		switch ($op) {
+			case self::OP_IS:
+			case self::OP_NOT:
+				break;
+			case self::OP_CONTAINS:
+				$op = 'is';
+				break;
+			case self::OP_NOTCONTAINS:
+				$op = 'not';
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid operator: $op");
+		}
+
+
+		$check_ids = array_filter($check_ids, function($x) { return (int)$x; });
+		$check_ids = array_unique($check_ids);
+
+		$has_null = in_array(0, $check_ids, true);
+		$check_ids = Arrays::removeFalsey($check_ids);
+
+		$query = new FilterQuery();
+
+		if ($has_null || $check_ids) {
+			if ($has_null) {
+				if ($op == 'is') $query->orWhere("$field_name IS NULL");
+				else $query->orWhere("$field_name IS NOT NULL");
+			}
+
+			if ($check_ids) {
+				$query->orWhereIn($field_name, $check_ids, $op == 'not');
+			}
+		} else {
+			if ($op == 'is') $query->andWhere('0');
+			else $query->andWhere('1');
+		}
+
+		return $query;
+	}
+
+
+	/**
+	 * @param string $field_name
+	 * @param string|string[] $check_value
+	 * @return FilterQuery
+	 * @throws \InvalidArgumentException
+	 */
+	protected function getStringMatchQuery($field_name, $check_value)
+	{
+		$query = new FilterQuery();
+
+		if (!is_array($check_value)) {
+			$check_value = array($check_value);
+		}
+
+		foreach ($check_value as $k => $str) {
+			switch ($this->getTermOperator()) {
+				case self::OP_IS:
+				case self::OP_NOT:
+					$use_op = $this->getTermOptions() == self::OP_NOT ? '!=' : '=';
+					$query->orWhere("$field_name $use_op {param.str$k}");
+					$query->setParameter('str'.$k, $str);
+					break;
+				case self::OP_NOT:
+				case self::OP_CONTAINS:
+					$use_op = $this->getTermOptions() == self::OP_NOT ? 'NOT LIKE' : 'LIKE';
+					$query->orWhere("$field_name $use_op {param.str$k}");
+
+					$like_value = $str;
+					$like_value = str_replace('%', '%%', $like_value);
+					$like_value = str_replace('_', '__', $like_value);
+					$like_value = '%' . $like_value . '%';
+					$query->orParameter('str.$k', $like_value);
+					break;
+				default:
+					throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
+			}
+		}
+
+		return $query;
 	}
 }

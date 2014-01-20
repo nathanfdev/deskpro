@@ -197,7 +197,7 @@
           if (existId) {
             rowId = existId;
           } else {
-            rowScope.$id;
+            rowId = rowScope.$id;
           }
           if (dataFormatter) {
             rowScope.value = value || {};

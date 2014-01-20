@@ -36,121 +36,51 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-class FilterTermComposite implements FilterTermInterface
+class FilterUserName extends AbstractFilterTerm
 {
-	const OP_AND = 'AND';
-	const OP_OR  = 'OR';
-
 	/**
-	 * @var FilterTermInterface[]
-	 */
-	private $terms = array();
-
-	/**
-	 * @var string
-	 */
-	private $op = 'AND';
-
-
-	/**
-	 * @param FilterTermInterface[] $terms
-	 * @param string $op
-	 */
-	public function __construct(array $terms = array(), $op = self::OP_AND)
-	{
-		$this->setAll($terms);
-		$this->setOperator($op);
-	}
-
-
-	/**
-	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
-	 *
-	 * @param string $op
-	 */
-	public function setOperator($op)
-	{
-		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getOperator()
-	{
-		return $this->op;
-	}
-
-
-	/**
-	 * @param FilterTermInterface $term
-	 */
-	public function add(FilterTermInterface $term)
-	{
-		$this->terms[] = $term;
-	}
-
-
-	/**
-	 * @param FilterTermInterface[] $terms
-	 */
-	public function setAll(array $terms)
-	{
-		$this->terms = array();
-		foreach ($terms as $t) {
-			$this->add($t);
-		}
-	}
-
-
-	/**
-	 * @return FilterTermInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->terms;
-	}
-
-
-	/**
-	 * @return FilterQuery
+	 * {@inheritDoc}
 	 */
 	public function getFilterQuery(ExecutorContext $context = null)
 	{
-		$filter_query = new FilterQuery();
+		$options = $this->getTermOptions();
+		$check_value = $options['name'];
+		$like_value = null;
 
-		foreach ($this->terms as $t) {
-			$query = $t->getFilterQuery();
-			if (!$query) {
-				continue;
-			}
+		switch ($this->getTermOperator()) {
+			case self::OP_IS:
+			case self::OP_NOT:
+				break;
+			case self::OP_NOT:
+			case self::OP_CONTAINS:
+				$like_value = $check_value;
+				$like_value = str_replace('%', '%%', $like_value);
+				$like_value = str_replace('_', '__', $like_value);
+				$like_value = '%' . $like_value . '%';
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid operator: $op");
+		}
 
-			$parts = $query->getQueryParts();
-			foreach ($parts['joins'] as $join) {
-				$filter_query->addJoin(
-					$join['fromAlias'],
-					$join['join'],
-					$join['alias'] ?: $join['input_alias'],
-					$join['condition']
-				);
-			}
-			foreach ($parts['params'] as $param) {
-				$filter_query->setParameter(
-					$param['name'],
-					$param['value'],
-					$param['type'],
-					false
-				);
-			}
+		$query = new FilterQuery();
 
-			if ($this->op == self::OP_AND) {
-				$filter_query->andWhere($parts['where']);
-			} else {
-				$filter_query->orWhere($parts['where']);
+		foreach (array('name', 'first_name', 'last_name') as $k => $field_name) {
+			switch ($this->getTermOperator()) {
+				case self::OP_IS:
+				case self::OP_NOT:
+					$use_op = $this->getTermOptions() == self::OP_NOT ? '!=' : '=';
+					$query->orWhere("$field_name $use_op {param.str$k}");
+					$query->setParameter('str'.$k, $check_value);
+					break;
+				case self::OP_NOT:
+				case self::OP_CONTAINS:
+					$use_op = $this->getTermOptions() == self::OP_NOT ? 'NOT LIKE' : 'LIKE';
+					$query->orWhere("$field_name $use_op {param.str$k}");
+					$query->setParameter('str'.$k, $like_value);
+					break;
 			}
 		}
 
-		return $filter_query;
+		return $query;
 	}
 }
