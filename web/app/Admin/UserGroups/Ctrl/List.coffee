@@ -14,12 +14,4 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			return promise
 
-		toggleUserGroup: (user_group) ->
-			if user_group.is_enabled
-				val = '1'
-			else
-				val = '0'
-
-			@Api.sendPost('/user_groups/set-enabled/' + user_group.id + '/' + val)
-
 	Admin_UserGroups_Ctrl_List.EXPORT_CTRL()

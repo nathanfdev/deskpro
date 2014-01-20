@@ -15,7 +15,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@perm_form = @group.perms
 				@perm_form.options = {}
 
-				if @group.id != 1
+				if @group.id != 1 and data.reg_group.is_enabled
 					@perm_form_reg = data.reg_group.perms
 				else
 					@perm_form_reg = null

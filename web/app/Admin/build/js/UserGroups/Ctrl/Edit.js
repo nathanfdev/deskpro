@@ -32,7 +32,7 @@
           _this.form = data.form;
           _this.perm_form = _this.group.perms;
           _this.perm_form.options = {};
-          if (_this.group.id !== 1) {
+          if (_this.group.id !== 1 && data.reg_group.is_enabled) {
             _this.perm_form_reg = data.reg_group.perms;
           } else {
             _this.perm_form_reg = null;

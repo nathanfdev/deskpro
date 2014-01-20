@@ -45,8 +45,6 @@ class UsergroupPropsType extends AbstractType
 	{
 		$builder->add('title', 'text');
 		$builder->add('note', 'text', array('required' => true));
-		$builder->add('is_agent_group', 'checkbox');
-		$builder->add('sys_name', 'text', array('required' => false));
 		$builder->add('is_enabled', 'checkbox');
 	}
 

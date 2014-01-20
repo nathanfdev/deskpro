@@ -31,16 +31,6 @@
         return promise;
       };
 
-      Admin_UserGroups_Ctrl_List.prototype.toggleUserGroup = function(user_group) {
-        var val;
-        if (user_group.is_enabled) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/user_groups/set-enabled/' + user_group.id + '/' + val);
-      };
-
       return Admin_UserGroups_Ctrl_List;
 
     })(Admin_Ctrl_Base);
