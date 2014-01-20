@@ -68,14 +68,12 @@ class AgentMessagesLoader extends LoaderAbstract
 			list ($session_id, ) = explode('-', $agent_session_id, 2);
 			$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
-			$db = $this->getPdoRead();
-
 			$agent_session = $this->getPdoRead()->query("
 				SELECT sessions.*, people.is_agent, people_prefs.value_str AS last_message_id
 				FROM sessions
 				INNER JOIN people ON (sessions.person_id = people.id)
 				LEFT JOIN people_prefs ON (people_prefs.person_id = people.id AND people_prefs.name = 'agent.ui.last_message_id')
-				WHERE sessions.id = " . $db->quote($session_id)
+				WHERE sessions.id = " . $this->getPdoRead()->quote($session_id)
 			)->fetch(\PDO::FETCH_ASSOC);
 			if (!$agent_session || $agent_session_id !== (Util::baseEncode($agent_session['id'], Util::BASE36_ALPHABET) . '-' . $agent_session['auth'])) {
 				echo "no/invalid session";
@@ -158,20 +156,20 @@ class AgentMessagesLoader extends LoaderAbstract
 				}
 			}
 
-			// See if we should update last activity time
-			if ($activity_time && $activity_time > (time()-330)) {
-				// We save the last message we know a user got because we need to know
-				// to deliver offline messages (such as chats) the next time the user logs in
-				if ($new_since && $new_since > $last_since) {
-					$q = $this->getPdo()->prepare("
+			// We save the last message we know a user got because we need to know
+			// to deliver offline messages (such as chats) the next time the user logs in
+			if ($new_since && $new_since > $last_since) {
+				$q = $this->getPdo()->prepare("
 					REPLACE INTO people_prefs
 						(person_id, name, value_str, value_array, date_expire)
 					VALUES
 						(?, ?, ?, NULL, NULL);
 				");
-					$q->execute(array($agent_session['person_id'], 'agent.ui.last_message_id', $new_since));
-				}
+				$q->execute(array($agent_session['person_id'], 'agent.ui.last_message_id', $new_since));
+			}
 
+			// See if we should update last activity time
+			if ($activity_time && $activity_time > (time()-330)) {
 				// This bit makes sure theres only one record per 5 minute block
 				$date_active = new \DateTime('@' . $activity_time);
 				list($hour, $minute) = explode(':', $date_active->format('H:i'));
@@ -185,13 +183,6 @@ class AgentMessagesLoader extends LoaderAbstract
 						(?,?)
 				");
 				$q->execute(array($agent_session['person_id'], $date_active->format('Y-m-d H:i:s')));
-
-				$q = $this->getPdo()->prepare("
-					UPDATE sessions
-					SET date_last = ?
-					WHERE id = ?
-				");
-					$q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
 			}
 
 			$secret = $this->_getSetting('core.app_secret');
@@ -201,6 +192,13 @@ class AgentMessagesLoader extends LoaderAbstract
 
 			$token = md5($agent_session['id'] . $agent_session['auth'] . $secret . 'request_token');
 			$data['request_token'] = Util::generateStaticSecurityToken($token, 10800);
+
+			$q = $this->getPdo()->prepare("
+				UPDATE sessions
+				SET date_last = ?
+				WHERE id = ?
+			");
+			$q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
 
 			if (!empty($_REQUEST['recent_tabs'])) {
 
@@ -213,7 +211,7 @@ class AgentMessagesLoader extends LoaderAbstract
 					$post_recent_tabs = array();
 				}
 
-				$q = $db->prepare("
+				$q = $this->getPdoRead()->prepare("
 					SELECT value_array
 					FROM people_prefs
 					WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
@@ -298,7 +296,7 @@ class AgentMessagesLoader extends LoaderAbstract
 
 			// First poll, re-load up to the last 100 alerts
 			if ($is_initial_pool) {
-				$q = $db->query("
+				$q = $this->getPdoRead()->query("
 					SELECT id, typename, data
 					FROM agent_alerts
 					WHERE person_id = {$agent_session['person_id']} AND is_dismissed = 0 AND typename IN ('tickets')
@@ -552,9 +550,7 @@ class AgentMessagesLoader extends LoaderAbstract
 
 	public function getInitialMessagesForPerson($person_id, $since_id)
 	{
-		$db = $this->getPdoRead();
-
-		$q = $db->prepare("
+		$q = $this->getPdoRead()->prepare("
 			SELECT *
 			FROM client_messages
 			WHERE for_person_id = ?
