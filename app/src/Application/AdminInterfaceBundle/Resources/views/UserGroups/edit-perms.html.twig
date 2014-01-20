@@ -1,3 +1,14 @@
+{% macro perm_toggle(typename, permname, opts) %}
+	<input
+		dp-slider-switch
+		ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
+		is-on="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }}"
+		is-locked="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }}"
+		locked-tip="This permission is being granted through the Everyone usergroup"
+	/>
+{% endmacro %}
+
+
 <div class="panel panel-innertable">
 	<nav class="dp-tabletabs">
 		<ul>
@@ -19,13 +30,36 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_tickets') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.tickets_use"></button>
+					{{ _self.perm_toggle('ticket', 'use') }}
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">Can re-open resolved tickets</td>
+				<td width="100%">
+					Can re-open resolved tickets
+
+					<div style="padding: 10px 0 0 25px;" ng-show="!EditCtrl.perm_form.ticket.reopen_resolved && !EditCtrl.perm_form_reg.ticket.reopen_resolved">
+						How should the helpdesk handle an email reply to a resolved ticket?<br/>
+						<div ng-if="EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
+							<label tooltip="This permission is being granted through the Everyone usergroup">
+								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" disabled="disabled" />
+								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
+							</label>
+						</div>
+						<div ng-if="!EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
+							<label>
+								<input type="radio" value="reject" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
+								<strong>Reject</strong> &middot; The message is rejected and the user is sent an auto-response
+							</label>
+							<br/>
+							<label>
+								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
+								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
+							</label>
+						</div>
+					</div>
+				</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.tickets_reopen_resolved"></button>
+					{{ _self.perm_toggle('ticket', 'reopen_resolved') }}
 				</td>
 			</tr>
 		</tbody>
@@ -42,7 +76,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.can_use_chat') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.chat_use"></button>
+						{{ _self.perm_toggle('chat', 'use') }}
 					</td>
 				</tr>
 			</tbody>
@@ -59,25 +93,25 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_feedback') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_use"></button>
+					{{ _self.perm_toggle('feedback', 'use') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_feedback') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_submit"></button>
+					{{ _self.perm_toggle('feedback', 'submit') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_no_submit_validate"></button>
+					{{ _self.perm_toggle('feedback', 'no_submit_validate') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_feedback') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_rate"></button>
+					{{ _self.perm_toggle('feedback', 'rate') }}
 				</td>
 			</tr>
 
@@ -86,7 +120,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.feedback_comment"></button>
+						{{ _self.perm_toggle('feedback', 'comment') }}
 					</td>
 				</tr>
 
@@ -97,8 +131,7 @@
 				<tr>
 					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<td>
-						<button dp-toggle-switch
-								ng-model="EditCtrl.form.permissions.feedback_no_comment_validate"></button>
+						{{ _self.perm_toggle('feedback', 'no_comment_validate') }}
 					</td>
 				</tr>
 
@@ -116,13 +149,13 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_knowledgebase') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.articles_use"></button>
+					{{ _self.perm_toggle('article', 'use') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_rate_articles') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.articles_rate"></button>
+					{{ _self.perm_toggle('article', 'rate') }}
 				</td>
 			</tr>
 
@@ -131,7 +164,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.articles_comment"></button>
+						{{ _self.perm_toggle('article', 'comment') }}
 					</td>
 				</tr>
 
@@ -142,8 +175,7 @@
 				<tr>
 					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<td>
-						<button dp-toggle-switch
-								ng-model="EditCtrl.form.permissions.articles_no_comment_validate"></button>
+						{{ _self.perm_toggle('article', 'no_comment_validate') }}
 					</td>
 				</tr>
 
@@ -161,13 +193,13 @@
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_downloads') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_use"></button>
+					{{ _self.perm_toggle('download', 'use') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_rate_downloads') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_rate"></button>
+					{{ _self.perm_toggle('download', 'rate') }}
 				</td>
 			</tr>
 
@@ -176,7 +208,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_comment"></button>
+						{{ _self.perm_toggle('download', 'comment') }}
 					</td>
 				</tr>
 
@@ -187,7 +219,7 @@
 				<tr>
 					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<td>
-						<button dp-toggle-switch ng-model="EditCtrl.form.permissions.downloads_no_comment_validate"></button>
+						{{ _self.perm_toggle('download', 'no_comment_validate') }}
 					</td>
 				</tr>
 
@@ -205,25 +237,25 @@
 			<tr>
 				<td width="100%">{{ phrase('agent.general.news') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_use"></button>
+					{{ _self.perm_toggle('news', 'use') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_rate_news_posts') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_rate"></button>
+					{{ _self.perm_toggle('news', 'rate') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.submit_new_post_comments') }}</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_comment"></button>
+					{{ _self.perm_toggle('news', 'comment') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 				<td>
-					<button dp-toggle-switch ng-model="EditCtrl.form.permissions.news_no_comment_validate"></button>
+					{{ _self.perm_toggle('news', 'no_comment_validate') }}
 				</td>
 			</tr>
 		</tbody>

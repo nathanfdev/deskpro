@@ -214,7 +214,7 @@ define [
 					'ticket_works':    '/ticket_works',
 					'ticket_slas':     '/ticket_slas',
 					'ticket_accounts': '/ticket_accounts',
-					'usergroups':      '/usergroups',
+					'usergroups':      '/user_groups',
 				}).then( (result) =>
 					data = result.data
 					options_data = {}
@@ -227,7 +227,7 @@ define [
 					options_data['ticket_prods']     = data.ticket_prods?.products
 					options_data['ticket_slas']      = data.ticket_slas?.slas
 					options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
-					options_data['usergroups']       = data.usergroups.usergroups
+					options_data['usergroups']       = data.usergroups.groups
 					@options_data = options_data
 				)
 

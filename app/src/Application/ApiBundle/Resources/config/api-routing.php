@@ -926,20 +926,6 @@ $collection->create('api_agentgroups_getperms', array(
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_usergroups_list', array(
-	'path'        => '/usergroups',
-	'controller'  => 'ApiBundle:Usergroups:list',
-	'defaults'    => array('type' => 'user'),
-	'methods'     => array('GET'),
-));
-
-$collection->create('api_usergroups_non_sys_list', array(
-	'path'        => '/non_sys_usergroups',
-	'controller'  => 'ApiBundle:Usergroups:list',
-	'defaults'    => array('type' => 'non_sys_user'),
-	'methods'     => array('GET'),
-));
-
 $collection->create('api_combiner', array(
 	'path'        => '/api_caller',
 	'controller'  => 'ApiBundle:ApiCombiner:get',
@@ -3596,9 +3582,17 @@ $collection->create('api_banning_email_remove', array(
 # CRM User Groups
 ########################################################################################################################
 
-$collection->create('api_user_groups', array(
+$collection->create('api_user_groups_list', array(
 	'path'        => '/user_groups',
-	'controller'  => 'ApiBundle:Usergroups:listAll',
+	'controller'  => 'ApiBundle:Usergroups:list',
+	'defaults'    => array('type' => 'user'),
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usergroups_non_sys_list', array(
+	'path'        => '/non_sys_usergroups',
+	'controller'  => 'ApiBundle:Usergroups:list',
+	'defaults'    => array('type' => 'non_sys_user'),
 	'methods'     => array('GET'),
 ));
 

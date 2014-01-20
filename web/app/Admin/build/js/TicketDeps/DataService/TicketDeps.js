@@ -74,7 +74,7 @@
             depInfo: "/ticket_deps/" + id,
             agentsInfo: '/agents',
             agentgroupsInfo: '/agent_groups',
-            usergroupsInfo: '/usergroups',
+            usergroupsInfo: '/user_groups',
             ticketAccountsInfo: '/ticket_accounts',
             defaultLayoutInfo: '/ticket_layouts/default',
             customLayoutInfo: "/ticket_layouts/" + id
@@ -83,7 +83,7 @@
           promise = this.Api.sendDataGet({
             agentsInfo: '/agents',
             agentgroupsInfo: '/agent_groups',
-            usergroupsInfo: '/usergroups',
+            usergroupsInfo: '/user_groups',
             ticketAccountsInfo: '/ticket_accounts',
             defaultLayoutInfo: '/ticket_layouts/default'
           });
@@ -118,7 +118,7 @@
           }
           data.agents = result.agentsInfo.agents;
           data.agentgroups = result.agentgroupsInfo.groups;
-          data.usergroups = result.usergroupsInfo.usergroups;
+          data.usergroups = result.usergroupsInfo.groups;
           layouts = {
             default_layout: result.defaultLayoutInfo.layout,
             custom_layout: result.customLayoutInfo ? result.customLayoutInfo.layout : null,

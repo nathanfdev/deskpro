@@ -20,28 +20,31 @@
 
       Admin_UserGroups_Ctrl_Edit.prototype.init = function() {
         this.ugData = this.DataService.get('UserGroups');
-        return this.user_group = null;
+        return this.group = null;
       };
-
-      /*
-       	#
-      */
-
 
       Admin_UserGroups_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
         promise = this.ugData.loadEditUserGroupData(this.$stateParams.id || null).then(function(data) {
-          _this.user_group = data.user_group;
-          return _this.form = data.form;
+          var _ref1, _ref2;
+          _this.group = data.group;
+          _this.form = data.form;
+          _this.perm_form = _this.group.perms;
+          _this.perm_form.options = {};
+          if (_this.group.id !== 1) {
+            _this.perm_form_reg = data.reg_group.perms;
+          } else {
+            _this.perm_form_reg = null;
+          }
+          if (_this.perm_form.ticket.reopen_resolved_createnew || ((_ref1 = _this.perm_form_reg) != null ? (_ref2 = _ref1.ticket) != null ? _ref2.reopen_resolved_createnew : void 0 : void 0)) {
+            return _this.perm_form.options.reopen_resolved_createnew = 'new_ticket';
+          } else {
+            return _this.perm_form.options.reopen_resolved_createnew = 'reject';
+          }
         });
         return promise;
       };
-
-      /*
-      		#
-      */
-
 
       Admin_UserGroups_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise,
@@ -49,8 +52,8 @@
         if (!this.$scope.form_props.$valid) {
           return;
         }
-        is_new = !this.user_group.id;
-        promise = this.ugData.saveFormModel(this.user_group, this.form);
+        is_new = !this.group.id;
+        promise = this.ugData.saveFormModel(this.group, this.form, this.perm_form);
         this.startSpinner('saving');
         return promise.then(function() {
           _this.stopSpinner('saving', true).then(function() {

@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Usergroups;
 
 use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\People\UserPermissions\GroupsDbLoader;
 use Doctrine\ORM\EntityManager;
 
 class Usergroups
@@ -41,28 +42,29 @@ class Usergroups
 	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
-
 	protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\Usergroup[]
      */
-
     protected $usergroups;
 
+
+	/**
+	 * @param EntityManager $em
+	 */
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
 	}
 
+
 	/**
 	 * Loads twitter accounts data from the database
 	 */
-
 	private function preload()
 	{
 		if ($this->usergroups !== null) {
-
 			return;
 		}
 
@@ -74,53 +76,52 @@ class Usergroups
 	 * Resets this repository so the next time data is requested form it, it will
 	 * be queried again.
 	 */
-
 	public function reset()
 	{
 		$this->usergroups = null;
 	}
 
+
 	/**
 	 * @param int $id
 	 * @return \Application\DeskPRO\Entity\Usergroup
 	 */
-
 	public function getById($id)
 	{
-		$usergroup        = $this->em->getRepository('DeskPRO:Usergroup')->get($id);
-
+		$usergroup = $this->em->getRepository('DeskPRO:Usergroup')->get($id);
 		return $usergroup;
 	}
 
+
 	/**
 	 * @param int $id
-	 *
-	 * @return array
+	 * @return \Application\DeskPRO\People\UserPermissions\UserPermissions
+	 * @throws \InvalidArgumentException
 	 */
-
 	public function getPermissionsById($id)
 	{
-		$usergroup        = $this->em->getRepository('DeskPRO:Usergroup')->get($id);
-		$permissionsArray = array();
-
-		foreach ($usergroup->permissions as $permission) {
-
-			$data = array();
-
-			$data['id']           = $permission->id;
-			$data['name']         = $permission->name;
-			$data['value']        = $permission->value;
-
-			$permissionsArray[] = $data;
+		$usergroup = $this->em->getRepository('DeskPRO:Usergroup')->get($id);
+		if (!$usergroup) {
+			throw new \InvalidArgumentException("Invalid group id");
 		}
-
-		return $permissionsArray;
+		return $this->getPermissions($usergroup);
 	}
+
+
+	/**
+	 * @param Usergroup $group
+	 * @return \Application\DeskPRO\People\UserPermissions\UserPermissions
+	 */
+	public function getPermissions(Usergroup $group)
+	{
+		$db_loader = new GroupsDbLoader(array($group->id), $this->em);
+		return $db_loader->getGroupPermissions($group->id);
+	}
+
 
     /**
      * @return \Application\DeskPRO\Entity\Usergroup[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -128,10 +129,10 @@ class Usergroups
         return $this->usergroups;
     }
 
+
 	/**
 	 * @return int
 	 */
-
 	public function count()
 	{
 		$this->preload();
@@ -139,21 +140,20 @@ class Usergroups
 		return count($this->usergroups);
 	}
 
+
 	/**
 	 * @return \Application\DeskPRO\Entity\Usergroup
 	 */
-
 	public function createNew()
 	{
 		return Usergroup::createUsergroup();
 	}
 
+
 	/**
 	 * @param string $id
 	 * @param bool   $enabled
-	 *
 	 */
-
 	public function setFieldEnabledById($id, $enabled = true)
 	{
 		$usergroup             = $this->em->find('DeskPRO:Usergroup', $id);

@@ -34,7 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;

@@ -26,11 +26,11 @@ define [
 
 				data_promise = @Api.sendDataGet({
 					feedback_type: '/feedback_types/' + @$stateParams.id,
-					usergroups: '/usergroups'
+					usergroups: '/user_groups'
 				}).then((result) =>
 
 					@feedback_type = result.data.feedback_type.feedback_type
-					@usergroups = result.data.usergroups.usergroups
+					@usergroups = result.data.usergroups.groups
 
 					ids =	_.pluck(@feedback_type.usergroups, 'id')
 

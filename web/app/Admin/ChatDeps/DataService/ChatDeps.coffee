@@ -63,13 +63,13 @@ define [
 					depInfo:            "/chat_deps/#{id}",
 					agentsInfo:         '/agents',
 					agentgroupsInfo:    '/agent_groups',
-					usergroupsInfo:     '/usergroups',
+					usergroupsInfo:     '/user_groups',
 				})
 			else
 				promise = @Api.sendDataGet({
 					agentsInfo:         '/agents',
 					agentgroupsInfo:    '/agent_groups',
-					usergroupsInfo:     '/usergroups',
+					usergroupsInfo:     '/user_groups',
 				})
 
 			deferred = @$q.defer()
@@ -99,7 +99,7 @@ define [
 
 				data.agents          = result.agentsInfo.agents
 				data.agentgroups     = result.agentgroupsInfo.groups
-				data.usergroups      = result.usergroupsInfo.usergroups
+				data.usergroups      = result.usergroupsInfo.groups
 
 				data.form = @getFormMapper().getFormFromModel(
 					data.dep,

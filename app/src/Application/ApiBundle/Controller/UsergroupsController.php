@@ -34,9 +34,9 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
+use Application\DeskPRO\People\UserPermissions\GroupDbPersister;
+use Application\DeskPRO\People\UserPermissions\UserPermissions;
 use Application\DeskPRO\Usergroups\UsergroupEdit;
-use Application\DeskPRO\Usergroups\Usergroups;
 use Application\DeskPRO\Usergroups\Form\Type\UsergroupType;
 use Application\DeskPRO\Exception\ValidationException;
 
@@ -53,11 +53,8 @@ class UsergroupsController extends AbstractController
 		$data = array();
 
 		if ($type == 'non_sys_user') {
-
-			$data['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-
+			$data['groups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 		} else {
-
 			$ugs = $this->em->createQuery("
 				SELECT ug
 				FROM DeskPRO:Usergroup ug
@@ -65,29 +62,10 @@ class UsergroupsController extends AbstractController
 				ORDER BY ug.title ASC
 			")->execute();
 
-			$data['usergroups'] = $this->getApiData($ugs);
+			$data['groups'] = $this->getApiData($ugs);
 		}
 
 		return $this->createApiResponse($data);
-	}
-
-	####################################################################################################################
-	# list-all
-	####################################################################################################################
-
-	public function listAllAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
-		 */
-
-		$usergroups = $this->container->getSystemService('usergroups');
-
-		return $this->createApiResponse(
-			array(
-				 'user_groups' => $this->getApiData(Arrays::flatten($usergroups->getAll())),
-			)
-		);
 	}
 
 	###################################################################################################################
@@ -96,26 +74,17 @@ class UsergroupsController extends AbstractController
 
 	public function getAction($id)
 	{
-		/**
-		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
-		 */
-
 		$usergroups = $this->container->getSystemService('user_groups');
 		$usergroup  = $usergroups->getById($id);
 
-		$returnedData                = $this->getApiData($usergroup);
-		$returnedData['permissions'] = $usergroups->getPermissionsById($id);
-
-		if (!$usergroup) {
-
+		if (!$usergroup || $usergroup->is_agent_group) {
 			throw $this->createNotFoundException();
 		}
 
-		return $this->createApiResponse(
-			array(
-				 'user_group' => $returnedData,
-			)
-		);
+		$data = $usergroup->toApiData();
+		$data['perms'] = $usergroups->getPermissions($usergroup);
+
+		return $this->createApiResponse(array('group' => $data));
 	}
 
 	####################################################################################################################
@@ -124,10 +93,6 @@ class UsergroupsController extends AbstractController
 
 	public function toggleUsergroupAction($user_group_id, $is_enabled)
 	{
-		/**
-		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
-		 */
-
 		$usergroups = $this->container->getSystemService('usergroups');
 		$usergroups->setFieldEnabledById($user_group_id, $is_enabled);
 
@@ -140,46 +105,67 @@ class UsergroupsController extends AbstractController
 
 	public function saveAction($id)
 	{
-		/**
-		 * @var \Application\DeskPRO\Usergroups\Usergroups $usergroups
-		 */
-
 		$usergroups = $this->container->getSystemService('usergroups');
 
+		#------------------------------
+		# Get group
+		#------------------------------
+
 		if ($id) {
-
 			$usergroup = $usergroups->getById($id);
-
 			if (!$usergroup) {
-
 				throw $this->createNotFoundException();
 			}
 		} else {
-
 			$usergroup = $usergroups->createNew();
 		}
 
-		$postData = $this->in->getAll('post');
+		#------------------------------
+		# Save form
+		#------------------------------
 
 		$usergroup_edit = new UsergroupEdit($usergroup);
 
+		$formData = array('group' => $this->in->getArrayValue('group'));
+		unset($formData['group']['perms']);
+
 		$form = $this->createForm(new UsergroupType(), $usergroup_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_group'), true);
+		$form->submit($formData, true);
 
-		if ($form->isValid()) {
-
-			$usergroup_edit->save($this->em);
-
-		} else {
-
+		if (!$form->isValid()) {
 			throw ValidationException::create($this->getFormValidationErrorsString($form));
 		}
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $usergroup->id,
-			)
-		);
+		$usergroup_edit->save($this->em);
+
+		#------------------------------
+		# Save permissions
+		#------------------------------
+
+		// Save perms
+		$perms = new UserPermissions();
+		$perms->fromArray($this->in->getArrayValue('group.perms'));
+
+		$db_persister = new GroupDbPersister($this->em);
+		$db_persister->savePerms($usergroup, $perms);
+
+		#------------------------------
+		# Clear permission cache
+		#------------------------------
+
+		$this->db->executeUpdate("DELETE FROM permissions_cache");
+
+		#------------------------------
+		# Result
+		#------------------------------
+
+		if (!$id) {
+			return $this->createApiCreateResponse(
+				array('id' => $usergroup->id),
+				$this->generateUrl('api_user_groups_get', array('id' => $usergroup->id), true)
+			);
+		} else {
+			return $this->createApiSuccessResponse();
+		}
 	}
 }

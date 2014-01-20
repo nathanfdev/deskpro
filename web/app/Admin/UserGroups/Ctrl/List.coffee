@@ -7,24 +7,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		init: ->
 			@ugData = @DataService.get('UserGroups')
 
-		###
-		# Loads the list
-		###
-
 		initialLoad: ->
-
 			promise = @ugData.loadList().then( (list) =>
 				@list = list
 			)
 
 			return promise
 
-		###
- 	# @param {Object} user_group - usergroup model which enabled / disabled state we want to toggle
-		###
-
 		toggleUserGroup: (user_group) ->
-
 			if user_group.is_enabled
 				val = '1'
 			else

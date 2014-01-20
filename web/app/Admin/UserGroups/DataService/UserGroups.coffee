@@ -12,8 +12,7 @@ define [
 			deferred = @$q.defer()
 
 			@Api.sendGet('/user_groups').success( (data) =>
-
-				models = data.user_groups
+				models = data.groups
 				deferred.resolve(models)
 			, (data, status, headers, config) ->
 				deferred.reject()
@@ -21,90 +20,80 @@ define [
 
 			return deferred.promise
 
-		###
-  # Remove a model
-  #
-  # @param {Integer} id
-  # @return {promise}
-		###
 
+		###
+		# Remove a model
+		#
+		# @param {Integer} id
+		# @return {promise}
+		###
 		deleteUserGroupById: (id) ->
-
 			promise = @Api.sendDelete('/user_groups/' + id).success( =>
 				@removeListModelById(id)
 			)
-
 			return promise
+
 
 		###
 		# Get the form mapper
 		#
 		# @return {UserGroupEditFormMapper}
 		###
-
 		getFormMapper: ->
-
 			if @formMapper then return @formMapper
 			@formMapper = new UserGroupEditFormMapper()
 			return @formMapper
 
-		###
-  # Get all data needed for the edit page
-  #
-  # @param {Integer} id
-  # @return {promise}
-		###
 
+		###
+		# Get all data needed for the edit page. Also returns the "reg_group" usergroup info as well.
+		#
+		# @param {Integer} id
+		# @return {promise}
+		###
 		loadEditUserGroupData: (id) ->
-
 			deferred = @$q.defer()
 
-			if id
+			sendTypes = {
+				reg_group: '/user_groups/1'
+			}
+			if (id and id != 1)
+				sendTypes.group = "/user_groups/#{id}"
 
-				@Api.sendGet('/user_groups/' + id).then( (result) =>
-
-					data = {}
-					data.user_group = result.data.user_group
-
-					data.form = @getFormMapper().getFormFromModel(data)
-
-					deferred.resolve(data)
-				, ->
-					deferred.reject()
-				)
-
-			else
-
+			@Api.sendDataGet(sendTypes).then( (result) =>
 				data = {}
 
-				data.user_group = {is_enabled: true}
-				data.user_group.permissions = {}
+				data.reg_group = result.data.reg_group.group
 
-				data.form = @getFormMapper().getFormFromModel(data)
+				if result.data.group
+					data.group = result.data.group.group
+					data.form = @getFormMapper().getFormFromModel(data)
+				else
+					data.group = { id: null, title: '', is_enabled: true}
+					data.group.perms = {}
+					data.form = @getFormMapper().getFormFromModel(data)
 
 				deferred.resolve(data)
+			, -> deferred.reject())
 
 			return deferred.promise
 
 
 		###
-  # Saves a form model and merges model with list data
-  #
-  # @param {Object} model api_key model
- 	# @param {Object} formModel  The model representing the form
-  # @return {promise}
+		# Saves a form model and merges model with list data
+		#
+		# @param {Object} model api_key model
+		# @param {Object} formModel  The model representing the form
+		# @return {promise}
 		###
-
-		saveFormModel: (model, formModel) ->
-
+		saveFormModel: (model, formModel, formPermsModel) ->
 			mapper = @getFormMapper()
-
-			postData = mapper.getPostDataFromForm(formModel)
+			postData = mapper.getPostDataFromForm(formModel, formPermsModel)
 
 			if model.id
-				promise = @Api.sendPostJson('/user_groups/' + model.id, {user_group: postData})
+				promise = @Api.sendPostJson('/user_groups/' + model.id, {group: postData})
 			else
-				promise = @Api.sendPutJson('/user_groups', {user_group: postData}).success( (data) ->
+				promise = @Api.sendPutJson('/user_groups', {group: postData}).success( (data) ->
 					model.id = data.id
 				)
 

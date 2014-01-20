@@ -134,7 +134,7 @@
             'ticket_pris': '/ticket_pris',
             'ticket_works': '/ticket_works',
             'ticket_accounts': '/ticket_accounts',
-            'usergroups': '/usergroups'
+            'usergroups': '/user_groups'
           }).then(function(result) {
             var data, _ref1;
             data = result.data;
@@ -146,7 +146,7 @@
             _this.options_data['ticket_works'] = data.ticket_works.workflows;
             _this.options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
             _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
-            return _this.options_data['usergroups'] = data.usergroups.usergroups;
+            return _this.options_data['usergroups'] = data.usergroups.groups;
           });
         }
         return p;

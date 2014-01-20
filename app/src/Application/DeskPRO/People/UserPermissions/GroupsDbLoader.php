@@ -32,7 +32,7 @@
  * @category People
  */
 
-namespace Application\DeskPRO\People\AgentPermissions;
+namespace Application\DeskPRO\People\UserPermissions;
 
 use Doctrine\ORM\EntityManager;
 
@@ -62,12 +62,12 @@ class GroupsDbLoader
 	 * @var array
 	 */
 	public static $prefix_map = array(
-		'agent_tickets' => 'ticket',
-		'agent_people'  => 'people',
-		'agent_org'     => 'org',
-		'agent_chat'    => 'chat',
-		'agent_publish' => 'publish',
-		'agent_general' => 'general',
+		'tickets'  => 'ticket',
+		'chat'     => 'chat',
+		'feedback' => 'feedback',
+		'articles' => 'article',
+		'download' => 'download',
+		'news'     => 'news',
 	);
 
 
@@ -87,8 +87,8 @@ class GroupsDbLoader
 			}
 		}
 
-		$this->em        = $em;
-		$this->db        = $em->getConnection();
+		$this->em = $em;
+		$this->db = $em->getConnection();
 	}
 
 
@@ -130,22 +130,22 @@ class GroupsDbLoader
 
 	/**
 	 * @param $group_id
-	 * @return AgentPermissions
+	 * @return UserPermissions
 	 */
 	public function getGroupPermissions($group_id)
 	{
 		$perms = $this->getPermissions($group_id);
-		return $this->createAgentPermissions($perms);
+		return $this->createUserPermissions($perms);
 	}
 
 
 	/**
 	 * @param array $perm_array
-	 * @return AgentPermissions
+	 * @return UserPermissions
 	 */
-	private function createAgentPermissions(array $perm_array)
+	private function createUserPermissions(array $perm_array)
 	{
-		$agent_perms = new AgentPermissions();
+		$user_perms = new UserPermissions();
 
 		foreach ($perm_array as $k => $v) {
 			if (!$v) continue; // disabled
@@ -155,12 +155,12 @@ class GroupsDbLoader
 			if (!isset(self::$prefix_map[$type])) continue; // unknown type
 
 			$obj_name = self::$prefix_map[$type];
-			$obj = $agent_perms->$obj_name;
+			$obj = $user_perms->$obj_name;
 			if (!isset($obj->$name)) continue; // invalid;
 
 			$obj->$name = true;
 		}
 
-		return $agent_perms;
+		return $user_perms;
 	}
 }

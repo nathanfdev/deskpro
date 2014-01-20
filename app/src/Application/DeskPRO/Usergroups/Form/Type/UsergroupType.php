@@ -43,7 +43,7 @@ class UsergroupType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('user_group', new UsergroupPropsType());
+		$builder->add('group', new UsergroupPropsType());
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)

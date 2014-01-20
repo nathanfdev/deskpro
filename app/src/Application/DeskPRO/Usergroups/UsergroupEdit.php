@@ -42,12 +42,11 @@ class UsergroupEdit
 	/**
 	 * @var \Application\DeskPRO\Entity\Usergroup
 	 */
-
-	public $user_group;
+	public $group;
 
 	public function __construct(Usergroup $user_group)
 	{
-		$this->user_group = $user_group;
+		$this->group = $user_group;
 	}
 
 	/**
@@ -56,7 +55,7 @@ class UsergroupEdit
 
 	public function save(EntityManager $em)
 	{
-		$em->persist($this->user_group);
+		$em->persist($this->group);
 		$em->flush();
 	}
 }

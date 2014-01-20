@@ -22,11 +22,6 @@
         return this.ugData = this.DataService.get('UserGroups');
       };
 
-      /*
-      		# Loads the list
-      */
-
-
       Admin_UserGroups_Ctrl_List.prototype.initialLoad = function() {
         var promise,
           _this = this;
@@ -35,11 +30,6 @@
         });
         return promise;
       };
-
-      /*
-       	# @param {Object} user_group - usergroup model which enabled / disabled state we want to toggle
-      */
-
 
       Admin_UserGroups_Ctrl_List.prototype.toggleUserGroup = function(user_group) {
         var val;

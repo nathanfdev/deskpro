@@ -29,38 +29,81 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Usergroups\Form\Type;
+namespace Application\DeskPRO\People\UserPermissions;
 
-use Application\DeskPRO\Form\Type\PermissionRowType;
+use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Usergroup;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class UsergroupPropsType extends AbstractType
+class GroupDbPersister
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	private $em;
+
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	private $db;
+
+	/**
+	 * @param EntityManager $em
+	 */
+	public function __construct(EntityManager $em)
 	{
-		$builder->add('title', 'text');
-		$builder->add('note', 'text', array('required' => true));
-		$builder->add('is_agent_group', 'checkbox');
-		$builder->add('sys_name', 'text', array('required' => false));
-		$builder->add('is_enabled', 'checkbox');
+		$this->em        = $em;
+		$this->db        = $em->getConnection();
 	}
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	/**
+	 * @param Usergroup $group
+	 * @param UserPermissions $perms
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function savePerms(Usergroup $group, UserPermissions $perms)
 	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\Usergroup',
-			)
-		);
-	}
+		$current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE usergroup_id = ?", array($group->id));
 
-	public function getName()
-	{
-		return 'usergroup';
+		$set_perms = array();
+		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+			$obj = $perms->$coll_name;
+			foreach ($obj->getNames() as $prop) {
+				if ($obj->$prop) {
+					$set_perms[] = $real_name . '.' . $prop;
+				}
+			}
+		}
+
+		$del_perms = array_diff($current_perms, $set_perms);
+		$new_perms = array_diff($set_perms, $current_perms);
+
+		$ins = array();
+		if ($new_perms) {
+			foreach ($new_perms as $p) {
+				$ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
+			}
+
+		}
+
+		$this->db->beginTransaction();
+		try {
+			if ($del_perms) {
+				$this->db->deleteIn('permissions', $del_perms, 'name', false, "usergroup_id = {$group->id}");
+			}
+			if ($ins) {
+				$this->db->batchInsert('permissions', $ins, true);
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return true;
 	}
 }

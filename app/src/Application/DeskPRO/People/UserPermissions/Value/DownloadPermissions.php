@@ -29,38 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category People
  */
 
-namespace Application\DeskPRO\Usergroups\Form\Type;
+namespace Application\DeskPRO\People\UserPermissions\Value;
 
-use Application\DeskPRO\Form\Type\PermissionRowType;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class UsergroupPropsType extends AbstractType
+class DownloadPermissions implements PermissionValueInterface
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('title', 'text');
-		$builder->add('note', 'text', array('required' => true));
-		$builder->add('is_agent_group', 'checkbox');
-		$builder->add('sys_name', 'text', array('required' => false));
-		$builder->add('is_enabled', 'checkbox');
-	}
+	public $use                 = false;
+	public $rate                = false;
+	public $comment             = false;
+	public $no_comment_validate = false;
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+
+	public function getNames()
 	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\Usergroup',
-			)
+		return array(
+			'use', 'rate',  'comment', 'no_comment_validate',
 		);
-	}
-
-	public function getName()
-	{
-		return 'usergroup';
 	}
 }

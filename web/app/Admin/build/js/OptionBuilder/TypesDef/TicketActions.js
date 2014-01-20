@@ -171,7 +171,7 @@
             'ticket_works': '/ticket_works',
             'ticket_slas': '/ticket_slas',
             'ticket_accounts': '/ticket_accounts',
-            'usergroups': '/usergroups'
+            'usergroups': '/user_groups'
           }).then(function(result) {
             var data, options_data, _ref1, _ref2;
             data = result.data;
@@ -185,7 +185,7 @@
             options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
             options_data['ticket_slas'] = (_ref2 = data.ticket_slas) != null ? _ref2.slas : void 0;
             options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
-            options_data['usergroups'] = data.usergroups.usergroups;
+            options_data['usergroups'] = data.usergroups.groups;
             return _this.options_data = options_data;
           });
         }

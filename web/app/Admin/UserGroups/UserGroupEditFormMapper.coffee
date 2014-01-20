@@ -4,62 +4,32 @@ define [
 	Util
 ) ->
 	class UserGroupEditFormMapper
-
-		###
-			#
- 		#
-		###
-
 		getFormFromModel: (model) ->
-
 			form = {}
 
-			form.id = model.user_group.id
-			form.title = model.user_group.title
-			form.note = model.user_group.note
-			form.is_enabled = model.user_group.is_enabled
-
-			form.permissions = {}
-
-			for permission in model.user_group.permissions
-				key = permission.name.replace('.', '_')
-				if Util.isBlank(permission.value) then form.permissions[key] = false else form.permissions[key] = true
+			form.id = model.group.id
+			form.title = model.group.title
+			form.note = model.group.note
+			form.is_enabled = model.group.is_enabled
 
 			return form
 
-		###
-			#
-			#
-		###
-
 		applyFormToModel: (model, formModel) ->
-
 			model.title = formModel.title
 
-		###
-			#
-			#
-		###
-
-		getPostDataFromForm: (formModel) ->
-
+		getPostDataFromForm: (formModel, formPermsModel) ->
 			postData = {}
-
-			postData.id = formModel.id
 			postData.title = formModel.title
 			postData.note = formModel.note
 			postData.is_enabled = formModel.is_enabled
 
-			postData.permissions = []
+			if formPermsModel
+				postData.perms = Util.clone(formPermsModel)
+				if postData.perms.options.reopen_resolved_createnew == 'new_ticket'
+					postData.perms.ticket.reopen_resolved_createnew = true
+				else
+					postData.perms.ticket.reopen_resolved_createnew = false
 
-			console.log formModel.permissions
-
-			for own permission, value of formModel.permissions
-				postData.permissions.push({
-					usergroup_id: formModel.id,
-					name: permission.replace('_', '.'),
-					value: (if value then 1 else 0),
-					person_id: null,
-				})
+				delete postData.perms.options
 
 			return postData

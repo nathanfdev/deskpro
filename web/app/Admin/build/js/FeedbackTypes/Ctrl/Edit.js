@@ -32,11 +32,11 @@
         } else {
           data_promise = this.Api.sendDataGet({
             feedback_type: '/feedback_types/' + this.$stateParams.id,
-            usergroups: '/usergroups'
+            usergroups: '/user_groups'
           }).then(function(result) {
             var id, ids, _i, _len, _results;
             _this.feedback_type = result.data.feedback_type.feedback_type;
-            _this.usergroups = result.data.usergroups.usergroups;
+            _this.usergroups = result.data.usergroups.groups;
             ids = _.pluck(_this.feedback_type.usergroups, 'id');
             _results = [];
             for (_i = 0, _len = ids.length; _i < _len; _i++) {

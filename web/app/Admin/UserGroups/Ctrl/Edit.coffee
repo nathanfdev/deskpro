@@ -1,8 +1,4 @@
-define [
-	'Admin/Main/Ctrl/Base'
-], (
-	Admin_Ctrl_Base
-) ->
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_UserGroups_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_UserGroups_Ctrl_Edit'
 		@CTRL_AS = 'EditCtrl'
@@ -10,32 +6,33 @@ define [
 
 		init: ->
 			@ugData = @DataService.get('UserGroups')
-			@user_group = null
-
-		###
- 	#
- 	###
+			@group = null
 
 		initialLoad: ->
 			promise = @ugData.loadEditUserGroupData(@$stateParams.id || null).then( (data) =>
+				@group     = data.group
+				@form      = data.form
+				@perm_form = @group.perms
+				@perm_form.options = {}
 
-				@user_group  = data.user_group
-				@form = data.form
+				if @group.id != 1
+					@perm_form_reg = data.reg_group.perms
+				else
+					@perm_form_reg = null
+
+				if @perm_form.ticket.reopen_resolved_createnew || @perm_form_reg?.ticket?.reopen_resolved_createnew
+					@perm_form.options.reopen_resolved_createnew = 'new_ticket'
+				else
+					@perm_form.options.reopen_resolved_createnew = 'reject'
 			)
 			return promise
 
-		###
-		#
-		###
-
 		saveForm: ->
-
 			if not @$scope.form_props.$valid
 				return
 
-			is_new = !@user_group.id
-
-			promise = @ugData.saveFormModel(@user_group, @form)
+			is_new = !@group.id
+			promise = @ugData.saveFormModel(@group, @form, @perm_form)
 
 			@startSpinner('saving')
 			promise.then( =>

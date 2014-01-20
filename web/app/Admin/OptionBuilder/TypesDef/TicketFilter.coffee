@@ -155,7 +155,7 @@ define [
 					'ticket_pris':     '/ticket_pris',
 					'ticket_works':    '/ticket_works',
 					'ticket_accounts': '/ticket_accounts',
-					'usergroups':      '/usergroups',
+					'usergroups':      '/user_groups',
 				}).then( (result) =>
 					data = result.data
 					@options_data['agents']           = data.agents.agents
@@ -166,7 +166,7 @@ define [
 					@options_data['ticket_works']     = data.ticket_works.workflows
 					@options_data['ticket_prods']     = data.ticket_prods?.products
 					@options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
-					@options_data['usergroups']       = data.usergroups.usergroups
+					@options_data['usergroups']       = data.usergroups.groups
 				)
 
 			return p

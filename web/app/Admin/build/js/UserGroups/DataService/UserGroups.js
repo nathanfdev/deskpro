@@ -20,7 +20,7 @@
         deferred = this.$q.defer();
         this.Api.sendGet('/user_groups').success(function(data) {
           var models;
-          models = data.user_groups;
+          models = data.groups;
           return deferred.resolve(models);
         }, function(data, status, headers, config) {
           return deferred.reject();
@@ -29,10 +29,10 @@
       };
 
       /*
-      # Remove a model
-      #
-      # @param {Integer} id
-      # @return {promise}
+      		# Remove a model
+      		#
+      		# @param {Integer} id
+      		# @return {promise}
       */
 
 
@@ -61,60 +61,67 @@
       };
 
       /*
-      # Get all data needed for the edit page
-      #
-      # @param {Integer} id
-      # @return {promise}
+      		# Get all data needed for the edit page. Also returns the "reg_group" usergroup info as well.
+      		#
+      		# @param {Integer} id
+      		# @return {promise}
       */
 
 
       UserGroups.prototype.loadEditUserGroupData = function(id) {
-        var data, deferred,
+        var deferred, sendTypes,
           _this = this;
         deferred = this.$q.defer();
-        if (id) {
-          this.Api.sendGet('/user_groups/' + id).then(function(result) {
-            var data;
-            data = {};
-            data.user_group = result.data.user_group;
-            data.form = _this.getFormMapper().getFormFromModel(data);
-            return deferred.resolve(data);
-          }, function() {
-            return deferred.reject();
-          });
-        } else {
-          data = {};
-          data.user_group = {
-            is_enabled: true
-          };
-          data.user_group.permissions = {};
-          data.form = this.getFormMapper().getFormFromModel(data);
-          deferred.resolve(data);
+        sendTypes = {
+          reg_group: '/user_groups/1'
+        };
+        if (id && id !== 1) {
+          sendTypes.group = "/user_groups/" + id;
         }
+        this.Api.sendDataGet(sendTypes).then(function(result) {
+          var data;
+          data = {};
+          data.reg_group = result.data.reg_group.group;
+          if (result.data.group) {
+            data.group = result.data.group.group;
+            data.form = _this.getFormMapper().getFormFromModel(data);
+          } else {
+            data.group = {
+              id: null,
+              title: '',
+              is_enabled: true
+            };
+            data.group.perms = {};
+            data.form = _this.getFormMapper().getFormFromModel(data);
+          }
+          return deferred.resolve(data);
+        }, function() {
+          return deferred.reject();
+        });
         return deferred.promise;
       };
 
       /*
-      # Saves a form model and merges model with list data
-      #
-      # @param {Object} model api_key model
-       	# @param {Object} formModel  The model representing the form
-      # @return {promise}
+      		# Saves a form model and merges model with list data
+      		#
+      		# @param {Object} model api_key model
+      		# @param {Object} formModel  The model representing the form
+      		# @return {promise}
       */
 
 
-      UserGroups.prototype.saveFormModel = function(model, formModel) {
+      UserGroups.prototype.saveFormModel = function(model, formModel, formPermsModel) {
         var mapper, postData, promise,
           _this = this;
         mapper = this.getFormMapper();
-        postData = mapper.getPostDataFromForm(formModel);
+        postData = mapper.getPostDataFromForm(formModel, formPermsModel);
         if (model.id) {
           promise = this.Api.sendPostJson('/user_groups/' + model.id, {
-            user_group: postData
+            group: postData
           });
         } else {
           promise = this.Api.sendPutJson('/user_groups', {
-            user_group: postData
+            group: postData
           }).success(function(data) {
             return model.id = data.id;
           });
