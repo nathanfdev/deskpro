@@ -1,8 +1,8 @@
 (function() {
   define(['DeskPRO/Util/Angular', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Util_Angular, Arrays, Util) {
     /*
-       # This is a simple base data service that implements some default functionality for
-       # loading the "list" collection, and some methods for keeping the list up to date.
+    	# This is a simple base data service that implements some default functionality for
+    	# loading the "list" collection, and some methods for keeping the list up to date.
     */
 
     var Admin_Main_DataService_BaseListEdit;
@@ -20,7 +20,7 @@
       }
 
       /*
-        	# An empty hook method for sub-classes
+      		# An empty hook method for sub-classes
       */
 
 
@@ -28,8 +28,8 @@
 
       /*
       		# Loads list of accounts
-        	#
-        	# @return {Promise}
+      		#
+      		# @return {Promise}
       */
 
 
@@ -303,14 +303,14 @@
       };
 
       /*
-        	# This method should be overriden.
-        	#
-        	# This method needs to load the list data and needs to
-        	# resolve to an array of models that will be set on the list collection.
-        	#
-        	# This method must return a promise
-        	#
-        	# @return {promise}
+      		# This method should be overriden.
+      		#
+      		# This method needs to load the list data and needs to
+      		# resolve to an array of models that will be set on the list collection.
+      		#
+      		# This method must return a promise
+      		#
+      		# @return {promise}
       */
 
 
@@ -501,7 +501,7 @@
       };
 
       /*
-        	# Re-orders the list collection
+      		# Re-orders the list collection
       */
 
 

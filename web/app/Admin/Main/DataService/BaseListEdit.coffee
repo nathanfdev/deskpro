@@ -8,9 +8,9 @@ define [
 	Util
 ) ->
 	###
-    # This is a simple base data service that implements some default functionality for
-    # loading the "list" collection, and some methods for keeping the list up to date.
-    ###
+	# This is a simple base data service that implements some default functionality for
+	# loading the "list" collection, and some methods for keeping the list up to date.
+	###
 	class Admin_Main_DataService_BaseListEdit
 		constructor: ->
 			Util_Angular.setInjectedProperties(this, arguments)
@@ -25,16 +25,16 @@ define [
 
 
 		###
-    	# An empty hook method for sub-classes
-    	###
+		# An empty hook method for sub-classes
+		###
 		init: ->
 			return
 
 
 		###
 		# Loads list of accounts
-    	#
-    	# @return {Promise}
+		#
+		# @return {Promise}
 		###
 		loadList: (reload) ->
 			if reload
@@ -223,14 +223,14 @@ define [
 			return false
 
 		###
-    	# This method should be overriden.
-    	#
-    	# This method needs to load the list data and needs to
-    	# resolve to an array of models that will be set on the list collection.
-    	#
-    	# This method must return a promise
-    	#
-    	# @return {promise}
+		# This method should be overriden.
+		#
+		# This method needs to load the list data and needs to
+		# resolve to an array of models that will be set on the list collection.
+		#
+		# This method must return a promise
+		#
+		# @return {promise}
 		###
 		_doLoadList: ->
 			throw new Exception("This method must be implemented by a sub-class")
@@ -374,7 +374,7 @@ define [
 
 
 		###
-    	# Re-orders the list collection
+		# Re-orders the list collection
 		###
 		reorderList: ->
 			if not @isListLoaded then return
