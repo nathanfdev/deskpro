@@ -55,9 +55,13 @@ class AgentsController extends AbstractController
 	{
 		$data = array('agents' => array());
 
+		$online_agents_userchat = $this->em->getRepository('DeskPRO:Person')->getActiveAgentIdsForUserChat();
+		$online_agents_userchat = array_fill_keys($online_agents_userchat, true);
+
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
 			$agent_data = $agent->toApiData();
 			$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+			$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 
 			$data['agents'][] = $agent_data;
 		}
