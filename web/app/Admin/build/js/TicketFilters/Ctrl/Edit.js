@@ -28,11 +28,15 @@
       };
 
       Admin_TicketFilters_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
-        if (this.$stateParams.id) {
-          promise = this.filterData.loadEditFilterData(this.$stateParams.id).then(function(data) {
-            var rowId, term, _i, _len, _ref1, _results;
+        var _this = this;
+        return this.filterData.loadEditFilterData(this.filterId).then(function(data) {
+          var rowId, term, _i, _len, _ref1, _results;
+          _this.agents = data.agents;
+          _this.teams = data.teams;
+          if (!_this.teams[0]) {
+            _this.teams = null;
+          }
+          if (data.filter) {
             _this.filter = data.filter;
             _this.form = _this.getFormFromModel(_this.filter);
             _ref1 = _this.filter.terms.terms;
@@ -43,19 +47,39 @@
               _results.push(_this.filter_criteria[rowId] = term);
             }
             return _results;
-          });
-          return promise;
-        } else {
-          this.filter = {};
-          this.form = this.getFormFromModel(this.filter);
-          return null;
-        }
+          } else {
+            _this.filter = {
+              is_global: true
+            };
+            return _this.form = _this.getFormFromModel(_this.filter);
+          }
+        });
       };
 
       Admin_TicketFilters_Ctrl_Edit.prototype.getFormFromModel = function(filterModel) {
         var form;
         form = {};
         form.title = filterModel.title || '';
+        if (filterModel.is_gloabl) {
+          form.perm_type = 'global';
+        } else if (filterModel.agent_team && this.teams[0]) {
+          form.perm_type = 'team';
+        } else {
+          form.perm_type = 'agent';
+        }
+        if (this.filter.person) {
+          form.agent_id = this.filter.person.id + "";
+        } else {
+          form.agent_id = this.agents[0].id + "";
+        }
+        form.team_id = null;
+        if (this.teams) {
+          if (this.filter.agent_team) {
+            form.team_id = this.filter.agent_team.id + "";
+          } else {
+            form.team_id = this.teams[0].id + "";
+          }
+        }
         return form;
       };
 
@@ -73,7 +97,12 @@
           url = "/ticket_filters";
         }
         postData = {
-          filter: this.form
+          filter: {
+            title: this.form.title,
+            is_global: this.form.perm_type === 'global',
+            person_id: this.form.perm_type === 'agent' ? parseInt(this.form.agent_id) || null : null,
+            agent_team_id: this.form.perm_type === 'team' ? parseInt(this.form.team_id) || null : null
+          }
         };
         postData.filter.terms = this.filter_criteria;
         return this.sendFormSaveApiCall(method, url, postData).then(function(res) {
@@ -81,6 +110,19 @@
           _this.filter.title = _this.form.title;
           if (res.data.filter_id) {
             _this.filter.id = res.data.filter_id;
+          }
+          _this.filter.is_global = _this.form.perm_type === 'global';
+          _this.filter.person = null;
+          _this.filter.agent_team = null;
+          if (_this.form.perm_type === 'agent') {
+            _this.filter.person = _this.agents.filter(function(x) {
+              return x.id === parseInt(_this.form.agent_id);
+            })[0];
+          }
+          if (_this.form.perm_type === 'team') {
+            _this.filter.agent_team = _this.teams.filter(function(x) {
+              return x.id === parseInt(_this.form.team_id);
+            })[0];
           }
           _this.filterData.mergeDataModel(_this.filter);
           if (!_this.filterId) {

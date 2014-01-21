@@ -22,6 +22,14 @@
         var _this = this;
         this.list = [];
         this.filterData = this.DataService.get('TicketFilters');
+        this.$scope.display_filter = {
+          type: "all",
+          agent: "0",
+          team: "0"
+        };
+        this.$scope.$watch('display_filter', function() {
+          return _this.updateFilterList();
+        }, true);
         return this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',
@@ -45,7 +53,7 @@
       };
 
       Admin_TicketFilters_Ctrl_List.prototype.initialLoad = function() {
-        var promise,
+        var bothPromise, data_promise, promise,
           _this = this;
         promise = this.filterData.loadList();
         promise.then(function(list) {
@@ -60,7 +68,59 @@
             }
           }
         });
-        return promise;
+        data_promise = this.Api.sendDataGet({
+          agents: '/agents',
+          teams: '/agent_teams'
+        }).then(function(res) {
+          _this.agents = res.data.agents.agents;
+          _this.teams = res.data.teams.agent_teams;
+          if (!_this.teams[0]) {
+            return _this.teams = null;
+          }
+        });
+        bothPromise = this.$q.all([promise, data_promise]);
+        bothPromise.then(function() {
+          return _this.updateFilterList();
+        });
+        return bothPromise;
+      };
+
+      Admin_TicketFilters_Ctrl_List.prototype.updateFilterList = function() {
+        var agentId, display_filter, filterList, teamId;
+        filterList = [];
+        display_filter = this.$scope.display_filter;
+        if (display_filter.type === 'all') {
+          filterList = this.list;
+        } else {
+          if (display_filter.type === 'global') {
+            filterList = this.list.filter(function(x) {
+              return x.is_global;
+            });
+          } else if (display_filter.type === 'agent') {
+            agentId = parseInt(display_filter.agent);
+            if (agentId) {
+              filterList = this.list.filter(function(x) {
+                return !x.is_global && x.person && x.person.id === agentId;
+              });
+            } else {
+              filterList = this.list.filter(function(x) {
+                return !x.is_global && x.person;
+              });
+            }
+          } else if (display_filter.type === 'team') {
+            teamId = parseInt(display_filter.team);
+            if (teamId) {
+              filterList = this.list.filter(function(x) {
+                return !x.is_global && x.agent_team && x.agent_team.id === teamId;
+              });
+            } else {
+              filterList = this.list.filter(function(x) {
+                return !x.is_global && x.agent_team;
+              });
+            }
+          }
+        }
+        return this.$scope.filterList = filterList;
       };
 
       /*

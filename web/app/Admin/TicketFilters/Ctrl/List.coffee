@@ -11,6 +11,15 @@ define [
 		init: ->
 			@list = []
 			@filterData = @DataService.get('TicketFilters')
+			@$scope.display_filter = {
+				type:  "all",
+				agent: "0",
+				team:  "0"
+			}
+
+			@$scope.$watch('display_filter', =>
+				@updateFilterList()
+			, true)
 
 			@sortedListOptions = {
 				axis: 'y',
@@ -45,8 +54,47 @@ define [
 						@$state.go('tickets.ticket_filters.create')
 			)
 
-			return promise
+			data_promise = @Api.sendDataGet({
+				agents: '/agents',
+				teams: '/agent_teams'
+			}).then( (res) =>
+				@agents = res.data.agents.agents
+				@teams = res.data.teams.agent_teams
 
+				if not @teams[0]
+					@teams = null
+			)
+
+			bothPromise = @$q.all([promise, data_promise])
+			bothPromise.then(=>
+				@updateFilterList()
+			)
+
+			return bothPromise;
+
+		updateFilterList: ->
+			filterList = []
+			display_filter = @$scope.display_filter
+
+			if display_filter.type == 'all'
+				filterList = @list
+			else
+				if display_filter.type == 'global'
+					filterList = @list.filter((x) -> x.is_global)
+				else if display_filter.type == 'agent'
+					agentId = parseInt(display_filter.agent)
+					if agentId
+						filterList = @list.filter((x) -> !x.is_global && x.person && x.person.id == agentId)
+					else
+						filterList = @list.filter((x) -> !x.is_global && x.person)
+				else if display_filter.type == 'team'
+					teamId = parseInt(display_filter.team)
+					if teamId
+						filterList = @list.filter((x) -> !x.is_global && x.agent_team && x.agent_team.id == teamId)
+					else
+						filterList = @list.filter((x) -> !x.is_global && x.agent_team)
+
+			@$scope.filterList = filterList
 
 		###
 		# Show the delete dlg

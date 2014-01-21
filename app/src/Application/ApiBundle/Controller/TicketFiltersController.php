@@ -57,9 +57,7 @@ class TicketFiltersController extends AbstractController
 				'sys_name'          => $filter->sys_name,
 				'display_order'     => $filter->display_order,
 				'is_global'         => $filter->is_global,
-				'person_id'         => $filter->person ? $filter->person->id : null,
 				'person'            => $filter->person ? $filter->person->toApiData(true) : null,
-				'agent_team_id'     => $filter->agent_team ? $filter->agent_team->id : null,
 				'agent_team'        => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
 			);
 
@@ -102,11 +100,20 @@ class TicketFiltersController extends AbstractController
 			}
 		} else {
 			$filter = new TicketFilter();
+			$filter->person = $this->person;
 		}
 
 		$filter->title = $this->in->getString('filter.title');
-		if (!$filter->person) {
-			$filter->person = $this->person;
+		$filter->is_global = $this->in->getBool('filter.is_global');
+
+		$filter->person = null;
+		if ($this->in->getUint('filter.person_id')) {
+			$filter->person = $this->container->getAgentData()->get($this->in->getUint('filter.person_id'));
+		}
+
+		$filter->agent_team = null;
+		if ($this->in->getUint('filter.agent_team_id')){
+			$filter->agent_team = $this->container->getAgentData()->getTeam($this->in->getUint('filter.agent_team_id'));
 		}
 
 		$filter->terms = new FilterTerms();

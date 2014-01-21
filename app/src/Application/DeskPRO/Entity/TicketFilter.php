@@ -38,7 +38,6 @@ use Application\DeskPRO\Domain\DomainObject;
 
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -408,7 +407,6 @@ class TicketFilter extends DomainObject
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
 		$metadata->addPropertyConstraint('title', new NotBlank());
-		$metadata->addPropertyConstraint('person', new NotNull());
 	}
 
 
@@ -490,6 +488,7 @@ class TicketFilter extends DomainObject
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'person',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'dpApi'        => true,
 			'joinColumns'  => array(array(
 				'name'                 => 'person_id',
 				'referencedColumnName' => 'id',
@@ -500,6 +499,7 @@ class TicketFilter extends DomainObject
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'agent_team',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'dpApi'        => true,
 			'joinColumns' => array(array(
 				'name'                 => 'agent_team_id',
 				'referencedColumnName' => 'id',

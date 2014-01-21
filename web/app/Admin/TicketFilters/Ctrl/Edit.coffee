@@ -20,24 +20,49 @@ define [
 			@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
 
 		initialLoad: ->
-			if @$stateParams.id
-				promise = @filterData.loadEditFilterData(@$stateParams.id).then( (data) =>
+			return @filterData.loadEditFilterData(@filterId).then( (data) =>
+				@agents = data.agents
+				@teams = data.teams
+				if not @teams[0]
+					@teams = null
+
+				if data.filter
 					@filter = data.filter
 					@form = @getFormFromModel(@filter)
 
 					for term in @filter.terms.terms
 						rowId = Util.uid('term')
 						@filter_criteria[rowId] = term
-				)
-				return promise
-			else
-				@filter = {}
-				@form = @getFormFromModel(@filter)
-				return null
+				else
+					@filter = {
+						is_global: true
+					}
+					@form = @getFormFromModel(@filter)
+			)
 
 		getFormFromModel: (filterModel) ->
 			form = {}
 			form.title = filterModel.title || ''
+
+			if filterModel.is_gloabl
+				form.perm_type = 'global'
+			else if filterModel.agent_team and @teams[0]
+				form.perm_type = 'team'
+			else
+				form.perm_type = 'agent'
+
+			if @filter.person
+				form.agent_id = @filter.person.id + ""
+			else
+				form.agent_id = @agents[0].id + ""
+
+			form.team_id = null
+			if @teams
+				if @filter.agent_team
+					form.team_id = @filter.agent_team.id + ""
+				else
+					form.team_id = @teams[0].id + ""
+
 			return form
 
 		saveForm: ->
@@ -51,7 +76,12 @@ define [
 				url = "/ticket_filters"
 
 			postData = {
-				filter: @form
+				filter: {
+					title: @form.title,
+					is_global:     @form.perm_type == 'global',
+					person_id:     if @form.perm_type == 'agent' then parseInt(@form.agent_id) || null else null,
+					agent_team_id: if @form.perm_type == 'team' then parseInt(@form.team_id) || null else null
+				}
 			}
 			postData.filter.terms = @filter_criteria
 
@@ -61,6 +91,15 @@ define [
 				@filter.title = @form.title
 				if res.data.filter_id
 					@filter.id = res.data.filter_id
+
+				@filter.is_global = @form.perm_type == 'global'
+				@filter.person = null
+				@filter.agent_team = null
+
+				if @form.perm_type == 'agent'
+					@filter.person = @agents.filter((x) => x.id == parseInt(@form.agent_id))[0]
+				if @form.perm_type == 'team'
+					@filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
 
 				@filterData.mergeDataModel(@filter)
 

@@ -77,12 +77,23 @@
 
 
       Admin_TicketFilters_DataService_TicketFilters.prototype.loadEditFilterData = function(id) {
-        var deferred;
+        var deferred, types;
         deferred = this.$q.defer();
-        this.Api.sendGet('/ticket_filters/' + id).then(function(result) {
-          return deferred.resolve({
-            filter: result.data.filter
-          });
+        types = {};
+        if (id) {
+          types.filter = '/ticket_filters/' + id;
+        }
+        types.agents = '/agents';
+        types.teams = '/agent_teams';
+        this.Api.sendDataGet(types).then(function(res) {
+          var data;
+          data = {};
+          if (res.data.filter) {
+            data.filter = res.data.filter.filter;
+          }
+          data.agents = res.data.agents.agents;
+          data.teams = res.data.teams.agent_teams;
+          return deferred.resolve(data);
         }, function() {
           return deferred.reject();
         });
