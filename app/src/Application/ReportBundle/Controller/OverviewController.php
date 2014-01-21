@@ -95,7 +95,7 @@ class OverviewController extends AbstractController
 
 	public function doUpdateStatAction($type, $grouping_field = null)
 	{
-		$this->person->loadPrefGroup('reports.ui.overview.options'); 
+		$this->person->loadPrefGroup('reports.ui.overview.options');
 
 		if (!$grouping_field) {
 			$grouping_field = $this->in->getString('grouping_field');
