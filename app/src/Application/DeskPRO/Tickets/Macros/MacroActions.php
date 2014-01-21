@@ -137,7 +137,7 @@ class MacroActions implements \Serializable, MacroActionInterface
 
 			$data['actions'][] = array(
 				'type'    => $actions->getActionType(),
-				'options' => $actions->getActionOptions()
+				'options' => $actions->getActionOptions()->all()
 			);
 		}
 
@@ -182,6 +182,15 @@ class MacroActions implements \Serializable, MacroActionInterface
 		$data = json_decode($data, true);
 
 		$this->__construct();
-		$this->importFromArray($data);
+
+		foreach ($data['actions'] as $action_info) {
+			try {
+				$this->addActionFromArray($action_info);
+			} catch (\Exception $e) {
+				if (!empty($action_info['type'])) {
+					KernelErrorHandler::logException($e, false, md5('macro_' . $action_info['type']));
+				}
+			}
+		}
 	}
 }

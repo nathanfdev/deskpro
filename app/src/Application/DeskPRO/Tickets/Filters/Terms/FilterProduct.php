@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on set product
+ *
+ * @option int[] product_ids
+ */
 class FilterProduct extends AbstractFilterTerm
 {
 	/**

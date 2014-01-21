@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Doctrine\Common\Collections\Collection;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -70,7 +71,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	private $op;
 
 	/**
-	 * @var array
+	 * @var \Orb\Util\OptionsArray
 	 */
 	private $options;
 
@@ -81,8 +82,38 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 */
 	public function __construct($op, array $options)
 	{
-		$this->op      = $op;
-		$this->options = $options;
+		$this->op = $op;
+		$this->_initOptions($options);
+	}
+
+
+	/**
+	 * @param array $options
+	 */
+	private function _initOptions(array $options)
+	{
+		$this->options = $this->getOptionsDef();
+		$this->options->setAll($options);
+		$this->options->setArrayDefault($this->getDefaultOptions());
+		$this->options->ensureRequired();
+	}
+
+
+	/**
+	 * @return array
+	 */
+	protected function getDefaultOptions()
+	{
+		return array();
+	}
+
+
+	/**
+	 * @return CheckedOptionsArray
+	 */
+	protected function getOptionsDef()
+	{
+		return new CheckedOptionsArray();
 	}
 
 

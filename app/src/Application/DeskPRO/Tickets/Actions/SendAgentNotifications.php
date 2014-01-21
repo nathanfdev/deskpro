@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Orb\Util\Arrays;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Send an email to the user
@@ -50,6 +51,17 @@ use Application\DeskPRO\Tickets\Util as TicketUtil;
  */
 class SendAgentNotifications extends AbstractAction implements ActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addValidNames('template', 'from_name', 'force_agent_ids');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

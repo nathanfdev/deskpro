@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on subject
+ *
+ * @option string subject
+ */
 class FilterSubject extends AbstractFilterTerm
 {
 	/**

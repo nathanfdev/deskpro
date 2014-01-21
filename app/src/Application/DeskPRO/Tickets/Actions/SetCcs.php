@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Adds and removed CC'ed users to the ticket, creating users as necessary.
@@ -46,6 +47,17 @@ use Application\DeskPRO\Tickets\ExecutorContext;
  */
 class SetCcs extends AbstractAction implements ActionInterface, MacroActionInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addValidNames('add_emails', 'remove_emails');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

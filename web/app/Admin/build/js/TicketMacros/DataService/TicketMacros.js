@@ -65,10 +65,13 @@
           data = {};
           if (((_ref1 = result.data.macro) != null ? _ref1.macro : void 0) != null) {
             data.macro = result.data.macro.macro;
+            data.macro.person_id = data.macro.person ? data.macro.person.id + "" : result.data.agents.agents[0].id + "";
           } else {
             data.macro = {
               id: null,
-              title: ''
+              title: '',
+              is_global: true,
+              person_id: result.data.agents.agents[0].id + ""
             };
           }
           data.agents = result.data.agents.agents;

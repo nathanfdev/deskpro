@@ -150,6 +150,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'person',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'dpApi'        => true,
 			'joinColumns'  => array(array(
 				'name'                 => 'person_id',
 				'referencedColumnName' => 'id',

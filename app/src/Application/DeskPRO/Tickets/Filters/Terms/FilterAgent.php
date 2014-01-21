@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on assigned agent
+ *
+ * @option int[] agent_ids
+ */
 class FilterAgent extends AbstractFilterTerm
 {
 	/**

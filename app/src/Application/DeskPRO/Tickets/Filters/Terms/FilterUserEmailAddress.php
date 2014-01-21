@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on ticket user email address
+ *
+ * @option string email
+ */
 class FilterUserEmailAddress extends AbstractFilterTerm
 {
 	/**
@@ -45,7 +50,7 @@ class FilterUserEmailAddress extends AbstractFilterTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('domain');
+		$options->addRequiredNames('email');
 		return $options;
 	}
 
@@ -57,8 +62,8 @@ class FilterUserEmailAddress extends AbstractFilterTerm
 	{
 		$options = $this->getTermOptions();
 
-		$query = $this->getStringMatchQuery('org_email_domain.domain', $options['domain']);
-		$query->addJoin('tickets.organization.email_domains', 'organization_email_domains', 'org_email_domain', 'org_email_domain.organization_id = tickets.organization_id');
+		$query = $this->getStringMatchQuery('user_email.email', $options['email']);
+		$query->addJoin('tickets.person.email', 'people_emails', 'user_email', 'user_email.person_id = tickets.person_id');
 		return $query;
 	}
 }

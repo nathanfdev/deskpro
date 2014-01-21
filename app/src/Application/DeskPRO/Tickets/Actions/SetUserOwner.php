@@ -39,6 +39,7 @@ use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Validator\StringEmail;
 
 /**
@@ -49,6 +50,18 @@ use Orb\Validator\StringEmail;
  */
 class SetUserOwner extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('email_address');
+		$options->addValidNames('add_cc');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

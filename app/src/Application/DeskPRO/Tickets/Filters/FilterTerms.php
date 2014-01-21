@@ -175,13 +175,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
 	public function importFromArray(array $data)
 	{
 		foreach ($data['terms'] as $term_info) {
-			try {
-				$this->addTermFromArray($term_info);
-			} catch (\Exception $e) {
-				if (!empty($term_info['type'])) {
-					KernelErrorHandler::logException($e, false, md5('filter_' . $term_info['type']));
-				}
-			}
+			$this->addTermFromArray($term_info);
 		}
 	}
 
@@ -211,6 +205,15 @@ class FilterTerms implements \Serializable, FilterTermInterface
 	{
 		$data = json_decode($data, true);
 		$this->__construct();
-		$this->importFromArray($data);
+
+		foreach ($data['terms'] as $term_info) {
+			try {
+				$this->addTermFromArray($term_info);
+			} catch (\Exception $e) {
+				if (!empty($term_info['type'])) {
+					KernelErrorHandler::logException($e, false, md5('filter_' . $term_info['type']));
+				}
+			}
+		}
 	}
 }

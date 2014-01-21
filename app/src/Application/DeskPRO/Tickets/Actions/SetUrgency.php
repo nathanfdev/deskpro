@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Set the urgency.
@@ -58,6 +59,18 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 	const MODE_SUB   = 'sub';
 	const MODE_RAISE = 'raise';
 	const MODE_LOWER = 'lower';
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('mode', 'urgency');
+		return $options;
+	}
+
 
 	/**
 	 * @param string $mode

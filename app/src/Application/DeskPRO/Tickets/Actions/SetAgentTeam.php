@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Sets the assigned agent team
@@ -45,6 +46,17 @@ use Application\DeskPRO\Tickets\ExecutorContext;
  */
 class SetAgentTeam extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('agent_team_id');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

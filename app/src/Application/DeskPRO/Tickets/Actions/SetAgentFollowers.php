@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Adds and removes agent followers from the ticket.
@@ -46,6 +47,17 @@ use Application\DeskPRO\Tickets\ExecutorContext;
  */
 class SetAgentFollowers extends AbstractAction implements ActionInterface, MacroActionInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addValidNames('add_agent_ids', 'remove_agent_ids');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

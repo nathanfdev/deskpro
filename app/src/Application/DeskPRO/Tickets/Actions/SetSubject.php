@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Set the subject.
@@ -45,6 +46,17 @@ use Application\DeskPRO\Tickets\ExecutorContext;
  */
 class SetSubject extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('subject');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

@@ -43,7 +43,6 @@ define [
 		loadEditMacroData: (id) ->
 
 			deferred = @$q.defer()
-
 			@Api.sendDataGet({
 				'macro': (if id then '/ticket_macros/' + id else null)
 				'agents': '/agents'
@@ -52,10 +51,13 @@ define [
 
 				if result.data.macro?.macro?
 					data.macro = result.data.macro.macro
+					data.macro.person_id = if data.macro.person then data.macro.person.id + "" else result.data.agents.agents[0].id + ""
 				else
 					data.macro = {
 						id: null,
-						title: ''
+						title: '',
+						is_global: true
+						person_id: result.data.agents.agents[0].id + ""
 					}
 
 				data.agents = result.data.agents.agents

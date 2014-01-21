@@ -38,6 +38,9 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on hold status
+ */
 class FilterIsHold extends AbstractFilterTerm
 {
 	/**

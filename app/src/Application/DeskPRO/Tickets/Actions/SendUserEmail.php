@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketEmail;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Send an email to the user
@@ -48,6 +49,17 @@ use Application\DeskPRO\Tickets\TicketEmail;
  */
 class SendUserEmail extends AbstractAction implements ActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addValidNames('template', 'from_name', 'do_cc_users');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

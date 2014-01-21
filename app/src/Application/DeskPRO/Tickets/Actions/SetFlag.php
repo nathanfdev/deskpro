@@ -38,6 +38,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Sets a flag for a ticket. In a trigger context, this sets on every agent account.
@@ -47,6 +48,17 @@ use Application\DeskPRO\Tickets\ExecutorContext;
  */
 class SetFlag extends AbstractAction implements ActionInterface, MacroActionInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('color');
+		return $options;
+	}
+
+
 	/**
 	 * @param Connection $db
 	 * @param Ticket $ticket

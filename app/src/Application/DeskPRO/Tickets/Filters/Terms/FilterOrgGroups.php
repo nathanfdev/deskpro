@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on ticket org usergroups
+ *
+ * @option int[] group_ids
+ */
 class FilterOrgGroups extends AbstractFilterTerm
 {
 	/**

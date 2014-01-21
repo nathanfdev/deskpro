@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Sets the status on SLAs
@@ -46,6 +47,17 @@ use Application\DeskPRO\Tickets\ExecutorContext;
  */
 class SetSlaStatuses extends AbstractAction implements ActionInterface, MacroActionInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('sla_status', 'sla_ids');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

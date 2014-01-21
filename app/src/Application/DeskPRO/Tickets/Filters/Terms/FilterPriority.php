@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on set priority
+ *
+ * @option int[] priority_ids
+ */
 class FilterPriority extends AbstractFilterTerm
 {
 	/**

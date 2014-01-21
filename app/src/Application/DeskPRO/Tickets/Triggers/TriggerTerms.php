@@ -147,7 +147,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 					$set_terms[] = array(
 						'type'    => $set_criteria->getTermType(),
 						'op'      => $set_criteria->getTermOperator(),
-						'options' => $set_criteria->getTermOptions()
+						'options' => $set_criteria->getTermOptions()->all()
 					);
 				}
 
@@ -164,7 +164,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 				$data['terms'][] = array(
 					'type'    => $criteria->getTermType(),
 					'op'      => $criteria->getTermOperator(),
-					'options' => $criteria->getTermOptions()
+					'options' => $criteria->getTermOptions()->all()
 				);
 			}
 		}
@@ -209,6 +209,15 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	{
 		$data = json_decode($data, true);
 		$this->__construct();
-		$this->importFromArray($data);
+
+		foreach ($data['terms'] as $term_info) {
+			try {
+				$this->addTermFromArray($term_info);
+			} catch (\Exception $e) {
+				if (!empty($term_info['type'])) {
+					KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
+				}
+			}
+		}
 	}
 }

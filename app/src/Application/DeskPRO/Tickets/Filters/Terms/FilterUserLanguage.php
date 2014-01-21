@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Filters based on ticket user language
+ *
+ * @option int[] language_ids
+ */
 class FilterUserLanguage extends AbstractFilterTerm
 {
 	/**

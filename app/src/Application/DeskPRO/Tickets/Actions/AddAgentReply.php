@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\SnippetFormatter;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Adds a reply to the ticket
@@ -48,6 +49,18 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
  */
 class AddAgentReply extends AbstractAction implements ActionInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('by_agent_id');
+		$options->addRequiredNames('reply_text');
+		$options->addValidNames('by_assigned_agent');
+		return $options;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

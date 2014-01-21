@@ -37,8 +37,27 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
+/**
+ * Checks if a subject matches
+ *
+ * @option string subject
+ */
 class CheckSubject extends AbstractTriggerTerm
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('subject');
+		return $options;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
 	{
 		$options = $this->getTermOptions();

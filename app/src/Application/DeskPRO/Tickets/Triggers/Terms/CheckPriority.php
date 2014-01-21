@@ -36,9 +36,29 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Checks if a priority is set
+ *
+ * @option int[] priority_ids
+ */
 class CheckPriority extends AbstractTriggerTerm
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('priority_ids');
+		return $options;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
 	{
 		$options = $this->getTermOptions();

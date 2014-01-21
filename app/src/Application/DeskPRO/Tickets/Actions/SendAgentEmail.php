@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketEmail;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Send an email to one or more agents
@@ -47,6 +48,18 @@ use Application\DeskPRO\Tickets\TicketEmail;
  */
 class SendAgentEmail extends AbstractAction implements ActionInterface, NoopableInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('agent_ids');
+		$options->addRequiredNames('template');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

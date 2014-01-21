@@ -37,7 +37,12 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\CheckedOptionsArray;
 
-class FilterOrgName extends AbstractFilterTerm
+/**
+ * Filters based on ticket org email domain
+ *
+ * @option string domain
+ */
+class FilterOrgEmailDomain extends AbstractFilterTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -45,7 +50,7 @@ class FilterOrgName extends AbstractFilterTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
+		$options->addRequiredNames('domain');
 		return $options;
 	}
 
@@ -57,8 +62,8 @@ class FilterOrgName extends AbstractFilterTerm
 	{
 		$options = $this->getTermOptions();
 
-		$query = $this->getStringMatchQuery('org.name', $options['name']);
-		$query->addJoin('tickets.organization', 'organizations', 'org', 'org.id = tickets.organization_id');
+		$query = $this->getStringMatchQuery('org_email_domain.domain', $options['domain']);
+		$query->addJoin('tickets.organization.email_domains', 'organization_email_domains', 'org_email_domain', 'org_email_domain.organization_id = tickets.organization_id');
 		return $query;
 	}
 }

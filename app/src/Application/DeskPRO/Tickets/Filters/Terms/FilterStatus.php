@@ -38,6 +38,12 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
+
+/**
+ * Filters based on status
+ *
+ * @option string|string[] status
+ */
 class FilterStatus extends AbstractFilterTerm
 {
 	/**

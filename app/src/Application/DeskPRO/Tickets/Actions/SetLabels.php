@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Adds and removes lables from tickets.
@@ -47,6 +48,17 @@ use Application\DeskPRO\Tickets\ExecutorContext;
  */
 class SetLabels extends AbstractAction implements ActionInterface, MacroActionInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addValidNames('remove_labels', 'add_labels');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

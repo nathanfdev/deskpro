@@ -36,6 +36,9 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
 
+/**
+ * Filters based on ticket user disabled status
+  */
 class FilterUserIsDisabled extends AbstractFilterTerm
 {
 	/**
