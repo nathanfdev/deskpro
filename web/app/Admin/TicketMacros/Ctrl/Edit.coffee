@@ -11,6 +11,7 @@ define [
 		init: ->
 			@macroData  = @DataService.get('TicketMacros')
 
+			@macroId = parseInt(@$stateParams.id)
 			@macro  = null
 			@agents = null
 			@form   = null
@@ -19,7 +20,7 @@ define [
 			@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
 
 		initialLoad: ->
-			promise = @macroData.loadEditMacroData(@$stateParams.id || null).then( (data) =>
+			promise = @macroData.loadEditMacroData(@macroId || null).then( (data) =>
 				@macro  = data.macro
 				@agents = data.agents
 				@form   = data.form
@@ -27,8 +28,7 @@ define [
 			return promise
 
 		saveForm: ->
-			is_new = !!@macro.id
-
+			@form.agents = @agents
 			promise = @macroData.saveFormModel(@macro, @form)
 
 			@startSpinner('saving')
@@ -36,7 +36,7 @@ define [
 				@stopSpinner('saving')
 
 				@skipDirtyState()
-				if is_new
+				if !@macroId
 					@$state.go('tickets.macros.gocreate')
 			)
 

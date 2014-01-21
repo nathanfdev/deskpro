@@ -121,6 +121,11 @@
           });
         }
         promise.success(function() {
+          macroModel.title = formModel.title;
+          macroModel.is_global = formModel.is_global;
+          macroModel.person = parseInt(formModel.person_id) ? formModel.agents.filter(function(x) {
+            return x.id === parseInt(formModel.person_id);
+          })[0] : null;
           mapper.applyFormToModel(macroModel, formModel);
           return _this.mergeDataModel(macroModel);
         });

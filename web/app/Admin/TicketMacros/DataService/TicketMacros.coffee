@@ -102,6 +102,11 @@ define [
 				)
 
 			promise.success(=>
+
+				macroModel.title = formModel.title
+				macroModel.is_global = formModel.is_global
+				macroModel.person = if parseInt(formModel.person_id) then formModel.agents.filter( (x) -> x.id == parseInt(formModel.person_id) )[0] else null
+
 				mapper.applyFormToModel(macroModel, formModel)
 				@mergeDataModel(macroModel)
 			)

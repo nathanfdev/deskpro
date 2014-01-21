@@ -19,18 +19,62 @@
       Admin_TicketMacros_Ctrl_List.DEPS = ['$state', '$stateParams', 'DataService'];
 
       Admin_TicketMacros_Ctrl_List.prototype.init = function() {
+        var _this = this;
         this.list = [];
-        return this.macroData = this.DataService.get('TicketMacros');
+        this.macroData = this.DataService.get('TicketMacros');
+        this.$scope.display_filter = {
+          type: "all",
+          agent: "0"
+        };
+        return this.$scope.$watch('display_filter', function() {
+          return _this.updateFilterList();
+        }, true);
       };
 
       Admin_TicketMacros_Ctrl_List.prototype.initialLoad = function() {
-        var promise,
+        var bothPromise, data_promise, promise,
           _this = this;
         promise = this.macroData.loadList();
         promise.then(function(list) {
           return _this.list = list;
         });
-        return promise;
+        data_promise = this.Api.sendDataGet({
+          agents: '/agents'
+        }).then(function(res) {
+          return _this.agents = res.data.agents.agents;
+        });
+        bothPromise = this.$q.all([promise, data_promise]);
+        bothPromise.then(function() {
+          return _this.updateFilterList();
+        });
+        return bothPromise;
+      };
+
+      Admin_TicketMacros_Ctrl_List.prototype.updateFilterList = function() {
+        var agentId, display_filter, filterList;
+        filterList = [];
+        display_filter = this.$scope.display_filter;
+        if (display_filter.type === 'all') {
+          filterList = this.list;
+        } else {
+          if (display_filter.type === 'global') {
+            filterList = this.list.filter(function(x) {
+              return x.is_global;
+            });
+          } else if (display_filter.type === 'agent') {
+            agentId = parseInt(display_filter.agent);
+            if (agentId) {
+              filterList = this.list.filter(function(x) {
+                return !x.is_global && x.person && x.person.id === agentId;
+              });
+            } else {
+              filterList = this.list.filter(function(x) {
+                return !x.is_global && x.person;
+              });
+            }
+          }
+        }
+        return this.$scope.filterList = filterList;
       };
 
       /*

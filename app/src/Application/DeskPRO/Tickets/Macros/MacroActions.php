@@ -40,9 +40,7 @@ use Application\DeskPRO\Tickets\Actions\MacroActionComposite;
 use Application\DeskPRO\Tickets\Actions\ActionContext;
 use Application\DeskPRO\Tickets\Actions\MacroActionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
-
-// TODO
-require_once(DP_ROOT.'/src/Application/DeskPRO/Tickets/Actions/TODO.php');
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 /**
  * This is a wrapper around an ActionComposite that is able to serialize.
@@ -100,10 +98,10 @@ class MacroActions implements \Serializable, MacroActionInterface
 	 *
 	 * @param Person $person
 	 * @param Ticket $ticket
-	 * @param ActionContext $context
+	 * @param ExecutorContext $context
 	 * @return array
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ActionContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
 		return $this->actions->getMacroPermissionErrors($person, $ticket, $context);
 	}
@@ -112,10 +110,10 @@ class MacroActions implements \Serializable, MacroActionInterface
 	/**
 	 * @param Person $person
 	 * @param Ticket $ticket
-	 * @param ActionContext $context
+	 * @param ExecutorContext $context
 	 * @return void
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ActionContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
 	{
 		$this->actions->applyMacro($person, $ticket, $context);
 	}

@@ -20,6 +20,7 @@
 
       Admin_TicketMacros_Ctrl_Edit.prototype.init = function() {
         this.macroData = this.DataService.get('TicketMacros');
+        this.macroId = parseInt(this.$stateParams.id);
         this.macro = null;
         this.agents = null;
         this.form = null;
@@ -30,7 +31,7 @@
       Admin_TicketMacros_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.macroData.loadEditMacroData(this.$stateParams.id || null).then(function(data) {
+        promise = this.macroData.loadEditMacroData(this.macroId || null).then(function(data) {
           _this.macro = data.macro;
           _this.agents = data.agents;
           return _this.form = data.form;
@@ -39,15 +40,15 @@
       };
 
       Admin_TicketMacros_Ctrl_Edit.prototype.saveForm = function() {
-        var is_new, promise,
+        var promise,
           _this = this;
-        is_new = !!this.macro.id;
+        this.form.agents = this.agents;
         promise = this.macroData.saveFormModel(this.macro, this.form);
         this.startSpinner('saving');
         return promise.then(function() {
           _this.stopSpinner('saving');
           _this.skipDirtyState();
-          if (is_new) {
+          if (!_this.macroId) {
             return _this.$state.go('tickets.macros.gocreate');
           }
         });
