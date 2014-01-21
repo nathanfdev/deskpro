@@ -118,9 +118,9 @@ class Callback extends AbstractValidator
 					$this->addError($info);
 				}
 			}
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 }
