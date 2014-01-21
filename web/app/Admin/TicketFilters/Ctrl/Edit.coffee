@@ -30,6 +30,7 @@ define [
 					@filter = data.filter
 					@form = @getFormFromModel(@filter)
 
+					@filter_criteria = {}
 					for term in @filter.terms.terms
 						rowId = Util.uid('term')
 						@filter_criteria[rowId] = term

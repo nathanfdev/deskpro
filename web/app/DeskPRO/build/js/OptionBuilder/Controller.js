@@ -99,7 +99,7 @@
         });
         this.$scope.$watch('saveTarget', function() {
           return _this.reset();
-        }, true);
+        });
       }
 
       DeskPRO_OptionBuilder_Controller.prototype.reset = function() {
@@ -119,7 +119,11 @@
           for (rowId in _ref1) {
             if (!__hasProp.call(_ref1, rowId)) continue;
             term = _ref1[rowId];
-            _results.push(this.addRow(term.type, term, rowId));
+            if (term && term.type) {
+              _results.push(this.addRow(term.type, term, rowId));
+            } else {
+              _results.push(void 0);
+            }
           }
           return _results;
         }

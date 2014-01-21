@@ -39,6 +39,7 @@
           if (data.filter) {
             _this.filter = data.filter;
             _this.form = _this.getFormFromModel(_this.filter);
+            _this.filter_criteria = {};
             _ref1 = _this.filter.terms.terms;
             _results = [];
             for (_i = 0, _len = _ref1.length; _i < _len; _i++) {

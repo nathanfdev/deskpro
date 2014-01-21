@@ -102,9 +102,13 @@ define ->
 				@updateOptionTypes()
 			)
 
+			# This is a shallow-watch on purpose
+			# This builder isnt designed for full model-value syncing like ngModel
+			# So this is looking for the actual saveTarget being changed (eg a new object)
+			# Otherwise, the object is fully managed internally
 			@$scope.$watch('saveTarget', =>
 				@reset()
-			, true)
+			)
 
 		reset: ->
 			@rowsCount = 0
@@ -118,7 +122,8 @@ define ->
 
 			if @$scope.saveTarget
 				for own rowId, term of @$scope.saveTarget
-					@addRow(term.type, term, rowId)
+					if term and term.type
+						@addRow(term.type, term, rowId)
 
 		###
     	# Updates the option types available in the select box
@@ -228,7 +233,6 @@ define ->
 					scope: rowScope
 				}
 				@$scope.saveTarget[rowId] = rowScope.value
-
 			)
 
 		###
