@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Form\CustomField\Model;
 
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class ChoiceField extends CustomFieldAbstract
@@ -50,12 +51,12 @@ class ChoiceField extends CustomFieldAbstract
 	public $choices_structure = '';
 	public $choices_removed_structure = '';
 
-	public $default_option = '';
+	public $default_value = null;
 
 	protected function init()
 	{
 		if ($this->_field->default_value) {
-			$this->default_option = $this->_field->default_value;
+			$this->default_value = $this->_field->default_value;
 		}
 
 		if ($this->_field->getOption('multiple')) {
@@ -150,91 +151,95 @@ class ChoiceField extends CustomFieldAbstract
 			$field->setOption('agent_max_length', null);
 		}
 
-		if (!$this->default_option) {
+		if (!$this->default_value) {
 			$field->default_value = null;
 		}
 	}
 
 	protected function saveAdditional()
 	{
-		$choices_structure = @json_decode($this->choices_structure, true);
-		$choices_removed   = @json_decode($this->choices_removed_structure, true);
-		if (!$choices_removed) $choices_removed = array();
+		/*
+		 This array looks like this:
+		 	{
+				"cb_1": {
+					"id": "cb_1",
+					"@is_new": true,
+					"title": "Title",
+					"parent_id": null,
+					"display_order": 0
+				}
+				...
+			}
+		 */
+		$choices_structure = $this->choices_structure;
+		$choices_structure = Arrays::keyFromData($choices_structure, 'id');
 
 		$choices = array();
-		foreach ($this->_field->children as $child) {
-			$choices[$child->getId()] = $child;
+		$removed_ids = array();
+		foreach ($this->_field->children as $ch) {
+			if (!isset($choices_structure[$ch->id])) {
+				$this->_em->remove($ch);
+				$removed_ids[$ch->id] = true;
+			} else {
+				$choices[$ch->getId()] = $ch;
+			}
 		}
 
-		// Maps string IDs generated on the client with real
-		// field IDs saved in the database that we've saved right now
-		$new_id_map = array();
-
-		foreach ($choices_structure as $k => $info) {
-			$parent_id = $info['parent_id'];
-			if ($parent_id && is_string($parent_id)) {
-				if (!isset($new_id_map[$parent_id])) {
-					continue;
+		// If there were removed parents, then all children under those parents
+		// must be removed as well
+		do {
+			$changed = false;
+			foreach ($choices as $ch) {
+				if ($ch->getOption('parent_id') && isset($removed_ids[$ch->getOption('parent_id')])) {
+					$this->_em->remove($ch);
+					$removed_id[$ch->id] = true;
+					$changed = true;
 				}
-				$parent_id = $new_id_map[$parent_id];
 			}
-			if (!$parent_id) {
-				$parent_id = 0;
-			}
+		} while ($changed);
 
-			$id = $info['id'];
-			$title = $info['title'];
+		foreach ($removed_ids as $rid) unset($choices[$rid]);
 
-			if (in_array($id, $choices_removed)) {
+		// Now add new ones
+		foreach ($choices_structure as $cinfo) {
+			if (!isset($cinfo['@is_new']) || !$cinfo['@is_new']) {
 				continue;
 			}
 
-			if (isset($choices[$id])) {
-				$choices[$id]->setTitle($title);
-				$choices[$id]->setDisplayOrder($k);
+			$ch = $this->_field->createChild();
+			$ch->setTitle($cinfo['title']);
 
-				$this->_em->persist($choices[$id]);
-			} else {
-				$child = $this->_field->createChild();
-				$child->setTitle($title);
-				$child->setDisplayOrder($k);
-				$child->setOption('parent_id', $parent_id);
-
-				$this->_em->persist($child);
-				$this->_em->flush();
-
-				$new_id_map[$id] = $child->getId();
-				$choices[$child->getId()] = $child;
-			}
+			$choices[$cinfo['id']] = $ch;
+			$this->_em->persist($ch);
 		}
 
-		foreach ($choices_removed as $id) {
-			if (isset($choices[$id])) {
-				$this->_field->children->removeElement($choices[$id]);
-				$this->_em->remove($choices[$id]);
-				unset($choices[$id]);
-				foreach ($choices as $cid => $c) {
-					if ($c->getOption('parent_id') == $id) {
-						$this->_field->children->removeElement($choices[$cid]);
-						$this->_em->remove($choices[$cid]);
-						unset($choices[$cid]);
-					}
-				}
-			}
-		}
-
-		if ($this->default_option) {
-			if (isset($choices[$this->default_option])) {
-				$this->_field->default_value = $this->default_option;
-			} elseif (isset($new_id_map[$this->default_option])) {
-				$this->_field->default_value = $new_id_map[$this->default_option];
-			} else {
-				$this->_field->default_value = null;
+		// Hook up parents and set display order
+		foreach ($choices_structure as $cinfo) {
+			if (!isset($choices[$cinfo['id']])) {
+				continue;
 			}
 
-			$this->_em->persist($this->_field);
+			$ch = $choices[$cinfo['id']];
+			$ch->setOption('parent_id', null);
+			if ($cinfo['parent_id'] && isset($choices[$cinfo['parent_id']])) {
+				$ch->setOption('parent_id', $choices[$cinfo['parent_id']]->id);
+			}
+
+			$ch->display_order = (int)$cinfo['display_order'];
+			$this->_em->persist($ch);
 		}
 
 		$this->_em->flush();
+
+		if ($this->default_value != $this->_field->default_value) {
+			$this->_field->default_value = null;
+
+			if (isset($choices[$this->default_value])) {
+				$this->_field->default_value = $choices[$this->default_value]->id;
+			}
+
+			$this->_em->persist($this->_field);
+			$this->_em->flush();
+		}
 	}
 }

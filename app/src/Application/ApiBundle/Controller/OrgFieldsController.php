@@ -47,10 +47,9 @@ class OrgFieldsController extends AbstractController
 		$data = array();
 
 		/** @var \Application\DeskPRO\CustomFields\OrganizationFieldManager $field_manager */
-
 		$field_manager = $this->container->getSystemService('org_fields_manager');
 
-		$custom_fields         = $field_manager->getDefinedFields();
+		$custom_fields = $field_manager->getDefinedFields();
 		$data['custom_fields'] = $this->getApiData($custom_fields, false);
 
 		return $this->createApiResponse($data);
@@ -62,17 +61,12 @@ class OrgFieldsController extends AbstractController
 
 	public function getCustomFieldAction($id)
 	{
-		/** @var \Application\DeskPRO\CustomFields\OrganizationFieldManager $field_manager */
-
-		$field_manager = $this->container->getSystemService('org_fields_manager');
-		$field         = $field_manager->getFieldFromId($id);
-
-		if (!$field) {
-
+		$field = $this->em->find('DeskPRO:CustomDefOrganization', $id);
+		if (!$field || $field->parent) {
 			throw $this->createNotFoundException();
 		}
 
-		$data          = array();
+		$data = array();
 		$data['field'] = $field->toApiData();
 
 		return $this->createApiResponse($data);
@@ -85,19 +79,14 @@ class OrgFieldsController extends AbstractController
 	public function saveCustomFieldAction($id)
 	{
 		/** @var \Application\DeskPRO\CustomFields\OrganizationFieldManager $field_manager */
-
 		$field_manager = $this->container->getSystemService('org_fields_manager');
 
 		if ($id) {
-
-			$field = $field_manager->getFieldFromId($id);
-
-			if (!$field) {
-
+			$field = $this->em->find('DeskPRO:CustomDefOrganization', $id);
+			if (!$field || $field->parent) {
 				throw $this->createNotFoundException();
 			}
 		} else {
-
 			$field                = $field_manager->createNewDefEntity();
 			$field->handler_class = $this->in->getString('handler_class');
 		}
@@ -108,14 +97,12 @@ class OrgFieldsController extends AbstractController
 		$helper->saveFormToField($field, $post);
 
 		if ($id) {
-
 			return $this->createSuccessResponse(
 				array(
 					 'field_id' => $field->id
 				)
 			);
 		} else {
-
 			return $this->createSuccessResponse(
 				array(
 					 'field_id' => $field->id,
@@ -132,7 +119,6 @@ class OrgFieldsController extends AbstractController
 	public function toggleFieldAction($field_id, $is_enabled)
 	{
 		/** @var \Application\DeskPRO\CustomFields\OrganizationFieldManager $field_manager */
-
 		$field_manager = $this->container->getSystemService('org_fields_manager');
 		$field_manager->setFieldEnabledById($field_id, $is_enabled);
 

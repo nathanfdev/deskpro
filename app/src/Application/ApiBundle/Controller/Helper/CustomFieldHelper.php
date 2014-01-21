@@ -81,8 +81,7 @@ class CustomFieldHelper
 		$this->em->getConnection()->beginTransaction();
 		try {
 			if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$editfield->choices_structure = $this->in->getString('choices_structure');
-				$editfield->choices_removed_structure = $this->in->getString('choices_removed_structure');
+				$editfield->choices_structure = $this->in->getArrayValue('choices_structure');
 				$editfield->default_option = $this->in->getString('default_option');
 			}
 

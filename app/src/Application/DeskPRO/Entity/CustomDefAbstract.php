@@ -578,9 +578,10 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 			$data['choices'] = array();
 			foreach ($this->children as $c) {
 				$data['choices'][] = array(
-					'id'        => $c->id,
-					'title'     => $c->title,
-					'parent_id' => $c->getOption('parent_id') ?: null
+					'id'            => $c->id,
+					'title'         => $c->title,
+					'parent_id'     => $c->getOption('parent_id') ?: null,
+					'display_order' => $c->display_order
 				);
 			}
 		}

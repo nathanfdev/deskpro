@@ -67,8 +67,8 @@ class TicketFieldsController extends AbstractController
 
 	public function getCustomFieldAction($id)
 	{
-		$field = $this->container->getTicketFieldManager()->getFieldFromId($id);
-		if (!$field) {
+		$field = $this->em->find('DeskPRO:CustomDefTicket', $id);
+		if (!$field || $field->parent) {
 			throw $this->createNotFoundException();
 		}
 
@@ -85,8 +85,8 @@ class TicketFieldsController extends AbstractController
 	public function saveCustomFieldAction($id)
 	{
 		if ($id) {
-			$field = $this->container->getTicketFieldManager()->getFieldFromId($id);
-			if (!$field) {
+			$field = $this->em->find('DeskPRO:CustomDefTicket', $id);
+			if (!$field || $field->parent) {
 				throw $this->createNotFoundException();
 			}
 		} else {
