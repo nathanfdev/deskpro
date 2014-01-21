@@ -382,6 +382,15 @@ class TicketFilter extends DomainObject
 	 */
 	public function setTerms($terms)
 	{
+		if (is_array($terms)) {
+			$terms_array = $terms;
+			$terms = new FilterTerms();
+
+			foreach ($terms_array as $info) {
+				$terms->addTermFromArray($info);
+			}
+		}
+
 		if (!($terms instanceof FilterTerms)) {
 			throw new \InvalidArgumentException();
 		}

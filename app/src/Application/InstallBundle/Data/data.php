@@ -179,19 +179,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'agent';
 $q['terms']      = array(array(
-		'type'      => 'agent',
+		'type'      => 'FilterAgent',
 		'op'        => 'is',
-		'options'   => array('agent'     => '-1',)
+		'options'   => array('agent_ids' => array('-1'))
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent',)
 	),
 	array(
-		'type'      => 'is_hold',
-		'op'        => 'is',
-		'options'   => array('is_hold'   => '0')
+		'type'      => 'FilterIsHold',
+		'op'        => 'not',
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -207,19 +207,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'agent_team';
 $q['terms']      = array(array(
-		'type'      => 'agent_team',
+		'type'      => 'FilterAgentTeam',
 		'op'        => 'is',
-		'options'   => array('agent_team' => '-1',)
+		'options'   => array('team_ids' => array('-1')),
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status'    => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
-		'op'        => 'is',
-		'options'   => array('is_hold'   => '0')
+		'type'      => 'FilterIsHold',
+		'op'        => 'not',
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -235,19 +235,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'participant';
 $q['terms']      = array(array(
-		'type'      => 'participant',
+		'type'      => 'FilterAgentParticipant',
 		'op'        => 'is',
-		'options'   => array('agent'     => '-1',)
+		'options'   => array('agent_ids' => array('-1'))
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
-		'op'        => 'is',
-		'options'   => array('is_hold'   => '0')
+		'type'      => 'FilterIsHold',
+		'op'        => 'not',
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -263,19 +263,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'unassigned';
 $q['terms']      = array(array(
-		'type'      => 'agent',
+		'type'      => 'FilterAgent',
 		'op'        => 'is',
-		'options'   => array('agent'     => '0',)
+		'options'   => array('agent_ids' => array('0'))
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
-		'op'        => 'is',
-		'options'   => array('is_hold'   => '0')
+		'type'      => 'FilterIsHold',
+		'op'        => 'not',
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -292,14 +292,14 @@ $q['is_global']  = true;
 $q['sys_name']   = 'all';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
-		'op'        => 'is',
-		'options'   => array('is_hold'   => '0')
+		'type'      => 'FilterIsHold',
+		'op'        => 'not',
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -314,19 +314,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'agent_w_hold';
 $q['terms']      = array(array(
-		'type'      => 'agent',
+		'type'      => 'FilterAgent',
 		'op'        => 'is',
-		'options'   => array('agent'     => '-1',)
+		'options'   => array('agent_ids' => array('-1'))
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
+		'type'      => 'FilterIsHold',
 		'op'        => 'is',
-		'options'   => array('is_hold'   => '1')
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -342,19 +342,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'agent_team_w_hold';
 $q['terms']      = array(array(
-		'type'      => 'agent_team',
+		'type'      => 'FilterAgentTeam',
 		'op'        => 'is',
-		'options'   => array('agent_team' => '-1',)
+		'options'   => array('team_ids' => array('-1'))
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
+		'type'      => 'FilterIsHold',
 		'op'        => 'is',
-		'options'   => array('is_hold'   => '1')
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -370,19 +370,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'participant_w_hold';
 $q['terms']      = array(array(
-		'type'      => 'participant',
+		'type'      => 'FilterAgentParticipant',
 		'op'        => 'is',
-		'options'   => array('agent'     => '-1',)
+		'options'   => array('agent_ids' => array('-1'))
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
+		'type'      => 'FilterIsHold',
 		'op'        => 'is',
-		'options'   => array('is_hold'   => '1')
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -399,19 +399,19 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'unassigned_w_hold';
 $q['terms']      = array(array(
-		'type'      => 'agent',
+		'type'      => 'FilterAgent',
 		'op'        => 'is',
-		'options'   => array('agent'     => '0',)
+		'options'   => array('agent_ids' => array('0'))
 	),
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
+		'type'      => 'FilterIsHold',
 		'op'        => 'is',
-		'options'   => array('is_hold'   => '1')
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -428,14 +428,14 @@ $q['is_global']  = true;
 $q['sys_name']   = 'all_w_hold';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_agent',)
+		'options'   => array('status' => 'awaiting_agent')
 	),
 	array(
-		'type'      => 'is_hold',
+		'type'      => 'FilterIsHold',
 		'op'        => 'is',
-		'options'   => array('is_hold'   => '1')
+		'options'   => array()
 	),
 );
 $em->persist($q);
@@ -452,9 +452,9 @@ $q['is_global']  = true;
 $q['sys_name']   = 'archive_awaiting_user';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'awaiting_user',)
+		'options'   => array('status' => 'awaiting_user')
 	)
 );
 $em->persist($q);
@@ -470,9 +470,9 @@ $q['is_global']  = true;
 $q['sys_name']   = 'archive_resolved';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'resolved',)
+		'options'   => array('status' => 'resolved')
 	)
 );
 $em->persist($q);
@@ -488,9 +488,9 @@ $q['is_global']  = true;
 $q['sys_name']   = 'archive_closed';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'closed',)
+		'options'   => array('status' => 'closed')
 	)
 );
 $em->persist($q);
@@ -506,9 +506,9 @@ $q['is_global']  = true;
 $q['sys_name']   = 'archive_validating';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'hidden.validating')
+		'options'   => array('status' => 'hidden.validating')
 	)
 );
 $em->persist($q);
@@ -524,9 +524,9 @@ $q['is_global']  = true;
 $q['sys_name']   = 'archive_spam';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'hidden.spam')
+		'options'   => array('status' => 'hidden.spam')
 	)
 );
 $em->persist($q);
@@ -542,16 +542,15 @@ $q['is_global']  = true;
 $q['sys_name']   = 'archive_deleted';
 $q['terms']      = array(
 	array(
-		'type'      => 'status',
+		'type'      => 'FilterStatus',
 		'op'        => 'is',
-		'options'   => array('status'    => 'hidden.deleted')
+		'options'   => array('status' => 'hidden.deleted')
 	)
 );
 $em->persist($q);
 $em->flush();
 
 ##BEGIN:create_style.master##
-
 $s = new \Application\DeskPRO\Entity\Style();
 $s['title'] = $translate->phrase('agent.defaults.default_style');
 $s['note'] = $translate->phrase('agent.defaults.default_style');
