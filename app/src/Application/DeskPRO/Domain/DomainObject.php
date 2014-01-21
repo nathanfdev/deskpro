@@ -241,6 +241,8 @@ abstract class DomainObject extends BasicDomainObject
 					}
 
 					$values[$name] = $output;
+				} else if ($val === null) {
+					$values[$name] = null;
 				}
 			}
 		}
