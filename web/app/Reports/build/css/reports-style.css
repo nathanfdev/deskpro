@@ -8596,6 +8596,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   max-width: 70%;
   overflow: hidden;
   font-size: 12px;
+  line-height: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-wrap: none;

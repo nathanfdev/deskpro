@@ -1,26 +1,26 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['DeskPRO/Util/Util', 'DeskPRO/Main/Service/AppState', 'DeskPRO/Main/Service/DpApi', 'DeskPRO/Main/Service/Growl', 'DeskPRO/Main/Service/InhelpState'], function(Util, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState) {
+  define(['DeskPRO/Util/Util', 'DeskPRO/Main/Service/AppState', 'DeskPRO/Main/Service/DpApi', 'DeskPRO/Main/Service/Growl', 'DeskPRO/Main/Service/InhelpState'], function(Util, DeskPRO_Main_Service_AppState, DeskPRO_Main_Service_DpApi, DeskPRO_Main_Service_Growl, DeskPRO_Main_Service_InhelpState) {
     return function(Module) {
       Module.service('AppState', [
         '$rootScope', '$state', function($rootScope, $state) {
-          return new Admin_Main_Service_AppState($rootScope, $state);
+          return new DeskPRO_Main_Service_AppState($rootScope, $state);
         }
       ]);
       Module.service('Api', [
         '$http', function($http) {
-          return new Admin_Main_Service_DpApi($http, window.DP_BASE_API_URL, window.DP_API_TOKEN);
+          return new DeskPRO_Main_Service_DpApi($http, window.DP_BASE_API_URL, window.DP_API_TOKEN);
         }
       ]);
       Module.service('InhelpState', [
         'Api', function(Api) {
-          return new Admin_Main_Service_InhelpState(Api);
+          return new DeskPRO_Main_Service_InhelpState(Api);
         }
       ]);
       Module.service('Growl', [
         function() {
-          return new Admin_Main_Service_Growl();
+          return new DeskPRO_Main_Service_Growl();
         }
       ]);
       Module.filter('escape_url', [

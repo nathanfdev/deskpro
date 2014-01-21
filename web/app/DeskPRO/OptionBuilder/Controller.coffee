@@ -104,7 +104,7 @@ define ->
 
 			@$scope.$watch('saveTarget', =>
 				@reset()
-			)
+			, true)
 
 		reset: ->
 			@rowsCount = 0

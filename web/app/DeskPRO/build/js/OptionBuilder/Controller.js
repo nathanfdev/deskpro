@@ -99,7 +99,7 @@
         });
         this.$scope.$watch('saveTarget', function() {
           return _this.reset();
-        });
+        }, true);
       }
 
       DeskPRO_OptionBuilder_Controller.prototype.reset = function() {
