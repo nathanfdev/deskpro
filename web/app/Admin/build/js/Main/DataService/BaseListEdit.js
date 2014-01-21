@@ -98,6 +98,9 @@
       Admin_Main_DataService_BaseListEdit.prototype._setListData = function(listModels) {
         var model, subModel, _i, _j, _len, _len1, _ref, _results, _results1;
         this.listModels.length = 0;
+        if (!listModels) {
+          return;
+        }
         if (this.subLists.length) {
           this.listModels = {};
           _ref = this.subLists;
@@ -139,6 +142,9 @@
 
       Admin_Main_DataService_BaseListEdit.prototype._setPaginationData = function(listModels) {
         var i, subModel, _i, _j, _len, _ref, _ref1, _results, _results1;
+        if (!listModels) {
+          return;
+        }
         if (listModels.pagination) {
           this.pagination = listModels.pagination;
         }

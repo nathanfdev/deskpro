@@ -93,6 +93,8 @@ define [
 		_setListData: (listModels) ->
 			@listModels.length = 0
 
+			if not listModels then return
+
 			if @subLists.length
 				@listModels = {}
 				for subModel in @subLists
@@ -113,6 +115,8 @@ define [
 		# @param {Object} listModels - object representing the list
 		###
 		_setPaginationData: (listModels) ->
+
+			if not listModels then return
 
 			# we assume that backend returned appropriate pagination info and doesn't check its correctness here
 			@pagination = listModels.pagination if listModels.pagination
