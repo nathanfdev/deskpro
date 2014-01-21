@@ -35,9 +35,21 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 class FilterUserLanguage extends AbstractFilterTerm
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('language_ids');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

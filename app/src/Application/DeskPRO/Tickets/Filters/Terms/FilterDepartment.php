@@ -35,15 +35,27 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 class FilterDepartment extends AbstractFilterTerm
 {
 	/**
 	 * {@inheritDoc}
 	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('department_ids');
+		return $options;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getFilterQuery(ExecutorContext $context = null)
 	{
 		$options = $this->getTermOptions();
-		return $this->getIdMatchQuery('tickets.department_id', $options['department_ids']);
+		return $this->getIdMatchQuery('tickets.department_id', $options->get('department_ids'));
 	}
 }

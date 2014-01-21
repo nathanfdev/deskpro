@@ -35,9 +35,21 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 class FilterOrgName extends AbstractFilterTerm
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('name');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

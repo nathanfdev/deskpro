@@ -38,6 +38,7 @@ use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * This is a wrapper around a FilterTermComposite that is able to serialize.
@@ -142,7 +143,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
 					$set_terms[] = array(
 						'type'    => $set_criteria->getTermType(),
 						'op'      => $set_criteria->getTermOperator(),
-						'options' => $set_criteria->getTermOptions()
+						'options' => $set_criteria->getTermOptions()->all()
 					);
 				}
 
@@ -159,7 +160,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
 				$data['terms'][] = array(
 					'type'    => $criteria->getTermType(),
 					'op'      => $criteria->getTermOperator(),
-					'options' => $criteria->getTermOptions()
+					'options' => $criteria->getTermOptions()->all()
 				);
 			}
 		}
@@ -174,7 +175,13 @@ class FilterTerms implements \Serializable, FilterTermInterface
 	public function importFromArray(array $data)
 	{
 		foreach ($data['terms'] as $term_info) {
-			$this->addTermFromArray($term_info);
+			try {
+				$this->addTermFromArray($term_info);
+			} catch (\Exception $e) {
+				if (!empty($term_info['type'])) {
+					KernelErrorHandler::logException($e, false, md5('filter_' . $term_info['type']));
+				}
+			}
 		}
 	}
 

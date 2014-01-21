@@ -35,9 +35,21 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
 class FilterUserName extends AbstractFilterTerm
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('name');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -59,7 +71,7 @@ class FilterUserName extends AbstractFilterTerm
 				$like_value = '%' . $like_value . '%';
 				break;
 			default:
-				throw new \InvalidArgumentException("Invalid operator: $op");
+				throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
 		}
 
 		$query = new FilterQuery();

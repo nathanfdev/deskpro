@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
@@ -60,20 +61,48 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 	private $op;
 
 	/**
-	 * @var array
+	 * @var \Orb\Util\CheckedOptionsArray
 	 */
 	private $options;
 
 
 	/**
-	 * @param string $type
 	 * @param string $op
 	 * @param array  $options
 	 */
 	public function __construct($op, array $options)
 	{
 		$this->op      = $op;
-		$this->options = $options;
+		$this->_initOptions($options);
+	}
+
+	/**
+	 * @param array $options
+	 */
+	private function _initOptions(array $options)
+	{
+		$this->options = $this->getOptionsDef();
+		$this->options->setAll($options);
+		$this->options->setArrayDefault($this->getDefaultOptions());
+		$this->options->ensureRequired();
+	}
+
+
+	/**
+	 * @return array
+	 */
+	protected function getDefaultOptions()
+	{
+		return array();
+	}
+
+
+	/**
+	 * @return CheckedOptionsArray
+	 */
+	protected function getOptionsDef()
+	{
+		return new CheckedOptionsArray();
 	}
 
 
@@ -102,12 +131,13 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 	/**
 	 * Get's an array of options
 	 *
-	 * @return array
+	 * @return \Orb\Util\OptionsArray
 	 */
 	public function getTermOptions()
 	{
 		return $this->options;
 	}
+
 
 	/**
 	 * {@inheritDoc}
