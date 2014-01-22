@@ -77,7 +77,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 		$this->logger->logDebug("[TicketsStatus] $sql");
 		$this->logger->startTimer('TicketsStatus');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logToatlTime('TicketsStatus');
+		$this->logger->logTotalTime('TicketsStatus');
 
 		return $this->values;
 	}

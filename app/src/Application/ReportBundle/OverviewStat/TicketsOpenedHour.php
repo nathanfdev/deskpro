@@ -210,7 +210,7 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 		$this->logger->logDebug("[TicketsOpenedHour] $sql");
 		$this->logger->startTimer('TicketsOpenedHour');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logToatlTime('TicketsOpenedHour');
+		$this->logger->logTotalTime('TicketsOpenedHour');
 
 		return $this->values;
 	}

@@ -489,7 +489,7 @@ class Logger
 	 * @param $message
 	 * @param string $level
 	 */
-	public function logToatlTime($name = 'default', $message = null, $level = 'DEBUG')
+	public function logTotalTime($name = 'default', $message = null, $level = 'DEBUG')
 	{
 		if (!$message) {
 			$message = "$name time: {{TIME}}";

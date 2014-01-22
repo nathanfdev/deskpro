@@ -142,7 +142,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 			$this->logger->logDebug("[TicketsResponseTime (Grouped)] $sql");
 			$this->logger->startTimer('TicketsResponseTime');
 			$q = App::getDb()->executeQuery($sql);
-			$this->logger->logToatlTime('TicketsResponseTime');
+			$this->logger->logTotalTime('TicketsResponseTime');
 
 			$this->logger->startTimer('TicketsResponseTime.collecting');
 
@@ -162,7 +162,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 				$this->values[$time_group][$group_id] += $count;
 			}
 
-			$this->logger->logToatlTime('TicketsResponseTime.collecting');
+			$this->logger->logTotalTime('TicketsResponseTime.collecting');
 		} else {
 			$sql = "
 				SELECT $field, COUNT(*)
@@ -174,7 +174,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 			$this->logger->logDebug("[TicketsResponseTime] $sql");
 			$this->logger->startTimer('TicketsResponseTime');
 			$this->values = App::getDb()->fetchAllKeyValue($sql);
-			$this->logger->logToatlTime('TicketsResponseTime');
+			$this->logger->logTotalTime('TicketsResponseTime');
 		}
 
 		return $this->values;
