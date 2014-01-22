@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Service;
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\License;
 
 class ErrorReporter
 {
@@ -475,10 +476,10 @@ class ErrorReporter
 
 		$data = array(
 			'message' => $message,
-			'name' => $person->getDisplayName(),
-			'email' => $email_address,
-			'url' => App::getSetting('core.deskpro_url'),
-			'type' => $type,
+			'name'    => $person->getDisplayName(),
+			'email'   => $email_address,
+			'url'     => App::getSetting('core.deskpro_url'),
+			'type'    => $type,
 		);
 
 		try {
@@ -488,6 +489,39 @@ class ErrorReporter
 			$client->getRequest()->getPost()->fromArray($data);
 			$client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
 			$r = $client->send();
-		} catch (\Exception $e) {}
+			return true;
+		} catch (\Exception $e) {
+			return false;
+		}
+	}
+
+
+	/**
+	 * @static
+	 * @param $person
+	 * @param $message
+	 */
+	public static function sendSupportMessage($subject, $message, $name, $email_address)
+	{
+		$data = array(
+			'message' => $message,
+			'name'    => $name,
+			'email'   => $email_address,
+			'url'     => App::getSetting('core.deskpro_url'),
+			'lic_id'  => License::getLicense()->getLicenseId(),
+			'subject' => $subject,
+		);
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
+			$client->getRequest()->getPost()->fromArray($data);
+			$client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
+			$r = $client->send();
+			return true;
+		} catch (\Exception $e) {
+			return false;
+		}
 	}
 }

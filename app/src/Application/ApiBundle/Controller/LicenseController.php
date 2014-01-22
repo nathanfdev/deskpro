@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Kernel\License;
 use Orb\Util\Dates;
+use Orb\Validator\StringEmail;
 
 
 class LicenseController extends AbstractController
@@ -159,6 +160,31 @@ FILE;
 				'content_type' => 'plain/text',
 				'data'         => $file
 			));
+		}
+	}
+
+	####################################################################################################################
+	# send-support-request
+	####################################################################################################################
+
+	public function sendSupportRequestAction()
+	{
+		$email = $this->in->getString('contact.email');
+		if (!$email || !StringEmail::isValueValid($email)) {
+			$email = $this->person->getPrimaryEmailAddress();
+		}
+
+		$ret = \Application\DeskPRO\Service\ErrorReporter::sendSupportMessage(
+			$this->in->getString('contact.subject'),
+			$this->in->getString('contact.message'),
+			$this->person->getDisplayName(),
+			$email
+		);
+
+		if ($ret) {
+			return $this->createSuccessResponse();
+		} else {
+			return $this->createApiErrorResponse('failed_send', 'Failed to send support request.');
 		}
 	}
 }

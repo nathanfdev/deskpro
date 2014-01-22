@@ -33,12 +33,27 @@
 			<article>
 				<form>
 					<div class="form-group">
-						<input type="text" class="form-control" ng-model="new_agent.name" placeholder="Name" />
+						<input type="text" class="form-control" ng-model="new_agent.name" placeholder="Name" ng-change="new_agent.errors.name = false" />
+						<span ng-show="new_agent.errors.name" class="text-danger">Please enter a name.</span>
 					</div>
 					<div class="form-group">
-						<input type="email" class="form-control" ng-model="new_agent.email" placeholder="Email" required />
+						<input type="email" class="form-control" ng-model="new_agent.email" placeholder="Email" ng-change="new_agent.errors.email = false" />
+						<span ng-show="new_agent.errors.email" class="text-danger">Please enter a valid email address.</span>
 					</div>
-					<button class="btn btn-default">Add Agent</button>
+					<div dp-hide-spinning="saving_new_agent">
+						<button class="btn btn-default" ng-click="$event.preventDefault(); Home.addNewAgent();">Add Agent</button>
+					</div>
+					<div dp-show-spinning="saving_new_agent">
+						<i class="spinner-flat"></i>
+					</div>
+					<div class="alert alert-success" style="margin-top: 8px;" ng-show="created_agent">
+						<p>
+							An agent account for {{ ng_var('created_agent.name') }} was created successfully.
+						</p>
+						<p>
+							An email with login instructions has been sent to {{ ng_var('created_agent.email') }}.
+						</p>
+					</div>
 				</form>
 			</article>
 		</section>
@@ -99,27 +114,37 @@
 					</header>
 					<article>
 						<div class="dp-mpadded">
-							<form>
-								<div class="form-group">
-									<input type="text" class="form-control" ng-model="submit_ticket.subject" required placeholder="Enter a subject for your message" />
+							<div class="form-group">
+								<input type="text" class="form-control" ng-model="submit_ticket.subject" required placeholder="Enter a subject for your message" />
+							</div>
+							<div class="form-group">
+								<textarea class="form-control" style="height: 100px;" ng-model="submit_ticket.message" placeholder="Enter your question here" ng-change="submit_ticket_message_error = false"></textarea>
+								<span ng-show="submit_ticket_message_error" class="text-danger">Please enter a message</span>
+							</div>
+							<div class="form-group">
+								<div ng-show="submit_ticket_defaultemail" ng-init="submit_ticket_defaultemail = true">
+									We will reply to <strong>{{ app.user.primary_email_address }}</strong>.
+									<a href="#" ng-click="submit_ticket_defaultemail = false">Change?</a>
 								</div>
-								<div class="form-group">
-									<textarea class="form-control" style="height: 100px;" ng-model="submit_ticket.message" placeholder="Enter your question here"></textarea>
+								<div class="input-group" ng-hide="submit_ticket_defaultemail">
+									<span class="input-group-addon">Reply To:</span>
+									<input type="email" class="form-control" ng-model="submit_ticket.email" ng-init="submit_ticket.email = '{{ app.user.primary_email_address }}'" required />
 								</div>
-								<div class="form-group">
-									<div ng-show="submit_ticket_defaultemail" ng-init="submit_ticket_defaultemail = true">
-										We will reply to <strong>{{ app.user.primary_email_address }}</strong>.
-										<a href="#" ng-click="submit_ticket_defaultemail = false">Change?</a>
-									</div>
-									<div class="input-group" ng-hide="submit_ticket_defaultemail">
-										<span class="input-group-addon">Reply To:</span>
-										<input type="email" class="form-control" ng-model="submit_ticket.email" ng-init="submit_ticket.email = '{{ app.user.primary_email_address }}'" required />
-									</div>
-								</div>
-							</form>
+							</div>
 						</div>
 						<div class="dp-mpadded">
-							<button class="btn btn-default"><i class="fa fa-envelope-o"></i> Send Message</button>
+							<div ng-hide="support_sent">
+								<div dp-hide-spinning="sending_support_request">
+									<button class="btn btn-default" ng-click="$event.preventDefault(); Home.sendSupportRequest();"><i class="fa fa-envelope-o"></i> Send Message</button>
+								</div>
+								<div dp-show-spinning="sending_support_request">
+									<i class="spinner-flat"></i>
+								</div>
+							</div>
+							<p ng-show="support_sent" class="text-success">
+								Your support request has been submitted successfully. One of our agents will respond
+								to you as soon as possible.
+							</p>
 						</div>
 					</article>
 				</div>

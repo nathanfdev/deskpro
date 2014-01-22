@@ -1,4 +1,10 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define [
+	'Admin/Main/Ctrl/Base',
+	'DeskPRO/Util/Strings'
+], (
+	Admin_Ctrl_Base,
+	Strings
+) ->
 	class Admin_Main_Ctrl_Home extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Main_Ctrl_Home'
 		@CTRL_AS   = 'Home'
@@ -6,6 +12,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		init: ->
 			@online_agents = []
 			@offline_agents = []
+			@$scope.new_agent = {}
 			return
 
 		initialLoad: ->
@@ -24,5 +31,63 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			)
 
 			return promise
+
+
+		###
+		# Saves new agent form
+		###
+		addNewAgent: ->
+			@$scope.created_agent = null
+
+			postData = {
+				agent: {
+					name: Strings.trim(@$scope.new_agent.name || ''),
+					primary_email_address: Strings.trim(@$scope.new_agent.email || '')
+				}
+			}
+
+			@$scope.new_agent.errors = {
+				name: !postData.agent.name,
+				email: postData.agent.primary_email_address.indexOf('@') == -1
+			}
+
+			if @$scope.new_agent.errors.name or @$scope.new_agent.errors.email
+				return
+
+			@startSpinner('saving_new_agent')
+			@Api.sendPutJson('/agents', postData).then(=>
+				@stopSpinner('saving_new_agent').then(=>
+					@$scope.created_agent = @$scope.new_agent
+					@$scope.new_agent = {}
+				)
+			)
+
+		###
+		# Sends support request
+		###
+		sendSupportRequest: ->
+			submit_ticket = @$scope.submit_ticket
+
+			contact = {
+				subject: Strings.trim(submit_ticket.subject || ''),
+				message: Strings.trim(submit_ticket.message || '')
+				email:   Strings.trim(submit_ticket.email   || '')
+			}
+
+			if not contact.message
+				@$scope.submit_ticket_message_error = true
+				return
+
+			if @$scope.submit_ticket_defaultemail or contact.email.indexOf('@') == -1
+				delete contact.email
+				@$scope.submit_ticket_defaultemail = true
+
+			@startSpinner('sending_support_request')
+			@Api.sendPostJson('/dp_license/support-request', { contact: contact}).then( =>
+				@stopSpinner('sending_support_request').then(=>
+					@$scope.support_sent = true
+				)
+			)
+
 
 	Admin_Main_Ctrl_Home.EXPORT_CTRL()

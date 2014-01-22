@@ -2376,6 +2376,12 @@ $collection->create('api_dp_keyfile', array(
 	'requirements' => array('_format' => 'txt|json'),
 ));
 
+$collection->create('api_dp_license_supportrequest', array(
+	'path'         => '/dp_license/support-request',
+	'controller'   => 'ApiBundle:License:sendSupportRequest',
+	'methods'      => array('POST'),
+));
+
 ########################################################################################################################
 # Ticket Settings
 ########################################################################################################################

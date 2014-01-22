@@ -319,7 +319,7 @@ class PrefsTable
 				foreach ($opts as $opt) {
 					$col[] = array(
 						'name'  => $opt,
-						'desc'  => $this->tr->phrase("agent.prefs.filter_{$type}_{$opt}"),
+						'desc'  => $this->tr->phrase("agent.prefs.filter_{$type}_{$opt}_desc"),
 						'value' => (isset($values[$opt]) && $values[$opt]) ? true : false
 					);
 				}
