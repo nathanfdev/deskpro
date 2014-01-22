@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     var Admin_Templates_Ctrl_EmailList, _ref;
     Admin_Templates_Ctrl_EmailList = (function(_super) {
       __extends(Admin_Templates_Ctrl_EmailList, _super);
@@ -16,7 +16,11 @@
 
       Admin_Templates_Ctrl_EmailList.CTRL_AS = 'ListCtrl';
 
-      Admin_Templates_Ctrl_EmailList.DEPS = [];
+      Admin_Templates_Ctrl_EmailList.DEPS = ['listType'];
+
+      Admin_Templates_Ctrl_EmailList.prototype.init = function() {
+        return console.log(this.listType);
+      };
 
       /*
       		# Open an editor

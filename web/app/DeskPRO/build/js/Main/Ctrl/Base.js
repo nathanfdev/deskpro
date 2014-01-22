@@ -100,8 +100,8 @@
           }
         }
         me = this;
-        for (i = _j = 0, _len1 = args.length; _j < _len1; i = ++_j) {
-          arg = args[i];
+        for (_j = 0, _len1 = args.length; _j < _len1; _j++) {
+          arg = args[_j];
           if (arg && (arg._is_ds_class != null)) {
             arg.registerCtrl(this);
             this.$scope.$on('$destroy', function() {});

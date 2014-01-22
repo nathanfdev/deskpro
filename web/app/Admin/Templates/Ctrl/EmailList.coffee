@@ -1,8 +1,11 @@
-define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_Templates_Ctrl_EmailList extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Templates_Ctrl_EmailList'
 		@CTRL_AS   = 'ListCtrl'
-		@DEPS      = []
+		@DEPS     = ['listType']
+
+		init: ->
+			console.log(@listType)
 
 		###
 		# Open an editor

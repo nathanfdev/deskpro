@@ -71,7 +71,7 @@ define ['angular'], (angular) ->
 					@[arg_name] = arg
 
 			me = @
-			for arg, i in args
+			for arg in args
 				if arg and arg._is_ds_class?
 					arg.registerCtrl(@)
 					@$scope.$on('$destroy', ->

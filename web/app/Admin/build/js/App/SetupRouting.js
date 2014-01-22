@@ -24,6 +24,9 @@
               url: url,
               data: route.data || null
             };
+            if (route.resolve) {
+              opts.resolve = route.resolve;
+            }
             if (route.views) {
               opts.views = route.views;
             } else {
