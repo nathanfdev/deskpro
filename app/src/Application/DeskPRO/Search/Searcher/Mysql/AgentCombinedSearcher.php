@@ -46,7 +46,7 @@ use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\Result;
 
 /**
- * The combined searcher searches everything: tickets, chats, articles, news, downloads, feedback
+ * The combined searcher searches everything: articles, news, downloads, feedback
  */
 class AgentCombinedSearcher
 {

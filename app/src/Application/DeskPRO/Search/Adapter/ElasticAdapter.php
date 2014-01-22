@@ -42,7 +42,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\Search\EntityListener;
 
 use Application\DeskPRO\Search\Searcher\Elastic\ContentSearcher;
-use Application\DeskPRO\Search\Searcher\Elastic\TicketSearcher;
 
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
@@ -56,7 +55,6 @@ abstract class ElasticAdapter extends AbstractAdapter
 {
 	public static $capabilities = array(
 		'searcher_content', 'searcher_content_labels', 'searcher_content_similar',
-		'searcher_tickets',
 	);
 
 	/**
@@ -95,15 +93,11 @@ abstract class ElasticAdapter extends AbstractAdapter
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Download',        'download');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Feedback',            'feedback');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\News',            'news');
-		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Ticket',          'ticket');
-		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\TicketMessage',   'ticket_message');
 
 		$this->addIndexMap('article',   'content');
 		$this->addIndexMap('download',  'content');
 		$this->addIndexMap('feedback',      'content');
 		$this->addIndexMap('news',      'content');
-		$this->addIndexMap('ticket',         'tickets');
-		$this->addIndexMap('ticket_message', 'tickets');
 	}
 
 
@@ -179,20 +173,6 @@ abstract class ElasticAdapter extends AbstractAdapter
 		return $obj;
 	}
 
-	/**
-	 * Get a ticket searcher.
-	 *
-	 * Factory method.
-	 *
-	 * @return \Application\DeskPRO\Search\Searcher\ContentSearcherInterface
-	 */
-	public function getTicketSearcher()
-	{
-		$searcher = new ContentSearcher($this);
-		$searcher->setPersonContext($this->getPersonContext());
-
-		return $searcher;
-	}
 
 	/**
 	 * Get a content searcher.

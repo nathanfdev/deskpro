@@ -648,40 +648,6 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
-	# Ajax loaded tabs
-	############################################################################
-
-	public function ajaxTabRelatedContentAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$search = App::getSearchEngine();
-
-
-		$related_tickets = false;
-		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_TICKETS_SIMILAR)) {
-			$ticket_searcher = $search->getTicketSearcher();
-			$results = $ticket_searcher->similar($ticket);
-
-			$related_tickets = $search->getResultSetObjects($results);
-		}
-
-		$related_articles = false;
-		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)) {
-			$content_searcher = $search->getContentSearcher();
-			$results = $content_searcher->similarArticleToTicket($ticket);
-
-			$related_articles = $search->getResultSetObjects($results);
-		}
-
-		return $this->render('AgentBundle:Ticket:tab-related-content.html.twig', array(
-			'ticket'            => $ticket,
-			'related_tickets'   => $related_tickets,
-			'related_articles'  => $related_articles,
-		));
-	}
-
-	############################################################################
 	# ajax-save-flagged
 	############################################################################
 

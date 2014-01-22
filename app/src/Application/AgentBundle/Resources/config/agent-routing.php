@@ -163,21 +163,6 @@ $collection->add('agent_quicksearch', new Route(
 	array()
 ));
 
-$collection->add('agent_search', new Route(
-	'/search/search',
-	array('_controller' => 'AgentBundle:Search:search'),
-	array(),
-	array()
-));
-
-$collection->add('agent_search_json', new Route(
-	'/search/search.json',
-	array('_controller' => 'AgentBundle:Search:searchResults'),
-	array(),
-	array()
-));
-
-
 $collection->add('agent_recyclebin', new Route(
 	'/recycle-bin',
 	array('_controller' => 'AgentBundle:RecycleBin:list'),
@@ -1180,13 +1165,6 @@ $collection->add('agent_ticket_delpart', new Route(
 	'/tickets/{ticket_id}/remove-part.json',
 	array('_controller' => 'AgentBundle:Ticket:removeParticipant'),
 	array(),
-	array()
-));
-
-$collection->add('agent_ticket_ajaxtab_releated_content', new Route(
-	'/tickets/{ticket_id}/ajax-tab-related-content',
-	array('_controller' => 'AgentBundle:Ticket:ajaxTabRelatedContent'),
-	array('ticket_id' => '\\d+'),
 	array()
 ));
 

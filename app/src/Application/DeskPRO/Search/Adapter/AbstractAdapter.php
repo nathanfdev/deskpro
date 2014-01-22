@@ -60,8 +60,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	const CAP_CONTENT                             = 'searcher_content';
 	const CAP_CONTENT_LABELS                      = 'searcher_content_labels';
 	const CAP_CONTENT_SIMILAR_ARTICLES            = 'searcher_content_similar';
-	const CAP_TICKETS                             = 'searcher_tickets';
-	const CAP_TICKETS_SIMILAR                     = 'searcher_tickets_similar';
 	/**#@-*/
 
 	/**#@+
@@ -71,8 +69,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	const TYPE_DOWNLOAD           = 'download';
 	const TYPE_IDEA               = 'feedback';
 	const TYPE_NEWS               = 'news';
-	const TYPE_TICKET             = 'ticket';
-	const TYPE_TICKET_MESSAGE     = 'ticketMessage';
 	/**#@-*/
 
 	/**
@@ -203,16 +199,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 * @return \Application\DeskPRO\Search\Searcher\ContentSearcherInterface
 	 */
 	abstract public function getContentSearcher();
-
-
-	/**
-	 * Get a ticket searcher.
-	 *
-	 * Factory method.
-	 *
-	 * @return \Application\DeskPRO\Search\Searcher\ContentSearcherInterface
-	 */
-	abstract public function getTicketSearcher();
 
 
 	/**
