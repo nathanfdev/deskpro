@@ -83,7 +83,7 @@
           langs: '/langs',
           widget_selections: '/widget/selections'
         }).then(function(res) {
-          var d, key, selections, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref1, _ref2, _ref3, _ref4;
+          var d, key, selections, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
           _this.hdinfo = res.data.hdinfo;
           _this.langs = res.data.langs.languages;
           _this.widget_selections = res.data.widget_selections;
@@ -92,26 +92,32 @@
             downloads: {},
             news: {}
           };
-          _ref1 = _this.widget_selections.selections.articles;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            key = _ref1[_i];
-            selections.articles[key] = true;
+          if (((_ref1 = _this.widget_selections) != null ? (_ref2 = _ref1.selections) != null ? _ref2.articles : void 0 : void 0) != null) {
+            _ref3 = _this.widget_selections.selections.articles;
+            for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+              key = _ref3[_i];
+              selections.articles[key] = true;
+            }
           }
-          _ref2 = _this.widget_selections.selections.downloads;
-          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-            key = _ref2[_j];
-            selections.downloads[key] = true;
+          if (((_ref4 = _this.widget_selections) != null ? (_ref5 = _ref4.selections) != null ? _ref5.downloads : void 0 : void 0) != null) {
+            _ref6 = _this.widget_selections.selections.downloads;
+            for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
+              key = _ref6[_j];
+              selections.downloads[key] = true;
+            }
           }
-          _ref3 = _this.widget_selections.selections.news;
-          for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-            key = _ref3[_k];
-            selections.news[key] = true;
+          if (((_ref7 = _this.widget_selections) != null ? (_ref8 = _ref7.selections) != null ? _ref8.news : void 0 : void 0) != null) {
+            _ref9 = _this.widget_selections.selections.news;
+            for (_k = 0, _len2 = _ref9.length; _k < _len2; _k++) {
+              key = _ref9[_k];
+              selections.news[key] = true;
+            }
           }
           _this.widget_selections.selections = selections;
           _this.deps = [];
-          _ref4 = res.data.ticket_deps.departments;
-          for (_l = 0, _len3 = _ref4.length; _l < _len3; _l++) {
-            d = _ref4[_l];
+          _ref10 = res.data.ticket_deps.departments;
+          for (_l = 0, _len3 = _ref10.length; _l < _len3; _l++) {
+            d = _ref10[_l];
             if (!d.has_children) {
               d.title = d.title_parts.join(' > ');
               _this.deps.push(d);

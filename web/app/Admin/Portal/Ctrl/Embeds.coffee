@@ -79,14 +79,17 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 					news: {}
 				}
 
-				for key in @widget_selections.selections.articles
-					selections.articles[key] = true
+				if @widget_selections?.selections?.articles?
+					for key in @widget_selections.selections.articles
+						selections.articles[key] = true
 
-				for key in @widget_selections.selections.downloads
-					selections.downloads[key] = true
+				if @widget_selections?.selections?.downloads?
+					for key in @widget_selections.selections.downloads
+						selections.downloads[key] = true
 
-				for key in @widget_selections.selections.news
-					selections.news[key] = true
+				if @widget_selections?.selections?.news?
+					for key in @widget_selections.selections.news
+						selections.news[key] = true
 
 				@widget_selections.selections = selections
 
