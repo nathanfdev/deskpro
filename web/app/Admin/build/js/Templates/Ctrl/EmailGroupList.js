@@ -18,6 +18,17 @@
 
       Admin_Templates_Ctrl_EmailGroupList.DEPS = [];
 
+      Admin_Templates_Ctrl_EmailGroupList.prototype.initialLoad = function() {
+        var promise,
+          _this = this;
+        promise = this.Api.sendDataGet({
+          info: '/email-templates-info'
+        }).then(function(res) {
+          return _this.templateInfo = res.data.info.list;
+        });
+        return promise;
+      };
+
       return Admin_Templates_Ctrl_EmailGroupList;
 
     })(Admin_Ctrl_Base);

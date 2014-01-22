@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Templating\Templates;
 
 use Application\DeskPRO\Entity\Style;
+use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
@@ -262,9 +263,16 @@ class TemplateSet
 		}
 
 		if ($tr) {
-			$key = 'admin.emailtpl_desc.' . strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
-			$data['display_title'] = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : null;
-			$data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc') : null;
+			if (preg_match('#^DeskPRO:email#', $data['name'])) {
+				$tpl_desc = new EmailTemplatesDesc();
+				$info = $tpl_desc->getTplDisplayInfo(array('name' => $data['name']), $tr);
+				$data['display_title'] = $info['title'];
+				$data['display_description'] = $info['desc'];
+			} else {
+				$key = 'admin.emailtpl_desc.' . strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
+				$data['display_title'] = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : null;
+				$data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc') : null;
+			}
 		}
 
 		if ($tr && $replace_phrases) {

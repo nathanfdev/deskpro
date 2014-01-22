@@ -16,10 +16,22 @@
 
       Admin_Templates_Ctrl_EmailList.CTRL_AS = 'ListCtrl';
 
-      Admin_Templates_Ctrl_EmailList.DEPS = ['listType'];
-
       Admin_Templates_Ctrl_EmailList.prototype.init = function() {
-        return console.log(this.listType);
+        var parts;
+        parts = this.$stateParams.groupName.split(':');
+        this.typeId = parts.shift();
+        return this.groupId = parts.shift();
+      };
+
+      Admin_Templates_Ctrl_EmailList.prototype.initialLoad = function() {
+        var promise,
+          _this = this;
+        promise = this.Api.sendDataGet({
+          info: '/email-templates-info'
+        }).then(function(res) {
+          return _this.templates = res.data.info.list[_this.typeId].groups[_this.groupId].templates;
+        });
+        return promise;
       };
 
       /*
@@ -32,7 +44,7 @@
           _this = this;
         modalInstance = this.$modal.open({
           templateUrl: 'Templates/modal-email-editor.html',
-          controller: 'Admin_Templates_Ctrl_EmailEditor',
+          controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
           resolve: {
             templateName: function() {
               return tpl.name;

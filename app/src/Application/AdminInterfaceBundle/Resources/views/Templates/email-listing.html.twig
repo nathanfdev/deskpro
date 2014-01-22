@@ -17,10 +17,13 @@
 							&nbsp;
 								<span class="text-middle" ng-click="ListCtrl.openEditor(tpl)">
 									<span class="linked-text">
-										<em>{{ ng_var('tpl.shortname') }}</em>
+										<em>{{ ng_var('tpl.title') }}</em>
 										<i class="hovershow fa fa-cog"></i>
 									</span>
 								</span>
+							<div style="font-size: 11px; color: #666;">
+								{{ ng_var('tpl.desc') }}
+							</div>
 						</td>
 						<td style="text-align: right;">
 							<span ng-show="tpl.is_custom" class="label uc label-info" tooltip-placement="left" tooltip="You have customized this template.">Customized</span>
@@ -32,5 +35,5 @@
 			</div>
 		</article>
 	</section>
-	{{ ng_tpl('AdminInterfaceBundle:Templates:modal-template-editor.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Templates:modal-email-editor.html.twig') }}
 {% endblock %}

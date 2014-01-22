@@ -34,6 +34,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
+use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
 
@@ -55,6 +56,39 @@ class TemplatesController extends AbstractController
 		return $this->createApiResponse(array(
 			'list'             => $list,
 			'custom_templates' => $custom_templates,
+		));
+	}
+
+	####################################################################################################################
+	# get-email-template-info
+	####################################################################################################################
+
+	public function getEmailTemplateInfoAction()
+	{
+		$tpl_desc = new EmailTemplatesDesc();
+		$list = $tpl_desc->getProcessedList($this->container->getTranslator());
+
+		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
+		$custom_templates = array_filter($custom_templates, function($x) { return preg_match('#^DeskPRO:emails_#', $x['name']); });
+
+		if ($custom_templates) {
+			foreach ($list as &$type_coll) {
+				foreach ($type_coll['groups'] as &$group_coll) {
+					foreach ($group_coll['templates'] as &$tpl){
+						if (isset($custom_templates[$tpl['name']])) {
+							$tpl['is_custom'] = true;
+						} else {
+							$tpl['is_custom'] = false;
+						}
+					}
+				}
+			}
+			unset($type_coll, $group_coll, $tpl);
+		}
+
+		return $this->createApiResponse(array(
+			'list'             => $list,
+			'custom_templates' => $custom_templates
 		));
 	}
 
@@ -164,6 +198,8 @@ class TemplatesController extends AbstractController
 		));
 	}
 
+
+	####################################################################################################################
 
 	/**
 	 * @return TemplateSet

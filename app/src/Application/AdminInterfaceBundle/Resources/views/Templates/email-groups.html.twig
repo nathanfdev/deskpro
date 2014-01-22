@@ -7,26 +7,46 @@
 		<article>
 			<ul class="dp-item-list">
 				<li>
-					<a href="{{ ng_href('tickets.email_templates.list_layout') }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'layout:top'}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
 							<span class="title-text">Layout (Header, footer, CSS)</span>
 						</h4>
 					</a>
 				</li>
-				<li>
-					<a href="{{ ng_href('tickets.email_templates.list_users') }}">
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>User Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="info in ListCtrl.templateInfo.user.groups">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'user:' + info.groupId}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
-							<span class="title-text">Emails sent to users</span>
+							<span class="title-text">{{ ng_var('info.title') }}</span>
 						</h4>
 					</a>
 				</li>
-				<li>
-					<a href="{{ ng_href('tickets.email_templates.list_agents') }}">
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Agent Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="info in ListCtrl.templateInfo.agent.groups">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'agent:' + info.groupId}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
-							<span class="title-text">Emails sent to agents</span>
+							<span class="title-text">{{ ng_var('info.title') }}</span>
 						</h4>
 					</a>
 				</li>

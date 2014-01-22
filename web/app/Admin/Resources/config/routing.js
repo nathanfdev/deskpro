@@ -607,33 +607,10 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'tickets.email_templates.list_layout',
-		url: '/layout',
-		templateName: 'Templates/listing.html',
-		controller: 'Admin_Templates_Ctrl_EmailList',
-		resolve: {
-			listType: function() { return "layout"; }
-		}
-	});
-
-	routes.push({
-		id: 'tickets.email_templates.list_users',
-		url: '/users',
-		templateName: 'Templates/listing.html',
-		controller: 'Admin_Templates_Ctrl_EmailList',
-		resolve: {
-			listType: function() { return "user"; }
-		}
-	});
-
-	routes.push({
-		id: 'tickets.email_templates.list_agents',
-		url: '/agents',
-		templateName: 'Templates/listing.html',
-		controller: 'Admin_Templates_Ctrl_EmailList',
-		resolve: {
-			listType: function() { return "agent"; }
-		}
+		id: 'tickets.email_templates.list',
+		url: '/{groupName:.*?}',
+		templateName: 'Templates/email-listing.html',
+		controller: 'Admin_Templates_Ctrl_EmailList'
 	});
 
 	//###
