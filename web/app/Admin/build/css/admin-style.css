@@ -8415,18 +8415,22 @@ section.dp-help-content-wrapper {
   z-index: 1000;
   margin: 10px 90px 0 90px;
   overflow: visible;
+  text-align: center;
   transition: all 0.2s linear;
 }
 
 section.dp-help-content-wrapper .dp-help-content-outer {
-  border: 3px solid #e1e6ef;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+  border: 3px solid #eae7da;
   border-radius: 3px;
 }
 
 section.dp-help-content-wrapper .dp-help-content-outer2 {
   position: relative;
   background: #fff;
-  border: 1px solid #d0d9e6;
+  border: 1px solid #fff;
   border-radius: 2px;
 }
 
@@ -8447,26 +8451,45 @@ section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap em {
   padding: 2px 8px;
   font-style: normal;
   line-height: 100%;
-  background: #d0d9e6;
+  background: #e3decd;
+  border: 1px solid #d6d1c0;
   border-radius: 2px;
 }
 
 section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap i {
-  color: #fff;
+  color: #c4bda4;
 }
 
 section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap i.up {
   display: none;
 }
 
+.dp-help-content > header {
+  color: #8a6d3b;
+  cursor: pointer;
+  background: #fcf8e3;
+}
+
+.dp-help-content > header aside {
+  float: left;
+  margin: 10px 0 0 10px;
+  vertical-align: top;
+}
+
+.dp-help-content > header aside i {
+  font-size: 34px;
+  vertical-align: top;
+}
+
 .dp-help-content > header h1 {
-  padding: 0;
-  margin: 10px;
+  padding: 10px 10px 10px 0;
+  margin: 0 0 0 50px;
   font-size: 120%;
 }
 
 .dp-help-content > header p {
-  margin: 10px;
+  padding: 0 10px 10px 0;
+  margin: 0 0 0 50px;
 }
 
 .dp-help-content > article {
@@ -8506,9 +8529,17 @@ section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap i.up {
   margin-top: 0;
 }
 
+section.dp-help-content-wrapper.open header {
+  border-bottom: 1px solid #d6d1c0;
+}
+
 section.dp-help-content-wrapper.open .dp-help-content-outer {
   box-shadow: 0 0px 5px 2px rgba(0, 0, 0, 0.3);
   transition: all 0.2s linear;
+}
+
+section.dp-help-content-wrapper.open .dp-help-content-outer2 {
+  border: 1px solid #d6d1c0;
 }
 
 section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.down {

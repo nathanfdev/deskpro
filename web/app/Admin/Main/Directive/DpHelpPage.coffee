@@ -18,6 +18,8 @@ define ->
 			link: (scope, element, attrs) ->
 				isOpen = false
 				backdrop = null
+				element.find('header').first().prepend('<aside><i class="fa fa-question-circle"></i></aside>')
+
 				open = ->
 					return if isOpen
 					origH = element.height()
@@ -34,15 +36,15 @@ define ->
 
 					backdrop.show()
 					element.addClass('open')
-					article = element.find('.dp-help-content').find('article').hide()
-					article.slideDown(200)
+					article = element.find('.dp-help-content').find('article').first()
+					article.slideDown(200, 'linear')
 					isOpen = true
 
 				close = ->
 					return if not isOpen
 					backdrop.hide()
-					article = element.find('.dp-help-content').find('article')
-					article.slideUp(200, ->
+					article = element.find('.dp-help-content').find('article').first()
+					article.slideUp(200, 'linear', ->
 						element.removeClass('open')
 					)
 					isOpen = false
