@@ -18,7 +18,17 @@
 
       Reports_Overview_Ctrl_Overview.DEPS = [];
 
+      /*
+      		#
+      */
+
+
       Reports_Overview_Ctrl_Overview.prototype.init = function() {};
+
+      /*
+      		# Just doing all the necessary AJAX calls here
+      */
+
 
       Reports_Overview_Ctrl_Overview.prototype.initialLoad = function() {
         var data_promise,
@@ -27,24 +37,33 @@
           tickets_status: "/reports/overview/data/tickets_status"
         }).then(function(res) {
           _this.$scope.tickets_status = res.data.tickets_status;
-          return _this.setPercentagesForTicketsStatuses();
+          return _this.setVariablesForTicketsStatuses();
         });
         return this.$q.all([data_promise]);
       };
 
       /*
-      		#
+      		# We need to display bar graphs - so let's pre-calculate some variables
       */
 
 
-      Reports_Overview_Ctrl_Overview.prototype.setPercentagesForTicketsStatuses = function() {
-        var key, value, _ref1, _results;
-        _ref1 = this.$scope.tickets_status.titles;
+      Reports_Overview_Ctrl_Overview.prototype.setVariablesForTicketsStatuses = function() {
+        var denominator, key, percentage, _results;
+        this.$scope.tickets_status.stats = [];
+        denominator = this.$scope.tickets_status.max || 1;
         _results = [];
-        for (key in _ref1) {
-          value = _ref1[key];
+        for (key in this.$scope.tickets_status.titles) {
           if (this.$scope.tickets_status.values[key]) {
-            _results.push(console.log(this.$scope.tickets_status.values[key]));
+            percentage = this.$scope.tickets_status.values[key] / denominator * 100;
+            if (percentage < 1) {
+              percentage = 1;
+            }
+            _results.push(this.$scope.tickets_status.stats.push({
+              title: this.$scope.tickets_status.titles[key],
+              value: this.$scope.tickets_status.values[key],
+              left_percentage: percentage,
+              right_percentage: 100 - percentage
+            }));
           } else {
             _results.push(void 0);
           }

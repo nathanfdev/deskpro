@@ -7,37 +7,28 @@
 	</header>
 	<article ng-if="tickets_status.values">
 		<table class="stat-table" width="100%">
-				{% if data.values[id] %}
-					<tr ng-repeat="(id, title) in tickets_status.titles">
-						<td class="title"><span>{{ ng_var('title') }}</span></td>
-						<td width="100%">
-							<table width="100%" class="stat-value">
-								<tr>
-									{% set perc = (data.values[id] / data.max|default(1)) * 100 %}
-									{% if perc < 1.0 %}
-										<td class="value" width="1%">
-											<div>&nbsp;</div>
-										</td>
-										<td width="{{ 100 - 1 }}%">{{ data.values[id] }}</td>
-									{% else %}
-										<td class="value" width="{{ perc }}%">
-											<div>&nbsp;</div>
-										</td>
-										<td width="{{ 100 - perc }}%">{{ data.values[id] }}</td>
-									{% endif %}
-								</tr>
-							</table>
-						</td>
-					</tr>
-				{% endif %}
+			<tr ng-repeat="stat in tickets_status.stats">
+				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
+				<td width="100%">
+					<table width="100%" class="stat-value">
+						<tr>
+							<td class="value" width="{{ ng_var('stat.left_percentage') }}%">
+								<div>&nbsp;</div>
+							</td>
+							<td width="{{ ng_var('stat.right_percentage') }}%">
+								{{ ng_var('stat.value') }}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
 			<tr class="total-row">
 				<td class="title">Total:</td>
-				<td class="val">{{ data.sum }}</td>
+				<td class="val">{{ ng_var('tickets_status.sum') }}</td>
 			</tr>
 		</table>
 		<div class="no-data" ng-if="!tickets_status.values">
 			<h3>No matching data</h3>
 		</div>
-		{{ macros.no_data() }}
 	</article>
 </section>
