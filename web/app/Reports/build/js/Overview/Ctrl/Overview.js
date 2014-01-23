@@ -16,7 +16,41 @@
 
       Reports_Overview_Ctrl_Overview.CTRL_AS = 'Overview';
 
+      Reports_Overview_Ctrl_Overview.DEPS = [];
+
       Reports_Overview_Ctrl_Overview.prototype.init = function() {};
+
+      Reports_Overview_Ctrl_Overview.prototype.initialLoad = function() {
+        var data_promise,
+          _this = this;
+        data_promise = this.Api.sendDataGet({
+          tickets_status: "/reports/overview/data/tickets_status"
+        }).then(function(res) {
+          _this.$scope.tickets_status = res.data.tickets_status;
+          return _this.setPercentagesForTicketsStatuses();
+        });
+        return this.$q.all([data_promise]);
+      };
+
+      /*
+      		#
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.setPercentagesForTicketsStatuses = function() {
+        var key, value, _ref1, _results;
+        _ref1 = this.$scope.tickets_status.titles;
+        _results = [];
+        for (key in _ref1) {
+          value = _ref1[key];
+          if (this.$scope.tickets_status.values[key]) {
+            _results.push(console.log(this.$scope.tickets_status.values[key]));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
 
       return Reports_Overview_Ctrl_Overview;
 

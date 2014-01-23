@@ -2,18 +2,24 @@
 
 {% block fillpage_content %}
 
-	<div class="dp-interface-buttons">
-		<ul>
-			<li>
-				<article>Here we'll have overview page</article>
-			</li>
-			<li>
-				<article>Here we'll have overview page</article>
-			</li>
-			<li>
-				<article>Here we'll have overview page</article>
-			</li>
-		</ul>
-	</div>
+	<section class="dp-paneblock dp-panelink">
+
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td style="padding-right: 6px;" width="50%">
+
+					<div>
+						{% include 'ReportsInterfaceBundle:Overview:tickets-status.html.twig' %}
+					</div>
+
+					<br/>
+
+				</td>
+			</tr>
+		</table>
+
+		<br/>
+
+	</section>
 
 {% endblock %}
