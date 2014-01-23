@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
+use Orb\Util\Strings;
+
 class Layout implements \IteratorAggregate, \Serializable
 {
 	/**
@@ -116,6 +118,42 @@ class Layout implements \IteratorAggregate, \Serializable
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->fields);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function compileJsObj()
+	{
+		$js = "(function() {\n";
+		$js .= "\tvar i, fields = [\n";
+
+		$fields_js = array();
+		foreach ($this->fields as $field) {
+			$check_fn = trim(Strings::modifyLines($field->compileJsCheck(), "\t\t\t\t"));
+
+			$bit_js = "\t\t{\n";
+			$bit_js .= "\t\t\tid:         '{$field->getId()}',\n";
+			$bit_js .= "\t\t\tfield_type: '{$field->getFieldType()}',\n";
+			$bit_js .= "\t\t\tfield_id:   '{$field->getFieldId()}',\n";
+			$bit_js .= "\t\t\tcheckFn: $check_fn\n";
+			$bit_js .= "\t\t}";
+			$fields_js[] = $bit_js;
+		}
+
+		$js .= implode(",\n", $fields_js) . "\n\t];\n\n";
+
+		$js .= "\treturn {\n";
+		$js .= "\t\tgetMatchingFields: function(ticket) {\n";
+		$js .= "\t\t\tvar match = [];\n";
+		$js .= "\t\t\tfor(i = 0; i < fields.length; i++) { if (fields[i].checkFn(ticket)) match.push(fields[i]); }\n";
+		$js .= "\t\t}\n";
+		$js .= "\t};\n";
+
+		$js .= "})()";
+
+		return $js;
 	}
 
 

@@ -115,26 +115,35 @@ class LayoutFieldCriteria implements \Serializable
 			return "function() { return true; }";
 		}
 
-		$js = "function(ticket) {\n";
-		$js .= "\tvar any = false, checkFn = [];\n";
-
+		$js = "(function() {\n";
+		$js .= "\tvar i, checkFn = [\n";
+		$fn_bits = array();
 		foreach ($this->terms as $t) {
 			$t_js = $t->compileJsCheck();
-			$t_js = trim(Strings::modifyLines($t_js, "\t"));
-			$js .= "\tcheckFn.push($t_js);\n";
+			$t_js = trim(Strings::modifyLines($t_js, "\t\t"));
+			$fn_bits[] = "\t\t$t_js";
 		}
+		$js .= implode(",\n", $fn_bits);
+		$js .= "\n\t];\n";
 
-		$js .= "\twhile(f = checkFn.pop()) {\n";
-		$js .= "\t\tif (f(ticket)) { ";
-		if ($this->mode = self::CRIT_ALL) {
-			$js .= " } else { return false; }\n";
+		$js .= "\treturn function(ticket) {\n";
+		$js .= "\t\tfor(i = 0; i < checkFn.length; i++) { ";
+		if ($this->mode == self::CRIT_ANY) {
+			$js .= "if (checkFn[i](ticket)) return true;";
 		} else {
-			$js .= " return true; } \n";
+			$js .= "if (!checkFn[i](ticket)) return true;";
 		}
-		$js .= "\t}\n";
-		$js .= "\treturn false;\n";
+		$js .= " }\n";
 
-		$js .= "}";
+		if ($this->mode == self::CRIT_ANY) {
+			$js .= "\t\treturn false;\n";
+		} else {
+			$js .= "\t\treturn true;\n";
+		}
+
+		$js .= "\t};\n";
+		$js .= "})()";
+
 		return $js;
 	}
 

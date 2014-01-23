@@ -271,6 +271,19 @@ class LayoutField implements \Serializable
 
 
 	/**
+	 * @return string
+	 */
+	public function compileJsCheck()
+	{
+		if (!$this->criteria || !$this->criteria->getTerms()) {
+			return "function() { return true; }";
+		}
+
+		return $this->criteria->compileJsCheck();
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function exportToArray()

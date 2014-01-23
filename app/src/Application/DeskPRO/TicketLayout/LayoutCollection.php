@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,58 +25,76 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\TicketLayout;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\TicketLayout\LayoutCollection;
-use Application\DeskPRO\Tickets\Actions\NullAction;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckWorkflow;
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class LayoutCollection
 {
-	protected function configure()
+	/**
+	 * Array of layouts keyed by some unique key
+	 *
+	 * @var Layout[]
+	 */
+	private $layouts;
+
+	/**
+	 * Adds a layout to the collection
+	 *
+	 * @param Layout $layout   The layout to add
+	 * @param string $key      The layout key, or null for 'default'
+	 * @throws \OutOfBoundsException
+	 */
+	public function addLayout($layout, $key)
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
+		if (isset($this->layouts[$key])) {
+			throw new \OutOfBoundsException();
+		}
+
+		if ($key === null) {
+			$key = '0';
+		}
+
+		$this->layouts[$key] = $layout;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+
+	/**
+	 * @return string
+	 */
+	public function compileJsObj()
 	{
-		/** @var \Application\DeskPRO\Entity\TicketLayout $ticket_layout */
-		$ticket_layout = App::getOrm()->find('DeskPRO:TicketLayout', 1);
-		$ticket_layout2 = App::getOrm()->find('DeskPRO:TicketLayout', 3);
+		$js = "(function() {\n";
+		$js .= "\tvar layoutMap = {\n";
 
-		$layout_collection = new LayoutCollection();
-		$layout_collection->addLayout($ticket_layout->user_layout, null);
-		$layout_collection->addLayout($ticket_layout2->user_layout, 2);
+		$layout_codes = array();
+		foreach ($this->layouts as $k => $layout) {
+			$k_str = "'$k'";
 
-		echo $layout_collection->compileJsObj();
-		echo "\n";
+			$code = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
+			$bit_js ="\t\t{$k_str}: {$code}";
+			$layout_codes[] = $bit_js;
+		}
+
+		$js .= implode(",\n", $layout_codes) . "\n";
+		$js .= "\t};\n";
+
+		$js .= "\treturn {\n";
+		$js .= "\t\tgetLayout: function(id) {\n";
+		$js .= "\t\t\treturn return layoutMap[id+''] || layoutMap['0'] || null;\n";
+		$js .= "\t\t}\n";
+		$js .= "\t};\n";
+
+		$js .= "})()";
+
+		return $js;
 	}
 }

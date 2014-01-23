@@ -39,6 +39,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Domain\DomainObject;
 
+/**
+ * @property int $id
+ * @property Department $department
+ * @property bool $is_enabled
+ * @property \Application\DeskPRO\TicketLayout\Layout $user_layout
+ * @property \Application\DeskPRO\TicketLayout\Layout $agent_layout
+ */
 class TicketLayout extends DomainObject
 {
 	/**

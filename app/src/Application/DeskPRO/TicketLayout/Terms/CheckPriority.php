@@ -67,9 +67,7 @@ class CheckPriority extends AbstractTicketLayoutTerm
 		$op = $this->op == self::OP_NOT ? '===' : '!==';
 
 		$js = <<<JS
-function(ticket) {
-	return $js_ids.indexOf(ticket.getPriorityId()) $op -1;
-}
+function(ticket) { return $js_ids.indexOf(ticket.getPriorityId()) $op -1; }
 JS;
 
 		return $js;
