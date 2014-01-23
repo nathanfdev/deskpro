@@ -38,10 +38,29 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class UsergroupDataService extends BaseRepositoryService
 {
+	/**
+	 * @var bool
+	 */
 	protected $has_init = false;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Usergroup[]
+	 */
 	protected $ugs;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Usergroup[]
+	 */
 	protected $agent_ugs;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Usergroup[]
+	 */
 	protected $user_ugs;
+
+	/**
+	 * @var int[]
+	 */
 	protected $ug_ids = array();
 
 	/**
@@ -49,6 +68,10 @@ class UsergroupDataService extends BaseRepositoryService
 	 */
 	protected $continer;
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public static function create(DeskproContainer $container, array $options = null)
 	{
 		if (!$options) $options = array();
@@ -60,35 +83,19 @@ class UsergroupDataService extends BaseRepositoryService
 		return $o;
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function init()
 	{
-		$this->continer   = $this->options['container'];
+		$this->continer = $this->options['container'];
 	}
 
-	public function get($ug_id)
-	{
-		$this->preload();
-		return isset($this->ugs[$ug_id]) ? $this->ugs[$ug_id] : null;
-	}
 
-	public function getAll()
-	{
-		$this->preload();
-		return $this->ugs;
-	}
-
-	public function getUserUsergroups()
-	{
-		$this->preload();
-		return $this->user_ugs;
-	}
-
-	public function getAgentUsergroups()
-	{
-		$this->preload();
-		$this->agent_ugs;
-	}
-
+	/**
+	 * Loads data
+	 */
 	protected function preload()
 	{
 		if ($this->has_init) {
@@ -115,6 +122,80 @@ class UsergroupDataService extends BaseRepositoryService
 		}
 	}
 
+
+	/**
+	 * Gets a usergroup (either user or agent)
+	 *
+	 * @param int $ug_id
+	 * @return \Application\DeskPRO\Entity\Usergroup|null
+	 */
+	public function get($ug_id)
+	{
+		$this->preload();
+		return isset($this->ugs[$ug_id]) ? $this->ugs[$ug_id] : null;
+	}
+
+
+	/**
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\Usergroup|null
+	 */
+	public function getAgentGroup($id)
+	{
+		$this->preload();
+		return isset($this->agent_ugs[$id]) ? $this->agent_ugs[$id] : null;
+	}
+
+
+	/**
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\Usergroup|null
+	 */
+	public function getUserGroup($id)
+	{
+		$this->preload();
+		return isset($this->user_ugs[$id]) ? $this->user_ugs[$id] : null;
+	}
+
+
+	/**
+	 * Gets all groups
+	 *
+	 * @return array
+	 */
+	public function getAll()
+	{
+		$this->preload();
+		return $this->ugs;
+	}
+
+
+	/**
+	 * Gets an array of user groups
+	 *
+	 * @return array
+	 */
+	public function getUserUsergroups()
+	{
+		$this->preload();
+		return $this->user_ugs;
+	}
+
+
+	/**
+	 * Gets an array of agent groups
+	 */
+	public function getAgentUsergroups()
+	{
+		$this->preload();
+		return $this->agent_ugs;
+	}
+
+
+	/**
+	 * @param null $for_ids
+	 * @return array
+	 */
 	public function getNames($for_ids = null)
 	{
 		$this->preload();
@@ -138,6 +219,10 @@ class UsergroupDataService extends BaseRepositoryService
 		return $ret;
 	}
 
+
+	/**
+	 * @return array
+	 */
 	public function getUsergroupNames()
 	{
 		$this->preload();
@@ -145,11 +230,21 @@ class UsergroupDataService extends BaseRepositoryService
 		return $names;
 	}
 
+
+	/**
+	 * @return array
+	 */
 	public function getAgentUsergroupNames()
 	{
 		return $this->getUsergroupNames(array_keys($this->agent_ugs));
 	}
 
+
+	/**
+	 * @param array $ids
+	 * @param bool $keep_order
+	 * @return array
+	 */
 	public function getByIds(array $ids, $keep_order = false)
 	{
 		$this->preload();
@@ -164,6 +259,9 @@ class UsergroupDataService extends BaseRepositoryService
 		return $ret;
 	}
 
+	/**
+	 * Pass-through to repository
+	 */
 	public function __call($method, array $args = array())
 	{
 		$this->preload();

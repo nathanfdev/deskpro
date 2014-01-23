@@ -29,81 +29,72 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\People\Helpers;
+namespace Application\DeskPRO\People\Agents\Type;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Orb\Util\Arrays;
-
-/**
- * This helps working with agent teams on a person
- */
-class AgentTeam implements \Orb\Helper\ShortCallableInterface
+class EditAgentType extends AbstractType
 {
-	protected $person;
-	protected $_agent_team_ids = null;
-
-	public function __construct(Entity\Person $person)
+	/**
+	 * @param FormBuilderInterface $builder
+	 * @param array $options
+	 */
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$this->person = $person;
-	}
+		$builder->add('name', 'text', array('required' => true));
+		$builder->add('override_name', 'text', array('required' => false));
 
-	public function getShortCallableNames()
-	{
-		return array(
-			'getAgentTeamIds' => 'getAgentTeamIds',
-		);
-	}
+		$builder->add('emails', 'collection', array(
+			'type'         => 'email',
+			'allow_add'    => true,
+			'allow_delete' => true,
+		));
 
-	public function getAgentTeamIds()
-	{
-		if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
+		$builder->add('zones', 'choice', array(
+			'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
+			'multiple' => true,
+			'required' => false,
+		));
 
-		$this->_agent_team_ids = App::getDb()->fetchAllCol("
-			SELECT team_id
-			FROM agent_team_members
-			WHERE person_id = {$this->person['id']}
-		");
+		$builder->add('teams', 'entity', array(
+			'class'    => 'DeskPRO:AgentTeam',
+			'required' => false,
+			'multiple' => true,
+		));
 
-		return $this->_agent_team_ids;
-	}
-
-	public function getAgentTeams()
-	{
-		$ids = $this->getAgentTeamIds();
-		if (!$ids) {
-			return array();
-		}
-
-		$agent_data = App::getContainer()->getAgentData();
-		$teams = array();
-
-		foreach ($ids as $id) {
-			$t = $agent_data->getTeam($id);
-			if ($t) {
-				$teams[] = $t;
+		$builder->add('agent_groups', 'entity', array(
+			'class'         => 'DeskPRO:Usergroup',
+			'required'      => false,
+			'multiple'      => true,
+			'query_builder' => function(EntityRepository $er) {
+				return $er->createQueryBuilder('ug')->where('ug.is_agent_group = true');
 			}
-		}
-
-		return $teams;
+		));
 	}
 
-	public function getPrimaryTeamId()
+
+	/**
+	 * @param OptionsResolverInterface $resolver
+	 */
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		return Arrays::getFirstItem($this->getAgentTeamIds());
+		$resolver->setDefaults(array(
+			'data_class'         => 'Application\\DeskPRO\\People\\Agents\\EditAgent',
+			'cascade_validation' => true,
+		));
 	}
 
-	public function addToAgentTeam(Entity\AgentTeam $team)
-	{
-		return $team->addPerson($this);
-	}
 
-	public function reset()
+	/**
+	 * @return string
+	 */
+	public function getName()
 	{
-		$this->_agent_team_ids = null;
+		return 'agent';
 	}
 }

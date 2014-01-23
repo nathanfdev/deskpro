@@ -11,12 +11,12 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 
 			if agent.override_display_name
 				@form.enable_display_name = true
-				@form.override_display_name = agent.enable_display_name
+				@form.override_name = agent.enable_display_name
 			else
 				@form.enable_display_name = false
-				@form.override_display_name = ''
+				@form.override_name = ''
 
-			@form.primary_email_address = agent.primary_email.email
+			@form.email = agent.primary_email?.email
 
 			@form.zones = {
 				admin: agent.can_admin,
@@ -64,22 +64,25 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			formData = {}
 			formData.name = @form.name
 
-			if @form.enable_display_name and Strings.trim(@form.override_display_name)
-				formData.override_display_name = Strings.trim(@form.override_display_name)
+			if @form.enable_display_name and Strings.trim(@form.override_name)
+				formData.override_name = Strings.trim(@form.override_name)
 			else
-				formData.override_display_name = null
+				formData.override_name = ''
 
-			formData.primary_email_address = @form.primary_email_address
-			formData.zones = @form.zones
+			formData.email = @form.email
 
-			formData.team_ids = []
+			formData.zones = []
+			if @form.zones.admin   then formData.zones.push('admin')
+			if @form.zones.reports then formData.zones.push('reports')
+
+			formData.teams = []
 			for t in @form.teams
 				if t.value
-					formData.team_ids.push(t.id)
+					formData.teams.push(t.id)
 
-			formData.agentgroup_ids = []
+			formData.agent_groups = []
 			for g in @form.agent_groups
 				if g.value
-					formData.agentgroup_ids.push(g.id)
+					formData.agent_groups.push(g.id)
 
 			return formData

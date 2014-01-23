@@ -29,81 +29,66 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Validator
  */
 
-namespace Application\DeskPRO\People\Helpers;
+namespace Application\DeskPRO\Validator\Constraints;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
+use Application\DeskPRO\Entity\AgentTeam;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
 
-use Orb\Util\Arrays;
-
-/**
- * This helps working with agent teams on a person
- */
-class AgentTeam implements \Orb\Helper\ShortCallableInterface
+class AgentTeamValidator extends ConstraintValidator
 {
-	protected $person;
-	protected $_agent_team_ids = null;
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+	 */
+	private $agent_data;
 
-	public function __construct(Entity\Person $person)
+
+	/**
+	 * @param AgentDataService $agent_data
+	 */
+	public function __construct(AgentDataService $agent_data)
 	{
-		$this->person = $person;
+		$this->agent_data = $agent_data;
 	}
 
-	public function getShortCallableNames()
+
+	/**
+	 * @param mixed $value
+	 * @param Constraint $constraint
+	 */
+	public function validate($value, Constraint $constraint)
 	{
-		return array(
-			'getAgentTeamIds' => 'getAgentTeamIds',
-		);
-	}
+		if (is_object($value)) {
+			if (!($value instanceof AgentTeam)) {
+				$this->context->addViolation($constraint->typeMessage, array('{{type}}' => get_class($value)));
+			} else {
+				if ($constraint->checkRepos) {
+					if (!$value->id || !$this->agent_data->getTeam($value->id)) {
+						$this->context->addViolation($constraint->message);
+					}
+				}
+			}
+		} else {
+			if (!$constraint->acceptId) {
+				$this->context->addViolation($constraint->message);
+			}
 
-	public function getAgentTeamIds()
-	{
-		if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
-
-		$this->_agent_team_ids = App::getDb()->fetchAllCol("
-			SELECT team_id
-			FROM agent_team_members
-			WHERE person_id = {$this->person['id']}
-		");
-
-		return $this->_agent_team_ids;
-	}
-
-	public function getAgentTeams()
-	{
-		$ids = $this->getAgentTeamIds();
-		if (!$ids) {
-			return array();
-		}
-
-		$agent_data = App::getContainer()->getAgentData();
-		$teams = array();
-
-		foreach ($ids as $id) {
-			$t = $agent_data->getTeam($id);
-			if ($t) {
-				$teams[] = $t;
+			if (!$this->agent_data->getAgentGroup($value)) {
+				$this->context->addViolation($constraint->message);
 			}
 		}
-
-		return $teams;
 	}
 
-	public function getPrimaryTeamId()
-	{
-		return Arrays::getFirstItem($this->getAgentTeamIds());
-	}
 
-	public function addToAgentTeam(Entity\AgentTeam $team)
+	/**
+	 * @return string
+	 */
+	public static function getAlias()
 	{
-		return $team->addPerson($this);
-	}
-
-	public function reset()
-	{
-		$this->_agent_team_ids = null;
+		return 'AgentTeam';
 	}
 }

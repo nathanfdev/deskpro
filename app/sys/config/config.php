@@ -180,6 +180,33 @@ $definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-u
 $container->setDefinition('deskpro.service_urls', $definition);
 
 ############################################################################
+# Validators and Constraints
+############################################################################
+
+// deskpro.constraint_factory
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Validator\\Constraints\\ConstraintFactory');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('deskpro.constraint_factory', $definition);
+
+foreach (array(
+	'Application\\DeskPRO\\Validator\\Constraints\\AgentGroupValidator',
+	'Application\\DeskPRO\\Validator\\Constraints\\AgentTeamValidator',
+) as $class) {
+	$parts = explode('\\', $class);
+	$base_name = array_pop($parts);
+
+	$alias = $class::getAlias();
+
+	$definition = new Definition();
+	$definition->setClass($class);
+	$definition->setFactoryService('deskpro.constraint_factory');
+	$definition->setFactoryMethod('get' . ucfirst($base_name));
+	$definition->addTag('validator.constraint_validator', array('alias' => $alias));
+	$container->setDefinition('validator.deskpro.' . strtolower($alias), $definition);
+}
+
+############################################################################
 # Framework Configuration
 ############################################################################
 

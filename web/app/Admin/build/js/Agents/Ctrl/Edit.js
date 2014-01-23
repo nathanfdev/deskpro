@@ -53,7 +53,7 @@
             _this.agent = {
               id: 0,
               name: '',
-              primary_email: {},
+              email: {},
               teams: [],
               usergroups: []
             };
@@ -466,6 +466,9 @@
       Admin_Agents_Ctrl_Edit.prototype.saveAgent = function() {
         var postData, promise,
           _this = this;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
         this.startSpinner('saving');
         postData = this.getFormData();
         if (this.agentId) {
@@ -488,6 +491,9 @@
             }
           }
           return _this.stopSpinner('saving');
+        }, function(res) {
+          _this.stopSpinner('saving', true);
+          return _this.applyErrorResponseToView(res);
         });
         return promise;
       };

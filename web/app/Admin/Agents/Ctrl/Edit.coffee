@@ -44,7 +44,7 @@ define [
 					@agent = {
 						id: 0,
 						name: '',
-						primary_email: {},
+						email: {},
 						teams: [],
 						usergroups: []
 					}
@@ -348,6 +348,9 @@ define [
     	# Saves the agent
 		###
 		saveAgent: ->
+			if not @$scope.form_props.$valid
+				return
+
 			@startSpinner('saving')
 
 			postData = @getFormData()
@@ -367,6 +370,9 @@ define [
 					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.addAgent(res.data.person_id, @agent.display_name)
 
 				@stopSpinner('saving')
+			, (res) =>
+				@stopSpinner('saving', true)
+				@applyErrorResponseToView(res)
 			)
 
 			return promise

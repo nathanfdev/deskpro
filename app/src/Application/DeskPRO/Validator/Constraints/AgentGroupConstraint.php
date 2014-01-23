@@ -29,81 +29,43 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Validator
  */
 
-namespace Application\DeskPRO\People\Helpers;
+namespace Application\DeskPRO\Validator\Constraints;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Symfony\Component\Validator\Constraint;
 
-use Orb\Util\Arrays;
-
-/**
- * This helps working with agent teams on a person
- */
-class AgentTeam implements \Orb\Helper\ShortCallableInterface
+class AgentGroupConstraint extends Constraint
 {
-	protected $person;
-	protected $_agent_team_ids = null;
+	/**
+	 * @var string
+	 */
+	public $message     = 'Invalid agent group';
 
-	public function __construct(Entity\Person $person)
+	/**
+	 * @var string
+	 */
+	public $typeMessage = 'Invalid object type, got {{type}}';
+
+	/**
+	 * Accepts and validates IDs (as well as actual objects)
+	 * @var bool
+	 */
+	public $acceptId    = true;
+
+	/**
+	 * If given a Usergroup, checks that its actually in the repository
+	 * @var bool
+	 */
+	public $checkRepos  = true;
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function validatedBy()
 	{
-		$this->person = $person;
-	}
-
-	public function getShortCallableNames()
-	{
-		return array(
-			'getAgentTeamIds' => 'getAgentTeamIds',
-		);
-	}
-
-	public function getAgentTeamIds()
-	{
-		if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
-
-		$this->_agent_team_ids = App::getDb()->fetchAllCol("
-			SELECT team_id
-			FROM agent_team_members
-			WHERE person_id = {$this->person['id']}
-		");
-
-		return $this->_agent_team_ids;
-	}
-
-	public function getAgentTeams()
-	{
-		$ids = $this->getAgentTeamIds();
-		if (!$ids) {
-			return array();
-		}
-
-		$agent_data = App::getContainer()->getAgentData();
-		$teams = array();
-
-		foreach ($ids as $id) {
-			$t = $agent_data->getTeam($id);
-			if ($t) {
-				$teams[] = $t;
-			}
-		}
-
-		return $teams;
-	}
-
-	public function getPrimaryTeamId()
-	{
-		return Arrays::getFirstItem($this->getAgentTeamIds());
-	}
-
-	public function addToAgentTeam(Entity\AgentTeam $team)
-	{
-		return $team->addPerson($this);
-	}
-
-	public function reset()
-	{
-		$this->_agent_team_ids = null;
+		return 'AgentGroup';
 	}
 }

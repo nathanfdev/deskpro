@@ -426,6 +426,9 @@
 
       DeskPRO_Ctrl_Base.prototype.applyErrorResponseToView = function(result) {
         var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
+        if ((result != null ? result.data : void 0) && (result != null ? result.config : void 0)) {
+          result = result.data;
+        }
         if ((result != null ? result.error_code : void 0) !== 'validation_error') {
           return;
         }

@@ -341,7 +341,13 @@ define ['angular'], (angular) ->
     	* a validation error that we want to show in the form.
 		###
 		applyErrorResponseToView: (result) ->
-			if result?.error_code != 'validation_error' then return
+
+			# passed the full result object rather than just data
+			if result?.data and result?.config
+				result = result.data
+
+			if result?.error_code != 'validation_error'
+				return
 
 			error_codes = []
 

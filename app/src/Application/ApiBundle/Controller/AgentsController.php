@@ -34,7 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
@@ -42,6 +41,8 @@ use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoa
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\People\Agents\AgentDelete;
+use Application\DeskPRO\People\Agents\EditAgent;
+use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -160,6 +161,58 @@ class AgentsController extends AbstractController
 
 	public function saveAgentAction($id = null)
 	{
+		#-------------------------
+		# Pre-validation
+		#-------------------------
+
+		$set_emails = $this->in->getArrayOfStrings('agent.emails');
+
+		if ($this->in->getString('agent.email')) {
+			array_unshift($set_emails, $this->in->getString('agent.email'));
+		}
+
+		$set_emails = array_unique($set_emails);
+		$set_emails = Arrays::removeFalsey($set_emails);
+
+		$find_existing = array();
+		foreach ($set_emails as $email_addr) {
+			$exist = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email_addr);
+			if ($exist && $exist->id != $id) {
+				if (!isset($find_existing[$exist->id])) {
+					$find_existing[$exist->id] = array(
+						'person' => $exist,
+						'emails' => array()
+					);
+				}
+				$find_existing[$exist->id]['emails'] = $email_addr;
+			}
+		}
+
+		if ($find_existing) {
+			// If there is just one existing person and we're creating a new agent,
+			// then we can just promote the user to be an agent
+			if (count($find_existing) == 1 && !$id) {
+				$exist = array_pop($find_existing);
+				$id = $exist->id;
+
+			// In all other cases, we have a dupe email error
+			} else {
+				$error_info = array('existing' => array());
+				foreach ($find_existing as $info) {
+					$error_info['existing'][] = array(
+						'person_id'   => $info['person']>id,
+						'person_name' => $info['person']->display_name,
+						'emails'      => $info['emails']
+					);
+				}
+				return $this->createApiErrorInfoResponse('dupe_email', 'One or more email addresses are already in use by other users', $error_info);
+			}
+		}
+
+		#-------------------------
+		# Get agent
+		#-------------------------
+
 		if ($id) {
 			$is_new = false;
 			$agent = $this->container->getAgentData()->get($id);
@@ -170,32 +223,50 @@ class AgentsController extends AbstractController
 		} else {
 			$is_new = true;
 			$agent = new Person();
-
-			$agent->is_user = true;
-			$agent->is_confirmed = true;
-			$agent->is_agent = true;
-			$agent->can_agent = true;
 			$agent->setPassword(Strings::random(20));
-
-			$agent->addEmailAddressString($this->in->getString('agent.primary_email_address'));
 		}
 
-		$agent->setName($this->in->getString('agent.name'));
-		$agent->override_display_name = $this->in->getString('agent.override_display_name') ?: '';
-		$agent->can_admin   = $this->in->getBool('agent.zones.admin');
-		$agent->can_billing = $agent->can_admin;
-		$agent->can_reports = $this->in->getBool('agent.zones.reports');
+		$edit_agent = new EditAgent($agent);
 
-		$this->em->persist($agent);
-		$this->em->flush();
+		#-------------------------
+		# Save form
+		#-------------------------
 
-		if ($is_new) {
-			// Send welcome email
+		$form = $this->createForm(
+			new EditAgentType(),
+			$edit_agent
+		);
+
+		$agent_postdata = $this->in->getArrayValue('agent');
+
+		// We did a bit of pre-cleanup above to prepend
+		// primary address to emails list
+		unset($agent_postdata['email']);
+		$agent_postdata['emails'] = $set_emails;
+
+		$form->submit($agent_postdata, false);
+
+		if (!$form->isValid()) {
+			return $this->createApiFormErrorResponse($form);
+		}
+
+		$edit_agent->save($this->em);
+
+		#-------------------------
+		# Send welcome email
+		#-------------------------
+
+		// Send welcome email for new users
+		if ($is_new && !$this->in->getBool('skip_email')) {
 			$message = $this->container->getMailer()->createMessage();
 			$message->setToPerson($agent);
 			$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
 			$this->container->getMailer()->send($message);
 		}
+
+		#-------------------------
+		# Return
+		#-------------------------
 
 		if ($is_new) {
 			return $this->createApiCreateResponse(array(

@@ -224,7 +224,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 
-
 	/**
 	 * Create an API error response
 	 *
@@ -241,6 +240,31 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		), $status);
 	}
 
+
+	/**
+	 * Create an API error response
+	 *
+	 * @param string $error_code The short error code
+	 * @param string $error_message The error message
+	 * @param array $data Data to return
+	 * @param int $status The HTTP status to return
+	 * @return Response
+	 */
+	public function createApiErrorInfoResponse($error_code, $error_message, array $error_info, $status = 400)
+	{
+		return $this->createApiResponse(array(
+			'error_code'    => $error_code,
+			'error_message' => $error_message,
+			'error_info'    => $error_info,
+		), $status);
+	}
+
+
+	/**
+	 * @param array $errors
+	 * @param int $status
+	 * @return Response
+	 */
 	public function createApiMultipleErrorResponse(array $errors, $status = 400)
 	{
 		return $this->createApiResponse(array(
@@ -248,7 +272,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			'errors' => $errors
 		), $status);
 	}
-
 
 
 	/**
@@ -353,6 +376,32 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 			$info = $renderer->renderCombinedViolationList($errors);
 		}
+
+		$data = array(
+			'error_code'    => 'validation_error',
+			'error_message' => 'One or more validation errors occurred. Your request was not processed.',
+			'errors'        => $info,
+		);
+
+		if ($extra) {
+			$data = array_merge($data, $extra);
+		}
+
+		return $this->createApiResponse($data, $status);
+	}
+
+
+	/**
+	 * @param Form       $form   A form to fetch errors from
+	 * @param array      $extra  Any other extra data you want to return
+	 * @param int        $status The HTTP status code to return
+	 * @return Response
+	 * @throws \InvalidArgumentException
+	 */
+	public function createApiFormErrorResponse(Form $form, array $extra = null, $status = 400)
+	{
+		$renderer = new ViolationApiRenderer();
+		$info = $renderer->renderFormErrorList($form);
 
 		$data = array(
 			'error_code'    => 'validation_error',

@@ -32,78 +32,53 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\People\Helpers;
+namespace Application\DeskPRO\Validator\Constraints;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 /**
- * This helps working with agent teams on a person
+ * Central factory for custom DeskPRO validators.
+ *
+ * === Adding a custom validator ===
+ * 1. Create MyNameConstraint.php and MyNameValidator.php in this directory.
+ * 2. MyNameConstraint is a typical constraint, but make sure it has validatedBy with a unique name
+ * 3. MyNameValidator is again a typical validator, but make sure it has a getAlias method that
+ *    returns the same name you defined in MyNameConstraint::validatedBy
+ * 4. Add getMyNameValidator to this factory class
+ * 5. Edit the DI config at /app/sys/config/config.php and add the MyNameValidator class
+ *    to the to "Validators and Constraints" array
  */
-class AgentTeam implements \Orb\Helper\ShortCallableInterface
+class ConstraintFactory
 {
-	protected $person;
-	protected $_agent_team_ids = null;
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	private $container;
 
-	public function __construct(Entity\Person $person)
+
+	/**
+	 * @param DeskproContainer $container
+	 */
+	public function __construct(DeskproContainer $container)
 	{
-		$this->person = $person;
+		$this->container = $container;
 	}
 
-	public function getShortCallableNames()
+
+	/**
+	 * @return AgentTeamValidator
+	 */
+	public function getAgentTeamValidator()
 	{
-		return array(
-			'getAgentTeamIds' => 'getAgentTeamIds',
-		);
+		return new AgentTeamValidator($this->container->getAgentData());
 	}
 
-	public function getAgentTeamIds()
+
+	/**
+	 * @return AgentGroupValidator
+	 */
+	public function getAgentGroupValidator()
 	{
-		if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
-
-		$this->_agent_team_ids = App::getDb()->fetchAllCol("
-			SELECT team_id
-			FROM agent_team_members
-			WHERE person_id = {$this->person['id']}
-		");
-
-		return $this->_agent_team_ids;
-	}
-
-	public function getAgentTeams()
-	{
-		$ids = $this->getAgentTeamIds();
-		if (!$ids) {
-			return array();
-		}
-
-		$agent_data = App::getContainer()->getAgentData();
-		$teams = array();
-
-		foreach ($ids as $id) {
-			$t = $agent_data->getTeam($id);
-			if ($t) {
-				$teams[] = $t;
-			}
-		}
-
-		return $teams;
-	}
-
-	public function getPrimaryTeamId()
-	{
-		return Arrays::getFirstItem($this->getAgentTeamIds());
-	}
-
-	public function addToAgentTeam(Entity\AgentTeam $team)
-	{
-		return $team->addPerson($this);
-	}
-
-	public function reset()
-	{
-		$this->_agent_team_ids = null;
+		return new AgentGroupValidator($this->container->getDataService('Usergroup'));
 	}
 }

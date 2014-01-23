@@ -102,28 +102,31 @@ class ClassMetadataFactory extends BaseClassMetadataFactory
 	private function procConstraint($constraint)
 	{
 		foreach ($constraint as $prop => $val) {
-			if (($prop == 'message' || preg_match('#Message$#', $prop)) && is_string($val)) {
+			if (($prop == 'message' || preg_match('#Message$#', $prop)) && is_string($val) && !preg_match('#^\[[a-zA-Z0-9_\-\.]+\]#', $val)) {
 				$name = Util::getBaseClassname($constraint);
+				$name = preg_replace('#Constraint$#', '', $name); // some have a Constraint suffix which we dont want
 				$name = Strings::camelCaseToUnderscore($name);
 
 				// This is for case when we have pluralization cases for constraint message that are divided by '|'
-
 				if (strpos($val, '|') !== false) {
-
 					$parts = explode('|', $val);
 
 					foreach ($parts as $key => $part) {
-
 						$parts[$key] = '[' . $name . '] ' . $part;
 					}
 
 					$val = implode('|', $parts);
-
 					$constraint->$prop = $val;
 				} else {
-
 					$constraint->$prop = '[' . $name . '] ' . $val;
 				}
+			}
+		}
+
+		// Some constraints are collections of other constraints (collection related validators)
+		if (!empty($constraint->constraints)) {
+			foreach ($constraint->constraints as $c) {
+				$this->procConstraint($c);
 			}
 		}
 	}
