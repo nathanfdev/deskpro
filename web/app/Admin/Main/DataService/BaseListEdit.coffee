@@ -215,11 +215,8 @@ define [
 		# @return {Boolean}
 		###
 		hasChildrenAndChangedParent: (obj, form) ->
-
-			value1 = obj.original_parent_id
-			value1 = "0" if value1 == null
-
-			value2 = form.parent_id
+			value1 = parseInt(obj.original_parent_id || 0)
+			value2 = parseInt(form.parent_id)
 
 			if @hasChildren(obj) and parseInt(value1) != parseInt(value2)
 				return true

@@ -297,11 +297,8 @@
 
       Admin_Main_DataService_BaseListEdit.prototype.hasChildrenAndChangedParent = function(obj, form) {
         var value1, value2;
-        value1 = obj.original_parent_id;
-        if (value1 === null) {
-          value1 = "0";
-        }
-        value2 = form.parent_id;
+        value1 = parseInt(obj.original_parent_id || 0);
+        value2 = parseInt(form.parent_id);
         if (this.hasChildren(obj) && parseInt(value1) !== parseInt(value2)) {
           return true;
         }
