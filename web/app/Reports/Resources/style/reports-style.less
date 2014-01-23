@@ -1,2 +1,99 @@
 @import "../../../Admin/Resources/style/admin-style";
 @import "style";
+
+section.report-wrapper {
+	> header {
+		border: 1px solid #D9DBDB;
+		border-bottom: none;
+		.border-radius(5px, 5px, 0, 0);
+		background: #F5F5F5;
+
+		h2 {
+			margin: 0 !important;
+			padding: 5px;
+			font-size: 12pt;
+			font-weight: bold;
+			line-height: 100%;
+			color: #000;
+		}
+
+		h3 {
+			margin: 0 !important;
+			padding: 0 5px 5px 5px;
+			font-size: 10pt;
+			font-weight: normal;
+			line-height: 100%;
+			color: #545454;
+		}
+	}
+
+	> article {
+		position: relative;
+		border: 1px solid #D9DBDB;
+		padding: 8px;
+
+		tr.total-row {
+			td {
+				border-top: 10px solid #fff;
+				background: #EBF2FE;
+
+			}
+		}
+	}
+}
+
+section.report-wrapper table.stat-table {
+	tr > td {
+		padding: 2px;
+		vertical-align: middle;
+	}
+	tr > td.title {
+		text-align: right;
+		span {
+			white-space: nowrap;
+			display: block;
+		}
+	}
+}
+
+section.report-wrapper table.stat-value-multi {
+
+	tr > td {
+		padding: 1px 1px 1px 0;
+		&:first-child {
+			padding-left: 1px;
+		}
+		> div {
+			border: none !important;
+			.inner-shadow(0, 0, 4px, 0.4);
+		}
+	}
+
+	tr > td:hover > div {
+		.opacity(75);
+	}
+}
+
+section.report-wrapper table.stat-value {
+	tr > td.value > div {
+		background-color: #AAC9E5;
+		padding: 1px;
+		.inner-shadow(0, 0, 4px, 0.4);
+	}
+}
+
+section.report-wrapper table.stat-value-multi {
+
+}
+
+section.report-wrapper .no-data {
+	padding: 40px;
+	text-align: center;
+	border: 1px dashed #999;
+	margin: 10px;
+
+	h3 {
+		font-size: 14pt;
+
+	}
+}
