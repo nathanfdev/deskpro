@@ -3866,9 +3866,9 @@ $collection->create('api_widget_selections_save', array(
 # Reports Overview
 ########################################################################################################################
 
-$collection->create('api_reports_overview', array(
-	'path'        => '/reports/overview',
-	'controller'  => 'ApiBundle:ReportsOverview:list',
+$collection->create('api_reports_overview_get_data', array(
+	'path'        => '/reports/overview/data/{type}',
+	'controller'  => 'ApiBundle:ReportsOverview:getData',
 	'methods'     => array('GET'),
 ));
 

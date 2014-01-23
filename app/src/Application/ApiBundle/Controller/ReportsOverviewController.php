@@ -36,10 +36,10 @@ namespace Application\ApiBundle\Controller;
 class ReportsOverviewController extends AbstractController
 {
 	####################################################################################################################
-	# list
+	# get data (for specified type)
 	####################################################################################################################
 
-	public function listAction()
+	public function getDataAction($type)
 	{
 		/**
 		 * @var \Application\DeskPRO\Reports\Overview $reports_overview
@@ -48,10 +48,6 @@ class ReportsOverviewController extends AbstractController
 		$reports_overview = $this->container->getSystemService('reports_overview');
 		$reports_overview->setPerson($this->person);
 
-		return $this->createApiResponse(
-			array(
-				 'reports_overview' => $reports_overview->getMainInfo()
-			)
-		);
+		return $this->createApiResponse($reports_overview->getOverviewData($type));
 	}
 }

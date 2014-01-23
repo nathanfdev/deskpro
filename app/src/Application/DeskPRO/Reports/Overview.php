@@ -44,6 +44,7 @@ use Application\DeskPRO\Reports\Overview\TicketsResolved;
 use Application\DeskPRO\Reports\Overview\TicketsResponseTime;
 use Application\DeskPRO\Reports\Overview\TicketsStatus;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Log\Logger;
 
@@ -93,21 +94,18 @@ class Overview
 
 
 	/**
+	 * @param string $type
 	 * @return array
 	 */
-	public function getMainInfo()
+	public function getOverviewData($type)
 	{
-		return array(
-			'tickets_status_data'            => $this->getValues('tickets_status'),
-			'tickets_awaiting_agent_data'    => $this->getValues('tickets_awaiting_agent'),
-			'tickets_resolved_data'          => $this->getValues('tickets_resolved'),
-			'tickets_response_time_data'     => $this->getValues('tickets_response_time'),
-			'tickets_user_waiting_time_data' => $this->getValues('tickets_user_waiting_time'),
-			'tickets_opened_hour_data'       => $this->getValues('tickets_opened_hour'),
-			'tickets_sla_status'             => $this->getValues('tickets_sla_status'),
-			'chats_created_data'             => $this->getValues('chats_created'),
-			'kb_views_hour_data'             => $this->getValues('kb_views_hour'),
-		);
+		$this->person->loadPrefGroup('reports.ui.overview.options');
+
+		// First load just renders the sections, they'll
+		// be filled in with user preference with ajax
+		$this->no_data_mode = true;
+
+		return $this->getValues($type);
 	}
 
 
