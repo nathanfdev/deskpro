@@ -36,7 +36,7 @@ namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 
-class ProductTerm extends AbstractTicketLayoutTerm
+class CheckPriority extends AbstractTicketLayoutTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -44,7 +44,7 @@ class ProductTerm extends AbstractTicketLayoutTerm
 	public function isLayoutTermMatch(Ticket $ticket)
 	{
 		$have_id = $ticket->category ? $ticket->category->getId() : 0;
-		$is_match = in_array($have_id, $this->options['product_ids']);
+		$is_match = in_array($have_id, $this->options['priority_ids']);
 
 		if ($this->op == self::OP_NOT) {
 			$is_match = !$is_match;
@@ -60,7 +60,7 @@ class ProductTerm extends AbstractTicketLayoutTerm
 	public function compileJsCheck()
 	{
 		$js_ids = array();
-		foreach ($this->options['product_ids'] as $id) {
+		foreach ($this->options['priority_ids'] as $id) {
 			$js_ids[] = (int)$id;
 		}
 		$js_ids = "[" . implode(',', $js_ids) . "]";
@@ -68,7 +68,7 @@ class ProductTerm extends AbstractTicketLayoutTerm
 
 		$js = <<<JS
 function(ticket) {
-	return $js_ids.indexOf(ticket.getProductId()) $op -1;
+	return $js_ids.indexOf(ticket.getPriorityId()) $op -1;
 }
 JS;
 

@@ -180,10 +180,10 @@ define [
 				options: {
 					on_newticket: true,
 					on_viewticket: true,
-					on_viewticket_mode: "VALUE",
+					on_viewticket_mode: "value",
 					on_editticket: true
 					criteria: {
-						mode: "ALL",
+						mode: "all",
 						terms: []
 					}
 				}

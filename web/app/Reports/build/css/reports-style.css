@@ -10821,6 +10821,12 @@ table.display-table > tr > td.nowrap {
   margin: 0;
 }
 
+.dp-layout-editor .form-elements header h3 a {
+  position: relative;
+  top: -1px;
+  font-size: 10pt;
+}
+
 .dp-layout-editor .form-elements ul {
   padding: 8px;
   margin: 0;

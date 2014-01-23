@@ -20,6 +20,8 @@
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
+        window.DEP_CTRL = this;
+        this.depId = parseInt(this.$stateParams.id);
         this.depData = this.DataService.get('TicketDeps');
         this.$scope.$watch('EditCtrl.form.parent_id', function(newVal) {
           var parent;
@@ -48,11 +50,21 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.depData.getEditDepartmentData(this.$stateParams.id || null).then(function(data) {
+        promise = this.depData.getEditDepartmentData(this.depId || null).then(function(data) {
           var code, code_all, name, tpl, _i, _len, _ref1, _results;
           _this.dep = data.dep;
           _this.form = data.form;
+          _this.is_custom_layout = _this.form.use_custom_layout;
           _this.origForm = Util.clone(_this.form, true);
+          _this.layout_info = data.layout_info;
+          if (_this.depId) {
+            _this.layout_info["default"] = _this.layout_info["default"].filter(function(x) {
+              return x.id !== _this.depId;
+            });
+            _this.layout_info.custom = _this.layout_info.custom.filter(function(x) {
+              return x.id !== _this.depId;
+            });
+          }
           _this.usergroups = data.usergroups;
           _this.agentgroups = data.agentgroups;
           _this.agents = data.agents;
@@ -97,7 +109,7 @@
         promise = this.depData.saveFormModel(this.dep, this.form);
         promise.then(function() {
           if (_this.form.use_custom_layout) {
-            return _this.Api.sendPostJson("/ticket_layouts/" + _this.dep.id, {
+            _this.Api.sendPostJson("/ticket_layouts/" + _this.dep.id, {
               layout: _this.form.custom_layout
             }).then(function() {
               return deferred2.resolve();
@@ -108,8 +120,9 @@
             }).then(function() {
               return deferred2.resolve();
             });
-            return _this.Api.sendDelete("/ticket_layouts/" + _this.dep.id);
+            _this.Api.sendDelete("/ticket_layouts/" + _this.dep.id);
           }
+          return _this.is_custom_layout = _this.form.use_custom_layout;
         });
         promise.error(function(info, code) {
           _this.stopSpinner('saving_dep');

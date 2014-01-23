@@ -77,6 +77,43 @@ class TicketLayoutsController extends AbstractController
 		));
 	}
 
+
+	####################################################################################################################
+	# stats
+	####################################################################################################################
+
+	public function getLayoutStatsAction()
+	{
+		$deps_with_layouts = $this->db->fetchAllCol("
+			SELECT department_id
+			FROM ticket_layouts
+			WHERE department_id IS NOT NULL
+		");
+		if ($deps_with_layouts) {
+			$deps_with_layouts = array_fill_keys($deps_with_layouts, true);
+		}
+
+		$data = array('default' => array(), 'custom' => array());
+
+		/** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
+		$ticket_deps = $this->container->getSystemService('ticket_departments');
+
+		foreach ($ticket_deps->getAll() as $dep) {
+			if (isset($deps_with_layouts[$dep->id])) {
+				$data['custom'][] = $dep->toApiData();
+			} else {
+				$data['default'][] = $dep->toApiData();
+			}
+		}
+
+		return $this->createApiResponse(array(
+			'layout_info'   => $data,
+			'count_custom'  => count($data['custom']),
+			'count_default' => count($data['default']),
+		));
+	}
+
+
 	####################################################################################################################
 	# save
 	####################################################################################################################

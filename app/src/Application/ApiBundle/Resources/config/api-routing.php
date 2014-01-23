@@ -2477,6 +2477,10 @@ $collection->create('api_ticket_deps_remove', array(
 	'methods'     => array('DELETE'),
 ));
 
+########################################################################################################################
+# Ticket Layouts
+########################################################################################################################
+
 $collection->create('api_ticket_layout_get', array(
 	'path'         => '/ticket_layouts/{dep_id}',
 	'controller'   => 'ApiBundle:TicketLayouts:get',
@@ -2510,6 +2514,12 @@ $collection->create('api_ticket_layout_savedefault', array(
 	'controller'  => 'ApiBundle:TicketLayouts:save',
 	'defaults'    => array('dep_id' => '0'),
 	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_layout_stats', array(
+	'path'        => '/ticket_layouts/stats',
+	'controller'  => 'ApiBundle:TicketLayouts:getLayoutStats',
+	'methods'     => array('GET'),
 ));
 
 ########################################################################################################################

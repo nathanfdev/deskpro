@@ -21,7 +21,6 @@ define ->
 				@element.find('nav').remove()
 
 		openOptions: ->
-			console.log("oepn")
 			if @scope.type == 'user'
 				tpl = 'ticketdeps_layouteditor_user_options'
 			else
@@ -33,6 +32,10 @@ define ->
 			inst = @$modal.open({
 				templateUrl: tpl,
 				controller: ['$scope', '$modalInstance', 'options', 'typeDef', ($scope, $modalInstance, options, typeDef) ->
+					if not options.criteria? then options.criteria = {}
+					if not options.criteria?.terms then options.criteria.terms = {}
+					if not options.criteria?.mode then options.criteria.mode = 'all'
+
 					$scope.options = options
 
 					$scope.with_criteria = false
@@ -42,23 +45,23 @@ define ->
 					$scope.criteriaOptions = []
 					$scope.criteriaOptions.push({
 						title: 'Department',
-						value: 'department'
+						value: 'CheckDepartment'
 					})
 					$scope.criteriaOptions.push({
 						 title: 'Product',
-						 value: 'product'
+						 value: 'CheckProduct'
 					})
 					$scope.criteriaOptions.push({
 						 title: 'Category',
-						 value: 'category'
+						 value: 'CheckCategory'
 					})
 					$scope.criteriaOptions.push({
 						 title: 'Priority',
-						 value: 'priority'
+						 value: 'CheckPriority'
 					})
 					$scope.criteriaOptions.push({
 						title: 'Workflow',
-						value: 'workflow'
+						value: 'CheckWorkflow'
 					})
 
 					$scope.criteriaTypesDef = typeDef

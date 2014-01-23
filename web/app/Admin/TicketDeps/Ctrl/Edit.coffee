@@ -13,6 +13,8 @@ define [
 		@DEPS      = ['$templateCache']
 
 		init: ->
+			window.DEP_CTRL = this
+			@depId = parseInt(@$stateParams.id)
 			@depData = @DataService.get('TicketDeps')
 			@$scope.$watch('EditCtrl.form.parent_id', (newVal) =>
 				newVal = parseInt(newVal)
@@ -36,10 +38,16 @@ define [
 			@form = Util.clone(@origForm, true)
 
 		initialLoad: ->
-			promise = @depData.getEditDepartmentData(@$stateParams.id || null).then( (data) =>
+			promise = @depData.getEditDepartmentData(@depId || null).then( (data) =>
 				@dep  = data.dep
 				@form = data.form
+				@is_custom_layout = @form.use_custom_layout
 				@origForm = Util.clone(@form, true)
+				@layout_info = data.layout_info
+
+				if @depId
+					@layout_info.default = @layout_info.default.filter((x) => return x.id != @depId)
+					@layout_info.custom = @layout_info.custom.filter((x) => return x.id != @depId)
 
 				@usergroups  = data.usergroups
 				@agentgroups = data.agentgroups
@@ -84,6 +92,8 @@ define [
 				else
 					@Api.sendPostJson("/ticket_layouts/default", {layout: @form.default_layout}).then(-> deferred2.resolve())
 					@Api.sendDelete("/ticket_layouts/#{@dep.id}")
+
+				@is_custom_layout = @form.use_custom_layout
 			)
 			promise.error( (info, code) =>
 				@stopSpinner('saving_dep')

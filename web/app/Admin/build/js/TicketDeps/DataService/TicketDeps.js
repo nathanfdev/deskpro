@@ -77,7 +77,8 @@
             usergroupsInfo: '/user_groups',
             ticketAccountsInfo: '/ticket_accounts',
             defaultLayoutInfo: '/ticket_layouts/default',
-            customLayoutInfo: "/ticket_layouts/" + id
+            customLayoutInfo: "/ticket_layouts/" + id,
+            layoutStats: "/ticket_layouts/stats"
           });
         } else {
           promise = this.Api.sendDataGet({
@@ -85,7 +86,8 @@
             agentgroupsInfo: '/agent_groups',
             usergroupsInfo: '/user_groups',
             ticketAccountsInfo: '/ticket_accounts',
-            defaultLayoutInfo: '/ticket_layouts/default'
+            defaultLayoutInfo: '/ticket_layouts/default',
+            layoutStats: "/ticket_layouts/stats"
           });
         }
         deferred = this.$q.defer();
@@ -104,6 +106,7 @@
               agent_ids: []
             };
           }
+          data.layout_info = result.layoutStats.layout_info;
           data.ticket_accounts = result.ticketAccountsInfo.ticket_accounts;
           data.dep_parent_list = _this.listModels.slice(0);
           if (data.dep.id) {

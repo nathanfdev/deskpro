@@ -65,6 +65,7 @@ define [
 					ticketAccountsInfo: '/ticket_accounts',
 					defaultLayoutInfo:  '/ticket_layouts/default',
 					customLayoutInfo:   "/ticket_layouts/#{id}",
+					layoutStats:        "/ticket_layouts/stats"
 				})
 			else
 				promise = @Api.sendDataGet({
@@ -73,6 +74,7 @@ define [
 					usergroupsInfo:     '/user_groups',
 					ticketAccountsInfo: '/ticket_accounts',
 					defaultLayoutInfo:  '/ticket_layouts/default',
+					layoutStats:        "/ticket_layouts/stats"
 				})
 
 			deferred = @$q.defer()
@@ -92,6 +94,8 @@ define [
 						agentgroup_ids: [],
 						agent_ids: []
 					}
+
+				data.layout_info = result.layoutStats.layout_info
 
 				data.ticket_accounts = result.ticketAccountsInfo.ticket_accounts
 

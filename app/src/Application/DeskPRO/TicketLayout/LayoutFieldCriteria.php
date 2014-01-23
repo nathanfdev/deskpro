@@ -34,12 +34,13 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
+use Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface;
 use Orb\Util\Strings;
 
 class LayoutFieldCriteria implements \Serializable
 {
-	const CRIT_ALL = 'ALL';
-	const CRIT_ANY = 'ANY';
+	const CRIT_ALL = 'all';
+	const CRIT_ANY = 'any';
 
 	/**
 	 * @var string
@@ -71,7 +72,7 @@ class LayoutFieldCriteria implements \Serializable
 	/**
 	 * @param CriteriaTermInterface $term
 	 */
-	public function addTerm(CriteriaTermInterface $term)
+	public function addTerm(TicketLayoutTermInterface $term)
 	{
 		$this->terms[] = $term;
 	}
@@ -134,7 +135,7 @@ class LayoutFieldCriteria implements \Serializable
 		$js .= "\treturn false;\n";
 
 		$js .= "}";
-		return $jsl
+		return $js;
 	}
 
 

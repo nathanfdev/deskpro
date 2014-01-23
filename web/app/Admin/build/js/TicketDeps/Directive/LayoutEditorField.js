@@ -35,7 +35,6 @@
       LayoutEditorField.prototype.openOptions = function() {
         var inst, tpl,
           _this = this;
-        console.log("oepn");
         if (this.scope.type === 'user') {
           tpl = 'ticketdeps_layouteditor_user_options';
         } else {
@@ -48,6 +47,16 @@
           templateUrl: tpl,
           controller: [
             '$scope', '$modalInstance', 'options', 'typeDef', function($scope, $modalInstance, options, typeDef) {
+              var _ref, _ref1;
+              if (options.criteria == null) {
+                options.criteria = {};
+              }
+              if (!((_ref = options.criteria) != null ? _ref.terms : void 0)) {
+                options.criteria.terms = {};
+              }
+              if (!((_ref1 = options.criteria) != null ? _ref1.mode : void 0)) {
+                options.criteria.mode = 'all';
+              }
               $scope.options = options;
               $scope.with_criteria = false;
               if ($scope.options.criteria.terms.length) {
@@ -56,23 +65,23 @@
               $scope.criteriaOptions = [];
               $scope.criteriaOptions.push({
                 title: 'Department',
-                value: 'department'
+                value: 'CheckDepartment'
               });
               $scope.criteriaOptions.push({
                 title: 'Product',
-                value: 'product'
+                value: 'CheckProduct'
               });
               $scope.criteriaOptions.push({
                 title: 'Category',
-                value: 'category'
+                value: 'CheckCategory'
               });
               $scope.criteriaOptions.push({
                 title: 'Priority',
-                value: 'priority'
+                value: 'CheckPriority'
               });
               $scope.criteriaOptions.push({
                 title: 'Workflow',
-                value: 'workflow'
+                value: 'CheckWorkflow'
               });
               $scope.criteriaTypesDef = typeDef;
               return $scope.done = function() {

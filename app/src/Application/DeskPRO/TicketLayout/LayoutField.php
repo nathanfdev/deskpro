@@ -35,11 +35,12 @@
 namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Util\OptionsArray;
+use Application\DeskPRO\TicketLayout\Terms;
 
 class LayoutField implements \Serializable
 {
-	const VIEW_ALWAYS = 'ALWAYS';
-	const VIEW_VALUE  = 'VALUE';
+	const VIEW_ALWAYS = 'always';
+	const VIEW_VALUE  = 'value';
 
 	/**
 	 * @var string
@@ -111,6 +112,51 @@ class LayoutField implements \Serializable
 			$this->enableOnNew();
 		} else {
 			$this->disableOnNew();
+		}
+
+		if ($options->has('criteria')) {
+			$crit_options = new OptionsArray($options->get('criteria'));
+			$criteria = new LayoutFieldCriteria();
+			$criteria->setMode($crit_options->get('mode') == 'all' ? 'all' : 'any');
+
+			foreach ($crit_options->get('terms') as $term_info) {
+				$term = null;
+				switch ($term_info['type']) {
+					case 'CheckDepartment':
+						if (!empty($term_info['options']['department_ids'])) {
+							$term = new Terms\CheckDepartment($term_info['op'], $term_info['options']);
+						}
+						break;
+					case 'CheckProduct':
+						if (!empty($term_info['options']['product_ids'])) {
+							$term = new Terms\CheckProduct($term_info['op'], $term_info['options']);
+						}
+						break;
+					case 'CheckCategory':
+						if (!empty($term_info['options']['category_ids'])) {
+							$term = new Terms\CheckCategory($term_info['op'], $term_info['options']);
+						}
+						break;
+					case 'CheckPriority':
+						if (!empty($term_info['options']['priority_ids'])) {
+							$term = new Terms\CheckPriority($term_info['op'], $term_info['options']);
+						}
+						break;
+					case 'CheckWorkflow':
+						if (!empty($term_info['options']['priority_ids'])) {
+							$term = new Terms\CheckWorkflow($term_info['op'], $term_info['options']);
+						}
+						break;
+				}
+
+				if ($term) {
+					$criteria->addTerm($term);
+				}
+			}
+
+			if (count($criteria->getTerms())) {
+				$this->setCriteria($criteria);
+			}
 		}
 	}
 
@@ -237,9 +283,9 @@ class LayoutField implements \Serializable
 		$data['options']    = array();
 
 		if ($this->criteria) {
-			$data['criteria'] = $this->criteria->exportToArray();
+			$data['options']['criteria'] = $this->criteria->exportToArray();
 		} else {
-			$data['criteria'] = null;
+			$data['options']['criteria'] = null;
 		}
 
 		foreach (array(

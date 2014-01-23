@@ -35,80 +35,43 @@
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
-use Orb\Util\Util;
 
-abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
+class CheckWorkflow extends AbstractTicketLayoutTerm
 {
-	const OP_IS  = 'is';
-	const OP_NOT = 'not';
-
 	/**
-	 * @var
+	 * {@inheritDoc}
 	 */
-	protected $op;
-
-	/**
-	 * @var array
-	 */
-	protected $options;
-
-
-	/**
-	 * @param string $op
-	 * @param array  $options
-	 */
-	public function __construct($op, array $options)
+	public function isLayoutTermMatch(Ticket $ticket)
 	{
-		$this->op      = $op;
-		$this->options = $options;
+		$have_id = $ticket->category ? $ticket->category->getId() : 0;
+		$is_match = in_array($have_id, $this->options['workflow_ids']);
+
+		if ($this->op == self::OP_NOT) {
+			$is_match = !$is_match;
+		}
+
+		return $is_match;
 	}
 
 
 	/**
-	 * Gets the type name of the criteria
-	 *
-	 * @return string
+	 * {@inheritDoc}
 	 */
-	public function getTermType()
+	public function compileJsCheck()
 	{
-		return Util::getBaseClassname($this);
+		$js_ids = array();
+		foreach ($this->options['workflow_ids'] as $id) {
+			$js_ids[] = (int)$id;
+		}
+		$js_ids = "[" . implode(',', $js_ids) . "]";
+		$op = $this->op == self::OP_NOT ? '===' : '!==';
+
+		$js = <<<JS
+function(ticket) {
+	return $js_ids.indexOf(ticket.getWorkflowId()) $op -1;
+}
+JS;
+
+		return $js;
 	}
-
-
-	/**
-	 * Gets criteria operator (is, is not, etc).
-	 *
-	 * @return string
-	 */
-	public function getTermOperator()
-	{
-		return $this->op;
-	}
-
-
-	/**
-	 * Get's an array of options
-	 *
-	 * @return array
-	 */
-	public function getTermOptions()
-	{
-		return $this->options;
-	}
-
-	/**
-	 * Used on the server-side to check if the term matches.
-	 *
-	 * @param Ticket $ticket
-	 * @return bool
-	 */
-	abstract public function isLayoutTermMatch(Ticket $ticket);
-
-	/**
-	 * Should return a JS function that accepts a ticket object and returns true/false
-	 * depending on if the term passes/fails.
-	 *
-	 * @return string
-	 */
-	abstract public function compileJsCheck();
 }
