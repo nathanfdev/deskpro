@@ -84,6 +84,9 @@
         denominator = this.$scope.tickets_awaiting_agent.max || 1;
         _results = [];
         for (key in this.$scope.tickets_awaiting_agent.titles) {
+          if (!this.$scope.tickets_awaiting_agent.values[key]) {
+            continue;
+          }
           percentage = this.$scope.tickets_awaiting_agent.values[key] / denominator * 100;
           if (percentage < 1) {
             percentage = 1;

@@ -61,7 +61,7 @@ define [
 			@$scope.tickets_awaiting_agent.stats = []
 			denominator = @$scope.tickets_awaiting_agent.max || 1
 
-			for key of @$scope.tickets_awaiting_agent.titles
+			for key of @$scope.tickets_awaiting_agent.titles when @$scope.tickets_awaiting_agent.values[key]
 
 				percentage = @$scope.tickets_awaiting_agent.values[key] / denominator * 100
 				percentage = 1 if percentage < 1
