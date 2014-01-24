@@ -61,6 +61,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	const EVENT_FWD_NEWTICKET            = 'DeskPRO_onTicketGatewayNewFwdTicket';
 
 	/**
+	 * @var int
+	 */
+	protected $text_len_maxlen = 125000;
+
+	/**
 	 * @var \Application\DeskPRO\EmailGateway\Cutter\Def\Generic
 	 */
 	protected $cutterDef;
@@ -855,10 +860,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
-			if (strlen($txt) > 25000) {
+			if (strlen($txt) > $this->text_len_maxlen) {
 				$this->logMessage('[TicketGatewayProcessor] Message too long, trimming');
 				$did_html_trim = true;
-				$txt = substr($txt, 0, 25000);
+				$txt = substr($txt, 0, $this->text_len_maxlen);
 			}
 
 			$body_raw = @htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8');
@@ -1296,9 +1301,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 				}
 
-				if (strlen($txt) > 25000) {
+				if (strlen($txt) > $this->text_len_maxlen) {
 					$this->logMessage('[TicketGatewayProcessor] Message too long, trimming');
-					$txt = substr($txt, 0, 25000);
+					$txt = substr($txt, 0, $this->text_len_maxlen);
 				}
 
 				$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
