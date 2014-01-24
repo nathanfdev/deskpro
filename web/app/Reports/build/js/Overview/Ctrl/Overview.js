@@ -35,12 +35,15 @@
           _this = this;
         data_promise = this.Api.sendDataGet({
           tickets_status: "/reports/overview/data/tickets_status",
-          tickets_awaiting_agent: "/reports/overview/data/tickets_awaiting_agent"
+          tickets_awaiting_agent: "/reports/overview/data/tickets_awaiting_agent",
+          tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time"
         }).then(function(res) {
           _this.$scope.tickets_status = res.data.tickets_status;
           _this.$scope.tickets_awaiting_agent = res.data.tickets_awaiting_agent;
+          _this.$scope.tickets_user_waiting_time = res.data.tickets_user_waiting_time;
           _this.setVariablesForTicketsStatuses();
-          return _this.setVariablesForTicketsAwaitingAgent();
+          _this.setVariablesForTicketsAwaitingAgent();
+          return _this.setVariablesForTicketsUserWaitingTime();
         });
         return this.$q.all([data_promise]);
       };
@@ -65,7 +68,7 @@
           }
           _results.push(this.$scope.tickets_status.stats.push({
             title: this.$scope.tickets_status.titles[key],
-            value: this.$scope.tickets_status.values[key],
+            value: this.$scope.tickets_status.values[key] || 0,
             left_percentage: percentage,
             right_percentage: 100 - percentage
           }));
@@ -93,10 +96,40 @@
           }
           _results.push(this.$scope.tickets_awaiting_agent.stats.push({
             title: this.$scope.tickets_awaiting_agent.titles[key],
-            value: this.$scope.tickets_awaiting_agent.values[key],
+            value: this.$scope.tickets_awaiting_agent.values[key] || 0,
             left_percentage: percentage,
             right_percentage: 100 - percentage
           }));
+        }
+        return _results;
+      };
+
+      /*
+      		# We need to display bar graphs - so let's pre-calculate some variables
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.setVariablesForTicketsUserWaitingTime = function() {
+        var denominator, key, percentage, _results;
+        this.$scope.tickets_user_waiting_time.stats = [];
+        denominator = this.$scope.tickets_user_waiting_time.max || 1;
+        _results = [];
+        for (key in this.$scope.tickets_user_waiting_time.titles) {
+          percentage = this.$scope.tickets_user_waiting_time.values[key] / denominator * 100;
+          if (percentage < 1) {
+            percentage = 1;
+          }
+          if (this.$scope.tickets_user_waiting_time.values[key]) {
+            _results.push(this.$scope.tickets_user_waiting_time.stats.push({
+              title: this.$scope.tickets_user_waiting_time.titles[key],
+              value: this.$scope.tickets_user_waiting_time.values[key] || 0,
+              percentage: percentage
+            }));
+          } else {
+            _results.push(this.$scope.tickets_user_waiting_time.stats.push({
+              title: this.$scope.tickets_user_waiting_time.titles[key]
+            }));
+          }
         }
         return _results;
       };

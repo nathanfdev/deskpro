@@ -1,0 +1,27 @@
+<section class="report-wrapper">
+	<header>
+		<h2>
+			Time Tickets have been 'Awaiting Agent'
+		</h2>
+		<h3>Showing Grouped by {{ ng_var('tickets_user_waiting_time.grouping_field') }}</h3>
+	</header>
+	<article>
+		<table class="stat-table" width="100%">
+			<tr ng-repeat="stat in tickets_user_waiting_time.stats">
+				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
+				<td width="100%">
+					<table width="100%" class="stat-value" ng-if="stat.value && !tickets_user_waiting_time.sub_titles">
+						<tr>
+							<td class="value" width="{{ ng_var('stat.percentage') }}%">
+								<div>&nbsp;</div>
+							</td>
+							<td>
+								<span style="white-space: nowrap;">{{ ng_var('stat.value') }}</span>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</article>
+</section>
