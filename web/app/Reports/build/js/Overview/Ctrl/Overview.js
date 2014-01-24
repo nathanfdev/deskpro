@@ -34,10 +34,13 @@
         var data_promise,
           _this = this;
         data_promise = this.Api.sendDataGet({
-          tickets_status: "/reports/overview/data/tickets_status"
+          tickets_status: "/reports/overview/data/tickets_status",
+          tickets_awaiting_agent: "/reports/overview/data/tickets_awaiting_agent"
         }).then(function(res) {
           _this.$scope.tickets_status = res.data.tickets_status;
-          return _this.setVariablesForTicketsStatuses();
+          _this.$scope.tickets_awaiting_agent = res.data.tickets_awaiting_agent;
+          _this.setVariablesForTicketsStatuses();
+          return _this.setVariablesForTicketsAwaitingAgent();
         });
         return this.$q.all([data_promise]);
       };
@@ -53,20 +56,44 @@
         denominator = this.$scope.tickets_status.max || 1;
         _results = [];
         for (key in this.$scope.tickets_status.titles) {
-          if (this.$scope.tickets_status.values[key]) {
-            percentage = this.$scope.tickets_status.values[key] / denominator * 100;
-            if (percentage < 1) {
-              percentage = 1;
-            }
-            _results.push(this.$scope.tickets_status.stats.push({
-              title: this.$scope.tickets_status.titles[key],
-              value: this.$scope.tickets_status.values[key],
-              left_percentage: percentage,
-              right_percentage: 100 - percentage
-            }));
-          } else {
-            _results.push(void 0);
+          if (!this.$scope.tickets_status.values[key]) {
+            continue;
           }
+          percentage = this.$scope.tickets_status.values[key] / denominator * 100;
+          if (percentage < 1) {
+            percentage = 1;
+          }
+          _results.push(this.$scope.tickets_status.stats.push({
+            title: this.$scope.tickets_status.titles[key],
+            value: this.$scope.tickets_status.values[key],
+            left_percentage: percentage,
+            right_percentage: 100 - percentage
+          }));
+        }
+        return _results;
+      };
+
+      /*
+      		# We need to display bar graphs - so let's pre-calculate some variables
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.setVariablesForTicketsAwaitingAgent = function() {
+        var denominator, key, percentage, _results;
+        this.$scope.tickets_awaiting_agent.stats = [];
+        denominator = this.$scope.tickets_awaiting_agent.max || 1;
+        _results = [];
+        for (key in this.$scope.tickets_awaiting_agent.titles) {
+          percentage = this.$scope.tickets_awaiting_agent.values[key] / denominator * 100;
+          if (percentage < 1) {
+            percentage = 1;
+          }
+          _results.push(this.$scope.tickets_awaiting_agent.stats.push({
+            title: this.$scope.tickets_awaiting_agent.titles[key],
+            value: this.$scope.tickets_awaiting_agent.values[key],
+            left_percentage: percentage,
+            right_percentage: 100 - percentage
+          }));
         }
         return _results;
       };

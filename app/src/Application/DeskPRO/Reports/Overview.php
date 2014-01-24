@@ -100,11 +100,6 @@ class Overview
 	public function getOverviewData($type)
 	{
 		$this->person->loadPrefGroup('reports.ui.overview.options');
-
-		// First load just renders the sections, they'll
-		// be filled in with user preference with ajax
-		$this->no_data_mode = true;
-
 		return $this->getValues($type);
 	}
 
