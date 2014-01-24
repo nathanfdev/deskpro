@@ -148,6 +148,7 @@ class Layout implements \IteratorAggregate, \Serializable
 		$js .= "\t\tgetMatchingFields: function(ticket) {\n";
 		$js .= "\t\t\tvar match = [];\n";
 		$js .= "\t\t\tfor(i = 0; i < fields.length; i++) { if (fields[i].checkFn(ticket)) match.push(fields[i]); }\n";
+		$js .= "\t\t\treturn match;\n";
 		$js .= "\t\t}\n";
 		$js .= "\t};\n";
 
