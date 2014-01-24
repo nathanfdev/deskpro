@@ -213,7 +213,7 @@ define [
 					'ticket_pris':     '/ticket_pris',
 					'ticket_works':    '/ticket_works',
 					'ticket_slas':     '/ticket_slas',
-					'ticket_accounts': '/ticket_accounts',
+					'ticket_accounts': '/email_accounts',
 					'usergroups':      '/user_groups',
 				}).then( (result) =>
 					data = result.data
@@ -226,7 +226,7 @@ define [
 					options_data['ticket_works']     = data.ticket_works.workflows
 					options_data['ticket_prods']     = data.ticket_prods?.products
 					options_data['ticket_slas']      = data.ticket_slas?.slas
-					options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
+					options_data['email_accounts']   = data.ticket_accounts.email_accounts
 					options_data['usergroups']       = data.usergroups.groups
 					@options_data = options_data
 				)
@@ -290,7 +290,7 @@ define [
 
 		getSetEmailAccount: (options = {}) ->
 			options.propName = 'gateway_ids'
-			options.dataName = 'ticket_accounts'
+			options.dataName = 'email_accounts'
 			options.optionsFormatter = (options) ->
 				opts = []
 

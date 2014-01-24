@@ -31,68 +31,71 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\TicketAccounts;
+namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
 use Application\DeskPRO\Email\EditTransport;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailGatewayAddress;
 use Application\DeskPRO\Entity\EmailTransport;
 use Doctrine\ORM\EntityManager;
+use Orb\Validator\StringEmail;
 
-class EditTicketAccount
+class EditEmailAccount
 {
 	/**
 	 * @var string
 	 */
-	public $email_address;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
-	public $department;
+	public $address;
 
 	/**
 	 * @var string
 	 */
-	public $connection_type;
+	public $other_addresses;
 
 	/**
-	 * @var \Application\DeskPRO\Email\IncomingAccount\GmailAccount
+	 * @var string
+	 */
+	public $incoming_type;
+
+	/**
+	 * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig
 	 */
 	public $in_gmail_account;
 
 	/**
-	 * @var \Application\DeskPRO\Email\IncomingAccount\Pop3Account
+	 * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config
 	 */
 	public $in_pop3_account;
 
 	/**
-	 * @var \Application\DeskPRO\Email\IncomingAccount\ImapAccount
+	 * @var string
 	 */
-	public $in_imap_account;
+	public $outgoing_type;
 
 	/**
-	 * @var \Application\DeskPRO\Email\EditTransport
+	 * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\GmailConfig
 	 */
-	public $email_transport;
+	public $out_gmail_account;
+
+	/**
+	 * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig
+	 */
+	public $out_smtp_account;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 */
-	private $gateway;
+	private $account;
 
-	public function __construct(EmailGateway $gateway)
+	public function __construct(EmailAccount $account)
 	{
-		$this->gateway = $gateway;
+		$this->account         = $account;
 
-		if ($gateway->linked_transport) {
-			$tr = $gateway->linked_transport;
-		} else {
-			$tr = new EmailTransport();
-			$gateway->linked_transport = $tr;
-		}
-
-		$this->email_transport = new EditTransport($tr);
+		$this->address         = $account->address;
+		$this->other_addresses = implode(', ', $account->other_addresses ?: array());
+		$this->incoming_type   = $account->incoming_account ? $account->incoming_account->getType() : '';
+		$this->outgoing_type   = $account->outgoing_account ? $account->outgoing_account->getType() : '';
 	}
 
 
@@ -101,40 +104,62 @@ class EditTicketAccount
 	 */
 	public function apply()
 	{
-		$this->email_transport->email_address = $this->email_address;
-		$this->email_transport->apply();
+		$this->account->address = strtolower($this->address);
 
-		$this->gateway->email_address = $this->email_address;
+		if ($this->other_addresses) {
+			$emails_arr = array();
+			$emails = explode(',', $this->other_addresses);
+			foreach ($emails as $email) {
+				$email = trim(strtolower($email));
+				if (StringEmail::isValueValid($email)) {
+					$emails_arr[] = $email;
+				}
+			}
 
-		$this->gateway->department = $this->department;
-		$this->gateway->connection_options = array();
-		$this->gateway->connection_type = '';
+			$this->account->other_addresses = $emails_arr;
+		}
 
-		if ($this->connection_type == 'pop3') {
-			$this->gateway->connection_type = 'pop3';
-			$this->gateway->connection_options = $this->in_pop3_account->getOptions();
-		} else if ($this->connection_type == 'imap') {
-			$this->gateway->connection_type = 'imap';
-			$this->gateway->connection_options = $this->in_imap_account->getOptions();
-		} else if ($this->connection_type == 'gmail') {
-			$this->gateway->connection_type = 'gmail';
-			$this->gateway->connection_options = $this->in_gmail_account->getOptions();
+		$this->account->incoming_account = $this->getIncomingAccountConfig();
+		$this->account->outgoing_account = $this->getOutgoingAccountConfig();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+	 */
+	public function getIncomingAccountConfig()
+	{
+		switch ($this->incoming_type) {
+			case 'pop3':
+				return $this->in_pop3_account;
+				break;
+
+			case 'gmail':
+				return $this->in_gmail_account;
+				break;
+
+			default:
+				return null;
 		}
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Email\IncomingAccount\IncomingAccountInterface
+	 * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
 	 */
-	public function getIncomingAccount()
+	public function getOutgoingAccountConfig()
 	{
-		if ($this->connection_type == 'pop3') {
-			return $this->in_pop3_account;
-		} else if ($this->connection_type == 'imap') {
-			return $this->in_imap_account;
-		} else if ($this->connection_type == 'gmail') {
-			return $this->in_gmail_account;
+		switch ($this->outgoing_type) {
+			case 'smtp':
+				return $this->out_smtp_account;
+				break;
+
+			case 'gmail':
+				return $this->out_gmail_account;
+				break;
+
+			default;
+				return null;
 		}
-		return null;
 	}
 }

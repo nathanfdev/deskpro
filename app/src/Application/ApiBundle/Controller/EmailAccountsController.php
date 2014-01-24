@@ -34,27 +34,170 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
+use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
+use Application\DeskPRO\Entity\EmailAccount;
+
 class EmailAccountsController extends AbstractController
 {
 	####################################################################################################################
 	# list
 	####################################################################################################################
 
-	public function listAction($type)
+	public function listAction()
 	{
-		$data = array();
+		$data = array('email_accounts' => array());
 
-		$email_accounts = $this->em->createQuery("
-			SELECT acc, tr, dep, addr
-			FROM DeskPRO:EmailGateway acc
-			LEFT JOIN acc.linked_transport tr
-			LEFT JOIN acc.addresses addr
-			WHERE acc.gateway_type = ?0
-			ORDER BY acc.id ASC
-		")->setParameters(array($type))->execute();
-
-		$data['email_accounts'] = $this->getApiData($email_accounts, true);
+		$manager = $this->container->getEmailAccountManager();
+		foreach ($manager->getAllAccounts() as $acc) {
+			$data['email_accounts'][] = $acc->toApiData();
+		}
 
 		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		$manager = $this->container->getEmailAccountManager();
+		$account = $manager->getAccount($id);
+
+		if (!$account) {
+			throw $this->createNotFoundException();
+		}
+
+		$data['email_account'] = $account->toApiData();
+
+		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		if ($id) {
+			$account = $this->container->getEmailAccountManager()->getAccount($id);
+
+			if (!$account) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+		}
+
+		$edit_account = new EditEmailAccount($account);
+
+		$form = $this->createForm(
+			new EditEmailAccountType(),
+			$edit_account
+		);
+
+		$data = $this->in->getAll('post');
+
+		// Copy gmail config into the transport
+		if ($data['incoming_type'] == 'gmail') {
+			$data['outgoing_type']     = 'gmail';
+			$data['out_gmail_account'] = $data['in_gmail_account'];
+		}
+
+		$form->submit($data);
+		$edit_account->apply();
+
+		$this->em->persist($account);
+		$this->em->flush();
+
+		if ($id) {
+			return $this->createApiSuccessResponse();
+		} else {
+			return $this->createApiCreateResponse(array(
+				'email_account_id' => $account->id,
+			), $this->generateUrl('api_emailaccounts_get', array('id' => $account->id)));
+		}
+	}
+
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		$account = $this->container->getEmailAccountManager()->getAccount($id);
+		if (!$account) {
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $account->id;
+		$this->em->remove($account);
+		$this->em->flush();
+
+		return $this->createApiDeleteResponse(array('old_id' => $old_id));
+	}
+
+
+	####################################################################################################################
+	# test-account
+	####################################################################################################################
+
+	public function testAccountAction()
+	{
+		$account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+		$edit_account = new EditEmailAccount($account);
+
+		$form = $this->createForm(
+			new EditEmailAccountType(),
+			$edit_account
+		);
+
+		$data = $this->in->getAll('post');
+		$form->submit($data);
+
+		$tester = new IncomingAccountTester($edit_account->getIncomingAccountConfig());
+		$tester->test();
+
+		return $this->createApiResponse(array(
+			'is_success'    => $tester->isSuccess(),
+			'log'           => $tester->getLog(),
+			'message_count' => $tester->getMessageCount()
+		));
+	}
+
+	####################################################################################################################
+	# test-outgoing-account
+	####################################################################################################################
+
+	public function testOutgoingAccountAction()
+	{
+		$account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+		$edit_account = new EditEmailAccount($account);
+
+		$form = $this->createForm(
+			new EditEmailAccountType(),
+			$edit_account
+		);
+
+		$data = $this->in->getAll('post');
+		$form->submit($data);
+
+		$tester = new OutgoingAccountTester($edit_account->getOutgoingAccountConfig());
+		$tester->test(
+			$this->in->getString('test_email.to'),
+			$this->in->getString('test_email.from'),
+			$this->in->getString('test_email.subject'),
+			$this->in->getString('test_email.message')
+		);
+
+		return $this->createApiResponse(array(
+			'is_success'    => $tester->isSuccess(),
+			'log'           => $tester->getLog(),
+		));
 	}
 }

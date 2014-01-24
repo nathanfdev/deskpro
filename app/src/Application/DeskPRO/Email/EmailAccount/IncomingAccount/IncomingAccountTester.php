@@ -31,18 +31,18 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\IncomingAccount;
+namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
-use Orb\Util\Arrays;
 
 class IncomingAccountTester
 {
 	/**
-	 * @var \Application\DeskPRO\Email\IncomingAccount\IncomingAccountInterface
+	 * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
 	 */
-	private $account;
+	private $account_config;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -69,9 +69,9 @@ class IncomingAccountTester
 	 */
 	private $message_count = 0;
 
-	public function __construct(IncomingAccountInterface $account)
+	public function __construct(AccountConfigInterface $account_config)
 	{
-		$this->account = $account;
+		$this->account_config = $account_config;
 
 		$this->logger        = new Logger();
 		$this->logger_writer = new ArrayWriter();
@@ -86,12 +86,14 @@ class IncomingAccountTester
 	 */
 	public function test()
 	{
-		if ($this->account instanceof Pop3Account) {
-			$this->_testPop3($this->account);
-		} else if ($this->account instanceof ImapAccount) {
-			$this->_testImap($this->account);
-		} else if ($this->account instanceof GmailAccount) {
-			$this->_testGmail($this->account);
+		switch ($this->account_config->getType()) {
+			case 'pop3':
+				$this->_testPop3();
+				break;
+
+			case 'gmail':
+				$this->_testGmail();
+				break;
 		}
 
 		return $this->is_success;
@@ -128,19 +130,22 @@ class IncomingAccountTester
 
 
 	/**
-	 * @param Pop3Account $account
+	 * Tests Pop3
 	 */
-	private function _testPop3(Pop3Account $account)
+	private function _testPop3()
 	{
+		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $account_config */
+		$account_config = $this->account_config;
+
 		$this->logger->logInfo('Testing Pop3Account');
 
 		try {
 			$storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-				'host'     => $account->host,
-				'user'     => $account->username,
-				'password' => $account->password,
-				'port'     => $account->port,
-				'ssl'      => $account->secure,
+				'host'     => $account_config->host,
+				'user'     => $account_config->user,
+				'password' => $account_config->password,
+				'port'     => $account_config->port,
+				'ssl'      => $account_config->secure_mode,
 				'logger'   => $this->logger
 			));
 
@@ -156,44 +161,20 @@ class IncomingAccountTester
 
 
 	/**
-	 * @param ImapAccount $account
+	 * Tests Gmail
 	 */
-	private function _testImap(ImapAccount $account)
+	private function _testGmail()
 	{
-		$this->logger->logInfo('Testing ImapAccount');
+		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $account_config */
+		$account_config = $this->account_config;
 
-		try {
-			$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
-				'host'     => $account->host,
-				'user'     => $account->username,
-				'password' => $account->password,
-				'port'     => $account->port,
-				'ssl'      => $account->secure,
-				'logger'   => $this->logger
-			));
-
-			$this->message_count = $storage->countUnseenMessages();
-
-			$this->is_success = true;
-		} catch (\Exception $e) {
-			$this->logger->logError(sprintf("An exception occurred: [%s:%s] %s", get_class($e), $e->getCode(), $e->getMessage()));
-			$this->is_success = false;
-		}
-	}
-
-
-	/**
-	 * @param GmailAccount $account
-	 */
-	private function _testGmail(GmailAccount $account)
-	{
 		$this->logger->logInfo('Testing GmailAccount');
 
 		try {
 			$storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
 				'host'     => 'pop.gmail.com',
-				'user'     => $account->username,
-				'password' => $account->password,
+				'user'     => $account_config->user,
+				'password' => $account_config->password,
 				'port'     => 995,
 				'ssl'      => 'ssl',
 				'logger'   => $this->logger

@@ -58,7 +58,7 @@ class GmailConfig implements AccountConfigInterface
 	public function serializeJsonArray()
 	{
 		return array(
-			'user'        => $this->port,
+			'user'        => $this->user,
 			'password'    => $this->password,
 		);
 	}

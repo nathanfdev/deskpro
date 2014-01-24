@@ -62,7 +62,7 @@ define [
 					agentsInfo:         '/agents',
 					agentgroupsInfo:    '/agent_groups',
 					usergroupsInfo:     '/user_groups',
-					ticketAccountsInfo: '/ticket_accounts',
+					ticketAccountsInfo: '/email_accounts',
 					defaultLayoutInfo:  '/ticket_layouts/default',
 					customLayoutInfo:   "/ticket_layouts/#{id}",
 					layoutStats:        "/ticket_layouts/stats"
@@ -72,7 +72,7 @@ define [
 					agentsInfo:         '/agents',
 					agentgroupsInfo:    '/agent_groups',
 					usergroupsInfo:     '/user_groups',
-					ticketAccountsInfo: '/ticket_accounts',
+					ticketAccountsInfo: '/email_accounts',
 					defaultLayoutInfo:  '/ticket_layouts/default',
 					layoutStats:        "/ticket_layouts/stats"
 				})
@@ -97,7 +97,7 @@ define [
 
 				data.layout_info = result.layoutStats.layout_info
 
-				data.ticket_accounts = result.ticketAccountsInfo.ticket_accounts
+				data.email_accounts = result.ticketAccountsInfo.email_accounts
 
 				data.dep_parent_list = @listModels.slice(0)
 				if data.dep.id

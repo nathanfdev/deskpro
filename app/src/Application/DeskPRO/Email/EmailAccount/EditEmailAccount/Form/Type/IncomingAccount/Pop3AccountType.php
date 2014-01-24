@@ -31,31 +31,36 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\OutgoingAccount;
+namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\IncomingAccount;
 
-class PhpMailAccount implements OutgoingAccountInterface
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class Pop3AccountType extends AbstractType
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setOptions(array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-
+		$builder->add('user',        'text',     array('required' => false));
+		$builder->add('password',    'password', array('required' => false));
+		$builder->add('host',        'text',     array('required' => true));
+		$builder->add('port',        'text',     array('required' => true));
+		$builder->add('secure_mode', 'choice',   array(
+			'required'      => false,
+			'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
+			'empty_value'   => true,
+		));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getOptions()
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		return array();
+		$resolver->setDefaults(array(
+			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\Pop3Config',
+		));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTypeName()
+	public function getName()
 	{
-		return 'mail';
+		return 'in_pop3_account';
 	}
 }

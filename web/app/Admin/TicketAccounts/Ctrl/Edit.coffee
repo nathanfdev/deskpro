@@ -11,6 +11,7 @@ define [
 		@DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal']
 
 		init: ->
+			@accountId = parseInt(@$stateParams.id || 0)
 			@didPassTest = false
 			@testMessageCount = 0
 			@didConfirmExistingMessages = false
@@ -26,7 +27,7 @@ define [
 				@deps = list
 			)
 
-			if not @$stateParams.id
+			if not @accountId
 				@account = {
 					email_address: '',
 					connection_type: '',
@@ -44,17 +45,17 @@ define [
 				@form_model.form.email_transport.transport_type = ''
 				@$scope.form = @form_model.form
 
-				return @$q.all([dep_promise]);
+				return dep_promise
 			else
-				data_promise = @Api.sendDataGet([
-					'/ticket_accounts/' + @$stateParams.id
-				]).then( (result) =>
-					@account = result.data.api_ticket_accounts_get.ticket_account
+				data_promise = @Api.sendDataGet({
+					'email_account': '/email_accounts/' + @accountId
+				}).then( (result) =>
+					@account = result.data.email_account.email_account
 					@form_model = new EditTicketAccountModel(@account)
 					@$scope.form = @form_model.form
 				)
 
-				return @$q.all([dep_promise, data_promise]);
+				return @$q.all([dep_promise, data_promise])
 
 
 		###
@@ -68,10 +69,10 @@ define [
 			@startSpinner('saving_account')
 			if @account.id
 				is_new = false
-				promise = @Api.sendPostJson('/ticket_accounts/' + @account.id, postData)
+				promise = @Api.sendPostJson('/email_accounts/' + @account.id, postData)
 			else
 				is_new = true
-				promise = @Api.sendPutJson('/ticket_accounts', postData)
+				promise = @Api.sendPutJson('/email_accounts', postData)
 
 			promise.success( (result) =>
 				@account.id = result.id
@@ -103,7 +104,7 @@ define [
     	# @return {promise}
 		###
 		loadAccountTest: ->
-			return @Api.sendPostJson('/ticket_accounts/test-account', @form_model.getFormData()).success( (result) =>
+			return @Api.sendPostJson('/email_accounts/test-account', @form_model.getFormData()).success( (result) =>
 				@didPassTest = result.is_success
 			)
 
@@ -119,7 +120,7 @@ define [
 			form_data = @form_model.getFormData().email_transport
 			form_data.test_email = @test_email
 
-			return @Api.sendPostJson('/ticket_accounts/test-outgoing-account', form_data)
+			return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data)
 
 
 		###

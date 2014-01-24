@@ -29,44 +29,12 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\TicketAccounts\Form\Type;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Email\Form\Type\EmailTransportType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\GmailAccountType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\ImapAccountType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\Pop3AccountType;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class TicketAccountType extends AbstractType
+class EmailAccount extends AbstractEntityRepository
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('email_address', 'text', array(
-			'required'      => true,
-		));
-		$builder->add('connection_type', 'text', array(
-			'required'      => true,
-		));
-		$builder->add('in_gmail_account', new GmailAccountType());
-		$builder->add('in_pop3_account', new Pop3AccountType());
-		$builder->add('in_imap_account', new ImapAccountType());
-		$builder->add('email_transport', new EmailTransportType());
-	}
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\TicketAccounts\\EditTicketAccount',
-		));
-	}
-
-	public function getName()
-	{
-		return 'email_transport';
-	}
 }

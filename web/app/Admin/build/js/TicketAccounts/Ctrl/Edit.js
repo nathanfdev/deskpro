@@ -19,6 +19,7 @@
       Admin_TicketAccounts_Ctrl_Edit.DEPS = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal'];
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.init = function() {
+        this.accountId = parseInt(this.$stateParams.id || 0);
         this.didPassTest = false;
         this.testMessageCount = 0;
         this.didConfirmExistingMessages = false;
@@ -36,7 +37,7 @@
         dep_promise = this.DataService.get('TicketDeps').loadList().then(function(list) {
           return _this.deps = list;
         });
-        if (!this.$stateParams.id) {
+        if (!this.accountId) {
           this.account = {
             email_address: '',
             connection_type: '',
@@ -52,10 +53,12 @@
           this.form_model.form.connection_type = '';
           this.form_model.form.email_transport.transport_type = '';
           this.$scope.form = this.form_model.form;
-          return this.$q.all([dep_promise]);
+          return dep_promise;
         } else {
-          data_promise = this.Api.sendDataGet(['/ticket_accounts/' + this.$stateParams.id]).then(function(result) {
-            _this.account = result.data.api_ticket_accounts_get.ticket_account;
+          data_promise = this.Api.sendDataGet({
+            'email_account': '/email_accounts/' + this.accountId
+          }).then(function(result) {
+            _this.account = result.data.email_account.email_account;
             _this.form_model = new EditTicketAccountModel(_this.account);
             return _this.$scope.form = _this.form_model.form;
           });
@@ -77,10 +80,10 @@
         this.startSpinner('saving_account');
         if (this.account.id) {
           is_new = false;
-          promise = this.Api.sendPostJson('/ticket_accounts/' + this.account.id, postData);
+          promise = this.Api.sendPostJson('/email_accounts/' + this.account.id, postData);
         } else {
           is_new = true;
-          promise = this.Api.sendPutJson('/ticket_accounts', postData);
+          promise = this.Api.sendPutJson('/email_accounts', postData);
         }
         promise.success(function(result) {
           _this.account.id = result.id;
@@ -113,7 +116,7 @@
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.loadAccountTest = function() {
         var _this = this;
-        return this.Api.sendPostJson('/ticket_accounts/test-account', this.form_model.getFormData()).success(function(result) {
+        return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData()).success(function(result) {
           return _this.didPassTest = result.is_success;
         });
       };
@@ -130,7 +133,7 @@
         this.test_email.from = this.form_model.form.email_address;
         form_data = this.form_model.getFormData().email_transport;
         form_data.test_email = this.test_email;
-        return this.Api.sendPostJson('/ticket_accounts/test-outgoing-account', form_data);
+        return this.Api.sendPostJson('/email_accounts/test-outgoing-account', form_data);
       };
 
       /*

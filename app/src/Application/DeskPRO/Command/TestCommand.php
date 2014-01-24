@@ -35,40 +35,22 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\TicketLayout\LayoutCollection;
-use Application\DeskPRO\Tickets\Actions\NullAction;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckWorkflow;
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TestCommand extends ContainerAwareCommand
 {
 	protected function configure()
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
+		$this->setName('dp:test');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		/** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
+		$container = $this->getContainer();
+
 		echo __FILE__;
 		echo "\n";
 	}

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Types\JsonObjectSerializer;
 
 
 /**
@@ -106,6 +107,7 @@ class EmailAccount extends DomainObject
 	protected $other_addresses;
 
 	/**
+	 * Misc options or flags that can be used by whatever uses this account.
 	 * @var array
 	 */
 	protected $options;
@@ -154,16 +156,132 @@ class EmailAccount extends DomainObject
 	}
 
 
+	/**
+	 * @return null|string
+	 */
+	public function getIncomingAccountType()
+	{
+		if (!$this->incoming_account) {
+			return null;
+		}
+
+		return $this->incoming_account->getType();
+	}
+
+
+	/**
+	 * @return null|string
+	 */
+	public function getOutgoingAccountType()
+	{
+		if (!$this->outgoing_account) {
+			return null;
+		}
+
+		return $this->outgoing_account->getType();
+	}
+
+
+	/**
+	 * Get an array of all of the addresses for this account
+	 *
+	 * @return array
+	 */
+	public function getAllAddresses()
+	{
+		$addrs = $this->other_addresses;
+		array_unshift($addrs, $this->address);
+		return $addrs;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param mixed  $default
+	 * @return mixed
+	 */
+	public function getOption($name, $default = null)
+	{
+		if (!$this->options || !isset($this->options[$name])) {
+			return $default;
+		}
+
+		return $this->options[$name];
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param mixed  $value
+	 */
+	public function setOption($name, $value)
+	{
+		$new = $this->options;
+
+		if ($value === null) {
+			if (!$new) {
+				return;
+			}
+
+			unset($new[$name]);
+			if (!$new) {
+				$this->options = null;
+			}
+		} else {
+			if (!$new) {
+				$new = array();
+			}
+			$new[$name] = $value;
+		}
+
+		$this->setModelField('options', $new);
+	}
+
+
+	/**
+	 * @param string $options
+	 */
+	public function setOptions($options)
+	{
+		if (!$options) {
+			$options = null;
+		}
+
+		$this->setModelField('options', $options);
+	}
+
+
+	############################################################################
+	# Export
+	############################################################################
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		$data['incoming_account']      = $this->incoming_account ? $this->incoming_account->serializeJsonArray() : array();
+		$data['incoming_account_type'] = $this->getIncomingAccountType();
+		$data['outgoing_account_type'] = $this->getOutgoingAccountType();
+		$data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : array();
+
+		return $data;
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->idGenerator          = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-		$metadata->setPrimaryTable(array('name' => 'email_accounts'));
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailAccount';
+
+		$metadata->setPrimaryTable(array(
+			'name' => 'email_accounts'
+		));
 
 		$metadata->mapField(array(
 			'columnName' => 'id',

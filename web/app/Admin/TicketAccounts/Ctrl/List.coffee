@@ -54,7 +54,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		# Actually do th edelete
 		###
 		deleteAccount: (acc) ->
-			@Api.sendDelete('/ticket_accounts/' + acc.id).success( =>
+			@Api.sendDelete('/email_accounts/' + acc.id).success( =>
 				@TicketAccountsData.remove(acc.id)
 				@ngApply()
 

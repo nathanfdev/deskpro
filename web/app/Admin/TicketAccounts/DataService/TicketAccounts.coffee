@@ -31,8 +31,8 @@ define [
 				deferred.resolve(@recs)
 				return deferred.promise
 
-			http_def = @Api.sendGet('/ticket_accounts').success( (data, status, headers, config) =>
-				@_setListData(data.ticket_accounts)
+			http_def = @Api.sendGet('/email_accounts').success( (data, status, headers, config) =>
+				@_setListData(data.email_accounts)
 				deferred.resolve(@recs)
 			, (data, status, headers, config) ->
 				deferred.reject()

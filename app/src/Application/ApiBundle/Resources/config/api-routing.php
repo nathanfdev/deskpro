@@ -2721,49 +2721,49 @@ $collection->create('api_ticket_fields_setenabled', array(
 ));
 
 ########################################################################################################################
-# Ticket Email Accounts
+# Email Accounts
 ########################################################################################################################
 
-$collection->create('api_ticket_accounts', array(
-	'path'        => '/ticket_accounts',
-	'controller'  => 'ApiBundle:TicketAccounts:list',
+$collection->create('api_emailaccounts', array(
+	'path'        => '/email_accounts',
+	'controller'  => 'ApiBundle:EmailAccounts:list',
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_ticket_accounts_create', array(
-	'path'        => '/ticket_accounts',
-	'controller'  => 'ApiBundle:TicketAccounts:save',
+$collection->create('api_emailaccounts_create', array(
+	'path'        => '/email_accounts',
+	'controller'  => 'ApiBundle:EmailAccounts:save',
 	'defaults'    => array('id' => '0'),
 	'methods'     => array('PUT'),
 ));
 
-$collection->create('api_ticket_accounts_test', array(
-	'path'        => '/ticket_accounts/test-account',
-	'controller'  => 'ApiBundle:TicketAccounts:testAccount',
+$collection->create('api_emailaccounts_test', array(
+	'path'        => '/email_accounts/test-account',
+	'controller'  => 'ApiBundle:EmailAccounts:testAccount',
 	'methods'     => array('POST'),
 ));
 
-$collection->create('api_ticket_accounts_testoutgoing', array(
-	'path'        => '/ticket_accounts/test-outgoing-account',
-	'controller'  => 'ApiBundle:TicketAccounts:testOutgoingAccount',
+$collection->create('api_emailaccounts_testoutgoing', array(
+	'path'        => '/email_accounts/test-outgoing-account',
+	'controller'  => 'ApiBundle:EmailAccounts:testOutgoingAccount',
 	'methods'     => array('POST'),
 ));
 
-$collection->create('api_ticket_accounts_get', array(
-	'path'        => '/ticket_accounts/{id}',
-	'controller'  => 'ApiBundle:TicketAccounts:get',
+$collection->create('api_emailaccounts_get', array(
+	'path'        => '/email_accounts/{id}',
+	'controller'  => 'ApiBundle:EmailAccounts:get',
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_ticket_accounts_remove', array(
-	'path'        => '/ticket_accounts/{id}',
-	'controller'  => 'ApiBundle:TicketAccounts:remove',
+$collection->create('api_emailaccounts_remove', array(
+	'path'        => '/email_accounts/{id}',
+	'controller'  => 'ApiBundle:EmailAccounts:remove',
 	'methods'     => array('DELETE'),
 ));
 
-$collection->create('api_ticket_accounts_save', array(
-	'path'        => '/ticket_accounts/{id}',
-	'controller'  => 'ApiBundle:TicketAccounts:save',
+$collection->create('api_emailaccounts_save', array(
+	'path'        => '/email_accounts/{id}',
+	'controller'  => 'ApiBundle:EmailAccounts:save',
 	'methods'     => array('POST'),
 ));
 

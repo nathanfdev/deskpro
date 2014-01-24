@@ -154,7 +154,7 @@ define [
 					'ticket_prods':    '/ticket_prods',
 					'ticket_pris':     '/ticket_pris',
 					'ticket_works':    '/ticket_works',
-					'ticket_accounts': '/ticket_accounts',
+					'ticket_accounts': '/email_accounts',
 					'usergroups':      '/user_groups',
 				}).then( (result) =>
 					data = result.data

@@ -33,8 +33,8 @@
           deferred.resolve(this.recs);
           return deferred.promise;
         }
-        http_def = this.Api.sendGet('/ticket_accounts').success(function(data, status, headers, config) {
-          _this._setListData(data.ticket_accounts);
+        http_def = this.Api.sendGet('/email_accounts').success(function(data, status, headers, config) {
+          _this._setListData(data.email_accounts);
           return deferred.resolve(_this.recs);
         }, function(data, status, headers, config) {
           return deferred.reject();

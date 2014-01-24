@@ -31,27 +31,43 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\OutgoingAccount;
+namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type;
 
-interface OutgoingAccountInterface
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class EditEmailAccountType extends AbstractType
 {
-	/**
-	 * @return string
-	 */
-	public function getTypeName();
+	public function buildForm(FormBuilderInterface $builder, array $options)
+	{
+		$builder->add('address',         'email', array('required' => true));
+		$builder->add('other_addresses', 'text',  array('required' => false));
 
-	/**
-	 * Set configuration options from an array
-	 *
-	 * @param array $options
-	 * @return mixed
-	 */
-	public function setOptions(array $options);
+		$builder->add('incoming_type', 'choice', array(
+			'choices'  => array('gmail' => 'gmail', 'pop3' => 'pop3'),
+			'required' => true
+		));
+		$builder->add('in_gmail_account', new IncomingAccount\GmailAccountType());
+		$builder->add('in_pop3_account',  new IncomingAccount\Pop3AccountType());
 
-	/**
-	 * Export options to an array
-	 *
-	 * @return mixed
-	 */
-	public function getOptions();
+		$builder->add('outgoing_type', 'choice', array(
+			'choices'  => array('gmail' => 'gmail', 'smtp' => 'smtp'),
+			'required' => true
+		));
+		$builder->add('out_gmail_account', new OutgoingAccount\GmailAccountType());
+		$builder->add('out_smtp_account',  new OutgoingAccount\SmtpAccountType());
+	}
+
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	{
+		$resolver->setDefaults(array(
+			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\EditEmailAccount\\EditEmailAccount',
+		));
+	}
+
+	public function getName()
+	{
+		return 'email_account';
+	}
 }

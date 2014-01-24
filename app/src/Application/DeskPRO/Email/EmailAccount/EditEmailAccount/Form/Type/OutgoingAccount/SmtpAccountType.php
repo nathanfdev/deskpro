@@ -31,44 +31,36 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\OutgoingAccount;
+namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\OutgoingAccount;
 
-class GmailAccount implements OutgoingAccountInterface
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class SmtpAccountType extends AbstractType
 {
-	public $username;
-	public $password;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setOptions(array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		foreach ($options as $k => $v) {
-			switch ($k) {
-				case 'username':
-				case 'password':
-					$this->$k = $v ?: '';
-					break;
-			}
-		}
+		$builder->add('user',        'text',     array('required' => false));
+		$builder->add('password',    'password', array('required' => false));
+		$builder->add('host',        'text',    array('required' => true));
+		$builder->add('port',        'text',    array('required' => true));
+		$builder->add('secure_mode', 'choice',  array(
+			'required'      => false,
+			'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
+			'empty_value'   => true,
+		));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getOptions()
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		return array(
-			'username' => $this->username ?: '',
-			'password' => $this->password ?: '',
-		);
+		$resolver->setDefaults(array(
+			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\SmtpConfig',
+		));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTypeName()
+	public function getName()
 	{
-		return 'gmail';
+		return 'out_smtp_account';
 	}
 }

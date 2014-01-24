@@ -3,64 +3,61 @@
     var Admin_TicketAccounts_Form_EditTicketAccountModel;
     return Admin_TicketAccounts_Form_EditTicketAccountModel = (function() {
       function Admin_TicketAccounts_Form_EditTicketAccountModel(account) {
-        var _ref;
         this.account = account;
         this.form = {};
-        this.form.department = ((_ref = this.account.department) != null ? _ref.id : void 0) || 0;
-        this.form.email_address = this.account.email_address;
-        this.form.connection_type = 'pop3';
+        this.form.address = this.account.address;
+        this.form.incoming_type = 'pop3';
         this.form.in_gmail_account = {};
         this.form.in_pop3_account = {};
         this.form.in_imap_account = {};
-        this.form.email_transport = {
-          transport_type: 'mail',
-          out_gmail_account: {},
-          out_smtp_account: {}
-        };
-        if (this.account.connection_type) {
-          this.form.connection_type = this.account.connection_type;
-          if (this.form.connection_type === 'pop3') {
-            this.form.in_pop3_account.host = this.account.linked_transport.transport_options.host;
-            this.form.in_pop3_account.port = this.account.linked_transport.transport_options.port;
-            this.form.in_pop3_account.secure = this.account.linked_transport.transport_options.secure;
-            this.form.in_pop3_account.username = this.account.linked_transport.transport_options.username;
-            this.form.in_pop3_account.password = this.account.linked_transport.transport_options.password;
-          } else if (this.form.connection_type === 'pop3') {
-            this.form.in_imap_account.host = this.account.linked_transport.transport_options.host;
-            this.form.in_imap_account.port = this.account.linked_transport.transport_options.port;
-            this.form.in_imap_account.secure = this.account.linked_transport.transport_options.secure;
-            this.form.in_imap_account.username = this.account.linked_transport.transport_options.username;
-            this.form.in_imap_account.password = this.account.linked_transport.transport_options.password;
-          } else if (this.form.connection_type === 'gmail') {
-            this.form.in_gmail_account.password = this.account.linked_transport.transport_options.password;
+        this.form.outgoing_type = 'mail';
+        this.form.out_gmail_account = {};
+        this.form.out_smtp_account = {};
+        if (this.account.other_addresses.length) {
+          this.form.with_email_aliases = true;
+          this.form.other_addresses = this.account.other_addresses.join(', ');
+        } else {
+          this.form.with_email_aliases = false;
+          this.form.other_addresses = '';
+        }
+        if (this.account.incoming_account_type) {
+          this.form.incoming_type = this.account.incoming_account_type;
+          if (this.form.incoming_type === 'pop3') {
+            this.form.in_pop3_account.host = this.account.incoming_account.host;
+            this.form.in_pop3_account.port = this.account.incoming_account.port;
+            this.form.in_pop3_account.secure = this.account.incoming_account.secure;
+            this.form.in_pop3_account.username = this.account.incoming_account.username;
+            this.form.in_pop3_account.password = this.account.incoming_account.password;
+          } else if (this.form.incoming_type === 'gmail') {
+            this.form.in_gmail_account.password = this.account.incoming_account.password;
           }
         }
-        if (this.account.linked_transport) {
-          this.form.email_transport.transport_type = this.account.linked_transport.transport_type;
-          if (this.form.email_transport.transport_type === 'gmail') {
-            this.form.email_transport.out_gmail_account.password = this.account.linked_transport.transport_options.password;
-          } else if (this.form.email_transport.transport_type === 'smtp') {
-            this.form.email_transport.out_smtp_account.host = this.account.linked_transport.transport_options.host;
-            this.form.email_transport.out_smtp_account.port = this.account.linked_transport.transport_options.port;
-            this.form.email_transport.out_smtp_account.secure = this.account.linked_transport.transport_options.secure;
-            this.form.email_transport.out_smtp_account.username = this.account.linked_transport.transport_options.username;
-            this.form.email_transport.out_smtp_account.password = this.account.linked_transport.transport_options.password;
+        if (this.account.outgoing_account_type) {
+          this.form.outgoing_type = this.account.outgoing_account_type;
+          if (this.form.outgoing_type === 'smtp') {
+            this.form.out_smtp_account.host = this.account.outgoing_account.host;
+            this.form.out_smtp_account.port = this.account.outgoing_account.port;
+            this.form.out_smtp_account.secure = this.account.outgoing_account.secure;
+            this.form.out_smtp_account.username = this.account.outgoing_account.username;
+            this.form.out_smtp_account.password = this.account.outgoing_account.password;
+          } else if (this.form.outgoing_type === 'gmail') {
+            this.form.out_gmail_account.password = this.account.outgoing_account.password;
           }
         }
       }
 
       Admin_TicketAccounts_Form_EditTicketAccountModel.prototype.getFormData = function() {
-        if (this.form.connection_type === 'gmail') {
-          this.form.in_gmail_account.username = this.form.email_address;
+        if (this.form.incoming_type === 'gmail') {
+          this.form.in_gmail_account.user = this.form.address;
         }
-        if (this.form.email_transport.transport_type === 'gmail') {
-          this.form.email_transport.out_gmail_account.username = this.form.email_address;
+        if (this.form.outgoing_type === 'gmail') {
+          this.form.out_gmail_account.user = this.form.address;
         }
         return this.form;
       };
 
       Admin_TicketAccounts_Form_EditTicketAccountModel.prototype.apply = function() {
-        return this.account.email_address = this.form.email_address;
+        return this.account.address = this.form.address;
       };
 
       return Admin_TicketAccounts_Form_EditTicketAccountModel;

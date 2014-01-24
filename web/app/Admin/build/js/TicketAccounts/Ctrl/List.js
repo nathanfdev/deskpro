@@ -85,7 +85,7 @@
 
       Admin_TicketAccounts_Ctrl_List.prototype.deleteAccount = function(acc) {
         var _this = this;
-        return this.Api.sendDelete('/ticket_accounts/' + acc.id).success(function() {
+        return this.Api.sendDelete('/email_accounts/' + acc.id).success(function() {
           _this.TicketAccountsData.remove(acc.id);
           _this.ngApply();
           if (_this.$state.current.name === 'tickets.ticket_accounts.edit' && parseInt(_this.$state.params.id) === acc.id) {

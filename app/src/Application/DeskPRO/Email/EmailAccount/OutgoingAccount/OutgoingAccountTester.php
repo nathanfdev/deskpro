@@ -31,18 +31,16 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\OutgoingAccount;
+namespace Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
 
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
-use Orb\Util\Arrays;
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 
 class OutgoingAccountTester
 {
 	/**
-	 * @var \Application\DeskPRO\Email\OutgoingAccount\OutgoingAccountInterface
+	 * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
 	 */
-	private $account;
+	private $account_config;
 
 	/**
 	 * @var
@@ -64,15 +62,20 @@ class OutgoingAccountTester
 	 */
 	private $swift_message;
 
-	public function __construct(OutgoingAccountInterface $account)
+	public function __construct(AccountConfigInterface $account_config)
 	{
 		$this->swift_arraylogger = new \Swift_Plugins_Loggers_ArrayLogger();
-		$this->account = $account;
+		$this->account_config = $account_config;
 	}
 
+
 	/**
-	 * Run the test
+	 * Runs the test
 	 *
+	 * @param string $to_address
+	 * @param string $from_address
+	 * @param string $subject
+	 * @param string $message
 	 * @return bool
 	 */
 	public function test($to_address, $from_address, $subject, $message)
@@ -84,12 +87,12 @@ class OutgoingAccountTester
 			->setTo($to_address);
 
 		try {
-			if ($this->account instanceof SmtpAccount) {
-				$this->_testSmtp($this->account);
-			} else if ($this->account instanceof GmailAccount) {
-				$this->_testGmail($this->account);
-			} else if ($this->account instanceof PhpMailAccount) {
-				$this->_testMail($this->account);
+			if ($this->account_config instanceof SmtpAccount) {
+				$this->_testSmtp($this->account_config);
+			} else if ($this->account_config instanceof GmailAccount) {
+				$this->_testGmail($this->account_config);
+			} else if ($this->account_config instanceof PhpMailAccount) {
+				$this->_testMail($this->account_config);
 			}
 		} catch (\Exception $e) {
 			$this->swift_arraylogger->add("[error] " . $e->getMessage());
@@ -118,7 +121,7 @@ class OutgoingAccountTester
 
 
 	/**
-	 * @param \Swift_SmtpTransport $transport
+	 * @param \Swift_Transport $transport
 	 */
 	private function sendWithTransport(\Swift_Transport $transport)
 	{
@@ -136,26 +139,29 @@ class OutgoingAccountTester
 
 
 	/**
-	 * @param SmtpAccount $account
+	 * Test with SMTP
 	 */
-	private function _testSmtp(SmtpAccount $account)
+	private function _testSmtp()
 	{
+		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig $account_config */
+		$account_config = $this->account_config;
+
 		$this->swift_arraylogger->add("Testing SmtpAccount");
 
-		$this->swift_arraylogger->add("[options] host: {$account->host}");
-		$this->swift_arraylogger->add("[options] port: {$account->port}");
-		$this->swift_arraylogger->add("[options] secure: {$account->secure}");
-		$this->swift_arraylogger->add("[options] username: {$account->username}");
-		$this->swift_arraylogger->add("[options] password: {$account->password}");
+		$this->swift_arraylogger->add("[options] host: {$account_config->host}");
+		$this->swift_arraylogger->add("[options] port: {$account_config->port}");
+		$this->swift_arraylogger->add("[options] secure: {$account_config->secure}");
+		$this->swift_arraylogger->add("[options] username: {$account_config->user}");
+		$this->swift_arraylogger->add("[options] password: {$account_config->password}");
 
 		$transport = \Swift_SmtpTransport::newInstance(
-			$account->host,
-			$account->port,
-			$account->secure
+			$account_config->host,
+			$account_config->port,
+			$account_config->secure
 		);
-		if ($account->username) {
-			$transport->setUsername($account->username);
-			$transport->setPassword($account->password);
+		if ($account_config->user) {
+			$transport->setUsername($account_config->user);
+			$transport->setPassword($account_config->password);
 		}
 
 		$this->sendWithTransport($transport);
@@ -163,15 +169,18 @@ class OutgoingAccountTester
 
 
 	/**
-	 * @param GmailAccount $account
+	 * Test with gmail
 	 */
-	private function _testGmail(GmailAccount $account)
+	private function _testGmail()
 	{
+		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\GmailConfig $account_config */
+		$account_config = $this->account_config;
+
 		$this->swift_arraylogger->add("Testing GmailAccount");
 		$smtp = new SmtpAccount();
 		$smtp->setOptions(array(
-			'username' => $account->username,
-			'password' => $account->password,
+			'username' => $account_config->user,
+			'password' => $account_config->password,
 			'host'     => 'smtp.gmail.com',
 			'port'     => 465,
 			'secure'   => 'ssl'
@@ -181,9 +190,9 @@ class OutgoingAccountTester
 
 
 	/**
-	 * @param PhpMailAccount $account
+	 * Test with mail
 	 */
-	public function _testMail(PhpMailAccount $account)
+	public function _testMail()
 	{
 		$this->swift_arraylogger->add("Testing PhpMailAccount");
 		$this->swift_arraylogger->add("(No detailed logging is available using the PHP mail() transport.)");

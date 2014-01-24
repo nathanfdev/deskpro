@@ -31,29 +31,24 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\IncomingAccount\Form\Type;
+namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\IncomingAccount;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-
 class GmailAccountType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('username', 'text', array(
-			'required'      => true,
-		));
-		$builder->add('password', 'password', array(
-			'required'      => false,
-		));
+		$builder->add('user',     'email',    array('required' => true));
+		$builder->add('password', 'password', array('required' => false));
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Email\\IncomingAccount\\GmailAccount',
+			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\GmailConfig',
 		));
 	}
 

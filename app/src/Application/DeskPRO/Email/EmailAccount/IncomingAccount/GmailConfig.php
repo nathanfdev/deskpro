@@ -29,47 +29,70 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Email\IncomingAccount\Form\Type;
+namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
-class ImapAccountType extends AbstractType
+class GmailConfig implements AccountConfigInterface
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	/**
+	 * @var string
+	 */
+	public $user;
+
+	/**
+	 * @var string
+	 */
+	public $password;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function serializeJsonArray()
 	{
-		$builder->add('username', 'text', array(
-			'required'      => false,
-		));
-		$builder->add('password', 'password', array(
-			'required'      => false,
-		));
-		$builder->add('host', 'text', array(
-			'required'      => true,
-		));
-		$builder->add('port', 'text', array(
-			'required'      => true,
-		));
-		$builder->add('secure', 'choice', array(
-			'required'      => false,
-			'choices'       => array('ssl' => 'ssl'),
-			'empty_value'   => true,
-		));
+		return array(
+			'user'        => $this->user,
+			'password'    => $this->password,
+		);
 	}
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public static function unserializeJsonArray(array $data)
 	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Email\\IncomingAccount\\ImapAccount',
-		));
+		$obj = new self();
+		foreach ($data as $k => $v) {
+			$obj->$k = $v;
+		}
+
+		return $obj;
 	}
 
-	public function getName()
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getType()
 	{
-		return 'in_imap_account';
+		return 'gmail';
+	}
+
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('user', new Constraints\NotBlank());
+		$metadata->addPropertyConstraint('password', new Constraints\NotBlank());
 	}
 }
