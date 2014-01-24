@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,50 +25,50 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
+ * @package Orb
+ * @category Types
  */
 
-namespace Application\DeskPRO\Command;
+namespace Orb\Types;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\TicketLayout\LayoutCollection;
-use Application\DeskPRO\Tickets\Actions\NullAction;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckWorkflow;
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class JsonObjectSerializer
 {
-	protected function configure()
+	/**
+	 * @param JsonObjectSerializable $object
+	 * @return string
+	 */
+	public static function serialize(JsonObjectSerializable $object)
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
+		$class_name = get_class($object);
+		$obj_data   = $object->serializeJsonArray();
+		$data = array(
+			'@CLASS'   => $class_name,
+			'@DATA'    => $obj_data
+		);
+
+		return json_encode($data);
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+
+	/**
+	 * @param string $json_object
+	 * @return mixed
+	 * @throws \InvalidArgumentException
+	 */
+	public static function unserialize($json_object)
 	{
-		echo __FILE__;
-		echo "\n";
+		$data = json_decode($json_object, true);
+
+		if (!isset($data['@CLASS']) || !isset($data['@DATA'])) {
+			throw new \InvalidArgumentException("Not a valid JsonObjectSerializable serialized string");
+		}
+
+		$class_name = $data['@CLASS'];
+		$object = $class_name::unserializeJsonArray($data['@DATA']);
+
+		return $object;
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-namespace DpUnitTests\Orb\Util\OptionsTest;
+namespace DpUnitTests\Orb\Util;
 
 use Orb\Util\OptionsArray;
 use Orb\Util\CheckedOptionsArray;

@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,50 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
+ * @package Orb
+ * @category Types
  */
 
-namespace Application\DeskPRO\Command;
+namespace Orb\Types;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\TicketLayout\LayoutCollection;
-use Application\DeskPRO\Tickets\Actions\NullAction;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckWorkflow;
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+interface JsonObjectSerializable
 {
-	protected function configure()
-	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
-	}
+	/**
+	 * Encodes the object to a PHP array for use in our object serializer.
+	 * MUST return a plain PHP array with primitive values.
+	 *
+	 * @return array
+	 */
+	public function serializeJsonArray();
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo __FILE__;
-		echo "\n";
-	}
+
+	/**
+	 * Takes an array of data that was serialized with serializeJsonArray() and re-constructs the PHP object from it.
+	 *
+	 * @param array $data
+	 * @return this
+	 */
+	public static function unserializeJsonArray(array $data);
 }

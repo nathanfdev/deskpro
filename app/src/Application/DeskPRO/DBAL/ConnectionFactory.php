@@ -63,6 +63,9 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 		if (!\Doctrine\DBAL\Types\Type::hasType('dpblob_file')) {
 			\Doctrine\DBAL\Types\Type::addType('dpblob_file', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType');
 		}
+		if (!\Doctrine\DBAL\Types\Type::hasType('dp_json_obj')) {
+			\Doctrine\DBAL\Types\Type::addType('dp_json_obj', 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject');
+		}
 
 		\Doctrine\DBAL\Types\Type::overrideType('array', 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType');
 		\Doctrine\DBAL\Types\Type::overrideType('object', 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType');

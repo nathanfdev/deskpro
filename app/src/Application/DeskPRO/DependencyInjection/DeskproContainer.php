@@ -426,6 +426,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
+	 */
+	public function getEmailAccountManager()
+	{
+		return $this->getSystemService('email_account_manager');
+	}
+
+
+	/**
 	 * Get the queuer
 	 *
 	 * @return \Application\DeskPRO\Queue\Queue

@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,50 +25,78 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\DBAL\Types;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\TicketLayout\LayoutCollection;
-use Application\DeskPRO\Tickets\Actions\NullAction;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckWorkflow;
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
+use Orb\Types\JsonObjectSerializable;
+use Orb\Types\JsonObjectSerializer;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class DpJsonObject extends Type
 {
-	protected function configure()
+	const DP_JSON_OBJ = 'dp_json_obj';
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
+		return $platform->getClobTypeDeclarationSQL($fieldDeclaration);
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function convertToDatabaseValue($value, AbstractPlatform $platform)
 	{
-		echo __FILE__;
-		echo "\n";
+		if (null === $value) {
+			return null;
+		}
+
+		if (!is_object($value) || !($value instanceof JsonObjectSerializable)) {
+			throw new \InvalidArgumentException("Class is not JsonObjectSerializable");
+		}
+
+		return JsonObjectSerializer::serialize($value);
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function convertToPHPValue($value, AbstractPlatform $platform)
+	{
+		if ($value === null) {
+			return null;
+		}
+
+		$value = (is_resource($value)) ? stream_get_contents($value) : $value;
+
+		return JsonObjectSerializer::unserialize($value);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getName()
+	{
+		return self::DP_JSON_OBJ;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function requiresSQLCommentHint(AbstractPlatform $platform)
+	{
+		return true;
 	}
 }
