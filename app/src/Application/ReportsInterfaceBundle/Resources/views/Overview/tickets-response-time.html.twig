@@ -1,0 +1,50 @@
+<section class="report-wrapper">
+	<header>
+		<h2>
+			Average First Response Time {{ ng_var('tickets_response_time.date_choice') }}
+		</h2>
+		<h3>Showing Grouped by {{ ng_var('tickets_response_time.grouping_field') }}</h3>
+	</header>
+	<article>
+		<table class="stat-table" width="100%">
+			<tr ng-repeat="stat in tickets_response_time.stats">
+				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
+				<td width="100%">
+					<table width="100%" class="stat-value" ng-if="stat.value && !tickets_response_time.sub_titles">
+						<tr>
+							<td class="value" width="{{ ng_var('stat.percentage') }}%">
+								<div>&nbsp;</div>
+							</td>
+							<td>
+								<span style="white-space: nowrap;">{{ ng_var('stat.value') }}</span>
+							</td>
+						</tr>
+					</table>
+					<table width="100%" class="stat-value" ng-if="stat.value && tickets_response_time.sub_titles">
+						<tr>
+							<td width="{{ ng_var('stat.percentage') }}%">
+								<table width="100%" class="stat-value stat-value-multi">
+									<tr>
+										<td ng-repeat="sub_stat in stat.sub_stats"
+											tooltip-placement="top"
+											tooltip-append-to-body="true"
+											tooltip="{{ ng_var('sub_stat.title') }}"
+											class="value tipped"
+											width="{{ ng_var('sub_stat.percentage') }}%">
+											<div style="background-color:#{{ ng_var('sub_stat.background') }}">
+												&nbsp;
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<span style="white-space: nowrap;">{{ ng_var('stat.value') }}</span>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</article>
+</section>
