@@ -22,18 +22,20 @@ define [
 		###
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
-				tickets_status:            "/reports/overview/data/tickets_status",
-				tickets_awaiting_agent:    "/reports/overview/data/tickets_awaiting_agent",
-				tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time",
-				tickets_resolved:          "/reports/overview/data/tickets_resolved",
-				tickets_response_time:     "/reports/overview/data/tickets_response_time",
-				chats_created:             "/reports/overview/data/chats_created",
+				tickets_status:            "/reports/overview/data/tickets_status"
+				tickets_awaiting_agent:    "/reports/overview/data/tickets_awaiting_agent"
+				tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time"
+				tickets_resolved:          "/reports/overview/data/tickets_resolved"
+				tickets_response_time:     "/reports/overview/data/tickets_response_time"
+				tickets_sla_status:        "/reports/overview/data/tickets_sla_status"
+				chats_created:             "/reports/overview/data/chats_created"
 			}).then( (res) =>
 				@$scope.tickets_status            = res.data.tickets_status
 				@$scope.tickets_awaiting_agent    = res.data.tickets_awaiting_agent
 				@$scope.tickets_user_waiting_time = res.data.tickets_user_waiting_time
 				@$scope.tickets_resolved          = res.data.tickets_resolved
 				@$scope.tickets_response_time     = res.data.tickets_response_time
+				@$scope.tickets_sla_status        = res.data.tickets_sla_status
 				@$scope.chats_created             = res.data.chats_created
 
 				@setVariablesForTicketsStatuses()
@@ -41,6 +43,7 @@ define [
 				@setVariablesForTicketsUserWaitingTime()
 				@setVariablesForTicketsResolved()
 				@setVariablesForTicketsResponseTime()
+				@setVariablesForTicketsSlaStatus()
 				@setVariablesForChatsCreated()
 			)
 
@@ -125,6 +128,26 @@ define [
 							left_percentage: percentage
 							right_percentage: 100 - percentage
 						})
+
+
+		###
+		# We need to display bar graphs - so let's pre-calculate some variables
+		###
+		setVariablesForTicketsSlaStatus: ->
+			@$scope.tickets_sla_status.stats = []
+			denominator = @$scope.tickets_sla_status.max || 1
+
+			for key of @$scope.tickets_sla_status.titles when @$scope.tickets_sla_status.values[key]
+
+				percentage = @$scope.tickets_sla_status.values[key] / denominator * 100
+				percentage = 1 if percentage < 1
+
+				@$scope.tickets_sla_status.stats.push({
+					title: @$scope.tickets_sla_status.titles[key]
+					value: @$scope.tickets_sla_status.values[key] || 0
+					left_percentage: percentage
+					right_percentage: 100 - percentage
+				})
 
 
 		###

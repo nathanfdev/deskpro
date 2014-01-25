@@ -39,6 +39,7 @@
           tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time",
           tickets_resolved: "/reports/overview/data/tickets_resolved",
           tickets_response_time: "/reports/overview/data/tickets_response_time",
+          tickets_sla_status: "/reports/overview/data/tickets_sla_status",
           chats_created: "/reports/overview/data/chats_created"
         }).then(function(res) {
           _this.$scope.tickets_status = res.data.tickets_status;
@@ -46,12 +47,14 @@
           _this.$scope.tickets_user_waiting_time = res.data.tickets_user_waiting_time;
           _this.$scope.tickets_resolved = res.data.tickets_resolved;
           _this.$scope.tickets_response_time = res.data.tickets_response_time;
+          _this.$scope.tickets_sla_status = res.data.tickets_sla_status;
           _this.$scope.chats_created = res.data.chats_created;
           _this.setVariablesForTicketsStatuses();
           _this.setVariablesForTicketsAwaitingAgent();
           _this.setVariablesForTicketsUserWaitingTime();
           _this.setVariablesForTicketsResolved();
           _this.setVariablesForTicketsResponseTime();
+          _this.setVariablesForTicketsSlaStatus();
           return _this.setVariablesForChatsCreated();
         });
         return this.$q.all([data_promise]);
@@ -162,6 +165,34 @@
           _results.push(this.$scope.tickets_resolved.stats.push({
             title: this.$scope.tickets_resolved.titles[key],
             value: this.$scope.tickets_resolved.values[key] || 0,
+            left_percentage: percentage,
+            right_percentage: 100 - percentage
+          }));
+        }
+        return _results;
+      };
+
+      /*
+      		# We need to display bar graphs - so let's pre-calculate some variables
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.setVariablesForTicketsSlaStatus = function() {
+        var denominator, key, percentage, _results;
+        this.$scope.tickets_sla_status.stats = [];
+        denominator = this.$scope.tickets_sla_status.max || 1;
+        _results = [];
+        for (key in this.$scope.tickets_sla_status.titles) {
+          if (!this.$scope.tickets_sla_status.values[key]) {
+            continue;
+          }
+          percentage = this.$scope.tickets_sla_status.values[key] / denominator * 100;
+          if (percentage < 1) {
+            percentage = 1;
+          }
+          _results.push(this.$scope.tickets_sla_status.stats.push({
+            title: this.$scope.tickets_sla_status.titles[key],
+            value: this.$scope.tickets_sla_status.values[key] || 0,
             left_percentage: percentage,
             right_percentage: 100 - percentage
           }));

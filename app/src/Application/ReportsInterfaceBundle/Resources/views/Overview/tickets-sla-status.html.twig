@@ -1,0 +1,46 @@
+<section class="report-wrapper" ng-if="tickets_sla_status.values">
+	<header>
+		<h2>
+			<span class="drop-option">
+				<select class="grouping-field" name="sla_id">
+					<option value="0">All SLAs</option>
+					{% for sla in app.getDataService('Sla').getAllSlas() %}
+						<option {% if data.sla_id == sla.id %}selected="selected"{% endif %} value="{{ sla.id }}">{{ sla.title }}</option>
+					{% endfor %}
+				</select>
+				<i></i>
+			</span>
+
+			for Tickets Created
+
+			{{ ng_var('tickets_sla_status.date_choice') }}
+		</h2>
+		<h3>Showing Grouped by Status</h3>
+	</header>
+	<article ng-if="tickets_sla_status.values">
+		<table class="stat-table" width="100%">
+			<tr ng-repeat="stat in tickets_sla_status.stats">
+				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
+				<td width="100%">
+					<table width="100%" class="stat-value">
+						<tr>
+							<td class="value" width="{{ ng_var('stat.left_percentage') }}%">
+								<div>&nbsp;</div>
+							</td>
+							<td width="{{ ng_var('stat.right_percentage') }}%">
+								{{ ng_var('stat.value') }}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr class="total-row">
+				<td class="title">Total:</td>
+				<td class="val">{{ ng_var('tickets_sla_status.sum') }}</td>
+			</tr>
+		</table>
+		<div class="no-data" ng-if="!tickets_sla_status.values">
+			<h3>No matching data</h3>
+		</div>
+	</article>
+</section>
