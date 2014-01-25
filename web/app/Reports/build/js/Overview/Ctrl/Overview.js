@@ -106,11 +106,15 @@
 
       /*
       		# We need to display bar graphs - so let's pre-calculate some variables
+      		# What is special here - we display every piece of data
+      		# Just for cases with no data we display only labels without graphical bars
+      		# Ie. if we have 0 tickets created < 5 minutes ago, we still display '< 5 minutes' label, but without bar
+      		# This leads to the situation that we have to iterate over all the '@$scope.tickets_user_waiting_time.titles' array
       */
 
 
       Reports_Overview_Ctrl_Overview.prototype.setVariablesForTicketsUserWaitingTime = function() {
-        var denominator, key, percentage, _results;
+        var denominator, key, percentage, sub_percentage, sub_stats, subid, subtitle, _ref1, _results;
         this.$scope.tickets_user_waiting_time.stats = [];
         denominator = this.$scope.tickets_user_waiting_time.max || 1;
         _results = [];
@@ -119,16 +123,52 @@
           if (percentage < 1) {
             percentage = 1;
           }
-          if (this.$scope.tickets_user_waiting_time.values[key]) {
-            _results.push(this.$scope.tickets_user_waiting_time.stats.push({
-              title: this.$scope.tickets_user_waiting_time.titles[key],
-              value: this.$scope.tickets_user_waiting_time.values[key] || 0,
-              percentage: percentage
-            }));
+          if (!this.$scope.tickets_user_waiting_time.sub_titles) {
+            if (this.$scope.tickets_user_waiting_time.values[key]) {
+              _results.push(this.$scope.tickets_user_waiting_time.stats.push({
+                title: this.$scope.tickets_user_waiting_time.titles[key],
+                value: this.$scope.tickets_user_waiting_time.values[key] || 0,
+                percentage: percentage
+              }));
+            } else {
+              _results.push(this.$scope.tickets_user_waiting_time.stats.push({
+                title: this.$scope.tickets_user_waiting_time.titles[key]
+              }));
+            }
           } else {
-            _results.push(this.$scope.tickets_user_waiting_time.stats.push({
-              title: this.$scope.tickets_user_waiting_time.titles[key]
-            }));
+            percentage = this.$scope.tickets_user_waiting_time.group_total[key] / denominator * 100;
+            if (percentage < 1) {
+              percentage = 1;
+            }
+            if (this.$scope.tickets_user_waiting_time.group_total[key]) {
+              sub_stats = [];
+              _ref1 = this.$scope.tickets_user_waiting_time.sub_titles;
+              for (subid in _ref1) {
+                subtitle = _ref1[subid];
+                if (!this.$scope.tickets_user_waiting_time.values[key][subid]) {
+                  continue;
+                }
+                sub_percentage = this.$scope.tickets_user_waiting_time.values[key][subid] / this.$scope.tickets_user_waiting_time.group_total[key] * 100;
+                if (sub_percentage < 1) {
+                  sub_percentage = 1;
+                }
+                sub_stats.push({
+                  title: subtitle + ' (' + this.$scope.tickets_user_waiting_time.values[key][subid] + ')',
+                  percentage: sub_percentage,
+                  background: this.$scope.tickets_user_waiting_time.group_keys[subid]
+                });
+              }
+              _results.push(this.$scope.tickets_user_waiting_time.stats.push({
+                title: this.$scope.tickets_user_waiting_time.titles[key],
+                value: this.$scope.tickets_user_waiting_time.group_total[key] || 0,
+                percentage: percentage,
+                sub_stats: sub_stats
+              }));
+            } else {
+              _results.push(this.$scope.tickets_user_waiting_time.stats.push({
+                title: this.$scope.tickets_user_waiting_time.titles[key]
+              }));
+            }
           }
         }
         return _results;

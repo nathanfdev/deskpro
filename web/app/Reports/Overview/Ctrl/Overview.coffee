@@ -80,6 +80,10 @@ define [
 
 		###
 		# We need to display bar graphs - so let's pre-calculate some variables
+		# What is special here - we display every piece of data
+		# Just for cases with no data we display only labels without graphical bars
+		# Ie. if we have 0 tickets created < 5 minutes ago, we still display '< 5 minutes' label, but without bar
+		# This leads to the situation that we have to iterate over all the '@$scope.tickets_user_waiting_time.titles' array
 		###
 		setVariablesForTicketsUserWaitingTime: ->
 			@$scope.tickets_user_waiting_time.stats = []
@@ -90,15 +94,49 @@ define [
 				percentage = @$scope.tickets_user_waiting_time.values[key] / denominator * 100
 				percentage = 1 if percentage < 1
 
-				if @$scope.tickets_user_waiting_time.values[key]
-					@$scope.tickets_user_waiting_time.stats.push({
-						title: @$scope.tickets_user_waiting_time.titles[key]
-						value: @$scope.tickets_user_waiting_time.values[key] || 0
-						percentage: percentage
-					})
+				# case of simple data without sub-data
+
+				if not @$scope.tickets_user_waiting_time.sub_titles
+
+					if @$scope.tickets_user_waiting_time.values[key]
+						@$scope.tickets_user_waiting_time.stats.push({
+							title: @$scope.tickets_user_waiting_time.titles[key]
+							value: @$scope.tickets_user_waiting_time.values[key] || 0
+							percentage: percentage
+						})
+					else
+						@$scope.tickets_user_waiting_time.stats.push({
+							title: @$scope.tickets_user_waiting_time.titles[key]
+						})
+
 				else
-					@$scope.tickets_user_waiting_time.stats.push({
-						title: @$scope.tickets_user_waiting_time.titles[key]
-					})
+
+					# case of more sophisticated case with sub-data
+
+					percentage = @$scope.tickets_user_waiting_time.group_total[key] / denominator * 100
+					percentage = 1 if percentage < 1
+
+					if @$scope.tickets_user_waiting_time.group_total[key]
+						sub_stats = []
+
+						for subid, subtitle of @$scope.tickets_user_waiting_time.sub_titles when @$scope.tickets_user_waiting_time.values[key][subid]
+							sub_percentage = @$scope.tickets_user_waiting_time.values[key][subid] / @$scope.tickets_user_waiting_time.group_total[key] * 100
+							sub_percentage = 1 if sub_percentage < 1
+							sub_stats.push({
+								title: subtitle + ' (' + @$scope.tickets_user_waiting_time.values[key][subid] + ')'
+								percentage: sub_percentage
+								background: @$scope.tickets_user_waiting_time.group_keys[subid]
+							})
+
+						@$scope.tickets_user_waiting_time.stats.push({
+							title: @$scope.tickets_user_waiting_time.titles[key]
+							value: @$scope.tickets_user_waiting_time.group_total[key] || 0
+							percentage: percentage
+							sub_stats: sub_stats
+						})
+					else
+						@$scope.tickets_user_waiting_time.stats.push({
+							title: @$scope.tickets_user_waiting_time.titles[key]
+						})
 
 	Reports_Overview_Ctrl_Overview.EXPORT_CTRL()

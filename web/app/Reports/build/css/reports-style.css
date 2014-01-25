@@ -11519,13 +11519,13 @@ section.report-wrapper table.stat-value-multi tr > td > div {
 }
 
 section.report-wrapper table.stat-value-multi tr > td:hover > div {
-  -khtml-opacity: 0.75;
-    -moz-opacity: 0.75;
-         opacity: 0.75;
-  opacity: 75;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)";
-      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=75);
-  filter: alpha(opacity=7500);
+  -khtml-opacity: 0.0075;
+    -moz-opacity: 0.0075;
+         opacity: 0.0075;
+  opacity: 0.75;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0.75)";
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0.75);
+  filter: alpha(opacity=75);
 }
 
 section.report-wrapper table.stat-value tr > td.value > div {
