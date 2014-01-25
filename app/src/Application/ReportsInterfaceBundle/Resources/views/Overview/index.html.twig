@@ -6,7 +6,7 @@
 
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
-				<td style="padding-right: 6px;" width="50%">
+				<td style="padding-right: 6px;vertical-align: top;" width="50%">
 					<div>
 						{% include 'ReportsInterfaceBundle:Overview:tickets-status.html.twig' %}
 					</div>
@@ -21,10 +21,12 @@
 						{% include 'ReportsInterfaceBundle:Overview:tickets-user-waiting-time.html.twig' %}
 					</div>
 				</td>
-				<td style="padding-right: 6px;" width="50%">
+				<td style="padding-right: 6px;vertical-align: top;" width="50%">
 					<div>
-						&nbsp;
+						{% include 'ReportsInterfaceBundle:Overview:tickets-resolved.html.twig' %}
 					</div>
+
+					<br />
 					<br/>
 				</td>
 			</tr>

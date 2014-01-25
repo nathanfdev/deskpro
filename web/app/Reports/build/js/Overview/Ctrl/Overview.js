@@ -36,14 +36,17 @@
         data_promise = this.Api.sendDataGet({
           tickets_status: "/reports/overview/data/tickets_status",
           tickets_awaiting_agent: "/reports/overview/data/tickets_awaiting_agent",
-          tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time"
+          tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time",
+          tickets_resolved: "/reports/overview/data/tickets_resolved"
         }).then(function(res) {
           _this.$scope.tickets_status = res.data.tickets_status;
           _this.$scope.tickets_awaiting_agent = res.data.tickets_awaiting_agent;
           _this.$scope.tickets_user_waiting_time = res.data.tickets_user_waiting_time;
+          _this.$scope.tickets_resolved = res.data.tickets_resolved;
           _this.setVariablesForTicketsStatuses();
           _this.setVariablesForTicketsAwaitingAgent();
-          return _this.setVariablesForTicketsUserWaitingTime();
+          _this.setVariablesForTicketsUserWaitingTime();
+          return _this.setVariablesForTicketsResolved();
         });
         return this.$q.all([data_promise]);
       };
@@ -97,6 +100,34 @@
           _results.push(this.$scope.tickets_awaiting_agent.stats.push({
             title: this.$scope.tickets_awaiting_agent.titles[key],
             value: this.$scope.tickets_awaiting_agent.values[key] || 0,
+            left_percentage: percentage,
+            right_percentage: 100 - percentage
+          }));
+        }
+        return _results;
+      };
+
+      /*
+      		# We need to display bar graphs - so let's pre-calculate some variables
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.setVariablesForTicketsResolved = function() {
+        var denominator, key, percentage, _results;
+        this.$scope.tickets_resolved.stats = [];
+        denominator = this.$scope.tickets_resolved.max || 1;
+        _results = [];
+        for (key in this.$scope.tickets_resolved.titles) {
+          if (!this.$scope.tickets_resolved.values[key]) {
+            continue;
+          }
+          percentage = this.$scope.tickets_resolved.values[key] / denominator * 100;
+          if (percentage < 1) {
+            percentage = 1;
+          }
+          _results.push(this.$scope.tickets_resolved.stats.push({
+            title: this.$scope.tickets_resolved.titles[key],
+            value: this.$scope.tickets_resolved.values[key] || 0,
             left_percentage: percentage,
             right_percentage: 100 - percentage
           }));

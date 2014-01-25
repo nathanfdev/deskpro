@@ -25,14 +25,17 @@ define [
 				tickets_status:            "/reports/overview/data/tickets_status",
 				tickets_awaiting_agent:    "/reports/overview/data/tickets_awaiting_agent",
 				tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time",
+				tickets_resolved:          "/reports/overview/data/tickets_resolved",
 			}).then( (res) =>
 				@$scope.tickets_status            = res.data.tickets_status
 				@$scope.tickets_awaiting_agent    = res.data.tickets_awaiting_agent
 				@$scope.tickets_user_waiting_time = res.data.tickets_user_waiting_time
+				@$scope.tickets_resolved          = res.data.tickets_resolved
 
 				@setVariablesForTicketsStatuses()
 				@setVariablesForTicketsAwaitingAgent()
 				@setVariablesForTicketsUserWaitingTime()
+				@setVariablesForTicketsResolved()
 			)
 
 			@$q.all([data_promise])
@@ -76,6 +79,26 @@ define [
 					left_percentage: percentage
 					right_percentage: 100 - percentage
 				})
+
+
+		###
+		# We need to display bar graphs - so let's pre-calculate some variables
+		###
+		setVariablesForTicketsResolved: ->
+					@$scope.tickets_resolved.stats = []
+					denominator = @$scope.tickets_resolved.max || 1
+
+					for key of @$scope.tickets_resolved.titles when @$scope.tickets_resolved.values[key]
+
+						percentage = @$scope.tickets_resolved.values[key] / denominator * 100
+						percentage = 1 if percentage < 1
+
+						@$scope.tickets_resolved.stats.push({
+							title: @$scope.tickets_resolved.titles[key]
+							value: @$scope.tickets_resolved.values[key] || 0
+							left_percentage: percentage
+							right_percentage: 100 - percentage
+						})
 
 
 		###
