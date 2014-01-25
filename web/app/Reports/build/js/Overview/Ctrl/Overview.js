@@ -38,18 +38,21 @@
           tickets_awaiting_agent: "/reports/overview/data/tickets_awaiting_agent",
           tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time",
           tickets_resolved: "/reports/overview/data/tickets_resolved",
-          tickets_response_time: "/reports/overview/data/tickets_response_time"
+          tickets_response_time: "/reports/overview/data/tickets_response_time",
+          chats_created: "/reports/overview/data/chats_created"
         }).then(function(res) {
           _this.$scope.tickets_status = res.data.tickets_status;
           _this.$scope.tickets_awaiting_agent = res.data.tickets_awaiting_agent;
           _this.$scope.tickets_user_waiting_time = res.data.tickets_user_waiting_time;
           _this.$scope.tickets_resolved = res.data.tickets_resolved;
           _this.$scope.tickets_response_time = res.data.tickets_response_time;
+          _this.$scope.chats_created = res.data.chats_created;
           _this.setVariablesForTicketsStatuses();
           _this.setVariablesForTicketsAwaitingAgent();
           _this.setVariablesForTicketsUserWaitingTime();
           _this.setVariablesForTicketsResolved();
-          return _this.setVariablesForTicketsResponseTime();
+          _this.setVariablesForTicketsResponseTime();
+          return _this.setVariablesForChatsCreated();
         });
         return this.$q.all([data_promise]);
       };
@@ -103,6 +106,34 @@
           _results.push(this.$scope.tickets_awaiting_agent.stats.push({
             title: this.$scope.tickets_awaiting_agent.titles[key],
             value: this.$scope.tickets_awaiting_agent.values[key] || 0,
+            left_percentage: percentage,
+            right_percentage: 100 - percentage
+          }));
+        }
+        return _results;
+      };
+
+      /*
+      		# We need to display bar graphs - so let's pre-calculate some variables
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.setVariablesForChatsCreated = function() {
+        var denominator, key, percentage, _results;
+        this.$scope.chats_created.stats = [];
+        denominator = this.$scope.chats_created.max || 1;
+        _results = [];
+        for (key in this.$scope.chats_created.titles) {
+          if (!this.$scope.chats_created.values[key]) {
+            continue;
+          }
+          percentage = this.$scope.chats_created.values[key] / denominator * 100;
+          if (percentage < 1) {
+            percentage = 1;
+          }
+          _results.push(this.$scope.chats_created.stats.push({
+            title: this.$scope.chats_created.titles[key],
+            value: this.$scope.chats_created.values[key] || 0,
             left_percentage: percentage,
             right_percentage: 100 - percentage
           }));

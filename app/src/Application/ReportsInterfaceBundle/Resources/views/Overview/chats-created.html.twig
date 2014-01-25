@@ -1,0 +1,38 @@
+<section class="report-wrapper">
+	<header>
+		<h2>
+			<span class="label-sum">
+				{{ ng_var('chats_created.sum') }}</span> Chats were Created
+				{{ ng_var('chats_created.date_choice') }}
+		</h2>
+		<h3>
+			Showing Grouped by {{ ng_var('chats_created.grouping_field') }}
+		</h3>
+	</header>
+	<article ng-if="chats_created.values">
+		<table class="stat-table" width="100%">
+			<tr ng-repeat="stat in chats_created.stats">
+				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
+				<td width="100%">
+					<table width="100%" class="stat-value">
+						<tr>
+							<td class="value" width="{{ ng_var('stat.left_percentage') }}%">
+								<div>&nbsp;</div>
+							</td>
+							<td width="{{ ng_var('stat.right_percentage') }}%">
+								{{ ng_var('stat.value') }}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr class="total-row">
+				<td class="title">Total:</td>
+				<td class="val">{{ ng_var('chats_created.sum') }}</td>
+			</tr>
+		</table>
+		<div class="no-data" ng-if="!chats_created.values">
+			<h3>No matching data</h3>
+		</div>
+	</article>
+</section>
