@@ -40,6 +40,7 @@
           tickets_resolved: "/reports/overview/data/tickets_resolved",
           tickets_response_time: "/reports/overview/data/tickets_response_time",
           tickets_sla_status: "/reports/overview/data/tickets_sla_status",
+          tickets_opened_hour: "/reports/overview/data/tickets_opened_hour",
           chats_created: "/reports/overview/data/chats_created"
         }).then(function(res) {
           _this.$scope.tickets_status = res.data.tickets_status;
@@ -48,6 +49,7 @@
           _this.$scope.tickets_resolved = res.data.tickets_resolved;
           _this.$scope.tickets_response_time = res.data.tickets_response_time;
           _this.$scope.tickets_sla_status = res.data.tickets_sla_status;
+          _this.$scope.tickets_opened_hour = res.data.tickets_opened_hour;
           _this.$scope.chats_created = res.data.chats_created;
           _this.setVariablesForTicketsStatuses();
           _this.setVariablesForTicketsAwaitingAgent();
@@ -55,6 +57,7 @@
           _this.setVariablesForTicketsResolved();
           _this.setVariablesForTicketsResponseTime();
           _this.setVariablesForTicketsSlaStatus();
+          _this.setVariablesForTicketsOpenedHours();
           return _this.setVariablesForChatsCreated();
         });
         return this.$q.all([data_promise]);
@@ -196,6 +199,37 @@
             left_percentage: percentage,
             right_percentage: 100 - percentage
           }));
+        }
+        return _results;
+      };
+
+      /*
+      		# We need to display bar graphs - so let's pre-calculate some variables
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.setVariablesForTicketsOpenedHours = function() {
+        var denominator, key, percentage, _results;
+        this.$scope.tickets_opened_hour.stats = [];
+        this.$scope.tickets_opened_hour.column_width = 100 / Object.keys(this.$scope.tickets_opened_hour.titles).length;
+        denominator = this.$scope.tickets_opened_hour.max || 1;
+        _results = [];
+        for (key in this.$scope.tickets_opened_hour.titles) {
+          if (this.$scope.tickets_opened_hour.values[key]) {
+            percentage = this.$scope.tickets_opened_hour.values[key] / denominator * 100;
+            if (percentage < 1) {
+              percentage = 1;
+            }
+            _results.push(this.$scope.tickets_opened_hour.stats.push({
+              title: this.$scope.tickets_opened_hour.titles[key],
+              value: this.$scope.tickets_opened_hour.values[key] || 0,
+              percentage: percentage
+            }));
+          } else {
+            _results.push(this.$scope.tickets_opened_hour.stats.push({
+              title: this.$scope.tickets_opened_hour.titles[key]
+            }));
+          }
         }
         return _results;
       };
