@@ -9,8 +9,8 @@
 			Showing Grouped by {{ ng_var('chats_created.grouping_field') }}
 		</h3>
 	</header>
-	<article ng-if="chats_created.values">
-		<table class="stat-table" width="100%">
+	<article>
+		<table class="stat-table" width="100%" ng-if="!chats_created.empty">
 			<tr ng-repeat="stat in chats_created.stats">
 				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
 				<td width="100%">
@@ -31,7 +31,7 @@
 				<td class="val">{{ ng_var('chats_created.sum') }}</td>
 			</tr>
 		</table>
-		<div class="no-data" ng-if="!chats_created.values">
+		<div class="no-data" ng-if="chats_created.empty">
 			<h3>No matching data</h3>
 		</div>
 	</article>

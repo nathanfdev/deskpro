@@ -17,8 +17,8 @@
 		</h2>
 		<h3>Showing Grouped by Status</h3>
 	</header>
-	<article ng-if="tickets_sla_status.values">
-		<table class="stat-table" width="100%">
+	<article>
+		<table class="stat-table" width="100%" ng-if="!tickets_sla_status.empty">
 			<tr ng-repeat="stat in tickets_sla_status.stats">
 				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
 				<td width="100%">
@@ -39,7 +39,7 @@
 				<td class="val">{{ ng_var('tickets_sla_status.sum') }}</td>
 			</tr>
 		</table>
-		<div class="no-data" ng-if="!tickets_sla_status.values">
+		<div class="no-data" ng-if="tickets_sla_status.empty">
 			<h3>No matching data</h3>
 		</div>
 	</article>

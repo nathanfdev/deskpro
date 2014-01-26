@@ -1,7 +1,9 @@
 define [
-	'Reports/Main/Ctrl/Base'
+	'Reports/Main/Ctrl/Base',
+	'DeskPRO/Util/Util',
 ], (
-	ReportsBaseCtrl
+	ReportsBaseCtrl,
+	Util,
 ) ->
 	class Reports_Overview_Ctrl_Overview extends ReportsBaseCtrl
 		@CTRL_ID   = 'Reports_Overview_Ctrl_Overview'
@@ -60,6 +62,7 @@ define [
  	# @param {String} data_key - using this key data is looked in @$scope
 		###
 		setDataForBarGraphs: (data_key) ->
+			@$scope[data_key].empty = true if Util.isEmpty(@$scope[data_key].values)
 			@$scope[data_key].stats = []
 			denominator = @$scope[data_key].max || 1
 

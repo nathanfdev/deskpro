@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Reports/Main/Ctrl/Base'], function(ReportsBaseCtrl) {
+  define(['Reports/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(ReportsBaseCtrl, Util) {
     var Reports_Overview_Ctrl_Overview, _ref;
     Reports_Overview_Ctrl_Overview = (function(_super) {
       __extends(Reports_Overview_Ctrl_Overview, _super);
@@ -71,6 +71,9 @@
 
       Reports_Overview_Ctrl_Overview.prototype.setDataForBarGraphs = function(data_key) {
         var denominator, key, percentage, _results;
+        if (Util.isEmpty(this.$scope[data_key].values)) {
+          this.$scope[data_key].empty = true;
+        }
         this.$scope[data_key].stats = [];
         denominator = this.$scope[data_key].max || 1;
         _results = [];
