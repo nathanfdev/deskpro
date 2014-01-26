@@ -1,20 +1,36 @@
+{% import 'ReportBundle:Overview:macros.html.twig' as macros %}
 <section class="report-wrapper" ng-if="tickets_sla_status.values">
 	<header>
-		<h2>
-			<span class="drop-option">
-				<select class="grouping-field" name="sla_id">
-					<option value="0">All SLAs</option>
-					{% for sla in app.getDataService('Sla').getAllSlas() %}
-						<option {% if data.sla_id == sla.id %}selected="selected"{% endif %} value="{{ sla.id }}">{{ sla.title }}</option>
-					{% endfor %}
-				</select>
-				<i></i>
-			</span>
+		<div style="float: left; padding-bottom: 5px;">
+			<select ui-select2 ng-model="tickets_sla_status.sla_id" style="min-width: 120px" class="no-search">
+				<option value="0">All SLAs</option>
+				{% for sla in app.getDataService('Sla').getAllSlas() %}
+					<option value="{{ sla.id }}">
+						{{ sla.title }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
 
-			for Tickets Created
+		<h2 style="float: left;">for Tickets Created</h2>
 
-			{{ ng_var('tickets_sla_status.date_choice') }}
-		</h2>
+		<div style="float: left; padding-bottom: 5px;">
+			<select ui-select2 ng-model="tickets_sla_status.date_choice" style="min-width: 120px" class="no-search">
+				{% for field,title in {
+				'today': 'Today',
+				'this_week': 'This Week',
+				'this_month': 'This Month',
+				'this_year': 'This Year',
+				} %}
+					<option value="{{ field }}">
+						{{ title }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="clearfix"></div>
+
 		<h3>Showing Grouped by Status</h3>
 	</header>
 	<article>

@@ -1,9 +1,24 @@
 <section class="report-wrapper">
 	<header>
-		<h2>
-			<span class="label-sum">{{ ng_var('tickets_opened_hour.sum') }}</span> Tickets were Created
-			{{ ng_var('tickets_opened_hour.date_choice') }}
+		<h2 style="float: left;">
+			<span class="label-sum">{{ ng_var('tickets_opened_hour.sum') }}</span>
+			Tickets were Created
 		</h2>
+		<div style="float: left; padding-bottom: 5px;">
+			<select ui-select2 ng-model="tickets_opened_hour.date_choice" style="min-width: 120px" class="no-search">
+				{% for field,title in {
+					'today': 'Today',
+					'this_week': 'This Week',
+					'this_month': 'This Month',
+					'this_year': 'This Year',
+				} %}
+					<option value="{{ field }}">
+						{{ title }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="clearfix"></div>
 	</header>
 	<article ng-if="tickets_opened_hour.values">
 		<table class="stat-table stat-table-vert" width="100%">

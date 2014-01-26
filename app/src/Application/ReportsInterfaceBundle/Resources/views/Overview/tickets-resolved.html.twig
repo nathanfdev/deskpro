@@ -1,11 +1,29 @@
-
+{% import 'ReportsInterfaceBundle:Overview:macros.html.twig' as macros %}
 <section class="report-wrapper">
 	<header>
-		<h2>
+		<h2 style="float: left;">
 			<span class="label-sum"> {{ ng_var('tickets_resolved.sum') }}</span>
-			Tickets were 'Resolved' {{ ng_var('tickets_resolved.date_choice') }}
+			Tickets were 'Resolved'
 		</h2>
-		<h3>Showing Grouped by {{ ng_var('tickets_resolved.grouping_field') }}
+		<div style="float: left; padding-bottom: 5px;">
+			<select ui-select2 ng-model="tickets_resolved.date_choice" style="min-width: 120px" class="no-search">
+				{% for field,title in {
+					'today': 'Today',
+					'this_week': 'This Week',
+					'this_month': 'This Month',
+					'this_year': 'This Year',
+				} %}
+					<option value="{{ field }}">
+						{{ title }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="clearfix"></div>
+		<h3>
+			Showing Grouped by
+			{{ macros.grouping_field_select('tickets_resolved', data.grouping_field) }}
+		</h3>
 	</header>
 	<article>
 		<table class="stat-table" width="100%" ng-if="!tickets_resolved.empty">

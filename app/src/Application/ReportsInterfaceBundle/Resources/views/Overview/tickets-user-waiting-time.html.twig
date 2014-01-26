@@ -3,7 +3,10 @@
 		<h2>
 			Time Tickets have been 'Awaiting Agent'
 		</h2>
-		<h3>Showing Grouped by {{ ng_var('tickets_user_waiting_time.grouping_field') }}</h3>
+		<h3>
+			Showing Grouped by
+			{{ macros.grouping_field_select('tickets_user_waiting_time', tickets_user_waiting_time.grouping_field, {none: true}) }}
+		</h3>
 	</header>
 	<article>
 		<table class="stat-table" width="100%">

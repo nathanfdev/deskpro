@@ -1,9 +1,27 @@
+{% import 'ReportsInterfaceBundle:Overview:macros.html.twig' as macros %}
 <section class="report-wrapper">
 	<header>
-		<h2>
-			Average First Response Time {{ ng_var('tickets_response_time.date_choice') }}
+		<h2 style="float: left;">
+			Average First Response Time
 		</h2>
-		<h3>Showing Grouped by {{ ng_var('tickets_response_time.grouping_field') }}</h3>
+		<div style="float: left; padding-bottom: 5px;">
+			<select ui-select2 ng-model="tickets_response_time.date_choice" style="min-width: 120px" class="no-search">
+				{% for field,title in {
+				'today': 'Today',
+				'this_week': 'This Week',
+				'this_month': 'This Month',
+				'this_year': 'This Year',
+				} %}
+					<option value="{{ field }}">
+						{{ title }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="clearfix"></div>
+		<h3>
+			Showing Grouped by {{ macros.grouping_field_select('tickets_response_time', tickets_response_time.grouping_field, {none: true}) }}
+		</h3>
 	</header>
 	<article>
 		<table class="stat-table" width="100%">

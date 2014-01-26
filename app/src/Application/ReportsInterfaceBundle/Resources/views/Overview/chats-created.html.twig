@@ -1,12 +1,51 @@
 <section class="report-wrapper">
 	<header>
-		<h2>
-			<span class="label-sum">
-				{{ ng_var('chats_created.sum') }}</span> Chats were Created
-				{{ ng_var('chats_created.date_choice') }}
+		<h2 style="float: left;">
+			{{ ng_var('chats_created.sum') }} Chats were Created
 		</h2>
+
+		<div style="float: left; padding-bottom: 5px;">
+			<select ui-select2 ng-model="chats_created.date_choice" style="min-width: 120px" class="no-search">
+				{% for field,title in {
+					'today': 'Today',
+					'this_week': 'This Week',
+					'this_month': 'This Month',
+					'this_year': 'This Year',
+				} %}
+					<option value="{{ field }}">
+						{{ title }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="clearfix"></div>
+
 		<h3>
-			Showing Grouped by {{ ng_var('chats_created.grouping_field') }}
+			Showing Grouped by
+			<select ui-select2 ng-model="chats_created.grouping_field" style="min-width: 120px" class="no-search">
+				<optgroup label="Chat Fields">
+					<option {% if chats_created.grouping_field == 'department' %}selected="selected"{% endif %}
+							value="department">Department
+					</option>
+					<option {% if chats_created.grouping_field == 'agent' %}selected="selected"{% endif %} value="agent">Agent
+					</option>
+				</optgroup>
+				<optgroup label="User Fields">
+					<option {% if chats_created.grouping_field == 'user' %}selected="selected"{% endif %} value="user">User
+					</option>
+					<option {% if chats_created.grouping_field == 'organization' %}selected="selected"{% endif %}
+							value="organization">Organization
+					</option>
+					<option {% if chats_created.grouping_field == 'usergroup' %}selected="selected"{% endif %} value="usergroup">
+						Usergroup
+					</option>
+					{% for field_def in app.getCustomFieldManager('people').getFields() %}
+						<option {% if chats_created.grouping_field == ('user_field.' ~ field_def.id) %}selected="selected"{% endif %}
+								value="user_field.{{ field_def.id }}">{{ field_def.title }}</option>
+					{% endfor %}
+				</optgroup>
+			</select>
 		</h3>
 	</header>
 	<article>
