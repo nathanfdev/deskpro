@@ -40,14 +40,16 @@ define [
 				@$scope.tickets_opened_hour       = res.data.tickets_opened_hour
 				@$scope.chats_created             = res.data.chats_created
 
-				@setVariablesForTicketsStatuses()
-				@setVariablesForTicketsAwaitingAgent()
-				@setVariablesForTicketsUserWaitingTime()
-				@setVariablesForTicketsResolved()
-				@setVariablesForTicketsResponseTime()
-				@setVariablesForTicketsSlaStatus()
-				@setVariablesForTicketsOpenedHours()
-				@setVariablesForChatsCreated()
+				@setDataForBarGraphs('tickets_status')
+				@setDataForBarGraphs('tickets_awaiting_agent')
+				@setDataForBarGraphs('tickets_resolved')
+				@setDataForBarGraphs('tickets_sla_status')
+				@setDataForBarGraphs('chats_created')
+
+				@setDataForTicketsOpenedHours()
+
+				@setDataForTableWithBarGraphs('tickets_user_waiting_time')
+				@setDataForTableWithBarGraphs('tickets_response_time')
 			)
 
 			@$q.all([data_promise])
@@ -55,19 +57,20 @@ define [
 
 		###
 		# We need to display bar graphs - so let's pre-calculate some variables
+ 	# @param {String} data_key - using this key data is looked in @$scope
 		###
-		setVariablesForTicketsStatuses: ->
-			@$scope.tickets_status.stats = []
-			denominator = @$scope.tickets_status.max || 1
+		setDataForBarGraphs: (data_key) ->
+			@$scope[data_key].stats = []
+			denominator = @$scope[data_key].max || 1
 
-			for key of @$scope.tickets_status.titles when @$scope.tickets_status.values[key]
+			for key of @$scope[data_key].titles when @$scope[data_key].values[key]
 
-				percentage = @$scope.tickets_status.values[key] / denominator * 100
+				percentage = @$scope[data_key].values[key] / denominator * 100
 				percentage = 1 if percentage < 1
 
-				@$scope.tickets_status.stats.push({
-					title: @$scope.tickets_status.titles[key]
-					value: @$scope.tickets_status.values[key] || 0
+				@$scope[data_key].stats.push({
+					title: @$scope[data_key].titles[key]
+					value: @$scope[data_key].values[key] || 0
 					left_percentage: percentage
 					right_percentage: 100 - percentage
 				})
@@ -75,88 +78,9 @@ define [
 
 		###
 		# We need to display bar graphs - so let's pre-calculate some variables
+ 	# This method is special case of @setDataForBarGraphs()
 		###
-		setVariablesForTicketsAwaitingAgent: ->
-			@$scope.tickets_awaiting_agent.stats = []
-			denominator = @$scope.tickets_awaiting_agent.max || 1
-
-			for key of @$scope.tickets_awaiting_agent.titles when @$scope.tickets_awaiting_agent.values[key]
-
-				percentage = @$scope.tickets_awaiting_agent.values[key] / denominator * 100
-				percentage = 1 if percentage < 1
-
-				@$scope.tickets_awaiting_agent.stats.push({
-					title: @$scope.tickets_awaiting_agent.titles[key]
-					value: @$scope.tickets_awaiting_agent.values[key] || 0
-					left_percentage: percentage
-					right_percentage: 100 - percentage
-				})
-
-
-		###
-		# We need to display bar graphs - so let's pre-calculate some variables
-		###
-		setVariablesForChatsCreated: ->
-			@$scope.chats_created.stats = []
-			denominator = @$scope.chats_created.max || 1
-
-			for key of @$scope.chats_created.titles when @$scope.chats_created.values[key]
-
-				percentage = @$scope.chats_created.values[key] / denominator * 100
-				percentage = 1 if percentage < 1
-
-				@$scope.chats_created.stats.push({
-					title: @$scope.chats_created.titles[key]
-					value: @$scope.chats_created.values[key] || 0
-					left_percentage: percentage
-					right_percentage: 100 - percentage
-				})
-
-
-		###
-		# We need to display bar graphs - so let's pre-calculate some variables
-		###
-		setVariablesForTicketsResolved: ->
-			@$scope.tickets_resolved.stats = []
-			denominator = @$scope.tickets_resolved.max || 1
-
-			for key of @$scope.tickets_resolved.titles when @$scope.tickets_resolved.values[key]
-
-				percentage = @$scope.tickets_resolved.values[key] / denominator * 100
-				percentage = 1 if percentage < 1
-
-				@$scope.tickets_resolved.stats.push({
-					title: @$scope.tickets_resolved.titles[key]
-					value: @$scope.tickets_resolved.values[key] || 0
-					left_percentage: percentage
-					right_percentage: 100 - percentage
-				})
-
-
-		###
-		# We need to display bar graphs - so let's pre-calculate some variables
-		###
-		setVariablesForTicketsSlaStatus: ->
-			@$scope.tickets_sla_status.stats = []
-			denominator = @$scope.tickets_sla_status.max || 1
-
-			for key of @$scope.tickets_sla_status.titles when @$scope.tickets_sla_status.values[key]
-
-				percentage = @$scope.tickets_sla_status.values[key] / denominator * 100
-				percentage = 1 if percentage < 1
-
-				@$scope.tickets_sla_status.stats.push({
-					title: @$scope.tickets_sla_status.titles[key]
-					value: @$scope.tickets_sla_status.values[key] || 0
-					left_percentage: percentage
-					right_percentage: 100 - percentage
-				})
-
-
-		###
-		# We need to display bar graphs - so let's pre-calculate some variables
-		###
-		setVariablesForTicketsOpenedHours: ->
+		setDataForTicketsOpenedHours: ->
 			@$scope.tickets_opened_hour.stats = []
 			@$scope.tickets_opened_hour.column_width = 100 / Object.keys(@$scope.tickets_opened_hour.titles).length
 			denominator = @$scope.tickets_opened_hour.max || 1
@@ -185,120 +109,60 @@ define [
 		# Just for cases with no data we display only labels without graphical bars
 		# Ie. if we have 0 tickets created < 5 minutes ago, we still display '< 5 minutes' label, but without bar
 		# This leads to the situation that we have to iterate over all the '@$scope.tickets_user_waiting_time.titles' array
+ 	# @param {String} data_key - using this key data is looked in @$scope
 		###
-		setVariablesForTicketsUserWaitingTime: ->
-			@$scope.tickets_user_waiting_time.stats = []
-			denominator = @$scope.tickets_user_waiting_time.max || 1
+		setDataForTableWithBarGraphs: (data_key) ->
+			@$scope[data_key].stats = []
+			denominator = @$scope[data_key].max || 1
 
-			for key of @$scope.tickets_user_waiting_time.titles
+			for key of @$scope[data_key].titles
 
-				percentage = @$scope.tickets_user_waiting_time.values[key] / denominator * 100
+				percentage = @$scope[data_key].values[key] / denominator * 100
 				percentage = 1 if percentage < 1
 
 				# case of simple data without sub-data
 
-				if not @$scope.tickets_user_waiting_time.sub_titles
+				if not @$scope[data_key].sub_titles
 
-					if @$scope.tickets_user_waiting_time.values[key]
-						@$scope.tickets_user_waiting_time.stats.push({
-							title: @$scope.tickets_user_waiting_time.titles[key]
-							value: @$scope.tickets_user_waiting_time.values[key] || 0
+					if @$scope[data_key].values[key]
+						@$scope[data_key].stats.push({
+							title: @$scope[data_key].titles[key]
+							value: @$scope[data_key].values[key] || 0
 							percentage: percentage
 						})
 					else
-						@$scope.tickets_user_waiting_time.stats.push({
-							title: @$scope.tickets_user_waiting_time.titles[key]
+						@$scope[data_key].stats.push({
+							title: @$scope[data_key].titles[key]
 						})
 
 				else
 
 					# case of more sophisticated case with sub-data
 
-					percentage = @$scope.tickets_user_waiting_time.group_total[key] / denominator * 100
+					percentage = @$scope[data_key].group_total[key] / denominator * 100
 					percentage = 1 if percentage < 1
 
-					if @$scope.tickets_user_waiting_time.group_total[key]
+					if @$scope[data_key].group_total[key]
 						sub_stats = []
 
-						for subid, subtitle of @$scope.tickets_user_waiting_time.sub_titles when @$scope.tickets_user_waiting_time.values[key][subid]
-							sub_percentage = @$scope.tickets_user_waiting_time.values[key][subid] / @$scope.tickets_user_waiting_time.group_total[key] * 100
+						for subid, subtitle of @$scope[data_key].sub_titles when @$scope[data_key].values[key][subid]
+							sub_percentage = @$scope[data_key].values[key][subid] / @$scope[data_key].group_total[key] * 100
 							sub_percentage = 1 if sub_percentage < 1
 							sub_stats.push({
-								title: subtitle + ' (' + @$scope.tickets_user_waiting_time.values[key][subid] + ')'
+								title: subtitle + ' (' + @$scope[data_key].values[key][subid] + ')'
 								percentage: sub_percentage
-								background: @$scope.tickets_user_waiting_time.group_keys[subid]
+								background: @$scope[data_key].group_keys[subid]
 							})
 
-						@$scope.tickets_user_waiting_time.stats.push({
-							title: @$scope.tickets_user_waiting_time.titles[key]
-							value: @$scope.tickets_user_waiting_time.group_total[key] || 0
+						@$scope[data_key].stats.push({
+							title: @$scope[data_key].titles[key]
+							value: @$scope[data_key].group_total[key] || 0
 							percentage: percentage
 							sub_stats: sub_stats
 						})
 					else
-						@$scope.tickets_user_waiting_time.stats.push({
-							title: @$scope.tickets_user_waiting_time.titles[key]
-						})
-
-		###
-		# We need to display bar graphs - so let's pre-calculate some variables
-		# What is special here - we display every piece of data
-		# Just for cases with no data we display only labels without graphical bars
-		# Ie. if we have 0 tickets created < 5 minutes ago, we still display '< 5 minutes' label, but without bar
-		# This leads to the situation that we have to iterate over all the '@$scope.tickets_user_waiting_time.titles' array
-		###
-		setVariablesForTicketsResponseTime: ->
-			@$scope.tickets_response_time.stats = []
-			denominator = @$scope.tickets_response_time.max || 1
-
-			for key of @$scope.tickets_response_time.titles
-
-				percentage = @$scope.tickets_response_time.values[key] / denominator * 100
-				percentage = 1 if percentage < 1
-
-				# case of simple data without sub-data
-
-				if not @$scope.tickets_response_time.sub_titles
-
-					if @$scope.tickets_response_time.values[key]
-						@$scope.tickets_response_time.stats.push({
-							title: @$scope.tickets_response_time.titles[key]
-							value: @$scope.tickets_response_time.values[key] || 0
-							percentage: percentage
-						})
-					else
-						@$scope.tickets_response_time.stats.push({
-							title: @$scope.tickets_response_time.titles[key]
-						})
-
-				else
-
-					# case of more sophisticated case with sub-data
-
-					percentage = @$scope.tickets_response_time.group_total[key] / denominator * 100
-					percentage = 1 if percentage < 1
-
-					if @$scope.tickets_response_time.group_total[key]
-						sub_stats = []
-
-						for subid, subtitle of @$scope.tickets_response_time.sub_titles when @$scope.tickets_response_time.values[key][subid]
-							sub_percentage = @$scope.tickets_response_time.values[key][subid] / @$scope.tickets_response_time.group_total[key] * 100
-							sub_percentage = 1 if sub_percentage < 1
-							sub_stats.push({
-								title: subtitle + ' (' + @$scope.tickets_response_time.values[key][subid] + ')'
-								percentage: sub_percentage
-								background: @$scope.tickets_response_time.group_keys[subid]
-							})
-
-						@$scope.tickets_response_time.stats.push({
-							title: @$scope.tickets_response_time.titles[key]
-							value: @$scope.tickets_response_time.group_total[key] || 0
-							percentage: percentage
-							sub_stats: sub_stats
-						})
-					else
-						@$scope.tickets_response_time.stats.push({
-							title: @$scope.tickets_response_time.titles[key]
+						@$scope[data_key].stats.push({
+							title: @$scope[data_key].titles[key]
 						})
 
 	Reports_Overview_Ctrl_Overview.EXPORT_CTRL()
