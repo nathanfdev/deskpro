@@ -41,6 +41,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 	initialize: function(options) {
 
+		this.isMultiUser = false;
 		this.options = {
 			convoId: 0,
 			agentIds: [],
@@ -111,7 +112,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 				to_agent_id: agentInfo.id,
 				to_agent_picture: agentInfo.pictureUrlSizable.replace(/_SIZE_/g, 15)
 			});
+			this.isMultiUser = false;
 		} else {
+			this.isMultiUser = true;
 			var newContainer = $.tmpl('agent_groupchat_conversation', {
 				local_id: this.uuid,
 				title: this.options.title || 'Group'
@@ -357,7 +360,12 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			}
 		}
 
-		var newMessage = $.tmpl('agent_chat_message', {
+		var tpl = 'agent_chat_message';
+		if (this.isMultiUser) {
+			tpl = 'agent_chat_group_message';
+		}
+
+		var newMessage = $.tmpl(tpl, {
 			author_id: messageInfo.agentId,
 			author_name: agentInfo.name,
 			author_picture: agentInfo.pictureUrlSizable.replace(/_SIZE_/g, 25),

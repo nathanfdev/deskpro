@@ -13,6 +13,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		$('#agent_chat_conversation').template('agent_chat_conversation');
 		$('#agent_groupchat_conversation').template('agent_groupchat_conversation');
 		$('#agent_chat_message').template('agent_chat_message');
+		$('#agent_chat_group_message').template('agent_chat_group_message');
 		$('#agent_chat_message_me').template('agent_chat_message_me');
 
 		this._initMessageHandlers();
