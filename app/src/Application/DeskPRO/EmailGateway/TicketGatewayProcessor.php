@@ -1606,6 +1606,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->gateway = $this->gateway;
 		$newticket->gateway_address = $this->gateway_address;
 		$newticket->sent_to	= $this->sent_to;
+		$newticket->setEmailReader($this->reader);
 
 		if ($this->logger) {
 			$newticket->logger = $this->logger;
