@@ -53,11 +53,26 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		$this->addOption('owl-size', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('real-send', null, InputOption::VALUE_NONE);
 		$this->addOption('subject', null, InputOption::VALUE_NONE);
+		$this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$fwd_for = $input->getOption('fwd-for') ? $input->getOption('fwd-for') : false;
 		$subject = $input->getOption('subject') ?: 'Test Email - %TIME%';
+
+		$email_pre = "";
+
+		$email_pre_html = "";
+		if ($email_pre) {
+			$email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
+		}
+
+		if ($fwd_for) {
+			$fwd_footer = "\n\n----- Forwarded Message -----\nFrom: $fwd_for\nSubject: $subject\n\nOriginal message from the user\n\n";
+			$fwd_footer_html = "<div>" . nl2br($fwd_footer) . "</div>";
+			$subject = "FW: " . $subject;
+		}
 
 		if (!$input->getOption('with-owl')) {
 			$source = <<<SRC
@@ -75,7 +90,9 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+$email_pre
 Test Subject - 2012-12-10 19:15:29
+$fwd_footer
 
 -- Christopher
 
@@ -85,9 +102,10 @@ Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-
+$email_pre_html
 <div>Test Message</div>
 %MSG_UID%
+$fwd_footer_html
 
 --50c634de_3222e7cd_af2f--
 
@@ -655,8 +673,10 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+$email_pre
 Test Message
 %MSG_UID%
+$fwd_footer
 
 
 --50c77e34_1d4ed43b_dfd0
@@ -664,8 +684,10 @@ Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
+$email_pre_html
 <div>Test Message</div>
 %MSG_UID%
+$fwd_footer_html
 
 --50c77e34_1d4ed43b_dfd0--
 
