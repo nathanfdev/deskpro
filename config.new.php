@@ -50,7 +50,32 @@ $DP_CONFIG = array('debug' => array(), 'cache' => array());
 # ~~~~~~~~~~~~~~~~~~~~  PATHS ~~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################
-# Location of PHP Command Line Interface CLI         #
+# Location of the Data Directory                     #
+######################################################
+#                                                    #
+# You may wish change the location of the data       #
+# directory. There are some security benefits from   #
+# having this directory outside of the webroot.      #
+#                                                    #
+# Note: DeskPRO will *require* you to change the     #
+# data/ directory if it is web-readable.             #
+#                                                    #
+# Moving the data/ directory:                        #
+#  1. Copy the existing data/ directory (with all of #
+#     its existing files and subdirectorys) to the   #
+#     target location.                               #
+#  2. Ensure it is still writable. For example, you  #
+#     can recursively chmod the directory like this: #
+#        $ chmod -R 0777 /my-new/data-path           #
+#  3. Update the path listed here to the full,       #
+#     absolute path to the new data directory.       #
+######################################################
+
+$DP_CONFIG['dir_data'] = '';
+
+######################################################
+# Location of PHP CLI Binary                         #
+######################################################
 #                                                    #
 # You need to specify this path if the system        #
 # cannot detect it automatically.                    #
@@ -78,7 +103,8 @@ $DP_CONFIG = array('debug' => array(), 'cache' => array());
 $DP_CONFIG['php_path'] = '';
 
 ######################################################
-# Location of mysqldump                              #
+# Location of the mysqldump Binary                   #
+######################################################
 #                                                    #
 # mysqldump is a command line tool used to generate  #
 # backups of your mysql database                     #
@@ -96,7 +122,8 @@ $DP_CONFIG['php_path'] = '';
 $DP_CONFIG['mysqldump_path'] = '';
 
 ######################################################
-# Location of mysql                                  #
+# Location of the mysql Binary                       #
+######################################################
 #                                                    #
 # mysql is the command line version of the mysql     #
 # client                                             #
@@ -113,28 +140,11 @@ $DP_CONFIG['mysqldump_path'] = '';
 
 $DP_CONFIG['mysql_path'] = '';
 
-######################################################
-# Location of the Data directory                     #
-#                                                    #
-# You may wish change the location of the data       #
-# directory. There are some security benefits from   #
-# having this directory outside of the webroot. If   #
-# you do move the folder, please remember to ensure  #
-# it remains writable.                               #
-#                                                    #
-# You should specify the full path to the data       #
-# directory.                                         #
-#                                                    #
-# You should be regularly backing up the data        #
-# directory.                                         #
-######################################################
-
-$DP_CONFIG['dir_data'] = '';
-
 # ~~~~~~~~~~~~~~~~ DESKPRO IMPORT ~~~~~~~~~~~~~~~~~~~~
 
 ######################################################
 # DeskPRO Import Settings                            #
+######################################################
 #                                                    #
 # Enter the database details of your current         #
 # DeskPRO v1, DeskPRO v2 or DeskPRO v3 database if   #
@@ -208,11 +218,16 @@ $DP_CONFIG['import'] = array(
 
 ######################################################
 # OPTIONAL: Trust proxy data                         #
+######################################################
 #                                                    #
 # You should enable this option if you want to trust #
 # proxy data passed in request headers. Typically    #
 # you only need to do this if you are hosting        #
 # DeskPRO behind a reverse proxy.                    #
+#                                                    #
+# For more information and information about         #
+# advanced usage of this setting, read:              #
+# https://support.deskpro.com/kb/articles/176        #
 ######################################################
 
 $DP_CONFIG['trust_proxy_data'] = false;
@@ -221,6 +236,7 @@ $DP_CONFIG['trust_proxy_data'] = false;
 
 ######################################################
 # OPTIONAL : Override php.ini 'display_errors'       #
+######################################################
 #                                                    #
 # Enabling display_errors means you will see output  #
 # in the interface of errors (like database errors). #
@@ -245,6 +261,7 @@ $DP_CONFIG['trust_proxy_data'] = false;
 
 ######################################################
 # OPTIONAL : Disable URL corrections                 #
+######################################################
 #                                                    #
 # This disables the auto-redirection that happens    #
 # when you try to view the site through a URL that   #
@@ -255,6 +272,7 @@ $DP_CONFIG['disable_url_corrections'] = false;
 
 ######################################################
 # OPTIONAL : Enable debug call trace                 #
+######################################################
 #                                                    #
 # Sometimes a support agent may ask you to enable    #
 # this option to help debug a problem                #
@@ -265,6 +283,7 @@ $DP_CONFIG['debug']['enable_debug_trace_keep'] = false;
 
 ######################################################
 # OPTIONAL : Page Logs                               #
+######################################################
 #                                                    #
 # Sometimes a support agent may ask you to enable    #
 # these options to help debug a problem              #
@@ -324,6 +343,7 @@ $DP_CONFIG['debug']['page_log'] = array(
 
 ######################################################
 # OPTIONAL : Usersource Log                          #
+######################################################
 #                                                    #
 # Enables log for external usersource adapters for   #
 # troubleshooting.                                   #
@@ -333,6 +353,7 @@ $DP_CONFIG['debug']['enable_usersource_log'] = false;
 
 ######################################################
 # OPTIONAL : Mail Debug                              #
+######################################################
 #                                                    #
 # Sometimes a support agent may ask you to enable    #
 # these options to help debug a problem              #
@@ -346,6 +367,7 @@ $DP_CONFIG['debug']['mail']['force_to'] = '';
 
 ######################################################
 # OPTIONAL : Caching                                 #
+######################################################
 #                                                    #
 # Configure how and whether user interface pages are #
 # cached for increased performance.                  #
@@ -360,9 +382,16 @@ $DP_CONFIG['cache']['page_cache']['hit_log_file'] = '';
 
 ######################################################
 # OPTIONAL : Read Only Database                      #
+######################################################
 #                                                    #
 # Configure whether a special database is used for   #
-# particularly exprensive read queries.              #
+# particularly exprensive read queries including:    #
+# - Reports                                          #
+# - Searches and filters from the agent interace     #
+# - Searches from the user interface                 #
+#                                                    #
+# For more advanced usage of this setting, read:     #
+# https://support.deskpro.com/kb/articles/175        #
 ######################################################
 
 $DP_CONFIG['db_read'] = array();
