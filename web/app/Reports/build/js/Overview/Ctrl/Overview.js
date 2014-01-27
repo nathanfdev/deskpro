@@ -129,6 +129,9 @@
 
       Reports_Overview_Ctrl_Overview.prototype.setDataForTicketsOpenedHours = function() {
         var denominator, key, percentage, _results;
+        if (Util.isEmpty(this.$scope.tickets_opened_hour.values)) {
+          this.$scope.tickets_opened_hour.empty = true;
+        }
         this.$scope.tickets_opened_hour.stats = [];
         this.$scope.tickets_opened_hour.column_width = 100 / Object.keys(this.$scope.tickets_opened_hour.titles).length;
         denominator = this.$scope.tickets_opened_hour.max || 1;
@@ -165,6 +168,9 @@
 
       Reports_Overview_Ctrl_Overview.prototype.setDataForTableWithBarGraphs = function(data_key) {
         var denominator, key, percentage, sub_percentage, sub_stats, subid, subtitle, _ref1, _results;
+        if (Util.isEmpty(this.$scope[data_key].values)) {
+          this.$scope[data_key].empty = true;
+        }
         this.$scope[data_key].stats = [];
         denominator = this.$scope[data_key].max || 1;
         _results = [];

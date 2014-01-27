@@ -10,7 +10,7 @@
 		</h3>
 	</header>
 	<article>
-		<table class="stat-table" width="100%">
+		<table class="stat-table" width="100%" ng-if="!tickets_user_waiting_time.empty">
 			<tr ng-repeat="stat in tickets_user_waiting_time.stats">
 				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
 				<td width="100%">
@@ -50,5 +50,8 @@
 				</td>
 			</tr>
 		</table>
+		<div class="no-data" ng-if="tickets_user_waiting_time.empty">
+			<h3>No matching data</h3>
+		</div>
 	</article>
 </section>

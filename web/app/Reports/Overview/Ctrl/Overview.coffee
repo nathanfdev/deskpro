@@ -107,6 +107,7 @@ define [
  	# This method is special case of @setDataForBarGraphs()
 		###
 		setDataForTicketsOpenedHours: ->
+			@$scope.tickets_opened_hour.empty = true if Util.isEmpty(@$scope.tickets_opened_hour.values)
 			@$scope.tickets_opened_hour.stats = []
 			@$scope.tickets_opened_hour.column_width = 100 / Object.keys(@$scope.tickets_opened_hour.titles).length
 			denominator = @$scope.tickets_opened_hour.max || 1
@@ -138,6 +139,7 @@ define [
  	# @param {String} data_key - using this key data is looked in @$scope
 		###
 		setDataForTableWithBarGraphs: (data_key) ->
+			@$scope[data_key].empty = true if Util.isEmpty(@$scope[data_key].values)
 			@$scope[data_key].stats = []
 			denominator = @$scope[data_key].max || 1
 
