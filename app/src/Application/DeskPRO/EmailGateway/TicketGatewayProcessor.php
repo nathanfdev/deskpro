@@ -297,7 +297,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		} else {
 			$check_person = null;
 		}
-		if ($check_person && $check_person['is_agent']) {
+
+		$is_fwd = false;
+		if (App::getSetting('core_tickets.process_agent_fwd') AND $check_person && $check_person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+			$is_fwd = true;
+		}
+
+
+		if ($check_person && $check_person['is_agent'] && !$is_fwd) {
 			if ($this->email_body_html) {
 				$rc = new AgentReplyCodes($this->email_body_html, true);
 				$rc->setLogger($this->logger);
@@ -1694,32 +1701,52 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		// Add agent reply if there was one
 		if ($agent_reply) {
 
+			$rc = new AgentReplyCodes($agent_reply, false);
+			$rc->setLogger($this->logger);
+			$this->reply_actions = $rc->getProperties();
+			if ($this->reply_actions) {
+				$agent_reply = $rc->getNewBody();
+			}
+
+			$has_reply_codes = false;
+			if ($this->reply_actions) {
+				$has_reply_codes = true;
+			}
 
 			$ticket->getTicketLogger()->recordExtra('is_fwd_reply', true);
+			$ticket->getTicketLogger()->recordExtra('reply_actions_override', $this->reply_actions);
 
 			$this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 			$agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
 			App::getOrm()->beginTransaction();
-			$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
-			$agent_message->email_reader = $this->reader;
-			$agent_message->person = $agent;
-			$agent_message['message'] = $agent_reply;
-			$ticket->addMessage($agent_message);
+			if (!isset($this->reply_actions['no_reply'])) {
+				$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
+				$agent_message->email_reader = $this->reader;
+				$agent_message->person = $agent;
+				$agent_message['message'] = $agent_reply;
 
-			if ($this->processBlobs()) {
-				$this->logMessage('[TicketGatewayProcessor] Adding attachments to agent message');
-				foreach ($this->processBlobs() as $blob) {
-					$attach = new Entity\TicketAttachment();
-					$attach['blob'] = $blob;
-					$attach['person'] = $agent;
+				if (isset($this->reply_actions['is_note'])) {
+					$agent_message['is_agent_note'] = true;
+				}
 
-					$agent_message->addAttachment($attach);
-					App::getOrm()->persist($attach);
+				$ticket->addMessage($agent_message);
+
+				if ($this->processBlobs()) {
+					$this->logMessage('[TicketGatewayProcessor] Adding attachments to agent message');
+					foreach ($this->processBlobs() as $blob) {
+						$attach = new Entity\TicketAttachment();
+						$attach['blob'] = $blob;
+						$attach['person'] = $agent;
+
+						$agent_message->addAttachment($attach);
+						App::getOrm()->persist($attach);
+					}
 				}
 			}
 
 			$ticket->setStatus('awaiting_user');
+			$this->applyChangesArray($ticket);
 
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush($ticket);
