@@ -317,20 +317,22 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			contentH = 350;
 		}
 
+		if (this.options.sidePosition == 'bottom') {
+			// Prevents "jumping" height
+			if (!this.posMaxHeight || this.posMaxHeight < contentH) {
+				this.posMaxHeight = contentH
+			}
+
+			if (contentH < this.posMaxHeight) {
+				contentH = this.posMaxHeight;
+			}
+		}
+
 		var maxH = $(window).height() - top - 10;
 
 		if (contentH && contentH < maxH) {
 			bottom = '';
 			height = contentH;
-		}
-
-		// Prevents "jumping" height
-		if (!this.posMaxHeight || this.posMaxHeight < height) {
-			this.posMaxHeight = height
-		}
-
-		if (height < this.posMaxHeight) {
-			height = this.posMaxHeight;
 		}
 
 		// Beside
