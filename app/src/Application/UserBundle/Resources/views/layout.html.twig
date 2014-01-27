@@ -360,10 +360,15 @@
 {% endif %}
 <script type="text/javascript">
 (function() {
-	if (window.self !== window.top) {
+	var els;
+	if (window.self !== window.top || !(document.getElementsByClassName || document.querySelectorAll)) {
 		return;
 	}
-	var els = document.getElementsByClassName('dp_website_url');
+	if (document.getElementsByClassName) {
+		els = document.getElementsByClassName('dp_website_url');
+	} else if (document.querySelectorAll) {
+		els = document.querySelectorAll('.dp_website_url');
+	}
 	for (var i = 0; i < els.length; i++) {
 		els[i].value = 'DP_UNSET';
 	}
