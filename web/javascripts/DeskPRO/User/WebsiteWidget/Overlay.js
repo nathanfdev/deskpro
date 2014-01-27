@@ -726,14 +726,6 @@ var DpOverlayWidget = new (function() {
 
 		var degrees;
 
-		if (options.tabLocation == 'left') {
-			css.push('left: 0');
-			degrees = 90;
-		} else {
-			css.push('right: 0');
-			degrees = 270;
-		}
-
 		if (options.bottomPosition) {
 			css.push('bottom: ' + options.bottomPosition);
 		} else {
@@ -744,18 +736,28 @@ var DpOverlayWidget = new (function() {
 			}
 		}
 
-		css.push('-webkit-transform: rotate(' + degrees + 'deg)');
-		css.push('-moz-transform: rotate(' + degrees + 'deg)');
-		css.push('-ms-transform: rotate(' + degrees + 'deg)');
-		css.push('-o-transform: rotate(' + degrees + 'deg)');
-
-		if (isIE ) {
-			if (parseInt((ieVer+'').slice(0,1)) >= "9") {
-				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=4)');
-			} else {
+		if (isIE && ieVer < 10) {
+			if (options.tabLocation == 'left') {
+				css.push('left: 0');
 				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)');
+			} else {
+				css.push('right: 0;');
+				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3)');
 			}
 		} else {
+			if (options.tabLocation == 'left') {
+				css.push('left: 0');
+				degrees = 90;
+			} else {
+				css.push('right: 0');
+				degrees = 270;
+			}
+
+			css.push('-webkit-transform: rotate(' + degrees + 'deg)');
+			css.push('-moz-transform: rotate(' + degrees + 'deg)');
+			css.push('-ms-transform: rotate(' + degrees + 'deg)');
+			css.push('-o-transform: rotate(' + degrees + 'deg)');
+
 			// IE's filter to rotate the box makes the edges around
 			// the rounded corners black, so better to not use rounded corners
 			css.push('border-radius: 9px');
@@ -779,7 +781,24 @@ var DpOverlayWidget = new (function() {
 		tmp = util.createEl('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '">' + phrase + '</div>');
 		body.appendChild(tmp);
 
-		tmp.style[options.tabLocation] = '-' + ((util.getElWidth(tmp) / 2) - 10) + 'px';
+		if (isIE && options.tabLocation == 'right') {
+			if (ieVer < 10) {
+				if (document.documentMode && document.documentMode == 7) {
+					tmp.style[options.tabLocation] = '-' + ((util.getElWidth(tmp) / 2) - 12) + 'px';
+					tmp.style.position = 'absolute';
+				} else {
+					tmp.style.right = '-' + ((util.getElHeight(tmp)) - util.getElWidth(tmp) + 4) + 'px';
+					tmp.style.position = 'absolute';
+					document.body.style.overflowX = 'hidden';
+				}
+			} else {
+				// IEs scrollbar will overlap it unless we do this
+				tmp.style[options.tabLocation] = '-' + ((util.getElWidth(tmp) / 2) - 10) + 'px';
+				document.body.style.msOverflowStyle = 'scrollbar';
+			}
+		} else {
+			tmp.style[options.tabLocation] = '-' + ((util.getElWidth(tmp) / 2) - 10) + 'px';
+		}
 
 		util.bind(tmp, 'click', function(ev) {
 			if (ev && ev.preventDefault) ev.preventDefault();
