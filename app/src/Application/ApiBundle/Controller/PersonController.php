@@ -1057,14 +1057,12 @@ class PersonController extends AbstractController
 		foreach ($person->contact_data AS $contact) {
 			if ($contact->id == $contact_id) {
 				$this->em->remove($contact);
-				$this->em->persist($contact);
-				break;
+				$this->em->flush();
+				return $this->createSuccessResponse();
 			}
 		}
 
-		$this->em->flush();
-
-		return $this->createSuccessResponse();
+		throw $this->createNotFoundException();
 	}
 
 	public function getPersonGroupsAction($person_id)
