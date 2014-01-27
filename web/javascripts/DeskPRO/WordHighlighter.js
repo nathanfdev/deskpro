@@ -45,13 +45,13 @@ DeskPRO.WordHighlighter = {
 		}
 
 		var addedNodes = [];
-		this._do(node, useWords, words, addedNodes, onlyFirst, {});
+		this._do(node, useWords, words, addedNodes, onlyFirst, {}, {});
 
 		return addedNodes;
 	},
 
-	_do: function(node, words, originalWords, addedNodes, onlyFirst, _doneWords) {
-		var i, tmp;
+	_do: function(node, words, originalWords, addedNodes, onlyFirst, _doneWords, _regexCache) {
+		var i, tmp, findRegex, match, pos, spannode, middlebit, endbit, middleclone, children;
 
 		var proc_node = [node];
 		var replaceBits = [];
@@ -61,18 +61,26 @@ DeskPRO.WordHighlighter = {
 				for (i = 0; i < words.length; i++) {
 					if (onlyFirst && _doneWords[i]) continue;
 
-					var pos = node.data.toLowerCase().indexOf(words[i]);
+					if (_regexCache[words[i]]) {
+						findRegex = _regexCache[words[i]];
+					} else {
+						findRegex = new RegExp("\\b" + words[i].replace(/([.?*+^$[\]\\(){}-])/g, "\\$1") + "\\b");
+						_regexCache[words[i]] = findRegex;
+					}
+
+					match = node.data.toLowerCase().match(findRegex);
+					pos = match ? match.index : -1;
 					if (pos >= 0 && !$(node.parentNode).hasClass('dp-highlight-word') && !$(node.parentNode).closest('.dp-highlight-word')[0]) {
 						_doneWords[i] = true;
 
-						var spannode = document.createElement('span');
+						spannode = document.createElement('span');
 						spannode.className = 'dp-highlight-word';
 						spannode.setAttribute('data-word', originalWords[i]);
 						addedNodes.push(spannode);
 
-						var middlebit = node.splitText(pos);
-						var endbit = middlebit.splitText(words[i].length);
-						var middleclone = middlebit.cloneNode(true);
+						middlebit = node.splitText(pos);
+						endbit = middlebit.splitText(words[i].length);
+						middleclone = middlebit.cloneNode(true);
 						spannode.appendChild(middleclone);
 
 						middlebit.parentNode.replaceChild(spannode, middlebit);
@@ -81,7 +89,7 @@ DeskPRO.WordHighlighter = {
 					}
 				}
 			} else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
-				var children = $.makeArray(node.childNodes);
+				children = $.makeArray(node.childNodes);
 				for (i = 0; i < children.length; i++) {
 					proc_node.unshift(children[i]);
 				}
