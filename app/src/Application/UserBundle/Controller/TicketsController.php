@@ -153,6 +153,7 @@ class TicketsController extends AbstractController
 
 		$pageinfo = Numbers::getPaginationPages($count, $page, $per_page, 3);
 
+		$all_tickets      = array();
 		$active_tickets   = array();
 		$resolved_tickets = array();
 
@@ -160,6 +161,7 @@ class TicketsController extends AbstractController
 
 		foreach ($tickets as $t) {
 			$ticket_ids[] = $t['id'];
+			$all_tickets[] = $t;
 			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
 				$active_tickets[] = $t;
 			} else {
@@ -192,13 +194,20 @@ class TicketsController extends AbstractController
 			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
 		}
 
+		$show_split = false;
+		if ($sort == 'date_created' && $page == 1 && $active_tickets) {
+			$show_split = true;
+		}
+
         return $this->render('UserBundle:Tickets:list.html.twig', array(
+			'all_tickets'      => $all_tickets,
 			'active_tickets'   => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
 			'last_messages'    => $last_messages,
 			'sort'             => $sort,
 			'count'            => $count,
 			'pageinfo'         => $pageinfo,
+			'show_split'       => $show_split,
 		));
     }
 
@@ -258,6 +267,7 @@ class TicketsController extends AbstractController
 			ORDER BY $sort_dql
 		")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('organization' => $this->person->organization));
 
+		$all_tickets      = array();
 		$active_tickets   = array();
 		$resolved_tickets = array();
 
@@ -265,6 +275,7 @@ class TicketsController extends AbstractController
 
 		foreach ($tickets as $t) {
 			$ticket_ids[] = $t['id'];
+			$all_tickets[] = $t;
 			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
 				$active_tickets[] = $t;
 			} else {
@@ -298,14 +309,21 @@ class TicketsController extends AbstractController
 			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
 		}
 
+		$show_split = false;
+		if ($sort == 'date_created' && $page == 1 && $active_tickets) {
+			$show_split = true;
+		}
+
         return $this->render('UserBundle:Tickets:list-organization.html.twig', array(
 			'organization'     => $this->person->organization,
 			'sort'             => $sort,
+			'all_tickets'      => $all_tickets,
 			'active_tickets'   => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
 			'last_messages'    => $last_messages,
 			'count'            => $count,
 			'pageinfo'         => $pageinfo,
+			'show_split'       => $show_split,
 		));
     }
 
