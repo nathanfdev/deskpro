@@ -77,6 +77,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\DevLoadDataCommand',
 			'Application\\DeskPRO\\Command\\DevPagelogCommand',
 			'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
+			'Application\\DeskPRO\\Command\\DevTestApiCommand',
 			'Application\\DeskPRO\\Command\\ElasticInitializerCommand',
 			'Application\\DeskPRO\\Command\\GenBuildClassCommand',
 			'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
