@@ -8,7 +8,7 @@ define [
 	class Reports_Overview_Ctrl_Overview extends ReportsBaseCtrl
 		@CTRL_ID   = 'Reports_Overview_Ctrl_Overview'
 		@CTRL_AS   = 'Overview'
-		@DEPS      = []
+		@DEPS      = ['Api']
 
 
 		###
@@ -55,6 +55,29 @@ define [
 			)
 
 			@$q.all([data_promise])
+
+
+		###
+ 	# This method is used in select boxes for defining grouping field and / or other search parameters
+ 	# @param {String} data_key - using this key data is looked in @$scope
+ 	###
+		getStats: (data_key) ->
+			promise = @Api.sendGet('/reports/overview/get-stats/' + data_key, {
+				grouping_field: @$scope[data_key].grouping_field
+				date_choice: @$scope[data_key].date_choice
+				sla_id: @$scope[data_key].sla_id
+			})
+
+			promise.success((data) =>
+				@$scope[data_key] = data
+
+				if data_key == 'tickets_user_waiting_time' or data_key == 'tickets_response_time'
+					@setDataForTableWithBarGraphs(data_key)
+				else if data_key == 'tickets_opened_hour'
+					@setDataForTicketsOpenedHours()
+				else
+					@setDataForBarGraphs(data_key)
+			)
 
 
 		###

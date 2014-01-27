@@ -5,7 +5,8 @@
 			Average First Response Time
 		</h2>
 		<div style="float: left; padding-bottom: 5px;">
-			<select ui-select2 ng-model="tickets_response_time.date_choice" style="min-width: 120px" class="no-search">
+			<select ui-select2 ng-model="tickets_response_time.date_choice" style="min-width: 120px" class="no-search"
+					ng-change="Overview.getStats('tickets_response_time')">
 				{% for field,title in {
 				'today': 'Today',
 				'this_week': 'This Week',
@@ -20,7 +21,7 @@
 		</div>
 		<div class="clearfix"></div>
 		<h3>
-			Showing Grouped by {{ macros.grouping_field_select('tickets_response_time', tickets_response_time.grouping_field, {none: true}) }}
+			Showing Grouped by {{ macros.grouping_field_select('tickets_response_time', {none: true}) }}
 		</h3>
 	</header>
 	<article>

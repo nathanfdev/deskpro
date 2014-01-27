@@ -16,7 +16,7 @@
 
       Reports_Overview_Ctrl_Overview.CTRL_AS = 'Overview';
 
-      Reports_Overview_Ctrl_Overview.DEPS = [];
+      Reports_Overview_Ctrl_Overview.DEPS = ['Api'];
 
       /*
       		#
@@ -61,6 +61,32 @@
           return _this.setDataForTableWithBarGraphs('tickets_response_time');
         });
         return this.$q.all([data_promise]);
+      };
+
+      /*
+       	# This method is used in select boxes for defining grouping field and / or other search parameters
+       	# @param {String} data_key - using this key data is looked in @$scope
+      */
+
+
+      Reports_Overview_Ctrl_Overview.prototype.getStats = function(data_key) {
+        var promise,
+          _this = this;
+        promise = this.Api.sendGet('/reports/overview/get-stats/' + data_key, {
+          grouping_field: this.$scope[data_key].grouping_field,
+          date_choice: this.$scope[data_key].date_choice,
+          sla_id: this.$scope[data_key].sla_id
+        });
+        return promise.success(function(data) {
+          _this.$scope[data_key] = data;
+          if (data_key === 'tickets_user_waiting_time' || data_key === 'tickets_response_time') {
+            return _this.setDataForTableWithBarGraphs(data_key);
+          } else if (data_key === 'tickets_opened_hour') {
+            return _this.setDataForTicketsOpenedHours();
+          } else {
+            return _this.setDataForBarGraphs(data_key);
+          }
+        });
       };
 
       /*
