@@ -307,6 +307,5 @@ unset($errors);
 if (extension_loaded('newrelic')) {
 	if (defined('DPC_SITE_DOMAIN')) newrelic_add_custom_parameter('dpc_domain', DPC_SITE_DOMAIN);
 	newrelic_capture_params(true);
-	newrelic_disable_autorum();
 }
 //==END:MONITORING==
