@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DependencyInjection;
 
 use Orb\Util\Arrays;
+use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -699,5 +700,31 @@ class DeskproContainer extends Container
 	public function getBackupDir()
 	{
 		return $this->kernel->getBackupDir();
+	}
+
+
+	/**
+	 * Checks a static security token
+	 *
+	 * @param string $name
+	 * @param string $token
+	 * @return bool
+	 */
+	public function checkStaticSecurityToken($name, $token)
+	{
+		return Util::checkStaticSecurityToken($token, md5($this->getSetting('core.app_secret', 'secret') . $name));
+	}
+
+
+	/**
+	 * Generate static security token
+	 *
+	 * @param string $name
+	 * @param int $timeout
+	 * @return string
+	 */
+	public function generateStaticSecurityToken($name, $timeout = 18000)
+	{
+		return Util::generateStaticSecurityToken(md5($this->getSetting('core.app_secret', 'secret') . $name), $timeout);
 	}
 }

@@ -34,14 +34,19 @@
 
 namespace Application\UserBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use Application\DeskPRO\App;
 use Application\DeskPRO\People\EmailValidator;
 use Application\DeskPRO\People\AccountValidator;
 
 class MainController extends AbstractController
 {
+	public function requireRequestToken($action, $arguments = null)
+	{
+		if ($action == 'acceptTempUploadAction') {
+			return false;
+		}
+		return parent::requireRequestToken($action, $arguments);
+	}
+
 	/**
 	 * This action is used to render the header/footer in the portal editor when it was updated.
 	 * We need to actually render it like this because they could use twig tags in it, and it could
@@ -114,7 +119,7 @@ class MainController extends AbstractController
 	public function acceptTempUploadAction()
 	{
 		$security_token = $this->in->getString('security_token');
-		if (!$this->session->getEntity()->checkSecurityToken('attach_temp', $security_token)) {
+		if (!$this->container->checkStaticSecurityToken('attach_temp', $security_token)) {
 			return $this->createJsonResponse(array(array(
 				'error_code' => 'invalid_security_token'
 			)), 403);
