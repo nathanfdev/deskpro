@@ -654,6 +654,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			} else {
 				self.getEl('cc_list').show().addClass('cc-open');
 				self.getEl('cc_list').find('.addrow').show();
+				self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 			}
 		});
 
