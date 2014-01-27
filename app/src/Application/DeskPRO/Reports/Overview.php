@@ -53,6 +53,7 @@ use Doctrine\ORM\EntityManager;
 
 use Orb\Util\OptionsArray;
 use Orb\Log\Writer\Stream;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Overview
 {
@@ -101,6 +102,142 @@ class Overview
 	{
 		$this->person->loadPrefGroup('reports.ui.overview.options');
 		return $this->getValues($type);
+	}
+
+
+	/**
+	 * @param string $type
+	 * @param string $grouping_field
+	 * @param array $options
+	 * @return array
+	 * @throws NotFoundHttpException
+	 */
+	public function getStats($type, $grouping_field = null, $options = array())
+	{
+		$this->person->loadPrefGroup('reports.ui.overview.options');
+
+		switch ($type) {
+
+			case 'tickets_awaiting_agent':
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_awaiting_agent.grouping',
+					$grouping_field
+				);
+
+				return $this->getValues('tickets_awaiting_agent', array('grouping_field' => $grouping_field));
+
+			case 'tickets_resolved':
+
+				$date_choice = $options['date_choice'];
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_resolved.grouping',
+					$grouping_field
+				);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_resolved.date_choice',
+					$date_choice
+				);
+
+				return $this->getValues(
+					'tickets_resolved',
+					array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)
+				);
+
+			case 'tickets_response_time':
+
+				$date_choice = $options['date_choice'];
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_response_time.grouping',
+					$grouping_field
+				);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_response_time.date_choice',
+					$date_choice
+				);
+
+				return $this->getValues(
+					'tickets_response_time',
+					array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)
+				);
+
+			case 'tickets_user_waiting_time':
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_user_waiting_time.grouping',
+					$grouping_field
+				);
+
+				return $this->getValues('tickets_user_waiting_time', array('grouping_field' => $grouping_field));
+
+			case 'tickets_opened_hour':
+
+				$date_choice = $options['date_choice'];
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_opened_hour.date_choice',
+					$date_choice
+				);
+
+				return $this->getValues('tickets_opened_hour', array('date_choice' => $date_choice));
+
+			case 'tickets_sla_status':
+
+				$date_choice = $options['date_choice'];
+				$sla_id      = $options['sla_id'];
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_sla_status.date_choice',
+					$date_choice
+				);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.tickets_sla_status.sla_id',
+					$sla_id
+				);
+
+				return $this->getValues(
+					'tickets_sla_status',
+					array('date_choice' => $date_choice, 'sla_id' => $sla_id)
+				);
+
+			case 'kb_views_hour':
+
+				return $this->getValues('kb_views_hour');
+
+			case 'chats_created':
+
+				$date_choice = $options['date_choice'];
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.chats_created.grouping',
+					$grouping_field
+				);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'reports.ui.overview.options.chats_created.date_choice',
+					$date_choice
+				);
+
+				return $this->getValues(
+					'chats_created',
+					array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)
+				);
+
+			default:
+				throw new NotFoundHttpException("Unknown type $type");
+		}
 	}
 
 

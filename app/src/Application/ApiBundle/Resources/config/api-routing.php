@@ -3872,6 +3872,12 @@ $collection->create('api_reports_overview_get_data', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_reports_overview_update_stats', array(
+	'path'        => '/reports/overview/get-stats/{type}',
+	'controller'  => 'ApiBundle:ReportsOverview:getStats',
+	'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Plugins
 ########################################################################################################################
