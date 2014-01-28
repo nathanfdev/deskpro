@@ -402,6 +402,13 @@ class KernelErrorHandler
 		$str = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $str);
 		$line = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $line);
 
+		// First line of the log in the logfile must be DP_LOG.BEGIN, as that is used for the
+		// "quick" counts in admin interface
+		$pos = strpos($str, '<DP_LOG:');
+		if ($pos !== false) {
+			$str = substr_replace($str, '<DP_LOG.BEGIN:', $pos, strlen('<DP_LOG:'));
+		}
+
 		// Always write error line to standard error log
 		@error_log($line, 0);
 

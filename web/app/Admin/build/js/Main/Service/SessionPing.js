@@ -25,7 +25,7 @@
           window.clearInterval(this.interval);
         }
         return this.interval = window.setInterval(function() {
-          return _this.ping();
+          return _this._autoPing();
         }, timeout);
       };
 

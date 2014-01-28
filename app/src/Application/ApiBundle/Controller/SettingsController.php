@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
+use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\TicketSettings;
 use Application\DeskPRO\Settings\ServerSettings;

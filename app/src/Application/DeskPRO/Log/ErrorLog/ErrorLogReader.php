@@ -64,6 +64,11 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	protected $count = 0;
 
 	/**
+	 * @var null|int
+	 */
+	protected $quick_count = null;
+
+	/**
 	 * @var \DateTimeZone
 	 */
 	protected $timezone;
@@ -161,7 +166,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 			$m = null;
 			$l = trim($l);
 
-			if (!preg_match('#^<DP_LOG:([0-9A-Z]+)>\s*(.*?)$#', $l, $m)) {
+			if (!preg_match('#^<DP_LOG(?:\.BEGIN)?:([0-9A-Z]+)>\s*(.*?)$#', $l, $m)) {
 				if ($log_lines && $last_id) {
 					$this->_initItem($last_id, $log_lines);
 				}
@@ -277,6 +282,39 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 		throw new \BadMethodCallException();
 	}
 	/**#@-*/
+
+
+	/**
+	 * This will not parse the entire file, but just open it up and try to quickly
+	 * count the number of logged errors.
+	 */
+	public function quickCount()
+	{
+		// Already done a full parse,
+		// just return the real count
+		if ($this->items !==  null) {
+			return $this->count();
+		}
+
+		if ($this->quick_count != null) {
+			return $this->quick_count;
+		}
+
+		$this->quick_count = 0;
+		$fp = @fopen($this->path, 'r');
+		if (!$fp) {
+			return 0;
+		}
+
+		while (($l = @fgets($fp, 1024)) != false) {
+			if (strpos($l, '<DP_LOG.BEGIN:') !== false) {
+				$this->quick_count++;
+			}
+		}
+		@fclose($fp);
+
+		return $this->quick_count;
+	}
 
 
 	/**

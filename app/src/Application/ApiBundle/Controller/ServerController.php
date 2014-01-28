@@ -34,6 +34,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
+use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\Exception\ValidationException;
 
@@ -482,5 +484,41 @@ class ServerController extends AbstractController implements ProtectedController
 		}
 
 		return $this->createSuccessResponse();
+	}
+
+	####################################################################################################################
+	# cron-status
+	####################################################################################################################
+
+	public function cronStatusAction()
+	{
+		$status = new CronStatus($this->db);
+
+		return $this->createJsonResponse(array(
+			'last_run_ts'         => $status->getLastRunTimestamp(),
+			'last_run'            => $status->getLastRunDate()->format('Y-m-d H:i:s'),
+			'secs_since_last_run' => $status->getSecsSinceLastRun(),
+			'is_problem'          => $status->guessIsProblem(),
+		));
+	}
+
+	####################################################################################################################
+	# error-count
+	####################################################################################################################
+
+	public function errorInfoAction()
+	{
+		$err_reader = new ErrorLogReader(dp_get_log_dir() . '/error.log');
+		$err_reader->enableCountMode();
+		$error_count = $err_reader->count();
+
+		$status = new CronStatus($this->db);
+
+		return $this->createJsonResponse(array(
+			'last_run_ts'         => $status->getLastRunTimestamp(),
+			'last_run'            => $status->getLastRunDate()->format('Y-m-d H:i:s'),
+			'secs_since_last_run' => $status->getSecsSinceLastRun(),
+			'is_problem'          => $status->guessIsProblem(),
+		));
 	}
 }

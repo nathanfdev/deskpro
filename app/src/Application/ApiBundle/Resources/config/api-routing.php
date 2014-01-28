@@ -3921,4 +3921,14 @@ $collection->create('api_blobs_get', array(
 	'methods'      => array('GET'),
 ));
 
+########################################################################################################################
+# My
+########################################################################################################################
+
+$collection->create('api_my_session_renewtoken', array(
+	'path'         => '/my/session/renew-request-token',
+	'controller'   => 'ApiBundle:MySession:renewRequestToken',
+	'methods'      => array('GET'),
+));
+
 return $collection;
