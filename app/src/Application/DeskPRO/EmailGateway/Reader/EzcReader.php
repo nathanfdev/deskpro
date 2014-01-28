@@ -187,25 +187,7 @@ class EzcReader extends AbstractReader
 
 		$subject = new Item\Subject();
 		$subject->subject = $this->mail->subject;
-		$subject->subject_utf8 = null;
-
-		if (function_exists('imap_mime_header_decode')) {
-			$decoded = imap_mime_header_decode($this->mail->subject);
-			if ($decoded) {
-				$subject->subject_utf8 = '';
-				foreach ($decoded as $p) {
-					if ($p->charset == 'default') {
-						$subject->subject_utf8 .= $p->text;
-					} else {
-						$subject->subject_utf8 .= Strings::convertToUtf8($p->text, $p->charset);
-					}
-				}
-			}
-		}
-		if (!$subject->subject_utf8) {
-			$subject->subject_utf8 = Strings::convertToUtf8($this->mail->subject, $charset);
-		}
-		$subject->original_charset = $charset;
+		$subject->subject_utf8 = Strings::convertToUtf8($this->mail->subject, $charset);
 
 		return $subject;
 	}

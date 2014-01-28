@@ -583,6 +583,22 @@ class ezcMailTools
      */
     public static function mimeDecode( $text, $charset = 'utf-8' )
     {
+		//DESKPRO EDIT
+		// icon is missing some common charset aliases which
+		// makes it fail in decoding certain text
+		// So we need to map them to the real names iconv will know
+
+		// Some missing aliases in iconv
+		// Same array as Strings::convertToUtf8
+		static $charset_map = array(
+			'KS_C_5601-1987' => 'CP949',
+			'ISO-8859-8-I'   => 'ISO-8859-8'
+		);
+
+		foreach ($charset_map as $from => $to) {
+			$text = preg_replace('#=\?' . preg_quote(strtolower($from)) . '\?#i', '=?'.strtolower($to).'?', $text);
+		}
+
         $origtext = $text;
         $text = @iconv_mime_decode( $text, 0, $charset );
         if ( $text !== false )
