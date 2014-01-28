@@ -33,14 +33,24 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\UserRules\UserRuleEdit;
 use Application\DeskPRO\UserRules\Form\Type\UserRuleType;
 use Application\DeskPRO\Exception\ValidationException;
 
-class UserRulesController extends AbstractController
+class UserRulesController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

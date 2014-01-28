@@ -34,6 +34,9 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\FeedbackTypes\FeedbackTypes;
 use Application\DeskPRO\Exception\ValidationException;
 
@@ -42,8 +45,20 @@ use Application\DeskPRO\FeedbackTypes\FeedbackTypeEdit;
 
 use Orb\Util\Arrays;
 
-class FeedbackTypesController extends AbstractController
+class FeedbackTypesController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

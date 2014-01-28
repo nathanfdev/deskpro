@@ -33,10 +33,20 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\TwitterSetup\TwitterSetup;
 
-class TwitterSetupController extends AbstractController
+class TwitterSetupController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# twitter-setup
 	####################################################################################################################

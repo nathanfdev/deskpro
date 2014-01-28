@@ -47,15 +47,13 @@ class CoreExtension extends Extension
 {
 	public function load(array $config, ContainerBuilder $container)
     {
-		$definition = new Definition('Application\\ApiBundle\\StaticLoader\\RequestKey');
-	    $definition->setFactoryClass('Application\\ApiBundle\\StaticLoader\\RequestKey');
-		$definition->setFactoryMethod('getApiKeyFromRequest');
-		$container->setDefinition('deskpro.api.request_key', $definition);
-
-		$definition = new Definition('Application\\ApiBundle\\StaticLoader\\RequestKey');
-	    $definition->setFactoryClass('Application\\ApiBundle\\StaticLoader\\RequestKey');
-		$definition->setFactoryMethod('getApiTokenFromRequest');
-		$container->setDefinition('deskpro.api.request_token', $definition);
+		$definition = new Definition('Application\\ApiBundle\\Request\\RequestAuth');
+		$definition->setScope('request');
+		$definition->setArguments(array(
+			new Reference('doctrine.orm.entity_manager'),
+			new Reference('request')
+		));
+		$container->setDefinition('deskpro.api.request_auth', $definition);
 
 		$definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditManager');
 		$definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');

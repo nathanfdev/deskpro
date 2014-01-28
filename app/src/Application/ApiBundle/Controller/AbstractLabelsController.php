@@ -33,10 +33,20 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Labels\LabelDefManager;
 
-abstract class AbstractLabelsController extends AbstractController
+abstract class AbstractLabelsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new UserTypePermission(UserTypePermission::AGENT);
+	}
+
+
 	/**
 	 * @return array
 	 */

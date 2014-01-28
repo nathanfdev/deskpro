@@ -19,16 +19,6 @@ $container->loadFromExtension('fos_js_routing', array(
 	)
 ));
 
-$definition = new Definition('Application\\ApiBundle\\StaticLoader\\RequestKey');
-$definition->setFactoryClass('Application\\ApiBundle\\StaticLoader\\RequestKey');
-$definition->setFactoryMethod('getApiKeyFromRequest');
-$container->setDefinition('deskpro.api.request_key', $definition);
-
-$definition = new Definition('Application\\ApiBundle\\StaticLoader\\RequestKey');
-$definition->setFactoryClass('Application\\ApiBundle\\StaticLoader\\RequestKey');
-$definition->setFactoryMethod('getApiTokenFromRequest');
-$container->setDefinition('deskpro.api.request_token', $definition);
-
 $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditManager');
 $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
 $definition->setFactoryMethod('getAuditManager');

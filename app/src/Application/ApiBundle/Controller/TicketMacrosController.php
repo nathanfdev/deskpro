@@ -34,12 +34,22 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Macros\MacroActions;
 
-class TicketMacrosController extends AbstractController
+class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

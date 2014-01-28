@@ -34,11 +34,21 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 
-class TicketFiltersController extends AbstractController
+class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

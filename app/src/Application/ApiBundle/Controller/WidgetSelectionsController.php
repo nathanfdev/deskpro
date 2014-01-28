@@ -33,12 +33,21 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\Exception\ValidationException;
 
-class WidgetSelectionsController extends AbstractController
+class WidgetSelectionsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
 	####################################################################################################################
 	# get
 	####################################################################################################################

@@ -35,8 +35,19 @@
 namespace Application\ApiBundle\Controller;
 
 
-class LoginLogsController extends AbstractController
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+
+class LoginLogsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list login logs
 	####################################################################################################################

@@ -33,8 +33,18 @@
 
 namespace Application\ApiBundle\Controller;
 
-class CsvUploadController extends AbstractController
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+
+class CsvUploadController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
 	####################################################################################################################
 	# upload
 	####################################################################################################################

@@ -34,6 +34,9 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Exception\ValidationException;
@@ -43,8 +46,20 @@ use Application\DeskPRO\ResourceScanner\LanguagePhrases;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
-class LanguagesController extends AbstractController
+class LanguagesController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

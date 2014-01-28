@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
@@ -43,8 +44,17 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Orb\Util\Arrays;
 
-class TicketStatusesController extends AbstractController
+class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# get-closed-info
 	####################################################################################################################

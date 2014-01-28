@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
@@ -46,8 +47,16 @@ use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class AgentsController extends AbstractController
+class AgentsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
 	####################################################################################################################
 	# list-agents
 	####################################################################################################################

@@ -16,6 +16,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			return {
 				request: (config) ->
 					addRunningCount()
+
+					if window.DP_SESSION_ID and not config.headers?['X-DeskPRO-Session-ID']?
+						config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
+					if window.DP_REQUEST_TOKEN and not config.headers?['X-DeskPRO-Request-Token']?
+						config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
+
 					if config.headers?['X-DeskPRO-API-Token']?
 						config.startTime = new Date()
 

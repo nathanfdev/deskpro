@@ -33,13 +33,23 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
 use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
 
-class TemplatesController extends AbstractController
+class TemplatesController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# get-template-info
 	####################################################################################################################

@@ -33,6 +33,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\Exception\ValidationException;
@@ -41,8 +42,17 @@ use Application\DeskPRO\TwitterAccounts\TwitterAccounts;
 use Application\DeskPRO\TwitterAccounts\TwitterAccountEdit;
 use Application\DeskPRO\TwitterAccounts\Form\Type\TwitterAccountType;
 
-class TwitterAccountsController extends AbstractController
+class TwitterAccountsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

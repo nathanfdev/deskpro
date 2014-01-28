@@ -35,9 +35,24 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 
-class UserFieldsController extends AbstractController
+class UserFieldsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

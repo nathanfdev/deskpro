@@ -34,6 +34,9 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
@@ -46,8 +49,20 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 
-class TicketDepsController extends AbstractController
+class TicketDepsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

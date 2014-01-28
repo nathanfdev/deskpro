@@ -34,12 +34,22 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
-class TicketSlasController extends AbstractController
+class TicketSlasController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

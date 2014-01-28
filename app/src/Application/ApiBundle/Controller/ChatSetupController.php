@@ -33,8 +33,18 @@
 
 namespace Application\ApiBundle\Controller;
 
-class ChatSetupController extends AbstractController
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+
+class ChatSetupController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
 	####################################################################################################################
 	# chat-setup
 	####################################################################################################################

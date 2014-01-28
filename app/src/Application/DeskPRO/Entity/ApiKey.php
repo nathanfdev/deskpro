@@ -49,29 +49,26 @@ use Orb\Util\Arrays;
  * @property string note
  * @property string $keyString
  * @property Person $person
+ * @property array $flags
  */
 
 class ApiKey extends DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
+	const FLAG_ADMIN_MANAGE = 'admin_manage';
 
+	/**
+	 * @var int
+	 */
 	protected $id = null;
 
 	/**
 	 * @var string
 	 */
-
 	protected $code;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-
 	protected $person;
 
 	/**
@@ -79,31 +76,37 @@ class ApiKey extends DomainObject
 	 *
 	 * @var string
 	 */
-
 	protected $note = '';
+
+	/**
+	 * @var array
+	 */
+	protected $flags = array();
+
 
 	public function __construct()
 	{
 		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
 	}
 
+
 	/**
 	 * @return ApiKey
 	 */
-
 	public static function createApiKey()
 	{
 		return new self();
 	}
 
-	/**
-	 *
-	 */
 
+	/**
+	 * Regenerate the API key
+	 */
 	public function regenerateApiKey()
 	{
 		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
 	}
+
 
 	/**
 	 * Get a "key string". This is a combined ID and code like id:code
@@ -111,11 +114,21 @@ class ApiKey extends DomainObject
 	 *
 	 * @return string
 	 */
-
 	public function getKeyString()
 	{
 		return $this->id . ':' . $this->code;
 	}
+
+
+	/**
+	 * @param string $flag
+	 * @return bool
+	 */
+	public function isFlagSet($flag)
+	{
+		return in_array($flag, $this->flags);
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -123,59 +136,54 @@ class ApiKey extends DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiKey';
-		$metadata->setPrimaryTable(array('name' => 'api_keys',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'id',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'id',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'code',
-				 'type'       => 'string',
-				 'length'     => 25,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'code',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'note',
-				 'type'       => 'text',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'note',
-			)
-		);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'person',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-				 'mappedBy'     => null,
-				 'inversedBy'   => null,
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'person_id',
-						 'referencedColumnName' => 'id',
-						 'nullable'             => true,
-						 'onDelete'             => 'cascade',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\ApiKey';
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+
+		$metadata->setPrimaryTable(array(
+			'name' => 'api_keys'
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'code',
+			'fieldName'  => 'code',
+			'type'       => 'string',
+			'length'     => 25,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'note',
+			'fieldName'  => 'note',
+			'type'       => 'text',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'flags',
+			'fieldName'  => 'flags',
+			'type'       => 'simple_array',
+			'nullable'   => false,
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'person',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'mappedBy'     => null,
+			'inversedBy'   => null,
+			'joinColumns'  => array(array(
+				'name'                 => 'person_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+				'columnDefinition'     => null,
+			)),
+		));
 	}
 }

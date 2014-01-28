@@ -47,6 +47,11 @@ use Symfony\Component\Validator\ConstraintViolationList;
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
 	/**
+	 * @var \Application\ApiBundle\ApiUser
+	 */
+	public $api_user;
+
+	/**
 	 * The API key making this request
 	 *
 	 * @var \Application\DeskPRO\Entity\ApiKey|null
@@ -117,39 +122,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->cleaner  = $this->get('deskpro.core.input_cleaner');
 		$this->settings = $this->get('deskpro.core.settings');
 
-		$this->apikey = $this->get('deskpro.api.request_key');
-		$person = null;
+		/** @var \Application\ApiBundle\Request\RequestAuth $request_auth */
+		$request_auth = $this->get('deskpro.api.request_auth');
+		$this->api_user = $request_auth->getApiUser();
 
-		if ($this->apikey) {
-			$person = false;
+		$this->apikey    = $this->api_user->api_key;
+		$this->api_token = $this->api_user->api_token;
+		$this->person    = $this->api_token->person;
 
-			if (!$this->apikey->person) {
-				$as_agent_id = $this->getRequest()->headers->get('X-DeskPRO-Agent-ID', null, true);
-				if (!$as_agent_id) {
-					$as_agent_id = isset($_REQUEST['DP-AGENT-ID']) ? $_REQUEST['DP-AGENT-ID'] : 0;
-				}
-				$as_agent_id = intval($as_agent_id);
-
-				$agent = $this->em->getRepository('DeskPRO:Person')->find($as_agent_id);
-				if ($agent && $agent->is_agent) {
-					$person = $agent;
-				}
-			} else {
-				$person = $this->apikey->person;
-			}
-		}
-
-		if (!$this->apikey) {
-			$this->api_token = $this->get('deskpro.api.request_token');
-			if ($this->api_token) {
-				$person = $this->api_token->person;
-			}
-		}
-
-		if ($person && $person->is_agent && !$person->is_deleted && !$person->is_disabled) {
-			App::setCurrentPerson($person);
-
-			$this->person = $person;
+		if ($this->person && $this->person->is_agent && !$this->person->is_deleted && !$this->person->is_disabled) {
+			App::setCurrentPerson($this->person);
 
 			$this->person->loadHelper('Agent');
 			$this->person->loadHelper('AgentTeam');
@@ -184,6 +166,43 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		if (!$this->person) {
 			return $this->createApiErrorResponse('invalid_person', 'Please provide a valid agent for this request', 403);
+		}
+
+		// Verify that token requests are with sessions, and verify the session person matches
+		if ($this->api_token && $this->api_token->scope == 'session') {
+			$session = $this->api_user->session;
+
+			if (!$session || !$session->person || $session->person != $this->api_token->person) {
+				return $this->createApiErrorResponse('invalid_api_token', 'API requests via token must be with a valid session', 403);
+			}
+
+			// Validate the request token
+			if (!$this->api_user->request_token || !$this->api_user->session->checkSecurityToken('request_token', $this->api_user->request_token)) {
+				return $this->createApiErrorResponse('invalid_request_token', 'You must provide a valid request token', 403);
+			}
+
+			// Ping the 'last' date of the session
+			$this->container->getDb()->update('sessions', array(
+				'date_last' => date('Y-m-d H:i:s')
+			), array('id' => $this->api_user->session->id));
+
+			// Increase lifetime of the session token
+			$this->container->getDb()->update('api_token', array(
+				'date_expires' => date('Y-m-d H:i:s', strtotime("+1 hour"))
+			), array('id' => $this->api_token->id));
+		}
+
+		if ($this instanceof ProtectedControllerInterface) {
+			$perm_strategy = $this->getPermissionStrategy();
+			$context_info = array(
+				'controller' => $this,
+				'action'     => $action,
+				'arguments'  => $arguments,
+				'type'       => $action
+			);
+			if (!$perm_strategy->userHasPermission($this->api_user, $context_info)) {
+				return $this->createApiErrorResponse('no_permission', 'You do not have permission to use this resource', 403);
+			}
 		}
 
 		if (App::getSetting('core.api_rate_limit')) {

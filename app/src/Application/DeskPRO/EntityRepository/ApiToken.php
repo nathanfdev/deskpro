@@ -63,7 +63,7 @@ class ApiToken extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:ApiToken t
-			WHERE t.person = ?0
+			WHERE t.person = ?0 AND t.scope = 'client'
 		")->setParameters(array($person))->getOneOrNullResult();
 	}
 

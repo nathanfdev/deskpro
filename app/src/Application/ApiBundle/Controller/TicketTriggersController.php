@@ -34,14 +34,24 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Orb\Util\Arrays;
 
-class TicketTriggersController extends AbstractController
+class TicketTriggersController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

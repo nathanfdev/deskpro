@@ -35,10 +35,19 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 
-class ChatFieldsController extends AbstractController
+class ChatFieldsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

@@ -34,16 +34,24 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Banning\IpBanEdit;
 use Application\DeskPRO\Banning\Form\Type\IpBanType;
 use Application\DeskPRO\Banning\EmailBanEdit;
 use Application\DeskPRO\Banning\Form\Type\EmailBanType;
 
-use Orb\Util\Arrays;
-
-class BanningController extends AbstractController
+class BanningController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new UserTypePermission(UserTypePermission::AGENT);
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

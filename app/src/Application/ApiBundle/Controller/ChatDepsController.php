@@ -34,6 +34,9 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Departments\ChatDepartmentEditor;
 use Application\DeskPRO\Exception\ValidationException;
 
@@ -43,8 +46,19 @@ use Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
 
 use Orb\Util\Arrays;
 
-class ChatDepsController extends AbstractController
+class ChatDepsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
+	}
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

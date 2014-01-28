@@ -33,8 +33,18 @@
 
 namespace Application\ApiBundle\Controller;
 
-class ApiCombinerController extends AbstractController
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+
+class ApiCombinerController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
 	function getAction()
 	{
 		// Currently can only be used by admins

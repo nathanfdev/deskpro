@@ -34,14 +34,29 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Orb\Util\Arrays;
 
-class AgentGroupsController extends AbstractController
+class AgentGroupsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

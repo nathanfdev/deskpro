@@ -34,13 +34,28 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 
-class EmailAccountsController extends AbstractController
+class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

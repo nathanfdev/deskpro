@@ -8,6 +8,7 @@ define [
 	'DeskPRO/App/SetupNetwork',
 	'Admin/App/SetupRouting',
 	'DeskPRO/App/SetupServices',
+	'Admin/App/SetupServices',
 	'Admin/App/SetupTemplates',
 ], (
 	angular,
@@ -19,10 +20,12 @@ define [
 	SetupNetwork,
 	SetupRouting,
 	SetupServices,
+	AdminSetupServices,
 	SetupTemplates
 ) ->
 
 	SetupServices(AdminModule)
+	AdminSetupServices(AdminModule)
 	SetupLogging(AdminModule)
 	SetupDataServices(AdminModule)
 	SetupNetwork(AdminModule)

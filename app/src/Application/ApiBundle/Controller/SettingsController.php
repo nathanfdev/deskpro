@@ -33,6 +33,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\RegistrationSettings;
@@ -44,8 +45,17 @@ use Application\DeskPRO\Settings\PortalSettings;
 use Orb\Util\Env;
 use Orb\Util\Strings;
 
-class SettingsController extends AbstractController
+class SettingsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# get-value
 	####################################################################################################################

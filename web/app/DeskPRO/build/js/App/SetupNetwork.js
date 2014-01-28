@@ -17,9 +17,15 @@
           };
           return {
             request: function(config) {
-              var next, timeEnc, _ref;
+              var next, timeEnc, _ref, _ref1, _ref2;
               addRunningCount();
-              if (((_ref = config.headers) != null ? _ref['X-DeskPRO-API-Token'] : void 0) != null) {
+              if (window.DP_SESSION_ID && (((_ref = config.headers) != null ? _ref['X-DeskPRO-Session-ID'] : void 0) == null)) {
+                config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID;
+              }
+              if (window.DP_REQUEST_TOKEN && (((_ref1 = config.headers) != null ? _ref1['X-DeskPRO-Request-Token'] : void 0) == null)) {
+                config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN;
+              }
+              if (((_ref2 = config.headers) != null ? _ref2['X-DeskPRO-API-Token'] : void 0) != null) {
                 config.startTime = new Date();
                 next = updateTimes.pop();
                 if (next) {

@@ -33,8 +33,18 @@
 
 namespace Application\ApiBundle\Controller;
 
-class EnableSettingsController extends AbstractController
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+
+class EnableSettingsController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
 	####################################################################################################################
 	# get status
 	####################################################################################################################

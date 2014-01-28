@@ -34,14 +34,24 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Kernel\License;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
 
 
-class LicenseController extends AbstractController
+class LicenseController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# get-license
 	####################################################################################################################

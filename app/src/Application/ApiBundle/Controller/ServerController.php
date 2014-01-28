@@ -33,11 +33,21 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\Exception\ValidationException;
 
-class ServerController extends AbstractController
+class ServerController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# get Server Reqs
 	####################################################################################################################

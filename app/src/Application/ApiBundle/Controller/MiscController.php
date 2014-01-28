@@ -212,6 +212,7 @@ class MiscController extends AbstractController
 		$token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
 		if (!$token) {
 			$token = new \Application\DeskPRO\Entity\ApiToken();
+			$token->scope = 'client';
 			$token->person = $person;
 		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
 			$token->regenerateToken();

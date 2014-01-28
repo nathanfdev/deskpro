@@ -34,16 +34,19 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
-use Application\DeskPRO\Departments\TicketDepartmentEdit;
-use Application\DeskPRO\Departments\TicketDepartmentEditor;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
-use Application\DeskPRO\Exception\ValidationException;
-use Orb\Util\Arrays;
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 
-class TicketUrgenciesController extends AbstractController
+class TicketUrgenciesController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################

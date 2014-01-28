@@ -33,16 +33,25 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\Exception\ValidationException;
 
-use Application\DeskPRO\ApiKeys\ApiKeys;
 use Application\DeskPRO\ApiKeys\ApiKeyEdit;
 use Application\DeskPRO\ApiKeys\Form\Type\ApiKeyType;
 
-class ApiKeysController extends AbstractController
+class ApiKeysController extends AbstractController implements ProtectedControllerInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPermissionStrategy()
+	{
+		return new AdminManagePermission();
+	}
+
+
 	####################################################################################################################
 	# list
 	####################################################################################################################
