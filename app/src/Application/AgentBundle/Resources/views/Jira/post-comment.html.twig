@@ -1,0 +1,51 @@
+<!-- script src="http://code.jquery.com/jquery-1.10.1.min.js"></script -->
+<form method="POST" class="actions-overlay post-comment" data-target="{{ path('post_comment', {'issue_id': issue_id}) }}" style="width: 650px; height: 266px;">
+	<div class="overlay-title">
+		<h4>{{ phrase('agent.jira.post_comment') }}</h4>
+	</div>
+	<div class="overlay-content">
+		<div class="row">
+			<div class="left" style="width: 20%">
+				<label for="description">{{ phrase('agent.jira.labels.comment') }} *</label>
+			</div>
+			<div class="right" style="width: 100%">
+				<input type="hidden" value="{{ jiraissue }}"/>
+				<textarea style="width: 99%" rows="10" id="comment" name="comment"></textarea>
+			</div>
+		</div>
+	</div>
+	<div class="overlay-footer">
+		<div class="is-not-loading">
+			<button type="reset" id="jira-form-cancel" class="close  clean-white">{{ phrase('agent.general.reset') }}</button>
+			<button type="submit" id="jira-form-submit" class="export clean-white">{{ phrase('agent.jira.labels.comment') }}</button>
+		</div>
+		<div class="is-loading">
+			<i class="flat-spinner"></i>
+		</div>
+	</div>
+</form>
+<script>
+	$(document).off('submit', 'form.post-comment').on('submit', 'form.post-comment', function(event){
+		$(this).find("button").prop("disabled", true);
+		
+		var form	= $(this).closest('form');
+		
+		var url		= form.data('target');
+		
+		var formData = form.serialize();
+		
+		var jQxhr = $.post(url, formData, "json").done(function(data) {
+			DeskPRO_Window.showAlert("Comment posted successfully");
+			
+			form.find("a.close").click();
+		}).fail(function(xhr) {
+			var response = jQuery.parseJSON(xhr.responseText);
+			
+			DeskPRO_Window._showAjaxError(response.message);
+		}).always(function(){
+			$(this).find("button").prop("disabled", false);
+		});
+		
+		return false;
+	});
+</script>

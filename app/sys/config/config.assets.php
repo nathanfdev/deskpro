@@ -403,6 +403,7 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
+		'javascripts/DeskPRO/Agent/Jira/Jira.js',
 	)
 );
 
@@ -658,6 +659,7 @@ $CONFIG['agent_interface_css2'] = array(
 		'stylesheets-less/agent/dp-list-pane.less',
 		'stylesheets-less/agent/dp-content-pane.less',
 		'stylesheets-less/agent/agent.less',
+		'stylesheets-less/agent/jira.less',
 	)
 );
 

@@ -2132,4 +2132,39 @@ $collection->create('agent_plugins_run', array(
 	'controller'  => 'AgentBundle:Plugins:run',
 ));
 
+if (Application\DeskPRO\App::getSetting('core.apps_jira')) {
+	$collection->create('jira_export', array(
+		'path'          => '/jira/export/{ticket_id}',
+		'controller'    => 'AgentBundle:Jira:export',
+		'defaults'		=> array('ticket_id' => '-1'),
+		'requirements'  => array('ticket_id' => '\\d+'),
+	));
+	
+	$collection->create('jira_lookup', array(
+		'path'          => '/jira/lookup',
+		'controller'    => 'AgentBundle:Jira:lookup',
+	));
+	
+	$collection->create('associated_issues', array(
+		'path'          => '/jira/issues/{ticket_id}',
+		'controller'    => 'AgentBundle:Jira:getAssociatedIssues',
+		'defaults'		=> array('ticket_id' => '-1'),
+		'requirements'  => array('ticket_id' => '\\d+'),
+	));
+	
+	$collection->create('comments', array(
+		'path'          => '/jira/{issue_id}/comments',
+		'controller'    => 'AgentBundle:Jira:getComments',
+		'defaults'		=> array('issue_id' => '-1'),
+		'requirements'  => array('issue_id' => '\\d+'),
+	));
+	
+	$collection->create('post_comment', array(
+		'path'          => '/jira/{issue_id}/comment',
+		'controller'    => 'AgentBundle:Jira:postComment',
+		'defaults'		=> array('issue_id' => '-1'),
+		'requirements'  => array('issue_id' => '\\d+'),
+	));
+}
+
 return $collection;
