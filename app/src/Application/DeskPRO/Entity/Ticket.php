@@ -3266,7 +3266,8 @@ class Ticket extends DomainObject
 				'nullable'             => true,
 				'onDelete'             => 'cascade',
 			)),
-			'dpApi'                => true
+			'dpApi'                => true,
+			'dpApiDeep'            => true
 		));
 		$metadata->mapManyToOne(array(
 			'fieldName'            => 'person_email',

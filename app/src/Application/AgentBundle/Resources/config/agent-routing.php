@@ -122,16 +122,6 @@ $collection->create('agent_quicksearch', array(
 	'controller'  => 'AgentBundle:Main:quickSearch',
 ));
 
-$collection->create('agent_search', array(
-	'path'        => '/search/search',
-	'controller'  => 'AgentBundle:Search:search',
-));
-
-$collection->create('agent_search_json', array(
-	'path'        => '/search/search.json',
-	'controller'  => 'AgentBundle:Search:searchResults',
-));
-
 $collection->create('agent_recyclebin', array(
 	'path'        => '/recycle-bin',
 	'controller'  => 'AgentBundle:RecycleBin:list',
@@ -1814,9 +1804,10 @@ $collection->create('agent_feedback_status', array(
 ));
 
 $collection->create('agent_feedback_label', array(
-	'path'        => '/feedback/label/{label}',
-	'controller'  => 'AgentBundle:Feedback:labelList',
-	'options'     => array('fragment_name' => 'label', 'fragment_type' => 'list'),
+	'path'         => '/feedback/label/{label}',
+	'controller'   => 'AgentBundle:Feedback:labelList',
+	'options'      => array('fragment_name' => 'label', 'fragment_type' => 'list'),
+	'requirements' => array('label' => '.*'),
 ));
 
 $collection->create('agent_feedback_filter', array(
