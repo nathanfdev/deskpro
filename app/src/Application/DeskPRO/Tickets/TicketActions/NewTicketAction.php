@@ -212,6 +212,10 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				$ticket->setStatus('hidden.validating');
 			} elseif ($ticket->status == 'hidden' && $ticket->person->is_agent_confirmed) {
 				$ticket->setStatus('awaiting_agent');
+
+				// Need to manually apply SLAs since the ticket is not hidden anymore
+				// (it was during the first round of trigger execs)
+				$ticket->_applySlas();
 			}
 
 			App::getOrm()->persist($ticket);

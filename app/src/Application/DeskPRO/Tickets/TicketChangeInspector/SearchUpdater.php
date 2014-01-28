@@ -129,8 +129,6 @@ class SearchUpdater
 					App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->id));
 					App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->id));
 				}
-
-				App::getSystemService('search_indexer')->update($this->ticket, 'update');
 			}
 		}
 	}

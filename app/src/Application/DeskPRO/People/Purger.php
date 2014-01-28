@@ -116,7 +116,7 @@ class Purger implements PersonContextInterface
 		}
 
 		if ($inserts) {
-			$this->db->batchInsert('tickets_deleted', $inserts);
+			$this->db->batchInsert('tickets_deleted', $inserts, true);
 		}
 
 		#------------------------------
@@ -126,7 +126,10 @@ class Purger implements PersonContextInterface
 		$this->db->delete('tickets_search_active', array('person_id' => $this->person->getId()));
 		$this->db->delete('tickets_search_message', array('person_id' => $this->person->getId()));
 		$this->db->delete('tickets_search_message_active', array('person_id' => $this->person->getId()));
-		$this->db->executeUpdate("DELETE FROM tickets_search_subject WHERE id IN (" . implode(',', $ticket_ids) . ")");
+
+		if ($ticket_ids) {
+			$this->db->executeUpdate("DELETE FROM tickets_search_subject WHERE id IN (" . implode(',', $ticket_ids) . ")");
+		}
 	}
 
 

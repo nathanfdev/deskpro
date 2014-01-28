@@ -612,6 +612,19 @@ class PersonController extends AbstractController
 				}
 				break;
 
+			case 'remove-usersource':
+
+				$us_id = $this->in->getUint('usersource_id');
+				foreach ($person->usersource_assoc as $assoc) {
+					if ($assoc->usersource->id == $us_id) {
+						$this->em->remove($assoc);
+					}
+				}
+
+				$this->em->flush();
+
+				break;
+
 			case 'set-slas':
 				$sla_ids = $this->in->getCleanValueArray('sla_ids', 'uint', 'discard');
 				$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();

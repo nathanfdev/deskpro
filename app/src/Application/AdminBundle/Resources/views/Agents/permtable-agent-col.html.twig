@@ -20,7 +20,7 @@
 				name="permissions[{{ permgroup }}][override][{{ name }}]"
 				id="perm_val_override_{{ perm_fname_flat }}"
 				value="1"
-				{% if not is_ug_perm and usergroup_values['override'][permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
+				{% if usergroup_values['override'][permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
 			/>
 			{# Other permission values #}
 			{% for id, ug in usergroup_values %}

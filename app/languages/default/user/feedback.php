@@ -1,6 +1,7 @@
 <?php return array(
 	'user.feedback.all_types'                => 'All Types',
 	'user.feedback.category'                 => 'Category',
+	'user.feedback.type'                     => 'Type',
 	'user.feedback.count_votes'              => '1 Vote|{{count}} Votes',
 	'user.feedback.description'              => 'These suggestions have been submitted by customers like you; we encourage you to discuss and vote on those you agree with and to submit your own suggestions if the idea is not already listed.',
 	'user.feedback.feedback'                 => 'Feedback',

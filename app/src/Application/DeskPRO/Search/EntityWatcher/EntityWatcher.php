@@ -54,8 +54,6 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		'Application\\DeskPRO\\Entity\\LabelFeedback' => 1,
 		'Application\\DeskPRO\\Entity\\News' => 1,
 		'Application\\DeskPRO\\Entity\\LabelNews' => 1,
-		'Application\\DeskPRO\\Entity\\Ticket' => 1,
-		'Application\\DeskPRO\\Entity\\TicketMessage' => 1,
 	);
 
 	/**
@@ -121,9 +119,6 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		static $has_init = false;
 		if ($has_init === true) return;
 		$has_init = true;
-
-		$ticket_filter = new MysqlFilter\TicketFilter($this->container->getEm());
-		$this->addEntityTypeFilter('Application\\DeskPRO\\Entity\\Ticket', $ticket_filter);
 	}
 
 	/**
@@ -218,8 +213,6 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 			return $ent->download;
 		} elseif ($ent instanceof \Application\DeskPRO\Entity\LabelFeedback) {
 			return $ent->feedback;
-		} elseif ($ent instanceof \Application\DeskPRO\Entity\TicketMessage) {
-			return $ent->ticket;
 		}
 
 		return $ent;

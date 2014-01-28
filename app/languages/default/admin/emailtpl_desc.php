@@ -57,6 +57,8 @@
 	'admin.emailtpl_desc.deskpro_emails_user_new-reply-agent_html_twig_title'              => 'New Agent Reply',
 	'admin.emailtpl_desc.deskpro_emails_user_new-reply-user_html_twig_desc'                => 'This is an automatic reply sent to the user to tell them that the system recieved their ticket reply.',
 	'admin.emailtpl_desc.deskpro_emails_user_new-reply-user_html_twig_title'               => 'User Reply Auto-Reponse',
+	'admin.emailtpl_desc.deskpro_emails_user_new-reply-reject-resolved_html_twig_title'               => 'New reply rejected because ticket is resolved',
+	'admin.emailtpl_desc.deskpro_emails_user_new-reply-reject-resolved_html_twig_desc'                => 'If a user tries to reply to a resolved ticket and they do not have permission to re-open tickets, they will get this rejection letter. (You can change this permissions from CRM / Usergroups)',
 	'admin.emailtpl_desc.deskpro_emails_user_new-ticket-agent_html_twig_desc'              => 'This is the notification email sent to the user to tell them about a new ticket created by an agent.',
 	'admin.emailtpl_desc.deskpro_emails_user_new-ticket-agent_html_twig_title'             => 'New Ticket Created By Agent',
 	'admin.emailtpl_desc.deskpro_emails_user_new-ticket-reg-closed_html_twig_desc'         => 'If you have disabled registration, this is the email users will recieve if they send an email to helpdesk without already having an account.',

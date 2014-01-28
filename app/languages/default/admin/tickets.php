@@ -174,6 +174,7 @@
 	'admin.tickets.x_since_time_open'                       => '&gt; {{time}} since ticket was opened',
 	'admin.tickets.x_since_time_resolved'                   => '&gt; {{time}} since status was set to resolved',
 	'admin.tickets.x_since_time_user_waiting'               => 'User waiting &gt; {{time}}',
+	'admin.tickets.x_since_time_total_user_waiting'         => 'Total user waiting &gt; {{time}}',
 	'admin.tickets.x_since_total_user_waiting'              => 'User has been waiting &gt; {{time}}',
 	'admin.tickets.email_accounts' => 'Email Accounts',
 	'admin.tickets.x_email_accounts' => '{{count}} Email Account|{{count}} Email Accounts',

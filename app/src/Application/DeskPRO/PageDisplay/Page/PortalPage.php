@@ -103,6 +103,14 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
 		$group_displays = array();
 
+		$topbar = new PortalPageDisplay();
+		$topbar->type = 'userinfo';
+		$topbar->display_order = 0;
+		$topbar->is_enabled = true;
+		$topbar->section = 'topbar';
+		$topbar->data = array();
+		$portal_items[] = $topbar;
+
 		foreach ($portal_items as $item) {
 			if (!isset($group_displays[$item->section])) {
 				$group_displays[$item->section] =  new PortalPageDisplay();

@@ -44,6 +44,7 @@ use Application\DeskPRO\Tickets\TicketActions\AgentAction;
 use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\CategoryAction;
 use Application\DeskPRO\Tickets\TicketActions\DepartmentAction;
+use Application\DeskPRO\Tickets\TicketActions\HoldAction;
 use Application\DeskPRO\Tickets\TicketActions\PriorityAction;
 use Application\DeskPRO\Tickets\TicketActions\ProductAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
@@ -467,6 +468,12 @@ class TriggerExecutor
 							continue;
 						}
 						if ($action instanceof PriorityAction && isset($override_actions['priority'])) {
+							continue;
+						}
+						if ($action instanceof StatusAction && isset($override_actions['status'])) {
+							continue;
+						}
+						if ($action instanceof HoldAction && isset($override_actions['is_hold'])) {
 							continue;
 						}
 					}

@@ -395,7 +395,7 @@ class TicketSearch extends SearcherAbstract
 		$this->getLogger()->logDebug("Search Query: " . $sql);
 		$time = microtime(true);
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.tickets');
 
 		try {
 			$ticket_ids = $db->fetchAllCol($sql);
@@ -592,7 +592,7 @@ class TicketSearch extends SearcherAbstract
 		$this->getLogger()->logDebug("Search Count Query: " . $count_sql);
 		$time = microtime(true);
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.tickets');
 
 		try {
 			$result = $db->fetchColumn($count_sql);
@@ -995,7 +995,7 @@ class TicketSearch extends SearcherAbstract
 
 		$tickets_table = 'tickets';
 
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.tickets');
 		$tr = App::getTranslator();
 
 		$wheres = array();
@@ -1096,7 +1096,7 @@ class TicketSearch extends SearcherAbstract
 							"LEFT JOIN content_search AS $join_name ON ($join_name.object_type = 'ticket' AND $join_name.object_id = tickets.id)"
 						);
 
-						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDbRead()->quote($choice) . ")";
+						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDbRead('search.filter.tickets')->quote($choice) . ")";
 
 						$this->summary[] = "Ticket content matches: " . $choice;
 						break;
@@ -2112,19 +2112,13 @@ class TicketSearch extends SearcherAbstract
 						$this->affected_fields[] = 'ticket.total_user_waiting';
 						$now = time();
 
-						$choice = $this->normalizeWaitingTime($choice);
-
 						// Need the check on waiting_time because it could be date1/date2 instead
 						if (is_array($choice) && isset($choice['waiting_time'])) {
 							$this->summary[] = 'Total waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 							$choice = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
 						}
 
-						if ($choice && is_array($choice)) {
-							$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", 'between', $choice);
-						} elseif ($choice) {
-							$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", $op, $choice);
-						}
+						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting))))", $op, $choice);
 						break;
 
 					case self::TERM_CREATION_SYSTEM:

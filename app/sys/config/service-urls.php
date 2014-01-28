@@ -27,4 +27,5 @@
 	'dp.kb.editing_php_ini'                  => 'https://support.deskpro.com/kb/articles/122',
 	'dp.kb.install.error_disabled_functions' => 'https://support.deskpro.com/kb/articles/122',
 	'dp.kb.install.error_upload_tmp_dir'     => 'https://support.deskpro.com/kb/articles/122',
+	'dp.kb.install.url_rewriting'            => 'https://support.deskpro.com/kb/articles/177',
 );

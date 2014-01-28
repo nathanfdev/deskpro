@@ -676,9 +676,9 @@ class TemplatingExtension extends \Twig_Extension
 		return App::getSession()->getEntity()->generateSecurityToken($name, $timeout);
 	}
 
-	public function staticSecurityToken($name = '', $timeout = 43200)
+	public function staticSecurityToken($name = '', $timeout = 18000)
 	{
-		return Util::generateStaticSecurityToken(md5(App::getAppSecret() . $name), $timeout);
+		return App::getContainer()->generateStaticSecurityToken($name, $timeout);
 	}
 
 	public function staticSecurityTokenSecret($secret, $timeout = 43200)

@@ -54,10 +54,12 @@ class UserTrackController extends AbstractController
 		$cut = new \DateTime("@" . (time() - $this->settings->get('core_chat.user_online_time')));
 
 		$visitors = $this->em->createQuery("
-			SELECT v, t, ti
+			SELECT v, t, ti, ts, p
 			FROM DeskPRO:Visitor v
 			LEFT JOIN v.last_track t
+			LEFT JOIN v.last_track_soft ts
 			LEFT JOIN v.visit_track ti
+			LEFT JOIN v.person p
 			WHERE v.date_last > ?0 AND v.last_track IS NOT NULL AND v.hint_hidden = 0
 			ORDER BY v.date_last DESC
 		")->setMaxResults(100)->execute(array($cut));

@@ -119,6 +119,40 @@ class HttpKernel extends BaseHttpKernel
 		}
 
 		if (isset($controller[0]) AND $controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller) {
+			//==BEGIN:MONITORING==
+			if (extension_loaded('newrelic')) {
+				$ctrl_name = preg_replace('#^Application\\\\(.*?)(?:Bundle)?\\\\Controller\\\\(.*?)Controller$#', '$1:$2', get_class($controller[0]));
+				$ctrl_name .= ':' . preg_replace('#Action$#', '', $controller[1]);
+				newrelic_name_transaction($ctrl_name);
+
+				$args_str = array();
+				foreach ($arguments as $a) {
+					if (is_scalar($a)) {
+						if (is_bool($a)) {
+							$args_str[] = $a ? 'true' : 'false';
+						} else {
+							$args_str[] = $a;
+						}
+					} else if (is_array($a)) {
+						$single_array = true;
+						foreach ($a as $suba) {
+							if (!is_scalar($suba)) { $single_array = false; break; }
+						}
+						if ($single_array) {
+							$args_str[] = '[' . implode(', ', $a) . ']';
+						} else {
+							$args_str[] = '[array:' . count($a) . ']';
+						}
+					} else if (is_object($a)) {
+						$args_str[] = get_class($a);
+					} else {
+						$args_str[] = gettype($a);
+					}
+				}
+				newrelic_add_custom_parameter('route_params', implode(', ', $args_str));
+			}
+			//==END:MONITORING==
+
 			// Run pre event
 			$event = new PrePostEvent(array(
 				'request_type' => $type,

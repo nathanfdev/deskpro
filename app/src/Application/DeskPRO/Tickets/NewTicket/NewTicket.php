@@ -268,7 +268,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			}
 
 			$ticket['person']  = $person;
-			if ($email) {
+			if ($email && $person->primary_email && $person->primary_email->id != $email->id) {
 				$ticket->person_email = $email;
 			}
 			$ticket['subject'] = $this->ticket->subject;

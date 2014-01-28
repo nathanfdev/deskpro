@@ -5,7 +5,7 @@
             <li class="{% if deal_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{deal_attach.blob.extension|default('none')}}{% endif %}">
                 <div>
                     {% if deal_attach.blob.isImage() %}
-                            <a href="{{ deal_attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': deal_attach.blob.auth_id, 'filename': deal_attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+                            <a href="{{ deal_attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': deal_attach.blob.auth_id, 'filename': deal_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
                     {% endif %}
 
                     <a href="{{ deal_attach.blob.download_url }}" target="_blank">{{deal_attach.blob.filename}}</a>

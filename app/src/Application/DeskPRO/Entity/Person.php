@@ -430,19 +430,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $_set_plain_password = null;
 
 	/**
-	 * An array of name=>value for loaded preferences. These are not obejcts.
-	 * @var array
-	 */
-	protected $_pref_values = array();
-
-	/**
-	 * AN array of names we've loaded. This is because values can be null if they
-	 * dont exist, but we dont want to keep trying ot laod them every time they're requested.
-	 * @var array
-	 */
-	protected $_pref_loaded = array();
-
-	/**
 	 * Label manager for adding/removing labels
 	 * @var \Application\DeskPRO\Labels\LabelManager
 	 */
@@ -1070,8 +1057,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$pref['value'] = $value;
-		$this->_pref_loaded[] = $pref_name;
-		$this->_pref_values[$pref_name] = $value;
 
 		return $pref;
 	}
@@ -1087,12 +1072,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getPref($name, $default = null)
 	{
-		if (!in_array($name, $this->_pref_loaded)) {
-			$this->_pref_values[$name] = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId($name, $this->id);
-		}
-
-		if (isset($this->_pref_values[$name])) {
-			return $this->_pref_values[$name];
+		foreach ($this->preferences as $pref) {
+			if ($pref->name == $name) {
+				return $pref->getValue();
+			}
 		}
 
 		if ($default === null && $name == 'agent.ticket_reverse_order') {
@@ -1119,24 +1102,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$names = func_get_args();
 		}
 
-		// Filter out ones we already have
-		$loaded = $this->_pref_loaded;
-		$names_get = array_filter($names, function ($v) use ($loaded) {
-			if (in_array($v, $loaded)) {
-				return false;
-			}
-			return true;
-		});
-
-		if ($names_get) {
-			$got = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId($names_get, $this->id);
-			$this->_pref_values = array_merge($this->_pref_values, $got);
-			$this->_pref_loaded = array_merge($this->_pref_loaded, array_keys($got));
-		}
-
+		$names = array_fill_keys(array_values($names), true);
 		$ret = array();
-		foreach ($names as $n) {
-			$ret[$n] = isset($this->_pref_values[$n]) ? $this->_pref_values[$n] : null;
+
+		foreach ($this->preferences as $pref) {
+			if (isset($names[$pref->name])) {
+				$ret[$pref->name] = $pref->getValue();
+			}
 		}
 
 		return $ret;
@@ -1230,13 +1202,18 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function loadPrefGroup($pref_group)
 	{
-		$group = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId($pref_group, $this->id, false);
-		$this->_pref_values = array_merge(
-			$this->_pref_values,
-			$group
-		);
+		$pref_group = rtrim($pref_group, '.'); // incase it was supplied with dot
+		$pref_group_len = strlen($pref_group) + 1; // used with trimming below
 
-		return $group;
+		$ret = array();
+		foreach ($this->preferences as $pref) {
+			if (strpos($pref->name, $pref_group) === 0) {
+				$pref_name = substr($pref->name, $pref_group_len);
+				$ret[$pref_name] = $pref->getValue();
+			}
+		}
+
+		return $ret;
 	}
 
 
@@ -1858,7 +1835,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			if ($this->picture_blob && $this->picture_blob->isImage()) {
 				$url = App::get('router')->generate('serve_blob_sizefit', array(
 					'blob_auth_id' => $this->picture_blob->getAuthId(),
-					'filename' => $this->picture_blob->filename,
+					'filename' => $this->picture_blob->getFilenameSafe(),
 					's' => $size,
 				), true);
 
@@ -2260,6 +2237,17 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('organization_position', $organization_position);
 	}
 
+	public function hasSla(Sla $sla)
+	{
+		foreach ($this->slas AS $person_sla) {
+			if ($person_sla->id == $sla->id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * @return string
@@ -2459,7 +2447,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => false));
+		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'indexBy' => 'id', 'dpApi' => true, 'dpApiDeep' => true ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'joinTable' => array( 'name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));

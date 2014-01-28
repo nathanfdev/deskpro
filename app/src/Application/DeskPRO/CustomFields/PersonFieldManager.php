@@ -88,10 +88,30 @@ class PersonFieldManager extends FieldManager
 			$field_name = $field->getOption('field_name');
 			$raw_data   = $identity->getRawData();
 
-			$val = Arrays::keyAsPath($raw_data, $field_name, '/', null);
+			// Reads the value and does some common input error correction:
+			// - Arrays are separated by a slash or a dot: telephonenumber.0 or telephonenumber/0
+			// - If the key isnt found as-is, we'll also try converting to lowercase and trying again (keys are typically lowercase)
+			foreach (array('/', '.') as $sep) {
+				$val = Arrays::keyAsPath($raw_data, $field_name, $sep, null);
+
+				if ($val === null) {
+					$val = Arrays::keyAsPath($raw_data, strtolower($field_name), $sep, null);
+				}
+
+				if ($val !== null) {
+					break;
+				}
+			}
 
 			if ($val === null) {
 				continue;
+			}
+
+			// Automatically flatten arrays
+			// E.g., LDAP will return attributes as an array, often with only one item
+			// Without this we'd need to document that you need to specify attrName/0
+			if (is_array($val)) {
+				$val = implode("\n\n", $val);
 			}
 
 			$save_data['field_' . $field->getId()] = $val;

@@ -331,24 +331,51 @@ class ObjectLangRepository
 		$run = $this->queued_objects;
 		$this->queued_objects = array();
 
+		$run_refs = array();
+		$run_langs = array();
+
 		foreach ($run as $lang_id => $refs) {
-			$recs = $this->em->createQuery("
-				SELECT o
-				FROM DeskPRO:ObjectLang o
-				WHERE o.ref IN (?0) AND o.language = ?1
-			")->setParameters(array(array_values($refs), $lang_id))->execute();
+			$run_refs = array_merge($run_refs, array_keys($refs));
+			$run_langs[] = $lang_id;
+		}
 
-			foreach ($recs as $rec) {
-				$obj_ref = $rec->ref;
-				if (!isset($this->loaded[$obj_ref])) {
-					$this->loaded[$obj_ref] = array();
-				}
-				if (!isset($this->loaded[$obj_ref][$lang_id])) {
-					$this->loaded[$obj_ref][$lang_id] = array();
-				}
+		$run_refs = array_unique($run_refs);
+		$run_refs = array_values($run_refs);
 
-				$this->loaded[$obj_ref][$lang_id][$rec->getPropName()] = $rec;
+		$run_langs = array_unique($run_langs);
+		$run_langs = array_values($run_langs);
+
+		// Possible we over-fetch some info by getting
+		// langs we didnt specify if we are pre-loading two sets at a time
+		// but better to over-fetch than under-fetch and do another query
+		$recs = $this->em->createQuery("
+			SELECT o
+			FROM DeskPRO:ObjectLang o
+			WHERE o.ref IN (?0) AND o.language IN (?1)
+		")->setParameters(array($run_refs, $run_langs))->execute();
+
+		// Mark the refs themselves as "laoded" so we dont attempt to
+		// prelaod empty collections
+		foreach ($run_langs as $lang_id) {
+			foreach ($run_refs as $ref) {
+				if (!isset($this->loaded[$ref][$lang_id])) {
+					$this->loaded[$ref][$lang_id] = array();
+				}
 			}
+		}
+
+		foreach ($recs as $rec) {
+			$obj_ref = $rec->ref;
+			$lang_id = $rec->language->getId();
+
+			if (!isset($this->loaded[$obj_ref])) {
+				$this->loaded[$obj_ref] = array();
+			}
+			if (!isset($this->loaded[$obj_ref][$lang_id])) {
+				$this->loaded[$obj_ref][$lang_id] = array();
+			}
+
+			$this->loaded[$obj_ref][$lang_id][$rec->getPropName()] = $rec;
 		}
 	}
 

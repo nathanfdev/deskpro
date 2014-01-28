@@ -125,6 +125,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					}));
 
 					snippetList.empty().append(newList);
+					self.updateUi();
 				});
 			} else {
 				var catIds = [];
@@ -182,6 +183,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							snippetList.append(newListWrap);
 						});
 					});
+					self.updateUi();
 				} else {
 					driver.loadSnippets({
 						filterString: filterString || null
@@ -224,6 +226,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							newListWrap.append(newList);
 							snippetList.append(newListWrap);
 						});
+
+						self.updateUi();
 					});
 				}
 			}

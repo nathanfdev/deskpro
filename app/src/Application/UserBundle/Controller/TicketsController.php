@@ -42,6 +42,7 @@ use Orb\Util\Arrays;
 use Application\UserBundle\Form\EditTicketType;
 use Application\UserBundle\Form\NewTicketReplyType;
 use Application\UserBundle\Form\NewTicketParticipantType;
+use Orb\Util\Numbers;
 
 class TicketsController extends AbstractController
 {
@@ -74,6 +75,10 @@ class TicketsController extends AbstractController
 			return $this->redirect($redirect_url);
 		}
 
+		$page = max($this->in->getUint('p'), 1);
+		$per_page = 100;
+		$limit = ($page - 1) * $per_page;
+
 		$dql_join = '';
 		$sort = $this->in->getString('sort');
 		switch ($sort) {
@@ -94,15 +99,29 @@ class TicketsController extends AbstractController
 		}
 
 		if ($this->person->is_agent) {
+			$count = $this->db->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets
+				WHERE tickets.person_id = ? AND tickets.status != 'hidden'
+			", array($this->person->id));
+
 			$tickets = $this->em->createQuery("
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket
 				$dql_join
 				WHERE ticket.person = :person AND ticket.status != 'hidden'
 				ORDER BY $sort_dql
-			")->execute(array('person' => $this->person));
+			")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
 		} else {
 			if ($this->person->organization && $this->person->organization_manager) {
+
+				$count = $this->db->fetchColumn("
+					SELECT COUNT(*)
+					FROM tickets
+					LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
+					WHERE (tickets.person_id = ? OR (tickets_participants.person_id = ? AND tickets.organization_id != ?)) AND tickets.status != 'hidden'
+				", array($this->person->id, $this->person->id, $this->person->organization->id));
+
 				// Managers can always see their org tickets, so dont show them
 				// tickets if they are of their own org because those will be on the org page
 				$tickets = $this->em->createQuery("
@@ -112,8 +131,15 @@ class TicketsController extends AbstractController
 					$dql_join
 					WHERE (ticket.person = :person OR (part.person = :person AND ticket.organization != :org)) AND ticket.status != 'hidden'
 					ORDER BY $sort_dql
-				")->execute(array('person' => $this->person, 'org' => $this->person->organization));
+				")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
 			} else {
+				$count = $this->db->fetchColumn("
+					SELECT COUNT(*)
+					FROM tickets
+					LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
+					WHERE (tickets.person_id = ? OR tickets_participants.person_id = ?) AND tickets.status != 'hidden'
+				", array($this->person->id, $this->person->id));
+
 				$tickets = $this->em->createQuery("
 					SELECT ticket
 					FROM DeskPRO:Ticket ticket
@@ -121,10 +147,13 @@ class TicketsController extends AbstractController
 					$dql_join
 					WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden'
 					ORDER BY $sort_dql
-				")->execute(array('person' => $this->person));
+				")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
 			}
 		}
 
+		$pageinfo = Numbers::getPaginationPages($count, $page, $per_page, 3);
+
+		$all_tickets      = array();
 		$active_tickets   = array();
 		$resolved_tickets = array();
 
@@ -132,6 +161,7 @@ class TicketsController extends AbstractController
 
 		foreach ($tickets as $t) {
 			$ticket_ids[] = $t['id'];
+			$all_tickets[] = $t;
 			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
 				$active_tickets[] = $t;
 			} else {
@@ -164,11 +194,20 @@ class TicketsController extends AbstractController
 			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
 		}
 
+		$show_split = false;
+		if ($sort == 'date_created' && $page == 1 && $active_tickets) {
+			$show_split = true;
+		}
+
         return $this->render('UserBundle:Tickets:list.html.twig', array(
+			'all_tickets'      => $all_tickets,
 			'active_tickets'   => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
 			'last_messages'    => $last_messages,
 			'sort'             => $sort,
+			'count'            => $count,
+			'pageinfo'         => $pageinfo,
+			'show_split'       => $show_split,
 		));
     }
 
@@ -210,14 +249,25 @@ class TicketsController extends AbstractController
 				$sort_dql = 'ticket.id DESC';
 		}
 
+		$page = max($this->in->getUint('p'), 1);
+		$per_page = 100;
+		$limit = ($page - 1) * $per_page;
+
+		$count = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets
+			WHERE tickets.organization_id = ? AND tickets.status != 'hidden'
+		", array($this->person->organization->id));
+
 		$tickets = $this->em->createQuery("
 			SELECT ticket
 			FROM DeskPRO:Ticket ticket
 			$dql_join
 			WHERE ticket.organization = :organization AND ticket.status != 'hidden'
 			ORDER BY $sort_dql
-		")->execute(array('organization' => $this->person->organization));
+		")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('organization' => $this->person->organization));
 
+		$all_tickets      = array();
 		$active_tickets   = array();
 		$resolved_tickets = array();
 
@@ -225,6 +275,7 @@ class TicketsController extends AbstractController
 
 		foreach ($tickets as $t) {
 			$ticket_ids[] = $t['id'];
+			$all_tickets[] = $t;
 			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
 				$active_tickets[] = $t;
 			} else {
@@ -232,6 +283,7 @@ class TicketsController extends AbstractController
 			}
 		}
 
+		$pageinfo = Numbers::getPaginationPages($count, $page, $per_page, 3);
 		$ticket_ids = implode(',', $ticket_ids);
 
 		$last_messages = array();
@@ -257,12 +309,21 @@ class TicketsController extends AbstractController
 			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
 		}
 
+		$show_split = false;
+		if ($sort == 'date_created' && $page == 1 && $active_tickets) {
+			$show_split = true;
+		}
+
         return $this->render('UserBundle:Tickets:list-organization.html.twig', array(
 			'organization'     => $this->person->organization,
 			'sort'             => $sort,
+			'all_tickets'      => $all_tickets,
 			'active_tickets'   => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
-			'last_messages'    => $last_messages
+			'last_messages'    => $last_messages,
+			'count'            => $count,
+			'pageinfo'         => $pageinfo,
+			'show_split'       => $show_split,
 		));
     }
 

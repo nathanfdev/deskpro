@@ -648,40 +648,6 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
-	# Ajax loaded tabs
-	############################################################################
-
-	public function ajaxTabRelatedContentAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$search = App::getSearchEngine();
-
-
-		$related_tickets = false;
-		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_TICKETS_SIMILAR)) {
-			$ticket_searcher = $search->getTicketSearcher();
-			$results = $ticket_searcher->similar($ticket);
-
-			$related_tickets = $search->getResultSetObjects($results);
-		}
-
-		$related_articles = false;
-		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)) {
-			$content_searcher = $search->getContentSearcher();
-			$results = $content_searcher->similarArticleToTicket($ticket);
-
-			$related_articles = $search->getResultSetObjects($results);
-		}
-
-		return $this->render('AgentBundle:Ticket:tab-related-content.html.twig', array(
-			'ticket'            => $ticket,
-			'related_tickets'   => $related_tickets,
-			'related_articles'  => $related_articles,
-		));
-	}
-
-	############################################################################
 	# ajax-save-flagged
 	############################################################################
 
@@ -2297,8 +2263,9 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_sla = $ticket->addSla($sla);
+		$ticket_sla->calculateSlaDates(false);
 		if ($ticket_sla && !$ticket_sla->id) {
-			$this->em->persist($ticket);
+			$this->em->persist($ticket_sla);
 			$this->em->flush();
 
 			$data = array(
@@ -2917,6 +2884,11 @@ class TicketController extends AbstractController
 	public function viewMessageWindowAction($message_id, $type = 'normal')
 	{
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		if (!$message) {
+			throw $this->createNotFoundException();
+		}
+
 		$ticket = $message->ticket;
 
 		$vars = array(

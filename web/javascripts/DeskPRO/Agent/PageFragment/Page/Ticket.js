@@ -654,6 +654,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			} else {
 				self.getEl('cc_list').show().addClass('cc-open');
 				self.getEl('cc_list').find('.addrow').show();
+				self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 			}
 		});
 
@@ -681,6 +682,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					},
 					success: function(html) {
 						logsWrap.html(html);
+						DeskPRO_Window.initInterfaceServices(logsWrap);
 						self.updateUi();
 					}
 				});
@@ -693,6 +695,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					},
 					success: function(html) {
 						logsWrap.html(html);
+						DeskPRO_Window.initInterfaceServices(logsWrap);
 						self.updateUi();
 					}
 				});
@@ -883,6 +886,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: postData,
 			success: function(html) {
 				logsWrap.html(html);
+				DeskPRO_Window.initInterfaceServices(logsWrap);
 				self.updateUi();
 			}
 		});
@@ -892,7 +896,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		DeskPRO_Window.showAlert('You are not allowed to make any changes to this ticket until it has been unlocked.');
 	},
 
-	handleReplySave: function(ev, formData, handler) {
+	handleReplySave: function(ev, formData, handler, meta) {
+
+		this.replyHasBillingControl = meta.hasBillingControl;
 
 		if (this.pauseSend) {
 			window.setTimeout((function() {
@@ -1179,7 +1185,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				billing.addBillingRow(data.charge_html);
 				billing.updateBillingForm(true);
 				billing.resetBillingForm();
-			} else {
+			} else if (this.replyHasBillingControl) {
 				billing.updateBillingForm(false);
 				billing.resetBillingForm();
 			}

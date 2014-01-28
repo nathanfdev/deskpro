@@ -252,7 +252,7 @@ class DownloadsController extends AbstractController
 			return $this->redirect($download->fileurl);
 		}
 
-		return $this->redirectRoute('serve_blob', array('blob_auth_id' => $download->blob->auth_id, 'filename' => $download->filename));
+		return $this->redirectRoute('serve_blob', array('blob_auth_id' => $download->blob->auth_id, 'filename' => $download->getFilenameSafe()));
 	}
 
 

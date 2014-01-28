@@ -339,7 +339,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->isImage()) {
 			return null;
 		}
-		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->filename, 's' => $size), $absolute);
+		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe(), 's' => $size), $absolute);
 	}
 
 	/**

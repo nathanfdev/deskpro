@@ -716,13 +716,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 								try {
 									var tpl = twig({
 										data: useText,
-										strict_variables: true
+										strict_variables: false
 									});
 									if (tpl) {
 										result = tpl.render({
-											ticket: self.page ? self.page.meta.api_data : {}
+											ticket: self.page.meta.api_data
 										}, {
-											strict_variables: true
+											strict_variables: false
 										});
 									} else {
 										result = useText;
@@ -868,7 +868,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('action').val(self.getElById('reply_as_type').data('type'));
 
 			var formData = self.el.serializeArray();
-			self.el.trigger('replyboxsubmit', [formData, self]);
+			self.el.trigger('replyboxsubmit', [formData, self, {
+				hasBillingControl: self.getElById('billing_reply')[0] ? true : false
+			}]);
 		});
 
 		this.getElById('keep_open_toggle').on('click', function(ev) {

@@ -178,7 +178,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 						$path .= "?$data_url";
 					}
 				}
-				$request = $http_client->get($path);
+				$request = $http_client->delete($path);
 				break;
 
 			default:

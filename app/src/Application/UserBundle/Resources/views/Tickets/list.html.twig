@@ -9,10 +9,19 @@
 {% block page_title %}{{ phrase('user.tickets.your_tickets') }}{% endblock %}
 {% block content %}
 
-{% macro ticket_row(ticket, last_messages, show_owner) %}
+{% macro ticket_row(ticket, last_messages, show_owner, show_status) %}
 	<li>
 		<div class="dp-title">
-			<div class="dp-fadeaway-container">
+			{% if show_status %}
+				<div style="float:right">
+					{% if ticket.status in ['awaiting_agent', 'awaiting_user'] %}
+						<span class="dp-status dp-status-open">{{ phrase('user.tickets.status_open') }}</span>
+					{% elseif ticket.status in ['resolved', 'closed'] %}
+						<span class="dp-status dp-status-closed">{{ phrase('user.tickets.status_resolved') }}</span>
+					{% endif %}
+				</div>
+			{% endif %}
+			<div class="dp-fadeaway-container" style="margin-right: 80px;">
 				<h4 class="dp-fadetitle">
 					<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a>
 					{% if show_owner %}<span class="ticket-creator">{{ ticket.person.display_name }}</span>{% endif %}
@@ -53,43 +62,84 @@
 	</form>
 {% endset %}
 
-{% if active_tickets|length %}
-	<section class="dp-ticketlist-section dp-portal-section">
-		<header>
-			{{ sort_form|raw }}
-			<h1>{{ phrase('user.tickets.open_tickets') }}</h1>
-		</header>
-		<div class="dp-content-block">
-			<div class="dp-content-wrapper">
-				<ul class="dp-ticket-list">
-					{% for ticket in active_tickets %}
-						{{ _self.ticket_row(ticket, last_messages) }}
-					{% endfor %}
-				</ul>
+{% if show_split %}
+	{% if active_tickets|length %}
+		<section class="dp-ticketlist-section dp-portal-section">
+			<header>
+				{{ sort_form|raw }}
+				<h1>{{ phrase('user.tickets.open_tickets') }}</h1>
+			</header>
+			<div class="dp-content-block">
+				<div class="dp-content-wrapper">
+					<ul class="dp-ticket-list">
+						{% for ticket in active_tickets %}
+							{{ _self.ticket_row(ticket, last_messages) }}
+						{% endfor %}
+					</ul>
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<br />
+		<br />
+	{% endif %}
+
+	{% if resolved_tickets|length %}
+		<section class="dp-ticketlist-section dp-portal-section">
+			<header>
+				{% if not active_tickets %}{{ sort_form|raw }}{% endif %}
+				<h1>{{ phrase('user.tickets.list_resolved') }}</h1>
+			</header>
+			<div class="dp-content-block">
+				<div class="dp-content-wrapper">
+					<ul class="dp-ticket-list">
+						{% for ticket in resolved_tickets %}
+							{{ _self.ticket_row(ticket, last_messages) }}
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<br />
+	{% endif %}
+{% else %}
+	{% if all_tickets|length %}
+		<section class="dp-ticketlist-section dp-portal-section">
+			<header>
+				{% if all_tickets|length %}{{ sort_form|raw }}{% endif %}
+				<h1>{{ phrase('user.tickets.tickets') }}</h1>
+			</header>
+			<div class="dp-content-block">
+				<div class="dp-content-wrapper">
+					<ul class="dp-ticket-list">
+						{% for ticket in all_tickets %}
+							{{ _self.ticket_row(ticket, last_messages, false, true) }}
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<br />
+	{% endif %}
 {% endif %}
 
-{% if resolved_tickets|length %}
-	<section class="dp-ticketlist-section dp-portal-section">
-		<header>
-			{% if not active_tickets %}{{ sort_form|raw }}{% endif %}
-			<h1>{{ phrase('user.tickets.list_resolved') }}</h1>
-		</header>
-		<div class="dp-content-block">
-			<div class="dp-content-wrapper">
-				<ul class="dp-ticket-list">
-					{% for ticket in resolved_tickets %}
-						{{ _self.ticket_row(ticket, last_messages) }}
-					{% endfor %}
-				</ul>
-			</div>
-		</div>
-	</section>
+{% if pageinfo.last != 1 %}
+	<br/>
+	{% set page_url = path('user_tickets') ~ '?sort=' ~ sort ~ '&p=' %}
 
-	<br />
+	<div class="dp-pagination">
+		<ul>
+			{% if pageinfo.curpage == 1 %}
+				{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.more') }} {{ language_arrow('right') }}</a></li>{% endif %}
+			{% else %}
+				{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">{{ language_arrow('left') }} {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+				{% for p in pageinfo.pages %}
+				<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
+					{% endfor %}
+				{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.next') }} {{ language_arrow('right') }}</a></li>{% endif %}
+			{% endif	 %}
+		</ul>
+	</div>
 {% endif %}
 {% endblock %}

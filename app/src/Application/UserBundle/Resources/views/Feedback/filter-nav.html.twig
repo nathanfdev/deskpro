@@ -7,7 +7,7 @@
 	<li class="dp-dropdown dp-alt-option dp-first" style="float: {% if is_rtl() %}right{% else %}left{% endif %};">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			{% if category.id %}
-				<span class="dp-info-prefix">{{ phrase('user.feedback.category') }}:</span>
+				<span class="dp-info-prefix">{{ phrase('user.feedback.type') }}:</span>
 				{{ category.full_title }}
 			{% else %}
 				{{ phrase('user.feedback.all_types') }}

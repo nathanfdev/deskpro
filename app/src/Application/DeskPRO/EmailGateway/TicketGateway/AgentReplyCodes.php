@@ -306,7 +306,10 @@ class AgentReplyCodes implements Loggable
 						$this->getLogger()->logDebug('[AgentReplyCodes] Set user to ' . $person->id);
 						$this->props['user'] = $person;
 					} else {
-						$this->getLogger()->logDebug('[AgentReplyCodes] Unknown person: ' . $param);
+						$this->getLogger()->logDebug('[AgentReplyCodes] Creating new person: ' . $param);
+						$person = $person_processor->createPerson($email, true);
+						$this->getLogger()->logDebug('[AgentReplyCodes] Creating person #' . $person->id);
+						$this->props['user'] = $person;
 					}
 				} else {
 					$this->getLogger()->logDebug('[AgentReplyCodes] User must be an email: ' . $param);

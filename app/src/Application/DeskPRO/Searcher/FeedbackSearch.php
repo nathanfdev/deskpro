@@ -73,7 +73,7 @@ class FeedbackSearch extends SearcherAbstract
 	 */
 	public function getMatches(array $limit = null)
 	{
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.feedback');
 
 		$feedback_ids = $db->fetchAllCol($this->getSql($limit));
 
@@ -172,7 +172,7 @@ class FeedbackSearch extends SearcherAbstract
 			$sql .= '1';
 		}
 
-		$count = App::getDbRead()->fetchColumn($sql);
+		$count = App::getDbRead('search.filter.feedback')->fetchColumn($sql);
 
 		return $count;
 	}
@@ -312,7 +312,7 @@ class FeedbackSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
-		$db = App::getDbRead();
+		$db = App::getDbRead('search.filter.feedback');
 
 		$wheres = array();
 		$joins = array();

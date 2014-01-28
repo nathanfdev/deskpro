@@ -267,6 +267,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			var iScroll, iPosition = { start: 0, now: 0 }, iMouse = {};
 			var wheelStopTimeout = null;
 			var mouseoverTimeout = null;
+			var touchDragStartPos = null;
+			var isTouchDrag = false;
 
 			// - Sometimes the browser might scroll the view,
 			//   which is different than the position offset
@@ -344,7 +346,11 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				iMouse.start = sAxis ? oEvent.pageX : oEvent.pageY;
 				var oThumbDir = parseInt(oThumb.obj.css(sDirection));
 				iPosition.start = oThumbDir == 'auto' ? 0 : oThumbDir;
+				isTouchDrag = false;
+				touchDragStartPos = iScroll;
+
 				if (touchEvents) {
+					isTouchDrag = true;
 					document.ontouchmove = function( event )
 					{
 						event.preventDefault();
@@ -352,6 +358,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					};
 					document.ontouchend = end;
 				} else if (msTouchEvents && oEvent.pointerType && oEvent.pointerType == oEvent.MSPOINTER_TYPE_TOUCH) {
+					isTouchDrag = true;
 					var fn = function( event )
 					{
 						isTouchEvent = true;
@@ -436,14 +443,23 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					fns = [];
 				}
 
-				isTouchEvent = false;
-
-				return false;
+				if (isTouchEvent || isTouchDrag) {
+					isTouchEvent = false;
+					if (Math.abs(iScroll - touchDragStartPos) > 10) {
+						window.DP_SCROLL_CANCEL_TOUCH = true;
+						window.setTimeout(function() {
+							window.DP_SCROLL_CANCEL_TOUCH = false;
+						}, 100);
+						return false;
+					}
+				} else {
+					return false;
+				}
 			};
 			function drag(oEvent){
 				oWrapper.removeClass('stuck');
 				if(!(oContent.ratio >= 1)){
-					if(isTouchEvent) {
+					if(isTouchEvent || isTouchDrag) {
 						iPosition.now = Math.min((oTrack[options.axis] - oThumb[options.axis]), Math.max(0, (iPosition.start - ((sAxis ? oEvent.pageX : oEvent.pageY) - iMouse.start))));
 					} else {
 						iPosition.now = Math.min((oTrack[options.axis] - oThumb[options.axis]), Math.max(0, (iPosition.start + ((sAxis ? oEvent.pageX : oEvent.pageY) - iMouse.start))));

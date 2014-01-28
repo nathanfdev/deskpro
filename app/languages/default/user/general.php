@@ -35,6 +35,7 @@
 	'user.general.post_comment_btn'              => 'Post Comment',
 	'user.general.rating_x_of_y_found_helpful'   => '{{vote_up}} of {{vote_count}} people found this page helpful',
 	'user.general.read_more'                     => 'Read more',
+	'user.general.more'                          => 'More',
 	'user.general.remember_me'                   => 'Remember Me',
 	'user.general.save'                          => 'Save',
 	'user.general.set_as_helpful'                => 'This page was helpful',

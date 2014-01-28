@@ -11,7 +11,7 @@
 	</header>
 	<article>
 		<div class="dp-post">{{ download.content_html|raw }}</div>
-		<p><a class="dp-btn dp-btn-primary" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
+		<p><a class="dp-btn dp-btn-primary" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename_safe}) }}">
 			{{ phrase('user.downloads.button-download') }}: {{ download.filename }} ({{ download.readable_filesize }})
 		</a></p>
 	</article>

@@ -419,14 +419,18 @@
 						</p>
 					</fieldset>
 					<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
-					<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
-					<div id="lost_explain_wrap">
-						<div id="lost_explain">
-							<i class="close">x</i>
-							To reset admin passwords, you must a special command-line tool:
-							<br/>See <a href="https://support.deskpro.com/kb/articles/93">https://support.deskpro.com/kb/articles/93</a>
+					{% if app.isCloud() %}
+						<p class="text-right"><a href="{{ path('agent_login', {'lost':1}) }}">{{ phrase('agent.login.forgot_password') }}</a></p>
+					{% else %}
+						<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
+						<div id="lost_explain_wrap">
+							<div id="lost_explain">
+								<i class="close">x</i>
+								To reset admin passwords, you must a special command-line tool:
+								<br/>See <a href="https://support.deskpro.com/kb/articles/93">https://support.deskpro.com/kb/articles/93</a>
+							</div>
 						</div>
-					</div>
+					{% endif %}
 				</form>
 			</div>
 

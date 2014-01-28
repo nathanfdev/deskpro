@@ -320,6 +320,18 @@ class KernelErrorHandler
 		self::logToFile($errinfo);
 		unset($errinfo['exception']);
 
+		if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
+			//==BEGIN:MONITORING==
+			if (extension_loaded('newrelic')) {
+				if (isset($errinfo['exception'])) {
+					newrelic_notice_error($errinfo['summary'], $errinfo['exception']);
+				} else {
+					newrelic_notice_error($errinfo['summary']);
+				}
+			}
+			//==END:MONITORING==
+		}
+
 		if (isset($GLOBALS['DP_CRON_LOGGER'])) {
 			$GLOBALS['DP_CRON_LOGGER']->log("ERROR {$errinfo['session_name']}: {$errinfo['summary']}", 'ERR', array('flag' => 'job_error'));
 		}

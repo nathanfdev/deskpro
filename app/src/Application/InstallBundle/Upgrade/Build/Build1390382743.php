@@ -29,48 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Search
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Search\EntityWatcher\MysqlFilter;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\EntityManager;
-use Orb\Filter\FilterInterface;
-
-class TicketFilter implements FilterInterface
+class Build1390382743 extends AbstractBuild
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
-
-	public function __construct(EntityManager $em)
+	public function run()
 	{
-		$this->em = $em;
-	}
-
-	public function filter($ticket)
-	{
-		// Means its new, always index
-		if (!$ticket->id) {
-			return true;
-		}
-
-		$uow = $this->em->getUnitOfWork();
-		$changeset = $uow->getEntityChangeSet($ticket);
-
-		$valid_triggers = array(
-			'language', 'department', 'category', 'priority', 'workflow', 'product',
-			'person', 'agent', 'agent_team', 'organization', 'messages', 'labels',
-			'status', 'is_hold', 'subject',
-		);
-
-		foreach ($valid_triggers as $k) {
-			if (isset($changeset[$k])) {
-				return true;
-			}
-		}
-
-		return false;
+		$this->out("Clean up superfluous search records");
+		$this->execMutateSql("
+			DELETE FROM content_search
+			WHERE object_type IN ('ticket', 'chat_conversation')
+		");
+		$this->execMutateSql("
+			DELETE FROM content_search_attribute
+			WHERE object_type IN ('ticket', 'chat_conversation')
+		");
 	}
 }

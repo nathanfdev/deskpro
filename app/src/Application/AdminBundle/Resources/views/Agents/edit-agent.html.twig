@@ -171,7 +171,7 @@
 				</div>
 			</div>
 		{% else %}
-			{% if agent.getPasswordHash() %}
+			{% if agent.getPasswordHash() or (not agent.getPasswordHash() and not user_usersources|length) %}
 				<div class="dp-form-row">
 					<div class="dp-form-label">
 						<label>Reset Password</label>

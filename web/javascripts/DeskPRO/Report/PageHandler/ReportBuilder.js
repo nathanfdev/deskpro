@@ -101,6 +101,7 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 
 			$.scrollTo(document.body, 200);
 
+			hash = decodeURIComponent(hash)
 			$.ajax({
 				url: hash || window.location.pathname + window.location.search,
 				type: 'GET',

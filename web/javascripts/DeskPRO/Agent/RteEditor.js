@@ -103,6 +103,11 @@ DeskPRO.Agent.RteEditor = {
 			return false
 		}
 
+		// Need to capture clicks on the contenteditable
+		// or else it'll be consumed by the scrollbar handler
+		api.$content.on('touchend', function(ev) {
+			event.stopPropagation();
+		});
 		api.$toolbar.find('a').attr('unselectable', 'on').attr('tabindex', '-1');
 		api.$editor.addClass('unreset');
 

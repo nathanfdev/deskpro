@@ -788,7 +788,7 @@ class GroupingCounter
 				} elseif ($key == (count($times) - 1)) {
 					$term = array('type' => $groupvar, 'op' => 'gte', 'options' => 14515200);
 				} else {
-					$term = array('type' => $groupvar, 'op' => 'lte', 'options' => array($times[$key], $times[$key+1]));
+					$term = array('type' => $groupvar, 'op' => 'between', 'options' => array($times[$key], $times[$key+1]));
 				}
 
 				return $term;
