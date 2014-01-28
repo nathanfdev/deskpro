@@ -62,6 +62,8 @@ define [
  	# @param {String} data_key - using this key data is looked in @$scope
  	###
 		getStats: (data_key) ->
+			@toggleLoadingState(data_key)
+
 			promise = @Api.sendGet('/reports/overview/get-stats/' + data_key, {
 				grouping_field: @$scope[data_key].grouping_field
 				date_choice: @$scope[data_key].date_choice
@@ -69,6 +71,7 @@ define [
 			})
 
 			promise.success((data) =>
+				@toggleLoadingState(data_key)
 				@$scope[data_key] = data
 
 				if data_key == 'tickets_user_waiting_time' or data_key == 'tickets_response_time'
@@ -78,6 +81,13 @@ define [
 				else
 					@setDataForBarGraphs(data_key)
 			)
+
+
+		###
+ 	# Used for hiding / showing AJAX loader
+ 	###
+ 	toggleLoadingState: (data_key) ->
+			@$scope[data_key].loading = !@$scope[data_key].loading
 
 
 		###

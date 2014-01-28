@@ -51,7 +51,8 @@
 		</h3>
 	</header>
 	<article>
-		<table class="stat-table" width="100%" ng-if="!chats_created.empty">
+		<div class="dp-layout-loading" ng-show="chats_created.loading"><i></i></div>
+		<table class="stat-table" width="100%" ng-if="!chats_created.empty" ng-hide="chats_created.loading">
 			<tr ng-repeat="stat in chats_created.stats">
 				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
 				<td width="100%">
@@ -72,7 +73,7 @@
 				<td class="val">{{ ng_var('chats_created.sum') }}</td>
 			</tr>
 		</table>
-		<div class="no-data" ng-if="chats_created.empty">
+		<div class="no-data" ng-if="chats_created.empty" ng-hide="chats_created.loading">
 			<h3>No matching data</h3>
 		</div>
 	</article>

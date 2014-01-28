@@ -25,7 +25,8 @@
 		</h3>
 	</header>
 	<article>
-		<table class="stat-table" width="100%" ng-if="!tickets_response_time.empty">
+		<div class="dp-layout-loading" ng-show="tickets_response_time.loading"><i></i></div>
+		<table class="stat-table" width="100%" ng-if="!tickets_response_time.empty" ng-hide="tickets_response_time.loading">
 			<tr ng-repeat="stat in tickets_response_time.stats">
 				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
 				<td width="100%">
@@ -65,7 +66,7 @@
 				</td>
 			</tr>
 		</table>
-		<div class="no-data" ng-if="tickets_response_time.empty">
+		<div class="no-data" ng-if="tickets_response_time.empty" ng-hide="tickets_response_time.loading">
 			<h3>No matching data</h3>
 		</div>
 	</article>
