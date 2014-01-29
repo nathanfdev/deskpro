@@ -128,7 +128,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$this->apikey    = $this->api_user->api_key;
 		$this->api_token = $this->api_user->api_token;
-		$this->person    = $this->api_token->person;
+		$this->person    = $this->api_user->person;
 
 		if ($this->person && $this->person->is_agent && !$this->person->is_deleted && !$this->person->is_disabled) {
 			App::setCurrentPerson($this->person);
