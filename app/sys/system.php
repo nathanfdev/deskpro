@@ -481,6 +481,20 @@ final class License
 
 	/**
 	 * @static
+	 * @return string
+	 */
+	public static function getSupportUrl()
+	{
+		if (!defined('DP_SUPPORT_URL')) {
+			define('DP_SUPPORT_URL', 'https://support.deskpro.com');
+		}
+
+		return DP_SUPPORT_URL;
+	}
+
+
+	/**
+	 * @static
 	 * @param $license_code
 	 * @return \DeskPRO\Kernel\License
 	 */

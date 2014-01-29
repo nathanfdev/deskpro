@@ -20,7 +20,8 @@ define [
 				agents:      '/agents',
 				cronStatus:  '/server/cron-status',
 				errorStatus: '/server/error-status',
-				apcStatus:   '/server/apc-status'
+				apcStatus:   '/server/apc-status',
+				versionInfo: '/dp_license/version-info',
 			}).then( (result) =>
 				data = result.data
 				@online_agents  = []
@@ -28,6 +29,7 @@ define [
 				@cron_status    = result.data.cronStatus
 				@error_status   = result.data.errorStatus
 				@apc_status     = result.data.apcStatus
+				@version_info   = result.data.versionInfo
 
 				problem_triggers = [
 					@cron_status.is_problem,
@@ -44,6 +46,25 @@ define [
 						@online_agents.push(agent)
 					else
 						@offline_agents.push(agent)
+			)
+
+			# Get news and version info in parallel
+			@Api.sendDataGet({
+				latestVersion: '/dp_license/latest-version-info',
+				news: '/dp_license/news'
+			}).then( (result) =>
+				if not result.data.latestVersion?.version_info?
+					@latest_version_status = "error"
+				else
+					@latest_version_status = "okay"
+					@latest_version = result.data.latestVersion.version_info
+					@latest_version.count_behind = 2
+
+				if not result.data.news?.news?
+					@news_status = "error"
+				else
+					@news_status = "okay"
+					@news = result.data.news.news
 			)
 
 			return promise

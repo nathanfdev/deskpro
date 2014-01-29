@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Service\LicenseService;
 use DeskPRO\Kernel\License;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
@@ -173,6 +174,7 @@ FILE;
 		}
 	}
 
+
 	####################################################################################################################
 	# send-support-request
 	####################################################################################################################
@@ -196,5 +198,54 @@ FILE;
 		} else {
 			return $this->createApiErrorResponse('failed_send', 'Failed to send support request.');
 		}
+	}
+
+
+	####################################################################################################################
+	# get-version-info
+	####################################################################################################################
+
+	public function getVersionInfoAction()
+	{
+		return $this->createJsonResponse(array(
+			'build'          => DP_BUILD_TIME,
+			'build_name'     => defined('DP_BUILD_NUM') && DP_BUILD_NUM ? DP_BUILD_NUM : 'DEV',
+			'build_num_base' => defined('DP_BUILD_NUM_BASE') ? DP_BUILD_NUM_BASE : 0,
+			'build_num_rev'  => defined('DP_BUILD_NUM_REV') ? DP_BUILD_NUM_REV : 0
+		));
+	}
+
+	####################################################################################################################
+	# get-latest-version
+	####################################################################################################################
+
+	public function getLatestVersionAction()
+	{
+		try {
+			$version_info = LicenseService::compareVersion();
+		} catch (\Exception $e) {
+			$version_info = null;
+		}
+
+		return $this->createJsonResponse(array(
+			'version_info' => $version_info,
+		));
+	}
+
+	####################################################################################################################
+	# get-news
+	####################################################################################################################
+
+	public function getNewsAction()
+	{
+		try {
+			$news = LicenseService::getNews();
+		} catch (\Exception $e) {
+			$news = null;
+		}
+
+		return $this->createJsonResponse(array(
+			'news' => $news,
+		));
 	}
 }

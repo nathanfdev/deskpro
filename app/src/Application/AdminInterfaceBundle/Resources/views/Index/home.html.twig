@@ -99,10 +99,30 @@
 			<div class="col-xs-6">
 				<div class="dp-item" style="min-height: 284px;">
 					<header>
-						<h3>DeskPRO News</h3>
+						<h3>DeskPRO Updates</h3>
 					</header>
-					<article>
-						...
+					<article style="padding: 10px;">
+						<p>
+							You are currently using version <strong>#{{ ng_var('Home.version_info.build_name') }}</strong>.
+							<span ng-show="Home.latest_version_status == 'okay'">
+								The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
+								<span ng-show="Home.latest_version.count_behind > 0">
+									You are behind by {{ ng_var('Home.latest_version.count_behind') }}.<br/><button class="btn btn-primary">Update DeskPRO Now &rarr;</button>
+								</span>
+								<span ng-show="Home.latest_version.count_behind <= 0">
+									You are up to date!
+								</span>
+							</span>
+						</p>
+						<div ng-show="Home.news_status == 'okay'" class="news-content">
+							<strong>News</strong>
+							<ul>
+								<li ng-repeat="item in Home.news">
+									<i class="fa fa-caret-right"></i>
+									<a ng-href="{{ ng_var('item.link') }}" target="_blank">{{ ng_var('item.title') }}</a>
+								</li>
+							</ul>
+						</div>
 					</article>
 				</div>
 			</div>

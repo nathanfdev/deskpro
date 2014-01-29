@@ -29,7 +29,8 @@
           agents: '/agents',
           cronStatus: '/server/cron-status',
           errorStatus: '/server/error-status',
-          apcStatus: '/server/apc-status'
+          apcStatus: '/server/apc-status',
+          versionInfo: '/dp_license/version-info'
         }).then(function(result) {
           var agent, data, problem_triggers, _i, _len, _ref1, _results;
           data = result.data;
@@ -38,6 +39,7 @@
           _this.cron_status = result.data.cronStatus;
           _this.error_status = result.data.errorStatus;
           _this.apc_status = result.data.apcStatus;
+          _this.version_info = result.data.versionInfo;
           problem_triggers = [_this.cron_status.is_problem, _this.error_status.error_count > 0, _this.error_status.gateway_error_count > 0, _this.error_status.sendmail_error_count > 0, _this.apc_status.is_problem];
           _this.is_server_problem = problem_triggers.filter(function(x) {
             return !!x;
@@ -53,6 +55,25 @@
             }
           }
           return _results;
+        });
+        this.Api.sendDataGet({
+          latestVersion: '/dp_license/latest-version-info',
+          news: '/dp_license/news'
+        }).then(function(result) {
+          var _ref1, _ref2;
+          if (((_ref1 = result.data.latestVersion) != null ? _ref1.version_info : void 0) == null) {
+            _this.latest_version_status = "error";
+          } else {
+            _this.latest_version_status = "okay";
+            _this.latest_version = result.data.latestVersion.version_info;
+            _this.latest_version.count_behind = 2;
+          }
+          if (((_ref2 = result.data.news) != null ? _ref2.news : void 0) == null) {
+            return _this.news_status = "error";
+          } else {
+            _this.news_status = "okay";
+            return _this.news = result.data.news.news;
+          }
         });
         return promise;
       };

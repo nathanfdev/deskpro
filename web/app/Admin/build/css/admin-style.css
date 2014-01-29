@@ -8162,6 +8162,30 @@ div.dp-appalt-section > section header h3 {
   box-shadow: 0 0 3px 1px rgba(126, 49, 64, 0.5);
 }
 
+.dp-dashboard .news-content {
+  margin-top: 15px;
+}
+
+.dp-dashboard .news-content strong {
+  font-size: 120%;
+  font-size: normal;
+}
+
+.dp-dashboard .news-content ul {
+  padding: 0;
+  margin: 0;
+}
+
+.dp-dashboard .news-content ul li {
+  margin: 6px 0 6px 4px;
+  list-style-type: none;
+}
+
+.dp-dashboard .news-content ul li i {
+  margin-right: 3px;
+  color: #aaa;
+}
+
 .dp-dashboard .status-content header .icon {
   float: left;
   width: 30px;

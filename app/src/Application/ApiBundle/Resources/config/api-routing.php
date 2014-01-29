@@ -2382,6 +2382,24 @@ $collection->create('api_dp_license_supportrequest', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_dp_license_versioninfo', array(
+	'path'         => '/dp_license/version-info',
+	'controller'   => 'ApiBundle:License:getVersionInfo',
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_dp_license_latestversion', array(
+	'path'         => '/dp_license/latest-version-info',
+	'controller'   => 'ApiBundle:License:getLatestVersion',
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_dp_license_news', array(
+	'path'         => '/dp_license/news',
+	'controller'   => 'ApiBundle:License:getNews',
+	'methods'      => array('GET'),
+));
+
 ########################################################################################################################
 # Ticket Settings
 ########################################################################################################################
