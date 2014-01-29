@@ -92,4 +92,13 @@ $collection->create('admin_portaleditor_accept_upload', array(
 	'controller'  => 'AdminInterfaceBundle:PortalEditor:acceptTempUpload',
 ));
 
+########################################################################################################################
+# Upgrade
+########################################################################################################################
+
+$collection->create('admin_upgrade_index', array(
+	'path'        => '/upgrade',
+	'controller'  => 'AdminInterfaceBundle:Upgrade:index',
+));
+
 return $collection;

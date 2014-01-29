@@ -7,10 +7,6 @@ $collection = new RouteCollection();
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php'));
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php'));
 
-$col = $loader->import(DP_ROOT.'/src/Application/AdminBundle/Resources/config/admin-routing.php');
-$col->addPrefix('/admin');
-$collection->addCollection($col);
-
 $col = $loader->import(DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php');
 $col->addPrefix('/admin');
 $collection->addCollection($col);

@@ -4,6 +4,7 @@
   "dependencies": {
     "requirejs": "2.1.8",
     "angular": "v1.2.0",
+	"angular-route": "latest",
 	"angular-dragdrop": "latest",
     "angular-animate": "v1.2.0",
     "angular-sanitize": "v1.2.0",

@@ -1,4 +1,4 @@
-define ['angular'], (angular) ->
+define ['angular', 'DeskPRO/Util/Util'], (angular, Util) ->
 	class DpApi
 		constructor: ($http, api_url, api_token) ->
 			@$http     = $http
@@ -43,7 +43,7 @@ define ['angular'], (angular) ->
 				else
 					k = encodeURIComponent(k)
 
-				if _.isObject(v)
+				if Util.isObject(v)
 					url += @_formatUrlObject(v, k)
 				else
 					v = encodeURIComponent(v)
@@ -59,7 +59,7 @@ define ['angular'], (angular) ->
 		###
 		sendDataGet: (paths, http_params = {}) ->
 			params = []
-			if _.isArray(paths)
+			if Util.isArray(paths)
 				for path in paths
 					if path == null then continue
 					params.push({

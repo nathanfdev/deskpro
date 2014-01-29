@@ -553,4 +553,77 @@ class ServerController extends AbstractController implements ProtectedController
 
 		return $this->createJsonResponse(array('apc_info' => $data));
 	}
+
+	####################################################################################################################
+	# begin-automatic-update
+	####################################################################################################################
+
+	public function beginAutomaticUpdateAction()
+	{
+		$update_time = $this->container->getSetting('core.upgrade_time');
+		if ($update_time) {
+			return $this->createApiErrorResponse('already_scheduled', 'An automatic update has already been scheduled. To rescheduled, abort the update first.');
+		}
+
+		$mins = $this->in->getUint('minutes');
+		if (!$mins) $mins = 0;
+
+		$future = time() + $mins * 60;
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_time', $future);
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_set_at', time());
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_files', $this->in->getInt('backup_files'));
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_db', $this->in->getInt('backup_db'));
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_started', null);
+
+		$this->container->getSettingsHandler()->setSetting('core.helpdesk_disabled_message', $this->in->getString('user_message'));
+		@file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->in->getString('user_message'));
+
+		if ($mins) {
+			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+			$agent_ids = array_keys($this->em->getRepository('DeskPRO:Person')->getAgents());
+			$agent_chat->sendAgentMessage("Warning: The helpdesk will go down for maintenance in 5 minutes.", $agent_ids, 0);
+		}
+	}
+
+	####################################################################################################################
+	# automatic-update-status
+	####################################################################################################################
+
+	public function getAutomaticUpdateStatusAction()
+	{
+		$update_time = $this->container->getSetting('core.upgrade_time');
+		if (!$update_time) {
+			return $this->createApiResponse(array('is_scheduled' => false));
+		} else {
+			return $this->createApiResponse(array(
+				'is_scheduled' => true,
+				'start_time'   => $update_time,
+				'scheduled_at' => $this->container->getSetting('core.upgrade_set_at'),
+				'backup_files' => $this->container->getSetting('core.upgrade_backup_files'),
+				'backup_db'    => $this->container->getSetting('core.upgrade_backup_db'),
+			));
+		}
+	}
+
+	####################################################################################################################
+	# abort-automatic-update
+	####################################################################################################################
+
+	public function abortAutomaticUpdateAction()
+	{
+		$waiting = $this->container->getSetting('core.upgrade_time');
+		if ($waiting) {
+			return $this->createApiErrorResponse('already_started', 'The upgrade has already started, it cannot be aborted from here.');
+		}
+
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_time', null);
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
+		$this->container->getSettingsHandler()->setSetting('core.upgrade_started', null);
+
+		return $this->createApiSuccessResponse();
+	}
 }

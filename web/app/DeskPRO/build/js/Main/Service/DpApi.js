@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['angular'], function(angular) {
+  define(['angular', 'DeskPRO/Util/Util'], function(angular, Util) {
     var DpApi;
     return DpApi = (function() {
       function DpApi($http, api_url, api_token) {
@@ -64,7 +64,7 @@
           } else {
             k = encodeURIComponent(k);
           }
-          if (_.isObject(v)) {
+          if (Util.isObject(v)) {
             _results.push(url += this._formatUrlObject(v, k));
           } else {
             v = encodeURIComponent(v);
@@ -90,7 +90,7 @@
           http_params = {};
         }
         params = [];
-        if (_.isArray(paths)) {
+        if (Util.isArray(paths)) {
           for (_i = 0, _len = paths.length; _i < _len; _i++) {
             path = paths[_i];
             if (path === null) {

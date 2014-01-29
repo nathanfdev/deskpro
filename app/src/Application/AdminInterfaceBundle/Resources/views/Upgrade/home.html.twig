@@ -1,0 +1,63 @@
+<section>
+	<header>
+		<h1>DeskPRO Update</h1>
+	</header>
+	<article ng-show="!card_loaded" class="loading-container">
+		<i class="spinner-editor"></i>
+	</article>
+	<article ng-show="card_loaded && !latest_version">
+		<p>
+			We could not connect to the DeskPRO servers to fetch information about the latest version.
+		</p>
+		<p>
+			Try refreshing the page to try again. If you continue to receive this message, you can install
+			updates manually as described below.
+		</p>
+	</article>
+	<article ng-show="card_loaded && latest_version">
+		<section>
+			<p>
+				You are currently running version #{{ ng_var('Home.version_info.build_name') }}. The newest version available is #{{ ng_var('Home.latest_version.build_num_base') }}.
+			</p>
+		</section>
+		<section>
+			<h3>Release Notes</h3>
+			<iframe ng-src="https://www.deskpro.com/members/versions/changelog/0"></iframe>
+		</section>
+		<section>
+			<h3>Options</h3>
+			<p>
+				The automatic updater will install the newest version of DeskPRO for you by just clicking the button below.
+			</p>
+			<label>
+				<input type="checkbox" ng-model="opt.db_backup" /> Back up the database before installing the upgrade
+			</label>
+			<br/>
+			<label>
+				<input type="checkbox" ng-model="opt.file_backup" /> Back up the current DeskPRO source files before installing the upgrade
+			</label>
+		</section>
+	</article>
+	<footer ng-show="card_loaded && latest_version">
+		<div ng-show="!is_loading">
+			<button class="btn btn-primary" ng-click="Home.startUpgrade();">Start the automatic update <i class="fa fa-arrow-circle-right"></i></button>
+		</div>
+		<div ng-show="is_loading">
+			<i class="spinner-flat"></i>
+		</div>
+	</footer>
+</section>
+<div class="alert alert-info" style="margin-top: 25px;">
+	<p>
+		The preferred way to update DeskPRO is by using the automatic update tool above. But in some server enviornments,
+		using this tool is not possible. For example, strict file permissions may prevent the automatic updater from working.
+	</p>
+	<p>
+		If you cannot use the automatic update tool, you can use the CLI update tool instead which will
+		install the updates with a single command on the command-line. Refer to the DeskPRO knowledgebase for more information:
+	</p>
+	<p>
+		<i class="fa fa-globe"></i> <a href="https://support.deskpro.com/kb/articles/156">Installing Updates</a><br/>
+		<i class="fa fa-globe"></i> <a href="https://support.deskpro.com/kb/articles/135">Manually Installing Updates</a>
+	</p>
+</div>

@@ -47,6 +47,16 @@ module.exports = function(grunt) {
 					ext: '.js'
 				}]
 			},
+			admin_upgrade_js: {
+				files: [{
+					expand: true,
+					flatten: false,
+					cwd: 'AdminUpgrade/',
+					src: ['**/*.coffee'],
+					dest: 'AdminUpgrade/build/js',
+					ext: '.js'
+				}]
+			},
 			reports_js: {
 				files: [{
 					expand: true,
@@ -75,6 +85,10 @@ module.exports = function(grunt) {
 				files: 'Admin/**/*.coffee',
 				tasks: ['coffee']
 			},
+			admin_upgrade_js: {
+				files: 'AdminUpgrade/**/*.coffee',
+				tasks: ['coffee']
+			},
 			reports_recess: {
 				files: 'Reports/Resources/style/*.less',
 				tasks: ['recess']
@@ -95,6 +109,7 @@ module.exports = function(grunt) {
 	var changedFiles = {
 		'coffee.common_js':     [],
 		'coffee.admin_js':      [],
+		'coffee.admin_upgrade_js':      [],
 		'coffee.reports_js':    [],
 		'recess.admin_style':   [],
 		'recess.reports_style': []
@@ -118,10 +133,12 @@ module.exports = function(grunt) {
 
 		grunt.config('coffee.common_js.files',  getFilesCfg(changedFiles['coffee.common_js'],  'DeskPRO/build/js'));
 		grunt.config('coffee.admin_js.files',   getFilesCfg(changedFiles['coffee.admin_js'],   'Admin/build/js'));
+		grunt.config('coffee.admin_upgrade_js.files',   getFilesCfg(changedFiles['coffee.admin_upgrade_js'],   'AdminUpgrade/build/js'));
 		grunt.config('coffee.reports_js.files', getFilesCfg(changedFiles['coffee.reports_js'], 'Reports/build/js'));
 
 		changedFiles['coffee.common_js']     = [];
 		changedFiles['coffee.admin_js']      = [];
+		changedFiles['coffee.admin_upgrade_js']      = [];
 		changedFiles['coffee.reports_js']    = [];
 		changedFiles['recess.admin_style']   = [];
 		changedFiles['recess.reports_style'] = [];
@@ -133,6 +150,9 @@ module.exports = function(grunt) {
 			}
 			if (filepath.indexOf('Admin/') === 0 && changedFiles['coffee.admin_js'].indexOf(filepath) === -1) {
 				changedFiles['coffee.admin_js'].push(filepath)
+			}
+			if (filepath.indexOf('AdminUpgrade/') === 0 && changedFiles['coffee.admin_upgrade_js'].indexOf(filepath) === -1) {
+				changedFiles['coffee.admin_upgrade_js'].push(filepath)
 			}
 			if (filepath.indexOf('Reports/') === 0 && changedFiles['coffee.reports_js'].indexOf(filepath) === -1) {
 				changedFiles['coffee.reports_js'].push(filepath)

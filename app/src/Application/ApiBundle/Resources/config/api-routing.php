@@ -3256,6 +3256,24 @@ $collection->create('api_server_apc_status', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_server_autoupdate_begin', array(
+	'path'        => '/server/updates/auto',
+	'controller'  => 'ApiBundle:Server:beginAutomaticUpdate',
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_server_autoupdate_abort', array(
+	'path'        => '/server/updates/auto',
+	'controller'  => 'ApiBundle:Server:abortAutomaticUpdate',
+	'methods'     => array('DELETE'),
+));
+
+$collection->create('api_server_autoupdate_status', array(
+	'path'        => '/server/updates/auto',
+	'controller'  => 'ApiBundle:Server:getAutomaticUpdateStatus',
+	'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Server Error Logs
 ########################################################################################################################
