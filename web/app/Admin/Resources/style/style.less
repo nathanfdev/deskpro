@@ -614,6 +614,7 @@ div.dp-appalt-section {
 	.dp-item {
 		background: #fff;
 		border: 1px solid #d0d9e6;
+		border-radius: 3px;
 
 		> header {
 			margin: 6px;
@@ -624,6 +625,43 @@ div.dp-appalt-section {
 				padding: 0 0 2px 0;
 				margin: 0;
 			}
+		}
+
+		&.with-error {
+			border: 1px solid #7e3140;
+			box-shadow: 0 0 3px 1px rgba(126,49,64,0.5);
+		}
+	}
+
+	.status-content {
+		header {
+			.icon {
+				float: left;
+				width: 30px;
+				text-align: center;
+				font-size: 35px;
+				vertical-align: top;
+
+				i {
+					vertical-align: top;
+				}
+
+				&.okay {
+					color: #366c35;
+				}
+				&.bad {
+					color: #7e3140;
+				}
+			}
+			strong {
+				margin-left: 15px;
+				line-height: 35px;
+				font-size: 120%;
+				font-weight: normal;
+			}
+		}
+		article {
+			clear: left;
 		}
 	}
 }

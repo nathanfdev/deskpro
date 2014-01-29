@@ -113,6 +113,6 @@ class CronStatus
 	 */
 	public function guessIsProblem()
 	{
-		return $this->secsSinceLastRun() > 300;
+		return $this->getSecsSinceLastRun() > 300;
 	}
 }

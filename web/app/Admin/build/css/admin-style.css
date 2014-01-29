@@ -8142,6 +8142,7 @@ div.dp-appalt-section > section header h3 {
 .dp-dashboard .dp-item {
   background: #fff;
   border: 1px solid #d0d9e6;
+  border-radius: 3px;
 }
 
 .dp-dashboard .dp-item > header {
@@ -8154,6 +8155,42 @@ div.dp-appalt-section > section header h3 {
   margin: 0;
   font-size: 125%;
   border-bottom: 2px solid #ccc;
+}
+
+.dp-dashboard .dp-item.with-error {
+  border: 1px solid #7e3140;
+  box-shadow: 0 0 3px 1px rgba(126, 49, 64, 0.5);
+}
+
+.dp-dashboard .status-content header .icon {
+  float: left;
+  width: 30px;
+  font-size: 35px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.dp-dashboard .status-content header .icon i {
+  vertical-align: top;
+}
+
+.dp-dashboard .status-content header .icon.okay {
+  color: #366c35;
+}
+
+.dp-dashboard .status-content header .icon.bad {
+  color: #7e3140;
+}
+
+.dp-dashboard .status-content header strong {
+  margin-left: 15px;
+  font-size: 120%;
+  font-weight: normal;
+  line-height: 35px;
+}
+
+.dp-dashboard .status-content article {
+  clear: left;
 }
 
 .dp-layout-loading {

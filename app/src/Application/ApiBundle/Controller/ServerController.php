@@ -35,6 +35,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
+use Application\DeskPRO\Server\ApcStatus;
 use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\Exception\ValidationException;
@@ -503,22 +504,53 @@ class ServerController extends AbstractController implements ProtectedController
 	}
 
 	####################################################################################################################
-	# error-count
+	# error-status
 	####################################################################################################################
 
-	public function errorInfoAction()
+	public function errorStatusAction()
 	{
 		$err_reader = new ErrorLogReader(dp_get_log_dir() . '/error.log');
-		$err_reader->enableCountMode();
-		$error_count = $err_reader->count();
+		$error_count = $err_reader->quickCount();
 
-		$status = new CronStatus($this->db);
+		$gateway_error_count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
+		$sendmail_error_count = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_queue WHERE date_next_attempt IS NULL");
 
 		return $this->createJsonResponse(array(
-			'last_run_ts'         => $status->getLastRunTimestamp(),
-			'last_run'            => $status->getLastRunDate()->format('Y-m-d H:i:s'),
-			'secs_since_last_run' => $status->getSecsSinceLastRun(),
-			'is_problem'          => $status->guessIsProblem(),
+			'error_count'          => $error_count,
+			'gateway_error_count'  => $gateway_error_count,
+			'sendmail_error_count' => $sendmail_error_count,
 		));
+	}
+
+
+	####################################################################################################################
+	# apc-info
+	####################################################################################################################
+
+	public function apcStatusAction()
+	{
+		$status = new ApcStatus();
+		$data = array(
+			'is_enabled'          => $status->isEnabled(),
+			'is_problem'          => $status->guessIsProblem(),
+			'num_reqs'            => $status->getNumTotalReqs(),
+			'num_hits'            => $status->getNumHits(),
+			'num_misses'          => $status->getNumMisses(),
+			'perc_hit'            => $status->getHitPercent(),
+			'perc_hit_str'        => sprintf("%.1f", $status->getHitPercent()),
+			'perc_miss'           => $status->getMissPercent(),
+			'perc_miss_str'       => sprintf("%.1f", $status->getMissPercent()),
+			'mem_total'           => $status->getMemTotal(),
+			'mem_used'            => $status->getMemUsed(),
+			'mem_free'            => $status->getMemFree(),
+			'perc_mem_used'       => $status->getMemUsedPercent(),
+			'perc_mem_used_str'   => sprintf("%.1f", $status->getMemUsedPercent()),
+			'perc_mem_free'       => $status->getMemUsedPercent(),
+			'perc_mem_free_str'   => sprintf("%.1f", $status->getMemFreePercent()),
+			'hit_miss_chart_url'  => $status->getHitMissChartUrl(),
+			'mem_chart_url'       => $status->getMemChartUrl(),
+		);
+
+		return $this->createJsonResponse(array('apc_info' => $data));
 	}
 }

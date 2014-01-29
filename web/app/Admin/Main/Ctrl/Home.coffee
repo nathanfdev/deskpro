@@ -17,11 +17,27 @@ define [
 
 		initialLoad: ->
 			promise = @Api.sendDataGet({
-				agents: '/agents'
+				agents:      '/agents',
+				cronStatus:  '/server/cron-status',
+				errorStatus: '/server/error-status',
+				apcStatus:   '/server/apc-status'
 			}).then( (result) =>
 				data = result.data
-				@online_agents = []
+				@online_agents  = []
 				@offline_agents = []
+				@cron_status    = result.data.cronStatus
+				@error_status   = result.data.errorStatus
+				@apc_status     = result.data.apcStatus
+
+				problem_triggers = [
+					@cron_status.is_problem,
+					@error_status.error_count > 0,
+					@error_status.gateway_error_count > 0,
+					@error_status.sendmail_error_count > 0,
+					@apc_status.is_problem
+				]
+				@is_server_problem = problem_triggers.filter((x) -> return !!x).length > 0
+
 
 				for agent in data.agents.agents
 					if agent.is_online_now or agent.id == DP_PERSON_ID

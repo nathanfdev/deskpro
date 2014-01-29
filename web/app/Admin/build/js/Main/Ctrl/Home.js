@@ -26,12 +26,22 @@
         var promise,
           _this = this;
         promise = this.Api.sendDataGet({
-          agents: '/agents'
+          agents: '/agents',
+          cronStatus: '/server/cron-status',
+          errorStatus: '/server/error-status',
+          apcStatus: '/server/apc-status'
         }).then(function(result) {
-          var agent, data, _i, _len, _ref1, _results;
+          var agent, data, problem_triggers, _i, _len, _ref1, _results;
           data = result.data;
           _this.online_agents = [];
           _this.offline_agents = [];
+          _this.cron_status = result.data.cronStatus;
+          _this.error_status = result.data.errorStatus;
+          _this.apc_status = result.data.apcStatus;
+          problem_triggers = [_this.cron_status.is_problem, _this.error_status.error_count > 0, _this.error_status.gateway_error_count > 0, _this.error_status.sendmail_error_count > 0, _this.apc_status.is_problem];
+          _this.is_server_problem = problem_triggers.filter(function(x) {
+            return !!x;
+          }).length > 0;
           _ref1 = data.agents.agents;
           _results = [];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {

@@ -3211,6 +3211,28 @@ $collection->create('api_server_mysql_sort_order_status', array(
 ));
 
 ########################################################################################################################
+# Server
+########################################################################################################################
+
+$collection->create('api_server_cron_status', array(
+	'path'        => '/server/cron-status',
+	'controller'  => 'ApiBundle:Server:cronStatus',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_server_error_status', array(
+	'path'        => '/server/error-status',
+	'controller'  => 'ApiBundle:Server:errorStatus',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_server_apc_status', array(
+	'path'        => '/server/apc-status',
+	'controller'  => 'ApiBundle:Server:apcStatus',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
 # Server Error Logs
 ########################################################################################################################
 
