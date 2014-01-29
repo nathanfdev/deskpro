@@ -281,4 +281,19 @@ class TicketSearchController extends AbstractController
 		return App::getApi('tickets.filters');
 	}
 
+
+	public function getQuickStatsAction()
+	{
+		$stats = array();
+		$today = $this->person->getDateTime();
+		$today->setTime(0,0,0);
+		$today->setTimezone(\Orb\Util\Dates::tzUtc());
+		$today = $today->format('Y-m-d H:i:s');
+
+		$stats['created_today']  = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE date_created > ?", array($today));
+		$stats['resolved_today'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE date_resolved > ?", array($today));
+		$stats['awaiting_agent'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE status = 'awaiting_agent'");
+
+		return $this->createApiResponse($stats);
+	}
 }

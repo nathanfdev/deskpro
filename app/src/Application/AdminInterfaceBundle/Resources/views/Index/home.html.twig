@@ -181,15 +181,15 @@
 						<ul class="dp-display-list">
 							<li>
 								<i class="fa fa-envelope"></i>
-								Tickets created today: 6
+								Tickets created today: {{ ng_var('Home.quick_stats.created_today') }}
 							</li>
 							<li>
 								<i class="fa fa-check-square"></i>
-								Tickets resolved today: 6
+								Tickets resolved today: {{ ng_var('Home.quick_stats.resolved_today') }}
 							</li>
 							<li>
 								<i class="fa fa-clock-o"></i>
-								Tickets awaiting agent: 6
+								Tickets awaiting agent: {{ ng_var('Home.quick_stats.awaiting_agent') }}
 							</li>
 						</ul>
 						<div class="dp-mpadded">

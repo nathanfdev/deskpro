@@ -466,6 +466,12 @@ $collection->create('api_tickets', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_tickets_quickstats', array(
+	'path'        => '/tickets/quick-stats',
+	'controller'  => 'ApiBundle:TicketSearch:getQuickStats',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_tickets_filters', array(
 	'path'        => '/tickets/filters',
 	'controller'  => 'ApiBundle:TicketSearch:getFilters',

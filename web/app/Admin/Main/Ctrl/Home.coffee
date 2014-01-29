@@ -22,6 +22,7 @@ define [
 				errorStatus: '/server/error-status',
 				apcStatus:   '/server/apc-status',
 				versionInfo: '/dp_license/version-info',
+				quickStats:  '/tickets/quick-stats'
 			}).then( (result) =>
 				data = result.data
 				@online_agents  = []
@@ -30,6 +31,7 @@ define [
 				@error_status   = result.data.errorStatus
 				@apc_status     = result.data.apcStatus
 				@version_info   = result.data.versionInfo
+				@quick_stats    = result.data.quickStats
 
 				problem_triggers = [
 					@cron_status.is_problem,
