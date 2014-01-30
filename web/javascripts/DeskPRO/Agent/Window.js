@@ -1679,7 +1679,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 *
 	 * @param {jQuery} el The element to inspect for a route
 	 */
-	runPageRouteFromElement: function(el) {
+	runPageRouteFromElement: function(el, extraData) {
 
 		el = $(el);
 
