@@ -1,13 +1,13 @@
 define [
 	'DeskPRO/Directive/DpTimeWithUnit',
 	'DeskPRO/Directive/DpStateMark',
+	'DeskPRO/Directive/DpHelpPage',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpCommaSeparated',
 	'Admin/Main/Directive/DpDevBar',
 	'Admin/Main/Directive/DpErrorClass',
-	'Admin/Main/Directive/DpHelpPage',
 	'Admin/Main/Directive/DpHideSpinning',
 	'Admin/Main/Directive/DpInhelpBody',
 	'Admin/Main/Directive/DpInhelpBtn',
@@ -34,13 +34,13 @@ define [
 ], (
 	DeskPRO_Directive_DpTimeWithUnit,
 	DeskPRO_Directive_DpStateMark,
+	DeskPRO_Directive_DpHelpPage,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpCommaSeparated,
 	Admin_Main_Directive_DpDevBar,
 	Admin_Main_Directive_DpErrorClass,
-	Admin_Main_Directive_DpHelpPage,
 	Admin_Main_Directive_DpHideSpinning,
 	Admin_Main_Directive_DpInhelpBody,
 	Admin_Main_Directive_DpInhelpBtn,
@@ -68,13 +68,13 @@ define [
 	return (Module) ->
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
 		Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)
+		Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
 		Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated)
 		Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar)
 		Module.directive('dpErrorClass',                   Admin_Main_Directive_DpErrorClass)
-		Module.directive('dpHelpPage',                     Admin_Main_Directive_DpHelpPage)
 		Module.directive('dpHideSpinning',                 Admin_Main_Directive_DpHideSpinning)
 		Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody)
 		Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)

@@ -1,5 +1,5 @@
 define ->
-	Admin_Main_Directive_DpHelpPage = ['$rootScope', '$state', ($rootScope, $state) ->
+	DeskPRO_Directive_DpHelpPage = ['$rootScope', '$state', ($rootScope, $state) ->
 		return {
 			restrict: 'E',
 			scope: {},
@@ -65,4 +65,4 @@ define ->
 		}
 	]
 
-	return Admin_Main_Directive_DpHelpPage
+	return DeskPRO_Directive_DpHelpPage
