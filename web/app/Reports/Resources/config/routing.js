@@ -18,8 +18,8 @@ define(function() {
 	//##################################################################################################################
 
 	routes.push({
-		id: 'report_builder',
-		url: '/report_builder',
+		id: 'builder',
+		url: '/builder',
 		templateName: 'Builder/list.html',
 		controller: 'Reports_Builder_Ctrl_List'
 	});
