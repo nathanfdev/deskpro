@@ -3879,6 +3879,44 @@ $collection->create('api_reports_overview_update_stats', array(
 ));
 
 ########################################################################################################################
+# Report Builder
+########################################################################################################################
+
+$collection->create('api_reports_builder_list', array(
+	'path'        => '/reports/builder',
+	'controller'  => 'ApiBundle:ReportsBuilder:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_builder_get', array(
+	'path'         => '/reports/builder/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:get',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_reports_builder_delete', array(
+	'path'         => '/reports/builder/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:delete',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
+$collection->create('api_reports_builder_create', array(
+	'path'       => '/reports/builder',
+	'controller' => 'ApiBundle:ReportsBuilder:save',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_reports_builder_save', array(
+	'path'         => '/reports/builder/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:save',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+########################################################################################################################
 # Plugins
 ########################################################################################################################
 
