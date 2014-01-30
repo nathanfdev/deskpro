@@ -40,7 +40,9 @@ use Application\DeskPRO\Domain\DomainObject;
 
 /**
  * @property int           $id
+ * @property string        $name
  * @property string        $tag
+ * @property array         $metadata
  * @property PluginPackage $package
  * @property Blob          $blob
  */
@@ -50,6 +52,11 @@ class PluginAsset extends DomainObject
 	 * @var int
 	 */
 	protected $id = null;
+
+	/**
+	 * @var string
+	 */
+	protected $name;
 
 	/**
 	 * @var string
@@ -65,6 +72,37 @@ class PluginAsset extends DomainObject
 	 * @var \Application\DeskPRO\Entity\Blob
 	 */
 	protected $blob;
+
+	/**
+	 * @var array
+	 */
+	protected $metadata = null;
+
+
+	/**
+	 * Set metadata
+	 *
+	 * @param array $metadata
+	 */
+	public function setMetadata(array $metadata = null)
+	{
+		if (!$metadata) {
+			$this->setModelField('metadata', null);
+		} else {
+			$this->setModelField('metadata', $metadata);
+		}
+	}
+
+
+	/**
+	 * Get metadata
+	 *
+	 * @return array
+	 */
+	public function getMetadata()
+	{
+		return $this->metadata ? $this->metadata : array();
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -88,10 +126,25 @@ class PluginAsset extends DomainObject
 		));
 
 		$metadata->mapField(array(
+			'columnName' => 'name',
+			'fieldName'  => 'name',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
 			'columnName' => 'tag',
 			'fieldName'  => 'tag',
 			'type'       => 'string',
 			'length'     => 50,
+			'nullable'   => true,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'metadata',
+			'fieldName'  => 'metadata',
+			'type'       => 'json_array',
 			'nullable'   => true,
 		));
 

@@ -143,6 +143,8 @@ class PluginPackage extends DomainObject
 
 
 	/**
+	 * Get one asset tagged with some name
+	 *
 	 * @param string $tag
 	 * @return PluginAsset
 	 */
@@ -151,6 +153,44 @@ class PluginPackage extends DomainObject
 		foreach ($this->assets as $asset) {
 			if ($asset->tag == $tag) {
 				return $asset;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Get an array of all assets tagged with a name
+	 *
+	 * @param string $tag
+	 * @return PluginAsset[]
+	 */
+	public function getTaggedAssets($tag)
+	{
+		$assets = array();
+
+		foreach ($this->assets as $asset) {
+			if ($asset->tag == $tag) {
+				$assets[] = $asset;
+			}
+		}
+
+		return $asset;
+	}
+
+
+	/**
+	 * Get the asset with the filename $name
+	 *
+	 * @param string $name
+	 * @return PluginAsset|null
+	 */
+	public function getAsset($name)
+	{
+		foreach ($this->assets as $asset) {
+			if ($asset->name == $name) {
+				return $name;
 			}
 		}
 
