@@ -58,7 +58,11 @@
 			</li>
 		</ul>
 	</nav>
-	<div class="dp-layout" ui-view></div>
+	<div class="dp-layout">
+		<div class="dp-layout-app with-layout-appnav">
+			<div class="dp-layout-appbody" ui-view></div>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
