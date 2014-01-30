@@ -1,0 +1,35 @@
+{% extends 'ReportsInterfaceBundle:Layout:list.html.twig' %}
+{% set list_class = 'report_builder' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>
+				Built-in Reports
+			</h3>
+		</header>
+		<article>
+
+			<ul class="dp-item-list">
+				<li class="with-drag-handle" ng-repeat="report in ListCtrl.builtInReports.Tickets"
+					dp-state-mark="report_builder.edit.{{ ng_var('report.id') }}" data-id="{{ ng_var('report.id') }}">
+					<a href="{{ ng_href('report_builder.edit', '{id: report.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('report.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
+				   href="{{ ng_href('report_builder.create') }}">
+					<i class="fa fa-plus"></i> Create Custom Report
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+
+{% block listpane_help %}
+	{% include 'ReportsInterfaceBundle:Builder:help-page.html.twig' %}
+{% endblock %}

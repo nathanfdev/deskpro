@@ -1,7 +1,9 @@
 define [
 	'DeskPRO/Util/Strings',
+	'Reports/Builder/DataService/ReportBuilder',
 ], (
 	Strings,
+	DataService_ReportBuilder,
 ) ->
 	###
 	# A simple wrapper around the data services

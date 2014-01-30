@@ -20,8 +20,8 @@ define(function() {
 	routes.push({
 		id: 'report_builder',
 		url: '/report_builder',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'Builder/list.html',
+		controller: 'Reports_Builder_Ctrl_List'
 	});
 
 	//##################################################################################################################

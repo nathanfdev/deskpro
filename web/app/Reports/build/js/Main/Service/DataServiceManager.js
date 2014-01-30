@@ -1,5 +1,5 @@
 (function() {
-  define(['DeskPRO/Util/Strings'], function(Strings) {
+  define(['DeskPRO/Util/Strings', 'Reports/Builder/DataService/ReportBuilder'], function(Strings, DataService_ReportBuilder) {
     /*
     	# A simple wrapper around the data services
     */
