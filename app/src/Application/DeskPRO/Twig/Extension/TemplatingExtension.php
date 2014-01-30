@@ -1165,6 +1165,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getWidgets($baseId, $page, $location, $position = '*', $data = array())
 	{
+		return '';
 		$widgets = $this->_getPageLocationWidgets($page, $location, $position);
 		if (!$widgets) {
 			return '';
@@ -1186,11 +1187,13 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getWidgetsRaw($page, $location, $position = '')
 	{
+		return '';
 		return $this->_getPageLocationWidgets($page, $location, $position);
 	}
 
 	protected function _getPageLocationWidgets($page, $location, $position = '')
 	{
+		return array();
 		if (!array_key_exists($page, $this->_widgetCache)) {
 			$this->_widgetCache[$page] = App::getEntityRepository('DeskPRO:Widget')->getEnabledPageWidgetsGrouped($page);
 		}
