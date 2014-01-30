@@ -3877,10 +3877,11 @@ table.agent-perms-table {
 		text-align: left;
 		max-width: 800px;
 		min-width: 600px;
-		margin: 0 auto;
+		margin: 20px auto;
 
 		> section {
 			border-radius: 3px;
+			overflow: hidden;
 
 			-webkit-box-shadow: 0 0 4px 1px rgba(0,0,0,0.3);
 			box-shadow: 0 0 4px 1px rgba(0,0,0,0.3);
@@ -3936,6 +3937,52 @@ table.agent-perms-table {
 
 				> section + section {
 					border-top: 1px solid #ccc;
+				}
+
+				> section.running-section {
+					p {
+						display: none;
+					}
+					.progress {
+						float: right;
+						margin: 0;
+						width: 200px;
+						margin-top: 19px;
+						display: none;
+					}
+					&.on {
+						i.icon-incomplete { display: none; }
+						i.icon-complete { display: none; }
+						i.icon-on { display: inline-block; }
+						p {
+							display: block;
+						}
+						.progress {
+							display: block;
+						}
+					}
+					&.complete {
+						i.icon-incomplete { display: none; }
+						i.icon-complete { display: inline-block; }
+						i.icon-on { display: none; }
+					}
+					i.icon-incomplete { display: inline-block; }
+					i.icon-complete { display: none; }
+					i.icon-on { display: none; }
+
+					.title {
+						font-size: 15px;
+						em {
+							font-style: normal;
+							margin-right: 8px;
+							color: #888;
+							i {
+								font-size: 20px;
+								vertical-align: bottom;
+							}
+						}
+						strong { font-weight: normal; }
+					}
 				}
 			}
 

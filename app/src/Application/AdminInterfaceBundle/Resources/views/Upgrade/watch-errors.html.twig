@@ -1,0 +1,316 @@
+<section class="running-section on" ng-show="is_error && error.write_perm">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Write Permissions Failed</strong>
+	</div>
+	<p>
+		The upgrade utility requires write permission to the root DeskPRO directory, and all sub-directories and files.
+		This means the user running the scheduled task needs permission to write and delete DeskPRO files. Typically
+		this is done by making sure your scheduled task user is the same user who owns the files.
+	</p>
+	<p>
+		In this case, the upgrade utility detected that the status file at /auto-update-status.php could not be written.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.php_path">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not find the path to 'php'</strong>
+	</div>
+	<p>
+		The upgrade utility requires the path to the PHP executable but we could not detect it automatically.
+		You will need to locate the executable and then supply its path in config.php.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.php_binary_failcheck">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not find the path to 'php'</strong>
+	</div>
+	<p>
+		The upgrade utility requires the path to the PHP executable but the one defined is invalid
+		or does not meet server requirements ({{ ng_var('error_message') }}). You must edit
+		your config.php to specify the path to a correct PHP binary.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.php_binary_failcheck">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not verify the path to 'php'</strong>
+	</div>
+	<p>
+		The upgrade utility requires the path to the PHP executable but the one defined is invalid
+		or does not meet server requirements ({{ ng_var('error_message') }}). You must edit
+		your config.php to specify the path to a correct PHP binary.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.mysqldump_path">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not find the path to 'mysqldump'</strong>
+	</div>
+	<p>
+		The upgrade utility requires the path to the MySQL Dump executable but we could not detect it automatically.
+		You will need to locate the executable and then supply its path in config.php.
+	</p>
+	<p>
+		Note: If you want to manage backups manually, deselect the "Backup my database" option when scheduling the upgrade.
+		The database backup step will be skipped and this requirement will no longer be necessary.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.tmp_dir">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not write to the tmp directory</strong>
+	</div>
+	<p>
+		The data/tmp directory needs to be writable.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.backup_dir">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not write to the backup directory</strong>
+	</div>
+	<p>
+		The data/backup directory needs to be writable.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.backup_dir">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not write to the backup directory</strong>
+	</div>
+	<p>
+		The data/backup directory needs to be writable.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.log_dir">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Could not write to the logs directory</strong>
+	</div>
+	<p>
+		The data/logs directory needs to be writable.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.permissions">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Files are not writable</strong>
+	</div>
+	<p>
+		The upgrade utility is run by the same user who executes scheduled tasks, and this user must
+		be able to write and delete DeskPRO files. We detected that some files were not writable
+		which means you need to update file permissions.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.disabled_functions">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: You have disabled functions in php.ini</strong>
+	</div>
+	<p>
+		Your php.ini has a <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disabled_functions</a> directive that is disabling one or more functions required by the automatic upgrader.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+	<p>
+		To use the automatic upgrader, you will need to edit your php.ini and remove the disabled_functions directive.
+	</p>
+	<p>
+		You can still upgrade DeskPRO manually if you cannot change php.ini. Refer to our online manual:<br/>
+		<a href="http://support.deskpro.com/kb/articles/135-manually-installing-updates" target="_blank">http://support.deskpro.com/kb/articles/135-manually-installing-updates</a>
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.zip_ext">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: zlib or zip not available</strong>
+	</div>
+	<p>
+		The upgrade utility requires the <a href="http://php.net/manual/en/book.zlib.php">zlib</a>
+		or <a href="http://php.net/manual/en/book.zip.php">Zip</a> extension installed. You will
+		need to install or activate one of these extensions before trying agian.
+	</p>
+	<p>
+		You will have to install the extension into php.ini located at: {{ ng_var('error_message') }}
+	</p>
+	<p>
+		Note: If you want to manage backups manually, deselect the "Backup the current DeskPRO source files" option when scheduling the upgrade.
+		The file backup step will be skipped and this requirement will no longer be necessary.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.backup_files">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Backup error</strong>
+	</div>
+	<p>
+		There was a problem while trying to make backups of your helpdesk files. The upgrade was aborted.
+	</p>
+	<p>{{ ng_var('error_message') }}</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.backup_db">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Backup error</strong>
+	</div>
+	<p>
+		There was a problem while trying to make database backups of your helpdesk. The upgrade was aborted.
+	</p>
+	<p>
+		This probably means the path to "mysqldump" is incorrect. You should check the value you have in config.php
+		is correct.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+	<p>
+		Note: If you want to manage backups manually, deselect the "Backup my database" option when scheduling the upgrade.
+		The database backup step will be skipped and the upgrade will continue past this step.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.downloading_update">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Download errror</strong>
+	</div>
+	<p>
+		There was a problem communicating with the DeskPRO servers. This could
+		be due to a firewall or other network problem. The upgrade was aborted.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.installing_files">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Error copying new files</strong>
+	</div>
+	<p>
+		The upgrade utility encountered an error while trying to install the updated
+		files from the newest version of DeskPRO.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+	<p>
+		<strong>This means you have a half-updated helpdesk!</strong>
+		To get your helpdesk back online you need to manually apply the update. Refer to our helpdesk article:
+		<a href="https://support.deskpro.com/kb/articles/135">Manually installing updates</a>.
+	</p>
+	<p>
+		If you require assistance please send the data/logs/upgrade.log file to <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+		for assistance.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.installing_files">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Error while applying database updates</strong>
+	</div>
+	<p>
+		The upgrade utility encountered an error while trying to run database updates.
+		You should refer to data/logs/upgrade.log for more information.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+	<p>
+		<strong>This means you have a half-updated helpdesk!</strong>
+		To get your helpdesk back online you need to manually apply the update. Refer to our helpdesk article:
+		<a href="https://support.deskpro.com/kb/articles/135">Manually installing updates</a>.
+	</p>
+	<p>
+		If you require assistance please send the data/logs/upgrade.log file to <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+		for assistance.
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.command">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: Error while applying database updates</strong>
+	</div>
+	<p>
+		The upgrade did not complete successfully. If the problem persists, email <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+		and one of our agents will help you as soon as possible.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+</section>
+
+{##############################}
+
+<section class="running-section on" ng-show="is_error && error.remoterequester">
+	<div class="title">
+		<em><i class="fa fa-warning"></i></em>
+		<strong>Update Error: PHP cannot communicate with DeskPRO servers</strong>
+	</div>
+	<p>
+		The upgrade utility needs to communicate with the DeskPRO servers to get latest version information, and to download files.
+		You need to either enable the <a href="http://php.net/manual/en/book.curl.php">cURL extension</a>
+		or enable the <a href="http://www.php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen">allow_url_fopen</a>
+		configuration option in your php.ini file.
+	</p>
+	<p>
+		{{ ng_var('error_message') }}
+	</p>
+</section>

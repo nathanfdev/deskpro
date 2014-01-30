@@ -16,10 +16,17 @@
 
       AdminUpgrade_Main_Ctrl_UpgradeHome.CTRL_AS = 'Home';
 
-      AdminUpgrade_Main_Ctrl_UpgradeHome.DEPS = [];
+      AdminUpgrade_Main_Ctrl_UpgradeHome.DEPS = ['$sce', '$location'];
 
       AdminUpgrade_Main_Ctrl_UpgradeHome.prototype.init = function() {
         var _this = this;
+        this.$scope.opt = {
+          db_backup: true,
+          file_backup: false,
+          time_type: 'now',
+          delay: 15,
+          user_message: ''
+        };
         this.$scope.card_loaded = false;
         this.Api.sendDataGet({
           versionInfo: '/dp_license/version-info',
@@ -27,8 +34,13 @@
           updateStatus: '/server/updates/auto'
         }).then(function(result) {
           var _ref1;
+          if (result.data.updateStatus.is_scheduled) {
+            _this.$location.path('/progress');
+            return;
+          }
           _this.$scope.card_loaded = true;
           _this.$scope.version_info = result.data.versionInfo;
+          _this.$scope.release_notes_url = _this.$sce.trustAsResourceUrl("https://www.deskpro.com/members/versions/changelog/" + _this.$scope.version_info.build_num_base);
           if (((_ref1 = result.data.latestVersion) != null ? _ref1.version_info : void 0) == null) {
             return _this.$scope.latest_version = null;
           } else {
@@ -38,7 +50,19 @@
       };
 
       AdminUpgrade_Main_Ctrl_UpgradeHome.prototype.startUpgrade = function() {
-        return this.$scope.is_loading = true;
+        var formData, opt,
+          _this = this;
+        this.$scope.is_loading = true;
+        opt = this.$scope.opt;
+        formData = {
+          backup_db: opt.db_backup ? 1 : 0,
+          backup_files: opt.file_backup ? 1 : 0,
+          minutes: opt.time_type === 'now' ? 0 : parseInt(opt.delay) || 0,
+          user_message: opt.user_message
+        };
+        return this.Api.sendPutJson('/server/updates/auto', formData).success(function() {
+          return _this.$location.path('/progress');
+        });
       };
 
       return AdminUpgrade_Main_Ctrl_UpgradeHome;

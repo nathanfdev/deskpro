@@ -582,8 +582,10 @@ class ServerController extends AbstractController implements ProtectedController
 		if ($mins) {
 			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
 			$agent_ids = array_keys($this->em->getRepository('DeskPRO:Person')->getAgents());
-			$agent_chat->sendAgentMessage("Warning: The helpdesk will go down for maintenance in 5 minutes.", $agent_ids, 0);
+			$agent_chat->sendAgentMessage("Warning: The helpdesk will go down for maintenance in ".$mins." minutes.", $agent_ids, 0);
 		}
+
+		return $this->createSuccessResponse();
 	}
 
 	####################################################################################################################
@@ -597,11 +599,13 @@ class ServerController extends AbstractController implements ProtectedController
 			return $this->createApiResponse(array('is_scheduled' => false));
 		} else {
 			return $this->createApiResponse(array(
-				'is_scheduled' => true,
-				'start_time'   => $update_time,
-				'scheduled_at' => $this->container->getSetting('core.upgrade_set_at'),
-				'backup_files' => $this->container->getSetting('core.upgrade_backup_files'),
-				'backup_db'    => $this->container->getSetting('core.upgrade_backup_db'),
+				'is_scheduled'    => true,
+				'start_time'      => $update_time,
+				'scheduled_at'    => $this->container->getSetting('core.upgrade_set_at'),
+				'backup_files'    => $this->container->getSetting('core.upgrade_backup_files'),
+				'backup_db'       => $this->container->getSetting('core.upgrade_backup_db'),
+				'is_started'      => $this->container->getSetting('core.upgrade_started'),
+				'with_perm_error' => $this->container->getSetting('core.upgrade_error_writeperm')
 			));
 		}
 	}

@@ -11576,11 +11576,12 @@ table.agent-perms-table .toggle-wrap {
 #upgrader .main_content {
   max-width: 800px;
   min-width: 600px;
-  margin: 0 auto;
+  margin: 20px auto;
   text-align: left;
 }
 
 #upgrader .main_content > section {
+  overflow: hidden;
   border-radius: 3px;
   -webkit-box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
           box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
@@ -11637,6 +11638,81 @@ table.agent-perms-table .toggle-wrap {
 
 #upgrader .main_content > section > article > section + section {
   border-top: 1px solid #ccc;
+}
+
+#upgrader .main_content > section > article > section.running-section p {
+  display: none;
+}
+
+#upgrader .main_content > section > article > section.running-section .progress {
+  display: none;
+  float: right;
+  width: 200px;
+  margin: 0;
+  margin-top: 19px;
+}
+
+#upgrader .main_content > section > article > section.running-section.on i.icon-incomplete {
+  display: none;
+}
+
+#upgrader .main_content > section > article > section.running-section.on i.icon-complete {
+  display: none;
+}
+
+#upgrader .main_content > section > article > section.running-section.on i.icon-on {
+  display: inline-block;
+}
+
+#upgrader .main_content > section > article > section.running-section.on p {
+  display: block;
+}
+
+#upgrader .main_content > section > article > section.running-section.on .progress {
+  display: block;
+}
+
+#upgrader .main_content > section > article > section.running-section.complete i.icon-incomplete {
+  display: none;
+}
+
+#upgrader .main_content > section > article > section.running-section.complete i.icon-complete {
+  display: inline-block;
+}
+
+#upgrader .main_content > section > article > section.running-section.complete i.icon-on {
+  display: none;
+}
+
+#upgrader .main_content > section > article > section.running-section i.icon-incomplete {
+  display: inline-block;
+}
+
+#upgrader .main_content > section > article > section.running-section i.icon-complete {
+  display: none;
+}
+
+#upgrader .main_content > section > article > section.running-section i.icon-on {
+  display: none;
+}
+
+#upgrader .main_content > section > article > section.running-section .title {
+  font-size: 15px;
+}
+
+#upgrader .main_content > section > article > section.running-section .title em {
+  margin-right: 8px;
+  font-style: normal;
+  color: #888;
+}
+
+#upgrader .main_content > section > article > section.running-section .title em i {
+  font-size: 20px;
+  vertical-align: bottom;
+}
+
+#upgrader .main_content > section > article > section.running-section .title strong {
+  font-weight: normal;
 }
 
 #upgrader .main_content > section > footer {

@@ -54,6 +54,7 @@ class UpgradeController extends AbstractController
 		return $this->render('AdminInterfaceBundle:Upgrade:layout.html.twig', array(
 			'api_token'     => $token,
 			'session'       => $this->session->getEntity(),
+			'is_wincache'   => extension_loaded('wincache'),
 			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
 		));
 	}

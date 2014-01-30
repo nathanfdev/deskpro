@@ -1,6 +1,6 @@
 <section>
 	<header>
-		<h1>DeskPRO Update</h1>
+		<h1>Automatic Updater</h1>
 	</header>
 	<article ng-show="!card_loaded" class="loading-container">
 		<i class="spinner-editor"></i>
@@ -17,17 +17,17 @@
 	<article ng-show="card_loaded && latest_version">
 		<section>
 			<p>
-				You are currently running version #{{ ng_var('Home.version_info.build_name') }}. The newest version available is #{{ ng_var('Home.latest_version.build_num_base') }}.
+				You are currently running DeskPRO version #{{ ng_var('version_info.build_name') }}. The newest version available is #{{ ng_var('latest_version.build_num_base') }}.
+			</p>
+			<p>
+				The automatic updater will install the newest version of DeskPRO for you by just clicking the button below.
 			</p>
 		</section>
 		<section>
-			<h3>Release Notes</h3>
-			<iframe ng-src="https://www.deskpro.com/members/versions/changelog/0"></iframe>
-		</section>
-		<section>
-			<h3>Options</h3>
+			<h3>Backup Options</h3>
 			<p>
-				The automatic updater will install the newest version of DeskPRO for you by just clicking the button below.
+				It is recommended you enable backups so that in the very unlikely event a problem occurs,
+				you will be able to revert to the backup.
 			</p>
 			<label>
 				<input type="checkbox" ng-model="opt.db_backup" /> Back up the database before installing the upgrade
@@ -36,6 +36,29 @@
 			<label>
 				<input type="checkbox" ng-model="opt.file_backup" /> Back up the current DeskPRO source files before installing the upgrade
 			</label>
+		</section>
+		<section>
+			<h3>Time Delay</h3>
+			<p>
+				You may wish to delay the start of the automatic update. This will show an alert notice to any online agents,
+				giving them time to finish their work before the update starts.
+			</p>
+			<label>
+				<input type="radio" ng-model="opt.time_type" value="now" /> Start the update now
+			</label>
+			<label style="margin-left: 10px;">
+				<input type="radio" ng-model="opt.time_type" value="delay" /> Start the update in <span ng-show="opt.time_type != 'delay'">...</span>
+			</label>
+			<span ng-show="opt.time_type == 'delay'">
+				<input type="text" class="form-control" ng-model="opt.delay" style="padding: 1px; margin: 0; font-size: 11px; width: 45px; display: inline-block; height: auto;" /> minutes
+			</span>
+		</section>
+		<section>
+			<h3>User Offline Message</h3>
+			<p>
+				Enter the message to show on the user portal about the helpdesk being unavailable.
+			</p>
+			<input type="text" ng-model="opt.user_message" class="form-control" style="width: 80%" ng-init="opt.user_message = 'The helpdesk is undergoing routine maintenance. We will be back in about 10 minutes.'" />
 		</section>
 	</article>
 	<footer ng-show="card_loaded && latest_version">

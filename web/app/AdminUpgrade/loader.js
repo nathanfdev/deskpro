@@ -23,7 +23,8 @@ requirejs([
 	'angularRoute',
 
 	'AdminUpgrade/App/App',
-	'AdminUpgrade/Main/Ctrl/UpgradeHome'
+	'AdminUpgrade/Main/Ctrl/UpgradeHome',
+	'AdminUpgrade/Main/Ctrl/UpgradeWatch'
 ], function(angular) {
 	'use strict';
 
