@@ -36,6 +36,7 @@ namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Doctrine\ORM\EntityManager;
+use Orb\Data\ContentTypes;
 
 class PackageInstaller
 {
@@ -63,9 +64,14 @@ class PackageInstaller
 	public function installPackage(Package $package)
 	{
 		$def = $package->createAppPackage();
+		$this->em->persist($def);
+
+		#------------------------------
+		# Main icon
+		#------------------------------
 
 		$blob = $this->blob_storage->createBlobRecordFromFile(
-			$package->getIconFile(),
+			$package->getIconFilePath(),
 			'app.png',
 			'image/png'
 		);
@@ -73,8 +79,63 @@ class PackageInstaller
 		$asset = $def->addAssetFromBlob($blob);
 		$asset->tag = 'icons.app';
 
-		$this->em->persist($def);
 		$this->em->persist($asset);
+
+		#------------------------------
+		# Main app.js
+		#------------------------------
+
+		$appjs_path = $package->getAppJsFilePath();
+		if ($appjs_path) {
+			$blob = $this->blob_storage->createBlobRecordFromFile(
+				$appjs_path,
+				'app.js',
+				'text/javascript'
+			);
+
+			$asset = $def->addAssetFromBlob($blob);
+			$asset->tag = 'app_js';
+			$this->em->persist($asset);
+		}
+
+		#------------------------------
+		# Save assets
+		#------------------------------
+
+		$blob_storage = $this->blob_storage;
+		$em = $this->em;
+		$fn_proc_asset = function($asset_info, $tag) use ($blob_storage, $def, $em) {
+			$mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
+
+			$blob = $blob_storage->createBlobRecordFromFile(
+				$asset_info['real_path'],
+				$asset_info['name'],
+				$mimetype
+			);
+
+			$asset = $def->addAssetFromBlob($blob, $asset_info['path']);
+			$asset->tag = $tag;
+
+			$em->persist($asset);
+		};
+
+		foreach ($package->getJsAssets() as $asset_info) {
+			$fn_proc_asset($asset_info, 'js');
+		}
+		foreach ($package->getHtmlAssets() as $asset_info) {
+			$fn_proc_asset($asset_info, 'html');
+		}
+		foreach ($package->getCssAssets() as $asset_info) {
+			$fn_proc_asset($asset_info, 'css');
+		}
+		foreach ($package->getResAssets() as $asset_info) {
+			$fn_proc_asset($asset_info, 'res');
+		}
+
+		#------------------------------
+		# Save
+		#------------------------------
+
 		$this->em->flush();
 
 		return $def;

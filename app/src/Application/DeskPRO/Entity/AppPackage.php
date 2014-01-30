@@ -50,6 +50,7 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property string $version_name
  * @property string $native_name
  * @property string $is_single
+ * @property array  $settings_def
  * @property array  $assets
  */
 class AppPackage extends DomainObject
@@ -107,6 +108,11 @@ class AppPackage extends DomainObject
 	protected $is_single = false;
 
 	/**
+	 * @var array
+	 */
+	protected $settings_def = array();
+
+	/**
 	 * @var \Application\DeskPRO\Entity\AppAsset[]
 	 */
 	protected $assets;
@@ -131,9 +137,10 @@ class AppPackage extends DomainObject
 	 * @param Blob $blob
 	 * @return AppAsset
 	 */
-	public function addAssetFromBlob(Blob $blob)
+	public function addAssetFromBlob(Blob $blob, $filename = null)
 	{
 		$asset = new AppAsset();
+		$asset->name = $filename ? $filename : $blob->filename;
 		$asset->blob = $blob;
 		$asset->package = $this;
 		$this->assets->add($asset);
@@ -176,7 +183,7 @@ class AppPackage extends DomainObject
 			}
 		}
 
-		return $asset;
+		return $assets;
 	}
 
 
@@ -310,6 +317,13 @@ class AppPackage extends DomainObject
 			'columnName' => 'is_single',
 			'fieldName'  => 'is_single',
 			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'settings_def',
+			'fieldName'  => 'settings_def',
+			'type'       => 'json_array',
 			'nullable'   => false,
 		));
 

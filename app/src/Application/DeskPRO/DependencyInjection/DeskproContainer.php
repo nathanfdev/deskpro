@@ -779,6 +779,15 @@ class DeskproContainer extends Container
 	{
 		return Util::generateStaticSecurityToken(md5($this->getSetting('core.app_secret', 'secret') . $name), $timeout);
 	}
+
+
+	/**
+	 * @return \Application\DeskPRO\App\AppManager
+	 */
+	public function getAppManager()
+	{
+		return $this->getSystemService('app_manager');
+	}
 }
 
 class MockPluginRepos

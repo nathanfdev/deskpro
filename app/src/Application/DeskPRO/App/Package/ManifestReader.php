@@ -127,21 +127,38 @@ class ManifestReader
 				'is_single',
 				'author.name',
 				'author.email',
-				'author.link'
+				'author.link',
+				'settings_def'
 			);
 
 			$docheck = array();
 
 			foreach ($fields as $f) {
-				$value = Arrays::getValue($this->data, $f);
-				if (!$value || !trim($value)) {
+				$setter = Strings::underscoreToCamelCase('set_' . str_replace('.', '_', $f));
+				$value = Arrays::getValue($this->data, $f, '___dp_unset___');
+				if ($value === '___dp_unset___') {
 					$this->error_details[] = array('missing', $f);
+				} else if ($f == 'settings_def') {
+					if (!is_array($value)) {
+						$this->error_details[] = array('invalid', $f);
+					} else {
+						$this->manifest->$setter($value);
+					}
+				} else if ($f == 'api_version') {
+					$value = (int)$value;
+					if ($value != 1) {
+						$this->error_details[] = array('invalid', $f);
+					} else {
+						$this->manifest->$setter($value);
+					}
 				} else {
-					$setter = Strings::underscoreToCamelCase('set_' . str_replace('.', '_', $f));
-
-					$value = trim($value);
-					$this->manifest->$setter($value);
-					$docheck[] = $f;
+					if (!is_scalar($value)) {
+						$this->error_details[] = array('invalid', $f);
+					} else {
+						$value = trim($value);
+						$this->manifest->$setter($value);
+						$docheck[] = $f;
+					}
 				}
 			}
 

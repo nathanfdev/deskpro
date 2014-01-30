@@ -920,6 +920,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.cancelHashLoad = 0;
 			this.loadHashPath(startHash);
 		}
+
+		if (window.AppPlatform) {
+			this.initAppPlatform(window.AppPlatform);
+		}
+	},
+
+	initAppPlatform: function(AppPlatform) {
+		this.AppPlatform = AppPlatform;
+		this.AppPlatform.start();
 	},
 
 	addOnloadFunction: function(fn) {

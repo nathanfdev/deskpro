@@ -47,7 +47,7 @@ class MiscController extends AbstractController
 {
 	public function requireRequestToken($action, $arguments = null)
 	{
-		if ($action == 'getInterfaceDataAction') {
+		if ($action == 'getInterfaceDataAction' || $action == 'getRequirejsLoaderAction' || $action == 'getAppsConfigAction') {
 			return false;
 		}
 
@@ -832,5 +832,98 @@ JS;
 		$dom = $this->in->getRaw('html');
 		file_put_contents(dp_get_data_dir() . '/dom.html', $dom);
 		return $this->createJsonResponse(array('okay' => true));
+	}
+
+	public function getRequirejsLoaderAction()
+	{
+		$manager = $this->container->getAppManager();
+
+		$source_paths = array(
+			'"AppPlatform": "javascripts/DeskPRO/App/Platform"',
+			'"AppPlatformConfig": "' . str_replace('.js', '', $this->generateUrl('agent_apps_config_js')) . '"'
+		);
+		$requires = array('"AppPlatform"', '"AppPlatformConfig"');
+		$require_names = array('AppPlatform', 'AppPlatformConfig');
+
+		foreach ($manager->getAllPackages() as $package) {
+			$appAsset = $package->getTaggedAsset('app_js');
+			$name = "{$package->name}/app";
+
+			if ($appAsset) {
+				$source_paths[] = "\"$name\": \"" . $appAsset->blob->getDownloadUrl() . "\"";
+			}
+			foreach ($package->getTaggedAssets('js') as $asset) {
+
+				// A JS file named js/MyController becomes
+				// a path called 'com.deskpro.apps.test/MyController'
+				$name = $package->name . '/' . str_replace('.js', '', $asset->name);
+
+				$source_paths[] = "\"$name\": \"" . $asset->blob->getDownloadUrl() . "\"";
+			}
+		}
+
+		$source_paths = implode(",\n", $source_paths) . "\n";
+		$requires = implode(', ', $requires);
+		$require_names = implode(', ', $require_names);
+
+		$js = <<<JS
+requirejs.config({
+	"baseUrl": ASSETS_BASE_URL,
+	"urlArgs": "bust=" + (new Date()).getTime(),
+    "paths": {
+		$source_paths
+    }
+});
+requirejs([$requires], function($require_names) {
+
+})
+JS;
+
+		$response = $this->response;
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($js);
+
+		return $response;
+	}
+
+	public function getAppsConfigAction()
+	{
+		$js = array();
+
+		$manager = $this->container->getAppManager();
+
+		foreach ($manager->getAllApps() as $app) {
+			$package = $app->package;
+			$appAsset = $package->getTaggedAsset('app_js');
+			$name = "{$package->name}/app";
+
+			$js_row = "// {$package->name} :: App[{$app->id}]\n";
+			$js_row .= 'define(';
+			if ($appAsset) {
+				$js_row .= '["' . $name . '"], function(AppPackage) {';
+			} else {
+				$js_row .= '["AppPlatform"], function() { var AppPackage = {};';
+			}
+			$js_row .= "\n";
+
+			$infoJson = "{\n";
+			$infoJson .= "\t\t\"id\": {$app->id},\n";
+			$infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
+			$infoJson .= "\t\t\"settings\": ".json_encode($app->getSettings(), JSON_FORCE_OBJECT)."\n";
+			$infoJson .= "\t}";
+
+			$js_row .= "\tAppPlatform.registerApp(AppPackage, $infoJson);";
+
+			$js_row .= "\n});";
+			$js[] = $js_row;
+		}
+
+		$js = implode("\n\n", $js);
+
+		$response = $this->response;
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($js);
+
+		return $response;
 	}
 }

@@ -82,6 +82,11 @@ class Manifest
 	private $author_link;
 
 	/**
+	 * @var array
+	 */
+	private $settings_def = array();
+
+	/**
 	 * @param string $package_name
 	 */
 	public function setPackageName($package_name)
@@ -176,6 +181,23 @@ class Manifest
 	{
 		return $this->is_single;
 	}
+
+	/**
+	 * @param array $settings_def
+	 */
+	public function setSettingsDef($settings_def)
+	{
+		$this->settings_def = $settings_def;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSettingsDef()
+	{
+		return $this->settings_def;
+	}
+
 
 	/**
 	 * @param string $title

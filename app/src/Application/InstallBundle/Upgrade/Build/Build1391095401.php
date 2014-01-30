@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,57 +25,20 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App\Package\Package;
-use Application\DeskPRO\App\Package\PackageInstaller;
-use Application\DeskPRO\Entity\AppInstance;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-
-class TestCommand extends ContainerAwareCommand
+class Build1391095401 extends AbstractBuild
 {
-	protected function configure()
+	public function run()
 	{
-		$this->setName('dp:test');
-	}
-
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		/** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
-		$container = $this->getContainer();
-
-		$mode = 'package_read';
-		$mode = 'package';
-		$mode = 'app';
-
-		if ($mode == 'package') {
-			$package = new Package(DP_ROOT.'/apps/TestApp');
-
-			$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage());
-			$installer->installPackage($package);
-		} else if ($mode == 'package_read') {
-			$package = new Package(DP_ROOT.'/apps/TestApp');
-
-			print_r($package->getJsAssets());
-		} else if ($mode == 'app') {
-			$package = $container->getEm()->getRepository('DeskPRO:AppPackage')->findOneBy(array('name' => 'com.deskpro.apps.test'));
-
-			$app = new AppInstance();
-			$app->package = $package;
-			$app->title = $package->title;
-			$container->getEm()->persist($app);
-			$container->getEm()->flush();
-		}
-
-		echo "\n";
+		$this->execMutateSql("ALTER TABLE app_instances ADD settings LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
+		$this->execMutateSql("ALTER TABLE app_packages ADD settings_def LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
 	}
 }

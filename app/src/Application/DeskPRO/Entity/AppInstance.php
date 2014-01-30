@@ -39,6 +39,15 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 
+/**
+ * @property int $id
+ * @property AppPackage $package
+ * @property string $title
+ * @property string $auth_key
+ * @property string $secret_key
+ * @property array $settings
+ * @property \DateTime $date_created
+ */
 class AppInstance extends DomainObject
 {
 	/**
@@ -67,6 +76,11 @@ class AppInstance extends DomainObject
 	protected $secret_key;
 
 	/**
+	 * @var array
+	 */
+	protected $settings = null;
+
+	/**
 	 * @var \DateTime
 	 */
 	protected $date_created;
@@ -85,6 +99,33 @@ class AppInstance extends DomainObject
 	{
 		return $this->id;
 	}
+
+
+	/**
+	 * Set metadata
+	 *
+	 * @param array $metadata
+	 */
+	public function setSettings(array $settings = null)
+	{
+		if (!$settings) {
+			$this->setModelField('metadata', null);
+		} else {
+			$this->setModelField('metadata', $settings);
+		}
+	}
+
+
+	/**
+	 * Get metadata
+	 *
+	 * @return array
+	 */
+	public function getSettings()
+	{
+		return $this->settings ? $this->settings : array();
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -130,6 +171,13 @@ class AppInstance extends DomainObject
 			'type'       => 'string',
 			'length'     => 40,
 			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'settings',
+			'fieldName'  => 'settings',
+			'type'       => 'json_array',
+			'nullable'   => true,
 		));
 
 		$metadata->mapField(array(

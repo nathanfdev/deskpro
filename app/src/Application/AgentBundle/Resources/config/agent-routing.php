@@ -18,6 +18,16 @@ $collection->create('agent_savedom', array(
 	'controller'  => 'AgentBundle:Misc:saveDom',
 ));
 
+$collection->create('agent_requirejs_loader', array(
+	'path'        => '/requirejs-loader.js',
+	'controller'  => 'AgentBundle:Misc:getRequirejsLoader',
+));
+
+$collection->create('agent_apps_config_js', array(
+	'path'        => '/apps-config.js',
+	'controller'  => 'AgentBundle:Misc:getAppsConfig',
+));
+
 $collection->create('agent_combined_sectiondata', array(
 	'path'        => '/get-combined-section-data.json',
 	'controller'  => 'AgentBundle:Main:getCombinedSectionData',

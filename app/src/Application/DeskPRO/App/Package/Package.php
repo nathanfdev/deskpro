@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\Entity\AppPackage;
+use Symfony\Component\Finder\Finder;
 
 class Package
 {
@@ -99,8 +100,95 @@ class Package
 	/**
 	 * @return string
 	 */
-	public function getIconFile()
+	public function getIconFilePath()
 	{
 		return $this->path . '/res/icons/app.png';
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getAppJsFilePath()
+	{
+		$path = $this->path . '/app.js';
+		if (file_exists($path)) {
+			return $path;
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getJsAssets()
+	{
+		return $this->readAssetPath('js');
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getCssAssets()
+	{
+		return $this->readAssetPath('css');
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getHtmlAssets()
+	{
+		return $this->readAssetPath('css');
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getResAssets()
+	{
+		return $this->readAssetPath('res');
+	}
+
+
+	/**
+	 * @param string $path_name
+	 * @return array
+	 */
+	private function readAssetPath($path_name)
+	{
+		$assets = array();
+		$path = $this->path . '/' . $path_name;
+
+		if (!is_dir($path)) {
+			return array();
+		}
+
+		$finder = Finder::create()->in($path)->files();
+		switch ($path_name) {
+			case 'js':   $finder->name('*.js');   break;
+			case 'html': $finder->name('*.html'); break;
+			case 'css':  $finder->name('*.css');  break;
+		}
+
+		foreach ($finder as $file) {
+			/** @var $file \SplFileInfo */
+
+			$full_path  = $file->getRealPath();
+			$asset_path = str_replace($full_path, '', $full_path);
+			$file_name  = $file->getFilename();
+
+			$assets[] = array(
+				'real_path' => $full_path,
+				'path'      => $asset_path,
+				'name'      => $file_name,
+			);
+		}
+
+		return $assets;
 	}
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,57 +25,128 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\App;
 
-use Application\DeskPRO\App\Package\Package;
-use Application\DeskPRO\App\Package\PackageInstaller;
+use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\AppInstance;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
-class TestCommand extends ContainerAwareCommand
+class AppManager
 {
-	protected function configure()
+	/**
+	 * @var AppPackage[]
+	 */
+	private $packages = array();
+
+	/**
+	 * @var AppInstance[]
+	 */
+	private $apps = array();
+
+
+	/**
+	 * @param AppInstance[] $apps
+	 */
+	public function __construct(array $apps)
 	{
-		$this->setName('dp:test');
+		foreach ($apps as $app) {
+			$this->apps[$app->id] = $app;
+
+			$package = $app->package;
+			if (!isset($this->packages[$package->name])) {
+				$this->packages[$package->name] = $package;
+			}
+		}
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function hasPackage($name)
 	{
-		/** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
-		$container = $this->getContainer();
+		return isset($this->packages[$name]);
+	}
 
-		$mode = 'package_read';
-		$mode = 'package';
-		$mode = 'app';
 
-		if ($mode == 'package') {
-			$package = new Package(DP_ROOT.'/apps/TestApp');
-
-			$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage());
-			$installer->installPackage($package);
-		} else if ($mode == 'package_read') {
-			$package = new Package(DP_ROOT.'/apps/TestApp');
-
-			print_r($package->getJsAssets());
-		} else if ($mode == 'app') {
-			$package = $container->getEm()->getRepository('DeskPRO:AppPackage')->findOneBy(array('name' => 'com.deskpro.apps.test'));
-
-			$app = new AppInstance();
-			$app->package = $package;
-			$app->title = $package->title;
-			$container->getEm()->persist($app);
-			$container->getEm()->flush();
+	/**
+	 * @param string $name
+	 * @return AppPackage
+	 * @throws \InvalidArgumentException
+	 */
+	public function getPackage($name)
+	{
+		if (!isset($this->packages[$name])) {
+			throw new \InvalidArgumentException();
 		}
 
-		echo "\n";
+		return $this->packages[$name];
+	}
+
+
+	/**
+	 * @return AppPackage[]
+	 */
+	public function getAllPackages()
+	{
+		return array_values($this->packages);
+	}
+
+
+	/**
+	 * @param int $id
+	 * @return bool
+	 */
+	public function hasApp($id)
+	{
+		return isset($this->apps[$id]);
+	}
+
+
+	/**
+	 * @param int $id
+	 * @return AppInstance
+	 * @throws \InvalidArgumentException
+	 */
+	public function getApp($id)
+	{
+		if (!isset($this->apps[$id])) {
+			throw new \InvalidArgumentException();
+		}
+
+		return $this->apps[$id];
+	}
+
+
+	/**
+	 * @return AppInstance[]
+	 */
+	public function getAllApps()
+	{
+		return array_values($this->apps);
+	}
+
+
+	/**
+	 * @param string $name  The package name
+	 * @return AppInstance[]
+	 */
+	public function getPackageApps($name)
+	{
+		$apps = array();
+		foreach ($this->apps as $app) {
+			if ($app->package->name == $name) {
+				$apps[] = $apps;
+			}
+		}
+
+		return $apps;
 	}
 }
