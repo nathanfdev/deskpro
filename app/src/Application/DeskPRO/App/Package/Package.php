@@ -32,51 +32,75 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Plugin\Package;
+namespace Application\DeskPRO\App\Package;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\AppPackage;
 
-class PackageInstaller
+class Package
 {
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var string
 	 */
-	private $em;
+	private $path;
 
 	/**
-	 * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
+	 * @var Manifest
 	 */
-	private $blob_storage;
+	private $manifest;
 
-	public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage)
+	public function __construct($path)
 	{
-		$this->em = $em;
-		$this->blob_storage = $blob_storage;
+		$this->path = $path;
+
+		$reader = ManifestReader::newFromFile($path . '/manifest.json');
+		if ($reader->isError()) {
+			throw new \InvalidArgumentException(sprintf(
+				"Invalid manifest: %s %s",
+				$reader->getErrorCode(),
+				$reader->getErrorDetailAsString()
+			));
+		}
+		$this->manifest = $reader->getManifest();
 	}
 
 
 	/**
-	 * @param Package $package
-	 * @return \Application\DeskPRO\Entity\PluginPackage
+	 * @return AppPackage
 	 */
-	public function installPackage(Package $package)
+	public function createAppPackage()
 	{
-		$def = $package->createPluginPackage();
+		$def = new AppPackage();
+		$def->name         = $this->manifest->getPackageName();
+		$def->title        = $this->manifest->getTitle();
+		$def->author_name  = $this->manifest->getAuthorName();
+		$def->author_email = $this->manifest->getAuthorEmail();
+		$def->author_link  = $this->manifest->getAuthorLink();
+		$def->api_version  = $this->manifest->getApiVersion();
+		$def->version      = $this->manifest->getVersion();
+		$def->version_name = $this->manifest->getVersionName();
+		$def->is_single    = $this->manifest->getIsSingle();
 
-		$blob = $this->blob_storage->createBlobRecordFromFile(
-			$package->getIconFile(),
-			'app.png',
-			'image/png'
-		);
-
-		$asset = $def->addAssetFromBlob($blob);
-		$asset->tag = 'icons.app';
-
-		$this->em->persist($def);
-		$this->em->persist($asset);
-		$this->em->flush();
+		if (strpos($this->path, DP_ROOT.'/apps') === 0) {
+			$def->native_name = basename($this->path);
+		}
 
 		return $def;
+	}
+
+	/**
+	 * @return Manifest
+	 */
+	public function getManifest()
+	{
+		return $this->manifest;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getIconFile()
+	{
+		return $this->path . '/res/icons/app.png';
 	}
 }

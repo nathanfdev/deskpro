@@ -52,7 +52,7 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property string $is_single
  * @property array  $assets
  */
-class PluginPackage extends DomainObject
+class AppPackage extends DomainObject
 {
 	/**
 	 * @var string
@@ -95,7 +95,7 @@ class PluginPackage extends DomainObject
 	protected $version_name;
 
 	/**
-	 * The plugin ID if this plugin has resources in the filesystem
+	 * The app ID if this app has resources in the filesystem
 	 * @var string
 	 */
 	protected $native_name;
@@ -107,7 +107,7 @@ class PluginPackage extends DomainObject
 	protected $is_single = false;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\PluginAsset[]
+	 * @var \Application\DeskPRO\Entity\AppAsset[]
 	 */
 	protected $assets;
 
@@ -118,9 +118,9 @@ class PluginPackage extends DomainObject
 
 
 	/**
-	 * @param PluginAsset $asset
+	 * @param AppAsset $asset
 	 */
-	public function addAsset(PluginAsset $asset)
+	public function addAsset(AppAsset $asset)
 	{
 		$this->assets->add($asset);
 		$asset->package = $this;
@@ -129,11 +129,11 @@ class PluginPackage extends DomainObject
 
 	/**
 	 * @param Blob $blob
-	 * @return PluginAsset
+	 * @return AppAsset
 	 */
 	public function addAssetFromBlob(Blob $blob)
 	{
-		$asset = new PluginAsset();
+		$asset = new AppAsset();
 		$asset->blob = $blob;
 		$asset->package = $this;
 		$this->assets->add($asset);
@@ -146,7 +146,7 @@ class PluginPackage extends DomainObject
 	 * Get one asset tagged with some name
 	 *
 	 * @param string $tag
-	 * @return PluginAsset
+	 * @return AppAsset
 	 */
 	public function getTaggedAsset($tag)
 	{
@@ -164,7 +164,7 @@ class PluginPackage extends DomainObject
 	 * Get an array of all assets tagged with a name
 	 *
 	 * @param string $tag
-	 * @return PluginAsset[]
+	 * @return AppAsset[]
 	 */
 	public function getTaggedAssets($tag)
 	{
@@ -184,7 +184,7 @@ class PluginPackage extends DomainObject
 	 * Get the asset with the filename $name
 	 *
 	 * @param string $name
-	 * @return PluginAsset|null
+	 * @return AppAsset|null
 	 */
 	public function getAsset($name)
 	{
@@ -233,7 +233,7 @@ class PluginPackage extends DomainObject
 		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 		$metadata->setPrimaryTable(array(
-			'name' => 'plugin_packages'
+			'name' => 'app_packages'
 		));
 
 		$metadata->mapField(array(
@@ -315,7 +315,7 @@ class PluginPackage extends DomainObject
 
 		$metadata->mapOneToMany(array(
 			'fieldName'    => 'assets',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginAsset',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AppAsset',
 			'mappedBy'     => 'package'
 		));
 	}

@@ -234,13 +234,13 @@ class CustomDefChat extends CustomDefAbstract
 		);
 		$metadata->mapManyToOne(
 			array(
-				 'fieldName'    => 'plugin',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Plugin',
+				 'fieldName'    => 'app',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
 				 'mappedBy'     => null,
 				 'inversedBy'   => null,
 				 'joinColumns'  => array(
 					 0 => array(
-						 'name'                 => 'plugin_id',
+						 'name'                 => 'app_id',
 						 'referencedColumnName' => 'id',
 						 'unique'               => false,
 						 'nullable'             => true,

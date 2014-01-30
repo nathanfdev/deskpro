@@ -41,7 +41,7 @@ use Application\DeskPRO\App;
 use Orb\Util\Dates;
 
 /**
- * Ticket trigger action plugins
+ * Ticket trigger action apps
  *
  */
 class TicketTriggerPluginActions extends \Application\DeskPRO\Domain\DomainObject
@@ -58,9 +58,9 @@ class TicketTriggerPluginActions extends \Application\DeskPRO\Domain\DomainObjec
 	protected $action_class;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Plugin|null
+	 * @var \Application\DeskPRO\Entity\AppInstance|null
 	 */
-	protected $plugin = null;
+	protected $app = null;
 
 	/**
 	 * @return \Application\DeskPRO\Tickets\TicketActions\AbstractPluginSetup
@@ -90,7 +90,7 @@ class TicketTriggerPluginActions extends \Application\DeskPRO\Domain\DomainObjec
 		$metadata->mapField(array( 'fieldName' => 'event_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event_type', ));
 		$metadata->mapField(array( 'fieldName' => 'setup_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'setup_class', ));
 		$metadata->mapField(array( 'fieldName' => 'action_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'action_class', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'plugin', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Plugin', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'plugin_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

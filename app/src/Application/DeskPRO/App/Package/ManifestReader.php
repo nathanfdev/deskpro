@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Plugin\Package;
+namespace Application\DeskPRO\App\Package;
 
 use Orb\Util\Arrays;
 use Orb\Util\Strings;

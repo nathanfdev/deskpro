@@ -46,7 +46,6 @@ use Orb\Util\Arrays;
  * @property int $display_order
  * @property string $title
  * @property string $sys_name
- * @property CustomDefFeedback $parent
  */
 class CustomDefFeedback extends CustomDefAbstract
 {
@@ -266,13 +265,13 @@ class CustomDefFeedback extends CustomDefAbstract
 		);
 		$metadata->mapManyToOne(
 			array(
-				 'fieldName'    => 'plugin',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Plugin',
+				 'fieldName'    => 'app',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
 				 'mappedBy'     => null,
 				 'inversedBy'   => null,
 				 'joinColumns'  => array(
 					 0 => array(
-						 'name'                 => 'plugin_id',
+						 'name'                 => 'app_id',
 						 'referencedColumnName' => 'id',
 						 'unique'               => false,
 						 'nullable'             => true,

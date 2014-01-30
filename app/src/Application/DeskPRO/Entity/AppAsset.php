@@ -43,10 +43,10 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property string        $name
  * @property string        $tag
  * @property array         $metadata
- * @property PluginPackage $package
+ * @property AppPackage    $package
  * @property Blob          $blob
  */
-class PluginAsset extends DomainObject
+class AppAsset extends DomainObject
 {
 	/**
 	 * @var int
@@ -64,7 +64,7 @@ class PluginAsset extends DomainObject
 	protected $tag = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\PluginPackage
+	 * @var \Application\DeskPRO\Entity\AppPackage
 	 */
 	protected $package;
 
@@ -114,7 +114,7 @@ class PluginAsset extends DomainObject
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->setPrimaryTable(array(
-			'name' => 'plugin_assets'
+			'name' => 'app_assets'
 		));
 
 		$metadata->mapField(array(
@@ -150,7 +150,7 @@ class PluginAsset extends DomainObject
 
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'package',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginPackage',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
 			'inversedBy'   => 'assets',
 			'joinColumns'  => array(array(
 				'name'                 => 'package_name',

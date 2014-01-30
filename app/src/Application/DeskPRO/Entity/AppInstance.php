@@ -39,7 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 
-class Plugin extends DomainObject
+class AppInstance extends DomainObject
 {
 	/**
 	 * @var int
@@ -47,7 +47,7 @@ class Plugin extends DomainObject
 	protected $id = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\PluginPackage
+	 * @var \Application\DeskPRO\Entity\AppPackage
 	 */
 	protected $package;
 
@@ -95,9 +95,9 @@ class Plugin extends DomainObject
 		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Plugin';
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AppInstance';
 		$metadata->setPrimaryTable(array(
-			'name' => 'plugins'
+			'name' => 'app_instances'
 		));
 
 		$metadata->mapField(array(
@@ -141,7 +141,7 @@ class Plugin extends DomainObject
 
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'package',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginPackage',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
 			'joinColumns'  => array(array(
 				'name'                 => 'package_name',
 				'referencedColumnName' => 'name',

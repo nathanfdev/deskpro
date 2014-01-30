@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Plugin\Package;
+namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Doctrine\ORM\EntityManager;
@@ -70,7 +70,7 @@ class NativePackages
 		$this->blob_storage = $blob_storage;
 
 		if (!$root_path) {
-			$root_path = DP_ROOT . '/plugins';
+			$root_path = DP_ROOT . '/apps';
 		}
 		$this->root_path = $root_path;
 	}
@@ -103,13 +103,13 @@ class NativePackages
 	 * Finds the packages installed into the DB and those available
 	 * in the filesystem and makes sure they match.
 	 *
-	 * @return \\Application\DeskPRO\Entity\PluginPackage[]
+	 * @return \Application\DeskPRO\Entity\AppPackage[]
 	 */
 	public function syncPackages()
 	{
 		$existing_packages = $this->em->createQuery("
 			SELECT d
-			FROM DeskPRO:PluginPackage d INDEX BY d.native_name
+			FROM DeskPRO:AppPackage d INDEX BY d.native_name
 			WHERE d.native_name IS NOT NULL
 		")->execute();
 

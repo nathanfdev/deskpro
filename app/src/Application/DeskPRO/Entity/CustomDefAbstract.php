@@ -61,12 +61,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 	protected $id = null;
 
 	/**
-	 * Is the field associated with a plugin?
+	 * Is the field associated with an app?
 	 * These generally cant be edited.
 	 *
-	 * @var \Application\DeskPRO\Entity\Plugin
+	 * @var \Application\DeskPRO\Entity\AppInstance
 	 */
-	protected $plugin = null;
+	protected $app = null;
 
 	/**
 	 * JS class to init
