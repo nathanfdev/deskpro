@@ -108,19 +108,20 @@
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             subModel = _ref[_i];
             this.listModels[subModel] = [];
-            if (!listModels[subModel]) {
-              throw new Error("There is no values with key " + subModel + " in data returned by server");
+            if (listModels[subModel]) {
+              _results.push((function() {
+                var _j, _len1, _ref1, _results1;
+                _ref1 = listModels[subModel];
+                _results1 = [];
+                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                  model = _ref1[_j];
+                  _results1.push(this.listModels[subModel].push(model));
+                }
+                return _results1;
+              }).call(this));
+            } else {
+              _results.push(void 0);
             }
-            _results.push((function() {
-              var _j, _len1, _ref1, _results1;
-              _ref1 = listModels[subModel];
-              _results1 = [];
-              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                model = _ref1[_j];
-                _results1.push(this.listModels[subModel].push(model));
-              }
-              return _results1;
-            }).call(this));
           }
           return _results;
         } else {
