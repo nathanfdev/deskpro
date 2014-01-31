@@ -838,12 +838,20 @@ JS;
 	{
 		$manager = $this->container->getAppManager()->getScopeFilter('agent');
 
-		$source_paths = array(
-			'"AppPlatform": "javascripts/DeskPRO/App/Platform"',
-			'"AppPlatformConfig": "' . str_replace('.js', '', $this->generateUrl('agent_apps_config_js')) . '"'
-		);
-		$requires = array('"AppPlatform"', '"AppPlatformConfig"');
-		$require_names = array('AppPlatform', 'AppPlatformConfig');
+		$config_path = str_replace('.js', '', $this->generateUrl('agent_apps_config_js'));
+		$source_paths_head = <<<PATHS
+"DeskPRO/App": "javascripts/DeskPRO/App",
+"AppPlatform": "javascripts/DeskPRO/App/Platform",
+"AppPlatformConfig": "$config_path",
+"AgentApp": "javascripts/DeskPRO/App/AgentApp",
+angular:                         ASSETS_BASE_URL+'/app/bower_components/angular/angular',
+angularAnimate:                  ASSETS_BASE_URL+'/app/bower_components/angular-animate/angular-animate.min',
+angularSanitize:                 ASSETS_BASE_URL+'/app/bower_components/angular-sanitize/angular-sanitize'
+PATHS;
+
+
+		$source_paths = array();
+		$requires = array('"angular"', '"angularAnimate"', '"angularSanitize"', '"AppPlatform"', '"AppPlatformConfig"');
 
 		foreach ($manager->getAllPackages() as $package) {
 			if ($package->native_name) {
@@ -878,18 +886,31 @@ JS;
 
 		$source_paths = implode(",\n", $source_paths) . "\n";
 		$requires = implode(', ', $requires);
-		$require_names = implode(', ', $require_names);
+
+		if ($source_paths) {
+			$source_paths_head .= ",\n";
+		}
 
 		$js = <<<JS
 requirejs.config({
 	"baseUrl": ASSETS_BASE_URL,
 	"urlArgs": "bust=" + (new Date()).getTime(),
+	"shim": {
+		'angular':              {'exports' : 'angular'},
+		'angularAnimate':       ['angular'],
+		'angularSanitize':      ['angular']
+	},
     "paths": {
+    	$source_paths_head
 		$source_paths
     }
 });
-requirejs([$requires], function($require_names) {
-
+requirejs(['AppPlatform', 'AppPlatformConfig', 'AgentApp', 'angular'], function(AppPlatform, AppPlatformConfig, AgentApp, angular) {
+	angular.element(document).ready(function() {
+		console.log(AgentApp);
+		angular.bootstrap(document, ['AgentApp']);
+		window.DP_ONLOAD();
+	});
 })
 JS;
 
@@ -920,11 +941,39 @@ JS;
 			}
 			$js_row .= "\n";
 
+			if ($package->native_name) {
+				$native_baseurl = $this->generateUrl('serve_file_root') . '/apps/' . $package->native_name;
+			} else {
+				$native_baseurl = null;
+			}
+
+			$asset_files = array();
+			foreach (array('html', 'res') as $asset_type) {
+				foreach ($package->getTaggedAssets($asset_type) as $asset) {
+					$asset_id = $package->name . "/$asset_type/" . $asset->name;
+
+					if ($native_baseurl) {
+						$asset_path = $native_baseurl . "/$asset_type/" . $asset->name;
+					} else {
+						$asset_path = $asset->blob->getDownloadUrl();
+					}
+
+					$asset_files[$asset_id] = $asset_path;
+				}
+			}
+
+			if ($asset_files) {
+				$asset_files = json_encode($asset_files);
+			} else {
+				$asset_files = "{}";
+			}
+
 			$infoJson = "{\n";
 			$infoJson .= "\t\t\"id\": {$app->id},\n";
 			$infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
 			$infoJson .= "\t\t\"scope\": \"agent\",\n";
-			$infoJson .= "\t\t\"settings\": ".json_encode($app->getSettings(), JSON_FORCE_OBJECT)."\n";
+			$infoJson .= "\t\t\"settings\": ".json_encode($app->getSettings(), JSON_FORCE_OBJECT).",\n";
+			$infoJson .= "\t\t\"assets\": $asset_files\n";
 			$infoJson .= "\t}";
 
 			$js_row .= "\tAppPlatform.registerApp(AppPackage, $infoJson);";

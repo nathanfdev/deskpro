@@ -1,5 +1,7 @@
 define([
-	'javascripts/DeskPRO/App/AppContext'
+	'DeskPRO/App/Context/AppContext',
+	'DeskPRO/App/Context/TabContext/TabContext',
+	'DeskPRO/App/Context/TabContext/TicketTabContext',
 ], function(AppContext) {
 
 	var apps = [], AppPlatform, isStarted = false;
@@ -13,7 +15,17 @@ define([
 	 */
 	function registerApp(packageClass, appInstanceInfo)
 	{
-		var appContext = new AppContext(appInstanceInfo, packageClass);
+		var appContext;
+		if (typeof packageClass == 'function') {
+			appContext = new packageClass(appInstanceInfo);
+		} else {
+			if (typeof packageClass.Extends == 'undefined') {
+				packageClass.Extends = AppContext
+			}
+			packageClass = new Orb.Class(packageClass)
+			appContext = new packageClass(appInstanceInfo);
+		}
+
 		apps.push(appContext);
 
 		if (isStarted) {
