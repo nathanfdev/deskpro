@@ -3888,6 +3888,18 @@ $collection->create('api_reports_builder_list', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_reports_builder_list_custom', array(
+	'path'        => '/reports/builder/custom',
+	'controller'  => 'ApiBundle:ReportsBuilder:listCustom',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_builder_list_builtIn', array(
+	'path'        => '/reports/builder/builtIn',
+	'controller'  => 'ApiBundle:ReportsBuilder:listBuiltIn',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_reports_builder_get', array(
 	'path'         => '/reports/builder/{id}',
 	'controller'   => 'ApiBundle:ReportsBuilder:get',

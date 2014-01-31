@@ -53,4 +53,44 @@ class ReportsBuilderController extends AbstractController
 			)
 		);
 	}
+
+
+	####################################################################################################################
+	# list custom reports
+	####################################################################################################################
+
+	public function listCustomAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+
+		return $this->createApiResponse(
+			array(
+				 'reports' => $reports_builder->getCustomReports()
+			)
+		);
+	}
+
+
+	####################################################################################################################
+	# list built-in reports
+	####################################################################################################################
+
+	public function listBuiltInAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+
+		return $this->createApiResponse(
+			array(
+				 'reports' => $reports_builder->getBuiltInReports()
+			)
+		);
+	}
 }

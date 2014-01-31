@@ -59,13 +59,30 @@ class Builder
 	/**
 	 * @return array
 	 */
-
 	public function getAll()
 	{
 		return array(
 			'customReports'  => $this->repository->getCustomReports(),
 			'builtInReports' => $this->repository->getBuiltInReports(),
 		);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getCustomReports()
+	{
+		return $this->repository->getCustomReports();
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getBuiltInReports()
+	{
+		return $this->repository->getBuiltInReports();
 	}
 
 
