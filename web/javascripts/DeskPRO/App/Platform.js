@@ -1,44 +1,8 @@
 define([
-	'javascripts/DeskPRO/App/BaseAppPackage',
-	'javascripts/DeskPRO/App/Controller/BaseController',
-], function(BaseAppPackage, BaseController) {
+	'javascripts/DeskPRO/App/AppContext'
+], function(AppContext) {
 
-	var apps = [], AppPlatform;
-
-	function classExtend(childObj, parentObj)
-	{
-		var tmpObj = function () {}
-		tmpObj.prototype = parentObj.prototype;
-		childObj.prototype = new tmpObj();
-		childObj.prototype.constructor = childObj;
-		return childObj;
-	}
-
-	/**
-	 * Gets the prototype for a package
-	 * @param {String} packageName
-	 * @returns {Function}
-	 */
-	function getPackageClass(packageClass)
-	{
-		var proto, k;
-		if (typeof packageClass == 'function') {
-			proto = classExtend(packageClass, BaseAppPackage)
-		} else {
-			proto = function() {}
-
-			for (k in packageClass) {
-				if (packageClass.hasOwnProperty(k)) {
-					proto.prototype[k] = packageClass[k];
-				}
-			}
-
-			proto = classExtend(proto, BaseAppPackage)
-		}
-
-		return proto;
-	};
-
+	var apps = [], AppPlatform, isStarted = false;
 
 	/**
 	 * Register a new app
@@ -49,22 +13,31 @@ define([
 	 */
 	function registerApp(packageClass, appInstanceInfo)
 	{
-		var appInstance;
+		var appContext = new AppContext(appInstanceInfo, packageClass);
+		apps.push(appContext);
 
-		packageClass = getPackageClass(packageClass);
-		appInstance = new packageClass();
-		appInstance._initContext(appInstanceInfo);
-		appInstance.init();
+		if (isStarted) {
+			appContext._dp_init();
+		}
 
-		apps.push(appInstance);
-		return appInstance;
+		return appContext;
 	}
 
+	function start()
+	{
+		var i;
+
+		if (isStarted) return;
+		isStarted = true;
+
+		for (i = 0; i < apps.length; i++) {
+			apps[i]._dp_init();
+		}
+	}
 
 	AppPlatform = {
-		registerApp:     registerApp,
-		getApps:         function() { return apps; },
-		start:           function() { }
+		registerApp: registerApp,
+		start:       start
 	};
 
 	window.AppPlatform = AppPlatform;

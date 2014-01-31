@@ -34,37 +34,33 @@
 
 namespace Application\DeskPRO\App;
 
-use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\AppPackage;
 
-class AppManager implements AppManagerInterface
+class AppManagerFiltered implements AppManagerInterface
 {
 	/**
-	 * @var AppPackage[]
+	 * @var AppManagerInterface
 	 */
-	private $packages = array();
+	private $app_manager;
 
 	/**
-	 * @var AppInstance[]
+	 * @var callable
 	 */
-	private $apps = array();
+	private $filter;
 
 
 	/**
-	 * @param AppInstance[] $apps
+	 * $filter mus take an AppPackage and return truthy if it passes the filter or falsey if not.
+	 *
+	 * @param AppManagerInterface $app_manager
+	 * @param callable $filter The filter to filter app packages by
 	 */
-	public function __construct(array $apps)
+	public function __construct(AppManagerInterface $app_manager, $filter)
 	{
-		foreach ($apps as $app) {
-			$this->apps[$app->id] = $app;
-
-			$package = $app->package;
-			if (!isset($this->packages[$package->name])) {
-				$this->packages[$package->name] = $package;
-			}
-		}
+		$this->app_manager = $app_manager;
+		$this->filter = $filter;
 	}
-
 
 	/**
 	 * @param string $name
@@ -72,9 +68,13 @@ class AppManager implements AppManagerInterface
 	 */
 	public function hasPackage($name)
 	{
-		return isset($this->packages[$name]);
-	}
+		if (!$this->app_manager->hasPackage($name)) {
+			return false;
+		}
 
+		$package = $this->app_manager->getPackage($name);
+		return call_user_func($this->filter, $package) ? true : false;
+	}
 
 	/**
 	 * @param string $name
@@ -83,22 +83,29 @@ class AppManager implements AppManagerInterface
 	 */
 	public function getPackage($name)
 	{
-		if (!isset($this->packages[$name])) {
+		$package = $this->app_manager->getPackage($name);
+		if (!call_user_func($this->filter, $package)) {
 			throw new \InvalidArgumentException();
 		}
 
-		return $this->packages[$name];
+		return $package;
 	}
-
 
 	/**
 	 * @return AppPackage[]
 	 */
 	public function getAllPackages()
 	{
-		return array_values($this->packages);
-	}
+		$packages = array();
 
+		foreach ($this->app_manager->getAllPackages() as $p) {
+			if (call_user_func($this->filter, $p)) {
+				$packages[] = $p;
+			}
+		}
+
+		return $packages;
+	}
 
 	/**
 	 * @param int $id
@@ -106,9 +113,13 @@ class AppManager implements AppManagerInterface
 	 */
 	public function hasApp($id)
 	{
-		return isset($this->apps[$id]);
-	}
+		if (!$this->app_manager->hasApp($id)) {
+			return false;
+		}
 
+		$app = $this->app_manager->getApp($id);
+		return call_user_func($this->filter, $app->package) ? true : false;
+	}
 
 	/**
 	 * @param int $id
@@ -117,52 +128,40 @@ class AppManager implements AppManagerInterface
 	 */
 	public function getApp($id)
 	{
-		if (!isset($this->apps[$id])) {
+		$app = $this->app_manager->getApp($id);
+		if (!call_user_func($this->filter, $app->package)) {
 			throw new \InvalidArgumentException();
 		}
 
-		return $this->apps[$id];
+		return $app;
 	}
-
 
 	/**
 	 * @return AppInstance[]
 	 */
 	public function getAllApps()
 	{
-		return array_values($this->apps);
-	}
-
-
-	/**
-	 * @param string $name  The package name
-	 * @return AppInstance[]
-	 */
-	public function getPackageApps($name)
-	{
 		$apps = array();
-		foreach ($this->apps as $app) {
-			if ($app->package->name == $name) {
-				$apps[] = $apps;
+
+		foreach ($this->app_manager->getAllApps() as $app) {
+			if (call_user_func($this->filter, $app->package)) {
+				$apps[] = $app;
 			}
 		}
 
 		return $apps;
 	}
 
-
 	/**
-	 * Gets an AppManager with a specific scope filter applied to it
-	 *
-	 * @param string $scope The scope to search for
-	 * @return AppManagerInterface
+	 * @param string $name The package name
+	 * @return AppInstance[]
 	 */
-	public function getScopeFilter($scope)
+	public function getPackageApps($name)
 	{
-		$manager = new AppManagerFiltered($this, function(AppPackage $package) use ($scope) {
-			return in_array($scope, $package->scopes);
-		});
+		if (!$this->hasPackage($name)) {
+			return array();
+		}
 
-		return $manager;
+		return $this->app_manager->getPackageApps($name);
 	}
 }

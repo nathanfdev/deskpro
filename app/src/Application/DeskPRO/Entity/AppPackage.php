@@ -52,9 +52,12 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property string $is_single
  * @property array  $settings_def
  * @property array  $assets
+ * @property array  $scopes
  */
 class AppPackage extends DomainObject
 {
+	const SCOPE_AGENT = 'agent';
+
 	/**
 	 * @var string
 	 */
@@ -111,6 +114,11 @@ class AppPackage extends DomainObject
 	 * @var array
 	 */
 	protected $settings_def = array();
+
+	/**
+	 * @var array
+	 */
+	protected $scopes = array();
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AppAsset[]
@@ -324,6 +332,13 @@ class AppPackage extends DomainObject
 			'columnName' => 'settings_def',
 			'fieldName'  => 'settings_def',
 			'type'       => 'json_array',
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'scopes',
+			'fieldName'  => 'scopes',
+			'type'       => 'simple_array',
 			'nullable'   => false,
 		));
 

@@ -104,7 +104,7 @@ class AppInstance extends DomainObject
 	/**
 	 * Set metadata
 	 *
-	 * @param array $metadata
+	 * @param array $settings
 	 */
 	public function setSettings(array $settings = null)
 	{

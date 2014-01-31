@@ -836,7 +836,7 @@ JS;
 
 	public function getRequirejsLoaderAction()
 	{
-		$manager = $this->container->getAppManager();
+		$manager = $this->container->getAppManager()->getScopeFilter('agent');
 
 		$source_paths = array(
 			'"AppPlatform": "javascripts/DeskPRO/App/Platform"',
@@ -850,7 +850,7 @@ JS;
 			$name = "{$package->name}/app";
 
 			if ($appAsset) {
-				$source_paths[] = "\"$name\": \"" . $appAsset->blob->getDownloadUrl() . "\"";
+				$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl()) . "\"";
 			}
 			foreach ($package->getTaggedAssets('js') as $asset) {
 
@@ -858,7 +858,7 @@ JS;
 				// a path called 'com.deskpro.apps.test/MyController'
 				$name = $package->name . '/' . str_replace('.js', '', $asset->name);
 
-				$source_paths[] = "\"$name\": \"" . $asset->blob->getDownloadUrl() . "\"";
+				$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl()) . "\"";
 			}
 		}
 
@@ -890,7 +890,7 @@ JS;
 	{
 		$js = array();
 
-		$manager = $this->container->getAppManager();
+		$manager = $this->container->getAppManager()->getScopeFilter('agent');
 
 		foreach ($manager->getAllApps() as $app) {
 			$package = $app->package;
@@ -909,6 +909,7 @@ JS;
 			$infoJson = "{\n";
 			$infoJson .= "\t\t\"id\": {$app->id},\n";
 			$infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
+			$infoJson .= "\t\t\"scope\": \"agent\",\n";
 			$infoJson .= "\t\t\"settings\": ".json_encode($app->getSettings(), JSON_FORCE_OBJECT)."\n";
 			$infoJson .= "\t}";
 

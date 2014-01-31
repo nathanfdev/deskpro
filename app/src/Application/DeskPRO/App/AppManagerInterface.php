@@ -37,43 +37,13 @@ namespace Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\AppInstance;
 
-class AppManager implements AppManagerInterface
+interface AppManagerInterface
 {
-	/**
-	 * @var AppPackage[]
-	 */
-	private $packages = array();
-
-	/**
-	 * @var AppInstance[]
-	 */
-	private $apps = array();
-
-
-	/**
-	 * @param AppInstance[] $apps
-	 */
-	public function __construct(array $apps)
-	{
-		foreach ($apps as $app) {
-			$this->apps[$app->id] = $app;
-
-			$package = $app->package;
-			if (!isset($this->packages[$package->name])) {
-				$this->packages[$package->name] = $package;
-			}
-		}
-	}
-
-
 	/**
 	 * @param string $name
 	 * @return bool
 	 */
-	public function hasPackage($name)
-	{
-		return isset($this->packages[$name]);
-	}
+	public function hasPackage($name);
 
 
 	/**
@@ -81,33 +51,20 @@ class AppManager implements AppManagerInterface
 	 * @return AppPackage
 	 * @throws \InvalidArgumentException
 	 */
-	public function getPackage($name)
-	{
-		if (!isset($this->packages[$name])) {
-			throw new \InvalidArgumentException();
-		}
-
-		return $this->packages[$name];
-	}
+	public function getPackage($name);
 
 
 	/**
 	 * @return AppPackage[]
 	 */
-	public function getAllPackages()
-	{
-		return array_values($this->packages);
-	}
+	public function getAllPackages();
 
 
 	/**
 	 * @param int $id
 	 * @return bool
 	 */
-	public function hasApp($id)
-	{
-		return isset($this->apps[$id]);
-	}
+	public function hasApp($id);
 
 
 	/**
@@ -115,54 +72,18 @@ class AppManager implements AppManagerInterface
 	 * @return AppInstance
 	 * @throws \InvalidArgumentException
 	 */
-	public function getApp($id)
-	{
-		if (!isset($this->apps[$id])) {
-			throw new \InvalidArgumentException();
-		}
-
-		return $this->apps[$id];
-	}
+	public function getApp($id);
 
 
 	/**
 	 * @return AppInstance[]
 	 */
-	public function getAllApps()
-	{
-		return array_values($this->apps);
-	}
+	public function getAllApps();
 
 
 	/**
 	 * @param string $name  The package name
 	 * @return AppInstance[]
 	 */
-	public function getPackageApps($name)
-	{
-		$apps = array();
-		foreach ($this->apps as $app) {
-			if ($app->package->name == $name) {
-				$apps[] = $apps;
-			}
-		}
-
-		return $apps;
-	}
-
-
-	/**
-	 * Gets an AppManager with a specific scope filter applied to it
-	 *
-	 * @param string $scope The scope to search for
-	 * @return AppManagerInterface
-	 */
-	public function getScopeFilter($scope)
-	{
-		$manager = new AppManagerFiltered($this, function(AppPackage $package) use ($scope) {
-			return in_array($scope, $package->scopes);
-		});
-
-		return $manager;
-	}
+	public function getPackageApps($name);
 }

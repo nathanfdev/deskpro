@@ -927,6 +927,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initAppPlatform: function(AppPlatform) {
+		if (this.AppPlatform) return;
 		this.AppPlatform = AppPlatform;
 		this.AppPlatform.start();
 	},
