@@ -497,7 +497,7 @@ class ServerController extends AbstractController implements ProtectedController
 
 		return $this->createJsonResponse(array(
 			'last_run_ts'         => $status->getLastRunTimestamp(),
-			'last_run'            => $status->getLastRunDate()->format('Y-m-d H:i:s'),
+			'last_run'            => $status->getLastRunDate() ? $status->getLastRunDate()->format('Y-m-d H:i:s') : null,
 			'secs_since_last_run' => $status->getSecsSinceLastRun(),
 			'is_problem'          => $status->guessIsProblem(),
 		));

@@ -88,7 +88,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
 			'license' => array(
 				'licenseId'   => $lic->getLicenseId(),
 				'org'         => $lic->get('org') ?: null,
-				'expireDate'  => $lic->getExpireDate()->format($this->settings->get('core.date_full')),
+				'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
 				'isExpired'   => $is_expired,
 				'expireDays'  => $expire_in_days,
 				'isDemo'      => $lic->isDemo() ? true : false,
