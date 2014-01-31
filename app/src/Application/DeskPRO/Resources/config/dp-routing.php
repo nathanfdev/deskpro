@@ -13,6 +13,11 @@ $collection->create('proxy', array(
 	'controller'  => 'DeskPRO:Widget:proxy',
 ));
 
+$collection->create('serve_file_root', array(
+	'path'        => '/file.php',
+	'controller'  => '(see: serve_file.php)',
+));
+
 $collection->create('serve_blob', array(
 	'path'        => '/file.php/{blob_auth_id}/{filename}',
 	'controller'  => '(see: serve_file.php)',

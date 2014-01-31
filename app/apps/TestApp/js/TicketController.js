@@ -1,7 +1,3 @@
 define(function() {
-	return {
-		init: function() {
-			alert("INIT");
-		}
-	}
+	return function() { console.log("CONTROLLER INIT"); };
 });

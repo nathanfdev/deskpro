@@ -846,11 +846,21 @@ JS;
 		$require_names = array('AppPlatform', 'AppPlatformConfig');
 
 		foreach ($manager->getAllPackages() as $package) {
+			if ($package->native_name) {
+				$native_baseurl = $this->generateUrl('serve_file_root') . '/apps/' . $package->native_name;
+			} else {
+				$native_baseurl = null;
+			}
+
 			$appAsset = $package->getTaggedAsset('app_js');
 			$name = "{$package->name}/app";
 
 			if ($appAsset) {
-				$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl()) . "\"";
+				if ($native_baseurl) {
+					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js') . "\"";
+				} else {
+					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl()) . "\"";
+				}
 			}
 			foreach ($package->getTaggedAssets('js') as $asset) {
 
@@ -858,7 +868,11 @@ JS;
 				// a path called 'com.deskpro.apps.test/MyController'
 				$name = $package->name . '/' . str_replace('.js', '', $asset->name);
 
-				$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl()) . "\"";
+				if ($native_baseurl) {
+					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/js/' . $asset->name) . "\"";
+				} else {
+					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl()) . "\"";
+				}
 			}
 		}
 

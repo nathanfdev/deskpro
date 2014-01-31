@@ -1,7 +1,3 @@
 define(function() {
-	return {
-		init: function() {
-			alert("APP INIT");
-		}
-	}
+	return function() { console.log("APP INIT2"); };
 });

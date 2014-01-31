@@ -37,6 +37,7 @@ namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Imagine\Image\Box;
+use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 
 if (!defined('DP_ROOT')) exit('No access');
@@ -154,6 +155,8 @@ class FilestorageLoader extends LoaderAbstract
 				$this->handleDbBlobRequest($m[1], $m[2], $m[3]);
 			} elseif (preg_match('#^/gradient$#', $pathinfo)) {
 				$this->handleGradientRequest();
+			} elseif (preg_match('#^/apps/([a-zA-Z0-9_\-\.]+)/(app|js|css|html|res)/(.*?)$#', $pathinfo, $m)) {
+				$this->handleAppsRequest($m[1], $m[2], $m[3]);
 			} else {
 				if ($this->error_mode == 'exception') {
 					throw new \Exception("File not found. (bad_route)", 400);
@@ -1189,6 +1192,46 @@ class FilestorageLoader extends LoaderAbstract
 		$new_blob_info['filename_safe'] = $blob->getFilenameSafe();
 
 		return $new_blob_info;
+	}
+
+
+	/**
+	 * Serve static content from native 'apps'
+	 */
+	public function handleAppsRequest($app_name, $type, $filename)
+	{
+		if ($type == 'app' && $filename == 'app.js') {
+			$type_f = "";
+		} else {
+			$type_f = "{$type}/";
+		}
+
+		$filepath = @realpath(DP_ROOT."/apps/$app_name/{$type_f}$filename");
+		if (!$filepath || strpos($filepath, DP_ROOT."/apps/") != 0 && !is_file($filepath)) {
+			if ($this->error_mode == 'exception') {
+				throw new \Exception("App file not found. (bad_path)", 400);
+			}
+			header("HTTP/1.0 404 Not Found");
+			echo "App file not found. (bad_path)";
+			return;
+		}
+
+		$mimetype = ContentTypes::getContentTypeFromFilename($filename);
+		if (!$mimetype) {
+			$mimetype = 'application/octet-stream';
+		}
+
+		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
+		header('Content-Length: ' . filesize($filepath));
+		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+		header('Cache-Control: max-age=31556926,private');
+
+		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
+			header("X-Sendfile: $filepath");
+		} else {
+			readfile($filepath);
+		}
 	}
 }
 
