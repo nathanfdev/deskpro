@@ -120,6 +120,8 @@ define [
 
 			# we assume that backend returned appropriate pagination info and doesn't check its correctness here
 			@pagination = listModels.pagination if listModels.pagination
+			# in case of no data from backend just skip pagination step
+			if Util.isEmpty(@pagination) then return
 
 			if @subLists.length
 				for subModel in @subLists

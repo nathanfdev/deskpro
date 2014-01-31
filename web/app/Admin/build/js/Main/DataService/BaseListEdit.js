@@ -148,6 +148,9 @@
         if (listModels.pagination) {
           this.pagination = listModels.pagination;
         }
+        if (Util.isEmpty(this.pagination)) {
+          return;
+        }
         if (this.subLists.length) {
           _ref = this.subLists;
           _results = [];
