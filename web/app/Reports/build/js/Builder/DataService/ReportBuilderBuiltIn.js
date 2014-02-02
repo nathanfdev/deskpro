@@ -3,24 +3,24 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/DataService/BaseListEdit', 'Reports/Builder/ReportEditFormMapper'], function(BaseListEdit, ReportEditFormMapper) {
-    var ReportBuilder, _ref;
-    return ReportBuilder = (function(_super) {
-      __extends(ReportBuilder, _super);
+    var ReportBuilderCustom, _ref;
+    return ReportBuilderCustom = (function(_super) {
+      __extends(ReportBuilderCustom, _super);
 
-      function ReportBuilder() {
-        _ref = ReportBuilder.__super__.constructor.apply(this, arguments);
+      function ReportBuilderCustom() {
+        _ref = ReportBuilderCustom.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
-      ReportBuilder.$inject = ['Api', '$q'];
+      ReportBuilderCustom.$inject = ['Api', '$q'];
 
       /*
       		#
       */
 
 
-      ReportBuilder.prototype.init = function() {
-        return this.setSubLists(['customReports', 'builtInReports']);
+      ReportBuilderCustom.prototype.init = function() {
+        return this.setSubLists(['Tickets', 'Chats', 'Ideas', 'People & Organizations', 'Knowledgebase', 'News', 'Downloads', 'Feedback', 'Tasks', 'Twitter']);
       };
 
       /*
@@ -28,11 +28,11 @@
       */
 
 
-      ReportBuilder.prototype._doLoadList = function() {
+      ReportBuilderCustom.prototype._doLoadList = function() {
         var deferred,
           _this = this;
         deferred = this.$q.defer();
-        this.Api.sendGet('/reports/builder').success(function(data) {
+        this.Api.sendGet('/reports/builder/builtIn').success(function(data) {
           var models;
           models = data.reports;
           return deferred.resolve(models);
@@ -50,7 +50,7 @@
       */
 
 
-      ReportBuilder.prototype.deleteReportById = function(id) {
+      ReportBuilderCustom.prototype.deleteReportById = function(id) {
         var promise,
           _this = this;
         promise = this.Api.sendDelete('/reports/builder/' + id).success(function() {
@@ -66,7 +66,7 @@
       */
 
 
-      ReportBuilder.prototype.getFormMapper = function() {
+      ReportBuilderCustom.prototype.getFormMapper = function() {
         if (this.formMapper) {
           return this.formMapper;
         }
@@ -82,7 +82,7 @@
       */
 
 
-      ReportBuilder.prototype.loadEditReportData = function(id) {
+      ReportBuilderCustom.prototype.loadEditReportData = function(id) {
         var deferred,
           _this = this;
         deferred = this.$q.defer();
@@ -121,7 +121,7 @@
       */
 
 
-      ReportBuilder.prototype.saveFormModel = function(model, formModel) {
+      ReportBuilderCustom.prototype.saveFormModel = function(model, formModel) {
         var mapper, postData, promise,
           _this = this;
         mapper = this.getFormMapper();
@@ -144,7 +144,7 @@
         return promise;
       };
 
-      return ReportBuilder;
+      return ReportBuilderCustom;
 
     })(BaseListEdit);
   });
@@ -152,5 +152,5 @@
 }).call(this);
 
 /*
-//@ sourceMappingURL=ReportBuilder.js.map
+//@ sourceMappingURL=ReportBuilderBuiltIn.js.map
 */
