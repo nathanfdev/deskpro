@@ -37,7 +37,9 @@
 		<article>
 			<em><i class="fa fa-chevron-down"></i></em>
 
-			<a href="#" class="header">{{ ng_var('category') }} Built-In Reports</a>
+			<a href="#" class="header">
+				<span class="inner">{{ ng_var('category') }} Built-In Reports</span>
+			</a>
 
 			<ul class="dp-item-list" dp-nav-subnav>
 				<li ng-repeat="report in ListCtrl.built_in_data_list[category]"

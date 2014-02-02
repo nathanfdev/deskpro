@@ -11555,6 +11555,11 @@ section.report-wrapper .no-data h3 {
 }
 
 .dp-report-category article > a.header {
+  display: block;
+  width: 405px;
+}
+
+.dp-report-category article > a.header .inner {
   display: inline-block;
   padding: 0 0 2px;
   margin: 10px;
