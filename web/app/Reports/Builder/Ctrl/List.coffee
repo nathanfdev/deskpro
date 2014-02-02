@@ -10,18 +10,22 @@ define [
 		@CTRL_AS = 'ListCtrl'
 
 		init: ->
-			@builderData = @DataService.get('ReportBuilder')
+			@customData = @DataService.get('ReportBuilderCustom')
+			@builtInData = @DataService.get('ReportBuilderBuiltIn')
 
 			
 		###
-		# Loads the list
+		# Loads 2 lists - first with custom reports, second with built-in reports
 		###
 		initialLoad: ->
 
-			promise = @builderData.loadList().then( (list) =>
-				@list = list
+			custom_promise = @customData.loadList().then( (list) =>
+				@custom_data_list = list
+			)
+			built_in_promise = @builtInData.loadList().then( (list) =>
+				@built_in_data_list = list
 			)
 
-			return promise
+			return @$q.all([custom_promise, built_in_promise])
 
 	Reports_Builder_Ctrl_List.EXPORT_CTRL()

@@ -11546,3 +11546,33 @@ section.report-wrapper .no-data {
 section.report-wrapper .no-data h3 {
   font-size: 14pt;
 }
+
+.dp-report-category article > em {
+  float: right;
+  margin: 15px;
+  font-style: normal;
+  color: #AAAAAA;
+}
+
+.dp-report-category article > a.header {
+  display: inline-block;
+  padding: 0 0 2px;
+  margin: 10px;
+  font-size: 130%;
+  font-weight: normal;
+  color: #333;
+  text-decoration: none;
+  border-bottom: 3px solid #AAAAAA;
+}
+
+.dp-report-category .dp-item-list {
+  display: none;
+}
+
+.dp-report-category .dp-item-list > li > a {
+  padding: 5px 13px 5px 18px;
+}
+
+.dp-report-category .dp-item-list > li > a h4 {
+  max-width: 95% !important;
+}

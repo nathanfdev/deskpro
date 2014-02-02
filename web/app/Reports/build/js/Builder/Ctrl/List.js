@@ -17,21 +17,25 @@
       Reports_Builder_Ctrl_List.CTRL_AS = 'ListCtrl';
 
       Reports_Builder_Ctrl_List.prototype.init = function() {
-        return this.builderData = this.DataService.get('ReportBuilder');
+        this.customData = this.DataService.get('ReportBuilderCustom');
+        return this.builtInData = this.DataService.get('ReportBuilderBuiltIn');
       };
 
       /*
-      		# Loads the list
+      		# Loads 2 lists - first with custom reports, second with built-in reports
       */
 
 
       Reports_Builder_Ctrl_List.prototype.initialLoad = function() {
-        var promise,
+        var built_in_promise, custom_promise,
           _this = this;
-        promise = this.builderData.loadList().then(function(list) {
-          return _this.list = list;
+        custom_promise = this.customData.loadList().then(function(list) {
+          return _this.custom_data_list = list;
         });
-        return promise;
+        built_in_promise = this.builtInData.loadList().then(function(list) {
+          return _this.built_in_data_list = list;
+        });
+        return this.$q.all([custom_promise, built_in_promise]);
       };
 
       return Reports_Builder_Ctrl_List;

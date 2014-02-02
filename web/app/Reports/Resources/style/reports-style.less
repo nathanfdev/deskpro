@@ -1,6 +1,10 @@
 @import "../../../Admin/Resources/style/admin-style";
 @import "style";
 
+//######################################################################################################################
+//# Report Overview
+//######################################################################################################################
+
 section.report-wrapper {
 	> header {
 		border: 1px solid #D9DBDB;
@@ -95,5 +99,48 @@ section.report-wrapper .no-data {
 	h3 {
 		font-size: 14pt;
 
+	}
+}
+
+//######################################################################################################################
+//# Report Builder
+//######################################################################################################################
+
+.dp-report-category {
+
+	article {
+
+		> em {
+
+			color: #AAAAAA;
+			float: right;
+			font-style: normal;
+			margin: 15px;
+		}
+
+		> a.header {
+			color: #333;
+			text-decoration: none;
+			border-bottom: 3px solid #AAAAAA;
+			display: inline-block;
+			font-size: 130%;
+			font-weight: normal;
+			margin: 10px;
+			padding: 0 0 2px;
+		}
+	}
+
+	.dp-item-list {
+
+		display: none;
+
+		> li > a {
+
+			padding: 5px 13px 5px 18px;
+
+			h4 {
+				max-width: 95% !important;
+			}
+		}
 	}
 }
