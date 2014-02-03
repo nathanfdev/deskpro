@@ -838,15 +838,24 @@ JS;
 	{
 		$manager = $this->container->getAppManager()->getScopeFilter('agent');
 
+		$bust = '';
+		if (App::isDebug()) {
+			$bust = '"urlArgs": "bust=" + (new Date()).getTime(),';
+		}
+
 		$config_path = str_replace('.js', '', $this->generateUrl('agent_apps_config_js'));
 		$source_paths_head = <<<PATHS
-"DeskPRO/App": "javascripts/DeskPRO/App",
-"AppPlatform": "javascripts/DeskPRO/App/Platform",
-"AppPlatformConfig": "$config_path",
-"AgentApp": "javascripts/DeskPRO/App/AgentApp",
-angular:                         ASSETS_BASE_URL+'/app/bower_components/angular/angular',
-angularAnimate:                  ASSETS_BASE_URL+'/app/bower_components/angular-animate/angular-animate.min',
-angularSanitize:                 ASSETS_BASE_URL+'/app/bower_components/angular-sanitize/angular-sanitize'
+		"DeskPRO/App": "javascripts/DeskPRO/App",
+		"AppPlatform": "javascripts/DeskPRO/App/Platform",
+		"AppPlatformConfig": "$config_path",
+		"DeskPRO/Util/Arrays": "app/DeskPRO/build/js/Util/Arrays",
+		"DeskPRO/Util/Functions": "app/DeskPRO/build/js/Util/Functions",
+		"DeskPRO/Util/Strings": "app/DeskPRO/build/js/Util/Strings",
+		"DeskPRO/Util/Util": "app/DeskPRO/build/js/Util/Util",
+		"AgentApp": "javascripts/DeskPRO/App/AgentApp",
+		"angular": ASSETS_BASE_URL+"/app/bower_components/angular/angular",
+		"angularAnimate": ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min",
+		"angularSanitize": ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"
 PATHS;
 
 
@@ -865,26 +874,26 @@ PATHS;
 
 			if ($appAsset) {
 				if ($native_baseurl) {
-					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js') . "\"";
+					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js') . "\"";
 				} else {
-					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl()) . "\"";
+					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl()) . "\"";
 				}
 			}
 			foreach ($package->getTaggedAssets('js') as $asset) {
 
 				// A JS file named js/MyController becomes
 				// a path called 'com.deskpro.apps.test/MyController'
-				$name = $package->name . '/' . str_replace('.js', '', $asset->name);
+				$name = $package->name . '/js/' . str_replace('.js', '', $asset->name);
 
 				if ($native_baseurl) {
-					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/js/' . $asset->name) . "\"";
+					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/js/' . $asset->name) . "\"";
 				} else {
-					$source_paths[] = "\"$name\": \"" . preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl()) . "\"";
+					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl()) . "\"";
 				}
 			}
 		}
 
-		$source_paths = implode(",\n", $source_paths) . "\n";
+		$source_paths = implode(",\n", $source_paths);
 		$requires = implode(', ', $requires);
 
 		if ($source_paths) {
@@ -894,22 +903,30 @@ PATHS;
 		$js = <<<JS
 requirejs.config({
 	"baseUrl": ASSETS_BASE_URL,
+	$bust
 	"urlArgs": "bust=" + (new Date()).getTime(),
 	"shim": {
 		'angular':              {'exports' : 'angular'},
 		'angularAnimate':       ['angular'],
 		'angularSanitize':      ['angular']
 	},
-    "paths": {
-    	$source_paths_head
-		$source_paths
-    }
+	"paths": {
+$source_paths_head
+$source_paths
+	}
 });
 requirejs(['AppPlatform', 'AppPlatformConfig', 'AgentApp', 'angular'], function(AppPlatform, AppPlatformConfig, AgentApp, angular) {
 	angular.element(document).ready(function() {
-		console.log(AgentApp);
 		angular.bootstrap(document, ['AgentApp']);
+
+		AgentApp.dpInjector = angular.element(document).injector();
+		window.AppPlatform = new AppPlatform(AgentApp, AppPlatformConfig);
+
 		window.DP_ONLOAD();
+
+		if (window.DeskPRO_Window) {
+			window.DeskPRO_Window.initAppPlatform(window.AppPlatform);
+		}
 	});
 })
 JS;
@@ -924,6 +941,8 @@ JS;
 	public function getAppsConfigAction()
 	{
 		$js = array();
+		$require_paths = array('DeskPRO/App/Context/AppContext');
+		$require_names = array('AppContext');
 
 		$manager = $this->container->getAppManager()->getScopeFilter('agent');
 
@@ -932,14 +951,13 @@ JS;
 			$appAsset = $package->getTaggedAsset('app_js');
 			$name = "{$package->name}/app";
 
-			$js_row = "// {$package->name} :: App[{$app->id}]\n";
-			$js_row .= 'define(';
 			if ($appAsset) {
-				$js_row .= '["' . $name . '"], function(AppPackage) {';
+				$class_name = ucfirst(Strings::underscoreToCamelCase(str_replace(array('.', '/'), '_', $name)));
+				$require_paths[] = $name;
+				$require_names[] = $class_name;
 			} else {
-				$js_row .= '["AppPlatform"], function() { var AppPackage = {};';
+				$class_name = "AppContext";
 			}
-			$js_row .= "\n";
 
 			if ($package->native_name) {
 				$native_baseurl = $this->generateUrl('serve_file_root') . '/apps/' . $package->native_name;
@@ -963,24 +981,36 @@ JS;
 			}
 
 			if ($asset_files) {
-				$asset_files = json_encode($asset_files);
+				$asset_files_js = array();
+				foreach ($asset_files as $k => $v) {
+					$asset_files_js[] = "\t\t\t\"$k\": \"$v\"";
+				}
+				$asset_files_js = "{\n" . implode(",\n", $asset_files_js) . "\n\t\t}";
 			} else {
-				$asset_files = "{}";
+				$asset_files_js = "{}";
 			}
 
-			$infoJson = "{\n";
+			$infoJson = '';
 			$infoJson .= "\t\t\"id\": {$app->id},\n";
 			$infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
+			$infoJson .= "\t\t\"contextClass\": $class_name,\n";
 			$infoJson .= "\t\t\"scope\": \"agent\",\n";
 			$infoJson .= "\t\t\"settings\": ".json_encode($app->getSettings(), JSON_FORCE_OBJECT).",\n";
-			$infoJson .= "\t\t\"assets\": $asset_files\n";
-			$infoJson .= "\t}";
+			$infoJson .= "\t\t\"assets\": $asset_files_js\n";
 
-			$js_row .= "\tAppPlatform.registerApp(AppPackage, $infoJson);";
+			$infoJson = trim($infoJson);
 
-			$js_row .= "\n});";
+			$js_row = "\t// {$package->name} :: App[{$app->id}]\n";
+			$js_row .= "\tapps.push({\n\t\t$infoJson\n\t});";
 			$js[] = $js_row;
 		}
+
+		$require_paths = "\t'" . implode("',\n\t'", $require_paths) . "'";
+		$require_names = "\t" . implode(",\n\t", $require_names);
+
+		array_unshift($js, "define([\n$require_paths\n], function(\n$require_names\n) {\n\tvar apps = [];");
+
+		$js[] = "\treturn apps;\n});\n";
 
 		$js = implode("\n\n", $js);
 

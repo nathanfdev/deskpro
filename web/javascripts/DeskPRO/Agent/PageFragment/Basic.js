@@ -85,6 +85,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			self.wrapper = wrapper;
 			wrapper.data('page-fragment', self);
 			wrapper.addClass('with-page-fragment');
+			this.fragmentElement = wrapper;
 
 			DeskPRO_Window.initInterfaceServices(wrapper);
 
@@ -93,6 +94,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			}
 
 			this.initPage(wrapper);
+			this.initApps();
 
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
 		}, this);
@@ -110,6 +112,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			this.clearAlerts();
 		}, this);
 
+		this.addEvent('destroy', function() {
+			self.cleanupApps();
+		});
 		this.addEvent('destroy', function() {
 			this.scrollHandlers = [];
 			if (self.resizerInterval) {
@@ -419,6 +424,26 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 		DeskPRO_Window.notifications.removeRowById(id);
 		DeskPRO_Window.notifications.removeRowByClass(id);
+	},
+
+	initApps: function() {
+		var platform = DeskPRO_Window.getAppPlatform();
+		if (!platform) {
+			console.warn("platform not available");
+			return;
+		}
+
+		platform.onFragmentStarted(this);
+	},
+
+	cleanupApps: function() {
+		var platform = DeskPRO_Window.getAppPlatform();
+		if (!platform) {
+			console.warn("platform not available");
+			return;
+		}
+
+		platform.onFragmentEnded(this);
 	},
 
 	destroy: function() {

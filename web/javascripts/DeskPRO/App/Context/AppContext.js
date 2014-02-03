@@ -3,16 +3,21 @@ define([
 ], function(
 	TicketTabContext
 ) {
-	var AppContext = new Orb.Class({
+	return new Orb.Class({
 		initialize: function(contextParams) {
 			this._appId          = contextParams.appId;
+			this._platform       = contextParams.platform;
 			this._packageName    = contextParams.packageName;
 			this._scopeName      = contextParams.scope;
 			this._settings       = contextParams.settings;
 			this._regControllers = {};
-			this.init();
+			this._createdControllers = {};
 		},
 
+
+		/**
+		 * Called automatically when the context is created
+		 */
 		init: function() {
 
 		},
@@ -21,22 +26,52 @@ define([
 			this.init();
 		},
 
-		run: function() {
 
-		},
-
+		/**
+		 * Gets the app ID
+		 *
+		 * @return {Integer}
+		 */
 		getAppId: function() {
 			return this._appId;
 		},
 
+
+		/**
+		 * Get the app package name
+		 *
+		 * @returns {String}
+		 */
 		getPackageName: function() {
 			return this._packageName;
 		},
 
+
+		/**
+		 * Get the platform
+		 * @returns {Platform}
+		 */
+		getPlatform: function() {
+			return this._platform;
+		},
+
+
+		/**
+		 * Gets the app scope
+		 *
+		 * @return {String}
+		 */
 		getScopeName: function() {
 			return this._scopeName;
 		},
 
+
+		/**
+		 * Gets a setting
+		 * @param {String} name
+		 * @param {mixed} defaultValue
+		 * @return {mixed}
+		 */
 		getSetting: function(name, defaultValue) {
 			if (typeof this._settings[name] == 'undefined') {
 				return defaultValue;
@@ -44,7 +79,15 @@ define([
 			return this._settings[name];
 		},
 
-		registerController: function(type, controller, params) {
+
+		/**
+		 * Regster a controller for a type of tab
+		 *
+		 * @param {String} type
+		 * @param {Object} controller
+		 * @param {Object} params
+		 */
+		register: function(type, controller, params) {
 			var baseClass;
 
 			if (typeof controller != 'function') {
@@ -67,12 +110,22 @@ define([
 			this._regControllers[type].push([controller, params || null]);
 		},
 
-		createFragmentContexts: function(frag) {
+
+		/**
+		 * Called by the paltform when a new tab is opened. This is where app controllers are created.
+		 * By default, this just runs through the controllers registered with register().
+		 *
+		 * @param {Object} frag The fragment that was opened
+		 * @returns {Array} Array of contorllers that were created
+		 */
+		startFragmentContexts: function(frag) {
 			var i, contextParams, ctrl, created = [], type = frag.TYPENAME;
 
 			if (!this._regControllers[type]) {
 				return created;
 			}
+
+			this._createdControllers[frag.OBJ_ID] = [];
 
 			contextParams = {
 				appContext: this,
@@ -87,11 +140,34 @@ define([
 				);
 
 				created.push(ctrl);
+				this._createdControllers[frag.OBJ_ID].push(ctrl);
 			}
 
 			return created;
+		},
+
+
+		/**
+		 * Called by the platform when a tab is closed. This is where controllers are
+		 * destroyed. By default, this runs through the controllers that were created in startFragmentContexts.
+		 *
+		 * @param {Object} frag The fragment that was closed
+		 * @returns {Array} Array of controllers that were cleaned up
+		 */
+		cleanupFragmentContexts: function(frag) {
+			var i, controllers;
+			if (!this._createdControllers[frag.OBJ_ID]) {
+				return [];
+			}
+
+			controllers = this._createdControllers[frag.OBJ_ID];
+			delete this._createdControllers[frag.OBJ_ID];
+
+			for (i = 0; i < controllers.length; i++) {
+				controllers[i].destroy();
+			}
+
+			return controllers;
 		}
 	});
-
-	return AppContext;
 });

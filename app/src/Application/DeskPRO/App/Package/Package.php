@@ -80,6 +80,7 @@ class Package
 		$def->version      = $this->manifest->getVersion();
 		$def->version_name = $this->manifest->getVersionName();
 		$def->is_single    = $this->manifest->getIsSingle();
+		$def->scopes       = array(AppPackage::SCOPE_AGENT);
 
 		if (strpos($this->path, DP_ROOT.'/apps') === 0) {
 			$def->native_name = basename($this->path);
@@ -142,7 +143,7 @@ class Package
 	 */
 	public function getHtmlAssets()
 	{
-		return $this->readAssetPath('css');
+		return $this->readAssetPath('html');
 	}
 
 
@@ -179,7 +180,7 @@ class Package
 			/** @var $file \SplFileInfo */
 
 			$full_path  = $file->getRealPath();
-			$asset_path = str_replace($full_path, '', $full_path);
+			$asset_path = str_replace($path . '/', '', $full_path);
 			$file_name  = $file->getFilename();
 
 			$assets[] = array(

@@ -54,28 +54,20 @@ class TestCommand extends ContainerAwareCommand
 		/** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
 		$container = $this->getContainer();
 
-		$mode = 'package_read';
-		$mode = 'package';
-		$mode = 'app';
+		$container->getDb()->executeUpdate("DELETE FROM app_instances WHERE package_name = 'com.deskpro.apps.test'");
+		$container->getDb()->executeUpdate("DELETE FROM app_packages WHERE name = 'com.deskpro.apps.test'");
+		$package = new Package(DP_ROOT.'/apps/TestApp');
 
-		if ($mode == 'package') {
-			$package = new Package(DP_ROOT.'/apps/TestApp');
+		$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage());
+		$installer->installPackage($package);
 
-			$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage());
-			$installer->installPackage($package);
-		} else if ($mode == 'package_read') {
-			$package = new Package(DP_ROOT.'/apps/TestApp');
+		$package = $container->getEm()->getRepository('DeskPRO:AppPackage')->findOneBy(array('name' => 'com.deskpro.apps.test'));
 
-			print_r($package->getJsAssets());
-		} else if ($mode == 'app') {
-			$package = $container->getEm()->getRepository('DeskPRO:AppPackage')->findOneBy(array('name' => 'com.deskpro.apps.test'));
-
-			$app = new AppInstance();
-			$app->package = $package;
-			$app->title = $package->title;
-			$container->getEm()->persist($app);
-			$container->getEm()->flush();
-		}
+		$app = new AppInstance();
+		$app->package = $package;
+		$app->title = $package->title;
+		$container->getEm()->persist($app);
+		$container->getEm()->flush();
 
 		echo "\n";
 	}

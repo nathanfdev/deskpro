@@ -187,7 +187,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
 		try {
 			$response = $request->send();
-		} catch (\Guzzle\Http\Exception\ServerErrorResponseException $e) {
+		} catch (\Guzzle\Http\Exception\RequestException $e) {
 			$response = $e->getResponse();
 		}
 

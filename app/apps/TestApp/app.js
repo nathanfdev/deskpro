@@ -1,7 +1,7 @@
-define(['com.deskpro.apps.test/TicketController'], function(TicketController) {
+define(['com.deskpro.apps.test/js/TicketController'], function(TicketController) {
 	return {
-		run: function() {
-			this.registerController('ticket', TicketController)
+		init: function() {
+			this.register('ticket', TicketController)
 		}
 	}
 });

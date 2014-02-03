@@ -1,7 +1,7 @@
 define(function() {
 	return {
-		run: function() {
-
+		init: function() {
+			this.renderTemplate('Ticket/after-props.html', ['#TAB .header-profile-box', 'after']);
 		}
 	}
 });
