@@ -61,7 +61,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 		/**
 		 * Render a template to the location defined by the location description in loc
 		 * @param {String}        tplName
-		 * @param {String/Object} loc
+		 * @param {String/Object/HTMLElement} location
 		 * @param {Function}      controller
 		 * @return {promise}
 		 */
@@ -69,7 +69,8 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 			var $injector = this.getApp().getPlatform().getNgInjector(),
 				handler,
 				locationSelector,
-				locationPlace;
+				locationPlace,
+				self = this;
 
 			tplName = Strings.trim(tplName);
 
@@ -79,19 +80,9 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 				tplName = this.getApp().getPackageName() + '/html/' + tplName;
 			}
 
-			if (typeof location == 'string') {
-				locationSelector = location;
-				locationPlace = 'append';
-			} else {
-				locationSelector = location[0];
-				locationPlace = location[1];
-			}
-
-			// If it's using an ID, we need to prefix the tab uid to it
-			// eg #TAB_page_header is really #dp_rs00ey5_page_header
-			locationSelector = Strings.trim(locationSelector);
-			locationSelector = locationSelector.replace(/#TAB_(.*?)\b/g, '#' + this.getFragment().meta.baseId + '_$1');
-			locationSelector = locationSelector.replace(/#TAB\b/g, '#' + this.getFragmentElement().attr('id'));
+			location = this.getElementLocationDef(location)
+			locationSelector = location[0];
+			locationPlace = location[1];
 
 			console.log("[TabContext] Rendering %s into %s<%s>", tplName, locationSelector, locationPlace);
 
@@ -114,37 +105,17 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
 					// Automatically insert the widget into the DOM
 					if (locationSelector) {
-						locationEl = angular.element(locationSelector);
-						if (locationEl[0]) {
-							switch (locationPlace) {
-								case 'append':
-									locationEl.append(element);
-									break;
-								case 'prepend':
-									locationEl.prepend(element);
-									break;
-								case 'after':
-									locationEl.after(element);
-									break;
-								case 'before':
-									locationEl.before(element);
-									break;
-								case 'replace':
-									locationEl.replaceWith(element);
-									break;
-								default:
-									console.warn("Invalid locationPlace in %s<%s> (will append)", locationSelector, locationPlace);
-									locationEl.append(element);
-							}
-						} else {
-							console.warn("Invalid locationSelector in %s<%s> (will append to body)", locationSelector, locationPlace);
-							angular.element('body').append(element);
-						}
+						locationEl = self.moveElementTo(element, locationSelector, locationPlace, true);
 					}
 
 					element.html(response.data);
 					element.children().data('$ngControllerController', tplCtrl);
 					$compile(element.contents())(tplScope);
+
+					// Add with-app-contexts to the parent container,
+					// as well as any parent context container
+					element.parent().addClass('with-app-contexts')
+						.closest('.dp-app-context-container').addClass('with-app-contexts');
 
 					deferred.resolve({ template: tplName, controller: tplCtrl, scope: tplScope, element: element, location: location });
 				}, function() {
@@ -157,6 +128,131 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 			}]);
 
 			return handler.getPromise();
+		},
+
+
+		/**
+		 * Get a location def.
+		 *
+		 * Supported syntax:
+		 * - Array: ['#someSelector', 'after']
+		 * - Array with element/jquery: [HTMLElement, 'after']
+		 * - String: '#someSelector' (always means 'append' mode)
+		 * - String: 'after #someSelector' (first word is append, prepend, after, before, replace)
+		 * - HTMLElement/jquery (always means 'append')
+		 *
+		 * @param {String/Array} location
+		 * @returns {Array}
+		 */
+		getElementLocationDef: function(location) {
+			var locationSelector, locationPlace, placeMath;
+
+			if (typeof location == 'string') {
+				location = Strings.trim(location);
+
+				placeMath = location.match(/^(append|prepend|after|before|replace)\s+ (.*?)$/);
+				if (placeMath) {
+					locationSelector = placeMath[0];
+					locationPlace = placeMath[1];
+				} else {
+					locationSelector = location;
+					locationPlace = 'append';
+				}
+
+				locationSelector = this.cleanElementLocationSelector(locationSelector);
+			} else if (typeof location.jquery != 'undefined' || typeof location.tagName != 'undefined') {
+				locationSelector = location;
+				locationPlace = 'append';
+			} else {
+				locationSelector = this.cleanElementLocationSelector(location[0]);
+				locationPlace = location[1];
+			}
+
+			return [locationSelector, locationPlace];
+		},
+
+
+		/**
+		 * Cleans/modifies the location selector so its valid. Override this method in a sub-class to
+		 * add easy naming locations.
+		 *
+		 * @param locationSelector
+		 * @returns {XML|string}
+		 */
+		cleanElementLocationSelector: function(locationSelector) {
+			locationSelector = Strings.trim(locationSelector);
+
+			// @some.location is shorthand for named positions in the source
+			locationSelector = locationSelector.replace(/(?:^|\b)@([a-zA-Z0-9\-\._]+)\b/g, function (match, aliasName) {
+				return '#TAB_' + aliasName.replace(/[^a-zA-Z0-9_]/g, '_')
+			});
+
+			// If it's using an ID, we need to prefix the tab uid to it
+			// eg #TAB_page_header is really #dp_rs00ey5_page_header
+			locationSelector = locationSelector.replace(/(?:^|\b)#TAB_(.*?)\b/g, '#' + this.getFragment().meta.baseId + '_$1');
+			locationSelector = locationSelector.replace(/(?:^|\b)#TAB\b/g, '#' + this.getFragmentElement().attr('id'));
+
+			return locationSelector;
+		},
+
+
+		/**
+		 * Move an element to a named position within the tab
+		 * @param element
+		 * @param locationSelector
+		 * @param locationPlace
+		 * @param fallbackToBody
+		 * @returns {*}
+		 */
+		moveElementTo: function(element, locationSelector, locationPlace, fallbackToBody) {
+			var locationEl = angular.element(locationSelector).first(), realLocationEl;
+			if (locationEl[0]) {
+
+				// - context containers might optionally have an app target
+				//   this allows, for example, an app location to have surrounding markup (eg box, buttons etc)
+				// - this matters because the container itself is often hidden by default, and then displayed
+				//   when there are contexts. so this way we have the same logic of a container being hidden/shown
+				//   but allowed to specify a sub element as the actual target.
+				if (locationEl.hasClass('dp-app-context-container')) {
+					realLocationEl = locationEl.find('.dp-app-context-target').first();
+					if (!realLocationEl[0]) {
+						realLocationEl = locationEl;
+					}
+				} else {
+					realLocationEl = locationEl;
+				}
+
+				switch (locationPlace) {
+					case 'append':
+						realLocationEl.append(element);
+						break;
+					case 'prepend':
+						realLocationEl.prepend(element);
+						break;
+					case 'after':
+						realLocationEl.after(element);
+						break;
+					case 'before':
+						realLocationEl.before(element);
+						break;
+					case 'replace':
+						realLocationEl.replaceWith(element);
+						break;
+					default:
+						console.warn("Invalid locationPlace in %s<%s> (will append)", locationSelector, locationPlace);
+						realLocationEl.append(element);
+				}
+				return locationEl;
+			} else {
+				if (fallbackToBody) {
+					console.warn("Invalid locationSelector in %s<%s> (will append to body)", locationSelector, locationPlace);
+					locationEl = angular.element('body');
+					locationEl.append(element);
+					return locationEl;
+				} else {
+					return null;
+				}
+			}
 		},
 
 

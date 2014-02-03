@@ -88,6 +88,8 @@ pageMeta.lang = {{ {
 {% endif %}
 
 <header class="main-header" id="{{ baseId }}_page_header">
+	{{ dp_app_loc(baseId, 'header.top') }}
+
 	<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
 		<div class="locked-message">
 			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">{{ phrase('agent.tickets.unlock') }}</button>
@@ -227,6 +229,9 @@ pageMeta.lang = {{ {
 		</div>
 		{% endif %}
 	</div>
+
+	{{ dp_app_loc(baseId, 'header.bottom') }}
+
 	<div class="margin"></div>
 </header>
 
@@ -307,8 +312,8 @@ pageMeta.lang = {{ {
 	</ul>
 </nav>
 
-{{ dp_widgets(baseId, 'ticket', 'header', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'properties', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'header.after') }}
+{{ dp_app_loc(baseId, 'properties.before') }}
 
 <div class="header-profile-box">
 <div class="profile-box-container">
@@ -461,6 +466,8 @@ pageMeta.lang = {{ {
 		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
 	</section>
 </div>
+
+	{{ dp_app_loc(baseId, 'properties.after') }}
 </div>
 
 <nav class="header-nav">
@@ -531,19 +538,21 @@ pageMeta.lang = {{ {
 
 <div class="pagecontent">
 
-{{ dp_widgets(baseId, 'ticket', 'properties', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'messages', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'main.top') }}
 
 {% if app.user.getPref('agent.ticket_reverse_order') %}
 	{% if ticket_perms.reply or ticket_perms.modify_notes %}
-	<div style="position:relative;" class="ticket_reverse_order">
-		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
-		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
-			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+		{{ dp_app_loc(baseId, 'replybox.before') }}
+		<div style="position:relative;" class="ticket_reverse_order">
+			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+			<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
+				{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+			</div>
 		</div>
-	</div>
+		{{ dp_app_loc(baseId, 'replybox.after') }}
 	{% endif %}
 {% endif %}
+{{ dp_app_loc(baseId, 'messages.before') }}
 
 <div class="profile-box-container ticket-messages">
 	<header>
@@ -721,22 +730,23 @@ pageMeta.lang = {{ {
 	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
 </div>
 
-{{ dp_widgets(baseId, 'ticket', 'messages', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'reply', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'messages.after') }}
 
 {% if not app.user.getPref('agent.ticket_reverse_order') %}
 	{% if ticket_perms.reply or ticket_perms.modify_notes %}
+	{{ dp_app_loc(baseId, 'replybox.before') }}
 	<div style="position:relative;">
 		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
 			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 		</div>
 	</div>
+	{{ dp_app_loc(baseId, 'replybox.after') }}
 	{% endif %}
 {% endif %}
 
-{{ dp_widgets(baseId, 'ticket', 'reply', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'footer', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'main.after') }}
+{{ dp_app_loc(baseId, 'footer') }}
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">
@@ -890,8 +900,6 @@ pageMeta.lang = {{ {
 </section>
 
 {% include 'AgentBundle:Ticket:custom-view-include.html.twig' %}
-
-{{ dp_widgets(baseId, 'ticket', '', '', ticket_api) }}
 
 </div>
 

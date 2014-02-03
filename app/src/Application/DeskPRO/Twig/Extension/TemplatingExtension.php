@@ -128,6 +128,7 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_widgets_raw'                   => new \Twig_Function_Method($this, 'getWidgetsRaw'),
 			'dp_widget_id'                     => new \Twig_Function_Method($this, 'getWidgetHtmlId'),
 			'dp_widget_tabs_header'            => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
+			'dp_app_loc'                       => new \Twig_Function_Method($this, 'getDpAppLocation', array('is_safe' => array('html'))),
 			'dp_widget_tabs'                   => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
 			'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
 			'dp_js_sso_share'                  => new \Twig_Function_Method($this, 'getJsSsoShare', array('is_safe' => array('html'))),
@@ -1538,6 +1539,12 @@ class TemplatingExtension extends \Twig_Extension
 			$break = Strings::ZERO_WIDTH_SPACE;
 		}
 		return Strings::smartWordWrap($string, $len, $break);
+	}
+
+	public function getDpAppLocation($base_id, $loc_name)
+	{
+		$loc_id = preg_replace('#[^a-zA-Z0-9_]#', '_', $loc_name);
+		return '<div id="'.$base_id.'_'.$loc_id.'" class="dp-app-context-container as-default-hidden" data-location-name="'.$loc_name.'"></div>';
 	}
 }
 
