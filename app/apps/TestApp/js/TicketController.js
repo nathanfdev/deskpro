@@ -1,7 +1,7 @@
 define(function() {
 	return {
 		init: function() {
-			this.renderTemplate('Ticket/after-props.html', '@properties.after');
+			this.renderTemplateTab("Test Tab ({{tab.count}})", 'Ticket/after-props.html', '@properties.tab');
 		}
 	}
 });

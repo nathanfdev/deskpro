@@ -316,7 +316,7 @@ pageMeta.lang = {{ {
 {{ dp_app_loc(baseId, 'properties.before') }}
 
 <div class="header-profile-box">
-<div class="profile-box-container">
+<div class="profile-box-container dp-simpletab-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
 			<div class="controls {% if ticket.isLocked(app.user) %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
@@ -331,13 +331,19 @@ pageMeta.lang = {{ {
 		{% set sla_pips %}
 			{% for ticket_sla in ticket.ticket_slas %}<span class="sla-pip {{ ticket_sla.sla_status }}" data-sla-id="{{ ticket_sla.sla_id }}"></span>{% endfor %}
 		{% endset %}
-		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
-			(baseId ~ '_fields_display_main_wrap'): phrase('agent.general.properties'),
-			(baseId ~ '_linked_wrap'): '<i class="icon-link"></i> ' ~ phrase('agent.tickets.linked_tickets') ~' (<span id="' ~ baseId ~ '_linked_count" data-count="'~linked_tickets.count~'">' ~ linked_tickets.count ~ '</span>)',
-			(baseId ~ '_tasks_wrap'): phrase('agent.general.tasks') ~' (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)',
-			(baseId ~ '_sla_wrap'): (((addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty) ? phrase('agent.general.slas') ~ ' ' ~ sla_pips|raw : false),
-			(baseId ~ '_billing_wrap'): (app.getSetting('core_tickets.enable_billing') ? phrase('agent.tickets.billing') : false)
-		}) }}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
+				<li data-tab-for="#{{ baseId }}_linked_wrap"><i class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span id="{{ baseId }}_linked_count" data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)</li>
+				<li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>
+				{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
+					<li data-tab-for="#{{ baseId }}_sla_wrap">{{ phrase('agent.general.slas') }} {{ sla_pips|raw }}</li>
+				{% endif %}
+				{% if app.getSetting('core_tickets.enable_billing') %}
+					<li data-tab-for="#{{ baseId }}_billing_wrap">{{ phrase('agent.tickets.billing') }}</li>
+				{% endif %}
+			</ul>
+		</nav>
 	</header>
 	<section class="description-area" style="padding:0">
 		<div class="error-list {% if validator_errors %}on{% endif %}" id="{{baseId}}_field_errors" {% if not validator_errors %}style="display:none"{% endif %}>
@@ -463,7 +469,7 @@ pageMeta.lang = {{ {
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
 			</article>
 		{% endif %}
-		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
+		{{ dp_app_loc(baseId, 'properties.tab') }}
 	</section>
 </div>
 

@@ -59,18 +59,14 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
 
 		/**
-		 * Render a template to the location defined by the location description in loc
-		 * @param {String}        tplName
-		 * @param {String/Object/HTMLElement} location
-		 * @param {Function}      controller
-		 * @return {promise}
+		 * Loads a template. If the template has been loaded before, it is fetched from the template cache.
+		 *
+		 * @param {String} tplName
+		 * @return {promise} Promise that resolves to the template contents
 		 */
-		renderTemplate: function(tplName, location, ctrl) {
+		loadTemplate: function (tplName) {
 			var $injector = this.getApp().getPlatform().getNgInjector(),
-				handler,
-				locationSelector,
-				locationPlace,
-				self = this;
+				runner;
 
 			tplName = Strings.trim(tplName);
 
@@ -79,6 +75,171 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 			if (tplName.indexOf(this.getApp().getPackageName()) === -1) {
 				tplName = this.getApp().getPackageName() + '/html/' + tplName;
 			}
+
+			runner = $injector.instantiate(['$http', '$templateCache', '$q', function($http, $templateCache, $q) {
+				var deferred = $q.defer();
+				this.deferred = deferred;
+
+				$http.get(tplName, { cache: $templateCache } ).then(function(response) {
+					deferred.resolve(response.data);
+				}, function() {
+					deferred.reject();
+				});
+			}]);
+
+			return runner.deferred.promise;
+		},
+
+
+		/**
+		 * Render a template to the tab location defined by the location description in loc.
+		 *
+		 * If you want to use an actual template for the title (eg it has complex scope vars etc),
+		 * prefix the string with template: and then specify the template name. Use html: if the string is HTML (otherwise the string will be escaped)
+		 * For example:
+		 *
+		 * <code>
+		 * // Renders the tab with title '&lt;My Widget&gt;'
+		 * renderTemplateTab("<My Widget>", ...);
+		 *
+		 * // Renders the tab with title '<em>My Widget</em>'
+		 * renderTemplateTab("html:<em>My Widget</em>", ...);
+		 *
+		 * // Renders the tab with the title from widget-tab.html
+		 * renderTemplateTab("template:widget-tab.html", ...);
+		 *
+		 * // Renders
+		 * </code>
+		 *
+		 * The tab title scope is injected into your controller as $tabScope. For simpler cases, the scope value `tab` is
+		 * syncned between the content box and the tab. That is, setting $scope.tab.abc will set that on the tab scope as $scope.tab.abc as well.
+		 * (So, useful for things like counts).
+		 *
+		 * @param {String}                    tabTitle
+		 * @param {String}                    tplName
+		 * @param {String/Object/HTMLElement} location
+		 * @param {Function}                  ctrl
+		 * @param {Object}                    ctrlLocals
+		 * @return {promise}
+		 */
+		renderTemplateTab: function(tabTitle, tplName, location, ctrl, ctrlLocals) {
+			var self = this,
+				$injector = this.getApp().getPlatform().getNgInjector(),
+				tabTplName,
+				tabTplNameMatch,
+				tabTplHtml,
+				runner;
+
+			tabTplNameMatch = tabTitle.match(/^template:(.*?)$/);
+			if (tabTplNameMatch) {
+				tabTplName = tabTplNameMatch[1];
+			} else {
+				tabTplNameMatch = tabTitle.match(/^html:(.*?)$/);
+				if (tabTplNameMatch) {
+					tabTplHtml = tabTplNameMatch[1];
+				} else {
+					tabTplHtml = Strings.escapeHtml(tabTitle);
+				}
+			}
+
+			runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', function($rootScope, $controller, $compile, $q) {
+				var tplDeferred, tplPromise,
+					deferred = $q.defer();
+
+				this.deferred = deferred;
+
+				// Load both templates
+				// We call this twice, the first time will do
+				// the actual load so our tplDeferred resolves
+				// when we have both templates.
+				// The secondtime they are cached, so their loads will be
+				// instant. We just do it so we can syncronise the loading
+				if (tabTplName) {
+					tplDeferred = $q.defer();
+					tplDeferred.all([
+						self.loadTemplate(tabTplName),
+						self.loadTemplate(tplName)
+					]);
+					tplPromise = tplDeferred.promise;
+				} else {
+					tplPromise = self.loadTemplate(tplName);
+				}
+
+				tplPromise.then(function() {
+					var containerId = Orb.getUniqueId('app_context_');
+
+					var createTab = function(tplSource) {
+						var tplScope,
+							tplCtrl,
+							tabElement;
+
+						tplScope = $rootScope.$new();
+						tplCtrl = $controller(function() {}, { $scope: tplScope });
+
+						tabElement = angular.element('<li data-tab-for="#'+containerId+'"></li>');
+
+						tabElement.html(tplSource);
+						tabElement.children().data('$ngControllerController', tplCtrl);
+						$compile(tabElement.contents())(tplScope);
+
+						// Then render the usual content box
+						ctrlLocals = ctrlLocals || {};
+						ctrlLocals.containerElementId = containerId;
+						ctrlLocals.hiddenByDefault = containerId;
+						ctrlLocals.$tabScope = tplScope;
+
+						self.renderTemplate(tplName, location, ctrl, ctrlLocals).then(function(info) {
+							var nav = info.element.closest('.dp-simpletab-container').find('.dp-with-simpletabs').first();
+							if (nav[0]) {
+								nav.find('ul').append(tabElement);
+								nav.data('simpletabs').addTriggerElement(tabElement);
+							}
+
+							info.scope.$watch('tab', function(newVal) {
+								tplScope.tab = newVal;
+							}, true);
+
+							if (!info.scope.tab) {
+								info.scope.tab = {};
+							}
+
+							deferred.resolve(info);
+						}, function() { deferred.reject(); });
+					};
+
+					// Always render tab itself first
+					// because its scope is passed as an injectable to the main content controller
+					if (tabTplName) {
+						self.loadTemplate(tabTplName).then(function(tabHtml) {
+							createTab(tabHtml);
+						}, function() { deferred.reject(); });
+					} else {
+						createTab(tabTplHtml);
+					}
+				}, function() {
+					deferred.reject();
+				})
+			}]);
+
+			return runner.deferred.promise;
+		},
+
+
+		/**
+		 * Render a template to the location defined by the location description in loc
+		 *
+		 * @param {String}                    tplName
+		 * @param {String/Object/HTMLElement} location
+		 * @param {Function}                  ctrl
+		 * @param {Object}                    ctrlLocals
+		 * @return {promise}
+		 */
+		renderTemplate: function(tplName, location, ctrl, ctrlLocals) {
+			var $injector = this.getApp().getPlatform().getNgInjector(),
+				runner,
+				locationSelector,
+				locationPlace,
+				self = this;
 
 			location = this.getElementLocationDef(location)
 			locationSelector = location[0];
@@ -90,25 +251,40 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 				ctrl = function() { };
 			}
 
-			handler = $injector.instantiate(['$http', '$templateCache', '$rootScope', '$controller', '$compile', '$q', function($http, $templateCache, $rootScope, $controller, $compile, $q) {
+			runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', function($rootScope, $controller, $compile, $q) {
 				var tplScope,
 					tplCtrl,
 					element,
 					locationEl,
 					deferred = $q.defer();
 
-				$http.get(tplName, { cache: $templateCache } ).then(function(response) {
-					tplScope = $rootScope.$new();
-					tplCtrl = $controller(ctrl, { $scope: tplScope });
+				this.deferred = deferred;
 
-					element = angular.element('<div class="dp-app-context"></div>')
+				self.loadTemplate(tplName).then(function(tplSource) {
+					tplScope = $rootScope.$new();
+
+					ctrlLocals = ctrlLocals || {}
+					if (!ctrlLocals.containerElementId) {
+						ctrlLocals.containerElementId = Orb.getUniqueId('app_context_');
+					}
+
+					ctrlLocals.$scope = tplScope;
+
+					tplCtrl = $controller(ctrl, ctrlLocals);
+
+					element = angular.element('<div class="dp-app-context"></div>');
+					element.attr('id', ctrlLocals.containerElementId)
+
+					if (ctrlLocals.hiddenByDefault) {
+						element.hide();
+					}
 
 					// Automatically insert the widget into the DOM
 					if (locationSelector) {
 						locationEl = self.moveElementTo(element, locationSelector, locationPlace, true);
 					}
 
-					element.html(response.data);
+					element.html(tplSource);
 					element.children().data('$ngControllerController', tplCtrl);
 					$compile(element.contents())(tplScope);
 
@@ -117,17 +293,13 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 					element.parent().addClass('with-app-contexts')
 						.closest('.dp-app-context-container').addClass('with-app-contexts');
 
-					deferred.resolve({ template: tplName, controller: tplCtrl, scope: tplScope, element: element, location: location });
+					deferred.resolve({ template: tplName, controller: tplCtrl, scope: tplScope, element: element, locationEl: locationEl });
 				}, function() {
 					deferred.reject();
 				});
-
-				this.getPromise = function() {
-					return deferred.promise;
-				}
 			}]);
 
-			return handler.getPromise();
+			return runner.deferred.promise;
 		},
 
 
