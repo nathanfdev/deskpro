@@ -24,6 +24,7 @@ DeskPRO.ElementHandler.SimpleTabs = new Orb.Class({
 			activeClassname: activeClassname
 		});
 
+		this.el.addClass('dp-with-simpletabs');
 		this.el.data('simpletabs', this.simpleTabs);
 	}
 });
