@@ -100,13 +100,13 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 		 *
 		 * <code>
 		 * // Renders the tab with title '&lt;My Widget&gt;'
-		 * renderTemplateTab("<My Widget>", ...);
+		 * renderTemplateTab(..., "<My Widget>", ...);
 		 *
 		 * // Renders the tab with title '<em>My Widget</em>'
-		 * renderTemplateTab("html:<em>My Widget</em>", ...);
+		 * renderTemplateTab(..., "html:<em>My Widget</em>", ...);
 		 *
 		 * // Renders the tab with the title from widget-tab.html
-		 * renderTemplateTab("template:widget-tab.html", ...);
+		 * renderTemplateTab(..., "template:widget-tab.html", ...);
 		 *
 		 * // Renders
 		 * </code>
@@ -122,7 +122,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 		 * @param {Object}                    ctrlLocals
 		 * @return {promise}
 		 */
-		renderTemplateTab: function(tabTitle, tplName, location, ctrl, ctrlLocals) {
+		renderTemplateTab: function(location, tabTitle, tplName, ctrl, ctrlLocals) {
 			var self = this,
 				$injector = this.getApp().getPlatform().getNgInjector(),
 				tabTplName,
@@ -185,10 +185,10 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 						// Then render the usual content box
 						ctrlLocals = ctrlLocals || {};
 						ctrlLocals.containerElementId = containerId;
-						ctrlLocals.hiddenByDefault = containerId;
-						ctrlLocals.$tabScope = tplScope;
+						ctrlLocals.hiddenByDefault = true;
+						ctrlLocals.$tabScope   = tplScope;
 
-						self.renderTemplate(tplName, location, ctrl, ctrlLocals).then(function(info) {
+						self.renderTemplate(location, tplName, ctrl, ctrlLocals).then(function(info) {
 							var nav = info.element.closest('.dp-simpletab-container').find('.dp-with-simpletabs').first();
 							if (nav[0]) {
 								nav.find('ul').append(tabElement);
@@ -234,7 +234,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 		 * @param {Object}                    ctrlLocals
 		 * @return {promise}
 		 */
-		renderTemplate: function(tplName, location, ctrl, ctrlLocals) {
+		renderTemplate: function(location, tplName, ctrl, ctrlLocals) {
 			var $injector = this.getApp().getPlatform().getNgInjector(),
 				runner,
 				locationSelector,
@@ -269,6 +269,10 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 					}
 
 					ctrlLocals.$scope = tplScope;
+
+					ctrlLocals.$context  = self;
+					ctrlLocals.$app      = self.getApp();
+					ctrlLocals.$platform = self.getApp().getPlatform();
 
 					tplCtrl = $controller(ctrl, ctrlLocals);
 

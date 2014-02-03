@@ -81,16 +81,17 @@ define([
 
 
 		/**
-		 * Regster a controller for a type of tab
+		 * Regster a context for a type of tab
 		 *
 		 * @param {String} type
-		 * @param {Object} controller
+		 * @param {Object} context
 		 * @param {Object} params
+		 * @return {TabContext}
 		 */
-		register: function(type, controller, params) {
+		register: function(type, context, params) {
 			var baseClass;
 
-			if (typeof controller != 'function') {
+			if (typeof context != 'function') {
 				switch (type) {
 					case 'ticket':
 						baseClass = TicketTabContext;
@@ -98,8 +99,8 @@ define([
 				}
 
 				if (baseClass) {
-					controller.Extends = baseClass;
-					controller = Orb.Class(controller)
+					context.Extends = baseClass;
+					context = Orb.Class(context)
 				}
 			}
 
@@ -107,7 +108,45 @@ define([
 				this._regControllers[type] = [];
 			}
 
-			this._regControllers[type].push([controller, params || null]);
+			this._regControllers[type].push([context, params || null]);
+
+			return context;
+		},
+
+
+		/**
+		 * Shortcut for registering an empty context that just renders a template to a tab location.
+		 *
+		 * @param {String} type
+		 * @param {String/Array} location
+		 * @param {Function} controller
+		 * @param {Object} params
+		 * @return {TabContext}
+		 */
+		registerWidget: function(type, location, templateName, controller, params) {
+			return this.register(type, {
+				init: function() {
+					this.renderTemplate(location, templateName, controller, params);
+				}
+			}, params);
+		},
+
+
+		/**
+		 * Shortcut for registering an empty context that just renders a template to a tab location.
+		 *
+		 * @param {String} type
+		 * @param {String/Array} location
+		 * @param {Function} controller
+		 * @param {Object} params
+		 * @return {TabContext}
+		 */
+		registerWidgetTab: function(type, location, tabTitle, templateName, controller, params) {
+			return this.register(type, {
+				init: function() {
+					this.renderTemplateTab(location, tabTitle, templateName, controller, params);
+				}
+			}, params);
 		},
 
 
