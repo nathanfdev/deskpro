@@ -28,6 +28,15 @@
 
       DeskPRO_Util_Strings.CHARS_KEY_NUM = '23456789';
 
+      DeskPRO_Util_Strings.ENTITY_MAP = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+      };
+
       /*
         	# Generates a random string.
         	#
@@ -144,6 +153,20 @@
 
       DeskPRO_Util_Strings.prototype.escapeRegex = function(regexString) {
         return regexString.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+      };
+
+      /*
+        	# Escape special HTML chars in a string
+        	#
+        	# @param {String} htmlString
+        	# @return {String}
+      */
+
+
+      DeskPRO_Util_Strings.prototype.escapeHtml = function(htmlString) {
+        return htmlString.replace(/[&<>"'\/]/g, function(s) {
+          return DeskPRO_Util_Strings.ENTITY_MAP[s];
+        });
       };
 
       /*

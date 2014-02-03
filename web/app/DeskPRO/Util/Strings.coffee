@@ -12,6 +12,15 @@ define ->
 		@CHARS_KEY_ALPHA    = 'ABCDGHJKMNPQRSTWXYZ'
 		@CHARS_KEY_NUM      = '23456789'
 
+		@ENTITY_MAP = {
+			"&": "&amp;",
+			"<": "&lt;",
+			">": "&gt;",
+			'"': '&quot;',
+			"'": '&#39;',
+			"/": '&#x2F;'
+		};
+
 
 		###
     	# Generates a random string.
@@ -108,6 +117,18 @@ define ->
     	###
 		escapeRegex: (regexString) ->
 			return regexString.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+
+
+		###
+    	# Escape special HTML chars in a string
+    	#
+    	# @param {String} htmlString
+    	# @return {String}
+    	###
+		escapeHtml: (htmlString) ->
+			return htmlString.replace(/[&<>"'\/]/g, (s) ->
+				return DeskPRO_Util_Strings.ENTITY_MAP[s];
+			);
 
 
 		###
