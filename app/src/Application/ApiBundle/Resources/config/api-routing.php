@@ -3953,23 +3953,6 @@ $collection->create('api_widget_selections_save', array(
 ));
 
 ########################################################################################################################
-# Plugins
-########################################################################################################################
-
-$collection->create('api_plugins_package_list', array(
-	'path'        => '/plugins/packages',
-	'controller'  => 'ApiBundle:Plugins:listPackages',
-	'methods'     => array('GET'),
-));
-
-$collection->create('api_plugins_package_getinstaller', array(
-	'path'         => '/plugins/packages/{name}/installer',
-	'controller'   => 'ApiBundle:Plugins:getPackageInstaller',
-	'requirements' => array('name' => '[a-z0-9\._]+'),
-	'methods'      => array('GET'),
-));
-
-########################################################################################################################
 # Blobs
 ########################################################################################################################
 
@@ -3993,6 +3976,50 @@ $collection->create('api_my_session_renewtoken', array(
 	'path'         => '/my/session/renew-request-token',
 	'controller'   => 'ApiBundle:MySession:renewRequestToken',
 	'methods'      => array('GET'),
+));
+
+########################################################################################################################
+# Apps
+########################################################################################################################
+
+$collection->create('api_apps', array(
+	'path'        => '/apps',
+	'controller'  => 'ApiBundle:Apps:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_apps_package', array(
+	'path'         => '/apps/packages/{name}',
+	'controller'   => 'ApiBundle:Apps:getPackage',
+	'methods'      => array('GET'),
+	'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+')
+));
+
+$collection->create('api_apps_package_delete', array(
+	'path'         => '/apps/packages/{name}',
+	'controller'   => 'ApiBundle:Apps:deletePackage',
+	'methods'      => array('DELETE'),
+	'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+')
+));
+
+$collection->create('api_apps_instance', array(
+	'path'         => '/apps/instances/{id}',
+	'controller'   => 'ApiBundle:Apps:getInstance',
+	'methods'      => array('GET'),
+	'requirements' => array('id' => '\d+')
+));
+
+$collection->create('api_apps_instance_uninstall', array(
+	'path'         => '/apps/instances/{id}',
+	'controller'   => 'ApiBundle:Apps:uninstallInstance',
+	'methods'      => array('DELETE'),
+	'requirements' => array('id' => '\d+')
+));
+
+$collection->create('api_apps_install', array(
+	'path'        => '/apps/packages/{name}',
+	'controller'  => 'ApiBundle:Apps:installPackage',
+	'methods'     => array('PUT'),
 ));
 
 return $collection;

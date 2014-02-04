@@ -8789,12 +8789,13 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .dp-item-list.dp-icon-list aside {
   float: left;
-  padding: 8px;
+  padding: 8px 8px 0 8px;
 }
 
 .dp-item-list.dp-icon-list aside img {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
+  margin-top: 2px;
   overflow: hidden;
   border-radius: 3px;
 }
@@ -8802,6 +8803,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 .dp-item-list.dp-icon-list .content {
   min-height: 51px;
   padding: 10px 10px 8px 0;
+  margin-left: 57px;
 }
 
 .dp-item-list.dp-icon-list h4 {
@@ -8810,10 +8812,28 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   font-size: 11pt;
 }
 
+.dp-item-list.dp-icon-list h4 .title-alt {
+  font-size: 95%;
+  font-style: italic;
+  color: #888;
+}
+
 .dp-item-list.dp-icon-list p {
   margin-bottom: 0;
   line-height: 120%;
   color: #666;
+}
+
+.dp-item-list.dp-icon-list p.info {
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #888;
+}
+
+.dp-item-list.dp-icon-list p.info a {
+  color: #888;
+  text-decoration: none;
+  border-bottom: 1px dotted #999;
 }
 
 .dp-item-list.dp-icon-list.compact {
@@ -8821,23 +8841,25 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 }
 
 .dp-item-list.dp-icon-list.compact aside {
-  padding: 4px;
+  padding: 8px 8px 0 8px;
 }
 
 .dp-item-list.dp-icon-list.compact aside img {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 2px;
 }
 
 .dp-item-list.dp-icon-list.compact .content {
   min-height: 33px;
-  padding: 8px 5px 10px 0;
+  padding: 10px 10px 8px 0;
+  margin-left: 51px;
 }
 
 .dp-item-list.dp-icon-list.compact h4 {
-  padding: 0;
-  font-size: 12px;
+  padding: 0 0 3px 0;
+  margin: 0;
+  font-size: 11pt;
 }
 
 .dp-order-ctrl {
@@ -11726,4 +11748,45 @@ table.agent-perms-table .toggle-wrap {
 
 #upgrader .main_content > section > footer i.spinner-flat {
   margin-top: 8px;
+}
+
+.readme-text h1 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.readme-text h2 {
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.readme-text h3 {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.readme-text h4 {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.readme-text h5 {
+  font-size: 100%;
+  font-weight: bold;
+}
+
+.readme-text h6 {
+  font-size: 100%;
+  font-weight: bold;
+}
+
+.dp-alert-ribbon {
+  padding: 6px;
+  border-radius: 0;
+}
+
+.dp-listpane article .dp-alert-ribbon {
+  margin-bottom: 0;
+  border-right: none;
+  border-left: none;
 }

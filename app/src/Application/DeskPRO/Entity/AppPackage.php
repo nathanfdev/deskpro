@@ -42,6 +42,7 @@ use Application\DeskPRO\Domain\DomainObject;
 /**
  * @property string $name
  * @property string $title
+ * @property string $description
  * @property string $author_name
  * @property string $author_email
  * @property string $author_link
@@ -51,7 +52,7 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property string $native_name
  * @property string $is_single
  * @property array  $settings_def
- * @property array  $assets
+ * @property AppAsset[] $assets
  * @property array  $scopes
  */
 class AppPackage extends DomainObject
@@ -67,6 +68,11 @@ class AppPackage extends DomainObject
 	 * @var string
 	 */
 	protected $title;
+
+	/**
+	 * @var string
+	 */
+	protected $description;
 
 	/**
 	 * @var
@@ -218,23 +224,25 @@ class AppPackage extends DomainObject
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
+		$data = array();
 		$data['name']         = $this->name;
+		$data['native_name']  = $this->native_name;
 		$data['title']        = $this->title;
+		$data['description']  = $this->description;
 		$data['author_name']  = $this->author_name;
 		$data['author_email'] = $this->author_email;
 		$data['author_link']  = $this->author_link;
 		$data['version']      = $this->version;
 		$data['version_name'] = $this->version_name;
+		$data['settings_def'] = $this->settings_def;
 		$data['api_version']  = $this->api_version;
 		$data['is_single']    = $this->is_single;
 
-		$icon = $this->getTaggedAsset('icons.app');
-		$data['icon']    = $icon->blob->getThumbnailUrl(128, true);
-		$data['icon_75'] = $icon->blob->getThumbnailUrl(75, true);
-		$data['icon_50'] = $icon->blob->getThumbnailUrl(50, true);
-		$data['icon_32'] = $icon->blob->getThumbnailUrl(32, true);
-		$data['icon_24'] = $icon->blob->getThumbnailUrl(24, true);
-		$data['icon_16'] = $icon->blob->getThumbnailUrl(16, true);
+		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256);
+		foreach ($sizes as $size) {
+			$icon = $this->getTaggedAsset("icons.app.$size");
+			$data["icon_$size"] = $icon->blob->getDownloadUrl();
+		}
 
 		return $data;
 	}
@@ -264,6 +272,14 @@ class AppPackage extends DomainObject
 			'fieldName'  => 'title',
 			'type'       => 'string',
 			'length'     => 255,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'description',
+			'fieldName'  => 'description',
+			'type'       => 'string',
+			'length'     => 1000,
 			'nullable'   => false,
 		));
 

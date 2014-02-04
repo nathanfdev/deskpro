@@ -51,17 +51,16 @@ class AppManager implements AppManagerInterface
 
 
 	/**
+	 * @param AppPackage[] $packages
 	 * @param AppInstance[] $apps
 	 */
-	public function __construct(array $apps)
+	public function __construct(array $packages, array $apps)
 	{
+		foreach ($packages as $package) {
+			$this->packages[$package->name] = $package;
+		}
 		foreach ($apps as $app) {
 			$this->apps[$app->id] = $app;
-
-			$package = $app->package;
-			if (!isset($this->packages[$package->name])) {
-				$this->packages[$package->name] = $package;
-			}
 		}
 	}
 
@@ -141,9 +140,10 @@ class AppManager implements AppManagerInterface
 	public function getPackageApps($name)
 	{
 		$apps = array();
+
 		foreach ($this->apps as $app) {
 			if ($app->package->name == $name) {
-				$apps[] = $apps;
+				$apps[] = $app;
 			}
 		}
 

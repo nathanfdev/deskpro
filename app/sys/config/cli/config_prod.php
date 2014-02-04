@@ -13,12 +13,6 @@ $container->loadFromExtension('framework', array(
 	)
 ));
 
-$container->loadFromExtension('fos_js_routing', array(
-	'routes_to_expose' => array(
-		'^api_',
-	)
-));
-
 $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditManager');
 $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
 $definition->setFactoryMethod('getAuditManager');

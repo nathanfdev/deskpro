@@ -1583,15 +1583,22 @@ define(function() {
 	routes.push({
 		id: 'apps.apps',
 		url: '/apps',
-		templateName: 'Plugins/list.html',
-		controller: 'Admin_Plugins_Ctrl_List'
+		templateName: 'Apps/list.html',
+		controller: 'Admin_Apps_Ctrl_List'
 	});
 
 	routes.push({
-		id: 'apps.apps.install',
-		url: '/{name:[a-z0-9\\._]+}',
-		templateName: 'Plugins/install.html',
-		controller: 'Admin_Plugins_Ctrl_Install'
+		id: 'apps.apps.package',
+		url: '/{name:[a-zA-Z0-9\\-_\\.]+}',
+		templateName: 'Apps/package-info.html',
+		controller: 'Admin_Apps_Ctrl_PackageInfo'
+	});
+
+	routes.push({
+		id: 'apps.apps.instance',
+		url: '/{name:\\d+}',
+		templateName: 'Apps/instance-info.html',
+		controller: 'Admin_Apps_Ctrl_EditInstance'
 	});
 
 	//###

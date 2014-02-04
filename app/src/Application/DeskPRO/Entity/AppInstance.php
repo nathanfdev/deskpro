@@ -102,28 +102,52 @@ class AppInstance extends DomainObject
 
 
 	/**
-	 * Set metadata
+	 * Set settings
 	 *
 	 * @param array $settings
 	 */
 	public function setSettings(array $settings = null)
 	{
 		if (!$settings) {
-			$this->setModelField('metadata', null);
+			$this->setModelField('settings', null);
 		} else {
-			$this->setModelField('metadata', $settings);
+			$this->setModelField('settings', $settings);
 		}
 	}
 
 
 	/**
-	 * Get metadata
+	 * Get settings
 	 *
 	 * @return array
 	 */
 	public function getSettings()
 	{
 		return $this->settings ? $this->settings : array();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = array();
+
+		$data['id']              = $this->id;
+		$data['package_name']    = $this->package->name;
+		$data['title']           = $this->title;
+		$data['secret_key']      = $this->secret_key;
+		$data['auth_key']        = $this->auth_key;
+		$data['settings']        = $this->settings ?: array();
+		$data['date_created']    = $this->date_created->format('Y-m-d H:i:s');
+		$data['date_created_ts'] = $this->date_created->getTimestamp();
+
+		if ($primary) {
+			$data['package'] = $this->package->toApiData(false, $deep, $visited);
+		}
+
+		return $data;
 	}
 
 

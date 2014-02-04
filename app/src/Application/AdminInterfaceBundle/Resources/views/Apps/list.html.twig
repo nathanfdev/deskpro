@@ -1,0 +1,64 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length">
+	<header>
+		<h3 style="margin-bottom: 0;">Installed Apps</h3>
+	</header>
+	<article>
+		<ul class="dp-item-list dp-icon-list compact">
+			<li ng-repeat="app in ListCtrl.apps" dp-state-mark="apps.apps.edit.{{ ng_var('app.id') }}">
+				<aside>
+					<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}"><img src="{{ ng_var('app.package.icon_32') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content">
+					<h4>
+						<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}">
+							<span class="title-text">{{ ng_var('app.title') }}</span>
+							<span class="title-alt" ng-if="app.package.title != app.title">({{ ng_var('app.package.title') }})</span>
+						</a>
+					</h4>
+					<p class="info">
+						by {{ ng_var('app.package.author_name') }} &bull; <a ng-href="{{ ng_var('app.package.author_link') }}">Website</a>
+					</p>
+				</div>
+			</li>
+		</ul>
+	</article>
+</section>
+
+<section class="dp-paneblock dp-listpane">
+	<header>
+		<nav ng-show="ListCtrl.apps.length">
+			<label style="margin: 10px 15px 0 0; font-size: 11px;">
+				<input type="checkbox" ng-model="hide_installed" /> Hide apps that are already installed
+			</label>
+		</nav>
+		<h3>Available Apps</h3>
+	</header>
+	<article>
+		<div class="alert alert-info dp-alert-ribbon">
+			<button class="btn btn-default btn-xs"><i class="fa fa-asterisk"></i> Create App</button>
+			<button class="btn btn-default btn-xs"><i class="fa fa-upload"></i> Upload App</button>
+		</div>
+		<ul class="dp-item-list dp-icon-list">
+			<li ng-repeat="package in ListCtrl.packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.install.{{ ng_var('package.name') }}">
+				<aside>
+					<a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><img src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content">
+					<h4><a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><span class="title-text">{{ ng_var('package.title') }}</span></a></h4>
+					<p class="info">
+						by {{ ng_var('package.author_name') }} &middot; <a ng-href="{{ ng_var('package.author_link') }}">Website</a>
+					</p>
+					<p>
+						{{ ng_var('package.description') }}
+					</p>
+				</div>
+			</li>
+		</ul>
+	</article>
+</section>
+{% endblock %}
+{% block listpane_help %}
+{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}
+{% endblock %}

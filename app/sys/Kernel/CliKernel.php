@@ -51,8 +51,7 @@ class CliKernel extends AbstractKernel
 	protected function registerAdditionalBundles()
 	{
 		$bundles = array(
-			new \Application\AgentBundle\AgentBundle(),
-			new \FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+			new \Application\AgentBundle\AgentBundle()
 		);
 
 		return $bundles;

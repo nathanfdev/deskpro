@@ -47,6 +47,11 @@ class Manifest
 	private $title;
 
 	/**
+	 * @var string
+	 */
+	private $description;
+
+	/**
 	 * @var int
 	 */
 	private $api_version;
@@ -214,6 +219,25 @@ class Manifest
 	{
 		return $this->title;
 	}
+
+
+	/**
+	 * @param string $description
+	 */
+	public function setDescription($description)
+	{
+		$this->description = $description;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
 
 	/**
 	 * @param int $version

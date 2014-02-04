@@ -29,46 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
+ * @subpackage
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class PluginsController extends AbstractController
+class Build1391513789 extends AbstractBuild
 {
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
-	public function listPackagesAction()
+	public function run()
 	{
-		$packages = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:PluginPackage d
-			ORDER BY d.title ASC
-		")->execute();
-
-		$data = array();
-		foreach ($packages as $p) {
-			$data[] = $p->toApiData();
-		}
-
-		return $this->createApiResponse(array('packages' => $data));
-	}
-
-	####################################################################################################################
-	# get-package-installer
-	####################################################################################################################
-
-	public function getPackageInstallerAction($name)
-	{
-		$package = $this->em->find('DeskPRO:PluginPackage', $name);
-		if (!$package) {
-			throw $this->createNotFoundException();
-		}
-
-		return $this->createApiResponse(array(
-			'package' => $package->toApiData()
-		));
+		$this->execMutateSql("ALTER TABLE app_packages ADD description VARCHAR(1000) NOT NULL");
 	}
 }

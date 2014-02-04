@@ -104,6 +104,27 @@ class AppAsset extends DomainObject
 		return $this->metadata ? $this->metadata : array();
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = array();
+		$data['id']       = $this->id;
+		$data['name']     = $this->name;
+		$data['tag']      = $this->tag;
+		$data['metadata'] = $this->metadata;
+		$data['blob']     = $this->blob->toApiData(false, $deep);
+
+		if ($primary) {
+			$data['package'] = $this->package->toApiData(false, $deep);
+		}
+
+		return $data;
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

@@ -58,7 +58,7 @@ class TestCommand extends ContainerAwareCommand
 		$container->getDb()->executeUpdate("DELETE FROM app_packages WHERE name = 'com.deskpro.apps.test'");
 		$package = new Package(DP_ROOT.'/apps/TestApp');
 
-		$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage());
+		$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage(), $container->getImagine());
 		$installer->installPackage($package);
 
 		$package = $container->getEm()->getRepository('DeskPRO:AppPackage')->findOneBy(array('name' => 'com.deskpro.apps.test'));

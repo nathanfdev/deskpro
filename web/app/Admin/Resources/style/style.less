@@ -1231,11 +1231,12 @@ section.dp-help-content-wrapper.open {
 	}
 	aside {
 		float: left;
-		padding: 8px;
+		padding: 8px 8px 0 8px;
 
 		img {
-			width: 50px;
-			height: 50px;
+			margin-top: 2px;
+			width: 48px;
+			height: 48px;
 			border-radius: 3px;
 			overflow: hidden;
 		}
@@ -1243,6 +1244,7 @@ section.dp-help-content-wrapper.open {
 
 	.content {
 		padding: 10px 10px 8px 0;
+		margin-left: 57px;
 		min-height: 51px;
 	}
 
@@ -1250,34 +1252,53 @@ section.dp-help-content-wrapper.open {
 		margin: 0;
 		padding: 0 0 3px 0;
 		font-size: 11pt;
+
+		.title-alt {
+			font-size: 95%;
+			color: #888;
+			font-style: italic;
+		}
 	}
 
 	p {
 		line-height: 120%;
 		color: #666;
 		margin-bottom: 0;
+
+		&.info {
+			color: #888;
+			font-size: 11px;
+			margin-bottom: 4px;
+			a {
+				color: #888;
+				text-decoration: none;
+				border-bottom: 1px dotted #999;
+			}
+		}
 	}
 }
 
 .dp-item-list.dp-icon-list.compact {
 	min-height: 24px;
 	aside {
-		padding: 4px;
+		padding: 8px 8px 0 8px;
 		img {
-			width: 24px;
-			height: 24px;
+			width: 32px;
+			height: 32px;
 			border-radius: 2px;
 		}
 	}
 
 	.content {
-		padding: 8px 5px 10px 0;
+		padding: 10px 10px 8px 0;
 		min-height: 33px;
+		margin-left: 51px;
 	}
 
 	h4 {
-		font-size: @font-size-base;
-		padding: 0;
+		margin: 0;
+		padding: 0 0 3px 0;
+		font-size: 11pt;
 	}
 }
 
@@ -4000,4 +4021,24 @@ table.agent-perms-table {
 			}
 		}
 	}
+}
+
+.readme-text {
+	h1 { font-size: 18px; font-weight: bold; }
+	h2 { font-size: 18px; font-weight: normal; }
+	h3 { font-size: 16px; font-weight: normal; }
+	h4 { font-size: 14px; font-weight: normal; }
+	h5 { font-size: 100%; font-weight: bold; }
+	h6 { font-size: 100%; font-weight: bold; }
+}
+
+.dp-alert-ribbon {
+	border-radius: 0;
+	padding: 6px;
+}
+
+.dp-listpane article .dp-alert-ribbon {
+	border-left: none;
+	border-right: none;
+	margin-bottom: 0;
 }

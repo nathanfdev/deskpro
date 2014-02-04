@@ -121,6 +121,7 @@ class ManifestReader
 			$fields = array(
 				'package_name',
 				'title',
+				'description',
 				'api_version',
 				'version',
 				'version_name',

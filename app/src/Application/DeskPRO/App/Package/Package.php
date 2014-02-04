@@ -73,6 +73,7 @@ class Package
 		$def = new AppPackage();
 		$def->name         = $this->manifest->getPackageName();
 		$def->title        = $this->manifest->getTitle();
+		$def->description  = $this->manifest->getDescription();
 		$def->author_name  = $this->manifest->getAuthorName();
 		$def->author_email = $this->manifest->getAuthorEmail();
 		$def->author_link  = $this->manifest->getAuthorLink();
@@ -81,6 +82,7 @@ class Package
 		$def->version_name = $this->manifest->getVersionName();
 		$def->is_single    = $this->manifest->getIsSingle();
 		$def->scopes       = array(AppPackage::SCOPE_AGENT);
+		$def->settings_def = $this->manifest->getSettingsDef();
 
 		if (strpos($this->path, DP_ROOT.'/apps') === 0) {
 			$def->native_name = basename($this->path);
@@ -99,11 +101,31 @@ class Package
 
 
 	/**
+	 * @param int $size The size of the icon we want
 	 * @return string
 	 */
-	public function getIconFilePath()
+	public function getIconFilePath($size)
 	{
-		return $this->path . '/res/icons/app.png';
+		$path = $this->path . '/res/icons/app_'.$size.'.png';
+		if (!file_exists($path)) {
+			return null;
+		}
+
+		return $path;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getReadmeFilePath()
+	{
+		$path = $this->path . '/README';
+		if (!file_exists($path)) {
+			return null;
+		}
+
+		return $path;
 	}
 
 
@@ -113,10 +135,10 @@ class Package
 	public function getAppJsFilePath()
 	{
 		$path = $this->path . '/app.js';
-		if (file_exists($path)) {
-			return $path;
+		if (!file_exists($path)) {
+			return null;
 		}
-		return null;
+		return $path;
 	}
 
 

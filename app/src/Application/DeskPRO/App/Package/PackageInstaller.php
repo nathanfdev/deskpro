@@ -37,6 +37,11 @@ namespace Application\DeskPRO\App\Package;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Doctrine\ORM\EntityManager;
 use Orb\Data\ContentTypes;
+use Imagine\Image\Box as ImageBox;
+use Imagine\Image\Point as ImagePoint;
+use Imagine\Image\ImageInterface;
+use Imagine\Image\ImagineInterface;
+use Imagine\Exception as ImageException;
 
 class PackageInstaller
 {
@@ -50,10 +55,16 @@ class PackageInstaller
 	 */
 	private $blob_storage;
 
-	public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage)
+	/**
+	 * @var \Imagine\Image\ImagineInterface
+	 */
+	private $imagine;
+
+	public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage, ImagineInterface $imagine)
 	{
 		$this->em = $em;
 		$this->blob_storage = $blob_storage;
+		$this->imagine = $imagine;
 	}
 
 
@@ -67,19 +78,104 @@ class PackageInstaller
 		$this->em->persist($def);
 
 		#------------------------------
-		# Main icon
+		# Get app icons
 		#------------------------------
 
-		$blob = $this->blob_storage->createBlobRecordFromFile(
-			$package->getIconFilePath(),
-			'app.png',
-			'image/png'
-		);
+		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256);
+		$have_sizes = array();
+		$largest = null;
 
-		$asset = $def->addAssetFromBlob($blob);
-		$asset->tag = 'icons.app';
+		foreach ($sizes as $size) {
+			$path = $package->getIconFilePath($size);
+			if (!$path) {
+				continue;
+			}
 
-		$this->em->persist($asset);
+			$blob = $this->blob_storage->createBlobRecordFromFile(
+				$path,
+				"app_$size.png",
+				'image/png'
+			);
+
+			$asset = $def->addAssetFromBlob($blob);
+			$asset->tag = "icons.app.$size";
+			$this->em->persist($asset);
+
+			$largest = array($path, $size, $blob);
+			$have_sizes[$size] = $blob;
+		}
+
+		// No icon, we need a default
+		if (!$largest) {
+			$path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
+			$size = 256;
+			$blob = $this->blob_storage->createBlobRecordFromFile(
+				$path,
+				"app_$size.png",
+				'image/png'
+			);
+
+			$asset = $def->addAssetFromBlob($blob);
+			$asset->tag = "icons.app.$size";
+			$this->em->persist($asset);
+
+			$largest = array($path, $size, $blob);
+			$have_sizes[$size] = array($path, $size, $blob);
+		}
+
+		// Missing sizes we'll just scale whatever
+		// the largest icon we have
+		foreach ($sizes as $size) {
+			if (isset($have_sizes[$size])) {
+				continue;
+			}
+
+			$image = $this->imagine->open($largest[0]);
+			$image->resize(new ImageBox($size, $size));
+
+			$blob = $this->blob_storage->createBlobRecordFromString(
+				$image->get('png'),
+				"app_$size.png",
+				'image/png'
+			);
+
+			unset($image);
+
+			$asset = $def->addAssetFromBlob($blob);
+			$asset->tag = "icons.app.$size";
+			$this->em->persist($asset);
+
+			$largest = array($path, $size, $blob);
+			$have_sizes[$size] = $blob;
+		}
+
+		#------------------------------
+		# README file
+		#------------------------------
+
+		$path = $package->getReadmeFilePath();
+		if ($path) {
+			$readme = file_get_contents($path);
+
+			$blob = $this->blob_storage->createBlobRecordFromString(
+				$readme,
+				'README',
+				'text/plain'
+			);
+			$asset = $def->addAssetFromBlob($blob);
+			$asset->tag = 'readme.text';
+			$this->em->persist($asset);
+
+			$readme_html = \Parsedown::instance()->parse($readme);
+			$blob = $this->blob_storage->createBlobRecordFromString(
+				$readme_html,
+				'README.html',
+				'text/html'
+			);
+			$asset = $def->addAssetFromBlob($blob);
+			$asset->tag = 'readme.html';
+			$this->em->persist($asset);
+		}
 
 		#------------------------------
 		# Main app.js

@@ -44,6 +44,12 @@ class AppManagerService
 	{
 		$em = $container->getEm();
 
+		$packages = $em->createQuery("
+			SELECT package, asset
+			FROM DeskPRO:AppPackage package
+			LEFT JOIN package.assets asset
+		")->execute();
+
 		$apps = $em->createQuery("
 			SELECT app, package, asset
 			FROM DeskPRO:AppInstance app
@@ -52,8 +58,9 @@ class AppManagerService
 		")->execute();
 
 		if ($apps instanceof ArrayCollection) $apps = $apps->toArray();
+		if ($packages instanceof ArrayCollection) $packages = $packages->toArray();
 
-		$app_manager = new AppManager($apps);
+		$app_manager = new AppManager($packages, $apps);
 		return $app_manager;
 	}
 }

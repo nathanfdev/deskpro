@@ -113,6 +113,9 @@ requirejs([
 
 	'Admin/App/App',
 
+	'Admin/Apps/Ctrl/List',
+	'Admin/Apps/Ctrl/EditInstance',
+	'Admin/Apps/Ctrl/PackageInfo',
 	'Admin/Agents/Ctrl/Edit',
 	'Admin/Agents/Ctrl/DeletedList',
 	'Admin/Agents/Ctrl/DeletedRestore',
@@ -205,8 +208,6 @@ requirejs([
 	'Admin/TwitterSetup/Ctrl/TwitterSetup',
 	'Admin/TwitterAccounts/Ctrl/List',
 	'Admin/TwitterAccounts/Ctrl/Edit',
-	'Admin/Plugins/Ctrl/List',
-	'Admin/Plugins/Ctrl/Install',
 	'Admin/Portal/Ctrl/Embeds',
 	'Admin/Portal/Ctrl/PortalEditor',
 	'Admin/Server/Ctrl/ServerReqs',
