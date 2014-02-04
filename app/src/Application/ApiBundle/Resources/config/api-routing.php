@@ -4009,6 +4009,13 @@ $collection->create('api_apps_instance', array(
 	'requirements' => array('id' => '\d+')
 ));
 
+$collection->create('api_apps_instance_update', array(
+	'path'         => '/apps/instances/{id}',
+	'controller'   => 'ApiBundle:Apps:updateInstance',
+	'methods'      => array('POST'),
+	'requirements' => array('id' => '\d+')
+));
+
 $collection->create('api_apps_instance_uninstall', array(
 	'path'         => '/apps/instances/{id}',
 	'controller'   => 'ApiBundle:Apps:uninstallInstance',

@@ -1,0 +1,47 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-lg-12">
+							<div style="float: left;">
+								<img src="{{ ng_var('Ctrl.pack.icon_64') }}" alt="Icon" />
+							</div>
+							<div style="margin-left: 69px;">
+								<h2>{{ ng_var('setting_values.dp_app.title') }}</h2>
+								<p>
+									by {{ ng_var('Ctrl.pack.author_name') }} &lt;<a href="mailto:{{ ng_var('Ctrl.pack.author_email') }}">{{ ng_var('Ctrl.pack.author_email') }}</a>&gt;
+									&bull; <a ng-href="{{ ng_var('Ctrl.pack.author_link') }}">{{ ng_var('Ctrl.pack.author_link') }}</a>
+								</p>
+								<button ng-if="Ctrl.pack.readme" class="btn btn-default" ng-click="Ctrl.showReadme();"><i class="fa fa-file-text-o"></i> View App README</button>
+								<a class="btn btn-default" href="{{ ng_href('apps.apps.package', '{name: Ctrl.pack.name}') }}"><i class="fa fa-dropbox"></i> View App</a>
+							</div>
+						</div>
+					</div>
+					{% include 'AdminInterfaceBundle:Apps:package-settings-form.html.twig' %}
+				</div>
+			</div>
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-delete-control">
+					<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
+				</div>
+
+				<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div dp-hide-spinning="saving_settings">
+						<button class="btn btn-primary" ng-click="Ctrl.saveSettings();">{{ phrase('agent.general.save') }}</button>
+					</div>
+					<div dp-show-spinning="saving_settings">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+	<div dp-register-message="saved_settings">Settings were saved successfully</div>
+
+	{{ ng_tpl('AdminInterfaceBundle:Apps:readme-modal.html.twig') }}
+{% endblock %}

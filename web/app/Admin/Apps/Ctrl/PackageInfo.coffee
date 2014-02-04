@@ -2,10 +2,39 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 	class Admin_Apps_Ctrl_PackageInfo extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_PackageInfo'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = []
+		@DEPS      = ['$http']
 
 		init: ->
 			@packageName = @$stateParams.name;
+			@aceEditors = {}
+
+			@$scope.package_assets = {
+				app_js: "",
+				readme: ""
+			}
+
+			createAceLoaded = (name, maxH = 500) =>
+				return (editor) =>
+					@aceEditors[name] = editor
+					updateH = ->
+						newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth()
+						if newHeight > maxH
+							newHeight = maxH
+						if newHeight < 300
+							newHeight = 300
+
+						$(editor.container).height(newHeight)
+						editor.resize()
+
+					updateH()
+					editor.getSession().on('change', updateH);
+					editor.setShowPrintMargin(false)
+
+					$(editor.container).closest('div.editor').data('ace-editor', editor).addClass('with-ace-editor')
+
+			@$scope.aceLoaded = {
+				app_js: createAceLoaded('app_js')
+			}
 			return
 
 		initialLoad: ->
@@ -13,7 +42,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				pack: '/apps/packages/' + @packageName,
 			}).then( (result) =>
 				@pack = result.data.pack['package']
+				getResource = (id, tag) =>
+					asset = @pack.assets.filter((x) -> x.tag == tag)[0]
+					if asset
+						@$http.get(asset.blob.relative_url, { responseType: "text"}).success((data) =>
+							@$scope.package_assets[id] = data
+						)
+
+				getResource('app_js', 'app_js')
 			)
+
 			return promise
 
 		###

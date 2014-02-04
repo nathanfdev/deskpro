@@ -1588,17 +1588,17 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'apps.apps.package',
-		url: '/{name:[a-zA-Z0-9\\-_\\.]+}',
-		templateName: 'Apps/package-info.html',
-		controller: 'Admin_Apps_Ctrl_PackageInfo'
+		id: 'apps.apps.instance',
+		url: '/{id:\\d+}',
+		templateName: 'Apps/instance.html',
+		controller: 'Admin_Apps_Ctrl_EditInstance'
 	});
 
 	routes.push({
-		id: 'apps.apps.instance',
-		url: '/{name:\\d+}',
-		templateName: 'Apps/instance-info.html',
-		controller: 'Admin_Apps_Ctrl_EditInstance'
+		id: 'apps.apps.package',
+		url: '/{name:[a-zA-Z0-9\\-_\\.]+}',
+		templateName: 'Apps/package.html',
+		controller: 'Admin_Apps_Ctrl_PackageInfo'
 	});
 
 	//###

@@ -1,0 +1,186 @@
+{% extends "AdminInterfaceBundle:Layout:widget-modal.html.twig" %}
+{% block modal_title %}
+	<h4 class="modal-title">
+		New App
+	</h4>
+{% endblock %}
+{% block modal_body %}
+	<article class="form-horizontal dp-form">
+
+		<div class="alert alert-info">
+			<p>
+				This form will create a new basic app for you. Use this for simple apps where you want to use basic
+				Javascript and render simple HTML templates to pre-defined locations.
+			</p>
+			<p>
+				Apps are capable of doing much more than this. If you want more information about how to build
+				and package advanced apps, refer to the <a href="http://support.deskpro.com/" target="_blank">Apps Developer Guide</a>.
+			</p>
+		</div>
+
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Title</h3>
+			</div>
+			<div class="col-lg-9">
+				<input type="text" class="form-control" ng-model="opt.title" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Description</h3>
+			</div>
+			<div class="col-lg-9">
+				<input type="text" class="form-control" ng-model="opt.description" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>
+					<label>
+						<input type="checkbox" ng-model="opt.ticket_on" />
+						Tickets
+					</label>
+				</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="opt.ticket_on">
+					<ul class="checkbox-list" style="display: block; max-height: 200px; overflow: auto;">
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket.blank" />
+								<span>No UI (just Javascript)</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['header.top']" />
+								<span>Top of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['header.bottom']" />
+								<span>Bottom of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['header.after']" />
+								<span>After the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['properties.before']" />
+								<span>Before the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['properties.tab']" />
+								<span>A new tab in the properties box</span>
+							</label>
+							<div ng-show="opt.ticket['properties.tab']" style="padding-left: 30px;">
+								Tab Title: <input type="text" style="width: 100px;" ng-model="opt.ticket['properties.tab.title']" />
+							</div>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['properties.after']" />
+								<span>After the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['main.top']" />
+								<span>Top of the main content area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['replybox.before']" />
+								<span>Before the reply box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['replybox.after']" />
+								<span>After the reply box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['messages.before']" />
+								<span>Before the messages list</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['messages.aget']" />
+								<span>After the messages list</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['main.after']" />
+								<span>After the main content area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['footer']" />
+								<span>At the very bottom of the tab (footer)</span>
+							</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>
+					<label>
+						<input type="checkbox" ng-model="opt.user_on" />
+						Users
+					</label>
+				</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="opt.user_on">
+					<ul class="checkbox-list" style="display: block; max-height: 200px; overflow: auto;">
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>
+					<label>
+						<input type="checkbox" ng-model="opt.org_on" />
+						Organizations
+					</label>
+				</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="opt.org_on">
+					<ul class="checkbox-list" style="display: block; max-height: 200px; overflow: auto;">
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</article>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-primary" ng-click="doCreate()">Create New App</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

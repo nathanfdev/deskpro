@@ -37,7 +37,7 @@
 	</header>
 	<article>
 		<div class="alert alert-info dp-alert-ribbon">
-			<button class="btn btn-default btn-xs"><i class="fa fa-asterisk"></i> Create App</button>
+			<button class="btn btn-default btn-xs" ng-click="ListCtrl.showNewApp()"><i class="fa fa-asterisk"></i> Create App</button>
 			<button class="btn btn-default btn-xs"><i class="fa fa-upload"></i> Upload App</button>
 		</div>
 		<ul class="dp-item-list dp-icon-list">
@@ -58,7 +58,8 @@
 		</ul>
 	</article>
 </section>
+{{ ng_tpl('AdminInterfaceBundle:Apps:new-app-modal.html.twig') }}
 {% endblock %}
 {% block listpane_help %}
-{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}
+	{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}
 {% endblock %}

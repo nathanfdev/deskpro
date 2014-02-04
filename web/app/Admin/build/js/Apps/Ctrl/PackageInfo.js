@@ -16,10 +16,45 @@
 
       Admin_Apps_Ctrl_PackageInfo.CTRL_AS = 'Ctrl';
 
-      Admin_Apps_Ctrl_PackageInfo.DEPS = [];
+      Admin_Apps_Ctrl_PackageInfo.DEPS = ['$http'];
 
       Admin_Apps_Ctrl_PackageInfo.prototype.init = function() {
+        var createAceLoaded,
+          _this = this;
         this.packageName = this.$stateParams.name;
+        this.aceEditors = {};
+        this.$scope.package_assets = {
+          app_js: "",
+          readme: ""
+        };
+        createAceLoaded = function(name, maxH) {
+          if (maxH == null) {
+            maxH = 500;
+          }
+          return function(editor) {
+            var updateH;
+            _this.aceEditors[name] = editor;
+            updateH = function() {
+              var newHeight;
+              newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+              if (newHeight > maxH) {
+                newHeight = maxH;
+              }
+              if (newHeight < 300) {
+                newHeight = 300;
+              }
+              $(editor.container).height(newHeight);
+              return editor.resize();
+            };
+            updateH();
+            editor.getSession().on('change', updateH);
+            editor.setShowPrintMargin(false);
+            return $(editor.container).closest('div.editor').data('ace-editor', editor).addClass('with-ace-editor');
+          };
+        };
+        this.$scope.aceLoaded = {
+          app_js: createAceLoaded('app_js')
+        };
       };
 
       Admin_Apps_Ctrl_PackageInfo.prototype.initialLoad = function() {
@@ -28,7 +63,22 @@
         promise = this.Api.sendDataGet({
           pack: '/apps/packages/' + this.packageName
         }).then(function(result) {
-          return _this.pack = result.data.pack['package'];
+          var getResource;
+          _this.pack = result.data.pack['package'];
+          getResource = function(id, tag) {
+            var asset;
+            asset = _this.pack.assets.filter(function(x) {
+              return x.tag === tag;
+            })[0];
+            if (asset) {
+              return _this.$http.get(asset.blob.relative_url, {
+                responseType: "text"
+              }).success(function(data) {
+                return _this.$scope.package_assets[id] = data;
+              });
+            }
+          };
+          return getResource('app_js', 'app_js');
         });
         return promise;
       };

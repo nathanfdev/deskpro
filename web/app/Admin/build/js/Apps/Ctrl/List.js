@@ -65,6 +65,42 @@
         return _results;
       };
 
+      Admin_Apps_Ctrl_List.prototype.updateAppTitle = function(id, title) {
+        return this.apps.filter(function(x) {
+          return x.id === id;
+        }).map(function(x) {
+          return x.title = title;
+        });
+      };
+
+      Admin_Apps_Ctrl_List.prototype.showNewApp = function() {
+        var saveNewApp,
+          _this = this;
+        saveNewApp = function(options) {};
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('Apps/new-app-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              $scope.save = function() {
+                $scope.is_loading = true;
+                return saveNewApp($scope.opt).then(function() {
+                  $modalInstance.dismiss();
+                  return $scope.is_loading = false;
+                }, function() {
+                  return $scope.is_loading = false;
+                });
+              };
+              return $scope.opt = {
+                ticket: {}
+              };
+            }
+          ]
+        });
+      };
+
       return Admin_Apps_Ctrl_List;
 
     })(Admin_Ctrl_Base);

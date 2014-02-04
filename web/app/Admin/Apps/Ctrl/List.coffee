@@ -33,4 +33,33 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					p.is_installed = true
 					break
 
+		updateAppTitle: (id, title) ->
+			@apps.filter((x) -> x.id == id).map((x) -> x.title = title)
+
+		showNewApp: ->
+
+			saveNewApp = (options) =>
+				return
+
+			@$modal.open({
+				templateUrl: @getTemplatePath('Apps/new-app-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+
+					$scope.save = ->
+						$scope.is_loading = true
+						saveNewApp($scope.opt).then(->
+							$modalInstance.dismiss()
+							$scope.is_loading = false
+						, ->
+							$scope.is_loading = false
+						)
+
+					$scope.opt = {
+						ticket: {}
+					}
+				]
+			});
+
 	Admin_Apps_Ctrl_List.EXPORT_CTRL()

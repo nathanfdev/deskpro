@@ -50,7 +50,8 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property int    $version
  * @property string $version_name
  * @property string $native_name
- * @property string $is_single
+ * @property bool   $is_single
+ * @property bool   $is_custom
  * @property array  $settings_def
  * @property AppAsset[] $assets
  * @property array  $scopes
@@ -115,6 +116,14 @@ class AppPackage extends DomainObject
 	 * @var bool
 	 */
 	protected $is_single = false;
+
+	/**
+	 * True to mean that this is a custom app we created from within the admin interface.
+	 * This shows a simplified editor in the package screen.
+	 *
+	 * @var bool
+	 */
+	protected $is_custom = false;
 
 	/**
 	 * @var array
@@ -340,6 +349,13 @@ class AppPackage extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'is_single',
 			'fieldName'  => 'is_single',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'is_custom',
+			'fieldName'  => 'is_custom',
 			'type'       => 'boolean',
 			'nullable'   => false,
 		));

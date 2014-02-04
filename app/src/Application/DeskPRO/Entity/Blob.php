@@ -431,6 +431,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 			'name_hash'        => $this->getNameHash(),
 			'blob_hash'        => $this->blob_hash,
 			'download_url'     => $this->getDownloadUrl(true),
+			'relative_url'     => $this->getDownloadUrl(false),
 			'thumbnail_url_80' => $is_image ? $this->getThumbnailUrl(80, true) : null,
 			'thumbnail_url_75' => $is_image ? $this->getThumbnailUrl(75, true) : null,
 			'thumbnail_url_50' => $is_image ? $this->getThumbnailUrl(50, true) : null,
