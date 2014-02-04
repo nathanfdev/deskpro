@@ -60,6 +60,11 @@ class Client extends BaseClient
         return $this;
     }
 
+    public function removeHeader($name)
+    {
+        unset($this->headers[$name]);
+    }
+
     public function setAuth($user, $password = '', $type = CURLAUTH_BASIC)
     {
         $this->auth = array(
@@ -67,6 +72,13 @@ class Client extends BaseClient
             'password' => $password,
             'type'     => $type
         );
+
+        return $this;
+    }
+
+    public function resetAuth()
+    {
+        $this->auth = null;
 
         return $this;
     }
