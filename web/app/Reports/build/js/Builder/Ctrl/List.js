@@ -16,6 +16,8 @@
 
       Reports_Builder_Ctrl_List.CTRL_AS = 'ListCtrl';
 
+      Reports_Builder_Ctrl_List.DEPS = ['Api'];
+
       Reports_Builder_Ctrl_List.prototype.init = function() {
         this.customData = this.DataService.get('ReportBuilderCustom');
         return this.builtInData = this.DataService.get('ReportBuilderBuiltIn');
@@ -27,7 +29,7 @@
 
 
       Reports_Builder_Ctrl_List.prototype.initialLoad = function() {
-        var built_in_promise, custom_promise,
+        var built_in_promise, custom_promise, group_params_promise,
           _this = this;
         custom_promise = this.customData.loadList().then(function(list) {
           return _this.custom_data_list = list;
@@ -35,7 +37,10 @@
         built_in_promise = this.builtInData.loadList().then(function(list) {
           return _this.built_in_data_list = list;
         });
-        return this.$q.all([custom_promise, built_in_promise]);
+        group_params_promise = this.Api.sendGet('/reports/builder/group-params').then(function(data) {
+          return _this.group_params = data.data;
+        });
+        return this.$q.all([custom_promise, built_in_promise, group_params_promise]);
       };
 
       return Reports_Builder_Ctrl_List;
