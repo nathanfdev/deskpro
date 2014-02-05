@@ -195,6 +195,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 								nav.data('simpletabs').addTriggerElement(tabElement);
 							}
 
+							tplScope.content = info.scope;
 							info.scope.$watch('tab', function(newVal) {
 								tplScope.tab = newVal;
 							}, true);
@@ -256,6 +257,8 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 					tplCtrl,
 					element,
 					locationEl,
+					injectables,
+					i,
 					deferred = $q.defer();
 
 				this.deferred = deferred;
@@ -273,6 +276,13 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 					ctrlLocals.$context  = self;
 					ctrlLocals.$app      = self.getApp();
 					ctrlLocals.$platform = self.getApp().getPlatform();
+
+					injectables = self.getInjectables();
+					if (injectables) {
+						for (i = 0; i < injectables.length; i++) {
+							ctrlLocals[injectables[i][0]] = injectables[i][1];
+						}
+					}
 
 					tplCtrl = $controller(ctrl, ctrlLocals);
 
@@ -429,6 +439,15 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 					return null;
 				}
 			}
+		},
+
+
+		/**
+		 * Get an array of [name, object] to inject on created angular controllers
+		 * @returns {Array}
+		 */
+		getInjectables: function() {
+			return null;
 		},
 
 

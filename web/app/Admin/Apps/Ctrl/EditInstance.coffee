@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 	class Admin_Apps_Ctrl_EditInstance extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_EditInstance'
 		@CTRL_AS   = 'Ctrl'
@@ -27,6 +27,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			d.promise.then(=>
 				@$scope.pack = @pack
 				@$scope.setting_values = @app.settings
+				if not @$scope.setting_values || Util.isArray(@$scope.setting_values)
+					@$scope.setting_values = {}
 				@$scope.setting_values.dp_app = {title: @app.title}
 			)
 

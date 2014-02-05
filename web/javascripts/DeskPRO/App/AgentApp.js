@@ -1,4 +1,4 @@
-define(['angular'], function(angular) {
+define(['angular', 'DeskPRO/Util/Strings'], function(angular) {
 	var AgentApp = angular.module('AgentApp', []);
 
 	//-------------------------------------------------------------------------
@@ -19,6 +19,8 @@ define(['angular'], function(angular) {
 					console.log("[dpAppAssetInterceptor] %s -> %s", config.url, assetPath);
 					config.url = assetPath;
 					config.dpIsAppAsset = true;
+				} else {
+					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
 				}
 
 				return config;

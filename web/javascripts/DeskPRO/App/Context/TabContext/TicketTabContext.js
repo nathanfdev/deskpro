@@ -1,5 +1,11 @@
 define(['DeskPRO/App/Context/TabContext/TabContext'], function(TabContext) {
 	return new Orb.Class({
-		Extends: TabContext
+		Extends: TabContext,
+
+		getInjectables: function() {
+			return [
+				['$ticket', this.getFragment().meta.api_data]
+			]
+		}
 	});
 });

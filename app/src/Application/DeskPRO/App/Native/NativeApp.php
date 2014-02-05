@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,57 +25,91 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\App\Native;
 
-use Application\DeskPRO\App\Package\Package;
-use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
-class TestCommand extends ContainerAwareCommand
+class NativeApp
 {
-	protected function configure()
+	/**
+	 * @var \Application\DeskPRO\Entity\AppInstance
+	 */
+	private $app;
+
+	/**
+	 * @var NativePackageConfig
+	 */
+	private $config;
+
+	/**
+	 * @var string
+	 */
+	private $class_namespace;
+
+
+	/**
+	 * @param AppInstance $app
+	 * @param NativePackageConfig $config
+	 */
+	public function __construct(AppInstance $app, NativePackageConfig $config)
 	{
-		$this->setName('dp:test');
+		$this->app    = $app;
+		$this->config = $config;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+
+	/**
+	 * @return NativePackageConfig
+	 */
+	public function getConfig()
 	{
-		/** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
-		$container = $this->getContainer();
+		return $this->config;
+	}
 
-		$container->getDb()->executeUpdate("DELETE FROM app_instances WHERE package_name = 'com.deskpro.apps.highrise'");
-		$container->getDb()->executeUpdate("DELETE FROM app_packages WHERE name = 'com.deskpro.apps.highrise'");
-		$package = new Package(DP_ROOT.'/apps/Highrise');
 
-		$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage(), $container->getImagine());
-		$installer->installPackage($package);
+	/**
+	 * @return AppInstance
+	 */
+	public function getApp()
+	{
+		return $this->app;
+	}
 
-		return;
-		$container->getDb()->executeUpdate("DELETE FROM app_instances WHERE package_name = 'com.deskpro.apps.test'");
-		$container->getDb()->executeUpdate("DELETE FROM app_packages WHERE name = 'com.deskpro.apps.test'");
-		$package = new Package(DP_ROOT.'/apps/TestApp');
 
-		$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage(), $container->getImagine());
-		$installer->installPackage($package);
+	/**
+	 * @return \Application\DeskPRO\Entity\AppPackage
+	 */
+	public function getPackage()
+	{
+		return $this->app->package;
+	}
 
-		$package = $container->getEm()->getRepository('DeskPRO:AppPackage')->findOneBy(array('name' => 'com.deskpro.apps.test'));
 
-		$app = new AppInstance();
-		$app->package = $package;
-		$app->title = $package->title;
-		$container->getEm()->persist($app);
-		$container->getEm()->flush();
+	/**
+	 * @return string
+	 */
+	public function getClassNamespace()
+	{
+		if ($this->class_namespace === null) {
+			$this->class_namespace = preg_replace('#[^a-zA-Z0-9]#', '_', $this->app->package->name);
+		}
 
-		echo "\n";
+		return $this->class_namespace;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getNativeDir()
+	{
+		return DP_ROOT.'/apps/' . $this->app->package->native_name . '/native';
 	}
 }

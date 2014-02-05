@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\App;
 
+use Application\DeskPRO\App\Native\NativeApp;
+use Application\DeskPRO\App\Native\NativePackageConfig;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\AppInstance;
 
@@ -48,6 +50,17 @@ class AppManager implements AppManagerInterface
 	 * @var AppInstance[]
 	 */
 	private $apps = array();
+
+	/**
+	 * Cache of native configs per package
+	 * @var array
+	 */
+	private $native_package_configs = array();
+
+	/**
+	 * @var \Application\DeskPRO\App\Native\NativeApp[]
+	 */
+	private $native_apps = array();
 
 
 	/**
@@ -152,6 +165,24 @@ class AppManager implements AppManagerInterface
 
 
 	/**
+	 * Gets a single app for a package.
+	 *
+	 * @param string $name  The package name
+	 * @return AppInstance
+	 */
+	public function getPackageApp($name)
+	{
+		foreach ($this->apps as $app) {
+			if ($app->package->name == $name) {
+				return $app;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * Gets an AppManager with a specific scope filter applied to it
 	 *
 	 * @param string $scope The scope to search for
@@ -164,5 +195,73 @@ class AppManager implements AppManagerInterface
 		});
 
 		return $manager;
+	}
+
+
+	/**
+	 * @param AppInstance|int $app The app or app_id
+	 * @return NativeApp
+	 */
+	public function getNativeApp($app)
+	{
+		if ($app instanceof AppInstance) {
+			$app_id = $app->id;
+		} else {
+			$app = $this->getApp($app);
+			$app_id = $app->id;
+		}
+
+		if (!$app->package->native_name) {
+			throw new \InvalidArgumentException("{$app->package->name} is not a native app package");
+		}
+
+		if (isset($this->native_apps[$app_id])) {
+			return $this->native_apps[$app_id];
+		}
+
+		if (isset($this->native_package_configs[$app->package->name])) {
+			$native_config = $this->native_package_configs[$app->package->name];
+		} else {
+			$native_config = NativePackageConfig::createFromPackage($app->package);
+			$this->native_package_configs[$app->package->name] = $native_config;
+		}
+
+		$native_app = new NativeApp($app, $native_config);
+		$this->native_apps[$app_id] = $native_app;
+
+		$this->_initNativePackageAutoload($native_app);
+
+		return $native_app;
+	}
+
+	/**
+	 * @param NativeApp $native_app
+	 */
+	private function _initNativePackageAutoload(NativeApp $native_app)
+	{
+		static $has_reg = array();
+
+		$namespace = $native_app->getClassNamespace();
+		$directory = $native_app->getNativeDir();
+
+		if (isset($has_reg[$namespace])) {
+			return;
+		}
+
+		$has_reg[$namespace] = true;
+
+		spl_autoload_register(function($class_name) use ($namespace, $directory) {
+			if (strpos($class_name, $namespace.'\\') !== 0) {
+				return false;
+			}
+
+			$inc_name = str_replace($namespace.'\\', '', $class_name);
+			$inc_name = str_replace('\\', DIRECTORY_SEPARATOR, $inc_name);
+			$inc_name .= '.php';
+
+			include($directory . DIRECTORY_SEPARATOR . $inc_name);
+
+			return true;
+		});
 	}
 }

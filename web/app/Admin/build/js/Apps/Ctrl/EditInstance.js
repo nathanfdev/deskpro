@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
     var Admin_Apps_Ctrl_EditInstance, _ref;
     Admin_Apps_Ctrl_EditInstance = (function(_super) {
       __extends(Admin_Apps_Ctrl_EditInstance, _super);
@@ -40,6 +40,9 @@
         d.promise.then(function() {
           _this.$scope.pack = _this.pack;
           _this.$scope.setting_values = _this.app.settings;
+          if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
+            _this.$scope.setting_values = {};
+          }
           return _this.$scope.setting_values.dp_app = {
             title: _this.app.title
           };

@@ -2142,6 +2142,13 @@ $collection->create('agent_plugins_run', array(
 	'controller'  => 'AgentBundle:Plugins:run',
 ));
 
+$collection->create('agent_apps_run', array(
+	'path'          => '/apps/{app_id}/{action}',
+	'defaults'      => array('action' => 'default'),
+	'controller'    => 'AgentBundle:Apps:run',
+	'requirements'  => array('app_id' => '\\d+'),
+));
+
 if (Application\DeskPRO\App::getSetting('core.apps_jira')) {
 	$collection->create('jira_export', array(
 		'path'          => '/jira/export/{ticket_id}',

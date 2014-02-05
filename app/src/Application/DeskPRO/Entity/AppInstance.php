@@ -128,6 +128,17 @@ class AppInstance extends DomainObject
 
 
 	/**
+	 * @param string $name
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getSetting($name, $default = null)
+	{
+		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())

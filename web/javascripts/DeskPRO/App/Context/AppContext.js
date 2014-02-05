@@ -5,7 +5,7 @@ define([
 ) {
 	return new Orb.Class({
 		initialize: function(contextParams) {
-			this._appId          = contextParams.appId;
+			this._appId          = contextParams.id;
 			this._platform       = contextParams.platform;
 			this._packageName    = contextParams.packageName;
 			this._scopeName      = contextParams.scope;
@@ -77,6 +77,29 @@ define([
 				return defaultValue;
 			}
 			return this._settings[name];
+		},
+
+
+		/**
+		 * Return the URL to request handler (for native apps with request handlers)
+		 *
+		 * @param {String}    type   The type: just "agent" at the moment
+		 * @param {String}    action Optional sub-action to pass to the handler in the context
+		 * @return {String}
+		 */
+		getRequestHandlerUrl: function(type, action) {
+			var url;
+			if (type != 'agent') {
+				throw "Invalid `type` (must be 'agent')";
+			}
+
+			url = window.BASE_URL + type + "/apps/" + this.getAppId();
+			if (action) {
+				action = action.replace(/^\/+/, '');
+				url += "/" + action;
+			}
+
+			return url;
 		},
 
 
@@ -207,6 +230,29 @@ define([
 			}
 
 			return controllers;
+		},
+
+
+		/**
+		 * @return $http
+		 */
+		getHttp: function() {
+			return this.getPlatform().getNgInjector().get('$http');
+		},
+
+		/**
+		 * @return $q
+		 */
+		getQ: function() {
+			return this.getPlatform().getNgInjector().get('$q');
+		},
+
+
+		/**
+		 * @return {deferred}
+		 */
+		createDeferred: function() {
+			return this.getQ().defer();
 		}
 	});
 });

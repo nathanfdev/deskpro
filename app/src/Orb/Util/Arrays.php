@@ -760,6 +760,35 @@ class Arrays
 	}
 
 
+	/**
+	 * Takes a nested array and returns a flat version where sub-keys are separated with a dot.
+	 *
+	 * @param array $array
+	 * @param string $sub_sep
+	 * @param string $_start_key {internal}
+	 * @param array $_result {internal}
+	 * @return array
+	 */
+	public static function flattenKeyValueArray($array, $sub_sep = '.', $_start_key = '', array &$_result = null)
+	{
+		if (!$_result) {
+			$_result = array();
+		}
+
+		foreach ($array as $k => $v) {
+			$real_k = $_start_key ? $_start_key . $sub_sep . $k : $k;
+
+			if (is_array($v) || $v instanceof \Traversable) {
+				self::flattenKeyValueArray($v, $sub_sep, $real_k, $_result);
+			} else {
+				$_result[$real_k] = $v;
+			}
+		}
+
+		return $_result;
+	}
+
+
 
 	/**
 	 * Returns a string from an array using the given template on each item. Sortof like
