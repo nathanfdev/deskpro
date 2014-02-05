@@ -2142,6 +2142,9 @@ class TicketSearch extends SearcherAbstract
 
 						$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_address_id", $op, $choice, true);
 
+						// Need to use full ticket table for email_gateway_address_id field
+						$this->enableArchiveSearch();
+
 						break;
 
 					case self::TERM_RECEIVING_GATEWAY:
