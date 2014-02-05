@@ -93,4 +93,20 @@ class ReportsBuilderController extends AbstractController
 			)
 		);
 	}
+
+
+	####################################################################################################################
+	# get group params
+	####################################################################################################################
+
+	public function getGroupParamsAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+
+		return $this->createApiResponse($reports_builder->getGroupParams());
+	}
 }

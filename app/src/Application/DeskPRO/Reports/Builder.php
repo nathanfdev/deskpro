@@ -87,6 +87,15 @@ class Builder
 
 
 	/**
+	 * @return array
+	 */
+	public function getGroupParams()
+	{
+		return $this->repository->getReportGroupParams();
+	}
+
+
+	/**
 	 * @param array $params
 	 * @return array
 	 */

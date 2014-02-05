@@ -3900,6 +3900,12 @@ $collection->create('api_reports_builder_list_builtIn', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_reports_builder_get_group_params', array(
+	'path'        => '/reports/builder/group-params',
+	'controller'  => 'ApiBundle:ReportsBuilder:getGroupParams',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_reports_builder_get', array(
 	'path'         => '/reports/builder/{id}',
 	'controller'   => 'ApiBundle:ReportsBuilder:get',
