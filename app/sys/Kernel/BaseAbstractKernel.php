@@ -133,7 +133,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return $response;
 	}
 
-	protected function postResponseHandled($response)
+	protected function postResponseHandled($response, $request)
 	{
 		global $DP_CONFIG;
 

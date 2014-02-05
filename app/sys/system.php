@@ -373,7 +373,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
-		$this->postResponseHandled($response);
+		$this->postResponseHandled($response, $request);
 
 		if ($response->headers->get('Content-Type') == 'text/html') {
 			$content = $response->getContent();
