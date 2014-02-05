@@ -14,6 +14,12 @@ $collection->create('api', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_discover', array(
+	'path'        => '/discover',
+	'controller'  => 'ApiBundle:Test:discover',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_test', array(
 	'path'        => '/test',
 	'controller'  => 'ApiBundle:Test:test',
@@ -3986,6 +3992,12 @@ $collection->create('api_apps', array(
 	'path'        => '/apps',
 	'controller'  => 'ApiBundle:Apps:list',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_apps_custom_new', array(
+	'path'        => '/apps/custom',
+	'controller'  => 'ApiBundle:Apps:createCustomApp',
+	'methods'     => array('PUT'),
 ));
 
 $collection->create('api_apps_package', array(
