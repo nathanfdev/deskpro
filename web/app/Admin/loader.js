@@ -115,6 +115,7 @@ requirejs([
 
 	'Admin/Apps/Ctrl/List',
 	'Admin/Apps/Ctrl/EditInstance',
+	'Admin/Apps/Ctrl/EditCustomInstance',
 	'Admin/Apps/Ctrl/PackageInfo',
 	'Admin/Agents/Ctrl/Edit',
 	'Admin/Agents/Ctrl/DeletedList',

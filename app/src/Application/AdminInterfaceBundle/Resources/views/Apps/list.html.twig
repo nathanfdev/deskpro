@@ -1,5 +1,21 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
+
+<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.custom_apps.length">
+	<header>
+		<h3>Your Custom Apps</h3>
+	</header>
+	<article>
+		<ul class="dp-item-list">
+			<li ng-repeat="app in ListCtrl.custom_apps" dp-state-mark="apps.apps.edit.{{ ng_var('app.id') }}">
+				<a href="{{ ng_href('apps.apps.custom_instance', "{custom_id: 'custom_' + app.id}") }}">
+					<span class="title-text">{{ ng_var('app.title') }}</span>
+				</a>
+			</li>
+		</ul>
+	</article>
+</section>
+
 <section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length">
 	<header>
 		<h3 style="margin-bottom: 0;">Installed Apps</h3>

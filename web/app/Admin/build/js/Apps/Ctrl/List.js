@@ -36,7 +36,15 @@
           apps: '/apps'
         }).then(function(result) {
           _this.packages = result.data.apps.packages;
-          return _this.apps = result.data.apps.apps;
+          _this.packages = _this.packages.filter(function(x) {
+            return !x.is_custom;
+          });
+          _this.apps = result.data.apps.apps.filter(function(x) {
+            return !x["package"].is_custom;
+          });
+          return _this.custom_apps = result.data.apps.apps.filter(function(x) {
+            return x["package"].is_custom;
+          });
         });
         return promise;
       };
@@ -66,17 +74,45 @@
       };
 
       Admin_Apps_Ctrl_List.prototype.updateAppTitle = function(id, title) {
-        return this.apps.filter(function(x) {
+        this.apps.filter(function(x) {
+          return x.id === id;
+        }).map(function(x) {
+          return x.title = title;
+        });
+        return this.custom_apps.filter(function(x) {
           return x.id === id;
         }).map(function(x) {
           return x.title = title;
         });
       };
 
+      Admin_Apps_Ctrl_List.prototype.ensureCustomAppInList = function(customApp) {
+        var exist;
+        if (!this.custom_apps) {
+          return;
+        }
+        exist = this.custom_apps.filter(function(x) {
+          return x.id === customApp.id;
+        });
+        if (!exist.length) {
+          return this.custom_apps.push(customApp);
+        }
+      };
+
       Admin_Apps_Ctrl_List.prototype.showNewApp = function() {
         var saveNewApp,
           _this = this;
-        saveNewApp = function(options) {};
+        saveNewApp = function(options) {
+          var postData;
+          postData = {
+            options: options
+          };
+          return _this.Api.sendPutJson('/apps/custom', postData).success(function(info) {
+            return _this.$state.go('apps.apps.custom_instance', {
+              custom_id: "custom_" + info.id
+            });
+          });
+        };
         return this.$modal.open({
           templateUrl: this.getTemplatePath('Apps/new-app-modal.html'),
           controller: [
@@ -84,7 +120,7 @@
               $scope.dismiss = function() {
                 return $modalInstance.dismiss();
               };
-              $scope.save = function() {
+              $scope.doCreate = function() {
                 $scope.is_loading = true;
                 return saveNewApp($scope.opt).then(function() {
                   $modalInstance.dismiss();

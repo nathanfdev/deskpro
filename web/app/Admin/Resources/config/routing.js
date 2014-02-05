@@ -1595,6 +1595,13 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'apps.apps.custom_instance',
+		url: '/{custom_id:custom_\\d+}',
+		templateName: 'Apps/custom-instance.html',
+		controller: 'Admin_Apps_Ctrl_EditCustomInstance'
+	});
+
+	routes.push({
 		id: 'apps.apps.package',
 		url: '/{name:[a-zA-Z0-9\\-_\\.]+}',
 		templateName: 'Apps/package.html',

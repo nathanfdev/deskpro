@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Imagine\Image\Box as ImageBox;
 
@@ -291,6 +292,7 @@ class AppsController extends AbstractController
 		}
 
 		$app = $manager->getApp($id);
+		$package = $app->package;
 
 		$settings = $this->_readAppSettings($app->package, $this->in->getCleanValueArray('settings'));
 
@@ -299,6 +301,40 @@ class AppsController extends AbstractController
 
 		$this->em->persist($app);
 		$this->em->flush();
+
+		// If this is a custom app, we can update assets from here as well
+		if ($package->is_custom) {
+			$blob_storage = $this->container->getBlobStorage();
+			$assets = $package->assets;
+			$assets = Arrays::keyFromData($assets, 'id');
+			$save_assets = $this->in->getCleanValueArray('save_assets');
+
+			$remove_blobs = array();
+
+			foreach ($save_assets as $asset_info) {
+				if (!isset($assets[$asset_info['id']])) {
+					continue;
+				}
+
+				$asset = $assets[$asset_info['id']];
+				$old_blob = $asset->blob;
+
+				$asset->blob = $blob_storage->createBlobRecordFromString(
+					$asset_info['content'],
+					$old_blob->filename,
+					$old_blob->content_type
+				);
+
+				$this->em->persist($asset);
+				$remove_blobs[] = $old_blob;
+			}
+
+			$this->em->flush();
+
+			foreach ($remove_blobs as $blob) {
+				$blob_storage->deleteBlobRecord($blob);
+			}
+		}
 
 		return $this->createApiSuccessResponse();
 	}
@@ -321,7 +357,58 @@ class AppsController extends AbstractController
 		$this->em->remove($app);
 		$this->em->flush();
 
+		// If the package is a custom package, then uninstalling the app
+		// ininstalls the package too
+		if ($app->package->is_custom) {
+			$package = $app->package;
+			// Remove all assets from blob storage
+			$blob_storage = $this->container->getBlobStorage();
+			foreach ($package->assets as $asset) {
+				try {
+					$blob_storage->deleteBlobRecord($asset->blob);
+				} catch (\Exception $e) {}
+			}
+
+			$this->em->remove($package);
+			$this->em->flush();
+		}
+
 		return $this->createApiDeleteResponse(array('old_id' => $id));
+	}
+
+	####################################################################################################################
+	# get-custom-assets
+	####################################################################################################################
+
+	public function getCustomAssetsAction($id)
+	{
+		$manager = $this->container->getAppManager();
+
+		if (!$manager->hasApp($id)) {
+			throw $this->createNotFoundException();
+		}
+
+		$app = $manager->getApp($id);
+
+		if (!$app->package->is_custom) {
+			throw $this->createNotFoundException();
+		}
+
+		$blob_storage = $this->container->getBlobStorage();
+		$assets = array();
+
+		foreach ($app->package->assets as $a) {
+			if ($a->tag == 'js' || $a->tag == 'html' || $a->tag == 'app_js') {
+				$file = $blob_storage->copyBlobRecordToString($a->blob);
+
+				$a_info = $a->toApiData();
+				$a_info['file_content'] = $file;
+
+				$assets[] = $a_info;
+			}
+		}
+
+		return $this->createApiResponse(array('assets' => $assets));
 	}
 
 	####################################################################################################################
@@ -331,7 +418,7 @@ class AppsController extends AbstractController
 	public function createCustomAppAction()
 	{
 		$package = new AppPackage();
-		$package->name         = "com.deskpro.custom." . Strings::random(10, Strings::CHARS_ALPHA_I);
+		$package->name         = "com.deskpro.custom." . Strings::random(15, Strings::CHARS_ALPHA_I);
 		$package->title        = $this->in->getString('options.title') ?: "Untitled";
 		$package->description  = $this->in->getString('options.description') ?: "";
 		$package->author_name  = $this->person->getDisplayName();
@@ -347,32 +434,34 @@ class AppsController extends AbstractController
 		$this->em->persist($package);
 		$blob_storage = $this->container->getBlobStorage();
 
-		$with_blank = false;
-		$prop_tab_title = "Tab Title";
+		$with_blanks = array();
 
 		$locations = array();
 		$js_files = array();
 		$html_files = array();
 		$require_files = array();
 		$require_names = array();
+		$tab_titles = array();
 
-		foreach ($this->in->getCleanValue('options.ticket') as $name => $value) {
-			if (!$value) continue;
-			if ($name == 'blank') {
-				$with_blank = true;
-				$js_files[] = "Ticket/TicketContext";
-				$require_files[] = $package->name . "/js/Ticket/TicketContext";
-				$require_names[] = "Ticket_TicketContext";
-			} else if ($name == 'properties.tab.title') {
-				$prop_tab_title = $value;
-			} else {
-				$js_name = ucfirst(Strings::underscoreToCamelCase(str_replace('.', '_', $name)));
-
-				$locations[]     = array('location' => $name, 'js_class' => 'Ticket_' . $js_name, 'html_file' => "Ticket/" . $js_name . '.html');
-				$js_files[]      = "Ticket/" . $js_name . 'Controller';
-				$html_files[]    = "Ticket/" . $js_name;
-				$require_files[] = $package->name . "/js/$js_name";
-				$require_names[] = str_replace($js_name, "_", $js_name);
+		foreach (array('ticket', 'user', 'org') as $type) {
+			$type_name = ucfirst($type);
+			foreach ($this->in->getCleanValueArray('options.'.$type) as $name => $value) {
+				if (!$value) continue;
+				if ($name == 'blank') {
+					$with_blanks[] = array('type' => $type, 'class_name' => "{$type_name}_{$type_name}Context");
+					$js_files[] = "$type_name/{$type_name}Context";
+					$require_files[] = $package->name . "/js/$type_name/{$type_name}Context";
+					$require_names[] = "{$type_name}_{$type_name}Context";
+				} else if (strpos($name, '.tab.title') !== false) {
+					$tab_titles["$type.$name"] = $value;
+				} else {
+					$js_name = ucfirst(Strings::underscoreToCamelCase(str_replace('.', '_', $name)));
+					$locations[]     = array('type' => $type, 'location' => $name, 'js_class' => $type_name.'_' . $js_name.'Controller', 'html_file' => "$type_name/" . $js_name . '.html');
+					$js_files[]      = "$type_name/" . $js_name . 'Controller';
+					$html_files[]    = "$type_name/" . $js_name;
+					$require_files[] = $package->name . "/js/$type_name/{$js_name}Controller";
+					$require_names[] = str_replace(" ", "_", $type_name . '_' . $js_name.'Controller');
+				}
 			}
 		}
 
@@ -381,7 +470,7 @@ class AppsController extends AbstractController
 		#------------------------------
 
 		foreach ($js_files as $file) {
-			if ($file == 'Ticket/TicketContext') {
+			if (preg_match('#Context$#', $file)) {
 				$js = "define(function() {\n\treturn {\n\t\tinit: function() {\n\t\t\t// TODO\n\t\t}\n\t};\n\n});";
 			} else {
 				$js = "define(function() {\n\treturn function() {\n\t\t// TODO\n\t};\n\n});";
@@ -395,6 +484,7 @@ class AppsController extends AbstractController
 
 			$asset = $package->addAssetFromBlob($blob, $file.'.js');
 			$asset->tag = "js";
+			$asset->setMetadata(array('group_name' => preg_replace('#Controller$#', '', str_replace('/', '_', $file))));
 			$this->em->persist($asset);
 		}
 
@@ -413,6 +503,7 @@ class AppsController extends AbstractController
 
 			$asset = $package->addAssetFromBlob($blob, $file.'.html');
 			$asset->tag = "html";
+			$asset->setMetadata(array('group_name' => str_replace('/', '_', $file)));
 			$this->em->persist($asset);
 		}
 
@@ -426,7 +517,7 @@ class AppsController extends AbstractController
 
 		$path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
 		$size = 256;
-		$blob = $this->blob_storage->createBlobRecordFromFile(
+		$blob = $blob_storage->createBlobRecordFromFile(
 			$path,
 			"app_$size.png",
 			'image/png'
@@ -472,20 +563,31 @@ class AppsController extends AbstractController
 		$require_files = "'" . implode("', '", $require_files) . "'";
 		$require_names = implode(', ', $require_names);
 
-		$app_js = "define([$require_files], function($require_names) {\n\n";
+		$app_js = "define([$require_files], function($require_names) {\n\treturn {\n\t\tinit: function() {\n";
 
-		if ($with_blank) {
-			$app_js .= "\tthis.register(\"ticket\", \"Ticket_TicketContext\");\n";
+		if ($with_blanks) {
+			foreach ($with_blanks as $blank) {
+				$app_js .= "\t\t\tthis.register(\"{$blank['type']}\", {$blank['class_name']});\n";
+			}
 		}
 
 		foreach ($locations as $loc) {
-			if ($loc == 'properties.tab') {
-				$prop_tab_title = addslashes($prop_tab_title);
-				$app_js .= "\tthis.registerWidgetTab(\"ticket\", \"@{$loc['location']}\", $prop_tab_title, \"{$loc['html_file']}\", \"{$loc['js_class']}\");\n";
+			if (preg_match('#\.tab$#', $loc['location'])) {
+				$type = $loc['type'];
+				$name = $loc['location'];
+				if (isset($tab_titles["$type.$name.title"])) {
+					$prop_tab_title = addslashes($tab_titles["$type.$name.title"]);
+				} else {
+					$prop_tab_title = '';
+				}
+
+				$app_js .= "\t\t\tthis.registerWidgetTab(\"{$loc['type']}\", \"@{$loc['location']}\", \"$prop_tab_title\", \"{$loc['html_file']}\", {$loc['js_class']});\n";
 			} else {
-				$app_js .= "\tthis.registerWidget(\"ticket\", \"@{$loc['location']}\", \"{$loc['html_file']}\", \"{$loc['js_class']}\");\n";
+				$app_js .= "\t\t\tthis.registerWidget(\"{$loc['type']}\", \"@{$loc['location']}\", \"{$loc['html_file']}\", {$loc['js_class']});\n";
 			}
 		}
+
+		$app_js .= "\t\t}\n\t}";
 
 		$app_js .= "\n});";
 

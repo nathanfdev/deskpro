@@ -18,7 +18,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				apps: '/apps',
 			}).then( (result) =>
 				@packages = result.data.apps.packages
-				@apps     = result.data.apps.apps
+
+				# Dont list custom apps as "packages"
+				@packages = @packages.filter((x) -> !x.is_custom)
+
+				@apps = result.data.apps.apps.filter((x) -> !x.package.is_custom)
+				@custom_apps = result.data.apps.apps.filter((x) -> x.package.is_custom)
 			)
 			return promise
 
@@ -35,11 +40,23 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		updateAppTitle: (id, title) ->
 			@apps.filter((x) -> x.id == id).map((x) -> x.title = title)
+			@custom_apps.filter((x) -> x.id == id).map((x) -> x.title = title)
+
+		ensureCustomAppInList: (customApp) ->
+			if not @custom_apps then return
+			exist = @custom_apps.filter((x) -> x.id == customApp.id)
+			if !exist.length
+				@custom_apps.push(customApp)
 
 		showNewApp: ->
 
 			saveNewApp = (options) =>
-				return
+				postData = {
+					options: options
+				}
+				@Api.sendPutJson('/apps/custom', postData).success( (info) =>
+					@$state.go('apps.apps.custom_instance', {custom_id: "custom_" + info.id});
+				)
 
 			@$modal.open({
 				templateUrl: @getTemplatePath('Apps/new-app-modal.html'),
@@ -47,7 +64,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					$scope.dismiss = ->
 						$modalInstance.dismiss()
 
-					$scope.save = ->
+					$scope.doCreate = ->
 						$scope.is_loading = true
 						saveNewApp($scope.opt).then(->
 							$modalInstance.dismiss()

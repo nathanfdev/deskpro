@@ -4000,6 +4000,13 @@ $collection->create('api_apps_custom_new', array(
 	'methods'     => array('PUT'),
 ));
 
+$collection->create('api_apps_custom_getassets', array(
+	'path'         => '/apps/custom/{id}/assets',
+	'controller'   => 'ApiBundle:Apps:getCustomAssets',
+	'methods'      => array('GET'),
+	'requirements' => array('id' => '\d+')
+));
+
 $collection->create('api_apps_package', array(
 	'path'         => '/apps/packages/{name}',
 	'controller'   => 'ApiBundle:Apps:getPackage',
