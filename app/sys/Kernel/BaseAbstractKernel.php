@@ -128,7 +128,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 
-		$this->postResponseHandled($response $request);
+		$this->postResponseHandled($response, $request);
 
 		return $response;
 	}
