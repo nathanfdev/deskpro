@@ -29,40 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class TicketTriggerPluginActions extends AbstractEntityRepository
+class Build1391700332 extends AbstractBuild
 {
-	public function getActivePluginActions($index_by_type = false)
+	public function run()
 	{
-		$index_by = ($index_by_type ? 'a.event_type' : 'a.id');
-
-		return $this->getEntityManager()->createQuery('
-			SELECT a
-			FROM DeskPRO:TicketTriggerPluginActions a INDEX BY ' . $index_by . '
-			INNER JOIN a.plugin p
-			WHERE p.enabled = 1
-		')->execute();
-	}
-
-	/**
-	 * Gets list of setup objects for each active plugin action
-	 *
-	 * @return \Application\DeskPRO\Tickets\TicketActions\AbstractPluginSetup[]
-	 */
-	public function getSetupObjects()
-	{
-		$objects = array();
-		foreach ($this->getActivePluginActions() AS $action) {
-			$class = $action->setup_class;
-			$objects[$action->event_type] = new $class();
-		}
-
-		return $objects;
+		$this->execMutateSql("DROP TABLE IF EXISTS ticket_trigger_plugin_actions;");
+		$this->execMutateSql("CREATE TABLE ticket_actions_def (id INT AUTO_INCREMENT NOT NULL, app_id INT DEFAULT NULL, event_type VARCHAR(50) NOT NULL, def_class VARCHAR(255) DEFAULT NULL, settings LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', INDEX IDX_5FEF87EF7987212D (app_id), UNIQUE INDEX event_type_idx (event_type), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE ticket_actions_def ADD CONSTRAINT FK_5FEF87EF7987212D FOREIGN KEY (app_id) REFERENCES app_instances (id) ON DELETE CASCADE");
 	}
 }

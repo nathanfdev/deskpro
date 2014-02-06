@@ -47,6 +47,12 @@ class AppManager implements AppManagerInterface
 	private $packages = array();
 
 	/**
+	 * Apps grouped by package name
+	 * @var array
+	 */
+	private $package_to_apps = array();
+
+	/**
 	 * @var AppInstance[]
 	 */
 	private $apps = array();
@@ -74,6 +80,12 @@ class AppManager implements AppManagerInterface
 		}
 		foreach ($apps as $app) {
 			$this->apps[$app->id] = $app;
+
+			$pname = $app->package->name;
+			if (!isset($this->package_to_apps[$pname])) {
+				$this->package_to_apps[$pname] = array();
+			}
+			$this->package_to_apps[$pname][] = $app;
 		}
 	}
 
@@ -147,38 +159,56 @@ class AppManager implements AppManagerInterface
 
 
 	/**
-	 * @param string $name  The package name
+	 * @param string|AppPackage $name
 	 * @return AppInstance[]
 	 */
 	public function getPackageApps($name)
 	{
-		$apps = array();
-
-		foreach ($this->apps as $app) {
-			if ($app->package->name == $name) {
-				$apps[] = $app;
-			}
+		if ($name instanceof AppPackage) {
+			$name = $name->name;
 		}
 
-		return $apps;
+		if (!isset($this->package_to_apps[$name])) {
+			return array();
+		}
+
+		return $this->package_to_apps[$name];
 	}
 
 
 	/**
 	 * Gets a single app for a package.
 	 *
-	 * @param string $name  The package name
+	 * @param string|AppPackage $name
 	 * @return AppInstance
 	 */
 	public function getPackageApp($name)
 	{
-		foreach ($this->apps as $app) {
-			if ($app->package->name == $name) {
-				return $app;
-			}
+		if ($name instanceof AppPackage) {
+			$name = $name->name;
 		}
 
-		return null;
+		if (!isset($this->package_to_apps[$name])) {
+			return null;
+		}
+
+		return $this->package_to_apps[$name][0];
+	}
+
+
+	/**
+	 * Checks if a package has been installed at least once
+	 *
+	 * @param string|AppPackage $name
+	 * @return bool
+	 */
+	public function isPackageInstalled($name)
+	{
+		if ($name instanceof AppPackage) {
+			$name = $name->name;
+		}
+
+		return isset($this->package_to_apps[$name]);
 	}
 
 

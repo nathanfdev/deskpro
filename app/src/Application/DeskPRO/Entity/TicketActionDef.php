@@ -36,40 +36,79 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Orb\Util\Dates;
+use Application\DeskPRO\Domain\DomainObject;
 
 /**
- * Ticket trigger action apps
- *
+ * @property int $id
+ * @property string $event_type
+ * @property string $def_class
+ * @property AppInstance $app
+ * @property string $settings
  */
-class TicketTriggerPluginActions extends \Application\DeskPRO\Domain\DomainObject
+class TicketActionDef extends DomainObject
 {
 	/**
 	 * @var int
 	 */
 	protected $id = null;
 
+	/**
+	 * @var string
+	 */
 	protected $event_type;
 
-	protected $setup_class;
-
-	protected $action_class;
+	/**
+	 * @var string
+	 */
+	protected $def_class = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\AppInstance|null
+	 * @var \Application\DeskPRO\Entity\AppInstance
 	 */
-	protected $app = null;
+	protected $app;
 
 	/**
-	 * @return \Application\DeskPRO\Tickets\TicketActions\AbstractPluginSetup
+	 * @var array
 	 */
-	public function getSetupObject()
+	protected $settings = null;
+
+
+	/**
+	 * Set settings
+	 *
+	 * @param array $settings
+	 */
+	public function setSettings(array $settings = null)
 	{
-		$class = $this->setup_class;
-		return new $class();
+		if (!$settings) {
+			$this->setModelField('settings', null);
+		} else {
+			$this->setModelField('settings', $settings);
+		}
 	}
+
+
+	/**
+	 * Get settings
+	 *
+	 * @return array
+	 */
+	public function getSettings()
+	{
+		return $this->settings ? $this->settings : array();
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getSetting($name, $default = null)
+	{
+		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -77,20 +116,56 @@ class TicketTriggerPluginActions extends \Application\DeskPRO\Domain\DomainObjec
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketTriggerPluginActions';
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketActionDef';
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+
 		$metadata->setPrimaryTable(array(
-			'name' => 'ticket_trigger_plugin_actions',
-			'uniqueConstraints' => array(
-				'event_type_idx' => array('columns' => array('event_type'))
-			)
+			'name' => 'ticket_actions_def',
+			'uniqueConstraints' => array('event_type_idx' => array('columns' => array('event_type')))
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'event_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event_type', ));
-		$metadata->mapField(array( 'fieldName' => 'setup_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'setup_class', ));
-		$metadata->mapField(array( 'fieldName' => 'action_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'action_class', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+
+		$metadata->mapField(array(
+			'fieldName'  => 'id',
+			'columnName' => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'fieldName'  => 'event_type',
+			'columnName' => 'event_type',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'fieldName'  => 'def_class',
+			'columnName' => 'def_class',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => true,
+		));
+
+		$metadata->mapField(array(
+			'fieldName'  => 'settings',
+			'columnName' => 'settings',
+			'type'       => 'json_array',
+			'nullable'   => true,
+		));
+		
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'app',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
+			'joinColumns'  => array(array(
+				'name'                 => 'app_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			))
+		));
 	}
 }

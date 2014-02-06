@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
 use Orb\Util\Arrays;
@@ -198,6 +199,16 @@ class AppsController extends AbstractController
 		$this->em->persist($app);
 		$this->em->flush();
 
+		if ($package->native_name) {
+			$native_app = $manager->getNativeApp($app);
+			$class = $native_app->getConfig()->getInstallerHandlerClass();
+			if ($class) {
+				$context = new InstallerContext($this->container, $native_app);
+				$handler = new $class();
+				$handler->install($context);
+			}
+		}
+
 		return $this->createApiCreateResponse(
 			array('id' => $app->id),
 			$this->generateUrl('api_apps_instance', array('id' => $app->id))
@@ -353,6 +364,16 @@ class AppsController extends AbstractController
 		}
 
 		$app = $manager->getApp($id);
+
+		if ($app->package->native_name) {
+			$native_app = $manager->getNativeApp($app);
+			$class = $native_app->getConfig()->getInstallerHandlerClass();
+			if ($class) {
+				$context = new InstallerContext($this->container, $native_app);
+				$handler = new $class();
+				$handler->uninstall($context);
+			}
+		}
 
 		$this->em->remove($app);
 		$this->em->flush();

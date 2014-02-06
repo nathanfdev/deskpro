@@ -29,34 +29,87 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DataSync\Plugin;
+namespace Application\DeskPRO\App\Native\InstallerHandler;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\App\Native\NativeApp;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-/**
- * Data sync handler for widgets in plugins
- */
-class Widgets extends AbstractPlugin
+class InstallerContext
 {
-	public function getTableName()
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	private $container;
+
+	/**
+	 * @var \Application\DeskPRO\App\Native\NativeApp
+	 */
+	private $native_app;
+
+
+	/**
+	 * @param DeskproContainer $container
+	 * @param NativeApp $native_app
+	 */
+	public function __construct(DeskproContainer $container, NativeApp $native_app)
 	{
-		return 'widgets';
+		$this->container  = $container;
+		$this->native_app = $native_app;
 	}
 
-	public function getKeyField()
+	/**
+	 * @return \Application\DeskPRO\Entity\AppInstance
+	 */
+	public function getNativeApp()
 	{
-		return 'unique_key';
+		return $this->native_app;
 	}
 
-	public function getSyncFields()
+
+	/**
+	 * @return \Application\DeskPRO\Entity\AppInstance
+	 */
+	public function getApp()
 	{
-		return array('title', 'description', 'html', 'js', 'css', 'page', 'page_location', 'insert_position');
+		return $this->native_app->getApp();
 	}
 
-	public function getDefaultInsertValues()
+
+	/**
+	 * @return \Application\DeskPRO\Entity\AppPackage
+	 */
+	public function getPackage()
 	{
-		return array('enabled' => 1);
+		return $this->native_app->getPackage();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->container->getDb();
+	}
+
+
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getEm()
+	{
+		return $this->container->getEm();
 	}
 }

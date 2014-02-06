@@ -29,29 +29,27 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DataSync\Plugin;
+namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
-/**
- * Data sync handler for ticket trigger actions in plugins
- */
-class TicketTriggerPluginActions extends AbstractPlugin
+class TicketActionDef extends AbstractEntityRepository
 {
-	public function getTableName()
+	public function getActions($index_by_type = false)
 	{
-		return 'ticket_trigger_plugin_actions';
-	}
+		$matches = $this->_em->createQuery("
+			SELECT a
+			FROM DeskPRO:TicketAction a
+		")->execute();
 
-	public function getKeyField()
-	{
-		return 'event_type';
-	}
+		if ($index_by_type) {
+			$matches = Arrays::keyFromData($matches, 'event_type');
+		}
 
-	public function getSyncFields()
-	{
-		return array('setup_class', 'action_class');
+		return $matches;
 	}
 }

@@ -79,4 +79,13 @@ class NativePackageConfig
 	{
 		return $this->config->get('agent.request_handler', null);
 	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getInstallerHandlerClass()
+	{
+		return $this->config->get('install.handler', null);
+	}
 }

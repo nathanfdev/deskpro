@@ -139,6 +139,38 @@ class AppInstance extends DomainObject
 
 
 	/**
+	 * Get settings that we will output to JS (eg non-native only)
+	 *
+	 * @return array
+	 */
+	public function getOutputSettings()
+	{
+		if (!$this->settings) {
+			return $this->settings;
+		}
+
+		$native_only = array();
+
+		foreach ($this->package->settings_def as $info) {
+			if (isset($info['native_only']) && $info['native_only']) {
+				$native_only[$info['name']] = true;
+			}
+		}
+
+		if (!$native_only) {
+			return $this->settings;
+		}
+
+		$ret = $this->settings;
+		foreach ($native_only as $name => $x) {
+			unset($ret[$name]);
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())

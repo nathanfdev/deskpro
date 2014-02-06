@@ -1,0 +1,23 @@
+<div ng-show="matches.length">
+	<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table">
+		<tbody>
+			<tr>
+				<th style="font-size: 11px; padding: 1px 4px;">Name</th>
+				<th style="font-size: 11px; padding: 1px 4px;">Email</th>
+				<th style="font-size: 11px; padding: 1px 4px;">Company</th>
+				<th style="font-size: 11px; padding: 1px 4px;">View Profile <i class="fa fa-globe"></i></th>
+			</tr>
+			<tr ng-repeat="contact in matches">
+				<td>{{contact.name}}</td>
+				<td>{{contact.email}}</td>
+				<td>{{contact.company}}</td>
+				<td><a ng-href="{{contact.profile}}" target="_blank">View Profile</a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div ng-show="!matches.length">
+	<p>
+		No contacts matched.
+	</p>
+</div>

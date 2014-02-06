@@ -29,44 +29,43 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DataSync\Plugin;
-use Application\DeskPRO\Entity\Plugin;
+namespace com_deskpro_apps_hipchat;
 
-abstract class AbstractPlugin extends \Application\DeskPRO\DataSync\AbstractDataSync
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+
+class InstallerHandler implements InstallerHandlerInterface
 {
-	protected $_plugin;
-
-	public function __construct($baseFile = null, Plugin $plugin = null)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function install(InstallerContext $context)
 	{
-		parent::__construct($baseFile);
 
-		$this->_plugin = $plugin;
-		$this->_defaultFields['plugin_id'] = $plugin ? $plugin->id : null;
 	}
 
 	/**
-	 * Gets any rows that contain syncable data. This data may include
-	 * data that shouldn't be synced.
-	 *
-	 * @return array
+	 * {@inheritDoc}
 	 */
-	public function getLiveSyncableRows()
+	public function uninstall(InstallerContext $context)
 	{
-		if ($this->_plugin) {
-			$condition = "`$this->_keyField` IS NOT NULL AND plugin_id = ?";
-			$params = array($this->_plugin->id);
-		} else {
-			$condition = "`$this->_keyField` IS NOT NULL AND plugin_id IS NULL";
-			$params = array();
-		}
 
-		return $this->_db->fetchAllKeyed("
-			SELECT *
-			FROM `$this->_table`
-			WHERE $condition
-			ORDER BY `$this->_keyField`
-		", $params, $this->_keyField);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function update(InstallerContext $context)
+	{
+
+	}
+
+
+	private function refreshTriggerAction()
+	{
+
 	}
 }

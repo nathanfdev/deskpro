@@ -16,13 +16,15 @@
 			"name": "api_url",
 			"type": "text",
 			"label": "API URL",
-			"description": "This is the URL to your Highrise system, such as: https://example.highrisehq.com"
+			"description": "This is the URL to your Highrise system, such as: https://example.highrisehq.com",
+			"native_only": true
 		},
 		{
 			"name": "api_token",
 			"type": "text",
 			"label": "API Token",
-			"description": "This is the API token for your user. It can be found within Highrise under My Info > API Token."
+			"description": "This is the API token for your user. It can be found within Highrise under My Info > API Token.",
+			"native_only": true
 		},
 		{
 			"name": "widget_ticket",

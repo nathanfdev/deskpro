@@ -29,29 +29,28 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DataSync\Plugin;
+namespace Application\DeskPRO\App\Native\InstallerHandler;
 
-use Application\DeskPRO\App;
-
-/**
- * Data sync handler for usersources in plugins
- */
-class UsersourcePlugin extends AbstractPlugin
+interface InstallerHandlerInterface
 {
-	public function getTableName()
-	{
-		return 'usersource_plugins';
-	}
+	/**
+	 * @param InstallerContext $context
+	 * @return void
+	 */
+	public function install(InstallerContext $context);
 
-	public function getKeyField()
-	{
-		return 'unique_key';
-	}
+	/**
+	 * @param InstallerContext $context
+	 * @return void
+	 */
+	public function uninstall(InstallerContext $context);
 
-	public function getSyncFields()
-	{
-		return array('title', 'form_model_class', 'form_type_class', 'form_template', 'adapter_class');
-	}
+	/**
+	 * @param InstallerContext $context
+	 * @return void
+	 */
+	public function update(InstallerContext $context);
 }

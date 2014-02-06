@@ -16,7 +16,8 @@
 			"name": "api_token",
 			"type": "text",
 			"label": "API Token",
-			"description": "This is the API token for HipChat account. This can be created at https://www.hipchat.com/admin/api"
+			"description": "This is the API token for HipChat account. This can be created at https://www.hipchat.com/admin/api",
+			"native_only": true
 		},
 		{
 			"name": "notify",

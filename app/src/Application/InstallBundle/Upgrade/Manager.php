@@ -34,6 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade;
 
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Plugin\Package\NativePackages;
 use Orb\Util\Arrays;
@@ -177,8 +178,19 @@ class Manager
 		}
 
 		// Sync plugins
-		$native_packages = new NativePackages($this->container->getEm(), $this->container->getBlobStorage());
-		$native_packages->syncPackages();
+		$manager = $this->container->getAppManager();
+		foreach ($manager->getAllPackages() as $package) {
+			if (!$package->native_name) continue;
+			foreach ($manager->getPackageApps($package) as $app) {
+				$native_app = $manager->getNativeApp($app);
+				$class = $native_app->getConfig()->getInstallerHandlerClass();
+				if ($class) {
+					$context = new InstallerContext($this->container, $native_app);
+					$obj = new $class();
+					$obj->upgrade($context);
+				}
+			}
+		}
 	}
 
 

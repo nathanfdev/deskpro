@@ -178,7 +178,10 @@ class Highrise
 	public function setHttpClient(\Zend\Http\Client $http = null)
 	{
 		if ($http === null) {
-			$http = new \Zend\Http\Client(array('sslverifypeer' => false));
+			$http = new \Zend\Http\Client(
+				$this->highrise_url,
+				array('sslverifypeer' => false)
+			);
 		}
 
 		$this->http = $http;

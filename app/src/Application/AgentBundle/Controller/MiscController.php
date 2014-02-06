@@ -995,7 +995,7 @@ JS;
 			$infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
 			$infoJson .= "\t\t\"contextClass\": $class_name,\n";
 			$infoJson .= "\t\t\"scope\": \"agent\",\n";
-			$infoJson .= "\t\t\"settings\": ".json_encode($app->getSettings(), JSON_FORCE_OBJECT).",\n";
+			$infoJson .= "\t\t\"settings\": ".json_encode($app->getOutputSettings(), JSON_FORCE_OBJECT).",\n";
 			$infoJson .= "\t\t\"assets\": $asset_files_js\n";
 
 			$infoJson = trim($infoJson);

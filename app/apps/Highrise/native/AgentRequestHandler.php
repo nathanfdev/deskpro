@@ -36,6 +36,7 @@ namespace com_deskpro_apps_highrise;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Service\Highrise\Highrise;
 use Orb\Service\Highrise\Resource\Person as HighrisePerson;
 
@@ -83,7 +84,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 
 				error_reporting($error);
 			} catch (\Exception $e) {
-				return $context->createJsonResponse(array('error' => 'Invalid Highrise API URL or token.', 'error_message' => $e->getMessage()));
+				return $context->createJsonResponse(array('error' => 'Invalid Highrise API URL or token.', 'error_type' => get_class($e), 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()));
 			}
 
 			foreach ($output AS $person) {
@@ -117,9 +118,8 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 					'id' => $person['id'],
 					'name' => $name,
 					'email' => $email,
-					'title' => isset($person['title']) ? $person['title'] : false,
-					'company' => isset($person['company-name']) ? $person['company-name'] : false,
-					'companyTitle' => $companyTitle,
+					'title' => isset($person['title']) ? $person['title'] : '',
+					'company' => isset($person['company-name']) ? $person['company-name'] : '',
 					'profile' => $url . '/people/' . $person['id']
 				);
 			}
