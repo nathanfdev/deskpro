@@ -43,7 +43,6 @@
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.criteriaOptionTypes = [];
         this.$scope.actionOptionTypes = [];
-        this.updateCriteriaOptionTypes();
         this.$scope.$watch('form.typeForm', function() {
           return _this.updateCriteriaOptionTypes();
         }, true);
@@ -86,7 +85,9 @@
           opt = setCritOptions[_i];
           this.$scope.criteriaOptionTypes.push(opt);
         }
-        setActionOptions = this.actionsTypeDef.getOptionsForTypes(types);
+        setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, {
+          dynamicOptions: this.customActions
+        });
         this.$scope.actionOptionTypes.length = 0;
         _results = [];
         for (_j = 0, _len1 = setActionOptions.length; _j < _len1; _j++) {
@@ -102,22 +103,25 @@
 
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise,
+        var get, promise,
           _this = this;
+        get = {
+          customActions: '/ticket_triggers/get-custom-actions'
+        };
         if (this.triggerId) {
-          promise = this.dpTriggers.loadEditTriggerData(this.triggerId).then(function(data) {
-            _this.trigger = data.trigger;
-            _this.$scope.form = {
-              title: _this.trigger.title
-            };
-            return _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
-          });
-          return promise;
-        } else {
-          this.trigger = {};
-          this.$scope.form = this.editFormMapper.getFormFromModel(this.trigger);
-          return null;
+          get.trigger = "/ticket_triggers/" + this.triggerId;
         }
+        promise = this.Api.sendDataGet(get).then(function(result) {
+          _this.customActions = result.data.customActions.action_defs;
+          if (_this.triggerId) {
+            _this.trigger = result.data.trigger.trigger;
+          } else {
+            _this.trigger = {};
+          }
+          _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
+          return _this.updateCriteriaOptionTypes();
+        });
+        return promise;
       };
 
       /*

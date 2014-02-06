@@ -29,27 +29,47 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category HipChat
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace deskpro_hipchat\Ticket\Actions\ActionDef;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
+use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;
 
-class TicketActionDef extends AbstractEntityRepository
+class HipChatActionDef extends AbstractActionDef
 {
-	public function getActions($index_by_type = false)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getTriggerActionClass()
 	{
-		$matches = $this->_em->createQuery("
-			SELECT a
-			FROM DeskPRO:TicketActionDef a
-		")->execute();
+		return 'deskpro_hipchat\\Ticket\\Actions\\HipChatAction';
+	}
 
-		if ($index_by_type) {
-			$matches = Arrays::keyFromData($matches, 'event_type');
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getActionBuilderTemplate()
+	{
+		return 'Apps:deskpro_hipchat/type-actions-input.html.twig';
+	}
+
+
+	/**
+	 * Makes sure 'room' key is set, and adds 'app_id'
+	 *
+	 * @param array $options
+	 * @return array
+	 */
+	public function processActionBuilderOptions(array $options)
+	{
+		if (!isset($options['room'])) {
+			$options['room'] = '';
 		}
 
-		return $matches;
+		$options['app_id'] = $this->getActionDef()->app->id;
+
+		return $options;
 	}
 }

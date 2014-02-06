@@ -2817,6 +2817,12 @@ $collection->create('api_emailstatus_sendmaillist', array(
 # Ticket Triggers
 ########################################################################################################################
 
+$collection->create('api_ticket_triggers_getcustomactions', array(
+	'path'        => '/ticket_triggers/get-custom-actions',
+	'controller'  => 'ApiBundle:TicketTriggers:getCustomActions',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_ticket_triggers', array(
 	'path'         => '/ticket_triggers/{type}',
 	'controller'   => 'ApiBundle:TicketTriggers:list',

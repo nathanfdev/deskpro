@@ -17,7 +17,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var options, set_options;
+        var opt, options, set_options, typeFunc, _i, _len, _ref1;
         if (types == null) {
           types = [];
         }
@@ -155,6 +155,53 @@
           title: 'Trigger Control',
           subOptions: options
         });
+        if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
+          options = [];
+          _ref1 = typesData.dynamicOptions;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            opt = _ref1[_i];
+            options.push({
+              title: opt.title,
+              value: opt.type
+            });
+            typeFunc = "get" + opt.type;
+            this[typeFunc] = function(options) {
+              var me;
+              if (options == null) {
+                options = {};
+              }
+              me = this;
+              return {
+                getTemplate: function() {
+                  return me.dpTemplateManager.get('Apps/' + opt.builder_template);
+                },
+                getData: function() {
+                  return {};
+                },
+                getDataFormatter: function() {
+                  return {
+                    getViewValue: function(value, data) {
+                      if (value == null) {
+                        value = {};
+                      }
+                      return data || {};
+                    },
+                    getValue: function(model, data) {
+                      var value;
+                      if (model == null) {
+                        model = {};
+                      }
+                      value = {};
+                      value.type = opt.type;
+                      value.options = model || {};
+                      return value;
+                    }
+                  };
+                }
+              };
+            };
+          }
+        }
         return set_options;
       };
 

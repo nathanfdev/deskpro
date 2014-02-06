@@ -54,9 +54,9 @@ class TestCommand extends ContainerAwareCommand
 		/** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
 		$container = $this->getContainer();
 
-		$container->getDb()->executeUpdate("DELETE FROM app_instances WHERE package_name = 'com.deskpro.apps.highrise'");
-		$container->getDb()->executeUpdate("DELETE FROM app_packages WHERE name = 'com.deskpro.apps.highrise'");
-		$package = new Package(DP_ROOT.'/apps/Highrise');
+		$container->getDb()->executeUpdate("DELETE FROM app_instances WHERE package_name = 'com.deskpro.apps.hipchat'");
+		$container->getDb()->executeUpdate("DELETE FROM app_packages WHERE name = 'com.deskpro.apps.hipchat'");
+		$package = new Package(DP_ROOT.'/apps/deskpro_hipchat');
 
 		$installer = new PackageInstaller($container->getEm(), $container->getBlobStorage(), $container->getImagine());
 		$installer->installPackage($package);

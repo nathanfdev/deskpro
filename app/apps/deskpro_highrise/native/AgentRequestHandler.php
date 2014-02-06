@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace com_deskpro_apps_highrise;
+namespace deskpro_highrise;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;

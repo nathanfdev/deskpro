@@ -1,5 +1,5 @@
 {
-	"package_name": "com.deskpro.apps.hipchat",
+	"package_name": "deskpro_hipchat",
 	"title": "HipChat",
 	"description": "Allows you to add a ticket trigger that inserts a message into a HipChat room when matched.",
 	"api_version": 1,

@@ -86,6 +86,10 @@ class AppManager implements AppManagerInterface
 				$this->package_to_apps[$pname] = array();
 			}
 			$this->package_to_apps[$pname][] = $app;
+
+			if ($app->package->native_name) {
+				$this->getNativeApp($app);
+			}
 		}
 	}
 

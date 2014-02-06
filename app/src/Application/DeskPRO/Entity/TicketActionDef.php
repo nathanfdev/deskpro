@@ -40,7 +40,7 @@ use Application\DeskPRO\Domain\DomainObject;
 
 /**
  * @property int $id
- * @property string $event_type
+ * @property string $action_name
  * @property string $def_class
  * @property AppInstance $app
  * @property string $settings
@@ -55,7 +55,7 @@ class TicketActionDef extends DomainObject
 	/**
 	 * @var string
 	 */
-	protected $event_type;
+	protected $action_name;
 
 	/**
 	 * @var string
@@ -72,6 +72,11 @@ class TicketActionDef extends DomainObject
 	 */
 	protected $settings = null;
 
+	/**
+	 * @var \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
+	 */
+	private $_def;
+
 
 	/**
 	 * Set settings
@@ -85,6 +90,19 @@ class TicketActionDef extends DomainObject
 		} else {
 			$this->setModelField('settings', $settings);
 		}
+	}
+
+
+	/**
+	 * Override because we need to unset the cached $_def if a setting changed.
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 */
+	protected function setModelField($field, $value)
+	{
+		$this->_def = null;
+		return parent::setModelField($field, $value);
 	}
 
 
@@ -110,6 +128,41 @@ class TicketActionDef extends DomainObject
 	}
 
 
+	/**
+	 * @return \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
+	 */
+	public function getDef()
+	{
+		if ($this->_def) {
+			return $this->_def;
+		}
+
+		$class = $this->def_class;
+		$this->_def = new $class($this);
+
+		return $this->_def;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = array();
+		$data['id']               = $this->id;
+		$data['action_name']      = $this->action_name;
+		$data['def_class']        = $this->def_class;
+		$data['app']              = $this->app->toApiData(false, false);
+		$data['settings']         = $this->settings ?: array();
+		$data['action_class']     = $this->getDef()->getTriggerActionClass();
+		$data['macro_class']      = $this->getDef()->getMacroActionClass();
+		$data['builder_template'] = $this->getDef()->getActionBuilderTemplate();
+
+		return $data;
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -123,7 +176,7 @@ class TicketActionDef extends DomainObject
 
 		$metadata->setPrimaryTable(array(
 			'name' => 'ticket_actions_def',
-			'uniqueConstraints' => array('event_type_idx' => array('columns' => array('event_type')))
+			'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name')))
 		));
 
 		$metadata->mapField(array(
@@ -135,8 +188,8 @@ class TicketActionDef extends DomainObject
 		));
 
 		$metadata->mapField(array(
-			'fieldName'  => 'event_type',
-			'columnName' => 'event_type',
+			'fieldName'  => 'action_name',
+			'columnName' => 'action_name',
 			'type'       => 'string',
 			'length'     => 50,
 			'nullable'   => false,

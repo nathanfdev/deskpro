@@ -788,6 +788,15 @@ class DeskproContainer extends Container
 	{
 		return $this->getSystemService('app_manager');
 	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\Actions\ActionDef\TicketActionDefManager
+	 */
+	public function getTicketActionDefManager()
+	{
+		return $this->getSystemService('ticket_action_def_manager');
+	}
 }
 
 class MockPluginRepos

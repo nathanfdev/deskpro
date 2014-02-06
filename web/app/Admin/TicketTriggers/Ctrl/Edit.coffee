@@ -40,7 +40,6 @@ define [
 
 			@$scope.criteriaOptionTypes = []
 			@$scope.actionOptionTypes = []
-			@updateCriteriaOptionTypes()
 
 			@$scope.$watch('form.typeForm', =>
 				@updateCriteriaOptionTypes()
@@ -78,7 +77,7 @@ define [
 			for opt in setCritOptions
 				@$scope.criteriaOptionTypes.push(opt)
 
-			setActionOptions = @actionsTypeDef.getOptionsForTypes(types)
+			setActionOptions = @actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: @customActions })
 			@$scope.actionOptionTypes.length = 0
 			for opt in setActionOptions
 				@$scope.actionOptionTypes.push(opt)
@@ -87,20 +86,28 @@ define [
 		# Load the trigger
 		###
 		initialLoad: ->
-			if @triggerId
-				promise = @dpTriggers.loadEditTriggerData(@triggerId).then( (data) =>
-					@trigger = data.trigger
-					@$scope.form = {
-						title: @trigger.title
-					}
+			get = {
+				customActions: '/ticket_triggers/get-custom-actions'
+			}
 
-					@$scope.form = @editFormMapper.getFormFromModel(@trigger)
-				)
-				return promise
-			else
-				@trigger = {}
+			if @triggerId
+				get.trigger = "/ticket_triggers/#{@triggerId}"
+
+			promise = @Api.sendDataGet(get).then( (result) =>
+
+				@customActions = result.data.customActions.action_defs
+
+				if @triggerId
+					@trigger = result.data.trigger.trigger
+				else
+					@trigger = {}
+
 				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
-				return null
+
+				@updateCriteriaOptionTypes()
+			)
+
+			return promise
 
 		###
 		# Save the trigger

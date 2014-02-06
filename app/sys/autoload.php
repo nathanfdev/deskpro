@@ -72,6 +72,24 @@ spl_autoload_register(function($classname) {
 	return true;
 });
 
+spl_autoload_register(function($classname) {
+	// Fallback to checking native apps
+	$parts = explode('\\', $classname);
+	if (count($parts) < 2) {
+		return false;
+	}
+
+	$appname = array_shift($parts);
+	$path = DP_ROOT.'/apps/'. $appname . '/native/' . implode('/', $parts) . '.php';
+
+	if (file_exists($path)) {
+		require_once($path);
+		return true;
+	}
+
+	return false;
+});
+
 $loader->register();
 
 define('QP_NO_AUTOLOADER', true);

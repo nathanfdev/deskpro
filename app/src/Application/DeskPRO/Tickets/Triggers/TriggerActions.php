@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\Actions\ActionContext;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * This is a wrapper around an ActionComposite that is able to serialize.
@@ -82,7 +83,11 @@ class TriggerActions implements \Serializable, ActionInterface
 	 */
 	public function addActionFromArray(array $action_info)
 	{
-		$class_name = "Application\\DeskPRO\\Tickets\\Actions\\{$action_info['type']}";
+		if (isset($action_info['type_class'])) {
+			$class_name = $action_info['type_class'];
+		} else {
+			$class_name = "Application\\DeskPRO\\Tickets\\Actions\\{$action_info['type']}";
+		}
 		if (!class_exists($class_name)) {
 			throw new \InvalidArgumentException("Unknown action {$action_info['type']} (could not locate class: $class_name)");
 		}
@@ -115,10 +120,18 @@ class TriggerActions implements \Serializable, ActionInterface
 				continue;
 			}
 
-			$data['actions'][] = array(
-				'type'    => $actions->getActionType(),
-				'options' => $actions->getActionOptions()->all()
-			);
+			if (strpos(get_class($actions), 'Application\\DeskPRO\\Tickets\\Actions\\') === 0) {
+				$data['actions'][] = array(
+					'type'    => $actions->getActionType(),
+					'options' => $actions->getActionOptions()->all()
+				);
+			} else {
+				$data['actions'][] = array(
+					'type'       => $actions->getActionType(),
+					'type_class' => get_class($actions),
+					'options'    => $actions->getActionOptions()->all()
+				);
+			}
 		}
 
 		return $data;

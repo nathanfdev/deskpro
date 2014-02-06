@@ -29,27 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
-
-class TicketActionDef extends AbstractEntityRepository
+class Build1391701390 extends AbstractBuild
 {
-	public function getActions($index_by_type = false)
+	public function run()
 	{
-		$matches = $this->_em->createQuery("
-			SELECT a
-			FROM DeskPRO:TicketActionDef a
-		")->execute();
-
-		if ($index_by_type) {
-			$matches = Arrays::keyFromData($matches, 'event_type');
-		}
-
-		return $matches;
+		$this->execMutateSql("DROP INDEX event_type_idx ON ticket_actions_def");
+		$this->execMutateSql("ALTER TABLE ticket_actions_def CHANGE event_type action_name VARCHAR(50) NOT NULL");
+		$this->execMutateSql("CREATE UNIQUE INDEX action_name_idx ON ticket_actions_def (action_name)");
 	}
 }

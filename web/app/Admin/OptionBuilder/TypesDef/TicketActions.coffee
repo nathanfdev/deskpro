@@ -200,6 +200,41 @@ define [
 				subOptions: options
 			})
 
+			#------------------------------
+			# Dynamic Options
+			#------------------------------
+
+			if typesData?.dynamicOptions?
+
+				options = []
+
+				for opt in typesData.dynamicOptions
+					options.push({
+						title: opt.title,
+						value: opt.type
+					})
+
+					typeFunc = "get#{opt.type}"
+					@[typeFunc] = (options = {}) ->
+						me = @
+						return {
+							getTemplate: ->
+								return me.dpTemplateManager.get('Apps/' + opt.builder_template)
+							getData: ->
+								return {}
+							getDataFormatter: ->
+								return {
+									getViewValue: (value = {}, data) ->
+										return data || {}
+									getValue: (model = {}, data) ->
+										value = {}
+										value.type = opt.type
+										value.options = model || {}
+										return value
+								}
+						}
+
+
 			return set_options
 
 		loadDataOptions: ->

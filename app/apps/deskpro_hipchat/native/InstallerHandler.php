@@ -32,24 +32,60 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace deskpro_hipchat;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
 
-class TicketActionDef extends AbstractEntityRepository
+class InstallerHandler implements InstallerHandlerInterface
 {
-	public function getActions($index_by_type = false)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function install(InstallerContext $context)
 	{
-		$matches = $this->_em->createQuery("
-			SELECT a
-			FROM DeskPRO:TicketActionDef a
-		")->execute();
+		$this->refreshTriggerAction($context);
+	}
 
-		if ($index_by_type) {
-			$matches = Arrays::keyFromData($matches, 'event_type');
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function uninstall(InstallerContext $context)
+	{
+		$action_name = "deskpro_hipchat_" . $context->getApp()->id;
+		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", $action_name);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function update(InstallerContext $context)
+	{
+		$this->refreshTriggerAction($context);
+	}
+
+
+	/**
+	 * @param InstallerContext $context
+	 */
+	private function refreshTriggerAction(InstallerContext $context)
+	{
+		$action_name = "com_deskpro_apps_hipchat_" . $context->getApp()->id;
+
+		$rec = array(
+			'app_id'      => $context->getApp()->id,
+			'action_name' => $action_name,
+			'def_class'   => 'deskpro_hipchat\\Ticket\\Actions\\ActionDef\\HipChatActionDef',
+			'settings'    => null
+		);
+
+		$exist_id = $context->getDb()->fetchColumn("SELECT id FROM ticket_actions_def WHERE action_name = ?", array($action_name));
+		if ($exist_id) {
+			$context->getDb()->update('ticket_actions_def', $rec, array('id' => $exist_id));
+		} else {
+			$context->getDb()->insert('ticket_actions_def', $rec);
 		}
-
-		return $matches;
 	}
 }

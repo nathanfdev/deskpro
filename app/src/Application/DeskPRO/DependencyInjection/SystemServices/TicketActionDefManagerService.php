@@ -29,27 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Tickets\Actions\ActionDef\TicketActionDefManager;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class TicketActionDef extends AbstractEntityRepository
+class TicketActionDefManagerService
 {
-	public function getActions($index_by_type = false)
+	public static function create(DeskproContainer $container)
 	{
-		$matches = $this->_em->createQuery("
-			SELECT a
-			FROM DeskPRO:TicketActionDef a
-		")->execute();
-
-		if ($index_by_type) {
-			$matches = Arrays::keyFromData($matches, 'event_type');
+		$defs = $container->getEm()->getRepository('DeskPRO:TicketACtionDef')->getActions();
+		if ($defs instanceof ArrayCollection) {
+			$defs = $defs->toArray();
 		}
 
-		return $matches;
+		$x = new TicketActionDefManager($defs);
+		return $x;
 	}
 }

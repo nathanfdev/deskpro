@@ -117,9 +117,20 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 			}
 		}
 
+		$action_defs = $this->container->getTicketActionDefManager();
+
 		$actions = new TriggerActions();
 		foreach ($this->in->getArrayValue('actions') as $act) {
 			if ($act) {
+				$type = $act['type'];
+
+				if ($action_defs->hasNamedDef($type)) {
+					$act['type_class'] = $action_defs->getNamedDef($type)->getDef()->getTriggerActionClass();
+					if (!$act['type_class']) {
+						continue;
+					}
+				}
+
 				$actions->addActionFromArray($act);
 			}
 		}
@@ -182,5 +193,21 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		$this->em->getRepository('DeskPRO:TicketTrigger')->updateRunOrders($run_orders);
 
 		return $this->createSuccessResponse();
+	}
+
+	####################################################################################################################
+	# get-custom-actions
+	####################################################################################################################
+
+	public function getCustomActionsAction()
+	{
+		$manager = $this->container->getTicketActionDefManager();
+
+		$actions = array();
+		foreach ($manager->getAllDefs() as $d) {
+			$actions[] = $d->toApiData();
+		}
+
+		return $this->createJsonResponse(array('action_defs' => $actions));
 	}
 }
