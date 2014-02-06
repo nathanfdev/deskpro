@@ -22,7 +22,7 @@ define ->
 			template: """
 													<span class="title-text">
 														<span ng-repeat="text in texts">
-															<span style="vertical-align:middle;">{{ text }}</span>
+															<span style="vertical-align:middle;" ng-bind-html="text"></span>
 															<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;">
 																<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
 																	{{ option.label }}
@@ -80,7 +80,11 @@ define ->
 						# case when text that continues after last select box
 						lastPiece = lastPiece.replace(match[1], '').replace(match[2], '')
 
-					scope.texts.push(lastPiece.replace('[', '').replace(']', ''))
+					# finding icon for case we have it
+					lastPiece = lastPiece.replace('[', '').replace(']', '')
+					lastPiece = lastPiece.replace(/<chart:([a-z0-9_-]+)>/gi, '<span class="report-chart-icon report-chart-icon-$1"></span>')
+
+					scope.texts.push(lastPiece)
 
 				###
 				# Returning select box options that was rendered according to 'input' parameter

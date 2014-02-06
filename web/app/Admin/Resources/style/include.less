@@ -36,6 +36,23 @@
 	background: @startColor url("../../../../../file.php/gradient?size=@{size}&start_color=@{startSend_esc}&end_color=@{endSend_esc}") repeat-x bottom left ~"/*gradient_v:@{size}:@{startSend}:@{endSend}*/";
 }
 
+/**
+ * Adds basic CSS suitable for an inline icon image
+ */
+.iconbase(@w: 16px, @h: 16px) {
+    display: inline-block;
+	width: @w;
+	height: @h;
+	overflow: hidden;
+	text-indent: -100px;
+	line-height: 100%;
+	margin: 0;
+	padding: 0;
+
+	background-repeat: no-repeat;
+	background-position: 0 0;
+}
+
 //
 // Variables
 // --------------------------------------------------

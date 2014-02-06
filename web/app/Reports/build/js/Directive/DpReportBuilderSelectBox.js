@@ -25,7 +25,7 @@
       '$compile', function($compile) {
         return {
           restrict: 'AE',
-          template: "<span class=\"title-text\">\n	<span ng-repeat=\"text in texts\">\n		<span style=\"vertical-align:middle;\">{{ text }}</span>\n		<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</span>\n",
+          template: "<span class=\"title-text\">\n	<span ng-repeat=\"text in texts\">\n		<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n		<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</span>\n",
           link: function(scope, element, attrs) {
             /*
             
@@ -71,7 +71,9 @@
                 scope.selected.push(collected.selected);
                 lastPiece = lastPiece.replace(match[1], '').replace(match[2], '');
               }
-              return scope.texts.push(lastPiece.replace('[', '').replace(']', ''));
+              lastPiece = lastPiece.replace('[', '').replace(']', '');
+              lastPiece = lastPiece.replace(/<chart:([a-z0-9_-]+)>/gi, '<span class="report-chart-icon report-chart-icon-$1"></span>');
+              return scope.texts.push(lastPiece);
             };
             /*
             				# Returning select box options that was rendered according to 'input' parameter

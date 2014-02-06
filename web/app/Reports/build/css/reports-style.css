@@ -1205,6 +1205,10 @@ i.icon-dp-chat:before {
  * Generates a vertical gradient
  */
 
+/**
+ * Adds basic CSS suitable for an inline icon image
+ */
+
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
 
 article,
@@ -11581,4 +11585,35 @@ section.report-wrapper .no-data h3 {
 .dp-report-category .dp-item-list > li > a h4 {
   max-width: 95% !important;
   text-overflow: clip;
+}
+
+.dp-report-category .report-chart-icon {
+  position: relative;
+  top: 3px;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  line-height: 100%;
+  text-indent: -100px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-bar {
+  background-image: url('../../../../images/report/icons/chart_bar.png');
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-line {
+  background-image: url('../../../../images/report/icons/chart_line.png');
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-area {
+  background-image: url('../../../../images/report/icons/chart_line.png');
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-pie {
+  background-image: url('../../../../images/report/icons/chart_pie.png');
 }
