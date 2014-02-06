@@ -25,7 +25,7 @@
       '$compile', function($compile) {
         return {
           restrict: 'AE',
-          template: "<span class=\"title-text\">\n	<span ng-repeat=\"text in texts\">\n		<span style=\"vertical-align:middle;\">{{ text }}</span>\n		<select ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</span>\n",
+          template: "<span class=\"title-text\">\n	<span ng-repeat=\"text in texts\">\n		<span style=\"vertical-align:middle;\">{{ text }}</span>\n		<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</span>\n",
           link: function(scope, element, attrs) {
             /*
             
@@ -61,16 +61,17 @@
             */
 
             buildDirectiveVariables = function(value) {
-              var collected, match, regex, _results;
+              var collected, lastPiece, match, regex;
+              lastPiece = value;
               regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g;
-              _results = [];
               while (match = regex.exec(value)) {
                 scope.texts.push(match[1]);
                 collected = collectSelectOptions(match[3]);
                 scope.options.push(collected.options);
-                _results.push(scope.selected.push(collected.selected));
+                scope.selected.push(collected.selected);
+                lastPiece = lastPiece.replace(match[1], '').replace(match[2], '');
               }
-              return _results;
+              return scope.texts.push(lastPiece.replace('[', '').replace(']', ''));
             };
             /*
             				# Returning select box options that was rendered according to 'input' parameter

@@ -23,7 +23,7 @@ define ->
 													<span class="title-text">
 														<span ng-repeat="text in texts">
 															<span style="vertical-align:middle;">{{ text }}</span>
-															<select ng-model="selected[$index]" ui-select2 style="min-width:70px;">
+															<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;">
 																<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
 																	{{ option.label }}
 																</option>
@@ -68,6 +68,7 @@ define ->
 
 				buildDirectiveVariables = (value) ->
 
+					lastPiece = value
 					regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g
 
 					while match = regex.exec(value)
@@ -75,6 +76,11 @@ define ->
 						collected = collectSelectOptions(match[3])
 						scope.options.push(collected.options)
 						scope.selected.push(collected.selected)
+
+						# case when text that continues after last select box
+						lastPiece = lastPiece.replace(match[1], '').replace(match[2], '')
+
+					scope.texts.push(lastPiece.replace('[', '').replace(']', ''))
 
 				###
 				# Returning select box options that was rendered according to 'input' parameter
