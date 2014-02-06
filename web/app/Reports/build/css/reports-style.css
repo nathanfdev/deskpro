@@ -11548,7 +11548,7 @@ section.report-wrapper .no-data h3 {
 }
 
 .dp-pane.report_builder {
-  width: 630px;
+  width: 650px;
 }
 
 .dp-report-category article > em {
@@ -11560,7 +11560,7 @@ section.report-wrapper .no-data h3 {
 
 .dp-report-category article > a.header {
   display: block;
-  width: 575px;
+  width: 595px;
 }
 
 .dp-report-category article > a.header .inner {
@@ -11580,4 +11580,5 @@ section.report-wrapper .no-data h3 {
 
 .dp-report-category .dp-item-list > li > a h4 {
   max-width: 95% !important;
+  text-overflow: clip;
 }
