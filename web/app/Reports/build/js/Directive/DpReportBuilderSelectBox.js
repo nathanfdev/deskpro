@@ -25,46 +25,25 @@
       '$compile', function($compile) {
         return {
           restrict: 'AE',
-          scope: {},
-          template: "<span class=\"title-text\">\n	<span ng-repeat=\"text in texts\">\n		<span style=\"vertical-align:middle;\">{{ text }}</span>\n		<select ng-model=\"selected[$index]\" ui-select2>\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</span>\n",
+          template: "<span class=\"title-text\">\n	<span ng-repeat=\"text in texts\">\n		<span style=\"vertical-align:middle;\">{{ text }}</span>\n		<select ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</span>\n",
           link: function(scope, element, attrs) {
-            var buildDirectiveContent, _returnSelectBoxElement,
+            /*
+            
+             			Below vairbales will look liek following
+            
+             			scope.texts = ['Number of tickets created','grouped by',' & ']
+            				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
+            																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
+            																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
+            				]
+            				scope.selected = ['today', 'agent', 'department']
+            */
+
+            var buildDirectiveVariables, collectSelectOptions,
               _this = this;
-            scope.texts = ['Number of tickets created', 'grouped by', ' & '];
-            scope.options = [
-              [
-                {
-                  value: 'yesterday',
-                  label: 'Yesterday'
-                }, {
-                  value: 'today',
-                  label: 'Today'
-                }, {
-                  value: '123',
-                  label: '123'
-                }, {
-                  value: '456',
-                  label: '456'
-                }
-              ], [
-                {
-                  value: 'department',
-                  label: 'Department'
-                }, {
-                  value: 'agent',
-                  label: 'Agent'
-                }
-              ], [
-                {
-                  value: 'department',
-                  label: 'Department'
-                }, {
-                  value: 'agent',
-                  label: 'Agent'
-                }
-              ]
-            ];
-            scope.selected = ['today', 'agent', 'department'];
+            scope.texts = [];
+            scope.options = [];
+            scope.selected = [];
             scope.$watch(attrs.possibleValues, function(newVal, oldVal) {
               var valueToDecorate;
               if (typeof newVal === 'undefined') {
@@ -74,42 +53,53 @@
               if (!valueToDecorate) {
                 return;
               }
-              return buildDirectiveContent(valueToDecorate);
+              return buildDirectiveVariables(valueToDecorate);
             });
             /*
             				# This function builds directive by constructing it on 'the fly' using DOM operations
              			# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
             */
 
-            buildDirectiveContent = function(value) {
-              var newValue, regex;
-              newValue = value;
-              return regex = /<(\d+:.+?)>/g;
+            buildDirectiveVariables = function(value) {
+              var collected, match, regex, _results;
+              regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g;
+              _results = [];
+              while (match = regex.exec(value)) {
+                scope.texts.push(match[1]);
+                collected = collectSelectOptions(match[3]);
+                scope.options.push(collected.options);
+                _results.push(scope.selected.push(collected.selected));
+              }
+              return _results;
             };
-            _returnSelectBoxElement = function(value) {
-              var choice_value, choices, extras, extrasMatch, key, match, options, possibleValues, regex, selectElement, type;
+            /*
+            				# Returning select box options that was rendered according to 'input' parameter
+            */
+
+            collectSelectOptions = function(input) {
+              var choices, extras, extrasMatch, key, match, options, possibleValues, regex, type, value;
               possibleValues = scope.$eval(attrs.possibleValues);
               choices = {};
               extras = {};
               options = [];
-              if (value.match(/^\d+:date group(.*)$/)) {
+              if (input.match(/^\d+:date group(.*)$/)) {
                 choices = possibleValues.dates;
                 extrasMatch = RegExp.$1;
-              } else if (value.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)) {
+              } else if (input.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)) {
                 type = RegExp.$1;
                 if (typeof possibleValues.fields[type] !== 'undefined') {
                   choices = possibleValues.fields[type];
                   extrasMatch = RegExp.$2;
                 }
-              } else if (value.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)) {
+              } else if (input.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)) {
                 type = RegExp.$1;
-                if (typeof possibleValues[type] !== 'undefined') {
+                if (typeof possibleValues.statuses[type] !== 'undefined') {
                   choices = possibleValues.statuses[type];
                   extrasMatch = RegExp.$2;
                 }
-              } else if (value.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)) {
+              } else if (input.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)) {
                 type = RegExp.$1;
-                if (typeof possibleValues[type] !== 'undefined') {
+                if (typeof possibleValues.orders[type] !== 'undefined') {
                   choices = possibleValues.orders[type];
                   extrasMatch = RegExp.$2;
                 }
@@ -122,16 +112,21 @@
               }
               for (key in choices) {
                 if (!__hasProp.call(choices, key)) continue;
-                choice_value = choices[key];
+                value = choices[key];
                 options.push({
                   value: key,
-                  label: choice_value[0]
+                  label: value[0]
                 });
               }
-              selectElement = angular.element("<select ng-change=\"selectHandler()\"\n	ng-model=\"selectedOption\"\n	ng-options=\"opt as opt.label for opt in options\">\n</select>");
-              $compile(selectElement)(scope);
-              return selectElement;
+              return {
+                options: options,
+                selected: (extras["default"] ? extras["default"] : options[0].value)
+              };
             };
+            /*
+             			#
+            */
+
             return scope.selectHandler = function() {
               return alert('ok');
             };

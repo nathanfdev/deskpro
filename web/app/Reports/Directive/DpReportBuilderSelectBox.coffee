@@ -19,12 +19,11 @@ define ->
 	Reports_Directive_DpReportBuilderSelectBox = ['$compile', ($compile) ->
 		return {
 			restrict: 'AE',
-			scope: {},
 			template: """
 													<span class="title-text">
 														<span ng-repeat="text in texts">
 															<span style="vertical-align:middle;">{{ text }}</span>
-															<select ng-model="selected[$index]" ui-select2>
+															<select ng-model="selected[$index]" ui-select2 style="min-width:70px;">
 																<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
 																	{{ option.label }}
 																</option>
@@ -35,14 +34,22 @@ define ->
 													"""
 			link: (scope, element, attrs) ->
 
-				# Instead of this fake data there should be real data (parsed by build directive content function)
+				###
 
-				scope.texts = ['Number of tickets created','grouped by',' & ']
+ 			Below vairbales will look liek following
+
+ 			scope.texts = ['Number of tickets created','grouped by',' & ']
 				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
 																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
 																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
 				]
 				scope.selected = ['today', 'agent', 'department']
+
+ 			###
+
+				scope.texts = []
+				scope.options = []
+				scope.selected = []
 
 				scope.$watch(attrs.possibleValues, (newVal, oldVal) =>
 
@@ -50,8 +57,7 @@ define ->
 					valueToDecorate = scope.$eval(attrs.valueToDecorate)
 					if !valueToDecorate then return
 
-					#scope.finalText = $sce.trustAsHtml(_parseTokensAndReplaceThem(valueToDecorate))
-					buildDirectiveContent(valueToDecorate)
+					buildDirectiveVariables(valueToDecorate)
 				)
 
 
@@ -60,23 +66,21 @@ define ->
  			# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
 				###
 
-				buildDirectiveContent = (value) ->
+				buildDirectiveVariables = (value) ->
 
-					#directiveElement = angular.element('<span')
+					regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g
 
-					newValue = value
-					regex = /<(\d+:.+?)>/g
+					while match = regex.exec(value)
+						scope.texts.push(match[1])
+						collected = collectSelectOptions(match[3])
+						scope.options.push(collected.options)
+						scope.selected.push(collected.selected)
 
-					#while match = regex.exec(value)
-						#directiveElement.append(newValue.replace(match[0], ''))
-						#directiveElement.append(_returnSelectBoxElement(match[1]))
+				###
+				# Returning select box options that was rendered according to 'input' parameter
+ 			###
 
-					#element.append(directiveElement)
-
-						#newValue = newValue.replace(match[0], _addSelectBoxes(match[1]))
-
-				# returning select box element that was rendered according to 'value' parameter
-				_returnSelectBoxElement = (value) ->
+				collectSelectOptions = (input) ->
 
 					possibleValues = scope.$eval(attrs.possibleValues)
 					choices = {}
@@ -85,22 +89,22 @@ define ->
 
 					# some regular expressions parsing...
 
-					if value.match(/^\d+:date group(.*)$/)
+					if input.match(/^\d+:date group(.*)$/)
 						choices = possibleValues.dates
 						extrasMatch = RegExp.$1
-					else if value.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)
+					else if input.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)
 						type = RegExp.$1
 						if typeof possibleValues.fields[type] != 'undefined'
 							choices = possibleValues.fields[type]
 							extrasMatch = RegExp.$2
-					else if value.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)
+					else if input.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)
 						type = RegExp.$1
-						if typeof possibleValues[type] != 'undefined'
+						if typeof possibleValues.statuses[type] != 'undefined'
 							choices = possibleValues.statuses[type]
 							extrasMatch = RegExp.$2
-					else if value.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)
+					else if input.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)
 						type = RegExp.$1
-						if typeof possibleValues[type] != 'undefined'
+						if typeof possibleValues.orders[type] != 'undefined'
 							choices = possibleValues.orders[type]
 							extrasMatch = RegExp.$2
 
@@ -113,21 +117,17 @@ define ->
 
 					# constructing selects...
 
-					for own key, choice_value of choices
-						#selected = if extras?.default? == key then true else false
-						#if extras.default == key then console.log key, choice_value[0]
-						options.push({value: key, label: choice_value[0]})
+					for own key, value of choices
+						options.push({value: key, label: value[0]})
 
-					selectElement = angular.element("""
-																															<select ng-change="selectHandler()"
-																																ng-model="selectedOption"
-																																ng-options="opt as opt.label for opt in options">
-																															</select>
-																															""")
+					return {
+						options: options
+						selected: (if extras.default then extras.default else options[0].value)
+					}
 
-					$compile(selectElement)(scope)
-
-					return selectElement
+				###
+ 			#
+				###
 
 				scope.selectHandler = () ->
 					alert 'ok'
