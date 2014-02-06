@@ -11547,6 +11547,10 @@ section.report-wrapper .no-data h3 {
   font-size: 14pt;
 }
 
+.dp-pane.report_builder {
+  width: 630px;
+}
+
 .dp-report-category article > em {
   float: right;
   margin: 15px;
@@ -11556,7 +11560,7 @@ section.report-wrapper .no-data h3 {
 
 .dp-report-category article > a.header {
   display: block;
-  width: 405px;
+  width: 575px;
 }
 
 .dp-report-category article > a.header .inner {
