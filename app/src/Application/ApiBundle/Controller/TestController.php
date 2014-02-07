@@ -42,7 +42,7 @@ class TestController extends AbstractController
 {
 	public function preAction($action, $arguments = null)
 	{
-		if ($action == 'testAction') {
+		if ($action == 'testAction' || $action == 'aboutAction') {
 			return null;
 		}
 
