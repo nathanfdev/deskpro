@@ -107,7 +107,8 @@ requirejs([
 	'Reports/Main/Ctrl/Bare',
 
 	'Reports/Overview/Ctrl/Overview',
-	'Reports/Builder/Ctrl/List'
+	'Reports/Builder/Ctrl/List',
+	'Reports/Builder/Ctrl/Edit'
 ], function(angular) {
 	'use strict';
 

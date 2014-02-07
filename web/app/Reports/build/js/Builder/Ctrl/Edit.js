@@ -1,0 +1,85 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Reports/Main/Ctrl/Base'], function(ReportsBaseCtrl) {
+    var Reports_Builder_Ctrl_Edit, _ref;
+    Reports_Builder_Ctrl_Edit = (function(_super) {
+      __extends(Reports_Builder_Ctrl_Edit, _super);
+
+      function Reports_Builder_Ctrl_Edit() {
+        _ref = Reports_Builder_Ctrl_Edit.__super__.constructor.apply(this, arguments);
+        return _ref;
+      }
+
+      Reports_Builder_Ctrl_Edit.CTRL_ID = 'Reports_Builder_Ctrl_Edit';
+
+      Reports_Builder_Ctrl_Edit.CTRL_AS = 'EditCtrl';
+
+      Reports_Builder_Ctrl_Edit.DEPS = ['$stateParams', '$sce'];
+
+      Reports_Builder_Ctrl_Edit.prototype.init = function() {
+        if (this.$stateParams.type === 'builtIn') {
+          this.reportData = this.DataService.get('ReportBuilderBuiltIn');
+          this.reportType = 'builtIn';
+        }
+        if (this.$stateParams.type === 'custom') {
+          this.reportData = this.DataService.get('ReportBuilderCustom');
+          this.reportType = 'custom';
+        }
+        this.report = null;
+        return this.rendered_result = null;
+      };
+
+      /*
+       	#
+      */
+
+
+      Reports_Builder_Ctrl_Edit.prototype.initialLoad = function() {
+        var promise,
+          _this = this;
+        promise = this.reportData.loadEditReportData(this.$stateParams.id || null, this.$stateParams.params || null).then(function(data) {
+          _this.report = data.report;
+          _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
+          return _this.form = data.form;
+        });
+        return promise;
+      };
+
+      /*
+      		#
+      */
+
+
+      Reports_Builder_Ctrl_Edit.prototype.saveForm = function() {
+        var is_new, promise,
+          _this = this;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
+        is_new = !this.report.id;
+        promise = this.reportData.saveFormModel(this.report, this.form);
+        this.startSpinner('saving');
+        return promise.then(function() {
+          _this.stopSpinner('saving', true).then(function() {
+            return _this.Growl.success("Saved");
+          });
+          _this.skipDirtyState();
+          if (is_new) {
+            return _this.$state.go('builder.create');
+          }
+        });
+      };
+
+      return Reports_Builder_Ctrl_Edit;
+
+    })(ReportsBaseCtrl);
+    return Reports_Builder_Ctrl_Edit.EXPORT_CTRL();
+  });
+
+}).call(this);
+
+/*
+//@ sourceMappingURL=Edit.js.map
+*/

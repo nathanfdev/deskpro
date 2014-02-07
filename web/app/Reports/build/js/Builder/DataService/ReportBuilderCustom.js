@@ -80,8 +80,12 @@
         if (id) {
           this.Api.sendGet('/reports/builder/' + id).then(function(result) {
             var data;
+            if (result.data.type !== 'custom') {
+              throw new Error('Report you are loading should be custom report');
+            }
             data = {};
             data.report = result.data.report;
+            data.rendered_result = result.data.rendered_result;
             data.form = _this.getFormMapper().getFormFromModel(data);
             return deferred.resolve(data);
           }, function() {

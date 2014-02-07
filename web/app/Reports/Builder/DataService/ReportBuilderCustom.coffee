@@ -63,8 +63,11 @@ define [
 
 				@Api.sendGet('/reports/builder/' + id).then( (result) =>
 
+					if result.data.type != 'custom' then throw new Error('Report you are loading should be custom report')
+
 					data = {}
 					data.report = result.data.report
+					data.rendered_result = result.data.rendered_result
 					data.form = @getFormMapper().getFormFromModel(data)
 
 					deferred.resolve(data)
