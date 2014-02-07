@@ -29,86 +29,53 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage Templating
  */
 
-namespace Application\DeskPRO\Tickets\Actions\ActionDef;
+namespace Application\DeskPRO\Templating;
 
-use Application\DeskPRO\Entity\TicketActionDef;
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateNameParser as BaseTemplateNameParser;
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference as BundleTemplateReference;
+use Symfony\Component\Templating\TemplateReferenceInterface;
 
-abstract class AbstractActionDef
+class TemplateNameParser extends BaseTemplateNameParser
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketActionDef
+	 * {@inheritdoc}
 	 */
-	private $action_def;
-
-
-	/**
-	 * @param TicketActionDef $action_def
-	 */
-	public function __construct(TicketActionDef $action_def)
+	public function parse($name)
 	{
-		$this->action_def = $action_def;
-	}
+		if ($name instanceof TemplateReferenceInterface) {
+			return $name;
+		} elseif (isset($this->cache[$name])) {
+			return $this->cache[$name];
+		}
 
+		// normalize name
+		$name = str_replace(':/', ':', preg_replace('#/{2,}#', '/', strtr($name, '\\', '/')));
 
-	/**
-	 * @return TicketActionDef
-	 */
-	public function getActionDef()
-	{
-		return $this->action_def;
-	}
+		if (false !== strpos($name, '..')) {
+			throw new \RuntimeException(sprintf('Template name "%s" contains invalid characters.', $name));
+		}
 
+		if (!preg_match('/^([^:]*):([^:]*):(.+)\.([^\.]+)\.([^\.]+)$/', $name, $matches)) {
+			throw new \InvalidArgumentException(sprintf('Template name "%s" is not valid (format is "bundle:section:template.format.engine").', $name));
+		}
 
-	/**
-	 * @return string
-	 */
-	abstract function getTitle();
+		if ($matches[1] == 'Apps') {
+			$template = new BundleTemplateReference(null, $matches[2], $matches[3], $matches[4], $matches[5]);
+		} else {
+			$template = new BundleTemplateReference($matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
+		}
 
+		if ($template->get('bundle')) {
+			try {
+				$this->kernel->getBundle($template->get('bundle'));
+			} catch (\Exception $e) {
+				throw new \InvalidArgumentException(sprintf('Template name "%s" is not valid.', $name), 0, $e);
+			}
+		}
 
-	/**
-	 * Gets the classname for a macro action class
-	 * @return string|null
-	 */
-	public function getTriggerActionClass()
-	{
-		return null;
-	}
-
-
-	/**
-	 * Gets the classname for a macro action class
-	 * @return string|null
-	 */
-	public function getMacroActionClass()
-	{
-		return null;
-	}
-
-
-	/**
-	 * Get a string path to the option builder template
-	 * @return string
-	 */
-	public function getActionBuilderTemplate()
-	{
-		return null;
-	}
-
-
-	/**
-	 * Process the data returned from the action array.
-	 * $options will be whatever info was included in the form.
-	 *
-	 * Return null to cancel adding the action (eg its invalid)
-	 *
-	 * @param array $options
-	 * @return array|null
-	 */
-	public function processActionBuilderOptions(array $options)
-	{
-		return $options;
+		return $this->cache[$name] = $template;
 	}
 }

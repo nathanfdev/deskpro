@@ -69,15 +69,6 @@ class SettingsLocator implements \ArrayAccess
 			return;
 		}
 
-		// TODO PLUGINS
-		/*
-		$plugin_manager = App::get('deskpro.plugin_manager');
-		if ($plugin_manager->hasPlugin($key)) {
-			$this->settings_paths[$key] = $plugin_manager->getResourcesPath($key) . '/settings';
-		} else {
-			$this->failed_paths[$key] = true;
-		}
-		*/
 		$this->failed_paths[$key] = true;
 	}
 

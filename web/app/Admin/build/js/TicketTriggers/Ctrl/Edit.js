@@ -19,8 +19,7 @@
       Admin_TicketTriggers_Ctrl_Edit.DEPS = ['dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions'];
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.init = function() {
-        var with_changed_ops,
-          _this = this;
+        var with_changed_ops;
         this.triggerType = this.$stateParams.type;
         this.trigger = null;
         this.triggerId = this.$stateParams.id;
@@ -43,9 +42,6 @@
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.criteriaOptionTypes = [];
         this.$scope.actionOptionTypes = [];
-        this.$scope.$watch('form.typeForm', function() {
-          return _this.updateCriteriaOptionTypes();
-        }, true);
       };
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
@@ -119,7 +115,10 @@
             _this.trigger = {};
           }
           _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
-          return _this.updateCriteriaOptionTypes();
+          _this.updateCriteriaOptionTypes();
+          return _this.$scope.$watch('form.typeForm', function() {
+            return _this.updateCriteriaOptionTypes();
+          }, true);
         });
         return promise;
       };

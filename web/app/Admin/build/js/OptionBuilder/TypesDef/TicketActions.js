@@ -161,10 +161,10 @@
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             opt = _ref1[_i];
             options.push({
-              title: opt.title,
-              value: opt.type
+              title: opt.action_title,
+              value: opt.action_name
             });
-            typeFunc = "get" + opt.type;
+            typeFunc = "get" + opt.action_name;
             this[typeFunc] = function(options) {
               var me;
               if (options == null) {
@@ -173,7 +173,7 @@
               me = this;
               return {
                 getTemplate: function() {
-                  return me.dpTemplateManager.get('Apps/' + opt.builder_template);
+                  return me.dpTemplateManager.get(opt.builder_template);
                 },
                 getData: function() {
                   return {};
@@ -192,7 +192,7 @@
                         model = {};
                       }
                       value = {};
-                      value.type = opt.type;
+                      value.type = opt.action_name;
                       value.options = model || {};
                       return value;
                     }
@@ -200,6 +200,12 @@
                 }
               };
             };
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Ticket Options',
+              subOptions: options
+            });
           }
         }
         return set_options;

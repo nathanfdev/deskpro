@@ -326,28 +326,6 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return false;
 	}
 
-	/**
-	 * Returns a bundle and optionally its descendants by its name.
-	 *
-	 * @param string  $name  Bundle name
-	 * @param Boolean $first Whether to return the first bundle only or together with its descendants
-	 *
-	 * @return BundleInterface|Array A BundleInterface instance or an array of BundleInterface instances if $first is false
-	 *
-	 * @throws \InvalidArgumentException when the bundle is not enabled
-	 *
-	 * @api
-	 */
-	public function getBundle($name, $first = true)
-	{
-		if (!isset($this->bundleMap[$name]) && $this->container->get('deskpro.plugin_manager')->hasPlugin($name)) {
-			$bundle = $this->container->get('deskpro.plugin_manager')->getBundle($name);
-			return ($first ? $bundle : array($bundle));
-		}
-
-		return parent::getBundle($name, $first);
-	}
-
 	public function registerBundles()
 	{
 		$bundles = array(

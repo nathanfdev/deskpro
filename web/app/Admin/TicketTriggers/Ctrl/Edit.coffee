@@ -41,10 +41,6 @@ define [
 			@$scope.criteriaOptionTypes = []
 			@$scope.actionOptionTypes = []
 
-			@$scope.$watch('form.typeForm', =>
-				@updateCriteriaOptionTypes()
-			, true)
-
 			return
 
 		updateCriteriaOptionTypes: ->
@@ -105,6 +101,10 @@ define [
 				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
 
 				@updateCriteriaOptionTypes()
+
+				@$scope.$watch('form.typeForm', =>
+					@updateCriteriaOptionTypes()
+				, true)
 			)
 
 			return promise

@@ -155,6 +155,7 @@ class TicketActionDef extends DomainObject
 		$data['def_class']        = $this->def_class;
 		$data['app']              = $this->app->toApiData(false, false);
 		$data['settings']         = $this->settings ?: array();
+		$data['action_title']     = $this->getDef()->getTitle();
 		$data['action_class']     = $this->getDef()->getTriggerActionClass();
 		$data['macro_class']      = $this->getDef()->getMacroActionClass();
 		$data['builder_template'] = $this->getDef()->getActionBuilderTemplate();

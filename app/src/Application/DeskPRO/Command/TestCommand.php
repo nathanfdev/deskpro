@@ -54,6 +54,17 @@ class TestCommand extends ContainerAwareCommand
 		/** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
 		$container = $this->getContainer();
 
+		$tpl = $container->getTemplating();
+
+		try	 {
+			echo $tpl->render('Apps:deskpro_hipchat:type-actions-input.html.twig', array());
+		} catch (\Exception $e) {
+			echo $e->getTraceAsString();
+		}
+
+		echo "\n";
+		return;
+
 		$container->getDb()->executeUpdate("DELETE FROM app_instances WHERE package_name = 'com.deskpro.apps.hipchat'");
 		$container->getDb()->executeUpdate("DELETE FROM app_packages WHERE name = 'com.deskpro.apps.hipchat'");
 		$package = new Package(DP_ROOT.'/apps/deskpro_hipchat');

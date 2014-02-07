@@ -41,6 +41,14 @@ class HipChatActionDef extends AbstractActionDef
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getTitle()
+	{
+		return 'Announce to HipChat';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getTriggerActionClass()
 	{
 		return 'deskpro_hipchat\\Ticket\\Actions\\HipChatAction';
@@ -52,7 +60,7 @@ class HipChatActionDef extends AbstractActionDef
 	 */
 	public function getActionBuilderTemplate()
 	{
-		return 'Apps:deskpro_hipchat/type-actions-input.html.twig';
+		return 'Apps:deskpro_hipchat:type-actions-input.html.twig';
 	}
 
 

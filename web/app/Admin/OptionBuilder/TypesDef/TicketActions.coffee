@@ -210,16 +210,16 @@ define [
 
 				for opt in typesData.dynamicOptions
 					options.push({
-						title: opt.title,
-						value: opt.type
+						title: opt.action_title,
+						value: opt.action_name
 					})
 
-					typeFunc = "get#{opt.type}"
+					typeFunc = "get#{opt.action_name}"
 					@[typeFunc] = (options = {}) ->
 						me = @
 						return {
 							getTemplate: ->
-								return me.dpTemplateManager.get('Apps/' + opt.builder_template)
+								return me.dpTemplateManager.get(opt.builder_template)
 							getData: ->
 								return {}
 							getDataFormatter: ->
@@ -228,12 +228,17 @@ define [
 										return data || {}
 									getValue: (model = {}, data) ->
 										value = {}
-										value.type = opt.type
+										value.type = opt.action_name
 										value.options = model || {}
 										return value
 								}
 						}
 
+				if options.length
+					set_options.push({
+						title: 'Ticket Options',
+						subOptions: options
+					})
 
 			return set_options
 

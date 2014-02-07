@@ -73,17 +73,7 @@ class InterfaceController extends AbstractController
 			}
 		}
 
-		$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.:]#', '', $view_name);
-		$view_name = str_replace('/', ':', $view_name);
-		$view_name = str_replace('.html', '.html.twig', $view_name);
-		$view_name = str_replace('.html.twig.twig', '.html.twig', $view_name);
-
-		if (strpos($view_name, 'Apps:') === 0) {
-			$tpl_name = str_replace(':', '/', $view_name);
-			$tpl_name = preg_replace('#^Apps/#', 'Apps:', $tpl_name);
-		} else {
-			$tpl_name = "AdminInterfaceBundle:$view_name";
-		}
+		$tpl_name = $this->getRealViewName($view_name);
 
 		$rendered = null;
 		if ($this->tpl->exists($tpl_name)) {
@@ -108,18 +98,16 @@ class InterfaceController extends AbstractController
 
 		foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
 			$id = $view_name;
-			$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
-			$view_name = Strings::strReplaceOne('/', ':', $view_name);
-			$view_name = str_replace('.html', '.html.twig', $view_name);
+			$tpl_name = $this->getRealViewName($view_name);
 
 			$rendered = null;
-			if ($this->tpl->exists("AdminInterfaceBundle:$view_name")) {
-				$rendered = $this->renderView("AdminInterfaceBundle:$view_name");
+			if ($this->tpl->exists($tpl_name)) {
+				$rendered = $this->renderView($tpl_name);
 			}
 
 			$views[] = array(
 				'id'       => $id,
-				'template' => "AdminInterfaceBundle:$view_name",
+				'template' => $tpl_name,
 				'source'   => $rendered
 			);
 		}
@@ -169,5 +157,22 @@ class InterfaceController extends AbstractController
 		}
 
 		return $res;
+	}
+
+	####################################################################################################################
+
+	private function getRealViewName($view_name)
+	{
+		if (strpos($view_name, 'Apps:') === 0) {
+			$tpl_name = $view_name;
+		} else {
+			$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.:]#', '', $view_name);
+			$view_name = str_replace('/', ':', $view_name);
+			$view_name = str_replace('.html', '.html.twig', $view_name);
+			$view_name = str_replace('.html.twig.twig', '.html.twig', $view_name);
+			$tpl_name = "AdminInterfaceBundle:$view_name";
+		}
+
+		return $tpl_name;
 	}
 }
