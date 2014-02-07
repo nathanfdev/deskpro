@@ -180,3 +180,94 @@ section.report-wrapper .no-data {
 		}
 	}
 }
+
+.report-builder-table {
+	border: 1px solid #E1E3E6;
+	margin: 10px 0;
+
+	td, th {
+		padding: 8px;
+		vertical-align: middle;
+		text-align: left;
+		border: 1px solid #DDDDDD;
+		line-height: 100%;
+	}
+
+	.row-header th {
+		.gradient-v(#e6e9ec, #d8dbdf);
+		border-bottom: 1px solid #d5d5d5;
+
+		padding: 6px;
+		padding-top: 7px;
+		font-size: 13px;
+		color: #595959;
+		text-shadow: 0 1px 0 #FFFFFF;
+		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		text-align: left;
+		line-height: 100%;
+
+		white-space: nowrap;
+		text-overflow: clipped;
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.row-header .label {
+		text-align: center;
+		display: table-cell !important;
+	}
+
+	&.matrix .row-body th {
+		background-color: #E5E8ED;
+		color: #000;
+		white-space: nowrap;
+		text-align: right;
+	}
+
+	&.matrix .row-body.even th {
+		background-color: #E5E8ED;
+	}
+
+	.odd {
+		background: #fff;
+	}
+	.even {
+		background: #F2F4F8;
+	}
+	.null {
+		font-style: italic;
+	}
+
+	td.column-total, tr.total-row td, tr.total-row th {
+		border-top: 1px solid #E5E8ED;
+		background: #E1E4EC;
+		font-size: 11px;
+		padding: 6px;
+	}
+}
+
+.report-chart {
+	max-width: 625px;
+	height: 550px;
+	border: 1px solid #DEDEDE;
+	margin: 10px 0;
+}
+
+.report-no-results {
+	font-style: italic;
+	margin: 10px 0;
+}
+
+.report-builder-results .query {
+	white-space: pre-wrap;
+	display: none;
+	margin: 10px 0;
+}
+
+.query-error {
+	background-color: #FFD3C7;
+	border: 1px solid #FF9C8C;
+	padding: 10px;
+	margin: 10px 0;
+}
