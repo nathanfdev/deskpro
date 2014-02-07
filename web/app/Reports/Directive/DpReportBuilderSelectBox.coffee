@@ -30,7 +30,7 @@ define ->
 																		<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
 																			{{ option.label }}
 																		</option>
-																	</select>.ph6
+																	</select>
 																</span>
 															</span>
 														</h4>
