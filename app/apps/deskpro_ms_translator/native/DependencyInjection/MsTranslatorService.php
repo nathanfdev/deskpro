@@ -29,72 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\App\Native;
+namespace deskpro_ms_translator\DependencyInjection;
 
-use Application\DeskPRO\Entity\AppPackage;
-use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\AppInstance;
+use Orb\Service\Microsoft\Translate\Translate;
 
-class NativePackageConfig
+class MsTranslatorService
 {
-	/**
-	 * @var OptionsArray
-	 */
-	private $config;
-
-	/**
-	 * @param AppPackage $package
-	 * @return NativePackageConfig
-	 */
-	public static function createFromPackage(AppPackage $package)
+	public static function create(DeskproContainer $container, AppInstance $app)
 	{
-		$path = DP_ROOT.'/apps/' . $package->native_name . '/native/native_config.php';
-		if (file_exists($path)) {
-			$config = require($path);
-		} else {
-			$config = array();
-		}
+		$api = new Translate(
+			$app->getSetting('client_id'),
+			$app->getSetting('client_secret')
+		);
 
-		return new self($config);
-	}
-
-
-	/**
-	 * @param array $config
-	 */
-	public function __construct(array $config)
-	{
-		$config = Arrays::flattenKeyValueArray($config);
-		$this->config =  new OptionsArray($config);
-	}
-
-
-	/**
-	 * @return string|null
-	 */
-	public function getAgentRequestHandlerClass()
-	{
-		return $this->config->get('agent.request_handler', null);
-	}
-
-
-	/**
-	 * @return string|null
-	 */
-	public function getInstallerHandlerClass()
-	{
-		return $this->config->get('install.handler', null);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getServices()
-	{
-		return $this->config->get('services', array());
+		return $api;
 	}
 }

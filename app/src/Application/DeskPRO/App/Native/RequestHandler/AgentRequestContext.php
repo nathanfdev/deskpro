@@ -129,6 +129,16 @@ class AgentRequestContext
 
 
 	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getAppService($name)
+	{
+		return $this->container->getAppManager()->getService($name, $this->getApp());
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Entity\AppPackage
 	 */
 	public function getPackage()

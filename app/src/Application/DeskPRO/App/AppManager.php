@@ -68,13 +68,21 @@ class AppManager implements AppManagerInterface
 	 */
 	private $native_apps = array();
 
+	/**
+	 * @var AppServiceContainer
+	 */
+	private $app_service_container;
+
 
 	/**
 	 * @param AppPackage[] $packages
 	 * @param AppInstance[] $apps
+	 * @param AppServiceContainer $app_service_container
 	 */
-	public function __construct(array $packages, array $apps)
+	public function __construct(array $packages, array $apps, AppServiceContainer $app_service_container)
 	{
+		$this->app_service_container = $app_service_container;
+
 		foreach ($packages as $package) {
 			$this->packages[$package->name] = $package;
 		}
@@ -264,9 +272,11 @@ class AppManager implements AppManagerInterface
 		$this->native_apps[$app_id] = $native_app;
 
 		$this->_initNativePackageAutoload($native_app);
+		$this->app_service_container->registerNativeApp($native_app);
 
 		return $native_app;
 	}
+
 
 	/**
 	 * @param NativeApp $native_app
@@ -297,5 +307,16 @@ class AppManager implements AppManagerInterface
 
 			return true;
 		});
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param AppInstance|NativeApp|int $app
+	 * @return mixed
+	 */
+	public function getService($name, $app = null)
+	{
+		return $this->app_service_container->getService($name, $app);
 	}
 }

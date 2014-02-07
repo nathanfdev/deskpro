@@ -15,7 +15,7 @@
 		<header>
 			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
 			<div class="message-header-extra-controls">
-				{% if app.isPluginInstalled('MicrosoftTranslator') %}
+				{% if app.isAppInstalled('deskpro_ms_translator') %}
 					<div class="message-translate-controls">
 						<div class="translate-controls-off">
 							<span>{{ phrase('agent.general.translation') }}</span>
@@ -46,16 +46,16 @@
 											<select name="from">
 												<option value="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}</option>
 												<option value="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}"></option>
-												{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
-													{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+												{% for code in app.getAppService('ms_translator').getLanguagesForTranslate() %}
+													{% set name = app.getAppService('ms_translator').getSingleLanguageName(code) %}
 													<option value="{{ code }}">{{ name }}</option>
 												{% endfor %}
 											</select>
 											to <select name="to">
 												<option value="{{ app.user.language.locale }}">{{ phrase_object(app.user.language) }}</option>
 												<option value="{{ app.user.language.locale }}"></option>
-												{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
-													{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+												{% for code in app.getAppService('ms_translator').getLanguagesForTranslate() %}
+													{% set name = app.getAppService('ms_translator').getSingleLanguageName(code) %}
 													<option value="{{ code }}">{{ name }}</option>
 												{% endfor %}
 											</select>

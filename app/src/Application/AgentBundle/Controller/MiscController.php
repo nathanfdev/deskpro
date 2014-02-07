@@ -204,18 +204,17 @@ class MiscController extends AbstractController
 
 		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
 
-		// TODO plugins
-		/*
-		if ($this->plugins->isPluginInstalled('MicrosoftTranslator')) {
-			$lang_codes = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate();
+		if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
+			$ms_translator = $this->container->getAppManager()->getService('ms_translator');
+			$lang_codes = $ms_translator->getLanguagesForTranslate();
 			try {
-				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
-					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+				$lang_names = $ms_translator->getLanguageNames(
+					$ms_translator->getLanguagesForTranslate(),
 					$this->person->getLanguage()->getLocale()
 				);
 			} catch (\Exception $e) {
-				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
-					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+				$lang_names = $ms_translator->getLanguageNames(
+					$ms_translator->getLanguagesForTranslate(),
 					'en'
 				);
 			}
@@ -229,7 +228,6 @@ class MiscController extends AbstractController
 
 			$js[] = "window.DESKPRO_TRANSLATE_SERVICE = " . json_encode($info) . ";";
 		}
-		*/
 
 		$tr = $this->container->getTranslator();
 

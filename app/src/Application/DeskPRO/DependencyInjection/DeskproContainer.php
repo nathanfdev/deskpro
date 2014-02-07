@@ -476,22 +476,6 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \Application\DeskPRO\Plugin\PluginRepository
-	 */
-	public function getPlugins()
-	{
-		//TODO
-		static $s;
-
-		if ($s === null) {
-			$s = new MockPluginRepos();
-		}
-
-		return $s;
-	}
-
-
-	/**
 	 * Get the person activity logger
 	 *
 	 * @return \Application\DeskPRO\People\ActivityLogger\ActivityLogger
@@ -797,11 +781,4 @@ class DeskproContainer extends Container
 	{
 		return $this->getSystemService('ticket_action_def_manager');
 	}
-}
-
-class MockPluginRepos
-{
-	public function isPluginInstalled() { return false; }
-	public function getPlugin() { return null; }
-	public function getPluginService() { return null; }
 }

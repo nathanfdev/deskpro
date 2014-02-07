@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\App\AppManager;
+use Application\DeskPRO\App\AppServiceContainer;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -60,7 +61,9 @@ class AppManagerService
 		if ($apps instanceof ArrayCollection) $apps = $apps->toArray();
 		if ($packages instanceof ArrayCollection) $packages = $packages->toArray();
 
-		$app_manager = new AppManager($packages, $apps);
+		$app_service_container = new AppServiceContainer($container);
+
+		$app_manager = new AppManager($packages, $apps, $app_service_container);
 		return $app_manager;
 	}
 }
