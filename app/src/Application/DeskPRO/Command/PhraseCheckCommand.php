@@ -115,7 +115,6 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			DP_ROOT.'/src/Application/DeskPRO',
 			DP_ROOT.'/src/Application/InstallBundle',
 			DP_ROOT.'/src/Cloud/BillingBundle',
-			DP_WEB_ROOT.'/plugins',
 		))->getIterator());
 
 		foreach ($check_phrases as $phrase) {

@@ -36,9 +36,6 @@ $container->setParameter('router.options.generator_class', 'Application\\DeskPRO
 $container->setParameter('router.options.generator_base_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
 $container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
-$container->setParameter('doctrine_migrations.dir_name', '%kernel.root_dir%/Resources/DoctrineMigrations');
-$container->setParameter('doctrine_migrations.table_name', 'dev_migration_versions');
-//$container->setParameter('twig.extension.form.class', 'Application\\DeskPRO\\Twig\\Extension\\FormExtension');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
 $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');

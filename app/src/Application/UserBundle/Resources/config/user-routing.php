@@ -546,9 +546,4 @@ $collection->create('user_long_tweet_view', array(
 	'requirements'  => array('long_id' => '\\d+'),
 ));
 
-$collection->create('user_plugins_run', array(
-	'path'        => '/ext-plugins/{plugin_id}/run/{action}',
-	'controller'  => 'UserBundle:Plugins:run',
-));
-
 return $collection;

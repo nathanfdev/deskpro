@@ -177,7 +177,7 @@ class Manager
 			@unlink(dp_get_data_dir() . '/twitter.pid');
 		}
 
-		// Sync plugins
+		// Sync apps
 		$manager = $this->container->getAppManager();
 		foreach ($manager->getAllPackages() as $package) {
 			if (!$package->native_name) continue;

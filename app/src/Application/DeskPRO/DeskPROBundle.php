@@ -91,7 +91,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\LoginTokenCommand',
 			'Application\\DeskPRO\\Command\\MoveBlobsCommand',
 			'Application\\DeskPRO\\Command\\PhraseCheckCommand',
-			'Application\\DeskPRO\\Command\\PluginCommand',
 			'Application\\DeskPRO\\Command\\ProcessEmailCommand',
 			'Application\\DeskPRO\\Command\\RecountRatingsCommand',
 			'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
