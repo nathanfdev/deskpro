@@ -24,6 +24,20 @@ define(function() {
 		controller: 'Reports_Builder_Ctrl_List'
 	});
 
+	routes.push({
+		id: 'builder.create',
+		url: '/create',
+		templateName: 'Builder/edit.html',
+		controller: 'Reports_Builder_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'builder.edit',
+		url: '/{id:[0-9]+}/{params:.*}',
+		templateName: 'Builder/edit.html',
+		controller: 'Reports_Builder_Ctrl_Edit'
+	});
+
 	//##################################################################################################################
 	// Billing
 	//##################################################################################################################
