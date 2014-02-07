@@ -34,6 +34,10 @@
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql\Compiler;
+use Application\DeskPRO\Entity\ReportBuilder;
+use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 use Doctrine\ORM\EntityManager;
 
@@ -92,6 +96,80 @@ class Builder
 	public function getGroupParams()
 	{
 		return $this->repository->getReportGroupParams();
+	}
+
+
+	/**
+	 * @param int $id
+	 * @return ReportBuilder
+	 */
+	public function getById($id)
+	{
+		return $this->repository->find($id);
+	}
+
+
+	/**
+	 * @param int $id
+	 * @return array
+	 */
+	public function getRenderedResult($id)
+	{
+		$report = $this->repository->find($id);
+
+		$params = $this->getParamsInput('params');
+		$query  = $report->query;
+
+		$error   = false;
+		$results = $this->renderQuery($query, 'html', $error, $params);
+
+		return $results;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return array
+	 */
+	protected function getParamsInput($name = 'params')
+	{
+		if (isset($_REQUEST[$name])) {
+			$params = $_REQUEST[$name];
+		} else {
+			$params = App::getContainer()->getIn()->getRaw($name);
+		}
+
+		if (is_array($params)) {
+			ksort($params);
+		} else if ($params) {
+			$newParams = array();
+			foreach (explode(',', $params) AS $k => $v) {
+				$newParams[$k + 1] = $v;
+			}
+			$params = $newParams;
+		} else {
+			$params = array();
+		}
+
+		return $params;
+	}
+
+
+	/**
+	 * @param       $query
+	 * @param       $renderer
+	 * @param bool  $error
+	 * @param array $params
+	 * @return bool|string
+	 */
+	protected function renderQuery($query, $renderer, &$error = false, array $params = array())
+	{
+		return Display::renderQuery(
+			$renderer,
+			$query,
+			$params,
+			$error
+		);
 	}
 
 

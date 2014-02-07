@@ -109,4 +109,33 @@ class ReportsBuilderController extends AbstractController
 
 		return $this->createApiResponse($reports_builder->getGroupParams());
 	}
+
+
+	####################################################################################################################
+	# get report
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+		$report          = $reports_builder->getById($id);
+		$rendered_result = $reports_builder->getRenderedResult($id);
+
+		if (!$report) {
+
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'rendered_result' => $rendered_result,
+				 'report'          => $this->getApiData($report),
+				 'type'            => $report->is_custom ? 'custom' : 'builtIn',
+			)
+		);
+	}
 }
