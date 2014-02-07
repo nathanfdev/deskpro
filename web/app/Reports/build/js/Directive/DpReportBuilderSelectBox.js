@@ -25,11 +25,12 @@
       '$compile', function($compile) {
         return {
           restrict: 'AE',
-          template: "<span class=\"title-text\">\n	<span ng-repeat=\"text in texts\">\n		<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n		<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</span>\n",
+          replace: true,
+          template: "<a href=\"{{ state_path('builder.edit', {id: reportId, params: defaultLinkParams}) }}\">\n	<h4>\n		<span class=\"title-text\">\n			<span ng-repeat=\"text in texts\">\n				<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n				<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\">\n					<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n						{{ option.label }}\n					</option>\n				</select>.ph6\n			</span>\n		</span>\n	</h4>\n</a>\n",
           link: function(scope, element, attrs) {
             /*
             
-             			Below vairbales will look liek following
+             			Below vairbales will look like following
             
              			scope.texts = ['Number of tickets created','grouped by',' & ']
             				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
@@ -44,7 +45,8 @@
             scope.texts = [];
             scope.options = [];
             scope.selected = [];
-            scope.$watch(attrs.possibleValues, function(newVal, oldVal) {
+            scope.defaultLinkParams = '';
+            scope.$watch(attrs.possibleValues, function(newVal) {
               var valueToDecorate;
               if (typeof newVal === 'undefined') {
                 return;
@@ -53,7 +55,9 @@
               if (!valueToDecorate) {
                 return;
               }
-              return buildDirectiveVariables(valueToDecorate);
+              scope.reportId = scope.$eval(attrs.reportId);
+              buildDirectiveVariables(valueToDecorate);
+              return scope.defaultLinkParams = scope.selected.join(',');
             });
             /*
             				# This function builds directive by constructing it on 'the fly' using DOM operations

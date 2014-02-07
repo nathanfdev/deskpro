@@ -19,24 +19,29 @@ define ->
 	Reports_Directive_DpReportBuilderSelectBox = ['$compile', ($compile) ->
 		return {
 			restrict: 'AE',
+			replace: true,
 			template: """
-													<span class="title-text">
-														<span ng-repeat="text in texts">
-															<span style="vertical-align:middle;" ng-bind-html="text"></span>
-															<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;">
-																<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
-																	{{ option.label }}
-																</option>
-															</select>
-														</span>
-													</span>
+													<a href="{{ state_path('builder.edit', {id: reportId, params: defaultLinkParams}) }}">
+														<h4>
+															<span class="title-text">
+																<span ng-repeat="text in texts">
+																	<span style="vertical-align:middle;" ng-bind-html="text"></span>
+																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;">
+																		<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
+																			{{ option.label }}
+																		</option>
+																	</select>.ph6
+																</span>
+															</span>
+														</h4>
+													</a>
 
 													"""
 			link: (scope, element, attrs) ->
 
 				###
 
- 			Below vairbales will look liek following
+ 			Below vairbales will look like following
 
  			scope.texts = ['Number of tickets created','grouped by',' & ']
 				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
@@ -50,14 +55,17 @@ define ->
 				scope.texts = []
 				scope.options = []
 				scope.selected = []
+				scope.defaultLinkParams = ''
 
-				scope.$watch(attrs.possibleValues, (newVal, oldVal) =>
+				scope.$watch(attrs.possibleValues, (newVal) =>
 
 					if typeof newVal == 'undefined' then return
 					valueToDecorate = scope.$eval(attrs.valueToDecorate)
 					if !valueToDecorate then return
 
+					scope.reportId = scope.$eval(attrs.reportId)
 					buildDirectiveVariables(valueToDecorate)
+					scope.defaultLinkParams = scope.selected.join(',')
 				)
 
 
