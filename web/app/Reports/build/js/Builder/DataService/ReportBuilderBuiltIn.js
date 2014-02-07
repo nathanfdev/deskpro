@@ -82,15 +82,21 @@
       */
 
 
-      ReportBuilderCustom.prototype.loadEditReportData = function(id) {
+      ReportBuilderCustom.prototype.loadEditReportData = function(id, params) {
         var deferred,
           _this = this;
         deferred = this.$q.defer();
         if (id) {
-          this.Api.sendGet('/reports/builder/' + id).then(function(result) {
+          this.Api.sendGet('/reports/builder/' + id, {
+            params: params
+          }).then(function(result) {
             var data;
+            if (result.data.type !== 'builtIn') {
+              throw new Error('Report you are loading should be built-in report');
+            }
             data = {};
             data.report = result.data.report;
+            data.rendered_result = result.data.rendered_result;
             data.form = _this.getFormMapper().getFormFromModel(data);
             return deferred.resolve(data);
           }, function() {

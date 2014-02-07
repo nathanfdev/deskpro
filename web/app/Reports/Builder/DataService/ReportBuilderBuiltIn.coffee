@@ -64,15 +64,18 @@ define [
   # @param {Integer} id
   # @return {promise}
 		###
-		loadEditReportData: (id) ->
+		loadEditReportData: (id, params) ->
 
 			deferred = @$q.defer()
 			if id
 
-				@Api.sendGet('/reports/builder/' + id).then( (result) =>
+				@Api.sendGet('/reports/builder/' + id, {params: params}).then( (result) =>
+
+					if result.data.type != 'builtIn' then throw new Error('Report you are loading should be built-in report')
 
 					data = {}
 					data.report = result.data.report
+					data.rendered_result = result.data.rendered_result
 					data.form = @getFormMapper().getFormFromModel(data)
 
 					deferred.resolve(data)
