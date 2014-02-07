@@ -16,7 +16,7 @@ define ->
  		# 2) 'possible-values' (required parameter) - ...
    #
 	###
-	Reports_Directive_DpReportBuilderSelectBox = ['$compile', ($compile) ->
+	Reports_Directive_DpReportBuilderSelectBox = ['$state', ($state) ->
 		return {
 			restrict: 'AE',
 			replace: true,
@@ -26,7 +26,7 @@ define ->
 															<span class="title-text">
 																<span ng-repeat="text in texts">
 																	<span style="vertical-align:middle;" ng-bind-html="text"></span>
-																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;">
+																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;" ng-change="changeLinkParams()">
 																		<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
 																			{{ option.label }}
 																		</option>
@@ -144,11 +144,12 @@ define ->
 					}
 
 				###
- 			#
+ 			# Going to correponding route after changing selected options inside select box
 				###
 
-				scope.selectHandler = () ->
-					alert 'ok'
+				scope.changeLinkParams = () ->
+					linkParams = scope.selected.join(',')
+					$state.go('builder.edit', {id: scope.reportId, params:linkParams})
 		}
 	]
 
