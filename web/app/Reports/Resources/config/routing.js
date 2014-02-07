@@ -33,7 +33,7 @@ define(function() {
 
 	routes.push({
 		id: 'builder.edit',
-		url: '/{id:[0-9]+}/{params:.*}',
+		url: '/{id:[0-9]+}/{type:(?:custom|builtIn)}/{params:.*}',
 		templateName: 'Builder/edit.html',
 		controller: 'Reports_Builder_Ctrl_Edit'
 	});

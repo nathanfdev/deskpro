@@ -26,7 +26,7 @@
         return {
           restrict: 'AE',
           replace: true,
-          template: "<a href=\"{{ state_path('builder.edit', {id: reportId, params: defaultLinkParams}) }}\">\n	<h4>\n		<span class=\"title-text\">\n			<span ng-repeat=\"text in texts\">\n				<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n				<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\" ng-change=\"changeLinkParams()\">\n					<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n						{{ option.label }}\n					</option>\n				</select>\n			</span>\n		</span>\n	</h4>\n</a>\n",
+          template: "<a href=\"{{ state_path('builder.edit', {id: reportId, type: 'builtIn', params: defaultLinkParams}) }}\"> \n	<h4>\n		<span class=\"title-text\">\n			<span ng-repeat=\"text in texts\">\n				<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n				<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\" ng-change=\"changeLinkParams()\">\n					<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n						{{ option.label }}\n					</option>\n				</select>\n			</span>\n		</span>\n	</h4>\n</a>\n",
           link: function(scope, element, attrs) {
             /*
             
@@ -137,10 +137,6 @@
             return scope.changeLinkParams = function() {
               var linkParams;
               linkParams = scope.selected.join(',');
-              $state.go('builder.edit', {
-                id: scope.reportId,
-                params: linkParams
-              });
               return $state.go('builder.edit', {
                 id: scope.reportId,
                 params: linkParams

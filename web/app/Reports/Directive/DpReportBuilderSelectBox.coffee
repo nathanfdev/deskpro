@@ -21,7 +21,7 @@ define ->
 			restrict: 'AE',
 			replace: true,
 			template: """
-													<a href="{{ state_path('builder.edit', {id: reportId, params: defaultLinkParams}) }}">
+													<a href="{{ state_path('builder.edit', {id: reportId, type: 'builtIn', params: defaultLinkParams}) }}">
 														<h4>
 															<span class="title-text">
 																<span ng-repeat="text in texts">
