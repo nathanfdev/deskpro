@@ -29,6 +29,7 @@ define [
 				@report  = data.report
 				@rendered_result = @$sce.trustAsHtml(data.rendered_result)
 				@form = data.form
+				@group_params = @$scope.$parent.ListCtrl.group_params
 			)
 			return promise
 

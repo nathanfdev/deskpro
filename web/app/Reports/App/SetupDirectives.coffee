@@ -4,12 +4,14 @@ define [
 	'DeskPRO/Directive/DpHelpPage',
 	'Admin/Main/Directive/DpNavSubnav',
 	'Reports/Directive/DpReportBuilderSelectBox',
+	'Reports/Directive/DpReportBuilderTitle',
 ], (
 	DeskPRO_Directive_DpTimeWithUnit,
 	DeskPRO_Directive_DpStateMark,
 	DeskPRO_Directive_DpHelpPage,
 	Admin_Main_Directive_DpNavSubnav,
 	Reports_Directive_DpReportBuilderSelectBox,
+	Reports_Directive_DpReportBuilderTitle,
 ) ->
 	return (Module) ->
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
@@ -17,3 +19,4 @@ define [
 		Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
 		Module.directive('dpNavSubnav',                    Admin_Main_Directive_DpNavSubnav)
 		Module.directive('dpReportBuilderSelectBox',       Reports_Directive_DpReportBuilderSelectBox)
+		Module.directive('dpReportBuilderTitle',           Reports_Directive_DpReportBuilderTitle)

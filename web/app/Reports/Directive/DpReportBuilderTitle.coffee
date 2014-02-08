@@ -5,25 +5,19 @@ define ->
  		#
  		#	Example View
  		#	------------
- 		#	<dp-report-builder-select-box
- 		#				  value-to-decorate="scope.title"
- 		#				  possible-values="scope.some_object">
- 		#	</span>
+ 		#	<dp-report-builder-title>
+ 		#	</dp-report-builder-title>
  		#
  		#	Parameters
  		#	------------
- 		# 1) 'value-to-decorate' (required parameter) - ...
- 		# 2) 'possible-values' (required parameter) - ...
    #
 	###
-	Reports_Directive_DpReportBuilderSelectBox = ['$state', ($state) ->
+	Reports_Directive_DpReportTitle = ['$state', ($state) ->
 		return {
 			restrict: 'AE',
 			replace: true,
 			template: """
-													<a href="{{ state_path('builder.edit', {id: reportId, type: 'builtIn', params: defaultLinkParams}) }}">
-														<h4>
-															<span class="title-text">
+														<h3 style="font-weight:bold;">
 																<span ng-repeat="text in texts">
 																	<span style="vertical-align:middle;" ng-bind-html="text"></span>
 																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;" ng-change="changeLinkParams()">
@@ -32,9 +26,7 @@ define ->
 																		</option>
 																	</select>
 																</span>
-															</span>
-														</h4>
-													</a>
+														</h3>
 
 													"""
 			link: (scope, element, attrs) ->
@@ -153,4 +145,4 @@ define ->
 		}
 	]
 
-	return Reports_Directive_DpReportBuilderSelectBox
+	return Reports_Directive_DpReportTitle

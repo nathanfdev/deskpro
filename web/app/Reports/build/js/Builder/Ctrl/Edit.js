@@ -42,7 +42,8 @@
         promise = this.reportData.loadEditReportData(this.$stateParams.id || null, this.$stateParams.params || null).then(function(data) {
           _this.report = data.report;
           _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
-          return _this.form = data.form;
+          _this.form = data.form;
+          return _this.group_params = _this.$scope.$parent.ListCtrl.group_params;
         });
         return promise;
       };
