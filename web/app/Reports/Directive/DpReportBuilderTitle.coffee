@@ -16,6 +16,11 @@ define ->
 		return {
 			restrict: 'AE',
 			replace: true,
+			scope: {
+				possibleValues: '='
+				valueToDecorate: '='
+				reportId: '='
+			},
 			template: """
 														<h3 style="font-weight:bold;">
 																<span ng-repeat="text in texts">
@@ -49,13 +54,12 @@ define ->
 				scope.selected = []
 				scope.defaultLinkParams = ''
 
-				scope.$watch(attrs.possibleValues, (newVal) =>
+				scope.$watch('possibleValues', (newVal) =>
 
 					if typeof newVal == 'undefined' then return
-					valueToDecorate = scope.$eval(attrs.valueToDecorate)
+					valueToDecorate = scope.valueToDecorate
 					if !valueToDecorate then return
 
-					scope.reportId = scope.$eval(attrs.reportId)
 					buildDirectiveVariables(valueToDecorate)
 					scope.defaultLinkParams = scope.selected.join(',')
 				)
@@ -92,7 +96,7 @@ define ->
 
 				collectSelectOptions = (input) ->
 
-					possibleValues = scope.$eval(attrs.possibleValues)
+					possibleValues = scope.possibleValues
 					choices = {}
 					extras = {}
 					options = []

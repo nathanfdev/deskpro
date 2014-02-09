@@ -22,6 +22,11 @@
         return {
           restrict: 'AE',
           replace: true,
+          scope: {
+            possibleValues: '=',
+            valueToDecorate: '=',
+            reportId: '='
+          },
           template: "<h3 style=\"font-weight:bold;\">\n		<span ng-repeat=\"text in texts\">\n			<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n			<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\" ng-change=\"changeLinkParams()\">\n				<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n					{{ option.label }}\n				</option>\n			</select>\n		</span>\n</h3>\n",
           link: function(scope, element, attrs) {
             /*
@@ -42,16 +47,15 @@
             scope.options = [];
             scope.selected = [];
             scope.defaultLinkParams = '';
-            scope.$watch(attrs.possibleValues, function(newVal) {
+            scope.$watch('possibleValues', function(newVal) {
               var valueToDecorate;
               if (typeof newVal === 'undefined') {
                 return;
               }
-              valueToDecorate = scope.$eval(attrs.valueToDecorate);
+              valueToDecorate = scope.valueToDecorate;
               if (!valueToDecorate) {
                 return;
               }
-              scope.reportId = scope.$eval(attrs.reportId);
               buildDirectiveVariables(valueToDecorate);
               return scope.defaultLinkParams = scope.selected.join(',');
             });
@@ -81,7 +85,7 @@
 
             collectSelectOptions = function(input) {
               var choices, extras, extrasMatch, key, match, options, possibleValues, regex, type, value;
-              possibleValues = scope.$eval(attrs.possibleValues);
+              possibleValues = scope.possibleValues;
               choices = {};
               extras = {};
               options = [];
