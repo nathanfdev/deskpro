@@ -25,7 +25,7 @@ define ->
 														<h3 style="font-weight:bold;">
 																<span ng-repeat="text in texts">
 																	<span style="vertical-align:middle;" ng-bind-html="text"></span>
-																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;" ng-change="changeLinkParams()">
+																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:100px;" ng-change="changeLinkParams()">
 																		<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
 																			{{ option.label }}
 																		</option>
@@ -72,6 +72,9 @@ define ->
 
 				buildDirectiveVariables = (value) ->
 
+					key = 0
+					params = $state.params.params.split(',')
+
 					lastPiece = value
 					regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g
 
@@ -79,7 +82,8 @@ define ->
 						scope.texts.push(match[1])
 						collected = collectSelectOptions(match[3])
 						scope.options.push(collected.options)
-						scope.selected.push(collected.selected)
+						scope.selected.push(params[key])
+						key++
 
 						# case when text that continues after last select box
 						lastPiece = lastPiece.replace(match[1], '').replace(match[2], '')
@@ -122,13 +126,6 @@ define ->
 							choices = possibleValues.orders[type]
 							extrasMatch = RegExp.$2
 
-					# information about default group...
-
-					if extrasMatch
-						regex = /,([a-zA-Z0-9_ ]+):([^,]+)/g
-						while match = regex.exec(extrasMatch)
-							extras[$.trim(match[1])] = $.trim(match[2])
-
 					# constructing selects...
 
 					for own key, value of choices
@@ -136,7 +133,6 @@ define ->
 
 					return {
 						options: options
-						selected: (if extras.default then extras.default else options[0].value)
 					}
 
 				###

@@ -27,7 +27,7 @@
             valueToDecorate: '=',
             reportId: '='
           },
-          template: "<h3 style=\"font-weight:bold;\">\n		<span ng-repeat=\"text in texts\">\n			<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n			<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\" ng-change=\"changeLinkParams()\">\n				<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n					{{ option.label }}\n				</option>\n			</select>\n		</span>\n</h3>\n",
+          template: "<h3 style=\"font-weight:bold;\">\n		<span ng-repeat=\"text in texts\">\n			<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n			<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:100px;\" ng-change=\"changeLinkParams()\">\n				<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n					{{ option.label }}\n				</option>\n			</select>\n		</span>\n</h3>\n",
           link: function(scope, element, attrs) {
             /*
             
@@ -65,14 +65,17 @@
             */
 
             buildDirectiveVariables = function(value) {
-              var collected, lastPiece, match, regex;
+              var collected, key, lastPiece, match, params, regex;
+              key = 0;
+              params = $state.params.params.split(',');
               lastPiece = value;
               regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g;
               while (match = regex.exec(value)) {
                 scope.texts.push(match[1]);
                 collected = collectSelectOptions(match[3]);
                 scope.options.push(collected.options);
-                scope.selected.push(collected.selected);
+                scope.selected.push(params[key]);
+                key++;
                 lastPiece = lastPiece.replace(match[1], '').replace(match[2], '');
               }
               lastPiece = lastPiece.replace('[', '').replace(']', '');
@@ -84,7 +87,7 @@
             */
 
             collectSelectOptions = function(input) {
-              var choices, extras, extrasMatch, key, match, options, possibleValues, regex, type, value;
+              var choices, extras, extrasMatch, key, options, possibleValues, type, value;
               possibleValues = scope.possibleValues;
               choices = {};
               extras = {};
@@ -111,12 +114,6 @@
                   extrasMatch = RegExp.$2;
                 }
               }
-              if (extrasMatch) {
-                regex = /,([a-zA-Z0-9_ ]+):([^,]+)/g;
-                while (match = regex.exec(extrasMatch)) {
-                  extras[$.trim(match[1])] = $.trim(match[2]);
-                }
-              }
               for (key in choices) {
                 if (!__hasProp.call(choices, key)) continue;
                 value = choices[key];
@@ -126,8 +123,7 @@
                 });
               }
               return {
-                options: options,
-                selected: (extras["default"] ? extras["default"] : options[0].value)
+                options: options
               };
             };
             /*
