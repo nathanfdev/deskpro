@@ -11720,3 +11720,50 @@ section.report-wrapper .no-data h3 {
   background-color: #FFD3C7;
   border: 1px solid #FF9C8C;
 }
+
+.query-editor-builder dl {
+  margin: 5px 0;
+}
+
+.query-editor-builder dt {
+  display: inline-block;
+  *display: inline;
+  width: 15%;
+  padding-top: 5px;
+  vertical-align: top;
+  *zoom: 1;
+}
+
+.query-editor-builder dt.no-pad {
+  padding-top: 0;
+}
+
+.query-editor-builder dd {
+  display: inline-block;
+  *display: inline;
+  width: 80%;
+  *zoom: 1;
+}
+
+.query-editor-builder dd input[type="text"] {
+  width: 98%;
+}
+
+.query-editor-builder dd textarea {
+  width: 99%;
+  resize: none;
+}
+
+.query-editor-builder .limit input[type] {
+  display: inline-block;
+  width: 50px;
+}
+
+.query-editor-builder .limit span {
+  margin-left: 10px;
+}
+
+.query-editor-text textarea {
+  width: 99%;
+  resize: none;
+}

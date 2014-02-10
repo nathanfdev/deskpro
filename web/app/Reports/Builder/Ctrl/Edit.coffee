@@ -17,8 +17,9 @@ define [
 				@reportType = 'custom'
 
 			@report = null
+			@query_parts = null
 			@rendered_result = null
-
+			@show_query_editor = false
 
 		###
  	#
@@ -26,12 +27,20 @@ define [
 		initialLoad: ->
 			promise = @reportData.loadEditReportData(@$stateParams.id || null, @$stateParams.params || null).then( (data) =>
 
-				@report  = data.report
 				@rendered_result = @$sce.trustAsHtml(data.rendered_result)
-				@form = data.form
 				@group_params = @$scope.$parent.ListCtrl.group_params
+				@query_parts = data.query_parts
+				@report  = data.report
+				@form = data.form
 			)
 			return promise
+
+
+		###
+ 	# Shows / hides query editor
+ 	###
+ 	toggleQueryEditor: ->
+			@show_query_editor = !@show_query_editor
 
 
 		###

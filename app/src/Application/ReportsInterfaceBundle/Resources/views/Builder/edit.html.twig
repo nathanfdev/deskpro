@@ -15,9 +15,21 @@
 			</div>
 
 			<div class="panel panel-innertable">
-				<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+				<button class="btn btn-default">CSV</button>
+				<button class="btn btn-default">PDF</button>
+				<button class="btn btn-default">Print</button>
+				<button class="btn btn-success" ng-click="EditCtrl.toggleQueryEditor()"
+						ng-if="!EditCtrl.show_query_editor">
+					Show Query
+				</button>
+				<button class="btn btn-success" ng-click="EditCtrl.toggleQueryEditor()"
+						ng-if="EditCtrl.show_query_editor">
+					Hide Query
+				</button>
+			</div>
 
-				</form>
+			<div ng-if="EditCtrl.show_query_editor" class="panel panel-innertable">
+				{% include 'ReportsInterfaceBundle:Builder:edit-query-editor.html.twig' %}
 			</div>
 
 			<div class="panel panel-innertable">
