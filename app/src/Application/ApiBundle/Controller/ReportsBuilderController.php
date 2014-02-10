@@ -124,6 +124,7 @@ class ReportsBuilderController extends AbstractController
 		$reports_builder = $this->container->getSystemService('reports_builder');
 		$report          = $reports_builder->getById($id);
 		$rendered_result = $reports_builder->getRenderedResult($id);
+		$query_parts     = $reports_builder->getQueryParts($id);
 
 		if (!$report) {
 
@@ -133,6 +134,7 @@ class ReportsBuilderController extends AbstractController
 		return $this->createApiResponse(
 			array(
 				 'rendered_result' => $rendered_result,
+				 'query_parts'     => $query_parts,
 				 'report'          => $this->getApiData($report),
 				 'type'            => $report->is_custom ? 'custom' : 'builtIn',
 			)

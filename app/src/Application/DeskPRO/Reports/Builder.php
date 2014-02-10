@@ -128,6 +128,31 @@ class Builder
 
 
 	/**
+	 * @param int $id
+	 * @return array
+	 */
+	public function getQueryParts($id)
+	{
+		$parts = array();
+
+		$report = $this->repository->find($id);
+
+		$params = $this->getParamsInput('params');
+		$query  = $report->query;
+
+		try {
+			$compiler  = new Compiler();
+			$input     = $compiler->replacePlaceholders($query, $params);
+			$statement = $compiler->lexAndParse($input);
+			$parts     = $this->getDpqlPartsForInput($statement);
+		} catch(\Exception $e) {
+		}
+
+		return $parts;
+	}
+
+
+	/**
 	 * @param string $name
 	 * @return array
 	 */
@@ -152,6 +177,42 @@ class Builder
 		}
 
 		return $params;
+	}
+
+
+	/**
+	 * @param Display $statement
+	 * @return array
+	 */
+	protected function getDpqlPartsForInput(Display $statement = null)
+	{
+		if (!$statement) {
+			return array(
+				'display' => 'TABLE',
+				'select'  => '',
+				'from'    => '',
+				'where'   => '',
+				'splitBy' => '',
+				'groupBy' => '',
+				'orderBy' => '',
+				'limit'   => '',
+				'offset'  => ''
+			);
+		}
+
+		$parts = $statement->getDpqlParts();
+
+		return array(
+			'display' => $parts['DISPLAY'],
+			'select'  => $parts['SELECT'],
+			'from'    => $parts['FROM'],
+			'where'   => $parts['WHERE'],
+			'splitBy' => $parts['SPLIT'],
+			'groupBy' => $parts['GROUP'],
+			'orderBy' => $parts['ORDER'],
+			'limit'   => $parts['LIMIT'] ? : '',
+			'offset'  => $parts['OFFSET'] ? : ''
+		);
 	}
 
 
