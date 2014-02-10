@@ -701,7 +701,7 @@ class ServerController extends AbstractController
 		}
 
 		$filestorage_path = $this->container->getBlobDir();
-		$use_fs = ($this->container->getSetting('core.filestorage_method') == 'fs');
+		$filestorage_method = $this->container->getSetting('core.filestorage_method');
 
 		$moving_id = $this->container->getSetting('core.filesystem_move_from_id');
 		if ($moving_id) {
@@ -745,7 +745,7 @@ class ServerController extends AbstractController
 			'effective_max_display' => $effect_max_display,
 
 			'filestorage_path' => $filestorage_path,
-			'use_fs' => $use_fs,
+			'filestorage_method' => $filestorage_method,
 			'moving_id' => $moving_id,
 			'count_done' => $count_done,
 			'count_todo' => $count_todo,
@@ -760,24 +760,26 @@ class ServerController extends AbstractController
 	{
 		$this->ensureRequestToken();
 
-		$use_fs = ($this->container->getSetting('core.filestorage_method') == 'fs');
-		if ($use_fs) {
-			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', 'db');
-			$this->db->executeUpdate("
-				UPDATE blobs
-				SET storage_loc_pref = 'db'
-				WHERE storage_loc != 'db'
-			");
-		} else {
-			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', 'fs');
-			$this->db->executeUpdate("
-				UPDATE blobs
-				SET storage_loc_pref = 'fs'
-				WHERE storage_loc != 'fs'
-			");
+		$current_method = $this->container->getSetting('core.filestorage_method');
+		$use_method = $this->in->getString('filestorage_method');
+
+		if (!in_array($use_method, array('db', 'fs', 's3'))) {
+			$use_method = $current_method;
 		}
 
-		$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', '-1');
+		if ($current_method != $use_method) {
+			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', $use_method);
+			$this->db->executeUpdate("
+				UPDATE blobs
+				SET storage_loc_pref = '$use_method'
+				WHERE storage_loc != '$use_method'
+			");
+			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', '-1');
+		}
+
+		$this->container->getSettingsHandler()->setSetting('core.filestorage_s3_key', $this->in->getString('filestorage_s3_key'));
+		$this->container->getSettingsHandler()->setSetting('core.filestorage_s3_secret', $this->in->getString('filestorage_s3_secret'));
+		$this->container->getSettingsHandler()->setSetting('core.filestorage_s3_bucket', $this->in->getString('filestorage_s3_bucket'));
 
 		return $this->redirectRoute('admin_server_attach');
 	}

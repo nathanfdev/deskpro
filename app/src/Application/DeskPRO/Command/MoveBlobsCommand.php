@@ -86,6 +86,9 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		}
 
 		if (!$input->getOption('run')) {
+			// Cancel any automatic one currently running
+			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
+
 			$t = array('Adapter', 'Count', 'Waiting Count', 'Is Installed');
 			$counts = App::getDb()->fetchAllKeyValue("SELECT storage_loc, COUNT(*) AS count FROM blobs GROUP BY storage_loc");
 			$counts2 = App::getDb()->fetchAllKeyValue("SELECT storage_loc_pref, COUNT(*) AS count FROM blobs WHERE storage_loc_pref IS NOT NULL GROUP BY storage_loc_pref");

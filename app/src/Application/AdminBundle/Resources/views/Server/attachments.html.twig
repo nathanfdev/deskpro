@@ -14,16 +14,13 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% if use_fs %}
+			{% if filestorage_method == 'fs' %}
 				<tr>
 					<td width="200">{{ phrase('admin.server.storage_mechanism') }}</td>
 					<td>
 						{{ phrase('admin.server.file_storage') }}
 						<div style="font-size: 11px">
-
 							{{ phrase('admin.server.notice_most_efficient_storage') }}
-                            {% set phrase_link %}<a class="switch-trigger">{{ phrase('admin.server.switch_to_database_storage') }}</a>{% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.note_recommended_link', {'link':phrase_link}, true) }}{% endif %}
 						</div>
 					</td>
 				</tr>
@@ -31,34 +28,46 @@
 					<td>{{ phrase('admin.server.storage_path') }}</td>
 					<td>{{ filestorage_path }}</td>
 				</tr>
-			{% else %}
+			{% elseif filestorage_method == 'db' %}
 				<tr>
 					<td>{{ phrase('admin.server.storage_mechanism') }}</td>
 					<td>
 						{{ phrase('admin.server.database_storage') }}
 						<div style="font-size: 11px">
-							{{ phrase('admin.server.databases_not_recommended') }}
-                            {% set phrase_link %}
-                            <a class="switch-trigger">{{ phrase('admin.server.switching_to_fs_storage') }}</a>
-                            {% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.recommend_fs_storage', {'link':phrase_link}, true) }}{% endif %}
+							Databases are not meant to store files. We recommend switching to the filesystem storage mechanism where
+							files are stored as files on your server.
 						</div>
 					</td>
+				</tr>
+			{% elseif filestorage_method == 's3' %}
+				<tr>
+					<td>{{ phrase('admin.server.storage_mechanism') }}</td>
+					<td>
+						Amazon S3 storage.
+						<div style="font-size: 11px">
+							Blobs are being uploaded to Amazon S3.
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>S3 Bucket Name:</td>
+					<td>{{ app.getSetting('core.filestorage_s3_bucket') }}</td>
 				</tr>
 			{% endif %}
 			{% if moving_id %}
 				<tr>
 					<td colspan="4">
-                        {% if use_fs %}
-                            {% set phrase_part = phrase('admin.server.db_to_fs') %}
-                        {% else %}
-                            {% set phrase_part = phrase('admin.server.fs_to_db') %}
-                        {% endif %}
-                        {{ phrase('admin.server.currently_transferring', {'subphrase':phrase_part}, true) }}
+						You have recently changed the storage mechanism. Existing blobs are currently being moved from the old
+						mechanism into the new mechanism.
                         {{ phrase('admin.server.files_have_been_processed', {'count_done':count_done, 'count_todo':count_todo, 'percent':count_perc}) }}
 					</td>
 				</tr>
 			{% endif %}
+			<tr>
+				<td colspan="4" style="text-align: center">
+					<button class="clean-white switch-trigger">Edit Storage Mechanism</button>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 </div><br />
@@ -260,42 +269,89 @@
 	</table>
 </div><br />
 
-{% if not moving_id %}
-<div id="switch_confirm" style="display: none; width: 500px; height: 300px">
+<div id="switch_confirm" style="display: none; width: 700px; height: 600px">
+	<form action="{{ path('admin_server_attach_switch') }}">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>{{ phrase('admin.server.change_storage_mechanism') }}</h4>
+		<h4>Storage Mechanism</h4>
 	</div>
 	<div class="overlay-content">
-		{% if use_fs %}
-			<p style="margin-bottom: 10px;">{{ phrase('admin.server.confirm_switch_to_db', {'path':filestorage_path}) }}</p>
-		{% else %}
-			<p style="margin-bottom: 10px;">{{ phrase('admin.server.confirm_switch_to_fs', {'path':filestorage_path}) }}</p>
-		{% endif %}
-
-		<p style="margin: 10px; background-color: #F5F5F5; padding: 10px;">
-            {{ phrase('admin.server.count_files_will_be_used', {'count':count_todo, 'size':total_size_readable}) }}
-			<br /><br />
-			{{ phrase('admin.server.notice_transfer_is_gradually_done') }}
-		</p>
+		<div style="margin-bottom: 25px; padding: 8px; border-radius: 3px;">
+			<label style="font-size: 120%; font-weight: bold; margin-bottom: 9px; display: block;"><input type="radio" name="filestorage_method" value="db" {% if app.getSetting('core.filestorage_method') == 'db' %}checked{% endif %} /> Database</label>
+			<p>
+				The database storage mechanism stores binary data in your database. This is the easiest to use and the most portable and requires no special setup.
+			</p>
+		</div>
+		<div style="margin-bottom: 25px; padding: 8px; border-radius: 3px;">
+			<label style="font-size: 120%; font-weight: bold; margin-bottom: 9px; display: block;"><input type="radio" name="filestorage_method" value="fs" {% if app.getSetting('core.filestorage_method') == 'fs' %}checked{% endif %} /> Filesystem</label>
+			<p>
+				The filesystem storage mechanism stores binary data as files in the filesystem. This is more efficient than storing files
+				in the database. Using the filesystme storage mechanism is recommended.
+			</p>
+			<p class="show_selected" style="margin-top: 9px; display: none;">
+				Files will be saved to: {{ filestorage_path }}<br/>
+				(Change this path by updating the 'dir_data' option in config.php)
+			</p>
+		</div>
+		<div style="margin-bottom: 25px; padding: 8px; border-radius: 3px;">
+			<label style="font-size: 120%; font-weight: bold; margin-bottom: 9px; display: block;"><input type="radio" name="filestorage_method" value="s3" {% if app.getSetting('core.filestorage_method') == 's3' %}checked{% endif %} /> Amazon S3</label>
+			<p>
+				This storage mechanism uploads files to Amazon S3 and also serves files directly from Amazon S3.
+			</p>
+			<div class="show_selected" style="margin-top: 9px; display: none;">
+				<table>
+					<tr>
+						<td style="padding: 5px;">Your Amazon S3 Access Key:</td>
+						<td style="padding: 5px;"><input type="text" name="filestorage_s3_key" value="{{ app.getSetting('core.filestorage_s3_key') }}" /></td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;">Your Amazon S3 Secret Key:</td>
+						<td style="padding: 5px;"><input type="text" name="filestorage_s3_secret" value="{{ app.getSetting('core.filestorage_s3_secret') }}" /></td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;">Target Amazon S3 Bucket Name:</td>
+						<td style="padding: 5px;"><input type="text" name="filestorage_s3_bucket" value="{{ app.getSetting('core.filestorage_s3_bucket') }}" /></td>
+					</tr>
+				</table>
+				<br/><br/>
+				Refer to the DeskPRO knowledgebase for more information on Amazon S3 storage:<br/>
+				<a href="https://support.deskpro.com/kb/articles/178" target="_blank">https://support.deskpro.com/kb/articles/178</a>
+			</div>
+		</div>
 	</div>
 	<div class="overlay-footer">
-		<form action="{{ path('admin_server_attach_switch') }}">
-			{{ form_token() }}
-            {% if use_fs %}{% set phrase_part = phrase('admin.server.db') %}{% else %}{% set phrase_part = phrase('admin.server.fs') %}{% endif %}
-			<button class="clean-white">{{ phrase('admin.server.btn_confirm_switch', {'subphrase':phrase_part}, true) }}</button>
-		</form>
+		{{ form_token() }}
+		{% if use_fs %}{% set phrase_part = phrase('admin.server.db') %}{% else %}{% set phrase_part = phrase('admin.server.fs') %}{% endif %}
+		<button class="clean-white">{{ phrase('admin.server.btn_confirm_switch', {'subphrase':phrase_part}, true) }}</button>
 	</div>
+	</form>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
+	var overlayEl = $('#switch_confirm');
 	var overlay = new DeskPRO.UI.Overlay({
 		triggerElement: $('.switch-trigger'),
-		contentElement: $('#switch_confirm')
+		contentElement: overlayEl
 	});
+
+	var updateSelection = function() {
+		var optEl = overlayEl.find('input[type="radio"]:checked').first();
+		if (!optEl[0]) return;
+
+		overlayEl.find('.show_selected').hide();
+		overlayEl.find('.section_on').css('background', '').removeClass('section_on');
+
+		optEl.closest('div').addClass('section_on').css('background', '#ededed');
+		optEl.closest('div').find('.show_selected').show();
+	};
+
+	overlayEl.find('input[type="radio"]').on('click', function() {
+		updateSelection();
+	});
+
+	updateSelection();
 });
 </script>
-{% endif %}
 
 {% endblock %}
