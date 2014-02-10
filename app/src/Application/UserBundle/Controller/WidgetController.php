@@ -379,7 +379,10 @@ class WidgetController extends AbstractController
 			$this->db->update('chat_conversations', array('is_window' => 1), array('id' => $convo->getId()));
 		}
 
-		$departments = $this->container->getDataService('Department')->getOnlineChatDepartments($sessionObj->getPerson() ?: $this->person);
+		$departments = $this->container->getDataService('Department')->getOnlineChatDepartments(
+			$sessionObj->getPerson() ?: $this->person,
+			$this->in->getCleanValueArray('department_ids', 'uint', 'discard') ?: null
+		);
 		if (!count($departments) && !$convo) {
 			// no agents online in any departments the user can view
 			return $this->renderLoginOrPermissionError();

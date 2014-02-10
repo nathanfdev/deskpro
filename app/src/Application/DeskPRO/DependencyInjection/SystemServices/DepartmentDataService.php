@@ -220,11 +220,11 @@ class DepartmentDataService extends BaseRepositoryService
 		}
 	}
 
-	public function getOnlineChatDepartments(\Application\DeskPRO\Entity\Person $person_context)
+	public function getOnlineChatDepartments(\Application\DeskPRO\Entity\Person $person_context, array $only_ids = null)
 	{
 		$key = $person_context->getId();
 
-		if (isset($this->filtered_chat_nodes[$key])) {
+		if (isset($this->filtered_chat_nodes[$key]) && !$only_ids) {
 			return $this->filtered_chat_nodes[$key];
 		}
 
@@ -244,12 +244,20 @@ class DepartmentDataService extends BaseRepositoryService
 		}
 
 		$online_dep_ids = array_unique($online_dep_ids, \SORT_NUMERIC);
+
+		// We only want these specific IDs
+		if ($only_ids) {
+			$online_dep_ids = array_intersect($online_dep_ids, $only_ids);
+		}
+
 		if ($online_dep_ids) {
 			$online_dep_ids = array_combine($online_dep_ids, $online_dep_ids);
 		}
 
 		if (!$online_dep_ids) {
-			$this->filtered_nodes[$key] = array();
+			if (!$only_ids) {
+				$this->filtered_nodes[$key] = array();
+			}
 			return array();
 		}
 
@@ -260,8 +268,13 @@ class DepartmentDataService extends BaseRepositoryService
 			return $person_context->getPermissionsManager()->Departments->isAllowed($c->getId(), 'chat', 'full');
 		};
 
-		$this->filtered_nodes[$key] = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
-		return $this->filtered_nodes[$key];
+		$proxy = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
+
+		if (!$only_ids) {
+			$this->filtered_nodes[$key] = $proxy;
+		}
+
+		return $proxy;
 	}
 
 	public function getRootNodes()
