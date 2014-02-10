@@ -24,6 +24,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="task-input">
 			<input type="text"   class="input-title" name="newtask[%baseId%][title]" value="" class="task-title" placeholder="{{ phrase('agent.tasks.task_description') }}" />
 			<input type="hidden" class="input-date-due" name="newtask[%baseId%][date_due]" value="" />
+			<input type="hidden" class="input-date-time" name="newtask[%baseId%][time_due]" value="" />
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="1" />
 			<input type="hidden" class="input-ticket-id" name="newtask[%baseId%][ticket_id]" value="0" />
@@ -32,6 +33,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="task-info">
 			<ul>
 				<li class="noval opt-trigger date_due"><label>{{ phrase('agent.tasks.no_due_date') }}</label><span class="drop-icon"></span></li>
+				<li class="noval opt-trigger time_due" style="display: none;"><label>{{ phrase('agent.tasks.no_due_time') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger visibility"><label>{{ phrase('agent.general.public') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
 					<label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span>

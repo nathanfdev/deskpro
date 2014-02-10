@@ -458,6 +458,19 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		return $data;
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function hasDueTime()
+	{
+		if (!$this->date_due) {
+			return false;
+		}
+
+		return $this->date_due->format('H:i:s') !== '23:59:59';
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

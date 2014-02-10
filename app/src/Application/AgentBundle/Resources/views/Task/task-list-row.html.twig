@@ -22,6 +22,7 @@
 		<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
 			<ul>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}{{ phrase('agent.tasks.no_due_date') }}{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger time_due" style="{% if not task.date_due %}display: none;"{% endif %}"><label>{% if not task.hasDueTime() %}{{ phrase('agent.tasks.no_due_time') }}{% else %}{{ task.date_due|date('H:i') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger visibility"><label>{% if task.visibility %}{{ phrase('agent.general.public') }}{% else %}{{ phrase('agent.general.private') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; position: relative;">
 						<label>

@@ -24,5 +24,6 @@
 	'agent.tasks.task_has_deal_x'    => 'Task linked to: Deal "{{label}}"',
 	'agent.tasks.task_has_ticket_x'  => 'Task linked to: Ticket "{{label}}"',
 	'agent.tasks.tasks_i_delegated'  => 'Tasks I Delegated',
-	'agent.tasks.team_assigned_by'   => 'Your team was assigned to this task by {{name}',
+	'agent.tasks.team_assigned_by'   => 'Your team was assigned to this task by {{name}}',
+	'agent.tasks.no_due_time'        => 'No specific time',
 );

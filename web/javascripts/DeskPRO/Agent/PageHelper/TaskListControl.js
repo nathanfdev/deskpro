@@ -127,6 +127,70 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			openForEl = $(this).closest('article.task');
 			statusMenu.open(ev);
 		});
+		el.on('click', '.opt-trigger.time_due', function(ev) {
+
+			openForEl = $(this).closest('article.task');
+			var row = openForEl;
+			var timeLi = $(this).closest('ul').find('.time_due');
+			var label = timeLi.find('label');
+
+			var optOverlay = $('<div class="field-overlay"><div class="close-trigger"></div><select class="time_hour"><option value="NONE"></option></select>:<select class="time_min"><option value="NONE"></option></select></div>');
+			var backdrop = $('<div class="dp-popover-backdrop"></div>');
+			var hourEl = optOverlay.find('.time_hour');
+			var minEl = optOverlay.find('.time_min');
+
+			for (var i = 0; i <= 23; i++) {
+				var opt = $('<option></option>');
+				opt.text(i < 10 ? '0' + i : i+'');
+				opt.val(i);
+				opt.appendTo(hourEl);
+			}
+			for (var i = 0; i <= 55; i += 5) {
+				var opt = $('<option></option>');
+				opt.text(i < 10 ? '0' + i : i+'');
+				opt.val(i);
+				opt.appendTo(minEl);
+			}
+
+			optOverlay.css({
+				'z-idnex': 9999999,
+				left: $(this).offset().left,
+				top: $(this).offset().top
+			});
+			backdrop.css({
+				'z-idnex': 9999998
+			});
+			optOverlay.appendTo('body');
+			backdrop.appendTo('body');
+
+			var close = function() {
+				var hourVal = hourEl.find(':selected').val();
+				var minVal  = minEl.find(':selected').val();
+
+				var setTime, setTimeDisplay;
+
+				if (hourVal === 'NONE') {
+					setTime = '';
+					setTimeDisplay = 'No specific time';
+				} else {
+					hourVal = parseInt(hourVal);
+					minVal = parseInt(minVal) || 0;
+
+					setTime = hourVal + ':' + minVal;
+					setTimeDisplay = (hourVal < 10 ? '0'+hourVal : hourVal) + ':' + (minVal < 10 ? '0'+minVal : minVal);
+				}
+
+				label.text(setTimeDisplay);
+
+				sendUpdate(openForEl, 'time_due', setTime);
+
+				optOverlay.remove();
+				backdrop.remove();
+			};
+
+			backdrop.on('click', close);
+			optOverlay.find('.close-trigger').on('click', close);
+		});
 		el.on('click', '.opt-trigger.date_due', function(ev) {
 			openForEl = $(this).closest('article.task');
 
