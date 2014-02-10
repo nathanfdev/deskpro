@@ -48,6 +48,8 @@ define [
  	# This method is called when user clicks button named 'Test' in query builder form
  	###
 		testReport: ->
+			@startSpinner('test_report')
+
 			promise = @Api.sendPostJson('/reports/builder/test/' + @report.id, {
 				parts: @query_parts
 			})
@@ -58,6 +60,8 @@ define [
 				if data.rendered_result
 					@query_error = null
 					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
+
+				@stopSpinner('test_report', true)
 			)
 
 

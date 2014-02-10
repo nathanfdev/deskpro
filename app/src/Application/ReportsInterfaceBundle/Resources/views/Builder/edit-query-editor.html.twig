@@ -18,7 +18,10 @@
 		<div dp-tab-body="query.editor.builder">
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
-					<div id="query-builder" class="query-editor-builder">
+					<span dp-show-spinning="test_report">
+						<i class="spinner-flat"></i>
+					</span>
+					<div dp-hide-spinning="test_report" id="query-builder" class="query-editor-builder"  dp-hide-spinning="saving">
 						<dl>
 							<dt class="no-pad">DISPLAY</dt>
 							<dd>

@@ -62,13 +62,14 @@
       };
 
       /*
-       	# This method is called when user clicks button named 'Test' below query builder form
+       	# This method is called when user clicks button named 'Test' in query builder form
       */
 
 
       Reports_Builder_Ctrl_Edit.prototype.testReport = function() {
         var promise,
           _this = this;
+        this.startSpinner('test_report');
         promise = this.Api.sendPostJson('/reports/builder/test/' + this.report.id, {
           parts: this.query_parts
         });
@@ -78,8 +79,9 @@
           }
           if (data.rendered_result) {
             _this.query_error = null;
-            return _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
+            _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
           }
+          return _this.stopSpinner('test_report', true);
         });
       };
 
