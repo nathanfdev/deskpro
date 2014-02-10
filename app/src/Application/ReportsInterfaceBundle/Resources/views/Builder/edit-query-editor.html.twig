@@ -114,11 +114,11 @@
 
 		<div class="panel panel-fill indent">
 			<div class="panel-body">
-				<div class="query-error" style="display: none">
-					The following error occurred: <span id="query-error-message"></span>
+				<div class="query-error" ng-show="EditCtrl.query_error">
+					The following error occurred: <span id="query-error-message">{{ ng_var('EditCtrl.query_error') }}</span>
 				</div>
 
-				<button class="btn btn-success">
+				<button class="btn btn-success" ng-click="EditCtrl.testReport()">
 					Test Report
 				</button>
 

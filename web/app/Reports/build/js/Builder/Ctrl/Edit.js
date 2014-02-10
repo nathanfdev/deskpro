@@ -16,7 +16,7 @@
 
       Reports_Builder_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Reports_Builder_Ctrl_Edit.DEPS = ['$stateParams', '$sce'];
+      Reports_Builder_Ctrl_Edit.DEPS = ['$stateParams', '$sce', 'Api'];
 
       Reports_Builder_Ctrl_Edit.prototype.init = function() {
         if (this.$stateParams.type === 'builtIn') {
@@ -30,6 +30,7 @@
         this.report = null;
         this.query_parts = null;
         this.rendered_result = null;
+        this.query_error = null;
         return this.show_query_editor = false;
       };
 
@@ -58,6 +59,28 @@
 
       Reports_Builder_Ctrl_Edit.prototype.toggleQueryEditor = function() {
         return this.show_query_editor = !this.show_query_editor;
+      };
+
+      /*
+       	# This method is called when user clicks button named 'Test' below query builder form
+      */
+
+
+      Reports_Builder_Ctrl_Edit.prototype.testReport = function() {
+        var promise,
+          _this = this;
+        promise = this.Api.sendPostJson('/reports/builder/test/' + this.report.id, {
+          parts: this.query_parts
+        });
+        return promise.success(function(data) {
+          if (data.error) {
+            _this.query_error = data.error;
+          }
+          if (data.rendered_result) {
+            _this.query_error = null;
+            return _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
+          }
+        });
       };
 
       /*
