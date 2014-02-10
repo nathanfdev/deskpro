@@ -97,6 +97,7 @@
             data = {};
             data.report = result.data.report;
             data.rendered_result = result.data.rendered_result;
+            data.query_parts = result.data.query_parts;
             data.form = _this.getFormMapper().getFormFromModel(data);
             return deferred.resolve(data);
           }, function() {

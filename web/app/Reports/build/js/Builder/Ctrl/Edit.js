@@ -28,7 +28,9 @@
           this.reportType = 'custom';
         }
         this.report = null;
-        return this.rendered_result = null;
+        this.query_parts = null;
+        this.rendered_result = null;
+        return this.show_query_editor = false;
       };
 
       /*
@@ -40,12 +42,22 @@
         var promise,
           _this = this;
         promise = this.reportData.loadEditReportData(this.$stateParams.id || null, this.$stateParams.params || null).then(function(data) {
-          _this.report = data.report;
           _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
-          _this.form = data.form;
-          return _this.group_params = _this.$scope.$parent.ListCtrl.group_params;
+          _this.group_params = _this.$scope.$parent.ListCtrl.group_params;
+          _this.query_parts = data.query_parts;
+          _this.report = data.report;
+          return _this.form = data.form;
         });
         return promise;
+      };
+
+      /*
+       	# Shows / hides query editor
+      */
+
+
+      Reports_Builder_Ctrl_Edit.prototype.toggleQueryEditor = function() {
+        return this.show_query_editor = !this.show_query_editor;
       };
 
       /*

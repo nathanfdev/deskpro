@@ -68,6 +68,7 @@ define [
 					data = {}
 					data.report = result.data.report
 					data.rendered_result = result.data.rendered_result
+					data.query_parts = result.data.query_parts
 					data.form = @getFormMapper().getFormFromModel(data)
 
 					deferred.resolve(data)
