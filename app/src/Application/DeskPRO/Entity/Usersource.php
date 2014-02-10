@@ -94,9 +94,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\UsersourcePlugin|null
+	 * @var \Application\DeskPRO\Entity\AppInstance|null
 	 */
-	protected $usersource_plugin = null;
+	protected $app = null;
 
 	/**
 	 * @var \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
@@ -235,7 +235,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 
-		$metadata->mapManyToOne(array( 'fieldName' => 'usersource_plugin', 'targetEntity' => 'Application\\DeskPRO\\Entity\\UsersourcePlugin', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usersource_plugin_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usersource_plugin_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 

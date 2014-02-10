@@ -29,33 +29,68 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace deskpro_joomla\Usersource\Adapter;
 
-use Orb\Util\Arrays;
+use Orb\Auth\Identity;
+use Orb\Auth\Result;
+use \Application\DeskPRO\App;
 
-use Application\DeskPRO\App;
-use Doctrine\ORM\EntityRepository;
-
-class UsersourcePlugin extends AbstractEntityRepository
+class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 {
-	public function getPluginUsersources()
+	public function getFieldsFromIdentity(Identity $identity)
 	{
-		return $this->getEntityManager()->createQuery('
-			SELECT usp
-			FROM DeskPRO:UsersourcePlugin usp INDEX BY usp.id
-			ORDER BY usp.title
-		')->execute();
+		$info = $identity->getRawData();
+		return array(
+			'name'             => isset($info['name']) ? $info['name'] : '',
+			'email'            => isset($info['email']) ? $info['email'] : '',
+			'username'         => isset($info['username']) ? $info['username'] : '',
+			'email_confirmed'  => true,
+		);
 	}
 
-	public function getByUniqueKey($key)
+	/**
+	 * @return \Joomla\Usersource\Auth\Joomla
+	 */
+	protected function _createAuthAdapterObject()
 	{
-		return $this->getEntityManager()->createQuery('
-			SELECT usp
-			FROM DeskPRO:UsersourcePlugin usp
-			WHERE usp.unique_key = ?0
-		')->setParameters(array($key))->getOneOrNullResult();
+		$options = $this->usersource->options;
+		$options['joomla_url'] = App::getSetting("Joomla.joomla_url");
+		$options['joomla_secret'] = App::getSetting("Joomla.joomla_secret");
+
+		return new \deskpro_joomla\Usersource\Auth\Joomla($options);
+	}
+
+	/**
+	 * Find a user identity just by an email address.
+	 *
+	 * @param $id_input
+	 * @return \Orb\Auth\Identity|null
+	 */
+	public function findIdentityByInput($id_input)
+	{
+		$adapter = $this->getAuthAdapter();
+
+		$userinfo = $adapter->getUserInfoForEmail($id_input);
+		if (!$userinfo) {
+			return null;
+		}
+
+		return $adapter->getIdentityFromUserInfo($userinfo);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCapabilities()
+	{
+		return array(
+			'form_login',
+			'get_user_info',
+			'find_identity',
+			'share_session',
+		);
 	}
 }
