@@ -7,6 +7,8 @@ define [
 	'Reports/Directive/DpReportBuilderTitle',
 	'Admin/Main/Directive/DpTabBody',
 	'Admin/Main/Directive/DpTabBtn',
+	'Admin/Main/Directive/DpHideSpinning',
+	'Admin/Main/Directive/DpShowSpinning',
 ], (
 	DeskPRO_Directive_DpTimeWithUnit,
 	DeskPRO_Directive_DpStateMark,
@@ -16,6 +18,8 @@ define [
 	Reports_Directive_DpReportBuilderTitle,
 	Admin_Main_Directive_DpTabBody,
 	Admin_Main_Directive_DpTabBtn,
+	Admin_Main_Directive_DpHideSpinning,
+	Admin_Main_Directive_DpShowSpinning,
 ) ->
 	return (Module) ->
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
@@ -26,3 +30,5 @@ define [
 		Module.directive('dpReportBuilderTitle',           Reports_Directive_DpReportBuilderTitle)
 		Module.directive('dpTabBody',                      Admin_Main_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       Admin_Main_Directive_DpTabBtn)
+		Module.directive('dpHideSpinning',                 Admin_Main_Directive_DpHideSpinning)
+		Module.directive('dpShowSpinning',                 Admin_Main_Directive_DpShowSpinning)
