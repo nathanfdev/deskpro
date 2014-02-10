@@ -1172,7 +1172,9 @@ class TicketSearchController extends AbstractController
 			'person_field_defs'  => $person_field_defs,
 			'load_first'         => $this->in->getBool('load_first'),
 			'all_custom_fields'  => $all_custom_fields,
-			'user_all_custom_fields'  => $user_all_custom_fields
+			'user_all_custom_fields'  => $user_all_custom_fields,
+			'agent_signature'         => $this->person->getSignature(),
+			'agent_signature_html'    => $this->person->getSignatureHtml(),
 		));
 
         if($view_type == 'csv') {
