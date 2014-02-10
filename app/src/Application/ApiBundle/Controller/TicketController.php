@@ -171,6 +171,14 @@ class TicketController extends AbstractController
 			$ticket->person_email = $person->getPrimaryEmail();
 		}
 
+		$this->em->persist($ticket);
+
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$post_custom_fields = $this->getCustomFieldInput();
+		if (!empty($post_custom_fields)) {
+			$field_manager->saveFormToObject($post_custom_fields, $ticket);
+		}
+
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message->person = ($this->in->getBool('message_as_agent') ? $this->person : $person);
 		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
@@ -216,12 +224,6 @@ class TicketController extends AbstractController
 			$this->em->flush();
 
 			App::setCurrentPerson($this->person);
-
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
-			$post_custom_fields = $this->getCustomFieldInput();
-			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $ticket);
-			}
 
 			if ($labels) {
 				$ticket->getLabelManager()->setLabelsArray($labels, $this->em);
