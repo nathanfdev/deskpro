@@ -111,19 +111,49 @@ class Builder
 
 	/**
 	 * @param int $id
+	 * @param string|null $query
 	 * @return array
 	 */
-	public function getRenderedResult($id)
+	public function getRenderedResult($id, $query = null)
 	{
 		$report = $this->repository->find($id);
-
 		$params = $this->getParamsInput('params');
-		$query  = $report->query;
+
+		if ($query == 'from_request') {
+			$parts = App::getContainer()->getIn()->getArrayValue('parts');
+			$query = Display::getQueryStringFromParts($parts);
+		} else {
+			$query = $report->query;
+		}
 
 		$error   = false;
 		$results = $this->renderQuery($query, 'html', $error, $params);
 
 		return $results;
+	}
+
+
+	/**
+	 * @param int $id
+	 * @param string|null $query
+	 * @return boolean
+	 */
+	public function getErrors($id, $query = null)
+	{
+		$report = $this->repository->find($id);
+		$params = $this->getParamsInput('params');
+
+		if ($query == 'from_request') {
+			$parts = App::getContainer()->getIn()->getArrayValue('parts');
+			$query = Display::getQueryStringFromParts($parts);
+		} else {
+			$query = $report->query;
+		}
+
+		$error   = false;
+		$results = $this->renderQuery($query, 'html', $error, $params);
+
+		return $error;
 	}
 
 

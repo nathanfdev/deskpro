@@ -140,4 +140,36 @@ class ReportsBuilderController extends AbstractController
 			)
 		);
 	}
+
+
+	####################################################################################################################
+	# test report
+	####################################################################################################################
+
+	public function testAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+
+		if ($error = $reports_builder->getErrors($id, 'from_request')) {
+
+			return $this->createApiResponse(
+				array(
+					 'error' => $error
+				)
+			);
+		} else {
+
+			$rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
+
+			return $this->createApiResponse(
+				array(
+					 'rendered_result' => $rendered_result,
+				)
+			);
+		}
+	}
 }

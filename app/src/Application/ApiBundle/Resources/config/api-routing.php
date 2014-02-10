@@ -3934,6 +3934,13 @@ $collection->create('api_reports_builder_save', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_reports_builder_test', array(
+	'path'         => '/reports/builder/test/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:test',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
 ########################################################################################################################
 # Plugins
 ########################################################################################################################
