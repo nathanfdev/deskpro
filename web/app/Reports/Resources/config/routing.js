@@ -26,7 +26,7 @@ define(function() {
 
 	routes.push({
 		id: 'builder.create',
-		url: '/create',
+		url: '/create/{type:(?:custom)}',
 		templateName: 'Builder/edit.html',
 		controller: 'Reports_Builder_Ctrl_Edit'
 	});
