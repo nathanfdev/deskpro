@@ -33,6 +33,58 @@
 			</div>
 
 			<div class="panel panel-innertable">
+				<form role="form" name="form_props" ng-submit="EditCtrl.saveReport()">
+					<section class="dp-paneblock dp-editpane">
+						<article class="form-horizontal dp-form">
+							<div class="query-error" ng-show="EditCtrl.query_error">
+								The following error occurred:
+								<span id="query-error-message">
+									{{ ng_var('EditCtrl.query_error') }}
+								</span>
+							</div>
+							<div class="panel panel-fill indent">
+								<div class="panel-body">
+									<div class="form-group">
+										<div class="col-lg-3">
+											<h3>Description</h3>
+										</div>
+										<div class="col-lg-9">
+											<div class="inner-group" dp-error-class="form_props.description">
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</article>
+
+						<footer>
+							<div class="dp-content">
+								<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+									<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+									<ul>
+										<li ng-show="form_props.note.$error.required">Please set title for this report</li>
+									</ul>
+								</div>
+
+								<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+									<div dp-hide-spinning="saving">
+										<button class="btn btn-primary" dp-submit-form>
+											Save & Run
+										</button>
+									</div>
+									<div dp-show-spinning="saving">
+										<i class="spinner-flat"></i>
+									</div>
+								</div>
+							</div>
+						</footer>
+
+					</section>
+				</form>
+			</div>
+
+			<div class="panel panel-innertable">
 				<div class="panel-heading">
 					<h3>
 						<span>Results</span>

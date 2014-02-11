@@ -9,6 +9,8 @@ define [
 	'Admin/Main/Directive/DpTabBtn',
 	'Admin/Main/Directive/DpHideSpinning',
 	'Admin/Main/Directive/DpShowSpinning',
+	'Admin/Main/Directive/DpSubmitForm',
+	'Admin/Main/Directive/DpErrorClass',
 ], (
 	DeskPRO_Directive_DpTimeWithUnit,
 	DeskPRO_Directive_DpStateMark,
@@ -20,6 +22,8 @@ define [
 	Admin_Main_Directive_DpTabBtn,
 	Admin_Main_Directive_DpHideSpinning,
 	Admin_Main_Directive_DpShowSpinning,
+	Admin_Main_Directive_DpSubmitForm,
+	Admin_Main_Directive_DpErrorClass,
 ) ->
 	return (Module) ->
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
@@ -32,3 +36,5 @@ define [
 		Module.directive('dpTabBtn',                       Admin_Main_Directive_DpTabBtn)
 		Module.directive('dpHideSpinning',                 Admin_Main_Directive_DpHideSpinning)
 		Module.directive('dpShowSpinning',                 Admin_Main_Directive_DpShowSpinning)
+		Module.directive('dpSubmitForm',                   Admin_Main_Directive_DpSubmitForm)
+		Module.directive('dpErrorClass',                   Admin_Main_Directive_DpErrorClass)

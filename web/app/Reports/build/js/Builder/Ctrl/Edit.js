@@ -171,28 +171,52 @@
       };
 
       /*
-      		#
+      		# Saving report
       */
 
 
-      Reports_Builder_Ctrl_Edit.prototype.saveForm = function() {
+      Reports_Builder_Ctrl_Edit.prototype.saveReport = function() {
         var is_new, promise,
           _this = this;
+        if (!this.report.is_custom) {
+          throw new Error('Only custom reports could be saved');
+        }
         if (!this.$scope.form_props.$valid) {
           return;
         }
         is_new = !this.report.id;
-        promise = this.reportData.saveFormModel(this.report, this.form);
+        this.startSpinner('builder_loading');
+        this.startSpinner('query_loading');
         this.startSpinner('saving');
-        return promise.then(function() {
-          _this.stopSpinner('saving', true).then(function() {
-            return _this.Growl.success("Saved");
-          });
-          _this.skipDirtyState();
-          if (is_new) {
-            return _this.$state.go('builder.create');
-          }
+        promise = this.Api.sendPostJson('/reports/builder/' + this.report.id, {
+          parts: this.query_parts
         });
+        return promise.success(function(data) {
+          if (data.error) {
+            _this.query_error = data.error;
+          }
+          if (data.rendered_result) {
+            _this.query_error = null;
+            _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
+          }
+          _this.stopSpinner('builder_loading', true);
+          _this.stopSpinner('query_loading', true);
+          return _this.stopSpinner('saving', true);
+        });
+        /*promise = @reportData.saveFormModel(@report, @form)
+        
+        			@startSpinner('saving')
+        			promise.then( =>
+        				@stopSpinner('saving', true).then(=>
+        					@Growl.success("Saved")
+        				)
+        
+        				@skipDirtyState()
+        				if is_new
+        					@$state.go('builder.create')
+        			)
+        */
+
       };
 
       return Reports_Builder_Ctrl_Edit;

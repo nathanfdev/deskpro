@@ -139,16 +139,38 @@ define [
 
 
 		###
-		#
+		# Saving report
  	###
-		saveForm: ->
+		saveReport: ->
+
+			if !@report.is_custom then throw new Error('Only custom reports could be saved')
 
 			if not @$scope.form_props.$valid
 				return
 
 			is_new = !@report.id
 
-			promise = @reportData.saveFormModel(@report, @form)
+			@startSpinner('builder_loading')
+			@startSpinner('query_loading')
+			@startSpinner('saving')
+
+			promise = @Api.sendPostJson('/reports/builder/' + @report.id, {
+				parts: @query_parts
+			})
+
+			promise.success((data) =>
+				if data.error then @query_error = data.error
+
+				if data.rendered_result
+					@query_error = null
+					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
+
+				@stopSpinner('builder_loading', true)
+				@stopSpinner('query_loading', true)
+				@stopSpinner('saving', true)
+			)
+
+			###promise = @reportData.saveFormModel(@report, @form)
 
 			@startSpinner('saving')
 			promise.then( =>
@@ -159,6 +181,6 @@ define [
 				@skipDirtyState()
 				if is_new
 					@$state.go('builder.create')
-			)
+			)###
 
 	Reports_Builder_Ctrl_Edit.EXPORT_CTRL()
