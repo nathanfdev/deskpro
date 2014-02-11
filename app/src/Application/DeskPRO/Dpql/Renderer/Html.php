@@ -997,6 +997,7 @@ class Html extends AbstractRenderer
 					' . implode("\n", $graphCode) . '
 
 					chart.write("' . $id . '");
+					chart.invalidateSize();
 				});
 				</script>
 			';
