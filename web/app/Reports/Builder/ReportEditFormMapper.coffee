@@ -12,7 +12,9 @@ define [
 		getFormFromModel: (model) ->
 
 			form = {}
-			form.id = model.id
+			form.id = model.report.id
+			form.title = model.report.title
+			form.description = model.report.description
 
 			return form
 
@@ -23,7 +25,7 @@ define [
 		###
 		applyFormToModel: (model, formModel) ->
 
-			model.note = formModel.note
+			model.title = formModel.title
 
 
 		###
@@ -34,5 +36,7 @@ define [
 
 			postData = {}
 			postData.id = formModel.id
+			postData.title = formModel.title
+			postData.description = formModel.description
 
 			return postData

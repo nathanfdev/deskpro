@@ -170,17 +170,4 @@ define [
 				@stopSpinner('saving', true)
 			)
 
-			###promise = @reportData.saveFormModel(@report, @form)
-
-			@startSpinner('saving')
-			promise.then( =>
-				@stopSpinner('saving', true).then(=>
-					@Growl.success("Saved")
-				)
-
-				@skipDirtyState()
-				if is_new
-					@$state.go('builder.create')
-			)###
-
 	Reports_Builder_Ctrl_Edit.EXPORT_CTRL()

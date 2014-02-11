@@ -13,7 +13,9 @@
       ReportEditFormMapper.prototype.getFormFromModel = function(model) {
         var form;
         form = {};
-        form.id = model.id;
+        form.id = model.report.id;
+        form.title = model.report.title;
+        form.description = model.report.description;
         return form;
       };
 
@@ -24,7 +26,7 @@
 
 
       ReportEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
-        return model.note = formModel.note;
+        return model.title = formModel.title;
       };
 
       /*
@@ -37,6 +39,8 @@
         var postData;
         postData = {};
         postData.id = formModel.id;
+        postData.title = formModel.title;
+        postData.description = formModel.description;
         return postData;
       };
 
