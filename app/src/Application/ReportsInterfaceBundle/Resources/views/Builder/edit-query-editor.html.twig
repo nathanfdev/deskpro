@@ -1,13 +1,13 @@
 <section class="dp-paneblock dp-editpane">
 	<nav class="dp-blocktabs">
 		<ul>
-			<li class="active" dp-tab-btn="query.editor.builder">
+			<li class="active" dp-tab-btn="query.editor.builder"  ng-click="EditCtrl.switchToBuilder()">
 				<a href="#">
 					<i class="fa fa-pencil"></i> Builder
 				</a>
 			</li>
 			<li class="pipe">|</li>
-			<li dp-tab-btn="query.editor.query">
+			<li dp-tab-btn="query.editor.query" ng-click="EditCtrl.switchToQuery()">
 				<a href="#">
 					<i class="fa fa-users"></i> Query
 				</a>
@@ -18,10 +18,10 @@
 		<div dp-tab-body="query.editor.builder">
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
-					<span dp-show-spinning="test_report">
+					<span dp-show-spinning="builder_loading">
 						<i class="spinner-flat"></i>
 					</span>
-					<div dp-hide-spinning="test_report" id="query-builder" class="query-editor-builder"  dp-hide-spinning="saving">
+					<div dp-hide-spinning="builder_loading" id="query-builder" class="query-editor-builder">
 						<dl>
 							<dt class="no-pad">DISPLAY</dt>
 							<dd>
@@ -107,8 +107,12 @@
 		<div dp-tab-body="query.editor.query">
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
-					<div class="query-editor-text" id="query-text">
-						<textarea name="query" class="expander form-control" ng-model="EditCtrl.report.query" style="height: 100px;">
+					<span dp-show-spinning="query_loading">
+						<i class="spinner-flat"></i>
+					</span>
+					<div dp-hide-spinning="query_loading" class="query-editor-text" id="query-text">
+						<textarea name="query" class="expander form-control" ng-model="EditCtrl.report.query"
+								  style="height: 100px;">
 						</textarea>
 					</div>
 				</div>
@@ -118,7 +122,9 @@
 		<div class="panel panel-fill indent">
 			<div class="panel-body">
 				<div class="query-error" ng-show="EditCtrl.query_error">
-					The following error occurred: <span id="query-error-message">{{ ng_var('EditCtrl.query_error') }}</span>
+					The following error occurred: <span id="query-error-message">
+						{{ ng_var('EditCtrl.query_error') }}
+					</span>
 				</div>
 
 				<button class="btn btn-success" ng-click="EditCtrl.testReport()">

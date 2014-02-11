@@ -69,7 +69,8 @@
       Reports_Builder_Ctrl_Edit.prototype.testReport = function() {
         var promise,
           _this = this;
-        this.startSpinner('test_report');
+        this.startSpinner('builder_loading');
+        this.startSpinner('query_loading');
         promise = this.Api.sendPostJson('/reports/builder/test/' + this.report.id, {
           parts: this.query_parts
         });
@@ -81,7 +82,64 @@
             _this.query_error = null;
             _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
           }
-          return _this.stopSpinner('test_report', true);
+          _this.stopSpinner('builder_loading', true);
+          return _this.stopSpinner('query_loading', true);
+        });
+      };
+
+      /*
+      		# This method is called when user clicks on 'Query' tab inside query builder form
+      */
+
+
+      Reports_Builder_Ctrl_Edit.prototype.switchToQuery = function() {
+        var promise,
+          _this = this;
+        this.startSpinner('query_loading');
+        promise = this.Api.sendPostJson('/reports/builder/parse', {
+          currentType: 'builder',
+          inputType: 'builder',
+          newType: 'query',
+          query: this.report.query,
+          parts: this.query_parts
+        });
+        return promise.success(function(data) {
+          if (data.error) {
+            _this.query_error = data.error;
+          }
+          if (data.query) {
+            _this.query_error = null;
+            _this.report.query = data.query;
+          }
+          return _this.stopSpinner('query_loading', true);
+        });
+      };
+
+      /*
+      		# This method is called when user clicks on 'Builder' tab inside query builder form
+      */
+
+
+      Reports_Builder_Ctrl_Edit.prototype.switchToBuilder = function() {
+        var promise,
+          _this = this;
+        this.startSpinner('builder_loading');
+        promise = this.Api.sendPostJson('/reports/builder/parse', {
+          currentType: 'query',
+          inputType: 'query',
+          newType: 'builder',
+          query: this.report.query,
+          parts: this.query_parts
+        });
+        return promise.success(function(data) {
+          if (data.error) {
+            _this.query_error = data.error;
+          }
+          if (data.parts) {
+            _this.query_error = null;
+            _this.query_parts = data.parts;
+          }
+          return _this.stopSpinner('builder_loading', true);
         });
       };
 

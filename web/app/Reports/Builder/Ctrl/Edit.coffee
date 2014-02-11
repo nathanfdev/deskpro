@@ -48,7 +48,8 @@ define [
  	# This method is called when user clicks button named 'Test' in query builder form
  	###
 		testReport: ->
-			@startSpinner('test_report')
+			@startSpinner('builder_loading')
+			@startSpinner('query_loading')
 
 			promise = @Api.sendPostJson('/reports/builder/test/' + @report.id, {
 				parts: @query_parts
@@ -61,7 +62,58 @@ define [
 					@query_error = null
 					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
 
-				@stopSpinner('test_report', true)
+				@stopSpinner('builder_loading', true)
+				@stopSpinner('query_loading', true)
+			)
+
+
+		###
+		# This method is called when user clicks on 'Query' tab inside query builder form
+		###
+		switchToQuery: ->
+			@startSpinner('query_loading')
+
+			promise = @Api.sendPostJson('/reports/builder/parse', {
+				currentType: 'builder'
+				inputType: 'builder'
+				newType: 'query'
+				query: @report.query
+				parts: @query_parts
+			})
+
+			promise.success((data) =>
+				if data.error then @query_error = data.error
+
+				if data.query
+					@query_error = null
+					@report.query = data.query
+
+				@stopSpinner('query_loading', true)
+			)
+
+
+		###
+		# This method is called when user clicks on 'Builder' tab inside query builder form
+		###
+		switchToBuilder: ->
+			@startSpinner('builder_loading')
+
+			promise = @Api.sendPostJson('/reports/builder/parse', {
+				currentType: 'query'
+				inputType: 'query'
+				newType: 'builder'
+				query: @report.query
+				parts: @query_parts
+			})
+
+			promise.success((data) =>
+				if data.error then @query_error = data.error
+
+				if data.parts
+					@query_error = null
+					@query_parts = data.parts
+
+				@stopSpinner('builder_loading', true)
 			)
 
 
