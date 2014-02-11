@@ -57,6 +57,7 @@ class Builder
 	{
 		$this->em         = $em;
 		$this->repository = $this->em->getRepository('DeskPRO:ReportBuilder');
+		$this->in         = App::getContainer()->getIn();
 	}
 
 
@@ -120,7 +121,7 @@ class Builder
 		$params = $this->getParamsInput('params');
 
 		if ($query == 'from_request') {
-			$parts = App::getContainer()->getIn()->getArrayValue('parts');
+			$parts = $this->in->getArrayValue('parts');
 			$query = Display::getQueryStringFromParts($parts);
 		} else {
 			$query = $report->query;
@@ -144,7 +145,7 @@ class Builder
 		$params = $this->getParamsInput('params');
 
 		if ($query == 'from_request') {
-			$parts = App::getContainer()->getIn()->getArrayValue('parts');
+			$parts = $this->in->getArrayValue('parts');
 			$query = Display::getQueryStringFromParts($parts);
 		} else {
 			$query = $report->query;
@@ -154,6 +155,42 @@ class Builder
 		$results = $this->renderQuery($query, 'html', $error, $params);
 
 		return $error;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function parseInput()
+	{
+		$parts = $this->in->getArrayValue('parts');
+		$query = $this->in->getString('query');
+
+		$currentType = $this->in->getString('currentType');
+		$newType     = $this->in->getString('newType');
+
+		if ($currentType == 'builder' && $newType == 'query') {
+			$results = array('query' => Display::getQueryStringFromParts($parts));
+
+		} else if ($currentType == 'query' && $newType == 'builder') {
+			if (!$query) {
+				$results = array('parts' => $this->getDpqlPartsForInput());
+			} else {
+				try {
+					$compiler  = new Compiler();
+					$statement = $compiler->lexAndParse($query);
+					$results   = array('parts' => $this->getDpqlPartsForInput($statement));
+				} catch(DpqlException $e) {
+					$results = array('error' => $e->getMessage());
+				}
+			}
+		} else {
+			$results = array(
+				'error' => 'Unknown conversion action.'
+			);
+		}
+
+		return $results;
 	}
 
 
@@ -191,7 +228,7 @@ class Builder
 		if (isset($_REQUEST[$name])) {
 			$params = $_REQUEST[$name];
 		} else {
-			$params = App::getContainer()->getIn()->getRaw($name);
+			$params = $this->in->getRaw($name);
 		}
 
 		if (is_array($params)) {

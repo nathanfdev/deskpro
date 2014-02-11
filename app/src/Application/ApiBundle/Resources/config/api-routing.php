@@ -3941,6 +3941,12 @@ $collection->create('api_reports_builder_test', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_reports_builder_parse', array(
+	'path'         => '/reports/builder/parse',
+	'controller'   => 'ApiBundle:ReportsBuilder:parse',
+	'methods'      => array('POST'),
+));
+
 ########################################################################################################################
 # Plugins
 ########################################################################################################################
