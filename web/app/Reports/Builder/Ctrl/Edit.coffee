@@ -6,7 +6,7 @@ define [
 	class Reports_Builder_Ctrl_Edit extends ReportsBaseCtrl
 		@CTRL_ID   = 'Reports_Builder_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$stateParams', '$sce', 'Api']
+		@DEPS      = ['$stateParams', '$sce', 'Api', '$window']
 
 		init: ->
 			if(@$stateParams.type == 'builtIn')
@@ -115,6 +115,27 @@ define [
 
 				@stopSpinner('builder_loading', true)
 			)
+
+
+		###
+ 	# This method is called when user clicks on 'CSV' button
+ 	###
+		downloadCsv: ->
+			@$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + @report.id +  '/csv?API-TOKEN=' + window.DP_API_TOKEN
+
+
+		###
+		# This method is called when user clicks on 'PDF' button
+		###
+		downloadPdf: ->
+			@$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + @report.id + '/pdf?API-TOKEN=' + window.DP_API_TOKEN
+
+
+		###
+		# This method is called when user clicks on 'print' button
+		###
+		print: ->
+			window.print()
 
 
 		###

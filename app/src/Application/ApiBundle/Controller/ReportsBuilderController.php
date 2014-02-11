@@ -188,4 +188,19 @@ class ReportsBuilderController extends AbstractController
 
 		return $this->createApiResponse($reports_builder->parseInput());
 	}
+
+
+	####################################################################################################################
+	# download
+	####################################################################################################################
+
+	public function downloadAction($id, $type)
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+		$reports_builder->outputDownloadContent($id, $type);
+	}
 }

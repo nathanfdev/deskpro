@@ -135,6 +135,31 @@ class Builder
 
 
 	/**
+	 * @param int    $id
+	 * @param string $type
+	 * @param null   $query
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function outputDownloadContent($id, $type, $query = null)
+	{
+		$report = $this->repository->find($id);
+		$params = $this->getParamsInput('params');
+
+		if ($query == 'from_request') {
+			$parts = $this->in->getArrayValue('parts');
+			$query = Display::getQueryStringFromParts($parts);
+		} else {
+			$query = $report->query;
+		}
+
+		try {
+			return $this->getReportResponseForType($type, $query, $report->getTitle('printable', $params), $params);
+		} catch(DpqlException $e) {
+		}
+	}
+
+
+	/**
 	 * @param int $id
 	 * @param string|null $query
 	 * @return boolean
@@ -280,6 +305,34 @@ class Builder
 			'limit'   => $parts['LIMIT'] ? : '',
 			'offset'  => $parts['OFFSET'] ? : ''
 		);
+	}
+
+
+	/**
+	 * @param string $type
+	 * @param string $query
+	 * @param string $title
+	 * @param array  $params
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	protected function getReportResponseForType($type, $query, $title, array $params = array())
+	{
+		@set_time_limit(0);
+
+		$compiler  = new Compiler();
+		$statement = $compiler->compile($query, $params);
+		$statement->setImplicitLimit(0);
+
+		$renderer = $statement->getRenderer($type);
+		$renderer->setTitle($title);
+		$output = $renderer->render();
+
+		$response = App::getResponse();
+		$response->headers->set('Content-Type', $renderer->getContentType());
+		$response->headers->set('Content-Disposition', 'inline; filename=' . $renderer->getFileName($title));
+		$response->setContent($output);
+
+		return $response;
 	}
 
 

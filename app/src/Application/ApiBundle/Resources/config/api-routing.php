@@ -3947,6 +3947,12 @@ $collection->create('api_reports_builder_parse', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_reports_builder_download', array(
+	'path'         => '/reports/builder/download/{id}/{type}',
+	'controller'   => 'ApiBundle:ReportsBuilder:download',
+	'methods'      => array('GET'),
+));
+
 ########################################################################################################################
 # Plugins
 ########################################################################################################################
