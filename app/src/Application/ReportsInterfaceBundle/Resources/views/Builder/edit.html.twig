@@ -32,7 +32,7 @@
 				{% include 'ReportsInterfaceBundle:Builder:edit-query-editor.html.twig' %}
 			</div>
 
-			<div class="panel panel-innertable" ng-if="EditCtrl.reportType == 'custom'">
+			<div class="panel panel-innertable" ng-show="EditCtrl.reportType == 'custom'">
 				<form role="form" name="form_props" ng-submit="EditCtrl.saveReport()">
 					<section class="dp-paneblock dp-editpane">
 						<article class="form-horizontal dp-form">
