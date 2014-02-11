@@ -184,6 +184,29 @@ class Builder
 
 
 	/**
+	 * @param \Application\DeskPRO\Entity\ReportBuilder $report
+	 * @throws \Exception
+	 */
+	public function saveQuery($report)
+	{
+		$parts = $this->in->getArrayValue('parts');
+		$query = Display::getQueryStringFromParts($parts);
+
+		$report->query = $query;
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($report);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch(\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function parseInput()

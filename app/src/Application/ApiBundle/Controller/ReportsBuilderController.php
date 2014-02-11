@@ -143,6 +143,80 @@ class ReportsBuilderController extends AbstractController
 
 
 	####################################################################################################################
+	# save report
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+
+		if ($id) {
+
+			$report = $reports_builder->getById($id);
+
+			if (!$report) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$report = $reports_builder->createNew();
+		}
+
+		if (!$report->is_custom) {
+
+			// todo throw error correctly
+			return $this->createApiValidationErrorResponse(array('report cant be custom'));
+		}
+
+		if ($error = $reports_builder->getErrors($id, 'from_request')) {
+
+			return $this->createApiResponse(
+				array(
+					 'error' => $error
+				)
+			);
+		} else {
+
+			$reports_builder->saveQuery($report, 'from_request');
+			$rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
+
+			return $this->createApiResponse(
+				array(
+					 'rendered_result' => $rendered_result,
+				)
+			);
+		}
+
+		/*$postData = $this->in->getAll('post');
+
+		$feedback_type_edit = new FeedbackTypeEdit($report);
+
+		$form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
+
+		if ($form->isValid()) {
+
+			$feedback_type_edit->save($this->em);
+
+		} else {
+
+			return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($report));
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $report->getId(),
+			)
+		);*/
+	}
+
+
+	####################################################################################################################
 	# test report
 	####################################################################################################################
 
