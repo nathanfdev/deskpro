@@ -50,7 +50,7 @@
 		</section>
 	</article>
 
-	{% if ticket.status == 'awaiting_agent' %}
+	{% if ticket.status == 'awaiting_agent' or ticket.status == 'awaiting_user' %}
 		<article class="dp-early-close dp-well">
 			{{ phrase('user.tickets.reply.if_resolved', {'link_url': path('user_tickets_resolve', {'ticket_ref': ticket.public_id})}) }}
 		</article>
