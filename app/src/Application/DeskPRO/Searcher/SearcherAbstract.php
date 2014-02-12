@@ -755,7 +755,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$range1 = !empty($choice[0]) ? $choice[0] : null;
 		}
 		if (!empty($choice['max'])) {
-			$range1 = $choice['max'];
+			$range2 = $choice['max'];
 		} else {
 			$range2 = !empty($choice[1]) ? $choice[1] : null;
 		}
