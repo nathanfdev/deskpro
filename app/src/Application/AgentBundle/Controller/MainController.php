@@ -371,7 +371,7 @@ class MainController extends AbstractController
 		// We dont know about past ref formats, so just always try to find
 		// a ref if its a valid form
 		if (preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
-			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef($q);
+			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef(strtoupper($q));
 			if ($ticket) {
 				if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 					$results['ticket'][] = $ticket;
