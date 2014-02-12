@@ -87,6 +87,7 @@ class PortalController extends AbstractController
 						} catch (\Exception $e) {
 							throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
 						}
+						$im->setImageBackgroundColor('white');
 						$im->scaleImage(16, 16, true);
 						$im->setImageFormat('ico');
 						$file_content = $im->getImageBlob();
@@ -99,6 +100,7 @@ class PortalController extends AbstractController
 						$height = imagesy($gd);
 
 						$gd_dest = imagecreatetruecolor(16, 16);
+						imagefill($gd_dest, 0, 0, imagecolorallocate($gd_dest, 255, 255, 255));
 						imagecopyresampled($gd_dest, $gd, 0, 0, 0, 0, 16, 16, $width, $height);
 
 						$file_content = \phpthumb_ico::GD2ICOstring(array($gd_dest));
