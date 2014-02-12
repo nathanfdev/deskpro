@@ -121,8 +121,12 @@ class DbTablePhpPasswordCheckModel
 			'field_first_name' => $this->field_first_name,
 			'field_last_name'  => $this->field_last_name,
 			'field_name'       => $this->field_name,
-			'password_php'     => $this->password_php
 		);
+
+		// Cloud must be manually assign PHP code by us
+		if (!defined('DPC_IS_CLOUD') || !DPC_IS_CLOUD) {
+			$options['password_php'] = $this->password_php;
+		}
 
 		$this->_usersource->options = $options;
 
