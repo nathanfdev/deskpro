@@ -116,6 +116,18 @@
 		'is_managed' => true
 	),
 
+	'korean' => array(
+		'id'         => 'korean',
+		'lang_code'  => 'kor',
+		'title'      => 'Korean',
+		'locale'     => 'ko',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'norwegian' => array(
 		'id'         => 'norwegian',
 		'lang_code'  => 'nor',
@@ -295,18 +307,6 @@
 		'title'      => 'Hindi',
 		'locale'     => 'hi',
 		'is_rtl'     => true,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'korean' => array(
-		'id'         => 'korean',
-		'lang_code'  => 'kor',
-		'title'      => 'Korean',
-		'locale'     => 'ko',
-		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
 		'has_admin'  => false,
