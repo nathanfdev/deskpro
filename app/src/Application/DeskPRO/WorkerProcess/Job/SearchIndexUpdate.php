@@ -61,6 +61,16 @@ class SearchIndexUpdate extends AbstractJob
 
 	public function run()
 	{
+		// run() is called from shutdown, so dont want
+		// to throw exceptions
+
+		try {
+			$this->processUpdates();
+		} catch (\Exception $e) {}
+	}
+
+	public function processUpdates()
+	{
 		$time = time();
 
 		$this->em = App::getContainer()->getEm();
