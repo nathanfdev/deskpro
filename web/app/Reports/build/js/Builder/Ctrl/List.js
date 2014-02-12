@@ -43,6 +43,52 @@
         return this.$q.all([custom_promise, built_in_promise, group_params_promise]);
       };
 
+      /*
+      		# Show the delete dlg
+      */
+
+
+      Reports_Builder_Ctrl_List.prototype.startDelete = function(for_report_id) {
+        var inst, report,
+          _this = this;
+        report = this.customData.findListModelById(for_report_id);
+        if (!report.is_custom) {
+          throw new Error('Report you are going to delete should be custom report');
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Builder/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.deleteReport(report);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+      */
+
+
+      Reports_Builder_Ctrl_List.prototype.deleteReport = function(for_report) {
+        var _this = this;
+        return this.customData.deleteReportById(for_report.id).success(function() {
+          if (_this.$state.current.name === 'builder.edit' && parseInt(_this.$state.params.id) === for_report.id) {
+            return _this.$state.go('builder');
+          }
+        }).error(function(info, code) {
+          return _this.applyErrorResponseToView(info);
+        });
+      };
+
       return Reports_Builder_Ctrl_List;
 
     })(ReportsBaseCtrl);

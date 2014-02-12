@@ -33,6 +33,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Exception\ValidationException;
+
 class ReportsBuilderController extends AbstractController
 {
 	####################################################################################################################
@@ -167,9 +169,7 @@ class ReportsBuilderController extends AbstractController
 		}
 
 		if (!$report->is_custom) {
-
-			// todo throw error correctly
-			return $this->createApiValidationErrorResponse(array('report cant be custom'));
+			throw ValidationException::create('you can edit only custom report');
 		}
 
 		if ($error = $reports_builder->getErrors($id, 'from_request')) {
@@ -190,29 +190,33 @@ class ReportsBuilderController extends AbstractController
 				)
 			);
 		}
+	}
 
-		/*$postData = $this->in->getAll('post');
 
-		$feedback_type_edit = new FeedbackTypeEdit($report);
+	####################################################################################################################
+	# delete report
+	####################################################################################################################
 
-		$form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
+	public function deleteAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
 
-		if ($form->isValid()) {
+		$reports_builder = $this->container->getSystemService('reports_builder');
+		$report          = $reports_builder->getById($id);
 
-			$feedback_type_edit->save($this->em);
-
-		} else {
-
-			return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($report));
+		if (!$report) {
+			throw $this->createNotFoundException();
 		}
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $report->getId(),
-			)
-		);*/
+		if (!$report->is_custom) {
+			throw ValidationException::create('you can delete only custom report');
+		}
+
+		$reports_builder->remove($report);
+
+		return $this->createSuccessResponse(array('id' => $id));
 	}
 
 

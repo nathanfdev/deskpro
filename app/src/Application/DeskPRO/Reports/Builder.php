@@ -243,6 +243,25 @@ class Builder
 
 
 	/**
+	 * @param ReportBuilder $report
+	 * @throws \Exception
+	 */
+	public function remove($report)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			$this->em->remove($report);
+			$this->em->flush();
+			$this->em->commit();
+		} catch(\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
 	 * @param int $id
 	 * @return array
 	 */
@@ -374,26 +393,5 @@ class Builder
 			$params,
 			$error
 		);
-	}
-
-
-	/**
-	 * @param array $params
-	 * @return array
-	 */
-	protected function mergeReportBuilderLayoutParams(array $params = array())
-	{
-		$grouped   = $this->repository->groupReportsList();
-		$favorites = $this->repository->getFavoritesForPerson();
-
-		$reportBuilderParams = array(
-			'customReports'     => $grouped['custom'],
-			'builtInReports'    => $grouped['builtIn'],
-			'favoriteReports'   => $favorites,
-			'favoritesJs'       => $this->repository->getFavoritesSimplified($favorites),
-			'reportGroupParams' => $this->repository->getReportGroupParams()
-		);
-
-		return array_merge($reportBuilderParams, $params);
 	}
 }
