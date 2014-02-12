@@ -8,6 +8,7 @@
 @date_default_timezone_set('UTC');
 @ini_set('default_charset', 'UTF-8');
 @ini_set('zlib.output_compression', '0');
+@ini_set('xdebug.max_nesting_level', 1000000);
 
 require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
 require DP_ROOT . '/sys/load_config.php';
