@@ -762,6 +762,12 @@ class PersonSearch extends SearcherAbstract
 					}
 
 					switch ($op) {
+						case self::OP_IS:
+							if (strtolower($person['name']) != strtolower($choice)) return false;
+							break;
+						case self::OP_NOT:
+							if (strtolower($person['name']) == strtolower($choice)) return false;
+							break;
 						case self::OP_CONTAINS:
 							if (strpos(strtolower($person['name']), strtolower($choice)) === false) return false;
 							break;
