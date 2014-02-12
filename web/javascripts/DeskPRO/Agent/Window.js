@@ -507,6 +507,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initRoutes();
 		this._initSections();
 		this._initInterfaceServices();
+		this._initAngular();
 
 		if (window.DESKPRO_SNIPPETS_USE_CLIENT_DB) {
 			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetClientDbDriver('tickets');
@@ -3119,6 +3120,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		return popover;
+	},
+
+	_initAngular: function() {
+		this.ngModule = DeskPRO.Agent.AgentAppFactory();
+		angular.bootstrap(document, ['AgentApp']);
+		this.ngModule.dpInjector = angular.element(document).injector();
 	},
 
 	/**
