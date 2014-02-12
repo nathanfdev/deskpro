@@ -500,7 +500,8 @@ RedactorPlugins.clean_text = {
 		// Add icon to button
 		jQuery('a.redactor_btn_clean_text').css({
 			backgroundImage : ' url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQ0lEQVQYV2MMDQ39zwAEq1evZgTR6AAmzwhjYFOMLAc2BZtidDG4dcgSyNbDnITiLnTFyO4mXSFRVhPlGaKDh9gABwAJuDgDsQ44aQAAAABJRU5ErkJggg==)',
-			backgroundPosition : '7px 8px'
+			backgroundPosition : '7px 8px',
+			backgroundSize: 'auto 10px'
 		});
 	}
 }
