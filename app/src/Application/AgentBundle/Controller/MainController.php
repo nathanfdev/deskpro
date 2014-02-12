@@ -610,9 +610,10 @@ class MainController extends AbstractController
 							SELECT people.id
 							FROM people
 							LEFT JOIN tickets ON (tickets.person_id = people.id)
+							LEFT JOIN tickets_participants ON (tickets_participants.person_id = people.id)
 							LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 							WHERE
-								tickets.id > ?
+								(tickets.id > ? OR tickets_participants.ticket_id > ?)
 								AND (
 									people.name LIKE ?
 									OR people.first_name LIKE ?
@@ -622,7 +623,7 @@ class MainController extends AbstractController
 								)
 							ORDER BY tickets.id DESC
 							LIMIT 15
-						", array($after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
+						", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
 					}
 
 					if ($people_ids) {
