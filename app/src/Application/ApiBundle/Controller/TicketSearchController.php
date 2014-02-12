@@ -86,6 +86,16 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
+		if (($id_min = $this->in->getUint('id_min')) || ($id_max = $this->in->getUint('id_max'))) {
+			$terms[] = array('type' => 'id', 'op' => 'between', 'options' => array($id_min, $id_max));
+		} else if ($id = $this->in->getUint('id')) {
+			$terms[] = array('type' => 'id', 'op' => 'is', 'options' => array($id));
+		}
+
+		if ($ref = $this->in->getString('ref')) {
+			$terms[] = array('type' => 'ref', 'op' => 'contains', 'options' => array('ref' => $ref));
+		}
+
 		$proc_date_input = function($date_input) {
 			$date = null;
 			if (Numbers::isTimestamp($date_input)) {

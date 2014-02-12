@@ -46,6 +46,7 @@ use Application\DeskPRO\Entity\Ticket;
 class TicketSearch extends SearcherAbstract
 {
 	const TERM_ID                        = 'id';
+	const TERM_REF                       = 'ref';
 	const TERM_PERSON_ID                 = 'person_id';
 	const TERM_DEPARTMENT                = 'department';
 	const TERM_CATEGORY                  = 'category';
@@ -1070,6 +1071,11 @@ class TicketSearch extends SearcherAbstract
 							$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
 						}
 						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+						break;
+
+					case self::TERM_REF:
+						$this->enableArchiveSearch();
+						$wheres[] = $this->_stringMatch("$tickets_table.ref", $op, $choice, true);
 						break;
 
 					case self::TERM_PERSON_ID:
