@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Inserisci un sommario con almeno 5 caratteri',
 	'user.feedback.form_new_error_title'                                   => 'Inserisci un titolo con almeno 5 caratteri',
 	'user.feedback.form_new_prefix'                                        => 'Ho un...',
-	'user.feedback.form_title'                                             => 'Raccontateci la vostra &lt;span class=&quot;dp-cat-title-place&quot;&gt;idea&lt;/span&gt;',
+	'user.feedback.form_title'                                             => 'Raccontateci la vostra <span class=\'dp-cat-title-place\'>idea</span>',
 	'user.feedback.note_awaiting-validation'                               => 'Nota: Il vostro feedback è in attesa di convalida prima di apparire pubblicamente.',
 	'user.feedback.related_feedback'                                       => 'Feedback collegati',
 	'user.feedback.sidebar_description'                                    => 'Ci sono attualmente {{phrase1}} e {{phrase2}}. Votate il feedback con il quale concordate o inserite il vostro.',

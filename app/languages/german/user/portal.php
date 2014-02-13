@@ -26,10 +26,10 @@
 	'user.portal.tab_knowledgebase'                                        => 'Knowledgebase',
 	'user.portal.tab_knowledgebase-description'                            => 'Hilfeartikel lesen',
 	'user.portal.tab_news'                                                 => 'Neuheiten',
-	'user.portal.tab_news-description'                                     => 'Neuheiten &amp; Aktualisierungen',
+	'user.portal.tab_news-description'                                     => 'Neuheiten & Aktualisierungen',
 	'user.portal.tab_tickets'                                              => 'Kontaktieren Sie uns',
 	'user.portal.tab_tickets-description'                                  => 'Wir sind hier um zu helfen',
 	'user.portal.twitter-user-link'                                        => '@{{name}} auf Twitter',
-	'user.portal.twitter-view-more'                                        => 'Mehr von @{{name}} &amp;rarr;',
+	'user.portal.twitter-view-more'                                        => 'Mehr von @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'                                       => 'Willkommen zurück, Gast',
 );

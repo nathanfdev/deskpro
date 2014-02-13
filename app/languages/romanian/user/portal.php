@@ -29,6 +29,6 @@
 	'user.portal.tab_tickets'                                              => 'Contacteaza-ne',
 	'user.portal.tab_tickets-description'                                  => 'Suntem aici pentru a va ajuta',
 	'user.portal.twitter-user-link'                                        => '@{{name}} pe twitter',
-	'user.portal.twitter-view-more'                                        => 'Vizualizeaza mai multe de la @{{name}} &amp;rarr;',
+	'user.portal.twitter-view-more'                                        => 'Vizualizeaza mai multe de la @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'                                       => 'Bine ai revenit,',
 );

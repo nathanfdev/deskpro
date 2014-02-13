@@ -2,7 +2,7 @@
 	'user.tickets.add_me_to_ticket'                                        => 'Tilføj mig til denne sag',
 	'user.tickets.assigned-agent'                                          => 'Medarbejder på sagen',
 	'user.tickets.begin_with_department'                                   => 'Begynd med at vælge en afdeling',
-	'user.tickets.btn_continue'                                            => 'Fortsæt &amp;rarr;',
+	'user.tickets.btn_continue'                                            => 'Fortsæt &rarr;',
 	'user.tickets.cc_form_add_title'                                       => 'Tilføj med navn og email',
 	'user.tickets.check_email'                                             => 'check din mail',
 	'user.tickets.click_to_close'                                          => 'Klik for at lukke denne sag',

@@ -29,6 +29,6 @@
 	'user.portal.tab_tickets'                                              => 'Napisz do nas',
 	'user.portal.tab_tickets-description'                                  => 'Jesteśmy gotowi Ci pomóc',
 	'user.portal.twitter-user-link'                                        => '@{{name}} na twitterze',
-	'user.portal.twitter-view-more'                                        => 'Zobacz więcej od @{{name}} &amp;rarr;',
+	'user.portal.twitter-view-more'                                        => 'Zobacz więcej od @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'                                       => 'Witamy z powrotem, gościu',
 );

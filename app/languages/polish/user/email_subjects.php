@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'Potwierdź swój adres email',
 	'user.email_subjects.feedback_new'                                     => 'Dziękujemy za wysłaną opinię',
 	'user.email_subjects.feedback_new-approved'                            => 'Twoja opinia została zaakceptowana',
-	'user.email_subjects.feedback_new-comment'                             => 'Nowy komentarz pojawił się na &quot;{{title}}&quot;',
+	'user.email_subjects.feedback_new-comment'                             => 'Nowy komentarz pojawił się na \'{{title}}\'',
 	'user.email_subjects.feedback_new-confirm'                             => 'Dziękujemy za wysłanie Twojej opinii (potwierdzenie jest wymagane)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Twoja opinia została odrzucona',
 	'user.email_subjects.feedback_updated'                                 => 'Twoja opinia została zaktualizowana: {{title}}',

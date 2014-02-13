@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'اعتبار سنجی آدرس ایمیل شما',
 	'user.email_subjects.feedback_new'                                     => 'با تشکر از شما برای ارسال نظرات خود',
 	'user.email_subjects.feedback_new-approved'                            => 'نظرات شما مورد تایید قرار گرفته است',
-	'user.email_subjects.feedback_new-comment'                             => 'یک نظر جدید وجود دارد &quot;{{title}}&quot;',
+	'user.email_subjects.feedback_new-comment'                             => 'یک نظر جدید وجود دارد \'{{title}}\'',
 	'user.email_subjects.feedback_new-confirm'                             => 'با تشکر از شما برای ارسال نظرات خود ( اعتبار مورد نیاز )',
 	'user.email_subjects.feedback_new-disapproved'                         => 'نظرات شما رد شده است',
 	'user.email_subjects.feedback_updated'                                 => 'نظرات شما به روز رسانی: {{title}}',

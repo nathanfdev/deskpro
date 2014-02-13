@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'Bekräfta din e-postadress',
 	'user.email_subjects.feedback_new'                                     => 'Tack för att du skickade in din feedback',
 	'user.email_subjects.feedback_new-approved'                            => 'Din feedback har blivit godkänd',
-	'user.email_subjects.feedback_new-comment'                             => 'Det finns en ny kommentar på &quot;{{title}}&quot;',
+	'user.email_subjects.feedback_new-comment'                             => 'Det finns en ny kommentar på \'{{title}}\'',
 	'user.email_subjects.feedback_new-confirm'                             => 'Tack för att du skickade in din feedback (validering krävs)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Din feedback har blivit nekad',
 	'user.email_subjects.feedback_updated'                                 => 'Din feedback har blivit uppdaterad: {{title}}',

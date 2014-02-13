@@ -26,10 +26,10 @@
 	'user.portal.tab_knowledgebase'                                        => '지식 기반',
 	'user.portal.tab_knowledgebase-description'                            => '도움말 보기',
 	'user.portal.tab_news'                                                 => '뉴스',
-	'user.portal.tab_news-description'                                     => '뉴스 &amp; 업데이트',
+	'user.portal.tab_news-description'                                     => '뉴스 & 업데이트',
 	'user.portal.tab_tickets'                                              => '고객센터 문의',
 	'user.portal.tab_tickets-description'                                  => '우리는 도와드리기 위해 여기 있습니다',
 	'user.portal.twitter-user-link'                                        => '@{{name}} on twitter',
-	'user.portal.twitter-view-more'                                        => 'View more from @{{name}} &amp;rarr;',
+	'user.portal.twitter-view-more'                                        => 'View more from @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'                                       => '게스트 님 받갑습니다.',
 );

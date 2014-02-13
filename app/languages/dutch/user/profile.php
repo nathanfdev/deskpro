@@ -44,7 +44,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Bedankt voor het registreren. Voordat uw account volledig actief is, moet één van onze medewerkers uw account valideren. Dit proces zal niet lang duren.',
 	'user.profile.register_done_validate_email'                            => 'Bedankt voor het registreren. Voordat uw account volledig actief is, controleer uw e-mail en klik op de validatie link.',
 	'user.profile.register_email_exists'                                   => 'Dit e-mailadres wordt al gebruikt door een geregistreerde gebruiker.',
-	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Registreer&lt;/a&gt; of log hieronder in.',
+	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>Registreer</a> of log hieronder in.',
 	'user.profile.register_password_min_length'                            => 'Voer een wachtwoord van ten minste 5 tekens in.',
 	'user.profile.register_password_mismatch'                              => 'De twee wachtwoordvelden komen niet overeen.',
 	'user.profile.remove_email_address'                                    => 'Verwijder e-mailadres',

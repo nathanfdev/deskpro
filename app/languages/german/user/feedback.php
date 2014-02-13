@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Bitte geben Sie eine Zusammenfassung mit mindestens 5 Zeichen ein',
 	'user.feedback.form_new_error_title'                                   => 'Bitte geben Sie einen Titel mit mindestens 5 Zeichen ein',
 	'user.feedback.form_new_prefix'                                        => 'Ich habe ein(e)...',
-	'user.feedback.form_title'                                             => 'Teilen Sie uns Ihre &lt;span class=&quot;dp-cat-title-place&quot;&gt; Anregung&lt;/span&gt; mit',
+	'user.feedback.form_title'                                             => 'Teilen Sie uns Ihre <span class=\'dp-cat-title-place\'> Anregung</span> mit',
 	'user.feedback.note_awaiting-validation'                               => 'Hinweis: Ihr Feedback wartet derzeit auf Validierung ehe es öffentlich auf der Haupt-Website erscheint.',
 	'user.feedback.related_feedback'                                       => 'Verwandtes Feedback',
 	'user.feedback.sidebar_description'                                    => 'Derzeit gibt es {{phrase1}} sowie {{phrase2}}. Voten Sie für ein Feedback dem sie zustimmen oder übermitteln Sie Ihr Eigenes.',

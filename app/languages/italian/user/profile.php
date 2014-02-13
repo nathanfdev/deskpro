@@ -41,7 +41,7 @@
 	'user.profile.profile_saved'                                           => 'Profilo aggiornato con successo.',
 	'user.profile.register'                                                => 'Registrati',
 	'user.profile.register_email_exists'                                   => 'Questo indirizzo email appartiene a un utente già registrato.',
-	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Registrati&lt;/a&gt; o fai il login.',
+	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>Registrati</a> o fai il login.',
 	'user.profile.register_password_min_length'                            => 'La password deve avere almeno 5 caratteri.',
 	'user.profile.register_password_mismatch'                              => 'Le due password non corrispondono.',
 	'user.profile.remove_email_address'                                    => 'Rimuovi l\'indirizzo email',

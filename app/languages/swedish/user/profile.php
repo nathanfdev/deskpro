@@ -45,7 +45,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Tack för att du registrerar dig. Innan ditt konto blir aktiverat måste en av våra agenter validera ditt konto. Denna process bör inte ta alltför lång tid.',
 	'user.profile.register_done_validate_email'                            => 'Tack för att du registrerar dig. Innan ditt konto blir aktiverat måste du klicka på den valideringslänk som vi har skickat till dig via e-post.',
 	'user.profile.register_email_exists'                                   => 'Den här e-postadressen tillhör redan en registrerad användare.',
-	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Registrera&lt;/a&gt; eller logga in nedan.',
+	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>Registrera</a> eller logga in nedan.',
 	'user.profile.register_password_min_length'                            => 'Var vänlig och skriv ett lösenord på minst fem bokstäver.',
 	'user.profile.register_password_mismatch'                              => 'Lösenorden stämmer inte överrens.',
 	'user.profile.remove_email_address'                                    => 'Ta bort e-postadress',

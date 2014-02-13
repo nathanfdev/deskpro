@@ -9,7 +9,7 @@
 	'user.feedback.form_new_error_message'                                 => '5자 이내로 요약해 주세요.',
 	'user.feedback.form_new_error_title'                                   => '제목은 5자 이내로 입력해 주세요.',
 	'user.feedback.form_new_prefix'                                        => '다음을 요청합니다',
-	'user.feedback.form_title'                                             => '생각을 공유해주세요 &lt;span class=&quot;dp-cat-title-place&quot;&gt; &lt;/span&gt;',
+	'user.feedback.form_title'                                             => '생각을 공유해주세요 <span class=\'dp-cat-title-place\'> </span>',
 	'user.feedback.note_awaiting-validation'                               => '주의: 메인 페이지에 작성하신 피드백이 올라갈 때 까지 승인 대기 되니다.',
 	'user.feedback.related_feedback'                                       => '관련 피드백',
 	'user.feedback.sidebar_description-none'                               => '현재 사용자 작성 피드백이 없습니다. <a href="{{link}}"> 의견을 제시해 주세요. </a>',

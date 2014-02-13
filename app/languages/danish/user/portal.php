@@ -27,6 +27,6 @@
 	'user.portal.tab_tickets'                                              => 'Kontakt os',
 	'user.portal.tab_tickets-description'                                  => 'Vi er her for at hjælpe',
 	'user.portal.twitter-user-link'                                        => '@{{name}} på twitter',
-	'user.portal.twitter-view-more'                                        => 'Se mere fra @{{name}} &amp;rarr;',
+	'user.portal.twitter-view-more'                                        => 'Se mere fra @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'                                       => 'Velkommen tilbage, gæst',
 );

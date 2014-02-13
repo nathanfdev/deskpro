@@ -44,7 +44,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Tak for din registrering. Før din konto er helt aktiv, skal en af vores medarbejdere bekræfte din konto. Denne process skulle ikke tage særlig lang tid.',
 	'user.profile.register_done_validate_email'                            => 'Tak for din registrering. Før din konto er helt aktiv, skal du checke din email og klikke på bekræftelses linket.',
 	'user.profile.register_email_exists'                                   => 'Denne email adresse tilhører allerede en anden bruger',
-	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Registrer&lt;/a&gt; eller login herunder.',
+	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>Registrer</a> eller login herunder.',
 	'user.profile.register_password_min_length'                            => 'Skriv venligst et password på mindst 5 karakterer',
 	'user.profile.register_password_mismatch'                              => 'De to passwords var ikke ens.',
 	'user.profile.remove_email_address'                                    => 'Fjern email adressen',

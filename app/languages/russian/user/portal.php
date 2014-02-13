@@ -30,6 +30,6 @@
 	'user.portal.tab_tickets'                                              => 'Обратная связь',
 	'user.portal.tab_tickets-description'                                  => 'Мы готовы помочь',
 	'user.portal.twitter-user-link'                                        => '@{{name}} в Твиттере',
-	'user.portal.twitter-view-more'                                        => 'Узнать больше из @{{name}} &amp;rarr:',
+	'user.portal.twitter-view-more'                                        => 'Узнать больше из @{{name}} &rarr:',
 	'user.portal.welcome-back-guest'                                       => 'Уважаемый гость, мы рады видеть Вас снова',
 );

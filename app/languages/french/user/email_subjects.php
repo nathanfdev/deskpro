@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'Validez votre adresse email',
 	'user.email_subjects.feedback_new'                                     => 'Merci de nous avoir fait part de vos remarques',
 	'user.email_subjects.feedback_new-approved'                            => 'Votre remarque a été approuvée',
-	'user.email_subjects.feedback_new-comment'                             => 'Il y a un nouveau commentaire sur &quot;{{title}}&quot;',
+	'user.email_subjects.feedback_new-comment'                             => 'Il y a un nouveau commentaire sur \'{{title}}\'',
 	'user.email_subjects.feedback_new-confirm'                             => 'Merci de nous avoir fait part de vos remarques (validation nécessaire)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Votre remarque a été rejetée',
 	'user.email_subjects.feedback_updated'                                 => 'Votre remarque a été mise à jour: {{title}}',

@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'Подтвердите Ваш адрес электронной почты',
 	'user.email_subjects.feedback_new'                                     => 'Спасибо Вам за оставленный отзыв',
 	'user.email_subjects.feedback_new-approved'                            => 'Ваш отзыв принят к рассмотрению',
-	'user.email_subjects.feedback_new-comment'                             => 'Добавлен новый комментарий в раздел &quot;{{title}}&quot;',
+	'user.email_subjects.feedback_new-comment'                             => 'Добавлен новый комментарий в раздел \'{{title}}\'',
 	'user.email_subjects.feedback_new-confirm'                             => 'Спасибо Вам за оставленный отзыв(требуется подтверждение)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Ваш отзыв отклонен',
 	'user.email_subjects.feedback_updated'                                 => 'Ваш отзыв изменен:{{title}}',

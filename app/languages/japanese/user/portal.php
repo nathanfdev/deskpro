@@ -27,6 +27,6 @@
 	'user.portal.tab_tickets'                                              => '連絡先',
 	'user.portal.tab_tickets-description'                                  => 'お気軽にご相談ください。',
 	'user.portal.twitter-user-link'                                        => '@{{name}} twitter',
-	'user.portal.twitter-view-more'                                        => '@{{name}} &amp;rarr;からの情報を表示',
+	'user.portal.twitter-view-more'                                        => '@{{name}} &rarr;からの情報を表示',
 	'user.portal.welcome-back-guest'                                       => 'こんにちは、ゲスト様',
 );

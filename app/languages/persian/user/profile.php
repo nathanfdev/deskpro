@@ -37,7 +37,7 @@
 	'user.profile.profile_saved'                                           => 'مشخصات شما با موفقیت به روز رسانی شد.',
 	'user.profile.register'                                                => 'ثبت نام',
 	'user.profile.register_email_exists'                                   => 'این آدرس ایمیل در حال حاضر متعلق به یک کاربر ثبت نام شده است .',
-	'user.profile.register_or_login_below'                                 => 'لطفا &lt;a href=&quot;{{url}}&quot;&gt;ثبت نام کنید&lt;/a&gt; یا وارد شوید.',
+	'user.profile.register_or_login_below'                                 => 'لطفا <a href=\'{{url}}\'>ثبت نام کنید</a> یا وارد شوید.',
 	'user.profile.register_password_min_length'                            => 'لطفا یک رمز عبور حداقل 5 کاراکتر وارد کنید .',
 	'user.profile.register_password_mismatch'                              => 'دو رمز عبور با هم مطابقت ندارد.',
 	'user.profile.remove_email_address'                                    => 'حذف آدرس ایمیل',

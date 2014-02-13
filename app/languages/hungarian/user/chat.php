@@ -7,7 +7,7 @@
 	'user.chat.form_create_button-submit'                                  => 'Beszélgetés indítása',
 	'user.chat.form_create_department'                                     => 'Válassza ki a részleget',
 	'user.chat.form_create_title'                                          => 'Chateljen velünk!',
-	'user.chat.form_feedback_button-submit'                                => 'Visszajelzés küldése &amp; Ablak bezárása',
+	'user.chat.form_feedback_button-submit'                                => 'Visszajelzés küldése & Ablak bezárása',
 	'user.chat.form_feedback_comments'                                     => 'Hozzászólás?',
 	'user.chat.form_feedback_rate-satisfaction'                            => 'Elégedett munkatársunk munkájával?',
 	'user.chat.form_feedback_rate-satisfied'                               => 'Igen',

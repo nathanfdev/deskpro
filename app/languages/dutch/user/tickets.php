@@ -2,7 +2,7 @@
 	'user.tickets.add_me_to_ticket'                                        => 'Voeg mij toe aan de ticket',
 	'user.tickets.assigned-agent'                                          => 'Toegewezen medewerker',
 	'user.tickets.begin_with_department'                                   => 'Begin met het kiezen van een afdeling',
-	'user.tickets.btn_continue'                                            => 'Volgende &amp;rarr;',
+	'user.tickets.btn_continue'                                            => 'Volgende &rarr;',
 	'user.tickets.cc_form_add_title'                                       => 'Voeg gebruikersnaam en e-mailadres toe',
 	'user.tickets.check_email'                                             => 'Controleer uw e-mail',
 	'user.tickets.click_to_close'                                          => 'Klik om de ticket te sluiten',

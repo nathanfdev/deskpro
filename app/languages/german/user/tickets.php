@@ -2,7 +2,7 @@
 	'user.tickets.add_me_to_ticket'                                        => 'Fügen Sie mich zu dem Ticket hinzu',
 	'user.tickets.assigned-agent'                                          => 'Zugewiesener Agent',
 	'user.tickets.begin_with_department'                                   => 'Beginnen Sie indem Sie eine Abteilung wählen',
-	'user.tickets.btn_continue'                                            => 'Fortfahren &amp;rarr;',
+	'user.tickets.btn_continue'                                            => 'Fortfahren &rarr;',
 	'user.tickets.cc_form_add_title'                                       => 'Mit Name und Email hinzufügen',
 	'user.tickets.check_email'                                             => 'Prüfen sie Ihre Email',
 	'user.tickets.click_to_close'                                          => 'Klicken um dieses Ticket zu schließen',
