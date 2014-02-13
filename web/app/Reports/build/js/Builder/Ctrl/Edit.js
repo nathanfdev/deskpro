@@ -189,9 +189,18 @@
         this.startSpinner('builder_loading');
         this.startSpinner('query_loading');
         this.startSpinner('saving');
-        return promise.then(function(data) {
+        return promise.then(function(res) {
+          var data;
+          data = res.data;
           if (data.error) {
+            _this.stopSpinner('builder_loading', true);
+            _this.stopSpinner('query_loading', true);
+            _this.stopSpinner('saving', true);
             _this.query_error = data.error;
+            if (!_this.show_query_editor) {
+              _this.show_query_editor = true;
+            }
+            return;
           }
           if (data.rendered_result) {
             _this.query_error = null;
@@ -199,7 +208,7 @@
           }
           _this.skipDirtyState();
           if (is_new) {
-            _this.$state.go('builder.create');
+            _this.$state.go('builder');
           }
           _this.stopSpinner('builder_loading', true);
           _this.stopSpinner('query_loading', true);

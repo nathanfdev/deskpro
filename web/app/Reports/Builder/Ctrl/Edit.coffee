@@ -9,10 +9,10 @@ define [
 		@DEPS      = ['$stateParams', '$sce', 'Api', '$window']
 
 		init: ->
-			if(@$stateParams.type == 'builtIn')
+			if @$stateParams.type == 'builtIn'
 				@reportData = @DataService.get('ReportBuilderBuiltIn')
 				@reportType = 'builtIn'
-			if(@$stateParams.type == 'custom')
+			if @$stateParams.type == 'custom'
 				@reportData = @DataService.get('ReportBuilderCustom')
 				@reportType = 'custom'
 
@@ -156,9 +156,17 @@ define [
 			@startSpinner('query_loading')
 			@startSpinner('saving')
 
-			promise.then( (data) =>
+			promise.then( (res) =>
 
-				if data.error then @query_error = data.error
+				data = res.data
+
+				if data.error
+					@stopSpinner('builder_loading', true)
+					@stopSpinner('query_loading', true)
+					@stopSpinner('saving', true)
+					@query_error = data.error
+					if !@show_query_editor then @show_query_editor = true
+					return
 
 				if data.rendered_result
 					@query_error = null
@@ -166,7 +174,7 @@ define [
 
 				@skipDirtyState()
 				if is_new
-					@$state.go('builder.create')
+					@$state.go('builder')
 
 				@stopSpinner('builder_loading', true)
 				@stopSpinner('query_loading', true)

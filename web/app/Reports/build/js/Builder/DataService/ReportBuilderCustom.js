@@ -74,7 +74,7 @@
 
 
       ReportBuilderCustom.prototype.loadEditReportData = function(id) {
-        var deferred,
+        var data, deferred,
           _this = this;
         deferred = this.$q.defer();
         if (id) {
@@ -93,17 +93,16 @@
             return deferred.reject();
           });
         } else {
-          this.Api.sendGet('/reports/builder').then(function(result) {
-            var data;
-            data = {};
-            data.report = {
-              user: {}
-            };
-            data.form = _this.getFormMapper().getFormFromModel(data);
-            return deferred.resolve(data);
-          }, function() {
-            return deferred.reject();
-          });
+          data = {};
+          data.report = {
+            title: '',
+            description: '',
+            is_custom: true
+          };
+          data.rendered_result = '';
+          data.query_parts = {};
+          data.form = this.getFormMapper().getFormFromModel(data);
+          deferred.resolve(data);
         }
         return deferred.promise;
       };

@@ -78,16 +78,17 @@ define [
 
 			else
 
-				@Api.sendGet('/reports/builder').then( (result) =>
+				data = {}
+				data.report = {
+					title: ''
+					description: ''
+					is_custom: true
+				}
+				data.rendered_result = ''
+				data.query_parts = {}
+				data.form = @getFormMapper().getFormFromModel(data)
 
-					data = {}
-					data.report = {user: {}}
-					data.form = @getFormMapper().getFormFromModel(data)
-
-					deferred.resolve(data)
-				, ->
-					deferred.reject()
-				)
+				deferred.resolve(data)
 
 			return deferred.promise
 

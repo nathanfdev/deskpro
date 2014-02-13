@@ -127,7 +127,7 @@
 					</span>
 				</div>
 
-				<button class="btn btn-success" ng-click="EditCtrl.testReport()">
+				<button class="btn btn-success" ng-click="EditCtrl.testReport()" ng-if="EditCtrl.report.id"">
 					Test Report
 				</button>
 
@@ -135,7 +135,7 @@
 					Save To Clone
 				</button>
 
-				<button class="btn btn-warning" ng-click="EditCtrl.saveReport()" ng-if="EditCtrl.reportType == 'custom'">
+				<button class="btn btn-warning" ng-if="EditCtrl.reportType == 'custom'" dp-submit-form>
 					Save & Run
 				</button>
 			</div>
