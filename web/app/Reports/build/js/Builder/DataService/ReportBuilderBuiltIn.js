@@ -43,23 +43,6 @@
       };
 
       /*
-      # Remove a model
-      #
-      # @param {Integer} id
-      # @return {promise}
-      */
-
-
-      ReportBuilderCustom.prototype.deleteReportById = function(id) {
-        var promise,
-          _this = this;
-        promise = this.Api.sendDelete('/reports/builder/' + id).success(function() {
-          return _this.removeListModelById(id);
-        });
-        return promise;
-      };
-
-      /*
       		# Get the form mapper
       		#
       		# @return {ReportEditFormMapper}
@@ -117,38 +100,6 @@
           });
         }
         return deferred.promise;
-      };
-
-      /*
-      # Saves a form model and merges model with list data
-      #
-      # @param {Object} model api_key model
-       	# @param {Object} formModel  The model representing the form
-      # @return {promise}
-      */
-
-
-      ReportBuilderCustom.prototype.saveFormModel = function(model, formModel) {
-        var mapper, postData, promise,
-          _this = this;
-        mapper = this.getFormMapper();
-        postData = mapper.getPostDataFromForm(formModel);
-        if (model.id) {
-          promise = this.Api.sendPostJson('/reports/builder/' + model.id, {
-            report: postData
-          });
-        } else {
-          promise = this.Api.sendPutJson('/reports/builder', {
-            report: postData
-          }).success(function(data) {
-            return model.id = data.id;
-          });
-        }
-        promise.success(function() {
-          mapper.applyFormToModel(model, formModel);
-          return _this.mergeDataModel(model);
-        });
-        return promise;
       };
 
       return ReportBuilderCustom;

@@ -35,19 +35,6 @@ define [
 
 
 		###
-  # Remove a model
-  #
-  # @param {Integer} id
-  # @return {promise}
-		###
-		deleteReportById: (id) ->
-			promise = @Api.sendDelete('/reports/builder/' + id).success( =>
-				@removeListModelById(id)
-			)
-			return promise
-
-
-		###
 		# Get the form mapper
 		#
 		# @return {ReportEditFormMapper}
@@ -98,30 +85,3 @@ define [
 				)
 
 			return deferred.promise
-
-
-		###
-  # Saves a form model and merges model with list data
-  #
-  # @param {Object} model api_key model
- 	# @param {Object} formModel  The model representing the form
-  # @return {promise}
-		###
-		saveFormModel: (model, formModel) ->
-
-			mapper = @getFormMapper()
-			postData = mapper.getPostDataFromForm(formModel)
-
-			if model.id
-				promise = @Api.sendPostJson('/reports/builder/' + model.id, {report: postData})
-			else
-				promise = @Api.sendPutJson('/reports/builder', {report: postData}).success( (data) ->
-					model.id = data.id
-				)
-
-			promise.success(=>
-				mapper.applyFormToModel(model, formModel)
-				@mergeDataModel(model)
-			)
-
-			return promise

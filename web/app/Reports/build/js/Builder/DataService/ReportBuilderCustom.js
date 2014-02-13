@@ -111,24 +111,27 @@
       /*
       # Saves a form model and merges model with list data
       #
-      # @param {Object} model api_key model
+      # @param {Object} model report model
        	# @param {Object} formModel  The model representing the form
+       	# @param {Object} queryParts object that is used for storing query builder data
       # @return {promise}
       */
 
 
-      ReportBuilderCustom.prototype.saveFormModel = function(model, formModel) {
+      ReportBuilderCustom.prototype.saveFormModel = function(model, formModel, queryParts) {
         var mapper, postData, promise,
           _this = this;
         mapper = this.getFormMapper();
         postData = mapper.getPostDataFromForm(formModel);
         if (model.id) {
           promise = this.Api.sendPostJson('/reports/builder/' + model.id, {
-            report: postData
+            report: postData,
+            parts: queryParts
           });
         } else {
           promise = this.Api.sendPutJson('/reports/builder', {
-            report: postData
+            report: postData,
+            parts: queryParts
           }).success(function(data) {
             return model.id = data.id;
           });

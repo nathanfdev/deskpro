@@ -150,11 +150,32 @@ define [
 
 			is_new = !@report.id
 
+			promise = @reportData.saveFormModel(@report, @form, @query_parts)
+
 			@startSpinner('builder_loading')
 			@startSpinner('query_loading')
 			@startSpinner('saving')
 
-			promise = @Api.sendPostJson('/reports/builder/' + @report.id, {
+			promise.then( (data) =>
+
+				if data.error then @query_error = data.error
+
+				if data.rendered_result
+					@query_error = null
+					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
+
+				@skipDirtyState()
+				if is_new
+					@$state.go('builder.create')
+
+				@stopSpinner('builder_loading', true)
+				@stopSpinner('query_loading', true)
+				@stopSpinner('saving', true).then( =>
+					@Growl.success("Saved")
+				)
+			)
+
+			###promise = @Api.sendPostJson('/reports/builder/' + @report.id, {
 				parts: @query_parts
 			})
 
@@ -168,6 +189,6 @@ define [
 				@stopSpinner('builder_loading', true)
 				@stopSpinner('query_loading', true)
 				@stopSpinner('saving', true)
-			)
+			)###
 
 	Reports_Builder_Ctrl_Edit.EXPORT_CTRL()

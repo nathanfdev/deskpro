@@ -95,19 +95,20 @@ define [
 		###
   # Saves a form model and merges model with list data
   #
-  # @param {Object} model api_key model
+  # @param {Object} model report model
  	# @param {Object} formModel  The model representing the form
+ 	# @param {Object} queryParts object that is used for storing query builder data
   # @return {promise}
 		###
-		saveFormModel: (model, formModel) ->
+		saveFormModel: (model, formModel, queryParts) ->
 
 			mapper = @getFormMapper()
 			postData = mapper.getPostDataFromForm(formModel)
 
 			if model.id
-				promise = @Api.sendPostJson('/reports/builder/' + model.id, {report: postData})
+				promise = @Api.sendPostJson('/reports/builder/' + model.id, {report: postData, parts: queryParts})
 			else
-				promise = @Api.sendPutJson('/reports/builder', {report: postData}).success( (data) ->
+				promise = @Api.sendPutJson('/reports/builder', {report: postData, parts: queryParts}).success( (data) ->
 					model.id = data.id
 				)
 

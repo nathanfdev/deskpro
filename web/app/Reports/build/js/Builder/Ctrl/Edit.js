@@ -185,13 +185,11 @@
           return;
         }
         is_new = !this.report.id;
+        promise = this.reportData.saveFormModel(this.report, this.form, this.query_parts);
         this.startSpinner('builder_loading');
         this.startSpinner('query_loading');
         this.startSpinner('saving');
-        promise = this.Api.sendPostJson('/reports/builder/' + this.report.id, {
-          parts: this.query_parts
-        });
-        return promise.success(function(data) {
+        return promise.then(function(data) {
           if (data.error) {
             _this.query_error = data.error;
           }
@@ -199,10 +197,33 @@
             _this.query_error = null;
             _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
           }
+          _this.skipDirtyState();
+          if (is_new) {
+            _this.$state.go('builder.create');
+          }
           _this.stopSpinner('builder_loading', true);
           _this.stopSpinner('query_loading', true);
-          return _this.stopSpinner('saving', true);
+          return _this.stopSpinner('saving', true).then(function() {
+            return _this.Growl.success("Saved");
+          });
         });
+        /*promise = @Api.sendPostJson('/reports/builder/' + @report.id, {
+        				parts: @query_parts
+        			})
+        
+        			promise.success((data) =>
+        				if data.error then @query_error = data.error
+        
+        				if data.rendered_result
+        					@query_error = null
+        					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
+        
+        				@stopSpinner('builder_loading', true)
+        				@stopSpinner('query_loading', true)
+        				@stopSpinner('saving', true)
+        			)
+        */
+
       };
 
       return Reports_Builder_Ctrl_Edit;
