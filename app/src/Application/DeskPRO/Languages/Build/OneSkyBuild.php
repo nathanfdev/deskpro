@@ -129,14 +129,16 @@ class OneSkyBuild extends AbstractBuild
 				throw new \Exception("Error: " . $words['error'], strpos($words['error'], 'does not exist') !== false ? 404 : 200);
 			}
 
-			foreach ($words as &$v) {
-				$v = str_replace(
-					array('&lt;' ,'&gt;', '&quot;', '&amp;'),
-					array('<' ,'>', '\'', '&'),
-					$v
-				);
+			if ($words && is_array($words)) {
+				foreach ($words as &$v) {
+					$v = str_replace(
+						array('&lt;' ,'&gt;', '&quot;', '&amp;'),
+						array('<' ,'>', '\'', '&'),
+						$v
+					);
+				}
+				unset($v);
 			}
-			unset($v);
 
 		} catch (\Exception $e) {
 			if ($e->getCode() == 404) {
