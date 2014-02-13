@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Var vänlig och skriv en sammanfattning på minst fem bokstäver',
 	'user.feedback.form_new_error_title'                                   => 'Var vänlig och skriv en rubrik på minst fem bokstäver',
 	'user.feedback.form_new_prefix'                                        => 'Jag har en...',
-	'user.feedback.form_title'                                             => 'Berätta om din <span class="dp-cat-title-place">idé</span>',
+	'user.feedback.form_title'                                             => 'Berätta om din &lt;span class=&quot;dp-cat-title-place&quot;&gt;idé&lt;/span&gt;',
 	'user.feedback.note_awaiting-validation'                               => 'Notera: Din feedback inväntar en validering. När denna är utförd kommer den att synas publik på vår sida.',
 	'user.feedback.related_feedback'                                       => 'Relaterad Feedback',
 	'user.feedback.sidebar_description'                                    => 'Det är för närvarande {{phrase1}} liksom {{phrase2}}. Rösta upp den feedbacken du tycker är bra eller posta din egen.',

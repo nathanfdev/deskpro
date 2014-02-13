@@ -2,7 +2,7 @@
 	'user.tickets.add_me_to_ticket'                                        => 'リクエストに参加',
 	'user.tickets.assigned-agent'                                          => '担当エージェント',
 	'user.tickets.begin_with_department'                                   => '部署を選択',
-	'user.tickets.btn_continue'                                            => '続ける &rarr;',
+	'user.tickets.btn_continue'                                            => '続ける &amp;rarr;',
 	'user.tickets.cc_form_add_title'                                       => '名前とメールアドレスを使って追加',
 	'user.tickets.check_email'                                             => 'Eメールを確認',
 	'user.tickets.click_to_close'                                          => 'クリックして対応済みにする',

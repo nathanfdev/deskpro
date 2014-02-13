@@ -25,10 +25,10 @@
 	'user.portal.tab_knowledgebase'                                        => 'Kunskapsbas',
 	'user.portal.tab_knowledgebase-description'                            => 'Läs kunskapsartiklar',
 	'user.portal.tab_news'                                                 => 'Nyheter',
-	'user.portal.tab_news-description'                                     => 'Nyheter & uppdateringar',
+	'user.portal.tab_news-description'                                     => 'Nyheter &amp; uppdateringar',
 	'user.portal.tab_tickets'                                              => 'Kontakta Oss',
 	'user.portal.tab_tickets-description'                                  => 'Skicka in din fråga',
 	'user.portal.twitter-user-link'                                        => '@{{name}} på twitter',
-	'user.portal.twitter-view-more'                                        => 'Visa mer från @{{name}} &rarr;',
+	'user.portal.twitter-view-more'                                        => 'Visa mer från @{{name}} &amp;rarr;',
 	'user.portal.welcome-back-guest'                                       => 'Välkommen tillbaka, gäst',
 );

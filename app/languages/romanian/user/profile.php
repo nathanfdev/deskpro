@@ -50,7 +50,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Va multumim pentru inregistrare. Pentru a deveni activ, contul dumneavoastra trebuie validat de unul dintre agentii nostri. Acest proces nu ar trebui sa dureze prea mult.',
 	'user.profile.register_done_validate_email'                            => 'Va multumim ca v-ati inregistrat. Pentru a deveni activ, va rugam sa verificati adresa de email si sa validati contul dand click pe link-ul de activare.',
 	'user.profile.register_email_exists'                                   => 'Aceasta adresa de email apartine deja unui utilizator inregistrat.',
-	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Inregistreaza-te</a> sau logheza-te mai jos.',
+	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Inregistreaza-te&lt;/a&gt; sau logheza-te mai jos.',
 	'user.profile.register_password_min_length'                            => 'Va rugam sa introduceti o parola de cel putin 5 caractere',
 	'user.profile.register_password_mismatch'                              => 'Cele doua campuri pentru parola nu sunt identice',
 	'user.profile.remove_email_address'                                    => 'Indeparteaza adresa de email',

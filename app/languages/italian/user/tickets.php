@@ -2,7 +2,7 @@
 	'user.tickets.add_me_to_ticket'                                        => 'Aggiungimi al ticket',
 	'user.tickets.assigned-agent'                                          => 'Staff assegnato',
 	'user.tickets.begin_with_department'                                   => 'Inizia a scegliere un dipartimento',
-	'user.tickets.btn_continue'                                            => 'Continua &rarr;',
+	'user.tickets.btn_continue'                                            => 'Continua &amp;rarr;',
 	'user.tickets.cc_form_add_title'                                       => 'Aggiungi usando il nome o l\'email',
 	'user.tickets.check_email'                                             => 'controlla la tua posta elettronica',
 	'user.tickets.click_to_close'                                          => 'Clicca per chiudere il ticket',

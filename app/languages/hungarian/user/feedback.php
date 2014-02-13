@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Ide írhat bővebb összefoglalót a témáról. A leírásnak legalább 5 karakter hosszúságúnak kell lennie.',
 	'user.feedback.form_new_error_title'                                   => 'A tárgynak / címnek legalább 5 karakter hosszúságúnak kell lennie.',
 	'user.feedback.form_new_prefix'                                        => 'Új téma:',
-	'user.feedback.form_title'                                             => '<span class="dp-cat-title-place">Ötlet / Javaslat</span> bővebb leírása',
+	'user.feedback.form_title'                                             => '&lt;span class=&quot;dp-cat-title-place&quot;&gt;Ötlet / Javaslat&lt;/span&gt; bővebb leírása',
 	'user.feedback.note_awaiting-validation'                               => 'Köszönjük, hogy Ön is hozzájárul munkánk sikeréhez. Üzenetének tartalmát munkatársaink ellenőrizni fogják annak érdekében, hogy kiszűrjék a nem helyénvaló bejegyzéseket oldalainkról. Az ellenőrzés rövid időn belül megtörténik.',
 	'user.feedback.related_feedback'                                       => 'Kapcsolódó témák',
 	'user.feedback.sidebar_description'                                    => 'Jelenleg {{phrase1}}, valamint {{phrase2}} található az Ötlettárunkban. Böngésszen közöttük, szóljon hozzá, szavazzon, vagy küldjön be újat!',

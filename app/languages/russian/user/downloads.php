@@ -1,5 +1,6 @@
 <?php return array(
 	'user.downloads.button-download'                                       => 'Загрузить',
+	'user.downloads.change_file'                                           => 'Изменить файл',
 	'user.downloads.downloads-count'                                       => 'Этот файл был загружен 1 раз|Количество загрузок этого файла:{{count}}',
 	'user.downloads.file_not_found'                                        => 'Этот файл не найден',
 	'user.downloads.message_no-files'                                      => 'Папка пуста',

@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'メールアドレスを認証してください。',
 	'user.email_subjects.feedback_new'                                     => 'フィードバックを頂きありがとうございました。',
 	'user.email_subjects.feedback_new-approved'                            => 'フィードバックは承認されました。',
-	'user.email_subjects.feedback_new-comment'                             => '"{{title}}"に新着コメントがあります。',
+	'user.email_subjects.feedback_new-comment'                             => '&quot;{{title}}&quot;に新着コメントがあります。',
 	'user.email_subjects.feedback_new-confirm'                             => 'フィードバックを送信頂きありがとうございました。(承認手続き中)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'フィードバックは承認されませんでした。',
 	'user.email_subjects.feedback_updated'                                 => 'フィードバックが更新されました：{{title}}',

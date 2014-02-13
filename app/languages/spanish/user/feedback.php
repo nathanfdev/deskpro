@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Introduzca un mínimo de 5 caracteres',
 	'user.feedback.form_new_error_title'                                   => 'Introduzca un título con un mínimo de 5 caracteres',
 	'user.feedback.form_new_prefix'                                        => 'Tengo una ...',
-	'user.feedback.form_title'                                             => 'Comuníquenos su <span class="dp-cat-title-place">idea</span>',
+	'user.feedback.form_title'                                             => 'Comuníquenos su &lt;span class=&quot;dp-cat-title-place&quot;&gt;idea&lt;/span&gt;',
 	'user.feedback.note_awaiting-validation'                               => 'Nota: Sus comentarios están a la espera de su validación antes de hacerlos públicos en nuestro sistema.',
 	'user.feedback.related_feedback'                                       => 'Comentarios relacionados',
 	'user.feedback.sidebar_description'                                    => 'Hay actualmente {{phrase1}}, así como {{phrase2}}. Incremente el voto si está de acuerdo con enviar el suyo propio.',

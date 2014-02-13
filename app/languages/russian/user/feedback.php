@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Пожалуйста, введите краткое описание, состоящее не менее, чем из 5 символов',
 	'user.feedback.form_new_error_title'                                   => 'Пожалуйста, введите название, состоящее не менее, чем из 5 символов',
 	'user.feedback.form_new_prefix'                                        => 'У меня есть...',
-	'user.feedback.form_title'                                             => 'Расскажите нам о Вашей <span class="dp-cat-title-place">идее</span>',
+	'user.feedback.form_title'                                             => 'Расскажите нам о Вашей &lt;span class=&quot;dp-cat-title-place&quot;&gt;идее&lt;/span&gt;',
 	'user.feedback.note_awaiting-validation'                               => 'Сообщаем Вам, что Ваш отзыв проходит проверку, прежде чем быть опубликованным на основном сайте.',
 	'user.feedback.related_feedback'                                       => 'Похожий отзыв',
 	'user.feedback.sidebar_description'                                    => 'В данный момент {{phrase1}}, а также {{phrase2}}. Проголосуйте за отзыв пользователя, с которым Вы согласны, или отправьте свой.',

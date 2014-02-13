@@ -48,7 +48,7 @@
 	'user.profile.register_done_validate_agent'                            => 'شكراً لتسجيلك. لتفعيل حسابك بشكل كامل، سيقوم أحد موظفينا بمراجعته وتفعيله في أقرب وقت.',
 	'user.profile.register_done_validate_email'                            => 'شكراً لتسجيلك. لتفعيل حسابك بشكل كامل، أضغط على رابط التفعيل المرسل على بريدك الإلكتروني.',
 	'user.profile.register_email_exists'                                   => 'هذا البريد الإلكتروني مستخدم مسبقاً لدينا.',
-	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">تسجيل</a> أو دخول العضوية.',
+	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;تسجيل&lt;/a&gt; أو دخول العضوية.',
 	'user.profile.register_password_min_length'                            => 'فضلاً أدخل كلمة مرور على الأقل 5 حروف.',
 	'user.profile.register_password_mismatch'                              => 'حقول كلمة المرور غير متشابهة.',
 	'user.profile.remove_email_address'                                    => 'حذف عنوان البريد الإلكتروني',

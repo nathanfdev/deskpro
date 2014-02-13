@@ -6,7 +6,7 @@
 	'user.chat.form_create_button-submit'                                  => 'Start chat',
 	'user.chat.form_create_department'                                     => 'Vælg afdeling',
 	'user.chat.form_create_title'                                          => 'Start en chat med en medarbejder',
-	'user.chat.form_feedback_button-submit'                                => 'Send tilbagemelding & luk vinduet',
+	'user.chat.form_feedback_button-submit'                                => 'Send tilbagemelding &amp; luk vinduet',
 	'user.chat.form_feedback_comments'                                     => 'Kommentarer?',
 	'user.chat.form_feedback_rate-satisfaction'                            => 'Var du tilfreds med denne samtale?',
 	'user.chat.form_feedback_rate-satisfied'                               => 'Ja',

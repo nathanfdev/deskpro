@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Merci d\'entrer un résumé d\'au moins 5 caractères',
 	'user.feedback.form_new_error_title'                                   => 'Merci d\'entrer un titre d\'au moins 5 caractères',
 	'user.feedback.form_new_prefix'                                        => 'J\'ai une...',
-	'user.feedback.form_title'                                             => 'Parlez-nous de votre <span class="dp-cat-title-place">idée</span>',
+	'user.feedback.form_title'                                             => 'Parlez-nous de votre &lt;span class=&quot;dp-cat-title-place&quot;&gt;idée&lt;/span&gt;',
 	'user.feedback.note_awaiting-validation'                               => 'Note: Votre remarque est actuellement en attente de validation. Elle ne sera visible sur le site qu\'après validation.',
 	'user.feedback.related_feedback'                                       => 'Remarque associée',
 	'user.feedback.sidebar_description'                                    => 'Il y a actuellement {{phrase1}} ainsi que {{phrase2}}. Votez pour les remarques que vous approuvez et soumettez les vôtres.',

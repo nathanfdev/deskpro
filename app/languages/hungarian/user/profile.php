@@ -48,7 +48,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Köszönjük regisztrációját. Ügyfélfiókját munkatársaink hamarosan aktiválják, kérjük szíves türelmét.',
 	'user.profile.register_done_validate_email'                            => 'Köszönjük regisztrációját. Ügyfélfiókja aktiválásához kérjük ellenőrizze postafiókját, és kattintson a tőlünk kapott üzenetben található megerősítő linkre.',
 	'user.profile.register_email_exists'                                   => 'Ez az e-mail cím már szerepel az adatbázisunkban.',
-	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Regisztráljon</a> vagy jelentkezzen be.',
+	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Regisztráljon&lt;/a&gt; vagy jelentkezzen be.',
 	'user.profile.register_password_min_length'                            => 'Kérjük adja meg legalább 5 karakterből álló jelszavát!',
 	'user.profile.register_password_mismatch'                              => 'A két jelszó mező nem egyezik.',
 	'user.profile.remove_email_address'                                    => 'E-mail cím törlése',

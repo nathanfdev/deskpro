@@ -7,7 +7,7 @@
 	'user.chat.form_create_button-submit'                                  => 'Starta Chatten',
 	'user.chat.form_create_department'                                     => 'Välj avdelning',
 	'user.chat.form_create_title'                                          => 'Starta en chat med en agent',
-	'user.chat.form_feedback_button-submit'                                => 'Skicka Feedback & Stäng Fönstret',
+	'user.chat.form_feedback_button-submit'                                => 'Skicka Feedback &amp; Stäng Fönstret',
 	'user.chat.form_feedback_comments'                                     => 'Kommentarer?',
 	'user.chat.form_feedback_rate-satisfaction'                            => 'Är du nöjd med den här konversationen?',
 	'user.chat.form_feedback_rate-satisfied'                               => 'Ja',

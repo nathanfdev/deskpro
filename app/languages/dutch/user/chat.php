@@ -6,7 +6,7 @@
 	'user.chat.form_create_button-submit'                                  => 'Start Chat',
 	'user.chat.form_create_department'                                     => 'Kies een afdeling',
 	'user.chat.form_create_title'                                          => 'Start een chat met een medewerker',
-	'user.chat.form_feedback_button-submit'                                => 'Stuur feedback & sluit het venster',
+	'user.chat.form_feedback_button-submit'                                => 'Stuur feedback &amp; sluit het venster',
 	'user.chat.form_feedback_comments'                                     => 'Commentaar?',
 	'user.chat.form_feedback_rate-satisfaction'                            => 'Bent u tevreden geweest over deze conversatie?',
 	'user.chat.form_feedback_rate-satisfied'                               => 'Ja',

@@ -27,6 +27,6 @@
 	'user.portal.tab_tickets'                                              => 'İletişim',
 	'user.portal.tab_tickets-description'                                  => 'Yardım için buradayız',
 	'user.portal.twitter-user-link'                                        => '@{{name}} olarak twitter\'da',
-	'user.portal.twitter-view-more'                                        => 'Daha fazlası @{{name}} &rarr;',
+	'user.portal.twitter-view-more'                                        => 'Daha fazlası @{{name}} &amp;rarr;',
 	'user.portal.welcome-back-guest'                                       => 'Hoş geldiniz, Ziyaretçi',
 );

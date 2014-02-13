@@ -48,7 +48,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Gracias por registrarse. Antes de que su cuenta quede activa, uno de nuestros agentes debe validarla. Este proceso no debe demorarse mucho.',
 	'user.profile.register_done_validate_email'                            => 'Gracias por registrarse. Antes de que su cuenta se active, compruebe su correo electrónico y haga clic en el enlace que hay contenido en el.',
 	'user.profile.register_email_exists'                                   => 'Esta dirección de correo electrónico pertenece a un usuario registrado.',
-	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Registrese</a> o acceda.',
+	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Registrese&lt;/a&gt; o acceda.',
 	'user.profile.register_password_min_length'                            => 'Introduzca una contraseña con un mínimo de 5 caracteres.',
 	'user.profile.register_password_mismatch'                              => 'Las dos contraseñas no son iguales',
 	'user.profile.remove_email_address'                                    => 'Eliminar dirección de correo electrónico',

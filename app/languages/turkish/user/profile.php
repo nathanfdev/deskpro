@@ -41,7 +41,7 @@
 	'user.profile.profile_saved'                                           => 'Profiliniz başarıyla güncellendi.',
 	'user.profile.register'                                                => 'Kayı ol',
 	'user.profile.register_email_exists'                                   => 'Bu eposta adresi zaten kayıtlı.',
-	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Kayıt Ol</a> ya da aşağıdan oturum aç.',
+	'user.profile.register_or_login_below'                                 => '&lt;a href=&quot;{{url}}&quot;&gt;Kayıt Ol&lt;/a&gt; ya da aşağıdan oturum aç.',
 	'user.profile.register_password_min_length'                            => 'Lütfen en az 5 karakterden oluşan bir parola girin.',
 	'user.profile.register_password_mismatch'                              => 'İki parola alanı birbiriyle eşleşmedi.',
 	'user.profile.remove_email_address'                                    => 'Eposta adresini kaldır',

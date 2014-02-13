@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'Bekræft din email adresse',
 	'user.email_subjects.feedback_new'                                     => 'Tak for dit indlæg',
 	'user.email_subjects.feedback_new-approved'                            => 'Dit indlæg er blevet godkendt',
-	'user.email_subjects.feedback_new-comment'                             => 'Der er en ny kommentar på "{{title}}"',
+	'user.email_subjects.feedback_new-comment'                             => 'Der er en ny kommentar på &quot;{{title}}&quot;',
 	'user.email_subjects.feedback_new-confirm'                             => 'Tak for dit indlæg (bekræftelse nødvendig)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Dit indlæg er blevet afvist',
 	'user.email_subjects.feedback_updated'                                 => 'Dit indlæg er blevet opdateret: {{title}}',

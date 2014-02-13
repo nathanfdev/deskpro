@@ -29,6 +29,6 @@
 	'user.portal.tab_tickets'                                              => 'إتصل بنا',
 	'user.portal.tab_tickets-description'                                  => 'نحن هنا للمساعدة',
 	'user.portal.twitter-user-link'                                        => '@{{name}} على موقع تويتر',
-	'user.portal.twitter-view-more'                                        => 'شاهد المزيد من @{{name}} &rarr;',
+	'user.portal.twitter-view-more'                                        => 'شاهد المزيد من @{{name}} &amp;rarr;',
 	'user.portal.welcome-back-guest'                                       => 'مرحباً بك مرة أخرى كزائر',
 );
