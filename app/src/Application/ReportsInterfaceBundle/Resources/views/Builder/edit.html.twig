@@ -101,6 +101,10 @@
 										<button class="btn btn-primary" dp-submit-form>
 											Save & Run
 										</button>
+										<span class="btn btn-primary" ng-click="EditCtrl.saveToClone()"
+												ng-if="EditCtrl.report.id">
+											Save To Clone
+										</span>
 									</div>
 									<div dp-show-spinning="saving">
 										<i class="spinner-flat"></i>

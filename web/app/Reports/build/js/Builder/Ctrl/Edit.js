@@ -218,6 +218,34 @@
         });
       };
 
+      /*
+      		# Cloning the report
+      */
+
+
+      Reports_Builder_Ctrl_Edit.prototype.saveToClone = function() {
+        var promise,
+          _this = this;
+        this.startSpinner('builder_loading');
+        this.startSpinner('query_loading');
+        this.startSpinner('saving');
+        promise = this.Api.sendPost('/reports/builder/clone/' + this.report.id);
+        return promise.success(function(data) {
+          return _this.reportData.loadList(true).then(function() {
+            _this.stopSpinner('builder_loading', true);
+            _this.stopSpinner('query_loading', true);
+            return _this.stopSpinner('saving', true).then(function() {
+              _this.Growl.success("Cloning Done");
+              return _this.$state.go('builder.edit', {
+                type: 'custom',
+                id: data.id,
+                params: ''
+              });
+            });
+          });
+        });
+      };
+
       return Reports_Builder_Ctrl_Edit;
 
     })(ReportsBaseCtrl);

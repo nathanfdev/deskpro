@@ -183,4 +183,27 @@ define [
 				)
 			)
 
+
+		###
+		# Cloning the report
+ 	###
+		saveToClone: ->
+			@startSpinner('builder_loading')
+			@startSpinner('query_loading')
+			@startSpinner('saving')
+
+			promise = @Api.sendPost('/reports/builder/clone/' + @report.id)
+
+			promise.success((data) =>
+
+				@reportData.loadList(true).then(=>
+					@stopSpinner('builder_loading', true)
+					@stopSpinner('query_loading', true)
+					@stopSpinner('saving', true).then(=>
+						@Growl.success("Cloning Done")
+						@$state.go('builder.edit', {type: 'custom', id: data.id, params: ''})
+					)
+				)
+			)
+
 	Reports_Builder_Ctrl_Edit.EXPORT_CTRL()

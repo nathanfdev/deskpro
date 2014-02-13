@@ -216,6 +216,49 @@ class ReportsBuilderController extends AbstractController
 
 
 	####################################################################################################################
+	# clone report
+	####################################################################################################################
+
+	public function cloneAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
+		 */
+
+		$reports_builder = $this->container->getSystemService('reports_builder');
+		$report          = $reports_builder->getById($id);
+
+		if (!$report) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$new_report              = $reports_builder->createNew();
+		$new_report->title       = $report->title;
+		$new_report->description = $report->description;
+		$new_report->query       = $report->query;
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($new_report);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch(\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $new_report->id
+			)
+		);
+	}
+
+
+	####################################################################################################################
 	# delete report
 	####################################################################################################################
 

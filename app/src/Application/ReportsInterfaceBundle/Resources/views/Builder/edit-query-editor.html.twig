@@ -127,11 +127,11 @@
 					</span>
 				</div>
 
-				<button class="btn btn-success" ng-click="EditCtrl.testReport()" ng-if="EditCtrl.report.id"">
+				<button class="btn btn-success" ng-click="EditCtrl.testReport()" ng-if="EditCtrl.report.id">
 					Test Report
 				</button>
 
-				<button class="btn btn-warning" ng-if="EditCtrl.reportType == 'builtIn'">
+				<button class="btn btn-warning" ng-click="EditCtrl.saveToClone()" ng-if="EditCtrl.report.id">
 					Save To Clone
 				</button>
 
