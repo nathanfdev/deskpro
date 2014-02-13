@@ -62,7 +62,7 @@ class MainController extends AbstractController
 		$this->em->flush($ma_token);
 
 		$ma_login_url = License::getLicServer() . '/login_check_license';
-		if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
+		if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'http://') === 0) {
 			$ma_login_url = str_replace('http://', 'https://', $ma_login_url);
 		}
 
