@@ -208,6 +208,10 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 		$snippet_text = implode("\n<br/><br/>\n", $snippet_text);
 
 		$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+
+		$this->person_context->loadHelper('Agent');
+		$formatter->addVar('agent_signature', $this->person_context->getSignatureHtml());
+
 		$message->setMessageHtml($formatter->formatText($snippet_text, $ticket));
 		$ticket->addMessage($message);
 	}
@@ -305,8 +309,8 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 				}
 
 				$snippet_text = implode("\n<br/><br/>\n", $snippet_text);
-
 				$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+				$formatter->addVar('agent_signature', '');
 				$html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
 			}
 
