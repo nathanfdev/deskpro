@@ -14,7 +14,6 @@
 
 
 define('mPDF_VERSION','5.7.1');
-PersonFromEmailProcessor
 //Scale factor
 define('_MPDFK', (72/25.4));
 
