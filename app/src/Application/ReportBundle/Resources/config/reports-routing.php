@@ -42,7 +42,7 @@ $collection->create('report_agent_hours_index', array(
 $collection->create('report_agent_hours_list_date', array(
 	'path'        => '/agent-hours/{date}/{date2}',
 	'controller'  => 'ReportBundle:AgentHours:list',
-	'defaults'    => array('date2' => ''),
+	'defaults'    => array('date2' => '', 'date' => ''),
 ));
 
 $collection->create('report_agent_activity_index', array(
