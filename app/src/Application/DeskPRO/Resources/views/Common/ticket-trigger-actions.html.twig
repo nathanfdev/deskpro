@@ -22,6 +22,7 @@
 	<div class="builder-options">
 		<select name="agent">
 			<option value="-1">Me</option>
+			<option value="0">Unassigned</option>
 			<optgroup label="Agents">
 				{% for agent in app.agents.getAgents() %}
 					<option value="{{ agent.id }}">{{ agent.display_name }}</option>
