@@ -206,6 +206,8 @@ class ReportsBuilderController extends AbstractController
 
 			return $this->createApiResponse(
 				array(
+					 'success'         => true,
+					 'id'              => $report->id,
 					 'rendered_result' => $rendered_result,
 				)
 			);

@@ -112,6 +112,15 @@ class ReportBuilder extends DomainObject
 
 
 	/**
+	 * @return ReportBuilder
+	 */
+	public static function createReportBuilder()
+	{
+		return new self();
+	}
+
+
+	/**
 	 * @param string $type
 	 * @param array  $params
 	 * @return mixed|string

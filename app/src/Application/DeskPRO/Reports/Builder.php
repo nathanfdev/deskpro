@@ -111,6 +111,18 @@ class Builder
 
 
 	/**
+	 * @return \Application\DeskPRO\Entity\ReportBuilder
+	 */
+	public function createNew()
+	{
+		$report            = ReportBuilder::createReportBuilder();
+		$report->is_custom = true;
+
+		return $report;
+	}
+
+
+	/**
 	 * @param int $id
 	 * @param string|null $query
 	 * @return array
