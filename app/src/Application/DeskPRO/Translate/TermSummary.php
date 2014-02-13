@@ -207,6 +207,9 @@ class TermSummary
 				}
 				if ($agent_ids) {
 					$names = array_merge($names, App::getContainer()->getAgentData()->getNames($agent_ids));
+					if (in_array(-1, $agent_ids)) {
+						$names[-1] = 'Performer';
+					}
 				}
 				if ($not_id) {
 					$summary = $tr->phrase('agent.general.agent_is_not_me');
@@ -231,14 +234,22 @@ class TermSummary
 				} else {
 					if ($team_ids) {
 						$summary = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $team_ids, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+							if (!is_array($choice)) $choice = array($choice);
+							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($choice);
+							if (in_array(-1, $choice)) {
+								$titles[-1] = 'Performer\'s Team';
+							}
 							return $titles;
 						});
 					}
 
 					if ($not_ids) {
 						$summary = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), 'not', $not_ids, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+							if (!is_array($choice)) $choice = array($choice);
+							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($choice);
+							if (in_array(-1, $choice)) {
+								$titles[-1] = 'Performer\'s Team';
+							}
 							return $titles;
 						});
 					}
