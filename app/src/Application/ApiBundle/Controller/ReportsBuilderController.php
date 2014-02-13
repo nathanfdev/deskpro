@@ -34,6 +34,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\Reports\Form\Type\ReportType;
+use Application\DeskPRO\Reports\ReportEdit;
 
 class ReportsBuilderController extends AbstractController
 {
@@ -180,6 +182,24 @@ class ReportsBuilderController extends AbstractController
 				)
 			);
 		} else {
+
+			$postData = $this->in->getAll('post');
+
+			$report_edit = new ReportEdit($report);
+
+			$form = $this->createForm(new ReportType(), $report_edit, array('cascade_validation' => true));
+			$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'report'), true);
+
+			if ($form->isValid()) {
+
+				$report_edit->save($this->em);
+
+			} else {
+
+				return $this->createApiValidationErrorResponse(
+					$this->container->getValidator()->validate($report)
+				);
+			}
 
 			$reports_builder->saveQuery($report, 'from_request');
 			$rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
