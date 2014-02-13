@@ -175,20 +175,4 @@ define [
 				)
 			)
 
-			###promise = @Api.sendPostJson('/reports/builder/' + @report.id, {
-				parts: @query_parts
-			})
-
-			promise.success((data) =>
-				if data.error then @query_error = data.error
-
-				if data.rendered_result
-					@query_error = null
-					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
-
-				@stopSpinner('builder_loading', true)
-				@stopSpinner('query_loading', true)
-				@stopSpinner('saving', true)
-			)###
-
 	Reports_Builder_Ctrl_Edit.EXPORT_CTRL()
