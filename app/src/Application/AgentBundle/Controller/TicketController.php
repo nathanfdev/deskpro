@@ -162,6 +162,16 @@ class TicketController extends AbstractController
 		#------------------------------
 
 		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person, true);
+		usort($tasks, function($a, $b) {
+			$a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
+			$b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
+
+			if ($a_time == $b_time) {
+				return 0;
+			}
+
+			return ($a_time < $b_time) ? -1 : 1;
+		});
 
 		$addable_slas = $this->em->getRepository('DeskPRO:Sla')->getAddableSlas($ticket);
 		$ticket_api = array();

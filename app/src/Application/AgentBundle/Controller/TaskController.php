@@ -270,6 +270,17 @@ class TaskController extends AbstractController
             $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person, $search_categoty);
         }
 
+		usort($all_tasks, function($a, $b) {
+			$a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
+			$b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
+
+			if ($a_time == $b_time) {
+				return 0;
+			}
+
+			return ($a_time < $b_time) ? -1 : 1;
+		});
+
 		$tasks = array();
 		$completed_tasks = array();
 
