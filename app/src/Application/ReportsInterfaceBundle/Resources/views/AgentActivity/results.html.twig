@@ -1,6 +1,6 @@
 <div class="reports_agent_activity_section">
     {% if agents|length %}
-    <table class="activity_table">
+    <table class="activity_table table table-bordered" style="width: auto;">
         <thead>
             <tr>
                 <th>Hour</th>
@@ -12,7 +12,7 @@
         <tbody>
         {% for hour in range(0,23) %}
             <tr>
-                <td class="hour_cell">{{ '%02d'|format(hour) }}:00</td>
+                <td class="hour_cell alt dp-id-col">{{ '%02d'|format(hour) }}:00</td>
                 {% for agent in agents %}
                 <td>
                     {% set hour_index = '_' ~ hour %}
@@ -66,54 +66,3 @@
     {% endif %}
     <div class="reports-popup-page-overlay hidden"></div>
 </div>
-
-<style type="text/css">
-
-.reports_agent_activity_section .activity_table {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #CCCCCC;
-}
-
-.hour_cell {
-    text-align: center;
-}
-
-.activity_type_ticket .type_icon {
-    background-image: url({{ asset('images/agent/tabs/tabtype-ticket.png') }});
-}
-
-.activity_type_chat .type_icon {
-    background-image: url({{ asset('images/agent/tabs/tabtype-chat.png') }});
-}
-
-.activity_type_download .type_icon {
-    background-image: url({{ asset('images/agent/tabs/tabtype-download.png') }});
-}
-
-.activity_type_news .type_icon {
-    background-image: url({{ asset('images/agent/tabs/tabtype-news.png') }});
-}
-
-.activity_type_feedback .type_icon {
-    background-image: url({{ asset('images/agent/tabs/tabtype-feedback.png') }});
-}
-
-.activity_type_article .type_icon {
-    background-image: url({{ asset('images/agent/tabs/tabtype-content.png') }});
-}
-
-.activity .type_icon {
-    width: 15px;
-    height: 14px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-	position: relative;
-	top: 3px;
-}
-
-.activity {
-    vertical-align: middle;
-}
-</style>

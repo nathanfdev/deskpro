@@ -11767,3 +11767,41 @@ section.report-wrapper .no-data h3 {
   width: 99%;
   resize: none;
 }
+
+.activity_table .activity {
+  vertical-align: middle;
+}
+
+.activity_table .activity .type_icon {
+  position: relative;
+  top: 3px;
+  display: inline-block;
+  width: 15px;
+  height: 14px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.activity_table .activity_type_ticket .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-ticket.png');
+}
+
+.activity_table .activity_type_chat .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-chat.png');
+}
+
+.activity_table .activity_type_download .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-download.png');
+}
+
+.activity_table .activity_type_news .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-news.png');
+}
+
+.activity_table .activity_type_feedback .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-feedback.png');
+}
+
+.activity_table .activity_type_article .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-content.png');
+}

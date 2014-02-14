@@ -299,3 +299,48 @@ section.report-wrapper .no-data {
 	width: 99%;
 	resize: none;
 }
+
+//######################################################################################################################
+//# Report Agent Activity
+//######################################################################################################################
+
+.activity_table {
+
+	.activity {
+		vertical-align: middle;
+
+		.type_icon {
+			width: 15px;
+			height: 14px;
+			display: inline-block;
+			background-repeat: no-repeat;
+			background-position: 50% 50%;
+			position: relative;
+			top: 3px;
+		}
+	}
+
+	.activity_type_ticket .type_icon {
+	    background-image: url('@{img_path}/agent/tabs/tabtype-ticket.png');
+	}
+
+	.activity_type_chat .type_icon {
+	    background-image: url('@{img_path}/agent/tabs/tabtype-chat.png');
+	}
+
+	.activity_type_download .type_icon {
+	    background-image: url('@{img_path}/agent/tabs/tabtype-download.png');
+	}
+
+	.activity_type_news .type_icon {
+	    background-image: url('@{img_path}/agent/tabs/tabtype-news.png');
+	}
+
+	.activity_type_feedback .type_icon {
+	    background-image: url('@{img_path}/agent/tabs/tabtype-feedback.png');
+	}
+
+	.activity_type_article .type_icon {
+	    background-image: url('@{img_path}/agent/tabs/tabtype-content.png');
+	}
+}
