@@ -53,6 +53,7 @@ class ApiKernel extends AbstractKernel
 		$bundles = array(
 			new \Application\ApiBundle\ApiBundle(),
 			new \Application\AgentBundle\AgentBundle(),
+			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
 		);
 
 		if (defined('DPC_IS_CLOUD')) {
