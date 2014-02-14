@@ -2446,7 +2446,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		};
 
-		var rowContainer = this.getEl('tasks_wrap');
+		var rowContainer = this.getEl('tasks_wrap').find('table').first();
 
 		var openForEl = null;
 		rowContainer.on('click', '.remove-row-trigger', function(ev) {
@@ -2493,19 +2493,87 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			});
 		});
+		rowContainer.on('click', '.opt-trigger.time_due', function(ev) {
+
+			var row = $(this).closest('.task-row');
+			var field = $('input.input-date-time', row);
+			var timeLi = $(this).closest('ul').find('.time_due');
+			var label = timeLi.find('label');
+
+			var optOverlay = $('<div class="field-overlay"><div class="close-trigger"></div><select class="time_hour"><option value="NONE"></option></select>:<select class="time_min"><option value="NONE"></option></select></div>');
+			var backdrop = $('<div class="dp-popover-backdrop"></div>');
+			var hourEl = optOverlay.find('.time_hour');
+			var minEl = optOverlay.find('.time_min');
+
+			for (var i = 0; i <= 23; i++) {
+				var opt = $('<option></option>');
+				opt.text(i < 10 ? '0' + i : i+'');
+				opt.val(i);
+				opt.appendTo(hourEl);
+			}
+			for (var i = 0; i <= 55; i += 5) {
+				var opt = $('<option></option>');
+				opt.text(i < 10 ? '0' + i : i+'');
+				opt.val(i);
+				opt.appendTo(minEl);
+			}
+
+			optOverlay.css({
+				'z-idnex': 9999999,
+				left: $(this).offset().left,
+				top: $(this).offset().top
+			});
+			backdrop.css({
+				'z-idnex': 9999998
+			});
+			optOverlay.appendTo('body');
+			backdrop.appendTo('body');
+
+			var close = function() {
+				var hourVal = hourEl.find(':selected').val();
+				var minVal  = minEl.find(':selected').val();
+
+				var setTime, setTimeDisplay;
+
+				if (hourVal === 'NONE') {
+					setTime = '';
+					setTimeDisplay = 'No specific time';
+				} else {
+					hourVal = parseInt(hourVal);
+					minVal = parseInt(minVal) || 0;
+
+					setTime = hourVal + ':' + minVal;
+					setTimeDisplay = (hourVal < 10 ? '0'+hourVal : hourVal) + ':' + (minVal < 10 ? '0'+minVal : minVal);
+				}
+
+				field.val(setTime);
+				label.text(setTimeDisplay);
+
+				optOverlay.remove();
+				backdrop.remove();
+			};
+
+			backdrop.on('click', close);
+			optOverlay.find('.close-trigger').on('click', close);
+		});
 		rowContainer.on('click', '.opt-trigger.date_due', function(ev) {
 			var label = $('label', this);
-			var row = $(this).closest('.row-item');
+
+			var timeLi = $(this).closest('ul').find('.time_due');
+			var label2 = timeLi.find('label');
+
+			var row = $(this).closest('.task-row');
 			var field = $('input.input-date-due', row);
+			var field2 = $('input.input-date-time', row);
 			var date = $('input.input-date-due', row).val();
 			if (!date) {
 				date = new Date();
 			}
 
 			field.datepicker('dialog', date, function(date, inst) {
-				sendUpdate(row, 'date_due', date);
 				$('input.input-date-due', row).val(date);
 				label.text(date);
+				timeLi.show();
 			}, {
 				dateFormat: 'yy-mm-dd',
 				showButtonPanel: true,
@@ -2516,7 +2584,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$('button', buttonPane).remove();
 
 						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-						btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); label.text('No due date'); });
+						btn.unbind("click").bind("click", function () {
+							$.datepicker._clearDate( input );
+							field2.val('');
+							timeLi.hide();
+							label2.text('No specific time');
+							label.text('No due date');
+						});
 						btn.appendTo( buttonPane );
 
 						$(input).datepicker("widget").css('z-index', 30101);
@@ -2595,7 +2669,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
-		var control = new DeskPRO.Agent.PageHelper.TaskListControl(this.wrapper, {
+		var control = new DeskPRO.Agent.PageHelper.TaskListControl(this.getEl('task_list'), {
 			menuVis:  menuVis2,
 			completeCountEl: null
 		});

@@ -182,7 +182,11 @@ class TaskController extends AbstractController
 						$min = (int)$min;
 						if (Numbers::inRange($hour, 0, 23) && Numbers::inRange($min, 0, 59)) {
 							$date_due->setTime($hour, $min, 59);
+						} else {
+							$date_due->setTime(23, 59, 59);
 						}
+					} else {
+						$date_due->setTime(23, 59, 59);
 					}
 				} catch (\Exception $e) {
 					$date_due = null;
