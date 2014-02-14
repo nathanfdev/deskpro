@@ -60,10 +60,12 @@
       Reports_AgentActivity_Ctrl_AgentActivity.prototype.loadResults = function() {
         var promise,
           _this = this;
+        this.startSpinner('loading_results');
         promise = this.Api.sendGet("/reports/agent-activity/" + this.filter.agent_or_team + "/" + this.filter.date).then(function(res) {
           _this.html = _this.$sce.trustAsHtml(res.data.html);
           _this.all_agents = res.data.all_agents;
-          return _this.agent_teams = res.data.agent_teams;
+          _this.agent_teams = res.data.agent_teams;
+          return _this.stopSpinner('loading_results', true);
         });
         return promise;
       };
