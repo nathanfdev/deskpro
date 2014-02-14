@@ -235,7 +235,12 @@ class Generic implements ForwardDef, QuoteDef
 			return $forward_data;
 		}
 
-		$from_str = substr($forward_data['fwd_message_headers'], $pos);
+		$pos2 = strpos($forward_data['fwd_message_headers'], "\n", $pos);
+		if ($pos2 === false) {
+			return $forward_data;
+		}
+
+		$from_str = substr($forward_data['fwd_message_headers'], $pos, $pos2-$pos);
 		$m = null;
 
 		if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
