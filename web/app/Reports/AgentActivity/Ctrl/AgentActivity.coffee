@@ -28,15 +28,15 @@ define [
 
 
 		###
- 	# This method updates current parameters that are used for sending request to API
- 	###
+		# This method updates current parameters that are used for sending request to API
+		###
 		updateFilter: ->
 			@filter.date = moment(@date).format("YYYY-MM-DD")
 			@loadResults()
 
 
 		###
- 	# Loading the results of sending request to API
+		# Loading the results of sending request to API
 		###
 		loadResults: ->
 			promise = @Api.sendGet("/reports/agent-activity/0/" + @filter.date).then((res) =>

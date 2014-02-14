@@ -39,18 +39,17 @@
       };
 
       /*
-       	# This method updates current parameters that are used for sending request to API
+      		# This method updates current parameters that are used for sending request to API
       */
 
 
       Reports_AgentActivity_Ctrl_AgentActivity.prototype.updateFilter = function() {
-        console.log(this.date);
         this.filter.date = moment(this.date).format("YYYY-MM-DD");
         return this.loadResults();
       };
 
       /*
-       	# Loading the results of sending request to API
+      		# Loading the results of sending request to API
       */
 
 
