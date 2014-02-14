@@ -242,7 +242,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			// the list we're looking at is now out of date, meaning we need to relaod
 			if (li.hasClass('is-stale')) {
 				if (self.meta.routeData && self.meta.routeData.route) {
-					DeskPRO_Window.runPageRoute(self.meta.routeData.route);
+					DeskPRO_Window.runPageRoute(self.meta.routeData.route, {noChangePaneVis: true, isBackgroundLoad: true});
 				}
 			}
 
@@ -257,7 +257,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		if (self.meta.groupBy) {
 			if (self.meta.routeData && self.meta.routeData.route) {
-				DeskPRO_Window.runPageRoute(self.meta.routeData.route);
+				DeskPRO_Window.runPageRoute(self.meta.routeData.route, {noChangePaneVis: true, isBackgroundLoad: true});
 			}
 		}
 
@@ -401,7 +401,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			// and the various control elements havent been rendered.
 			// So we need to refresh the view
 			if (!this.getEl('is_results').length) {
-				DeskPRO_Window.loadListPane(this.meta.refreshUrl);
+				DeskPRO_Window.loadListPane(this.meta.refreshUrl, {noChangePaneVis: true, isBackgroundLoad: true});
 				return;
 			}
 
