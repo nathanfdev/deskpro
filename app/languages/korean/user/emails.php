@@ -19,7 +19,7 @@
 	'user.emails.feedback_validate-email'                                  => '아래 링크를 클릭해서 이메일 주소를 인증해주십시오:',
 	'user.emails.feedback_votes'                                           => '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: ',
 	'user.emails.greeting'                                                 => '{{to_name}}님께,',
-	'user.emails.kb-explain'                                               => '이 이메일은 지식베이스를 <a href="{{<a href="{{ deskpro_url }}">{{ deskpro_url }}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{ unsubscribe_url }}"> 를 클릭해 구독을 취소해주십시오.</a>',
+	'user.emails.kb-explain'                                               => '이 이메일은 지식베이스를 <a href="{{ deskpro_url }}">{{ deskpro_url }}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{ unsubscribe_url }}"> 를 클릭해 구독을 취소해주십시오.</a>',
 	'user.emails.kb-new-articles'                                          => '하나의 새로운 논문 {{count}}개의 새로운 논문',
 	'user.emails.kb-updated-articles'                                      => '하나의 업데이트 논문 {{count}} 개의 업데이트 논문',
 	'user.emails.label_view-online'                                        => '온라인에서 확인하세요',
