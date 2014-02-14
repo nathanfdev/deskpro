@@ -57,11 +57,29 @@ class AgentActivity
 
 
 	/**
+	 * @return mixed
+	 */
+	public function getAllAgents()
+	{
+		return $this->em->getRepository('DeskPRO:Person')->getAgents();
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getAllAgentTeams()
+	{
+		return $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
+	}
+
+
+	/**
 	 * @param string string $agent_or_team_id
 	 * @param string string $date
 	 * @return array
 	 */
-	public function getVarsForHtmlView($agent_or_team_id = '0', $date = '')
+	public function getVarsForHtmlView($agent_or_team_id = 'all', $date = '')
 	{
 		if($date == '') {
 			$dt = $this->person->getDateTime();
@@ -88,7 +106,7 @@ class AgentActivity
 		}
 
 		if (!$agent_list) {
-			$agent_or_team_id = '0';
+			$agent_or_team_id = 'all';
 			$agent_list       = $all_agents;
 		}
 
@@ -135,8 +153,6 @@ class AgentActivity
 		$vars['agents']           = $agents;
 		$vars['activity']         = $activity;
 		$vars['agent_or_team_id'] = $agent_or_team_id;
-		$vars['all_agents']       = $all_agents;
-		$vars['agent_teams']      = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
 		$vars['view_date']        = $date;
 		$vars['today']            = new \DateTime('now', new \DateTimeZone('UTC'));
 		$vars['agent_id']         = $agent_id;

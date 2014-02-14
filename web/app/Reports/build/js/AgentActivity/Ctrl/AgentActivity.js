@@ -26,7 +26,11 @@
       Reports_AgentActivity_Ctrl_AgentActivity.prototype.init = function() {
         this.html = '';
         this.date = new Date();
-        return this.filter = {};
+        this.all_agents = [];
+        this.agent_teams = [];
+        this.filter = {};
+        this.filter.date = moment(this.date).format("YYYY-MM-DD");
+        return this.filter.agent_or_team = 'all';
       };
 
       /*
@@ -56,8 +60,10 @@
       Reports_AgentActivity_Ctrl_AgentActivity.prototype.loadResults = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendGet("/reports/agent-activity/0/" + this.filter.date).then(function(res) {
-          return _this.html = _this.$sce.trustAsHtml(res.data.html);
+        promise = this.Api.sendGet("/reports/agent-activity/" + this.filter.agent_or_team + "/" + this.filter.date).then(function(res) {
+          _this.html = _this.$sce.trustAsHtml(res.data.html);
+          _this.all_agents = res.data.all_agents;
+          return _this.agent_teams = res.data.agent_teams;
         });
         return promise;
       };

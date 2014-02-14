@@ -7,20 +7,17 @@
 			Showing Agent Activity for:
 			<select
 					ui-select2
-					ng-model="AgentActivity.filter.agent"
+					ng-model="AgentActivity.filter.agent_or_team"
 					style="width: 200px;"
 					>
-				<option selected="selected" value="/reports/agent-activity/list/0/2014-02-14">All Agents</option>
-				<option value="/reports/agent-activity/list/2/2014-02-14">
-					Christopher Padfield
-				</option>
-				<option value="/reports/agent-activity/list/1/2014-02-14">
-					Egor Smirnov
+				<option value="all">All Agents</option>
+				<option ng-repeat="agent in AgentActivity.all_agents" ng-value="agent.id">
+					{{ ng_var('agent.name') }}
 				</option>
 				<optgroup label="Teams">
-					<option value="/reports/agent-activity/list/team-2/2014-02-14">1st Level Support</option>
-					<option value="/reports/agent-activity/list/team-3/2014-02-14">2nd Level Support</option>
-					<option value="/reports/agent-activity/list/team-1/2014-02-14">Support Managers</option>
+					<option ng-repeat="team in AgentActivity.agent_teams" value="team-{{ ng_var('team.id') }}">
+						{{ ng_var('team.name') }}
+					</option>
 				</optgroup>
 			</select>
 			on

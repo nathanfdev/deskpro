@@ -3967,7 +3967,7 @@ $collection->create('api_reports_builder_download', array(
 $collection->create('api_reports_agent_activity_list', array(
 	'path'        => '/reports/agent-activity/{agent_or_team_id}/{date}',
 	'controller'  => 'ApiBundle:ReportsAgentActivity:list',
-	'defaults'    => array('agent_or_team_id' => '0', 'date' => ''),
+	'defaults'    => array('agent_or_team_id' => 'all', 'date' => ''),
 	'methods'     => array('GET'),
 ));
 
