@@ -192,6 +192,10 @@ class TriggerExecutor
 		if (!$this->tracker->isExtraSet('ticket_created') && $this->ticket->status_code == 'awaiting_agent' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating')) {
 			$this->tracker->logMessage('[TriggerExecutor] ticket_created true');
 			$this->tracker->recordExtra('ticket_created', true);
+
+			// Also set the person_performer so the proper name is set
+			// (otherwise performer will be the agent who just validated the user)
+			$this->tracker->recordExtra('person_performer', $this->ticket->person);
 		}
 
 		// Mark that is a validating ticket created, created triggers
