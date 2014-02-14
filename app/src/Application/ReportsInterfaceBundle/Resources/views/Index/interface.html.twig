@@ -65,6 +65,9 @@
 	</div>
 </div>
 
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
+
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';
 window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
