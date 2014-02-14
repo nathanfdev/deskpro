@@ -3429,6 +3429,52 @@ ul.pane-tabs {
 	bottom: 0;
 }
 
+#dp_list .list-pane-view {
+
+	@header_size: 28px;
+	@subheader_size: 29px;
+	@footer_size: 26px;
+
+	.view-header, .view-subheader, .view-footer, .view-body {
+		position: absolute;
+		left: 0;
+		right: 0;
+		overflow: hidden;
+	}
+
+	.view-header {
+		height: @header_size;
+		top: 0;
+	}
+
+	.view-subheader {
+		height: @subheader_size;
+		top: @header_size+1;
+	}
+
+	.view-footer {
+		border-bottom: none;
+		height: @footer_size;
+		bottom: 0;
+	}
+
+	&.with-header .view-body {
+		top: @header_size + 1;
+	}
+	&.with-header.with-subheader .view-body {
+		top: @header_size + 1 + @subheader_size + 1;
+	}
+	&.with-footer .view-body {
+		bottom: @footer_size + 1;
+	}
+
+	.view-body {
+		overflow: auto;
+		top: 0;
+		bottom: 0;
+	}
+}
+
 #dp_list_resizer {
 	position: absolute;
 	top: 0;
@@ -4283,5 +4329,21 @@ section.dp-overlay > header nav h3 {
 			line-height: 24px;
 			overflow: auto;
 		}
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// New List Pane Results
+//----------------------------------------------------------------------------------------------------------------------
+
+section.list-results {
+	.border-box();
+
+	section, article, div, p, nav, ul, li, a, i, em, input {
+		.border-box();
+	}
+
+	article.list-row {
+
 	}
 }

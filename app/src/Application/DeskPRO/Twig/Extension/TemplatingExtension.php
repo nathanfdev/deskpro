@@ -139,6 +139,9 @@ class TemplatingExtension extends \Twig_Extension
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 
+			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
+
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
             'path' => new \Twig_Function_Method($this, 'getPath'),
@@ -1512,6 +1515,33 @@ class TemplatingExtension extends \Twig_Extension
 		$source = str_replace('</script>',  '%endScript%', $source);
 		$source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">' . $source . '</script>';
 		return $source;
+	}
+
+	public function ngVar($var)
+	{
+		return '{{' . $var . '}}';
+	}
+
+	public function ngIncTpl($context, $tpl_name, $save_name = null)
+	{
+		$name = $tpl_name;
+
+		$tpl = App::getContainer()->getTemplating();
+		if (!$tpl->exists($name)) {
+			return '<!-- No such template exists: ' . $name . ' -->';
+		}
+
+		$rendered = $tpl->render($name, $context);
+
+		if (!$save_name) {
+			$save_name = $tpl_name;
+			$save_name = preg_replace('#^(AdminInterface|Admin|Agent)Bundle:#', '$1/', $save_name);
+			$save_name = str_replace(':', '/', $save_name);
+			$save_name = preg_replace('#\.twig$#', '', $save_name);
+		}
+
+		$html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
+		return $html;
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)
