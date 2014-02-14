@@ -56,8 +56,8 @@ define(function() {
 	routes.push({
 		id: 'agent_activity',
 		url: '/agent_activity',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'AgentActivity/index.html',
+		controller: 'Reports_AgentActivity_Ctrl_AgentActivity'
 	});
 
 	//##################################################################################################################
