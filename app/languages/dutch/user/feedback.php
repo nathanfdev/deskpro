@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Geef een samenvatting van ten minste 5 tekens',
 	'user.feedback.form_new_error_title'                                   => 'Voer een titel in van ten minste 5 tekens',
 	'user.feedback.form_new_prefix'                                        => 'Ik heb een...',
-	'user.feedback.form_title'                                             => 'Vertel ons over uw <span class=\'dp-cat-title-place\'>idee</span>',
+	'user.feedback.form_title'                                             => 'Vertel ons over uw <span class="dp-cat-title-place">idee</span>',
 	'user.feedback.note_awaiting-validation'                               => 'Opmerking: Uw feedback wacht momenteel op validatie voordat deze publiekelijk op de website wordt geplaatst.',
 	'user.feedback.related_feedback'                                       => 'Gerelateerde feedback',
 	'user.feedback.sidebar_description'                                    => 'Er zijn momenteel zowel{{phrase1}} als {{phrase2}}. Stem voor de feedback waar u het mee eens bent of plaats uw eigen feedback.',

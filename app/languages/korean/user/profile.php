@@ -51,7 +51,7 @@
 	'user.profile.register_done_validate_agent'                            => '가입해 주셔서 감사합니다. 저희 스태프가 계정을 승인해야 활성화 됩니다. 조그만 기다려 주십시오.',
 	'user.profile.register_done_validate_email'                            => '가입해 주셔서 감사합니다. 계정이 활성화 되기 전에 이메일을 체크하여 승인 링크를 클릭해주세요.',
 	'user.profile.register_email_exists'                                   => '이 이메일 주소는 이미 사용중입니다.',
-	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>가입하거나</a> 아래에서 로그인 해주세요.',
+	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">가입하거나</a> 아래에서 로그인 해주세요.',
 	'user.profile.register_password_min_length'                            => '5자 이상의 비밀번호를 입력해 주세요.',
 	'user.profile.register_password_mismatch'                              => '두 칸의 비밀번호가 일치하지 않습니다.',
 	'user.profile.remove_email_address'                                    => '이메일주소 삭제하기',

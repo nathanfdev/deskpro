@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Skriv venligt en overskrift på mindst 5 karakterer',
 	'user.feedback.form_new_error_title'                                   => 'Skriv venligt en titel på mindst 5 karakterer',
 	'user.feedback.form_new_prefix'                                        => 'Jeg har en...',
-	'user.feedback.form_title'                                             => 'Fortæl os om din <span class=\'dp-cat-title-place\'>ide</span>',
+	'user.feedback.form_title'                                             => 'Fortæl os om din <span class="dp-cat-title-place">ide</span>',
 	'user.feedback.note_awaiting-validation'                               => 'Bemærk: Dit indlæg venter i øjeblikket på godkendelse, før det vises hoved websiten',
 	'user.feedback.related_feedback'                                       => 'Lignende indlæg',
 	'user.feedback.sidebar_description'                                    => 'Der er i øjeblikket {{phrase1}} så vel som {{phrase2}}. Stem på den artikel du er mest enig med eller skriv en selv.',

@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Lütfen en az 5 karakterden oluşan bir tanım girin',
 	'user.feedback.form_new_error_title'                                   => 'Lütfen en az 5 karakterden oluşan bir başlık girin',
 	'user.feedback.form_new_prefix'                                        => 'Benim',
-	'user.feedback.form_title'                                             => '<span class=\'dp-cat-title-place\'>Fikrinizi</span> söyleyin',
+	'user.feedback.form_title'                                             => '<span class="dp-cat-title-place">Fikrinizi</span> söyleyin',
 	'user.feedback.note_awaiting-validation'                               => 'Not: Geri bildiriminiz ana sitede yayınlanmak üzere onay bekliyor.',
 	'user.feedback.related_feedback'                                       => 'İlgili Geri Bildirimler',
 	'user.feedback.sidebar_description'                                    => 'Hali hazırda {{phrase1}} ve {{phrase2}} var. İsterseniz bunları oylayabilir ya da kendinizinkini gönderebilirsiniz.',

@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Va rugam sa introduceti o descriere de minim 5 caractere',
 	'user.feedback.form_new_error_title'                                   => 'Va rugam sa introduceti un titlu de minim 5 caractere',
 	'user.feedback.form_new_prefix'                                        => 'Am...',
-	'user.feedback.form_title'                                             => 'Spuneti-ne despre <span class=\'dp-cat-title-place\'>idea</span>',
+	'user.feedback.form_title'                                             => 'Spuneti-ne despre <span class="dp-cat-title-place">idea</span>',
 	'user.feedback.note_awaiting-validation'                               => 'Nota: Feecback-ul dumneavoastra asteapta validarea finala inainte de a fi publicat pagina principala.',
 	'user.feedback.related_feedback'                                       => 'Feedback legat de',
 	'user.feedback.sidebar_description'                                    => 'Exista momentan {{phrase1}} la fel si {{phrase2}}. Votati feedback-ul pe care il considerati valabil in cazul dumneavoastra sau inregistrati propriul feedback.',

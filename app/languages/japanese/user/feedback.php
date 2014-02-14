@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'サマリーは5文字以上でお願いします。',
 	'user.feedback.form_new_error_title'                                   => 'タイトルは5文字以上でお願いします。',
 	'user.feedback.form_new_prefix'                                        => '例えば...',
-	'user.feedback.form_title'                                             => 'あなたの <span class=\'dp-cat-title-place\'>アイデア</span>を教えてください。',
+	'user.feedback.form_title'                                             => 'あなたの <span class="dp-cat-title-place">アイデア</span>を教えてください。',
 	'user.feedback.note_awaiting-validation'                               => '注意：あなたのフィードバックは現在承認手続き中のため、ウェブサイトには開示されていません。',
 	'user.feedback.related_feedback'                                       => '関連フィードバック',
 	'user.feedback.sidebar_description'                                    => '現在次のような{{phrase1}} や {{phrase2}}があります。同意される場合は投票をしてください。その他の提案がある場合はぜひあなたのアイデアをお送りください。',

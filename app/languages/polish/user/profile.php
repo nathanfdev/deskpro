@@ -48,7 +48,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Dziękujemy za rejestrację. Zanim Twoje konto zostanie zaktywowane, jeden z naszych pracowników musi go zaakceptować. To nie zajmie dużo czasu.',
 	'user.profile.register_done_validate_email'                            => 'Dziękujemy za rejestrację. Zanim Twoje konto zostanie zaktywowane, sprawdź swoją skrzynkę pocztową i kliknij na link potwierdzający.',
 	'user.profile.register_email_exists'                                   => 'Ten adres email należy do zarejestrowanego użytkownika.',
-	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>Zarejestruj się</a> albo zaloguj się poniżej.',
+	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Zarejestruj się</a> albo zaloguj się poniżej.',
 	'user.profile.register_password_min_length'                            => 'Wpisz hasło, składające się z co najmniej 5 znaków.',
 	'user.profile.register_password_mismatch'                              => 'Wpisane hasła różnią się.',
 	'user.profile.remove_email_address'                                    => 'Usuń adres email',

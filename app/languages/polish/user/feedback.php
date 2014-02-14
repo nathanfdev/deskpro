@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'Wpisz podsumowanie z co najmniej 5 znaków',
 	'user.feedback.form_new_error_title'                                   => 'Wprowadź tytuł z co najmniej 5 znaków',
 	'user.feedback.form_new_prefix'                                        => 'Mam...',
-	'user.feedback.form_title'                                             => 'Jaką masz <span class=\'dp-cat-title-place\'>sugestię</span>?',
+	'user.feedback.form_title'                                             => 'Jaką masz <span class="dp-cat-title-place">sugestię</span>?',
 	'user.feedback.note_awaiting-validation'                               => 'Uwaga: Twoja opinia oczekuje zatwierdzenia, zanim się pojawi na stronie głównej.',
 	'user.feedback.related_feedback'                                       => 'Powiązana opinia',
 	'user.feedback.sidebar_description'                                    => 'Aktualnie:  {{phrase1}}, {{phrase2}}. Zagłosuj na opinię, z którą się zgadzasz, albo wyślij swoją.',

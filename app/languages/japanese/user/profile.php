@@ -44,7 +44,7 @@
 	'user.profile.register_done_validate_agent'                            => 'ご登録をいただきありがとうございました。アカウントを有効にするには、当社のエージェントによる承認がが必要です。今しばらくお待ちください。',
 	'user.profile.register_done_validate_email'                            => 'ご登録をいただきありがとうございました。アカウントを有効にするには、送信されたメールを確認し、承認のためのリンクをクリックしてください。',
 	'user.profile.register_email_exists'                                   => 'このメールアドレスはすでに他のユーザにより登録済みです。',
-	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>登録</a>またはログインしてください。',
+	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">登録</a>またはログインしてください。',
 	'user.profile.register_password_min_length'                            => 'パスワードは5文字以上入力してください。',
 	'user.profile.register_password_mismatch'                              => '入力されたパスワードが相違しています。',
 	'user.profile.remove_email_address'                                    => 'メールアドレスを削除',

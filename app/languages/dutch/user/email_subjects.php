@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'Valideer uw e-mailadres',
 	'user.email_subjects.feedback_new'                                     => 'Bedankt voor het sturen van uw feedback',
 	'user.email_subjects.feedback_new-approved'                            => 'Uw feedback is goedgekeurd',
-	'user.email_subjects.feedback_new-comment'                             => 'Er is een nieuwe opmerking op \'{{title}}\'',
+	'user.email_subjects.feedback_new-comment'                             => 'Er is een nieuwe opmerking op "{{title}}"',
 	'user.email_subjects.feedback_new-confirm'                             => 'Bedankt voor het sturen van uw feedback(Validatie vereist)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Uw feedback is afgewezen',
 	'user.email_subjects.feedback_updated'                                 => 'Uw feedback is bijgewerkt: {{title}}',

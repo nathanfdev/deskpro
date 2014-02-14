@@ -10,7 +10,7 @@
 	'user.feedback.form_new_error_message'                                 => 'فضلاً أضف مقتطف من 5 أحرف على الأقل',
 	'user.feedback.form_new_error_title'                                   => 'فضلاً أضف عنوان من 5 أحرف على الأقل',
 	'user.feedback.form_new_prefix'                                        => 'لدي...',
-	'user.feedback.form_title'                                             => 'أخبرنا عن <span class=\'dp-cat-title-place\'>فكرتك</span>',
+	'user.feedback.form_title'                                             => 'أخبرنا عن <span class="dp-cat-title-place">فكرتك</span>',
 	'user.feedback.note_awaiting-validation'                               => 'لاحظ: أقتراحك في أنتظار المراجعة قبل الظهور على الموقع الرئيسي.',
 	'user.feedback.related_feedback'                                       => 'أقتراحات مشابهة',
 	'user.feedback.sidebar_description'                                    => 'حالياً يوجد {{phrase1}} بالأضافة إلى {{phrase2}}.صوت للأقتراح الذي تتفق معه أو راسلنا بأقتراحك.',

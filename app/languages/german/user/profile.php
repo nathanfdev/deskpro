@@ -48,7 +48,7 @@
 	'user.profile.register_done_validate_agent'                            => 'Vielen Dank für Ihre Registrierung. Damit Ihr Konto vollkommen aktiv wird, muss einer unserer Agenten Ihr Konto bestätigen. Dieser Prozess sollte nicht sehr lange dauern.',
 	'user.profile.register_done_validate_email'                            => 'Vielen Dank für Ihre Registrierung. Damit Ihr Konto vollkommen aktiv wird, überprüfen Sie bitte Ihre Email und klicken Sie auf den Bestätigungslink.',
 	'user.profile.register_email_exists'                                   => 'Diese Email Adresse gehört bereits zu einem registrierten Benutzer.',
-	'user.profile.register_or_login_below'                                 => '<a href=\'{{url}}\'>Registrieren</a> oder unten anmelden.',
+	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Registrieren</a> oder unten anmelden.',
 	'user.profile.register_password_min_length'                            => 'Bitte geben Sie ein Kennwort mit mindestens 5 Zeichen ein.',
 	'user.profile.register_password_mismatch'                              => 'Die beiden Kennworte stimmen nicht überein.',
 	'user.profile.remove_email_address'                                    => 'Email Adresse entfernen',

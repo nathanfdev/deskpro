@@ -64,7 +64,7 @@
 	'user.tickets.no_subject'                                              => '(Sin asunto)',
 	'user.tickets.open_tickets'                                            => 'Tickets abiertos',
 	'user.tickets.organization_tickets'                                    => 'Tickets de {{organization}}',
-	'user.tickets.rate-intro'                                              => '{{name}} le ha ayudado con su ticket \'{{subject}}\'',
+	'user.tickets.rate-intro'                                              => '{{name}} le ha ayudado con su ticket "{{subject}}"',
 	'user.tickets.rate-negative'                                           => 'No ha sido bueno',
 	'user.tickets.rate-neutral'                                            => 'Bueno',
 	'user.tickets.rate-positive'                                           => 'Muy bueno',
