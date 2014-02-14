@@ -133,7 +133,7 @@ class OneSkyBuild extends AbstractBuild
 				foreach ($words as &$v) {
 					$v = str_replace(
 						array('&lt;' ,'&gt;', '&quot;', '&amp;'),
-						array('<' ,'>', '\'', '&'),
+						array('<' ,'>', '"', '&'),
 						$v
 					);
 				}
