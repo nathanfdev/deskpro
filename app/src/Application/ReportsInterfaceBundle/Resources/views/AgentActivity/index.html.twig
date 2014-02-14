@@ -2,6 +2,39 @@
 
 {% block fillpage_content %}
 
+	<div class="alert alert-info">
+		<div>
+			Showing Agent Activity for:
+			<select
+					ui-select2
+					ng-model="AgentActivity.filter.agent"
+					style="width: 200px;"
+					>
+				<option selected="selected" value="/reports/agent-activity/list/0/2014-02-14">All Agents</option>
+				<option value="/reports/agent-activity/list/2/2014-02-14">
+					Christopher Padfield
+				</option>
+				<option value="/reports/agent-activity/list/1/2014-02-14">
+					Egor Smirnov
+				</option>
+				<optgroup label="Teams">
+					<option value="/reports/agent-activity/list/team-2/2014-02-14">1st Level Support</option>
+					<option value="/reports/agent-activity/list/team-3/2014-02-14">2nd Level Support</option>
+					<option value="/reports/agent-activity/list/team-1/2014-02-14">Support Managers</option>
+				</optgroup>
+			</select>
+			on
+			<span>
+				<input type="text" class="form-control"
+					   style="width: 140px; display: inline-block;"
+					   datepicker-popup="dd MMMM yyyy" ng-model="AgentActivity.date"
+					   datepicker-options="{'show-weeks': false}"/>
+			</span>
+
+			<button class="btn btn-primary" ng-click="AgentActivity.updateFilter()">Show</button>
+		</div>
+	</div>
+
 	<section class="padd" ng-bind-html="AgentActivity.html">
 
 	</section>
