@@ -67,8 +67,8 @@ define(function() {
 	routes.push({
 		id: 'agent_hours',
 		url: '/agent_hours',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'AgentHours/index.html',
+		controller: 'Reports_AgentHours_Ctrl_AgentHours'
 	});
 
 	//##################################################################################################################

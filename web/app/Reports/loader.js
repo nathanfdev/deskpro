@@ -109,7 +109,8 @@ requirejs([
 	'Reports/Overview/Ctrl/Overview',
 	'Reports/Builder/Ctrl/List',
 	'Reports/Builder/Ctrl/Edit',
-	'Reports/AgentActivity/Ctrl/AgentActivity'
+	'Reports/AgentActivity/Ctrl/AgentActivity',
+	'Reports/AgentHours/Ctrl/AgentHours'
 ], function(angular) {
 	'use strict';
 
