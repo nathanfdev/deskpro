@@ -78,8 +78,8 @@ define(function() {
 	routes.push({
 		id: 'ticket_satisfaction',
 		url: '/ticket_satisfaction',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'TicketSatisfaction/list.html',
+		controller: 'Reports_TicketSatisfaction_Ctrl_List'
 	});
 
 	return routes;

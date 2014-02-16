@@ -344,3 +344,168 @@ section.report-wrapper .no-data {
 	    background-image: url('@{img_path}/agent/tabs/tabtype-content.png');
 	}
 }
+
+//######################################################################################################################
+//# Report Ticket Satisfaction
+//######################################################################################################################
+
+.feedback-table {
+	margin-bottom: 25px;
+	width: 800px;
+
+	> table > thead > tr > th {
+		text-align: left;
+		padding: 8px !important;
+		padding-top: 10px !important;
+	}
+
+	> table > thead > tr > th .timeago {
+		font-size: 11px;
+		font-weight: normal;
+	}
+
+	> table > thead > tr > th > h3 {
+		font-size: 12pt;
+		font-weight: normal;
+		margin: 5px 0 !important;
+	}
+
+	a.user-link {
+		display: block;
+		line-height: 31px;
+		background-position: 0 50%;
+		background-repeat: no-repeat;
+		padding: 2px 0 2px 29px;
+	}
+
+	.user-message {
+		margin: 0px 30px 0 29px;
+		font-size: 11px;
+		padding: 6px;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+
+	.user-message i {
+		font-size: 15pt;
+		font-weight: normal;
+		font-style: normal;
+		display: inline;
+		text-align: center;
+		line-height: 10px;
+		position: relative;
+		top: 2px;
+	}
+
+	.user-message.rating-up {
+		background-color: #D2FCD5;
+	}
+
+	.user-message.rating-neutral {
+		background-color: #E8E8E8;
+	}
+
+	.user-message.rating-down {
+		background-color: #FFE7DF;
+	}
+
+	&.check-grid {
+		border: 1px solid #D9DBDB;
+	}
+
+	&.check-grid.item-list > table thead th {
+		padding: 5px 0 5px 0;
+	}
+	&.check-grid > table > thead > tr > th {
+		font-size: 13px;
+
+		.gradient-v(#ffffff, darken(#FDFDFD, 8%));
+		border-bottom: 1px solid #D9DBDB;
+
+		padding: 3px 8px 2px 8px !important;
+		vertical-align: middle;
+	}
+
+	&.check-grid > table > tbody > tr > th,
+	&.check-grid > table > thead > tr > th,
+	&.check-grid > table > thead > tr > td,
+	&.check-grid > table > tbody > tr > td {
+		padding: 4px 0 4px 0;
+		font-size: 13px;
+	}
+
+	&.check-grid.item-list > table > thead > tr > td,
+	&.check-grid.item-list > table > tbody > tr > td {
+		border-top: 1px solid #D9DBDB;
+	}
+
+	&.check-grid.item-list > table > tbody > tr > th,
+	&.check-grid.item-list > table > thead > tr > th,
+	&.check-grid.item-list > table > thead > tr > td,
+	&.check-grid.item-list > table > tbody > tr > td {
+		vertical-align: middle;
+	}
+	&.check-grid.item-list > table > thead > tr > th,
+	&.check-grid.item-list > table > tbody > tr > th,
+	&.check-grid.item-list > table > thead > tr > td,
+	&.check-grid.item-list > table > tbody > tr > td{
+		padding: 5px 2px 5px 5px;
+		&:last-child { padding-right: 5px }
+	}
+
+	&.check-grid > table > thead > tr > td.title,
+	&.check-grid > table > tbody > tr > td.title {
+		padding-left: 5px;
+	}
+
+	&.check-grid > table td.title.title-group {
+		color: #8E8F91;
+	}
+
+	&.check-grid > table td.prop {
+		text-align: center;
+		background-color: #F8F8F8;
+	}
+
+	&.check-grid > table td.prop.new, &.check-grid > table td.prop.highlight {
+	    background-color: darken(#F8F8F8, 5%);
+		border-left: 1px solid #D9DBDB;
+		border-right: 1px solid #D9DBDB;
+
+		&.no-border {
+			border-left: none;
+	        border-right: none;
+		}
+	}
+
+	&.check-grid > table tr:hover td.prop {
+		background-color: #D0D1D1;
+	}
+	&.check-grid > table tr:hover td.title, .check-grid > table tr td.title.on {
+		background-color: #E8EAEA;
+	}
+
+	&.check-grid > table > tbody {
+		border-top: 1px solid #D9DBDB;
+	}
+	&.check-grid > table > tbody:first-of-type {
+		border-top: none;
+	}
+
+	&.check-grid > header:first-of-type {
+		border-top: none;
+	}
+
+	&.check-grid > header {
+		.gradient-v(#ffffff, #e5e5e5);
+
+		border-bottom: 1px solid #B3B6B8;
+		border-top: 1px solid #c2c6cc;
+
+		line-height: 22px;
+		padding-left: 5px;
+		font-size: 13px;
+		font-weight: bold;
+	}
+}

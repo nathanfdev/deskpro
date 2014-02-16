@@ -3983,6 +3983,24 @@ $collection->create('api_reports_agent_hours_list', array(
 ));
 
 ########################################################################################################################
+# Report Ticket Satisfaction
+########################################################################################################################
+
+$collection->create('api_reports_ticket_satisfaction_list', array(
+	'path'        => '/reports/ticket-satisfaction/{page}',
+	'controller'  => 'ApiBundle:ReportsTicketSatisfaction:list',
+	'defaults'    => array('page' => '0'),
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_ticket_satisfaction_summary', array(
+	'path'        => '/reports/ticket-satisfaction/summary/{date}',
+	'controller'  => 'ApiBundle:ReportsTicketSatisfaction:summary',
+	'defaults'    => array('date' => ''),
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
 # Plugins
 ########################################################################################################################
 

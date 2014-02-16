@@ -1,0 +1,13 @@
+{% extends 'ReportsInterfaceBundle:Layout:fill-page.html.twig' %}
+
+{% block fillpage_content %}
+
+	<span dp-show-spinning="loading_list_results" class="padd">
+		<i class="spinner-flat"></i>
+	</span>
+
+	<section class="padd" ng-bind-html="List.html" dp-hide-spinning="loading_list_results">
+
+	</section>
+
+{% endblock %}
