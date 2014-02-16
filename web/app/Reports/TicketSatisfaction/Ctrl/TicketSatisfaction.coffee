@@ -5,8 +5,8 @@ define [
 	ReportsBaseCtrl,
 	moment,
 ) ->
-	class Reports_TicketSatisfaction_Ctrl_List extends ReportsBaseCtrl
-		@CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_List'
+	class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl
+		@CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction'
 		@CTRL_AS   = 'ListCtrl'
 		@DEPS      = ['Api', '$sce']
 
@@ -81,4 +81,4 @@ define [
 			@changePage()
 
 
-		Reports_TicketSatisfaction_Ctrl_List.EXPORT_CTRL()
+		Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.EXPORT_CTRL()

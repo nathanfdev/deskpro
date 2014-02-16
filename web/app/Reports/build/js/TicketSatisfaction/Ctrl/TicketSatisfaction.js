@@ -3,27 +3,27 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Reports/Main/Ctrl/Base', 'moment'], function(ReportsBaseCtrl, moment) {
-    var Reports_TicketSatisfaction_Ctrl_List, _ref;
-    return Reports_TicketSatisfaction_Ctrl_List = (function(_super) {
-      __extends(Reports_TicketSatisfaction_Ctrl_List, _super);
+    var Reports_TicketSatisfaction_Ctrl_TicketSatisfaction, _ref;
+    return Reports_TicketSatisfaction_Ctrl_TicketSatisfaction = (function(_super) {
+      __extends(Reports_TicketSatisfaction_Ctrl_TicketSatisfaction, _super);
 
-      function Reports_TicketSatisfaction_Ctrl_List() {
-        _ref = Reports_TicketSatisfaction_Ctrl_List.__super__.constructor.apply(this, arguments);
+      function Reports_TicketSatisfaction_Ctrl_TicketSatisfaction() {
+        _ref = Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
-      Reports_TicketSatisfaction_Ctrl_List.CTRL_ID = 'Reports_TicketSatisfaction_Ctrl_List';
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.CTRL_ID = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction';
 
-      Reports_TicketSatisfaction_Ctrl_List.CTRL_AS = 'ListCtrl';
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.CTRL_AS = 'ListCtrl';
 
-      Reports_TicketSatisfaction_Ctrl_List.DEPS = ['Api', '$sce'];
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.DEPS = ['Api', '$sce'];
 
       /*
       		# Initializing..
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_List.prototype.init = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.init = function() {
         this.html = '';
         this.page_nums = [1];
         this.num_pages = 0;
@@ -35,7 +35,7 @@
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_List.prototype.initialLoad = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.initialLoad = function() {
         return this.loadResults();
       };
 
@@ -44,7 +44,7 @@
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_List.prototype.updateFilter = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.updateFilter = function() {
         return this.loadResults();
       };
 
@@ -53,7 +53,7 @@
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_List.prototype.loadResults = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.loadResults = function() {
         var promise,
           _this = this;
         this.startSpinner('loading_list_results');
@@ -76,7 +76,7 @@
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_List.prototype.changePage = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.changePage = function() {
         return this.loadResults();
       };
 
@@ -85,7 +85,7 @@
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_List.prototype.goPrevPage = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.goPrevPage = function() {
         this.page--;
         return this.changePage();
       };
@@ -95,14 +95,14 @@
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_List.prototype.goNextPage = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.goNextPage = function() {
         this.page++;
         return this.changePage();
       };
 
-      Reports_TicketSatisfaction_Ctrl_List.EXPORT_CTRL();
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.EXPORT_CTRL();
 
-      return Reports_TicketSatisfaction_Ctrl_List;
+      return Reports_TicketSatisfaction_Ctrl_TicketSatisfaction;
 
     })(ReportsBaseCtrl);
   });
@@ -110,5 +110,5 @@
 }).call(this);
 
 /*
-//@ sourceMappingURL=List.js.map
+//@ sourceMappingURL=TicketSatisfaction.js.map
 */
