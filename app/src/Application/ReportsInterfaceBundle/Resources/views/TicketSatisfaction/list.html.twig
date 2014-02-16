@@ -6,7 +6,31 @@
 		<i class="spinner-flat"></i>
 	</span>
 
-	<section class="padd" ng-bind-html="List.html" dp-hide-spinning="loading_list_results">
+	<section class="padd clearfix">
+		<div class="dp-btn-pagination pull-left" ng-show="ListCtrl.num_pages > 1">
+			<span dp-show-spinning="loading_list_results" class="padd">
+				<i class="spinner-flat"></i>
+			</span>
+			<button class="btn" ng-show="ListCtrl.page != 1" ng-click="ListCtrl.goPrevPage()">
+				&lt; Prev
+			</button>
+			<select
+					ng-model="ListCtrl.page"
+					ui-select2
+					style="width: 130px;"
+					>
+				<option ng-repeat="page in ListCtrl.page_nums" value="{{ ng_var('page') }}">
+					Page {{ ng_var('page') }}
+				</option>
+			</select>
+			<button class="btn" ng-show="ListCtrl.page < ListCtrl.num_pages"
+					ng-click="ListCtrl.goNextPage()">
+				Next &gt;
+			</button>
+		</div>
+	</section>
+
+	<section class="padd" ng-bind-html="ListCtrl.html" dp-hide-spinning="loading_list_results">
 
 	</section>
 

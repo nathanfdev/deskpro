@@ -62,12 +62,14 @@ class TicketSatisfaction
 
 		$vars       = array();
 		$repository = $this->em->getRepository('DeskPRO:TicketFeedback');
-		$feedback   = $repository->getFeedbackForFeed($page);
+		$feedback   = $repository->getFeedbackForFeed($page - 1);
 		$count      = $repository->getCountForPaging();
+		$num_pages  = $repository->getFeedbackPagesCount();
 
-		$vars['feedback'] = $feedback;
-		$vars['count']    = $count;
-		$vars['page']     = $page;
+		$vars['feedback']  = $feedback;
+		$vars['count']     = $count;
+		$vars['page']      = $page;
+		$vars['num_pages'] = $num_pages;
 
 		return $vars;
 	}

@@ -7,7 +7,7 @@ define [
 ) ->
 	class Reports_TicketSatisfaction_Ctrl_List extends ReportsBaseCtrl
 		@CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_List'
-		@CTRL_AS   = 'List'
+		@CTRL_AS   = 'ListCtrl'
 		@DEPS      = ['Api', '$sce']
 
 
@@ -16,8 +16,9 @@ define [
 		###
 		init: ->
 			@html = ''
-			@filter = {}
-			@filter.page = 0
+			@page_nums = [1]
+			@num_pages = 0
+			@page = 1
 
 
 		###
@@ -40,13 +41,43 @@ define [
 		loadResults: ->
 			@startSpinner('loading_list_results')
 
-			promise = @Api.sendGet("/reports/ticket-satisfaction/" + @filter.page).then((res) =>
+			promise = @Api.sendGet("/reports/ticket-satisfaction/" + @page).then((res) =>
 				@html = @$sce.trustAsHtml(res.data.html)
+
+				@page = res.data.page
+				@num_pages = res.data.num_pages
+
+				@page_nums = []
+
+				for i in [0...@num_pages]
+					@page_nums.push(i + 1)
 
 				@stopSpinner('loading_list_results', true)
 			)
 
 			return promise
+
+
+		###
+		# This is executed after we changed the current page
+		###
+
+		changePage: ->
+			@loadResults()
+
+
+		###
+		#
+		###
+		goPrevPage: ->
+			@page--
+
+
+		###
+		#
+		###
+		goNextPage: ->
+			@page++
 
 
 		Reports_TicketSatisfaction_Ctrl_List.EXPORT_CTRL()

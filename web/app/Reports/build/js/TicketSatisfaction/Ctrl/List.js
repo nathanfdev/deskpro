@@ -14,7 +14,7 @@
 
       Reports_TicketSatisfaction_Ctrl_List.CTRL_ID = 'Reports_TicketSatisfaction_Ctrl_List';
 
-      Reports_TicketSatisfaction_Ctrl_List.CTRL_AS = 'List';
+      Reports_TicketSatisfaction_Ctrl_List.CTRL_AS = 'ListCtrl';
 
       Reports_TicketSatisfaction_Ctrl_List.DEPS = ['Api', '$sce'];
 
@@ -25,8 +25,9 @@
 
       Reports_TicketSatisfaction_Ctrl_List.prototype.init = function() {
         this.html = '';
-        this.filter = {};
-        return this.filter.page = 0;
+        this.page_nums = [1];
+        this.num_pages = 0;
+        return this.page = 1;
       };
 
       /*
@@ -56,11 +57,45 @@
         var promise,
           _this = this;
         this.startSpinner('loading_list_results');
-        promise = this.Api.sendGet("/reports/ticket-satisfaction/" + this.filter.page).then(function(res) {
+        promise = this.Api.sendGet("/reports/ticket-satisfaction/" + this.page).then(function(res) {
+          var i, _i, _ref1;
           _this.html = _this.$sce.trustAsHtml(res.data.html);
+          _this.page = res.data.page;
+          _this.num_pages = res.data.num_pages;
+          _this.page_nums = [];
+          for (i = _i = 0, _ref1 = _this.num_pages; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+            _this.page_nums.push(i + 1);
+          }
           return _this.stopSpinner('loading_list_results', true);
         });
         return promise;
+      };
+
+      /*
+      		# This is executed after we changed the current page
+      */
+
+
+      Reports_TicketSatisfaction_Ctrl_List.prototype.changePage = function() {
+        return this.loadResults();
+      };
+
+      /*
+      		#
+      */
+
+
+      Reports_TicketSatisfaction_Ctrl_List.prototype.goPrevPage = function() {
+        return this.page--;
+      };
+
+      /*
+      		#
+      */
+
+
+      Reports_TicketSatisfaction_Ctrl_List.prototype.goNextPage = function() {
+        return this.page++;
       };
 
       Reports_TicketSatisfaction_Ctrl_List.EXPORT_CTRL();

@@ -51,6 +51,8 @@ class ReportsTicketSatisfactionController extends AbstractController
 
 		return $this->createApiResponse(
 			array(
+				 'page'        => $html_vars['page'],
+				 'num_pages'   => $html_vars['num_pages'],
 				 'html'        => $this->renderView(
 					 'ReportsInterfaceBundle:TicketSatisfaction:results.html.twig',
 					 $html_vars
