@@ -86,7 +86,8 @@
 
 
       Reports_TicketSatisfaction_Ctrl_List.prototype.goPrevPage = function() {
-        return this.page--;
+        this.page--;
+        return this.changePage();
       };
 
       /*
@@ -95,7 +96,8 @@
 
 
       Reports_TicketSatisfaction_Ctrl_List.prototype.goNextPage = function() {
-        return this.page++;
+        this.page++;
+        return this.changePage();
       };
 
       Reports_TicketSatisfaction_Ctrl_List.EXPORT_CTRL();

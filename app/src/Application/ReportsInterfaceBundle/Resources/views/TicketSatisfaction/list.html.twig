@@ -2,10 +2,6 @@
 
 {% block fillpage_content %}
 
-	<span dp-show-spinning="loading_list_results" class="padd">
-		<i class="spinner-flat"></i>
-	</span>
-
 	<section class="padd clearfix">
 		<div class="dp-btn-pagination pull-left" ng-show="ListCtrl.num_pages > 1">
 			<span dp-show-spinning="loading_list_results" class="padd">
@@ -18,6 +14,7 @@
 					ng-model="ListCtrl.page"
 					ui-select2
 					style="width: 130px;"
+					ng-change="ListCtrl.changePage()"
 					>
 				<option ng-repeat="page in ListCtrl.page_nums" value="{{ ng_var('page') }}">
 					Page {{ ng_var('page') }}

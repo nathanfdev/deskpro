@@ -61,7 +61,6 @@ define [
 		###
 		# This is executed after we changed the current page
 		###
-
 		changePage: ->
 			@loadResults()
 
@@ -71,6 +70,7 @@ define [
 		###
 		goPrevPage: ->
 			@page--
+			@changePage()
 
 
 		###
@@ -78,6 +78,7 @@ define [
 		###
 		goNextPage: ->
 			@page++
+			@changePage()
 
 
 		Reports_TicketSatisfaction_Ctrl_List.EXPORT_CTRL()
