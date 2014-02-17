@@ -39,7 +39,7 @@
 
 
       Reports_AgentActivity_Ctrl_AgentActivity.prototype.initialLoad = function() {
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       /*
@@ -49,7 +49,7 @@
 
       Reports_AgentActivity_Ctrl_AgentActivity.prototype.updateFilter = function() {
         this.filter.date = moment(this.date).format("YYYY-MM-DD");
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       /*
@@ -57,7 +57,7 @@
       */
 
 
-      Reports_AgentActivity_Ctrl_AgentActivity.prototype.loadResults = function() {
+      Reports_AgentActivity_Ctrl_AgentActivity.prototype.loadFeedResults = function() {
         var promise,
           _this = this;
         this.startSpinner('loading_results');

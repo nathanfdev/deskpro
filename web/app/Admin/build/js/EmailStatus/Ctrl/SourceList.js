@@ -31,7 +31,7 @@
       };
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.initialLoad = function() {
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.changePage = function() {
@@ -39,7 +39,7 @@
           return;
         }
         this.filter.page = this.page;
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.updateFilter = function() {
@@ -55,10 +55,10 @@
             this.filter.date_end = moment(this.filter_date2).format("YYYY-MM-DD");
           }
         }
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
-      Admin_EmailStatus_Ctrl_SourceList.prototype.loadResults = function() {
+      Admin_EmailStatus_Ctrl_SourceList.prototype.loadFeedResults = function() {
         var promise,
           _this = this;
         promise = this.Api.sendGet('/email_status/sources', {

@@ -27,7 +27,7 @@
       };
 
       Admin_Agents_Ctrl_Logs.prototype.initialLoad = function() {
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       /*
@@ -35,7 +35,7 @@
       */
 
 
-      Admin_Agents_Ctrl_Logs.prototype.loadResults = function() {
+      Admin_Agents_Ctrl_Logs.prototype.loadFeedResults = function() {
         var data_promise,
           _this = this;
         this.startSpinner('paginating_login_logs');
@@ -60,7 +60,7 @@
 
 
       Admin_Agents_Ctrl_Logs.prototype.updateFilter = function() {
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       /*
@@ -87,7 +87,7 @@
 
 
       Admin_Agents_Ctrl_Logs.prototype.changePageCallback = function() {
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       /*

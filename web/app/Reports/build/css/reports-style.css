@@ -11977,3 +11977,65 @@ section.report-wrapper .no-data h3 {
   border-top: 1px solid #c2c6cc;
   border-bottom: 1px solid #B3B6B8;
 }
+
+.reports_agent_feedback_summary_section > table .border-right {
+  border-right-color: #AAAAAA;
+  border-right-style: dashed;
+  border-right-width: 1px;
+}
+
+.reports_agent_feedback_summary_section > table tr.border-top {
+  border-top-color: #AAAAAA;
+  border-top-style: dashed;
+  border-top-width: 1px;
+}
+
+.reports_agent_feedback_summary_section > table .border-bottom {
+  border-bottom-color: #AAAAAA;
+  border-bottom-style: dashed;
+  border-bottom-width: 1px;
+}
+
+.reports_agent_feedback_summary_section > table td.rating_1,
+.reports_agent_feedback_summary_section table td.left-column {
+  text-align: right;
+}
+
+.reports_agent_feedback_summary_section > table th {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.reports_agent_feedback_summary_section > table th,
+.reports_agent_feedback_summary_section > table td {
+  padding: 18px;
+  vertical-align: middle;
+}
+
+.reports_agent_feedback_summary_section > table img {
+  vertical-align: middle;
+  opacity: .7;
+}
+
+.reports_agent_feedback_summary_section i.rating {
+  position: relative;
+  top: 2px;
+  display: inline;
+  font-size: 15pt;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 10px;
+  text-align: center;
+}
+
+.reports_agent_feedback_summary_section i.rating.positive {
+  color: #16B300;
+}
+
+.reports_agent_feedback_summary_section i.rating.neutral {
+  color: #849C96;
+}
+
+.reports_agent_feedback_summary_section i.rating.negative {
+  color: #A21B22;
+}

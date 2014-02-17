@@ -7,7 +7,7 @@ define [
 ) ->
 	class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl
 		@CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction'
-		@CTRL_AS   = 'ListCtrl'
+		@CTRL_AS   = 'Ctrl'
 		@DEPS      = ['Api', '$sce']
 
 
@@ -15,34 +15,43 @@ define [
 		# Initializing..
 		###
 		init: ->
-			@html = ''
+			@feed_html = ''
+			@summary_html = ''
 			@page_nums = [1]
 			@num_pages = 0
 			@page = 1
+			@date = moment(@date).format("YYYY-MM")
 
 
 		###
 		# Just doing all the necessary AJAX calls here
 		###
 		initialLoad: ->
-			return @loadResults()
+			return @loadFeedResults()
 
 
 		###
-		# This method updates current parameters that are used for sending request to API
+ 	# Switching to feed tab
+ 	###
+		switchToFeed: ->
+			@loadFeedResults()
+
+
 		###
-		updateFilter: ->
-			@loadResults()
+ 	# Switching to summary tab
+ 	###
+		switchToSummary: ->
+			@loadSummaryResults()
 
 
 		###
 		# Loading the results of sending request to API
 		###
-		loadResults: ->
-			@startSpinner('loading_list_results')
+		loadFeedResults: ->
+			@startSpinner('loading_feed_results')
 
 			promise = @Api.sendGet("/reports/ticket-satisfaction/" + @page).then((res) =>
-				@html = @$sce.trustAsHtml(res.data.html)
+				@feed_html = @$sce.trustAsHtml(res.data.html)
 
 				@page = res.data.page
 				@num_pages = res.data.num_pages
@@ -52,7 +61,21 @@ define [
 				for i in [0...@num_pages]
 					@page_nums.push(i + 1)
 
-				@stopSpinner('loading_list_results', true)
+				@stopSpinner('loading_feed_results', true)
+			)
+
+			return promise
+
+
+		###
+		# Loading the results of sending request to API
+		###
+		loadSummaryResults: ->
+			@startSpinner('loading_summary_results')
+
+			promise = @Api.sendGet("/reports/ticket-satisfaction/summary/" + @date).then((res) =>
+				@summary_html = @$sce.trustAsHtml(res.data.html)
+				@stopSpinner('loading_summary_results', true)
 			)
 
 			return promise
@@ -62,7 +85,7 @@ define [
 		# This is executed after we changed the current page
 		###
 		changePage: ->
-			@loadResults()
+			@loadFeedResults()
 
 
 		###

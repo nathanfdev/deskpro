@@ -14,7 +14,7 @@
 
       Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.CTRL_ID = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction';
 
-      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.CTRL_AS = 'ListCtrl';
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.CTRL_AS = 'Ctrl';
 
       Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.DEPS = ['Api', '$sce'];
 
@@ -24,10 +24,12 @@
 
 
       Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.init = function() {
-        this.html = '';
+        this.feed_html = '';
+        this.summary_html = '';
         this.page_nums = [1];
         this.num_pages = 0;
-        return this.page = 1;
+        this.page = 1;
+        return this.date = moment(this.date).format("YYYY-MM");
       };
 
       /*
@@ -36,16 +38,25 @@
 
 
       Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.initialLoad = function() {
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       /*
-      		# This method updates current parameters that are used for sending request to API
+       	# Switching to feed tab
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.updateFilter = function() {
-        return this.loadResults();
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.switchToFeed = function() {
+        return this.loadFeedResults();
+      };
+
+      /*
+       	# Switching to summary tab
+      */
+
+
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.switchToSummary = function() {
+        return this.loadSummaryResults();
       };
 
       /*
@@ -53,20 +64,36 @@
       */
 
 
-      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.loadResults = function() {
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.loadFeedResults = function() {
         var promise,
           _this = this;
-        this.startSpinner('loading_list_results');
+        this.startSpinner('loading_feed_results');
         promise = this.Api.sendGet("/reports/ticket-satisfaction/" + this.page).then(function(res) {
           var i, _i, _ref1;
-          _this.html = _this.$sce.trustAsHtml(res.data.html);
+          _this.feed_html = _this.$sce.trustAsHtml(res.data.html);
           _this.page = res.data.page;
           _this.num_pages = res.data.num_pages;
           _this.page_nums = [];
           for (i = _i = 0, _ref1 = _this.num_pages; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
             _this.page_nums.push(i + 1);
           }
-          return _this.stopSpinner('loading_list_results', true);
+          return _this.stopSpinner('loading_feed_results', true);
+        });
+        return promise;
+      };
+
+      /*
+      		# Loading the results of sending request to API
+      */
+
+
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.loadSummaryResults = function() {
+        var promise,
+          _this = this;
+        this.startSpinner('loading_summary_results');
+        promise = this.Api.sendGet("/reports/ticket-satisfaction/summary/" + this.date).then(function(res) {
+          _this.summary_html = _this.$sce.trustAsHtml(res.data.html);
+          return _this.stopSpinner('loading_summary_results', true);
         });
         return promise;
       };
@@ -77,7 +104,7 @@
 
 
       Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.prototype.changePage = function() {
-        return this.loadResults();
+        return this.loadFeedResults();
       };
 
       /*
