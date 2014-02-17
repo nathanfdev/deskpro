@@ -121,6 +121,7 @@
 		'lang_code'  => 'kor',
 		'title'      => 'Korean',
 		'locale'     => 'ko',
+		'flag_image' => 'kr.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
