@@ -1,6 +1,7 @@
 <article
 	class="row-item task task-{{ task.id }} {% if task.is_completed %}completed{% endif %}"
 	data-due-date="{{ task.date_due|date('day') }}"
+	data-due-time="{{ task.date_due|date('H:i') }}"
 	data-task-id="{{ task.id }}"
 
 	{% if task.isOverdue() %}data-in-sublist-overdue="1"

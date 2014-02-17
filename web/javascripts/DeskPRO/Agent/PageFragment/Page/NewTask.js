@@ -55,6 +55,14 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			var timeLi = $(this).closest('ul').find('.time_due');
 			var label = timeLi.find('label');
 
+			var currentTime = field.val() || null;
+			var currentH = null, currentM = null;
+			if (currentTime && currentTime.indexOf(':') != -1) {
+				currentTime = currentTime.split(':');
+				currentH = parseInt(currentTime[0]);
+				currentM = parseInt(currentTime[1]);
+			}
+
 			var optOverlay = $('<div class="field-overlay"><div class="close-trigger"></div><select class="time_hour"><option value="NONE"></option></select>:<select class="time_min"><option value="NONE"></option></select></div>');
 			var backdrop = $('<div class="dp-popover-backdrop"></div>');
 			var hourEl = optOverlay.find('.time_hour');
@@ -65,12 +73,20 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 				opt.text(i < 10 ? '0' + i : i+'');
 				opt.val(i);
 				opt.appendTo(hourEl);
+
+				if (currentH != null && currentH === i) {
+					opt.attr('selected', true);
+				}
 			}
 			for (var i = 0; i <= 55; i += 5) {
 				var opt = $('<option></option>');
 				opt.text(i < 10 ? '0' + i : i+'');
 				opt.val(i);
 				opt.appendTo(minEl);
+
+				if (currentM != null && currentM === i) {
+					opt.attr('selected', true);
+				}
 			}
 
 			optOverlay.css({

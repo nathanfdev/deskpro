@@ -139,17 +139,33 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			var hourEl = optOverlay.find('.time_hour');
 			var minEl = optOverlay.find('.time_min');
 
+			var currentTime = openForEl.data('due-time') || null;
+			var currentH = null, currentM = null;
+			if (currentTime && currentTime.indexOf(':') != -1) {
+				currentTime = currentTime.split(':');
+				currentH = parseInt(currentTime[0]);
+				currentM = parseInt(currentTime[1]);
+			}
+
 			for (var i = 0; i <= 23; i++) {
 				var opt = $('<option></option>');
 				opt.text(i < 10 ? '0' + i : i+'');
 				opt.val(i);
 				opt.appendTo(hourEl);
+
+				if (currentH != null && currentH === i) {
+					opt.attr('selected', true);
+				}
 			}
 			for (var i = 0; i <= 55; i += 5) {
 				var opt = $('<option></option>');
 				opt.text(i < 10 ? '0' + i : i+'');
 				opt.val(i);
 				opt.appendTo(minEl);
+
+				if (currentM != null && currentM === i) {
+					opt.attr('selected', true);
+				}
 			}
 
 			optOverlay.css({
@@ -172,12 +188,14 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				if (hourVal === 'NONE') {
 					setTime = '';
 					setTimeDisplay = 'No specific time';
+					openForEl.data('due-time', null);
 				} else {
 					hourVal = parseInt(hourVal);
 					minVal = parseInt(minVal) || 0;
 
 					setTime = hourVal + ':' + minVal;
 					setTimeDisplay = (hourVal < 10 ? '0'+hourVal : hourVal) + ':' + (minVal < 10 ? '0'+minVal : minVal);
+					openForEl.data('due-time', setTime);
 				}
 
 				label.text(setTimeDisplay);
