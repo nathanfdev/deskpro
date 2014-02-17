@@ -4,6 +4,7 @@ define [
 	'DeskPRO/Directive/DpHelpPage',
 	'Admin/Main/Directive/DpNavSubnav',
 	'Reports/Directive/DpReportBuilderSelectBox',
+	'Reports/Directive/DpReportBillingSelectBox',
 	'Reports/Directive/DpReportBuilderTitle',
 	'Admin/Main/Directive/DpTabBody',
 	'Admin/Main/Directive/DpTabBtn',
@@ -17,6 +18,7 @@ define [
 	DeskPRO_Directive_DpHelpPage,
 	Admin_Main_Directive_DpNavSubnav,
 	Reports_Directive_DpReportBuilderSelectBox,
+	Reports_Directive_DpReportBillingSelectBox,
 	Reports_Directive_DpReportBuilderTitle,
 	Admin_Main_Directive_DpTabBody,
 	Admin_Main_Directive_DpTabBtn,
@@ -31,6 +33,7 @@ define [
 		Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
 		Module.directive('dpNavSubnav',                    Admin_Main_Directive_DpNavSubnav)
 		Module.directive('dpReportBuilderSelectBox',       Reports_Directive_DpReportBuilderSelectBox)
+		Module.directive('dpReportBillingSelectBox',       Reports_Directive_DpReportBillingSelectBox)
 		Module.directive('dpReportBuilderTitle',           Reports_Directive_DpReportBuilderTitle)
 		Module.directive('dpTabBody',                      Admin_Main_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       Admin_Main_Directive_DpTabBtn)
