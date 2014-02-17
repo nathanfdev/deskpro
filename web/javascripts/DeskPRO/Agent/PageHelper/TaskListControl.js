@@ -212,6 +212,8 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 		el.on('click', '.opt-trigger.date_due', function(ev) {
 			openForEl = $(this).closest('article.task');
 
+			var dateFormat = openForEl.data('date-format');
+
 			var label = $('label', this);
 			var date = openForEl.data('date-due');
 			if (!date) {
@@ -222,7 +224,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				sendUpdate(openForEl, 'date_due', date);
 				label.text(date);
 			}, {
-				dateFormat: 'yy-mm-dd',
+				dateFormat: dateFormat,
 				showButtonPanel: true,
 				beforeShow: function(input) {
 					setTimeout(function() {

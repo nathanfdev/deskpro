@@ -3,6 +3,7 @@
 	data-due-date="{{ task.date_due|date('day') }}"
 	data-due-time="{{ task.date_due|date('H:i') }}"
 	data-task-id="{{ task.id }}"
+	data-date-format="{{ app.getSetting('core.date_day')|to_jqueryui_dateformat }}"
 
 	{% if task.isOverdue() %}data-in-sublist-overdue="1"
 	{% elseif task.isDueToday(app.user) %}data-in-sublist-today="1"

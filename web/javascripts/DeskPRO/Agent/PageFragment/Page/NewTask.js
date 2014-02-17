@@ -129,6 +129,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 		});
 		rowContainer.on('click', '.opt-trigger.date_due', function(ev) {
 			var label = $('label', this);
+			var dateFormat = self.meta.dateFormat;
 
 			var timeLi = $(this).closest('ul').find('.time_due');
 			var label2 = timeLi.find('label');
@@ -146,7 +147,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 				label.text(date);
 				timeLi.show();
 			}, {
-				dateFormat: 'yy-mm-dd',
+				dateFormat: dateFormat,
 				showButtonPanel: true,
 				beforeShow: function(input) {
 					setTimeout(function() {

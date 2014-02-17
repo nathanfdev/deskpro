@@ -2577,6 +2577,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var timeLi = $(this).closest('ul').find('.time_due');
 			var label2 = timeLi.find('label');
+			var dateFormat = self.meta.dateFormat;
 
 			var row = $(this).closest('.task-row');
 			var field = $('input.input-date-due', row);
@@ -2591,7 +2592,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				label.text(date);
 				timeLi.show();
 			}, {
-				dateFormat: 'yy-mm-dd',
+				dateFormat: dateFormat,
 				showButtonPanel: true,
 				beforeShow: function(input) {
 					setTimeout(function() {

@@ -6,6 +6,7 @@ pageMeta.noMoveToTab = false;
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
+pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat }}';
 </script>
 {{ agentui.scroll_containers('page-task-new') }}
 

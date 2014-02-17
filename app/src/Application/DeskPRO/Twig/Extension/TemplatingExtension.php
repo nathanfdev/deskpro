@@ -157,6 +157,7 @@ class TemplatingExtension extends \Twig_Extension
 			'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
 			'date'                   => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
+			'to_jqueryui_dateformat' => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
 			'time_length'            => new \Twig_Filter_Method($this, 'timeLength'),
 			'slugify'                => new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words'        => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
@@ -649,6 +650,50 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $this->container->getTranslator()->date($format, $date, $prefix);
+	}
+
+	public function jqueryUiDateFormat($format) {
+		// Map of PHP symbols to jQuery date format symbols
+		static $php_sym = array(
+			'd' => 'dd', 'D' => 'D', 'j' => 'd', 'l' => 'DD',
+			'N' => '', 'S' => '', 'w' => '', 'z' => 'o',
+			'W' => '',
+			'F' => 'MM', 'm' => 'mm', 'M' => 'M', 'n' => 'm',
+			't' => '',
+			'L' => '', 'o' => '', 'Y' => 'yy', 'y' => 'y',
+			'a' => '', 'A' => '', 'B' => '', 'g' => '',
+			'G' => '', 'h' => '', 'H' => '', 'i' => '',
+			's' => '', 'u' => ''
+		);
+
+		$format_len = strlen($format);
+		$new_format = array();
+		$escaping   = false;
+
+		for($i = 0; $i < $format_len; $i++) {
+			$char = $format[$i];
+			if($char === '\\') {
+				$i++;
+				if($escaping) {
+					$new_format[] = $format[$i];
+				} else {
+					$new_format[] = '\'' . $format[$i];
+				}
+				$escaping = true;
+			} else {
+				if($escaping) {
+					$new_format[] = "'";
+					$escaping = false;
+				}
+				if(isset($php_sym[$char])) {
+					$new_format[] = $php_sym[$char];
+				} else {
+					$new_format[] = $char;
+				}
+			}
+		}
+
+		return implode('', $new_format);
 	}
 
 	public function timeLength($length, $max_unit = null)
