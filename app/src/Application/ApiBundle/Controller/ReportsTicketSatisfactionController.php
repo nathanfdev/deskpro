@@ -47,14 +47,38 @@ class ReportsTicketSatisfactionController extends AbstractController
 		 */
 
 		$reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
-		$html_vars                   = $reports_ticket_satisfaction->getVarsForHtmlView($page);
+		$html_vars                   = $reports_ticket_satisfaction->getVarsForFeedHtmlView($page);
 
 		return $this->createApiResponse(
 			array(
 				 'page'        => $html_vars['page'],
 				 'num_pages'   => $html_vars['num_pages'],
 				 'html'        => $this->renderView(
-					 'ReportsInterfaceBundle:TicketSatisfaction:results.html.twig',
+					 'ReportsInterfaceBundle:TicketSatisfaction:results-feed.html.twig',
+					 $html_vars
+				 ),
+			)
+		);
+	}
+
+	####################################################################################################################
+	# summary
+	####################################################################################################################
+
+	public function summaryAction($date)
+	{
+		/**
+		 * @var \Application\DeskPRO\Reports\TicketSatisfaction $reports_ticket_satisfaction
+		 */
+
+		$reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
+		$html_vars                   = $reports_ticket_satisfaction->getVarsForSummaryHtmlView($date);
+
+
+		return $this->createApiResponse(
+			array(
+				 'html' => $this->renderView(
+					 'ReportsInterfaceBundle:TicketSatisfaction:results-summary.html.twig',
 					 $html_vars
 				 ),
 			)
