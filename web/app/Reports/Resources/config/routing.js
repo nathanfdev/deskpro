@@ -52,7 +52,7 @@ define(function() {
 	routes.push({
 		id: 'billing.view',
 		url: '/{id:.*}/params_{params:.*}',
-		templateName: 'Builder/view.html',
+		templateName: 'Billing/view.html',
 		controller: 'Reports_Billing_Ctrl_View'
 	});
 

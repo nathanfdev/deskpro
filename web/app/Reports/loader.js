@@ -113,6 +113,7 @@ requirejs([
 	'Reports/AgentHours/Ctrl/AgentHours',
 	'Reports/TicketSatisfaction/Ctrl/TicketSatisfaction',
 	'Reports/Billing/Ctrl/List',
+	'Reports/Billing/Ctrl/View'
 ], function(angular) {
 	'use strict';
 
