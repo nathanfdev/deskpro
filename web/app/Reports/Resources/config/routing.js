@@ -45,8 +45,15 @@ define(function() {
 	routes.push({
 		id: 'billing',
 		url: '/billing',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'Billing/list.html',
+		controller: 'Reports_Billing_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'billing.view',
+		url: '/{id:.*}/params_{params:.*}',
+		templateName: 'Builder/view.html',
+		controller: 'Reports_Billing_Ctrl_View'
 	});
 
 	//##################################################################################################################
