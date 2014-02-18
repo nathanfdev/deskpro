@@ -13,6 +13,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		this.wrapper = el;
 		this.perPage = 50;
+		this.filterId = parseInt(this.meta.filter_id) || 0;
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
 			self.$scope = $rootScope.$new();
@@ -60,7 +61,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
 
-		this.allTicketIds = eval(this.getEl('ticket_ids_json').html());
+		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
 		this.getEl('ticket_json').remove();
 		this.getEl('ticket_ids_json').remove();
@@ -108,11 +109,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			displayTicketId,
 			startIdx;
 
-		$scope.ticketCount = this.allTicketIds.length;
+		$scope.ticketCount = this.listTicketIds.length;
 
 		if ($scope.ticketCount) {
 			displayTicketId = $scope.tickets[0].id;
-			startIdx = this.allTicketIds.indexOf(displayTicketId);
+			startIdx = this.listTicketIds.indexOf(displayTicketId);
 
 			$scope.pageCursorStart = startIdx+1;
 			$scope.pageCursorEnd = $scope.pageCursorStart + $scope.tickets.length;
@@ -145,6 +146,24 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	_initListChangeEvents: function() {
 		var self = this, $scope = this.$scope, wrapperEl = this.wrapper;
 
+		this.fieldCompare = DeskPRO.Agent.PageFragment.List.TicketList.FieldComparer;
+		this.orderBy    = this.meta.orderBy.replace(/^ticket\./, '');
+		this.orderByDir = this.meta.orderByDir.toUpperCase();
+
+		this.groupingTerms = [];
+		if (this.meta.topGroupingTerm) {
+			if (this.meta.topGroupingOption.match(/^\d+/)) {
+				this.meta.topGroupingOption = parseInt(this.meta.topGroupingOption);
+			}
+			this.groupingTerms.push({ field: this.meta.topGroupingTerm, value: this.meta.topGroupingOption || 0 });
+		}
+		if (this.groupBy && this.meta.groupByOption && this.meta.groupByOption != 'DP_NOT_SET') {
+			if (this.meta.groupByOption.match(/^\d+/)) {
+				this.meta.groupByOption = parseInt(this.meta.groupByOption);
+			}
+			this.groupingTerms.push({ field: this.meta.groupBy, value: this.meta.groupByOption || 0 });
+		}
+
 		// Events about updates
 		// More updates happen in the Section.Tickets controller where
 		// we are told about specific additions/removals of tickets to the list
@@ -153,9 +172,30 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self.removeTicketResults(ticket_ids);
 		}).bind(this), null, [this.OBJ_ID])
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket_updated', function(info) {
-			var ticketId = info.ticket_id;
-			self.refreshTicketResults([ticketId]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
+			var ticketId = parseInt(info.ticket_id),
+				currentlyInView,
+				isInFilter = false;
+
+			if (self.listTicketIds.indexOf(ticketId) !== -1) {
+				isInFilter = true;
+			}
+			if (!isInFilter && self.filterId && DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.filterTicketIds[self.filterId]) {
+				if (DeskPRO_Window.sections.tickets_section.filterTicketIds[self.filterId].indexOf(ticketId) !== -1) {
+					isInFilter = true;
+				}
+			}
+
+			if (!isInFilter) {
+				return;
+			}
+
+			currentlyInView = $scope.tickets.filter(function(x) { return x.id === ticketId; }).length === 1;
+			if (currentlyInView) {
+				self.refreshTicketResults([ticketId]);
+			} else {
+				self.addTicketResults([ticketId]);
+			}
 		}, null, [this.OBJ_ID]);
 
 		// Tab indicator
@@ -195,8 +235,66 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @return void
 	 */
 	addTicketResults: function(ticketIds) {
-		var self = this;
+		var self = this,
+			$scope = this.$scope,
+			currentTicketIdsMap = {},
+			didAdd = [],
+			appendIds = [],
+			lastId = null,
+			tmp;
+
 		console.log("[TicketList.addTicketResult] %o", ticketIds);
+
+		$scope.tickets.forEach(function(t) { currentTicketIdsMap[t.id] = true });
+		ticketIds = ticketIds.filter(function(tid) { return !currentTicketIdsMap[tid]; });
+
+		if (!ticketIds.length) {
+			return;
+		}
+
+		this.getTicketRows(ticketIds).then(function(tickets) {
+			tickets.forEach(function(ticket) {
+				if (!self.isTicketGroupMatch(ticket)) {
+					return;
+				}
+
+				$scope.tickets.push(ticket);
+				didAdd.push(ticket.id);
+			});
+
+			if (didAdd.length) {
+
+				$scope.tickets.sort(function(ticketA, ticketB) {
+					return self.fieldCompare.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
+				});
+
+				// Add to IDs array
+				$scope.tickets.forEach(function(ticket) {
+					if (didAdd.indexOf(ticket.id) !== -1) {
+						if (!lastId) {
+							self.listTicketIds.unshift(ticket.id);
+						} else {
+							tmp = self.listTicketIds.indexOf(lastId);
+							if (tmp !== -1) {
+								self.listTicketIds.splice(tmp, 0, ticket.id);
+							} else {
+								appendIds.push(ticket.id);
+							}
+						}
+					}
+				});
+				if (appendIds.length) {
+					appendIds.forEach(function(tid) {
+						self.listTicketIds.push(tid);
+					});
+				}
+
+				// Truncate list to max perPage
+				if ($scope.tickets.length > self.perPage) {
+					$scope.tickets.splice(self.perPage);
+				}
+			}
+		});
 	},
 
 
@@ -214,7 +312,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		ticketIds.forEach(function(x) { map[x] = true; });
 
 		$scope.tickets = $scope.tickets.filter(function(x) { return !map[x.id]; });
-		this.allTicketIds = this.allTicketIds.filter(function(x) { return !map[x]; });
+		this.listTicketIds = this.listTicketIds.filter(function(x) { return !map[x]; });
 		this.updatePageCursor();
 		$scope.$safeApply();
 	},
@@ -229,10 +327,20 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @return void
 	 */
 	refreshTicketResults: function(ticketIds) {
-		var $scope = this.$scope, self = this;
+		var $scope = this.$scope,
+			self = this,
+			validTicketIdsMap = {};
+
 		console.log("[TicketList.refreshTicketResult] %o", ticketIds);
 
 		if (!$scope.tickets || !$scope.tickets.length) {
+			return;
+		}
+
+		$scope.tickets.forEach(function(t) { validTicketIdsMap[t.id] = true });
+		ticketIds = ticketIds.filter(function(tid) { return !!validTicketIdsMap[tid]; });
+
+		if (!ticketIds.length) {
 			return;
 		}
 
@@ -250,19 +358,81 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @param {Array} tickets
 	 */
 	applyTicketData: function(tickets) {
-		var $scope = this.$scope;
+		var $scope = this.$scope,
+			self = this,
+			didChange = false,
+			removeIds = [];
 
 		if (!tickets || !tickets.length) {
 			return;
 		}
 
 		tickets.forEach(function(newTicket) {
-			for (var ticketIdx = 0; ticketIdx < $scope.tickets.length; ticketIdx++) {
-				if ($scope.tickets[ticketIdx].id == newTicket.id) {
-					$scope.tickets[ticketIdx] = newTicket;
-				}
+			if (!self.isTicketGroupMatch(newTicket)) {
+				removeIds.push(newTicket.id);
+			} else {
+				$scope.tickets.forEach(function(ticket) {
+					if (ticket.id != newTicket.id) {
+						return;
+					}
+
+					for (var k in newTicket) {
+						if (newTicket.hasOwnProperty(k)) {
+							ticket[k] = newTicket[k];
+						}
+					}
+					for (var k in ticket) {
+						if (ticket.hasOwnProperty(k)) {
+							if (typeof newTicket[k] == 'undefined') {
+								ticket[k] = null;
+								delete ticket[k];
+							}
+						}
+					}
+					didChange = true;
+				});
 			}
 		});
+
+		if (didChange) {
+			$scope.tickets.sort(function(ticketA, ticketB) {
+				return self.fieldCompare.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
+			});
+		}
+
+		if (removeIds.length) {
+			this.removeTicketResults(removeIds);
+		}
+	},
+
+
+	/**
+	 * Given a ticket model object, check if it belongs in the list based on grouping vals.
+	 * For example, if viewing grouped by agent and I have selected 'me', then only tickets with ticket.agent.id == me
+	 * would return true.
+	 *
+	 * @param {Object} ticket
+	 * @returns {boolean}
+	 */
+	isTicketGroupMatch: function(ticket) {
+		var groupMatchCount = 0,
+			self = this;
+
+		if (!this.groupingTerms.length) {
+			return true;
+		}
+
+		this.groupingTerms.forEach(function(groupInfo) {
+			if (self.fieldCompare.checkEquality(ticket, groupInfo.field, groupInfo.value)) {
+				groupMatchCount++;
+			}
+		});
+
+		if (groupMatchCount < this.groupingTerms.length) {
+			return false;
+		}
+
+		return true;
 	},
 
 
@@ -506,13 +676,60 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	}
 });
 
+
 //######################################################################################################################
 //######################################################################################################################
 //######################################################################################################################
 
-DeskPRO.Agent.PageFragment.List.TicketList.Results = new Orb.Class({
+DeskPRO.Agent.PageFragment.List.TicketList.FieldComparer = {
+	checkEquality: function(ticket, field, value) {
+		var intValue = parseInt(value) || 0;
 
-});
+		switch (field) {
+			case 'department':
+				return (ticket.department && ticket.department.id === intValue) || (!ticket.department && intValue === 0);
+			case 'category':
+				return (ticket.category && ticket.category.id === intValue) || (!ticket.category && intValue === 0);
+			case 'organization':
+				return (ticket.organization && ticket.organization.id === intValue) || (!ticket.organization && intValue === 0);
+			case 'person':
+				return (ticket.person && ticket.person.id === intValue) || (!ticket.person && intValue === 0);
+			case 'language':
+				return (ticket.language && ticket.language.id === intValue) || (!ticket.language && intValue === 0);
+			case 'agent':
+				return (ticket.agent && ticket.agent.id === intValue) || (!ticket.agent && intValue === 0);
+			case 'agent_team':
+				return (ticket.agent_team && ticket.agent_team.id === intValue) || (!ticket.agent_team && intValue === 0);
+			case 'agent_team':
+				return (ticket.agent_team && ticket.agent_team.id === intValue) || (!ticket.agent_team && intValue === 0);
+			case 'urgency':
+				return ticket.urgency === intValue;
+			default:
+				return false;
+		}
+	},
+
+	getOrder: function(ticketA, ticketB, field, dir) {
+		var valA = 0, valB = 0;
+		switch (field) {
+			case 'urgency':
+				valA = ticketA.urgency;
+				valB = ticketB.urgency;
+				break;
+		}
+
+		if (valA === valB) {
+			valA = ticketA.id;
+			vabB = ticketB.id;
+		}
+
+		if (dir == 'ASC') {
+			return valA < valB ? -1 : 1;
+		} else {
+			return valA < valB ? 1 : -1;
+		}
+	}
+};
 
 
 //######################################################################################################################

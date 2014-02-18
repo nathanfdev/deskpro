@@ -27,7 +27,7 @@
 			<section class="list-listing">
 
 				<article
-					ng-repeat="ticket in tickets"
+					ng-repeat="ticket in tickets track by ticket.id"
 					class="row-item ticket-row-{{ ng_var('ticket.id') }}"
 					ng-class="{'open': openTickets[ticket.id], 'list-animation': isLoaded}"
 					data-ticket-id="{{ ng_var('ticket.id') }}"

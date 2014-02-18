@@ -821,10 +821,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					// went to 0
 					if (!hasCurrentSelection[0]) {
 
-						if (currentRoute) {
-							DeskPRO_Window.runPageRoute(currentRoute, { noChangePaneVis: true, isBackgroundLoad: true });
-						}
-
 					// Update currently viewed list if we're viewing a
 					// subgrouping and its a non-delete update.
 					// - If its a delete, then the ticket is simply removed,
@@ -853,11 +849,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 									if (filterOps && filterOps[filterId] && filterOps[filterId].ticketId && filterOps[filterId].op == 'del') {
 										listPage.removeTicketResults([filterOps[filterId].ticketId]);
 									} else {
-										if (li.data('route')) {
-											DeskPRO_Window.runPageRouteFromElement(li, { noChangePaneVis: true, isBackgroundLoad: true });
-										} else {
-											DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'), { noChangePaneVis: true, isBackgroundLoad: true });
-										}
+										listPage.addTicketResults([filterOps[filterId].ticketId]);
 									}
 								}
 							}

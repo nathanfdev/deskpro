@@ -65,6 +65,9 @@ pageMeta.view_name = '{{ view_name }}';
 	pageMeta.groupByOption = '{{ grouping_option }}';
 {% endif %}
 
+pageMeta.orderBy    = '{{ order_by[0] }}';
+pageMeta.orderByDir = '{{ order_by[1] }}';
+
 pageMeta.baseId = '{{ tplvars.baseId }}';
 </script>
 <script id="{{ tplvars.baseId }}_ticket_json" type="application/json">{{ ticket_json|raw }}</script>
