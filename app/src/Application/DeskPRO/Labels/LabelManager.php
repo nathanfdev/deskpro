@@ -221,7 +221,7 @@ class LabelManager
 			}
 		}
 		foreach ($removed as $removed_label) {
-			$this->removeLabel($removed_label);
+			$obj = $this->removeLabel($removed_label);
 			if ($em && $obj) {
 				$em->remove($obj);
 			}
