@@ -1011,7 +1011,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
 				var row = DeskPRO_Window.sections.tickets_section.listPage.wrapper.find('article.ticket-' + self.meta.ticket_id);
 				if (row[0] && !row.hasClass('removing')) {
-					DeskPRO_Window.sections.tickets_section.listPage.addTicket(self.meta.ticket_id, true);
+					DeskPRO_Window.sections.tickets_section.listPage.refreshTicketResults([self.meta.ticket_id]);
 				}
 			}
 		};

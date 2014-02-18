@@ -38,7 +38,7 @@ use Application\DeskPRO\Tickets\TicketResultsDisplay;
 
 class TicketListRenderer
 {
-	public function renderTicketDisplay(TicketResultsDisplay $ticket_display)
+	public function renderTicketDisplay(TicketResultsDisplay $ticket_display, $as_array = false)
 	{
 		if (!$ticket_display->getCount()) {
 			return '[]';
@@ -48,6 +48,10 @@ class TicketListRenderer
 
 		foreach ($ticket_display->getTickets() as $ticket) {
 			$json_array[] = $ticket->toApiData();
+		}
+
+		if ($as_array) {
+			return $json_array;
 		}
 
 		return json_encode($json_array);

@@ -7,11 +7,28 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.parent();
 	},
 
-	initPage: function() {
+	initPage: function(el) {
 		var self = this;
 		var attachPoint = this.getEl('ng_attach');
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$controller', function($compile, $rootScope) {
+
+		this.wrapper = el;
+		this.perPage = 50;
+
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', function($compile, $rootScope, $q) {
 			self.$scope = $rootScope.$new();
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					this.$apply(fn);
+				}
+			};
+
+			self.$q = $q;
 			attachPoint.data('$ngControllerController', self);
 			$compile(attachPoint.contents())(self.$scope);
 
@@ -26,15 +43,25 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				self.$scope = null;
 			}
 		});
+
+		if (this.meta.filter_id) {
+			DeskPRO_Window.sections.tickets_section.highlightFilterNav(this.meta.filter_id, this.meta.topGroupingOption || null);
+		}
 	},
 
 	initScope: function() {
-		var $scope = this.$scope, wrapperEl = this.wrapper;
+		var $scope = this.$scope;
 
-		$scope.tickets = eval(this.getEl('ticket_json').html());
-		$scope.checked = {};
-		$scope.display_fields = this.meta.display_fields || [];
-		$scope.openTickets = {};
+		$scope.tickets              = eval(this.getEl('ticket_json').html());
+		$scope.checkedTickets       = {};
+		$scope.checkedTicketsCount  = 0;
+		$scope.display_fields       = this.meta.display_fields || [];
+		$scope.openTickets          = {};
+
+		this.allTicketIds = eval(this.getEl('ticket_ids_json').html());
+
+		this.getEl('ticket_json').remove();
+		this.getEl('ticket_ids_json').remove();
 
 		$scope.isFieldDisplayable = function(ticket) {
 			return function(field) {
@@ -59,6 +86,73 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			};
 		};
 
+		this._initDisplayOptions();
+		this._initListChangeEvents();
+		this._initMassActions();
+
+		this.updatePageCursor();
+	},
+
+
+	/**
+	 * When tickets are added or removed then we should update the counter/cursor vars
+	 */
+	updatePageCursor: function() {
+		var $scope = this.$scope,
+			displayTicketId,
+			startIdx;
+
+		$scope.ticketCount = this.allTicketIds.length;
+
+		if ($scope.ticketCount) {
+			displayTicketId = $scope.tickets[0].id;
+			startIdx = this.allTicketIds.indexOf(displayTicketId);
+
+			$scope.pageCursorStart = startIdx+1;
+			$scope.pageCursorEnd = $scope.pageCursorStart + $scope.tickets.length;
+
+			if ($scope.pageCursorEnd > $scope.ticketCount) {
+				$scope.pageCursorEnd = $scope.ticketCount;
+			}
+		} else {
+			$scope.pageCursorStart = 0;
+			$scope.pageCursorEnd = 0;
+		}
+
+		if ($scope.pageCursorStart != 1) {
+			$scope.hasPrevPage = true;
+		} else {
+			$scope.hasPrevPage = false;
+		}
+
+		if ($scope.pageCursorEnd < $scope.ticketCount) {
+			$scope.hasNextPage = true;
+		} else {
+			$scope.hasNextPage = false;
+		}
+	},
+
+	//#########################################################################
+	//# Ticket List Change Events
+	//#########################################################################
+
+	_initListChangeEvents: function() {
+		var self = this, $scope = this.$scope, wrapperEl = this.wrapper;
+
+		// Events about updates
+		// More updates happen in the Section.Tickets controller where
+		// we are told about specific additions/removals of tickets to the list
+		// Those events are called directly on this controller as addTicketResults/removeTicketResults
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
+			self.removeTicketResults(ticket_ids);
+		}).bind(this), null, [this.OBJ_ID])
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket_updated', function(info) {
+			var ticketId = info.ticket_id;
+			self.refreshTicketResults([ticketId]);
+		}, null, [this.OBJ_ID]);
+
+		// Tab indicator
 		this.addEvent('watchedTabAdded', function(tab) {
 			var ticketId = parseInt(tab.page.meta.ticket_id);
 			$scope.openTickets[ticketId] = true;
@@ -70,10 +164,216 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			wrapperEl.find('.ticket-row-' + ticketId).removeClass('open');
 		});
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this, true);
-
-		this._initDisplayOptions();
 	},
 
+
+	/**
+	 * Called when a new ticket is added to the main result set. Note that just because it was
+	 * added to the *main* result set doesn't mean it should be added to the actual list
+	 * we're viewing.
+	 *
+	 * E.g.:
+	 * - We are on page1 and the result is added to the end of the list on page3
+	 * - We are viewing a sub-group of the set (e.g, 'All Tickets > By agent > Me'), so the ticket
+	 * might not apply at all.
+	 *
+	 * So just because you add a ticket result here doesn't neccessarily mean the list is updated
+	 * at all. This method does proper logic for detecting which tickets should be displayed.
+	 *
+	 * Note: This should still only be called when the tickets affect the current list. Eg.,
+	 * we are viewing filter#4 then only new tickets added to filter#4 should be added here.
+	 * The logic only knows about pages/grouping, not about full filter criteria--that is still
+	 * done server-side.
+	 *
+	 * @param {Array<Integer>} ticketIds
+	 * @return void
+	 */
+	addTicketResults: function(ticketIds) {
+		var self = this;
+		console.log("[TicketList.addTicketResult] %o", ticketIds);
+	},
+
+
+	/**
+	 * Called when a new ticket is removed from the current result set.
+	 *
+	 * @param {Array<Integer>} ticketIds
+	 * @return void
+	 */
+	removeTicketResults: function(ticketIds) {
+		var $scope = this.$scope, map;
+		console.log("[TicketList.removeTicketResult] %o", ticketIds);
+
+		map = {};
+		ticketIds.forEach(function(x) { map[x] = true; });
+
+		$scope.tickets = $scope.tickets.filter(function(x) { return !map[x.id]; });
+		this.allTicketIds = this.allTicketIds.filter(function(x) { return !map[x]; });
+		this.updatePageCursor();
+		$scope.$safeApply();
+	},
+
+
+	/**
+	 * Called to refresh display of specific tickets in the current view.
+	 *
+	 * Note: This only refreshes tickets in the current view (e.g, within current 50 ticket page).
+	 *
+	 * @param {Array<Integer>} ticketIds
+	 * @return void
+	 */
+	refreshTicketResults: function(ticketIds) {
+		var $scope = this.$scope, self = this;
+		console.log("[TicketList.refreshTicketResult] %o", ticketIds);
+
+		if (!$scope.tickets || !$scope.tickets.length) {
+			return;
+		}
+
+		this.getTicketRows(ticketIds).then(function (tickets) {
+			self.applyTicketData(tickets);
+		});
+	},
+
+
+	/**
+	 * Applies an array of ticket data to the current view.
+	 * This updates existing ticket data models, does not do anything to load/add/remove
+	 * (use other methods for that).
+	 *
+	 * @param {Array} tickets
+	 */
+	applyTicketData: function(tickets) {
+		var $scope = this.$scope;
+
+		if (!tickets || !tickets.length) {
+			return;
+		}
+
+		tickets.forEach(function(newTicket) {
+			for (var ticketIdx = 0; ticketIdx < $scope.tickets.length; ticketIdx++) {
+				if ($scope.tickets[ticketIdx].id == newTicket.id) {
+					$scope.tickets[ticketIdx] = newTicket;
+				}
+			}
+		});
+	},
+
+
+	/**
+	 * Loads raw JSON data for specified ticket IDs
+	 *
+	 * @param ticketIds
+	 * @returns {promise}
+	 */
+	getTicketRows: function(ticketIds) {
+		var def = this.$q.defer(),
+			formData = [];
+
+
+		ticketIds.forEach(function(tid) {
+			formData.push({ name: 'ticket_ids[]', value: tid });;
+		});
+
+		$.ajax({
+			url: BASE_URL + "agent/ticket-search/ticket-rows.json",
+			type: 'GET',
+			dataType: 'json',
+			data: formData,
+			noErrorOverride: true,
+			success: function(data) {
+				def.resolve(data);
+			},
+			error: function() {
+				def.reject();
+			}
+		});
+
+		return def.promise;
+	},
+
+	//#########################################################################
+	//# Mass Actions
+	//#########################################################################
+
+	_initMassActions: function() {
+		var self = this, $scope = this.$scope;
+
+		//------------------------------
+		// Checkbox management
+		//------------------------------
+
+		$scope.$watch('checkedTickets', function(x) {
+			$scope.checkedTicketsCount = 0;
+			for (var key in x) {
+				if (x[key] === true) {
+					$scope.checkedTicketsCount++;
+				}
+			}
+
+			if ($scope.checkedTicketsCount == $scope.tickets.length) {
+				$scope.checkedTicketsToggle = true;
+			} else {
+				$scope.checkedTicketsToggle = false;
+			}
+
+			if ($scope.checkedTicketsCount && !self.massActions) {
+				$scope.openMassActions();
+			}
+		}, true);
+
+		$scope.checkAllTickets = function(isChecked) {
+			if (isChecked) {
+				$scope.checkedTickets = {};
+				$scope.tickets.forEach(function(x) { $scope.checkedTickets[x.id] = true; });
+			} else {
+				$scope.checkedTickets = {};
+			}
+		};
+
+		//------------------------------
+		// Mass actions overlay
+		//------------------------------
+
+		$scope.openMassActions = function() {
+			if (!self.massActions) {
+				self.massActions = new DeskPRO.Agent.PageFragment.List.TicketList.MassActions({
+					templateElement: self.wrapper.find('.mass-actions-overlay-tpl'),
+					onPostApply: function(inst, data, info) {
+						$scope.checkedTickets = {};
+
+						if (data.ticket_data) {
+							self.applyTicketData(data.ticket_data);
+						}
+
+						$scope.$safeApply();
+					},
+					getCheckedIds: function() {
+						var ids = [];
+						for (var tid in $scope.checkedTickets) {
+							if ($scope.checkedTickets[tid] === true) {
+								ids.push(tid);
+							}
+						}
+
+						return ids;
+					},
+					onClosed: function() {
+						if (self.massActions) {
+							self.massActions.destroy();
+						}
+
+						$scope.checkedTickets = {};
+						$scope.$safeApply();
+
+						self.massActions = null;
+					}
+				});
+			}
+
+			self.massActions.open();
+		};
+	},
 
 	//#########################################################################
 	//# Display options
@@ -181,6 +481,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	//# List View
 	//#########################################################################
 
+	/**
+	 * Opens the current view in the table overlay
+	 */
 	openTableView: function() {
 		var oldlist = this.listview;
 		this.listview = new DeskPRO.Agent.TicketList.ListView(this);
@@ -194,5 +497,748 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		this.listview.open();
+	}
+});
+
+//######################################################################################################################
+//######################################################################################################################
+//######################################################################################################################
+
+DeskPRO.Agent.PageFragment.List.TicketList.Results = new Orb.Class({
+
+});
+
+
+//######################################################################################################################
+//######################################################################################################################
+//######################################################################################################################
+
+DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
+	Implements: [Orb.Util.Events, Orb.Util.Options],
+
+	initialize: function(options)  {
+		this.options = {
+			/**
+			 * The HTML element with the actual controls etc we'll use for this
+			 * Defaults to 'wrapper .mass-actions-overlay'
+			 */
+			templateElement: null
+		};
+
+		this.setOptions(options);
+
+		this.wrapperEl = this.options.templateElement;
+		if(!this.wrapperEl.length) {
+			return;
+		}
+
+		this._resetWrapper();
+
+		this.backdropEls = null;
+	},
+
+	updateUi: function() {
+		if (this.scrollerHandler) {
+			this.scrollerHandler.updateSize();
+		}
+	},
+
+	_resetWrapper: function() {
+		if (this.wrapper) {
+			this.wrapper.remove();
+		}
+
+		if (!this.wrapperEl.is('script')) {
+			this.wrapper = $('<div/>').addClass('mass-actions-overlay-container mass-actions').data('base-id', this.wrapperEl.data('base-id')).data('upload-url', this.wrapperEl.data('upload-url'));
+			var wrapperHtml = this.wrapperEl.html();
+			this.wrapper.html(wrapperHtml);
+		} else {
+			var wrapperHtml = DeskPRO_Window.util.getPlainTpl(this.wrapperEl);
+			this.wrapper = $(wrapperHtml);
+			this.wrapper.detach().appendTo('body');
+		}
+
+		this.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
+
+		this.countEl = $('.selected-tickets-count', this.wrapper);
+		DP.select($('select.macro', this.wrapper));
+
+		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
+		var scrollEl = $('.with-scrollbar', this.wrapper).first();
+		if (scrollEl.length) {
+			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
+				showEvent: 'show',
+				hideEvent: 'hide'
+			});
+		}
+	},
+
+	/**
+	 * Resets the wrapper back to the original, and then runs all of the init again.
+	 */
+	reset: function() {
+		var wasopen = this.isOpen();
+		this.close();
+
+		this._resetWrapper();
+
+		this._hasInit = false;
+
+		if (wasopen) {
+			this.open();
+		}
+	},
+
+
+	/**
+	 * Get the main wrapper element around the mass actions UI controls.
+	 *
+	 * @return {jQuery}
+	 */
+	getElement: function() {
+		return this.wrapper;
+	},
+
+
+	/**
+	 * Inits the overlay controls lazily on first open
+	 */
+	_initOverlay: function() {
+		var self = this;
+		if (this._hasInit) return;
+		this._hasInit = true;
+
+		this.wrapper.detach().appendTo('body');
+		this.wrapper.css('z-index', '21001');
+
+		this.baseId = this.wrapper.data('base-id');
+
+		this.wrapper.on('click', function(ev) {
+			ev.stopPropagation();
+		});
+
+		// Three backdrops to surround each side of the list pane: left, right, top
+		var back1 = $('<div class="backdrop mass-actions" />');
+		var back2 = $('<div class="backdrop mass-actions" />');
+		var back3 = $('<div class="backdrop mass-actions" />');
+		this.backdropEls = $([back1.get(0), back2.get(0), back3.get(0)]);
+		this.backdropEls.css('z-index', '21000').hide().appendTo('body');
+
+		this.backdropEls.on('click', (function(ev) {
+			ev.stopPropagation();
+			this.close();
+		}).bind(this));
+
+		$('header .close-trigger', this.wrapper).first().on('click', (function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+			this.close();
+		}).bind(this));
+
+		//------------------------------
+		// Convert radios
+		//------------------------------
+
+		var tpl = DeskPRO_Window.util.getPlainTpl($('.radio-tpl', this.wrapper));
+
+		var groupedRadios = {};
+		$(':radio.button-toggle', this.wrapper).each(function() {
+			var name = $(this).attr('name');
+			if (!groupedRadios[name]) {
+				groupedRadios[name] = [];
+			}
+
+			groupedRadios[name].push(this);
+		});
+
+		Object.each(groupedRadios, function(els) {
+			var newEls = [];
+			els = $(els);
+
+			var clickFn = function() {
+				var boundId = $(this).data('bound-id');
+				var radio = $('#' + boundId);
+
+				// Toggle off already checked (ie none selected now)
+				if (radio.is(':checked')) {
+					radio.attr('checked', false);
+					newEls.removeClass('radio-on');
+
+					// Normal radio behavior
+				} else {
+					radio.attr('checked', true);
+					newEls.removeClass('radio-on');
+					$(this).addClass('radio-on');
+				}
+			};
+
+			els.each(function() {
+
+				var wrapper = $(this).parent();
+				var title = $('.radio-title', wrapper).text().trim();
+
+				var newEl = $(tpl)
+				newEl.addClass($(this).data('attach-class'));
+				$('.radio-title', newEl).text(title);
+
+				if (!$(this).attr('id')) {
+					$(this).attr('id', Orb.getUniqueId());
+				}
+
+				newEl.data('bound-id', $(this).attr('id'));
+
+				newEl.on('click', clickFn);
+
+				wrapper.hide();
+				newEl.insertAfter(wrapper);
+
+				newEls.push(newEl.get(0));
+			});
+
+			newEls = $(newEls);
+		});
+
+		//------------------------------
+		// Attach change listeners
+		//------------------------------
+
+
+		$('select.macro', this.wrapper).on('change', function() {
+			self.loadMacro($(this).val());
+		});
+
+		$('.apply-actions', this.wrapper).on('click', (function(ev) {
+			this.apply();
+		}).bind(this));
+
+		//------------------------------
+		// Reply Box
+		//------------------------------
+
+		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
+		this.textarea = textarea;
+
+		if (DeskPRO_Window.canUseAgentReplyRte()) {
+
+			var sig = this.wrapper.find('textarea.signature-value-html').val() || "";
+			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
+
+			if (sig) {
+				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
+			}
+
+			isWysiwyg = true;
+			self.getElById('is_html_reply').val('1');
+
+			DeskPRO_Window.initRteAgentReply(textarea, {
+				defaultIsHtml: true,
+				inlineHiddenPosition: this.getElById('is_html_reply'),
+				minHeight: 120,
+				callback: function(obj) {
+					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
+					obj.addBtnSeparatorAfter('dp_attach');
+
+					var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+					snippetBtn.on('click', function(ev) {
+						Orb.cancelEvent(ev);
+						self.snippetsViewer.open();
+					});
+
+					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
+					attachBtn.addClass('attach');
+					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+
+					obj.addBtnSeparatorAfter('dp_snippets');
+				}
+			});
+			this.getElById('is_html_reply').val(1);
+		}
+
+		//------------------------------
+		// Snippets Viewer
+		//------------------------------
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			driver: DeskPRO_Window.ticketSnippetDriver,
+			onBeforeOpen: function() {
+				if (isWysiwyg && textarea.data('redactor')) {
+					try {
+						textarea.data('redactor').saveSelection();
+					} catch (e) {}
+				}
+			},
+			onSnippetClick: function(info) {
+
+				var snippetId    = info.snippetId;
+				var snippetCode  = info.snippetCode;
+
+				var agentText;
+				var defaultText;
+				var useText;
+				var result;
+
+				Array.each(snippetCode, function(info) {
+					if (info.value) {
+						if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+							agentText = info.value;
+						}
+						if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+							defaultText = info.value;
+						}
+						useText = info.value;
+					}
+				});
+
+				if (agentText) {
+					useText = agentText;
+				} else if (defaultText) {
+					useText = defaultText;
+				}
+
+				result = useText || '';
+
+				if (isWysiwyg && textarea.data('redactor')) {
+					try {
+						textarea.data('redactor').restoreSelection();
+						textarea.data('redactor').setBuffer();
+					} catch (e) {}
+
+					var html = result;
+					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+					html = html.replace(/^<p>/, '');
+					html = html.replace(/<\/p>$/, '');
+					textarea.data('redactor').insertHtml(html);
+				} else {
+					self.page.insertTextInReply(result);
+				}
+
+				self.snippetsViewer.close();
+			}
+		});
+
+		//------------------------------
+		// Upload handling
+		//------------------------------
+
+		DeskPRO_Window.util.fileupload(this.wrapper, {
+			url: this.wrapper.data('upload-url'),
+			uploadTemplate: $('.template-upload', this.replyBox),
+			downloadTemplate: $('.template-download', this.replyBox)
+		});
+
+		var sels = this.wrapper.find('select.dpe_select');
+
+		window.setTimeout(function() {
+			sels.each(function() {
+				DP.select($(this));
+			});
+		}, 150);
+
+		this.wrapper.bind('fileuploaddone', function() {
+			self.getElById('attach_row').fadeIn();
+			self.wrapper.find('[name="attach\\[\\]"]').each(function() {
+				$(this).name('actions[reply][attach_ids][]');
+			});
+		});
+		this.wrapper.bind('fileuploadstart', function() {
+			self.getElById('attach_row').fadeIn();
+			self.updatePositions();
+		});
+
+		this.wrapper.on('click', '.remove-attach-trigger', function() {
+
+			var row = $(this).closest('li');
+			row.remove();
+
+			var rows = $('ul.files li', self.getElById('attach_row'));
+			if (!rows.length) {
+				self.getElById('attach_row').hide().addClass('is-hidden');
+			}
+
+			self.updatePositions();
+		});
+
+		if (this.assignOptionBox) {
+			this.assignOptionBox.destroy();
+		}
+
+		var add = $('.other-properties-wrapper', this.wrapper);
+
+		// Remove all the stuff we have layed out in a different way
+		// on this popup
+		$('div.type', add).each(function() {
+			var type = $(this).data('rule-type');
+			if (!type) return;
+
+			if (type == 'add_labels' || type == 'remove_labels' || type.indexOf('ticket_field[') !== -1 || type.indexOf('people_field[') !== -1) {
+
+			} else {
+				$(this).remove();
+			}
+			self.updatePositions();
+		});
+
+		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
+
+		var actList = $('.other-properties-wrapper', this.wrapper);
+		$('.add-term-row', add).show().on('click', function() {
+			var x = Orb.getUniqueId();
+			var basename = 'actions_set['+x+']';
+			self.actionsEditor.addNewRow($('.search-terms', actList), basename);
+			self.updatePositions();
+		});
+	},
+
+	getElById: function(id) {
+		return $('#' + this.baseId + '_' + id);
+	},
+
+	getActionFormValues: function(appendArray, isApply, info) {
+		var self = this;
+		appendArray = appendArray || [];
+
+		if (!info) info = {};
+		info.actionsCount = 0;
+
+		if (this.wrapper.find('select.macro_id')[0] && this.wrapper.find('select.macro_id').val() != '0') {
+			appendArray.push({
+				name: 'run_macro_id',
+				value: this.wrapper.find('select.macro_id').val()
+			});
+			info.actionsCount = 1;
+			return appendArray;
+		}
+
+		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["]').each(function() {
+
+			var val = $(this).val(), name = $(this).attr('name');
+
+			if (!val) {
+				val = '';
+			}
+
+			if (val == '-1') {
+				val = '';
+			}
+
+			if ($(this).is(':radio, :checkbox')) {
+				if (!$(this).is(':checked')) {
+					return;
+				}
+			}
+
+			if (val === '') {
+				return;
+			}
+
+			// Dont send reply type when we're just fetching previews
+			if (!isApply && name == 'actions[reply][reply_text]') {
+				return;
+			}
+
+			// Empty reply, dont add it
+			if (name == 'actions[reply][reply_text]') {
+				var copy = $.trim(self.wrapper.find('.ticketreply').find('.redactor_editor').text()).replace(/\s/g, ' ');
+				var tmp = $('<div/>').html(self.wrapper.find('textarea.signature-value-html').val());
+				var sig = $.trim(tmp.text()).replace(/\s/g, ' ');
+
+				if (!copy || copy == sig) {
+					return;
+				}
+			}
+
+			appendArray.push({
+				name: name,
+				value: val
+			});
+
+			info.actionsCount++;
+		});
+
+		return appendArray;
+	},
+
+	/**
+	 * Apply the changes
+	 */
+	apply: function() {
+		var formData = [];
+
+		var formDataInfo = {
+			checkedCount: 0,
+			actionsCount: 0
+		};
+
+		var ticketIds = this.options.getCheckedIds();
+		formDataInfo.checkedCount = ticketIds.length;
+		if (!formDataInfo.checkedCount) {
+			return;
+		}
+
+		ticketIds.forEach(function(tid) {
+			formData.push({ name: 'result_ids[]', value: tid });
+		});
+
+		formData.push({ name:'return_data', value:'1'});
+
+		this.getActionFormValues(formData, true, formDataInfo);
+
+		// If we dont have any tickets or actions then theres nothing to do
+		if (!formDataInfo.checkedCount || !formDataInfo.actionsCount) {
+			return;
+		}
+
+		this.wrapper.addClass('loading');
+
+		var statusUpdate = this.wrapper.find('input[name="actions[status]"]:checked').val();
+
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
+			type: 'POST',
+			data: formData,
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+				this.wrapper.removeClass('loading');
+
+				this.close();
+
+				this.fireEvent('postApply', [this, data, formDataInfo]);
+
+				if (data && data.failed_tickets && data.failed_tickets.length) {
+					DeskPRO_Window.showAlert('Note: ' + data.failed_tickets.length + ' tickets were not updated because you do not have permission to make the requested changed.');
+				}
+
+				if (statusUpdate === 'hidden.deleted' || statusUpdate === 'hidden.spam') {
+					// hide any open tickets
+					$.each(data.success_tickets, function(k, ticketId) {
+						var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
+							return (tab && tab.page && tab.page && tab.page.meta.ticket_id == ticketId);
+						});
+						if (tab) {
+							DeskPRO_Window.removePage(tab.page);
+						}
+					});
+				}
+			}
+		});
+
+	},
+
+
+	/**
+	 * Update the positions of the elements
+	 */
+	updatePositions: function() {
+
+		//------------------------------
+		// The wrapper overlaps the content pane section
+		//------------------------------
+
+		var pos = $('#dp_content').offset();
+		var top = pos.top - 4;
+
+		var bottom = 10;
+		var height = '';
+
+		var scrollContent = $('.scroll-content', this.wrapper).first();
+		var contentH = false;
+		var hasHeader = !!($('> section > header', this.wrapper).length);
+		var hasFooter = !!($('> section > footer', this.wrapper).length);
+
+		if (scrollContent.length) {
+			contentH = scrollContent.height();
+			if (hasHeader) {
+				contentH += 36;
+			}
+			if (hasFooter) {
+				contentH += 45;
+			}
+
+			contentH += 31;
+		}
+
+		if (hasHeader) $('> section > article', this.wrapper).removeClass('no-header');
+		else $('> section > article', this.wrapper).addClass('no-header');
+
+		if (hasFooter) $('> section > article', this.wrapper).removeClass('no-footer');
+		else $('> section > article', this.wrapper).addClass('no-footer');
+
+		if (contentH < 350) {
+			contentH = 350;
+		}
+
+		var maxH = $(window).height() - top - 10;
+
+		if (contentH && contentH < maxH) {
+			bottom = '';
+			height = contentH;
+		}
+
+		this.wrapper.css({
+			top: pos.top - 4,
+			left: pos.left + 8,
+			right: 3,
+			bottom: bottom,
+			height: height
+		});
+
+		//------------------------------
+		// The backdrops surround each side of the list pane
+		//------------------------------
+
+		var leftEnd = 269; // Where the left ends (aka where listpane starts)
+		var topEnd = 50; // Where the top ends (aka header height)
+		var contentStart = pos.left;
+
+		if (!this.options.isListView) {
+			this.backdropEls.eq(0).css({
+				top: 0,
+				width: leftEnd,
+				bottom: 0,
+				left: 0
+			});
+
+			this.backdropEls.eq(1).css({
+				top: 0,
+				height: topEnd,
+				width: contentStart - leftEnd,
+				left: leftEnd
+			});
+
+			this.backdropEls.eq(2).css({
+				top: 0,
+				right: 0,
+				bottom: 0,
+				left: contentStart
+			});
+		}
+
+		this.updateUi();
+	},
+
+
+	/**
+	 * Load a macro into the form
+	 */
+	loadMacro: function(macro_id) {
+
+		var macroEl = $('.macro-options', this.wrapper);
+		var inputActionsEl = $('.actions-input', this.wrapper);
+
+		macro_id = parseInt(macro_id);
+		if (!macro_id) {
+			macroEl.hide();
+			macroEl.find('ul.actions-list').empty();
+			macroEl.find('input.macro_id').remove();
+			inputActionsEl.show();
+			this.updateUi();
+			this.updatePositions();
+			return;
+		}
+
+		var macroBtnEl = $('div.macro-load', this.wrapper).addClass('loading');
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/ajax-get-macro-actions',
+			data: { macro_id: macro_id },
+			type: 'GET',
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+
+				inputActionsEl.hide();
+				macroEl.show();
+
+				var input = $('<input type="hidden" class="macro_id" name="run_macro_id" />');
+				input.val(macro_id);
+				input.appendTo(macroEl);
+
+				var ul = macroEl.find('ul.actions-list');
+				ul.empty();
+
+				Array.each(data.descriptions, function(desc) {
+					var li = $('<li />');
+					li.html(desc);
+
+					ul.append(li);
+				});
+
+				macroBtnEl.removeClass('loading');
+
+				this.updateUi();
+				this.updatePositions();
+			}
+		});
+
+		this.updatePositions();
+	},
+
+
+	/**
+	 * Is the overlay currently open?
+	 *
+	 * @return {Boolean}
+	 */
+	isOpen: function() {
+		if (!this._hasInit || !this.wrapper.is('.open')) {
+			return false;
+		}
+
+		return true;
+	},
+
+
+	/**
+	 * Open this overlay
+	 */
+	open: function() {
+		if (!this.wrapper || !this.wrapper[0]) {
+			this._resetWrapper();
+		}
+
+		this._initOverlay();
+
+		this.updatePositions();
+		DeskPRO_Window.layout.addEvent('resized', this.updatePositions, this);
+		this.wrapper.addClass('open');
+		this.backdropEls.show();
+
+		this.wrapper.addClass('open').show();
+
+		this.updatePositions();
+	},
+
+
+	/**
+	 * Close the overlay
+	 */
+	close: function() {
+		if (!this.isOpen()) {
+			return false;
+		}
+
+		DeskPRO_Window.layout.removeEvent('resized', this.updatePositions, this);
+		this.wrapper.removeClass('open');
+		this.backdropEls.hide();
+		this.fireEvent('closed', [this]);
+
+		if (this.options.resetOnClose) {
+			this.reset();
+		}
+	},
+
+
+	destroy: function() {
+		if (this._hasInit) {
+			this.wrapper.remove();
+			this.backdropEls.remove();
+		}
+
+		if (this.textarea && this.textarea.data('redactor')) {
+			this.textarea.redactor('destroy');
+		}
 	}
 });

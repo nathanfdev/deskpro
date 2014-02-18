@@ -786,34 +786,34 @@ class Translate implements PersonContextInterface
 			$phrase_text = preg_replace_callback('#\{\{\s*([a-zA-Z0-9_]+)\s*\}\}#', function ($m) use ($vars) {
 				$name = $m[1];
 
-				if (isset($vars[$name])) {
+				if (array_key_exists($name, $vars)) {
 					return $vars[$name];
-				} elseif (isset($vars['_context'][$name])) {
+				} elseif (isset($vars['_context']) && array_key_exists($name, $vars['_context'])) {
 					return $vars['_context'][$name];
 				}
 
-				return '';
+				return $m[0];
 			}, $phrase_text);
 
 			$phrase_text = preg_replace_callback('#\{\{\s*([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\s*\}\}#', function ($m) use ($vars) {
 				$name = $m[1];
 				$prop = $m[2];
 
-				if (isset($vars[$name])) {
-					if (isset($vars[$name][$prop])) {
+				if (array_key_exists($name, $vars)) {
+					if ((is_array($vars[$name]) || $vars[$name] instanceof \ArrayAccess) && array_key_exists($prop, $vars[$name])) {
 						return $vars[$name][$prop];
 					} elseif (isset($vars[$name]->$prop)) {
 						return $vars[$name]->$prop;
 					}
-				} elseif (isset($vars['_context'][$name])) {
-					if (isset($vars['_context'][$name][$prop])) {
+				} elseif (isset($vars['_context']) && array_key_exists($name, $vars['_context'])) {
+					if ((is_array($vars[$name]) || $vars[$name] instanceof \ArrayAccess) && array_key_exists($prop, $vars['_context'][$name])) {
 						return $vars['_context'][$name][$prop];
 					} elseif (isset($vars['_context'][$name]->$prop)) {
 						return $vars['_context'][$name]->$prop;
 					}
 				}
 
-				return '';
+				return $m[0];
 			}, $phrase_text);
 		}
 

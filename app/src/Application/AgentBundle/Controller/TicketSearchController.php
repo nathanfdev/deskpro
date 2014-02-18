@@ -1160,6 +1160,7 @@ class TicketSearchController extends AbstractController
 			'ticket_display'     => $ticket_display,
 			'ticket_json'        => $ticket_json,
 			'tickets'            => $tickets,
+			'all_ticket_ids'     => $results_helper->getTicketIds(),
 			'count'              => $results_helper->getCount(),
 			'flagged_tickets'    => $flagged_tickets,
 			'ticket_options'     => $ticket_options,
@@ -1447,6 +1448,20 @@ class TicketSearchController extends AbstractController
         return $response;
     }
 
+	public function getTicketRowsAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
+
+		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+		$ticket_display->setPersonContext($this->person);
+
+		$json_renderer = new TicketListRenderer();
+		$ticket_json = $json_renderer->renderTicketDisplay($ticket_display);
+
+		return $this->createJsonResponse($ticket_json);
+	}
+
 	public function getSingleTicketRowAction($content_type, $content_id)
 	{
 		if ($content_type == 'sla') {
@@ -1730,11 +1745,21 @@ class TicketSearchController extends AbstractController
 			);
 		}
 
+		$ticket_data = null;
+		if ($this->in->getBool('return_data')) {
+			$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+			$ticket_display->setPersonContext($this->person);
+
+			$json_renderer = new TicketListRenderer();
+			$ticket_data = $json_renderer->renderTicketDisplay($ticket_display, true);
+		}
+
 		return $this->createJsonResponse(array(
 			'success'          => true,
 			'success_tickets' => $success,
 			'failed_tickets'  => $permission_errors,
 			'client_messages' => $client_messages,
+			'ticket_data'     => $ticket_data,
 		));
 	}
 }

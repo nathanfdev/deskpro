@@ -102,7 +102,8 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/ZeroClipboard/ZeroClipboard.min.js',
 		'vendor/idbstore/idbstore.min.js',
 		'vendor/twig/twig.js',
-		'vendor/angular/angular.min.js'
+		'vendor/angular/angular.min.js',
+		'vendor/angular/angular-animate.min.js',
 	)
 );
 

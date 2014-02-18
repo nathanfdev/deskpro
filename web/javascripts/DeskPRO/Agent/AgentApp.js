@@ -1,7 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent');
 
 DeskPRO.Agent.AgentAppFactory = function() {
-	var AgentApp = angular.module('AgentApp', []);
+	var AgentApp = angular.module('AgentApp', ['ngAnimate']);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor

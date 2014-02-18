@@ -68,4 +68,5 @@ pageMeta.view_name = '{{ view_name }}';
 pageMeta.baseId = '{{ tplvars.baseId }}';
 </script>
 <script id="{{ tplvars.baseId }}_ticket_json" type="application/json">{{ ticket_json|raw }}</script>
+<script id="{{ tplvars.baseId }}_ticket_ids_json" type="application/json">{{ all_ticket_ids|json_encode|raw }}</script>
 <div id="{{ tplvars.baseId }}_ng_attach">{% include 'AgentBundle:TicketSearch:ticket-list.html.twig' %}</div>

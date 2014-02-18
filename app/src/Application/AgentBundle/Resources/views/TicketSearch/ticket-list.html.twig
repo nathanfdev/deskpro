@@ -1,6 +1,6 @@
 <div class="list-pane-instance">
 	<div class="list-pane-header">
-		<h1><i class="icon-dp-ticket"></i> Tickets</h1>
+		<h1><i class="icon-dp-ticket"></i> {{ ticketCount }} Tickets</h1>
 	</div>
 	<div class="list-pane-content list-pane-view with-header with-subheader with-footer">
 		<header class="view-header">
@@ -8,7 +8,18 @@
 			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
 		</header>
 		<header class="view-subheader">
-			{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
+			<header class="list-selection-bar">
+				{#
+				<div class="pull-right" style="position: relative; top: -1px; padding-right: 8px;">
+					<button class="dp-btn dp-btn-xxsmall" ng-hide="!checkedTicketsCount" ng-click="openMassActions()">{{ phrase('agent.general.perform_actions') }}</button>
+				</div>
+				#}
+
+				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" ng-change="checkAllTickets(checkedTicketsToggle)" />
+				{{ phrase('agent.general.x_selected', {'num_placeholder': '{{ checkedTicketsCount }}'}, true) }}
+
+				{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
+			</header>
 		</header>
 		<article class="view-body">
 			{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
@@ -26,7 +37,7 @@
 				>
 					<div class="item-hover-over-indicator"></div>
 					<div class="loading-arrow">{{ phrase('agent.general.loading') }}</div>
-					<input type="checkbox" class="item-select" ng-model="checked[ticket.id]" />
+					<input type="checkbox" class="item-select" ng-model="checkedTickets[ticket.id]" />
 					<div class="top-row">
 						<div class="top-row-left">
 							<h3>
@@ -140,7 +151,10 @@
 
 		</article>
 		<footer class="view-footer results-nav">
-			<ul class="pagenav no-prev">
+			<div class="cursor">
+				Showing {{ ng_var('pageCursorStart') }} to {{ ng_var('pageCursorEnd') }} of {{ ng_var('ticketCount') }}
+			</div>
+			<ul class="pagenav" ng-class="{'no-prev': !hasPrevPage, 'no-next': !hasNextPage}">
 				<li class="prev"></li>
 				<li class="next"></li>
 			</ul>
