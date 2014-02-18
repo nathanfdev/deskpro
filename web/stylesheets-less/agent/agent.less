@@ -3469,9 +3469,23 @@ ul.pane-tabs {
 	}
 
 	.view-body {
-		overflow: auto;
+		overflow-x: hidden;
+		overflow-y: auto;
 		top: 0;
 		bottom: 0;
+	}
+
+	.list-listing {
+		.agent-inline-icon {
+			width: 16px;
+			height: 16px;
+		}
+
+		.extra-fields {
+			ul li div {
+				display: inline-block;
+			}
+		}
 	}
 }
 

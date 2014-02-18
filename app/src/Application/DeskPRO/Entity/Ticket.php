@@ -2845,6 +2845,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		$data['status_code'] = $this->getStatusCode();
+
 		$data['total_user_waiting_real'] = $this->getRealTotalUserWaiting();
 		$data['total_user_waiting_work'] = $this->getTotalUserWaitingWorkTime();
 		$data['current_user_waiting'] = $this->getCurrentUserWaitingTime();

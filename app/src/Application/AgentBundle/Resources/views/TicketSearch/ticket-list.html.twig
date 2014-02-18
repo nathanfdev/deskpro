@@ -16,7 +16,8 @@
 
 				<article
 					ng-repeat="ticket in tickets"
-					class="row-item ticket-{{ ng_var('ticket.id') }}"
+					class="row-item ticket-row-{{ ng_var('ticket.id') }}"
+					ng-class="{'open': openTickets[ticket.id]}"
 					data-ticket-id="{{ ng_var('ticket.id') }}"
 					data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ticket.id}}'}) }}"
 					data-route-title="@selector(a.subject)"
@@ -37,22 +38,100 @@
 						<div class="top-row-right">
 							<div class="bound-fade"></div>
 							<div class="on-hold" ng-show="ticket.is_hold">{{ phrase('agent.tickets.on_hold') }}</div>
-							<div class="status-pill status urgency-{{ ng_var('ticket.urgency') }} {{ ng_var("ticket.status_code") }}">
-								<label>{{ ng_var('ticket.status_code') }}</label>
-								<i ng-show="ticket.status == 'awaiting_agent'" class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>
+							<div class="status-pill status urgency-{{ ng_var('ticket.urgency') }} {{ ng_var("ticket.status") }} {{ ng_var("ticket.status") }}_{{ ng_var("ticket.hidden_status") }}">
+
+								<label ng-if="ticket.status == 'awaiting_agent'">{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
+								<label ng-if="ticket.status == 'awaiting_user'">{{ phrase('agent.tickets.status_awaiting_user') }}</label>
+								<label ng-if="ticket.status == 'resolved'">{{ phrase('agent.tickets.status_resolved') }}</label>
+								<label ng-if="ticket.status == 'closed'">{{ phrase('agent.tickets.status_closed') }}</label>
+								<label ng-if="ticket.status == 'hidden' && !ticket.hidden_status">{{ phrase('agent.tickets.status_hidden') }}</label>
+								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'deleted'">{{ phrase('agent.tickets.status_hidden_deleted') }}</label>
+								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'spam'">{{ phrase('agent.tickets.status_hidden_spam') }}</label>
+								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'temp'">{{ phrase('agent.tickets.status_hidden_temp') }}</label>
+								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'validating'">{{ phrase('agent.tickets.status_hidden_validating') }}</label>
+
+								<i ng-show="ticket.status == 'awaiting_agent'" class="ticket-urgency" data-urgency="{{ ng_var('ticket.urgency') }}">{{ ng_var('ticket.urgency') }}</i>
 							</div>
-							<span ng-show="ticket.agent" class="tipped agent-inline-icon" title="{{ ng_var('ticket.agent.display_name') }}"></span>
+							<span ng-show="ticket.agent" class="tipped agent-inline-icon" title="{{ ng_var('ticket.agent.display_name') }}" style="background-image: url({{ ng_var('ticket.agent.picture_url_16') }});"></span>
 							<br class="clear" />
 						</div>
 					</div>
 					<div class="userinfo">
 						<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ticket.person.id}}'}) }}" data-route-title="@selector(.person-tip)">
-							<span class="with-icon" data-person-id="{{ ng_var('ticket.person.id') }}">{{ ng_var('ticket.person.display_name') }}</span></a>
+							<span class="with-icon" data-person-id="{{ ng_var('ticket.person.id') }}" style="background-image: url({{ ng_var('ticket.person.picture_url_16') }});">{{ ng_var('ticket.person.display_name') }}</span></a>
 							<span class="org" ng-if="ticket.person.organization">
 								(<span ng-if="ticket.person.organization_position">{{ ng_var('ticket.person.organization_position') }}, </span>{{ ng_var('ticket.person.organization.name') }})
 							</span>
 							<span ng-if="ticket.person.primary_email" class="email"><b class="person-{{ ng_var('ticket.person.id') }}-pemail">{{ ng_var('ticket.person.primary_email.email') }}</b></span>
 						<div class="bound-fade"></div>
+					</div>
+					<div class="extra-fields">
+						<ul>
+							<li ng-repeat="field in display_fields | filter:isFieldDisplayable(ticket)" class="{{ ng_var('field') }}" ng-switch="field">
+								<div ng-switch-when="department">
+									<span class="prop-title">{{ phrase('agent.general.department') }}:</span>
+									<span class="prop-val">{{ ng_var('ticket.department.title_full') }}</span>
+								</div>
+
+								<div ng-switch-when="ref">
+									<span class="prop-title">{{ phrase('agent.general.ref') }}:</span>
+									<span class="prop-val">{{ ng_var('ticket.ref') }}</span>
+								</div>
+
+								<div ng-switch-when="language">
+									<span class="prop-title">{{ phrase('agent.general.language') }}:</span>
+									<span class="prop-val">{{ ng_var('ticket.language.title') }}</span>
+								</div>
+
+								<div ng-switch-when="category">
+									<span class="prop-title">{{ phrase('agent.general.category') }}:</span>
+									<span class="prop-val">{{ ng_var('ticket.category.title') }}</span>
+								</div>
+
+								<div ng-switch-when="priority">
+									<span class="prop-title">{{ phrase('agent.general.priority') }}:</span>
+									<span class="prop-val">{{ ng_var('ticket.priority.title') }}</span>
+								</div>
+
+								<div ng-switch-when="workflow">
+									<span class="prop-title">{{ phrase('agent.general.workflow') }}:</span>
+									<span class="prop-val">{{ ng_var('ticket.workflow.title') }}</span>
+								</div>
+
+								<div ng-switch-when="product">
+									<span class="prop-title">{{ phrase('agent.general.product') }}:</span>
+									<span class="prop-val">{{ ng_var('ticket.product.title') }}</span>
+								</div>
+
+								<div ng-switch-when="agent">
+									<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
+									<span class="prop-val" ng-if="ticket.agent && ticket.agent.id == DESKPRO_PERSON_ID" data-prop-value="{{ ng_var('ticket.agent.id') }}">{{ ng_var('ticket.agent.display_name') }}</span>
+									<span class="prop-val" ng-if="ticket.agent && ticket.agent.id != DESKPRO_PERSON_ID" data-prop-value="{{ ng_var('ticket.agent.id') }}"><a class="agent_link">{{ ng_var('ticket.agent.display_name') }}</a></span>
+									<span class="prop-val" ng-if="!ticket.agent">{{ phrase('agent.general.unassigned') }}</span>
+								</div>
+
+								<div ng-switch-when="agent_team">
+									<span class="prop-title">{{ phrase('agent.general.agent_team') }}:</span>
+									<span class="prop-val" ng-if="ticket.agent_team" data-prop-value="{{ ng_var('agent_team.agent.id') }}">{{ ng_var('ticket.agent_team.name') }}</span>
+									<span class="prop-val" ng-if="!ticket.agent_team">{{ phrase('agent.general.no_team') }}</span>
+								</div>
+
+								<div ng-switch-when="labels">
+									<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
+									<span class="prop-val">
+										<span ng-repeat="label in ticket.labels" class="listing-tag">{{ ng_var('label') }}</span>
+									</span>
+								</div>
+
+								<div ng-switch-when="organization">
+									<span class="prop-title">{{ phrase('agent.general.organization') }}:</span>
+									<span class="prop-val">
+										<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '{{ticket.organization.id}}'}) }}" data-route-title="@text">{{ ng_var('ticket.organization.name') }}</a>
+									</span>
+								</div>
+							</li>
+						</ul>
+						<br class="clear"/>
 					</div>
 				</article>
 

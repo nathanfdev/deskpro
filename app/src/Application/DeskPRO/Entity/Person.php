@@ -2297,7 +2297,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$data['display_name'] = $this->getDisplayName();
 		$data['primary_email'] = $this->getPrimaryEmailAddress();
-		$data['picture_url'] = $this->getPictureUrl();
+
+		$data['picture_url']    = $this->getPictureUrl();
+		$data['picture_url_80'] = $this->getPictureUrl(80);
+		$data['picture_url_64'] = $this->getPictureUrl(64);
+		$data['picture_url_50'] = $this->getPictureUrl(50);
+		$data['picture_url_45'] = $this->getPictureUrl(45);
+		$data['picture_url_32'] = $this->getPictureUrl(32);
+		$data['picture_url_22'] = $this->getPictureUrl(22);
+		$data['picture_url_16'] = $this->getPictureUrl(16);
 
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('person_fields_manager');
