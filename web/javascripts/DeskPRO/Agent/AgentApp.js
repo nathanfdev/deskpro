@@ -30,6 +30,32 @@ DeskPRO.Agent.AgentAppFactory = function() {
 		};
 	}]);
 
+	AgentApp.filter('formatTimestampAgo', function() {
+		return function(ts) {
+			return moment().unix(ts).fromNow();
+		}
+	});
+
+	AgentApp.filter('formatTimestamp', function() {
+		return function(ts, format) {
+			if (!format) {
+				format = 'day';
+			}
+			switch (format) {
+				case 'day':
+					format = 'MMM D YYYY';
+					break;
+				case 'day_short':
+					format = 'MMM D';
+					break;
+				case 'time':
+					format = 'h:m a'
+					break;
+			}
+			return moment().unix(ts).format(format);
+		}
+	});
+
 	AgentApp.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
 	}]);
