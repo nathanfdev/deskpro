@@ -68,7 +68,19 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		$scope.isFieldDisplayable = function(ticket) {
 			return function(field) {
+				var fieldM;
 				switch (field) {
+					case 'ref':
+					case 'agent':
+					case 'agent_team':
+					case 'date_user_waiting':
+					case 'date_created':
+					case 'total_user_waiting':
+					case 'date_last_user_reply':
+					case 'date_last_agent_reply':
+						return true;
+					case 'date_resolved':
+						return !!ticket.date_resolved;
 					case 'department':
 						return !!ticket.department;
 					case 'language':
@@ -79,11 +91,24 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						return !!ticket.priority;
 					case 'workflow':
 						return !!ticket.workflow;
-					case 'agent':
-						return true;
-					case 'agent':
-						return true;
+					case 'organization':
+						return !!ticket.organization;
+					case 'labels':
+						return ticket.labels && ticket.labels.length > 0;
 					default:
+						fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
+						if (fieldM) {
+							if (ticket['field' + fieldM[1]]) {
+								return true;
+							}
+						} else {
+							fieldM = field.match(/^person_fields\[(\d+)\]$/);
+							if (fieldM) {
+								if (ticket.person['field' + fieldM[1]]) {
+									return true;
+								}
+							}
+						}
 						return false;
 				}
 			};

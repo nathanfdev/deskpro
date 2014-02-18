@@ -141,6 +141,19 @@
 										<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '{{ticket.organization.id}}'}) }}" data-route-title="@text">{{ ng_var('ticket.organization.name') }}</a>
 									</span>
 								</div>
+
+								{% for field in app.getCustomFieldManager('tickets').getFields() %}
+									<div ng-switch-when="ticket_fields[{{ field.id }}]">
+										<span class="prop-title">{{ field.title }}:</span>
+										<span class="prop-val">{{ ng_var('ticket.field' ~ field.id) }}</span>
+									</div>
+								{% endfor %}
+								{% for field in app.getCustomFieldManager('people').getFields() %}
+									<div ng-switch-when="person_fields[{{ field.id }}]">
+										<span class="prop-title">{{ field.title }}:</span>
+										<span class="prop-val">{{ ng_var('ticket.person.field' ~ field.id) }}</span>
+									</div>
+								{% endfor %}
 							</li>
 						</ul>
 						<br class="clear"/>
