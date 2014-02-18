@@ -14,7 +14,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.wrapper = el;
 		this.perPage = 50;
 
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', function($compile, $rootScope, $q) {
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
 			self.$scope = $rootScope.$new();
 
 			self.$scope.$safeApply = function(fn) {
@@ -29,6 +29,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			};
 
 			self.$q = $q;
+			self.$timeout = $timeout;
+
 			attachPoint.data('$ngControllerController', self);
 			$compile(attachPoint.contents())(self.$scope);
 
@@ -91,6 +93,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this._initMassActions();
 
 		this.updatePageCursor();
+
+		this.$timeout(function() {
+			$scope.isLoaded = true;
+		}, 10);
 	},
 
 

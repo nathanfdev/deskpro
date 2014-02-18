@@ -29,7 +29,7 @@
 				<article
 					ng-repeat="ticket in tickets"
 					class="row-item ticket-row-{{ ng_var('ticket.id') }}"
-					ng-class="{'open': openTickets[ticket.id]}"
+					ng-class="{'open': openTickets[ticket.id], 'list-animation': isLoaded}"
 					data-ticket-id="{{ ng_var('ticket.id') }}"
 					data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ticket.id}}'}) }}"
 					data-route-title="@selector(a.subject)"
