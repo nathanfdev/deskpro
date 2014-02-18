@@ -4,13 +4,14 @@
 	</div>
 	<div class="list-pane-content list-pane-view with-header with-subheader with-footer">
 		<header class="view-header">
+			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
 		</header>
 		<header class="view-subheader">
 			{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
 		</header>
 		<article class="view-body">
-
+			{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 
 			<section class="list-listing">
 
@@ -145,5 +146,4 @@
 			</ul>
 		</footer>
 	</div>
-	{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 </div>

@@ -14,7 +14,8 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			resultId: 0,
 			prefSaveResultId: null,
 			prefId: '',
-			refreshUrl: ''
+			refreshUrl: '',
+			refreshCallback: null
 		};
 		this.setOptions(options);
 
@@ -52,7 +53,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 					$('option', sel).prop('selected', false);
 					$('option.' + prop.replace('.', '_'), sel).prop('selected', true);
 
-					self.saveAndRefresh();
+					self.saveAndRefresh({ isSortUpdate: true });
 
 				}).bind(this)
 			});
@@ -164,22 +165,23 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		this.saveAndRefresh();
 	},
 
-	saveAndRefresh: function() {
-
-		var self = this;
+	saveAndRefresh: function(context) {
 		var wrap = this.getWrapperElement();
 
 		var data = [];
+		var displayFields = [];
 		var pref_name = 'prefs[agent.ui.'+ this.options.prefId + '-display-fields.' + this.options.prefSaveResultId +'][]';
 
 		var has = false;
 
 		$('input[type="checkbox"]:checked', wrap).each(function() {
+			var name = $(this).attr('name');
 			has = true;
 			data.push({
 				name: pref_name,
-				value: $(this).attr('name')
+				value: name
 			});
+			displayFields.push(name)
 		});
 
 		if (!has) {
@@ -190,13 +192,21 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		}
 
 		// and the ordering
+		var orderBy = $('select[name="order_by"]', wrap).val();
 		data.push({
 			name: 'prefs[agent.ui.'+ this.options.prefId + '-order-by.' + this.options.prefSaveResultId +']',
-			value: $('select[name="order_by"]', wrap).val()
+			value: orderBy
 		});
 
 		// We reload the same page which will have changes applied
 		var url = this.options.refreshUrl;
+
+		var updateInfo = {
+			displayFields: displayFields,
+			orderBy: orderBy,
+			overlay: this,
+			context: context || {}
+		}
 
 		if (this.options.isListView) {
 			var page = this.page;
@@ -210,7 +220,11 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 					this.close();
 				},
 				success: function() {
-					page.meta.pageReloader();
+					if (this.options.refreshCallback) {
+						this.options.refreshCallback(updateInfo);
+					} else {
+						page.meta.pageReloader();
+					}
 				}
 			});
 		} else {
@@ -224,7 +238,11 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 					this.close();
 				},
 				success: function() {
-					DeskPRO_Window.loadListPane(url);
+					if (this.options.refreshCallback) {
+						this.options.refreshCallback(updateInfo);
+					} else {
+						DeskPRO_Window.loadListPane(url);
+					}
 				}
 			});
 		}

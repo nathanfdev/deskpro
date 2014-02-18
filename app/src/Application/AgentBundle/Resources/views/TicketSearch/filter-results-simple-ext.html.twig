@@ -15,6 +15,8 @@
 	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_name={{ view_name }}';
 	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'filter', 'content_id': filter_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
+	pageMeta.resultTypeName = 'filter';
+	pageMeta.resultTypeId = {{ filter.id|default(0) }};
 {% elseif sla_id %}
 	pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}';
 
@@ -25,6 +27,8 @@
 	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_name={{ view_name }}';
 	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'sla', 'content_id': sla_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
+	pageMeta.resultTypeName = 'sla';
+	pageMeta.resultTypeId = {{ sla_id|default(0) }};
 
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
@@ -32,6 +36,9 @@
 	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}';
 	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'filter', 'content_id': filter_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
+
+	pageMeta.resultTypeName = 'basic';
+	pageMeta.resultTypeId = 'general';
 {% endif %}
 {% if not tickets %}
 	pageMeta.noResults = true;
