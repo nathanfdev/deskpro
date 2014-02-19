@@ -22,8 +22,8 @@
        # </div>
     */
 
-    var Admin_Main_Directive_DpErrorClass;
-    Admin_Main_Directive_DpErrorClass = [
+    var DeskPRO_Directive_DpErrorClass;
+    DeskPRO_Directive_DpErrorClass = [
       function() {
         return {
           restrict: 'A',
@@ -61,7 +61,7 @@
         };
       }
     ];
-    return Admin_Main_Directive_DpErrorClass;
+    return DeskPRO_Directive_DpErrorClass;
   });
 
 }).call(this);

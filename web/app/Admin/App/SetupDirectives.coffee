@@ -8,12 +8,12 @@ define [
 	'DeskPRO/Directive/DpHideSpinning',
 	'DeskPRO/Directive/DpShowSpinning',
 	'DeskPRO/Directive/DpSubmitForm',
+	'DeskPRO/Directive/DpErrorClass',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpCommaSeparated',
 	'Admin/Main/Directive/DpDevBar',
-	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpInhelpBody',
 	'Admin/Main/Directive/DpInhelpBtn',
 	'Admin/Main/Directive/DpListAutoload',
@@ -41,12 +41,12 @@ define [
 	DeskPRO_Directive_DpHideSpinning,
 	DeskPRO_Directive_DpShowSpinning,
 	DeskPRO_Directive_DpSubmitForm,
+	DeskPRO_Directive_DpErrorClass,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpCommaSeparated,
 	Admin_Main_Directive_DpDevBar,
-	Admin_Main_Directive_DpErrorClass,
 	Admin_Main_Directive_DpInhelpBody,
 	Admin_Main_Directive_DpInhelpBtn,
 	Admin_Main_Directive_DpListAutoload,
@@ -75,12 +75,12 @@ define [
 		Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
 		Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
 		Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
+		Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
 		Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated)
 		Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar)
-		Module.directive('dpErrorClass',                   Admin_Main_Directive_DpErrorClass)
 		Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody)
 		Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
 		Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)

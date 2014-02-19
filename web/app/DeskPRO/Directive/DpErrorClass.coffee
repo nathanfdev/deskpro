@@ -20,7 +20,7 @@ define ->
     #    <input type="text" ng-model="myfield" name="myfield" required />
     # </div>
 	###
-	Admin_Main_Directive_DpErrorClass = [ ->
+	DeskPRO_Directive_DpErrorClass = [ ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
@@ -51,4 +51,4 @@ define ->
 		}
 	]
 
-	return Admin_Main_Directive_DpErrorClass
+	return DeskPRO_Directive_DpErrorClass
