@@ -6,6 +6,7 @@ define [
 	'DeskPRO/Directive/DpTabBody',
 	'DeskPRO/Directive/DpTabBtn',
 	'DeskPRO/Directive/DpHideSpinning',
+	'DeskPRO/Directive/DpShowSpinning',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -20,7 +21,6 @@ define [
 	'Admin/Main/Directive/DpPingFlash',
 	'Admin/Main/Directive/DpRegisterMessage',
 	'Admin/Main/Directive/DpServerValidation',
-	'Admin/Main/Directive/DpShowSpinning',
 	'Admin/Main/Directive/DpSliderSwitch',
 	'Admin/Main/Directive/DpStatusUpdate',
 	'Admin/Main/Directive/DpSubmitForm',
@@ -39,6 +39,7 @@ define [
 	DeskPRO_Directive_DpTabBody,
 	DeskPRO_Directive_DpTabBtn,
 	DeskPRO_Directive_DpHideSpinning,
+	DeskPRO_Directive_DpShowSpinning,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -53,7 +54,6 @@ define [
 	Admin_Main_Directive_DpPingFlash,
 	Admin_Main_Directive_DpRegisterMessage,
 	Admin_Main_Directive_DpServerValidation,
-	Admin_Main_Directive_DpShowSpinning,
 	Admin_Main_Directive_DpSliderSwitch,
 	Admin_Main_Directive_DpStatusUpdate,
 	Admin_Main_Directive_DpSubmitForm,
@@ -73,6 +73,7 @@ define [
 		Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       DeskPRO_Directive_DpTabBtn)
 		Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
+		Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
@@ -87,7 +88,6 @@ define [
 		Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash)
 		Module.directive('dpRegisterMessage',              Admin_Main_Directive_DpRegisterMessage)
 		Module.directive('dpServerValidation',             Admin_Main_Directive_DpServerValidation)
-		Module.directive('dpShowSpinning',                 Admin_Main_Directive_DpShowSpinning)
 		Module.directive('dpSliderSwitch',                 Admin_Main_Directive_DpSliderSwitch)
 		Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate)
 		Module.directive('dpSubmitForm',                   Admin_Main_Directive_DpSubmitForm)

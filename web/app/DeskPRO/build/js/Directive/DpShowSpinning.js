@@ -17,8 +17,8 @@
        # @stopSpinner('enableSpinner')
     */
 
-    var Admin_Main_Directive_DpShowSpinning;
-    Admin_Main_Directive_DpShowSpinning = [
+    var DeskPRO_Directive_DpShowSpinning;
+    DeskPRO_Directive_DpShowSpinning = [
       function() {
         return {
           restrict: 'A',
@@ -47,7 +47,7 @@
         };
       }
     ];
-    return Admin_Main_Directive_DpShowSpinning;
+    return DeskPRO_Directive_DpShowSpinning;
   });
 
 }).call(this);
