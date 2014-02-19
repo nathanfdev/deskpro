@@ -2,6 +2,7 @@ define [
 	'DeskPRO/Directive/DpTimeWithUnit',
 	'DeskPRO/Directive/DpStateMark',
 	'DeskPRO/Directive/DpHelpPage',
+	'DeskPRO/Directive/DpNavSubnav',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -12,7 +13,6 @@ define [
 	'Admin/Main/Directive/DpInhelpBody',
 	'Admin/Main/Directive/DpInhelpBtn',
 	'Admin/Main/Directive/DpListAutoload',
-	'Admin/Main/Directive/DpNavSubnav',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpOrderMenu',
 	'Admin/Main/Directive/DpPingFlash',
@@ -35,6 +35,7 @@ define [
 	DeskPRO_Directive_DpTimeWithUnit,
 	DeskPRO_Directive_DpStateMark,
 	DeskPRO_Directive_DpHelpPage,
+	DeskPRO_Directive_DpNavSubnav,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -45,7 +46,6 @@ define [
 	Admin_Main_Directive_DpInhelpBody,
 	Admin_Main_Directive_DpInhelpBtn,
 	Admin_Main_Directive_DpListAutoload,
-	Admin_Main_Directive_DpNavSubnav,
 	Admin_Main_Directive_DpOpenPhraseEditor,
 	Admin_Main_Directive_DpOrderMenu,
 	Admin_Main_Directive_DpPingFlash,
@@ -69,6 +69,7 @@ define [
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
 		Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)
 		Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
+		Module.directive('dpNavSubnav',                    DeskPRO_Directive_DpNavSubnav)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
@@ -79,7 +80,6 @@ define [
 		Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody)
 		Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
 		Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)
-		Module.directive('dpNavSubnav',                    Admin_Main_Directive_DpNavSubnav)
 		Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor)
 		Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu)
 		Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash)

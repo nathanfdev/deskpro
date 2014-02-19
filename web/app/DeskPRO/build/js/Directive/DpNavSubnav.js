@@ -19,8 +19,8 @@
        # </ul>
     */
 
-    var Admin_Main_Directive_DpNavSubnav;
-    Admin_Main_Directive_DpNavSubnav = [
+    var DeskPRO_Directive_DpNavSubnav;
+    DeskPRO_Directive_DpNavSubnav = [
       '$rootScope', '$state', function($rootScope, $state) {
         return {
           restrict: 'A',
@@ -43,7 +43,7 @@
         };
       }
     ];
-    return Admin_Main_Directive_DpNavSubnav;
+    return DeskPRO_Directive_DpNavSubnav;
   });
 
 }).call(this);

@@ -17,26 +17,26 @@ define ->
     #     </li>
     # </ul>
     ###
-	Admin_Main_Directive_DpNavSubnav = ['$rootScope', '$state', ($rootScope, $state) ->
+	DeskPRO_Directive_DpNavSubnav = ['$rootScope', '$state', ($rootScope, $state) ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
-				$parent = element.parent();
-				$toggler = $parent.find('> a');
+				$parent = element.parent()
+				$toggler = $parent.find('> a')
 				$toggler.on('click', (ev) ->
-					ev.preventDefault();
-					ev.stopPropagation();
+					ev.preventDefault()
+					ev.stopPropagation()
 
 					if $parent.hasClass('sublist-open')
 						$parent.removeClass('sublist-open')
-						element.slideUp();
+						element.slideUp()
 					else
 						$parent.addClass('sublist-open')
-						element.slideDown();
+						element.slideDown()
 
 				)
 				return
 		}
 	]
 
-	return Admin_Main_Directive_DpNavSubnav
+	return DeskPRO_Directive_DpNavSubnav
