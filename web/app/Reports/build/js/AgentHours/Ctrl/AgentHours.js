@@ -38,7 +38,7 @@
 
 
       Reports_AgentHours_Ctrl_AgentHours.prototype.initialLoad = function() {
-        return this.loadFeedResults();
+        return this.loadResults();
       };
 
       /*
@@ -49,7 +49,7 @@
       Reports_AgentHours_Ctrl_AgentHours.prototype.updateFilter = function() {
         this.filter.date1 = moment(this.date1).format("YYYY-MM-DD");
         this.filter.date2 = moment(this.date2).format("YYYY-MM-DD");
-        return this.loadFeedResults();
+        return this.loadResults();
       };
 
       /*
@@ -57,7 +57,7 @@
       */
 
 
-      Reports_AgentHours_Ctrl_AgentHours.prototype.loadFeedResults = function() {
+      Reports_AgentHours_Ctrl_AgentHours.prototype.loadResults = function() {
         var promise,
           _this = this;
         this.startSpinner('loading_results');

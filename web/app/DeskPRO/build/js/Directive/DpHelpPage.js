@@ -13,6 +13,7 @@
             var backdrop, close, isOpen, open, toggle;
             isOpen = false;
             backdrop = null;
+            element.find('header').first().prepend('<aside><i class="fa fa-question-circle"></i></aside>');
             open = function() {
               var article, origH;
               if (isOpen) {
@@ -30,8 +31,8 @@
               }
               backdrop.show();
               element.addClass('open');
-              article = element.find('.dp-help-content').find('article').hide();
-              article.slideDown(200);
+              article = element.find('.dp-help-content').find('article').first();
+              article.slideDown(200, 'linear');
               return isOpen = true;
             };
             close = function() {
@@ -40,8 +41,8 @@
                 return;
               }
               backdrop.hide();
-              article = element.find('.dp-help-content').find('article');
-              article.slideUp(200, function() {
+              article = element.find('.dp-help-content').find('article').first();
+              article.slideUp(200, 'linear', function() {
                 return element.removeClass('open');
               });
               return isOpen = false;

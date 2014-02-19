@@ -31,7 +31,7 @@
       };
 
       Admin_EmailStatus_Ctrl_SendmailList.prototype.initialLoad = function() {
-        return this.loadFeedResults();
+        return this.loadResults();
       };
 
       Admin_EmailStatus_Ctrl_SendmailList.prototype.changePage = function() {
@@ -39,7 +39,7 @@
           return;
         }
         this.filter.page = this.page;
-        return this.loadFeedResults();
+        return this.loadResults();
       };
 
       Admin_EmailStatus_Ctrl_SendmailList.prototype.updateFilter = function() {
@@ -55,10 +55,10 @@
             this.filter.date_end = moment(this.filter_date2).format("YYYY-MM-DD");
           }
         }
-        return this.loadFeedResults();
+        return this.loadResults();
       };
 
-      Admin_EmailStatus_Ctrl_SendmailList.prototype.loadFeedResults = function() {
+      Admin_EmailStatus_Ctrl_SendmailList.prototype.loadResults = function() {
         var promise,
           _this = this;
         promise = this.Api.sendGet('/email_status/sendmail', {
