@@ -37,8 +37,8 @@
 				<a class="app-icon app-icon-home" href="#/"></a>
 			</li>
 			<li tooltip="Report Builder" tooltip-append-to-body="true" tooltip-placement="right"
-				dp-state-mark="report_builder">
-				<a class="app-icon app-icon-cog" href="#/report_builder"></a>
+				dp-state-mark="builder">
+				<a class="app-icon app-icon-cog" href="#/builder"></a>
 			</li>
 			<li tooltip="Billing" tooltip-append-to-body="true"
 				tooltip-placement="right" dp-state-mark="billing">
@@ -58,8 +58,15 @@
 			</li>
 		</ul>
 	</nav>
-	<div class="dp-layout" ui-view></div>
+	<div class="dp-layout">
+		<div class="dp-layout-app">
+			<div class="dp-layout-appbody" ui-view></div>
+		</div>
+	</div>
 </div>
+
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';
@@ -77,6 +84,7 @@ window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
 window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
 </script>
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
+<script	type="text/javascript" src="{{ asset('app/Reports/amcharts27.js') }}"></script>
 <script
 	type="text/javascript"
 	data-main="{{ asset('app/Reports/loader.js') }}"

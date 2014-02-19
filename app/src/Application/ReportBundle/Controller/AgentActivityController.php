@@ -48,7 +48,7 @@ class AgentActivityController extends AbstractController
 
     public function listAction($agent_or_team_id, $date)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $vars = array(
             'hide_unknown' => 1,
         );
@@ -137,7 +137,7 @@ class AgentActivityController extends AbstractController
 
     private function getRevistionsForAgent($agent, $date) {
         $items = array('News', 'Article', 'Download', 'Feedback');
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $counts_hourly = array();
 
         foreach($items as $item) {
@@ -169,7 +169,7 @@ class AgentActivityController extends AbstractController
     }
 
     private function getTicketLogForAgent($agent, $date) {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $counts_hourly = array();
         $logs = $em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
             $agent,
@@ -198,7 +198,7 @@ class AgentActivityController extends AbstractController
     private function getChatLogForAgent($agent, $date) {
         $date_range = $this->createMysqlDateRangeForUser($date);
         $db = $this->getDoctrine()->getConnection();
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         // Could GROUP BY HOUR(date_created), but as timezones are in effect, it is easier to do this in PHP.
         $messages = $db->fetchAll(

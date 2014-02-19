@@ -1,0 +1,134 @@
+{% extends 'ReportsInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+	<section class="dp-paneblock dp-editpane">
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<dp-report-builder-title
+						ng-if="EditCtrl.reportType == 'builtIn'"
+						report-id="EditCtrl.report.id"
+						value-to-decorate="EditCtrl.report.title"
+						possible-values="EditCtrl.group_params">
+
+				</dp-report-builder-title>
+			</div>
+
+			<div class="panel panel-innertable">
+				<button class="btn btn-default" ng-click="EditCtrl.downloadCsv()">CSV</button>
+				<button class="btn btn-default" ng-click="EditCtrl.downloadCsv()">PDF</button>
+				<button class="btn btn-default" ng-click="EditCtrl.print()">Print</button>
+				<button class="btn btn-success" ng-click="EditCtrl.toggleQueryEditor()"
+						ng-if="!EditCtrl.show_query_editor">
+					Show Query
+				</button>
+				<button class="btn btn-success" ng-click="EditCtrl.toggleQueryEditor()"
+						ng-if="EditCtrl.show_query_editor">
+					Hide Query
+				</button>
+			</div>
+
+			<form role="form" name="form_props" ng-submit="EditCtrl.saveReport()">
+
+				<div ng-if="EditCtrl.show_query_editor" class="panel panel-innertable">
+					{% include 'ReportsInterfaceBundle:Builder:edit-query-editor.html.twig' %}
+				</div>
+
+				<div class="panel panel-innertable" ng-show="EditCtrl.reportType == 'custom'">
+					<section class="dp-paneblock dp-editpane">
+						<article class="form-horizontal dp-form">
+							<div class="query-error" ng-show="EditCtrl.query_error">
+								The following error occurred:
+								<span id="query-error-message">
+									{{ ng_var('EditCtrl.query_error') }}
+								</span>
+							</div>
+							<div class="panel panel-fill indent">
+								<div class="panel-body">
+									<div class="form-group">
+										<div class="col-lg-3">
+											<h3>Title</h3>
+										</div>
+										<div class="col-lg-9">
+											<div class="inner-group" dp-error-class="form_props.title">
+												<input type="text" class="form-control" name="title"
+													   ng-model="EditCtrl.form.title"
+													   style="width: 50%;" required>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-lg-3">
+											<h3>Description</h3>
+										</div>
+										<div class="col-lg-9">
+											<div class="inner-group" dp-error-class="form_props.description">
+												<textarea class="form-control" name="description"
+														  ng-model="EditCtrl.form.description"
+														  style="width: 50%;" required>
+												</textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</article>
+
+						<footer>
+							<div class="dp-content">
+								<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+									<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+									<ul>
+										<li ng-show="form_props.title.$error.required">
+											Please set title for this report
+										</li>
+										<li ng-show="form_props.description.$error.required">
+											Please set description for this report
+										</li>
+									</ul>
+								</div>
+
+								<div class="dp-delete-control"
+									 ng-if="EditCtrl.report.id && EditCtrl.reportType == 'custom'">
+									<button class="btn btn-danger"
+											ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.report.id);">
+										Delete
+									</button>
+								</div>
+
+								<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+									<div dp-hide-spinning="saving">
+										<button class="btn btn-primary" dp-submit-form>
+											Save & Run
+										</button>
+										<span class="btn btn-primary" ng-click="EditCtrl.saveToClone()"
+												ng-if="EditCtrl.report.id">
+											Save To Clone
+										</span>
+									</div>
+									<div dp-show-spinning="saving">
+										<i class="spinner-flat"></i>
+									</div>
+								</div>
+							</div>
+						</footer>
+					</section>
+				</div>
+			</form>
+
+			<div class="panel panel-innertable">
+				<div class="panel-heading">
+					<h3>
+						<span>Results</span>
+					</h3>
+				</div>
+				<div ng-bind-html="EditCtrl.rendered_result"></div>
+				<div ng-if="!EditCtrl.rendered_result" class="report-no-results">
+					No results for this report
+				</div>
+			</div>
+		</article>
+
+	</section>
+
+{% endblock %}

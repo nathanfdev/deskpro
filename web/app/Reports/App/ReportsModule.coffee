@@ -4,6 +4,7 @@ define [
 	angular
 ) ->
 	ReportsModule = angular.module('Reports_App', [
+		'ngAnimate',
 		'ngSanitize',
 		'ui.router',
 		'ui.bootstrap',

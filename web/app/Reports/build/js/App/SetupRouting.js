@@ -41,7 +41,7 @@
                 viewName = route.target;
               } else {
                 if (id.split('.').length === 2) {
-                  viewName = "appbody";
+                  viewName = "rightpane";
                 } else {
                   viewName = "";
                 }

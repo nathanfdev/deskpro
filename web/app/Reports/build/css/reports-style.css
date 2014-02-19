@@ -1205,6 +1205,10 @@ i.icon-dp-chat:before {
  * Generates a vertical gradient
  */
 
+/**
+ * Adds basic CSS suitable for an inline icon image
+ */
+
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
 
 article,
@@ -11901,4 +11905,493 @@ section.report-wrapper .no-data {
 
 section.report-wrapper .no-data h3 {
   font-size: 14pt;
+}
+
+.dp-pane.report-builder {
+  width: 650px;
+}
+
+.dp-layout-list-listpane.report-builder {
+  width: 650px;
+}
+
+.dp-layout-list-editpane.report-builder {
+  left: 650px;
+}
+
+.dp-report-category article > em {
+  float: right;
+  margin: 15px;
+  font-style: normal;
+  color: #AAAAAA;
+}
+
+.dp-report-category article > a.header {
+  display: block;
+  width: 595px;
+}
+
+.dp-report-category article > a.header .inner {
+  display: inline-block;
+  padding: 0 0 2px;
+  margin: 10px;
+  font-size: 130%;
+  font-weight: normal;
+  color: #333;
+  text-decoration: none;
+  border-bottom: 3px solid #AAAAAA;
+}
+
+.dp-report-category .dp-item-list > li > a {
+  padding: 7px 13px 7px 18px;
+}
+
+.dp-report-category .dp-item-list > li > a h4 {
+  max-width: 95% !important;
+  text-overflow: clip;
+}
+
+.dp-report-category .report-chart-icon {
+  position: relative;
+  top: 3px;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  line-height: 100%;
+  text-indent: -100px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-bar {
+  background-image: url('../../../../images/report/icons/chart_bar.png');
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-line {
+  background-image: url('../../../../images/report/icons/chart_line.png');
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-area {
+  background-image: url('../../../../images/report/icons/chart_line.png');
+}
+
+.dp-report-category .report-chart-icon.report-chart-icon-pie {
+  background-image: url('../../../../images/report/icons/chart_pie.png');
+}
+
+.report-builder-table {
+  margin: 10px 0;
+  border: 1px solid #E1E3E6;
+}
+
+.report-builder-table td,
+.report-builder-table th {
+  padding: 8px;
+  line-height: 100%;
+  text-align: left;
+  vertical-align: middle;
+  border: 1px solid #DDDDDD;
+}
+
+.report-builder-table .row-header th {
+  padding: 6px;
+  padding-top: 7px;
+  overflow: hidden;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 100%;
+  color: #595959;
+  text-align: left;
+  -o-text-overflow: ellipsis;
+     text-overflow: clipped;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 0 #FFFFFF;
+  white-space: nowrap;
+  background: #e6e9ec url("../../../file.php/gradient?size=20&start_color=e6e9ec&end_color=d8dbdf") repeat-x bottom left /*gradient_v:20:e6e9ec:d8dbdf*/;
+  background: #e6e9ec url("../../../../../file.php/gradient?size=20&start_color=e6e9ec&end_color=d8dbdf") repeat-x bottom left /*gradient_v:20:e6e9ec:d8dbdf*/;
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.report-builder-table .row-header .label {
+  display: table-cell !important;
+  text-align: center;
+}
+
+.report-builder-table.matrix .row-body th {
+  color: #000;
+  text-align: right;
+  white-space: nowrap;
+  background-color: #E5E8ED;
+}
+
+.report-builder-table.matrix .row-body.even th {
+  background-color: #E5E8ED;
+}
+
+.report-builder-table .odd {
+  background: #fff;
+}
+
+.report-builder-table .even {
+  background: #F2F4F8;
+}
+
+.report-builder-table .null {
+  font-style: italic;
+}
+
+.report-builder-table td.column-total,
+.report-builder-table tr.total-row td,
+.report-builder-table tr.total-row th {
+  padding: 6px;
+  font-size: 11px;
+  background: #E1E4EC;
+  border-top: 1px solid #E5E8ED;
+}
+
+.report-chart {
+  height: 550px;
+  max-width: 625px;
+  margin: 10px 0;
+  border: 1px solid #DEDEDE;
+}
+
+.report-no-results {
+  margin: 10px 0;
+  font-style: italic;
+}
+
+.report-builder-results .query {
+  display: none;
+  margin: 10px 0;
+  white-space: pre-wrap;
+}
+
+.query-error {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #FFD3C7;
+  border: 1px solid #FF9C8C;
+}
+
+.query-editor-builder dl {
+  margin: 5px 0;
+}
+
+.query-editor-builder dt {
+  display: inline-block;
+  *display: inline;
+  width: 15%;
+  padding-top: 5px;
+  vertical-align: top;
+  *zoom: 1;
+}
+
+.query-editor-builder dt.no-pad {
+  padding-top: 0;
+}
+
+.query-editor-builder dd {
+  display: inline-block;
+  *display: inline;
+  width: 80%;
+  *zoom: 1;
+}
+
+.query-editor-builder dd input[type="text"] {
+  width: 98%;
+}
+
+.query-editor-builder dd textarea {
+  width: 99%;
+  resize: none;
+}
+
+.query-editor-builder .limit input[type] {
+  display: inline-block;
+  width: 50px;
+}
+
+.query-editor-builder .limit span {
+  margin-left: 10px;
+}
+
+.query-editor-text textarea {
+  width: 99%;
+  resize: none;
+}
+
+.activity_table .activity {
+  vertical-align: middle;
+}
+
+.activity_table .activity .type_icon {
+  position: relative;
+  top: 3px;
+  display: inline-block;
+  width: 15px;
+  height: 14px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.activity_table .activity_type_ticket .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-ticket.png');
+}
+
+.activity_table .activity_type_chat .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-chat.png');
+}
+
+.activity_table .activity_type_download .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-download.png');
+}
+
+.activity_table .activity_type_news .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-news.png');
+}
+
+.activity_table .activity_type_feedback .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-feedback.png');
+}
+
+.activity_table .activity_type_article .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-content.png');
+}
+
+.feedback-table {
+  width: 800px;
+  margin-bottom: 25px;
+}
+
+.feedback-table > table > thead > tr > th {
+  padding: 8px !important;
+  padding-top: 10px !important;
+  text-align: left;
+}
+
+.feedback-table > table > thead > tr > th .timeago {
+  font-size: 11px;
+  font-weight: normal;
+}
+
+.feedback-table > table > thead > tr > th > h3 {
+  margin: 5px 0 !important;
+  font-size: 12pt;
+  font-weight: normal;
+}
+
+.feedback-table a.user-link {
+  display: block;
+  padding: 2px 0 2px 29px;
+  line-height: 31px;
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+}
+
+.feedback-table .user-message {
+  padding: 6px;
+  margin: 0 30px 0 29px;
+  font-size: 11px;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+}
+
+.feedback-table .user-message i {
+  position: relative;
+  top: 2px;
+  display: inline;
+  font-size: 15pt;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 10px;
+  text-align: center;
+}
+
+.feedback-table .user-message.rating-up {
+  background-color: #D2FCD5;
+}
+
+.feedback-table .user-message.rating-neutral {
+  background-color: #E8E8E8;
+}
+
+.feedback-table .user-message.rating-down {
+  background-color: #FFE7DF;
+}
+
+.feedback-table.check-grid {
+  border: 1px solid #D9DBDB;
+}
+
+.feedback-table.check-grid.item-list > table thead th {
+  padding: 5px 0 5px 0;
+}
+
+.feedback-table.check-grid > table > thead > tr > th {
+  padding: 3px 8px 2px 8px !important;
+  font-size: 13px;
+  vertical-align: middle;
+  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
+  background: #ffffff url("../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
+  border-bottom: 1px solid #D9DBDB;
+}
+
+.feedback-table.check-grid > table > tbody > tr > th,
+.feedback-table.check-grid > table > thead > tr > th,
+.feedback-table.check-grid > table > thead > tr > td,
+.feedback-table.check-grid > table > tbody > tr > td {
+  padding: 4px 0 4px 0;
+  font-size: 13px;
+}
+
+.feedback-table.check-grid.item-list > table > thead > tr > td,
+.feedback-table.check-grid.item-list > table > tbody > tr > td {
+  border-top: 1px solid #D9DBDB;
+}
+
+.feedback-table.check-grid.item-list > table > tbody > tr > th,
+.feedback-table.check-grid.item-list > table > thead > tr > th,
+.feedback-table.check-grid.item-list > table > thead > tr > td,
+.feedback-table.check-grid.item-list > table > tbody > tr > td {
+  vertical-align: middle;
+}
+
+.feedback-table.check-grid.item-list > table > thead > tr > th,
+.feedback-table.check-grid.item-list > table > tbody > tr > th,
+.feedback-table.check-grid.item-list > table > thead > tr > td,
+.feedback-table.check-grid.item-list > table > tbody > tr > td {
+  padding: 5px 2px 5px 5px;
+}
+
+.feedback-table.check-grid.item-list > table > thead > tr > th:last-child,
+.feedback-table.check-grid.item-list > table > tbody > tr > th:last-child,
+.feedback-table.check-grid.item-list > table > thead > tr > td:last-child,
+.feedback-table.check-grid.item-list > table > tbody > tr > td:last-child {
+  padding-right: 5px;
+}
+
+.feedback-table.check-grid > table > thead > tr > td.title,
+.feedback-table.check-grid > table > tbody > tr > td.title {
+  padding-left: 5px;
+}
+
+.feedback-table.check-grid > table td.title.title-group {
+  color: #8E8F91;
+}
+
+.feedback-table.check-grid > table td.prop {
+  text-align: center;
+  background-color: #F8F8F8;
+}
+
+.feedback-table.check-grid > table td.prop.new,
+.feedback-table.check-grid > table td.prop.highlight {
+  background-color: #ebebeb;
+  border-right: 1px solid #D9DBDB;
+  border-left: 1px solid #D9DBDB;
+}
+
+.feedback-table.check-grid > table td.prop.new.no-border,
+.feedback-table.check-grid > table td.prop.highlight.no-border {
+  border-right: none;
+  border-left: none;
+}
+
+.feedback-table.check-grid > table tr:hover td.prop {
+  background-color: #D0D1D1;
+}
+
+.feedback-table.check-grid > table tr:hover td.title,
+.feedback-table .check-grid > table tr td.title.on {
+  background-color: #E8EAEA;
+}
+
+.feedback-table.check-grid > table > tbody {
+  border-top: 1px solid #D9DBDB;
+}
+
+.feedback-table.check-grid > table > tbody:first-of-type {
+  border-top: none;
+}
+
+.feedback-table.check-grid > header:first-of-type {
+  border-top: none;
+}
+
+.feedback-table.check-grid > header {
+  padding-left: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 22px;
+  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  background: #ffffff url("../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  border-top: 1px solid #c2c6cc;
+  border-bottom: 1px solid #B3B6B8;
+}
+
+.reports_agent_feedback_summary_section > table .border-right {
+  border-right-color: #AAAAAA;
+  border-right-style: dashed;
+  border-right-width: 1px;
+}
+
+.reports_agent_feedback_summary_section > table tr.border-top {
+  border-top-color: #AAAAAA;
+  border-top-style: dashed;
+  border-top-width: 1px;
+}
+
+.reports_agent_feedback_summary_section > table .border-bottom {
+  border-bottom-color: #AAAAAA;
+  border-bottom-style: dashed;
+  border-bottom-width: 1px;
+}
+
+.reports_agent_feedback_summary_section > table td.rating_1,
+.reports_agent_feedback_summary_section table td.left-column {
+  text-align: right;
+}
+
+.reports_agent_feedback_summary_section > table th {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.reports_agent_feedback_summary_section > table th,
+.reports_agent_feedback_summary_section > table td {
+  padding: 18px;
+  vertical-align: middle;
+}
+
+.reports_agent_feedback_summary_section > table img {
+  vertical-align: middle;
+  opacity: .7;
+}
+
+.reports_agent_feedback_summary_section i.rating {
+  position: relative;
+  top: 2px;
+  display: inline;
+  font-size: 15pt;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 10px;
+  text-align: center;
+}
+
+.reports_agent_feedback_summary_section i.rating.positive {
+  color: #16B300;
+}
+
+.reports_agent_feedback_summary_section i.rating.neutral {
+  color: #849C96;
+}
+
+.reports_agent_feedback_summary_section i.rating.negative {
+  color: #A21B22;
 }

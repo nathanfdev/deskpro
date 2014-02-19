@@ -100,10 +100,9 @@ define [
 				for subModel in @subLists
 					@listModels[subModel] = []
 
-					if !listModels[subModel] then throw new Error("There is no values with key #{subModel} in data returned by server")
-
-					for model in listModels[subModel]
-						@listModels[subModel].push(model)
+					if listModels[subModel]
+						for model in listModels[subModel]
+							@listModels[subModel].push(model)
 			else
 				for model in listModels
 					@listModels.push(model)
@@ -120,6 +119,8 @@ define [
 
 			# we assume that backend returned appropriate pagination info and doesn't check its correctness here
 			@pagination = listModels.pagination if listModels.pagination
+			# in case of no data from backend just skip pagination step
+			if Util.isEmpty(@pagination) then return
 
 			if @subLists.length
 				for subModel in @subLists

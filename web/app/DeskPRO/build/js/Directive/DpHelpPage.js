@@ -1,0 +1,75 @@
+(function() {
+  define(function() {
+    var DeskPRO_Directive_DpHelpPage;
+    DeskPRO_Directive_DpHelpPage = [
+      '$rootScope', '$state', function($rootScope, $state) {
+        return {
+          restrict: 'E',
+          scope: {},
+          replace: true,
+          transclude: true,
+          template: "<section class=\"dp-help-content-wrapper\">\n	<div class=\"dp-help-content-outer\">\n		<div class=\"dp-help-content-outer2\">\n			<div class=\"dp-help-content\" ng-transclude></div>\n			<div class=\"dp-arrow-wrap\"><em><i class=\"fa fa-chevron-down down\"></i><i class=\"fa fa-chevron-up up\"></i></em></div>\n		</div>\n	</div>\n</section>",
+          link: function(scope, element, attrs) {
+            var backdrop, close, isOpen, open, toggle;
+            isOpen = false;
+            backdrop = null;
+            open = function() {
+              var article, origH;
+              if (isOpen) {
+                return;
+              }
+              origH = element.height();
+              element.height(origH);
+              if (!backdrop) {
+                backdrop = $('<div/>').addClass('dp-help-content-backdrop');
+                backdrop.on('click', function(ev) {
+                  ev.preventDefault();
+                  return close();
+                });
+                backdrop.insertBefore(element);
+              }
+              backdrop.show();
+              element.addClass('open');
+              article = element.find('.dp-help-content').find('article').hide();
+              article.slideDown(200);
+              return isOpen = true;
+            };
+            close = function() {
+              var article;
+              if (!isOpen) {
+                return;
+              }
+              backdrop.hide();
+              article = element.find('.dp-help-content').find('article');
+              article.slideUp(200, function() {
+                return element.removeClass('open');
+              });
+              return isOpen = false;
+            };
+            toggle = function() {
+              if (!isOpen) {
+                return open();
+              } else {
+                return close();
+              }
+            };
+            element.find('.dp-arrow-wrap').on('click', function(ev) {
+              ev.preventDefault();
+              return toggle();
+            });
+            return element.on('click', function(ev) {
+              ev.preventDefault();
+              return open();
+            });
+          }
+        };
+      }
+    ];
+    return DeskPRO_Directive_DpHelpPage;
+  });
+
+}).call(this);
+
+/*
+//@ sourceMappingURL=DpHelpPage.js.map
+*/

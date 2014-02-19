@@ -1,0 +1,34 @@
+{% extends 'ReportsInterfaceBundle:Layout:fill-page.html.twig' %}
+
+{% block fillpage_content %}
+
+	<div class="alert alert-info">
+		<div>
+			Showing Agent Hours from:
+			<span>
+				<input type="text" class="form-control"
+					   style="width: 140px; display: inline-block;"
+					   datepicker-popup="dd MMMM yyyy" ng-model="AgentHours.date1"
+					   datepicker-options="{'show-weeks': false}"/>
+			</span>
+			to
+			<span>
+				<input type="text" class="form-control"
+					   style="width: 140px; display: inline-block;"
+					   datepicker-popup="dd MMMM yyyy" ng-model="AgentHours.date2"
+					   datepicker-options="{'show-weeks': false}"/>
+			</span>
+
+			<button class="btn btn-primary" ng-click="AgentHours.updateFilter()">Show</button>
+		</div>
+	</div>
+
+	<span dp-show-spinning="loading_results" class="padd">
+		<i class="spinner-flat"></i>
+	</span>
+
+	<section class="padd" ng-bind-html="AgentHours.html" dp-hide-spinning="loading_results">
+
+	</section>
+
+{% endblock %}

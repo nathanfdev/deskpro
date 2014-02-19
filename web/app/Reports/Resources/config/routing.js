@@ -18,10 +18,24 @@ define(function() {
 	//##################################################################################################################
 
 	routes.push({
-		id: 'report_builder',
-		url: '/report_builder',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		id: 'builder',
+		url: '/builder',
+		templateName: 'Builder/list.html',
+		controller: 'Reports_Builder_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'builder.create',
+		url: '/create/{type:(?:custom)}',
+		templateName: 'Builder/edit.html',
+		controller: 'Reports_Builder_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'builder.edit',
+		url: '/{id:[0-9]+}/{type:(?:custom|builtIn)}/{params:.*}',
+		templateName: 'Builder/edit.html',
+		controller: 'Reports_Builder_Ctrl_Edit'
 	});
 
 	//##################################################################################################################
@@ -31,8 +45,15 @@ define(function() {
 	routes.push({
 		id: 'billing',
 		url: '/billing',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'Billing/list.html',
+		controller: 'Reports_Billing_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'billing.view',
+		url: '/{id:.*}/params_{params:.*}',
+		templateName: 'Billing/view.html',
+		controller: 'Reports_Billing_Ctrl_View'
 	});
 
 	//##################################################################################################################
@@ -42,8 +63,8 @@ define(function() {
 	routes.push({
 		id: 'agent_activity',
 		url: '/agent_activity',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'AgentActivity/index.html',
+		controller: 'Reports_AgentActivity_Ctrl_AgentActivity'
 	});
 
 	//##################################################################################################################
@@ -53,8 +74,8 @@ define(function() {
 	routes.push({
 		id: 'agent_hours',
 		url: '/agent_hours',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'AgentHours/index.html',
+		controller: 'Reports_AgentHours_Ctrl_AgentHours'
 	});
 
 	//##################################################################################################################
@@ -64,8 +85,8 @@ define(function() {
 	routes.push({
 		id: 'ticket_satisfaction',
 		url: '/ticket_satisfaction',
-		templateName: 'Index/blank.html',
-		controller: 'Reports_Main_Ctrl_Bare'
+		templateName: 'TicketSatisfaction/index.html',
+		controller: 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction'
 	});
 
 	return routes;

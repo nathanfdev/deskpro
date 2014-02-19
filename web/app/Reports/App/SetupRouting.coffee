@@ -45,7 +45,7 @@ define [
 						# An app-level (tickets.ticket_deps)
 						# Is always added to the appbody
 						if id.split('.').length == 2
-							viewName = "appbody"
+							viewName = "rightpane"
 						else
 							viewName = ""
 

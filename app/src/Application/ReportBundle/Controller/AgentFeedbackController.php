@@ -123,7 +123,7 @@ class AgentFeedbackController extends AbstractController
     public function feedAction($page)
     {
         $vars = array();
-        $repo = $this->getDoctrine()->getEntityManager()->getRepository('DeskPRO:TicketFeedback');
+        $repo = $this->getDoctrine()->getManager()->getRepository('DeskPRO:TicketFeedback');
         $feedback = $repo->getFeedbackForFeed($page);
         $count = $repo->getCountForPaging();
 

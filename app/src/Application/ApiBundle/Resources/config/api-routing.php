@@ -3981,6 +3981,138 @@ $collection->create('api_reports_overview_update_stats', array(
 ));
 
 ########################################################################################################################
+# Report Builder
+########################################################################################################################
+
+$collection->create('api_reports_builder_list', array(
+	'path'        => '/reports/builder',
+	'controller'  => 'ApiBundle:ReportsBuilder:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_builder_list_custom', array(
+	'path'        => '/reports/builder/custom',
+	'controller'  => 'ApiBundle:ReportsBuilder:listCustom',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_builder_list_builtIn', array(
+	'path'        => '/reports/builder/builtIn',
+	'controller'  => 'ApiBundle:ReportsBuilder:listBuiltIn',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_builder_get_group_params', array(
+	'path'        => '/reports/builder/group-params',
+	'controller'  => 'ApiBundle:ReportsBuilder:getGroupParams',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_builder_get', array(
+	'path'         => '/reports/builder/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:get',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_reports_builder_delete', array(
+	'path'         => '/reports/builder/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:delete',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
+$collection->create('api_reports_builder_create', array(
+	'path'       => '/reports/builder',
+	'controller' => 'ApiBundle:ReportsBuilder:save',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_reports_builder_save', array(
+	'path'         => '/reports/builder/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:save',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_reports_builder_clone', array(
+	'path'         => '/reports/builder/clone/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:clone',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_reports_builder_test', array(
+	'path'         => '/reports/builder/test/{id}',
+	'controller'   => 'ApiBundle:ReportsBuilder:test',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_reports_builder_parse', array(
+	'path'         => '/reports/builder/parse',
+	'controller'   => 'ApiBundle:ReportsBuilder:parse',
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_reports_builder_download', array(
+	'path'         => '/reports/builder/download/{id}/{type}',
+	'controller'   => 'ApiBundle:ReportsBuilder:download',
+	'methods'      => array('GET'),
+));
+
+########################################################################################################################
+# Report Agent Activity
+########################################################################################################################
+
+$collection->create('api_reports_agent_activity_list', array(
+	'path'        => '/reports/agent-activity/{agent_or_team_id}/{date}',
+	'controller'  => 'ApiBundle:ReportsAgentActivity:list',
+	'defaults'    => array('agent_or_team_id' => 'all', 'date' => ''),
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Report Agent Hours
+########################################################################################################################
+
+$collection->create('api_reports_agent_hours_list', array(
+	'path'        => '/reports/agent-hours/{date1}/{date2}',
+	'controller'  => 'ApiBundle:ReportsAgentHours:list',
+	'defaults'    => array('date1' => '', 'date2' => ''),
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Report Ticket Satisfaction
+########################################################################################################################
+
+$collection->create('api_reports_ticket_satisfaction_list', array(
+	'path'        => '/reports/ticket-satisfaction/{page}',
+	'controller'  => 'ApiBundle:ReportsTicketSatisfaction:list',
+	'defaults'    => array('page' => '0'),
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_ticket_satisfaction_summary', array(
+	'path'        => '/reports/ticket-satisfaction/summary/{date}',
+	'controller'  => 'ApiBundle:ReportsTicketSatisfaction:summary',
+	'defaults'    => array('date' => ''),
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Report Billing
+########################################################################################################################
+
+$collection->create('api_reports_billing_get', array(
+	'path'         => '/reports/billing/{id}',
+	'controller'   => 'ApiBundle:ReportsBilling:get',
+	'methods'      => array('GET'),
+));
+
+########################################################################################################################
 # Plugins
 ########################################################################################################################
 

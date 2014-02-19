@@ -152,6 +152,58 @@ class ReportBuilder extends AbstractEntityRepository
 		);
 	}
 
+
+	/**
+	 * @return array
+	 */
+	public function getCustomReports()
+	{
+		$reports = $this->getAllReports();
+		$custom = array();
+
+		foreach ($reports AS $report) {
+			if ($report->is_custom) {
+				$custom[] = $report->toApiData();
+			}
+		}
+
+		return $custom;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getBuiltInReports()
+	{
+		$reports    = $this->getAllReports();
+		$builtIn    = array();
+		$categories = $this->getBuiltInCategories();
+
+		foreach ($reports AS $report) {
+			if (!$report->is_custom) {
+				{
+					if (isset($categories[$report->category])) {
+						$categoryId = $report->category;
+					} else {
+						$categoryId = '';
+					}
+					$builtIn[$categoryId][] = $report->toApiData();
+				}
+			}
+		}
+
+		$builtInOrdered = array();
+
+		foreach ($categories AS $categoryId => $categoryName) {
+			if (isset($builtIn[$categoryId])) {
+				$builtInOrdered[$categoryName] = $builtIn[$categoryId];
+			}
+		}
+
+		return $builtInOrdered;
+	}
+
 	/**
 	 * Gets the list of built-in report grouping categories.
 	 *

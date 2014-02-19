@@ -1,7 +1,7 @@
 (function() {
   define(['angular'], function(angular) {
     var ReportsModule;
-    ReportsModule = angular.module('Reports_App', ['ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'angularMoment', 'blueimp.fileupload', 'uiSlider', 'deskpro.option_builder', 'deskpro.category_builder']);
+    ReportsModule = angular.module('Reports_App', ['ngAnimate', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'angularMoment', 'blueimp.fileupload', 'uiSlider', 'deskpro.option_builder', 'deskpro.category_builder']);
     ReportsModule.config([
       'datepickerConfig', 'datepickerPopupConfig', function(datepickerConfig, datepickerPopupConfig) {
         datepickerConfig.showWeeks = false;
