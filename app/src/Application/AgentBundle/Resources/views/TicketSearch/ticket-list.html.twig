@@ -142,6 +142,58 @@
 									</span>
 								</div>
 
+								<div ng-switch-when="date_created">
+									<span class="prop-title">{{ phrase('agent.general.date_created') }}:</span>
+									<span class="prop-val">
+										<dp-timeago timestamp="{{ ng_var('ticket.date_created_ts') }}" />
+									</span>
+								</div>
+
+								<div ng-switch-when="date_user_waiting">
+									<span class="prop-title">{{ phrase('agent.general.user_waiting') }}:</span>
+									<span class="prop-val">
+										<dp-timeago timestamp="{{ ng_var('ticket.date_user_waiting_ts') }}" no-suffix />
+									</span>
+								</div>
+
+								<div ng-switch-when="date_resolved">
+									<span class="prop-title">{{ phrase('agent.general.date_resolved') }}:</span>
+									<span class="prop-val">
+										<dp-timeago timestamp="{{ ng_var('ticket.date_resolved_ts') }}" />
+									</span>
+								</div>
+
+								<div ng-switch-when="date_last_user_reply">
+									<span class="prop-title">{{ phrase('agent.general.date_of_last_user_reply') }}:</span>
+									<span class="prop-val">
+										<dp-timeago timestamp="{{ ng_var('ticket.date_last_user_reply_ts') }}" />
+									</span>
+								</div>
+
+								<div ng-switch-when="date_last_agent_reply">
+									<span class="prop-title">{{ phrase('agent.general.date_of_last_agent_reply') }}:</span>
+									<span class="prop-val">
+										<dp-timeago timestamp="{{ ng_var('ticket.date_last_agent_reply_ts') }}" />
+									</span>
+								</div>
+
+								<div ng-switch-when="date_last_reply">
+									<span class="prop-title">{{ phrase('agent.general.date_of_last_reply') }}:</span>
+									<span class="prop-val" ng-if="ticket.date_last_agent_reply && (!ticket.date_last_user_reply || ticket.date_last_agent_reply_ts > ticket.date_last_user_reply_ts)">
+										<dp-timeago timestamp="{{ ng_var('ticket.date_last_agent_reply_ts') }}" />
+									</span>
+									<span class="prop-val" ng-if="ticket.date_last_user_reply && (!ticket.date_last_agent_reply || ticket.date_last_user_reply_ts > ticket.date_last_agent_reply_ts)">
+										<dp-timeago timestamp="{{ ng_var('ticket.date_last_user_reply_ts') }}" />
+									</span>
+								</div>
+
+								<div ng-switch-when="total_user_waiting">
+									<span class="prop-title">{{ phrase('agent.general.total_time_waiting') }}:</span>
+									<span class="prop-val">
+										{{ ng_var('ticket.total_user_waiting|formatSeconds:ticket.date_user_waiting_ts') }}
+									</span>
+								</div>
+
 								{% for field in app.getCustomFieldManager('tickets').getFields() %}
 									<div ng-switch-when="ticket_fields[{{ field.id }}]">
 										<span class="prop-title">{{ field.title }}:</span>

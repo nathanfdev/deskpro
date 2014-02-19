@@ -73,14 +73,20 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					case 'ref':
 					case 'agent':
 					case 'agent_team':
-					case 'date_user_waiting':
 					case 'date_created':
-					case 'total_user_waiting':
-					case 'date_last_user_reply':
-					case 'date_last_agent_reply':
 						return true;
+					case 'date_user_waiting':
+						return !!ticket.date_user_waiting;
 					case 'date_resolved':
 						return !!ticket.date_resolved;
+					case 'total_user_waiting':
+						return (ticket.total_user_waiting || ticket.date_user_waiting);
+					case 'date_last_user_reply':
+						return !!ticket.date_last_user_reply;
+					case 'date_last_agent_reply':
+						return !!ticket.date_last_agent_reply;
+					case 'date_last_reply':
+						return (ticket.date_last_user_reply || ticket.date_last_agent_reply);
 					case 'department':
 						return !!ticket.department;
 					case 'language':
