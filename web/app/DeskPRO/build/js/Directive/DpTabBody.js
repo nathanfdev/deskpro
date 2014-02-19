@@ -14,8 +14,8 @@
        # <section dp-tab-body="edit.main">...</section>
     */
 
-    var Admin_Main_Directive_DpTabBody;
-    Admin_Main_Directive_DpTabBody = [
+    var DeskPRO_Directive_DpTabBody;
+    DeskPRO_Directive_DpTabBody = [
       function() {
         return {
           restrict: 'A',
@@ -54,7 +54,7 @@
         };
       }
     ];
-    return Admin_Main_Directive_DpTabBody;
+    return DeskPRO_Directive_DpTabBody;
   });
 
 }).call(this);

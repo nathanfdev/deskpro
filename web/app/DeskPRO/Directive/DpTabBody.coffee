@@ -12,7 +12,7 @@ define ->
     # ------------
     # <section dp-tab-body="edit.main">...</section>
     ###
-	Admin_Main_Directive_DpTabBody = [ ->
+	DeskPRO_Directive_DpTabBody = [ ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
@@ -52,4 +52,4 @@ define ->
 		}
 	]
 
-	return Admin_Main_Directive_DpTabBody
+	return DeskPRO_Directive_DpTabBody

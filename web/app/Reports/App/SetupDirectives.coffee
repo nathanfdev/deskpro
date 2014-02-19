@@ -6,7 +6,7 @@ define [
 	'Reports/Directive/DpReportBuilderSelectBox',
 	'Reports/Directive/DpReportBillingSelectBox',
 	'Reports/Directive/DpReportBuilderTitle',
-	'Admin/Main/Directive/DpTabBody',
+	'DeskPRO/Directive/DpTabBody',
 	'Admin/Main/Directive/DpTabBtn',
 	'Admin/Main/Directive/DpHideSpinning',
 	'Admin/Main/Directive/DpShowSpinning',
@@ -20,7 +20,7 @@ define [
 	Reports_Directive_DpReportBuilderSelectBox,
 	Reports_Directive_DpReportBillingSelectBox,
 	Reports_Directive_DpReportBuilderTitle,
-	Admin_Main_Directive_DpTabBody,
+	DeskPRO_Directive_DpTabBody,
 	Admin_Main_Directive_DpTabBtn,
 	Admin_Main_Directive_DpHideSpinning,
 	Admin_Main_Directive_DpShowSpinning,
@@ -35,7 +35,7 @@ define [
 		Module.directive('dpReportBuilderSelectBox',       Reports_Directive_DpReportBuilderSelectBox)
 		Module.directive('dpReportBillingSelectBox',       Reports_Directive_DpReportBillingSelectBox)
 		Module.directive('dpReportBuilderTitle',           Reports_Directive_DpReportBuilderTitle)
-		Module.directive('dpTabBody',                      Admin_Main_Directive_DpTabBody)
+		Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       Admin_Main_Directive_DpTabBtn)
 		Module.directive('dpHideSpinning',                 Admin_Main_Directive_DpHideSpinning)
 		Module.directive('dpShowSpinning',                 Admin_Main_Directive_DpShowSpinning)

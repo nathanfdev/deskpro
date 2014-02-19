@@ -3,6 +3,7 @@ define [
 	'DeskPRO/Directive/DpStateMark',
 	'DeskPRO/Directive/DpHelpPage',
 	'DeskPRO/Directive/DpNavSubnav',
+	'DeskPRO/Directive/DpTabBody',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -22,7 +23,6 @@ define [
 	'Admin/Main/Directive/DpSliderSwitch',
 	'Admin/Main/Directive/DpStatusUpdate',
 	'Admin/Main/Directive/DpSubmitForm',
-	'Admin/Main/Directive/DpTabBody',
 	'Admin/Main/Directive/DpTabBtn',
 	'Admin/Main/Directive/DpToggleSwitch',
 	'Admin/Main/Directive/DpTristateCheck',
@@ -36,6 +36,7 @@ define [
 	DeskPRO_Directive_DpStateMark,
 	DeskPRO_Directive_DpHelpPage,
 	DeskPRO_Directive_DpNavSubnav,
+	DeskPRO_Directive_DpTabBody,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -55,7 +56,6 @@ define [
 	Admin_Main_Directive_DpSliderSwitch,
 	Admin_Main_Directive_DpStatusUpdate,
 	Admin_Main_Directive_DpSubmitForm,
-	Admin_Main_Directive_DpTabBody,
 	Admin_Main_Directive_DpTabBtn,
 	Admin_Main_Directive_DpToggleSwitch,
 	Admin_Main_Directive_DpTristateCheck,
@@ -70,6 +70,7 @@ define [
 		Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)
 		Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
 		Module.directive('dpNavSubnav',                    DeskPRO_Directive_DpNavSubnav)
+		Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
@@ -89,7 +90,6 @@ define [
 		Module.directive('dpSliderSwitch',                 Admin_Main_Directive_DpSliderSwitch)
 		Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate)
 		Module.directive('dpSubmitForm',                   Admin_Main_Directive_DpSubmitForm)
-		Module.directive('dpTabBody',                      Admin_Main_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       Admin_Main_Directive_DpTabBtn)
 		Module.directive('dpToggleSwitch',                 Admin_Main_Directive_DpToggleSwitch)
 		Module.directive('dpTristateCheck',                Admin_Main_Directive_DpTristateCheck)
