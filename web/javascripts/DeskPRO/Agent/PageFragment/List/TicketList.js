@@ -51,7 +51,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	},
 
 	initScope: function() {
-		var $scope = this.$scope, $timeout = this.$timeout, startTickets, startTicketsBatch;
+		var $scope = this.$scope,
+			$timeout = this.$timeout,
+			self = this,
+			startTickets,
+			startTicketsBatch;
 
 		startTickets = eval(this.getEl('ticket_json').html());
 		startTicketsBatch = [[], [], []];
@@ -61,13 +65,18 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			else startTicketsBatch[2].push(startTickets[i]);
 		}
 
-		$scope.tickets              = startTicketsBatch[0];
+		$scope.tickets              = startTickets;
 		$scope.checkedTickets       = {};
 		$scope.checkedTicketsCount  = 0;
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
 
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
+
+		this.updatePageCursor();
+
+		// Wait til after updatePageCursor since it needs full list to know proper cursor
+		$scope.tickets = startTicketsBatch[0];
 
 		this.getEl('ticket_json').remove();
 		this.getEl('ticket_ids_json').remove();
@@ -130,8 +139,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this._initListChangeEvents();
 		this._initMassActions();
 
-		this.updatePageCursor();
-
 		$timeout(function() {
 			if (startTicketsBatch[1].length) {
 				startTicketsBatch[1].forEach(function(t) {
@@ -143,6 +150,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						startTicketsBatch[2].forEach(function(t) {
 							$scope.tickets.push(t);
 						});
+						self.updatePageCursor();
 						$timeout(function() {
 							$scope.isLoaded = true;
 						}, 0);
