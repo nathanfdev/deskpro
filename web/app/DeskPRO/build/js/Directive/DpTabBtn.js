@@ -36,8 +36,8 @@
        # </section>
     */
 
-    var Admin_Main_Directive_DpTabBtn;
-    Admin_Main_Directive_DpTabBtn = [
+    var DeskPRO_Directive_DpTabBtn;
+    DeskPRO_Directive_DpTabBtn = [
       function() {
         return {
           restrict: 'A',
@@ -74,7 +74,7 @@
         };
       }
     ];
-    return Admin_Main_Directive_DpTabBtn;
+    return DeskPRO_Directive_DpTabBtn;
   });
 
 }).call(this);

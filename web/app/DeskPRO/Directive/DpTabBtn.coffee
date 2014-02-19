@@ -34,7 +34,7 @@ define ->
     #     <div dp-tab-body="subtabs.tab2">Subtab Content 2</div>
     # </section>
     ###
-	Admin_Main_Directive_DpTabBtn = [ ->
+	DeskPRO_Directive_DpTabBtn = [ ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
@@ -69,4 +69,4 @@ define ->
 		}
 	]
 
-	return Admin_Main_Directive_DpTabBtn
+	return DeskPRO_Directive_DpTabBtn
