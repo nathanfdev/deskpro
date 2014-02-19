@@ -71,8 +71,8 @@
         promise = this.Api.sendGet("/reports/ticket-satisfaction/" + this.page).then(function(res) {
           var i, _i, _ref1;
           _this.feed_html = _this.$sce.trustAsHtml(res.data.html);
-          _this.page = res.data.page;
-          _this.num_pages = res.data.num_pages;
+          _this.page = res.data.page || 1;
+          _this.num_pages = res.data.num_pages || 1;
           _this.page_nums = [];
           for (i = _i = 0, _ref1 = _this.num_pages; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
             _this.page_nums.push(i + 1);

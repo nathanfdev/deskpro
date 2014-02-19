@@ -53,8 +53,8 @@ define [
 			promise = @Api.sendGet("/reports/ticket-satisfaction/" + @page).then((res) =>
 				@feed_html = @$sce.trustAsHtml(res.data.html)
 
-				@page = res.data.page
-				@num_pages = res.data.num_pages
+				@page = res.data.page || 1
+				@num_pages = res.data.num_pages || 1
 
 				@page_nums = []
 
