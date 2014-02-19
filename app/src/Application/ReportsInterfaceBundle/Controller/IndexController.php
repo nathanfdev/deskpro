@@ -33,24 +33,24 @@
 
 namespace Application\ReportsInterfaceBundle\Controller;
 
+use Application\DeskPRO\Entity\ApiToken;
+
 class IndexController extends AbstractController
 {
 	public function interfaceAction()
 	{
-		$token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($this->person);
-		if (!$token) {
-			$token = new \Application\DeskPRO\Entity\ApiToken();
-			$token->person = $this->person;
-		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
-			$token->regenerateToken();
-		}
-		$token->date_expires = null;
+		$token = new ApiToken();
+		$token->scope = ApiToken::SCOPE_SESSION;
+		$token->person = $this->person;
+		$token->date_expires = new \DateTime("+1 hour");
 
 		$this->em->persist($token);
 		$this->em->flush();
 
 		return $this->render('ReportsInterfaceBundle:Index:interface.html.twig', array(
 			'api_token'     => $token,
+			'session'       => $this->session->getEntity(),
+			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
 		));
 	}
 }
