@@ -140,6 +140,7 @@ class TemplatingExtension extends \Twig_Extension
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
 			'ng_static_var'                    => new \Twig_Function_Method($this, 'ngStaticVar', array('is_safe' => array('html'))),
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 
@@ -1554,6 +1555,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function ngVar($var)
 	{
 		return '{{' . $var . '}}';
+	}
+
+	public function ngBind($var)
+	{
+		return '<span ng-bind="' . htmlspecialchars($var) . '"></span>';
 	}
 
 	public function ngStaticVar($var)

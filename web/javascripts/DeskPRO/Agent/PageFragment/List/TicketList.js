@@ -36,8 +36,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			$compile(attachPoint.contents())(self.$scope);
 
 			self.initScope();
-
-			self.$scope.$apply();
 		}]);
 
 		this.addEvent('destroy', function() {
@@ -53,9 +51,17 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	},
 
 	initScope: function() {
-		var $scope = this.$scope;
+		var $scope = this.$scope, $timeout = this.$timeout, startTickets, startTicketsBatch;
 
-		$scope.tickets              = eval(this.getEl('ticket_json').html());
+		startTickets = eval(this.getEl('ticket_json').html());
+		startTicketsBatch = [[], [], []];
+		for (var i = 0; i < startTickets.length; i++) {
+			if (i <= 15) startTicketsBatch[0].push(startTickets[i]);
+			else if (i <= 30) startTicketsBatch[1].push(startTickets[i]);
+			else startTicketsBatch[2].push(startTickets[i]);
+		}
+
+		$scope.tickets              = startTicketsBatch[0];
 		$scope.checkedTickets       = {};
 		$scope.checkedTicketsCount  = 0;
 		$scope.display_fields       = this.meta.display_fields || [];
@@ -126,9 +132,28 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		this.updatePageCursor();
 
-		this.$timeout(function() {
-			$scope.isLoaded = true;
-		}, 0);
+		$timeout(function() {
+			if (startTicketsBatch[1].length) {
+				startTicketsBatch[1].forEach(function(t) {
+					$scope.tickets.push(t);
+				});
+
+				$timeout(function() {
+					if (startTicketsBatch[2].length) {
+						startTicketsBatch[2].forEach(function(t) {
+							$scope.tickets.push(t);
+						});
+						$timeout(function() {
+							$scope.isLoaded = true;
+						}, 0);
+					} else {
+						$scope.isLoaded = true;
+					}
+				}, 10);
+			} else {
+				$scope.isLoaded = true;
+			}
+		}, 10);
 	},
 
 

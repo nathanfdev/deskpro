@@ -1,32 +1,29 @@
 <div class="list-pane-instance">
 	{% include 'AgentBundle:TicketSearch:ticket-list-props.html.twig' %}
 	<div class="list-pane-header">
-		<h1><i class="icon-dp-ticket"></i> {{ ticketCount }} Tickets</h1>
+		<h1><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} Tickets</h1>
 	</div>
 	<div class="list-pane-content list-pane-view with-header with-subheader with-footer">
-		<header class="view-header">
+		<header class="view-header" ng-non-bindable>
 			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
 		</header>
 		<header class="view-subheader">
 			<header class="list-selection-bar">
-				{#
-				<div class="pull-right" style="position: relative; top: -1px; padding-right: 8px;">
-					<button class="dp-btn dp-btn-xxsmall" ng-hide="!checkedTicketsCount" ng-click="openMassActions()">{{ phrase('agent.general.perform_actions') }}</button>
-				</div>
-				#}
-
 				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" ng-change="checkAllTickets(checkedTicketsToggle)" />
 				{{ phrase('agent.general.x_selected', {'num_placeholder': '{{ checkedTicketsCount }}'}, true) }}
 
-				{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
+				<div ng-non-bindable>
+					{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
+				</div>
 			</header>
 		</header>
 		<article class="view-body">
-			{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
+			<div ng-non-bindable>
+				{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
+			</div>
 
 			<section class="list-listing">
-
 				<article
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
@@ -45,7 +42,7 @@
 							<h3>
 								<span class="obj-id">#{{ ng_static_var('ticket.id') }}</span>
 								<a class="subject click-through">
-									{{ ng_var('ticket.subject') }}
+									{{ ng_bind('ticket.subject') }}
 								</a>
 							</h3>
 						</div>
@@ -67,7 +64,7 @@
 								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'temp'">{{ phrase('agent.tickets.status_hidden_temp') }}</label>
 								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'validating'">{{ phrase('agent.tickets.status_hidden_validating') }}</label>
 
-								<i ng-show="ticket.status == 'awaiting_agent'" class="ticket-urgency">{{ ng_var('ticket.urgency') }}</i>
+								<i ng-show="ticket.status == 'awaiting_agent'" class="ticket-urgency">{{ ng_bind('ticket.urgency') }}</i>
 							</div>
 							<span ng-show="ticket.agent" class="tipped agent-inline-icon" title="{{ ng_var('ticket.agent.display_name') }}" ng-style="{ 'background-image': 'url('+ticket.agent.picture_url_16+')' }"></span>
 							<br class="clear" />
@@ -75,11 +72,11 @@
 					</div>
 					<div class="userinfo">
 						<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ticket.person.id}}'}) }}" data-route-title="@selector(.person-tip)">
-							<span class="with-icon" ng-style="{ 'background-image': 'url('+ticket.person.picture_url_16+')' }">{{ ng_var('ticket.person.display_name') }}</span></a>
+							<span class="with-icon" ng-style="{ 'background-image': 'url('+ticket.person.picture_url_16+')' }">{{ ng_bind('ticket.person.display_name') }}</span></a>
 							<span class="org" ng-if="ticket.person.organization">
-								(<span ng-if="ticket.person.organization_position">{{ ng_var('ticket.person.organization_position') }}, </span>{{ ng_var('ticket.person.organization.name') }})
+								(<span ng-if="ticket.person.organization_position">{{ ng_bind('ticket.person.organization_position') }}, </span>{{ ng_bind('ticket.person.organization.name') }})
 							</span>
-							<span ng-if="ticket.person.primary_email" class="email">{{ ng_var('ticket.person.primary_email.email') }}</span>
+							<span ng-if="ticket.person.primary_email" class="email">{{ ng_bind('ticket.person.primary_email.email') }}</span>
 						<div class="bound-fade"></div>
 					</div>
 					<div class="extra-fields">
@@ -89,13 +86,12 @@
 						<br class="clear"/>
 					</div>
 				</article>
-
 			</section>
 
 		</article>
 		<footer class="view-footer results-nav">
 			<div class="cursor">
-				Showing {{ ng_var('pageCursorStart') }} to {{ ng_var('pageCursorEnd') }} of {{ ng_var('ticketCount') }}
+				Showing {{ ng_bind('pageCursorStart') }} to {{ ng_bind('pageCursorEnd') }} of {{ ng_bind('ticketCount') }}
 			</div>
 			<ul class="pagenav" ng-class="{'no-prev': !hasPrevPage, 'no-next': !hasNextPage}">
 				<li class="prev"></li>
