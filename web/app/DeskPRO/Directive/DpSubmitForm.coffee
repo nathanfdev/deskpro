@@ -11,7 +11,7 @@ define ->
     # ------------
     # <button dp-submit-form>Save</button>
     ###
-	Admin_Main_Directive_DpSubmitForm = [ ->
+	DeskPRO_Directive_DpSubmitForm = [ ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
@@ -38,4 +38,4 @@ define ->
 		}
 	]
 
-	return Admin_Main_Directive_DpSubmitForm
+	return DeskPRO_Directive_DpSubmitForm

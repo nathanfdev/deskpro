@@ -15,8 +15,8 @@
        # <button dp-submit-form>Save</button>
     */
 
-    var Admin_Main_Directive_DpSubmitForm;
-    Admin_Main_Directive_DpSubmitForm = [
+    var DeskPRO_Directive_DpSubmitForm;
+    DeskPRO_Directive_DpSubmitForm = [
       function() {
         return {
           restrict: 'A',
@@ -50,7 +50,7 @@
         };
       }
     ];
-    return Admin_Main_Directive_DpSubmitForm;
+    return DeskPRO_Directive_DpSubmitForm;
   });
 
 }).call(this);

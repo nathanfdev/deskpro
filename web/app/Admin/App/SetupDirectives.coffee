@@ -7,6 +7,7 @@ define [
 	'DeskPRO/Directive/DpTabBtn',
 	'DeskPRO/Directive/DpHideSpinning',
 	'DeskPRO/Directive/DpShowSpinning',
+	'DeskPRO/Directive/DpSubmitForm',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -23,7 +24,6 @@ define [
 	'Admin/Main/Directive/DpServerValidation',
 	'Admin/Main/Directive/DpSliderSwitch',
 	'Admin/Main/Directive/DpStatusUpdate',
-	'Admin/Main/Directive/DpSubmitForm',
 	'Admin/Main/Directive/DpToggleSwitch',
 	'Admin/Main/Directive/DpTristateCheck',
 	'Admin/Main/Directive/DpWorkingHours',
@@ -40,6 +40,7 @@ define [
 	DeskPRO_Directive_DpTabBtn,
 	DeskPRO_Directive_DpHideSpinning,
 	DeskPRO_Directive_DpShowSpinning,
+	DeskPRO_Directive_DpSubmitForm,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -56,7 +57,6 @@ define [
 	Admin_Main_Directive_DpServerValidation,
 	Admin_Main_Directive_DpSliderSwitch,
 	Admin_Main_Directive_DpStatusUpdate,
-	Admin_Main_Directive_DpSubmitForm,
 	Admin_Main_Directive_DpToggleSwitch,
 	Admin_Main_Directive_DpTristateCheck,
 	Admin_Main_Directive_DpWorkingHours,
@@ -74,6 +74,7 @@ define [
 		Module.directive('dpTabBtn',                       DeskPRO_Directive_DpTabBtn)
 		Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
 		Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
+		Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
@@ -90,7 +91,6 @@ define [
 		Module.directive('dpServerValidation',             Admin_Main_Directive_DpServerValidation)
 		Module.directive('dpSliderSwitch',                 Admin_Main_Directive_DpSliderSwitch)
 		Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate)
-		Module.directive('dpSubmitForm',                   Admin_Main_Directive_DpSubmitForm)
 		Module.directive('dpToggleSwitch',                 Admin_Main_Directive_DpToggleSwitch)
 		Module.directive('dpTristateCheck',                Admin_Main_Directive_DpTristateCheck)
 		Module.directive('dpWorkingHours',                 Admin_Main_Directive_DpWorkingHours)
