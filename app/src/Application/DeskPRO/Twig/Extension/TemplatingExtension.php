@@ -140,6 +140,7 @@ class TemplatingExtension extends \Twig_Extension
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_static_var'                    => new \Twig_Function_Method($this, 'ngStaticVar', array('is_safe' => array('html'))),
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 
 			// override so we can suppress errors where templates are out of date
@@ -1553,6 +1554,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function ngVar($var)
 	{
 		return '{{' . $var . '}}';
+	}
+
+	public function ngStaticVar($var)
+	{
+		return '<span bo-bind="'.htmlspecialchars($var).'"></span>';
 	}
 
 	public function ngIncTpl($context, $tpl_name, $save_name = null)

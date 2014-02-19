@@ -402,26 +402,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			if (!self.isTicketGroupMatch(newTicket)) {
 				removeIds.push(newTicket.id);
 			} else {
-				$scope.tickets.forEach(function(ticket) {
-					if (ticket.id != newTicket.id) {
+				for (var i = 0; i < $scope.tickets.length; i++) {
+					if ($scope.tickets[i].id != newTicket.id) {
 						return;
 					}
 
-					for (var k in newTicket) {
-						if (newTicket.hasOwnProperty(k)) {
-							ticket[k] = newTicket[k];
-						}
-					}
-					for (var k in ticket) {
-						if (ticket.hasOwnProperty(k)) {
-							if (typeof newTicket[k] == 'undefined') {
-								ticket[k] = null;
-								delete ticket[k];
-							}
-						}
-					}
+					$scope.tickets[i] = newTicket;
 					didChange = true;
-				});
+				}
 			}
 		});
 

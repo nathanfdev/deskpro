@@ -104,6 +104,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/twig/twig.js',
 		'vendor/angular/angular.min.js',
 		'vendor/angular/angular-animate.min.js',
+		'vendor/angular/modules/bindonce.min.js',
 		'vendor/momentjs/moment.min.js'
 	)
 );
