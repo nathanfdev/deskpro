@@ -105,7 +105,7 @@ class TicketsResolved extends AbstractTableOverviewStat
 		$this->logger->logDebug("[TicketsResolved] $sql");
 		$this->logger->startTimer('TicketsResolved');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logToatlTime('TicketsResolved');
+		$this->logger->logTotalTime('TicketsResolved');
 
 		return $this->values;
 	}

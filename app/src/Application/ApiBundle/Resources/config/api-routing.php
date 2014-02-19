@@ -3965,6 +3965,39 @@ $collection->create('api_widget_selections_save', array(
 ));
 
 ########################################################################################################################
+# Reports Overview
+########################################################################################################################
+
+$collection->create('api_reports_overview_get_data', array(
+	'path'        => '/reports/overview/data/{type}',
+	'controller'  => 'ApiBundle:ReportsOverview:getData',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_reports_overview_update_stats', array(
+	'path'        => '/reports/overview/get-stats/{type}',
+	'controller'  => 'ApiBundle:ReportsOverview:getStats',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Plugins
+########################################################################################################################
+
+$collection->create('api_plugins_package_list', array(
+	'path'        => '/plugins/packages',
+	'controller'  => 'ApiBundle:Plugins:listPackages',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_plugins_package_getinstaller', array(
+	'path'         => '/plugins/packages/{name}/installer',
+	'controller'   => 'ApiBundle:Plugins:getPackageInstaller',
+	'requirements' => array('name' => '[a-z0-9\._]+'),
+	'methods'      => array('GET'),
+));
+
+########################################################################################################################
 # Blobs
 ########################################################################################################################
 

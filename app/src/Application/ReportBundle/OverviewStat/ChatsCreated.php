@@ -105,7 +105,7 @@ class ChatsCreated extends AbstractTableOverviewStat
 		$this->logger->logDebug("[ChatsCreated] $sql");
 		$this->logger->startTimer('ChatsCreated');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logToatlTime('ChatsCreated');
+		$this->logger->logTotalTime('ChatsCreated');
 
 		return $this->values;
 	}

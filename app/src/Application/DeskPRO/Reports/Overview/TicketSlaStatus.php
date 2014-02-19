@@ -32,13 +32,24 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PageViewLog;
 
-class KbViewsHour extends AbstractTableOverviewStat
+use Orb\Util\Dates;
+
+class TicketSlaStatus extends AbstractTableOverviewStat
 {
+	/**
+	 * @var int[]
+	 */
+	protected $values = null;
+
+	/**
+	 * @var int
+	 */
+	protected $sla_id;
+
 	/**
 	 * @var \DateTime
 	 */
@@ -50,17 +61,13 @@ class KbViewsHour extends AbstractTableOverviewStat
 	protected $date_end;
 
 	/**
-	 * @var int[]
+	 * @param int $sla_id
+	 * @param \DateTime $date_start
+	 * @param \DateTime $date_end
 	 */
-	protected $values = null;
-
-	/**
-	 * @var array
-	 */
-	protected $titles = null;
-
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
+	public function __construct($sla_id = null, \DateTime $date_start = null, \DateTime $date_end = null)
 	{
+		$this->sla_id     = $sla_id ? (int)$sla_id : null;
 		$this->date_start = $date_start;
 		$this->date_end   = $date_end;
 	}
@@ -71,10 +78,11 @@ class KbViewsHour extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
-
-		return $titles;
+		return array(
+			'ok'       => 'Passed',
+			'warning'  => 'Warning',
+			'fail'     => 'Failed',
+		);
 	}
 
 
@@ -87,28 +95,40 @@ class KbViewsHour extends AbstractTableOverviewStat
 			return $this->values;
 		}
 
-		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
+		$where = array();
 
-		$d1 = $date1->format('Y-m-d H:i:s');
-		$d2 = $date2->format('Y-m-d H:i:s');
+		if ($this->sla_id) {
+			$where[] = "ticket_slas.sla_id = {$this->sla_id}";
+		}
+		if ($this->date_start && $this->date_end) {
+			$date1 = Dates::convertToUtcDateTime($this->date_start);
+			$date2 = Dates::convertToUtcDateTime($this->date_end);
 
-		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
+			$d1 = $date1->format('Y-m-d H:i:s');
+			$d2 = $date2->format('Y-m-d H:i:s');
 
-		$type = PageViewLog::TYPE_ARTICLE;
+			$where[] = "tickets.date_created BETWEEN '$d1' AND '$d2'";
+		}
+
+		if ($where) {
+			$where = " WHERE " . implode(' AND ', $where);
+		} else {
+			$where = '';
+		}
+
 		$sql = "
-			SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
-			FROM page_view_log
-			WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
+			SELECT ticket_slas.sla_status, COUNT(*) AS count
+			FROM ticket_slas
+			INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
+			INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
+			$where
+			GROUP BY ticket_slas.sla_status
 		";
 
-		$this->logger->logDebug("[KbViewsHour] $sql");
-		$this->logger->startTimer('KbViewsHour');
+		$this->logger->logDebug("[TicketSlaStatus] $sql");
+		$this->logger->startTimer('TicketSlaStatus');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('KbViewsHour');
+		$this->logger->logTotalTime('TicketSlaStatus');
 
 		return $this->values;
 	}

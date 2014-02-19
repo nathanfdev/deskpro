@@ -32,9 +32,11 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
+
+use Orb\Util\Dates;
 
 class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 {
@@ -61,8 +63,8 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 	public function __construct(GroupingField $grouping_field = null, \DateTime $date_start, \DateTime $date_end)
 	{
 		$this->grouping_field = $grouping_field;
-		$this->date_start     = \Orb\Util\Dates::convertToUtcDateTime($date_start);
-		$this->date_end       = \Orb\Util\Dates::convertToUtcDateTime($date_end);
+		$this->date_start     = Dates::convertToUtcDateTime($date_start);
+		$this->date_end       = Dates::convertToUtcDateTime($date_end);
 	}
 
 
@@ -128,7 +130,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 
 		if ($this->grouping_field) {
 			$group_field = $this->grouping_field->getFieldInfo();
-			$sql = "
+			$sql         = "
 				SELECT {$group_field['select']}, $field, COUNT(*)
 				FROM tickets
 				{$group_field['join']}
@@ -146,9 +148,9 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 
 			$this->values = array();
 			while ($row = $q->fetch(\PDO::FETCH_NUM)) {
-				$group_id = $row[0];
+				$group_id   = $row[0];
 				$time_group = $row[1];
-				$count = $row[2];
+				$count      = $row[2];
 				if (!isset($this->values[$time_group])) {
 					$this->values[$time_group] = array();
 				}

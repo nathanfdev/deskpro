@@ -32,11 +32,14 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
+
+use Orb\Util\Numbers;
+use Orb\Util\Dates;
 
 class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonContextInterface
 {
@@ -88,7 +91,8 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 
 
 	/**
-	 * @return string[]
+	 * @return array|mixed
+	 * @throws \InvalidArgumentException
 	 */
 	public function getTitles()
 	{
@@ -125,10 +129,10 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 				break;
 
 			case 'day':
-				$days = \Orb\Util\Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
+				$days = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
 				$titles = array();
 				foreach (range(1,$days) as $d) {
-					$titles[$d] = $d . \Orb\Util\Numbers::ordinalSuffix($d);
+					$titles[$d] = $d . Numbers::ordinalSuffix($d);
 				}
 
 				break;
@@ -158,7 +162,8 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 
 
 	/**
-	 * @return int[]
+	 * @return array|\int[]|mixed|null
+	 * @throws \InvalidArgumentException
 	 */
 	public function getValues()
 	{
@@ -167,8 +172,8 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 		}
 
 		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
+		$date1 = Dates::convertToUtcDateTime($this->date_start);
+		$date2 = Dates::convertToUtcDateTime($this->date_end);
 
 		$d1 = $date1->format('Y-m-d H:i:s');
 		$d2 = $date2->format('Y-m-d H:i:s');

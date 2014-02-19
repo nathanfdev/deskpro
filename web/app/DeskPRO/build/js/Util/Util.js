@@ -240,7 +240,7 @@
         if (this.isFunction(obj)) {
           return false;
         }
-        if (isNaN(obj)) {
+        if (this.isNumber(obj) && isNaN(obj)) {
           return true;
         }
         for (k in obj) {

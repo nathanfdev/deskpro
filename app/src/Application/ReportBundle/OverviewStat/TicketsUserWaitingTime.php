@@ -126,7 +126,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 			$this->logger->logDebug("[TicketsUserWaitingTime (Grouepd)] $sql");
 			$this->logger->startTimer('TicketsUserWaitingTime');
 			$q = App::getDb()->executeQuery($sql);
-			$this->logger->logToatlTime('TicketsUserWaitingTime');
+			$this->logger->logTotalTime('TicketsUserWaitingTime');
 
 			$this->logger->startTimer('TicketsUserWaitingTime.collecting');
 
@@ -146,7 +146,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 				$this->values[$time_group][$group_id] += $count;
 			}
 
-			$this->logger->logToatlTime('TicketsUserWaitingTime.collecting');
+			$this->logger->logTotalTime('TicketsUserWaitingTime.collecting');
 		} else {
 			$sql = "
 				SELECT $field, COUNT(*)
@@ -159,7 +159,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 			$this->logger->logDebug("[TicketsUserWaitingTime] $sql");
 			$this->logger->startTimer('TicketsUserWaitingTime');
 			$this->values = App::getDb()->fetchAllKeyValue($sql);
-			$this->logger->logToatlTime('TicketsUserWaitingTime');
+			$this->logger->logTotalTime('TicketsUserWaitingTime');
 		}
 
 		return $this->values;

@@ -29,87 +29,52 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PageViewLog;
-
-class KbViewsHour extends AbstractTableOverviewStat
+class ReportsOverviewController extends AbstractController
 {
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_start;
+	####################################################################################################################
+	# get data (for specified type)
+	####################################################################################################################
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_end;
-
-	/**
-	 * @var int[]
-	 */
-	protected $values = null;
-
-	/**
-	 * @var array
-	 */
-	protected $titles = null;
-
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
+	public function getDataAction($type)
 	{
-		$this->date_start = $date_start;
-		$this->date_end   = $date_end;
+		/**
+		 * @var \Application\DeskPRO\Reports\Overview $reports_overview
+		 */
+
+		$reports_overview = $this->container->getSystemService('reports_overview');
+		$reports_overview->setPerson($this->person);
+
+		return $this->createApiResponse($reports_overview->getOverviewData($type));
 	}
 
 
-	/**
-	 * @return string[]
-	 */
-	public function getTitles()
+	####################################################################################################################
+	# get statistics (for specified type)
+	####################################################################################################################
+
+	public function getStatsAction($type)
 	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
+		/**
+		 * @var \Application\DeskPRO\Reports\Overview $reports_overview
+		 */
 
-		return $titles;
-	}
+		$reports_overview = $this->container->getSystemService('reports_overview');
+		$reports_overview->setPerson($this->person);
 
+		$grouping_field = $this->in->getString('grouping_field');
+		$options        = array(
+			'date_choice' => $this->in->getString('date_choice'),
+			'sla_id'      => $this->in->getString('sla_id'),
+		);
 
-	/**
-	 * @return int[]
-	 */
-	public function getValues()
-	{
-		if ($this->values !== null) {
-			return $this->values;
+		try {
+			return $this->createApiResponse($reports_overview->getStats($type, $grouping_field, $options));
+		} catch(\InvalidArgumentException $e) {
+			return $this->createApiResponse($reports_overview->getStats($type, 'department'));
 		}
-
-		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
-
-		$d1 = $date1->format('Y-m-d H:i:s');
-		$d2 = $date2->format('Y-m-d H:i:s');
-
-		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
-
-		$type = PageViewLog::TYPE_ARTICLE;
-		$sql = "
-			SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
-			FROM page_view_log
-			WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
-		";
-
-		$this->logger->logDebug("[KbViewsHour] $sql");
-		$this->logger->startTimer('KbViewsHour');
-		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('KbViewsHour');
-
-		return $this->values;
 	}
 }

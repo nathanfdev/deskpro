@@ -32,84 +32,117 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PageViewLog;
+use Orb\Util\Colors;
 
-class KbViewsHour extends AbstractTableOverviewStat
+abstract class AbstractSubgroupedTableOverviewStat extends AbstractTableOverviewStat
 {
 	/**
-	 * @var \DateTime
+	 * @var GroupingField
 	 */
-	protected $date_start;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_end;
-
-	/**
-	 * @var int[]
-	 */
-	protected $values = null;
+	protected $grouping_field;
 
 	/**
 	 * @var array
 	 */
-	protected $titles = null;
+	protected $group_max = null;
 
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
-	{
-		$this->date_start = $date_start;
-		$this->date_end   = $date_end;
-	}
+	/**
+	 * @var array
+	 */
+	protected $group_total = null;
+
+	/**
+	 * @var array
+	 */
+	protected $group_colors = null;
 
 
 	/**
 	 * @return string[]
 	 */
-	public function getTitles()
-	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
+	abstract public function getSubgroupTitles();
 
-		return $titles;
+
+	/**
+	 * @return int[]
+	 */
+	public function getGroupMax()
+	{
+		$this->_initGroupInfo();
+		return $this->group_max;
 	}
 
 
 	/**
 	 * @return int[]
 	 */
-	public function getValues()
+	public function getGroupTotal()
 	{
-		if ($this->values !== null) {
-			return $this->values;
+		$this->_initGroupInfo();
+		return $this->group_total;
+	}
+
+
+	/**
+	 * @return int[]
+	 */
+	public function getGroupColors()
+	{
+		$this->_initGroupInfo();
+		return $this->group_colors;
+	}
+
+
+	/**
+	 * @return void
+	 */
+	protected function _initGroupInfo()
+	{
+		if (!$this->grouping_field) {
+			return;
 		}
 
-		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
+		if ($this->group_max !== null) {
+			return;
+		}
 
-		$d1 = $date1->format('Y-m-d H:i:s');
-		$d2 = $date2->format('Y-m-d H:i:s');
+		$group_max   = array();
+		$group_total = array();
 
-		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
+		foreach ($this->getValues() as $master_group => $sub_info) {
+			$group_max[$master_group]   = 0;
+			$group_total[$master_group] = 0;
+			foreach ($sub_info as $subid => $count) {
+				$group_total[$master_group] += $count;
+				if ($count > $group_max[$master_group]) {
+					$group_max[$master_group] = $count;
+				}
+			}
+		}
 
-		$type = PageViewLog::TYPE_ARTICLE;
-		$sql = "
-			SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
-			FROM page_view_log
-			WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
-		";
+		$group_colors = Colors::getColorsForKeys(array_keys($this->getSubgroupTitles()));
 
-		$this->logger->logDebug("[KbViewsHour] $sql");
-		$this->logger->startTimer('KbViewsHour');
-		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('KbViewsHour');
+		$this->group_max     = $group_max;
+		$this->group_total   = $group_total;
+		$this->group_colors  = $group_colors;
+	}
 
-		return $this->values;
+
+	/**
+	 * @return int
+	 */
+	public function getMax()
+	{
+		if (!$this->getValues()) {
+			return 1;
+		}
+
+		if ($this->grouping_field) {
+			return max($this->getGroupTotal());
+		}
+
+		return max($this->getValues());
 	}
 }

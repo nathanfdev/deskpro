@@ -32,84 +32,68 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PageViewLog;
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
 
-class KbViewsHour extends AbstractTableOverviewStat
+abstract class AbstractTableOverviewStat implements Loggable
 {
 	/**
-	 * @var \DateTime
+	 * @var \Orb\Log\Logger
 	 */
-	protected $date_start;
+	protected $logger;
 
 	/**
-	 * @var \DateTime
+	 * Gets a id => array(info) array of titles. Titles can have children.
+	 *
+	 * @abstract
+	 * @return mixed
 	 */
-	protected $date_end;
+	abstract function getTitles();
 
 	/**
-	 * @var int[]
+	 * Gets an id => xxx of counts.
+	 *
+	 * @abstract
+	 * @return mixed
 	 */
-	protected $values = null;
+	abstract function getValues();
+
 
 	/**
-	 * @var array
+	 * @param \Orb\Log\Logger $logger
 	 */
-	protected $titles = null;
-
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
+	public function setLogger(Logger $logger)
 	{
-		$this->date_start = $date_start;
-		$this->date_end   = $date_end;
+		$this->logger = $logger;
 	}
 
 
 	/**
-	 * @return string[]
+	 * @return \Orb\Log\Logger
 	 */
-	public function getTitles()
+	public function getLogger()
 	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
-
-		return $titles;
+		return $this->logger;
 	}
 
 
 	/**
-	 * @return int[]
+	 * @return int
 	 */
-	public function getValues()
+	public function getMax()
 	{
-		if ($this->values !== null) {
-			return $this->values;
+		if (!$this->getValues()) {
+			return 1;
 		}
 
-		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
+		$max = max($this->getValues());
 
-		$d1 = $date1->format('Y-m-d H:i:s');
-		$d2 = $date2->format('Y-m-d H:i:s');
+		if ($max < 3) {
+			$max = 3;
+		}
 
-		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
-
-		$type = PageViewLog::TYPE_ARTICLE;
-		$sql = "
-			SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
-			FROM page_view_log
-			WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
-		";
-
-		$this->logger->logDebug("[KbViewsHour] $sql");
-		$this->logger->startTimer('KbViewsHour');
-		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('KbViewsHour');
-
-		return $this->values;
+		return $max;
 	}
 }

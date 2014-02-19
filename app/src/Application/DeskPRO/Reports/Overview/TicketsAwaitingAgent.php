@@ -32,22 +32,16 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PageViewLog;
 
-class KbViewsHour extends AbstractTableOverviewStat
+class TicketsAwaitingAgent extends AbstractTableOverviewStat
 {
 	/**
-	 * @var \DateTime
+	 * @var GroupingField
 	 */
-	protected $date_start;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_end;
+	protected $grouping_field;
 
 	/**
 	 * @var int[]
@@ -59,10 +53,9 @@ class KbViewsHour extends AbstractTableOverviewStat
 	 */
 	protected $titles = null;
 
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
+	public function __construct(GroupingField $grouping_field)
 	{
-		$this->date_start = $date_start;
-		$this->date_end   = $date_end;
+		$this->grouping_field = $grouping_field;
 	}
 
 
@@ -71,10 +64,7 @@ class KbViewsHour extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
-
-		return $titles;
+		return $this->grouping_field->getTitles($this->getValues());
 	}
 
 
@@ -87,28 +77,20 @@ class KbViewsHour extends AbstractTableOverviewStat
 			return $this->values;
 		}
 
-		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
+		$group_field = $this->grouping_field->getFieldInfo();
 
-		$d1 = $date1->format('Y-m-d H:i:s');
-		$d2 = $date2->format('Y-m-d H:i:s');
-
-		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
-
-		$type = PageViewLog::TYPE_ARTICLE;
 		$sql = "
-			SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
-			FROM page_view_log
-			WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
+			SELECT {$group_field['select']}, COUNT(*)
+			FROM tickets AS tickets
+			{$group_field['join']}
+			WHERE tickets.status = 'awaiting_agent' {$group_field['where']} AND tickets.is_hold = 0
+			GROUP BY {$group_field['group_by']}
 		";
 
-		$this->logger->logDebug("[KbViewsHour] $sql");
-		$this->logger->startTimer('KbViewsHour');
+		$this->logger->logDebug("[TicketsAwaitingAgent] $sql");
+		$this->logger->startTimer('TicketsAwaitingAgent');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('KbViewsHour');
+		$this->logger->logTotalTime('TicketsAwaitingAgent');
 
 		return $this->values;
 	}

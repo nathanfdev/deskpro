@@ -183,7 +183,7 @@ define [
 				return false
 			if @isFunction(obj)
 				return false
-			if isNaN(obj)
+			if @isNumber(obj) and isNaN(obj)
 				return true
 
 			for own k, v of obj

@@ -32,22 +32,12 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
 
-class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
+class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 {
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_start;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_end;
-
 	/**
 	 * @var int[]
 	 */
@@ -58,11 +48,9 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 	 */
 	protected $titles = null;
 
-	public function __construct(GroupingField $grouping_field = null, \DateTime $date_start, \DateTime $date_end)
+	public function __construct(GroupingField $grouping_field = null)
 	{
 		$this->grouping_field = $grouping_field;
-		$this->date_start     = \Orb\Util\Dates::convertToUtcDateTime($date_start);
-		$this->date_end       = \Orb\Util\Dates::convertToUtcDateTime($date_end);
 	}
 
 
@@ -121,10 +109,8 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 			return $this->values;
 		}
 
-		$d1 = $this->date_start->format('Y-m-d H:i:s');
-		$d2 = $this->date_end->format('Y-m-d H:i:s');
-
-		$field = TimeTitles::makeTimeFieldSelect('tickets.total_to_first_reply');
+		$now = time();
+		$field = TimeTitles::makeTimeFieldSelect("($now - UNIX_TIMESTAMP(tickets.date_user_waiting))");
 
 		if ($this->grouping_field) {
 			$group_field = $this->grouping_field->getFieldInfo();
@@ -132,17 +118,17 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 				SELECT {$group_field['select']}, $field, COUNT(*)
 				FROM tickets
 				{$group_field['join']}
-				WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0 {$group_field['where']}
+				WHERE tickets.status IN ('awaiting_agent') {$group_field['where']} AND tickets.is_hold = 0
 				GROUP BY {$group_field['group_by']}, time_group
 				ORDER BY time_group ASC
 			";
 
-			$this->logger->logDebug("[TicketsResponseTime (Grouped)] $sql");
-			$this->logger->startTimer('TicketsResponseTime');
+			$this->logger->logDebug("[TicketsUserWaitingTime (Grouepd)] $sql");
+			$this->logger->startTimer('TicketsUserWaitingTime');
 			$q = App::getDb()->executeQuery($sql);
-			$this->logger->logTotalTime('TicketsResponseTime');
+			$this->logger->logTotalTime('TicketsUserWaitingTime');
 
-			$this->logger->startTimer('TicketsResponseTime.collecting');
+			$this->logger->startTimer('TicketsUserWaitingTime.collecting');
 
 			$this->values = array();
 			while ($row = $q->fetch(\PDO::FETCH_NUM)) {
@@ -160,19 +146,20 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 				$this->values[$time_group][$group_id] += $count;
 			}
 
-			$this->logger->logTotalTime('TicketsResponseTime.collecting');
+			$this->logger->logTotalTime('TicketsUserWaitingTime.collecting');
 		} else {
 			$sql = "
 				SELECT $field, COUNT(*)
 				FROM tickets
-				WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0
+				WHERE tickets.status IN ('awaiting_agent') AND tickets.is_hold = 0
 				GROUP BY time_group
 			";
 
-			$this->logger->logDebug("[TicketsResponseTime] $sql");
-			$this->logger->startTimer('TicketsResponseTime');
+
+			$this->logger->logDebug("[TicketsUserWaitingTime] $sql");
+			$this->logger->startTimer('TicketsUserWaitingTime');
 			$this->values = App::getDb()->fetchAllKeyValue($sql);
-			$this->logger->logTotalTime('TicketsResponseTime');
+			$this->logger->logTotalTime('TicketsUserWaitingTime');
 		}
 
 		return $this->values;

@@ -32,10 +32,12 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PageViewLog;
+
+use Orb\Util\Dates;
 
 class KbViewsHour extends AbstractTableOverviewStat
 {
@@ -88,8 +90,8 @@ class KbViewsHour extends AbstractTableOverviewStat
 		}
 
 		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
+		$date1 = Dates::convertToUtcDateTime($this->date_start);
+		$date2 = Dates::convertToUtcDateTime($this->date_end);
 
 		$d1 = $date1->format('Y-m-d H:i:s');
 		$d2 = $date2->format('Y-m-d H:i:s');

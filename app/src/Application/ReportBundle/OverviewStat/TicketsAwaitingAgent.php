@@ -90,7 +90,7 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 		$this->logger->logDebug("[TicketsAwaitingAgent] $sql");
 		$this->logger->startTimer('TicketsAwaitingAgent');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logToatlTime('TicketsAwaitingAgent');
+		$this->logger->logTotalTime('TicketsAwaitingAgent');
 
 		return $this->values;
 	}
