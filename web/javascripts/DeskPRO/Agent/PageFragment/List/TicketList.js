@@ -128,7 +128,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		this.$timeout(function() {
 			$scope.isLoaded = true;
-		}, 10);
+		}, 0);
 	},
 
 

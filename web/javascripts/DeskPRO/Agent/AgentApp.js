@@ -13,6 +13,7 @@ DeskPRO.Agent.AgentAppFactory = function() {
 	// But that file obviously doesn't exist. We use the interceptor to rewrite it
 	// to the real file.php/xxx/some-template.html file.
 
+	/*
 	AgentApp.factory('dpAppAssetInterceptor', [function() {
 		return  {
 			request: function(config) {
@@ -29,6 +30,7 @@ DeskPRO.Agent.AgentAppFactory = function() {
 			}
 		};
 	}]);
+	*/
 
 	AgentApp.filter('formatTimestampAgo', function() {
 		return function(ts) {
@@ -188,7 +190,7 @@ DeskPRO.Agent.AgentAppFactory = function() {
 	}]);
 
 	AgentApp.config(['$httpProvider', function($httpProvider) {
-		$httpProvider.interceptors.push('dpAppAssetInterceptor');
+		//$httpProvider.interceptors.push('dpAppAssetInterceptor');
 	}]);
 
 	return AgentApp;
