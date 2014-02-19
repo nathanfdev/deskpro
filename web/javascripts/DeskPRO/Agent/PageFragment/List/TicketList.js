@@ -741,17 +741,98 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldComparer = {
 	},
 
 	getOrder: function(ticketA, ticketB, field, dir) {
-		var valA = 0, valB = 0;
+
+		dir = dir.toUpperCase();
+
+		var valA = 0,
+			valB = 0,
+			idDir = dir,
+			rDir = dir == 'ASC' ? 'DESC' : 'ASC';
+
 		switch (field) {
 			case 'urgency':
-				valA = ticketA.urgency;
-				valB = ticketB.urgency;
+				valA = ticketA.urgency || 0;
+				valB = ticketB.urgency || 0;
+				idDir = rDir;
+				break;
+			case 'status':
+				switch (ticketA.status) {
+					case 'awaiting_agent': valA = 1; break;
+					case 'awaiting_user':  valA = 2; break;
+					case 'resolved':       valA = 3; break;
+					case 'closed':         valA = 4; break;
+					default:               valA = 5; break;
+				}
+				switch (ticketB.status) {
+					case 'awaiting_agent': valB = 1; break;
+					case 'awaiting_user':  valB = 2; break;
+					case 'resolved':       valB = 3; break;
+					case 'closed':         valB = 4; break;
+					default:               valB = 5; break;
+				}
+			case 'date_created':
+				idDir = dir;
+				// Will fallback to id
+				break;
+			case 'date_resolved':
+				if (ticketA.date_resolved) {
+					valA = ticketA.date_resolved_ts;
+				}
+				if (ticketB.date_resolved) {
+					valB = ticketB.date_resolved_ts;
+				}
+				break;
+			case 'date_closed':
+				if (ticketA.date_closed) {
+					valA = ticketA.date_closed_ts;
+				}
+				if (ticketB.date_closed) {
+					valB = ticketB.date_closed_ts;
+				}
+				break;
+			case 'total_user_waiting':
+				valA = ticketA.total_user_waiting;
+				valB = ticketB.total_user_waiting;
+				break;
+			case 'date_user_waiting':
+				if (ticketA.date_user_waiting) {
+					valA = ticketA.date_user_waiting_ts;
+				}
+				if (ticketB.date_closed) {
+					valB = ticketB.date_user_waiting_ts;
+				}
+				break;
+			case 'date_last_user_reply':
+				if (ticketA.date_last_user_reply) {
+					valA = ticketA.date_last_user_reply_ts;
+				}
+				if (ticketB.date_last_user_reply) {
+					valB = ticketB.date_last_user_reply_ts;
+				}
+				break;
+			case 'date_last_agent_reply':
+				if (ticketA.date_last_agent_reply) {
+					valA = ticketA.date_last_agent_reply_ts;
+				}
+				if (ticketB.date_last_agent_reply) {
+					valB = ticketB.date_last_agent_reply_ts;
+				}
+				break;
+			case 'date_last_reply':
+				valA = Math.max(ticketA.date_last_user_reply_ts || 0, ticketA.date_last_agent_reply_ts || 0, ticketA.date_created_ts || 0);
+				valB = Math.max(ticketB.date_last_user_reply_ts || 0, ticketB.date_last_agent_reply_ts || 0, ticketB.date_created_ts || 0);
+				break;
+			case 'priority':
+				valA = ticketA.priority ? ticketA.priority.priority : 0;
+				valB = ticketB.priority ? ticketB.priority.priority : 0;
+				idDir = rDir;
 				break;
 		}
 
 		if (valA === valB) {
 			valA = ticketA.id;
-			vabB = ticketB.id;
+			valB = ticketB.id;
+			dir = idDir;
 		}
 
 		if (dir == 'ASC') {

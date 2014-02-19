@@ -873,7 +873,7 @@ class TicketSearch extends SearcherAbstract
 					$this->add_raw_selects[] = "tickets.urgency AS status_order";
 				}
 
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id $r_dir";
 				$this->order_summary = $tr->phrase('agent.general.urgency');
 				break;
 
@@ -887,7 +887,7 @@ class TicketSearch extends SearcherAbstract
 					END AS status_order
 				";
 
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
 			case 'ticket.date_created':
@@ -899,7 +899,7 @@ class TicketSearch extends SearcherAbstract
 				$pris = App::getEntityRepository('DeskPRO:TicketPriority')->getIdsInOrder();
 				if ($pris) {
 					$this->add_raw_selects[] = "FIELD(tickets.priority_id, " . implode(',', $pris) . ") AS status_order";
-					$order_by = "ORDER BY status_order $dir, id $dir";
+					$order_by = "ORDER BY status_order $dir, id $r_dir";
 				} else {
 					$order_by = "ORDER BY id $dir";
 				}
@@ -912,38 +912,38 @@ class TicketSearch extends SearcherAbstract
 				$this->order_summary = 'SLA Severity';
 				$order_by = array(
 					"INNER JOIN ticket_slas AS sort_table ON (sort_table.ticket_id = tickets.id)",
-					"ORDER BY status_order $dir,  status_order2 $r_dir"
+					"ORDER BY status_order $dir, status_order2 $dir"
 				);
 				break;
 
 			case 'ticket.date_resolved':
 				$this->add_raw_selects[] = "tickets.date_resolved AS status_order";
 				$this->order_summary = $tr->phrase('agent.general.date_resolved');
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
 			case 'ticket.date_closed':
 				$this->add_raw_selects[] = "tickets.date_closed AS status_order";
 				$this->order_summary = $tr->phrase('agent.general.date_opened');
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
 			case 'ticket.last_activity':
 				$this->add_raw_selects[] = "tickets.date_last_user_reply AS status_order";
 				$this->order_summary = $tr->phrase('agent.general.date_of_last_user_reply');
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
             case 'ticket.total_user_waiting':
 				$this->add_raw_selects[] = "tickets.total_user_waiting AS status_order";
                 $this->order_summary = $tr->phrase('agent.general.total_time_waiting');
-                $order_by = "ORDER BY status_order $dir";
+                $order_by = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.date_user_waiting':
 				$this->add_raw_selects[] = "tickets.date_user_waiting AS status_order";
                 $this->order_summary = $tr->phrase('agent.general.time_waiting');
-                $order_by = "ORDER BY status_order $dir";
+                $order_by = "ORDER BY status_order $dir, id DESC";
                 break;
 
 			case 'ticket.organization':
@@ -951,26 +951,26 @@ class TicketSearch extends SearcherAbstract
 				$this->order_summary = $tr->phrase('agent.general.organization_name');
 				$order_by = array(
 					"INNER JOIN organizations AS sort_table ON (sort_table.id = tickets.organization_id)",
-					"ORDER BY status_order $dir"
+					"ORDER BY status_order $dir, id DESC"
 				);
 				break;
 
 			case 'ticket.date_last_user_reply':
 				$this->add_raw_selects[] = "tickets.date_last_user_reply AS status_order";
 				$this->order_summary = 'Date of Last User Reply';
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
 			case 'ticket.date_last_agent_reply':
 				$this->order_summary = 'Date of Last Agent Reply';
 				$this->add_raw_selects[] = "tickets.date_last_agent_reply AS status_order";
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
 			case 'ticket.date_last_reply':
 				$this->order_summary = 'Date of Last Reply';
 				$this->add_raw_selects[] = "GREATEST(COALESCE(tickets.date_last_agent_reply, '0000-00-00'), COALESCE(tickets.date_last_user_reply, '0000-00-00'), tickets.date_created) AS status_order";
-				$order_by = "ORDER BY status_order $dir";
+				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
 			case 'ticket.ticket_field':
@@ -987,7 +987,7 @@ class TicketSearch extends SearcherAbstract
 						$this->add_raw_selects[] = "sort_table.$search_type AS status_order";
 						$order_by = arary(
 							"INNER JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.id = $term_id)",
-							"ORDER BY status_order $dir"
+							"ORDER BY status_order $dir, id DESC"
 						);
 						break;
 				}
