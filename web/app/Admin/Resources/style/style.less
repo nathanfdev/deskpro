@@ -301,6 +301,10 @@ div.info-message {
 //# App Icons
 //######################################################################################################################
 
+@appIconBlockW: 55px;
+@appIconBlockH: 47px;
+@appIconImgW: 55px;
+@appIconImgH: 47px;
 .dp-appstrip {
 	overflow: hidden;
 	ul {
@@ -310,6 +314,45 @@ div.info-message {
 			padding: 0;
 			margin: 0;
 			list-style-type: none;
+			display: block;
+			border-top: 1px solid transparent;
+			border-bottom: 1px solid transparent;
+
+			a {
+				display: block;
+				width: @appIconBlockW;
+				height: @appIconBlockH;
+				overflow: hidden;
+				cursor: pointer;
+			}
+
+			i.app-icon {
+				display: block;
+				overflow: hidden;
+				width: @appIconImgW;
+				height: @appIconImgH;
+
+				background-position: 50% 50%;
+				background-repeat: no-repeat;
+				opacity: 0.75;
+			}
+
+			&:hover i.app-icon {
+				opacity: 1;
+			}
+
+			&.state-on, &.section-on {
+				background-color: #1D2022;
+				border-top: 1px solid #080909;
+				border-bottom: 1px solid #080909;
+				box-shadow: 0 0px 2px #080909;
+
+				i.app-icon {
+					opacity: 1;
+					-webkit-box-shadow: 0 0 2px 1px rgba(105,154,188,0.8);
+					box-shadow: 0 0 2px 1px rgba(105,154,188,0.8);
+				}
+			}
 		}
 	}
 
@@ -320,95 +363,107 @@ div.info-message {
 		overflow: hidden;
 	}
 
-	.app-icon {
-		text-indent: 200%;
-		white-space: nowrap;
-		display: block;
-		overflow: hidden;
+	.app-icon-home                  { background-image: url('@{img_path}/app-icons/1x/Dashboard.png'); }
+	.app-icon-setup                 { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
+	.app-icon-agents                { background-image: url('@{img_path}/app-icons/1x/Agents.png'); }
+	.app-icon-tickets               { background-image: url('@{img_path}/app-icons/1x/Tickets.png'); }
+	.app-icon-users                 { background-image: url('@{img_path}/app-icons/1x/People.png'); }
+	.app-icon-portal                { background-image: url('@{img_path}/app-icons/1x/Portal-Editor.png'); }
+	.app-icon-chat                  { background-image: url('@{img_path}/app-icons/1x/Chat.png'); }
+	.app-icon-twitter               { background-image: url('@{img_path}/app-icons/1x/Twitter.png'); }
+	.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x/Apps.png'); }
+	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
+	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
+	.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
+	.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x/Agent-Interface.png'); }
+	.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x/Reports.png'); }
+	.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/1x/User-Portal.png'); }
+	.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/1x/Report-Builder.png'); }
+	.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/1x/Billing-Graphs.png'); }
+	.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/1x/Agent-Activity-Alt.png'); }
+	.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/1x/Agent-Logs-Alt-2.png'); }
+	.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/1x/Ticket-Feedback.png'); }
 
-		width: 100%;
-		height: 60px;
-
-		background: url("@{admin_static_path}/img/app-icons.png") no-repeat;
-	}
-
-	.state-on .app-icon {
-		background-color: #1D2022;
-		box-shadow: 0 -1px 1px #080909;
-	}
-
-	.app-icon-home {
-		background-position: -1px 9px;
-	}
-
-	.state-on .app-icon-home,
-	.app-icon-home:focus,
-	.app-icon-home:hover {
-		background-position: -1px -90px;
-	}
-
-	.app-icon-cog {
-		background-position: -643px 4px;
-	}
-
-	.state-on .app-icon-cog,
-	.app-icon-cog:focus,
-	.app-icon-cog:hover {
-		background-position: -643px -96px;
-	}
-
-	.app-icon-chat {
-		background-position: -721px 0;
-	}
-	.state-on .app-icon-chat,
-	.app-icon-chat:focus,
-	.app-icon-chat:hover {
-		background-position: -721px -100px;
+	.state-on {
+		.app-icon-home                  { background-image: url('@{img_path}/app-icons/1x_active/Dashboard.png'); }
+		.app-icon-setup                 { background-image: url('@{img_path}/app-icons/1x_active/Admin.png'); }
+		.app-icon-agents                { background-image: url('@{img_path}/app-icons/1x_active/Agents.png'); }
+		.app-icon-tickets               { background-image: url('@{img_path}/app-icons/1x_active/Tickets.png'); }
+		.app-icon-users                 { background-image: url('@{img_path}/app-icons/1x_active/People.png'); }
+		.app-icon-portal                { background-image: url('@{img_path}/app-icons/1x_active/Portal-Editor.png'); }
+		.app-icon-chat                  { background-image: url('@{img_path}/app-icons/1x_active/Chat.png'); }
+		.app-icon-twitter               { background-image: url('@{img_path}/app-icons/1x_active/Twitter.png'); }
+		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x_active/Apps.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Admin.png'); }
+		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Agent-Interface.png'); }
+		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x_active/Reports.png'); }
+		.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/1x_active/User-Portal.png'); }
+		.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/1x_active/Report-Builder.png'); }
+		.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/1x_active/Billing-Graphs.png'); }
+		.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/1x_active/Agent-Activity-Alt.png'); }
+		.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/1x_active/Agent-Logs-Alt-2.png'); }
+		.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/1x_active/Ticket-Feedback.png'); }
 	}
 
-	.app-icon-ticket {
-		background-position: -92px 9px;
-	}
-	.state-on .app-icon-ticket,
-	.app-icon-ticket:focus,
-	.app-icon-ticket:hover {
-		background-position: -92px -91px;
-	}
+	@media
+	only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (   min--moz-device-pixel-ratio: 2),
+	only screen and (     -o-min-device-pixel-ratio: 2/1),
+	only screen and (        min-device-pixel-ratio: 2),
+	only screen and (                min-resolution: 192dpi),
+	only screen and (                min-resolution: 2dppx) {
+		i.app-icon {
+			background-size: 32px 32px;
+		}
+		.state-on i.app-icon {
+			background-size: 40px 40px;
+		}
 
-	.app-icon-crm {
-		background-position: -251px 5px;
-	}
-	.state-on .app-icon-crm,
-	.app-icon-crm:focus,
-	.app-icon-crm:hover {
-		background-position: -251px -95px;
-	}
+		.app-icon-home                  { background-image: url('@{img_path}/app-icons/2x/Dashboard.png'); }
+		.app-icon-setup                 { background-image: url('@{img_path}/app-icons/2x/Admin.png'); }
+		.app-icon-agents                { background-image: url('@{img_path}/app-icons/2x/Agents.png'); }
+		.app-icon-tickets               { background-image: url('@{img_path}/app-icons/2x/Tickets.png'); }
+		.app-icon-users                 { background-image: url('@{img_path}/app-icons/2x/People.png'); }
+		.app-icon-portal                { background-image: url('@{img_path}/app-icons/2x/Portal-Editor.png'); }
+		.app-icon-chat                  { background-image: url('@{img_path}/app-icons/2x/Chat.png'); }
+		.app-icon-twitter               { background-image: url('@{img_path}/app-icons/2x/Twitter.png'); }
+		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x/Apps.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x/Admin.png'); }
+		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x/Agent-Interface.png'); }
+		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x/Reports.png'); }
+		.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/2x/User-Portal.png'); }
+		.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/2x/Report-Builder.png'); }
+		.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/2x/Billing-Graphs.png'); }
+		.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/2x/Agent-Activity-Alt.png'); }
+		.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/2x/Agent-Logs-Alt-2.png'); }
+		.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x/Ticket-Feedback.png'); }
 
-	.app-icon-publish {
-		background-position: -408px 4px;
-	}
-	.state-on .app-icon-publish,
-	.app-icon-publish:hover,
-	.app-icon-publish:focus {
-		background-position: -408px -96px;
-	}
-
-	.app-icon-twitter {
-		background-position: -570px 9px;
-	}
-	.state-on .app-icon-twitter,
-	.app-icon-twitter:hover,
-	.app-icon-twitter:focus {
-		background-position: -570px -91px;
-	}
-
-	.app-icon-rate {
-		background-position: -331px 5px;
-	}
-	.state-on .app-icon-rate,
-	.app-icon-rate:hover,
-	.app-icon-rate:focus {
-		background-position: -331px -95px;
+		.state-on {
+			.app-icon-home                  { background-image: url('@{img_path}/app-icons/2x_active/Dashboard.png'); }
+			.app-icon-setup                 { background-image: url('@{img_path}/app-icons/2x_active/Admin.png'); }
+			.app-icon-agents                { background-image: url('@{img_path}/app-icons/2x_active/Agents.png'); }
+			.app-icon-tickets               { background-image: url('@{img_path}/app-icons/2x_active/Tickets.png'); }
+			.app-icon-users                 { background-image: url('@{img_path}/app-icons/2x_active/People.png'); }
+			.app-icon-portal                { background-image: url('@{img_path}/app-icons/2x_active/Portal-Editor.png'); }
+			.app-icon-chat                  { background-image: url('@{img_path}/app-icons/2x_active/Chat.png'); }
+			.app-icon-twitter               { background-image: url('@{img_path}/app-icons/2x_active/Twitter.png'); }
+			.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x_active/Apps.png'); }
+			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
+			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
+			.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Admin.png'); }
+			.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Agent-Interface.png'); }
+			.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x_active/Reports.png'); }
+			.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/2x_active/User-Portal.png'); }
+			.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/2x_active/Report-Builder.png'); }
+			.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/2x_active/Billing-Graphs.png'); }
+			.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/2x_active/Agent-Activity-Alt.png'); }
+			.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/2x_active/Agent-Logs-Alt-2.png'); }
+			.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x_active/Ticket-Feedback.png'); }
+		}
 	}
 }
 

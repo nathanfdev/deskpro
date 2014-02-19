@@ -43,50 +43,51 @@
 	<!-- Left Navigation Column -->
 	<nav class="dp-appstrip">
 		<ul>
-			<li tooltip="{{ phrase('adm.general.home') }}" tooltip-append-to-body="true" tooltip-placement="right"
-				dp-state-mark="home" class="state-on">
-				<a class="app-icon app-icon-home" href="#/"></a>
+			<li tooltip="{{ phrase('adm.general.home') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="home" class="state-on">
+				<a href="#/"><i class="app-icon app-icon-home"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_setup') }}" tooltip-append-to-body="true" tooltip-placement="right"
-				dp-state-mark="setup">
-				<a class="app-icon app-icon-cog" href="#/setup"></a>
+			<li tooltip="{{ phrase('adm.general.apps_setup') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="setup">
+				<a href="#/setup"><i class="app-icon app-icon-setup"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_agents') }}" tooltip-append-to-body="true"
-				tooltip-placement="right" dp-state-mark="agents">
-				<a class="app-icon app-icon-chat" href="#/agents"></a>
+			<li tooltip="{{ phrase('adm.general.apps_agents') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="agents">
+				<a href="#/agents"><i class="app-icon app-icon-agents"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_tickets') }}" tooltip-append-to-body="true"
-				tooltip-placement="right" dp-state-mark="tickets">
-				<a class="app-icon app-icon-ticket" href="#/tickets"></a>
+			<li tooltip="{{ phrase('adm.general.apps_tickets') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="tickets">
+				<a href="#/tickets"><i class="app-icon app-icon-tickets"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_crm') }}" tooltip-append-to-body="true" tooltip-placement="right"
-				dp-state-mark="crm">
-				<a class="app-icon app-icon-crm" href="#/crm"></a>
+			<li tooltip="{{ phrase('adm.general.apps_crm') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="crm">
+				<a href="#/crm"><i class="app-icon app-icon-users"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_portal') }}" tooltip-append-to-body="true"
-				tooltip-placement="right" dp-state-mark="portal">
-				<a class="app-icon app-icon-publish" href="#/portal"></a>
+			<li tooltip="{{ phrase('adm.general.apps_portal') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="portal">
+				<a href="#/portal"><i class="app-icon app-icon-portal"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_chat') }}" tooltip-append-to-body="true" tooltip-placement="right"
-				dp-state-mark="chat">
-				<a class="app-icon app-icon-chat" href="#/chat"></a>
+			<li tooltip="{{ phrase('adm.general.apps_chat') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="chat">
+				<a href="#/chat"><i class="app-icon app-icon-chat"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_twitter') }}" tooltip-append-to-body="true"
-				tooltip-placement="right" dp-state-mark="twitter">
-				<a class="app-icon app-icon-twitter" href="#/twitter"></a>
+			<li tooltip="{{ phrase('adm.general.apps_twitter') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="twitter">
+				<a href="#/twitter"><i class="app-icon app-icon-twitter"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right"
-				dp-state-mark="apps">
-				<a class="app-icon app-icon-rate" href="#/apps"></a>
+			<li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="apps">
+				<a href="#/apps"><i class="app-icon app-icon-apps"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true"
-				tooltip-placement="right" dp-state-mark="server">
-				<a class="app-icon app-icon-cog" href="#/server"></a>
+			<li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="server">
+				<a href="#/server"><i class="app-icon app-icon-server"></i></a>
 			</li>
 		</ul>
 
 		<ul class="btm">
-			<li><a class="app-icon app-fa fa-home" href="#/back_to_agent">{{ phrase('adm.general.back_to_agent') }}</a></li>
+			<li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="{{ path('user') }}"><i class="app-icon app-icon-user-ifce"></i></a>
+			</li>
+			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="/{{ path('user')|trim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
+			</li>
+			<li tooltip="{{ phrase('adm.general.back_to_agent') }}" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="#/back_to_agent"><i class="app-icon app-icon-agent-ifce"></i></a>
+			</li>
+			<li class="section-on" tooltip="You are currently using the Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
+			</li>
 		</ul>
 	</nav>
 	<div class="dp-layout" ui-view></div>

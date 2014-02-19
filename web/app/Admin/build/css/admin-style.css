@@ -7865,9 +7865,49 @@ div.info-message.well {
 }
 
 .dp-appstrip ul li {
+  display: block;
   padding: 0;
   margin: 0;
   list-style-type: none;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.dp-appstrip ul li a {
+  display: block;
+  width: 55px;
+  height: 47px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.dp-appstrip ul li i.app-icon {
+  display: block;
+  width: 55px;
+  height: 47px;
+  overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  opacity: 0.75;
+}
+
+.dp-appstrip ul li:hover i.app-icon {
+  opacity: 1;
+}
+
+.dp-appstrip ul li.state-on,
+.dp-appstrip ul li.section-on {
+  background-color: #1D2022;
+  border-top: 1px solid #080909;
+  border-bottom: 1px solid #080909;
+  box-shadow: 0 0px 2px #080909;
+}
+
+.dp-appstrip ul li.state-on i.app-icon,
+.dp-appstrip ul li.section-on i.app-icon {
+  opacity: 1;
+  -webkit-box-shadow: 0 0 2px 1px rgba(105, 154, 188, 0.8);
+          box-shadow: 0 0 2px 1px rgba(105, 154, 188, 0.8);
 }
 
 .dp-appstrip ul.btm {
@@ -7877,99 +7917,293 @@ div.info-message.well {
   overflow: hidden;
 }
 
-.dp-appstrip .app-icon {
-  display: block;
-  width: 100%;
-  height: 60px;
-  overflow: hidden;
-  text-indent: 200%;
-  white-space: nowrap;
-  background: url("../../../../app/Admin/Resources/img/app-icons.png") no-repeat;
-}
-
-.dp-appstrip .state-on .app-icon {
-  background-color: #1D2022;
-  box-shadow: 0 -1px 1px #080909;
-}
-
 .dp-appstrip .app-icon-home {
-  background-position: -1px 9px;
+  background-image: url('../../../../images/app-icons/1x/Dashboard.png');
 }
 
-.dp-appstrip .state-on .app-icon-home,
-.dp-appstrip .app-icon-home:focus,
-.dp-appstrip .app-icon-home:hover {
-  background-position: -1px -90px;
+.dp-appstrip .app-icon-setup {
+  background-image: url('../../../../images/app-icons/1x/Admin.png');
 }
 
-.dp-appstrip .app-icon-cog {
-  background-position: -643px 4px;
+.dp-appstrip .app-icon-agents {
+  background-image: url('../../../../images/app-icons/1x/Agents.png');
 }
 
-.dp-appstrip .state-on .app-icon-cog,
-.dp-appstrip .app-icon-cog:focus,
-.dp-appstrip .app-icon-cog:hover {
-  background-position: -643px -96px;
+.dp-appstrip .app-icon-tickets {
+  background-image: url('../../../../images/app-icons/1x/Tickets.png');
+}
+
+.dp-appstrip .app-icon-users {
+  background-image: url('../../../../images/app-icons/1x/People.png');
+}
+
+.dp-appstrip .app-icon-portal {
+  background-image: url('../../../../images/app-icons/1x/Portal-Editor.png');
 }
 
 .dp-appstrip .app-icon-chat {
-  background-position: -721px 0;
-}
-
-.dp-appstrip .state-on .app-icon-chat,
-.dp-appstrip .app-icon-chat:focus,
-.dp-appstrip .app-icon-chat:hover {
-  background-position: -721px -100px;
-}
-
-.dp-appstrip .app-icon-ticket {
-  background-position: -92px 9px;
-}
-
-.dp-appstrip .state-on .app-icon-ticket,
-.dp-appstrip .app-icon-ticket:focus,
-.dp-appstrip .app-icon-ticket:hover {
-  background-position: -92px -91px;
-}
-
-.dp-appstrip .app-icon-crm {
-  background-position: -251px 5px;
-}
-
-.dp-appstrip .state-on .app-icon-crm,
-.dp-appstrip .app-icon-crm:focus,
-.dp-appstrip .app-icon-crm:hover {
-  background-position: -251px -95px;
-}
-
-.dp-appstrip .app-icon-publish {
-  background-position: -408px 4px;
-}
-
-.dp-appstrip .state-on .app-icon-publish,
-.dp-appstrip .app-icon-publish:hover,
-.dp-appstrip .app-icon-publish:focus {
-  background-position: -408px -96px;
+  background-image: url('../../../../images/app-icons/1x/Chat.png');
 }
 
 .dp-appstrip .app-icon-twitter {
-  background-position: -570px 9px;
+  background-image: url('../../../../images/app-icons/1x/Twitter.png');
 }
 
-.dp-appstrip .state-on .app-icon-twitter,
-.dp-appstrip .app-icon-twitter:hover,
-.dp-appstrip .app-icon-twitter:focus {
-  background-position: -570px -91px;
+.dp-appstrip .app-icon-apps {
+  background-image: url('../../../../images/app-icons/1x/Apps.png');
 }
 
-.dp-appstrip .app-icon-rate {
-  background-position: -331px 5px;
+.dp-appstrip .app-icon-server {
+  background-image: url('../../../../images/app-icons/1x/Server.png');
 }
 
-.dp-appstrip .state-on .app-icon-rate,
-.dp-appstrip .app-icon-rate:hover,
-.dp-appstrip .app-icon-rate:focus {
-  background-position: -331px -95px;
+.dp-appstrip .app-icon-server {
+  background-image: url('../../../../images/app-icons/1x/Server.png');
+}
+
+.dp-appstrip .app-icon-admin-ifce {
+  background-image: url('../../../../images/app-icons/1x/Admin.png');
+}
+
+.dp-appstrip .app-icon-agent-ifce {
+  background-image: url('../../../../images/app-icons/1x/Agent-Interface.png');
+}
+
+.dp-appstrip .app-icon-reports-ifce {
+  background-image: url('../../../../images/app-icons/1x/Reports.png');
+}
+
+.dp-appstrip .app-icon-user-ifce {
+  background-image: url('../../../../images/app-icons/1x/User-Portal.png');
+}
+
+.dp-appstrip .app-icon-reports-builder {
+  background-image: url('../../../../images/app-icons/1x/Report-Builder.png');
+}
+
+.dp-appstrip .app-icon-reports-billing {
+  background-image: url('../../../../images/app-icons/1x/Billing-Graphs.png');
+}
+
+.dp-appstrip .app-icon-reports-agentactivity {
+  background-image: url('../../../../images/app-icons/1x/Agent-Activity-Alt.png');
+}
+
+.dp-appstrip .app-icon-reports-agenthours {
+  background-image: url('../../../../images/app-icons/1x/Agent-Logs-Alt-2.png');
+}
+
+.dp-appstrip .app-icon-reports-satisfaction {
+  background-image: url('../../../../images/app-icons/1x/Ticket-Feedback.png');
+}
+
+.dp-appstrip .state-on .app-icon-home {
+  background-image: url('../../../../images/app-icons/1x_active/Dashboard.png');
+}
+
+.dp-appstrip .state-on .app-icon-setup {
+  background-image: url('../../../../images/app-icons/1x_active/Admin.png');
+}
+
+.dp-appstrip .state-on .app-icon-agents {
+  background-image: url('../../../../images/app-icons/1x_active/Agents.png');
+}
+
+.dp-appstrip .state-on .app-icon-tickets {
+  background-image: url('../../../../images/app-icons/1x_active/Tickets.png');
+}
+
+.dp-appstrip .state-on .app-icon-users {
+  background-image: url('../../../../images/app-icons/1x_active/People.png');
+}
+
+.dp-appstrip .state-on .app-icon-portal {
+  background-image: url('../../../../images/app-icons/1x_active/Portal-Editor.png');
+}
+
+.dp-appstrip .state-on .app-icon-chat {
+  background-image: url('../../../../images/app-icons/1x_active/Chat.png');
+}
+
+.dp-appstrip .state-on .app-icon-twitter {
+  background-image: url('../../../../images/app-icons/1x_active/Twitter.png');
+}
+
+.dp-appstrip .state-on .app-icon-apps {
+  background-image: url('../../../../images/app-icons/1x_active/Apps.png');
+}
+
+.dp-appstrip .state-on .app-icon-server {
+  background-image: url('../../../../images/app-icons/1x_active/Server.png');
+}
+
+.dp-appstrip .state-on .app-icon-server {
+  background-image: url('../../../../images/app-icons/1x_active/Server.png');
+}
+
+.dp-appstrip .state-on .app-icon-admin-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/Admin.png');
+}
+
+.dp-appstrip .state-on .app-icon-agent-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/Agent-Interface.png');
+}
+
+.dp-appstrip .state-on .app-icon-reports-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/Reports.png');
+}
+
+.dp-appstrip .state-on .app-icon-user-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/User-Portal.png');
+}
+
+.dp-appstrip .state-on .app-icon-reports-builder {
+  background-image: url('../../../../images/app-icons/1x_active/Report-Builder.png');
+}
+
+.dp-appstrip .state-on .app-icon-reports-billing {
+  background-image: url('../../../../images/app-icons/1x_active/Billing-Graphs.png');
+}
+
+.dp-appstrip .state-on .app-icon-reports-agentactivity {
+  background-image: url('../../../../images/app-icons/1x_active/Agent-Activity-Alt.png');
+}
+
+.dp-appstrip .state-on .app-icon-reports-agenthours {
+  background-image: url('../../../../images/app-icons/1x_active/Agent-Logs-Alt-2.png');
+}
+
+.dp-appstrip .state-on .app-icon-reports-satisfaction {
+  background-image: url('../../../../images/app-icons/1x_active/Ticket-Feedback.png');
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .dp-appstrip i.app-icon {
+    background-size: 32px 32px;
+  }
+  .dp-appstrip .state-on i.app-icon {
+    background-size: 40px 40px;
+  }
+  .dp-appstrip .app-icon-home {
+    background-image: url('../../../../images/app-icons/2x/Dashboard.png');
+  }
+  .dp-appstrip .app-icon-setup {
+    background-image: url('../../../../images/app-icons/2x/Admin.png');
+  }
+  .dp-appstrip .app-icon-agents {
+    background-image: url('../../../../images/app-icons/2x/Agents.png');
+  }
+  .dp-appstrip .app-icon-tickets {
+    background-image: url('../../../../images/app-icons/2x/Tickets.png');
+  }
+  .dp-appstrip .app-icon-users {
+    background-image: url('../../../../images/app-icons/2x/People.png');
+  }
+  .dp-appstrip .app-icon-portal {
+    background-image: url('../../../../images/app-icons/2x/Portal-Editor.png');
+  }
+  .dp-appstrip .app-icon-chat {
+    background-image: url('../../../../images/app-icons/2x/Chat.png');
+  }
+  .dp-appstrip .app-icon-twitter {
+    background-image: url('../../../../images/app-icons/2x/Twitter.png');
+  }
+  .dp-appstrip .app-icon-apps {
+    background-image: url('../../../../images/app-icons/2x/Apps.png');
+  }
+  .dp-appstrip .app-icon-server {
+    background-image: url('../../../../images/app-icons/2x/Server.png');
+  }
+  .dp-appstrip .app-icon-server {
+    background-image: url('../../../../images/app-icons/2x/Server.png');
+  }
+  .dp-appstrip .app-icon-admin-ifce {
+    background-image: url('../../../../images/app-icons/2x/Admin.png');
+  }
+  .dp-appstrip .app-icon-agent-ifce {
+    background-image: url('../../../../images/app-icons/2x/Agent-Interface.png');
+  }
+  .dp-appstrip .app-icon-reports-ifce {
+    background-image: url('../../../../images/app-icons/2x/Reports.png');
+  }
+  .dp-appstrip .app-icon-user-ifce {
+    background-image: url('../../../../images/app-icons/2x/User-Portal.png');
+  }
+  .dp-appstrip .app-icon-reports-builder {
+    background-image: url('../../../../images/app-icons/2x/Report-Builder.png');
+  }
+  .dp-appstrip .app-icon-reports-billing {
+    background-image: url('../../../../images/app-icons/2x/Billing-Graphs.png');
+  }
+  .dp-appstrip .app-icon-reports-agentactivity {
+    background-image: url('../../../../images/app-icons/2x/Agent-Activity-Alt.png');
+  }
+  .dp-appstrip .app-icon-reports-agenthours {
+    background-image: url('../../../../images/app-icons/2x/Agent-Logs-Alt-2.png');
+  }
+  .dp-appstrip .app-icon-reports-satisfaction {
+    background-image: url('../../../../images/app-icons/2x/Ticket-Feedback.png');
+  }
+  .dp-appstrip .state-on .app-icon-home {
+    background-image: url('../../../../images/app-icons/2x_active/Dashboard.png');
+  }
+  .dp-appstrip .state-on .app-icon-setup {
+    background-image: url('../../../../images/app-icons/2x_active/Admin.png');
+  }
+  .dp-appstrip .state-on .app-icon-agents {
+    background-image: url('../../../../images/app-icons/2x_active/Agents.png');
+  }
+  .dp-appstrip .state-on .app-icon-tickets {
+    background-image: url('../../../../images/app-icons/2x_active/Tickets.png');
+  }
+  .dp-appstrip .state-on .app-icon-users {
+    background-image: url('../../../../images/app-icons/2x_active/People.png');
+  }
+  .dp-appstrip .state-on .app-icon-portal {
+    background-image: url('../../../../images/app-icons/2x_active/Portal-Editor.png');
+  }
+  .dp-appstrip .state-on .app-icon-chat {
+    background-image: url('../../../../images/app-icons/2x_active/Chat.png');
+  }
+  .dp-appstrip .state-on .app-icon-twitter {
+    background-image: url('../../../../images/app-icons/2x_active/Twitter.png');
+  }
+  .dp-appstrip .state-on .app-icon-apps {
+    background-image: url('../../../../images/app-icons/2x_active/Apps.png');
+  }
+  .dp-appstrip .state-on .app-icon-server {
+    background-image: url('../../../../images/app-icons/2x_active/Server.png');
+  }
+  .dp-appstrip .state-on .app-icon-server {
+    background-image: url('../../../../images/app-icons/2x_active/Server.png');
+  }
+  .dp-appstrip .state-on .app-icon-admin-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/Admin.png');
+  }
+  .dp-appstrip .state-on .app-icon-agent-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/Agent-Interface.png');
+  }
+  .dp-appstrip .state-on .app-icon-reports-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/Reports.png');
+  }
+  .dp-appstrip .state-on .app-icon-user-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/User-Portal.png');
+  }
+  .dp-appstrip .state-on .app-icon-reports-builder {
+    background-image: url('../../../../images/app-icons/2x_active/Report-Builder.png');
+  }
+  .dp-appstrip .state-on .app-icon-reports-billing {
+    background-image: url('../../../../images/app-icons/2x_active/Billing-Graphs.png');
+  }
+  .dp-appstrip .state-on .app-icon-reports-agentactivity {
+    background-image: url('../../../../images/app-icons/2x_active/Agent-Activity-Alt.png');
+  }
+  .dp-appstrip .state-on .app-icon-reports-agenthours {
+    background-image: url('../../../../images/app-icons/2x_active/Agent-Logs-Alt-2.png');
+  }
+  .dp-appstrip .state-on .app-icon-reports-satisfaction {
+    background-image: url('../../../../images/app-icons/2x_active/Ticket-Feedback.png');
+  }
 }
 
 nav.dp-appnav ul {
