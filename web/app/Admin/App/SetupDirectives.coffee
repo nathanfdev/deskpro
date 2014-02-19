@@ -5,13 +5,13 @@ define [
 	'DeskPRO/Directive/DpNavSubnav',
 	'DeskPRO/Directive/DpTabBody',
 	'DeskPRO/Directive/DpTabBtn',
+	'DeskPRO/Directive/DpHideSpinning',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpCommaSeparated',
 	'Admin/Main/Directive/DpDevBar',
 	'Admin/Main/Directive/DpErrorClass',
-	'Admin/Main/Directive/DpHideSpinning',
 	'Admin/Main/Directive/DpInhelpBody',
 	'Admin/Main/Directive/DpInhelpBtn',
 	'Admin/Main/Directive/DpListAutoload',
@@ -38,13 +38,13 @@ define [
 	DeskPRO_Directive_DpNavSubnav,
 	DeskPRO_Directive_DpTabBody,
 	DeskPRO_Directive_DpTabBtn,
+	DeskPRO_Directive_DpHideSpinning,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpCommaSeparated,
 	Admin_Main_Directive_DpDevBar,
 	Admin_Main_Directive_DpErrorClass,
-	Admin_Main_Directive_DpHideSpinning,
 	Admin_Main_Directive_DpInhelpBody,
 	Admin_Main_Directive_DpInhelpBtn,
 	Admin_Main_Directive_DpListAutoload,
@@ -72,13 +72,13 @@ define [
 		Module.directive('dpNavSubnav',                    DeskPRO_Directive_DpNavSubnav)
 		Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       DeskPRO_Directive_DpTabBtn)
+		Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
 		Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated)
 		Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar)
 		Module.directive('dpErrorClass',                   Admin_Main_Directive_DpErrorClass)
-		Module.directive('dpHideSpinning',                 Admin_Main_Directive_DpHideSpinning)
 		Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody)
 		Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
 		Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)

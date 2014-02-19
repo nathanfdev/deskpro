@@ -5,7 +5,7 @@ define ->
     #
     # Check out dp-show-spinning, this is the opposite.
 	###
-	Admin_Main_Directive_DpHideSpinning = [ ->
+	DeskPRO_Directive_DpHideSpinning = [ ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
@@ -31,4 +31,4 @@ define ->
 		}
 	]
 
-	return Admin_Main_Directive_DpHideSpinning
+	return DeskPRO_Directive_DpHideSpinning

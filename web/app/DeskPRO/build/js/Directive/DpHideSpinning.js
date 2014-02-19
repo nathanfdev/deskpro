@@ -7,8 +7,8 @@
        # Check out dp-show-spinning, this is the opposite.
     */
 
-    var Admin_Main_Directive_DpHideSpinning;
-    Admin_Main_Directive_DpHideSpinning = [
+    var DeskPRO_Directive_DpHideSpinning;
+    DeskPRO_Directive_DpHideSpinning = [
       function() {
         return {
           restrict: 'A',
@@ -37,7 +37,7 @@
         };
       }
     ];
-    return Admin_Main_Directive_DpHideSpinning;
+    return DeskPRO_Directive_DpHideSpinning;
   });
 
 }).call(this);
