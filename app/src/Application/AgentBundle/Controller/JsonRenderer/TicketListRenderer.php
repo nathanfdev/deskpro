@@ -47,7 +47,26 @@ class TicketListRenderer
 		$json_array = array();
 
 		foreach ($ticket_display->getTickets() as $ticket) {
-			$json_array[] = $ticket->toApiData();
+			$data = $ticket->toApiData();
+
+			$data['previews'] = array();
+			foreach ($ticket_display->getTicketPreview($ticket) as $m) {
+				$data['previews'][] = array(
+					'message' => array(
+						'id'               => $m->id,
+						'preview_text'     => $m->getMessagePreviewText(200),
+						'date_created'     => $m->date_created->format('Y-m-d H:i:s'),
+						'date_created_ts'  => $m->date_created->getTimestamp(),
+					),
+					'person' => array(
+						'id'            => $m->person->id,
+						'display_name'  => $m->person->getDisplayName(),
+						'is_agent'      => $m->person->is_agent,
+					),
+				);
+			}
+
+			$json_array[] = $data;
 		}
 
 		if ($as_array) {

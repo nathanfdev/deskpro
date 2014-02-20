@@ -79,6 +79,11 @@ class TicketResultsDisplay implements PersonContextInterface
 	/**
 	 * @var array
 	 */
+	protected $all_previews;
+
+	/**
+	 * @var array
+	 */
 	protected $people;
 
 	/**
@@ -307,6 +312,57 @@ class TicketResultsDisplay implements PersonContextInterface
 		return $this->dep_names[$ticket->department->getId()];
 	}
 
+
+	/**
+	 * Gets array of previews for each ticket
+	 * @return array
+	 */
+	public function getAllTicketPreviews()
+	{
+		if ($this->all_previews !== null) return $this->all_previews;
+
+		if (!$this->ticket_ids) {
+			$this->all_previews = array();
+			return $this->all_previews;
+		}
+
+		$messages = $this->em->createQuery("
+			SELECT DISTINCT partial t.{id}, m, partial p.{id,name,first_name,last_name,is_agent}
+			FROM DeskPRO:TicketMessage m
+			LEFT JOIN m.ticket t
+			LEFT JOIN m.person p
+			WHERE m.ticket IN (?0)
+			ORDER BY m.id ASC
+		")->setParameters(array(array_keys($this->ticket_ids)))->execute();
+
+		$this->all_previews = array();
+		foreach ($messages as $m) {
+			if (!isset($this->all_previews[$m->ticket->id])) {
+				$this->all_previews[$m->ticket->id] = array();
+			}
+			$this->all_previews[$m->ticket->id][] = $m;
+		}
+
+		return $this->all_previews;
+	}
+
+
+	/**
+	 * Get an array of ticket message previews
+	 *
+	 * @param Ticket $ticket
+	 * @return array
+	 */
+	public function getTicketPreview($ticket)
+	{
+		$this->getAllTicketPreviews();
+
+		if (isset($this->all_previews[$ticket->id])) {
+			return $this->all_previews[$ticket->id];
+		}
+
+		return array();
+	}
 
 	/**
 	 * @param mixed $ticket

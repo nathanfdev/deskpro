@@ -157,7 +157,122 @@ DeskPRO.Agent.AgentAppFactory = function() {
 				}, 5000);
 				update();
 			}
-		}
+		};
+	}]);
+
+	AgentApp.directive('dpStickyTip', ['$timeout', function($timeout) {
+		return {
+			restrict: 'E',
+			template: '<div class="dp-stickytip" ng-transclude></div>',
+			replace: true,
+			transclude: true,
+			link: function(scope, element, attrs) {
+				var timeoutId,
+					hideTimeoutId,
+					timeoutMs      = parseInt(attrs['timeout']) || 350,
+					hideTimeoutMs  = parseInt(attrs['hideTimeout']) || 100,
+					targetEl       = element.parent(),
+					targetSel      = attrs['trigger'],
+					offsetTop      = parseInt(attrs['offsetTop']) || 15,
+					offsetLeft     = parseInt(attrs['offsetLeft']) || 0,
+					hasInit        = false,
+					m;
+
+				if (targetSel) {
+					while ((m = targetSel.match(/^@parent/))) {
+						targetEl = targetEl.parent();
+						targetSel = targetSel.replace(/^@parent\s*/, '');
+					}
+
+					if (targetSel.length) {
+						targetEl = targetEl.find(targetSel).first();
+					}
+				}
+
+				if (!targetEl || !targetEl[0]) {
+					return;
+				}
+
+				if (attrs['style']) {
+					element.attr('style', attrs['style']);
+				}
+				if (attrs['class']) {
+					element.addClass(attrs['class']);
+				}
+
+				element.hide();
+
+				function show() {
+					if (!hasInit) {
+						element.detach().appendTo('body');
+						hasInit = true;
+					}
+
+					var pos = targetEl.offset();
+					element.css({
+						left: pos.left + offsetLeft,
+						top: pos.top + offsetTop
+					});
+					element.show();
+				};
+
+				function hide() {
+					element.hide();
+				};
+
+				targetEl.on('mouseover', function() {
+					if (hideTimeoutId) {
+						$timeout.cancel(hideTimeoutId);
+						hideTimeoutId = null;
+					}
+				});
+				element.on('mouseover', function() {
+					if (hideTimeoutId) {
+						$timeout.cancel(hideTimeoutId);
+						hideTimeoutId = null;
+					}
+				});
+
+				targetEl.on('mouseout', function() {
+					if (timeoutId) {
+						$timeout.cancel(timeoutId);
+						timeoutId = null;
+					}
+					if (hideTimeoutId) {
+						$timeout.cancel(hideTimeoutId);
+					}
+					hideTimeoutId = $timeout(function() { hide(); }, hideTimeoutMs);
+				});
+				element.on('mouseout', function() {
+					if (hideTimeoutId) {
+						$timeout.cancel(hideTimeoutId);
+					}
+					hideTimeoutId = $timeout(function() { hide(); }, hideTimeoutMs);
+				});
+
+				targetEl.on('mouseover', function() {
+					if (timeoutId) return;
+					timeoutId = $timeout(function() {
+						timeoutId = null;
+						show();
+					}, timeoutMs);
+				});
+
+				scope.$on('$destroy', function() {
+					if (timeoutId) {
+						$timeout.cancel(timeoutId);
+						timeoutId = null;
+					}
+					if (hideTimeoutId) {
+						$timeout.cancel(hideTimeoutId);
+						hideTimeoutId = null;
+					}
+					if (hasInit) {
+						element.remove();
+					}
+				});
+			}
+		};
 	}]);
 
 	AgentApp.config(['$locationProvider', function($locationProvider) {

@@ -34,6 +34,12 @@
 					data-route-title="@selector(a.subject)"
 					data-route-openclass="open"
 				>
+					<dp-sticky-tip trigger=".subject" offset-top="18" ng-if="ticket.previews[0]">
+						<div class="previewtext-row">
+							<cite>{{ ng_static_var('ticket.previews[0].person.display_name') }}:</cite>
+							{{ ng_static_var('ticket.previews[0].message.preview_text') }}
+						</div>
+					</dp-sticky-tip>
 					<div class="item-hover-over-indicator"></div>
 					<div class="loading-arrow">{{ phrase('agent.general.loading') }}</div>
 					<input type="checkbox" class="item-select" ng-model="checkedTickets[ticket.id]" />
