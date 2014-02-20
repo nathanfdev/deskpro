@@ -7949,6 +7949,18 @@ div.info-message.well {
   background-image: url('../../../../images/app-icons/1x/Twitter.png');
 }
 
+.dp-appstrip .app-icon-feedback {
+  background-image: url('../../../../images/app-icons/1x/Feedback.png');
+}
+
+.dp-appstrip .app-icon-publish {
+  background-image: url('../../../../images/app-icons/1x/Publish.png');
+}
+
+.dp-appstrip .app-icon-tasks {
+  background-image: url('../../../../images/app-icons/1x/Tasks.png');
+}
+
 .dp-appstrip .app-icon-apps {
   background-image: url('../../../../images/app-icons/1x/Apps.png');
 }
@@ -8027,6 +8039,18 @@ div.info-message.well {
 
 .dp-appstrip .state-on .app-icon-twitter {
   background-image: url('../../../../images/app-icons/1x_active/Twitter.png');
+}
+
+.dp-appstrip .state-on .app-icon-feedback {
+  background-image: url('../../../../images/app-icons/1x_active/Feedback.png');
+}
+
+.dp-appstrip .state-on .app-icon-publish {
+  background-image: url('../../../../images/app-icons/1x_active/Publish.png');
+}
+
+.dp-appstrip .state-on .app-icon-tasks {
+  background-image: url('../../../../images/app-icons/1x_active/Tasks.png');
 }
 
 .dp-appstrip .state-on .app-icon-apps {
@@ -8108,6 +8132,15 @@ div.info-message.well {
   .dp-appstrip .app-icon-twitter {
     background-image: url('../../../../images/app-icons/2x/Twitter.png');
   }
+  .dp-appstrip .app-icon-feedback {
+    background-image: url('../../../../images/app-icons/2x/Feedback.png');
+  }
+  .dp-appstrip .app-icon-publish {
+    background-image: url('../../../../images/app-icons/2x/Publish.png');
+  }
+  .dp-appstrip .app-icon-tasks {
+    background-image: url('../../../../images/app-icons/2x/Tasks.png');
+  }
   .dp-appstrip .app-icon-apps {
     background-image: url('../../../../images/app-icons/2x/Apps.png');
   }
@@ -8167,6 +8200,15 @@ div.info-message.well {
   }
   .dp-appstrip .state-on .app-icon-twitter {
     background-image: url('../../../../images/app-icons/2x_active/Twitter.png');
+  }
+  .dp-appstrip .state-on .app-icon-feedback {
+    background-image: url('../../../../images/app-icons/2x_active/Feedback.png');
+  }
+  .dp-appstrip .state-on .app-icon-publish {
+    background-image: url('../../../../images/app-icons/2x_active/Publish.png');
+  }
+  .dp-appstrip .state-on .app-icon-tasks {
+    background-image: url('../../../../images/app-icons/2x_active/Tasks.png');
   }
   .dp-appstrip .state-on .app-icon-apps {
     background-image: url('../../../../images/app-icons/2x_active/Apps.png');
