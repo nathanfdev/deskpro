@@ -172,6 +172,12 @@
 			<article id="user_type_new_form" class="dp-well dp-well-light" {% if this_page != 'register' %}style="display:none"{% endif %}>
 				<form action="{{ path('user_register') }}" method="post">
 					{{ form_token() }}
+					<div class="dp-its-a-trap">
+						{# Spam trap: If these fields contain values when submitted, the system knows a bot submitted the form #}
+						<input type="text" name="first_name" value="" />
+						<input type="text" name="last_name" value="" />
+						<input type="text" name="email" value="" />
+					</div>
 					<input type="hidden" name="process" value="1" />
 
 					<div class="dp-control-group {% if error_fields['name'] %}dp-error{% endif %}">
