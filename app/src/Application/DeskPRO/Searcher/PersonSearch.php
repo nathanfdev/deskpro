@@ -303,7 +303,53 @@ class PersonSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
+					// One specific id
+					if (isset($choice['person_id'])) {
+						switch ($op) {
+							case self::OP_GT:
+							case self::OP_GTE:
+							case self::OP_LT:
+							case self::OP_LTE:
+								$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice['person_id'], true);
+								break;
+
+							default:
+								$ids = explode(',', $choice['person_id']);
+								$ids = Arrays::func($ids, 'trim');
+								$ids = Arrays::func($ids, 'intval');
+								$ids = Arrays::removeFalsey($ids);
+
+								$context = null;
+								if ($this->getPersonContext()) {
+									$context = $this->getPersonContext();
+								}
+
+								$ids = array_map(function($id) use ($context) {
+									if ($id === -1) {
+										if ($context) {
+											$id = $context->id;
+										} else {
+											$id = null;
+										}
+									}
+
+									return $id;
+								}, $ids);
+
+								$ids = Arrays::removeFalsey($ids);
+								if (!$ids) {
+									$ids = array(-1);
+								}
+
+								if ($op == self::OP_NOT) {
+									$wheres[] = "$people_table.id NOT IN (" . implode(',', $ids) . ")";
+								} else {
+									$wheres[] = "$people_table.id IN (" . implode(',', $ids) . ")";
+								}
+						}
+					} else {
+						$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
+					}
 					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
                 case self::TERM_LANGUAGE:
@@ -743,6 +789,64 @@ class PersonSearch extends SearcherAbstract
 			list($term, $op, $choice) = $info;
 
 			switch ($term) {
+
+				case self::TERM_ID:
+					// One specific id
+					if (isset($choice['person_id'])) {
+						switch ($op) {
+							case self::OP_GT:
+							case self::OP_GTE:
+							case self::OP_LT:
+							case self::OP_LTE:
+								$wheres[] = $this->_testRangeMatch($person->id, $op, $choice['person_id']);
+								break;
+
+							default:
+								$ids = explode(',', $choice['person_id']);
+								$ids = Arrays::func($ids, 'trim');
+								$ids = Arrays::func($ids, 'intval');
+								$ids = Arrays::removeFalsey($ids);
+
+								$context = null;
+								if ($this->getPersonContext()) {
+									$context = $this->getPersonContext();
+								}
+
+								$ids = array_map(function($id) use ($context) {
+									if ($id === -1) {
+										if ($context) {
+											$id = $context->id;
+										} else {
+											$id = null;
+										}
+									}
+
+									return $id;
+								}, $ids);
+
+								$ids = Arrays::removeFalsey($ids);
+								if (!$ids) {
+									$ids = array(-1);
+								}
+
+								$match = false;
+								foreach ($ids as $id) {
+									if ($person->id == $id) {
+										$match = true;
+										break;
+									}
+								}
+
+								if ($op == self::OP_NOT) {
+									if ($match) return false;
+								} elseif ($op == self::OP_IS) {
+									if (!$match) return false;
+								}
+						}
+					} else {
+						$wheres[] = $this->_testRangeMatch($person->id, $op, $choice);
+					}
+					break;
 
 				case self::TERM_DATE_CREATED:
 					if (!$this->_testDateMatch($person['date_created'], $op, $choice)) return false;
