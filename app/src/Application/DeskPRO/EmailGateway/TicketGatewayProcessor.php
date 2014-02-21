@@ -1568,11 +1568,29 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				'error'   => $this->error
 			));
 			$message->setTo($this->reader->getFromAddress()->getEmail());
-			$message->attach(\Swift_Attachment::newInstance(
-				$this->reader->getRawSource(),
-				'message.eml',
-				'message/rfc822'
-			));
+
+			// We usually unset the raw source after reading to conserve memory
+			// so we need to re-download it now if we want to send it to the agent
+			$raw_source = null;
+			if ($this->reader->hasProperty('email_source')) {
+				$source = $this->reader->getProperty('email_source');
+				if ($source->blob->filesize < 5242880) {
+					$raw_source = App::getContainer()->getBlobStorage()->copyBlobRecordToString($source->blob);
+				}
+			}
+			if ($raw_source) {
+				$message->attach(\Swift_Attachment::newInstance(
+					$raw_source,
+					'message.eml',
+					'message/rfc822'
+				));
+			} else {
+				$message->attach(\Swift_Attachment::newInstance(
+					$this->email_body_text ?: strip_tags($this->email_body_html),
+					'message.txt',
+					'text/plain'
+				));
+			}
 
 			App::getMailer()->send($message);
 
