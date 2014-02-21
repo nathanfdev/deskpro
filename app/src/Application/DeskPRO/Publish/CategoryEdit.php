@@ -331,7 +331,8 @@ class CategoryEdit
 				$counts = App::getDb()->fetchColumn("
 					SELECT COUNT(*)
 					FROM article_to_categories
-					WHERE category_id = ?
+					LEFT JOIN articles ON articles.id = article_to_categories.article_id
+					WHERE category_id = ? AND (articles.hidden_status IS NULL OR articles.hidden_status != 'deleted')
 					LIMIT 1
 				", array($category_id));
 				break;
@@ -339,7 +340,7 @@ class CategoryEdit
 				$counts = App::getDb()->fetchColumn("
 					SELECT COUNT(*)
 					FROM downloads
-					WHERE category_id = ?
+					WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
 					LIMIT 1
 				", array($category_id));
 				break;
@@ -347,7 +348,7 @@ class CategoryEdit
 				$counts = App::getDb()->fetchColumn("
 					SELECT COUNT(*)
 					FROM news
-					WHERE category_id = ?
+					WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
 					LIMIT 1
 				", array($category_id));
 				break;
@@ -355,7 +356,7 @@ class CategoryEdit
 				$counts = App::getDb()->fetchColumn("
 					SELECT COUNT(*)
 					FROM feedback
-					WHERE category_id = ?
+					WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
 					LIMIT 1
 				", array($category_id));
 				break;
