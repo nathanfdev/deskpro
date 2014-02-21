@@ -3,7 +3,7 @@
 	<div class="list-pane-header">
 		<h1><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} Tickets</h1>
 	</div>
-	<div class="list-pane-content list-pane-view with-header with-subheader with-alert-subheader with-footer">
+	<div class="list-pane-content list-pane-view with-header with-subheader with-footer" ng-class="{'with-alert-subheader': hasUnloadedUpdates}">
 		<header class="view-header" ng-non-bindable>
 			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}

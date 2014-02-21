@@ -312,6 +312,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		console.log("[TicketList.addTicketResult] %o", ticketIds);
 
+		if (!$scope.realtime) {
+			$scope.hasUnloadedUpdates = true;
+			return;
+		}
+
 		$scope.tickets.forEach(function(t) { currentTicketIdsMap[t.id] = true });
 		ticketIds = ticketIds.filter(function(tid) { return !currentTicketIdsMap[tid]; });
 
@@ -375,6 +380,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var $scope = this.$scope, map;
 		console.log("[TicketList.removeTicketResult] %o", ticketIds);
 
+		if (!$scope.realtime) {
+			$scope.hasUnloadedUpdates = true;
+			return;
+		}
+
 		map = {};
 		ticketIds.forEach(function(x) { map[x] = true; });
 
@@ -399,6 +409,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			validTicketIdsMap = {};
 
 		console.log("[TicketList.refreshTicketResult] %o", ticketIds);
+
+		if (!$scope.realtime) {
+			$scope.hasUnloadedUpdates = true;
+			return;
+		}
 
 		if (!$scope.tickets || !$scope.tickets.length) {
 			return;
@@ -570,6 +585,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			if (!self.massActions) {
 				self.massActions = new DeskPRO.Agent.PageFragment.List.TicketList.MassActions({
 					templateElement: self.wrapper.find('.mass-actions-overlay-tpl'),
+					"$scope": self.$scope,
 					onPostApply: function(inst, data, info) {
 						$scope.checkedTickets = {};
 
@@ -753,26 +769,29 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var self = this,
 			$scope = this.$scope,
 			$q = this.$q,
+			$timeout = this.$timeout,
 			def;
 
-		$scope.refreshCursorLoading = true;
 		if (this.refreshCursorAjax) {
 			this.refreshCursorAjax.abort();
 			this.refreshCursorAjax = null;
 		}
 
 		def = new $q.defer();
-		$.ajax({
-			url: this.page.meta.refreshCursorUrl.replace(/$cursor/, $scope.pageCursorStart + this.perPage),
+		$scope.refreshCursorLoading = true;
+		this.refreshCursorAjax = $.ajax({
+			url: this.meta.refreshCursorUrl.replace(/$cursor/, $scope.pageCursorStart + this.perPage),
 			dataType: 'json',
-			complete: function() {
-				$scope.refreshCursorLoading = false;
-			},
 			success: function(data) {
-				self._handleRefreshCursor();
+				$scope.hasUnloadedUpdates = false;
+				self._handleRefreshCursor(data);
 				def.resolve(data);
+				$timeout(function() {
+					$scope.refreshCursorLoading = false;
+				}, 10);
 			},
 			error: function() {
+				$scope.refreshCursorLoading = false;
 				def.reject(data);
 			}
 		});
@@ -784,7 +803,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var self = this,
 			$scope = this.$scope;
 
+		this.listTicketIds = data.all_ticket_ids;
 		$scope.tickets = data.tickets;
+		this.updatePageCursor();
 	}
 });
 
@@ -938,10 +959,19 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			 * The HTML element with the actual controls etc we'll use for this
 			 * Defaults to 'wrapper .mass-actions-overlay'
 			 */
-			templateElement: null
+			templateElement: null,
+
+			/**
+			 * Scope of the list
+			 */
+			$scope: null
 		};
 
 		this.setOptions(options);
+		this.$scope = this.options.$scope;
+
+		this.realtimeStatus = this.$scope.realtime;
+		this.$scope.realtime = false;
 
 		this.wrapperEl = this.options.templateElement;
 		if(!this.wrapperEl.length) {
@@ -1643,6 +1673,10 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 
 		if (this.options.resetOnClose) {
 			this.reset();
+		}
+
+		if (this.realtimeStatus) {
+			this.$scope.toggleRealtimeUpdates();
 		}
 	},
 

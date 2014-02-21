@@ -850,7 +850,6 @@ class TicketSearchController extends AbstractController
 		$ticket_display->setPersonContext($this->person);
 
 		$json_renderer = new TicketListRenderer();
-		$ticket_json = $json_renderer->renderTicketDisplay($ticket_display);
 
 		if (!$this->container->getSetting('core.tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
 			$vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
@@ -862,7 +861,6 @@ class TicketSearchController extends AbstractController
 			'type'               => $type,
 			'type_id'            => $type_id,
 			'ticket_display'     => $ticket_display,
-			'ticket_json'        => $ticket_json,
 			'tickets'            => $tickets,
 			'all_ticket_ids'     => $results_helper->getTicketIds(),
 			'count'              => $results_helper->getCount(),
@@ -891,11 +889,14 @@ class TicketSearchController extends AbstractController
             return $this->_outputCsv($vars, $results_helper);
         }
 
-		if ($view_type) {
+		if ($view_type == 'json') {
 			return $this->createJsonResponse(array(
-				'tickets' => $ticket_json
+				'tickets'        => $json_renderer->renderTicketDisplay($ticket_display, true),
+				'all_ticket_ids' => $vars['all_ticket_ids']
 			));
 		} else {
+			$vars['ticket_json'] = $json_renderer->renderTicketDisplay($ticket_display);
+
 			$html = $this->renderView($tpl, $vars);
 
 			if ($is_partial) {
