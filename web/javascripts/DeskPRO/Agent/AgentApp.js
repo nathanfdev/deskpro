@@ -175,6 +175,7 @@ DeskPRO.Agent.AgentAppFactory = function() {
 					targetSel      = attrs['trigger'],
 					offsetTop      = parseInt(attrs['offsetTop']) || 15,
 					offsetLeft     = parseInt(attrs['offsetLeft']) || 0,
+					rightAlign     = typeof attrs['rightAlign'] != 'undefined',
 					hasInit        = false,
 					m;
 
@@ -208,9 +209,16 @@ DeskPRO.Agent.AgentAppFactory = function() {
 						hasInit = true;
 					}
 
-					var pos = targetEl.offset();
+					var pos = targetEl.offset(), left;
+					left = pos.left + offsetLeft;
+
+					if (rightAlign) {
+						left -= element.width();
+						left += targetEl.width();
+					}
+
 					element.css({
-						left: pos.left + offsetLeft,
+						left: left,
 						top: pos.top + offsetTop
 					});
 					element.show();

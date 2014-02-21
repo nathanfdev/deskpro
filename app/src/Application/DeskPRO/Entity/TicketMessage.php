@@ -246,6 +246,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		if (isset($message[$max_length])) {
 			$message = substr($message, 0, $max_length);
 			$message = trim($message);
+			$message .= '...';
 		}
 
 		return $message;

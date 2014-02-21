@@ -138,6 +138,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this._initDisplayOptions();
 		this._initListChangeEvents();
 		this._initMassActions();
+		this._initNavControls();
 
 		$timeout(function() {
 			if (startTicketsBatch[1].length) {
@@ -180,7 +181,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			startIdx = this.listTicketIds.indexOf(displayTicketId);
 
 			$scope.pageCursorStart = startIdx+1;
-			$scope.pageCursorEnd = $scope.pageCursorStart + $scope.tickets.length;
+			$scope.pageCursorEnd = startIdx + $scope.tickets.length;
 
 			if ($scope.pageCursorEnd > $scope.ticketCount) {
 				$scope.pageCursorEnd = $scope.ticketCount;
@@ -213,6 +214,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.fieldCompare = DeskPRO.Agent.PageFragment.List.TicketList.FieldComparer;
 		this.orderBy    = this.meta.orderBy.replace(/^ticket\./, '');
 		this.orderByDir = this.meta.orderByDir.toUpperCase();
+
+		$scope.realtime = true;
 
 		this.groupingTerms = [];
 		if (this.meta.topGroupingTerm) {
@@ -725,6 +728,63 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		this.listview.open();
+	},
+
+	//#########################################################################
+	//# Paging and refreshing
+	//#########################################################################
+
+	_initNavControls: function() {
+		var self = this,
+			$scope = this.$scope;
+
+		$scope.realtime              = true;
+		$scope.refreshCursor         = function() { self.refreshCursor(); };
+		$scope.hasUnloadedUpdates    = false;
+		$scope.toggleRealtimeUpdates = function() {
+			$scope.realtime = !$scope.realtime;
+			if ($scope.realtime && $scope.hasUnloadedUpdates) {
+				self.refreshCursor();
+			}
+		};
+	},
+
+	refreshCursor: function() {
+		var self = this,
+			$scope = this.$scope,
+			$q = this.$q,
+			def;
+
+		$scope.refreshCursorLoading = true;
+		if (this.refreshCursorAjax) {
+			this.refreshCursorAjax.abort();
+			this.refreshCursorAjax = null;
+		}
+
+		def = new $q.defer();
+		$.ajax({
+			url: this.page.meta.refreshCursorUrl.replace(/$cursor/, $scope.pageCursorStart + this.perPage),
+			dataType: 'json',
+			complete: function() {
+				$scope.refreshCursorLoading = false;
+			},
+			success: function(data) {
+				self._handleRefreshCursor();
+				def.resolve(data);
+			},
+			error: function() {
+				def.reject(data);
+			}
+		});
+
+		return def.promise;
+	},
+
+	_handleRefreshCursor: function(data) {
+		var self = this,
+			$scope = this.$scope;
+
+		$scope.tickets = data.tickets;
 	}
 });
 

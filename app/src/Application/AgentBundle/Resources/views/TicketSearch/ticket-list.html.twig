@@ -3,7 +3,7 @@
 	<div class="list-pane-header">
 		<h1><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} Tickets</h1>
 	</div>
-	<div class="list-pane-content list-pane-view with-header with-subheader with-footer">
+	<div class="list-pane-content list-pane-view with-header with-subheader with-alert-subheader with-footer">
 		<header class="view-header" ng-non-bindable>
 			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
@@ -13,10 +13,30 @@
 				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" ng-change="checkAllTickets(checkedTicketsToggle)" />
 				{{ phrase('agent.general.x_selected', {'num_placeholder': '{{ checkedTicketsCount }}'}, true) }}
 
+				<div class="realtime-indicator" ng-class="{'realtime-on': realtime}">
+					<span class="status" ng-click="toggleRealtimeUpdates();">
+						<div ng-show="realtime">
+							<em>Real-time updates are enabled</em>
+							<i class="icon-retweet"></i>
+						</div>
+						<div ng-show="!realtime">
+							<em>Real-time updates are disabled</em>
+							<i class="icon-retweet"></i>
+						</div>
+					</span>
+				</div>
+
 				<div ng-non-bindable>
 					{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
 				</div>
 			</header>
+		</header>
+		<header class="view-alert-subheader" ng-show="hasUnloadedUpdates">
+			There have been updates since you loaded this list.
+			<button class="clean-white" ng-click="refreshCursor();">
+				<span ng-hide="refreshCursorLoading">Refresh List</span>
+				<span ng-show="refreshCursorLoading"><i class="spinner-flat"></i></span>
+			</button>
 		</header>
 		<article class="view-body">
 			<div ng-non-bindable>

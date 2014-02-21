@@ -475,302 +475,6 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	public function runCustomFilterAction()
-	{
-		$result_cache = false;
-		if ($this->in->getUint('cache_id')) {
-			$result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
-			if ($result_cache['person_id'] != $this->person['id']) {
-				$result_cache = false;
-			}
-		}
-
-		$do_run = false;
-
-		$terms = array();
-		$order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
-		$group_by = $this->in->getString('group_by');
-		$searcher = null;
-
-		#------------------------------
-		# If there's no result set, we're running it for the first time
-		#------------------------------
-
-		if (!$result_cache) {
-			$term_rules = RuleBuilder::newTermsBuilder();
-			$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
-			$set_terms_map = array(
-				'department'    => array('op' => 'contains', 'options' => array()),
-				'status'        => array('op' => 'contains', 'options' => array()),
-				'agent'         => array('op' => 'contains', 'options' => array()),
-				'agent_team'    => array('op' => 'contains', 'options' => array()),
-				'participant'   => array('op' => 'contains', 'options' => array()),
-				'category'      => array('op' => 'contains', 'options' => array()),
-				'product'       => array('op' => 'contains', 'options' => array()),
-				'priority'      => array('op' => 'contains', 'options' => array()),
-				'workflow'      => array('op' => 'contains', 'options' => array()),
-				'organization'  => array('op' => 'contains', 'options' => array()),
-				'language'      => array('op' => 'contains', 'options' => array()),
-				'sla'           => array('op' => 'contains', 'options' => array()),
-			);
-
-			foreach ($set_terms_map as $name => $info) {
-				$in_val = $this->container->getIn()->getCleanValueArray('set_term.'.$name, 'raw', 'discard');
-				if ($in_val) {
-					$new_term = $info;
-					$new_term['options'] = $in_val;
-					Arrays::unshiftAssoc($new_term, 'type', $name);
-					$terms[] = $new_term;
-				}
-			}
-
-			foreach ($this->container->getSystemService('ticket_fields_manager')->getFields() as $field) {
-				$in_val = $this->container->getIn()->getValue('set_term.field_'.$field->getId());
-				if ($in_val) {
-					$terms[] = array('type' => 'ticket_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
-				}
-			}
-
-			foreach ($this->in->getCleanValueArray('terms_expanded', 'raw', 'raw') as $type => $info) {
-
-				if (empty($info['options']) || empty($info['op'])) {
-					continue;
-				}
-
-				$opts = $info['options'];
-
-				foreach ($opts as &$_v) {
-					if (is_array($_v)) {
-						$_v = Arrays::func($_v, 'trim');
-						$_v = Arrays::removeEmptyArray($_v);
-					} else if (trim($_v) === "") {
-						$_v = null;
-					}
-				}
-				unset($_v);
-
-				$opts = Arrays::removeValue($opts, null, true);
-				$opts = Arrays::removeValue($opts, false, true);
-
-				if (!$opts) {
-					continue;
-				}
-
-				$terms[] = array('type' => $type, 'op' => $info['op'], 'options' => $opts);
-			}
-
-			if ($this->in->getString('query')) {
-				$terms[] = array('type' => 'text', 'op' => 'is', 'options' => array('query' => $this->in->getString('query')));
-			}
-
-			// Search form: status
-			if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
-				$terms[] = array('type' => 'status', 'op' =>'is', 'options' => array('status' => $search_term));
-			}
-
-			// Search form: search_assigned
-			if ($search_term = $this->in->getCleanValueArray('search_assigned', 'raw', 'discard')) {
-				$agent_ids = array();
-				$team_ids = array();
-
-				foreach ($search_term as $t) {
-					if (strpos($t, 'team.') === 0) {
-						$t = Strings::extractRegexMatch('#^team\.(\d+)$#', $t);
-						if ($t !== "") {
-							$t = (int)$t;
-							$team_ids[] = $t;
-						}
-					} else {
-						$t = (int)$t;
-						$agent_ids[] = $t;
-					}
-				}
-
-				$agent_ids = array_unique($agent_ids);
-				$team_ids = array_unique($team_ids);
-
-				if ($agent_ids) {
-					$terms[] = array('type' => 'agent', 'op' => 'is', 'options' => array('agent_ids' => $agent_ids));
-				}
-				if ($team_ids) {
-					$terms[] = array('type' => 'agent_team', 'op' => 'is', 'options' => array('team_ids' => $team_ids));
-				}
-			}
-
-			if ($search_person_id = $this->in->getUint('search_person_id')) {
-				$terms[] = array('type' => 'person_id', 'op' => 'is', 'options' => array('person_id' => $search_person_id));
-			}
-
-			// Search form: status
-			if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
-				$terms[] = array('type' => 'status', 'op' =>'contains', 'options' => array('status' => $search_term));
-			}
-
-			// Search form: subject
-			$search_term = $this->in->getCleanValueArray('search_subject_string', 'string', 'discard');
-			if ($search_term && $search_term[0]) {
-				foreach ($search_term as $k => $string) {
-					$op   = $this->in->getString("search_subject_op.$k");
-					$type = $this->in->getString("search_subject_type.$k");
-
-					$terms[] = array('type' => 'subject_adv', 'op' => $op, 'options' => array('query' => $string, 'type' => $type));
-				}
-			} else if ($search_term = $this->in->getString('search_subject_simple')) {
-				$terms[] = array('type' => 'subject', 'op' => 'contains', 'options' => array('query' => $search_term));
-			}
-
-			// Search form: message
-			$search_term = $this->in->getCleanValueArray('search_message_string', 'string', 'discard');
-			if ($search_term && $search_term[0]) {
-				foreach ($search_term as $k => $string) {
-					$op   = $this->in->getString("search_message_op.$k");
-					$type = $this->in->getString("search_message_type.$k");
-					$who  = $this->in->getString("search_message_who.$k");
-
-					$date = null;
-					if ($date_op = $this->in->getString("search_message_when_op.$k")) {
-						$date = array(
-							'date1'               => $this->in->getString("search_message_when.date1.$k"),
-							'date2'               => $this->in->getString("search_message_when.date2.$k"),
-							'date1_relative'      => $this->in->getString("search_message_when.date1_relative.$k"),
-							'date2_relative'      => $this->in->getString("search_message_when.date2_relative.$k"),
-							'date1_relative_type' => $this->in->getString("search_message_when.date1_relative_type.$k"),
-							'date2_relative_type' => $this->in->getString("search_message_when.date2_relative_type.$k"),
-						);
-					}
-
-					$terms[] = array(
-						'type'    => 'ticket_message_adv',
-						'op'      => $op,
-						'options' => array(
-							'query'   => $string,
-							'type'    => $type,
-							'who'     => $who,
-							'date'    => $date,
-							'date_op' => $date_op,
-					));
-				}
-			} else if ($search_term = $this->in->getString('search_message_simple')) {
-				$terms[] = array('type' => 'ticket_message', 'op' => 'contains', 'options' => array('query' => $search_term));
-			}
-
-			$do_run = true;
-		}
-
-
-		#------------------------------
-		# Re-do search if we changed order
-		#------------------------------
-
-		if ($result_cache && $order_by && $result_cache->getExtraData('order_by') != $order_by) {
-			$terms = $result_cache['criteria'];
-			$do_run = true;
-		}
-
-		#------------------------------
-		# Run a filter if we need to
-		#------------------------------
-
-		if ($do_run) {
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			$searcher->setPerson($this->person);
-			if ($order_by) {
-				$searcher->setOrderByCode($order_by);
-			}
-
-			$user_searcher  = new \Application\DeskPRO\Searcher\PersonSearch();
-						$org_searcher   = new \Application\DeskPRO\Searcher\OrganizationSearch();
-			$has_user_terms = false;
-			$has_org_terms  = false;
-
-			foreach ($terms as $term) {
-				if (empty($term['op'])) {
-					continue;
-				}
-				if (!isset($term['options'])) $term['options'] = array();
-				if (strpos($term['type'], 'person_') === 0 && $term['type'] != 'person_id') {
-					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
-					$has_user_terms = true;
-				} elseif (strpos($term['type'], 'org_') === 0) {
-					$org_searcher->addTerm($term['type'], $term['op'], $term['options']);
-					$has_org_terms = true;
-				} else {
-					$searcher->addTerm($term['type'], $term['op'], $term['options']);
-				}
-			}
-
-			if ($has_user_terms) {
-				$searcher->setPersonSearch($user_searcher);
-			}
-			if ($has_org_terms) {
-				$searcher->setOrganizationSearch($org_searcher);
-			}
-
-			$results = $searcher->getMatches();
-			$results = Arrays::castToType($results, 'integer');
-
-			if (!$result_cache) {
-				$result_cache = new \Application\DeskPRO\Entity\ResultCache();
-				$result_cache->person = $this->person;
-			}
-
-			$needs_urgency = $searcher->needsUrgency();
-
-			$result_cache->results = $results;
-			$result_cache->criteria = $terms;
-			$result_cache->num_results = count($results);
-			$result_cache->setExtraData('order_by', $order_by);
-			$result_cache->setExtraData('needs_urgency', $needs_urgency);
-			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
-			$result_cache->setExtraData('order_by_summary', $searcher->getOrderBySummary());
-
-			$this->em->persist($result_cache);
-			$this->em->flush();
-		}
-
-		$helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
-		if ($group_by) {
-			$helper->setGroupField($group_by);
-		}
-
-		$vars = array(
-			'cache'               => $result_cache,
-			'cache_id'            => $result_cache->id,
-			'order_by_summary'    => $result_cache->getExtraData('order_by_summary'),
-			'terms_summary'       => $result_cache->getExtraData('terms_summary'),
-			'needs_urgency'       => $result_cache->getExtraData('needs_urgency'),
-			'order_by'            => explode(':', $result_cache->getExtraData('order_by')),
-			'ticket_ids'          => $result_cache->results,
-			'view_name'           => $this->in->getString('view_name'),
-			'view_extra'          => $this->in->getString('view_extra'),
-		);
-
-		$search_form = array(
-			'terms'    => $result_cache->criteria,
-			'order_by' => $result_cache->getExtraData('order_by')
-		);
-		$vars['search_form'] = $search_form;
-
-		if ($this->in->getString('filtername')) {
-			$vars['filtername'] = $this->in->getString('filtername');
-		}
-
-		if ($this->in->getString('view_name')) {
-			$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.name_' . $this->in->getString('view_name'));
-		} else {
-			$pref_display_fields = $this->person->getPref('agent.ui.ticket-basic-display-fields.general');
-		}
-
-		if ($pref_display_fields) {
-			$vars['display_fields'] = $pref_display_fields;
-		} else {
-			// Default display fields based on the filter
-			$vars['display_fields'] = $this->_suggestedDisplayFields($searcher);
-		}
-
-		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $helper, $vars);
-	}
 
 	public function runFilterAction($filter_id)
 	{
@@ -1016,7 +720,7 @@ class TicketSearchController extends AbstractController
 	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');
-		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'simple-ext', 'csv'))) {
+		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'simple-ext', 'csv', 'json'))) {
 			$view_type = 'simple-ext';
 		}
 
@@ -1187,16 +891,22 @@ class TicketSearchController extends AbstractController
             return $this->_outputCsv($vars, $results_helper);
         }
 
-		$html = $this->renderView($tpl, $vars);
-
-		if ($is_partial) {
+		if ($view_type) {
 			return $this->createJsonResponse(array(
-				'html'              => $html,
-				'page'              => $page,
-				'is_grouped_result' => $is_grouping,
+				'tickets' => $ticket_json
 			));
 		} else {
-			return $this->createResponse($html);
+			$html = $this->renderView($tpl, $vars);
+
+			if ($is_partial) {
+				return $this->createJsonResponse(array(
+					'html'              => $html,
+					'page'              => $page,
+					'is_grouped_result' => $is_grouping,
+				));
+			} else {
+				return $this->createResponse($html);
+			}
 		}
 	}
 
