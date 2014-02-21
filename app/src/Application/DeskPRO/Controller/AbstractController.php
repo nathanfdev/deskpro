@@ -88,6 +88,10 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	 */
 	public function checkRequestToken($name = '', $field_name = '_dp_security_token')
 	{
+		if (defined('DP_BYPASS_TOKEN_AUTH') && isset($_REQUEST['DP_BYPASS_TOKEN_AUTH']) && $_REQUEST['DP_BYPASS_TOKEN_AUTH'] == DP_BYPASS_TOKEN_AUTH) {
+			return true;
+		}
+
 		if (empty($_REQUEST[$field_name])) {
 			return false;
 		}
@@ -174,6 +178,9 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	 */
 	public function checkAuthToken($name, $token)
 	{
+		if (defined('DP_BYPASS_TOKEN_AUTH') && isset($_REQUEST['DP_BYPASS_TOKEN_AUTH']) && $_REQUEST['DP_BYPASS_TOKEN_AUTH'] == DP_BYPASS_TOKEN_AUTH) {
+			return true;
+		}
 		return $this->session->getEntity()->checkSecurityToken($name, $token);
 	}
 
