@@ -143,7 +143,7 @@
 										{% if app.getSetting('core.user_mode') != 'closed' %}<a style="margin-{% if is_rtl() %}right{% else %}left{% endif %}: 9px;" href="{{ path('user_login_resetpass') }}" target="_blank">{{ phrase('user.profile.lost_qm') }}</a>{% endif %}
 									</div>
 									<div>
-										<input type="password" value="" name="password" size="20" />
+										<input type="password" autocomplete="off" value="" name="password" size="20" />
 									</div>
 								</td>
 							</tr>
