@@ -393,6 +393,7 @@
 					{% if failed_login_name %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
 					{% if has_done_reset %}<div class="success">{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
 					{% if has_logged_out %}<div class="success">{{ phrase('agent.login.has_logged_out') }}</div>{% endif %}
+					{{ form_token('user_login') }}
 
 					{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
 

@@ -37,12 +37,15 @@ DeskPRO.User.ElementHandler.LoginBox = new Orb.Class({
 
 		this.resetSection.addClass('loading');
 
+		var postData = {
+			'email': $('#dp_login_email').val(),
+			'_dp_security_token': $('#dp_login_box').find('[name="_dp_security_token"]').val()
+		};
+
 		$.ajax({
 			url: BASE_URL + 'login/reset-password/send.json',
 			type: 'POST',
-			data: {
-				email: $('#dp_login_email').val()
-			},
+			data: postData,
 			dataType: 'json',
 			context: this,
 			success: function() {

@@ -70,6 +70,7 @@
 {% block content %}
 <form action="{{ path('billing_login_authenticate_local') }}" method="post">
 	<input type="hidden" name="agent_login" value="1" />
+	{{ form_token('user_login') }}
 	{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 
 	<h1 id="login_title">{{ phrase('agent.general.log_in') }}</h1>

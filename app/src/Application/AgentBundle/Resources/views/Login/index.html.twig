@@ -19,11 +19,10 @@
 			$('#do_send_lost').on('submit', function(ev) {
 				ev.preventDefault();
 
-				var postData = {
-					email: $('#lost_email').val().trim()
-				};
+				var email = $('#lost_email').val().trim();
+				var postData = $('#lost_form').find('input').serializeArray();
 
-				if (!postData.email.length || postData.email.indexOf('@') === -1) {
+				if (!email || email.indexOf('@') === -1) {
 					alert('Please enter an email address');
 					return;
 				}
@@ -33,6 +32,7 @@
 
 				$.ajax({
 					url: '{{ path(route_prefix~'_send_lost') }}',
+					type: 'POST',
 					data: postData,
 					complete: function() {
 						$('#lost_fields_submit').show();
@@ -76,6 +76,7 @@
 	</div>
 	<div class="content">
 		<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
+				{{ form_token('user_login') }}
 				<input type="hidden" name="agent_login" value="1" />
 				{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
 				{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
@@ -127,8 +128,9 @@
 		<form id="do_send_lost">
 			<fieldset>
 				<p>{{ phrase('agent.login.reset-password-info') }}</p>
-				<p>
+				<p id="lost_form">
 					<i class="icon-envelope-alt"></i>
+					{{ form_token('user_login') }}
 					<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
 				</p>
 			</fieldset>

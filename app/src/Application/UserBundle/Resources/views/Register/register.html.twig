@@ -133,7 +133,7 @@
 			</header>
 			<article id="user_type_exist_pass_form" class="dp-well dp-well-light" {% if this_page != 'reset' %}style="display:none"{% endif %}>
 				<form action="{{ path('user_login_resetpass_send') }}" class="form login" method="post" class="with-form-validator">
-					{{ form_token() }}
+					{{ form_token('user_login') }}
 					<table cellspacing="0" cellpadding="0">
 						<tr>
 							<td width="40%">
