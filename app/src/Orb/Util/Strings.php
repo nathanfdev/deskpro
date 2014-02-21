@@ -2113,6 +2113,28 @@ class Strings
 
 
 	/**
+	 * Takes a path with relative segments and returns a full, true path with those expanded.
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public static function canonicalPath($path)
+	{
+		$path = preg_replace('#\b./\b#', '', $path);
+		$parts = explode('/', $path);
+		$relative_idx = array_keys($parts, '..');
+
+		foreach($relative_idx AS $pos => $idx)
+		{
+			array_splice($parts, $idx - ($pos * 2 + 1), 2);
+		}
+
+		$parts = implode('/', $parts);
+		return $parts;
+	}
+
+
+	/**
 	 * Prepares WYSIWYG HTML where <p> tags only take up one line
 	 * by translating into <divs> or replacing with a simple <br>
 	 *

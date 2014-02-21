@@ -29,6 +29,7 @@
 </script>
 {% endblock %}
 {% block content %}
+{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
 
 <div class="dp-register-page">
 
