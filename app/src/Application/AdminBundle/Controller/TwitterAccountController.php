@@ -126,7 +126,7 @@ class TwitterAccountController extends AbstractController
 			try {
 				$url = $api->getAuthorizationUrl();
 			} catch (\EpiOAuthException $e) {
-				return $this->renderStandardError($e->getMessage(), "Error " . $e->getCode());
+				return $this->renderStandardError("There was a problm generating the Twitter authorization URL. There are two common reasons for this: Your consumer key or secret is incorrect, or your server does not allow outbound connection (e.g., because of a firewall)." . $e->getMessage(), "Error " . $e->getCode());
 			}
 			return $this->redirect($url);
 		}
