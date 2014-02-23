@@ -42,7 +42,7 @@ class TestController extends AbstractController
 {
 	public function preAction($action, $arguments = null)
 	{
-		if ($action == 'testAction' || $action == 'aboutAction') {
+		if ($action == 'TestAction' || $action == 'AboutAction') {
 			return null;
 		}
 
@@ -51,11 +51,12 @@ class TestController extends AbstractController
 
 	public function aboutAction()
 	{
-		return $this->createApiResponse(array(
+		return $this->render('ApiBundle:SwaggerUi:index.html.twig');
+		/*return $this->createApiResponse(array(
 			'about'         => 'This is the DeskPRO API. Refer to the API Documentation for available endpoints.',
 			'documentation' => 'https://support.deskpro.com/kb/articles/88-api-basics',
 			'libraries'     => array('php' => 'https://support.deskpro.com/kb/articles/97-deskpro-api-wrapper-php')
-		));
+		));*/
 	}
 
 	/**
