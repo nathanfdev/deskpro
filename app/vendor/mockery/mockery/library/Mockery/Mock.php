@@ -14,7 +14,7 @@
  *
  * @category   Mockery
  * @package    Mockery
- * @copyright  Copyright (c) 2010 Pádraic Brady (http://blog.astrumfutura.com)
+ * @copyright  Copyright (c) 2010-2014 Pádraic Brady (http://blog.astrumfutura.com)
  * @license    http://github.com/padraic/mockery/blob/master/LICENSE New BSD License
  */
 
@@ -135,7 +135,7 @@ class Mock implements MockInterface
      *
      * @var ReflectionMethod[]
      */
-    static protected $_mockery_methods;
+    protected static $_mockery_methods;
 
     protected $_mockery_allowMockingProtectedMethods = false;
 
@@ -182,7 +182,7 @@ class Mock implements MockInterface
         $self = $this;
         $allowMockingProtectedMethods = $this->_mockery_allowMockingProtectedMethods;
         $lastExpectation = \Mockery::parseShouldReturnArgs(
-            $this, func_get_args(), function($method) use ($self, $nonPublicMethods, $allowMockingProtectedMethods) {
+            $this, func_get_args(), function ($method) use ($self, $nonPublicMethods, $allowMockingProtectedMethods) {
                 $rm = $self->mockery_getMethod($method);
                 if ($rm) {
                     if ($rm->isPrivate()) {

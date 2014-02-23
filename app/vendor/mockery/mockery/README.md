@@ -12,8 +12,8 @@ phpunit-mock-objects without the World ending.
 
 Mockery is released under a New BSD License.
 
-The current released version for PEAR is 0.8.0. Composer users may instead opt to use
-the current master branch in lieu of using the more static 0.8.0 git tag.
+The current released version for PEAR is 0.9.0. Composer users may instead opt to use
+the current master branch in lieu of using the more static 0.9.0 git tag.
 The build status of the current master branch is tracked by Travis CI:
 [![Build Status](https://travis-ci.org/padraic/mockery.png?branch=master)](http://travis-ci.org/padraic/mockery)
 
@@ -37,6 +37,42 @@ Prerequisites
 Mockery requires PHP 5.3.2 or greater. In addition, it is recommended to install
 the Hamcrest library (see below for instructions) which contains additional
 matchers used when defining expected method arguments.
+
+**Table of Contents**
+
+- [Installation](#installation)
+- [Upgrading](#upgrading)
+- [Simple Example](#simple-example)
+- [PHPUnit Integration](#phpunit-integration)
+    - [Warning: PHPUnit running tests in separate processes](#warning-phpunit-running-tests-in-separate-processes)
+- [Quick Reference](#quick-reference)
+    - [Behaviour Modifiers](#behaviour-modifiers)
+- [Expectation Declarations](#expectation-declarations)
+- [Argument Validation](#argument-validation)
+- [Creating Partial Mocks](#creating-partial-mocks)
+    - [Traditional Partial Mock](#traditional-partial-mock)
+    - [Passive Partial Mock](#passive-partial-mock)
+    - [Proxied Partial Mock](#proxied-partial-mock)
+        - [Special Internal Cases](#special-internal-cases)
+- [Detecting Mock Objects](#detecting-mock-objects)
+- [Default Mock Expectations](#default-mock-expectations)
+- [Mocking Public Properties](#mocking-public-properties)
+- [Mocking Public Static Methods](#mocking-public-static-methods)
+- [Generating Mock Objects Upon Instantiation (Instance Mocking)](#generating-mock-objects-upon-instantiation-instance-mocking)
+- [Preserving Pass-By-Reference Method Parameter Behaviour](#preserving-pass-by-reference-method-parameter-behaviour)
+- [Mocking Demeter Chains And Fluent Interfaces](#mocking-demeter-chains-and-fluent-interfaces)
+- [Mockery Exceptions](#mockery-exceptions)
+    - [\Mockery\Exception\InvalidCountException](#mockeryexceptioninvalidcountexception)
+    - [\Mockery\Exception\InvalidOrderException](#mockeryexceptioninvalidorderexception)
+    - [\Mockery\Exception\NoMatchingExpectationException](#mockeryexceptionnomatchingexpectationexception)
+- [Mock Object Recording](#mock-object-recording)
+- [Dealing with Final Classes/Methods](#dealing-with-final-classesmethods)
+- [Mockery Global Configuration](#mockery-global-configuration)
+- [Reserved Method Names](#reserved-method-names)
+- [PHP Magic Methods](#php-magic-methods)
+- [Gotchas!](#gotchas)
+- [Quick Examples](#quick-examples)
+- [Contributing](#contributing)
 
 Installation
 ------------

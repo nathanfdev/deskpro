@@ -15,6 +15,7 @@ return array(
     'Symfony\\Bundle\\SwiftmailerBundle' => array($vendorDir . '/symfony/swiftmailer-bundle'),
     'Symfony\\Bundle\\MonologBundle' => array($vendorDir . '/symfony/monolog-bundle'),
     'Symfony\\' => array($vendorDir . '/symfony/symfony/src'),
+    'Swagger' => array($vendorDir . '/zircote/swagger-php/library'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Pheanstalk' => array($vendorDir . '/pda/pheanstalk/classes'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),

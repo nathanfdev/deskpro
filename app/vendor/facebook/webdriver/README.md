@@ -13,15 +13,26 @@ Any complaint, question, idea? You can post it on the user group https://www.fac
 
 ##  GETTING THE CODE
 
-*   git clone git@github.com:facebook/php-webdriver.git
+### Github
+    git clone git@github.com:facebook/php-webdriver.git
 
-*   If you are using Packagist, add the dependency. https://packagist.org/packages/facebook/webdriver
+### Packagist
+Add the dependency. https://packagist.org/packages/facebook/webdriver
 
-        {
-          "require": {
-            "facebook/webdriver": "dev-master"
-          }
-        }
+    {
+      "require": {
+        "facebook/webdriver": "dev-master"
+      }
+    }
+    
+Download the composer.phar
+
+    curl -sS https://getcomposer.org/installer | php
+
+Install the library.
+
+    php composer.phar install
+        
    
 
 ##  GETTING STARTED
@@ -40,6 +51,14 @@ Any complaint, question, idea? You can post it on the user group https://www.fac
         $driver = RemoteWebDriver::create($host, $capabilities);
 
 *   The $capabilities array lets you specify (among other things) which browser to use. See https://code.google.com/p/selenium/wiki/DesiredCapabilities for more details.
+
+## RUN UNIT TESTS
+
+To run unit tests simply run:
+
+    ./vendor/bin/phpunit -c ./tests
+
+Note: For the functional test suite, a running selenium server is required.
 
 ## MORE INFORMATION
 

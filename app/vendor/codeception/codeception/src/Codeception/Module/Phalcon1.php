@@ -54,7 +54,7 @@ use Codeception\Util\Connector\PhalconMemorySession;
  *
  *
  */
-class Phalcon1 extends \Codeception\Util\Framework
+class Phalcon1 extends \Codeception\Util\Framework implements \Codeception\Util\ActiveRecordInterface
 {
     protected $config = array(
         'bootstrap' => 'app/config/bootstrap.php',
@@ -252,7 +252,7 @@ class Phalcon1 extends \Codeception\Util\Framework
      * Retrieves record from database
      *
      * ``` php
-     * $category = $I->grabFromDatabase('Phosphorum\Models\Categories', array('name' => 'Testing'));
+     * $category = $I->grabRecord('Phosphorum\Models\Categories', array('name' => 'Testing'));
      * ```
      *
      * @param $model
