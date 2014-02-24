@@ -58,8 +58,8 @@ class PersonController extends AbstractController
 	public function viewAction($person_id, $with_warn_for_email = false)
 	{
 		$person = $this->getPersonOr404($person_id);
-
-		if (!$person['first_name'] && !$person['last_name'] && $person['name']) {
+                
+                if (!$person['first_name'] && !$person['last_name'] && $person['name']) {
 			$parts = explode(' ', $person['name'], 2);
 			$parts = Arrays::removeFalsey($parts);
 
@@ -1166,7 +1166,16 @@ class PersonController extends AbstractController
 		if (!$this->session->getEntity()->checkSecurityToken('delete_person', $security_token)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
+                
+                $personDeleted = new Entity\PersonDeleted();
+                
+                $personDeleted['person_id'] = $person_id;
+                $personDeleted['by_person'] = $this->getPerson();
+                $personDeleted['reason']    = $this->in->getString('reason');
+                
+                $this->em->persist($personDeleted);
+                $this->em->flush();
+                
 		if ($this->in->getBool('ban')) {
 			foreach ($person->emails as $email) {
 				$email_addy = strtolower($email->email);

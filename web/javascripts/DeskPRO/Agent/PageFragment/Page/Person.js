@@ -383,12 +383,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						}
 					);
 				} else if (action == 'delete') {
-					var el = self.getEl('delete_confirm').clone();
+					var el = self.getEl('delete_confirm');//.clone();
 					DeskPRO_Window.showConfirm(
 						el,
 						function() {
 							$.ajax({
 								url: $(info.itemEl).data('delete-url'),
+                                                                data: {reason: $('.delete-reason', el.selector).val()},
 								type: 'POST',
 								success: function() {
 									DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: person_id });
@@ -402,6 +403,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 									});
 								}
 							});
+                                                        $('.delete-reason', el.selector).val("");
 							self.closeSelf();
 						},
 						null,
@@ -409,18 +411,23 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						400, 260
 					);
 				} else if (action == 'ban') {
-					var el = self.getEl('ban_confirm').clone();
+					var el = self.getEl('ban_confirm');//.clone();
 					DeskPRO_Window.showConfirm(
 						el,
 						function() {
+                                                    console.log($(info.itemEl).data('delete-url'));
+                                                    console.log($('.delete-reason', el.selector).val());
+                                                    //return true;
 							$.ajax({
 								url: $(info.itemEl).data('delete-url'),
 								type: 'POST',
+                                                                data: {reason: $('.delete-reason', el.selector).val()},
 								success: function() {
 									DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: person_id });
 									DeskPRO_Window.showAlert('The user was deleted and banned');
 								}
 							});
+                                                        $('.delete-reason', el.selector).val("");
 							self.closeSelf();
 						},
 						null,
