@@ -1595,6 +1595,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 	 * Apply the changes
 	 */
 	apply: function() {
+		var self = this;
 		var formData = [];
 
 		var formDataInfo = {
@@ -1632,7 +1633,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			success: function(data) {
-				this.wrapper.removeClass('loading');
+				self.wrapper.removeClass('loading');
 
 				this.close();
 
