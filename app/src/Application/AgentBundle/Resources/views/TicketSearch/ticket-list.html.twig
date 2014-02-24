@@ -74,7 +74,7 @@
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
 				>
-					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" attach-parent watch-deep="['ticket', 'display_fields']">
+					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" watch-deep="['ticket', 'display_fields']">
 						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
 					</script>
 				</div>

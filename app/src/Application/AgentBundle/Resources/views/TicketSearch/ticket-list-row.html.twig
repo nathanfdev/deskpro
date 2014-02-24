@@ -93,45 +93,45 @@
 						<span class="prop-val"><%- ticket.ref %></span>
 					<% } %>
 
-					<% if (field== 'language') { %>
+					<% if (field == 'language') { %>
 						<span class="prop-title">{{ phrase('agent.general.language') }}:</span>
 						<span class="prop-val"><%= ticket.language.title %></span>
 					<% } %>
 
-					<% if (field== 'category') { %>
+					<% if (field == 'category') { %>
 						<span class="prop-title">{{ phrase('agent.general.category') }}:</span>
 						<span class="prop-val"><%= ticket.category.title %></span>
 					<% } %>
 
-					<% if (field== 'priority') { %>
+					<% if (field == 'priority') { %>
 						<span class="prop-title">{{ phrase('agent.general.priority') }}:</span>
 						<span class="prop-val"><%= ticket.priority.title %></span>
 					<% } %>
 
-					<% if (field== 'workflow') { %>
+					<% if (field == 'workflow') { %>
 						<span class="prop-title">{{ phrase('agent.general.workflow') }}:</span>
 						<span class="prop-val"><%= ticket.workflow.title %></span>
 					<% } %>
 
-					<% if (field== 'product') { %>
+					<% if (field == 'product') { %>
 						<span class="prop-title">{{ phrase('agent.general.product') }}:</span>
 						<span class="prop-val"><%= ticket.product.title %></span>
 					<% } %>
 
-					<% if (field== 'agent') { %>
+					<% if (field == 'agent') { %>
 						<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
 						<% if (ticket.agent && ticket.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><%- ticket.agent.display_name %></span><% } %>
 						<% if (ticket.agent && ticket.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link"><%- ticket.agent.display_name %></a></span><% } %>
 						<% if (!ticket.agent) { %><span class="prop-val">{{ phrase('agent.general.unassigned') }}</span><% } %>
 					<% } %>
 
-					<% if (field== 'agent_team') { %>
+					<% if (field == 'agent_team') { %>
 						<span class="prop-title">{{ phrase('agent.general.agent_team') }}:</span>
 						<% if (ticket.agent_team) { %><span class="prop-val"><%- ticket.agent_team.name %></span><% } %>
 						<% if (!ticket.agent_team) { %><span class="prop-val">{{ phrase('agent.general.no_team') }}</span><% } %>
 					<% } %>
 
-					<% if (field== 'labels') { %>
+					<% if (field == 'labels') { %>
 						<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
 						<span class="prop-val">
 							<% for (var labelIdx = 0; labelIdx < ticket.labels.length; labelIdx++) { %>
@@ -140,49 +140,49 @@
 						</span>
 					<% } %>
 
-					<% if (field== 'organization') { %>
+					<% if (field == 'organization') { %>
 						<span class="prop-title">{{ phrase('agent.general.organization') }}:</span>
 						<span class="prop-val">
 							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket.organization.id %>'}) }}" data-route-title="@text"><%- ticket.organization.name %></a>
 						</span>
 					<% } %>
 
-					<% if (field== 'date_created') { %>
+					<% if (field == 'date_created') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_created') }}:</span>
 						<span class="prop-val">
 							<dp-timeago timestamp="<%= ticket.date_created_ts %>" />
 						</span>
 					<% } %>
 
-					<% if (field== 'date_user_waiting') { %>
+					<% if (field == 'date_user_waiting') { %>
 						<span class="prop-title">{{ phrase('agent.general.user_waiting') }}:</span>
 						<span class="prop-val">
 							<dp-timeago timestamp="<%= ticket.date_user_waiting_ts %>" no-suffix />
 						</span>
 					<% } %>
 
-					<% if (field== 'date_resolved') { %>
+					<% if (field == 'date_resolved') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_resolved') }}:</span>
 						<span class="prop-val">
 							<dp-timeago timestamp="<%= ticket.date_resolved_ts %>" />
 						</span>
 					<% } %>
 
-					<% if (field== 'date_last_user_reply') { %>
+					<% if (field == 'date_last_user_reply') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_of_last_user_reply') }}:</span>
 						<span class="prop-val">
 							<dp-timeago timestamp="<%= ticket.date_last_user_reply_ts %>" />
 						</span>
 					<% } %>
 
-					<% if (field== 'date_last_agent_reply') { %>
+					<% if (field == 'date_last_agent_reply') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_of_last_agent_reply') }}:</span>
 						<span class="prop-val">
-								<dp-timeago timestamp="<%= ticket.date_last_agent_reply_ts %>" />
-							</span>
+							<dp-timeago timestamp="<%= ticket.date_last_agent_reply_ts %>" />
+						</span>
 					<% } %>
 
-					<% if (field== 'date_last_reply') { %>
+					<% if (field == 'date_last_reply') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_of_last_reply') }}:</span>
 						<% if (ticket.date_last_agent_reply && (!ticket.date_last_user_reply || ticket.date_last_agent_reply_ts > ticket.date_last_user_reply_ts)) { %>
 							<span class="prop-val">
@@ -194,21 +194,41 @@
 						<% } %>
 					<% } %>
 
-					<% if (field== 'total_user_waiting') { %>
+					<% if (field == 'total_user_waiting') { %>
 						<span class="prop-title">{{ phrase('agent.general.total_time_waiting') }}:</span>
 						<span class="prop-val">
-							<span bind="<%= ticket.total_user_waiting %>|formatSeconds:ticket.date_user_waiting_ts"></span>
+							<span ng-bind="<%= parseInt(
+								(ticket.total_user_waiting || 0)
+								+ (
+									(ticket.date_user_waiting_ts || ticket.date_created_ts)
+									- ((new Date()).getTime()/1000)
+								)
+							) %>|formatSeconds"></span>
+						</span>
+					<% } %>
+
+					<% if (field == 'slas') { %>
+						<span class="prop-title">{{ phrase('agent.general.slas') }}:</span>
+						<span class="prop-val">
+							<% for (var slaIdx = 0; slaIdx < ticket.ticket_slas.length; slaIdx++) { var ticket_sla = ticket.ticket_slas[slaIdx]; %>
+							<span class="prop-val sla-status-<%= ticket_sla.sla_status %>">
+								<%- ticket_sla.sla.title %>
+								<% if (ticket_sla.next_trigger_date_ts) { %>
+									(<dp-timeago timestamp="<%= ticket_sla.next_trigger_date_ts %>" no-suffix />)
+								<% } %>
+							</span>
+							<% } %>
 						</span>
 					<% } %>
 
 					{% for field in app.getCustomFieldManager('tickets').getFields() %}
-						<% if (field== 'ticket_fields[{{ field.id }}]') { %>
+						<% if (field == 'ticket_fields[{{ field.id }}]') { %>
 							<span class="prop-title">{{ field.title }}:</span>
 							<span class="prop-val"><%- ticket.field{{ field.id }} %></span>
 						<% } %>
 					{% endfor %}
 					{% for field in app.getCustomFieldManager('people').getFields() %}
-						<% if (field== 'person_fields[{{ field.id }}]') { %>
+						<% if (field == 'person_fields[{{ field.id }}]') { %>
 							<span class="prop-title">{{ field.title }}:</span>
 							<span class="prop-val"><%- ticket.person.field{{ field.id }} %></span>
 						<% } %>

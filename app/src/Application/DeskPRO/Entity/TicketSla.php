@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -419,6 +420,22 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		$data['next_trigger_date'] = $this->getNextTriggerDate();
+		$data['next_trigger_date_ts'] = $data['next_trigger_date'] ? $data['next_trigger_date']->getTimestamp() : 0;
+
+		return $data;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata

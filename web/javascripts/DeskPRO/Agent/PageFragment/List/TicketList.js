@@ -61,6 +61,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			startTicketsBatch;
 
 		startTickets = eval(this.getEl('ticket_json').html());
+
+		if (DP_DEBUG) {
+			console.log(startTickets);
+		}
+
 		startTicketsBatch = [[], [], []];
 		for (var i = 0; i < startTickets.length; i++) {
 			if (i <= 15) startTicketsBatch[0].push(startTickets[i]);
@@ -741,6 +746,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						return !!ticket.organization;
 					case 'labels':
 						return ticket.labels && ticket.labels.length > 0;
+					case 'slas':
+						return ticket.ticket_slas && ticket.ticket_slas.length > 0;
 					default:
 						fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
 						if (fieldM) {
