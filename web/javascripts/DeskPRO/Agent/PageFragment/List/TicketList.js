@@ -705,6 +705,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 	_initDisplayOptions: function() {
 		var $scope = this.$scope,
+			$timeout = this.$timeout,
 			wrapperEl = this.wrapper,
 			self = this,
 			displayOptions,
@@ -777,6 +778,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			refreshCallback: function(info) {
 				// Updates to sort order must always refresh
 				if (info.context.isSortUpdate) {
+					$scope.$safeApply(function() {
+						$scope.refreshCursorLoading = true;
+					});
 					DeskPRO_Window.loadListPane(self.meta.refreshUrl);
 
 				// Otherwise its a display field update, we can just

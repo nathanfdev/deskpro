@@ -208,6 +208,10 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			context: context || {}
 		}
 
+		if (this.options.preRefreshCallback) {
+			this.options.preRefreshCallback(updateInfo);
+		}
+
 		if (this.options.isListView) {
 			var page = this.page;
 			$.ajax({
@@ -217,8 +221,12 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 				data: data,
 				context: this,
 				complete: function() {
-					this.wrapper.removeClass('loading');
-					this.close();
+					if (this.options.refreshCompleteCallback) {
+						this.options.refreshCompleteCallback(updateInfo);
+					}
+					if (this.isOpen()) {
+						this.close();
+					}
 				},
 				success: function() {
 					if (this.options.refreshCallback) {
@@ -236,8 +244,13 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 				data: data,
 				context: this,
 				complete: function() {
-					this.wrapper.removeClass('loading');
-					this.close();
+					if (this.options.refreshCompleteCallback) {
+						this.options.refreshCompleteCallback(updateInfo);
+					}
+					if (this.isOpen()) {
+						this.wrapper.removeClass('loading');
+						this.close();
+					}
 				},
 				success: function() {
 					if (this.options.refreshCallback) {
