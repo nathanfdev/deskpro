@@ -185,12 +185,18 @@ DeskPRO.Agent.AgentAppFactory = function() {
 					var deepWatch = attrs['watchDeep'] ? $parse(attrs['watchDeep'])() : null;
 
 					scope._isDirty = false;
-					function render() {
-						var oldHtml = element.html(),
-							newHtml = tpl.call(scope, scope);
 
+					function render() {
+						var oldHtml,
+							newHtml;
+
+						oldHtml = element.data('oldTplHtml');
+						newHtml = tpl.call(scope, scope);
+
+						// Prevents re-compiling the element with angular needlessly
 						if (oldHtml != newHtml) {
 							element.html(newHtml);
+							element.data('oldTplHtml', newHtml);
 							$compile(element.contents())(scope);
 						}
 

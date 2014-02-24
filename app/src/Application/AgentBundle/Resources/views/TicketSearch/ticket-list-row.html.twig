@@ -134,7 +134,9 @@
 					<% if (field== 'labels') { %>
 						<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
 						<span class="prop-val">
-							<span bindonce ng-repeat="label in ticket.labels" class="listing-tag">{{ ng_var('label') }}</span>
+							<% for (var labelIdx = 0; labelIdx < ticket.labels.length; labelIdx++) { %>
+								<span class="listing-tag"><%- ticket.labels[labelIdx] %></span>
+							<% } %>
 						</span>
 					<% } %>
 
@@ -195,7 +197,7 @@
 					<% if (field== 'total_user_waiting') { %>
 						<span class="prop-title">{{ phrase('agent.general.total_time_waiting') }}:</span>
 						<span class="prop-val">
-							<span bo-bind="<%= ticket.total_user_waiting %>|formatSeconds:ticket.date_user_waiting_ts"></span>
+							<span bind="<%= ticket.total_user_waiting %>|formatSeconds:ticket.date_user_waiting_ts"></span>
 						</span>
 					<% } %>
 

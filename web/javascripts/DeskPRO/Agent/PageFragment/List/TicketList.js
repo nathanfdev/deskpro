@@ -800,6 +800,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			url: this.meta.refreshCursorUrl.replace(/\$cursor/g, cursor),
 			dataType: 'json',
 			success: function(data) {
+				this.refreshCursorAjax = null;
 				time2 = new Date();
 				console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);
 
@@ -813,6 +814,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				}, 10);
 			},
 			error: function() {
+				this.refreshCursorAjax = null;
 				console.log('[TicketList] refreshCursor :: error :: %o', arguments);
 				$scope.refreshCursorLoading = false;
 				def.reject();
