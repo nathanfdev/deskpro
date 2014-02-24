@@ -381,7 +381,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				// Truncate list to max perPage
 				if ($scope.tickets.length >= self.perPage) {
 
-					if (self.realCursorStart !== 0 && firstId) {
+					if (self.realCursorStart !== 1 && firstId) {
 						for (var i = 0; i < $scope.tickets.length; i++) {
 							if ($scope.tickets[i].id === firstId) {
 								newFirstTicketIdx = i;
