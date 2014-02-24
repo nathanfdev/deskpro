@@ -43,12 +43,16 @@
 				{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 			</div>
 
-			<section class="list-listing">
+			<div style="padding: 20px; text-align: center;" ng-show="refreshCursorLoading">
+				<i class="spinner-circle-32"></i>
+			</div>
+
+			<section class="list-listing" ng-hide="refreshCursorLoading">
 				<article
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
 					class="row-item"
-					ng-class="{'open': openTickets[ticket.id], 'list-animation': isLoaded}"
+					ng-class="{'open': openTickets[ticket.id], 'list-animation': isLoaded && !pauseListAnim}"
 					bo-attr bo-attr-data-ticket-id="ticket.id"
 					bo-attr-data-route="'ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '\'+ticket.id+\''}) }}'"
 					data-route-title="@selector(a.subject)"
@@ -120,8 +124,8 @@
 				Showing {{ ng_bind('pageCursorStart') }} to {{ ng_bind('pageCursorEnd') }} of {{ ng_bind('ticketCount') }}
 			</div>
 			<ul class="pagenav" ng-class="{'no-prev': !hasPrevPage, 'no-next': !hasNextPage}">
-				<li class="prev"></li>
-				<li class="next"></li>
+				<li class="prev" ng-click="loadPrevCursorPage();"></li>
+				<li class="next" ng-click="loadNextCursorPage();"></li>
 			</ul>
 		</footer>
 	</div>

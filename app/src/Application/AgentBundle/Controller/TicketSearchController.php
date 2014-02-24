@@ -750,6 +750,9 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
+		$cursor = $this->in->getUint('cursor');
+		if (!$cursor) $cursor = 0;
+
         $tickets = array();
 
 		if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1' || $this->in->getString('grouping_option') == 'DP_NOT_SET') {
@@ -757,7 +760,11 @@ class TicketSearchController extends AbstractController
 			$is_grouping = false;
 			$grouping_option = 'DP_NOT_SET';
             if($view_type != 'csv') {
-			    $tickets = $results_helper->getTicketsForPage($page, $per_page);
+				if ($cursor) {
+					$tickets = $results_helper->getTicketsForCursorPage($cursor, $per_page);
+				} else {
+					$tickets = $results_helper->getTicketsForPage($page, $per_page);
+				}
             }
 		} else {
 			// User looking at just a group of results
@@ -768,7 +775,12 @@ class TicketSearchController extends AbstractController
 			}
 
             if($view_type != 'csv') {
-			    $tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
+				if ($cursor) {
+					$tickets = $results_helper->getGroupedTicketsForCursorPage($grouping_option, $page, $per_page);
+				} else {
+					$tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
+				}
+
 			    $vars['ticket_ids'] = $results_helper->getGroupTicketIds($grouping_option);
             }
 		}

@@ -73,67 +73,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
-		this.updatePageCursor();
+		this.updatePageCursorWithTicketId();
 
 		// Wait til after updatePageCursor since it needs full list to know proper cursor
 		$scope.tickets = startTicketsBatch[0];
 
 		this.getEl('ticket_json').remove();
 		this.getEl('ticket_ids_json').remove();
-
-		$scope.isFieldDisplayable = function(ticket) {
-			return function(field) {
-				var fieldM;
-				switch (field) {
-					case 'ref':
-					case 'agent':
-					case 'agent_team':
-					case 'date_created':
-						return true;
-					case 'date_user_waiting':
-						return !!ticket.date_user_waiting;
-					case 'date_resolved':
-						return !!ticket.date_resolved;
-					case 'total_user_waiting':
-						return (ticket.total_user_waiting || ticket.date_user_waiting);
-					case 'date_last_user_reply':
-						return !!ticket.date_last_user_reply;
-					case 'date_last_agent_reply':
-						return !!ticket.date_last_agent_reply;
-					case 'date_last_reply':
-						return (ticket.date_last_user_reply || ticket.date_last_agent_reply);
-					case 'department':
-						return !!ticket.department;
-					case 'language':
-						return !!ticket.language;
-					case 'category':
-						return !!ticket.category;
-					case 'priority':
-						return !!ticket.priority;
-					case 'workflow':
-						return !!ticket.workflow;
-					case 'organization':
-						return !!ticket.organization;
-					case 'labels':
-						return ticket.labels && ticket.labels.length > 0;
-					default:
-						fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
-						if (fieldM) {
-							if (ticket['field' + fieldM[1]]) {
-								return true;
-							}
-						} else {
-							fieldM = field.match(/^person_fields\[(\d+)\]$/);
-							if (fieldM) {
-								if (ticket.person['field' + fieldM[1]]) {
-									return true;
-								}
-							}
-						}
-						return false;
-				}
-			};
-		};
 
 		this._initDisplayOptions();
 		this._initListChangeEvents();
@@ -151,7 +97,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						startTicketsBatch[2].forEach(function(t) {
 							$scope.tickets.push(t);
 						});
-						self.updatePageCursor();
+						self.updatePageCursorWithTicketId();
 						$timeout(function() {
 							$scope.isLoaded = true;
 						}, 0);
@@ -165,11 +111,16 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}, 10);
 	},
 
+	//#########################################################################
+	//# Paging and cursor
+	//#########################################################################
 
 	/**
-	 * When tickets are added or removed then we should update the counter/cursor vars
+	 * When tickets are added or removed then we should update the counter/cursor vars.
+	 * This calculates the page cursor based on the first displayed ticket and where it appears
+	 * in the list of all ticket IDs.
 	 */
-	updatePageCursor: function() {
+	updatePageCursorWithTicketId: function() {
 		var $scope = this.$scope,
 			displayTicketId,
 			startIdx;
@@ -390,7 +341,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		$scope.tickets = $scope.tickets.filter(function(x) { return !map[x.id]; });
 		this.listTicketIds = this.listTicketIds.filter(function(x) { return !map[x]; });
-		this.updatePageCursor();
+		this.updatePageCursorWithTicketId();
 		$scope.$safeApply();
 	},
 
@@ -636,6 +587,60 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			groupMenuBtn,
 			groupingMenu;
 
+		$scope.isFieldDisplayable = function(ticket) {
+			return function(field) {
+				var fieldM;
+				switch (field) {
+					case 'ref':
+					case 'agent':
+					case 'agent_team':
+					case 'date_created':
+						return true;
+					case 'date_user_waiting':
+						return !!ticket.date_user_waiting;
+					case 'date_resolved':
+						return !!ticket.date_resolved;
+					case 'total_user_waiting':
+						return (ticket.total_user_waiting || ticket.date_user_waiting);
+					case 'date_last_user_reply':
+						return !!ticket.date_last_user_reply;
+					case 'date_last_agent_reply':
+						return !!ticket.date_last_agent_reply;
+					case 'date_last_reply':
+						return (ticket.date_last_user_reply || ticket.date_last_agent_reply);
+					case 'department':
+						return !!ticket.department;
+					case 'language':
+						return !!ticket.language;
+					case 'category':
+						return !!ticket.category;
+					case 'priority':
+						return !!ticket.priority;
+					case 'workflow':
+						return !!ticket.workflow;
+					case 'organization':
+						return !!ticket.organization;
+					case 'labels':
+						return ticket.labels && ticket.labels.length > 0;
+					default:
+						fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
+						if (fieldM) {
+							if (ticket['field' + fieldM[1]]) {
+								return true;
+							}
+						} else {
+							fieldM = field.match(/^person_fields\[(\d+)\]$/);
+							if (fieldM) {
+								if (ticket.person['field' + fieldM[1]]) {
+									return true;
+								}
+							}
+						}
+						return false;
+				}
+			};
+		};
+
 		displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'ticket-' + this.meta.resultTypeName,
 			resultId: this.meta.resultTypeId,
@@ -763,49 +768,92 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				self.refreshCursor();
 			}
 		};
+
+		$scope.loadPrevCursorPage = function() { if ($scope.hasPrevPage) self.loadPrevCursorPage(); };
+		$scope.loadNextCursorPage = function() { if ($scope.hasNextPage) self.loadNextCursorPage(); };
 	},
 
-	refreshCursor: function() {
+	refreshCursor: function(cursor) {
 		var self = this,
 			$scope = this.$scope,
 			$q = this.$q,
 			$timeout = this.$timeout,
-			def;
+			def,
+			time1 = new Date(),
+			time2;
+
+		if (typeof cursor == 'undefined') {
+			cursor = $scope.pageCursorStart;
+		}
+
+		console.log('[TicketList] refreshCursor(%d)', cursor);
 
 		if (this.refreshCursorAjax) {
 			this.refreshCursorAjax.abort();
 			this.refreshCursorAjax = null;
+			console.log('[TicketList] refreshCursor :: abort existing request');
 		}
 
 		def = new $q.defer();
 		$scope.refreshCursorLoading = true;
 		this.refreshCursorAjax = $.ajax({
-			url: this.meta.refreshCursorUrl.replace(/$cursor/, $scope.pageCursorStart + this.perPage),
+			url: this.meta.refreshCursorUrl.replace(/\$cursor/g, cursor),
 			dataType: 'json',
 			success: function(data) {
+				time2 = new Date();
+				console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);
+
 				$scope.hasUnloadedUpdates = false;
 				self._handleRefreshCursor(data);
 				def.resolve(data);
+
 				$timeout(function() {
+					console.log('[TicketList] refreshCursor :: done render (%dms)', (new Date()).getTime() - time2.getTime());
 					$scope.refreshCursorLoading = false;
 				}, 10);
 			},
 			error: function() {
+				console.log('[TicketList] refreshCursor :: error :: %o', arguments);
 				$scope.refreshCursorLoading = false;
-				def.reject(data);
+				def.reject();
 			}
 		});
 
 		return def.promise;
 	},
 
+	loadNextCursorPage: function() {
+		var $scope = this.$scope;
+
+		var nextCursor = ($scope.pageCursorStart + this.perPage) - 1;
+
+		return this.refreshCursor(nextCursor);
+	},
+
+	loadPrevCursorPage: function() {
+		var $scope = this.$scope;
+
+		var prevCursor = ($scope.pageCursorStart - this.perPage) - 1;
+		if (prevCursor < 0) {
+			prevCursor = 0;
+		}
+
+		return this.refreshCursor(prevCursor);
+	},
+
 	_handleRefreshCursor: function(data) {
 		var self = this,
-			$scope = this.$scope;
+			$scope = this.$scope,
+			$timeout = this.$timeout;
 
+		$scope.pauseListAnim = true;
 		this.listTicketIds = data.all_ticket_ids;
 		$scope.tickets = data.tickets;
-		this.updatePageCursor();
+		this.updatePageCursorWithTicketId();
+
+		$timeout(function() {
+			$scope.pauseListAnim = true;
+		}, 1200);
 	}
 });
 
