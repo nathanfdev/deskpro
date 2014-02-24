@@ -18,7 +18,7 @@
 			{% set grouping_url = 'listpane:' ~ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) ~ '?group_by=' ~ group_by ~ '&grouping_option=' %}
 		{% endif %}
 	{% endif %}
-	<div class="list-grouping-bar">
+	<div class="list-grouping-bar" id="{{ tplvars.baseId }}_grouping_bar">
 		<ul>
 		{% if grouped_info.counts[-1].total > 0 %}
 			<li data-grouping-option="-1" {% if grouping_option == 'DP_NOT_SET' or grouping_option == '-1' %}class="on" id="{{ tplvars.baseId }}_total_grouped_count"{% endif %}>

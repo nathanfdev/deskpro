@@ -846,6 +846,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				} else {
 					self.wrapper.find('header.list-grouping-bar').hide();
 					self.getEl('grouping_loading').show();
+					self.getEl('grouping_bar').hide();
 					DeskPRO_Window.loadListPane(url);
 				}
 			}
