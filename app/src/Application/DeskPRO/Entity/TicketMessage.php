@@ -240,7 +240,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$message = Strings::standardEol($message);
 		$message = str_replace(array('<br/>', '<br>', '<br />', '<p>', '</p>'), "\n", $message);
 		$message = strip_tags($message);
-		$message = preg_replace('#[ ]{2,}#', ' ', $message);
+		$message = Strings::decodeHtmlEntities($message);
+		$message = preg_replace('#\s+#', ' ', $message);
 		$message = trim($message);
 
 		if (isset($message[$max_length])) {
