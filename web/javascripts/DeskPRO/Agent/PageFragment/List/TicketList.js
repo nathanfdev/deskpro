@@ -163,6 +163,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	_initListChangeEvents: function() {
 		var self = this, $scope = this.$scope, wrapperEl = this.wrapper;
 
+		this.queuedChangeEvents_timeout = null;
+		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
+
 		this.fieldCompare = DeskPRO.Agent.PageFragment.List.TicketList.FieldComparer;
 		this.orderBy    = this.meta.orderBy.replace(/^ticket\./, '');
 		this.orderByDir = this.meta.orderByDir.toUpperCase();
@@ -190,7 +193,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		// we are told about specific additions/removals of tickets to the list
 		// Those events are called directly on this controller as addTicketResults/removeTicketResults
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
-			self.removeTicketResults(ticket_ids);
+			self.queueChangeEvent('removeTicketResults', ticket_ids);
 		}).bind(this), null, [this.OBJ_ID])
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
@@ -213,9 +216,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 			currentlyInView = $scope.tickets.filter(function(x) { return x.id === ticketId; }).length === 1;
 			if (currentlyInView) {
-				self.refreshTicketResults([ticketId]);
+				self.queueChangeEvent('refreshTicketResults', [ticketId]);
 			} else {
-				self.addTicketResults([ticketId]);
+				self.queueChangeEvent('addTicketResults', [ticketId]);
 			}
 		}, null, [this.OBJ_ID]);
 
@@ -231,6 +234,38 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			wrapperEl.find('.ticket-row-' + ticketId).removeClass('open');
 		});
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this, true);
+	},
+
+
+	/**
+	 * Queues a change event. This is mainly to de-bounce incoming events from client messages.
+	 *
+	 * @param {String} type
+	 * @param {Array} ticketIds
+	 */
+	queueChangeEvent: function(type, ticketIds) {
+		var self = this;
+		ticketIds.forEach(function(tid) {
+			this.queuedChangeEvents[type].push(parseInt(ticketIds));
+		});
+
+		if (!this.queuedChangeEvents_timeout) {
+			this.queuedChangeEvents_timeout = window.setTimeout(function() {
+				var events = self.queuedChangeEvents;
+				self.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
+				self.queuedChangeEvents_timeout = null;
+
+				if (events.removeTicketResults.length) {
+					self.removeTicketResults(events.removeTicketResults);
+				}
+				if (events.refreshTicketResults.length) {
+					self.refreshTicketResults(events.refreshTicketResults);
+				}
+				if (events.addTicketResults.length) {
+					self.addTicketResults(events.addTicketResults);
+				}
+			}, 600);
+		}
 	},
 
 
