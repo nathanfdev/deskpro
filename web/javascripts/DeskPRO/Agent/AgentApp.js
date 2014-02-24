@@ -352,6 +352,16 @@ DeskPRO.Agent.AgentAppFactory = function() {
 		};
 	}]);
 
+	AgentApp.directive('dpRemoved', [function() {
+		return {
+			link: function(scope, element, attr) {
+				element.on('$destroy', function() {
+					scope.$eval(attr.dpRemoved);
+				});
+			}
+		}
+	}]);
+
 	AgentApp.config(['$locationProvider', function($locationProvider) {
 		$locationProvider.html5Mode(true).hashPrefix('');
 	}]);
