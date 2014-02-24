@@ -160,6 +160,69 @@ DeskPRO.Agent.AgentAppFactory = function() {
 		};
 	}]);
 
+	AgentApp.directive('dpTpl', ['$compile', '$parse', function($compile, $parse) {
+		var cache = {};
+		return {
+			restrict: 'AE',
+			replace: true,
+			transclude: false,
+			compile: function(element, attrs) {
+				var newElement = '<div class="dp-tpl"></div>', tpl;
+
+				if (attrs['tplId'] && cache[attrs['tplId']]) {
+					tpl = cache[attrs['tplId']];
+				} else {
+					tpl = _.template(element.html());
+					if (attrs['tplId']) {
+						cache[attrs['tplId']] = tpl;
+					}
+				}
+
+				element.replaceWith(newElement);
+
+				return function(scope, element, attrs) {
+					var watch = attrs['watch'] ? $parse(attrs['watch'])() : null;
+					var deepWatch = attrs['watchDeep'] ? $parse(attrs['watchDeep'])() : null;
+
+					scope._isDirty = false;
+					function render() {
+						var oldHtml = element.html(),
+							newHtml = tpl.call(scope, scope);
+
+						if (oldHtml != newHtml) {
+							element.html(newHtml);
+							$compile(element.contents())(scope);
+						}
+
+						scope._isDirty = false;
+					}
+
+					if (watch && watch.length) {
+						watch.forEach(function(name) {
+							scope.$watch(name, function() {
+								scope._isDirty = true;
+							});
+						});
+					}
+					if (deepWatch && deepWatch.length) {
+						deepWatch.forEach(function(name) {
+							scope.$watch(name, function() {
+								scope._isDirty = true;
+							}, true);
+						});
+					}
+
+					scope.$watch('_isDirty', function(isDirty) {
+						if (isDirty) {
+							render();
+						}
+					});
+					render();
+				};
+			}
+		};
+	}]);
+
 	AgentApp.directive('dpStickyTip', ['$timeout', function($timeout) {
 		return {
 			restrict: 'E',

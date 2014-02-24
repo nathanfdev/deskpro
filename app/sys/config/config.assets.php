@@ -58,7 +58,6 @@ $CONFIG['agent'] = array(
 $CONFIG['agent_vendors'] = array(
 	'out' => 'js/agent-vendors.js',
 	'files' => array(
-		'vendor/tracekit.js',
 		'vendor/modernizr.min.js',
 		'javascripts/Orb/modernizr-ext.js',
 
@@ -71,6 +70,8 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/tmpl.min.js',
+
+		'vendor/underscore/underscore-min.js',
 
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
@@ -105,7 +106,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/angular/angular.min.js',
 		'vendor/angular/angular-animate.min.js',
 		'vendor/angular/modules/bindonce.min.js',
-		'vendor/momentjs/moment.min.js'
+		'vendor/momentjs/moment.min.js',
 	)
 );
 

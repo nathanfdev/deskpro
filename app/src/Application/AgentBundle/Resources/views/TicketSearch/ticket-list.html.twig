@@ -1,5 +1,4 @@
 <div class="list-pane-instance">
-	{% include 'AgentBundle:TicketSearch:ticket-list-props.html.twig' %}
 	<div class="list-pane-header">
 		<h1><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} Tickets</h1>
 	</div>
@@ -48,74 +47,14 @@
 			</div>
 
 			<section class="list-listing" ng-hide="refreshCursorLoading">
-				<article
+				<div
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
-					class="row-item"
-					ng-class="{'open': openTickets[ticket.id], 'list-animation': isLoaded && !pauseListAnim}"
-					bo-attr bo-attr-data-ticket-id="ticket.id"
-					bo-attr-data-route="'ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '\'+ticket.id+\''}) }}'"
-					data-route-title="@selector(a.subject)"
-					data-route-openclass="open"
 				>
-					<dp-sticky-tip trigger=".subject" offset-top="18" ng-if="ticket.previews[0]">
-						<div class="previewtext-row">
-							<cite>{{ ng_static_var('ticket.previews[0].person.display_name') }}:</cite>
-							{{ ng_static_var('ticket.previews[0].message.preview_text') }}
-						</div>
-					</dp-sticky-tip>
-					<div class="item-hover-over-indicator"></div>
-					<div class="loading-arrow">{{ phrase('agent.general.loading') }}</div>
-					<input type="checkbox" class="item-select" ng-model="checkedTickets[ticket.id]" />
-					<div class="top-row">
-						<div class="top-row-left">
-							<h3>
-								<span class="obj-id">#{{ ng_static_var('ticket.id') }}</span>
-								<a class="subject click-through">
-									{{ ng_bind('ticket.subject') }}
-								</a>
-							</h3>
-						</div>
-						<div class="top-row-right">
-							<div class="bound-fade"></div>
-							<div class="on-hold" ng-show="ticket.is_hold">{{ phrase('agent.tickets.on_hold') }}</div>
-							<div
-								class="status-pill status"
-								ng-class="['urgency-'+ticket.urgency, ticket.status, ticket.status+'_'+ticket.hidden_status]"
-							>
-
-								<label ng-if="ticket.status == 'awaiting_agent'">{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
-								<label ng-if="ticket.status == 'awaiting_user'">{{ phrase('agent.tickets.status_awaiting_user') }}</label>
-								<label ng-if="ticket.status == 'resolved'">{{ phrase('agent.tickets.status_resolved') }}</label>
-								<label ng-if="ticket.status == 'closed'">{{ phrase('agent.tickets.status_closed') }}</label>
-								<label ng-if="ticket.status == 'hidden' && !ticket.hidden_status">{{ phrase('agent.tickets.status_hidden') }}</label>
-								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'deleted'">{{ phrase('agent.tickets.status_hidden_deleted') }}</label>
-								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'spam'">{{ phrase('agent.tickets.status_hidden_spam') }}</label>
-								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'temp'">{{ phrase('agent.tickets.status_hidden_temp') }}</label>
-								<label ng-if="ticket.status == 'hidden' && ticket.hidden_status == 'validating'">{{ phrase('agent.tickets.status_hidden_validating') }}</label>
-
-								<i ng-show="ticket.status == 'awaiting_agent'" class="ticket-urgency">{{ ng_bind('ticket.urgency') }}</i>
-							</div>
-							<span ng-show="ticket.agent" class="tipped agent-inline-icon" title="{{ ng_var('ticket.agent.display_name') }}" ng-style="{ 'background-image': 'url('+ticket.agent.picture_url_16+')' }"></span>
-							<br class="clear" />
-						</div>
-					</div>
-					<div class="userinfo">
-						<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ticket.person.id}}'}) }}" data-route-title="@selector(.person-tip)">
-							<span class="with-icon" ng-style="{ 'background-image': 'url('+ticket.person.picture_url_16+')' }">{{ ng_bind('ticket.person.display_name') }}</span></a>
-							<span class="org" ng-if="ticket.person.organization">
-								(<span ng-if="ticket.person.organization_position">{{ ng_bind('ticket.person.organization_position') }}, </span>{{ ng_bind('ticket.person.organization.name') }})
-							</span>
-							<span ng-if="ticket.person.primary_email" class="email">{{ ng_bind('ticket.person.primary_email.email') }}</span>
-						<div class="bound-fade"></div>
-					</div>
-					<div class="extra-fields">
-						<ul>
-							<li ng-repeat="field in display_fields | filter:isFieldDisplayable(ticket)" ng-include="'ticketlist_prop_'+field"></li>
-						</ul>
-						<br class="clear"/>
-					</div>
-				</article>
+					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" attach-parent watch="['display_fields']" watch-deep="['ticket']">
+						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
+					</script>
+				</div>
 			</section>
 
 		</article>
