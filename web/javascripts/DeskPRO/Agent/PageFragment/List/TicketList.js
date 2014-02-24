@@ -246,7 +246,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	queueChangeEvent: function(type, ticketIds) {
 		var self = this;
 		ticketIds.forEach(function(tid) {
-			this.queuedChangeEvents[type].push(parseInt(ticketIds));
+			if (this.queuedChangeEvents[type].indexOf(tid) === -1) {
+				this.queuedChangeEvents[type].push(parseInt(ticketIds));
+			}
 		});
 
 		if (!this.queuedChangeEvents_timeout) {
@@ -317,10 +319,19 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function(tickets) {
 			var firstId = $scope.tickets[0] ? $scope.tickets[0].id : null,
-				newFirstTicketIdx = null;
+				newFirstTicketIdx = null,
+				listTicketIdsMap;
+
+			// Re-gen the map because it could change if another request
+			// was made while this one was still processing
+			currentTicketIdsMap = {};
+			$scope.tickets.forEach(function(t) { currentTicketIdsMap[t.id] = true });
+
+			listTicketIdsMap = {};
+			self.listTicketIds.forEach(function(tid) { listTicketIdsMap[tid] = true; });
 
 			tickets.forEach(function(ticket) {
-				if (!self.isTicketGroupMatch(ticket)) {
+				if (currentTicketIdsMap[ticket.id] || !self.isTicketGroupMatch(ticket)) {
 					return;
 				}
 
@@ -337,18 +348,20 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				// Add to IDs array
 				$scope.tickets.forEach(function(ticket, idx) {
 					if (didAdd.indexOf(ticket.id) !== -1) {
-						if (!lastId) {
-							if (idx === 0) {
-								self.listTicketIds.unshift(ticket.id);
+						if (!listTicketIdsMap[ticket.id]) {
+							if (!lastId) {
+								if (idx === 0) {
+									self.listTicketIds.unshift(ticket.id);
+								} else {
+									self.listTicketIds.push(ticket);
+								}
 							} else {
-								self.listTicketIds.push(ticket);
-							}
-						} else {
-							tmp = self.listTicketIds.indexOf(lastId);
-							if (tmp !== -1) {
-								self.listTicketIds.splice(tmp, 0, ticket.id);
-							} else {
-								appendIds.push(ticket.id);
+								tmp = self.listTicketIds.indexOf(lastId);
+								if (tmp !== -1) {
+									self.listTicketIds.splice(tmp, 0, ticket.id);
+								} else {
+									appendIds.push(ticket.id);
+								}
 							}
 						}
 					}
@@ -356,7 +369,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				});
 				if (appendIds.length) {
 					appendIds.forEach(function(tid) {
-						self.listTicketIds.push(tid);
+						if (!listTicketIdsMap[tid]) {
+							self.listTicketIds.push(tid);
+						}
 					});
 				}
 
