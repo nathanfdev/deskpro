@@ -74,6 +74,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
 		this.updatePageCursorWithTicketId();
+		this.realCursorStart = this.$scope.pageCursorStart;
 
 		// Wait til after updatePageCursor since it needs full list to know proper cursor
 		$scope.tickets = startTicketsBatch[0];
@@ -167,6 +168,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.orderByDir = this.meta.orderByDir.toUpperCase();
 
 		$scope.realtime = true;
+		$scope.halfrealtime = false;
+		$scope.massActionsOpen = false;
 
 		this.groupingTerms = [];
 		if (this.meta.topGroupingTerm) {
@@ -331,7 +334,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var $scope = this.$scope, map;
 		console.log("[TicketList.removeTicketResult] %o", ticketIds);
 
-		if (!$scope.realtime) {
+		if (!$scope.realtime && !$scope.halfrealtime) {
 			$scope.hasUnloadedUpdates = true;
 			return;
 		}
@@ -361,7 +364,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		console.log("[TicketList.refreshTicketResult] %o", ticketIds);
 
-		if (!$scope.realtime) {
+		if (!$scope.realtime && !$scope.halfrealtime) {
 			$scope.hasUnloadedUpdates = true;
 			return;
 		}
@@ -499,6 +502,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 		// Checkbox management
 		//------------------------------
+
+		$scope.uncheckTicketId = function(ticketId) {
+			if ($scope.checkedTickets[ticketId]) {
+				delete $scope.checkedTickets[ticketId];
+				$scope.checkedTicketsCount--;
+			}
+		};
 
 		$scope.$watch('checkedTickets', function(x) {
 			$scope.checkedTicketsCount = 0;
@@ -783,7 +793,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			time2;
 
 		if (typeof cursor == 'undefined') {
-			cursor = $scope.pageCursorStart;
+			cursor = this.realCursorStart - 1;
 		}
 
 		console.log('[TicketList] refreshCursor(%d)', cursor);
@@ -852,6 +862,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.listTicketIds = data.all_ticket_ids;
 		$scope.tickets = data.tickets;
 		this.updatePageCursorWithTicketId();
+		this.realCursorStart = this.$scope.pageCursorStart;
 
 		$timeout(function() {
 			$scope.pauseListAnim = true;
@@ -1022,6 +1033,12 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 
 		this.realtimeStatus = this.$scope.realtime;
 		this.$scope.realtime = false;
+
+		if (this.realtimeStatus) {
+			this.$scope.halfrealtime = true;
+		}
+
+		this.$scope.massActionsOpen = true;
 
 		this.wrapperEl = this.options.templateElement;
 		if(!this.wrapperEl.length) {
@@ -1725,9 +1742,12 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			this.reset();
 		}
 
+		this.$scope.halfrealtime = false;
+		this.$scope.massActionsOpen = false;
 		if (this.realtimeStatus) {
 			this.$scope.toggleRealtimeUpdates();
 		}
+		this.$scope.$safeApply();
 	},
 
 

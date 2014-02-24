@@ -12,7 +12,17 @@
 				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" ng-change="checkAllTickets(checkedTicketsToggle)" />
 				{{ phrase('agent.general.x_selected', {'num_placeholder': '{{ checkedTicketsCount }}'}, true) }}
 
-				<div class="realtime-indicator" ng-class="{'realtime-on': realtime}">
+				<div class="realtime-indicator half-realtime" ng-show="halfrealtime && massActionsOpen">
+					<em>Limited real-time updating</em>
+					<dp-sticky-tip offset-top="18" right-align>
+						<div class="previewtext-row" style="max-width: 200px;">
+							While you are working with mass actions, no <em>new</em> tickets will appear in this list.
+							<br/><br/>
+							Updates to tickets <em>already</em> in the list will still appear in real-time as they change.
+						</div>
+					</dp-sticky-tip>
+				</div>
+				<div class="realtime-indicator" ng-class="{'realtime-on': realtime}" ng-hide="halfrealtime || massActionsOpen">
 					<span class="status" ng-click="toggleRealtimeUpdates();">
 						<div ng-show="realtime">
 							<em>Real-time updates are enabled</em>
