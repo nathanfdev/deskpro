@@ -1,6 +1,6 @@
 <article
 	class="row-item "
-	data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%= ticket.id %>'}) }}"
+	data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%= ticket.id %>'})|raw }}"
 	ng-class="{'open': openTickets[ticket.id], 'list-animation': isLoaded && !pauseListAnim}"
 	data-route-title="@selector(a.subject)"
 	data-route-openclass="open"
@@ -67,7 +67,7 @@
 		</div>
 	</div>
 	<div class="userinfo">
-		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket.person.id %>'}) }}" data-route-title="@selector(.person-tip)">
+		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- ticket.person.picture_url_16 %>');"><%- ticket.person.display_name %></span></a>
 			<% if (ticket.person.organization) { %>
 				<span class="org">
