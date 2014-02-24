@@ -1,7 +1,7 @@
 <article
-	class="row-item "
+	class="row-item"
 	data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%= ticket.id %>'})|raw }}"
-	ng-class="{'open': openTickets[ticket.id], 'list-animation': isLoaded && !pauseListAnim}"
+	ng-class="{'open': openTickets[ticket.id]}"
 	data-route-title="@selector(a.subject)"
 	data-route-openclass="open"
 >

@@ -981,7 +981,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.realCursorStart = this.$scope.pageCursorStart;
 
 		$timeout(function() {
-			$scope.pauseListAnim = true;
+			$scope.pauseListAnim = false;
 		}, 1200);
 	}
 });

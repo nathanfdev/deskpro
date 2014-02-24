@@ -73,6 +73,7 @@
 				<div
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
+					ng-class="{'list-animation': isLoaded && !pauseListAnim}"
 				>
 					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" watch-deep="['ticket', 'display_fields']">
 						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
