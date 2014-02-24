@@ -288,7 +288,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * done server-side.
 	 *
 	 * @param {Array<Integer>} ticketIds
-	 * @return void
+	 * @return {promise}
 	 */
 	addTicketResults: function(ticketIds) {
 		var self = this,
@@ -297,6 +297,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			didAdd = [],
 			appendIds = [],
 			lastId = null,
+			promise,
 			tmp;
 
 		console.log("[TicketList.addTicketResult] %o", ticketIds);
@@ -313,7 +314,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			return;
 		}
 
-		this.getTicketRows(ticketIds).then(function(tickets) {
+		promise = this.getTicketRows(ticketIds);
+		promise.then(function(tickets) {
+			var firstId = $scope.tickets[0] ? $scope.tickets[0].id : null,
+				newFirstTicketIdx = null;
+
 			tickets.forEach(function(ticket) {
 				if (!self.isTicketGroupMatch(ticket)) {
 					return;
@@ -330,10 +335,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				});
 
 				// Add to IDs array
-				$scope.tickets.forEach(function(ticket) {
+				$scope.tickets.forEach(function(ticket, idx) {
 					if (didAdd.indexOf(ticket.id) !== -1) {
 						if (!lastId) {
-							self.listTicketIds.unshift(ticket.id);
+							if (idx === 0) {
+								self.listTicketIds.unshift(ticket.id);
+							} else {
+								self.listTicketIds.push(ticket);
+							}
 						} else {
 							tmp = self.listTicketIds.indexOf(lastId);
 							if (tmp !== -1) {
@@ -343,6 +352,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 							}
 						}
 					}
+					lastId = ticket.id;
 				});
 				if (appendIds.length) {
 					appendIds.forEach(function(tid) {
@@ -351,11 +361,29 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				}
 
 				// Truncate list to max perPage
-				if ($scope.tickets.length > self.perPage) {
-					$scope.tickets.splice(self.perPage);
+				if ($scope.tickets.length >= self.perPage) {
+
+					if (self.realCursorStart !== 0 && firstId) {
+						for (var i = 0; i < $scope.tickets.length; i++) {
+							if ($scope.tickets[i].id === firstId) {
+								newFirstTicketIdx = i;
+								break;
+							}
+						}
+					}
+
+					if (!newFirstTicketIdx) {
+						newFirstTicketIdx = 0;
+					}
+
+					$scope.tickets = $scope.tickets.slice(newFirstTicketIdx, newFirstTicketIdx+self.perPage);
 				}
+
+				self.updatePageCursorWithTicketId();
 			}
 		});
+
+		return promise;
 	},
 
 
@@ -366,7 +394,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @return void
 	 */
 	removeTicketResults: function(ticketIds) {
-		var $scope = this.$scope, map;
+		var $scope = this.$scope,
+			self = this,
+			map,
+			loadExtra,
+			loadExtraStartIdx,
+			loadExtraEndIdx;
+
 		console.log("[TicketList.removeTicketResult] %o", ticketIds);
 
 		if (!$scope.realtime && !$scope.halfrealtime) {
@@ -379,8 +413,26 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		$scope.tickets = $scope.tickets.filter(function(x) { return !map[x.id]; });
 		this.listTicketIds = this.listTicketIds.filter(function(x) { return !map[x]; });
-		this.updatePageCursorWithTicketId();
-		$scope.$safeApply();
+
+		// If we have less than the per page, then get the next page results and bring them in here
+		if ($scope.realtime && $scope.tickets.length < this.perPage && this.listTicketIds.length > $scope.tickets.length) {
+			if ($scope.tickets.length) {
+				loadExtraStartIdx = this.listTicketIds.indexOf($scope.tickets[$scope.tickets.length-1].id) + 1;
+			}
+			if (!loadExtraStartIdx || loadExtraStartIdx === -1) {
+				loadExtraStartIdx = 0;
+			}
+
+			loadExtraEndIdx = loadExtraStartIdx + (this.perPage - $scope.tickets.length);
+			loadExtra = this.listTicketIds.slice(loadExtraStartIdx, loadExtraEndIdx);
+			this.addTicketResults(loadExtra).then(function() {
+				self.updatePageCursorWithTicketId();
+				$scope.$safeApply();
+			});
+		} else {
+			this.updatePageCursorWithTicketId();
+			$scope.$safeApply();
+		}
 	},
 
 
@@ -390,12 +442,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * Note: This only refreshes tickets in the current view (e.g, within current 50 ticket page).
 	 *
 	 * @param {Array<Integer>} ticketIds
-	 * @return void
+	 * @return {promise}
 	 */
 	refreshTicketResults: function(ticketIds) {
 		var $scope = this.$scope,
 			self = this,
-			validTicketIdsMap = {};
+			validTicketIdsMap = {},
+			promise;
 
 		console.log("[TicketList.refreshTicketResult] %o", ticketIds);
 
@@ -415,9 +468,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			return;
 		}
 
-		this.getTicketRows(ticketIds).then(function (tickets) {
+		promise = this.getTicketRows(ticketIds);
+		promise.then(function (tickets) {
 			self.applyTicketData(tickets);
 		});
+
+		return promise;
 	},
 
 
