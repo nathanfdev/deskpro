@@ -217,6 +217,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 				data: data,
 				context: this,
 				complete: function() {
+					this.wrapper.removeClass('loading');
 					this.close();
 				},
 				success: function() {
@@ -235,6 +236,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 				data: data,
 				context: this,
 				complete: function() {
+					this.wrapper.removeClass('loading');
 					this.close();
 				},
 				success: function() {

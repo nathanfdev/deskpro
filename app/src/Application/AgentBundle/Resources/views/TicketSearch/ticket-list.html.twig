@@ -3,8 +3,8 @@
 		<h1><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} Tickets</h1>
 	</div>
 	<div class="list-pane-content list-pane-view with-header with-subheader with-footer" ng-class="{'with-alert-subheader': hasUnloadedUpdates}">
-		<header class="view-header" ng-non-bindable>
-			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
+		<header class="view-header">
+			<div ng-non-bindable>{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}</div>
 			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
 		</header>
 		<header class="view-subheader">
@@ -51,7 +51,7 @@
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
 				>
-					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" attach-parent watch="['display_fields']" watch-deep="['ticket']">
+					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" attach-parent watch-deep="['ticket', 'display_fields']">
 						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
 					</script>
 				</div>
