@@ -62,6 +62,18 @@ $collection->create('api_profile_inhelpstate', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_docs', array(
+	'path'        => '/docs',
+	'controller'  => 'ApiBundle:Docs:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_docs_get', array(
+	'path'        => '/docs/{id}',
+	'controller'  => 'ApiBundle:Docs:get',
+	'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # General
 ########################################################################################################################
