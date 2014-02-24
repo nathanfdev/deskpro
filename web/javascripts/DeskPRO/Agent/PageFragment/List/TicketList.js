@@ -46,7 +46,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		});
 
 		if (this.meta.filter_id) {
-			DeskPRO_Window.sections.tickets_section.highlightFilterNav(this.meta.filter_id, this.meta.topGroupingOption || null);
+			DeskPRO_Window.sections.tickets_section.highlightFilterNav(
+				this.meta.filter_id,
+				this.meta.topGroupingOption || this.meta.topGroupingOption === 0 ? this.meta.topGroupingOption : null
+			);
 		}
 	},
 
