@@ -252,15 +252,17 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @param {Array} ticketIds
 	 */
 	queueChangeEvent: function(type, ticketIds) {
-		var self = this;
+		var self = this,
+			$timeout = this.$timeout;
+
 		ticketIds.forEach(function(tid) {
-			if (this.queuedChangeEvents[type].indexOf(tid) === -1) {
-				this.queuedChangeEvents[type].push(parseInt(ticketIds));
+			if (self.queuedChangeEvents[type].indexOf(tid) === -1) {
+				self.queuedChangeEvents[type].push(parseInt(tid));
 			}
 		});
 
 		if (!this.queuedChangeEvents_timeout) {
-			this.queuedChangeEvents_timeout = window.setTimeout(function() {
+			this.queuedChangeEvents_timeout = $timeout(function() {
 				var events = self.queuedChangeEvents;
 				self.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
 				self.queuedChangeEvents_timeout = null;
