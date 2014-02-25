@@ -66,7 +66,7 @@
 			assignedAgentAvatarIcon: '{{ convo.agent.getPictureUrl(16)|default(0) }}',
 			initialMessages: {{ convo_messages|json_encode|raw }},
 			uploadTo: '{{ path('user_accept_upload') }}',
-			uploadSecurityToken: '{{ security_token('attach_temp') }}',
+			uploadSecurityToken: '{{ static_security_token('attach_temp') }}',
 			autoStart: {% if auto_start %}true{% else %}false{% endif %},
 			isWindowMode: {% if is_window_mode %}true{% else %}false{% endif %}
 		});
