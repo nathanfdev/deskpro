@@ -409,7 +409,7 @@ class MainController extends AbstractController
 		});
 
 		$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
-		$after_id = $after_id - 8000;
+		$after_id = $after_id - 10000;
 
 		if ($words) {
 			$db = App::getDbRead();
@@ -518,7 +518,7 @@ class MainController extends AbstractController
 							$email = substr($q, 1);
 							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
-							if ($this->settings->get('core_tablecounts.people') < 15000) {
+							if ($this->settings->get('core_tablecounts.people') < 150000) {
 								$people_ids = $this->db->fetchAllCol("
 									SELECT people.id
 									FROM people
@@ -543,7 +543,7 @@ class MainController extends AbstractController
 						} else {
 							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
-							if ($this->settings->get('core_tablecounts.people') < 15000) {
+							if ($this->settings->get('core_tablecounts.people') < 150000) {
 								$people_ids = $this->db->fetchAllCol("
 									SELECT people.id
 									FROM people
@@ -590,7 +590,7 @@ class MainController extends AbstractController
 					$q = preg_replace('#\s+#', ' ', $q);
 					$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
-					if ($this->settings->get('core_tablecounts.people') < 15000) {
+					if ($this->settings->get('core_tablecounts.people') < 150000) {
 						$people_ids = $this->db->fetchAllCol("
 							SELECT people.id
 							FROM people
