@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Controller\JsonRenderer;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
+use Application\DeskPRO\Util;
 
 class TicketListRenderer
 {
@@ -59,9 +60,9 @@ class TicketListRenderer
 						'date_created_ts'  => $m->date_created->getTimestamp(),
 					),
 					'person' => array(
-						'id'            => $m->person->id,
-						'display_name'  => $m->person->getDisplayName(),
-						'is_agent'      => $m->person->is_agent,
+						'id'            => $m->person ? $m->person->id : 0,
+						'display_name'  => $m->person ? $m->person->getDisplayName() : 'Anon',
+						'is_agent'      => $m->person ? $m->person->is_agent : false,
 					),
 				);
 			}
@@ -73,7 +74,7 @@ class TicketListRenderer
 			return $json_array;
 		}
 
-		return json_encode($json_array);
+		return Util::jsonEncode($json_array);
 	}
 
 	public function renderTicket(Ticket $ticket)
