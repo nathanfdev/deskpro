@@ -475,6 +475,121 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function getSubgroupCountsAction()
+	{
+		if ($filter_id = $this->in->getUint('filter_id')) {
+			/** @var $filter \Application\DeskPRO\Entity\TicketFilter */
+			$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
+
+			if (!$filter) {
+				throw $this->createNotFoundException();
+			}
+
+			$searcher = $filter->getSearcher();
+			$searcher->setPerson($this->person);
+
+			$set_group_term = null;
+			$set_group_option = null;
+			if ($this->in->getString('set_group_term')) {
+				$set_group_term = $this->in->getString('set_group_term');
+				$set_group_option = $this->in->getString('set_group_option');
+
+				$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+				if ($term) {
+					$type = $term['type'];
+					$op = $term['op'];
+					$choice = $term;
+					unset($choice['type'], $choice['op']);
+
+					$searcher->addTerm($type, $op, $choice);
+				}
+			}
+
+			$results = $searcher->getMatches();
+
+			$group_by = $this->person->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
+			if ($this->in->checkIsset('group_by')) {
+				$group_by = $this->in->getString('group_by');
+			} elseif ($filter['group_by']) {
+				$group_by = $filter['group_by'];
+			}
+		} else if ($sla_id = $this->in->getUint('sla_id')) {
+			/** @var $sla \Application\DeskPRO\Entity\Sla */
+			$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+
+			if (!$sla) {
+				throw $this->createNotFoundException();
+			}
+
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setPerson($this->person);
+
+			$sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
+			if ($sla_filter == 'agent') {
+				$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT, 'is', $this->person->id);
+			} else if ($sla_filter == 'team') {
+				$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT_TEAM, 'is', $this->person->getAgentTeamIds());
+			}
+
+			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', array(
+				'is_completed' => 0,
+				'sla_id' => $sla_id
+			));
+
+			if ($sla_status = $this->in->getString('sla_status')) {
+				$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_STATUS, 'is', array(
+					'sla_status' => $sla_status,
+					'sla_id' => $sla_id
+				));
+			}
+
+			if ($sla->sla_type == \Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME) {
+				$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
+			} else if ($sla->sla_type == \Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE) {
+				$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
+			} else {
+				$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', array('awaiting_agent', 'awaiting_user'));
+			}
+
+			$set_group_term = null;
+			$set_group_option = null;
+			if ($this->in->getString('set_group_term')) {
+				$set_group_term = $this->in->getString('set_group_term');
+				$set_group_option = $this->in->getString('set_group_option');
+
+				$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+				if ($term) {
+					$type = $term['type'];
+					$op = $term['op'];
+					$choice = $term;
+					unset($choice['type'], $choice['op']);
+
+					$searcher->addTerm($type, $op, $choice);
+				}
+			}
+
+			$results = $searcher->getMatches();
+
+			$group_by = $this->person->getPref('agent.ui.ticket-sla-group-by.' . $sla['id']);
+			if ($this->in->getString('group_by')) {
+				$group_by = $this->in->getString('group_by');
+
+				App::getEntityRepository('DeskPRO:PersonPref')->savePref(
+					$this->person,
+					'agent.ui.ticket-sla-group-by.' . $sla['id'],
+					$group_by
+				);
+			}
+		} else {
+			return $this->createJsonResponse(array('error' => 'invalid type'));
+		}
+
+		$helper = new Helper\TicketResults($this);
+		$helper->setTicketIds($results);
+
+		$helper->setGroupField($group_by);
+		return $this->createJsonResponse(array('group_display' => $helper->getGroupDisplayInfo()));
+	}
 
 	public function runFilterAction($filter_id)
 	{

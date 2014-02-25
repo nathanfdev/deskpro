@@ -855,6 +855,13 @@ $collection->add('agent_ticketsearch_runfilter', new Route(
 	array('fragment_name' => 'filter', 'fragment_type' => 'list')
 ));
 
+$collection->add('agent_ticketsearch_getsubgroupcounts', new Route(
+	'/ticket-search/subgroup-counts.json',
+	array('_controller' => 'AgentBundle:TicketSearch:getSubgroupCounts'),
+	array(),
+	array()
+));
+
 $collection->add('agent_ticketsearch_runnamedfilter', new Route(
 	'/ticket-search/filter/{filter_name}',
 	array('_controller' => 'AgentBundle:TicketSearch:runNamedFilter'),

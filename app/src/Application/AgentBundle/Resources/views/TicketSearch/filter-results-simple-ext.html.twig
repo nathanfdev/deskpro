@@ -13,6 +13,7 @@
 	pageMeta.filter_id = {{filter_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.List.TicketList';
 	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_name={{ view_name }}';
+	pageMeta.refreshSubgroupCounts = '{{ path('agent_ticketsearch_getsubgroupcounts') }}?filter_id={{ filter_id }}&set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}';
 	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.refreshCursorUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=json&cursor=$cursor&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'filter', 'content_id': filter_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
@@ -26,6 +27,7 @@
 	pageMeta.sla_filter = '{{ sla_filter }}';
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketSla';
 	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_name={{ view_name }}';
+	pageMeta.refreshSubgroupCounts = '{{ path('agent_ticketsearch_getsubgroupcounts') }}?sla_id={{ sla_id }}&sla_status={{ sla_status }}&set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}';
 	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.refreshCursorUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=json&cursor=$cursor&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'sla', 'content_id': sla_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';

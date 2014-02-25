@@ -174,7 +174,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.queuedChangeEvents_timeout = null;
 		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
 
-		this.fieldCompare = DeskPRO.Agent.PageFragment.List.TicketList.FieldComparer;
+		this.fieldUtil  = DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil;
 		this.orderBy    = this.meta.orderBy.replace(/^ticket\./, '');
 		this.orderByDir = this.meta.orderByDir.toUpperCase();
 
@@ -189,7 +189,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 			this.groupingTerms.push({ field: this.meta.topGroupingTerm, value: this.meta.topGroupingOption || 0 });
 		}
-		if (this.groupBy && this.meta.groupByOption && this.meta.groupByOption != 'DP_NOT_SET') {
+		if (this.meta.groupBy) {
+			$scope.$watch('ticketCount', function(n) {
+				self.getEl('total_grouped_count').find('span').text(n);
+			});
+		}
+		if (this.meta.groupBy && this.meta.groupByOption && this.meta.groupByOption != 'DP_NOT_SET') {
 			if (this.meta.groupByOption.match(/^\d+/)) {
 				this.meta.groupByOption = parseInt(this.meta.groupByOption);
 			}
@@ -347,12 +352,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 				$scope.tickets.push(ticket);
 				didAdd.push(ticket.id);
+				self.updateSubgroupingBubbles('add', ticket);
 			});
 
 			if (didAdd.length) {
 
 				$scope.tickets.sort(function(ticketA, ticketB) {
-					return self.fieldCompare.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
+					return self.fieldUtil.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
 				});
 
 				// Add to IDs array
@@ -422,6 +428,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var $scope = this.$scope,
 			self = this,
 			map,
+			didRemoveList,
 			loadExtra,
 			loadExtraStartIdx,
 			loadExtraEndIdx;
@@ -434,10 +441,28 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		map = {};
+		didRemoveList = {};
 		ticketIds.forEach(function(x) { map[x] = true; });
 
-		$scope.tickets = $scope.tickets.filter(function(x) { return !map[x.id]; });
-		this.listTicketIds = this.listTicketIds.filter(function(x) { return !map[x]; });
+		$scope.tickets = $scope.tickets.filter(function(x) {
+			if (map[x.id]) {
+				self.updateSubgroupingBubbles('remove', x);
+				didRemoveList[x.id] = true;
+				return false;
+			} else {
+				return true;
+			}
+		});
+		this.listTicketIds = this.listTicketIds.filter(function(x) {
+			if (map[x]) {
+				if (!didRemoveList[x]) {
+					self.updateSubgroupingBubbles('refresh');
+				}
+				return false;
+			} else {
+				return true;
+			}
+		});
 
 		// If we have less than the per page, then get the next page results and bring them in here
 		if ($scope.realtime && $scope.tickets.length < this.perPage && this.listTicketIds.length > $scope.tickets.length) {
@@ -513,6 +538,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var $scope = this.$scope,
 			self = this,
 			didChange = false,
+			hasOutofviewChange = false,
 			removeIds = [];
 
 		if (!tickets || !tickets.length) {
@@ -520,7 +546,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		tickets.forEach(function(newTicket) {
+			var found = false;
 			if (!self.isTicketGroupMatch(newTicket)) {
+				found = true;
 				removeIds.push(newTicket.id);
 			} else {
 				for (var i = 0; i < $scope.tickets.length; i++) {
@@ -528,18 +556,27 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						return;
 					}
 
+					found = true;
+					self.updateSubgroupingBubbles('remove', $scope.tickets[i]);
+					self.updateSubgroupingBubbles('add', newTicket);
 					$scope.tickets[i] = newTicket;
 					didChange = true;
 				}
+			}
+			if (!found) {
+				hasOutofviewChange = true;
 			}
 		});
 
 		if (didChange) {
 			$scope.tickets.sort(function(ticketA, ticketB) {
-				return self.fieldCompare.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
+				return self.fieldUtil.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
 			});
 		}
 
+		if (hasOutofviewChange) {
+			self.updateSubgroupingBubbles('refresh');
+		}
 		if (removeIds.length) {
 			this.removeTicketResults(removeIds);
 		}
@@ -563,7 +600,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		this.groupingTerms.forEach(function(groupInfo) {
-			if (self.fieldCompare.checkEquality(ticket, groupInfo.field, groupInfo.value)) {
+			if (self.fieldUtil.checkEquality(ticket, groupInfo.field, groupInfo.value)) {
 				groupMatchCount++;
 			}
 		});
@@ -606,6 +643,101 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		});
 
 		return def.promise;
+	},
+
+
+	/**
+	 * Updates grouping bubble with some info about what happened
+	 *
+	 * @param op
+	 * @param ticket
+	 */
+	updateSubgroupingBubbles: function(op, ticket) {
+		var self = this,
+			groupingBar,
+			ticketValue,
+			foundBubble,
+			$timeout = this.$timeout;
+
+		if (!this.meta.groupBy) {
+			return;
+		}
+
+		groupingBar = this.getEl('grouping_bar');
+
+		if (!ticket) {
+			op = 'refresh';
+		}
+		if (op != 'refresh') {
+			ticketValue = this.fieldUtil.getFieldValue(this.meta.groupBy, ticket);
+			if (ticketValue === '__UNKNOWN__') {
+				op = 'refresh';
+			}
+		}
+		if (op != 'refresh') {
+			if (ticketValue === null) {
+				ticketValue = 0;
+			}
+			groupingBar.find('li').each(function() {
+				var el = $(this), num;
+				if (el.data('grouping-option') == ticketValue) {
+					foundBubble = el;
+					num = parseInt(el.find('span').text().trim() || 0);
+					if (op == 'add') {
+						num++;
+					} else {
+						num--;
+					}
+					el.find('span').text(num);
+					if (num == 0) {
+						el.hide();
+					} else {
+						el.show();
+					}
+				}
+			});
+			if (!foundBubble) {
+				op = 'refresh';
+			}
+		}
+
+		if (op == 'refresh') {
+			$timeout(function() {
+				self.refreshSubgroupNumbers();
+			}, 100);
+		}
+	},
+
+	refreshSubgroupNumbers: function() {
+		var self = this;
+		if (!this.meta.refreshSubgroupCounts) {
+			return;
+		}
+
+		$.ajax({
+			url: this.meta.refreshSubgroupCounts,
+			success: function(data) {
+				var groupingBar = self.getEl('grouping_bar');
+				if (!data.group_display || !data.group_display.counts) {
+					return;
+				}
+
+				for (var k in data.group_display.counts) {
+					if (!data.group_display.counts.hasOwnProperty(ticketValue)) continue;
+					groupingBar.find('li').each(function() {
+						var el = $(this), num = data.group_display.counts[k].total || 0;
+						if (el.data('grouping-option') == ticketValue) {
+							el.find('span').text(num);
+							if (num == 0) {
+								el.hide();
+							} else {
+								el.show();
+							}
+						}
+					});
+				}
+			}
+		});
 	},
 
 	//#########################################################################
@@ -1019,7 +1151,32 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 //######################################################################################################################
 //######################################################################################################################
 
-DeskPRO.Agent.PageFragment.List.TicketList.FieldComparer = {
+DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
+	getFieldValue: function(field, ticket) {
+		switch (field) {
+			case 'department':
+				return ticket.department ? ticket.department.id : null;
+			case 'category':
+				return ticket.category ? ticket.category.id : null;
+			case 'organization':
+				return ticket.organization ? ticket.organization.id : null;
+			case 'person':
+				return ticket.person ? ticket.person.id : null;
+			case 'language':
+				return ticket.language ? ticket.language.id : null;
+			case 'agent':
+				return ticket.agent ? ticket.agent.id : null;
+			case 'agent_team':
+				return ticket.agent_team ? ticket.agent_team.id : null;
+			case 'agent_team':
+				return ticket.agent_team ? ticket.agent_team.id : null;
+			case 'urgency':
+				return ticket.urgency ? ticket.urgency : null;
+			default:
+				return '__UNKNOWN__';
+		}
+	},
+
 	checkEquality: function(ticket, field, value) {
 		var intValue = parseInt(value) || 0;
 
