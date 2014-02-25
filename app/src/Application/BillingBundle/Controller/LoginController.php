@@ -51,21 +51,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
-		if ($this->loginViaToken()) {
-			return $this->redirectRoute($this->route_prefix);
-		}
-
-		$agent_session_code = $this->in->getString('dpsid-agent');
-		$agent_session = null;
-		if ($agent_session_code) {
-			$agent_session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($agent_session_code);
-			if (!$agent_session || !$agent_session->person || !$agent_session->person->is_agent) {
-				$agent_session = null;
-			}
-		}
-
-		$url = $this->generateUrl('billing', array(), true);
-		return $this->render('BillingBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session));
+		return $this->redirectRoute('agent_login', array('return' => $this->generateUrl('billing')));
 	}
 
 	public function verifyMaLoginRequestAction($license_id, $code)
