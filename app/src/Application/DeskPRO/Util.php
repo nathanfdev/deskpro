@@ -67,6 +67,32 @@ class Util
 	}
 
 
+	/**
+	 * Fixes quirky handling of UTF8 errors in native json_encode.
+	 * See http://stackoverflow.com/q/4663743/18802
+	 *
+	 * @param mixed $data
+	 * @return string
+	 */
+	public static function jsonEncode($data)
+	{
+		$fn = function($val) {
+			if (!is_string($val) && !ctype_digit($val)) {
+				return $val;
+			}
+
+			return Strings::utf8_bad_strip($val);
+		};
+
+		if (is_string($data)) {
+			$data = $fn($data);
+		} elseif (is_array($data)) {
+			$data = Arrays::func($data, $fn, array(), true);
+		}
+
+		return @json_encode($data);
+	}
+
 
 	/**
 	 * Tries to build an array of person data using an arbitrary array.
@@ -75,7 +101,7 @@ class Util
 	 * @param array $misc_data
 	 * @return array
 	 */
-public function getPersonData(array $misc_data)
+	public function getPersonData(array $misc_data)
 	{
 		$person_data = array(
 			'standard_fields' => array(),
