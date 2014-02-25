@@ -55,7 +55,7 @@ class TicketListRenderer
 				$data['previews'][] = array(
 					'message' => array(
 						'id'               => $m->id,
-						'preview_text'     => $m->getMessagePreviewText(200),
+						'preview_text'     => $m->getMessagePreviewText(750, ''),
 						'date_created'     => $m->date_created->format('Y-m-d H:i:s'),
 						'date_created_ts'  => $m->date_created->getTimestamp(),
 					),

@@ -332,7 +332,7 @@ class TicketResultsDisplay implements PersonContextInterface
 			LEFT JOIN m.ticket t
 			LEFT JOIN m.person p
 			WHERE m.ticket IN (?0)
-			ORDER BY m.id ASC
+			ORDER BY m.id DESC
 		")->setParameters(array(array_keys($this->ticket_ids)))->execute();
 
 		$this->all_previews = array();

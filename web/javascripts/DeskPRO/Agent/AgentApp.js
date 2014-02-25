@@ -245,6 +245,11 @@ DeskPRO.Agent.AgentAppFactory = function() {
 					offsetTop      = parseInt(attrs['offsetTop']) || 15,
 					offsetLeft     = parseInt(attrs['offsetLeft']) || 0,
 					rightAlign     = typeof attrs['rightAlign'] != 'undefined',
+					topAlign       = typeof attrs['topAlign'] != 'undefined',
+					maxWidthCalc   = attrs['maxWidthCalc'] ? scope.$eval(attrs['maxWidthCalc']) : null,
+					maxWidth       = attrs['maxWidth'] ? attrs['maxWidth'] : null,
+					widthCalc      = attrs['widthCalc'] ? scope.$eval(attrs['widthCalc']) : null,
+					width          = attrs['width'] ? attrs['width'] : null,
 					hasInit        = false,
 					m;
 
@@ -278,19 +283,52 @@ DeskPRO.Agent.AgentAppFactory = function() {
 						hasInit = true;
 					}
 
-					var pos = targetEl.offset(), left;
+					var pos = targetEl.offset(), left, top;
 					left = pos.left + offsetLeft;
+					top = pos.top + offsetTop;
 
 					if (rightAlign) {
 						left -= element.width();
 						left += targetEl.width();
 					}
+					if (topAlign) {
+						top -= element.height();
+					}
 
 					element.css({
 						left: left,
-						top: pos.top + offsetTop
+						top: top,
+
+						// Make it invisble but display:block
+						// so whatever maxWidthCalc might do can use
+						// the proper offset()'s
+						visibility: 'hidden',
+						display: 'block'
 					});
-					element.show();
+
+					if (width) {
+						element.css('width', maxWidth);
+					} else if (widthCalc) {
+						element.css('width', widthCalc(element, targetEl, attrs, scope));
+					} else if (maxWidth) {
+						element.css('max-width', maxWidth);
+					} else if (maxWidthCalc) {
+						element.css('max-width', maxWidthCalc(element, targetEl, attrs, scope));
+					}
+
+					// Compatibility with the dpTextOverflow directive
+					element.find('.with-dp-text-overflow').trigger('init.dptextoverflow').trigger('update.dot');
+
+					// If it's overflowing the window, align it above instead
+					if ((element.offset().top + element.height()) > $(window).height()) {
+						top = pos.top;
+						top -= element.height();
+						element.css('top', top);
+					}
+
+					element.trigger('preshow.dpstickytip');
+					element.css('visibility', 'visible');
+					element.trigger('postshow.dpstickytip');
 				};
 
 				function hide() {
@@ -358,6 +396,63 @@ DeskPRO.Agent.AgentAppFactory = function() {
 				element.on('$destroy', function() {
 					scope.$eval(attr.dpRemoved);
 				});
+			}
+		}
+	}]);
+
+	AgentApp.directive('dpTextOverflow', [function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attr) {
+				var hasInit = false;
+				function init() {
+					if (hasInit) return;
+					hasInit = true;
+					var options = {
+						ellipsis: '...',
+						wrap: 'letter'
+					};
+
+					if (attr['overflowAppendString']) {
+						options['ellipsis'] = attr['overflowAppendString']
+					}
+					if (attr['overflowWrapType']) {
+						options['wrap'] = attr['overflowWrapType']
+					}
+					if (typeof attr['overflowWatch'] != 'undefined') {
+						if (attr['overflowWatch'] == 'window') {
+							options['watch'] = 'window';
+						} else {
+							options['watch'] = true;
+						}
+					}
+					if (attr['overflowHeight']) {
+						options['height'] = parseInt(attr['overflowHeight']);
+					}
+					if (attr['overflowTolerance']) {
+						options['tolerance'] = attr['overflowTolerance']
+					}
+					if (attr['overflowCallback']) {
+						options['callback'] = scope.$eval(attr['overflowCallback']);
+					}
+
+					element.dotdotdot(options);
+
+					element.on('preshow', function() {
+						element.trigger('update.dot');
+					});
+
+					scope.$on('$destroy', function() {
+						element.trigger('destroy');
+					});
+				}
+
+				element.addClass('with-dp-text-overflow');
+				element.on('init.dptextoverflow', function() { init(); });
+
+				if (typeof attr['overflowManualInit'] == 'undefined') {
+					init();
+				}
 			}
 		}
 	}]);

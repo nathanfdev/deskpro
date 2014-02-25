@@ -81,6 +81,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.hotkeys.js',
 		'vendor/jquery/jquery.textarea-expander.js',
 		'vendor/jquery/jquery.serializeJSON.min.js',
+		'vendor/jquery/jquery.dotdotdot.min.js',
 		'vendor/jqTree/tree.jquery.js',
 
 		'vendor/jquery/jquery-checkbox/jquery.checkbox.js',

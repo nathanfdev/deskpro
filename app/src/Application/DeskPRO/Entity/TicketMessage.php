@@ -228,7 +228,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_message_length;
 	}
 
-	public function getMessagePreviewText($max_length)
+	public function getMessagePreviewText($max_length = 0, $ellipses = '...')
 	{
 		$message = $this->getMessageHtml();
 		$sig_pos = strpos($message, '<div class="dp-signature-start">');
@@ -244,10 +244,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$message = preg_replace('#\s+#', ' ', $message);
 		$message = trim($message);
 
-		if (isset($message[$max_length])) {
+		if ($max_length && isset($message[$max_length])) {
 			$message = substr($message, 0, $max_length);
 			$message = trim($message);
-			$message .= '...';
+			$message .= $ellipses;
 		}
 
 		return $message;

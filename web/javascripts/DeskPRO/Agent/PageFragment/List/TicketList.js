@@ -716,6 +716,25 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			groupMenuBtn,
 			groupingMenu;
 
+		$scope.previewMaxWidthCalc = function(element, targetElement, attrs, scope) {
+			var pane = $('#dp_list'),
+				maxW;
+
+			maxW = pane.width();
+
+			// Minus the indent of the element to the row (its aligned to the link)
+			maxW -= (element.offset().left - pane.offset().left);
+
+			// Some tolerance
+			maxW -= 25;
+
+			if (maxW < 300) {
+				maxW = 300;
+			}
+
+			return maxW;
+		};
+
 		$scope.isFieldDisplayable = function(ticket) {
 			return function(field) {
 				var fieldM;
