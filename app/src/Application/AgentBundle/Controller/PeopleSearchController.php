@@ -887,7 +887,7 @@ class PeopleSearchController extends AbstractController
 				SELECT f
 				FROM DeskPRO:Feedback f
 				WHERE f.person = ?0 AND f.hidden_status = 'user_validating'
-			")->execute(array($person->getId()));
+			")->execute(array($people_ids));
 			foreach ($all_feedback as $feedback) {
 				$feedback->setStatus('new');
 				$this->em->persist($feedback);
@@ -898,7 +898,7 @@ class PeopleSearchController extends AbstractController
 					SELECT c
 					FROM DeskPRO:$rel c
 					WHERE c.person = ?0 AND c.status = 'user_validating'
-				")->execute(array($person->getId()));
+				")->execute(array($people_ids));
 				foreach ($all_comments as $comment) {
 					$comment->setStatus('visible');
 					$this->em->persist($comment);
