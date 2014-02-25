@@ -642,6 +642,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 			if ($scope.checkedTicketsCount && !self.massActions) {
 				$scope.openMassActions();
+			} else if (!$scope.checkedTicketsCount && self.massActions) {
+				self.massActions.close();
 			}
 		}, true);
 
