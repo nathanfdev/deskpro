@@ -196,7 +196,7 @@ class Arrays
 
 		foreach ($array as $k => $v) {
 			if ($run_on_keys) {
-				$k = self::_func_run_func($func, $params, $v);
+				$k = self::_func_run_func($func, $params, $k);
 			}
 			$array[$k] = Arrays::func($v, $func, $params);
 		}
