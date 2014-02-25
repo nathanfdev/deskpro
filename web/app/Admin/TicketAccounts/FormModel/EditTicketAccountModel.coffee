@@ -12,7 +12,7 @@ define ->
 			@form.out_gmail_account = {}
 			@form.out_smtp_account  = {}
 
-			if @account.other_addresses.length
+			if @account.other_addresses and @account.other_addresses.length
 				@form.with_email_aliases = true
 				@form.other_addresses = @account.other_addresses.join(', ')
 			else

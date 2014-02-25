@@ -13,7 +13,7 @@
         this.form.outgoing_type = 'mail';
         this.form.out_gmail_account = {};
         this.form.out_smtp_account = {};
-        if (this.account.other_addresses.length) {
+        if (this.account.other_addresses && this.account.other_addresses.length) {
           this.form.with_email_aliases = true;
           this.form.other_addresses = this.account.other_addresses.join(', ');
         } else {

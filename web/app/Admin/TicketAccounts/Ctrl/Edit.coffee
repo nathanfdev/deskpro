@@ -31,6 +31,7 @@ define [
 				@account = {
 					email_address: '',
 					connection_type: '',
+					other_addresses: [],
 					in_pop3_account: {},
 					in_imap_account: {},
 					in_gmial_account: {},
@@ -41,8 +42,8 @@ define [
 				}
 
 				@form_model = new EditTicketAccountModel(@account)
-				@form_model.form.connection_type = ''
-				@form_model.form.email_transport.transport_type = ''
+				@form_model.form.incoming_account_type = ''
+				@form_model.form.outgoing_account_type = 'smtp'
 				@$scope.form = @form_model.form
 
 				return dep_promise

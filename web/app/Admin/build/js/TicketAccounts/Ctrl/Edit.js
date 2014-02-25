@@ -41,6 +41,7 @@
           this.account = {
             email_address: '',
             connection_type: '',
+            other_addresses: [],
             in_pop3_account: {},
             in_imap_account: {},
             in_gmial_account: {},
@@ -50,8 +51,8 @@
             }
           };
           this.form_model = new EditTicketAccountModel(this.account);
-          this.form_model.form.connection_type = '';
-          this.form_model.form.email_transport.transport_type = '';
+          this.form_model.form.incoming_account_type = '';
+          this.form_model.form.outgoing_account_type = 'smtp';
           this.$scope.form = this.form_model.form;
           return dep_promise;
         } else {
