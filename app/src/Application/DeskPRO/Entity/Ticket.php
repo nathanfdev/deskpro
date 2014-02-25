@@ -1505,7 +1505,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setPersonId($id)
 	{
 		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
-		$this['person'] = $person;
+		$this->setPerson($person);
 	}
 
 	public function setPerson(Person $person)
@@ -1523,6 +1523,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
 			$this['person_email'] = null;
 		}
+	}
+
+	public function setPersonEmail(PersonEmail $email = null)
+	{
+		if ($email) {
+			if ($this->person && $email->person && $this->person->id != $email->person->id) {
+				throw new \InvalidArgumentException("The email address does not belong to the person who owns the ticket.");
+			}
+		}
+
+		$this->setModelField('person_email', $email);
 	}
 
 	public function getPersonEmail()

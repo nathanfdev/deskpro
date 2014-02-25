@@ -298,7 +298,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			if ($email_validating) {
 				$ticket->person_email_validating = $email_validating;
 			} else {
-				$ticket['person_email'] = $email;
+				if ($email && $email->person && $person && $email->person->id == $person->id) {
+					$ticket['person_email'] = $email;
+				}
 			}
 
 			if ($this->require_login) {
