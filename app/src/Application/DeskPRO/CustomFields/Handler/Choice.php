@@ -57,7 +57,7 @@ class Choice extends HandlerAbstract
 		if ($data === null) return '';
 
 		$data['value'] = $this->_getRenderableString($data);
-		return parent::renderText($data, $template_vars);
+		return parent::renderHtml($data, $template_vars);
 	}
 
 	public function renderText($data = null, array $template_vars = array())
