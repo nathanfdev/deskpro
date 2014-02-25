@@ -540,9 +540,11 @@ class AgentsController extends AbstractController
 
 		foreach ($emails as $email) {
 			// In case they are an existing account already
+			$did_exist = true;
 			$agent = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
 			if (!$agent) {
+				$did_exist = false;
 				$agent = new \Application\DeskPRO\Entity\Person();
 			}
 
@@ -552,7 +554,11 @@ class AgentsController extends AbstractController
 			$agent->can_agent = true;
 			$agent->setPassword(Strings::random(20));
 
-			$email = $agent->addEmailAddressString($email);
+			if (!$did_exist) {
+				$email = $agent->addEmailAddressString($email);
+			} else {
+				$email = $agent->findEmailAddress($email);
+			}
 
 			// Attempt to figure out name from email address
 			list ($name,) = explode('@', $email->email, 2);
