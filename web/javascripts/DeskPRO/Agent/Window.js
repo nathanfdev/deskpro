@@ -655,6 +655,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 			});
 		});
+		$('#agent_chat_section').each(function() {
+			$(this).qtip({
+				position: {
+					my: 'bottom center',
+					at: 'top center',
+					target: $(this)
+				},
+				content: {attr: 'title'},
+				style: {
+					classes: 'qtip-dark qtip-rounded'
+				}
+			});
+		});
 
 		$('.panevis-switcher').find('li').each(function() {
 			$(this).qtip({
@@ -2974,7 +2987,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.getSectionDataStartQueue();
 
-		$('#dp_nav [data-section-handler]').each(function() {
+		$('#dp_nav [data-section-handler], #agent_chat_section').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
 				el.attr('id', Orb.getUniqueId('section_'));

@@ -45,7 +45,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	initSection: function() {
-
+		this.updateOnlineCount();
 	},
 
 	_initMessageHandlers: function() {
@@ -70,6 +70,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	_initInterface: function() {
 		this.panelEl = $('#agent_chat_panel');
 		this.onlineListEl = $('#agent_online_list');
+		this.onlineIconsEl = $('#agent_chat_online_icons');
 		this.offlineListEl = $('#agent_offline_list');
 		this.onlineCountEl = $('#chat_online_count');
 		this.agentTeamList = $('#agent_team_list');
@@ -152,6 +153,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			self.addOnlineAgent($(this).removeClass('online-now').data('agent-id'));
 		});
 
+		this.updateOnlineCount();
+
 		this.panelEl.on('click', function() {
 
 		});
@@ -232,6 +235,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			return;
 		}
 
+		var li2 = this.onlineIconsEl.find('.agent-' + agent_id);
+		li2.show();
+
 		// Make sure they aren't already there (ie logged out/logged in before we could see theyre gone)
 		if ($('.agent-' + agent_id, this.onlineListEl).length) {
 			return;
@@ -247,6 +253,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var countInt = parseInt(this.onlineCountEl.html());
 		countInt++;
 		this.onlineCountEl.html(countInt);
+		this.updateOnlineCount();
 
 		$('li.no-agents', this.onlineListEl).hide();
 	},
@@ -257,6 +264,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}
 
 		var li = $('.agent-' + agent_id, this.onlineListEl);
+		var li2 = this.onlineIconsEl.find('.agent-' + agent_id);
 		var offlineLi = $('.agent-' + agent_id, this.offlineListEl);
 
 		if (!li.length) {
@@ -264,6 +272,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}
 
 		li.remove();
+		li2.hide();
 
 		// Show them in offline again
 		offlineLi.show();
@@ -275,5 +284,14 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		if (countInt < 1) {
 			$('li.no-agents', this.onlineListEl).show();
 		}
+		this.updateOnlineCount();
+	},
+
+	updateOnlineCount: function(countInt) {
+		if (!countInt) {
+			countInt = this.onlineListEl.find('li').length;
+		}
+
+		$('#agent_chat_section').attr('title', 'Online Agents: ' + countInt + '. Click to open IM window.');
 	}
 });
