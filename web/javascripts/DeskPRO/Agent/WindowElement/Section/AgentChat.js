@@ -289,7 +289,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 	updateOnlineCount: function(countInt) {
 		if (!countInt) {
-			countInt = this.onlineListEl.find('li').length;
+			countInt = this.onlineListEl.find('li').length - 1; //-1 because theres an li for 'no online'
 		}
 
 		$('#agent_chat_section').attr('title', 'Online Agents: ' + countInt + '. Click to open IM window.');
