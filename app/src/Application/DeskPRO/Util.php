@@ -77,7 +77,7 @@ class Util
 	public static function jsonEncode($data)
 	{
 		$fn = function($val) {
-			if (!is_string($val) && !ctype_digit($val)) {
+			if (!is_string($val) || ctype_digit($val)) {
 				return $val;
 			}
 
