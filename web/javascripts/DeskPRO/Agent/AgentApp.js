@@ -101,7 +101,7 @@ DeskPRO.Agent.AgentAppFactory = function() {
 
 	AgentApp.directive('dpTimeago', ['$interval', '$filter', function($interval, $filter) {
 		return {
-			restrict: 'E',
+			restrict: 'AE',
 			template: '<time class="dp-timeago"></time>',
 			replace: true,
 			scope: {
@@ -235,7 +235,7 @@ DeskPRO.Agent.AgentAppFactory = function() {
 
 	AgentApp.directive('dpStickyTip', ['$timeout', function($timeout) {
 		return {
-			restrict: 'E',
+			restrict: 'AE',
 			template: '<div class="dp-stickytip" ng-transclude></div>',
 			replace: true,
 			transclude: true,
