@@ -32,78 +32,13 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\App\Native;
+namespace Application\DeskPRO\App\Native\EventHandler;
 
-use Application\DeskPRO\Entity\AppPackage;
-use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
-
-class NativePackageConfig
+interface EventHandlerInterface
 {
 	/**
-	 * @var OptionsArray
+	 * @param EventContext $context
+	 * @return void
 	 */
-	private $config;
-
-	/**
-	 * @param AppPackage $package
-	 * @return NativePackageConfig
-	 */
-	public static function createFromPackage(AppPackage $package)
-	{
-		$path = DP_ROOT.'/apps/' . $package->native_name . '/native/native_config.php';
-		if (file_exists($path)) {
-			$config = require($path);
-		} else {
-			$config = array();
-		}
-
-		return new self($config);
-	}
-
-
-	/**
-	 * @param array $config
-	 */
-	public function __construct(array $config)
-	{
-		$config = Arrays::flattenKeyValueArray($config);
-		$this->config =  new OptionsArray($config);
-	}
-
-
-	/**
-	 * @return string|null
-	 */
-	public function getAgentRequestHandlerClass()
-	{
-		return $this->config->get('agent.request_handler', null);
-	}
-
-
-	/**
-	 * @return string|null
-	 */
-	public function getInstallerHandlerClass()
-	{
-		return $this->config->get('install.handler', null);
-	}
-
-
-	/**
-	 * @return string|null
-	 */
-	public function getEventHandlerClass()
-	{
-		return $this->config->get('event.handler', null);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getServices()
-	{
-		return $this->config->get('services', array());
-	}
+	public function handleEvent(EventContext $context);
 }

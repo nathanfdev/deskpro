@@ -32,78 +32,45 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\App\Native;
+namespace deskpro_gravatar;
 
-use Application\DeskPRO\Entity\AppPackage;
-use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
 
-class NativePackageConfig
+class InstallerHandler implements InstallerHandlerInterface
 {
 	/**
-	 * @var OptionsArray
+	 * {@inheritDoc}
 	 */
-	private $config;
-
-	/**
-	 * @param AppPackage $package
-	 * @return NativePackageConfig
-	 */
-	public static function createFromPackage(AppPackage $package)
+	public function install(InstallerContext $context)
 	{
-		$path = DP_ROOT.'/apps/' . $package->native_name . '/native/native_config.php';
-		if (file_exists($path)) {
-			$config = require($path);
-		} else {
-			$config = array();
-		}
-
-		return new self($config);
+		$this->_doInstall($context);
 	}
 
 
 	/**
-	 * @param array $config
+	 * {@inheritDoc}
 	 */
-	public function __construct(array $config)
+	public function uninstall(InstallerContext $context)
 	{
-		$config = Arrays::flattenKeyValueArray($config);
-		$this->config =  new OptionsArray($config);
+		$context->getContainer()->getSettingsHandler()->setSetting('core.use_gravatar', null);
 	}
 
 
 	/**
-	 * @return string|null
+	 * {@inheritDoc}
 	 */
-	public function getAgentRequestHandlerClass()
+	public function update(InstallerContext $context)
 	{
-		return $this->config->get('agent.request_handler', null);
+		$this->_doInstall($context);
 	}
 
 
 	/**
-	 * @return string|null
+	 * @param InstallerContext $context
 	 */
-	public function getInstallerHandlerClass()
+	private function _doInstall(InstallerContext $context)
 	{
-		return $this->config->get('install.handler', null);
-	}
-
-
-	/**
-	 * @return string|null
-	 */
-	public function getEventHandlerClass()
-	{
-		return $this->config->get('event.handler', null);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getServices()
-	{
-		return $this->config->get('services', array());
+		$context->getContainer()->getSettingsHandler()->setSetting('core.use_gravatar', 1);
 	}
 }

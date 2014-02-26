@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\App\Native\EventHandler\EventContext;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
@@ -312,6 +313,16 @@ class AppsController extends AbstractController
 
 		$this->em->persist($app);
 		$this->em->flush();
+
+		if ($app->package->native_name) {
+			$native_app = $manager->getNativeApp($app);
+			$class = $native_app->getConfig()->getEventHandlerClass();
+			if ($class) {
+				$context = new EventContext('settings.updated', array('settings' => $app->getSettings()), $this->container, $native_app);
+				$handler = new $class();
+				$handler->handleEvent($context);
+			}
+		}
 
 		// If this is a custom app, we can update assets from here as well
 		if ($package->is_custom) {

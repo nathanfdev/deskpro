@@ -174,7 +174,6 @@
 	 * Use gravatar for default avatars?
 	 */
 	'core.use_gravatar' => 1,
-	'core.use_default_gravatar' => 1,
 
 	/**
 	 * How long, in seconds, are sessions valid for?
