@@ -200,12 +200,10 @@ abstract class LoaderAbstract
 			require DP_ROOT . '/sys/KernelBooter.php';
 			\DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
-			if (!$kernel_class) {
-				$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
-			}
+			$kernel_class = 'DeskPRO\\Kernel\\DpKernel';
 			define('DP_INTERFACE', 'sys');
 
-			$kernel = new $kernel_class($env, $debug);
+			$kernel = new $kernel_class($env, $debug, DP_INTERFACE);
 			$kernel->boot();
 
 			/** @var $container \Application\DeskPRO\DependencyInjection\DeskproContainer */

@@ -78,6 +78,15 @@ $definition->setArguments(array(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 
+// twig.helpers.deskpro_user_templating
+$definition = new Definition();
+$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$definition->addTag('twig.extension', array());
+$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
+
 // session.storage
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
@@ -216,7 +225,10 @@ $container->loadFromExtension('framework', array(
 	),
 	'validation' => array('enabled' => true),
 	'session' => array(),
-	'form' => array('enabled' => true)
+	'form' => array('enabled' => true),
+	'router' => array(
+		'resource' => DP_ROOT.'/sys/config/routing.php'
+	)
 ));
 
 // Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)
@@ -278,3 +290,4 @@ $container->loadFromExtension('swiftmailer', array(
 
 $container->loadFromExtension('deskpro_core', array());
 $container->loadFromExtension('deskpro_search', array());
+$container->loadFromExtension('deskpro_api_core', array());

@@ -205,24 +205,17 @@ class KernelBooter
 			exit;
 		}
 
+		$kernel_class = 'DeskPRO\\Kernel\\DpKernel';
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');
 		} elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\AdminKernel';
 			define('DP_INTERFACE', 'admin');
 		} elseif (preg_match('#^/billing(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\BillingKernel';
 			define('DP_INTERFACE', 'billing');
 		} elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\ReportKernel';
 			define('DP_INTERFACE', 'reports');
 		} elseif (preg_match('#^/api(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\ApiKernel';
 			define('DP_INTERFACE', 'api');
-		} elseif (preg_match('#^/dev(/|\?|$)#', $path) && $env == 'dev') {
-			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
-			define('DP_INTERFACE', 'dev');
 		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
 
 			if (dp_get_config('is_installed_flag')) {
@@ -250,7 +243,6 @@ class KernelBooter
 			header('Location: ' . $url);
 			exit;
 		} else {
-			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'user');
 
 			try {
@@ -334,7 +326,11 @@ class KernelBooter
 
 		try {
 			if (!$kernel) {
-				$kernel = new $kernel_class($env, $debug);
+				if ($kernel == 'DeskPRO\\Kernel\\InstallKernel') {
+					$kernel = new $kernel_class($env, $debug);
+				} else {
+					$kernel = new $kernel_class($env, $debug, DP_INTERFACE);
+				}
 			}
 			$response = $kernel->handle($request);
 			if (DP_INTERFACE == 'user') {

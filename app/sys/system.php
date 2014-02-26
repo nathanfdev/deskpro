@@ -37,9 +37,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Orb\Util\Arrays;
 use Orb\Util\Env;
 
@@ -47,10 +45,9 @@ use Application\DeskPRO\App;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
-require_once DP_ROOT.'/sys/Kernel/BaseAbstractKernel.php';
 require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
-abstract class AbstractKernel extends BaseAbstractKernel
+abstract class AbstractKernel extends BaseKernel
 {
 	final public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
@@ -123,7 +120,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
-		if ($this instanceof UserKernel) {
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 			$website_url = '';
 			if (!empty($_REQUEST['dp_website_url'])) {
 				$website_url = $_REQUEST['dp_website_url'];
@@ -144,7 +141,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$GLOBALS['DP_WEBSITE_URL'] = $website_url;
 		}
 
-		if ($this instanceof UserKernel && $this->isHelpdeskOffline()) {
+		if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $this->isHelpdeskOffline()) {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
 			$scheme_host = $request->getScheme().'://'.$request->getHttpHost();
@@ -379,7 +376,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$content = $response->getContent();
 			$content = str_replace('</head>', "\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />\n\t</head>", $content);
 
-			if ($this instanceof UserKernel) {
+			if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 				$website_url = isset($GLOBALS['DP_WEBSITE_URL']) ? $GLOBALS['DP_WEBSITE_URL'] : '';
 				$content = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="' . htmlspecialchars($website_url) . '" />', $content);
 			}
@@ -387,7 +384,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$response->setContent($content);
 		}
 
-		if ($this instanceof UserKernel && $response->headers->get('Content-Type') == 'text/html' && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
+		if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $response->headers->get('Content-Type') == 'text/html' && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
 			if (!License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
 				// Dont show lic error when serving exception page in debug mode
 				if (!(strpos($response->getContent(), 'sf-exceptionreset') && $this->isDebug())) {
@@ -401,14 +398,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 	}
 }
 
-require_once DP_ROOT.'/sys/Kernel/AdminKernel.php';
-require_once DP_ROOT.'/sys/Kernel/AgentKernel.php';
-require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
-require_once DP_ROOT.'/sys/Kernel/BillingKernel.php';
-require_once DP_ROOT.'/sys/Kernel/CliKernel.php';
+require_once DP_ROOT.'/sys/Kernel/DpKernel.php';
 require_once DP_ROOT.'/sys/Kernel/InstallKernel.php';
-require_once DP_ROOT.'/sys/Kernel/ReportKernel.php';
-require_once DP_ROOT.'/sys/Kernel/UserKernel.php';
 
 ###############################################################################
 # License

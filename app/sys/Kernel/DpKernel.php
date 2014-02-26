@@ -33,9 +33,10 @@
 
 namespace DeskPRO\Kernel;
 
+use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -43,17 +44,31 @@ use Symfony\Component\Config\ConfigCache;
 
 use Application\DeskPRO\App;
 
-abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
+class DpKernel extends AbstractKernel
 {
+	/**
+	 * @var bool
+	 */
 	private $has_booted = false;
 
-	public function __construct($environment, $debug)
+	/**
+	 * @var string
+	 */
+	private $interface;
+
+
+	/**
+	 * @param string $environment
+	 * @param bool $debug
+	 */
+	public function __construct($environment, $debug, $interface = 'unknown')
 	{
 		parent::__construct($environment, $debug);
 
 		$name = explode("\\", get_class($this));
 		$name = array_pop($name);
 		$this->name = $name;
+		$this->interface = $interface;
 
 		if (!defined('DP_DEBUG')) {
 			if ($this->isDebug()) {
@@ -63,15 +78,16 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			}
 		}
 
+		set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
+		set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
+
 		App::setKernel($this);
 	}
 
-	public function init()
-	{
-		set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
-		set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
-	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function boot()
 	{
 		if ($this->has_booted) return;
@@ -92,6 +108,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function initializeContainer()
 	{
 		if ($this->environment == 'dev') {
@@ -115,53 +135,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		parent::initializeContainer();
 	}
 
-	public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
-	{
-		if (false === $this->booted) {
-			$this->boot();
-		}
 
-		$response = $this->preResponseHandled($request, $type, $catch);
-		if ($response) {
-			return $response;
-		}
-
-		$response = $this->getHttpKernel()->handle($request, $type, $catch);
-
-		$this->postResponseHandled($response, $request);
-
-		return $response;
-	}
-
-	protected function postResponseHandled($response, $request)
-	{
-		global $DP_CONFIG;
-
-		if (session_id() != '') {
-			if ($this->container->isServiceInitialized('session')) {
-				$this->container->get('session')->save();
-			}
-			session_write_close();
-		}
-
-		if (isset($DP_CONFIG['debug']['enable_log_tpl_use']) && $DP_CONFIG['debug']['enable_log_tpl_use']) {
-			$loc = $this->container->get('templating.locator');
-			$write = array();
-
-			$write[] = sprintf("=== BEGIN REQUEST %s ===\nURL: %s", date('D, jS M Y H:i:s'), defined('DP_REQUEST_URL') ? DP_REQUEST_URL : 'unknown');
-
-			foreach ($loc->getLoadedTemplates() as $x => $info) {
-				$info['origin'] = str_replace(DP_ROOT, '', $info['origin']);
-				$write[] = sprintf("%3d: {$info['key']} \n     -> {$info['origin']}", $x);
-			}
-
-			$write[] = '';
-			$write[] = '';
-			$write = implode("\n", $write);
-			file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
-		}
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
 	{
 		// Make sure the cache dirs exist
@@ -203,6 +180,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$cache->write($content, $container->getResources());
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function getContainerClass()
 	{
 		$parts = explode('\\', get_class($this));
@@ -220,11 +201,19 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return $container_name;
 	}
 
+
+	/**
+	 * @return string
+	 */
 	public function getRootDir()
 	{
 		return DP_ROOT.'/sys';
 	}
 
+
+	/**
+	 * @return string
+	 */
 	public function getCacheDir()
 	{
 		static $cache_dir = null;
@@ -240,29 +229,53 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return $cache_dir;
 	}
 
+
+	/**
+	 * @deprecated Use dp_get_log_dir()
+	 * @return string
+	 */
 	public function getUserLogDir()
 	{
 		require_once DP_ROOT . '/sys/load_config.php';
 		return dp_get_log_dir();
 	}
 
+
+	/**
+	 * @deprecated Use dp_get_log_dir()
+	 * @return string
+	 */
 	public function getLogDir()
 	{
 		return $this->getUserLogDir();
 	}
 
+
+	/**
+	 * @deprecated Use dp_get_backup_dir()
+	 * @return string
+	 */
 	public function getBackupDir()
 	{
 		require_once DP_ROOT . '/sys/load_config.php';
 		return dp_get_backup_dir();
 	}
 
+
+	/**
+	 * @deprecated Use dp_get_blob_dir()
+	 * @return string
+	 */
 	public function getBlobDir()
 	{
 		require_once DP_ROOT . '/sys/load_config.php';
 		return dp_get_blob_dir();
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function getKernelParameters()
 	{
 		$params = parent::getKernelParameters();
@@ -271,11 +284,28 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return $params;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getInterface()
+	{
+		return $this->interface;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function getContainerBaseClass()
 	{
 		return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function registerBundleDirs()
 	{
 		return array(
@@ -284,11 +314,32 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		);
 	}
 
-	public function loadClassCache($name = 'classes', $extension = '.php')
-	{
 
+	/**
+	 * @param LoaderInterface $loader
+	 */
+	public function registerContainerConfiguration(LoaderInterface $loader)
+	{
+		if (defined('DPC_IS_CLOUD')) {
+			$loader->load(DP_ROOT.'/sys/config-cloud/config_'.$this->getEnvironment().'.php');
+		} else {
+			$loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
+		}
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadClassCache($name = 'classes', $extension = '.php')
+	{
+		// Nothing, we handle the class cache as part of the build and include it in KernelBooter
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function setClassCache(array $classes)
 	{
 		if (defined('DP_BUILDING')) {
@@ -296,36 +347,11 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 	}
 
-	public function isHelpdeskOffline()
-	{
-		if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
-			return true;
-		}
+	####################################################################################################################
 
-		// Offline setting applies to all but admin
-		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin' && DP_INTERFACE != 'billing') {
-			return true;
-		}
-
-		// Offline file is inserted on cmdline upgrade,
-		// we want to disable all access
-		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public function isUpgradePending()
-	{
-		// Make sure filesystem and db builds are the same, or else the upgrader needs to run
-		if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
-			return true;
-		}
-
-		return false;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	public function registerBundles()
 	{
 		$bundles = array(
@@ -334,31 +360,39 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+
 			new \Application\DeskPRO\DeskPROBundle(),
+			new \Application\AdminBundle\AdminBundle(),
+			new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
+			new \Application\AgentBundle\AgentBundle(),
+			new \Application\ReportBundle\ReportBundle(),
+			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
 			new \Application\UserBundle\UserBundle(),
+			new \Application\ApiBundle\ApiBundle(),
 		);
 
-		$bundles = array_merge($bundles, $this->registerAdditionalBundles());
-
-		if ($this->isDebug()) {
-			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
-			$bundles[] = new \Application\DevBundle\DevBundle();
+		if (defined('DPC_IS_CLOUD')) {
+			$bundles = array_merge($bundles, array(
+				new \Cloud\AdminBundle\CloudAdminBundle(),
+				new \Cloud\ApiBundle\CloudApiBundle()
+			));
 		}
 
 		return $bundles;
 	}
 
-	protected function registerAdditionalBundles()
-	{
-
-	}
-
+	####################################################################################################################
+	# DeskPRO Specific
+	####################################################################################################################
 
 	/**
 	 * Returns a Response if the kernel shouldnt route and pass control off to a controller.
 	 * Returns null if things should progress normally.
 	 *
-	 * @return \Symfony\Component\HttpFoundation\Response|null
+	 * @param Request $request
+	 * @param int $type
+	 * @param bool $catch
+	 * @return null|RedirectResponse
 	 */
 	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
@@ -445,8 +479,129 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return null;
 	}
 
+
+	/**
+	 * Executed after the requests is handled, right before it is returned to the user.
+	 *
+	 * @param Response $response
+	 * @param Request $request
+	 */
+	protected function postResponseHandled(Response $response, Request $request)
+	{
+		global $DP_CONFIG;
+
+		if (session_id() != '') {
+			if ($this->container->isServiceInitialized('session')) {
+				$this->container->get('session')->save();
+			}
+			session_write_close();
+		}
+
+		if (isset($DP_CONFIG['debug']['enable_log_tpl_use']) && $DP_CONFIG['debug']['enable_log_tpl_use']) {
+			$loc = $this->container->get('templating.locator');
+			$write = array();
+
+			$write[] = sprintf("=== BEGIN REQUEST %s ===\nURL: %s", date('D, jS M Y H:i:s'), defined('DP_REQUEST_URL') ? DP_REQUEST_URL : 'unknown');
+
+			foreach ($loc->getLoadedTemplates() as $x => $info) {
+				$info['origin'] = str_replace(DP_ROOT, '', $info['origin']);
+				$write[] = sprintf("%3d: {$info['key']} \n     -> {$info['origin']}", $x);
+			}
+
+			$write[] = '';
+			$write[] = '';
+			$write = implode("\n", $write);
+			file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
+		}
+	}
+
+
+	/**
+	 * @param Request $request
+	 * @return bool
+	 */
 	protected function shouldApplyUrlCorrections(Request $request)
 	{
+		switch ($this->interface) {
+			case 'admin':
+			case 'api':
+			case 'cli':
+				return false;
+
+			case 'agent':
+				return true;
+
+			case 'user':
+				// Dont apply redirects on URLs loaded from widget
+				// (eg loading an article iframe)
+				if (isset($_GET['parent_url'])) {
+					return false;
+				}
+				// Set when viewing through an iframe
+				if (!empty($_COOKIE['dp_o_uri']) || !empty($_GET['dp_website_url'])) {
+					return false;
+				}
+
+				// Dont auto-redirect these URLs that are used
+				// in widgets and callbacks
+				if (
+					preg_match('#^/widget/#', $request->getPathInfo())
+					|| preg_match('#^/chat/#', $request->getPathInfo())
+					|| preg_match('#^/tickets/new-simple#', $request->getPathInfo())
+					|| preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
+					|| preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
+					|| preg_match('#^/logout#', $request->getPathInfo())
+					|| preg_match('#^/login#', $request->getPathInfo())
+				) {
+					return false;
+				}
+
+			default:
+				return false;
+		}
+
 		return true;
+	}
+
+
+	/**
+	 * Checks settings/triggers to see if the helpdesk is offline
+	 *
+	 * @return bool
+	 */
+	public function isHelpdeskOffline()
+	{
+		if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
+			return true;
+		}
+
+		// Offline setting applies to all but admin
+		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin' && DP_INTERFACE != 'billing') {
+			return true;
+		}
+
+		// Offline file is inserted on cmdline upgrade,
+		// we want to disable all access
+		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Checks settings to see if an auto-upgrade is pending
+	 *
+	 * @return bool
+	 */
+	public function isUpgradePending()
+	{
+		// Make sure filesystem and db builds are the same, or else the upgrader needs to run
+		if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
+			return true;
+		}
+
+		return false;
 	}
 }
