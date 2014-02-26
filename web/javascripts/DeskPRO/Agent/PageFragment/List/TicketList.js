@@ -350,13 +350,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self.listTicketIds.forEach(function(tid) { listTicketIdsMap[tid] = true; });
 
 			tickets.forEach(function(ticket) {
-				if (currentTicketIdsMap[ticket.id] || !self.isTicketGroupMatch(ticket)) {
-					return;
-				}
+				if (!currentTicketIdsMap[ticket.id] && self.isTicketGroupMatch(ticket)) {
+					$scope.tickets.push(ticket);
+					didAdd.push(ticket.id);
 
-				$scope.tickets.push(ticket);
-				didAdd.push(ticket.id);
-				self.updateSubgroupingBubbles('add', ticket);
+					if (!listTicketIdsMap[ticket.id]) {
+						self.updateSubgroupingBubbles('add', ticket);
+					}
+				}
 			});
 
 			if (didAdd.length) {
@@ -431,7 +432,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	removeTicketResults: function(ticketIds) {
 		var $scope = this.$scope,
 			self = this,
-			map,
+			removeTicketIdsMap,
 			didRemoveList,
 			loadExtra,
 			loadExtraStartIdx,
@@ -444,22 +445,22 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			return;
 		}
 
-		map = {};
+		removeTicketIdsMap = {};
 		didRemoveList = {};
-		ticketIds.forEach(function(x) { map[x] = true; });
+		ticketIds.forEach(function(x) { removeTicketIdsMap[x] = true; });
 
-		$scope.tickets = $scope.tickets.filter(function(x) {
-			if (map[x.id]) {
-				self.updateSubgroupingBubbles('remove', x);
-				didRemoveList[x.id] = true;
+		$scope.tickets = $scope.tickets.filter(function(t) {
+			if (removeTicketIdsMap[t.id]) {
+				self.updateSubgroupingBubbles('remove', t);
+				didRemoveList[t.id] = true;
 				return false;
 			} else {
 				return true;
 			}
 		});
-		this.listTicketIds = this.listTicketIds.filter(function(x) {
-			if (map[x]) {
-				if (!didRemoveList[x]) {
+		this.listTicketIds = this.listTicketIds.filter(function(tid) {
+			if (removeTicketIdsMap[tid]) {
+				if (!didRemoveList[tid]) {
 					self.updateSubgroupingBubbles('refresh');
 				}
 				return false;
@@ -479,9 +480,24 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 			loadExtraEndIdx = loadExtraStartIdx + (this.perPage - $scope.tickets.length);
 			loadExtra = this.listTicketIds.slice(loadExtraStartIdx, loadExtraEndIdx);
-			this.addTicketResults(loadExtra).then(function() {
-				self.updatePageCursorWithTicketId();
-				$scope.$safeApply();
+			$scope.$safeApply(function() {
+				self.getTicketRows(loadExtra).then(function(tickets) {
+					var currentTicketIdsMap = {}, didAdd;
+					$scope.tickets.forEach(function(t) { currentTicketIdsMap[t.id] = true });
+
+					tickets.forEach(function(ticket) {
+						if (self.listTicketIds.indexOf(ticket.id) !== -1 && !currentTicketIdsMap[ticket.id]) {
+							$scope.tickets.push(ticket);
+							didAdd = true;
+						}
+					});
+					if (didAdd) {
+						$scope.tickets.sort(function(ticketA, ticketB) {
+							return self.fieldUtil.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
+						});
+						self.updatePageCursorWithTicketId();
+					}
+				});
 			});
 		} else {
 			this.updatePageCursorWithTicketId();
