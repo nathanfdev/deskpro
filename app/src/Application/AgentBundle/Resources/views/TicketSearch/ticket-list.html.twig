@@ -69,13 +69,12 @@
 				<i class="spinner-circle-32"></i>
 			</div>
 
-			<section class="list-listing" ng-hide="refreshCursorLoading">
+			<section class="list-listing" ng-hide="refreshCursorLoading" ng-class="{'list-animation': isLoaded && !pauseListAnim}">
 				<div
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
-					ng-class="{'list-animation': isLoaded && !pauseListAnim}"
 				>
-					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" watch-deep="['ticket', 'display_fields']">
+					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" watch-vars="['ticket']" watch-vars-deep="['display_fields']">
 						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
 					</script>
 				</div>

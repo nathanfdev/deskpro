@@ -3508,18 +3508,18 @@ ul.pane-tabs {
 			}
 		}
 
-		.list-animation.ng-enter, .list-animation.ng-leave {
+		&.list-animation .ng-enter, &.list-animation .ng-leave {
 			position: relative;
 			-webkit-transition:all linear 0.3s;
 			transition:all linear 0.3s;
 		}
 
-		.list-animation.ng-leave.ng-leave-active, .list-animation.ng-enter {
+		&.list-animation .ng-leave.ng-leave-active, &.list-animation .ng-enter {
 			opacity: 0;
 			left: -500px;
 		}
 
-		.list-animation.ng-leave, .list-animation.ng-enter.ng-enter-active {
+		&.list-animation .ng-leave, &.list-animation .ng-enter.ng-enter-active {
 			opacity: 1;
 			left: 0;
 		}

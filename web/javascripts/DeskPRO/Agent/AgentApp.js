@@ -137,7 +137,7 @@ DeskPRO.Agent.AgentAppFactory = function() {
 
 					// Cancel interval if its an old date that is unlikely to change in realtime
 					// Saves some cycles when many timeago's are visible
-					if (Math.abs(moment().unix() - time.unix()) < 86400) {
+					if (timeoutId && Math.abs(moment().unix() - time.unix()) < 86400) {
 						$interval.cancel(timeoutId);
 						timeoutId = null;
 					}
@@ -152,15 +152,17 @@ DeskPRO.Agent.AgentAppFactory = function() {
 					}
 				});
 
-				timeoutId = $interval(function() {
-					update();
-				}, 5000);
+				if (attrs['autoUpdate'] || attrs['updateInterval']) {
+					timeoutId = $interval(function() {
+						update();
+					}, parseInt(attrs['updateInterval']) || 15000);
+				}
 				update();
 			}
 		};
 	}]);
 
-	AgentApp.directive('dpTpl', ['$compile', '$parse', function($compile, $parse) {
+	AgentApp.directive('dpTpl', ['$compile', '$timeout', function($compile, $timeout) {
 		var cache = {};
 		return {
 			restrict: 'AE',
@@ -181,8 +183,8 @@ DeskPRO.Agent.AgentAppFactory = function() {
 				element.replaceWith(newElement);
 
 				return function(scope, element, attrs) {
-					var watch = attrs['watch'] ? $parse(attrs['watch'])() : null;
-					var deepWatch = attrs['watchDeep'] ? $parse(attrs['watchDeep'])() : null;
+					var watch = attrs['watchVars'] ? scope.$eval(attrs['watchVars']) : null;
+					var deepWatch = attrs['watchVarsDeep'] ? scope.$eval(attrs['watchVarsDeep']) : null;
 
 					scope._isDirty = false;
 
@@ -219,9 +221,11 @@ DeskPRO.Agent.AgentAppFactory = function() {
 					}
 
 					scope.$watch('_isDirty', function(isDirty) {
-						if (isDirty) {
-							render();
-						}
+						$timeout(function() {
+							if (isDirty) {
+								render();
+							}
+						}, 10);
 					});
 					render();
 				};

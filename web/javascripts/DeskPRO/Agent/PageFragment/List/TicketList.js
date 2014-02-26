@@ -238,13 +238,17 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		// Tab indicator
 		this.addEvent('watchedTabAdded', function(tab) {
 			var ticketId = parseInt(tab.page.meta.ticket_id);
-			$scope.openTickets[ticketId] = true;
-			wrapperEl.find('.ticket-row-' + ticketId).addClass('open');
+			if (ticketId) {
+				$scope.openTickets[ticketId] = true;
+				wrapperEl.find('.ticket-row-' + ticketId).addClass('open');
+			}
 		});
 		this.addEvent('watchedTabRemoved', function(tab) {
 			var ticketId = parseInt(tab.page.meta.ticket_id);
-			$scope.openTickets[ticketId] = false;
-			wrapperEl.find('.ticket-row-' + ticketId).removeClass('open');
+			if (ticketId) {
+				$scope.openTickets[ticketId] = false;
+				wrapperEl.find('.ticket-row-' + ticketId).removeClass('open');
+			}
 		});
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this, true);
 	},
@@ -552,15 +556,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				removeIds.push(newTicket.id);
 			} else {
 				for (var i = 0; i < $scope.tickets.length; i++) {
-					if ($scope.tickets[i].id != newTicket.id) {
-						return;
+					if ($scope.tickets[i].id == newTicket.id) {
+						found = true;
+						self.updateSubgroupingBubbles('remove', $scope.tickets[i]);
+						self.updateSubgroupingBubbles('add', newTicket);
+						$scope.tickets[i] = newTicket;
+						didChange = true;
 					}
-
-					found = true;
-					self.updateSubgroupingBubbles('remove', $scope.tickets[i]);
-					self.updateSubgroupingBubbles('add', newTicket);
-					$scope.tickets[i] = newTicket;
-					didChange = true;
 				}
 			}
 			if (!found) {
