@@ -390,6 +390,13 @@ class PersonController extends AbstractController
 	{
 		$person = $this->_getPersonOr404($person_id, 'delete');
 
+		if ($person->is_agent) {
+			return $this->createApiErrorResponse('no_delete_agents', 'You cannot delete agents. There is a separate agents resource that you should use instead.');
+		}
+		if ($person->id == $this->person->id) {
+			return $this->createApiErrorResponse('no_delete_self', 'You cannot delete yourself');
+		}
+
 		$edit_manager = $this->container->getSystemService('person_edit_manager');
 		$edit_manager->setPersonContext($this->person);
 		$edit_manager->deleteUser($person);

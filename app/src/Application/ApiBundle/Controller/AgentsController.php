@@ -342,6 +342,10 @@ class AgentsController extends AbstractController implements ProtectedController
 			throw $this->createNotFoundException();
 		}
 
+		if ($agent->id == $this->person->id) {
+			return $this->createApiErrorResponse('no_delete_self', 'You cannot delete yourself');
+		}
+
 		$deleter = new AgentDelete($agent, $this->em);
 
 		switch ($mode) {
