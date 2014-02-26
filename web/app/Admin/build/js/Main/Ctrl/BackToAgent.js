@@ -14,9 +14,14 @@
 
       Admin_Main_Ctrl_BackToAgent.CTRL_ID = 'Admin_Main_Ctrl_BackToAgent';
 
+      Admin_Main_Ctrl_BackToAgent.DEPS = ['$location'];
+
       Admin_Main_Ctrl_BackToAgent.prototype.init = function() {
-        if (!window.parent) {
-          return window.location = window.DP_BASE_URL + '/agent/';
+        console.log("here");
+        if (!window.parent || !window.parent.DP_FRAME_OVERLAY_admin) {
+          return window.location.href = window.DP_BASE_URL + 'agent/';
+        } else {
+          return window.parent.DP_FRAME_OVERLAY_admin.close();
         }
       };
 

@@ -53,19 +53,37 @@
 		</ul>
 
 		<ul class="btm">
+			<li id="users_section" class="no-click-switch">
+				<a id="admin_interface_trigger"
+				   title="Go to User Interface"
+				   target="_blank"
+				   href="{{ path('user') }}"
+				   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+				   data-frame-id="yser">
+					<i class="app-icon app-icon-user-ifce"></i>
+				</a>
+			</li>
+
 			{% if app.user.can_reports %}
 				<li id="reports_section" class="no-click-switch">
 					<a title="{{ phrase('agent.chrome.nav_reports') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
 				</li>
 			{% endif %}
 
-			<li id="reports_section" class="no-click-switch section-on">
+			<li id="agents_section" class="no-click-switch section-on">
 				<a title="You are currently using the Agent Interface" href="#"><i class="app-icon app-icon-agent-ifce"></i></a>
 			</li>
 
 			{% if app.user.can_admin %}
 				<li id="settings_section" class="no-click-switch">
-					<a id="admin_interface_trigger" title="{{ phrase('agent.chrome.nav_admin_settings') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/admin/" data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame" data-frame-id="admin"><i class="app-icon app-icon-admin-ifce"></i></a>
+					<a id="admin_interface_trigger"
+					   title="{{ phrase('agent.chrome.nav_admin_settings') }}"
+					   target="_blank"
+					   href="{{ app.request.getBaseUrl() }}/admin/"
+					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+					   data-frame-id="admin">
+						<i class="app-icon app-icon-admin-ifce"></i>
+					</a>
 				</li>
 			{% endif %}
 			{#
