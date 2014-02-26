@@ -60,7 +60,7 @@ if (!empty($argv[1])) {
 		$debug = true;
 	}
 
-	$kernel = new \DeskPRO\Kernel\UserKernel($env, $debug);
+	$kernel = new \DeskPRO\Kernel\DpKernel($env, $debug, 'sys');
 	$kernel->boot();
 
 	if (session_id() != '') {
