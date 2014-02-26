@@ -7,7 +7,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		var self = this;
 		this.frameUrl  = this.el.data('frame-url') || this.el.attr('href');
 		this.frameId   = this.el.data('frame-id');
-		this.closeKey  = this.el.data('close-key');
+		this.closeKey  = this.el.data('close-key') || 'back_to_agent';
 
 		this.frameWrap = null;
 		this.frame = null;
@@ -36,11 +36,23 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 		window['DP_FRAME_OVERLAY_' + this.frameId] = this;
 
+		if (!window['DP_FRAME_OVERLAYS']) window['DP_FRAME_OVERLAYS'] = {};
+		window['DP_FRAME_OVERLAYS'][this.frameId] = this;
+
 		this.frameWrap.appendTo('body');
 	},
 
 	open: function(with_hash, callback) {
 		var self = this;
+
+		if (window['DP_FRAME_OVERLAYS']) {
+			for (var k in window['DP_FRAME_OVERLAYS']) {
+				if (k !== this.frameId && window['DP_FRAME_OVERLAYS'].hasOwnProperty(k)) {
+					window['DP_FRAME_OVERLAYS'][k].close();
+				}
+			}
+		}
+
 		if (!this.frame) {
 			this.initFrame(with_hash);
 		}
@@ -58,7 +70,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		this.frameWrap.show();
 
 		DeskPRO_Window.disableHashPath(function(hash) {
-			if (hash.indexOf('admin:') !== 0) {
+			if (hash.indexOf(self.frameId + ':') !== 0) {
 				return;
 			}
 
@@ -66,7 +78,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 			var iWin = frame.contentWindow;
 			var localHash = hash.substr(6);
 
-			if (localHash == '/back_to_agent') {
+			if (localHash == '/' + self.closeKey) {
 				self.close();
 				return;
 			}
@@ -102,9 +114,53 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 			this.frame = null;
 			this.frameWrap = null;
 			delete window['DP_FRAME_OVERLAY_' + this.frameId];
+			delete window['DP_FRAME_OVERLAYS'][this.frameId];
 		}
 
 		window.location.hash = '';
 		DeskPRO_Window.enableHashPath();
+	}
+});
+
+
+DeskPRO.Agent.ElementHandler.OverlayFrameSimple = new Orb.Class({
+	Extends: DeskPRO.Agent.ElementHandler.OverlayFrame,
+
+	initFrame: function(with_hash) {
+		this.frameWrap = $('<div class="overlay-frame-wrap" style="position: absolute; top: 51px; right: 0; bottom: 0; left: 55px; z-index: 9999999999;"></div>');
+		this.frame = $('<iframe frameborder="0" width="100%" height="100%" scrolling="auto" marginheight="0" marginwidth="0" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: 0; padding: 0;"></iframe>');
+		this.frame.appendTo(this.frameWrap);
+
+		var url = this.frameUrl;
+		if (with_hash) {
+			if (url.indexOf('#') !== -1) {
+				url = url.substr(0, url.indexOf('#'));
+			}
+
+			url += '#' + with_hash
+		}
+		this.frame.attr('src', url);
+
+		window['DP_FRAME_OVERLAY_' + this.frameId] = this;
+		if (!window['DP_FRAME_OVERLAYS']) window['DP_FRAME_OVERLAYS'] = {};
+		window['DP_FRAME_OVERLAYS'][this.frameId] = this;
+
+		this.frameWrap.insertAfter('#dp_center');
+	},
+
+	open: function(with_hash, callback) {
+		this.parent(with_hash, callback);
+		$('#dp_center').hide();
+		$('#dp_nav_sections').find('.is-nav-section').hide();
+		$('#dp_nav_sections').find('.is-nav-btn').removeClass('section-on');
+		this.el.closest('li').addClass('section-on');
+	},
+
+	close: function() {
+		this.parent();
+		$('#dp_center').show();
+		$('#dp_nav_sections').find('.is-nav-section').hide();
+		$('#dp_nav_sections').find('.is-nav-section').filter('.is-default').show();
+		$('#dp_nav_sections').find('.is-nav-btn').removeClass('section-on').filter('.is-default').addClass('section-on');
 	}
 });

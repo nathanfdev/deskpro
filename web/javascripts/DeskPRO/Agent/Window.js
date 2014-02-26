@@ -924,6 +924,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (window.AppPlatform) {
 			this.initAppPlatform(window.AppPlatform);
 		}
+
+		$('#agents_section').on('click', function(ev) {
+			if (window['DP_FRAME_OVERLAYS']) {
+				for (var k in window['DP_FRAME_OVERLAYS']) {
+					if (window['DP_FRAME_OVERLAYS'].hasOwnProperty(k)) {
+						window['DP_FRAME_OVERLAYS'][k].close();
+					}
+				}
+			}
+		});
 	},
 
 	initAppPlatform: function(AppPlatform) {

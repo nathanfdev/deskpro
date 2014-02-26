@@ -47,7 +47,7 @@ class MiscController extends AbstractController
 {
 	public function requireRequestToken($action, $arguments = null)
 	{
-		if ($action == 'getInterfaceDataAction' || $action == 'getRequirejsLoaderAction' || $action == 'getAppsConfigAction') {
+		if ($action == 'getInterfaceDataAction' || $action == 'getRequirejsLoaderAction' || $action == 'getAppsConfigAction' || $action == 'userInterfaceFrameAction') {
 			return false;
 		}
 
@@ -692,6 +692,11 @@ JS;
 
 
 		return $this->createJsonResponse(array('success' =>true, 'status' => $status));
+	}
+
+	public function userInterfaceFrameAction()
+	{
+		return $this->render('AgentBundle:Misc:user-frame.html.twig');
 	}
 
 	public function redirectExternalAction($url)

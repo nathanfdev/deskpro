@@ -122,6 +122,11 @@ $collection->create('agent_redirect_out_info', array(
 	'requirements'  => array('url' => '.+'),
 ));
 
+$collection->create('agent_user_interface_frame', array(
+	'path'          => '/user-interface-frame',
+	'controller'    => 'AgentBundle:Misc:userInterfaceFrame',
+));
+
 $collection->create('agent_password_confirm_code', array(
 	'path'        => '/password-confirm-code.json',
 	'controller'  => 'AgentBundle:Misc:getPasswordConfirmCode',
