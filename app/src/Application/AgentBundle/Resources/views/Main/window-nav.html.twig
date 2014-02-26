@@ -53,6 +53,38 @@
 		</ul>
 
 		<ul class="btm">
+			<li id="agents_section" class="no-click-switch section-on is-default is-nav-btn">
+				<a title="You are currently using the Agent Interface" href="#"><i class="app-icon app-icon-agent-ifce"></i></a>
+			</li>
+
+			{% if app.user.can_reports %}
+				<li class="no-click-switch is-nav-btn">
+					<a
+							title="{{ phrase('agent.chrome.nav_reports') }}"
+							target="_blank"
+							href="{{ app.request.getBaseUrl() }}/reports/"
+							data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+							data-frame-id="reports"
+							>
+						<i class="app-icon app-icon-reports-ifce"></i>
+					</a>
+				</li>
+			{% endif %}
+
+			{% if app.user.can_admin %}
+				<li id="settings_section" class="no-click-switch is-nav-btn">
+					<a id="admin_interface_trigger"
+					   title="{{ phrase('agent.chrome.nav_admin_settings') }}"
+					   target="_blank"
+					   href="{{ app.request.getBaseUrl() }}/admin/"
+					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+					   data-frame-id="admin"
+							>
+						<i class="app-icon app-icon-admin-ifce"></i>
+					</a>
+				</li>
+			{% endif %}
+
 			<li id="users_section" class="no-click-switch is-nav-btn">
 				<a id="admin_interface_trigger"
 				   title="Go to User Interface"
@@ -65,45 +97,6 @@
 					<i class="app-icon app-icon-user-ifce"></i>
 				</a>
 			</li>
-
-			{% if app.user.can_reports %}
-				<li class="no-click-switch is-nav-btn">
-					<a
-					   title="{{ phrase('agent.chrome.nav_reports') }}"
-					   target="_blank"
-					   href="{{ app.request.getBaseUrl() }}/reports/"
-					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
-					   data-frame-id="reports"
-					>
-						<i class="app-icon app-icon-reports-ifce"></i>
-					</a>
-				</li>
-			{% endif %}
-
-			<li id="agents_section" class="no-click-switch section-on is-default is-nav-btn">
-				<a title="You are currently using the Agent Interface" href="#"><i class="app-icon app-icon-agent-ifce"></i></a>
-			</li>
-
-			{% if app.user.can_admin %}
-				<li id="settings_section" class="no-click-switch is-nav-btn">
-					<a id="admin_interface_trigger"
-					   title="{{ phrase('agent.chrome.nav_admin_settings') }}"
-					   target="_blank"
-					   href="{{ app.request.getBaseUrl() }}/admin/"
-					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
-					   data-frame-id="admin"
-					>
-						<i class="app-icon app-icon-admin-ifce"></i>
-					</a>
-				</li>
-			{% endif %}
-			{#
-			<li id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">
-				<span id="chat_online_count">0</span>
-				<span class="count-badge" style="display: none"><span></span></span>
-				<a title="{{ phrase('agent.chrome.nav_agentchat') }}"><span class="agentchatNavIcon"></span></a>
-			</li>
-			#}
 		</ul>
 	</div>
 </div>
