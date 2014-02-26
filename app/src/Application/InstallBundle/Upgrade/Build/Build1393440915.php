@@ -29,33 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-use Orb\Util\Numbers;
-
-class WebHook extends AbstractEntityRepository
+class Build1393440915 extends AbstractBuild
 {
-	public function getAllHooks()
+	public function run()
 	{
-		return $this->getEntityManager()->createQuery('
-			SELECT h
-			FROM DeskPRO:WebHook h
-			ORDER BY h.title
-		')->execute();
-	}
-
-	public function getHookTitles()
-	{
-		return App::getDb()->fetchAllKeyValue("
-			SELECT id, title
-			FROM web_hooks
-			ORDER BY title ASC
-		");
+		$this->execMutateSql("DROP TABLE IF EXISTS web_hooks");
 	}
 }
