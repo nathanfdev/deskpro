@@ -854,7 +854,7 @@ class KernelBooter
 		}
 
 		define('DP_INTERFACE', 'cli');
-		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
+		$kernel = new \DeskPRO\Kernel\DpKernel($env, $debug, DP_INTERFACE);
 		$kernel->boot($mode);
 
 		try {
