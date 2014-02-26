@@ -89,8 +89,9 @@ class WebHook extends AbstractAction implements ActionInterface, MacroActionInte
 		$data['event_performer'] = $context->getEventPerformer();
 		$data['event_type']      = $context->getEventType();
 		$data['event_method']    = $context->getEventMethod();
+		$data['custom_data']     = $this->getActionOption('custom_data') ?: '';
 
-		$request = $http_client->createRequest($this->getActionOption('method'), null, $headers, $data);
+		$request = $http_client->createRequest($this->getActionOption('method') ?: 'POST', null, $headers, $data);
 
 		if ($this->getActionOption('username') || $this->getActionOption('password')) {
 			$request->setAuth($this->getActionOption('username') ?: '', $this->getActionOption('password') ?: '');

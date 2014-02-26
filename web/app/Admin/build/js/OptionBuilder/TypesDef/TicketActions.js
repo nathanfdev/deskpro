@@ -125,6 +125,10 @@
           title: 'Force User Email Validation',
           value: 'ModForceEmailValidation'
         });
+        options.push({
+          title: 'Call Web Hook',
+          value: 'WebHook'
+        });
         set_options.push({
           title: 'Ticket Actions',
           subOptions: options
@@ -528,6 +532,42 @@
         }
         def = this.getStandardIs(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getWebHook = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-webhook.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return value;
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'webhook';
+                value.options = model;
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetSlas = function(options) {

@@ -153,6 +153,11 @@ define [
 				value: 'ModForceEmailValidation'
 			})
 
+			options.push({
+				title: 'Call Web Hook',
+				value: 'WebHook'
+			})
+
 			set_options.push({
 				title: 'Ticket Actions',
 				subOptions: options
@@ -435,6 +440,27 @@ define [
 		getModQuietAgentEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
+
+		getWebHook: (options = {}) ->
+			me = @
+			return {
+			getTemplate: ->
+				return me.dpTemplateManager.get('OptionBuilder/type-actions-webhook.html')
+
+			getData: ->
+				return {}
+
+			getDataFormatter: ->
+				return {
+				getViewValue: (value = {}, data) ->
+					return value
+				getValue: (model = {}, data) ->
+					value = {}
+					value.type = 'webhook'
+					value.options = model
+					return value
+				}
+			}
 
 		getSetSlas: (options = {}) ->
 			me = @
