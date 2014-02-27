@@ -249,7 +249,8 @@ class NewTicket
 		$ticket['language'] = $person->getRealLanguage();
 
 		if ($this->suppress_user_notify) {
-			$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+			//TODO
+			//$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
 		}
 
 		$this->_email = $person->findEmailAddress($this->person->email_address);
