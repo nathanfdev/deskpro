@@ -34,7 +34,7 @@ if (!defined('DP_BUILD_TIME')) {
 require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
-$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
+$kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
 
 $_SERVER['argv'] = array('x', 'dpdev:lang:check-phrase-ids');
 

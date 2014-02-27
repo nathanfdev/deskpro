@@ -14,7 +14,7 @@ define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
-$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
+$kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
 
 if (in_array('--js', $_SERVER['argv'])) {
 	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--not', '--verbose', '-p', '_css');

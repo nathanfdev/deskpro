@@ -62,7 +62,7 @@ class DpTestEnv
 		if (self::$last_container !== null) {
 			return self::$last_container;
 		}
-		$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
+		$kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
 		$kernel->boot('cli');
 
 		self::$last_container = $kernel->getContainer();

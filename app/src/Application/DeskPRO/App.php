@@ -779,7 +779,7 @@ class App
 
 		if ($is_cli === null) {
 			$is_cli = false;
-			if (self::getKernel() instanceof \DeskPRO\Kernel\CliKernel) {
+			if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
 				$is_cli = true;
 			}
 		}
