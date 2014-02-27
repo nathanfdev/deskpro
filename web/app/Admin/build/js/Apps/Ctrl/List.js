@@ -73,6 +73,12 @@
         return _results;
       };
 
+      Admin_Apps_Ctrl_List.prototype.removeAppInstance = function(instanceId) {
+        return this.apps = this.apps.filter(function(x) {
+          return x.id !== instanceId;
+        });
+      };
+
       Admin_Apps_Ctrl_List.prototype.updateAppTitle = function(id, title) {
         this.apps.filter(function(x) {
           return x.id === id;

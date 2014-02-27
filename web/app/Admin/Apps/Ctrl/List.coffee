@@ -38,6 +38,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					p.is_installed = true
 					break
 
+		removeAppInstance: (instanceId) ->
+			@apps = @apps.filter((x) -> return x.id != instanceId)
+
 		updateAppTitle: (id, title) ->
 			@apps.filter((x) -> x.id == id).map((x) -> x.title = title)
 			@custom_apps.filter((x) -> x.id == id).map((x) -> x.title = title)

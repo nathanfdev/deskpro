@@ -52,6 +52,11 @@
         return d.promise;
       };
 
+
+      /*
+        	 * Saves settings
+       */
+
       Admin_Apps_Ctrl_EditInstance.prototype.saveSettings = function() {
         var postData;
         postData = {
@@ -70,6 +75,11 @@
         });
       };
 
+
+      /*
+        	 * Shows readme modal window
+       */
+
       Admin_Apps_Ctrl_EditInstance.prototype.showReadme = function() {
         return this.$modal.open({
           templateUrl: this.getTemplatePath('Apps/readme-modal.html'),
@@ -85,6 +95,50 @@
             pack: (function(_this) {
               return function() {
                 return _this.pack;
+              };
+            })(this)
+          }
+        });
+      };
+
+
+      /*
+      		 * SHow delete modal
+       */
+
+      Admin_Apps_Ctrl_EditInstance.prototype.startDelete = function() {
+        var doDelete;
+        doDelete = (function(_this) {
+          return function() {
+            return _this.Api.sendDelete('/apps/instances/' + _this.app.id).success(function() {
+              var _ref, _ref1;
+              if (((_ref = _this.$scope.$parent) != null ? _ref.ListCtrl : void 0) != null) {
+                if ((_ref1 = _this.$scope.$parent) != null) {
+                  _ref1.ListCtrl.removeAppInstance(_this.app.id);
+                }
+              }
+              return _this.$state.go('apps.apps');
+            });
+          };
+        })(this);
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('Apps/instance-delete-modal.html'),
+          controller: [
+            'app', '$scope', '$modalInstance', function(app, $scope, $modalInstance) {
+              $scope.app = app;
+              $scope.dismiss = function() {
+                return $modalInstance.close();
+              };
+              return $scope.confirm = function() {
+                $scope.is_loading = true;
+                return doDelete();
+              };
+            }
+          ],
+          resolve: {
+            app: (function(_this) {
+              return function() {
+                return _this.app;
               };
             })(this)
           }
