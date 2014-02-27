@@ -7986,6 +7986,10 @@ div.info-message.well {
   background-image: url('../../../../images/app-icons/1x/Reports.png');
 }
 
+.dp-appstrip .app-icon-billing-ifce {
+  background-image: url('../../../../images/app-icons/1x/Leads.png');
+}
+
 .dp-appstrip .app-icon-user-ifce {
   background-image: url('../../../../images/app-icons/1x/User-Portal.png');
 }
@@ -8095,6 +8099,11 @@ div.info-message.well {
   background-image: url('../../../../images/app-icons/1x_active/Reports.png');
 }
 
+.dp-appstrip .state-on .app-icon-billing-ifce,
+.dp-appstrip .section-on .app-icon-billing-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/Leads.png');
+}
+
 .dp-appstrip .state-on .app-icon-user-ifce,
 .dp-appstrip .section-on .app-icon-user-ifce {
   background-image: url('../../../../images/app-icons/1x_active/User-Portal.png');
@@ -8183,6 +8192,9 @@ div.info-message.well {
   .dp-appstrip .app-icon-reports-ifce {
     background-image: url('../../../../images/app-icons/2x/Reports.png');
   }
+  .dp-appstrip .app-icon-billing-ifce {
+    background-image: url('../../../../images/app-icons/2x/Leads.png');
+  }
   .dp-appstrip .app-icon-user-ifce {
     background-image: url('../../../../images/app-icons/2x/User-Portal.png');
   }
@@ -8268,6 +8280,10 @@ div.info-message.well {
   .dp-appstrip .state-on .app-icon-reports-ifce,
   .dp-appstrip .section-on .app-icon-reports-ifce {
     background-image: url('../../../../images/app-icons/2x_active/Reports.png');
+  }
+  .dp-appstrip .state-on .app-icon-billing-ifce,
+  .dp-appstrip .section-on .app-icon-billing-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/Leads.png');
   }
   .dp-appstrip .state-on .app-icon-user-ifce,
   .dp-appstrip .section-on .app-icon-user-ifce {

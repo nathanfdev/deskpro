@@ -14,9 +14,23 @@
 
       Admin_Main_Ctrl_MainPage.CTRL_ID = 'Admin_Main_Ctrl_MainPage';
 
-      Admin_Main_Ctrl_MainPage.DEPS = ['$rootScope', 'AppState'];
+      Admin_Main_Ctrl_MainPage.DEPS = ['$rootScope', '$location'];
 
-      Admin_Main_Ctrl_MainPage.prototype.init = function() {};
+      Admin_Main_Ctrl_MainPage.prototype.init = function() {
+        var _this = this;
+        if (this.$location.path() === '/license') {
+          this.$scope.isBillingInterface = true;
+        } else {
+          this.$scope.isBillingInterface = false;
+        }
+        this.$rootScope.$on('$locationChangeSuccess', function() {
+          if (_this.$location.path() === '/license') {
+            return _this.$scope.isBillingInterface = true;
+          } else {
+            return _this.$scope.isBillingInterface = false;
+          }
+        });
+      };
 
       return Admin_Main_Ctrl_MainPage;
 
