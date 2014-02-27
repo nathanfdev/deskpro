@@ -98,7 +98,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
 					$scope.confirm = ->
 						$scope.is_loading = true
-						doDelete()
+						doDelete().then(->
+							$modalInstance.close();
+						)
 				],
 				resolve: {
 					app: =>

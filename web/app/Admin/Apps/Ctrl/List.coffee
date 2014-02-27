@@ -39,7 +39,19 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					break
 
 		removeAppInstance: (instanceId) ->
+			app = @apps.find((x) -> return x.id == instanceId)
 			@apps = @apps.filter((x) -> return x.id != instanceId)
+
+			# we just removed an app so we might need to switch the
+			# is_installed flag on the package so it appears back in the list
+			if app
+				hasOtherApp = false
+				@apps.map((x) -> if x.package.name == app.package.name then hasOtherApp = true)
+				if not hasOtherApp
+					p = @packages.find((x) -> x.name == app.package.name)
+					if p
+						p.is_installed = false
+
 
 		updateAppTitle: (id, title) ->
 			@apps.filter((x) -> x.id == id).map((x) -> x.title = title)

@@ -131,7 +131,9 @@
               };
               return $scope.confirm = function() {
                 $scope.is_loading = true;
-                return doDelete();
+                return doDelete().then(function() {
+                  return $modalInstance.close();
+                });
               };
             }
           ],

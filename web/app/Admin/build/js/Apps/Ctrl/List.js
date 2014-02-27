@@ -74,9 +74,29 @@
       };
 
       Admin_Apps_Ctrl_List.prototype.removeAppInstance = function(instanceId) {
-        return this.apps = this.apps.filter(function(x) {
+        var app, hasOtherApp, p;
+        app = this.apps.find(function(x) {
+          return x.id === instanceId;
+        });
+        this.apps = this.apps.filter(function(x) {
           return x.id !== instanceId;
         });
+        if (app) {
+          hasOtherApp = false;
+          this.apps.map(function(x) {
+            if (x["package"].name === app["package"].name) {
+              return hasOtherApp = true;
+            }
+          });
+          if (!hasOtherApp) {
+            p = this.packages.find(function(x) {
+              return x.name === app["package"].name;
+            });
+            if (p) {
+              return p.is_installed = false;
+            }
+          }
+        }
       };
 
       Admin_Apps_Ctrl_List.prototype.updateAppTitle = function(id, title) {
