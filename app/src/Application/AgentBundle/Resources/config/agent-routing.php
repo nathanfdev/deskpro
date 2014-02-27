@@ -66,9 +66,9 @@ $collection->add('agent_submit_deskpro_feedback', new Route(
 ));
 
 $collection->add('agent_parse_vcard', new Route(
-    '/misc/parse-vcard',
-    array('_controller' => 'AgentBundle:Misc:parseVCard'),
-    array(),
+    '/misc/parse-vcard/{blob_id}',
+    array('_controller' => 'AgentBundle:Misc:parseVCard', 'blob_id' => null),
+    array('blob_id' => '\\d+'),
     array()
 ));
 
@@ -504,6 +504,13 @@ $collection->add('agent_people_login_as', new Route(
 $collection->add('agent_people_changepicoverlay', new Route(
 	'/people/{person_id}/change-picture-overlay',
 	array('_controller' => 'AgentBundle:Person:changePictureOverlay'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_people_uploadvcardoverlay', new Route(
+	'/people/{person_id}/upload-vcard-overlay',
+	array('_controller' => 'AgentBundle:Person:uploadVcardOverlay'),
 	array('person_id' => '\\d+'),
 	array()
 ));

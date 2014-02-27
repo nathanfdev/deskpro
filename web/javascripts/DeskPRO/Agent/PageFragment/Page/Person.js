@@ -330,7 +330,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
 				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
 			});
+			this.uploadVcard = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard(this, {
+				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/upload-vcard-overlay",
+				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
+			});
 			this.ownObject(this.changePic);
+			this.ownObject(this.uploadVcard);
 
 		} // can edit
 
@@ -466,7 +471,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					itemEl.data('flip', text);
 					itemEl.data('action', 'enable-user');
 					self.getEl('change_user_picture').append($('<span class="person-disabled" />'));
-				}
+				} else if (action == 'upload-vcard') {
+                                    self.uploadVcard.open();
+                                }
 			}
 		});
 		this.ownObject(this.moreactionsMenu);

@@ -766,6 +766,15 @@ class PersonController extends AbstractController
 			'person' => $person
 		));
 	}
+        
+	public function uploadVcardOverlayAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		return $this->render('AgentBundle:Person:upload-vcard-overlay.html.twig', array(
+			'person' => $person
+		));
+	}
 
 	############################################################################
 	# unban-email

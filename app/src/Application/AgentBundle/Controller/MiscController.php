@@ -589,11 +589,18 @@ JS;
 		));
 	}
 
-    public function parseVCardAction()
+    public function parseVCardAction($blob_id = null)
     {
-        $file = $this->request->files->get('files');
+        if ($blob_id) {
+            $blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-        $content = file_get_contents($file[0]->getPathName());
+            $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+        } else {
+            $file = $this->request->files->get('files');
+
+            $content = file_get_contents($file[0]->getPathName());
+        }        
+        
         $parse = \File_IMC::parse('vCard');
         $vcard = $parse->fromText($content);
         $fields = array();
