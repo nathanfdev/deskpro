@@ -29,52 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace deskpro_joomla;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
-
-class InstallerHandler implements InstallerHandlerInterface
+class Build1393521003 extends AbstractBuild
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
+	public function run()
 	{
-		$context->getDb()->insert('usersources', array(
-			'app_id'            => $context->getApp()->id,
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'is_enabled'        => '1'
-		));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function update(InstallerContext $context)
-	{
-		$context->getDb()->update('usersources', array(
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'is_enabled'        => '1'
-		), array('app_id' => $context->getApp()->id));
+		$this->out("My Upgrade Class");
+		$this->execMutateSql("ALTER TABLE usersources DROP FOREIGN KEY FK_4E3C994CEB0D3362");
+		$this->execMutateSql("DROP INDEX IDX_4E3C994CEB0D3362 ON usersources");
+		$this->execMutateSql("ALTER TABLE usersources CHANGE usersource_plugin_id app_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C7987212D FOREIGN KEY (app_id) REFERENCES app_instances (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_4E3C994C7987212D ON usersources (app_id)");
 	}
 }
