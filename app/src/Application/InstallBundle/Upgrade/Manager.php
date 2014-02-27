@@ -35,6 +35,8 @@
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Package\Package;
+use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Plugin\Package\NativePackages;
 use Orb\Util\Arrays;
@@ -177,8 +179,13 @@ class Manager
 			@unlink(dp_get_data_dir() . '/twitter.pid');
 		}
 
-		// Sync apps
+		#------------------------------
+		# Apps
+		#------------------------------
+
 		$manager = $this->container->getAppManager();
+
+		// Update apps
 		foreach ($manager->getAllPackages() as $package) {
 			if (!$package->native_name) continue;
 			foreach ($manager->getPackageApps($package) as $app) {
@@ -190,6 +197,25 @@ class Manager
 					$obj->upgrade($context);
 				}
 			}
+		}
+
+		// Sync new native apps
+		$path = DP_ROOT.'/apps';
+		$dir = dir($path);
+		while (($f = $dir->read()) !== false) {
+			$f_path = $path.'/'.$f;
+			if ($f == '.' || $f == '..' || !is_dir($f_path)) {
+				continue;
+			}
+
+			$app_package = new Package($f_path);
+			if ($manager->hasPackage($app_package->getManifest()->getPackageName())) {
+				// already installed (will have been updated)
+				continue;
+			}
+
+			$installer = new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine());
+			$installer->installPackage($app_package);
 		}
 	}
 
