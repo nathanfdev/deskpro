@@ -16,13 +16,13 @@
 	</div>
 	<div class="col-lg-8">
 		<div ng-switch-when="text">
-			<input type="text" class="form-control" ng-model="setting_values[setting.name]" placeholder="setting.placeholder" />
+			<input type="text" class="form-control" ng-model="setting_values[setting.name]" placeholder="{{ ng_var('setting.placeholder') }}" />
 		</div>
 		<div ng-switch-when="textarea">
-			<textarea class="form-control" ng-model="setting_values[setting.name]" placeholder="setting.placeholder"></textarea>
+			<textarea class="form-control" ng-model="setting_values[setting.name]" placeholder="{{ ng_var('setting.placeholder') }}"></textarea>
 		</div>
 		<div ng-switch-when="password">
-			<input type="password" class="form-control" ng-model="setting_values[setting.name]" placeholder="setting.placeholder" />
+			<input type="password" class="form-control" ng-model="setting_values[setting.name]" placeholder="{{ ng_var('setting.placeholder') }}" />
 		</div>
 		<div ng-switch-when="checkbox">
 			<label>
