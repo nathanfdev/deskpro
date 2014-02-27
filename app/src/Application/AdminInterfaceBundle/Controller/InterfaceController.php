@@ -157,7 +157,7 @@ class InterfaceController extends AbstractController
 			$tpl_name = $view_name;
 		} else {
 			$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.:]#', '', $view_name);
-			$view_name = str_replace('/', ':', $view_name);
+			$view_name = Strings::strReplaceOne('/', ':', $view_name);
 			$view_name = str_replace('.html', '.html.twig', $view_name);
 			$view_name = str_replace('.html.twig.twig', '.html.twig', $view_name);
 			$tpl_name = "AdminInterfaceBundle:$view_name";
