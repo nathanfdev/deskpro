@@ -82,6 +82,7 @@ class PackageInstaller
 		$def = $package->createAppPackage($def);
 
 		$this->em->persist($def);
+		$old_blobs = array();
 
 		#------------------------------
 		# Get app icons
@@ -103,7 +104,7 @@ class PackageInstaller
 				'image/png'
 			);
 
-			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size");
+			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size", null, $old_blobs);
 			$this->em->persist($asset);
 
 			$largest = array($path, $size, $blob);
@@ -120,7 +121,7 @@ class PackageInstaller
 				'image/png'
 			);
 
-			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size");
+			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size", null, $old_blobs);
 			$this->em->persist($asset);
 
 			$largest = array($path, $size, $blob);
@@ -145,10 +146,9 @@ class PackageInstaller
 
 			unset($image);
 
-			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size");
+			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size", null, $old_blobs);
 			$this->em->persist($asset);
 
-			$largest = array($path, $size, $blob);
 			$have_sizes[$size] = $blob;
 		}
 
@@ -165,7 +165,7 @@ class PackageInstaller
 				'README',
 				'text/plain'
 			);
-			$asset = $this->_addAssetBlob($def, $blob, 'readme.text');
+			$asset = $this->_addAssetBlob($def, $blob, 'readme.text', null, $old_blobs);
 			$this->em->persist($asset);
 
 			$readme_html = \Parsedown::instance()->parse($readme);
@@ -174,7 +174,7 @@ class PackageInstaller
 				'README.html',
 				'text/html'
 			);
-			$asset = $this->_addAssetBlob($def, $blob, 'readme.html');
+			$asset = $this->_addAssetBlob($def, $blob, 'readme.html', null, $old_blobs);
 			$this->em->persist($asset);
 		}
 
@@ -190,7 +190,7 @@ class PackageInstaller
 				'text/javascript'
 			);
 
-			$asset = $this->_addAssetBlob($def, $blob, 'app_js');
+			$asset = $this->_addAssetBlob($def, $blob, 'app_js', null, $old_blobs);
 			$this->em->persist($asset);
 		}
 
@@ -199,19 +199,19 @@ class PackageInstaller
 		#------------------------------
 
 		foreach ($package->getJsAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'js');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'js', $old_blobs);
 			$this->em->persist($asset);
 		}
 		foreach ($package->getHtmlAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'html');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'html', $old_blobs);
 			$this->em->persist($asset);
 		}
 		foreach ($package->getCssAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'css');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'css', $old_blobs);
 			$this->em->persist($asset);
 		}
 		foreach ($package->getResAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'res');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'res', $old_blobs);
 			$this->em->persist($asset);
 		}
 
@@ -220,6 +220,12 @@ class PackageInstaller
 		#------------------------------
 
 		$this->em->flush();
+
+		// Need to delete old blobs at the end after AppAsset.blob has been overwritten
+		// because AppAsset.blob has a delete cascade relation.
+		foreach ($old_blobs as $b) {
+			$this->blob_storage->deleteBlobRecord($b);
+		}
 
 		return $def;
 	}
@@ -231,7 +237,7 @@ class PackageInstaller
 	 * @param string $tag
 	 * @return \Application\DeskPRO\Entity\AppAsset
 	 */
-	private function _addAssetFromInfo(AppPackage $def, array $asset_info, $tag)
+	private function _addAssetFromInfo(AppPackage $def, array $asset_info, $tag, array &$old_blobs)
 	{
 		$mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
 
@@ -241,7 +247,7 @@ class PackageInstaller
 			$mimetype
 		);
 
-		$asset = $this->_addAssetBlob($def, $blob, $tag, $asset_info['path']);
+		$asset = $this->_addAssetBlob($def, $blob, $tag, $asset_info['path'], $old_blobs);
 		return $asset;
 	}
 
@@ -253,13 +259,13 @@ class PackageInstaller
 	 * @param string $filename
 	 * @return \Application\DeskPRO\Entity\AppAsset
 	 */
-	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null)
+	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
 	{
 		$asset = $def->getTaggedAsset($tag);
 		if ($asset) {
 			// Asset already exists, replace it
 			if ($asset->blob) {
-				$this->blob_storage->deleteBlobRecord($asset->blob);
+				$old_blobs[] = $asset->blob;
 			}
 			$asset->blob = $blob;
 		} else {

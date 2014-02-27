@@ -209,6 +209,12 @@ class Package
 			$asset_path = str_replace($path . '/', '', $full_path);
 			$file_name  = $file->getFilename();
 
+			if ($path_name == 'res') {
+				if (preg_match('#res/icons/app_\d+\.png$#', $full_path)) {
+					continue;
+				}
+			}
+
 			$assets[] = array(
 				'real_path' => $full_path,
 				'path'      => $asset_path,
