@@ -62,7 +62,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				listCtrl = @$scope.$parent.ListCtrl
 
 			doInstall = (setting_values) =>
-				return @Api.sendPut("/apps/packages/#{@packageName}", {settings: setting_values}).success( (info) =>
+				return @Api.sendPutJson("/apps/packages/#{@packageName}", {settings: setting_values}).success( (info) =>
 
 					if listCtrl
 						instanceInfo = {

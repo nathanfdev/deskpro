@@ -96,7 +96,7 @@
         }
         doInstall = (function(_this) {
           return function(setting_values) {
-            return _this.Api.sendPut("/apps/packages/" + _this.packageName, {
+            return _this.Api.sendPutJson("/apps/packages/" + _this.packageName, {
               settings: setting_values
             }).success(function(info) {
               var instanceInfo;

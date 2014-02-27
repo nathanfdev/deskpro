@@ -49,7 +49,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				@custom_apps.push(customApp)
 
 		showNewApp: ->
-
 			saveNewApp = (options) =>
 				postData = {
 					options: options
