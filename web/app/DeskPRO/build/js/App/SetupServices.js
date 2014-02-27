@@ -121,14 +121,14 @@
         '$provide', function($provide) {
           return $provide.decorator('$state', [
             '$delegate', '$stateParams', function($delegate, $stateParams) {
-              /*
-              				# Checks to see if a certain state is currently active
-              				#
-              				# @param {String} stateId The state to check. If it begins with a leading dot, we'll cehck
-              				#                         if the id exists anywhere in the current state. E.g., shorter to write '.create' than 'x.y.z.create'
-              				# @param {Object} stateParams If provided, then the params specified must also match
-              */
 
+              /*
+              				 * Checks to see if a certain state is currently active
+              				 *
+              				 * @param {String} stateId The state to check. If it begins with a leading dot, we'll cehck
+              				 *                         if the id exists anywhere in the current state. E.g., shorter to write '.create' than 'x.y.z.create'
+              				 * @param {Object} stateParams If provided, then the params specified must also match
+               */
               $delegate.isStateActive = function(stateId, stateParams) {
                 var k, v;
                 if (stateParams == null) {
@@ -176,6 +176,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SetupServices.js.map
-*/
+//# sourceMappingURL=SetupServices.js.map

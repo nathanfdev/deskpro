@@ -17,12 +17,12 @@
         });
       }
 
+
       /**
       		* Gets a title/message from a 'content' param
         	*
         	* @return {Array}
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype._getContent = function(content) {
         var message, title;
@@ -36,12 +36,12 @@
         return [title, message];
       };
 
+
       /**
       		* Gets an options array from a 'options' param
         	*
         	* @return {Object}
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype._getOptions = function(options) {
         if (!options) {
@@ -55,14 +55,14 @@
         return options;
       };
 
+
       /**
       		* Shows an error notif
         	*
         	* @param {String/Object} A string message, or an object with 'title' and 'message' properties
         	* @param {Object/Function} An object of options, or a simple Function callback for a click handler
         	* @return {notify}
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype.error = function(content, options) {
         var message, title, _ref;
@@ -71,14 +71,14 @@
         return toastr.error(message, title, options);
       };
 
+
       /**
       		* Shows an info notif
         	*
         	* @param {String/Object} A string message, or an object with 'title' and 'message' properties
         	* @param {Object/Function} An object of options, or a simple Function callback for a click handler
         	* @return {notify}
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype.info = function(content, options) {
         var message, title, _ref;
@@ -87,14 +87,14 @@
         return toastr.info(message, title, options);
       };
 
+
       /**
       		* Shows a success notif
         	*
         	* @param {String/Object} A string message, or an object with 'title' and 'message' properties
         	* @param {Object/Function} An object of options, or a simple Function callback for a click handler
         	* @return {notify}
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype.success = function(content, options) {
         var message, title, _ref;
@@ -103,14 +103,14 @@
         return toastr.success(message, title, options);
       };
 
+
       /**
       		* Shows a warning notif
         	*
         	* @param {String/Object} A string message, or an object with 'title' and 'message' properties
         	* @param {Object/Function} An object of options, or a simple Function callback for a click handler
         	* @return {notify}
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype.warning = function(content, options) {
         var message, title, _ref;
@@ -119,21 +119,21 @@
         return toastr.warning(message, title, options);
       };
 
+
       /**
       		* Clears all open notifs
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype.clearAll = function() {
         return toastr.clear();
       };
 
+
       /**
       		* Clears a specific notif
         	*
         	* @param {notify} notify
-      */
-
+       */
 
       DeskPRO_Main_Service_Growl.prototype.clearNotif = function(notify) {
         return toastr.clear(notify);
@@ -146,6 +146,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Growl.js.map
-*/
+//# sourceMappingURL=Growl.js.map

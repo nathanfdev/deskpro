@@ -1,22 +1,22 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # Just like ng-show but works specifically on spinner IDs.
-       #
-       # Example
-       # -------
-       # <span dp-show-spinning="saving_dep" class="spinner">Saving</span>
-       # <span dp-hide-spinning="saving_dep"><button>Click here to save</button></span>
-       #
-       # Controller:
-       # @startSpinner('saving_dep')
-       # ...
-       # @stopSpinner('enableSpinner')
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * Just like ng-show but works specifically on spinner IDs.
+        *
+        * Example
+        * -------
+        * <span dp-show-spinning="saving_dep" class="spinner">Saving</span>
+        * <span dp-hide-spinning="saving_dep"><button>Click here to save</button></span>
+        *
+        * Controller:
+        * @startSpinner('saving_dep')
+        * ...
+        * @stopSpinner('enableSpinner')
+     */
     var DeskPRO_Directive_DpShowSpinning;
     DeskPRO_Directive_DpShowSpinning = [
       function() {
@@ -52,6 +52,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpShowSpinning.js.map
-*/
+//# sourceMappingURL=DpShowSpinning.js.map

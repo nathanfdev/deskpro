@@ -1,34 +1,34 @@
 (function() {
   define(['jquery'], function($) {
-    /*
-    	# Description
-    	# -----------
-    	#
-    	# This is the trigger for an inline help content body to display. When it is clicked,
-    	# this element will fade away and the body will slide in. When the body is closed again,
-    	# the body will "minimise into" this switch and the switch will become visible again.
-    	#
-    	# The ID of these inline helps should be globally unique because their state is saved.
-    	#
-    	# Help State
-    	# ----------
-    	#
-    	# A help state can either be open, closed, or undefined. Undefined states default to being
-    	# open unless the default-state attribute is used to set it open.
-    	#
-    	# Example View
-    	# ------------
-    	# <div class="panel-heading">
-    	#     <h3>
-    	#         <span>Permissions</span>
-    	#         <button class="btn inhelp-trigger" dp-inhelp-btn="admin.ticket_deps.edit.usergroup_perms"><i></i></button>
-    	#     </h3>
-    	# </div>
-    	# <div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.usergroup_perms">
-    	#     ...
-    	# </div>
-    */
 
+    /*
+    	 * Description
+    	 * -----------
+    	 *
+    	 * This is the trigger for an inline help content body to display. When it is clicked,
+    	 * this element will fade away and the body will slide in. When the body is closed again,
+    	 * the body will "minimise into" this switch and the switch will become visible again.
+    	 *
+    	 * The ID of these inline helps should be globally unique because their state is saved.
+    	 *
+    	 * Help State
+    	 * ----------
+    	 *
+    	 * A help state can either be open, closed, or undefined. Undefined states default to being
+    	 * open unless the default-state attribute is used to set it open.
+    	 *
+    	 * Example View
+    	 * ------------
+    	 * <div class="panel-heading">
+    	 *     <h3>
+    	 *         <span>Permissions</span>
+    	 *         <button class="btn inhelp-trigger" dp-inhelp-btn="admin.ticket_deps.edit.usergroup_perms"><i></i></button>
+    	 *     </h3>
+    	 * </div>
+    	 * <div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.usergroup_perms">
+    	 *     ...
+    	 * </div>
+     */
     var Admin_Main_Directive_DpInhelpBtn;
     Admin_Main_Directive_DpInhelpBtn = [
       'InhelpState', '$rootScope', function(InhelpState, $rootScope) {
@@ -95,6 +95,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpInhelpBtn.js.map
-*/
+//# sourceMappingURL=DpInhelpBtn.js.map

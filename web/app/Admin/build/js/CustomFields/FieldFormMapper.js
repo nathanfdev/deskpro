@@ -4,13 +4,13 @@
     return FieldFormMapper = (function() {
       function FieldFormMapper() {}
 
-      /*
-      		# Get a form model for an existing field
-      		#
-      		# @param {Object} fieldModel The field model (eg as returned from the API)
-      		# @return {Object}
-      */
 
+      /*
+      		 * Get a form model for an existing field
+      		 *
+      		 * @param {Object} fieldModel The field model (eg as returned from the API)
+      		 * @return {Object}
+       */
 
       FieldFormMapper.prototype.getFormFromModel = function(fieldModel) {
         var day, form, formTypeOpts, _i, _len, _ref;
@@ -207,15 +207,15 @@
         return form;
       };
 
-      /*
-      		# Use a form model to construct a payload we can deliver to the API to save
-      		# a field.
-      		#
-      		# @param {String} fieldType  The field type
-      		# @param {Object} formModel  The form model
-      		# @return {Object}
-      */
 
+      /*
+      		 * Use a form model to construct a payload we can deliver to the API to save
+      		 * a field.
+      		 *
+      		 * @param {String} fieldType  The field type
+      		 * @param {Object} formModel  The form model
+      		 * @return {Object}
+       */
 
       FieldFormMapper.prototype.getPostDataFromForm = function(fieldType, formModel) {
         var day, formTypeOpts, postData, x, _i, _len, _ref;
@@ -332,11 +332,11 @@
         return postData;
       };
 
-      /*
-      		# Applies basic settings from form onto the real field model
-        	# so the list is showing correct data.
-      */
 
+      /*
+      		 * Applies basic settings from form onto the real field model
+        	 * so the list is showing correct data.
+       */
 
       FieldFormMapper.prototype.applyFormToModel = function(fieldModel, formModel) {
         fieldModel.title = formModel.title;
@@ -351,6 +351,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=FieldFormMapper.js.map
-*/
+//# sourceMappingURL=FieldFormMapper.js.map

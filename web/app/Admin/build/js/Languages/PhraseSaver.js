@@ -7,13 +7,13 @@
         this.$q = $q;
       }
 
-      /*
-        	# Saves an array of phrases
-        	#
-        	# @param {Array} phrases
-        	# @return {promise}
-      */
 
+      /*
+        	 * Saves an array of phrases
+        	 *
+        	 * @param {Array} phrases
+        	 * @return {promise}
+       */
 
       PhraseSaver.prototype.savePhrases = function(langId, phrases) {
         var deferred, p, savePhrases, setVal, _i, _len;
@@ -57,6 +57,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=PhraseSaver.js.map
-*/
+//# sourceMappingURL=PhraseSaver.js.map

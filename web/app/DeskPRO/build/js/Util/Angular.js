@@ -6,14 +6,14 @@
     DeskPRO_Util_Angular = (function() {
       function DeskPRO_Util_Angular() {}
 
-      /*
-        	# Get an object of k=>v services injected into a constructor of object given an array of args.
-        	#
-        	# @param {Object} object An object annotated with $inject
-        	# @param {Array} args    An array of args, typically args of a constructor
-        	# @return {Object}
-      */
 
+      /*
+        	 * Get an object of k=>v services injected into a constructor of object given an array of args.
+        	 *
+        	 * @param {Object} object An object annotated with $inject
+        	 * @param {Array} args    An array of args, typically args of a constructor
+        	 * @return {Object}
+       */
 
       DeskPRO_Util_Angular.prototype.getInjectedArgs = function(object, args) {
         var arg, argName, i, injectedArgs, injectedNames, _i, _len;
@@ -35,14 +35,14 @@
         return injectedArgs;
       };
 
-      /*
-        	# Takes the objects injected (gotten via getInjectedArgs) and assigns them to properties
-        	# on the object,
-        	#
-        	# @param {Object} object An object annotated with $inject
-        	# @param {Array} args    An array of args, typically args of a constructor
-      */
 
+      /*
+        	 * Takes the objects injected (gotten via getInjectedArgs) and assigns them to properties
+        	 * on the object,
+        	 *
+        	 * @param {Object} object An object annotated with $inject
+        	 * @param {Array} args    An array of args, typically args of a constructor
+       */
 
       DeskPRO_Util_Angular.prototype.setInjectedProperties = function(object, args) {
         var injectedArgs, k, v, _results;
@@ -64,6 +64,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Angular.js.map
-*/
+//# sourceMappingURL=Angular.js.map

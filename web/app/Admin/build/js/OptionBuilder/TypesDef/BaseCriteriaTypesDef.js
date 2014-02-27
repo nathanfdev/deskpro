@@ -15,10 +15,10 @@
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.init = function() {};
 
-      /*
-        	# Gets a type definition by calling a getX method on this class
-      */
 
+      /*
+        	 * Gets a type definition by calling a getX method on this class
+       */
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getDef = function(type, options) {
         var me, typeFunc, typeName;
@@ -60,20 +60,20 @@
         }
       };
 
-      /*
-        	# @param {Object} options
-        	# @return {Array}
-      */
 
+      /*
+        	 * @param {Object} options
+        	 * @return {Array}
+       */
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getOperators = function(options) {
         return options.operators || ['is', 'not'];
       };
 
-      /*
-        	# Constructs a standard select box type
-      */
 
+      /*
+        	 * Constructs a standard select box type
+       */
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getStandardSelect = function(options) {
         var data_name, form_type, me, operators, options_formatter, prop_name, type;
@@ -124,17 +124,18 @@
             }
           },
           getData: function() {
-            var defer,
-              _this = this;
+            var defer;
             if (data_name) {
               defer = me.$q.defer();
-              me.loadDataOptions().then(function() {
-                return defer.resolve({
-                  operators: operators,
-                  options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                  multiselect: true
-                });
-              });
+              me.loadDataOptions().then((function(_this) {
+                return function() {
+                  return defer.resolve({
+                    operators: operators,
+                    options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
+                    multiselect: true
+                  });
+                };
+              })(this));
               return defer.promise;
             } else {
               return {
@@ -171,10 +172,10 @@
         };
       };
 
-      /*
-        	# Constructs a standard "is" template (no options, just a boolean is)
-      */
 
+      /*
+        	 * Constructs a standard "is" template (no options, just a boolean is)
+       */
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getStandardIs = function(options) {
         var me, prop_name, type;
@@ -216,10 +217,10 @@
         };
       };
 
-      /*
-        	# Constructs a standard input box
-      */
 
+      /*
+        	 * Constructs a standard input box
+       */
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getStandardInput = function(options) {
         var me, operators, prop_name, type;
@@ -272,6 +273,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=BaseCriteriaTypesDef.js.map
-*/
+//# sourceMappingURL=BaseCriteriaTypesDef.js.map

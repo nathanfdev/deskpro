@@ -1,12 +1,12 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This is the body portion of dp-inhelp-switch. See that directive for more information.
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This is the body portion of dp-inhelp-switch. See that directive for more information.
+     */
     var Admin_Main_Directive_DpInhelpBody;
     Admin_Main_Directive_DpInhelpBody = [
       'InhelpState', '$rootScope', function(InhelpState, $rootScope) {
@@ -44,6 +44,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpInhelpBody.js.map
-*/
+//# sourceMappingURL=DpInhelpBody.js.map

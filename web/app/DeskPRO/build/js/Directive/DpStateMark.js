@@ -1,28 +1,28 @@
 (function() {
   define(['DeskPRO/Util/Util', 'DeskPRO/Util/Strings'], function(Util, Strings) {
-    /*
-       # Description
-       # -----------
-       #
-       # This directive adds a "state-on" and "active" classname to the element when the specified
-       # route section is enabled.
-       #
-       # Sections can be named specifically or generally:
-       #
-       # * tickets.ticket_deps.edit.18
-       # * tickets.ticket_deps.edit
-       # * tickets.ticket_deps
-       # * tickets
-       #
-       # If you specifiy a generic state name, then all states "under" that state will cause the on-state.
-       #
-       # If a is three-levels deep (e.g., nav > list > edit) then the 'id' param is appended and used as the last segment.
-       #
-       # Example View
-       # ------------
-       # <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This directive adds a "state-on" and "active" classname to the element when the specified
+        * route section is enabled.
+        *
+        * Sections can be named specifically or generally:
+        *
+        * * tickets.ticket_deps.edit.18
+        * * tickets.ticket_deps.edit
+        * * tickets.ticket_deps
+        * * tickets
+        *
+        * If you specifiy a generic state name, then all states "under" that state will cause the on-state.
+        *
+        * If a is three-levels deep (e.g., nav > list > edit) then the 'id' param is appended and used as the last segment.
+        *
+        * Example View
+        * ------------
+        * <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
+     */
     var DeskPRO_Directive_DpStateMark;
     DeskPRO_Directive_DpStateMark = [
       '$rootScope', '$state', function($rootScope, $state) {
@@ -54,17 +54,17 @@
                   currentStateId += '.' + $state.params.type;
                 }
                 if (currentStateId.match(myStateIdRe)) {
-                  /*
-                   						# This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
-                   						# In this case both the elements will be highlighted
-                   						#
-                   						# If you will need to understand what is done uncomment following lines of code:
-                   						#
-                   						# console.log currentStateId, myStateIdRe
-                   						# console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
-                   						# console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
-                  */
 
+                  /*
+                   						 * This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
+                   						 * In this case both the elements will be highlighted
+                   						 *
+                   						 * If you will need to understand what is done uncomment following lines of code:
+                   						 *
+                   						 * console.log currentStateId, myStateIdRe
+                   						 * console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
+                   						 * console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
+                   */
                   firstStateOccurrence = currentStateId.split('.')[0];
                   firstRegExpOccurrence = myStateIdRe.toString().split('.')[0];
                   occurrenceFound = firstRegExpOccurrence.indexOf(firstStateOccurrence);
@@ -95,6 +95,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpStateMark.js.map
-*/
+//# sourceMappingURL=DpStateMark.js.map

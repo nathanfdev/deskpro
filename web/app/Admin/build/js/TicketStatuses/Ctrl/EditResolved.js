@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_TicketStatuses_Ctrl_EditResolved, _ref;
+    var Admin_TicketStatuses_Ctrl_EditResolved;
     Admin_TicketStatuses_Ctrl_EditResolved = (function(_super) {
       __extends(Admin_TicketStatuses_Ctrl_EditResolved, _super);
 
       function Admin_TicketStatuses_Ctrl_EditResolved() {
-        _ref = Admin_TicketStatuses_Ctrl_EditResolved.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_TicketStatuses_Ctrl_EditResolved.__super__.constructor.apply(this, arguments);
       }
 
       Admin_TicketStatuses_Ctrl_EditResolved.CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditResolved';
@@ -28,6 +27,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EditResolved.js.map
-*/
+//# sourceMappingURL=EditResolved.js.map

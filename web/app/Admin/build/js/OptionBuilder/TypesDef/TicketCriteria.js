@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/OptionBuilder/TypesDef/BaseCriteriaTypesDef'], function(BaseCriteriaTypesDef) {
-    var Admin_OptionBuilder_TypesDef_TicketCriteria, _ref;
+    var Admin_OptionBuilder_TypesDef_TicketCriteria;
     return Admin_OptionBuilder_TypesDef_TicketCriteria = (function(_super) {
       __extends(Admin_OptionBuilder_TypesDef_TicketCriteria, _super);
 
       function Admin_OptionBuilder_TypesDef_TicketCriteria() {
-        _ref = Admin_OptionBuilder_TypesDef_TicketCriteria.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_OptionBuilder_TypesDef_TicketCriteria.__super__.constructor.apply(this, arguments);
       }
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.init = function() {
@@ -21,7 +20,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOperators = function(options) {
-        var o, ops, _i, _len, _ref1;
+        var o, ops, _i, _len, _ref;
         if (!options.operators) {
           return ['is', 'not'];
         }
@@ -29,9 +28,9 @@
           return options.operators;
         }
         ops = [];
-        _ref1 = options.operators;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          o = _ref1[_i];
+        _ref = options.operators;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          o = _ref[_i];
           if (o !== 'changed' && o !== 'changed_to' && o !== 'changed_from') {
             ops.push(o);
           }
@@ -227,7 +226,6 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.loadDataOptions = function() {
-        var _this = this;
         if (!this.loadDataPromise) {
           this.loadDataPromise = this.Api.sendDataGet({
             'agents': '/agents',
@@ -239,21 +237,23 @@
             'ticket_works': '/ticket_works',
             'ticket_accounts': '/email_accounts',
             'usergroups': '/user_groups'
-          }).then(function(result) {
-            var data, options_data, _ref1;
-            data = result.data;
-            options_data = {};
-            options_data['agents'] = data.agents.agents;
-            options_data['agent_teams'] = data.agent_teams.agent_teams;
-            options_data['ticket_deps'] = data.ticket_deps.departments;
-            options_data['ticket_cats'] = data.ticket_cats.categories;
-            options_data['ticket_pris'] = data.ticket_pris.priorities;
-            options_data['ticket_works'] = data.ticket_works.workflows;
-            options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
-            options_data['email_accounts'] = data.ticket_accounts.email_accounts;
-            options_data['usergroups'] = data.usergroups.groups;
-            return _this.options_data = options_data;
-          });
+          }).then((function(_this) {
+            return function(result) {
+              var data, options_data, _ref;
+              data = result.data;
+              options_data = {};
+              options_data['agents'] = data.agents.agents;
+              options_data['agent_teams'] = data.agent_teams.agent_teams;
+              options_data['ticket_deps'] = data.ticket_deps.departments;
+              options_data['ticket_cats'] = data.ticket_cats.categories;
+              options_data['ticket_pris'] = data.ticket_pris.priorities;
+              options_data['ticket_works'] = data.ticket_works.workflows;
+              options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+              options_data['email_accounts'] = data.ticket_accounts.email_accounts;
+              options_data['usergroups'] = data.usergroups.groups;
+              return _this.options_data = options_data;
+            };
+          })(this));
         }
         return this.loadDataPromise;
       };
@@ -754,6 +754,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=TicketCriteria.js.map
-*/
+//# sourceMappingURL=TicketCriteria.js.map

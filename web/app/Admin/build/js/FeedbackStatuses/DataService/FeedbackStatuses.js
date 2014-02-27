@@ -18,17 +18,16 @@
         };
       }
 
+
       /**
       		* Loads all feedback statuses
         	* Returns a promise.
         	*
         	* @return {Promise}
-      */
-
+       */
 
       Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.loadList = function(reload) {
-        var deferred, http_def,
-          _this = this;
+        var deferred, http_def;
         if (this.loadListPromise) {
           return this.loadListPromise;
         }
@@ -37,22 +36,24 @@
           deferred.resolve(this.recs);
           return deferred.promise;
         }
-        http_def = this.Api.sendGet('/feedback_statuses').success(function(data, status, headers, config) {
-          _this._setListData(data.statuses);
-          return deferred.resolve(_this.recs);
-        }, function(data, status, headers, config) {
+        http_def = this.Api.sendGet('/feedback_statuses').success((function(_this) {
+          return function(data, status, headers, config) {
+            _this._setListData(data.statuses);
+            return deferred.resolve(_this.recs);
+          };
+        })(this), function(data, status, headers, config) {
           return deferred.reject();
         });
         this.loadListPromise = deferred.promise;
         return this.loadListPromise;
       };
 
+
       /**
       				* Removed entity from entity manager
       		  *
       		  * @param id
-      */
-
+       */
 
       Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.remove = function(id) {
         var model;
@@ -64,11 +65,11 @@
         return this._updateOrderOfData();
       };
 
-      /*
-      		# Updates entity with new model data provided
-       	# with new model provided. Or adds it to the list if it doesnt exist.
-      */
 
+      /*
+      		 * Updates entity with new model data provided
+       	 * with new model provided. Or adds it to the list if it doesnt exist.
+       */
 
       Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.updateModel = function(model) {
         var new_model;
@@ -83,32 +84,33 @@
         return new_model;
       };
 
-      /*
-      		# Returns list of feedback_statuses where feedback of specified feedback_status could be moved to
-       	# @param model - specified feedback_status model
-      		# @return array
-      */
 
+      /*
+      		 * Returns list of feedback_statuses where feedback of specified feedback_status could be moved to
+       	 * @param model - specified feedback_status model
+      		 * @return array
+       */
 
       Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.getListOfMovables = function(model) {
-        var move_list,
-          _this = this;
+        var move_list;
         move_list = [];
-        this.recs[model.status_type + '_statuses'].forEach(function(key, val) {
-          if (val.id !== model.id) {
-            return move_list.push(val);
-          }
-        });
+        this.recs[model.status_type + '_statuses'].forEach((function(_this) {
+          return function(key, val) {
+            if (val.id !== model.id) {
+              return move_list.push(val);
+            }
+          };
+        })(this));
         return move_list;
       };
+
 
       /**
       				* Creates entities for feedback statuses raw data
       				* The thing is that it creates entities for both active and closed statuses
       				*
       				* @return {Promise}
-      */
-
+       */
 
       Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype._setListData = function(raw_recs) {
         var model, rec, _i, _j, _len, _len1, _ref, _ref1, _results;
@@ -164,6 +166,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=FeedbackStatuses.js.map
-*/
+//# sourceMappingURL=FeedbackStatuses.js.map

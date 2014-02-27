@@ -1,34 +1,34 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This turns an element into an iOS7-style toggle on/off switch. It toggles the connected
-       # model to true or false.
-       #
-       # (This is similar to DpToggleSwitch, this is just cleaner; aka 'version 2' of that compontent)
-       #
-       # Additional Attributes
-       # ---------------------
-       #
-       # * is-locked:    Expression to evaluate when checking if the locked symbol is on
-       # * is-on:        Expression to evaluate when showing this as 'on'. When ng-model is true or when this is true, then it shows on
-       # * ng-model:     The on/off model
-       # * locked-tip:   A string for the locked tooltop
-       # * locked-top-e: An expression that returns a string
-       #
-       # Example View
-       # ------------
-       # <input
-       #     dp-slider-switch
-       #     ng-model="myModel"
-       #     is-on="myOtherModel.showAsOn"
-       #     is-locked="myOtherModel.isLocked"
-       #     locked-tip="This is locked because the 'full' permission is enabled"
-       # />
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This turns an element into an iOS7-style toggle on/off switch. It toggles the connected
+        * model to true or false.
+        *
+        * (This is similar to DpToggleSwitch, this is just cleaner; aka 'version 2' of that compontent)
+        *
+        * Additional Attributes
+        * ---------------------
+        *
+        * * is-locked:    Expression to evaluate when checking if the locked symbol is on
+        * * is-on:        Expression to evaluate when showing this as 'on'. When ng-model is true or when this is true, then it shows on
+        * * ng-model:     The on/off model
+        * * locked-tip:   A string for the locked tooltop
+        * * locked-top-e: An expression that returns a string
+        *
+        * Example View
+        * ------------
+        * <input
+        *     dp-slider-switch
+        *     ng-model="myModel"
+        *     is-on="myOtherModel.showAsOn"
+        *     is-locked="myOtherModel.isLocked"
+        *     locked-tip="This is locked because the 'full' permission is enabled"
+        * />
+     */
     var Admin_Main_Directive_DpToggleSwitch;
     Admin_Main_Directive_DpToggleSwitch = [
       function() {
@@ -160,6 +160,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpSliderSwitch.js.map
-*/
+//# sourceMappingURL=DpSliderSwitch.js.map

@@ -2,24 +2,24 @@
   var __hasProp = {}.hasOwnProperty;
 
   define(function() {
-    /*
-      # Description
-      # -----------
-    		#
-    		#	Example View
-    		#	------------
-    		#	<dp-report-billing-select-box
-    		#				  value-to-decorate="scope.title"
-    		#				  possible-values="scope.some_object">
-    		#	</span>
-    		#
-    		#	Parameters
-    		#	------------
-    		# 1) 'value-to-decorate' (required parameter) - ...
-    		# 2) 'possible-values' (required parameter) - ...
-      #
-    */
 
+    /*
+       * Description
+       * -----------
+    		 *
+    		 *	Example View
+    		 *	------------
+    		 *	<dp-report-billing-select-box
+    		 *				  value-to-decorate="scope.title"
+    		 *				  possible-values="scope.some_object">
+    		 *	</span>
+    		 *
+    		 *	Parameters
+    		 *	------------
+    		 * 1) 'value-to-decorate' (required parameter) - ...
+    		 * 2) 'possible-values' (required parameter) - ...
+       *
+     */
     var Reports_Directive_DpReportBillingSelectBox;
     Reports_Directive_DpReportBillingSelectBox = [
       '$state', function($state) {
@@ -28,6 +28,7 @@
           replace: true,
           template: "<a href=\"{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}\">\n	<h4>\n		<span class=\"title-text\">\n			<span ng-repeat=\"text in texts\">\n				<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n				<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\" ng-change=\"changeLinkParams()\">\n					<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n						{{ option.label }}\n					</option>\n				</select>\n			</span>\n		</span>\n	</h4>\n</a>\n",
           link: function(scope, element, attrs) {
+
             /*
             
              			Below variables will look like following
@@ -38,32 +39,32 @@
             																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
             				]
             				scope.selected = ['today', 'agent', 'department']
-            */
-
-            var buildDirectiveVariables, collectSelectOptions,
-              _this = this;
+             */
+            var buildDirectiveVariables, collectSelectOptions;
             scope.texts = [];
             scope.options = [];
             scope.selected = [];
             scope.defaultLinkParams = '';
-            scope.$watch(attrs.possibleValues, function(newVal) {
-              var valueToDecorate;
-              if (typeof newVal === 'undefined') {
-                return;
-              }
-              valueToDecorate = scope.$eval(attrs.valueToDecorate);
-              if (!valueToDecorate) {
-                return;
-              }
-              scope.reportId = scope.$eval(attrs.reportId);
-              buildDirectiveVariables(valueToDecorate);
-              return scope.defaultLinkParams = scope.selected.join(',');
-            });
-            /*
-            				# This function builds directive by constructing it on 'the fly' using DOM operations
-             			# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
-            */
+            scope.$watch(attrs.possibleValues, (function(_this) {
+              return function(newVal) {
+                var valueToDecorate;
+                if (typeof newVal === 'undefined') {
+                  return;
+                }
+                valueToDecorate = scope.$eval(attrs.valueToDecorate);
+                if (!valueToDecorate) {
+                  return;
+                }
+                scope.reportId = scope.$eval(attrs.reportId);
+                buildDirectiveVariables(valueToDecorate);
+                return scope.defaultLinkParams = scope.selected.join(',');
+              };
+            })(this));
 
+            /*
+            				 * This function builds directive by constructing it on 'the fly' using DOM operations
+             			 * The reason for doing so - problems with inner directives that were compiled with $compile() functionality
+             */
             buildDirectiveVariables = function(value) {
               var collected, lastPiece, match, regex;
               lastPiece = value;
@@ -79,10 +80,10 @@
               lastPiece = lastPiece.replace(/<chart:([a-z0-9_-]+)>/gi, '<span class="report-chart-icon report-chart-icon-$1"></span>');
               return scope.texts.push(lastPiece);
             };
-            /*
-            				# Returning select box options that was rendered according to 'input' parameter
-            */
 
+            /*
+            				 * Returning select box options that was rendered according to 'input' parameter
+             */
             collectSelectOptions = function(input) {
               var choices, extras, extrasMatch, key, match, options, possibleValues, regex, type, value;
               possibleValues = scope.$eval(attrs.possibleValues);
@@ -130,10 +131,10 @@
                 selected: (extras["default"] ? extras["default"] : options[0].value)
               };
             };
-            /*
-             			# Going to correponding route after changing selected options inside select box
-            */
 
+            /*
+             			 * Going to correponding route after changing selected options inside select box
+             */
             return scope.changeLinkParams = function() {
               var linkParams;
               linkParams = scope.selected.join(',');
@@ -151,6 +152,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpReportBillingSelectBox.js.map
-*/
+//# sourceMappingURL=DpReportBillingSelectBox.js.map

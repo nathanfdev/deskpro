@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
-    var Admin_TicketFilters_Ctrl_Edit, _ref;
+    var Admin_TicketFilters_Ctrl_Edit;
     Admin_TicketFilters_Ctrl_Edit = (function(_super) {
       __extends(Admin_TicketFilters_Ctrl_Edit, _super);
 
       function Admin_TicketFilters_Ctrl_Edit() {
-        _ref = Admin_TicketFilters_Ctrl_Edit.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_TicketFilters_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
       Admin_TicketFilters_Ctrl_Edit.CTRL_ID = 'Admin_TicketFilters_Ctrl_Edit';
@@ -28,33 +27,34 @@
       };
 
       Admin_TicketFilters_Ctrl_Edit.prototype.initialLoad = function() {
-        var _this = this;
-        return this.filterData.loadEditFilterData(this.filterId).then(function(data) {
-          var rowId, term, _i, _len, _ref1, _results;
-          _this.agents = data.agents;
-          _this.teams = data.teams;
-          if (!_this.teams[0]) {
-            _this.teams = null;
-          }
-          if (data.filter) {
-            _this.filter = data.filter;
-            _this.form = _this.getFormFromModel(_this.filter);
-            _this.filter_criteria = {};
-            _ref1 = _this.filter.terms.terms;
-            _results = [];
-            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-              term = _ref1[_i];
-              rowId = Util.uid('term');
-              _results.push(_this.filter_criteria[rowId] = term);
+        return this.filterData.loadEditFilterData(this.filterId).then((function(_this) {
+          return function(data) {
+            var rowId, term, _i, _len, _ref, _results;
+            _this.agents = data.agents;
+            _this.teams = data.teams;
+            if (!_this.teams[0]) {
+              _this.teams = null;
             }
-            return _results;
-          } else {
-            _this.filter = {
-              is_global: true
-            };
-            return _this.form = _this.getFormFromModel(_this.filter);
-          }
-        });
+            if (data.filter) {
+              _this.filter = data.filter;
+              _this.form = _this.getFormFromModel(_this.filter);
+              _this.filter_criteria = {};
+              _ref = _this.filter.terms.terms;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                term = _ref[_i];
+                rowId = Util.uid('term');
+                _results.push(_this.filter_criteria[rowId] = term);
+              }
+              return _results;
+            } else {
+              _this.filter = {
+                is_global: true
+              };
+              return _this.form = _this.getFormFromModel(_this.filter);
+            }
+          };
+        })(this));
       };
 
       Admin_TicketFilters_Ctrl_Edit.prototype.getFormFromModel = function(filterModel) {
@@ -85,8 +85,7 @@
       };
 
       Admin_TicketFilters_Ctrl_Edit.prototype.saveForm = function() {
-        var method, postData, url,
-          _this = this;
+        var method, postData, url;
         if (!this.$scope.form_props.$valid) {
           return;
         }
@@ -106,30 +105,32 @@
           }
         };
         postData.filter.terms = this.filter_criteria;
-        return this.sendFormSaveApiCall(method, url, postData).then(function(res) {
-          _this.Growl.success(_this.getRegisteredMessage('saved_filter'));
-          _this.filter.title = _this.form.title;
-          if (res.data.filter_id) {
-            _this.filter.id = res.data.filter_id;
-          }
-          _this.filter.is_global = _this.form.perm_type === 'global';
-          _this.filter.person = null;
-          _this.filter.agent_team = null;
-          if (_this.form.perm_type === 'agent') {
-            _this.filter.person = _this.agents.filter(function(x) {
-              return x.id === parseInt(_this.form.agent_id);
-            })[0];
-          }
-          if (_this.form.perm_type === 'team') {
-            _this.filter.agent_team = _this.teams.filter(function(x) {
-              return x.id === parseInt(_this.form.team_id);
-            })[0];
-          }
-          _this.filterData.mergeDataModel(_this.filter);
-          if (!_this.filterId) {
-            return _this.$state.go('tickets.ticket_filters.gocreate');
-          }
-        });
+        return this.sendFormSaveApiCall(method, url, postData).then((function(_this) {
+          return function(res) {
+            _this.Growl.success(_this.getRegisteredMessage('saved_filter'));
+            _this.filter.title = _this.form.title;
+            if (res.data.filter_id) {
+              _this.filter.id = res.data.filter_id;
+            }
+            _this.filter.is_global = _this.form.perm_type === 'global';
+            _this.filter.person = null;
+            _this.filter.agent_team = null;
+            if (_this.form.perm_type === 'agent') {
+              _this.filter.person = _this.agents.filter(function(x) {
+                return x.id === parseInt(_this.form.agent_id);
+              })[0];
+            }
+            if (_this.form.perm_type === 'team') {
+              _this.filter.agent_team = _this.teams.filter(function(x) {
+                return x.id === parseInt(_this.form.team_id);
+              })[0];
+            }
+            _this.filterData.mergeDataModel(_this.filter);
+            if (!_this.filterId) {
+              return _this.$state.go('tickets.ticket_filters.gocreate');
+            }
+          };
+        })(this));
       };
 
       return Admin_TicketFilters_Ctrl_Edit;
@@ -140,6 +141,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Edit.js.map
-*/
+//# sourceMappingURL=Edit.js.map

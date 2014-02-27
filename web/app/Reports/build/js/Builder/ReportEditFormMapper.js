@@ -4,11 +4,11 @@
     return ReportEditFormMapper = (function() {
       function ReportEditFormMapper() {}
 
-      /*
-      			#
-       		#
-      */
 
+      /*
+      			 *
+       		 *
+       */
 
       ReportEditFormMapper.prototype.getFormFromModel = function(model) {
         var form;
@@ -19,21 +19,21 @@
         return form;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       ReportEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
         return model.title = formModel.title;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       ReportEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var postData;
@@ -51,6 +51,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ReportEditFormMapper.js.map
-*/
+//# sourceMappingURL=ReportEditFormMapper.js.map

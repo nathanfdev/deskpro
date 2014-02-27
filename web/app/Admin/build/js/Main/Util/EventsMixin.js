@@ -55,6 +55,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EventsMixin.js.map
-*/
+//# sourceMappingURL=EventsMixin.js.map

@@ -15,18 +15,17 @@
         this.recs = new Admin_Main_Collection_OrderedDictionary();
       }
 
+
       /**
       		* Loads list of records
        	*
       * @param reload - (optional) whether to reload list of records or no
       *
       * @return {Promise}
-      */
-
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.loadList = function(model, reload) {
-        var deferred,
-          _this = this;
+        var deferred;
         if (this.loadListPromise) {
           return this.loadListPromise;
         }
@@ -35,22 +34,24 @@
           deferred.resolve(this.recs);
           return deferred.promise;
         }
-        this.Api.sendGet('/feedback_categories').success(function(data, status, headers, config) {
-          _this._setListData(data.feedback_categories);
-          return deferred.resolve(_this.recs);
-        }, function(data, status, headers, config) {
+        this.Api.sendGet('/feedback_categories').success((function(_this) {
+          return function(data, status, headers, config) {
+            _this._setListData(data.feedback_categories);
+            return deferred.resolve(_this.recs);
+          };
+        })(this), function(data, status, headers, config) {
           return deferred.reject();
         });
         this.loadListPromise = deferred.promise;
         return this.loadListPromise;
       };
 
+
       /**
       				* Removes entity from entity manager
       		  *
       		  * @param id
-      */
-
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.remove = function(id) {
         var model;
@@ -62,11 +63,11 @@
         return this._updateOrderOfData();
       };
 
-      /*
-      		# Updates entity with new model data provided
-       	# with new model provided. Or adds it to the list if it doesnt exist.
-      */
 
+      /*
+      		 * Updates entity with new model data provided
+       	 * with new model provided. Or adds it to the list if it doesnt exist.
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.updateModel = function(model) {
         var new_model;
@@ -84,56 +85,58 @@
         return this._updateOrderOfData();
       };
 
-      /*
-      		# Returns list of feedback_categories where feedback of specified feedback_category could be moved to
-       	# @param model - specified feedback_category model
-      		# @return array
-      */
 
+      /*
+      		 * Returns list of feedback_categories where feedback of specified feedback_category could be moved to
+       	 * @param model - specified feedback_category model
+      		 * @return array
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.getListOfMovables = function(model) {
-        var move_list, parent_id,
-          _this = this;
+        var move_list, parent_id;
         move_list = [];
         parent_id = model.parent_id;
-        this.recs.forEach(function(key, val) {
-          if (val.id !== model.id && val.id !== ~~parent_id) {
-            return move_list.push(val);
-          }
-        });
+        this.recs.forEach((function(_this) {
+          return function(key, val) {
+            if (val.id !== model.id && val.id !== ~~parent_id) {
+              return move_list.push(val);
+            }
+          };
+        })(this));
         return move_list;
       };
 
-      /*
-      		# Returns list of parent records
-      		# @param model - specified model for which we want to know possible parent records
-      		# @return array
-      */
 
+      /*
+      		 * Returns list of parent records
+      		 * @param model - specified model for which we want to know possible parent records
+      		 * @return array
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.getListOfParents = function(model) {
-        var parent_list,
-          _this = this;
+        var parent_list;
         parent_list = [
           {
             id: 0,
             title: 'No Parent'
           }
         ];
-        this.recs.forEach(function(key, val) {
-          if (val.id !== model.id && !val.parent_id) {
-            return parent_list.push(val);
-          }
-        });
+        this.recs.forEach((function(_this) {
+          return function(key, val) {
+            if (val.id !== model.id && !val.parent_id) {
+              return parent_list.push(val);
+            }
+          };
+        })(this));
         return parent_list;
       };
 
-      /*
-      		# Returns wherther spcified model has children or not
-      		# @param model - specified model for which we want to know if it has children or not
-      		# @return array
-      */
 
+      /*
+      		 * Returns wherther spcified model has children or not
+      		 * @param model - specified model for which we want to know if it has children or not
+      		 * @return array
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.hasChildren = function(model) {
         var rec, _i, _len, _ref;
@@ -147,12 +150,12 @@
         return false;
       };
 
+
       /**
       				* Creates entities for feedback categories raw data
       				*
       				* @return {Promise}
-      */
-
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype._setListData = function(raw_recs) {
         var model, rec, _i, _len, _results;
@@ -166,11 +169,11 @@
         return _results;
       };
 
-      /*
-      		# Reorders the data of this data service
-       	# Useful for cases of drag&drop ordering of data
-      */
 
+      /*
+      		 * Reorders the data of this data service
+       	 * Useful for cases of drag&drop ordering of data
+       */
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype._updateOrderOfData = function() {
         this.recs.reorder(function(a, b) {
@@ -194,6 +197,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=FeedbackCategories.js.map
-*/
+//# sourceMappingURL=FeedbackCategories.js.map

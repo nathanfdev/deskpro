@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
-    var Admin_Apps_Ctrl_EditInstance, _ref;
+    var Admin_Apps_Ctrl_EditInstance;
     Admin_Apps_Ctrl_EditInstance = (function(_super) {
       __extends(Admin_Apps_Ctrl_EditInstance, _super);
 
       function Admin_Apps_Ctrl_EditInstance() {
-        _ref = Admin_Apps_Ctrl_EditInstance.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_Apps_Ctrl_EditInstance.__super__.constructor.apply(this, arguments);
       }
 
       Admin_Apps_Ctrl_EditInstance.CTRL_ID = 'Admin_Apps_Ctrl_EditInstance';
@@ -23,52 +22,55 @@
       };
 
       Admin_Apps_Ctrl_EditInstance.prototype.initialLoad = function() {
-        var d,
-          _this = this;
+        var d;
         d = this.$q.defer();
         this.Api.sendDataGet({
           app: '/apps/instances/' + this.instanceId
-        }).then(function(result) {
-          _this.app = result.data.app.app;
-          return _this.Api.sendDataGet({
-            pack: '/apps/packages/' + _this.app.package_name
-          }).then(function(result) {
-            _this.pack = result.data.pack['package'];
-            return d.resolve();
-          });
-        });
-        d.promise.then(function() {
-          _this.$scope.pack = _this.pack;
-          _this.$scope.setting_values = _this.app.settings;
-          if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
-            _this.$scope.setting_values = {};
-          }
-          return _this.$scope.setting_values.dp_app = {
-            title: _this.app.title
+        }).then((function(_this) {
+          return function(result) {
+            _this.app = result.data.app.app;
+            return _this.Api.sendDataGet({
+              pack: '/apps/packages/' + _this.app.package_name
+            }).then(function(result) {
+              _this.pack = result.data.pack['package'];
+              return d.resolve();
+            });
           };
-        });
+        })(this));
+        d.promise.then((function(_this) {
+          return function() {
+            _this.$scope.pack = _this.pack;
+            _this.$scope.setting_values = _this.app.settings;
+            if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
+              _this.$scope.setting_values = {};
+            }
+            return _this.$scope.setting_values.dp_app = {
+              title: _this.app.title
+            };
+          };
+        })(this));
         return d.promise;
       };
 
       Admin_Apps_Ctrl_EditInstance.prototype.saveSettings = function() {
-        var postData,
-          _this = this;
+        var postData;
         postData = {
           settings: this.$scope.setting_values
         };
         this.startSpinner('saving_settings');
-        return this.Api.sendPostJson("/apps/instances/" + this.instanceId, postData).then(function() {
-          return _this.stopSpinner('saving_settings').then(function() {
-            _this.$scope.$parent.ListCtrl.updateAppTitle(_this.instanceId, _this.$scope.setting_values.dp_app.title);
-            return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
-          });
-        }, function() {
+        return this.Api.sendPostJson("/apps/instances/" + this.instanceId, postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving_settings').then(function() {
+              _this.$scope.$parent.ListCtrl.updateAppTitle(_this.instanceId, _this.$scope.setting_values.dp_app.title);
+              return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+            });
+          };
+        })(this), function() {
           return this.stopSpinner('saving_settings');
         });
       };
 
       Admin_Apps_Ctrl_EditInstance.prototype.showReadme = function() {
-        var _this = this;
         return this.$modal.open({
           templateUrl: this.getTemplatePath('Apps/readme-modal.html'),
           controller: [
@@ -80,9 +82,11 @@
             }
           ],
           resolve: {
-            pack: function() {
-              return _this.pack;
-            }
+            pack: (function(_this) {
+              return function() {
+                return _this.pack;
+              };
+            })(this)
           }
         });
       };
@@ -95,6 +99,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EditInstance.js.map
-*/
+//# sourceMappingURL=EditInstance.js.map

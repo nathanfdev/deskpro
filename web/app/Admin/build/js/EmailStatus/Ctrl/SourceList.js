@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
-    var Admin_EmailStatus_Ctrl_SourceList, _ref;
+    var Admin_EmailStatus_Ctrl_SourceList;
     Admin_EmailStatus_Ctrl_SourceList = (function(_super) {
       __extends(Admin_EmailStatus_Ctrl_SourceList, _super);
 
       function Admin_EmailStatus_Ctrl_SourceList() {
-        _ref = Admin_EmailStatus_Ctrl_SourceList.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_EmailStatus_Ctrl_SourceList.__super__.constructor.apply(this, arguments);
       }
 
       Admin_EmailStatus_Ctrl_SourceList.CTRL_ID = 'Admin_EmailStatus_Ctrl_SourceList';
@@ -59,24 +58,25 @@
       };
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.loadResults = function() {
-        var promise,
-          _this = this;
+        var promise;
         promise = this.Api.sendGet('/email_status/sources', {
           filter: this.filter
-        }).success(function(data) {
-          var i, _i, _ref1, _results;
-          _this.results = data.email_sources;
-          _this.filter.page = data.page;
-          _this.page = data.page;
-          _this.num_pages = data.num_pages;
-          _this.num_results = data.count;
-          _this.page_nums = [];
-          _results = [];
-          for (i = _i = 0, _ref1 = _this.num_pages; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
-            _results.push(_this.page_nums.push(i + 1));
-          }
-          return _results;
-        });
+        }).success((function(_this) {
+          return function(data) {
+            var i, _i, _ref, _results;
+            _this.results = data.email_sources;
+            _this.filter.page = data.page;
+            _this.page = data.page;
+            _this.num_pages = data.num_pages;
+            _this.num_results = data.count;
+            _this.page_nums = [];
+            _results = [];
+            for (i = _i = 0, _ref = _this.num_pages; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+              _results.push(_this.page_nums.push(i + 1));
+            }
+            return _results;
+          };
+        })(this));
         return promise;
       };
 
@@ -88,6 +88,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SourceList.js.map
-*/
+//# sourceMappingURL=SourceList.js.map

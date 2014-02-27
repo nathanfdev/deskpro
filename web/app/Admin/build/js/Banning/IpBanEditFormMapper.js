@@ -4,11 +4,11 @@
     return IpBanEditFormMapper = (function() {
       function IpBanEditFormMapper() {}
 
-      /*
-      			#
-       		#
-      */
 
+      /*
+      			 *
+       		 *
+       */
 
       IpBanEditFormMapper.prototype.getFormFromModel = function(model) {
         var form;
@@ -17,19 +17,19 @@
         return form;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       IpBanEditFormMapper.prototype.applyFormToModel = function(model, formModel) {};
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       IpBanEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var postData;
@@ -45,6 +45,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=IpBanEditFormMapper.js.map
-*/
+//# sourceMappingURL=IpBanEditFormMapper.js.map

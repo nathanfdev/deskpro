@@ -79,6 +79,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=TriggerEditFormMapper.js.map
-*/
+//# sourceMappingURL=TriggerEditFormMapper.js.map

@@ -1,23 +1,23 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This inserts a comma between all elements in the list.
-       # When used in conjunection with ng-if, it's an easy way
-       # to generate a string of comma-separated elements that conditionally
-       # appear.
-       #
-       # Example
-       # -------
-       # <span dp-comma-separated>
-       #    <span ng-if="something1">value1</span>
-       #    <span ng-if="something2">value2</span>
-       #    <span ng-if="something3">value3</span>
-       # </span>
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This inserts a comma between all elements in the list.
+        * When used in conjunection with ng-if, it's an easy way
+        * to generate a string of comma-separated elements that conditionally
+        * appear.
+        *
+        * Example
+        * -------
+        * <span dp-comma-separated>
+        *    <span ng-if="something1">value1</span>
+        *    <span ng-if="something2">value2</span>
+        *    <span ng-if="something3">value3</span>
+        * </span>
+     */
     var Admin_Main_Directive_DpCommaSeparated;
     Admin_Main_Directive_DpCommaSeparated = [
       '$timeout', function($timeout) {
@@ -62,6 +62,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpCommaSeparated.js.map
-*/
+//# sourceMappingURL=DpCommaSeparated.js.map

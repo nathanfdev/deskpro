@@ -15,16 +15,15 @@
         this.recs = new Admin_Main_Collection_OrderedDictionary();
       }
 
+
       /**
       		* Loads list of accounts
         	*
         	* @return {Promise}
-      */
-
+       */
 
       Admin_TicketAccounts_DataService_TicketAccounts.prototype.loadList = function(reload) {
-        var deferred, http_def,
-          _this = this;
+        var deferred, http_def;
         if (this.loadListPromise) {
           return this.loadListPromise;
         }
@@ -33,10 +32,12 @@
           deferred.resolve(this.recs);
           return deferred.promise;
         }
-        http_def = this.Api.sendGet('/email_accounts').success(function(data, status, headers, config) {
-          _this._setListData(data.email_accounts);
-          return deferred.resolve(_this.recs);
-        }, function(data, status, headers, config) {
+        http_def = this.Api.sendGet('/email_accounts').success((function(_this) {
+          return function(data, status, headers, config) {
+            _this._setListData(data.email_accounts);
+            return deferred.resolve(_this.recs);
+          };
+        })(this), function(data, status, headers, config) {
           return deferred.reject();
         });
         this.loadListPromise = deferred.promise;
@@ -60,11 +61,11 @@
         return _results;
       };
 
-      /*
-        	# Updates the first-class model (title, etc)
-        	# with account provided. Or adds it to the list if it doesnt exist.
-      */
 
+      /*
+        	 * Updates the first-class model (title, etc)
+        	 * with account provided. Or adds it to the list if it doesnt exist.
+       */
 
       Admin_TicketAccounts_DataService_TicketAccounts.prototype.updateModel = function(account) {
         var new_model;
@@ -73,12 +74,12 @@
         return new_model;
       };
 
+
       /**
       		* Adds a new model to the existing list (eg was just created)
         	*
         	* @return {Admin_Main_Model_Base}
-      */
-
+       */
 
       Admin_TicketAccounts_DataService_TicketAccounts.prototype.addToList = function(rec) {
         var model;
@@ -98,6 +99,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=TicketAccounts.js.map
-*/
+//# sourceMappingURL=TicketAccounts.js.map

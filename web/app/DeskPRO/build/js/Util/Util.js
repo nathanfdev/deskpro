@@ -22,13 +22,13 @@
         }
       }
 
-      /*
-      		# Gets a unique number for the current page
-      		#
-      		# @param {String} prefix Optional prefix
-      		# @return {String}
-      */
 
+      /*
+      		 * Gets a unique number for the current page
+      		 *
+      		 * @param {String} prefix Optional prefix
+      		 * @return {String}
+       */
 
       DeskPRO_Util_Util.prototype.uid = function(prefix) {
         if (prefix == null) {
@@ -38,14 +38,14 @@
         return prefix + DeskPRO_Util_Util.UID_COUNTER;
       };
 
-      /*
-      		# Get a random number between min and max inclusive.
-      		#
-      		# @param {Integer} min
-      		# @param {Integer} max
-      		# @return {Integer}
-      */
 
+      /*
+      		 * Get a random number between min and max inclusive.
+      		 *
+      		 * @param {Integer} min
+      		 * @param {Integer} max
+      		 * @return {Integer}
+       */
 
       DeskPRO_Util_Util.prototype.random = function(min, max) {
         if (max == null) {
@@ -58,13 +58,13 @@
         return min + Math.floor(Math.random() * (max - min + 1));
       };
 
-      /*
-      		# Get an array of [key, value] in an object
-      		#
-      		# @param {Object} obj
-      		# @return {Array}
-      */
 
+      /*
+      		 * Get an array of [key, value] in an object
+      		 *
+      		 * @param {Object} obj
+      		 * @return {Array}
+       */
 
       DeskPRO_Util_Util.prototype.keyValuePair = function(obj) {
         var k, pairs, v;
@@ -77,13 +77,13 @@
         return pairs;
       };
 
-      /*
-      		# Get an array of keys in an object
-      		#
-      		# @param {Object} obj
-      		# @return {Array}
-      */
 
+      /*
+      		 * Get an array of keys in an object
+      		 *
+      		 * @param {Object} obj
+      		 * @return {Array}
+       */
 
       DeskPRO_Util_Util.prototype.keys = function(obj) {
         var k, keys, v;
@@ -100,13 +100,13 @@
         }
       };
 
-      /*
-      		# Get an array of values in an object
-      		#
-      		# @param {Object} obj
-      		# @return {Array}
-      */
 
+      /*
+      		 * Get an array of values in an object
+      		 *
+      		 * @param {Object} obj
+      		 * @return {Array}
+       */
 
       DeskPRO_Util_Util.prototype.values = function(obj) {
         var k, v, values;
@@ -119,13 +119,13 @@
         return values;
       };
 
-      /*
-      		# Check if a value is a function
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is a function
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isFunction = function(obj) {
         if (this.optIsfunc) {
@@ -135,87 +135,87 @@
         }
       };
 
-      /*
-      		# Check if a value is a string
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is a string
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isString = function(obj) {
         return Object.prototype.toString.call(obj) === '[object String]';
       };
 
-      /*
-      		# Check if a value is a string
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is a string
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isBoolean = function(obj) {
         return typeof obj === 'boolean';
       };
 
-      /*
-      		# Check if a value is an integer
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is an integer
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isInteger = function(obj) {
         return obj === parseInt(obj);
       };
 
-      /*
-      		# Check if a value is an float
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is an float
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isFloat = function(obj) {
         return obj === parseFloat(obj);
       };
 
-      /*
-      		# Check if a value is a number
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is a number
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isNumber = function(obj) {
         return typeof obj === 'number';
       };
 
-      /*
-      		# Check if a value is undefined
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is undefined
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isUndefined = function(obj) {
         return typeof obj === 'undefined';
       };
 
-      /*
-      		# Check if a value is empty (empty array, empty string, empty object, NaN).
-        	# Non-collection types like numbers and booleans are never considered empty.
-        	# If you need to catch things like an integer 0, use isBlank() instead.
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is empty (empty array, empty string, empty object, NaN).
+        	 * Non-collection types like numbers and booleans are never considered empty.
+        	 * If you need to catch things like an integer 0, use isBlank() instead.
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isEmpty = function(obj) {
         var k, v;
@@ -251,13 +251,13 @@
         return true;
       };
 
-      /*
-      		# Check if a value is blank. This means roughly the same as PHP's "falsey" values: 0, "0", [], ""
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is blank. This means roughly the same as PHP's "falsey" values: 0, "0", [], ""
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isBlank = function(obj) {
         if (this.isEmpty(obj)) {
@@ -278,25 +278,25 @@
         return false;
       };
 
-      /*
-      		# Check if a value is an object
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is an object
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isObject = function(obj) {
         return obj !== null && typeof obj === 'object';
       };
 
-      /*
-      		# Check if a value is an array
-      		#
-      		# @param {Object} obj
-      		# @return {bool}
-      */
 
+      /*
+      		 * Check if a value is an array
+      		 *
+      		 * @param {Object} obj
+      		 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.isArray = function(obj) {
         if (this.nativeIsArray) {
@@ -306,14 +306,14 @@
         }
       };
 
-      /*
-      		# Copy properties from other_objects to destObj, returning destObj.
-      		#
-      		# @param {Object} destObj
-      		# @param {Object} other_objects...
-      		# @return {Object}
-      */
 
+      /*
+      		 * Copy properties from other_objects to destObj, returning destObj.
+      		 *
+      		 * @param {Object} destObj
+      		 * @param {Object} other_objects...
+      		 * @return {Object}
+       */
 
       DeskPRO_Util_Util.prototype.extend = function() {
         var destObj, k, other_obj, other_objects, v, _i, _len;
@@ -329,13 +329,13 @@
         return destObj;
       };
 
-      /*
-      		# Merge all objects into a new object
-      		#
-      		# @param {Object} objects...
-      		# @return {Object}
-      */
 
+      /*
+      		 * Merge all objects into a new object
+      		 *
+      		 * @param {Object} objects...
+      		 * @return {Object}
+       */
 
       DeskPRO_Util_Util.prototype.merge = function() {
         var args, objects;
@@ -345,14 +345,14 @@
         return this.extend.apply(this, args);
       };
 
-      /*
-      		# Clones an object
-      		#
-      		# @param {Object} obj
-      		# @param {bool} deep True to do a deep clone
-      		# @return {Object}
-      */
 
+      /*
+      		 * Clones an object
+      		 *
+      		 * @param {Object} obj
+      		 * @param {bool} deep True to do a deep clone
+      		 * @return {Object}
+       */
 
       DeskPRO_Util_Util.prototype.clone = function(obj, deep) {
         var index, key, result, value, _i, _len;
@@ -385,14 +385,14 @@
         return result;
       };
 
-      /*
-        	# Compares two values to see if they are equal.
-        	#
-        	# If objects, every property of the object is compared with equals()
-        	#
-        	# @return {bool}
-      */
 
+      /*
+        	 * Compares two values to see if they are equal.
+        	 *
+        	 * If objects, every property of the object is compared with equals()
+        	 *
+        	 * @return {bool}
+       */
 
       DeskPRO_Util_Util.prototype.equals = function(obj1, obj2, ignorePrivate) {
         var k, v, _i, _len;
@@ -460,14 +460,14 @@
         return false;
       };
 
-      /*
-        	# Dump a variable to a string repr
-        	#
-        	# @param {mixed} obj
-        	# @param {Integer} maxLvl How deep down nested structures to recurse
-        	# @return {String}
-      */
 
+      /*
+        	 * Dump a variable to a string repr
+        	 *
+        	 * @param {mixed} obj
+        	 * @param {Integer} maxLvl How deep down nested structures to recurse
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Util.prototype.dump = function(obj, maxLvl, _rlvl, _visited) {
         var k, out, subs, v, vis, _i, _len;
@@ -555,6 +555,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Util.js.map
-*/
+//# sourceMappingURL=Util.js.map

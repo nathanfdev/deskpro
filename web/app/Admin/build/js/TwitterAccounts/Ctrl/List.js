@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_TwitterAccounts_Ctrl_List, _ref;
+    var Admin_TwitterAccounts_Ctrl_List;
     Admin_TwitterAccounts_Ctrl_List = (function(_super) {
       __extends(Admin_TwitterAccounts_Ctrl_List, _super);
 
       function Admin_TwitterAccounts_Ctrl_List() {
-        _ref = Admin_TwitterAccounts_Ctrl_List.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_TwitterAccounts_Ctrl_List.__super__.constructor.apply(this, arguments);
       }
 
       Admin_TwitterAccounts_Ctrl_List.CTRL_ID = 'Admin_TwitterAccounts_Ctrl_List';
@@ -24,27 +23,27 @@
       };
 
       Admin_TwitterAccounts_Ctrl_List.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
+        var promise;
         promise = this.twitterAccountData.loadList();
-        promise.then(function(list) {
-          return _this.list = list;
-        });
+        promise.then((function(_this) {
+          return function(list) {
+            return _this.list = list;
+          };
+        })(this));
         return promise;
       };
 
-      /*
-      		# Show the delete dlg
-      */
 
+      /*
+      		 * Show the delete dlg
+       */
 
       Admin_TwitterAccounts_Ctrl_List.prototype.startDelete = function(twitter_account_id) {
-        var inst, twitter_account, v, _i, _len, _ref1,
-          _this = this;
+        var inst, twitter_account, v, _i, _len, _ref;
         twitter_account = null;
-        _ref1 = this.list;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          v = _ref1[_i];
+        _ref = this.list;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          v = _ref[_i];
           if (v.id === twitter_account_id) {
             twitter_account = v;
             break;
@@ -63,13 +62,15 @@
             }
           ]
         });
-        return inst.result.then(function() {
-          return _this.twitterAccountData.deleteTwitterAccountById(twitter_account.id).then(function() {
-            if (_this.$state.current.name === 'twitter.accounts.edit' && parseInt(_this.$state.params.id) === twitter_account.id) {
-              return _this.$state.go('twitter.accounts');
-            }
-          });
-        });
+        return inst.result.then((function(_this) {
+          return function() {
+            return _this.twitterAccountData.deleteTwitterAccountById(twitter_account.id).then(function() {
+              if (_this.$state.current.name === 'twitter.accounts.edit' && parseInt(_this.$state.params.id) === twitter_account.id) {
+                return _this.$state.go('twitter.accounts');
+              }
+            });
+          };
+        })(this));
       };
 
       return Admin_TwitterAccounts_Ctrl_List;
@@ -80,6 +81,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=List.js.map
-*/
+//# sourceMappingURL=List.js.map

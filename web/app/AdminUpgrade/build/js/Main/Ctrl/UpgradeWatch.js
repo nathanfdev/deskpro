@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['AdminUpgrade/Main/Ctrl/UpgradeBase', 'DeskPRO/Util/Strings'], function(UpgradeBase, Strings) {
-    var AdminUpgrade_Main_Ctrl_UpgradeWatch, _ref;
+    var AdminUpgrade_Main_Ctrl_UpgradeWatch;
     AdminUpgrade_Main_Ctrl_UpgradeWatch = (function(_super) {
       __extends(AdminUpgrade_Main_Ctrl_UpgradeWatch, _super);
 
       function AdminUpgrade_Main_Ctrl_UpgradeWatch() {
-        _ref = AdminUpgrade_Main_Ctrl_UpgradeWatch.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return AdminUpgrade_Main_Ctrl_UpgradeWatch.__super__.constructor.apply(this, arguments);
       }
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.CTRL_ID = 'AdminUpgrade_Main_Ctrl_UpgradeWatch';
@@ -19,7 +18,6 @@
       AdminUpgrade_Main_Ctrl_UpgradeWatch.DEPS = ['$interval', '$http'];
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.prototype.init = function() {
-        var _this = this;
         window.WATCH = this;
         this.startTime = null;
         this.initialPollTime = false;
@@ -73,21 +71,23 @@
         this.steps = ['waiting', 'started', 'checks', 'download', 'backup_files', 'disable_helpdesk', 'backup_database', 'install_files', 'install_database', 'enable_helpdesk', 'done'];
         this.Api.sendDataGet({
           updateStatus: '/server/updates/auto'
-        }).then(function(result) {
-          if (!result.data.updateStatus.is_scheduled) {
-            _this.$location.path('/');
-            return;
-          }
-          _this.startTime = parseInt(result.data.updateStatus.start_time);
-          _this.pollRunning = null;
-          return _this.pollTimer = _this.$interval(function() {
-            if (!_this.$scope.step.waiting.complete) {
-              return _this.pollCheckStarted();
-            } else {
-              return _this.pollStatus();
+        }).then((function(_this) {
+          return function(result) {
+            if (!result.data.updateStatus.is_scheduled) {
+              _this.$location.path('/');
+              return;
             }
-          }, 2000);
-        });
+            _this.startTime = parseInt(result.data.updateStatus.start_time);
+            _this.pollRunning = null;
+            return _this.pollTimer = _this.$interval(function() {
+              if (!_this.$scope.step.waiting.complete) {
+                return _this.pollCheckStarted();
+              } else {
+                return _this.pollStatus();
+              }
+            }, 2000);
+          };
+        })(this));
       };
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.prototype.finishStep = function(stepName) {
@@ -103,9 +103,9 @@
       };
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.prototype.beginStep = function(stepName) {
-        var i, id, name, _i, _ref1;
+        var i, id, name, _i, _ref;
         id = this.steps.indexOf(stepName);
-        for (i = _i = 0, _ref1 = id - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        for (i = _i = 0, _ref = id - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
           name = this.steps[i];
           this.$scope.step[name].on = false;
           this.$scope.step[name].complete = true;
@@ -115,10 +115,10 @@
       };
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.prototype.finishAll = function() {
-        var name, _i, _len, _ref1;
-        _ref1 = this.steps;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          name = _ref1[_i];
+        var name, _i, _len, _ref;
+        _ref = this.steps;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          name = _ref[_i];
           this.$scope.step[name].on = false;
           this.$scope.step[name].complete = true;
         }
@@ -127,27 +127,29 @@
       };
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.prototype.pollCheckStarted = function() {
-        var _this = this;
         if (this.pollRunning) {
           return null;
         }
         return this.pollRunning = this.Api.sendDataGet({
           updateStatus: '/server/updates/auto'
-        }).then(function(result) {
-          _this.pollRunning = null;
-          if (result.data.updateStatus.with_perm_error) {
-            return _this.handleError('error_write_perm');
-          } else if (result.data.updateStatus.is_started) {
-            return _this.finishStep('waiting');
-          }
-        }, function() {
-          return _this.pollRunning = null;
-        });
+        }).then((function(_this) {
+          return function(result) {
+            _this.pollRunning = null;
+            if (result.data.updateStatus.with_perm_error) {
+              return _this.handleError('error_write_perm');
+            } else if (result.data.updateStatus.is_started) {
+              return _this.finishStep('waiting');
+            }
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.pollRunning = null;
+          };
+        })(this));
       };
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.prototype.pollStatus = function() {
-        var url,
-          _this = this;
+        var url;
         if (this.pollRunning) {
           return null;
         }
@@ -159,36 +161,42 @@
           url: url,
           cache: false,
           responseType: 'text'
-        }).success(function(content) {
-          var last, last_time, lines, m, restart_timer, time, _i, _len;
-          content = Strings.trim(content);
-          lines = content.split(/\n+/);
-          if (content.length === 0) {
-            return;
-          }
-          last_time = _this.initialPollTime || _this.startTime;
-          restart_timer = true;
-          for (_i = 0, _len = lines.length; _i < _len; _i++) {
-            last = lines[_i];
-            m = /^STATUS\((.*?)\)@([0-9\.]+)#(.*?)$/.exec(last);
-            if (m) {
-              time = parseFloat(m[2]);
-              if (time >= last_time) {
-                updateStatus(m[1], m[3], m[2]);
-              }
-              if (m[1] === 'done' || m[1].indexOf('error_') === 0) {
-                restart_timer = false;
+        }).success((function(_this) {
+          return function(content) {
+            var last, last_time, lines, m, restart_timer, time, _i, _len;
+            content = Strings.trim(content);
+            lines = content.split(/\n+/);
+            if (content.length === 0) {
+              return;
+            }
+            last_time = _this.initialPollTime || _this.startTime;
+            restart_timer = true;
+            for (_i = 0, _len = lines.length; _i < _len; _i++) {
+              last = lines[_i];
+              m = /^STATUS\((.*?)\)@([0-9\.]+)#(.*?)$/.exec(last);
+              if (m) {
+                time = parseFloat(m[2]);
+                if (time >= last_time) {
+                  updateStatus(m[1], m[3], m[2]);
+                }
+                if (m[1] === 'done' || m[1].indexOf('error_') === 0) {
+                  restart_timer = false;
+                }
               }
             }
-          }
-          if (!restart_timer) {
-            return _this.$interval.cancel(_this.pollTimer);
-          }
-        }).then(function() {
-          return _this.pollRunning = null;
-        }, function() {
-          return _this.pollRunning = null;
-        });
+            if (!restart_timer) {
+              return _this.$interval.cancel(_this.pollTimer);
+            }
+          };
+        })(this)).then((function(_this) {
+          return function() {
+            return _this.pollRunning = null;
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.pollRunning = null;
+          };
+        })(this));
       };
 
       AdminUpgrade_Main_Ctrl_UpgradeWatch.prototype.updateStatus = function(code, message, time) {
@@ -251,6 +259,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=UpgradeWatch.js.map
-*/
+//# sourceMappingURL=UpgradeWatch.js.map

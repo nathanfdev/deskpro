@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], function(Strings, Admin_Ctrl_Base) {
-    var Admin_ChatSetup_Ctrl_ChatSetup, _ref;
+    var Admin_ChatSetup_Ctrl_ChatSetup;
     Admin_ChatSetup_Ctrl_ChatSetup = (function(_super) {
       __extends(Admin_ChatSetup_Ctrl_ChatSetup, _super);
 
       function Admin_ChatSetup_Ctrl_ChatSetup() {
-        _ref = Admin_ChatSetup_Ctrl_ChatSetup.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_ChatSetup_Ctrl_ChatSetup.__super__.constructor.apply(this, arguments);
       }
 
       Admin_ChatSetup_Ctrl_ChatSetup.CTRL_ID = 'Admin_ChatSetup_Ctrl_ChatSetup';
@@ -18,10 +17,10 @@
 
       Admin_ChatSetup_Ctrl_ChatSetup.DEPS = [];
 
-      /*
-       	#
-      */
 
+      /*
+       	 *
+       */
 
       Admin_ChatSetup_Ctrl_ChatSetup.prototype.init = function() {
         this.setup = null;
@@ -40,31 +39,32 @@
         };
       };
 
-      /*
-       	#
-      */
 
+      /*
+       	 *
+       */
 
       Admin_ChatSetup_Ctrl_ChatSetup.prototype.initialLoad = function() {
-        var data_promise,
-          _this = this;
+        var data_promise;
         data_promise = this.Api.sendDataGet({
           hdinfo: '/deskpro/info',
           chat_setup: '/chat_setup'
-        }).then(function(res) {
-          _this.hdinfo = res.data.hdinfo;
-          _this.$scope.setup = res.data.chat_setup.chat_setup;
-          return _this.$scope.$watch('chat_options', function() {
-            return _this.updateChatCode();
-          }, true);
-        });
+        }).then((function(_this) {
+          return function(res) {
+            _this.hdinfo = res.data.hdinfo;
+            _this.$scope.setup = res.data.chat_setup.chat_setup;
+            return _this.$scope.$watch('chat_options', function() {
+              return _this.updateChatCode();
+            }, true);
+          };
+        })(this));
         return this.$q.all([data_promise]);
       };
 
-      /*
-      		#
-      */
 
+      /*
+      		 *
+       */
 
       Admin_ChatSetup_Ctrl_ChatSetup.prototype.toggleChat = function() {
         var val;
@@ -101,6 +101,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ChatSetup.js.map
-*/
+//# sourceMappingURL=ChatSetup.js.map

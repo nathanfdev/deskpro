@@ -63,6 +63,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=UpgradeBase.js.map
-*/
+//# sourceMappingURL=UpgradeBase.js.map

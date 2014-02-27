@@ -82,6 +82,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SetupNetwork.js.map
-*/
+//# sourceMappingURL=SetupNetwork.js.map

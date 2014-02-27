@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_Languages_Ctrl_Settings, _ref;
+    var Admin_Languages_Ctrl_Settings;
     Admin_Languages_Ctrl_Settings = (function(_super) {
       __extends(Admin_Languages_Ctrl_Settings, _super);
 
       function Admin_Languages_Ctrl_Settings() {
-        _ref = Admin_Languages_Ctrl_Settings.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_Languages_Ctrl_Settings.__super__.constructor.apply(this, arguments);
       }
 
       Admin_Languages_Ctrl_Settings.CTRL_ID = 'Admin_Languages_Ctrl_Settings';
@@ -27,69 +26,73 @@
       };
 
       Admin_Languages_Ctrl_Settings.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
+        var promise;
         promise = this.Api.sendDataGet({
           setting: '/settings/values/core.lang_auto_install',
           lang: '/langs'
-        }).then(function(res) {
-          var pack, _i, _len, _ref1;
-          _this.form.lang_auto_install = parseInt(res.data.setting.value) ? true : false;
-          _this.langChoices = [];
-          _ref1 = res.data.lang.packs;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            pack = _ref1[_i];
-            if (pack.is_installed) {
-              _this.langChoices.push({
-                id: pack.installed_language_id,
-                title: pack.title
-              });
+        }).then((function(_this) {
+          return function(res) {
+            var pack, _i, _len, _ref;
+            _this.form.lang_auto_install = parseInt(res.data.setting.value) ? true : false;
+            _this.langChoices = [];
+            _ref = res.data.lang.packs;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              pack = _ref[_i];
+              if (pack.is_installed) {
+                _this.langChoices.push({
+                  id: pack.installed_language_id,
+                  title: pack.title
+                });
+              }
             }
-          }
-          _this.form.tickets_move_to = res.data.lang.default_lang_id;
-          return _this.form.users_move_to = res.data.lang.default_lang_id;
-        });
+            _this.form.tickets_move_to = res.data.lang.default_lang_id;
+            return _this.form.users_move_to = res.data.lang.default_lang_id;
+          };
+        })(this));
         return promise;
       };
 
       Admin_Languages_Ctrl_Settings.prototype.saveSettings = function() {
-        var _this = this;
         this.startSpinner('saving_settings');
         return this.Api.sendPost('/settings/values/core.lang_auto_install', {
           value: this.form.lang_auto_install ? '1' : '0'
-        }).then(function() {
-          return _this.stopSpinner('saving_settings');
-        });
+        }).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving_settings');
+          };
+        })(this));
       };
 
       Admin_Languages_Ctrl_Settings.prototype.doMassTicketMove = function() {
-        var _this = this;
-        return this.showConfirm('@confirm_move_tickets').result.then(function() {
-          var postData;
-          _this.startSpinner('saving_tickets');
-          postData = {
-            from_lang: _this.form.tickets_move_from,
-            to_lang: _this.form.tickets_move_to
+        return this.showConfirm('@confirm_move_tickets').result.then((function(_this) {
+          return function() {
+            var postData;
+            _this.startSpinner('saving_tickets');
+            postData = {
+              from_lang: _this.form.tickets_move_from,
+              to_lang: _this.form.tickets_move_to
+            };
+            return _this.Api.sendPost('/langs/tools/mass-update-tickets', postData).then(function() {
+              return _this.stopSpinner('saving_tickets');
+            });
           };
-          return _this.Api.sendPost('/langs/tools/mass-update-tickets', postData).then(function() {
-            return _this.stopSpinner('saving_tickets');
-          });
-        });
+        })(this));
       };
 
       Admin_Languages_Ctrl_Settings.prototype.doMassUserMove = function() {
-        var _this = this;
-        return this.showConfirm('@confirm_move_users').result.then(function() {
-          var postData;
-          _this.startSpinner('saving_users');
-          postData = {
-            from_lang: _this.form.users_move_from,
-            to_lang: _this.form.users_move_to
+        return this.showConfirm('@confirm_move_users').result.then((function(_this) {
+          return function() {
+            var postData;
+            _this.startSpinner('saving_users');
+            postData = {
+              from_lang: _this.form.users_move_from,
+              to_lang: _this.form.users_move_to
+            };
+            return _this.Api.sendPost('/langs/tools/mass-update-users', postData).then(function() {
+              return _this.stopSpinner('saving_users');
+            });
           };
-          return _this.Api.sendPost('/langs/tools/mass-update-users', postData).then(function() {
-            return _this.stopSpinner('saving_users');
-          });
-        });
+        })(this));
       };
 
       return Admin_Languages_Ctrl_Settings;
@@ -100,6 +103,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Settings.js.map
-*/
+//# sourceMappingURL=Settings.js.map

@@ -6,22 +6,22 @@
     DeskPRO_Util_Arrays = (function() {
       function DeskPRO_Util_Arrays() {}
 
-      /*
-        	# Analyze a flat array of categories that have structure defined like:
-        	# - id: the unique ID
-        	# - parent_id: The parent, or 0/null for no parent
-        	# - title: The title of the category
-        	#
-        	# Returns a new flat array with additional information:
-        	# - parent_ids: An array of parents
-        	# - child_ids: An array of any chilcren
-        	# - depth: How deep the category is in the structure
-        	# - title_segs: An array of parent titles and this title (eg to generate a breadcrumb)
-        	# - full_title: A string of all titles separated by a ' > '
-        	#
-        	# @return {Array}
-      */
 
+      /*
+        	 * Analyze a flat array of categories that have structure defined like:
+        	 * - id: the unique ID
+        	 * - parent_id: The parent, or 0/null for no parent
+        	 * - title: The title of the category
+        	 *
+        	 * Returns a new flat array with additional information:
+        	 * - parent_ids: An array of parents
+        	 * - child_ids: An array of any chilcren
+        	 * - depth: How deep the category is in the structure
+        	 * - title_segs: An array of parent titles and this title (eg to generate a breadcrumb)
+        	 * - full_title: A string of all titles separated by a ' > '
+        	 *
+        	 * @return {Array}
+       */
 
       DeskPRO_Util_Arrays.prototype.analyzeFlatCatStructure = function(cats) {
         var fnProc, ret;
@@ -67,14 +67,14 @@
         return ret;
       };
 
-      /*
-        	# Pushes value on to array only if value does not already exist in array.
-        	#
-        	# @param  {Array} array
-        	@ @param  mixed   value
-        	# @return {Array}
-      */
 
+      /*
+        	 * Pushes value on to array only if value does not already exist in array.
+        	 *
+        	 * @param  {Array} array
+        	@ @param  mixed   value
+        	 * @return {Array}
+       */
 
       DeskPRO_Util_Arrays.prototype.pushUnique = function(array, value) {
         if (array.indexOf(value) === -1) {
@@ -83,14 +83,14 @@
         return array;
       };
 
-      /*
-      		# Pushes value on to array only if value does not already exist in array.
-      		#
-      		# @param  {Array} array
-      		@ @param  mixed   value
-      		# @return {Array}
-      */
 
+      /*
+      		 * Pushes value on to array only if value does not already exist in array.
+      		 *
+      		 * @param  {Array} array
+      		@ @param  mixed   value
+      		 * @return {Array}
+       */
 
       DeskPRO_Util_Arrays.prototype.unshiftUnique = function(array, value) {
         if (array.indexOf(value) === -1) {
@@ -99,14 +99,14 @@
         return array;
       };
 
-      /*
-      		# Append arrays to array
-      		#
-      		# @param {Array} array  The array to append on
-      		# @param {Array} arrays... One or more arrays to add to array
-      		# @return {Array}
-      */
 
+      /*
+      		 * Append arrays to array
+      		 *
+      		 * @param {Array} array  The array to append on
+      		 * @param {Array} arrays... One or more arrays to add to array
+      		 * @return {Array}
+       */
 
       DeskPRO_Util_Arrays.prototype.append = function() {
         var arr, array, arrays, v, _i, _j, _len, _len1;
@@ -121,30 +121,30 @@
         return array;
       };
 
-      /*
-      		# Insert a value into an array a specific location.
-        	# Modifies the array in place.
-        	#
-        	# @param {Array} array
-        	# @param {mixed} value
-        	# @param {Integer} index
-      */
 
+      /*
+      		 * Insert a value into an array a specific location.
+        	 * Modifies the array in place.
+        	 *
+        	 * @param {Array} array
+        	 * @param {mixed} value
+        	 * @param {Integer} index
+       */
 
       DeskPRO_Util_Arrays.prototype.insertAtIndex = function(array, value, index) {
         array.splice(index, 0, value);
         return array;
       };
 
-      /*
-      		# Remove all occurances of removeVal in array.
-      		# Modifies the array in-place.
-      		#
-      		# @param {Array} array
-      		# @param {Integer} idx
-      		# @return {Array}
-      */
 
+      /*
+      		 * Remove all occurances of removeVal in array.
+      		 * Modifies the array in-place.
+      		 *
+      		 * @param {Array} array
+      		 * @param {Integer} idx
+      		 * @return {Array}
+       */
 
       DeskPRO_Util_Arrays.prototype.removeValue = function(array, removeVal) {
         var idx;
@@ -154,15 +154,15 @@
         return array;
       };
 
-      /*
-        	# Remove a specific element of an array.
-        	# Modifies the array in-place.
-        	#
-        	# @param {Array} array
-        	# @param {Integer} idx
-        	# @return {Array}
-      */
 
+      /*
+        	 * Remove a specific element of an array.
+        	 * Modifies the array in-place.
+        	 *
+        	 * @param {Array} array
+        	 * @param {Integer} idx
+        	 * @return {Array}
+       */
 
       DeskPRO_Util_Arrays.prototype.removeIndex = function(array, idx) {
         array.splice(idx, 1);
@@ -177,6 +177,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Arrays.js.map
-*/
+//# sourceMappingURL=Arrays.js.map

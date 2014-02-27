@@ -17,16 +17,17 @@
       };
 
       Admin_Main_Service_SessionPing.prototype.startInterval = function(timeout) {
-        var _this = this;
         if (timeout == null) {
           timeout = 240000;
         }
         if (this.interval) {
           window.clearInterval(this.interval);
         }
-        return this.interval = window.setInterval(function() {
-          return _this._autoPing();
-        }, timeout);
+        return this.interval = window.setInterval((function(_this) {
+          return function() {
+            return _this._autoPing();
+          };
+        })(this), timeout);
       };
 
       Admin_Main_Service_SessionPing.prototype.stopInterval = function() {
@@ -43,12 +44,12 @@
         return this.ping();
       };
 
-      /*
-        	# Ping the session and get a new request token
-        	#
-        	# @return {promise}
-      */
 
+      /*
+        	 * Ping the session and get a new request token
+        	 *
+        	 * @return {promise}
+       */
 
       Admin_Main_Service_SessionPing.prototype.ping = function() {
         var p;
@@ -68,6 +69,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SessionPing.js.map
-*/
+//# sourceMappingURL=SessionPing.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/OptionBuilder/TypesDef/BaseCriteriaTypesDef'], function(BaseCriteriaTypesDef) {
-    var Admin_OptionBuilder_TypesDef_TicketFilter, _ref;
+    var Admin_OptionBuilder_TypesDef_TicketFilter;
     return Admin_OptionBuilder_TypesDef_TicketFilter = (function(_super) {
       __extends(Admin_OptionBuilder_TypesDef_TicketFilter, _super);
 
       function Admin_OptionBuilder_TypesDef_TicketFilter() {
-        _ref = Admin_OptionBuilder_TypesDef_TicketFilter.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_OptionBuilder_TypesDef_TicketFilter.__super__.constructor.apply(this, arguments);
       }
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.init = function() {
@@ -117,12 +116,13 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
-        var p,
-          _this = this;
+        var p;
         if (this.options_data) {
-          p = this.$q.fcall(function() {
-            return _this.options_data;
-          });
+          p = this.$q.fcall((function(_this) {
+            return function() {
+              return _this.options_data;
+            };
+          })(this));
         } else {
           this.options_data = {};
           p = this.Api.sendDataGet({
@@ -135,19 +135,21 @@
             'ticket_works': '/ticket_works',
             'ticket_accounts': '/email_accounts',
             'usergroups': '/user_groups'
-          }).then(function(result) {
-            var data, _ref1;
-            data = result.data;
-            _this.options_data['agents'] = data.agents.agents;
-            _this.options_data['agent_teams'] = data.agent_teams.agent_teams;
-            _this.options_data['ticket_deps'] = data.ticket_deps.departments;
-            _this.options_data['ticket_cats'] = data.ticket_cats.categories;
-            _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
-            _this.options_data['ticket_works'] = data.ticket_works.workflows;
-            _this.options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
-            _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
-            return _this.options_data['usergroups'] = data.usergroups.groups;
-          });
+          }).then((function(_this) {
+            return function(result) {
+              var data, _ref;
+              data = result.data;
+              _this.options_data['agents'] = data.agents.agents;
+              _this.options_data['agent_teams'] = data.agent_teams.agent_teams;
+              _this.options_data['ticket_deps'] = data.ticket_deps.departments;
+              _this.options_data['ticket_cats'] = data.ticket_cats.categories;
+              _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
+              _this.options_data['ticket_works'] = data.ticket_works.workflows;
+              _this.options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+              _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
+              return _this.options_data['usergroups'] = data.usergroups.groups;
+            };
+          })(this));
         }
         return p;
       };
@@ -574,6 +576,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=TicketFilter.js.map
-*/
+//# sourceMappingURL=TicketFilter.js.map

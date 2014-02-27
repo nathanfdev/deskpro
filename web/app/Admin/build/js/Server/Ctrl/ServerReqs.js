@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
-    var Admin_ServerReqs_Ctrl_ServerReqs, _ref;
+    var Admin_ServerReqs_Ctrl_ServerReqs;
     Admin_ServerReqs_Ctrl_ServerReqs = (function(_super) {
       __extends(Admin_ServerReqs_Ctrl_ServerReqs, _super);
 
       function Admin_ServerReqs_Ctrl_ServerReqs() {
-        _ref = Admin_ServerReqs_Ctrl_ServerReqs.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_ServerReqs_Ctrl_ServerReqs.__super__.constructor.apply(this, arguments);
       }
 
       Admin_ServerReqs_Ctrl_ServerReqs.CTRL_ID = 'Admin_ServerReqs_Ctrl_ServerReqs';
@@ -23,11 +22,12 @@
       };
 
       Admin_ServerReqs_Ctrl_ServerReqs.prototype.initialLoad = function() {
-        var data_promise,
-          _this = this;
-        data_promise = this.Api.sendGet('/server_reqs').then(function(res) {
-          return _this.$scope.server_reqs = res.data.server_reqs;
-        });
+        var data_promise;
+        data_promise = this.Api.sendGet('/server_reqs').then((function(_this) {
+          return function(res) {
+            return _this.$scope.server_reqs = res.data.server_reqs;
+          };
+        })(this));
         return this.$q.all([data_promise]);
       };
 
@@ -39,6 +39,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ServerReqs.js.map
-*/
+//# sourceMappingURL=ServerReqs.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], function(Strings, Admin_Ctrl_Base) {
-    var Admin_Portal_Ctrl_Embeds, _ref;
+    var Admin_Portal_Ctrl_Embeds;
     Admin_Portal_Ctrl_Embeds = (function(_super) {
       __extends(Admin_Portal_Ctrl_Embeds, _super);
 
       function Admin_Portal_Ctrl_Embeds() {
-        _ref = Admin_Portal_Ctrl_Embeds.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_Portal_Ctrl_Embeds.__super__.constructor.apply(this, arguments);
       }
 
       Admin_Portal_Ctrl_Embeds.CTRL_ID = 'Admin_Portal_Ctrl_Embeds';
@@ -52,19 +51,26 @@
       };
 
       Admin_Portal_Ctrl_Embeds.prototype.initCode = function() {
-        var _this = this;
-        this.$scope.$watch('overlay_options', function() {
-          return _this.updateWebsiteTabCode();
-        }, true);
-        this.$scope.$watch('chat_options', function() {
-          return _this.updateChatCode();
-        }, true);
-        this.$scope.$watch('form_frame_options', function() {
-          return _this.updateFormFrameCode();
-        }, true);
-        this.$scope.$watch('iframe_options', function() {
-          return _this.updateIframeCode();
-        }, true);
+        this.$scope.$watch('overlay_options', (function(_this) {
+          return function() {
+            return _this.updateWebsiteTabCode();
+          };
+        })(this), true);
+        this.$scope.$watch('chat_options', (function(_this) {
+          return function() {
+            return _this.updateChatCode();
+          };
+        })(this), true);
+        this.$scope.$watch('form_frame_options', (function(_this) {
+          return function() {
+            return _this.updateFormFrameCode();
+          };
+        })(this), true);
+        this.$scope.$watch('iframe_options', (function(_this) {
+          return function() {
+            return _this.updateIframeCode();
+          };
+        })(this), true);
         this.$scope.embedEditorLoaded = function(editor) {
           return $(editor.container).closest('div.editor').data('ace-editor', editor).addClass('with-ace-editor');
         };
@@ -75,67 +81,67 @@
       };
 
       Admin_Portal_Ctrl_Embeds.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
+        var promise;
         promise = this.Api.sendDataGet({
           hdinfo: '/deskpro/info',
           ticket_deps: '/ticket_deps',
           langs: '/langs',
           widget_selections: '/widget/selections'
-        }).then(function(res) {
-          var d, key, selections, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
-          _this.hdinfo = res.data.hdinfo;
-          _this.langs = res.data.langs.languages;
-          _this.widget_selections = res.data.widget_selections;
-          selections = {
-            articles: {},
-            downloads: {},
-            news: {}
+        }).then((function(_this) {
+          return function(res) {
+            var d, key, selections, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+            _this.hdinfo = res.data.hdinfo;
+            _this.langs = res.data.langs.languages;
+            _this.widget_selections = res.data.widget_selections;
+            selections = {
+              articles: {},
+              downloads: {},
+              news: {}
+            };
+            if (((_ref = _this.widget_selections) != null ? (_ref1 = _ref.selections) != null ? _ref1.articles : void 0 : void 0) != null) {
+              _ref2 = _this.widget_selections.selections.articles;
+              for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+                key = _ref2[_i];
+                selections.articles[key] = true;
+              }
+            }
+            if (((_ref3 = _this.widget_selections) != null ? (_ref4 = _ref3.selections) != null ? _ref4.downloads : void 0 : void 0) != null) {
+              _ref5 = _this.widget_selections.selections.downloads;
+              for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
+                key = _ref5[_j];
+                selections.downloads[key] = true;
+              }
+            }
+            if (((_ref6 = _this.widget_selections) != null ? (_ref7 = _ref6.selections) != null ? _ref7.news : void 0 : void 0) != null) {
+              _ref8 = _this.widget_selections.selections.news;
+              for (_k = 0, _len2 = _ref8.length; _k < _len2; _k++) {
+                key = _ref8[_k];
+                selections.news[key] = true;
+              }
+            }
+            _this.widget_selections.selections = selections;
+            _this.deps = [];
+            _ref9 = res.data.ticket_deps.departments;
+            for (_l = 0, _len3 = _ref9.length; _l < _len3; _l++) {
+              d = _ref9[_l];
+              if (!d.has_children) {
+                d.title = d.title_parts.join(' > ');
+                _this.deps.push(d);
+              }
+            }
+            return _this.initCode();
           };
-          if (((_ref1 = _this.widget_selections) != null ? (_ref2 = _ref1.selections) != null ? _ref2.articles : void 0 : void 0) != null) {
-            _ref3 = _this.widget_selections.selections.articles;
-            for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-              key = _ref3[_i];
-              selections.articles[key] = true;
-            }
-          }
-          if (((_ref4 = _this.widget_selections) != null ? (_ref5 = _ref4.selections) != null ? _ref5.downloads : void 0 : void 0) != null) {
-            _ref6 = _this.widget_selections.selections.downloads;
-            for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
-              key = _ref6[_j];
-              selections.downloads[key] = true;
-            }
-          }
-          if (((_ref7 = _this.widget_selections) != null ? (_ref8 = _ref7.selections) != null ? _ref8.news : void 0 : void 0) != null) {
-            _ref9 = _this.widget_selections.selections.news;
-            for (_k = 0, _len2 = _ref9.length; _k < _len2; _k++) {
-              key = _ref9[_k];
-              selections.news[key] = true;
-            }
-          }
-          _this.widget_selections.selections = selections;
-          _this.deps = [];
-          _ref10 = res.data.ticket_deps.departments;
-          for (_l = 0, _len3 = _ref10.length; _l < _len3; _l++) {
-            d = _ref10[_l];
-            if (!d.has_children) {
-              d.title = d.title_parts.join(' > ');
-              _this.deps.push(d);
-            }
-          }
-          return _this.initCode();
-        });
+        })(this));
         return promise;
       };
 
-      /*
-       	#
-      */
 
+      /*
+       	 *
+       */
 
       Admin_Portal_Ctrl_Embeds.prototype.updateSelections = function() {
-        var inst,
-          _this = this;
+        var inst;
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('Portal/selections-modal.html'),
           controller: [
@@ -150,43 +156,47 @@
             }
           ],
           resolve: {
-            widget_selections: function() {
-              return _this.widget_selections;
-            }
+            widget_selections: (function(_this) {
+              return function() {
+                return _this.widget_selections;
+              };
+            })(this)
           }
         });
-        return inst.result.then(function(selections_data) {
-          var key, postData, value, _ref1, _ref2, _ref3;
-          postData = {
-            articles: [],
-            downloads: [],
-            news: []
+        return inst.result.then((function(_this) {
+          return function(selections_data) {
+            var key, postData, value, _ref, _ref1, _ref2;
+            postData = {
+              articles: [],
+              downloads: [],
+              news: []
+            };
+            _ref = selections_data.articles;
+            for (key in _ref) {
+              value = _ref[key];
+              if (value) {
+                postData.articles.push(key);
+              }
+            }
+            _ref1 = selections_data.downloads;
+            for (key in _ref1) {
+              value = _ref1[key];
+              if (value) {
+                postData.downloads.push(key);
+              }
+            }
+            _ref2 = selections_data.news;
+            for (key in _ref2) {
+              value = _ref2[key];
+              if (value) {
+                postData.news.push(key);
+              }
+            }
+            return _this.Api.sendPostJson('/widget/selections', {
+              selections: postData
+            });
           };
-          _ref1 = selections_data.articles;
-          for (key in _ref1) {
-            value = _ref1[key];
-            if (value) {
-              postData.articles.push(key);
-            }
-          }
-          _ref2 = selections_data.downloads;
-          for (key in _ref2) {
-            value = _ref2[key];
-            if (value) {
-              postData.downloads.push(key);
-            }
-          }
-          _ref3 = selections_data.news;
-          for (key in _ref3) {
-            value = _ref3[key];
-            if (value) {
-              postData.news.push(key);
-            }
-          }
-          return _this.Api.sendPostJson('/widget/selections', {
-            selections: postData
-          });
-        });
+        })(this));
       };
 
       Admin_Portal_Ctrl_Embeds.prototype.updateWebsiteTabCode = function() {
@@ -240,6 +250,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Embeds.js.map
-*/
+//# sourceMappingURL=Embeds.js.map

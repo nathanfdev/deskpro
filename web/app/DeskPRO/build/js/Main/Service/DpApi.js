@@ -10,14 +10,14 @@
         this.api_url = api_url.replace(/\/$/, '');
       }
 
+
       /**
       		* Format an endpoint with GET params to a full URL string.
         	*
         	* @param {String} endpoint
         	* @param {Object/Array} Params to send in the query string
         	* @return {String}
-      */
-
+       */
 
       DpApi.prototype.formatUrl = function(endpoint, params) {
         var itm, k, url, v, _i, _len;
@@ -74,6 +74,7 @@
         return _results;
       };
 
+
       /**
       		* Uses the api-caller endpoint to fetch multiple data points at once.
         	*
@@ -81,8 +82,7 @@
         	*                             name (if `paths` was an array), or by a string ID (the keys of `paths` if it was an object)
         	* @param {Object} http_params The HTTP params to send with the request
         	* @return {Promise}
-      */
-
+       */
 
       DpApi.prototype.sendDataGet = function(paths, http_params) {
         var params, path, save_key, _i, _len;
@@ -117,14 +117,14 @@
         return this.sendGet('api_caller', params, http_params);
       };
 
+
       /**
       		* Format an endpoint with GET params to a full URL string.
         	*
         	* @param {String} endpoint
         	* @param {Object/Array} Params to send in the query string
         	* @return {String}
-      */
-
+       */
 
       DpApi.prototype.prepareHttpParams = function(http_params) {
         var headers;
@@ -140,14 +140,14 @@
         return http_params;
       };
 
+
       /*
         	* Sends a GET request
         	*
         	* @param {String} endpoint
         	* @param {Object/Array} params to send in th query string
         	* @return {Promise}
-      */
-
+       */
 
       DpApi.prototype.sendGet = function(endpoint, params, http_params) {
         var url;
@@ -164,6 +164,7 @@
         return this.$http(http_params);
       };
 
+
       /*
         	* Sends a POST request with post_data as an encoded form.
         	*
@@ -172,8 +173,7 @@
         	* @param {Object/Array} params to send in th query string
         	* @param {Object} http_params Params that will be written to
         	* @return {Promise}
-      */
-
+       */
 
       DpApi.prototype.sendPost = function(endpoint, post_data, params, http_params) {
         var data_str, itm, k, url, v, _i, _len;
@@ -215,6 +215,7 @@
         return this.$http(http_params);
       };
 
+
       /*
         	* Sends a POST request with a JSON payload
         	*
@@ -223,8 +224,7 @@
         	* @param {Object/Array} params to send in th query string
         	* @param {Object} http_params Params that will be written to
         	* @return {Promise}
-      */
-
+       */
 
       DpApi.prototype.sendPostJson = function(endpoint, post_data, params, http_params) {
         var url;
@@ -245,6 +245,7 @@
         return this.$http(http_params);
       };
 
+
       /*
         	* Sends a PUT request with post_data as an encoded form
         	*
@@ -253,8 +254,7 @@
         	* @param {Object/Array} params to send in th query string
         	* @param {Object} http_params Params that will be written to
         	* @return {Promise}
-      */
-
+       */
 
       DpApi.prototype.sendPut = function(endpoint, post_data, params, http_params) {
         var data_str, itm, k, url, v, _i, _len;
@@ -297,6 +297,7 @@
         return this.$http(http_params);
       };
 
+
       /*
         	* Sends a PUT request with a JSON payload
         	*
@@ -305,8 +306,7 @@
         	* @param {Object/Array} params to send in th query string
         	* @param {Object} http_params Params that will be written to
         	* @return {Promise}
-      */
-
+       */
 
       DpApi.prototype.sendPutJson = function(endpoint, post_data, params, http_params) {
         var url;
@@ -327,14 +327,14 @@
         return this.$http(http_params);
       };
 
+
       /*
         	* Sends a DELETE request
         	*
         	* @param {String} endpoint
         	* @param {Object/Array} params to send in th query string
         	* @return {Promise}
-      */
-
+       */
 
       DpApi.prototype.sendDelete = function(endpoint, params, http_params) {
         var url;
@@ -358,6 +358,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpApi.js.map
-*/
+//# sourceMappingURL=DpApi.js.map

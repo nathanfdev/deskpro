@@ -37,14 +37,14 @@
         "/": '&#x2F;'
       };
 
-      /*
-        	# Generates a random string.
-        	#
-        	# @param {Integer} len     How long the generated string should be
-        	# @param {String}  chars   A string of characters to choose form, or the name of a preset
-        	# @return {String}
-      */
 
+      /*
+        	 * Generates a random string.
+        	 *
+        	 * @param {Integer} len     How long the generated string should be
+        	 * @param {String}  chars   A string of characters to choose form, or the name of a preset
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.random = function(len, chars) {
         var charsSet, i, maxRange, rnd, string, _i;
@@ -71,13 +71,13 @@
         return string;
       };
 
-      /*
-        	# Removes leading and trailing whitespace
-        	#
-        	# @param {String} string
-        	# @return {String}
-      */
 
+      /*
+        	 * Removes leading and trailing whitespace
+        	 *
+        	 * @param {String} string
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.trim = function(string) {
         if (string.trim != null) {
@@ -86,13 +86,13 @@
         return string.replace(/^\s+|\s+$/g, '');
       };
 
-      /*
-        	# Removes leading whitespace
-      
-        	# @param {String} string
-        	# @return {String}
-      */
 
+      /*
+        	 * Removes leading whitespace
+      
+        	 * @param {String} string
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.trimLeft = function(string) {
         if (string.trimLeft != null) {
@@ -101,13 +101,13 @@
         return string.replace(/^\s+/, '');
       };
 
-      /*
-        	# Removes trailing whitespace
-        	#
-        	# @param {String} string
-        	# @return {String}
-      */
 
+      /*
+        	 * Removes trailing whitespace
+        	 *
+        	 * @param {String} string
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.trimRight = function(string) {
         if (string.trimRight != null) {
@@ -116,14 +116,14 @@
         return string.replace(/\s+$/, '');
       };
 
-      /*
-        	# Given a string with words separated by dashes, underscores or spaces, convert it into
-        	# camel case. For example "my-string" and "my_string" becomes myString
-        	#
-        	# @param {String} string
-        	# @return {String}
-      */
 
+      /*
+        	 * Given a string with words separated by dashes, underscores or spaces, convert it into
+        	 * camel case. For example "my-string" and "my_string" becomes myString
+        	 *
+        	 * @param {String} string
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.toCamelCase = function(string) {
         return string.toLowerCase().replace(/[\-_ ]{1}([a-zA-Z])/g, function(match, group1) {
@@ -131,37 +131,37 @@
         });
       };
 
-      /*
-        	# Uppercase the first letter of a string
-        	#
-        	# @param {String} string
-        	# @return {String}
-      */
 
+      /*
+        	 * Uppercase the first letter of a string
+        	 *
+        	 * @param {String} string
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.ucFirst = function(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
       };
 
-      /*
-        	# Escape special regex chars in a string
-        	#
-        	# @param {String} regexString
-        	# @return {String}
-      */
 
+      /*
+        	 * Escape special regex chars in a string
+        	 *
+        	 * @param {String} regexString
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.escapeRegex = function(regexString) {
         return regexString.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
       };
 
-      /*
-        	# Escape special HTML chars in a string
-        	#
-        	# @param {String} htmlString
-        	# @return {String}
-      */
 
+      /*
+        	 * Escape special HTML chars in a string
+        	 *
+        	 * @param {String} htmlString
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.escapeHtml = function(htmlString) {
         return htmlString.replace(/[&<>"'\/]/g, function(s) {
@@ -169,14 +169,14 @@
         });
       };
 
-      /*
-        	# Repeat a str num times
-        	#
-        	# @param {String} str
-        	# @param {Integer} num
-        	# @return {String}
-      */
 
+      /*
+        	 * Repeat a str num times
+        	 *
+        	 * @param {String} str
+        	 * @param {Integer} num
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.repeat = function(str, num) {
         var res;
@@ -190,14 +190,14 @@
         return res;
       };
 
-      /*
-        	# Simple formatter replaces {0}, {1} etc in a string with args passed.
-        	#
-        	# @param {String} str
-        	# @param {mixed} args...  Args to place back in to str
-        	# @return {String}
-      */
 
+      /*
+        	 * Simple formatter replaces {0}, {1} etc in a string with args passed.
+        	 *
+        	 * @param {String} str
+        	 * @param {mixed} args...  Args to place back in to str
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.format = function() {
         var args, str;
@@ -211,15 +211,15 @@
         });
       };
 
-      /*
-        	# Pad the start of a string with padStr until it is len characters long.
-        	#
-        	# @param {String} str
-        	# @param {String} padStr
-        	# @param {Integer} len
-        	# @return {String}
-      */
 
+      /*
+        	 * Pad the start of a string with padStr until it is len characters long.
+        	 *
+        	 * @param {String} str
+        	 * @param {String} padStr
+        	 * @param {Integer} len
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.prePad = function(str, padStr, len) {
         if (len == null) {
@@ -236,15 +236,15 @@
         return str;
       };
 
-      /*
-        	# Pad the end of a string with padStr until it is len characters long.
-        	#
-        	# @param {String} str
-        	# @param {String} padStr
-        	# @param {Integer} len
-        	# @return {String}
-      */
 
+      /*
+        	 * Pad the end of a string with padStr until it is len characters long.
+        	 *
+        	 * @param {String} str
+        	 * @param {String} padStr
+        	 * @param {Integer} len
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.pad = function(str, padStr, len) {
         if (len == null) {
@@ -261,28 +261,28 @@
         return str;
       };
 
-      /*
-        	# Escapes control characters in strings
-        	#
-        	# @param {String} str
-        	# @return {String}
-      */
 
+      /*
+        	 * Escapes control characters in strings
+        	 *
+        	 * @param {String} str
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.addslashes = function(str) {
         return str.replace(/\\/g, '\\\\').replace(/\u0008/g, '\\b').replace(/\t/g, '\\t').replace(/\n/g, '\\n').replace(/\f/g, '\\f').replace(/\r/g, '\\r').replace(/'/g, '\\\'').replace(/"/g, '\\"');
       };
 
-      /*
-        	# Generate a MurmurHash3 hash. This is a very very fast non-crypto hash (eg can be used for hash tables etc)
-        	#
-        	# See: https://github.com/garycourt/murmurhash-js
-        	#
-        	# @param {String} key
-        	# @param {String} seed
-        	# @return {String}
-      */
 
+      /*
+        	 * Generate a MurmurHash3 hash. This is a very very fast non-crypto hash (eg can be used for hash tables etc)
+        	 *
+        	 * See: https://github.com/garycourt/murmurhash-js
+        	 *
+        	 * @param {String} key
+        	 * @param {String} seed
+        	 * @return {String}
+       */
 
       DeskPRO_Util_Strings.prototype.murmurhash3 = function(key, seed, asHex) {
         var bytes, c1, c2, h1, h1b, i, k1, remainder, res;
@@ -343,6 +343,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Strings.js.map
-*/
+//# sourceMappingURL=Strings.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
-    var Admin_Templates_Ctrl_TemplateList, _ref;
+    var Admin_Templates_Ctrl_TemplateList;
     Admin_Templates_Ctrl_TemplateList = (function(_super) {
       __extends(Admin_Templates_Ctrl_TemplateList, _super);
 
       function Admin_Templates_Ctrl_TemplateList() {
-        _ref = Admin_Templates_Ctrl_TemplateList.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_Templates_Ctrl_TemplateList.__super__.constructor.apply(this, arguments);
       }
 
       Admin_Templates_Ctrl_TemplateList.CTRL_ID = 'Admin_Templates_Ctrl_TemplateList';
@@ -26,24 +25,24 @@
       };
 
       Admin_Templates_Ctrl_TemplateList.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
+        var promise;
         promise = this.Api.sendDataGet({
           info: '/templates-info'
-        }).then(function(res) {
-          return _this.templates = res.data.info.list[_this.bundle][_this.tplDir].templates;
-        });
+        }).then((function(_this) {
+          return function(res) {
+            return _this.templates = res.data.info.list[_this.bundle][_this.tplDir].templates;
+          };
+        })(this));
         return promise;
       };
 
-      /*
-      		# Open an editor
-      */
 
+      /*
+      		 * Open an editor
+       */
 
       Admin_Templates_Ctrl_TemplateList.prototype.openEditor = function(tpl) {
-        var modalInstance,
-          _this = this;
+        var modalInstance;
         modalInstance = this.$modal.open({
           templateUrl: 'Templates/modal-template-editor.html',
           controller: 'Admin_Templates_Ctrl_TemplateEditor',
@@ -52,13 +51,15 @@
               return tpl.name;
             }
           }
-        }).result.then(function(info) {
-          if (info.mode === 'custom') {
-            return tpl.is_custom = true;
-          } else if (info.mode === 'revert') {
-            return tpl.is_custom = false;
-          }
-        });
+        }).result.then((function(_this) {
+          return function(info) {
+            if (info.mode === 'custom') {
+              return tpl.is_custom = true;
+            } else if (info.mode === 'revert') {
+              return tpl.is_custom = false;
+            }
+          };
+        })(this));
         return modalInstance;
       };
 
@@ -70,6 +71,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=TemplateList.js.map
-*/
+//# sourceMappingURL=TemplateList.js.map

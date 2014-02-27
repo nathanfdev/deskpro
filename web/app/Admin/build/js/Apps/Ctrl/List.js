@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
-    var Admin_Apps_Ctrl_List, _ref;
+    var Admin_Apps_Ctrl_List;
     Admin_Apps_Ctrl_List = (function(_super) {
       __extends(Admin_Apps_Ctrl_List, _super);
 
       function Admin_Apps_Ctrl_List() {
-        _ref = Admin_Apps_Ctrl_List.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_Apps_Ctrl_List.__super__.constructor.apply(this, arguments);
       }
 
       Admin_Apps_Ctrl_List.CTRL_ID = 'Admin_Apps_Ctrl_List';
@@ -30,35 +29,36 @@
       };
 
       Admin_Apps_Ctrl_List.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
+        var promise;
         promise = this.Api.sendDataGet({
           apps: '/apps'
-        }).then(function(result) {
-          _this.packages = result.data.apps.packages;
-          _this.packages = _this.packages.filter(function(x) {
-            return !x.is_custom;
-          });
-          _this.apps = result.data.apps.apps.filter(function(x) {
-            return !x["package"].is_custom;
-          });
-          return _this.custom_apps = result.data.apps.apps.filter(function(x) {
-            return x["package"].is_custom;
-          });
-        });
+        }).then((function(_this) {
+          return function(result) {
+            _this.packages = result.data.apps.packages;
+            _this.packages = _this.packages.filter(function(x) {
+              return !x.is_custom;
+            });
+            _this.apps = result.data.apps.apps.filter(function(x) {
+              return !x["package"].is_custom;
+            });
+            return _this.custom_apps = result.data.apps.apps.filter(function(x) {
+              return x["package"].is_custom;
+            });
+          };
+        })(this));
         return promise;
       };
 
       Admin_Apps_Ctrl_List.prototype.addAppInstance = function(instanceInfo) {
-        var p, _i, _len, _ref1, _results;
+        var p, _i, _len, _ref, _results;
         if (!this.apps) {
           this.apps = [];
         }
         this.apps.push(instanceInfo);
-        _ref1 = this.packages;
+        _ref = this.packages;
         _results = [];
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          p = _ref1[_i];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          p = _ref[_i];
           if (p.name === instanceInfo["package"].name) {
             if (!p.apps) {
               p.apps = [];
@@ -100,19 +100,20 @@
       };
 
       Admin_Apps_Ctrl_List.prototype.showNewApp = function() {
-        var saveNewApp,
-          _this = this;
-        saveNewApp = function(options) {
-          var postData;
-          postData = {
-            options: options
-          };
-          return _this.Api.sendPutJson('/apps/custom', postData).success(function(info) {
-            return _this.$state.go('apps.apps.custom_instance', {
-              custom_id: "custom_" + info.id
+        var saveNewApp;
+        saveNewApp = (function(_this) {
+          return function(options) {
+            var postData;
+            postData = {
+              options: options
+            };
+            return _this.Api.sendPutJson('/apps/custom', postData).success(function(info) {
+              return _this.$state.go('apps.apps.custom_instance', {
+                custom_id: "custom_" + info.id
+              });
             });
-          });
-        };
+          };
+        })(this);
         return this.$modal.open({
           templateUrl: this.getTemplatePath('Apps/new-app-modal.html'),
           controller: [
@@ -145,6 +146,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=List.js.map
-*/
+//# sourceMappingURL=List.js.map

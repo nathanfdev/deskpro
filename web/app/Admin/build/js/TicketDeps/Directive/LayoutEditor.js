@@ -5,7 +5,6 @@
     var InterfaceHandler;
     InterfaceHandler = (function() {
       function InterfaceHandler(scope, element, attr, ngModel, $compile, logger) {
-        var _this = this;
         this.scope = scope;
         this.element = element;
         this.ngModel = ngModel;
@@ -23,69 +22,75 @@
         };
         this._initTab('user', this.els.user_tab);
         this._initTab('agent', this.els.agent_tab);
-        this.ngModel.$formatters.push(function(modelValue) {
-          var f, fieldType, has, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
-          if (!modelValue) {
-            modelValue = {};
-          }
-          if (modelValue.user == null) {
-            modelValue.user = [];
-          }
-          if (modelValue.agent == null) {
-            modelValue.agent = [];
-          }
-          _ref = _this.required_fields.user;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            fieldType = _ref[_i];
-            has = false;
-            _ref1 = modelValue.user;
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              f = _ref1[_j];
-              if (!f.id) {
-                if (f.field_id) {
-                  f.id = "" + f.field_type + "." + f.field_id;
-                } else {
-                  f.id = f.field_type;
+        this.ngModel.$formatters.push((function(_this) {
+          return function(modelValue) {
+            var f, fieldType, has, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
+            if (!modelValue) {
+              modelValue = {};
+            }
+            if (modelValue.user == null) {
+              modelValue.user = [];
+            }
+            if (modelValue.agent == null) {
+              modelValue.agent = [];
+            }
+            _ref = _this.required_fields.user;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              fieldType = _ref[_i];
+              has = false;
+              _ref1 = modelValue.user;
+              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                f = _ref1[_j];
+                if (!f.id) {
+                  if (f.field_id) {
+                    f.id = "" + f.field_type + "." + f.field_id;
+                  } else {
+                    f.id = f.field_type;
+                  }
+                }
+                if (f.field_type === fieldType) {
+                  has = true;
                 }
               }
-              if (f.field_type === fieldType) {
-                has = true;
+              if (!has) {
+                modelValue.user.push(_this.createFieldValue(fieldType));
               }
             }
-            if (!has) {
-              modelValue.user.push(_this.createFieldValue(fieldType));
-            }
-          }
-          _ref2 = _this.required_fields.agent;
-          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-            fieldType = _ref2[_k];
-            has = false;
-            _ref3 = modelValue.agent;
-            for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
-              f = _ref3[_l];
-              if (!f.id) {
-                if (f.field_id) {
-                  f.id = "" + f.field_type + "." + f.field_id;
-                } else {
-                  f.id = f.field_type;
+            _ref2 = _this.required_fields.agent;
+            for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+              fieldType = _ref2[_k];
+              has = false;
+              _ref3 = modelValue.agent;
+              for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+                f = _ref3[_l];
+                if (!f.id) {
+                  if (f.field_id) {
+                    f.id = "" + f.field_type + "." + f.field_id;
+                  } else {
+                    f.id = f.field_type;
+                  }
+                }
+                if (f.field_type === fieldType) {
+                  has = true;
                 }
               }
-              if (f.field_type === fieldType) {
-                has = true;
+              if (!has) {
+                modelValue.agent.push(_this.createFieldValue(fieldType));
               }
             }
-            if (!has) {
-              modelValue.agent.push(_this.createFieldValue(fieldType));
-            }
-          }
-          return modelValue;
-        });
-        this.ngModel.$parsers.push(function(viewModel) {
-          return viewModel;
-        });
-        this.ngModel.$render = function() {
-          return _this.render();
-        };
+            return modelValue;
+          };
+        })(this));
+        this.ngModel.$parsers.push((function(_this) {
+          return function(viewModel) {
+            return viewModel;
+          };
+        })(this));
+        this.ngModel.$render = (function(_this) {
+          return function() {
+            return _this.render();
+          };
+        })(this);
       }
 
       InterfaceHandler.prototype._initTab = function(tabType, tab) {
@@ -123,15 +128,15 @@
         });
       };
 
-      /*
-        	# Create a new field, add it to the model and also add it to the UI
-        	#
-        	# @param {String} tabType
-        	# @param {String} fieldType
-        	# @param {Integer} fieldId
-        	# @param {HTMLElement} insertAfterEl
-      */
 
+      /*
+        	 * Create a new field, add it to the model and also add it to the UI
+        	 *
+        	 * @param {String} tabType
+        	 * @param {String} fieldType
+        	 * @param {Integer} fieldId
+        	 * @param {HTMLElement} insertAfterEl
+       */
 
       InterfaceHandler.prototype.createAndAddField = function(tabType, fieldType, fieldId, insertAfterEl) {
         var f, field, insertAt, row, ul, viewValue, _i, _len, _ref;
@@ -179,12 +184,12 @@
         return row;
       };
 
-      /*
-        	# Creates a new field object
-        	#
-        	# @return {Object}
-      */
 
+      /*
+        	 * Creates a new field object
+        	 *
+        	 * @return {Object}
+       */
 
       InterfaceHandler.prototype.createFieldValue = function(fieldType, fieldId) {
         var id, layoutField;
@@ -213,35 +218,36 @@
         return layoutField;
       };
 
-      /*
-        	# Renders a new field row
-        	#
-        	# @param {Object} field
-        	# @return {HTMLElement}
-      */
 
+      /*
+        	 * Renders a new field row
+        	 *
+        	 * @param {Object} field
+        	 * @return {HTMLElement}
+       */
 
       InterfaceHandler.prototype.createFieldRow = function(tabType, field) {
-        var fieldRow, fieldScope, _ref,
-          _this = this;
+        var fieldRow, fieldScope, _ref;
         fieldScope = this.scope.$new(true);
         fieldScope.field = field;
         fieldScope.type = tabType;
-        fieldScope.removeRow = function() {
-          var f, idx, tab, viewValue, _i, _len;
-          viewValue = _this.ngModel.$viewValue[tabType];
-          for (idx = _i = 0, _len = viewValue.length; _i < _len; idx = ++_i) {
-            f = viewValue[idx];
-            if (f === field) {
-              viewValue.splice(idx, 1);
-              break;
+        fieldScope.removeRow = (function(_this) {
+          return function() {
+            var f, idx, tab, viewValue, _i, _len;
+            viewValue = _this.ngModel.$viewValue[tabType];
+            for (idx = _i = 0, _len = viewValue.length; _i < _len; idx = ++_i) {
+              f = viewValue[idx];
+              if (f === field) {
+                viewValue.splice(idx, 1);
+                break;
+              }
             }
-          }
-          fieldRow.remove();
-          fieldScope.$destroy();
-          tab = _this.els["" + tabType + "_tab"].find('.form-elements');
-          return tab.find("[data-field-type=\"" + field.id + "\"]").show();
-        };
+            fieldRow.remove();
+            fieldScope.$destroy();
+            tab = _this.els["" + tabType + "_tab"].find('.form-elements');
+            return tab.find("[data-field-type=\"" + field.id + "\"]").show();
+          };
+        })(this);
         if (_ref = field.id, __indexOf.call(this.required_fields[tabType], _ref) >= 0) {
           fieldScope.removeRow = function() {};
           fieldScope.isSticky = true;
@@ -251,11 +257,11 @@
         return fieldRow;
       };
 
-      /*
-        	# Renders options on the left (worksheet) with those saved in the model
-        	# Tries to be smart in what it is re-rendering so only changes are rendered.
-      */
 
+      /*
+        	 * Renders options on the left (worksheet) with those saved in the model
+        	 * Tries to be smart in what it is re-rendering so only changes are rendered.
+       */
 
       InterfaceHandler.prototype.render = function() {
         var doReorder, draggableEls, elementMap, f, field, fieldEl, fieldRow, form, form_model, forms, layoutFieldEls, listEl, newFields, order, orderMap, prevField, prevFieldEl, typeName, worksheetEl, _i, _j, _k, _l, _len, _len1, _len2, _len3, _results;
@@ -371,6 +377,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=LayoutEditor.js.map
-*/
+//# sourceMappingURL=LayoutEditor.js.map

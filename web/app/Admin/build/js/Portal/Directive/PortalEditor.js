@@ -850,6 +850,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=PortalEditor.js.map
-*/
+//# sourceMappingURL=PortalEditor.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/CustomFields/Base/Ctrl/Edit'], function(Admin_CustomFields_Base_Ctrl_Edit) {
-    var Admin_CustomFields_Chat_Ctrl_Edit, _ref;
+    var Admin_CustomFields_Chat_Ctrl_Edit;
     Admin_CustomFields_Chat_Ctrl_Edit = (function(_super) {
       __extends(Admin_CustomFields_Chat_Ctrl_Edit, _super);
 
       function Admin_CustomFields_Chat_Ctrl_Edit() {
-        _ref = Admin_CustomFields_Chat_Ctrl_Edit.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_CustomFields_Chat_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
       Admin_CustomFields_Chat_Ctrl_Edit.CTRL_ID = 'Admin_CustomFields_User_Ctrl_Edit';
@@ -34,6 +33,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Edit.js.map
-*/
+//# sourceMappingURL=Edit.js.map

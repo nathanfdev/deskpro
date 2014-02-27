@@ -47,6 +47,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=InterfaceTimer.js.map
-*/
+//# sourceMappingURL=InterfaceTimer.js.map

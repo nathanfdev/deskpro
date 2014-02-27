@@ -4,11 +4,11 @@
     return EmailBanEditFormMapper = (function() {
       function EmailBanEditFormMapper() {}
 
-      /*
-      			#
-       		#
-      */
 
+      /*
+      			 *
+       		 *
+       */
 
       EmailBanEditFormMapper.prototype.getFormFromModel = function(model) {
         var form;
@@ -17,19 +17,19 @@
         return form;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       EmailBanEditFormMapper.prototype.applyFormToModel = function(model, formModel) {};
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       EmailBanEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var postData;
@@ -45,6 +45,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EmailBanEditFormMapper.js.map
-*/
+//# sourceMappingURL=EmailBanEditFormMapper.js.map

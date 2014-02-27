@@ -48,6 +48,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=MacroEditFormMapper.js.map
-*/
+//# sourceMappingURL=MacroEditFormMapper.js.map

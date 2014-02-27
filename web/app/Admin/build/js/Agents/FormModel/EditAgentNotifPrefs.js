@@ -110,6 +110,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EditAgentNotifPrefs.js.map
-*/
+//# sourceMappingURL=EditAgentNotifPrefs.js.map

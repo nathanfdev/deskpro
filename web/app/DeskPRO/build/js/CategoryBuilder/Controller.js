@@ -3,8 +3,7 @@
     var DeskPRO_CategoryBuilder_Controller;
     return DeskPRO_CategoryBuilder_Controller = (function() {
       function DeskPRO_CategoryBuilder_Controller($scope, $element, $attrs, $compile, $q) {
-        var me,
-          _this = this;
+        var me;
         this.$scope = $scope;
         this.$element = $element;
         this.$attrs = $attrs;
@@ -17,9 +16,11 @@
         this.$scope.sortedListOptions = {
           axis: 'y',
           handle: '.dp-cb-row-move',
-          update: function(ev, data) {
-            return _this.updateOrder();
-          }
+          update: (function(_this) {
+            return function(ev, data) {
+              return _this.updateOrder();
+            };
+          })(this)
         };
         this.addRowEl = this.$element.find('.dp-cb-newrow');
         this.rootListEl = this.$element.find('.dp-cb-root');
@@ -72,12 +73,13 @@
       DeskPRO_CategoryBuilder_Controller.prototype.updateOrder = function() {};
 
       DeskPRO_CategoryBuilder_Controller.prototype.setModel = function(ngModel) {
-        var _this = this;
         this.ngModel = ngModel;
         this.cat_rows = {};
-        this.ngModel.$render = function() {
-          return _this.updateView(_this.ngModel.$modelValue);
-        };
+        this.ngModel.$render = (function(_this) {
+          return function() {
+            return _this.updateView(_this.ngModel.$modelValue);
+          };
+        })(this);
         this.ngModel.$parsers.push(function(viewValue) {
           return viewValue || [];
         });
@@ -197,8 +199,7 @@
       };
 
       DeskPRO_CategoryBuilder_Controller.prototype.addNewCatFromTrigger = function(triggerEl) {
-        var catData, parent_id, rowEl, title,
-          _this = this;
+        var catData, parent_id, rowEl, title;
         rowEl = $(triggerEl).closest('.dp-cb-addrow');
         title = Strings.trim(this.$scope.new_cat_title);
         if (title === '') {
@@ -219,9 +220,11 @@
           catData.parent_id = rowEl.data('parentId');
         }
         this.$scope.new_cat_title = '';
-        return this.$scope.$apply(function() {
-          return _this.addCat(catData);
-        });
+        return this.$scope.$apply((function(_this) {
+          return function() {
+            return _this.addCat(catData);
+          };
+        })(this));
       };
 
       DeskPRO_CategoryBuilder_Controller.FACTORY = [
@@ -237,6 +240,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Controller.js.map
-*/
+//# sourceMappingURL=Controller.js.map

@@ -4,11 +4,11 @@
     return ApiKeyEditFormMapper = (function() {
       function ApiKeyEditFormMapper() {}
 
-      /*
-      			#
-       		#
-      */
 
+      /*
+      			 *
+       		 *
+       */
 
       ApiKeyEditFormMapper.prototype.getFormFromModel = function(model) {
         var form;
@@ -28,21 +28,21 @@
         return form;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       ApiKeyEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
         return model.note = formModel.note;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       ApiKeyEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var postData;
@@ -62,6 +62,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ApiKeyEditFormMapper.js.map
-*/
+//# sourceMappingURL=ApiKeyEditFormMapper.js.map

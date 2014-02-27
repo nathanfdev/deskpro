@@ -4,11 +4,11 @@
     return UserRuleEditFormMapper = (function() {
       function UserRuleEditFormMapper() {}
 
-      /*
-      			#
-       		#
-      */
 
+      /*
+      			 *
+       		 *
+       */
 
       UserRuleEditFormMapper.prototype.getFormFromModel = function(model) {
         var form;
@@ -24,21 +24,21 @@
         return form;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       UserRuleEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
         return model.email_patterns = formModel.email_patterns;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       UserRuleEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var postData;
@@ -56,6 +56,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=UserRuleEditFormMapper.js.map
-*/
+//# sourceMappingURL=UserRuleEditFormMapper.js.map

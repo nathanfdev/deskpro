@@ -4,10 +4,10 @@
     return ChatDepFormMapper = (function() {
       function ChatDepFormMapper() {}
 
-      /*
-      		#
-      */
 
+      /*
+      		 *
+       */
 
       ChatDepFormMapper.prototype.getFormFromModel = function(dep, depPerms, agents, agentgroups, usergroups) {
         var agent, form, group, matrix, p, u, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref;
@@ -58,10 +58,10 @@
         return form;
       };
 
-      /*
-       	#
-      */
 
+      /*
+       	 *
+       */
 
       ChatDepFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var depData, permData, postData, usergroup, _i, _len, _ref;
@@ -94,10 +94,10 @@
         return postData;
       };
 
-      /*
-      		#
-      */
 
+      /*
+      		 *
+       */
 
       ChatDepFormMapper.prototype.applyFormToModel = function(dep, formModel) {
         dep.title = formModel.title;
@@ -118,6 +118,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ChatDepFormMapper.js.map
-*/
+//# sourceMappingURL=ChatDepFormMapper.js.map

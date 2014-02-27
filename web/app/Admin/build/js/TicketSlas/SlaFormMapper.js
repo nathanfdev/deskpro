@@ -6,13 +6,13 @@
     return SlaFormMapper = (function() {
       function SlaFormMapper() {}
 
-      /*
-        	# Converts a model we get from the API into a form model that we can use in our page
-        	#
-        	# @param {Object} model
-        	# @return {Object}
-      */
 
+      /*
+        	 * Converts a model we get from the API into a form model that we can use in our page
+        	 *
+        	 * @param {Object} model
+        	 * @return {Object}
+       */
 
       SlaFormMapper.prototype.getFormFromModel = function(model) {
         var action, day, days, form, rowId, setId, term, termSet, _, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
@@ -86,14 +86,14 @@
         return form;
       };
 
-      /*
-        	# Converts the form model into a model we can post back to the API
-        	# Essentially the reverse of getFormFromModel
-        	#
-        	# @param {Object} form
-        	# @return {Object}
-      */
 
+      /*
+        	 * Converts the form model into a model we can post back to the API
+        	 * Essentially the reverse of getFormFromModel
+        	 *
+        	 * @param {Object} form
+        	 * @return {Object}
+       */
 
       SlaFormMapper.prototype.getPostDataFromFormModel = function(form) {
         var act, crit, crit_set, day, enabled, postData, set, work_days, _, _i, _len, _ref, _ref1, _ref2, _ref3;
@@ -176,6 +176,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SlaFormMapper.js.map
-*/
+//# sourceMappingURL=SlaFormMapper.js.map

@@ -1,32 +1,32 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This directive adds a new form element for a time period described as a number and a unit. For example,
-       # "2 days" or "5 hours". In the model, the number is saved as the time in seconds.
-       #
-       # Add a "model-type" attribute to the element to change how the time is represented in the model:
-       # - seconds (default): Convert time into seconds. E.g., 1 hour is saved as 3600
-       # - array: Save as an array: [time, unit]. E.g., 1 hour is [1, 'hours']
-       # - object: Save in an object: { time: time, unit: unit}. E.g., 1 hour is {time: 1, unit: 'hours'}
-       # - "X:Y": Save in an object using X and Y as keys: {X: time, Y: unit}
-       #
-       # Example Controller
-       # ------------------
-       # $scope.my_model = 7200
-       # $scope.my_model_alt = {num: 4, time_unit: "hours"}
-       #
-       # Example View
-       # ------------
-       # <dp-time-with-unit ng-model="my_model" />
-       # (7200 will render as "2 hours")
-       #
-       # <dp-time-with-unit model-type="num:time_unit" ng-model="my_model" />
-       # (Renders as "4 hours")
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This directive adds a new form element for a time period described as a number and a unit. For example,
+        * "2 days" or "5 hours". In the model, the number is saved as the time in seconds.
+        *
+        * Add a "model-type" attribute to the element to change how the time is represented in the model:
+        * - seconds (default): Convert time into seconds. E.g., 1 hour is saved as 3600
+        * - array: Save as an array: [time, unit]. E.g., 1 hour is [1, 'hours']
+        * - object: Save in an object: { time: time, unit: unit}. E.g., 1 hour is {time: 1, unit: 'hours'}
+        * - "X:Y": Save in an object using X and Y as keys: {X: time, Y: unit}
+        *
+        * Example Controller
+        * ------------------
+        * $scope.my_model = 7200
+        * $scope.my_model_alt = {num: 4, time_unit: "hours"}
+        *
+        * Example View
+        * ------------
+        * <dp-time-with-unit ng-model="my_model" />
+        * (7200 will render as "2 hours")
+        *
+        * <dp-time-with-unit model-type="num:time_unit" ng-model="my_model" />
+        * (Renders as "4 hours")
+     */
     var DeskPRO_Directive_DpTimeWithUnit;
     DeskPRO_Directive_DpTimeWithUnit = [
       function() {
@@ -154,6 +154,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpTimeWithUnit.js.map
-*/
+//# sourceMappingURL=DpTimeWithUnit.js.map

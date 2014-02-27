@@ -61,6 +61,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SetupRouting.js.map
-*/
+//# sourceMappingURL=SetupRouting.js.map

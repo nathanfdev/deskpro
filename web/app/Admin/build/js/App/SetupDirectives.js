@@ -36,6 +36,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SetupDirectives.js.map
-*/
+//# sourceMappingURL=SetupDirectives.js.map

@@ -4,16 +4,16 @@
     DeskPRO_Util_Functions = (function() {
       function DeskPRO_Util_Functions() {}
 
-      /*
-        	# Returns a function that will be called wait ms after the last time it was
-        	# invoked. E.g., if it was called 3 times in a row, it wouldnt actually be invoked
-      		# 3 times because it happened before wait time had passed.
-        	#
-        	# @param {Function} fn
-        	# @param {Integer} wait
-        	# @param {bool} immediate
-      */
 
+      /*
+        	 * Returns a function that will be called wait ms after the last time it was
+        	 * invoked. E.g., if it was called 3 times in a row, it wouldnt actually be invoked
+      		 * 3 times because it happened before wait time had passed.
+        	 *
+        	 * @param {Function} fn
+        	 * @param {Integer} wait
+        	 * @param {bool} immediate
+       */
 
       DeskPRO_Util_Functions.prototype.debounce = function(fn, wait, immediate) {
         return function() {
@@ -55,6 +55,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Functions.js.map
-*/
+//# sourceMappingURL=Functions.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/TicketSlas/SlaFormMapper'], function(Admin_Ctrl_Base, Util, SlaFormMapper) {
-    var Admin_TicketSlas_Ctrl_Edit, _ref;
+    var Admin_TicketSlas_Ctrl_Edit;
     Admin_TicketSlas_Ctrl_Edit = (function(_super) {
       __extends(Admin_TicketSlas_Ctrl_Edit, _super);
 
       function Admin_TicketSlas_Ctrl_Edit() {
-        _ref = Admin_TicketSlas_Ctrl_Edit.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_TicketSlas_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
       Admin_TicketSlas_Ctrl_Edit.CTRL_ID = 'Admin_TicketSlas_Ctrl_Edit';
@@ -51,14 +50,15 @@
       };
 
       Admin_TicketSlas_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
+        var promise;
         if (this.$stateParams.id) {
-          promise = this.slaData.loadEditSlaData(this.$stateParams.id).then(function(data) {
-            _this.sla = data.sla;
-            _this.form = _this.getFormFromModel(_this.sla);
-            return _this.origForm = Util.clone(_this.form, true);
-          });
+          promise = this.slaData.loadEditSlaData(this.$stateParams.id).then((function(_this) {
+            return function(data) {
+              _this.sla = data.sla;
+              _this.form = _this.getFormFromModel(_this.sla);
+              return _this.origForm = Util.clone(_this.form, true);
+            };
+          })(this));
           return promise;
         } else {
           this.macro = {};
@@ -74,8 +74,7 @@
       };
 
       Admin_TicketSlas_Ctrl_Edit.prototype.saveForm = function() {
-        var is_new, postData, promise,
-          _this = this;
+        var is_new, postData, promise;
         postData = this.formMapper.getPostDataFromFormModel(this.form);
         this.startSpinner('saving');
         if (this.sla.id) {
@@ -85,28 +84,32 @@
           is_new = true;
           promise = this.Api.sendPutJson('/ticket_slas', postData);
         }
-        promise.success(function(result) {
-          _this.sla.id = result.sla_id;
-          if (is_new) {
-            _this.sla.is_enabled = true;
-          }
-          _this.sla.title = postData.title;
-          _this.stopSpinner('saving', true).then(function() {
-            return _this.Growl.success("Saved");
-          });
-          _this.slaData.mergeDataModel({
-            id: _this.sla.id,
-            title: _this.sla.title
-          });
-          _this.skipDirtyState();
-          if (is_new) {
-            return _this.$state.go('tickets.slas.gocreate');
-          }
-        });
-        promise.error(function(info, code) {
-          _this.stopSpinner('saving', true);
-          return _this.applyErrorResponseToView(info);
-        });
+        promise.success((function(_this) {
+          return function(result) {
+            _this.sla.id = result.sla_id;
+            if (is_new) {
+              _this.sla.is_enabled = true;
+            }
+            _this.sla.title = postData.title;
+            _this.stopSpinner('saving', true).then(function() {
+              return _this.Growl.success("Saved");
+            });
+            _this.slaData.mergeDataModel({
+              id: _this.sla.id,
+              title: _this.sla.title
+            });
+            _this.skipDirtyState();
+            if (is_new) {
+              return _this.$state.go('tickets.slas.gocreate');
+            }
+          };
+        })(this));
+        promise.error((function(_this) {
+          return function(info, code) {
+            _this.stopSpinner('saving', true);
+            return _this.applyErrorResponseToView(info);
+          };
+        })(this));
         return promise;
       };
 
@@ -118,6 +121,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Edit.js.map
-*/
+//# sourceMappingURL=Edit.js.map

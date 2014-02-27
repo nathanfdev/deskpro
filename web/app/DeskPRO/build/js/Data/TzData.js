@@ -4,12 +4,12 @@
     TzData = (function() {
       function TzData() {}
 
-      /*
-        	# Get an array of objects with title/value properties for each tz.
-        	#
-        	# @return {Array}
-      */
 
+      /*
+        	 * Get an array of objects with title/value properties for each tz.
+        	 *
+        	 * @return {Array}
+       */
 
       TzData.prototype.getOptions = function() {
         var ret, title, tz, _i, _len, _ref, _results;
@@ -31,12 +31,12 @@
         return _results;
       };
 
-      /*
-        	# Get an array of grouped tz values
-        	#
-        	# @return {Array}
-      */
 
+      /*
+        	 * Get an array of grouped tz values
+        	 *
+        	 * @return {Array}
+       */
 
       TzData.prototype.getGroupedOptions = function() {
         var group_map, parent_obj, parent_title, ret, tz, _i, _len, _ref;
@@ -1756,6 +1756,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=TzData.js.map
-*/
+//# sourceMappingURL=TzData.js.map

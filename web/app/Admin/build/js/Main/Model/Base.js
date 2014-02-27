@@ -2,6 +2,7 @@
   var __hasProp = {}.hasOwnProperty;
 
   define(['angular'], function(angular) {
+
     /**
        * A model holds data about some kind of entity.
        * Our model class does nothing special except tries to make it easier
@@ -16,8 +17,7 @@
        * and these models are completely unaware of other models already loaded.
        * That means you could have two records with ID 5, or a record with a "parent" of 5 etc.
        * These models by themselves are not a repository.
-    */
-
+     */
     var Admin_Main_Model_Base;
     return Admin_Main_Model_Base = (function() {
       function Admin_Main_Model_Base(type_id, id_prop) {
@@ -34,12 +34,12 @@
         this._data_checkpoints = [];
       }
 
-      /**
-        	# Add to the ref counter
-        	#
-        	# @param {Object} obj Optionally set up auto-release on obj
-      */
 
+      /**
+        	 * Add to the ref counter
+        	 *
+        	 * @param {Object} obj Optionally set up auto-release on obj
+       */
 
       Admin_Main_Model_Base.prototype.retain = function(obj) {
         this._obj_refc += 1;
@@ -49,42 +49,42 @@
         }
       };
 
-      /**
-        	# Remove from the ref counter
-      */
 
+      /**
+        	 * Remove from the ref counter
+       */
 
       Admin_Main_Model_Base.prototype.release = function() {
         this._obj_refc -= 1;
         return this._obj_time = (new Date()).getTime();
       };
 
-      /**
-        	# Copy properties from another model
-      */
 
+      /**
+        	 * Copy properties from another model
+       */
 
       Admin_Main_Model_Base.prototype.copyPropertiesFrom = function(model) {
         return this.setData(mode.getData());
       };
 
+
       /**
         	* Get the type of model this is
         	*
         	* @return {String}
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.getTypeId = function() {
         return this._type_id;
       };
 
+
       /**
         	* Get the ID of the entity this object represents (typically a numeric ID)
         	*
         	* @return {Integer}
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.getEntityId = function() {
         var id_parts, idp, _i, _len, _ref;
@@ -104,13 +104,13 @@
         return null;
       };
 
+
       /**
         	* Create a new checkpoint. Checkpoints allow you to revert data to previous states or compare
         	* with previous states.
         	*
         	* @param {String} chk_id Optionally provide an ID to refer to the checkpoint later
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.setCheckpoint = function(chk_id, deep) {
         var data, key, value;
@@ -137,12 +137,12 @@
         return this._data_checkpoints.push([chk_id, data]);
       };
 
+
       /**
         	* Get data for a checkpoint.
         	*
         	* @param {String} chk_id Optionally provide an ID, else the latest checkpoint is returned
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.getCheckpoint = function(chk_id) {
         var cp, _i, _len, _ref;
@@ -163,12 +163,12 @@
         return null;
       };
 
+
       /**
         	* Revert to a previous checkpoint
         	*
         	* @param {String} chk_id Optionally provide an ID, else the latest checkpoint is returned
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.revertCheckpoint = function(chk_id, deep) {
         var cp, data, i, key, value, _i, _len, _ref, _results;
@@ -215,10 +215,10 @@
         }
       };
 
+
       /**
         	* Revert to the first checkpoint (e.g., the initial data)
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.revertAllCheckpoints = function(deep) {
         var data, key, value, _results;
@@ -247,10 +247,10 @@
         }
       };
 
+
       /**
         	* Clears all checkpoints. The data set now is considered the initial data.
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.clearCheckpoints = function(deep) {
         var key, value, _results;
@@ -275,12 +275,12 @@
         }
       };
 
+
       /**
         	* Set data on this model
         	*
         	* @param {Object} data
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.setData = function(data) {
         var key, value;
@@ -294,12 +294,12 @@
         }
       };
 
+
       /**
         	* Gets all data on this model.
         	*
         	* @return {Object}
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.getData = function() {
         var data, key, value;
@@ -314,12 +314,12 @@
         return data;
       };
 
+
       /**
         	* Return an array of field names that have changed.
         	*
         	* @return {Array}
-      */
-
+       */
 
       Admin_Main_Model_Base.prototype.getChangedFields = function(chk_id, deep) {
         var changed, key, last_data, model_changed, subchange, value, _i, _len;
@@ -371,6 +371,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Base.js.map
-*/
+//# sourceMappingURL=Base.js.map

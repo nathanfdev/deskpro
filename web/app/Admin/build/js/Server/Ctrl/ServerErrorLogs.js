@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_ServerErrorLogs_Ctrl_ServerErrorLogs, _ref;
+    var Admin_ServerErrorLogs_Ctrl_ServerErrorLogs;
     Admin_ServerErrorLogs_Ctrl_ServerErrorLogs = (function(_super) {
       __extends(Admin_ServerErrorLogs_Ctrl_ServerErrorLogs, _super);
 
       function Admin_ServerErrorLogs_Ctrl_ServerErrorLogs() {
-        _ref = Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.__super__.constructor.apply(this, arguments);
       }
 
       Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.CTRL_ID = 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs';
@@ -24,23 +23,23 @@
       };
 
       Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.prototype.initialLoad = function() {
-        var data_promise,
-          _this = this;
-        data_promise = this.Api.sendGet('/server_error_logs').then(function(res) {
-          _this.$scope.server_error_logs = res.data.server_error_logs;
-          return _this.$scope.logs_size = _.size(_this.$scope.server_error_logs.logs);
-        });
+        var data_promise;
+        data_promise = this.Api.sendGet('/server_error_logs').then((function(_this) {
+          return function(res) {
+            _this.$scope.server_error_logs = res.data.server_error_logs;
+            return _this.$scope.logs_size = _.size(_this.$scope.server_error_logs.logs);
+          };
+        })(this));
         return this.$q.all([data_promise]);
       };
 
-      /*
-      # Show the clear dlg
-      */
 
+      /*
+       * Show the clear dlg
+       */
 
       Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.prototype.startClearAll = function() {
-        var inst,
-          _this = this;
+        var inst;
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('Server/server-error-logs-delete-modal.html'),
           controller: [
@@ -54,21 +53,24 @@
             }
           ]
         });
-        return inst.result.then(function() {
-          return _this.clearAll();
-        });
+        return inst.result.then((function(_this) {
+          return function() {
+            return _this.clearAll();
+          };
+        })(this));
       };
 
-      /*
-      		# Actually do the clear
-      */
 
+      /*
+      		 * Actually do the clear
+       */
 
       Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.prototype.clearAll = function() {
-        var _this = this;
-        return this.Api.sendDelete('/server_error_logs/').success(function() {
-          return _this.$scope.server_error_logs.logs = null;
-        });
+        return this.Api.sendDelete('/server_error_logs/').success((function(_this) {
+          return function() {
+            return _this.$scope.server_error_logs.logs = null;
+          };
+        })(this));
       };
 
       return Admin_ServerErrorLogs_Ctrl_ServerErrorLogs;
@@ -79,6 +81,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ServerErrorLogs.js.map
-*/
+//# sourceMappingURL=ServerErrorLogs.js.map

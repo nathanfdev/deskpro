@@ -1,10 +1,10 @@
 (function() {
   define(['DeskPRO/Util/Angular', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Util_Angular, Arrays, Util) {
-    /*
-    	# This is a simple base data service that implements some default functionality for
-    	# loading the "list" collection, and some methods for keeping the list up to date.
-    */
 
+    /*
+    	 * This is a simple base data service that implements some default functionality for
+    	 * loading the "list" collection, and some methods for keeping the list up to date.
+     */
     var Admin_Main_DataService_BaseListEdit;
     return Admin_Main_DataService_BaseListEdit = (function() {
       function Admin_Main_DataService_BaseListEdit() {
@@ -19,23 +19,22 @@
         this.init();
       }
 
-      /*
-      		# An empty hook method for sub-classes
-      */
 
+      /*
+      		 * An empty hook method for sub-classes
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.init = function() {};
 
-      /*
-      		# Loads list of accounts
-      		#
-      		# @return {Promise}
-      */
 
+      /*
+      		 * Loads list of accounts
+      		 *
+      		 * @return {Promise}
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.loadList = function(reload) {
-        var deferred,
-          _this = this;
+        var deferred;
         if (reload) {
           this.loadListPromise = null;
           this.isListLoaded = false;
@@ -50,39 +49,46 @@
         }
         deferred = this.$q.defer();
         this.loadListPromise = deferred.promise;
-        this._doLoadList().then(function(models) {
-          _this.isListLoaded = true;
-          _this._setListData(models);
-          _this._setPaginationData(models);
-          return deferred.resolve(_this.listModels);
-        }, function() {
-          return deferred.reject();
-        });
+        this._doLoadList().then((function(_this) {
+          return function(models) {
+            _this.isListLoaded = true;
+            _this._setListData(models);
+            _this._setPaginationData(models);
+            return deferred.resolve(_this.listModels);
+          };
+        })(this), (function(_this) {
+          return function() {
+            return deferred.reject();
+          };
+        })(this));
         return this.loadListPromise;
       };
 
       Admin_Main_DataService_BaseListEdit.prototype.refreshList = function() {
-        var deferred,
-          _this = this;
+        var deferred;
         deferred = this.$q.defer();
         this.loadListPromise = deferred.promise;
-        this._doRefreshList().then(function(models) {
-          _this._setListData(models);
-          _this._setPaginationData(models);
-          return deferred.resolve(_this.listModels);
-        }, function() {
-          return deferred.reject();
-        });
+        this._doRefreshList().then((function(_this) {
+          return function(models) {
+            _this._setListData(models);
+            _this._setPaginationData(models);
+            return deferred.resolve(_this.listModels);
+          };
+        })(this), (function(_this) {
+          return function() {
+            return deferred.reject();
+          };
+        })(this));
         return this.loadListPromise;
       };
 
-      /*
-      		# This is useful if we need to store 2 or more lists instead of default one
-      		# Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
-      		#
-      		# @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
-      */
 
+      /*
+      		 * This is useful if we need to store 2 or more lists instead of default one
+      		 * Call this method somewhere ( init() method of data service is preferable) and use array of names of sub lists
+      		 *
+      		 * @param {Array} subLists - array with names of sub lists (eg. ['email_data', 'ip_data'])
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.setSubLists = function(subLists) {
         if (Util.isArray(subLists)) {
@@ -90,10 +96,10 @@
         }
       };
 
-      /*
-      		# Sets ist data on the @listModels object
-      */
 
+      /*
+      		 * Sets ist data on the @listModels object
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype._setListData = function(listModels) {
         var model, subModel, _i, _j, _len, _len1, _ref, _results, _results1;
@@ -134,12 +140,12 @@
         }
       };
 
-      /*
-      		# Sets pagination data for current data service
-      		#
-      		# @param {Object} listModels - object representing the list
-      */
 
+      /*
+      		 * Sets pagination data for current data service
+      		 *
+      		 * @param {Object} listModels - object representing the list
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype._setPaginationData = function(listModels) {
         var i, subModel, _i, _j, _len, _ref, _ref1, _results, _results1;
@@ -179,22 +185,22 @@
         }
       };
 
-      /*
-      		#	@return {Object} returns information about pagination
-      */
 
+      /*
+      		 *	@return {Object} returns information about pagination
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.getPagination = function() {
         return this.pagination;
       };
 
-      /*
-      		# Find a model that has been loaded into the list
-      		#
-      		# @param {Integer} id
-      		# @return {Object}
-      */
 
+      /*
+      		 * Find a model that has been loaded into the list
+      		 *
+      		 * @param {Integer} id
+      		 * @return {Object}
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.findListModelById = function(id) {
         var child, model, subModel, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
@@ -231,13 +237,13 @@
         return null;
       };
 
-      /*
-      		# Find children of specified object
-      		#
-      		# @param {Object} obj - specified object in which we'll search
-      		# @param {Integet} id - id of children we want to search
-      */
 
+      /*
+      		 * Find children of specified object
+      		 *
+      		 * @param {Object} obj - specified object in which we'll search
+      		 * @param {Integet} id - id of children we want to search
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.findChildModelById = function(obj, id) {
         var model, _i, _len, _ref;
@@ -253,13 +259,13 @@
         return null;
       };
 
-      /*
-      		# Returns index of specified model
-      		#
-      		# @param {Object} obj
-      		# @return {Object}
-      */
 
+      /*
+      		 * Returns index of specified model
+      		 *
+      		 * @param {Object} obj
+      		 * @return {Object}
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.returnIndexForModel = function(obj) {
         var idx, model, _i, _len, _ref;
@@ -273,13 +279,13 @@
         return null;
       };
 
-      /*
-      		# Checks whether an object has children or not
-      		#
-      		# @param {Object} obj
-      		# @return {Boolean}
-      */
 
+      /*
+      		 * Checks whether an object has children or not
+      		 *
+      		 * @param {Object} obj
+      		 * @return {Boolean}
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.hasChildren = function(obj) {
         var model;
@@ -290,14 +296,14 @@
         return false;
       };
 
-      /*
-      		# Checks whether obj has children and form changed its value since it was created, could be useful in some cases
-      		#
-      		#	@param {Object} obj - model object
-      		# @param {Object} form - form object
-      		# @return {Boolean}
-      */
 
+      /*
+      		 * Checks whether obj has children and form changed its value since it was created, could be useful in some cases
+      		 *
+      		 *	@param {Object} obj - model object
+      		 * @param {Object} form - form object
+      		 * @return {Boolean}
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.hasChildrenAndChangedParent = function(obj, form) {
         var value1, value2;
@@ -309,36 +315,36 @@
         return false;
       };
 
-      /*
-      		# This method should be overriden.
-      		#
-      		# This method needs to load the list data and needs to
-      		# resolve to an array of models that will be set on the list collection.
-      		#
-      		# This method must return a promise
-      		#
-      		# @return {promise}
-      */
 
+      /*
+      		 * This method should be overriden.
+      		 *
+      		 * This method needs to load the list data and needs to
+      		 * resolve to an array of models that will be set on the list collection.
+      		 *
+      		 * This method must return a promise
+      		 *
+      		 * @return {promise}
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype._doLoadList = function() {
         throw new Exception("This method must be implemented by a sub-class");
       };
 
-      /*
-      		# Takes a data model and updates the list.
-      		# For example, you would use this when you want to apply changes from the Edit pane into the List pane.
-      		# By merging the data model, this will either 1) update the list model (eg the title) or 2) create
-      		# a new list model and append it to the list.
-      		#
-      		# You should always supply a dataMapper. The default implementation is to just get the id/title properties
-      		# from teh dataModel which may not be sufficient.
-      		#
-      		# @param {Object} dataModel
-      		# @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
-      		# @param {String} subList Optional parameter in case we want to update only sub list
-      */
 
+      /*
+      		 * Takes a data model and updates the list.
+      		 * For example, you would use this when you want to apply changes from the Edit pane into the List pane.
+      		 * By merging the data model, this will either 1) update the list model (eg the title) or 2) create
+      		 * a new list model and append it to the list.
+      		 *
+      		 * You should always supply a dataMapper. The default implementation is to just get the id/title properties
+      		 * from teh dataModel which may not be sufficient.
+      		 *
+      		 * @param {Object} dataModel
+      		 * @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+      		 * @param {String} subList Optional parameter in case we want to update only sub list
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.mergeDataModel = function(dataModel, dataMapper, subList) {
         var child, existingChild, idx, k, listModel, model, newListModel, oldParent, parent, removeIdx, v, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
@@ -456,12 +462,12 @@
         }
       };
 
-      /*
-      		# Remove a model from the list by ID.
-      		#
-      		# @return {Object/null} The removed object or null if object could not be found
-      */
 
+      /*
+      		 * Remove a model from the list by ID.
+      		 *
+      		 * @return {Object/null} The removed object or null if object could not be found
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.removeListModelById = function(id) {
         var idx, model, removeIdx, result, subModel, subModelIdx, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
@@ -507,35 +513,36 @@
         return result;
       };
 
-      /*
-      		# Re-orders the list collection
-      */
 
+      /*
+      		 * Re-orders the list collection
+       */
 
       Admin_Main_DataService_BaseListEdit.prototype.reorderList = function() {
-        var _this = this;
         if (!this.isListLoaded) {
           return;
         }
-        this.listModels.sort(function(data1, data2) {
-          var o1, o2, _ref;
-          if (data1[_this.orderField]) {
-            o1 = data1[_this.orderField];
-          } else {
-            o1 = data[_this.idProp];
-          }
-          if (data2[_this.orderField]) {
-            o2 = data2[_this.orderField];
-          } else {
-            o2 = data2[_this.idProp];
-          }
-          if (o1 === o2) {
-            return 0;
-          }
-          return (_ref = o1 < o2) != null ? _ref : -{
-            1: 1
+        this.listModels.sort((function(_this) {
+          return function(data1, data2) {
+            var o1, o2, _ref;
+            if (data1[_this.orderField]) {
+              o1 = data1[_this.orderField];
+            } else {
+              o1 = data[_this.idProp];
+            }
+            if (data2[_this.orderField]) {
+              o2 = data2[_this.orderField];
+            } else {
+              o2 = data2[_this.idProp];
+            }
+            if (o1 === o2) {
+              return 0;
+            }
+            return (_ref = o1 < o2) != null ? _ref : -{
+              1: 1
+            };
           };
-        });
+        })(this));
         return this.listModels.reverse();
       };
 
@@ -546,6 +553,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=BaseListEdit.js.map
-*/
+//# sourceMappingURL=BaseListEdit.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'Admin/TicketAccounts/FormModel/EditTicketAccountModel'], function(Admin_Ctrl_Base, EditTicketAccountModel) {
-    var Admin_TicketAccounts_Ctrl_Edit, _ref;
+    var Admin_TicketAccounts_Ctrl_Edit;
     Admin_TicketAccounts_Ctrl_Edit = (function(_super) {
       __extends(Admin_TicketAccounts_Ctrl_Edit, _super);
 
       function Admin_TicketAccounts_Ctrl_Edit() {
-        _ref = Admin_TicketAccounts_Ctrl_Edit.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_TicketAccounts_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
       Admin_TicketAccounts_Ctrl_Edit.CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit';
@@ -32,11 +31,12 @@
       };
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
-        var data_promise, dep_promise,
-          _this = this;
-        dep_promise = this.DataService.get('TicketDeps').loadList().then(function(list) {
-          return _this.deps = list;
-        });
+        var data_promise, dep_promise;
+        dep_promise = this.DataService.get('TicketDeps').loadList().then((function(_this) {
+          return function(list) {
+            return _this.deps = list;
+          };
+        })(this));
         if (!this.accountId) {
           this.account = {
             email_address: '',
@@ -58,25 +58,26 @@
         } else {
           data_promise = this.Api.sendDataGet({
             'email_account': '/email_accounts/' + this.accountId
-          }).then(function(result) {
-            _this.account = result.data.email_account.email_account;
-            _this.form_model = new EditTicketAccountModel(_this.account);
-            return _this.$scope.form = _this.form_model.form;
-          });
+          }).then((function(_this) {
+            return function(result) {
+              _this.account = result.data.email_account.email_account;
+              _this.form_model = new EditTicketAccountModel(_this.account);
+              return _this.$scope.form = _this.form_model.form;
+            };
+          })(this));
           return this.$q.all([dep_promise, data_promise]);
         }
       };
 
-      /*
-        	# Saves the current form
-        	#
-        	# @return {promise}
-      */
 
+      /*
+        	 * Saves the current form
+        	 *
+        	 * @return {promise}
+       */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.saveAccount = function() {
-        var is_new, postData, promise,
-          _this = this;
+        var is_new, postData, promise;
         postData = this.form_model.getFormData();
         this.startSpinner('saving_account');
         if (this.account.id) {
@@ -86,48 +87,53 @@
           is_new = true;
           promise = this.Api.sendPutJson('/email_accounts', postData);
         }
-        promise.success(function(result) {
-          _this.account.id = result.id;
-          _this.account.is_enabled = true;
-          _this.stopSpinner('saving_account', true).then(function() {
-            return _this.Growl.success(_this.getRegisteredMessage('saved_account'));
-          });
-          _this.form_model.apply();
-          _this.TicketAccountsData.updateModel(_this.account);
-          _this.skipDirtyState();
-          if (is_new) {
-            return _this.$state.go('tickets.ticket_accounts.gocreate');
-          } else {
-            return _this.$state.go('tickets.ticket_accounts');
-          }
-        });
-        promise.error(function(info, code) {
-          _this.stopSpinner('saving_account', true);
-          return _this.applyErrorResponseToView(info);
-        });
+        promise.success((function(_this) {
+          return function(result) {
+            _this.account.id = result.id;
+            _this.account.is_enabled = true;
+            _this.stopSpinner('saving_account', true).then(function() {
+              return _this.Growl.success(_this.getRegisteredMessage('saved_account'));
+            });
+            _this.form_model.apply();
+            _this.TicketAccountsData.updateModel(_this.account);
+            _this.skipDirtyState();
+            if (is_new) {
+              return _this.$state.go('tickets.ticket_accounts.gocreate');
+            } else {
+              return _this.$state.go('tickets.ticket_accounts');
+            }
+          };
+        })(this));
+        promise.error((function(_this) {
+          return function(info, code) {
+            _this.stopSpinner('saving_account', true);
+            return _this.applyErrorResponseToView(info);
+          };
+        })(this));
         return promise;
       };
 
-      /*
-        	# Test current account settings
-        	#
-        	# @return {promise}
-      */
 
+      /*
+        	 * Test current account settings
+        	 *
+        	 * @return {promise}
+       */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.loadAccountTest = function() {
-        var _this = this;
-        return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData()).success(function(result) {
-          return _this.didPassTest = result.is_success;
-        });
+        return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData()).success((function(_this) {
+          return function(result) {
+            return _this.didPassTest = result.is_success;
+          };
+        })(this));
       };
 
-      /*
-        	# Test current outgoing settings with message details from @test_email object.
-        	#
-        	# @return {promise}
-      */
 
+      /*
+        	 * Test current outgoing settings with message details from @test_email object.
+        	 *
+        	 * @return {promise}
+       */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.loadOutgoingAccountTest = function() {
         var form_data;
@@ -137,104 +143,108 @@
         return this.Api.sendPostJson('/email_accounts/test-outgoing-account', form_data);
       };
 
-      /*
-        	# Show the test account modal
-      */
 
+      /*
+        	 * Show the test account modal
+       */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.testAccountModal = function() {
-        var inst,
-          _this = this;
+        var inst;
         return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketAccounts/test-account-modal.html'),
           controller: [
-            '$scope', '$modalInstance', function($scope, $modalInstance) {
-              var testNow;
-              $scope.dismiss = function() {
-                return $modalInstance.dismiss();
+            '$scope', '$modalInstance', (function(_this) {
+              return function($scope, $modalInstance) {
+                var testNow;
+                $scope.dismiss = function() {
+                  return $modalInstance.dismiss();
+                };
+                $scope.showLog = function() {
+                  return $scope.showing_log = true;
+                };
+                testNow = function() {
+                  $scope.showing_log = false;
+                  $scope.is_testing = true;
+                  return _this.loadAccountTest().success(function(result) {
+                    $scope.is_testing = false;
+                    $scope.is_success = result.is_success;
+                    $scope.log = result.log;
+                    return $scope.message_count = result.message_count;
+                  }).error(function() {
+                    $scope.showing_log = true;
+                    $scope.is_testing = false;
+                    $scope.is_success = false;
+                    $scope.log = "Server Error";
+                    return $scope.message_count = 0;
+                  });
+                };
+                testNow();
+                return $scope.testNow = function() {
+                  return testNow();
+                };
               };
-              $scope.showLog = function() {
-                return $scope.showing_log = true;
-              };
-              testNow = function() {
-                $scope.showing_log = false;
-                $scope.is_testing = true;
-                return _this.loadAccountTest().success(function(result) {
-                  $scope.is_testing = false;
-                  $scope.is_success = result.is_success;
-                  $scope.log = result.log;
-                  return $scope.message_count = result.message_count;
-                }).error(function() {
-                  $scope.showing_log = true;
-                  $scope.is_testing = false;
-                  $scope.is_success = false;
-                  $scope.log = "Server Error";
-                  return $scope.message_count = 0;
-                });
-              };
-              testNow();
-              return $scope.testNow = function() {
-                return testNow();
-              };
-            }
+            })(this)
           ]
         });
       };
 
-      /*
-        	# Show the test account modal
-      */
 
+      /*
+        	 * Show the test account modal
+       */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.testOutgoingModal = function() {
-        var inst,
-          _this = this;
+        var inst;
         return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
           resolve: {
-            test_email: function() {
-              _this.test_email.from = _this.form_model.form.email_address;
-              return _this.test_email;
-            }
+            test_email: (function(_this) {
+              return function() {
+                _this.test_email.from = _this.form_model.form.email_address;
+                return _this.test_email;
+              };
+            })(this)
           },
           controller: [
-            '$scope', '$modalInstance', 'test_email', function($scope, $modalInstance, test_email) {
-              var resetTest, testNow;
-              $scope.dismiss = function() {
-                return $modalInstance.dismiss();
+            '$scope', '$modalInstance', 'test_email', (function(_this) {
+              return function($scope, $modalInstance, test_email) {
+                var resetTest, testNow;
+                $scope.dismiss = function() {
+                  return $modalInstance.dismiss();
+                };
+                $scope.showLog = function() {
+                  return $scope.showing_log = true;
+                };
+                console.log(test_email);
+                $scope.test_email = test_email;
+                testNow = function() {
+                  $scope.testing_started = true;
+                  $scope.showing_log = false;
+                  $scope.is_testing = true;
+                  return _this.loadOutgoingAccountTest().success(function(result) {
+                    $scope.is_testing = false;
+                    $scope.is_success = result.is_success;
+                    $scope.log = result.log;
+                    return $scope.message_count = result.message_count;
+                  }).error(function() {
+                    $scope.showing_log = true;
+                    $scope.is_testing = false;
+                    $scope.is_success = false;
+                    $scope.log = "Server Error";
+                    return $scope.message_count = 0;
+                  });
+                };
+                resetTest = function() {
+                  return $scope.testing_started = false;
+                };
+                $scope.testNow = function() {
+                  return testNow();
+                };
+                return $scope.resetTest = function() {
+                  return resetTest();
+                };
               };
-              $scope.showLog = function() {
-                return $scope.showing_log = true;
-              };
-              console.log(test_email);
-              $scope.test_email = test_email;
-              testNow = function() {
-                $scope.testing_started = true;
-                $scope.showing_log = false;
-                $scope.is_testing = true;
-                return _this.loadOutgoingAccountTest().success(function(result) {
-                  $scope.is_testing = false;
-                  $scope.is_success = result.is_success;
-                  $scope.log = result.log;
-                  return $scope.message_count = result.message_count;
-                }).error(function() {
-                  $scope.showing_log = true;
-                  $scope.is_testing = false;
-                  $scope.is_success = false;
-                  $scope.log = "Server Error";
-                  return $scope.message_count = 0;
-                });
-              };
-              resetTest = function() {
-                return $scope.testing_started = false;
-              };
-              $scope.testNow = function() {
-                return testNow();
-              };
-              return $scope.resetTest = function() {
-                return resetTest();
-              };
-            }
+            })(this)
           ]
         });
       };
@@ -247,6 +257,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Edit.js.map
-*/
+//# sourceMappingURL=Edit.js.map

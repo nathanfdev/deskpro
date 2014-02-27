@@ -9,22 +9,22 @@
         this.formatter = null;
       }
 
-      /*
-        	# @param {Object} record
-        	# @return {bool}
-      */
 
+      /*
+        	 * @param {Object} record
+        	 * @return {bool}
+       */
 
       AbstractHandler.prototype.isHandling = function(record) {
         return record.level >= this.level;
       };
 
-      /*
-        	# Handle a number of records at once
-        	#
-        	# @param {Array} records
-      */
 
+      /*
+        	 * Handle a number of records at once
+        	 *
+        	 * @param {Array} records
+       */
 
       AbstractHandler.prototype.handleBatch = function(records) {
         var rec, _i, _len, _results;
@@ -36,53 +36,53 @@
         return _results;
       };
 
-      /*
-        	# Handle the log record
-        	#
-        	# @param {Object} record
-        	# @return {bool}
-      */
 
+      /*
+        	 * Handle the log record
+        	 *
+        	 * @param {Object} record
+        	 * @return {bool}
+       */
 
       AbstractHandler.prototype.handle = function(record) {
         throw new Error("Unimplemented");
       };
 
-      /*
-        	# @return {Function}
-      */
 
+      /*
+        	 * @return {Function}
+       */
 
       AbstractHandler.prototype.pushProcessor = function(processor) {
         this.processors.unshift(processor);
         return this;
       };
 
-      /*
-        	# @return {Object}
-      */
 
+      /*
+        	 * @return {Object}
+       */
 
       AbstractHandler.prototype.popProcessor = function() {
         return this.processors.shift();
       };
 
-      /*
-        	# Sets the formatter
-        	#
-        	# @param {Object} formatter
-      */
 
+      /*
+        	 * Sets the formatter
+        	 *
+        	 * @param {Object} formatter
+       */
 
       AbstractHandler.prototype.setFormatter = function(formatter) {
         this.formatter = formatter;
         return this;
       };
 
-      /*
-        	# @return {Object}
-      */
 
+      /*
+        	 * @return {Object}
+       */
 
       AbstractHandler.prototype.getFormatter = function() {
         if (this.formatter === null) {
@@ -91,51 +91,51 @@
         return this.formatter;
       };
 
-      /*
-        	# @return {Object}
-      */
 
+      /*
+        	 * @return {Object}
+       */
 
       AbstractHandler.prototype.getDefaultFormatter = function() {
         return new LineFormatter();
       };
 
-      /*
-        	# @return {Integer}
-      */
 
+      /*
+        	 * @return {Integer}
+       */
 
       AbstractHandler.prototype.getLevel = function() {
         return this.level;
       };
 
-      /*
-        	# Sets the level
-        	#
-        	# @param {Integer} level
-      */
 
+      /*
+        	 * Sets the level
+        	 *
+        	 * @param {Integer} level
+       */
 
       AbstractHandler.prototype.setLevel = function(level) {
         this.level = level;
         return this;
       };
 
-      /*
-        	# @return {bool}
-      */
 
+      /*
+        	 * @return {bool}
+       */
 
       AbstractHandler.prototype.getBubble = function() {
         return this.bubble;
       };
 
-      /*
-        	# Enable/disable bubble
-        	#
-        	# @param {bool} bubble
-      */
 
+      /*
+        	 * Enable/disable bubble
+        	 *
+        	 * @param {bool} bubble
+       */
 
       AbstractHandler.prototype.setBubble = function(bubble) {
         this.bubble = bubble;
@@ -149,6 +149,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=AbstractHandler.js.map
-*/
+//# sourceMappingURL=AbstractHandler.js.map

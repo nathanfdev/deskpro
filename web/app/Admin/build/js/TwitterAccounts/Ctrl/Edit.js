@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_TwitterAccounts_Ctrl_Edit, _ref;
+    var Admin_TwitterAccounts_Ctrl_Edit;
     Admin_TwitterAccounts_Ctrl_Edit = (function(_super) {
       __extends(Admin_TwitterAccounts_Ctrl_Edit, _super);
 
       function Admin_TwitterAccounts_Ctrl_Edit() {
-        _ref = Admin_TwitterAccounts_Ctrl_Edit.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_TwitterAccounts_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
       Admin_TwitterAccounts_Ctrl_Edit.CTRL_ID = 'Admin_TwitterAccounts_Ctrl_Edit';
@@ -24,23 +23,23 @@
       };
 
       Admin_TwitterAccounts_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
-        promise = this.twitterAccountData.loadEditTwitterAccountData(this.$stateParams.id || null).then(function(data) {
-          _this.twitter_account = data.twitter_account;
-          return _this.form = data.form;
-        });
+        var promise;
+        promise = this.twitterAccountData.loadEditTwitterAccountData(this.$stateParams.id || null).then((function(_this) {
+          return function(data) {
+            _this.twitter_account = data.twitter_account;
+            return _this.form = data.form;
+          };
+        })(this));
         return promise;
       };
 
       Admin_TwitterAccounts_Ctrl_Edit.prototype.saveForm = function() {
-        var agent, is_new, key, promise, value, _ref1,
-          _this = this;
+        var agent, is_new, key, promise, value, _ref;
         this.twitter_account.persons = [];
-        _ref1 = this.selected_agents;
-        for (key in _ref1) {
-          if (!__hasProp.call(_ref1, key)) continue;
-          value = _ref1[key];
+        _ref = this.selected_agents;
+        for (key in _ref) {
+          if (!__hasProp.call(_ref, key)) continue;
+          value = _ref[key];
           if (value) {
             agent = _.findWhere(this.agents, {
               id: parseInt(key)
@@ -56,15 +55,17 @@
         is_new = !this.twitter_account.id;
         promise = this.twitterAccountData.saveFormModel(this.twitter_account, this.form);
         this.startSpinner('saving');
-        return promise.then(function() {
-          _this.stopSpinner('saving', true).then(function() {
-            return _this.Growl.success("Saved");
-          });
-          _this.skipDirtyState();
-          if (is_new) {
-            return _this.$state.go('twitter.accounts.gocreate');
-          }
-        });
+        return promise.then((function(_this) {
+          return function() {
+            _this.stopSpinner('saving', true).then(function() {
+              return _this.Growl.success("Saved");
+            });
+            _this.skipDirtyState();
+            if (is_new) {
+              return _this.$state.go('twitter.accounts.gocreate');
+            }
+          };
+        })(this));
       };
 
       return Admin_TwitterAccounts_Ctrl_Edit;
@@ -75,6 +76,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Edit.js.map
-*/
+//# sourceMappingURL=Edit.js.map

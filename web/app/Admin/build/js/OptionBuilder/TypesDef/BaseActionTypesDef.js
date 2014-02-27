@@ -15,10 +15,10 @@
 
       Admin_OptionBuilder_TypesDef_BaseActionTypesDef.prototype.init = function() {};
 
-      /*
-        	# Gets a type definition by calling a getX method on this class
-      */
 
+      /*
+        	 * Gets a type definition by calling a getX method on this class
+       */
 
       Admin_OptionBuilder_TypesDef_BaseActionTypesDef.prototype.getDef = function(type, options) {
         var me, typeFunc, typeName;
@@ -60,10 +60,10 @@
         }
       };
 
-      /*
-        	# Constructs a standard select box type
-      */
 
+      /*
+        	 * Constructs a standard select box type
+       */
 
       Admin_OptionBuilder_TypesDef_BaseActionTypesDef.prototype.getStandardSelect = function(options) {
         var data_name, is_multi, me, options_formatter, prop_name, type;
@@ -110,16 +110,17 @@
             return me.dpTemplateManager.get(me.selectTemplate);
           },
           getData: function() {
-            var defer,
-              _this = this;
+            var defer;
             if (data_name) {
               defer = me.$q.defer();
-              me.loadDataOptions().then(function() {
-                return defer.resolve({
-                  options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                  multiselect: is_multi
-                });
-              });
+              me.loadDataOptions().then((function(_this) {
+                return function() {
+                  return defer.resolve({
+                    options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
+                    multiselect: is_multi
+                  });
+                };
+              })(this));
               return defer.promise;
             } else {
               return {};
@@ -152,10 +153,10 @@
         };
       };
 
-      /*
-        	# Constructs a standard "is" template (no options, just a boolean is)
-      */
 
+      /*
+        	 * Constructs a standard "is" template (no options, just a boolean is)
+       */
 
       Admin_OptionBuilder_TypesDef_BaseActionTypesDef.prototype.getStandardIs = function(options) {
         var me, prop_name, type;
@@ -196,10 +197,10 @@
         };
       };
 
-      /*
-        	# Constructs a standard input box
-      */
 
+      /*
+        	 * Constructs a standard input box
+       */
 
       Admin_OptionBuilder_TypesDef_BaseActionTypesDef.prototype.getStandardInput = function(options) {
         var me, prop_name, type;
@@ -248,6 +249,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=BaseActionTypesDef.js.map
-*/
+//# sourceMappingURL=BaseActionTypesDef.js.map

@@ -13,28 +13,30 @@
       }
 
       LayoutEditorField.prototype._initEvents = function() {
-        var _this = this;
         if (!this.scope.isSticky) {
-          this.element.find('.opt_btn').on('click', function(ev) {
-            ev.preventDefault();
-            return _this.openOptions();
-          });
-          return this.element.find('.remove_btn').on('click', function(ev) {
-            ev.preventDefault();
-            if (_this.scope.removeRow != null) {
-              return _this.scope.removeRow();
-            } else {
-              return _this.scope.$destroy();
-            }
-          });
+          this.element.find('.opt_btn').on('click', (function(_this) {
+            return function(ev) {
+              ev.preventDefault();
+              return _this.openOptions();
+            };
+          })(this));
+          return this.element.find('.remove_btn').on('click', (function(_this) {
+            return function(ev) {
+              ev.preventDefault();
+              if (_this.scope.removeRow != null) {
+                return _this.scope.removeRow();
+              } else {
+                return _this.scope.$destroy();
+              }
+            };
+          })(this));
         } else {
           return this.element.find('nav').remove();
         }
       };
 
       LayoutEditorField.prototype.openOptions = function() {
-        var inst, tpl,
-          _this = this;
+        var inst, tpl;
         if (this.scope.type === 'user') {
           tpl = 'ticketdeps_layouteditor_user_options';
         } else {
@@ -93,12 +95,16 @@
             }
           ],
           resolve: {
-            options: function() {
-              return _this.scope.field.options;
-            },
-            typeDef: function() {
-              return _this.dpObTypesDefTicketCriteria;
-            }
+            options: (function(_this) {
+              return function() {
+                return _this.scope.field.options;
+              };
+            })(this),
+            typeDef: (function(_this) {
+              return function() {
+                return _this.dpObTypesDefTicketCriteria;
+              };
+            })(this)
           }
         });
       };
@@ -124,6 +130,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=LayoutEditorField.js.map
-*/
+//# sourceMappingURL=LayoutEditorField.js.map

@@ -14,6 +14,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ReportsModule.js.map
-*/
+//# sourceMappingURL=ReportsModule.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_UserReg_Ctrl_UsersourceList, _ref;
+    var Admin_UserReg_Ctrl_UsersourceList;
     Admin_UserReg_Ctrl_UsersourceList = (function(_super) {
       __extends(Admin_UserReg_Ctrl_UsersourceList, _super);
 
       function Admin_UserReg_Ctrl_UsersourceList() {
-        _ref = Admin_UserReg_Ctrl_UsersourceList.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_UserReg_Ctrl_UsersourceList.__super__.constructor.apply(this, arguments);
       }
 
       Admin_UserReg_Ctrl_UsersourceList.CTRL_ID = 'Admin_UserReg_Ctrl_UsersourceList';
@@ -28,6 +27,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=UsersourceList.js.map
-*/
+//# sourceMappingURL=UsersourceList.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'Admin/Main/Model/DepAgentPermMatrix', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Admin_Main_Model_DepAgentPermMatrix, Util) {
-    var Admin_ChatDeps_Ctrl_Edit, _ref;
+    var Admin_ChatDeps_Ctrl_Edit;
     Admin_ChatDeps_Ctrl_Edit = (function(_super) {
       __extends(Admin_ChatDeps_Ctrl_Edit, _super);
 
       function Admin_ChatDeps_Ctrl_Edit() {
-        _ref = Admin_ChatDeps_Ctrl_Edit.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_ChatDeps_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
       Admin_ChatDeps_Ctrl_Edit.CTRL_ID = 'Admin_ChatDeps_Ctrl_Edit';
@@ -18,63 +17,63 @@
 
       Admin_ChatDeps_Ctrl_Edit.DEPS = [];
 
-      /*
-       	#
-      */
 
+      /*
+       	 *
+       */
 
       Admin_ChatDeps_Ctrl_Edit.prototype.init = function() {
         this.depData = this.DataService.get('ChatDeps');
         return this.initializeScopeWatching();
       };
 
-      /*
-      		#
-      */
 
+      /*
+      		 *
+       */
 
       Admin_ChatDeps_Ctrl_Edit.prototype.resetForm = function() {
         return this.form = Util.clone(this.origForm, true);
       };
 
-      /*
-       	# Loads data that will be used inside the view into scope of controller
-      */
 
+      /*
+       	 * Loads data that will be used inside the view into scope of controller
+       */
 
       Admin_ChatDeps_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
-        promise = this.depData.getEditDepartmentData(this.$stateParams.id || null).then(function(data) {
-          _this.dep = data.dep;
-          _this.form = data.form;
-          _this.origForm = Util.clone(_this.form, true);
-          _this.usergroups = data.usergroups;
-          _this.agentgroups = data.agentgroups;
-          _this.agents = data.agents;
-          return _this.dep_parent_list = data.dep_parent_list;
-        });
+        var promise;
+        promise = this.depData.getEditDepartmentData(this.$stateParams.id || null).then((function(_this) {
+          return function(data) {
+            _this.dep = data.dep;
+            _this.form = data.form;
+            _this.origForm = Util.clone(_this.form, true);
+            _this.usergroups = data.usergroups;
+            _this.agentgroups = data.agentgroups;
+            _this.agents = data.agents;
+            return _this.dep_parent_list = data.dep_parent_list;
+          };
+        })(this));
         return promise;
       };
 
-      /*
-       	# Checks whether data entered to form was changed or not
-      # This is useful for showing modal dialog that notifies user that he has edited the form
-      */
 
+      /*
+       	 * Checks whether data entered to form was changed or not
+       * This is useful for showing modal dialog that notifies user that he has edited the form
+       */
 
       Admin_ChatDeps_Ctrl_Edit.prototype.isDirtyState = function() {
         return !Util.equals(this.form, this.origForm);
       };
 
-      /*
-      		# Saves the form
-      */
 
+      /*
+      		 * Saves the form
+       */
 
       Admin_ChatDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var is_new, promise,
-          _this = this;
+        var is_new, promise;
         is_new = !this.dep.id;
         if (!this.$scope.form_props.$valid) {
           return;
@@ -85,50 +84,55 @@
         }
         this.startSpinner('saving_dep');
         promise = this.depData.saveFormModel(this.dep, this.form);
-        promise.success(function() {
-          _this.origForm = Util.clone(_this.form, true);
-          _this.stopSpinner('saving_dep', true).then(function() {
-            return _this.Growl.success(_this.getRegisteredMessage('saved_dep'));
-          });
-          if (is_new) {
-            return _this.$state.go('chat.chat_deps.gocreate');
-          }
-        });
-        promise.error(function(info, code) {
-          _this.stopSpinner('saving_dep');
-          return _this.applyErrorResponseToView(info);
-        });
+        promise.success((function(_this) {
+          return function() {
+            _this.origForm = Util.clone(_this.form, true);
+            _this.stopSpinner('saving_dep', true).then(function() {
+              return _this.Growl.success(_this.getRegisteredMessage('saved_dep'));
+            });
+            if (is_new) {
+              return _this.$state.go('chat.chat_deps.gocreate');
+            }
+          };
+        })(this));
+        promise.error((function(_this) {
+          return function(info, code) {
+            _this.stopSpinner('saving_dep');
+            return _this.applyErrorResponseToView(info);
+          };
+        })(this));
         return promise;
       };
 
-      /*
-       	# Watches for changing of parent_id that is in scope
-      # This is usable inside view to show some notification information
-      */
 
+      /*
+       	 * Watches for changing of parent_id that is in scope
+       * This is usable inside view to show some notification information
+       */
 
       Admin_ChatDeps_Ctrl_Edit.prototype.initializeScopeWatching = function() {
-        var _this = this;
-        return this.$scope.$watch('EditCtrl.form.parent_id', function(newVal) {
-          var parent;
-          newVal = parseInt(newVal);
-          if (!newVal) {
-            _this.$scope.show_parent_warning = false;
-            return;
-          }
-          parent = _this.depData.findListModelById(newVal);
-          if (parent && parent.children && !parent.children.length) {
-            return _this.$scope.show_parent_warning = parent;
-          } else {
-            return _this.$scope.show_parent_warning = false;
-          }
-        });
+        return this.$scope.$watch('EditCtrl.form.parent_id', (function(_this) {
+          return function(newVal) {
+            var parent;
+            newVal = parseInt(newVal);
+            if (!newVal) {
+              _this.$scope.show_parent_warning = false;
+              return;
+            }
+            parent = _this.depData.findListModelById(newVal);
+            if (parent && parent.children && !parent.children.length) {
+              return _this.$scope.show_parent_warning = parent;
+            } else {
+              return _this.$scope.show_parent_warning = false;
+            }
+          };
+        })(this));
       };
 
-      /*
-       	#
-      */
 
+      /*
+       	 *
+       */
 
       Admin_ChatDeps_Ctrl_Edit.prototype.propogatePermission = function(obj, perm) {
         if (this._propogatePermission_running) {
@@ -151,6 +155,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Edit.js.map
-*/
+//# sourceMappingURL=Edit.js.map

@@ -3,53 +3,53 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/DataService/BaseListEdit', 'Admin/ChatDeps/ChatDepFormMapper', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(BaseListEdit, ChatDepFormMapper, Arrays, Util) {
-    var ChatDeps, _ref;
+    var ChatDeps;
     return ChatDeps = (function(_super) {
       __extends(ChatDeps, _super);
 
       function ChatDeps() {
-        _ref = ChatDeps.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return ChatDeps.__super__.constructor.apply(this, arguments);
       }
 
       ChatDeps.$inject = ['Api', '$q'];
 
       ChatDeps.prototype._doLoadList = function() {
-        var deferred,
-          _this = this;
+        var deferred;
         deferred = this.$q.defer();
-        this.Api.sendGet('/chat_deps').success(function(data) {
-          var models, proc;
-          _this.deps = data.departments;
-          proc = function(parent) {
-            var d, list, parent_id, _i, _len, _ref1;
-            list = [];
-            parent_id = parent ? parent.id : null;
-            _ref1 = data.departments;
-            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-              d = _ref1[_i];
-              if (d.parent_id === parent_id) {
-                d.parent = parent;
-                d.children = proc(d);
-                list.push(d);
+        this.Api.sendGet('/chat_deps').success((function(_this) {
+          return function(data) {
+            var models, proc;
+            _this.deps = data.departments;
+            proc = function(parent) {
+              var d, list, parent_id, _i, _len, _ref;
+              list = [];
+              parent_id = parent ? parent.id : null;
+              _ref = data.departments;
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                d = _ref[_i];
+                if (d.parent_id === parent_id) {
+                  d.parent = parent;
+                  d.children = proc(d);
+                  list.push(d);
+                }
               }
-            }
-            return list;
+              return list;
+            };
+            models = proc(null);
+            return deferred.resolve(models);
           };
-          models = proc(null);
-          return deferred.resolve(models);
-        }, function(data, status, headers, config) {
+        })(this), function(data, status, headers, config) {
           return deferred.reject();
         });
         return deferred.promise;
       };
 
-      /*
-       # Get the form mapper
-       #
-       # @return {ChatDepFormMapper}
-      */
 
+      /*
+        * Get the form mapper
+        *
+        * @return {ChatDepFormMapper}
+       */
 
       ChatDeps.prototype.getFormMapper = function() {
         if (this.formMapper) {
@@ -59,16 +59,15 @@
         return this.formMapper;
       };
 
-      /*
-       # Get all info needed for an 'edit department' form
-       #
-       # @return {promise}
-      */
 
+      /*
+        * Get all info needed for an 'edit department' form
+        *
+        * @return {promise}
+       */
 
       ChatDeps.prototype.getEditDepartmentData = function(id) {
-        var allPromise, deferred, promise,
-          _this = this;
+        var allPromise, deferred, promise;
         if (id) {
           promise = this.Api.sendDataGet({
             depInfo: "/chat_deps/" + id,
@@ -84,49 +83,51 @@
           });
         }
         deferred = this.$q.defer();
-        allPromise = this.$q.all([promise, this.loadList()]).then(function(result) {
-          var d, data, idx, _i, _len, _ref1;
-          result = result[0].data;
-          data = {};
-          if (result.depInfo) {
-            data.dep = result.depInfo.department;
-            data.depPerms = result.depInfo.permissions;
-          } else {
-            data.dep = {};
-            data.depPerms = {
-              usergroup_ids: [],
-              agentgroup_ids: [],
-              agent_ids: []
-            };
-          }
-          data.dep_parent_list = _this.listModels.slice(0);
-          if (data.dep.id) {
-            _ref1 = data.dep_parent_list;
-            for (idx = _i = 0, _len = _ref1.length; _i < _len; idx = ++_i) {
-              d = _ref1[idx];
-              if (d.id === data.dep.id) {
-                data.dep_parent_list = Arrays.removeIndex(data.dep_parent_list, idx);
-                break;
+        allPromise = this.$q.all([promise, this.loadList()]).then((function(_this) {
+          return function(result) {
+            var d, data, idx, _i, _len, _ref;
+            result = result[0].data;
+            data = {};
+            if (result.depInfo) {
+              data.dep = result.depInfo.department;
+              data.depPerms = result.depInfo.permissions;
+            } else {
+              data.dep = {};
+              data.depPerms = {
+                usergroup_ids: [],
+                agentgroup_ids: [],
+                agent_ids: []
+              };
+            }
+            data.dep_parent_list = _this.listModels.slice(0);
+            if (data.dep.id) {
+              _ref = data.dep_parent_list;
+              for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+                d = _ref[idx];
+                if (d.id === data.dep.id) {
+                  data.dep_parent_list = Arrays.removeIndex(data.dep_parent_list, idx);
+                  break;
+                }
               }
             }
-          }
-          data.agents = result.agentsInfo.agents;
-          data.agentgroups = result.agentgroupsInfo.groups;
-          data.usergroups = result.usergroupsInfo.groups;
-          data.form = _this.getFormMapper().getFormFromModel(data.dep, data.depPerms, data.agents, data.agentgroups, data.usergroups);
-          data.dep.original_parent_id = data.dep.parent_id;
-          return deferred.resolve(data);
-        });
+            data.agents = result.agentsInfo.agents;
+            data.agentgroups = result.agentgroupsInfo.groups;
+            data.usergroups = result.usergroupsInfo.groups;
+            data.form = _this.getFormMapper().getFormFromModel(data.dep, data.depPerms, data.agents, data.agentgroups, data.usergroups);
+            data.dep.original_parent_id = data.dep.parent_id;
+            return deferred.resolve(data);
+          };
+        })(this));
         return deferred.promise;
       };
 
-      /*
-      		# Save display orders
-       #
-       # @param {Array} orders An array of ids in order
-       # @return {promise}
-      */
 
+      /*
+      		 * Save display orders
+        *
+        * @param {Array} orders An array of ids in order
+        * @return {promise}
+       */
 
       ChatDeps.prototype.saveDisplayOrders = function(orders) {
         var d, id, order, postData, promise, _i, _len;
@@ -145,19 +146,18 @@
         return promise;
       };
 
-      /*
-      # Saves a form model and applies the form model to the dep model
-      # once finished.
-      #
-      # @param {Object} dep The dep model
-      # @param {Object} formModel  The model representing the form
-      # @return {promise}
-      */
 
+      /*
+       * Saves a form model and applies the form model to the dep model
+       * once finished.
+       *
+       * @param {Object} dep The dep model
+       * @param {Object} formModel  The model representing the form
+       * @return {promise}
+       */
 
       ChatDeps.prototype.saveFormModel = function(dep, formModel) {
-        var mapper, postData, promise,
-          _this = this;
+        var mapper, postData, promise;
         mapper = this.getFormMapper();
         postData = mapper.getPostDataFromForm(formModel);
         if (dep.id) {
@@ -167,20 +167,22 @@
             return dep.id = data.id;
           });
         }
-        promise.success(function() {
-          mapper.applyFormToModel(dep, formModel);
-          return _this.mergeDataModel(dep);
-        });
+        promise.success((function(_this) {
+          return function() {
+            mapper.applyFormToModel(dep, formModel);
+            return _this.mergeDataModel(dep);
+          };
+        })(this));
         return promise;
       };
 
-      /*
-      # Gets an option array of full-title departments.
-      #
-      # @param {Integer} exclude_id  Dont include this dep in the list
-      # @return {Array}
-      */
 
+      /*
+       * Gets an option array of full-title departments.
+       *
+       * @param {Integer} exclude_id  Dont include this dep in the list
+       * @return {Array}
+       */
 
       ChatDeps.prototype.getLeafOptionsArray = function(exclude_id) {
         var list, proc;
@@ -213,15 +215,15 @@
         return list;
       };
 
-      /*
-      # Remove a model from the list by ID.
-      #
-      # @return {Object/null} The removed object or null if object could not be found
-      */
 
+      /*
+       * Remove a model from the list by ID.
+       *
+       * @return {Object/null} The removed object or null if object could not be found
+       */
 
       ChatDeps.prototype.removeListModelById = function(id) {
-        var idx, model, removeIdx, result, subModel, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3, _ref4;
+        var idx, model, removeIdx, result, subModel, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
         if (!this.isListLoaded) {
           return;
         }
@@ -230,9 +232,9 @@
           return;
         }
         removeIdx = null;
-        _ref1 = this.deps;
-        for (idx = _i = 0, _len = _ref1.length; _i < _len; idx = ++_i) {
-          model = _ref1[idx];
+        _ref = this.deps;
+        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+          model = _ref[idx];
           if (model[this.idProp] === id) {
             removeIdx = idx;
             break;
@@ -243,16 +245,16 @@
           result = this.deps.splice(removeIdx, 1);
           result = result[0];
         }
-        _ref2 = this.listModels;
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          model = _ref2[_j];
-          if (!((_ref3 = model.children) != null ? _ref3.length : void 0)) {
+        _ref1 = this.listModels;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          model = _ref1[_j];
+          if (!((_ref2 = model.children) != null ? _ref2.length : void 0)) {
             continue;
           }
           removeIdx = null;
-          _ref4 = model.children;
-          for (idx = _k = 0, _len2 = _ref4.length; _k < _len2; idx = ++_k) {
-            subModel = _ref4[idx];
+          _ref3 = model.children;
+          for (idx = _k = 0, _len2 = _ref3.length; _k < _len2; idx = ++_k) {
+            subModel = _ref3[idx];
             if (subModel.id === id) {
               removeIdx = idx;
               break;
@@ -265,23 +267,24 @@
         return result;
       };
 
-      /*
-      # Remove a department
-       	#
-       	# @param {Integer} id Department id
-       	# @param {Integer} move_to - id to which we want to move department data
-      # @return {promise}
-      */
 
+      /*
+       * Remove a department
+       	 *
+       	 * @param {Integer} id Department id
+       	 * @param {Integer} move_to - id to which we want to move department data
+       * @return {promise}
+       */
 
       ChatDeps.prototype.deleteDepartmentById = function(id, move_to) {
-        var promise,
-          _this = this;
+        var promise;
         promise = this.Api.sendDelete('/chat_deps/' + id, {
           move_to: move_to
-        }).success(function() {
-          return _this.removeListModelById(id);
-        });
+        }).success((function(_this) {
+          return function() {
+            return _this.removeListModelById(id);
+          };
+        })(this));
         return promise;
       };
 
@@ -292,6 +295,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ChatDeps.js.map
-*/
+//# sourceMappingURL=ChatDeps.js.map

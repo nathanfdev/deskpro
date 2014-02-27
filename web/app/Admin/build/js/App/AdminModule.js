@@ -14,6 +14,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=AdminModule.js.map
-*/
+//# sourceMappingURL=AdminModule.js.map

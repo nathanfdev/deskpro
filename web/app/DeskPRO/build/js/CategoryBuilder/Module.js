@@ -22,6 +22,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Module.js.map
-*/
+//# sourceMappingURL=Module.js.map

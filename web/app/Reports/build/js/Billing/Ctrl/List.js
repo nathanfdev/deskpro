@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Reports/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(ReportsBaseCtrl, Util) {
-    var Reports_Billing_Ctrl_List, _ref;
+    var Reports_Billing_Ctrl_List;
     Reports_Billing_Ctrl_List = (function(_super) {
       __extends(Reports_Billing_Ctrl_List, _super);
 
       function Reports_Billing_Ctrl_List() {
-        _ref = Reports_Billing_Ctrl_List.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Reports_Billing_Ctrl_List.__super__.constructor.apply(this, arguments);
       }
 
       Reports_Billing_Ctrl_List.CTRL_ID = 'Reports_Billing_Ctrl_List';
@@ -72,17 +71,18 @@
         ];
       };
 
-      /*
-      		# Loads 2 lists - first with custom reports, second with built-in reports
-      */
 
+      /*
+      		 * Loads 2 lists - first with custom reports, second with built-in reports
+       */
 
       Reports_Billing_Ctrl_List.prototype.initialLoad = function() {
-        var group_params_promise,
-          _this = this;
-        group_params_promise = this.Api.sendGet('/reports/builder/group-params').then(function(data) {
-          return _this.group_params = data.data;
-        });
+        var group_params_promise;
+        group_params_promise = this.Api.sendGet('/reports/builder/group-params').then((function(_this) {
+          return function(data) {
+            return _this.group_params = data.data;
+          };
+        })(this));
         return this.$q.all([group_params_promise]);
       };
 
@@ -94,6 +94,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=List.js.map
-*/
+//# sourceMappingURL=List.js.map

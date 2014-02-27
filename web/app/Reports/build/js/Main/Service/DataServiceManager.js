@@ -1,9 +1,9 @@
 (function() {
   define(['DeskPRO/Util/Strings', 'Reports/Builder/DataService/ReportBuilderCustom', 'Reports/Builder/DataService/ReportBuilderBuiltIn'], function(Strings, DataService_ReportBuilderCustom, DataService_ReportBuilderBuiltIn) {
-    /*
-    	# A simple wrapper around the data services
-    */
 
+    /*
+    	 * A simple wrapper around the data services
+     */
     var Admin_Main_Service_DataServiceManager;
     return Admin_Main_Service_DataServiceManager = (function() {
       function Admin_Main_Service_DataServiceManager($injector) {
@@ -42,6 +42,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DataServiceManager.js.map
-*/
+//# sourceMappingURL=DataServiceManager.js.map

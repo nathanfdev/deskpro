@@ -9,13 +9,13 @@
         this.groups_map = {};
       }
 
+
       /**
       		* Add a group
         	*
         	* @param {Model}  group        The group model
         	* @param {Array}  perms_array  Array of current perm values
-      */
-
+       */
 
       Admin_Main_Model_DepAgentPermMatrix.prototype.addGroup = function(group, perms_array) {
         var obj, p, perms, _i, _len;
@@ -39,13 +39,13 @@
         return this.groups_map[group.id] = obj;
       };
 
+
       /**
       		* Add an agnet
         	*
         	* @param {Model}  agent        The agent model
         	* @param {Array}  perms_array  Array of current perm values
-      */
-
+       */
 
       Admin_Main_Model_DepAgentPermMatrix.prototype.addAgent = function(agent, perms_array) {
         var obj, p, perms, _i, _len;
@@ -68,12 +68,12 @@
         return this.agents_map[agent.id] = obj;
       };
 
+
       /**
       		* After all perm values are added to the matrix,
         	* this should be called to propogate values from ug's to
         	* agents and set the proper locked state.
-      */
-
+       */
 
       Admin_Main_Model_DepAgentPermMatrix.prototype.initPerms = function(group_perms, agent_perms) {
         var agent, agentObj, agentPerms, aid, gid, group, groupObj, groupPerms, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _results;
@@ -225,10 +225,10 @@
         return _results;
       };
 
+
       /**
       		* Refreshes permissions on agents based on current group permssions
-      */
-
+       */
 
       Admin_Main_Model_DepAgentPermMatrix.prototype.refreshAgentGroupPerms = function(aid) {
         var agent, agentObj, agentPerms, agents, gid, groupPerms, _i, _j, _len, _len1, _ref, _results;
@@ -279,12 +279,12 @@
         return _results;
       };
 
+
       /**
       		* Takes the value of a permission
         	*
         	* @param {permission}  perm    The permission to resolve
-      */
-
+       */
 
       Admin_Main_Model_DepAgentPermMatrix.prototype.setGroupPerm = function(gid, name, value) {
         var groupPerms;
@@ -320,12 +320,12 @@
         return this.refreshAgentGroupPerms();
       };
 
+
       /**
       		* Takes the value of a permission
         	*
         	* @param {permission}  perm    The permission to resolve
-      */
-
+       */
 
       Admin_Main_Model_DepAgentPermMatrix.prototype.setAgentPerm = function(aid, name, value) {
         var agentPerms;
@@ -360,12 +360,12 @@
         return this.refreshAgentGroupPerms(aid);
       };
 
-      /*
-        	# Get all permission data as an array
-        	#
-        	# @return {Array}
-      */
 
+      /*
+        	 * Get all permission data as an array
+        	 *
+        	 * @return {Array}
+       */
 
       Admin_Main_Model_DepAgentPermMatrix.prototype.getPermsData = function() {
         var agentObj, groupObj, perms, _i, _j, _len, _len1, _ref, _ref1;
@@ -414,6 +414,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DepAgentPermMatrix.js.map
-*/
+//# sourceMappingURL=DepAgentPermMatrix.js.map

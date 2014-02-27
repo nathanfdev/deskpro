@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['DeskPRO/Util/Util', 'DeskPRO/Logger/Handler/AbstractHandler'], function(Util, AbstractHandler) {
-    var AbstractProcessingHandler, _ref;
+    var AbstractProcessingHandler;
     return AbstractProcessingHandler = (function(_super) {
       __extends(AbstractProcessingHandler, _super);
 
       function AbstractProcessingHandler() {
-        _ref = AbstractProcessingHandler.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return AbstractProcessingHandler.__super__.constructor.apply(this, arguments);
       }
 
       AbstractProcessingHandler.prototype.handle = function(record) {
@@ -36,10 +35,10 @@
       };
 
       AbstractProcessingHandler.prototype.processRecord = function(record) {
-        var proc, _i, _len, _ref1;
-        _ref1 = this.processors;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          proc = _ref1[_i];
+        var proc, _i, _len, _ref;
+        _ref = this.processors;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          proc = _ref[_i];
           if (proc.process != null) {
             record = proc.process(record);
           } else {
@@ -56,6 +55,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=AbstractProcessingHandler.js.map
-*/
+//# sourceMappingURL=AbstractProcessingHandler.js.map

@@ -18,6 +18,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SetupServices.js.map
-*/
+//# sourceMappingURL=SetupServices.js.map

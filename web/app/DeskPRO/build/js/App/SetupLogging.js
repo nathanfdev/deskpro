@@ -141,6 +141,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SetupLogging.js.map
-*/
+//# sourceMappingURL=SetupLogging.js.map

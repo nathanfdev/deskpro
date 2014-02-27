@@ -40,6 +40,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=InhelpState.js.map
-*/
+//# sourceMappingURL=InhelpState.js.map

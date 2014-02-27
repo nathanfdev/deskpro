@@ -71,6 +71,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpHelpPage.js.map
-*/
+//# sourceMappingURL=DpHelpPage.js.map

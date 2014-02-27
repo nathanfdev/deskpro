@@ -44,6 +44,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ConsoleFormatter.js.map
-*/
+//# sourceMappingURL=ConsoleFormatter.js.map

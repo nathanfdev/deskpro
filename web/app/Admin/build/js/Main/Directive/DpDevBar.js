@@ -37,6 +37,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpDevBar.js.map
-*/
+//# sourceMappingURL=DpDevBar.js.map

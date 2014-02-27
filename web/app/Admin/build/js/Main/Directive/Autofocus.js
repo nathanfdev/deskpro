@@ -1,16 +1,16 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This sets the initial focus once a form is loaded.
-       #
-       # Example
-       # -------
-       # <input autofocus>
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This sets the initial focus once a form is loaded.
+        *
+        * Example
+        * -------
+        * <input autofocus>
+     */
     var Admin_Main_Directive_Autofocus;
     Admin_Main_Directive_Autofocus = [
       '$rootScope', '$timeout', function($rootScope, $timeout) {
@@ -35,6 +35,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Autofocus.js.map
-*/
+//# sourceMappingURL=Autofocus.js.map

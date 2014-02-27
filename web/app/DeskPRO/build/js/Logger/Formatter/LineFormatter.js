@@ -33,6 +33,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=LineFormatter.js.map
-*/
+//# sourceMappingURL=LineFormatter.js.map

@@ -54,6 +54,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=SetupTemplates.js.map
-*/
+//# sourceMappingURL=SetupTemplates.js.map

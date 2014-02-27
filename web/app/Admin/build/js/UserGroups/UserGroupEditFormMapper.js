@@ -43,6 +43,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=UserGroupEditFormMapper.js.map
-*/
+//# sourceMappingURL=UserGroupEditFormMapper.js.map

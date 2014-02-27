@@ -1,19 +1,19 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This should be applied to the body portion of a tabbed interface. When the dp-tab-btn with this ID
-       # is enabled, this body is displayed and others are removed.
-       #
-       # See dp-tab-btn for a full example.
-       #
-       # Example View
-       # ------------
-       # <section dp-tab-body="edit.main">...</section>
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This should be applied to the body portion of a tabbed interface. When the dp-tab-btn with this ID
+        * is enabled, this body is displayed and others are removed.
+        *
+        * See dp-tab-btn for a full example.
+        *
+        * Example View
+        * ------------
+        * <section dp-tab-body="edit.main">...</section>
+     */
     var DeskPRO_Directive_DpTabBody;
     DeskPRO_Directive_DpTabBody = [
       function() {
@@ -59,6 +59,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpTabBody.js.map
-*/
+//# sourceMappingURL=DpTabBody.js.map

@@ -1,12 +1,12 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # Check out dp-show-spinning, this is the opposite.
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * Check out dp-show-spinning, this is the opposite.
+     */
     var DeskPRO_Directive_DpHideSpinning;
     DeskPRO_Directive_DpHideSpinning = [
       function() {
@@ -42,6 +42,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpHideSpinning.js.map
-*/
+//# sourceMappingURL=DpHideSpinning.js.map

@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_CustomFields_Base_Ctrl_Edit, _ref;
+    var Admin_CustomFields_Base_Ctrl_Edit;
     return Admin_CustomFields_Base_Ctrl_Edit = (function(_super) {
       __extends(Admin_CustomFields_Base_Ctrl_Edit, _super);
 
       function Admin_CustomFields_Base_Ctrl_Edit() {
-        _ref = Admin_CustomFields_Base_Ctrl_Edit.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_CustomFields_Base_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
       Admin_CustomFields_Base_Ctrl_Edit.CTRL_ID = 'Admin_CustomFields_Base_Ctrl_Edit';
@@ -25,13 +24,14 @@
       };
 
       Admin_CustomFields_Base_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
-        promise = this.fieldDataService.loadEditFieldData(this.$stateParams.id || null).then(function(data) {
-          _this.field = data.field;
-          _this.field_type = data.field_type;
-          return _this.form = data.form;
-        });
+        var promise;
+        promise = this.fieldDataService.loadEditFieldData(this.$stateParams.id || null).then((function(_this) {
+          return function(data) {
+            _this.field = data.field;
+            _this.field_type = data.field_type;
+            return _this.form = data.form;
+          };
+        })(this));
         return promise;
       };
 
@@ -44,8 +44,7 @@
       };
 
       Admin_CustomFields_Base_Ctrl_Edit.prototype.saveForm = function() {
-        var is_new, promise,
-          _this = this;
+        var is_new, promise;
         if (!this.$scope.form_props.$valid) {
           return;
         }
@@ -53,21 +52,25 @@
         this.field.type_name = this.field_type;
         promise = this.fieldDataService.saveFormModel(this.field, this.form);
         this.startSpinner('saving');
-        promise.success(function() {
-          _this.stopSpinner('saving', true).then(function() {
-            return _this.Growl.success('Saved');
-          });
-          _this.skipDirtyState();
-          if (is_new) {
-            return _this.$state.go(_this.getBaseRouteName() + ".gocreate");
-          } else {
-            return _this.$state.go(_this.getBaseRouteName());
-          }
-        });
-        return promise.error(function(info, code) {
-          _this.stopSpinner('saving', true);
-          return _this.applyErrorResponseToView(info);
-        });
+        promise.success((function(_this) {
+          return function() {
+            _this.stopSpinner('saving', true).then(function() {
+              return _this.Growl.success('Saved');
+            });
+            _this.skipDirtyState();
+            if (is_new) {
+              return _this.$state.go(_this.getBaseRouteName() + ".gocreate");
+            } else {
+              return _this.$state.go(_this.getBaseRouteName());
+            }
+          };
+        })(this));
+        return promise.error((function(_this) {
+          return function(info, code) {
+            _this.stopSpinner('saving', true);
+            return _this.applyErrorResponseToView(info);
+          };
+        })(this));
       };
 
       return Admin_CustomFields_Base_Ctrl_Edit;
@@ -77,6 +80,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Edit.js.map
-*/
+//# sourceMappingURL=Edit.js.map

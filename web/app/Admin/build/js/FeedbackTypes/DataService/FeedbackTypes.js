@@ -15,17 +15,16 @@
         this.recs = new Admin_Main_Collection_OrderedDictionary();
       }
 
+
       /**
       		* Loads all feedback types
         	* Returns a promise.
         	*
         	* @return {Promise}
-      */
-
+       */
 
       Admin_FeedbackTypes_DataService_FeedbackTypes.prototype.loadList = function(reload) {
-        var deferred, http_def,
-          _this = this;
+        var deferred, http_def;
         if (this.loadListPromise) {
           return this.loadListPromise;
         }
@@ -34,22 +33,24 @@
           deferred.resolve(this.recs);
           return deferred.promise;
         }
-        http_def = this.Api.sendGet('/feedback_types').success(function(data, status, headers, config) {
-          _this._setListData(data.types);
-          return deferred.resolve(_this.recs);
-        }, function(data, status, headers, config) {
+        http_def = this.Api.sendGet('/feedback_types').success((function(_this) {
+          return function(data, status, headers, config) {
+            _this._setListData(data.types);
+            return deferred.resolve(_this.recs);
+          };
+        })(this), function(data, status, headers, config) {
           return deferred.reject();
         });
         this.loadListPromise = deferred.promise;
         return this.loadListPromise;
       };
 
+
       /**
       				* Removed entity from entity manager
       		  *
       		  * @param id
-      */
-
+       */
 
       Admin_FeedbackTypes_DataService_FeedbackTypes.prototype.remove = function(id) {
         var model;
@@ -61,11 +62,11 @@
         return this._updateOrderOfData();
       };
 
-      /*
-      		# Updates entity with new model data provided
-       	# with new model provided. Or adds it to the list if it doesnt exist.
-      */
 
+      /*
+      		 * Updates entity with new model data provided
+       	 * with new model provided. Or adds it to the list if it doesnt exist.
+       */
 
       Admin_FeedbackTypes_DataService_FeedbackTypes.prototype.updateModel = function(model) {
         var new_model;
@@ -75,31 +76,32 @@
         return new_model;
       };
 
-      /*
-      		# Returns list of feedback_types where feedback of specified feedback_type could be moved to
-       	# @param model - specified feedback_type model
-      		# @return array
-      */
 
+      /*
+      		 * Returns list of feedback_types where feedback of specified feedback_type could be moved to
+       	 * @param model - specified feedback_type model
+      		 * @return array
+       */
 
       Admin_FeedbackTypes_DataService_FeedbackTypes.prototype.getListOfMovables = function(model) {
-        var move_list,
-          _this = this;
+        var move_list;
         move_list = [];
-        this.recs.forEach(function(key, val) {
-          if (val.id !== model.id) {
-            return move_list.push(val);
-          }
-        });
+        this.recs.forEach((function(_this) {
+          return function(key, val) {
+            if (val.id !== model.id) {
+              return move_list.push(val);
+            }
+          };
+        })(this));
         return move_list;
       };
+
 
       /**
       				* Creates entities for feedback types raw data
       				*
       				* @return {Promise}
-      */
-
+       */
 
       Admin_FeedbackTypes_DataService_FeedbackTypes.prototype._setListData = function(raw_recs) {
         var model, rec, _i, _len, _results;
@@ -113,11 +115,11 @@
         return _results;
       };
 
-      /*
-      		# Reorders the data of this data service
-       	# Useful for cases of drag&drop ordering of data
-      */
 
+      /*
+      		 * Reorders the data of this data service
+       	 * Useful for cases of drag&drop ordering of data
+       */
 
       Admin_FeedbackTypes_DataService_FeedbackTypes.prototype._updateOrderOfData = function() {
         this.recs.reorder(function(a, b) {
@@ -141,6 +143,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=FeedbackTypes.js.map
-*/
+//# sourceMappingURL=FeedbackTypes.js.map

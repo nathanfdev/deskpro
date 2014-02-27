@@ -16,6 +16,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=AppState.js.map
-*/
+//# sourceMappingURL=AppState.js.map

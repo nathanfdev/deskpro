@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_Languages_Ctrl_Install, _ref;
+    var Admin_Languages_Ctrl_Install;
     Admin_Languages_Ctrl_Install = (function(_super) {
       __extends(Admin_Languages_Ctrl_Install, _super);
 
       function Admin_Languages_Ctrl_Install() {
-        _ref = Admin_Languages_Ctrl_Install.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_Languages_Ctrl_Install.__super__.constructor.apply(this, arguments);
       }
 
       Admin_Languages_Ctrl_Install.CTRL_ID = 'Admin_Languages_Ctrl_Install';
@@ -21,30 +20,32 @@
       };
 
       Admin_Languages_Ctrl_Install.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
-        promise = this.Api.sendGet("/langs/" + this.id).then(function(result) {
-          if (result.data.language) {
-            _this.$state.go('setup.languages.edit', {
-              id: _this.id
-            });
-            return;
-          }
-          _this.pack = result.data.pack;
-          return _this.lang = result.data.language;
-        });
+        var promise;
+        promise = this.Api.sendGet("/langs/" + this.id).then((function(_this) {
+          return function(result) {
+            if (result.data.language) {
+              _this.$state.go('setup.languages.edit', {
+                id: _this.id
+              });
+              return;
+            }
+            _this.pack = result.data.pack;
+            return _this.lang = result.data.language;
+          };
+        })(this));
         return promise;
       };
 
       Admin_Languages_Ctrl_Install.prototype.doInstall = function() {
-        var _this = this;
         this.startSpinner('saving');
-        return this.$scope.$parent.ListCtrl.installLang(this.id).then(function() {
-          _this.stopSpinner('saving', true);
-          return _this.$state.go('setup.languages.edit', {
-            id: _this.id
-          });
-        });
+        return this.$scope.$parent.ListCtrl.installLang(this.id).then((function(_this) {
+          return function() {
+            _this.stopSpinner('saving', true);
+            return _this.$state.go('setup.languages.edit', {
+              id: _this.id
+            });
+          };
+        })(this));
       };
 
       return Admin_Languages_Ctrl_Install;
@@ -55,6 +56,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=Install.js.map
-*/
+//# sourceMappingURL=Install.js.map

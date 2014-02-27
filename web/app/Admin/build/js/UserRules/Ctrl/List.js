@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_UserRules_Ctrl_List, _ref;
+    var Admin_UserRules_Ctrl_List;
     Admin_UserRules_Ctrl_List = (function(_super) {
       __extends(Admin_UserRules_Ctrl_List, _super);
 
       function Admin_UserRules_Ctrl_List() {
-        _ref = Admin_UserRules_Ctrl_List.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_UserRules_Ctrl_List.__super__.constructor.apply(this, arguments);
       }
 
       Admin_UserRules_Ctrl_List.CTRL_ID = 'Admin_UserRules_Ctrl_List';
@@ -20,28 +19,28 @@
         return this.userRulesData = this.DataService.get('UserRules');
       };
 
-      /*
-      		# Loads the list
-      */
 
+      /*
+      		 * Loads the list
+       */
 
       Admin_UserRules_Ctrl_List.prototype.initialLoad = function() {
-        var promise,
-          _this = this;
-        promise = this.userRulesData.loadList().then(function(list) {
-          return _this.list = list;
-        });
+        var promise;
+        promise = this.userRulesData.loadList().then((function(_this) {
+          return function(list) {
+            return _this.list = list;
+          };
+        })(this));
         return promise;
       };
 
-      /*
-      		# Show the delete dlg
-      */
 
+      /*
+      		 * Show the delete dlg
+       */
 
       Admin_UserRules_Ctrl_List.prototype.startDelete = function(for_rule_id) {
-        var inst, rule,
-          _this = this;
+        var inst, rule;
         rule = this.userRulesData.findListModelById(for_rule_id);
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('UserRules/delete-modal.html'),
@@ -56,25 +55,30 @@
             }
           ]
         });
-        return inst.result.then(function() {
-          return _this.deleteUserRule(rule);
-        });
+        return inst.result.then((function(_this) {
+          return function() {
+            return _this.deleteUserRule(rule);
+          };
+        })(this));
       };
 
-      /*
-      		# Actually do the delete
-      */
 
+      /*
+      		 * Actually do the delete
+       */
 
       Admin_UserRules_Ctrl_List.prototype.deleteUserRule = function(for_rule) {
-        var _this = this;
-        return this.userRulesData.deleteUserRuleById(for_rule.id).success(function() {
-          if (_this.$state.current.name === 'crm.rules.edit' && parseInt(_this.$state.params.id) === for_rule.id) {
-            return _this.$state.go('crm.rules');
-          }
-        }).error(function(info, code) {
-          return _this.applyErrorResponseToView(info);
-        });
+        return this.userRulesData.deleteUserRuleById(for_rule.id).success((function(_this) {
+          return function() {
+            if (_this.$state.current.name === 'crm.rules.edit' && parseInt(_this.$state.params.id) === for_rule.id) {
+              return _this.$state.go('crm.rules');
+            }
+          };
+        })(this)).error((function(_this) {
+          return function(info, code) {
+            return _this.applyErrorResponseToView(info);
+          };
+        })(this));
       };
 
       return Admin_UserRules_Ctrl_List;
@@ -85,6 +89,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=List.js.map
-*/
+//# sourceMappingURL=List.js.map

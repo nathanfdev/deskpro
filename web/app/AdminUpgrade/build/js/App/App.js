@@ -54,6 +54,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=App.js.map
-*/
+//# sourceMappingURL=App.js.map

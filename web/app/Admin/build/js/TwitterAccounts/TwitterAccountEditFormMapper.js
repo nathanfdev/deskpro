@@ -6,11 +6,11 @@
     return Admin_TwitterAccounts_TwitterAccountEditFormMapper = (function() {
       function Admin_TwitterAccounts_TwitterAccountEditFormMapper() {}
 
-      /*
-      			#
-       		#
-      */
 
+      /*
+      			 *
+       		 *
+       */
 
       Admin_TwitterAccounts_TwitterAccountEditFormMapper.prototype.getFormFromModel = function(model) {
         var form, id, ids, _i, _len;
@@ -32,21 +32,21 @@
         return form;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       Admin_TwitterAccounts_TwitterAccountEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
         return model.id = formModel.id;
       };
 
-      /*
-      			#
-      			#
-      */
 
+      /*
+      			 *
+      			 *
+       */
 
       Admin_TwitterAccounts_TwitterAccountEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var agent, key, postData, value, _ref;
@@ -76,6 +76,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=TwitterAccountEditFormMapper.js.map
-*/
+//# sourceMappingURL=TwitterAccountEditFormMapper.js.map

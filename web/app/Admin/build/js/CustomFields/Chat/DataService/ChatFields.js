@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/DataService/BaseListEdit', 'Admin/CustomFields/FieldFormMapper'], function(BaseListEdit, FieldFormMapper) {
-    var ChatFields, _ref;
+    var ChatFields;
     return ChatFields = (function(_super) {
       __extends(ChatFields, _super);
 
       function ChatFields() {
-        _ref = ChatFields.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return ChatFields.__super__.constructor.apply(this, arguments);
       }
 
       ChatFields.$inject = ['Api', '$q'];
@@ -17,60 +16,63 @@
       ChatFields.prototype.init = function() {};
 
       ChatFields.prototype._doLoadList = function() {
-        var deferred,
-          _this = this;
+        var deferred;
         deferred = this.$q.defer();
-        this.Api.sendDataGet(['/chat_fields']).then(function(res) {
-          var custom_fields, f, _i, _len, _ref1;
-          custom_fields = [];
-          _ref1 = res.data.api_chat_fields.custom_fields;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            f = _ref1[_i];
-            custom_fields.push(f);
-          }
-          return deferred.resolve(custom_fields);
-        });
+        this.Api.sendDataGet(['/chat_fields']).then((function(_this) {
+          return function(res) {
+            var custom_fields, f, _i, _len, _ref;
+            custom_fields = [];
+            _ref = res.data.api_chat_fields.custom_fields;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              f = _ref[_i];
+              custom_fields.push(f);
+            }
+            return deferred.resolve(custom_fields);
+          };
+        })(this));
         return deferred.promise;
       };
 
-      /*
-        	# Remove a field
-        	#
-        	# @param {Integer} id Filter id
-        	# @return {promise}
-      */
 
+      /*
+        	 * Remove a field
+        	 *
+        	 * @param {Integer} id Filter id
+        	 * @return {promise}
+       */
 
       ChatFields.prototype.deleteFieldById = function(id) {
-        var promise,
-          _this = this;
-        promise = this.Api.sendDelete('/chat_fields/' + id).then(function() {
-          return _this.removeListModelById(id);
-        });
+        var promise;
+        promise = this.Api.sendDelete('/chat_fields/' + id).then((function(_this) {
+          return function() {
+            return _this.removeListModelById(id);
+          };
+        })(this));
         return promise;
       };
 
-      /*
-        	# Get all data needed for the edit field page
-        	#
-        	# @param {Integer} id Filter id
-        	# @return {promise}
-      */
 
+      /*
+        	 * Get all data needed for the edit field page
+        	 *
+        	 * @param {Integer} id Filter id
+        	 * @return {promise}
+       */
 
       ChatFields.prototype.loadEditFieldData = function(id) {
-        var data, deferred,
-          _this = this;
+        var data, deferred;
         deferred = this.$q.defer();
         if (id) {
-          this.Api.sendGet("/chat_fields/" + id).then(function(result) {
-            var data;
-            data = {};
-            data.field = result.data.field;
-            data.field_type = result.data.field.type_name;
-            data.form = _this.getFormMapper().getFormFromModel(data.field);
-            return deferred.resolve(data);
-          });
+          this.Api.sendGet("/chat_fields/" + id).then((function(_this) {
+            return function(result) {
+              var data;
+              data = {};
+              data.field = result.data.field;
+              data.field_type = result.data.field.type_name;
+              data.form = _this.getFormMapper().getFormFromModel(data.field);
+              return deferred.resolve(data);
+            };
+          })(this));
         } else {
           data = {
             field: {},
@@ -82,12 +84,12 @@
         return deferred.promise;
       };
 
-      /*
-        	# Get the form mapper
-        	#
-        	# @return {FieldFormMapper}
-      */
 
+      /*
+        	 * Get the form mapper
+        	 *
+        	 * @return {FieldFormMapper}
+       */
 
       ChatFields.prototype.getFormMapper = function() {
         if (this.formMapper) {
@@ -97,19 +99,18 @@
         return this.formMapper;
       };
 
-      /*
-        	# Saves a form model and applies the form model to the field model
-        	# once finished.
-        	#
-        	# @param {Object} fieldModel The field model
-        	# @param {Object} formModel  The model representing the form
-        	# @return {promise}
-      */
 
+      /*
+        	 * Saves a form model and applies the form model to the field model
+        	 * once finished.
+        	 *
+        	 * @param {Object} fieldModel The field model
+        	 * @param {Object} formModel  The model representing the form
+        	 * @return {promise}
+       */
 
       ChatFields.prototype.saveFormModel = function(fieldModel, formModel) {
-        var mapper, postData, promise,
-          _this = this;
+        var mapper, postData, promise;
         mapper = this.getFormMapper();
         postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel);
         if (fieldModel.id) {
@@ -119,10 +120,12 @@
             return fieldModel.id = data.field_id;
           });
         }
-        promise.success(function() {
-          mapper.applyFormToModel(fieldModel, formModel);
-          return _this.mergeDataModel(fieldModel);
-        });
+        promise.success((function(_this) {
+          return function() {
+            mapper.applyFormToModel(fieldModel, formModel);
+            return _this.mergeDataModel(fieldModel);
+          };
+        })(this));
         return promise;
       };
 
@@ -133,6 +136,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=ChatFields.js.map
-*/
+//# sourceMappingURL=ChatFields.js.map

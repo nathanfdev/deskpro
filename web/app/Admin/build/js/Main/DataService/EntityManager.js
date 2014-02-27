@@ -8,6 +8,7 @@
         this.entity_cache = {};
       }
 
+
       /**
       		* Creates a new managed entity
         	*
@@ -15,8 +16,7 @@
         	* @param {String} id_prop
         	* @param {Object} data
         	* @return {Admin_Main_Model_Base}
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.createEntity = function(type_id, id_prop, data) {
         var entity;
@@ -24,6 +24,7 @@
         return this.add(entity, true);
       };
 
+
       /**
       		* Creates a new managed entity
         	*
@@ -31,8 +32,7 @@
         	* @param {String} id_prop
         	* @param {Object} data
         	* @return {Admin_Main_Model_Base}
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.createUnmanagedEntity = function(type_id, id_prop, data) {
         var entity;
@@ -43,13 +43,13 @@
         return entity;
       };
 
+
       /**
       		* Adds an entity to the manager
         	*
         	* @param {Admin_Main_Model_Base} entity
         	* @return {Admin_Main_Model_Base} The entity added to the manager
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.add = function(entity, merge) {
         var entity_id, entity_type, exist_entity, k, v, _ref;
@@ -88,20 +88,20 @@
         return entity;
       };
 
+
       /**
       		* Copy properties on one object to other similar objects.
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.propogate = function(entity) {};
+
 
       /**
       		* Get an entity from the manager
         	*
         	* @param {Admin_Main_Model_Base} entity
       		* @return {Admin_Main_Model_Base}
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.get = function(entity) {
         var entity_id, entity_type, _ref;
@@ -120,13 +120,13 @@
         return this.entity_cache[entity_type][entity_id];
       };
 
+
       /**
       		* Get an entity from the manager
         	*
         	* @param {Admin_Main_Model_Base} entity
         	* @return {Admin_Main_Model_Base}
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.getById = function(entity_type, entity_id) {
         var _ref;
@@ -143,12 +143,12 @@
         return this.entity_cache[entity_type][entity_id];
       };
 
+
       /**
       		* Remove an entity from the manager
         	*
         	* @param {Admin_Main_Model_Base} entity
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.remove = function(entity) {
         var entity_id, entity_type, _ref;
@@ -166,12 +166,12 @@
         }
       };
 
+
       /**
       		* Remove an entity from the manager
         	*
         	* @param {Admin_Main_Model_Base} entity
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.removeById = function(entity_type, entity_id) {
         var _ref;
@@ -181,13 +181,13 @@
         }
       };
 
+
       /**
       		* Check if the manager has an entity
         	*
         	* @param {Admin_Main_Model_Base} entity
         	* @return {Boolean}
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.hasById = function(entity_type, entity_id) {
         var _ref;
@@ -198,13 +198,13 @@
         return false;
       };
 
+
       /**
       		* Check if the manager has an entity
         	*
         	* @param {Admin_Main_Model_Base} entity
         	* @return {Boolean}
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.has = function(entity) {
         var entity_id, entity_type, _ref;
@@ -223,10 +223,10 @@
         return false;
       };
 
+
       /**
       		* Runs the auto-release which removes entities that are no longer in use
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.autoRelease = function() {
         var ent, ent_id, entities, time_cut, type, _ref, _results;
@@ -253,12 +253,12 @@
         return _results;
       };
 
+
       /**
       		* Clears entities from the manager
         	*
         	* @param {String} type A specific type
-      */
-
+       */
 
       Admin_Main_DataService_EntityManager.prototype.clear = function(type) {
         if (type == null) {
@@ -278,6 +278,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EntityManager.js.map
-*/
+//# sourceMappingURL=EntityManager.js.map

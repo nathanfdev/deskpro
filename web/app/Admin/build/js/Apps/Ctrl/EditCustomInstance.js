@@ -3,13 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
-    var Admin_Apps_Ctrl_EditCustomInstance, _ref;
+    var Admin_Apps_Ctrl_EditCustomInstance;
     Admin_Apps_Ctrl_EditCustomInstance = (function(_super) {
       __extends(Admin_Apps_Ctrl_EditCustomInstance, _super);
 
       function Admin_Apps_Ctrl_EditCustomInstance() {
-        _ref = Admin_Apps_Ctrl_EditCustomInstance.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Admin_Apps_Ctrl_EditCustomInstance.__super__.constructor.apply(this, arguments);
       }
 
       Admin_Apps_Ctrl_EditCustomInstance.CTRL_ID = 'Admin_Apps_Ctrl_EditCustomInstance';
@@ -44,61 +43,64 @@
       };
 
       Admin_Apps_Ctrl_EditCustomInstance.prototype.initialLoad = function() {
-        var d,
-          _this = this;
+        var d;
         d = this.$q.defer();
         this.Api.sendDataGet({
           app: '/apps/instances/' + this.instanceId
-        }).then(function(result) {
-          _this.app = result.data.app.app;
-          _this.$scope.$parent.ListCtrl.ensureCustomAppInList(_this.app);
-          return _this.Api.sendDataGet({
-            pack: '/apps/packages/' + _this.app.package_name,
-            assets: '/apps/custom/' + _this.instanceId + '/assets'
-          }).then(function(result) {
-            var app_js, asset_groups, assets;
-            _this.pack = result.data.pack['package'];
-            assets = result.data.assets.assets;
-            asset_groups = {
-              "main": [],
-              "ticket": [],
-              "user": [],
-              "org": []
-            };
-            app_js = assets.filter(function(x) {
-              return x.tag === 'app_js';
-            })[0];
-            if (app_js) {
-              asset_groups.main.push({
-                title: "App Definition",
-                js: app_js.file_content,
-                js_id: app_js.id,
-                js_name: app_js.name
-              });
-            }
-            asset_groups.ticket = _this._getGroupedAssets(assets.filter(function(x) {
-              return x.name.indexOf('Ticket/') !== -1;
-            }));
-            asset_groups.user = _this._getGroupedAssets(assets.filter(function(x) {
-              return x.name.indexOf('User/') !== -1;
-            }));
-            asset_groups.org = _this._getGroupedAssets(assets.filter(function(x) {
-              return x.name.indexOf('Org/') !== -1;
-            }));
-            _this.asset_groups = asset_groups;
-            return d.resolve();
-          });
-        });
-        d.promise.then(function() {
-          _this.$scope.pack = _this.pack;
-          _this.$scope.setting_values = _this.app.settings;
-          if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
-            _this.$scope.setting_values = {};
-          }
-          return _this.$scope.setting_values.dp_app = {
-            title: _this.app.title
+        }).then((function(_this) {
+          return function(result) {
+            _this.app = result.data.app.app;
+            _this.$scope.$parent.ListCtrl.ensureCustomAppInList(_this.app);
+            return _this.Api.sendDataGet({
+              pack: '/apps/packages/' + _this.app.package_name,
+              assets: '/apps/custom/' + _this.instanceId + '/assets'
+            }).then(function(result) {
+              var app_js, asset_groups, assets;
+              _this.pack = result.data.pack['package'];
+              assets = result.data.assets.assets;
+              asset_groups = {
+                "main": [],
+                "ticket": [],
+                "user": [],
+                "org": []
+              };
+              app_js = assets.filter(function(x) {
+                return x.tag === 'app_js';
+              })[0];
+              if (app_js) {
+                asset_groups.main.push({
+                  title: "App Definition",
+                  js: app_js.file_content,
+                  js_id: app_js.id,
+                  js_name: app_js.name
+                });
+              }
+              asset_groups.ticket = _this._getGroupedAssets(assets.filter(function(x) {
+                return x.name.indexOf('Ticket/') !== -1;
+              }));
+              asset_groups.user = _this._getGroupedAssets(assets.filter(function(x) {
+                return x.name.indexOf('User/') !== -1;
+              }));
+              asset_groups.org = _this._getGroupedAssets(assets.filter(function(x) {
+                return x.name.indexOf('Org/') !== -1;
+              }));
+              _this.asset_groups = asset_groups;
+              return d.resolve();
+            });
           };
-        });
+        })(this));
+        d.promise.then((function(_this) {
+          return function() {
+            _this.$scope.pack = _this.pack;
+            _this.$scope.setting_values = _this.app.settings;
+            if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
+              _this.$scope.setting_values = {};
+            }
+            return _this.$scope.setting_values.dp_app = {
+              title: _this.app.title
+            };
+          };
+        })(this));
         return d.promise;
       };
 
@@ -122,8 +124,8 @@
             continue;
           }
           html_asset = assets.filter(function(x) {
-            var _ref1;
-            return x.tag === 'html' && ((_ref1 = x.metadata) != null ? _ref1.group_name : void 0) === asset.metadata.group_name;
+            var _ref;
+            return x.tag === 'html' && ((_ref = x.metadata) != null ? _ref.group_name : void 0) === asset.metadata.group_name;
           })[0];
           groups.push({
             title: asset.metadata.group_name.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1'),
@@ -139,16 +141,15 @@
       };
 
       Admin_Apps_Ctrl_EditCustomInstance.prototype.saveSettings = function() {
-        var asset, group, postData, _, _i, _len, _ref1,
-          _this = this;
+        var asset, group, postData, _, _i, _len, _ref;
         postData = {
           settings: this.$scope.setting_values,
           save_assets: []
         };
-        _ref1 = this.asset_groups;
-        for (_ in _ref1) {
-          if (!__hasProp.call(_ref1, _)) continue;
-          group = _ref1[_];
+        _ref = this.asset_groups;
+        for (_ in _ref) {
+          if (!__hasProp.call(_ref, _)) continue;
+          group = _ref[_];
           for (_i = 0, _len = group.length; _i < _len; _i++) {
             asset = group[_i];
             if (asset.js_id) {
@@ -166,12 +167,14 @@
           }
         }
         this.startSpinner('saving_settings');
-        return this.Api.sendPostJson("/apps/instances/" + this.instanceId, postData).then(function() {
-          return _this.stopSpinner('saving_settings').then(function() {
-            _this.$scope.$parent.ListCtrl.updateAppTitle(_this.instanceId, _this.$scope.setting_values.dp_app.title);
-            return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
-          });
-        }, function() {
+        return this.Api.sendPostJson("/apps/instances/" + this.instanceId, postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving_settings').then(function() {
+              _this.$scope.$parent.ListCtrl.updateAppTitle(_this.instanceId, _this.$scope.setting_values.dp_app.title);
+              return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+            });
+          };
+        })(this), function() {
           return this.stopSpinner('saving_settings');
         });
       };
@@ -184,6 +187,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EditCustomInstance.js.map
-*/
+//# sourceMappingURL=EditCustomInstance.js.map

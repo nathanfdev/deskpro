@@ -1,20 +1,20 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This turns a checkbox into a tri-state checkbox that reflects the state of
-       # multiple models, and toggling it will toggle the watched models.
-       #
-       # Example
-       # -------
-       # <input type="checkbox" dp-tristate-check="model1, model2, model3" /> Status
-       # -- <input type="checkbox" ng-model="model1" /> Sub-Checkbox 1
-       # -- <input type="checkbox" ng-model="model2" /> Sub-Checkbox 2
-       # -- <input type="checkbox" ng-model="model3" /> Sub-Checkbox 3
-    */
 
+    /*
+        * Description
+        * -----------
+        *
+        * This turns a checkbox into a tri-state checkbox that reflects the state of
+        * multiple models, and toggling it will toggle the watched models.
+        *
+        * Example
+        * -------
+        * <input type="checkbox" dp-tristate-check="model1, model2, model3" /> Status
+        * -- <input type="checkbox" ng-model="model1" /> Sub-Checkbox 1
+        * -- <input type="checkbox" ng-model="model2" /> Sub-Checkbox 2
+        * -- <input type="checkbox" ng-model="model3" /> Sub-Checkbox 3
+     */
     var Admin_Main_Directive_TristateCheck;
     Admin_Main_Directive_TristateCheck = [
       function() {
@@ -91,6 +91,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=DpTristateCheck.js.map
-*/
+//# sourceMappingURL=DpTristateCheck.js.map

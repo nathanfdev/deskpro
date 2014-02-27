@@ -67,6 +67,4 @@
 
 }).call(this);
 
-/*
-//@ sourceMappingURL=EditTicketAccountModel.js.map
-*/
+//# sourceMappingURL=EditTicketAccountModel.js.map
