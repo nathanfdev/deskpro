@@ -97,34 +97,4 @@ class NativePackages
 
 		return $this->native_names;
 	}
-
-
-	/**
-	 * Finds the packages installed into the DB and those available
-	 * in the filesystem and makes sure they match.
-	 *
-	 * @return \Application\DeskPRO\Entity\AppPackage[]
-	 */
-	public function syncPackages()
-	{
-		$existing_packages = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:AppPackage d INDEX BY d.native_name
-			WHERE d.native_name IS NOT NULL
-		")->execute();
-
-		$installer = new PackageInstaller($this->em, $this->blob_storage);
-
-		$installed = array();
-		foreach ($this->getPackageNames() as $native_name) {
-			if (isset($existing_packages[$native_name])) {
-				continue;
-			}
-
-			$package = new Package($this->root_path . "/$native_name");
-			$installed[$native_name] = $installer->installPackage($package);
-		}
-
-		return $installed;
-	}
 }

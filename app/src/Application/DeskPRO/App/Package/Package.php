@@ -66,11 +66,15 @@ class Package
 
 
 	/**
+	 * @param AppPackage  $def Existing app package to update. Otherwise, a new package is created.
 	 * @return AppPackage
 	 */
-	public function createAppPackage()
+	public function createAppPackage(AppPackage $def = null)
 	{
-		$def = new AppPackage();
+		if (!$def) {
+			$def = new AppPackage();
+		}
+
 		$def->name         = $this->manifest->getPackageName();
 		$def->title        = $this->manifest->getTitle();
 		$def->description  = $this->manifest->getDescription();

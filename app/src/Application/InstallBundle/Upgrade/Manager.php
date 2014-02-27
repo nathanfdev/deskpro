@@ -184,10 +184,16 @@ class Manager
 		#------------------------------
 
 		$manager = $this->container->getAppManager();
+		$installer = new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine());
 
 		// Update apps
 		foreach ($manager->getAllPackages() as $package) {
 			if (!$package->native_name) continue;
+
+			// Updates the resource
+			$app_package = new Package(DP_ROOT.'/apps/' . $package->native_name);
+			$installer->installPackage($app_package, $package);
+
 			foreach ($manager->getPackageApps($package) as $app) {
 				$native_app = $manager->getNativeApp($app);
 				$class = $native_app->getConfig()->getInstallerHandlerClass();
@@ -214,7 +220,6 @@ class Manager
 				continue;
 			}
 
-			$installer = new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine());
 			$installer->installPackage($app_package);
 		}
 	}

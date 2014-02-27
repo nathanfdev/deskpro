@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Blob;
 use Doctrine\ORM\EntityManager;
 use Orb\Data\ContentTypes;
 use Imagine\Image\Box as ImageBox;
@@ -69,19 +71,23 @@ class PackageInstaller
 
 
 	/**
-	 * @param Package $package
-	 * @return \Application\DeskPRO\Entity\AppPackage
+	 * Install or update a package.
+	 *
+	 * @param Package    $package The package to installl
+	 * @param AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
+	 * @return AppPackage
 	 */
-	public function installPackage(Package $package)
+	public function installPackage(Package $package, AppPackage $def = null)
 	{
-		$def = $package->createAppPackage();
+		$def = $package->createAppPackage($def);
+
 		$this->em->persist($def);
 
 		#------------------------------
 		# Get app icons
 		#------------------------------
 
-		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256);
+		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
 		$have_sizes = array();
 		$largest = null;
 
@@ -97,8 +103,7 @@ class PackageInstaller
 				'image/png'
 			);
 
-			$asset = $def->addAssetFromBlob($blob);
-			$asset->tag = "icons.app.$size";
+			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size");
 			$this->em->persist($asset);
 
 			$largest = array($path, $size, $blob);
@@ -115,8 +120,7 @@ class PackageInstaller
 				'image/png'
 			);
 
-			$asset = $def->addAssetFromBlob($blob);
-			$asset->tag = "icons.app.$size";
+			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size");
 			$this->em->persist($asset);
 
 			$largest = array($path, $size, $blob);
@@ -141,8 +145,7 @@ class PackageInstaller
 
 			unset($image);
 
-			$asset = $def->addAssetFromBlob($blob);
-			$asset->tag = "icons.app.$size";
+			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size");
 			$this->em->persist($asset);
 
 			$largest = array($path, $size, $blob);
@@ -162,8 +165,7 @@ class PackageInstaller
 				'README',
 				'text/plain'
 			);
-			$asset = $def->addAssetFromBlob($blob);
-			$asset->tag = 'readme.text';
+			$asset = $this->_addAssetBlob($def, $blob, 'readme.text');
 			$this->em->persist($asset);
 
 			$readme_html = \Parsedown::instance()->parse($readme);
@@ -172,8 +174,7 @@ class PackageInstaller
 				'README.html',
 				'text/html'
 			);
-			$asset = $def->addAssetFromBlob($blob);
-			$asset->tag = 'readme.html';
+			$asset = $this->_addAssetBlob($def, $blob, 'readme.html');
 			$this->em->persist($asset);
 		}
 
@@ -189,8 +190,7 @@ class PackageInstaller
 				'text/javascript'
 			);
 
-			$asset = $def->addAssetFromBlob($blob);
-			$asset->tag = 'app_js';
+			$asset = $this->_addAssetBlob($def, $blob, 'app_js');
 			$this->em->persist($asset);
 		}
 
@@ -198,34 +198,21 @@ class PackageInstaller
 		# Save assets
 		#------------------------------
 
-		$blob_storage = $this->blob_storage;
-		$em = $this->em;
-		$fn_proc_asset = function($asset_info, $tag) use ($blob_storage, $def, $em) {
-			$mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
-
-			$blob = $blob_storage->createBlobRecordFromFile(
-				$asset_info['real_path'],
-				$asset_info['name'],
-				$mimetype
-			);
-
-			$asset = $def->addAssetFromBlob($blob, $asset_info['path']);
-			$asset->tag = $tag;
-
-			$em->persist($asset);
-		};
-
 		foreach ($package->getJsAssets() as $asset_info) {
-			$fn_proc_asset($asset_info, 'js');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'js');
+			$this->em->persist($asset);
 		}
 		foreach ($package->getHtmlAssets() as $asset_info) {
-			$fn_proc_asset($asset_info, 'html');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'html');
+			$this->em->persist($asset);
 		}
 		foreach ($package->getCssAssets() as $asset_info) {
-			$fn_proc_asset($asset_info, 'css');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'css');
+			$this->em->persist($asset);
 		}
 		foreach ($package->getResAssets() as $asset_info) {
-			$fn_proc_asset($asset_info, 'res');
+			$asset = $this->_addAssetFromInfo($def, $asset_info, 'res');
+			$this->em->persist($asset);
 		}
 
 		#------------------------------
@@ -235,5 +222,54 @@ class PackageInstaller
 		$this->em->flush();
 
 		return $def;
+	}
+
+
+	/**
+	 * @param AppPackage $def
+	 * @param array $asset_info
+	 * @param string $tag
+	 * @return \Application\DeskPRO\Entity\AppAsset
+	 */
+	private function _addAssetFromInfo(AppPackage $def, array $asset_info, $tag)
+	{
+		$mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
+
+		$blob = $this->blob_storage->createBlobRecordFromFile(
+			$asset_info['real_path'],
+			$asset_info['name'],
+			$mimetype
+		);
+
+		$asset = $this->_addAssetBlob($def, $blob, $tag, $asset_info['path']);
+		return $asset;
+	}
+
+
+	/**
+	 * @param AppPackage $def
+	 * @param Blob $blob
+	 * @param string $tag
+	 * @param string $filename
+	 * @return \Application\DeskPRO\Entity\AppAsset
+	 */
+	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null)
+	{
+		$asset = $def->getTaggedAsset($tag);
+		if ($asset) {
+			// Asset already exists, replace it
+			if ($asset->blob) {
+				$this->blob_storage->deleteBlobRecord($asset->blob);
+			}
+			$asset->blob = $blob;
+		} else {
+			// New asset
+			$asset = $def->addAssetFromBlob($blob);
+		}
+
+		$asset->name = $filename ? $filename : $blob->filename;
+		$asset->tag = $tag;
+
+		return $asset;
 	}
 }
