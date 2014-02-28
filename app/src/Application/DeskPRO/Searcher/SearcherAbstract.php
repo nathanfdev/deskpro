@@ -855,20 +855,27 @@ abstract class SearcherAbstract implements PersonContextInterface
 			if ($op == self::OP_CONTAINS) {
 				$where = "$field IN $choices_in";
 			} elseif ($op == self::OP_NOTCONTAINS) {
-				$where = "$field NOT IN $choices_in";
+				$where = "($field NOT IN $choices_in OR $field IS NULL)";
 			}
 
 		} else {
 			if ($is_id AND ($choice === 0 OR $choice === '0')) {
 				$choice = 'NULL';
 				$op = ($op == self::OP_IS) ? "IS" : "IS NOT";
-			}
-			else {
+			} else {
 				$choice = $db->quote($choice);
 				$op = ($op == self::OP_IS) ? "=" : "!=";
 			}
 
-			$where = "$field $op $choice";
+			if ($op == '!=') {
+				if ($choice != 'NULL') {
+					$where = "($field $op $choice OR $field IS NULL)";
+				} else {
+					$where = "$field $op $choice";
+				}
+			} else {
+				$where = "$field $op $choice";
+			}
 		}
 
 		return $where;
