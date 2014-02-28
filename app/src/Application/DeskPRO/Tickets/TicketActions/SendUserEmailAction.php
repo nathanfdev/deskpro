@@ -112,6 +112,10 @@ class SendUserEmailAction extends AbstractAction
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 		$vars['tracking_object'] = $ticket;
 
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+		$vars['custom_fields'] = $custom_fields;
+
 		$template_name = $this->template;
 
 		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($template_name, $vars, $from_address, $ticket, $person, $parts) {

@@ -304,6 +304,10 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			));
 			$vars['messages'] = $messages;
 
+			$field_manager = App::getSystemService('ticket_fields_manager');
+			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+			$vars['custom_fields'] = $custom_fields;
+
 			if ($ticket->creation_system == Ticket::CREATED_WEB_AGENT) {
 				// First message is the name we'll send it from
 				$first = \Orb\Util\Arrays::getFirstItem($messages);

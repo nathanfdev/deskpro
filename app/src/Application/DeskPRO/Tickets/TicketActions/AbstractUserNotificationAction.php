@@ -107,6 +107,10 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 		$vars['ticketdisplay'] = $ticketdisplay;
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+		$vars['custom_fields'] = $custom_fields;
+
 		if ($this->via_message) {
 			$has = false;
 			foreach ($vars['messages'] as $m) {
