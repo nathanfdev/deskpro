@@ -100,6 +100,10 @@ class SendTicketEmailAction extends AbstractAction
 		$vars['ticketdisplay'] = $ticketdisplay;
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+		$vars['custom_fields'] = $custom_fields;
+
 		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $from_address, $ticket, $person, $parts) {
 
 			$email = $person->getPrimaryEmailAddress();
