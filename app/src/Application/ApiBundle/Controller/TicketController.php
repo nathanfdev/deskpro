@@ -202,9 +202,10 @@ class TicketController extends AbstractController
 			$message->setMessageText($message_text);
 		}
 
-		$this->_addTicketMessageAttachments($message_blobs, $ticket, $message);
-
+		$this->em->persist($message);
 		$ticket->addMessage($message);
+
+		$this->_addTicketMessageAttachments($message_blobs, $ticket, $message);
 
 		// need to ensure we treat things as the message owner
 		App::setCurrentPerson($message->person);
