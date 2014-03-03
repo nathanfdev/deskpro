@@ -72,12 +72,27 @@ class NotifyListBuilder
 	 */
 	protected $notify_list = null;
 
+	/**
+	 * @var bool
+	 */
+	private $verbose_logging = false;
+
 	public function __construct(TicketChangeTracker $tracker, DetectFilterMatches $filter_detector)
 	{
 		$this->tracker = $tracker;
 		$this->filter_detector = $filter_detector;
 		$this->em = App::getOrm();
 	}
+
+
+	/**
+	 * @param $verbose_logging
+	 */
+	public function setVerboseLogging($verbose_logging)
+	{
+		$this->verbose_logging = (bool)$verbose_logging;
+	}
+
 
 	/**
 	 * This gets a raw notification list based off of subscriptions.
@@ -102,6 +117,7 @@ class NotifyListBuilder
 	 * for different fitlers. If you implement this, be sure to eg dont sent multiple
 	 * emails.
 	 *
+	 * @param string $notify_type
 	 * @return array
 	 */
 	public function getNotifyList($notify_type = null)
@@ -173,7 +189,10 @@ class NotifyListBuilder
 		$this->tracker->logMessage("[NotifyListBuilder] " . count($agent_ids) . " agents and " . count($filter_ids) . " filters");
 
 		$agent_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgents($agent_ids, $filter_ids);
-		$this->tracker->logMessage(\Orb\Util\Util::debugVar($agent_subs));
+
+		if ($this->verbose_logging) {
+			$this->tracker->logMessage(\Orb\Util\Util::debugVar($agent_subs));
+		}
 
 		// Build a list of who should be notified and how
 		$this->notify_list = array();
@@ -295,7 +314,10 @@ class NotifyListBuilder
 		}
 
 		$this->tracker->logMessage("[NotifyListBuilder] " . count($this->notify_list) . " agents with notifications");
-		$this->tracker->logMessage("[NotifyListBuilder] " . \Orb\Util\Util::debugVar($this->notify_list));
+
+		if ($this->verbose_logging) {
+			$this->tracker->logMessage("[NotifyListBuilder] " . \Orb\Util\Util::debugVar($this->notify_list));
+		}
 
 		return $this->notify_list;
 	}
