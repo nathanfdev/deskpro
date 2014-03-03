@@ -36,7 +36,6 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App\Native\EventHandler\EventContext;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\NativePackageConfig;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
@@ -207,7 +206,7 @@ class AppsController extends AbstractController
 			$native_app = $manager->getNativeApp($app);
 			$class = $native_app->getConfig()->getInstallerHandlerClass();
 			if ($class) {
-				$context = new InstallerContext($this->container, $native_app);
+				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
 				$handler = new $class();
 				$handler->install($context);
 			}

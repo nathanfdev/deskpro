@@ -67,7 +67,7 @@ class InstallerHandler implements InstallerHandlerInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function update(InstallerContext $context)
+	public function updateSettings(InstallerContext $context)
 	{
 		$context->getDb()->update('usersources', array(
 			'title'             => $context->getApp()->title,
@@ -76,5 +76,14 @@ class InstallerHandler implements InstallerHandlerInterface
 			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
 			'is_enabled'        => '1'
 		), array('app_id' => $context->getApp()->id));
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updatePackage(InstallerContext $context)
+	{
+		// Nothing
 	}
 }

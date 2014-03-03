@@ -800,11 +800,6 @@ class Arrays
 	 */
 	public static function implodeTemplate($array, $tpl = '<li>{VAL}</li>')
 	{
-	    if (!is_array($array)) {
-	        $array = (array)$array;
-	    }
-
-
 	    $string = '';
 
 	    foreach ($array as $k => $v) {

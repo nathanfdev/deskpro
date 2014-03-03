@@ -8,6 +8,7 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 			@packageName = @$stateParams.name.replace(/\.install$/, '');
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
+			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
 			@presaveCallback = null
 			return
 
@@ -88,6 +89,9 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 					@stopSpinner('saving_settings', true)
 				)
 
+		cancelInstall: ->
+			@$state.go('apps.apps.package', {name: @pack.name});
+
 		doInstall: ->
 			listCtrl = null
 			if @$scope.$parent.ListCtrl?.addAppInstance?
@@ -107,7 +111,5 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 
 				@$state.go('apps.apps.instance', {id: info.id});
 			);
-
-		enableCustomFooter: => @$scope.has_own_footer = true
 
 	Admin_Apps_Ctrl_PackageInstall.EXPORT_CTRL()

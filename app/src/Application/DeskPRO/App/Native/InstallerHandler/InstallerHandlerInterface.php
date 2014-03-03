@@ -52,5 +52,11 @@ interface InstallerHandlerInterface
 	 * @param InstallerContext $context
 	 * @return void
 	 */
-	public function update(InstallerContext $context);
+	public function updateSettings(InstallerContext $context);
+
+	/**
+	 * @param InstallerContext $context
+	 * @return void
+	 */
+	public function updatePackage(InstallerContext $context);
 }

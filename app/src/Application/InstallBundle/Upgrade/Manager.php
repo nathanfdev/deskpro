@@ -200,7 +200,7 @@ class Manager
 				if ($class) {
 					$context = new InstallerContext($this->container, $native_app);
 					$obj = new $class();
-					$obj->upgrade($context);
+					$obj->updatePackage($context);
 				}
 			}
 		}

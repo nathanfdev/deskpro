@@ -1,6 +1,5 @@
 (function() {
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['require', 'Admin/Main/Ctrl/Base'], function(require, Admin_Ctrl_Base) {
@@ -9,7 +8,6 @@
       __extends(Admin_Apps_Ctrl_PackageInstall, _super);
 
       function Admin_Apps_Ctrl_PackageInstall() {
-        this.enableCustomFooter = __bind(this.enableCustomFooter, this);
         return Admin_Apps_Ctrl_PackageInstall.__super__.constructor.apply(this, arguments);
       }
 
@@ -29,6 +27,11 @@
         this.$scope.setPresaveCallback = (function(_this) {
           return function(callback) {
             return _this.presaveCallback = callback;
+          };
+        })(this);
+        this.$scope.enableCustomFooter = (function(_this) {
+          return function() {
+            return _this.$scope.has_own_footer = true;
           };
         })(this);
         this.presaveCallback = null;
@@ -135,6 +138,12 @@
         }
       };
 
+      Admin_Apps_Ctrl_PackageInstall.prototype.cancelInstall = function() {
+        return this.$state.go('apps.apps.package', {
+          name: this.pack.name
+        });
+      };
+
       Admin_Apps_Ctrl_PackageInstall.prototype.doInstall = function() {
         var listCtrl, setting_values, _ref;
         listCtrl = null;
@@ -161,10 +170,6 @@
             });
           };
         })(this));
-      };
-
-      Admin_Apps_Ctrl_PackageInstall.prototype.enableCustomFooter = function() {
-        return this.$scope.has_own_footer = true;
       };
 
       return Admin_Apps_Ctrl_PackageInstall;

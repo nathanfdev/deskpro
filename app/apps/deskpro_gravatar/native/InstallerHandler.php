@@ -60,7 +60,16 @@ class InstallerHandler implements InstallerHandlerInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function update(InstallerContext $context)
+	public function updateSettings(InstallerContext $context)
+	{
+		$this->_doInstall($context);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updatePackage(InstallerContext $context)
 	{
 		$this->_doInstall($context);
 	}

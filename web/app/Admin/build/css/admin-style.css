@@ -8595,11 +8595,13 @@ div.dp-appalt-section > section header h3 {
   border-radius: 2px;
 }
 
-.dp-paneblock > header nav {
+.dp-paneblock > header nav,
+.dp-paneblock header.dp-panelblock-header nav {
   float: right;
 }
 
-.dp-paneblock > header h3 {
+.dp-paneblock > header h3,
+.dp-paneblock header.dp-panelblock-header h3 {
   display: inline-block;
   padding: 0 0 2px 0;
   margin: 10px;
@@ -8608,21 +8610,25 @@ div.dp-appalt-section > section header h3 {
   border-bottom: 3px solid #aaa;
 }
 
-.dp-paneblock > article + article {
+.dp-paneblock > article + article,
+.dp-paneblock article.dp-panelblock-article + article.dp-panelblock-article {
   border-top: 1px dotted #ccc;
 }
 
-.dp-paneblock > footer {
+.dp-paneblock > footer,
+.dp-paneblock footer.dp-panelblock-footer {
   padding: 15px;
   background: #efefef;
   border-top: 1px dotted #aaa;
 }
 
-.dp-paneblock > footer .dp-delete-control {
+.dp-paneblock > footer .dp-delete-control,
+.dp-paneblock footer.dp-panelblock-footer .dp-delete-control {
   float: right;
 }
 
-.dp-paneblock > footer .dp-btn-controls {
+.dp-paneblock > footer .dp-btn-controls,
+.dp-paneblock footer.dp-panelblock-footer .dp-btn-controls {
   text-align: center;
 }
 
@@ -12149,4 +12155,21 @@ table.agent-perms-table .toggle-wrap {
   margin-bottom: 0;
   border-right: none;
   border-left: none;
+}
+
+.dp-log-display {
+  display: block;
+  overflow: hidden;
+  background: #efefef;
+  border: 1px solid #aaaaaa;
+  border-radius: 2px;
+}
+
+.dp-log-display textarea {
+  width: 100%;
+  max-height: 300px;
+  min-height: 180px;
+  font-family: Monaco, Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  background: transparent;
 }

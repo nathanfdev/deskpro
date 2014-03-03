@@ -36,6 +36,7 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Orb\Util\Arrays;
 
 class InstallerContext
 {
@@ -49,16 +50,42 @@ class InstallerContext
 	 */
 	private $native_app;
 
+	/**
+	 * @var array
+	 */
+	private $raw_form;
+
 
 	/**
 	 * @param DeskproContainer $container
 	 * @param NativeApp $native_app
 	 */
-	public function __construct(DeskproContainer $container, NativeApp $native_app)
+	public function __construct(DeskproContainer $container, NativeApp $native_app, array $raw_form = array())
 	{
 		$this->container  = $container;
 		$this->native_app = $native_app;
+		$this->raw_form   = $raw_form;
 	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getRawForm()
+	{
+		return $this->raw_form;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getRawFormData($name)
+	{
+		return Arrays::getValue($this->raw_form, $name);
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\AppInstance

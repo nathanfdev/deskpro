@@ -101,7 +101,7 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
 		$time_start = microtime(true);
 		if ($this->logger) {
 			$this->logger->log("START Joomla::authenticate", Logger::DEBUG);
-			$this->logger->log("Options: " . trim(Arrays::implodeTemplate("{KEY}({VAL}) ")), Logger::DEBUG);
+			$this->logger->log("Options: " . trim(Arrays::implodeTemplate($this->options, "{KEY}({VAL}) ")), Logger::DEBUG);
 			$this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
 		}
 
@@ -114,7 +114,7 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
 			}
 		} catch (\Exception $e) {
 			if ($this->logger) {
-				$this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
+				$this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
 				return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
 			}
 			return new Result(Result::FAILURE_INVALID_CREDS);
@@ -260,7 +260,9 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
 
 			return $result;
 		} catch (\Exception $e) {
-			KernelErrorHandler::logException($e, false, 'joomla_call_err');
+			if ($this->logger) {
+				$this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
+			}
 			return array();
 		}
 	}

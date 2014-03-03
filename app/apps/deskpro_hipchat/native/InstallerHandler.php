@@ -61,7 +61,16 @@ class InstallerHandler implements InstallerHandlerInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function update(InstallerContext $context)
+	public function updateSettings(InstallerContext $context)
+	{
+		$this->refreshTriggerAction($context);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updatePackage(InstallerContext $context)
 	{
 		$this->refreshTriggerAction($context);
 	}
