@@ -40,38 +40,12 @@ use Application\DeskPRO\Entity\Person;
 use Symfony\Component\HttpFoundation\Request;
 use Application\AgentBundle\Controller\AbstractController;
 
-class AgentRequestContext
+class AgentRequestContext extends AbstractRequestContext
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
-
-	/**
-	 * @var \Symfony\Component\HttpFoundation\Request
-	 */
-	private $request;
-
 	/**
 	 * @var \Application\DeskPRO\App\Native\NativeApp
 	 */
 	private $native_app;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	private $agent;
-
-	/**
-	 * @var string
-	 */
-	private $action;
-
-	/**
-	 * @var \Application\AgentBundle\Controller\AbstractController
-	 */
-	private $controller;
-
 
 	/**
 	 * @param DeskproContainer $container
@@ -79,34 +53,26 @@ class AgentRequestContext
 	 * @param AbstractController $controller
 	 * @param NativeApp $native_app
 	 * @param Person $agent
-	 * @param string $action
+	 * @param $action
 	 */
-	public function __construct(DeskproContainer $container, Request $request, AbstractController $controller,  NativeApp $native_app, Person $agent, $action)
+	public function __construct(
+		DeskproContainer $container,
+		Request $request,
+		AbstractController $controller,
+		NativeApp $native_app,
+		Person $agent,
+		$action
+	)
 	{
-		$this->container  = $container;
-		$this->request    = $request;
-		$this->controller = $controller;
 		$this->native_app = $native_app;
-		$this->agent      = $agent;
-		$this->action     = $action;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getAction()
-	{
-		return $this->action;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function getAgent()
-	{
-		return $this->agent;
+		parent::__construct(
+			$container,
+			$request,
+			$controller,
+			$agent,
+			$native_app->getPackage(),
+			$action
+		);
 	}
 
 
@@ -134,95 +100,6 @@ class AgentRequestContext
 	 */
 	public function getAppService($name)
 	{
-		return $this->container->getAppManager()->getService($name, $this->getApp());
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\AppPackage
-	 */
-	public function getPackage()
-	{
-		return $this->native_app->getPackage();
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return $this->container;
-	}
-
-
-	/**
-	 * @return \Symfony\Component\HttpFoundation\Request
-	 */
-	public function getRequest()
-	{
-		return $this->request;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-	public function getDb()
-	{
-		return $this->container->getDb();
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Input\Reader
-	 */
-	public function getIn()
-	{
-		return $this->container->getIn();
-	}
-
-
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getEm()
-	{
-		return $this->container->getEm();
-	}
-
-
-	/**
-	 * @param string $message
-	 * @return \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-	 */
-	public function createNotFoundException($message = 'Not Found')
-	{
-		return $this->controller->createNotFoundException();
-	}
-
-	/**
-	 * Create a JSON response.
-	 *
-	 * @param string|array $content
-	 * @param int $status_code
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function createJsonResponse($content, $status_code = 200)
-	{
-		return $this->controller->createJsonResponse($content, $status_code);
-	}
-
-
-	/**
-	 * Create a JSON response.
-	 *
-	 * @param string $content
-	 * @param int $status_code
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function createResponse($content, $status_code = 200)
-	{
-		return $this->controller->createResponse($content, $status_code);
+		return $this->getContainer()->getAppManager()->getService($name, $this->getApp());
 	}
 }

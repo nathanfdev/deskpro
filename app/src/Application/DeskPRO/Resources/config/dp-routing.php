@@ -33,6 +33,12 @@ $collection->create('serve_blob_sizefit', array(
 	'controller'  => '(see: serve_file.php)',
 ));
 
+$collection->create('serve_blob_app_asset', array(
+	'path'         => '/file.php/apps/{app_name}/{type}/{path}',
+	'requirements' => array('app_name' => '[a-zA-Z0-9\-\_\.]+', 'type' => '(app|js|css|html|res)', 'path' => '.*+'),
+	'controller'   => '(see: serve_file.php)',
+));
+
 $collection->create('serve_person_picture', array(
 	'path'          => '/file.php/avatar/{person_id}',
 	'controller'    => '(see: serve_file.php)',

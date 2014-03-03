@@ -261,17 +261,10 @@ class AppManager implements AppManagerInterface
 			return $this->native_apps[$app_id];
 		}
 
-		if (isset($this->native_package_configs[$app->package->name])) {
-			$native_config = $this->native_package_configs[$app->package->name];
-		} else {
-			$native_config = NativePackageConfig::createFromPackage($app->package);
-			$this->native_package_configs[$app->package->name] = $native_config;
-		}
-
+		$native_config = $this->getNativePackageConfig($app->package);
 		$native_app = new NativeApp($app, $native_config);
 		$this->native_apps[$app_id] = $native_app;
 
-		$this->_initNativePackageAutoload($native_app);
 		$this->app_service_container->registerNativeApp($native_app);
 
 		return $native_app;
@@ -279,14 +272,38 @@ class AppManager implements AppManagerInterface
 
 
 	/**
-	 * @param NativeApp $native_app
+	 * @param AppPackage $package
+	 * @return NativePackageConfig
+	 * @throws \InvalidArgumentException
 	 */
-	private function _initNativePackageAutoload(NativeApp $native_app)
+	public function getNativePackageConfig(AppPackage $package)
+	{
+		if (!$package->native_name) {
+			throw new \InvalidArgumentException();
+		}
+
+		if (isset($this->native_package_configs[$package->name])) {
+			return $this->native_package_configs[$package->name];
+		} else {
+			$native_config = NativePackageConfig::createFromPackage($package);
+			$this->native_package_configs[$package->name] = $native_config;
+		}
+
+		$this->_initNativePackageAutoload($native_config);
+
+		return $native_config;
+	}
+
+
+	/**
+	 * @param NativePackageConfig $native_config
+	 */
+	private function _initNativePackageAutoload(NativePackageConfig $native_config)
 	{
 		static $has_reg = array();
 
-		$namespace = $native_app->getClassNamespace();
-		$directory = $native_app->getNativeDir();
+		$namespace = $native_config->getClassNamespace();
+		$directory = $native_config->getNativeDir();
 
 		if (isset($has_reg[$namespace])) {
 			return;

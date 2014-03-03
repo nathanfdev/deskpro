@@ -1602,6 +1602,13 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'apps.apps.install_package',
+		url: '/{name:[a-zA-Z0-9\\-_\\.]+\.install$}',
+		templateName: 'Apps/package-install.html',
+		controller: 'Admin_Apps_Ctrl_PackageInstall'
+	});
+
+	routes.push({
 		id: 'apps.apps.package',
 		url: '/{name:[a-zA-Z0-9\\-_\\.]+}',
 		templateName: 'Apps/package.html',

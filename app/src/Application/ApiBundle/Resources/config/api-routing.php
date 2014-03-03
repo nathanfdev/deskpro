@@ -4219,4 +4219,20 @@ $collection->create('api_apps_install', array(
 	'methods'     => array('PUT'),
 ));
 
+$collection->create('api_apps_package_exec', array(
+	'path'         => '/apps/packages/{name}/{action}',
+	'controller'   => 'ApiBundle:Apps:execPackage',
+	'defaults'     => array('action' => 'default'),
+	'methods'      => array('GET', 'POST', 'PUT', 'DELETE'),
+	'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+')
+));
+
+$collection->create('api_apps_instance_exec', array(
+	'path'         => '/apps/instances/{id}/{action}',
+	'controller'   => 'ApiBundle:Apps:execInstance',
+	'defaults'     => array('action' => 'default'),
+	'methods'      => array('GET', 'POST', 'PUT', 'DELETE'),
+	'requirements' => array('id' => '\d+')
+));
+
 return $collection;

@@ -32,75 +32,18 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\App\Native;
+namespace deskpro_joomla\RequestHandler;
 
-use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
+use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
 
-class NativeApp
+class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\AppInstance
+	 * {@inheritDoc}
 	 */
-	private $app;
-
-	/**
-	 * @var NativePackageConfig
-	 */
-	private $config;
-
-
-	/**
-	 * @param AppInstance $app
-	 * @param NativePackageConfig $config
-	 */
-	public function __construct(AppInstance $app, NativePackageConfig $config)
+	public function handleApiPackageRequest(ApiPackageRequestContext $context)
 	{
-		$this->app    = $app;
-		$this->config = $config;
-	}
-
-
-	/**
-	 * @return NativePackageConfig
-	 */
-	public function getConfig()
-	{
-		return $this->config;
-	}
-
-
-	/**
-	 * @return AppInstance
-	 */
-	public function getApp()
-	{
-		return $this->app;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\AppPackage
-	 */
-	public function getPackage()
-	{
-		return $this->app->package;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getClassNamespace()
-	{
-		return $this->config->getClassNamespace();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getNativeDir()
-	{
-		return $this->config->getNativeDir();
+		return $context->createJsonResponse(array('yay' => true, 'action' => $context->getAction()));
 	}
 }

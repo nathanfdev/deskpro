@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Domain\DomainObject;
@@ -116,6 +117,11 @@ class AppAsset extends DomainObject
 		$data['tag']      = $this->tag;
 		$data['metadata'] = $this->metadata;
 		$data['blob']     = $this->blob->toApiData(false, $deep);
+
+		if ($this->package->native_name && $this->tag && in_array($this->tag, array('js', 'css', 'html', 'res'))) {
+			$data['blob']['download_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
+			$data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
+		}
 
 		if ($primary) {
 			$data['package'] = $this->package->toApiData(false, $deep);

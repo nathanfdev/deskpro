@@ -30,6 +30,17 @@ define ->
 
 
 		###
+    	# Sets a template in the template cache
+    	#
+    	# @param {String} view
+    	# @param {String} source
+    	###
+		setTemplate: (view, source) ->
+			view = @commonName(view)
+			@$templateCache.put(view, source)
+
+
+		###
     	# Execute the pending loads by ending the http request.
     	#
     	# @return {promise}

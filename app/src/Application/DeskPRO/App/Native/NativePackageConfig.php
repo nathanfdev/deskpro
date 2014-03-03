@@ -41,6 +41,16 @@ use Orb\Util\OptionsArray;
 class NativePackageConfig
 {
 	/**
+	 * @var string
+	 */
+	private $native_name;
+
+	/**
+	 * @var string
+	 */
+	private $class_namespace;
+
+	/**
 	 * @var OptionsArray
 	 */
 	private $config;
@@ -58,17 +68,47 @@ class NativePackageConfig
 			$config = array();
 		}
 
-		return new self($config);
+		return new self($package->name, $config);
 	}
 
 
 	/**
+	 * @param string $native_name
 	 * @param array $config
 	 */
-	public function __construct(array $config)
+	public function __construct($native_name, array $config)
 	{
+		$this->native_name = $native_name;
+
 		$config = Arrays::flattenKeyValueArray($config);
 		$this->config =  new OptionsArray($config);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getNativeName()
+	{
+		return $this->native_name;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getApiPackageRequestHandlerClass()
+	{
+		return $this->config->get('api.package_request_handler', null);
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getApiAppRequestHandlerClass()
+	{
+		return $this->config->get('api.app_request_handler', null);
 	}
 
 
@@ -105,5 +145,27 @@ class NativePackageConfig
 	public function getServices()
 	{
 		return $this->config->get('services', array());
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getClassNamespace()
+	{
+		if ($this->class_namespace === null) {
+			$this->class_namespace = preg_replace('#[^a-zA-Z0-9]#', '_', $this->native_name);
+		}
+
+		return $this->class_namespace;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getNativeDir()
+	{
+		return DP_ROOT.'/apps/' . $this->native_name . '/native';
 	}
 }

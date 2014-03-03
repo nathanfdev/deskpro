@@ -36,11 +36,14 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App\Native\EventHandler\EventContext;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\NativePackageConfig;
+use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Imagine\Image\Box as ImageBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class AppsController extends AbstractController
 {
@@ -650,5 +653,86 @@ class AppsController extends AbstractController
 			array('id' => $app->id),
 			$this->generateUrl('api_apps_instance', array('id' => $app->id))
 		);
+	}
+
+
+	####################################################################################################################
+	# exec-package-action
+	####################################################################################################################
+
+	public function execPackageAction(Request $request, $name, $action)
+	{
+		$manager = $this->container->getAppManager();
+
+		if (!$manager->hasPackage($name)) {
+			throw $this->createNotFoundException();
+		}
+
+		$package = $manager->getPackage($name);
+		if (!$package->native_name) {
+			throw $this->createNotFoundException();
+		}
+
+		$native_config = $manager->getNativePackageConfig($package);
+
+		$handler_class = $native_config->getApiPackageRequestHandlerClass();
+		if (!$handler_class) {
+			return $this->createNotFoundException();
+		}
+
+		$context = new ApiPackageRequestContext(
+			$this->getContainer(),
+			$request,
+			$this,
+			$this->person,
+			$package,
+			$action
+		);
+
+		$handler = new $handler_class();
+		$result = $handler->handleApiPackageRequest($context);
+
+		return $result;
+	}
+
+
+	####################################################################################################################
+	# exec-app-action
+	####################################################################################################################
+
+	public function execAppAction(Request $request, $id, $action)
+	{
+		$manager = $this->container->getAppManager();
+
+		if (!$manager->hasApp($id)) {
+			throw $this->createNotFoundException();
+		}
+
+		$app = $manager->getApp($id);
+		$package = $app->package;
+		if (!$package->native_name) {
+			throw $this->createNotFoundException();
+		}
+
+		$native_config = $manager->getNativePackageConfig($package);
+
+		$handler_class = $native_config->getApiAppRequestHandlerClass();
+		if (!$handler_class) {
+			return $this->createNotFoundException();
+		}
+
+		$context = new ApiPackageRequestContext(
+			$this->getContainer(),
+			$request,
+			$this,
+			$this->person,
+			$package,
+			$action
+		);
+
+		$handler = new $handler_class();
+		$result = $handler->handleApiAppRequest($context);
+
+		return $result;
 	}
 }

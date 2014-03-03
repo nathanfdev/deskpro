@@ -44,6 +44,19 @@
 
 
       /*
+        	 * Sets a template in the template cache
+        	 *
+        	 * @param {String} view
+        	 * @param {String} source
+       */
+
+      Admin_Main_Service_TemplateManager.prototype.setTemplate = function(view, source) {
+        view = this.commonName(view);
+        return this.$templateCache.put(view, source);
+      };
+
+
+      /*
         	 * Execute the pending loads by ending the http request.
         	 *
         	 * @return {promise}

@@ -8626,6 +8626,14 @@ div.dp-appalt-section > section header h3 {
   text-align: center;
 }
 
+.dp-paneblock .dp-sep-top {
+  border-top: 1px dotted #ccc !important;
+}
+
+.dp-paneblock .dp-sep-bottom {
+  border-bottom: 1px dotted #ccc;
+}
+
 .dp-layout-list-editpane .dp-paneblock,
 .dp-layout-list-editpane .dp-layout-loading {
   margin-left: 0;
@@ -9661,6 +9669,15 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
           background-clip: padding-box;
+}
+
+.form-control.camo-input {
+  border: 1px solid transparent;
+}
+
+.form-control.camo-input:hover,
+.form-control.camo-input:focus {
+  border: 1px solid #cccccc;
 }
 
 .labels-group label {

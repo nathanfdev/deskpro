@@ -35,6 +35,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 							timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
 							config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
 
+					config.url = config.url.replace(/^DP_URL\//g, window.DP_BASE_URL.replace(/\/+$/, '')+'/')
+
 					return config
 
 				response: (response) ->

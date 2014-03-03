@@ -32,75 +32,74 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\App\Native;
+namespace Application\DeskPRO\App\Native\RequestHandler;
 
-use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\App\Native\NativeApp;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
+use Symfony\Component\HttpFoundation\Request;
+use Application\AgentBundle\Controller\AbstractController;
 
-class NativeApp
+class ApiAppRequestContext extends AbstractRequestContext
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\AppInstance
+	 * @var \Application\DeskPRO\App\Native\NativeApp
 	 */
-	private $app;
+	private $native_app;
 
 	/**
-	 * @var NativePackageConfig
+	 * @param DeskproContainer $container
+	 * @param Request $request
+	 * @param AbstractController $controller
+	 * @param NativeApp $native_app
+	 * @param Person $agent
+	 * @param $action
 	 */
-	private $config;
-
-
-	/**
-	 * @param AppInstance $app
-	 * @param NativePackageConfig $config
-	 */
-	public function __construct(AppInstance $app, NativePackageConfig $config)
+	public function __construct(
+		DeskproContainer $container,
+		Request $request,
+		AbstractController $controller,
+		NativeApp $native_app,
+		Person $agent,
+		$action
+	)
 	{
-		$this->app    = $app;
-		$this->config = $config;
+		$this->native_app = $native_app;
+		parent::__construct(
+			$container,
+			$request,
+			$controller,
+			$agent,
+			$native_app->getPackage(),
+			$action
+		);
 	}
 
 
 	/**
-	 * @return NativePackageConfig
+	 * @return \Application\DeskPRO\Entity\AppInstance
 	 */
-	public function getConfig()
+	public function getNativeApp()
 	{
-		return $this->config;
+		return $this->native_app;
 	}
 
 
 	/**
-	 * @return AppInstance
+	 * @return \Application\DeskPRO\Entity\AppInstance
 	 */
 	public function getApp()
 	{
-		return $this->app;
+		return $this->native_app->getApp();
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\AppPackage
+	 * @param string $name
+	 * @return mixed
 	 */
-	public function getPackage()
+	public function getAppService($name)
 	{
-		return $this->app->package;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getClassNamespace()
-	{
-		return $this->config->getClassNamespace();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getNativeDir()
-	{
-		return $this->config->getNativeDir();
+		return $this->getContainer()->getAppManager()->getService($name, $this->getApp());
 	}
 }
