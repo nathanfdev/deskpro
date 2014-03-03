@@ -39,7 +39,7 @@ use Application\DeskPRO\App\Native\EventHandler\EventHandlerInterface;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
 
-class InstallerHandler implements InstallerHandlerInterface, EventHandlerInterface
+class InstallerHandler implements InstallerHandlerInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -68,7 +68,11 @@ class InstallerHandler implements InstallerHandlerInterface, EventHandlerInterfa
 	 */
 	public function updateSettings(InstallerContext $context)
 	{
-		$this->_doInstall($context);
+		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
+		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
+		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
+		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
+		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
 	}
 
 
@@ -86,24 +90,6 @@ class InstallerHandler implements InstallerHandlerInterface, EventHandlerInterfa
 	 */
 	private function _doInstall(InstallerContext $context)
 	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
-	}
-
-
-	/**
-	 * @param EventContext $context
-	 * @return void
-	 */
-	public function handleEvent(EventContext $context)
-	{
-		if (!$context->isEventType('settings.updated')) {
-			return;
-		}
-
 		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
 		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
 		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
