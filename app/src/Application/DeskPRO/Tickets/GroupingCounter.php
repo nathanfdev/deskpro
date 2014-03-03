@@ -619,8 +619,13 @@ class GroupingCounter
 
 			case TicketSearch::TERM_LANGUAGE:
 				$this->grouping_summary = $tr->phrase('agent.general.language');
-				$titles = App::getDataService('Language')->getTitles();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+				$langs = App::getContainer()->getLanguageData();
+				$tr = App::getContainer()->getTranslator();
+
+				$titles = array(0 => $tr->phrase('agent.general.none'));
+				foreach ($langs->getAll() as $l) {
+					$titles[$l->id] = $tr->getPhraseObject($l);
+				}
 				break;
 
 			case TicketSearch::TERM_USER_WAITING:
