@@ -24,7 +24,6 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 				form_template = @packageName + '/Install/install.html'
 				installCtrl = null
 				loadingAssets = []
-
 				@$scope.has_display_settings = @pack.settings_def.filter( (x) -> x.type != 'hidden').length > 0
 
 				@$scope.setting_values = { dp_app: { title: @pack.title }}

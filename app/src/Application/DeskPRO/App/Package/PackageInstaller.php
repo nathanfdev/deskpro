@@ -261,14 +261,29 @@ class PackageInstaller
 	 */
 	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
 	{
-		$asset = $def->getTaggedAsset($tag);
-		if ($asset) {
-			// Asset already exists, replace it
-			if ($asset->blob) {
-				$old_blobs[] = $asset->blob;
+		if ($tag) {
+			if ($filename) {
+				$asset = null;
+				foreach ($def->getTaggedAssets($tag) as $a) {
+					if ($a->name == $filename) {
+						$asset = $a;
+						break;
+					}
+				}
+			} else {
+				$asset = $def->getTaggedAsset($tag);
 			}
-			$asset->blob = $blob;
-		} else {
+
+			if ($asset) {
+				// Asset already exists, replace it
+				if ($asset->blob) {
+					$old_blobs[] = $asset->blob;
+				}
+				$asset->blob = $blob;
+			}
+		}
+
+		if (!$asset) {
 			// New asset
 			$asset = $def->addAssetFromBlob($blob);
 		}

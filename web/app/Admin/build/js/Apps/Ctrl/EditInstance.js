@@ -15,15 +15,32 @@
 
       Admin_Apps_Ctrl_EditInstance.CTRL_AS = 'Ctrl';
 
-      Admin_Apps_Ctrl_EditInstance.DEPS = [];
+      Admin_Apps_Ctrl_EditInstance.DEPS = ['$http', 'dpTemplateManager'];
 
       Admin_Apps_Ctrl_EditInstance.prototype.init = function() {
         this.instanceId = parseInt(this.$stateParams.id);
+        this.$scope.getController = (function(_this) {
+          return function() {
+            return _this;
+          };
+        })(this);
+        this.$scope.setPresaveCallback = (function(_this) {
+          return function(callback) {
+            return _this.presaveCallback = callback;
+          };
+        })(this);
+        this.$scope.enableCustomFooter = (function(_this) {
+          return function() {
+            return _this.$scope.has_own_footer = true;
+          };
+        })(this);
+        this.presaveCallback = null;
       };
 
       Admin_Apps_Ctrl_EditInstance.prototype.initialLoad = function() {
-        var d;
+        var d, d2;
         d = this.$q.defer();
+        d2 = this.$q.defer();
         this.Api.sendDataGet({
           app: '/apps/instances/' + this.instanceId
         }).then((function(_this) {
@@ -33,36 +50,106 @@
               pack: '/apps/packages/' + _this.app.package_name
             }).then(function(result) {
               _this.pack = result.data.pack['package'];
+              _this.packageName = _this.pack.name;
               return d.resolve();
             });
           };
         })(this));
         d.promise.then((function(_this) {
           return function() {
+            var form_template, getResourcePath, installCtrl, jsDeferred, loadingAssets, path;
             _this.$scope.pack = _this.pack;
             _this.$scope.setting_values = _this.app.settings;
             if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
               _this.$scope.setting_values = {};
             }
-            return _this.$scope.setting_values.dp_app = {
+            _this.$scope.setting_values.dp_app = {
               title: _this.app.title
             };
+            _this.$scope.has_display_settings = _this.pack.settings_def.filter(function(x) {
+              return x.type !== 'hidden';
+            }).length > 0;
+            form_template = _this.packageName + '/AdminInterface/Install/settings.html';
+            installCtrl = null;
+            loadingAssets = [];
+            getResourcePath = function(tag, name) {
+              var asset;
+              asset = _this.pack.assets.filter(function(x) {
+                return x.tag === tag && x.name === name;
+              })[0];
+              if (asset) {
+                return asset.blob.relative_url;
+              } else {
+                return null;
+              }
+            };
+            if (path = getResourcePath('html', 'AdminInterface/Install/settings.html')) {
+              loadingAssets.push(_this.$http.get(path, {
+                responseType: "text"
+              }).success(function(data) {
+                console.log(form_template);
+                return _this.dpTemplateManager.setTemplate(form_template, data);
+              }));
+            }
+            if (path = getResourcePath('js', 'AdminInterface/Install/settings.js')) {
+              jsDeferred = _this.$q.defer();
+              require([path], function(c) {
+                installCtrl = c;
+                return jsDeferred.resolve();
+              });
+              loadingAssets.push(jsDeferred.promise);
+            }
+            if (loadingAssets.length) {
+              return _this.$q.all(loadingAssets).then(function() {
+                if (installCtrl) {
+                  _this.$scope.install_ctrl = installCtrl;
+                } else {
+                  _this.$scope.install_ctrl = [function() {}];
+                }
+                if (form_template) {
+                  _this.$scope.form_template = form_template;
+                  _this.$scope.default_form = false;
+                } else {
+                  _this.$scope.default_form = true;
+                }
+                return d2.resolve();
+              });
+            } else {
+              _this.$scope.default_form = true;
+              return d2.resolve();
+            }
           };
         })(this));
-        return d.promise;
+        return d2.promise;
       };
-
-
-      /*
-        	 * Saves settings
-       */
 
       Admin_Apps_Ctrl_EditInstance.prototype.saveSettings = function() {
         var postData;
+        this.startSpinner('saving_settings');
+        if (this.presaveCallback) {
+          this.presaveCallback().then((function(_this) {
+            return function() {
+              return _this.doSaveSettings()["catch"](function() {
+                return _this.stopSpinner('saving_settings', true);
+              });
+            };
+          })(this), (function(_this) {
+            return function() {
+              return _this.stopSpinner('saving_settings', true);
+            };
+          })(this));
+        } else {
+          this.doSaveSettings()["finally"]((function(_this) {
+            return function() {
+              return _this.stopSpinner('saving_settings', true);
+            };
+          })(this))({
+            doSaveSettings: function() {}
+          });
+        }
         postData = {
           settings: this.$scope.setting_values
         };
-        this.startSpinner('saving_settings');
         return this.Api.sendPostJson("/apps/instances/" + this.instanceId, postData).then((function(_this) {
           return function() {
             return _this.stopSpinner('saving_settings').then(function() {
@@ -70,9 +157,7 @@
               return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
             });
           };
-        })(this), function() {
-          return this.stopSpinner('saving_settings');
-        });
+        })(this));
       };
 
 
