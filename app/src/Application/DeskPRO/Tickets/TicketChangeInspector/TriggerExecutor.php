@@ -71,6 +71,11 @@ class TriggerExecutor
 	 */
 	protected $event_types = array();
 
+	/**
+	 * @var bool
+	 */
+	private $verbose_logging = false;
+
 	protected $all_triggers = array();
 	protected $is_performing = false;
 	protected $is_cancelled = false;
@@ -80,6 +85,16 @@ class TriggerExecutor
 		$this->tracker = $tracker;
 		$this->ticket = $tracker->getTicket();
 	}
+
+
+	/**
+	 * @param $verbose_logging
+	 */
+	public function setVerboseLogging($verbose_logging)
+	{
+		$this->verbose_logging = (bool)$verbose_logging;
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Tickets\TicketChangeTracker
@@ -132,7 +147,11 @@ class TriggerExecutor
 			}
 
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
-				$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+				if ($this->verbose_logging) {
+					$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+				} else {
+					$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger}");
+				}
 
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
@@ -439,7 +458,11 @@ class TriggerExecutor
 			}
 
 			$trigger_time = microtime(true);
-			$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->terms_any,true) . print_r($trigger->actions, true));
+			if ($this->verbose_logging) {
+				$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->terms_any,true) . print_r($trigger->actions, true));
+			} else {
+				$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger}");
+			}
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
 
 				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Match', microtime(true)-$trigger_time));
@@ -674,7 +697,11 @@ class TriggerExecutor
 
 			foreach ($all_triggers as $trigger) {
 				$trigger_time = microtime(true);
-				$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+				if ($this->verbose_logging) {
+					$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+				} else {
+					$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger}");
+				}
 				if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
 
 					$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Match', microtime(true)-$trigger_time));

@@ -80,15 +80,38 @@ class DetectFilterMatches
 	 */
 	protected $filter_changes = null;
 
+	/**
+	 * @var bool
+	 */
+	private $verbose_logging = false;
+
+
+	/**
+	 * @param TicketChangeTracker $tracker
+	 */
 	public function __construct(TicketChangeTracker $tracker)
 	{
 		$this->tracker = $tracker;
 	}
 
+
+	/**
+	 * @param $verbose_logging
+	 */
+	public function setVerboseLogging($verbose_logging)
+	{
+		$this->verbose_logging = (bool)$verbose_logging;
+	}
+
+
+	/**
+	 * @param string $message
+	 */
 	protected function logMessage($message)
 	{
 		$this->tracker->logMessage('[DetectFilterMatches] ' . $message);
 	}
+
 
 	/**
 	 * Read the changelog to fetch an array of actual changed fields that we
@@ -247,7 +270,9 @@ class DetectFilterMatches
 				'filter' => $filter
 			);
 
-			$this->logMessage("Filter {$filter['id']} {$filter['title']}");
+			if ($this->verbose_logging) {
+				$this->logMessage("Filter {$filter['id']} {$filter['title']}");
+			}
 
 			$agent_scopes = null;
 
@@ -270,7 +295,10 @@ class DetectFilterMatches
 					$affected_agent_ids[] = $a->getId();
 				}
 			}
-			$this->logMessage("-- Affected agents: " . implode(', ', $affected_agent_ids));
+
+			if ($this->verbose_logging) {
+				$this->logMessage("-- Affected agents: " . implode(', ', $affected_agent_ids));
+			}
 
 			if (!$agent_scopes) {
 				continue;
@@ -348,21 +376,33 @@ class DetectFilterMatches
 				}
 
 				if (!$orig_match) {
-					$this->logMessage("-- Orig failed term: $orig_match_failterm");
+					if ($this->verbose_logging) {
+						$this->logMessage("-- Orig failed term: $orig_match_failterm");
+					}
 				}
 				if (!$new_match) {
-					$this->logMessage("-- New failed term: $new_match_failterm");
+					if ($this->verbose_logging) {
+						$this->logMessage("-- New failed term: $new_match_failterm");
+					}
 				}
 
 				if (!$orig_match AND !$new_match) {
-					$this->logMessage("-- Agent Scope {$agent->id}: Nothing changed (both no-match)");
+					if ($this->verbose_logging) {
+						$this->logMessage("-- Agent Scope {$agent->id}: Nothing changed (both no-match)");
+					}
 				} else if ($orig_match AND $new_match) {
-					$this->logMessage("-- Agent Scope {$agent->id}:  Nothing changed (both match)");
+					if ($this->verbose_logging) {
+						$this->logMessage("-- Agent Scope {$agent->id}:  Nothing changed (both match)");
+					}
 				} else if ($orig_match AND !$new_match) {
-					$this->logMessage("-- Agent Scope {$agent->id}: Removed from list");
+					if ($this->verbose_logging) {
+						$this->logMessage("-- Agent Scope {$agent->id}: Removed from list");
+					}
 					$changed[$filter->id]['del'][] = $agent;
 				} else if (!$orig_match AND $new_match) {
-					$this->logMessage("-- Agent Scope {$agent->id}: Added to list");
+					if ($this->verbose_logging) {
+						$this->logMessage("-- Agent Scope {$agent->id}: Added to list");
+					}
 					$changed[$filter->id]['add'][] = $agent;
 				}
 
@@ -381,7 +421,10 @@ class DetectFilterMatches
 
 		$this->logMessage('Found ' . count($this->filter_changes) . ' matches');
 		$this->logMessage("Full check done in iterations: " . $scope_counts . "  in time " . sprintf('%.5f', $total_time) . " seconds");
-		$this->logMessage(\Orb\Util\Util::debugVar($this->filter_changes));
+
+		if ($this->verbose_logging) {
+			$this->logMessage(\Orb\Util\Util::debugVar($this->filter_changes));
+		}
 
 		return $this->filter_changes;
 	}
