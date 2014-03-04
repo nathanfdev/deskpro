@@ -26,53 +26,55 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ */
 
-namespace Application\AdminInterfaceBundle\Controller;
+namespace Application\DeskPRO\App\Assets;
 
-use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
-use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\App\AppManagerInterface;
+use Application\DeskPRO\Assets\RequireJsConfigGenerator as BaseRequireJsConfigGenerator;
 
-class IndexController extends AbstractController
+class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 {
-	public function interfaceAction()
+	public function __construct(AppManagerInterface $manager, $native_file_root = null)
 	{
-		$token = new ApiToken();
-		$token->scope = ApiToken::SCOPE_SESSION;
-		$token->person = $this->person;
-		$token->date_expires = new \DateTime("+1 hour");
+		foreach ($manager->getAllPackages() as $package) {
+			if ($native_file_root && $package->native_name) {
+				$native_baseurl = $native_file_root . '/' . $package->native_name;
+			} else {
+				$native_baseurl = null;
+			}
 
-		$this->em->persist($token);
-		$this->em->flush();
+			$appAsset = $package->getTaggedAsset('app_js');
+			$name = "{$package->name}/app";
 
-		// Default help states
-		$help_states = $this->db->fetchAllKeyValue("
-			SELECT name, value_str
-			FROM people_prefs
-			WHERE name LIKE 'inhelp.%'
-		");
+			if ($appAsset) {
+				if ($native_baseurl) {
+					$appjs_path = preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js');
+				} else {
+					$appjs_path = preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl());
+				}
+				$this->addPath($name, $appjs_path);
+			}
 
-		$inhelp_states = array();
-		foreach ($help_states as $k => $v) {
-			$k = preg_replace('#^inhelp\.#', '', $k);
-			$inhelp_states[$k] = $v;
+			// If its a native app, then we can get away with just using the prefix path
+			if ($native_baseurl) {
+				$name = $package->name;
+				$asset_path = $native_baseurl . '/js';
+				$this->addPath($name, $asset_path);
+
+			// Otherwise, we need to use the download URL that will contain unique auth codes
+			} else {
+				foreach ($package->getTaggedAssets('js') as $asset) {
+					$name = $package->name . '/' . str_replace('.js', '', $asset->name);
+					$asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl());
+
+					$this->addPath($name, $asset_path);
+				}
+			}
 		}
-
-		$rjs_apps = new AppsRequireJsConfigGenerator(
-			$this->container->getAppManager(),
-			$this->generateUrl('serve_file_root') . '/apps'
-		);
-		$rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();
-
-		return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
-			'api_token'     => $token,
-			'session'       => $this->session->getEntity(),
-			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-			'inhelp_states' => $inhelp_states,
-			'rjs_apps_config' => $rjs_apps_config,
-		));
 	}
 }

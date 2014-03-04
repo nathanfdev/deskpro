@@ -34,14 +34,14 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Assets\RequireJsConfigGenerator;
+use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
 use Application\AgentBundle\FragmentRouter;
 
-use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
-use Symfony\Component\HttpFoundation\Response;
 
 class MiscController extends AbstractController
 {
@@ -846,83 +846,29 @@ JS;
 	{
 		$manager = $this->container->getAppManager()->getScopeFilter('agent');
 
-		$bust = '';
+		$rjs = new RequireJsConfigGenerator();
+		$rjs->setBaseUrlExpr('ASSETS_BASE_URL');
+
 		if (App::isDebug()) {
-			$bust = '"urlArgs": "bust=" + (new Date()).getTime(),';
+			$rjs->setUrlArgsExpr('"bust=" + (new Date()).getTime()');
 		}
 
-		$config_path = str_replace('.js', '', $this->generateUrl('agent_apps_config_js'));
-		$source_paths_head = <<<PATHS
-		"DeskPRO/App": "javascripts/DeskPRO/App",
-		"AppPlatform": "javascripts/DeskPRO/App/Platform",
-		"AppPlatformConfig": "$config_path",
-		"DeskPRO/Util/Arrays": "app/DeskPRO/build/js/Util/Arrays",
-		"DeskPRO/Util/Functions": "app/DeskPRO/build/js/Util/Functions",
-		"DeskPRO/Util/Strings": "app/DeskPRO/build/js/Util/Strings",
-		"DeskPRO/Util/Util": "app/DeskPRO/build/js/Util/Util",
-		"AgentApp": "javascripts/DeskPRO/App/AgentApp",
-		"angular": ASSETS_BASE_URL+"/app/bower_components/angular/angular",
-		"angularAnimate": ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min",
-		"angularSanitize": ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"
-PATHS;
+		$rjs->addPath('DeskPRO/App', 'javascripts/DeskPRO/App');
+		$rjs->addPath('AppPlatform', 'javascripts/DeskPRO/App/Platform');
+		$rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
+		$rjs->addPath('DeskPRO/Util', 'app/DeskPRO/build/js/Util');
+		$rjs->addPath('AgentApp', 'javascripts/DeskPRO/App/AgentApp');
+		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular"');
+		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
+		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
 
+		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
+		$rjs->addPathsFromGenerator($rjs_apps);
 
-		$source_paths = array();
-		$requires = array('"angular"', '"angularAnimate"', '"angularSanitize"', '"AppPlatform"', '"AppPlatformConfig"');
-
-		foreach ($manager->getAllPackages() as $package) {
-			if ($package->native_name) {
-				$native_baseurl = $this->generateUrl('serve_file_root') . '/apps/' . $package->native_name;
-			} else {
-				$native_baseurl = null;
-			}
-
-			$appAsset = $package->getTaggedAsset('app_js');
-			$name = "{$package->name}/app";
-
-			if ($appAsset) {
-				if ($native_baseurl) {
-					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js') . "\"";
-				} else {
-					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl()) . "\"";
-				}
-			}
-			foreach ($package->getTaggedAssets('js') as $asset) {
-
-				// A JS file named js/MyController becomes
-				// a path called 'com.deskpro.apps.test/MyController'
-				$name = $package->name . '/js/' . str_replace('.js', '', $asset->name);
-
-				if ($native_baseurl) {
-					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $native_baseurl . '/js/' . $asset->name) . "\"";
-				} else {
-					$source_paths[] = "\t\t\"$name\": \"" . preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl()) . "\"";
-				}
-			}
-		}
-
-		$source_paths = implode(",\n", $source_paths);
-		$requires = implode(', ', $requires);
-
-		if ($source_paths) {
-			$source_paths_head .= ",\n";
-		}
+		$rjs_config = $rjs->generateRequireJsConfigCode();
 
 		$js = <<<JS
-requirejs.config({
-	"baseUrl": ASSETS_BASE_URL,
-	$bust
-	"urlArgs": "bust=" + (new Date()).getTime(),
-	"shim": {
-		'angular':              {'exports' : 'angular'},
-		'angularAnimate':       ['angular'],
-		'angularSanitize':      ['angular']
-	},
-	"paths": {
-$source_paths_head
-$source_paths
-	}
-});
+$rjs_config
 requirejs(['AppPlatform', 'AppPlatformConfig', 'AgentApp', 'angular'], function(AppPlatform, AppPlatformConfig, AgentApp, angular) {
 	angular.element(document).ready(function() {
 		angular.bootstrap(document, ['AgentApp']);
