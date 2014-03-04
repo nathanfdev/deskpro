@@ -3222,6 +3222,12 @@ class TicketController extends AbstractController
 
 				$newticket->save();
 				$ticket = $newticket->getTicket();
+                                
+                                $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+                                $ticket->getLabelManager()->setLabelsArray($labels);
+                                
+                                $this->em->persist($ticket);
 
 				if ($this->in->getUint('parent_ticket_id')) {
 					$parent_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('parent_ticket_id'));
