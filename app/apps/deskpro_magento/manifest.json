@@ -37,12 +37,14 @@
 			"name": "widget_ticket",
 			"type": "checkbox",
 			"label": "Enable Ticket Widget",
+			"checkbox_label": "Enable",
 			"description": "Show the Magento widget on tickets",
 			"native_only": false
 		},
 		{
 			"name": "widget_profile",
 			"type": "checkbox",
+			"checkbox_label": "Enable",
 			"label": "Enable Profile Widget",
 			"description": "Show the Magento widget on user profiles",
 			"native_only": false
