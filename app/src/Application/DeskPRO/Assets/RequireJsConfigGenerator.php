@@ -202,7 +202,7 @@ class RequireJsConfigGenerator
 		}
 
 		if ($this->shims) {
-			$js .= "\t\"shims\": {\n";
+			$js .= "\t\"shim\": {\n";
 
 			$parts = array();
 			foreach ($this->shims as $k => $v) {

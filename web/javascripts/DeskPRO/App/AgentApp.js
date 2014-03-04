@@ -1,4 +1,4 @@
-define(['angular', 'DeskPRO/Util/Strings'], function(angular) {
+define(['angular'], function(angular) {
 	var AgentApp = angular.module('AgentApp', []);
 
 	//-------------------------------------------------------------------------
