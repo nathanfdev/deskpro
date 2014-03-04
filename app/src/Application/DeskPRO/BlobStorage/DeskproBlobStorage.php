@@ -316,7 +316,7 @@ class DeskproBlobStorage implements Loggable
 			$this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromFile) All adapters failed");
 
 			$this->em->remove($blob_entity);
-			$this->em->flush($blob_entity);
+			$this->em->flush();
 
 			throw new \RuntimeException("Failed to store blob, no adapters succeeded", 1, $prev_e);
 		}
@@ -458,7 +458,7 @@ class DeskproBlobStorage implements Loggable
 			$this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromString) All adapters failed");
 
 			$this->em->remove($blob_entity);
-			$this->em->flush($blob_entity);
+			$this->em->flush();
 
 			throw new \RuntimeException("Failed to store blob, no adapters succeeded", 1, $prev_e);
 		}
@@ -680,7 +680,7 @@ class DeskproBlobStorage implements Loggable
 		try {
 			$this->deleteBlob($blob, $blob_entity->storage_loc);
 			$this->em->remove($blob_entity);
-			$this->em->flush($blob_entity);
+			$this->em->flush();
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete failed: {$e->getCode()} {$e->getMessage()}");
 			throw $e;
