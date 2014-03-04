@@ -11,9 +11,9 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 		//# Form validation / errors
 		//##############################################################################################################
 
-		['joomla_url', 'joomla_secret'].forEach(function(field) {
+		['url', 'api_user', 'api_key'].forEach(function(field) {
 			$scope.$watch('setting_values.' + field, function() {
-				if (field == 'joomla_url' && $scope.setting_values[field]) {
+				if (field == 'url' && $scope.setting_values[field]) {
 					$scope.setting_values[field] = $scope.setting_values[field].replace(/\//g, '');
 				}
 
@@ -58,28 +58,18 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 		//# Test modal
 		//##############################################################################################################
 
-		function runTest(username, password) {
+		function runTest() {
 			var deferred, postData;
 
 			postData = {
-				joomla_url:    Strings.trim($scope.setting_values.joomla_url || ''),
-				joomla_secret: Strings.trim($scope.setting_values.joomla_secret || ''),
-				username:      username,
-				password:      password
+				url:      Strings.trim($scope.setting_values.url || ''),
+				api_user: Strings.trim($scope.setting_values.api_user || ''),
+				api_key:  Strings.trim($scope.setting_values.api_key || '')
 			};
 
 			deferred = $q.defer();
 
-			if (!postData.joomla_url || !postData.joomla_secret) {
-				deferred.resolve({
-					log: 'Missing Joomla URL and/or Joomla Secret.',
-					error: 'Please fill in the Joomla URL and Jommla Secret.',
-					error_code: 1
-				});
-				return deferred.promise;
-			}
-
-			Api.sendPostJson('/apps/packages/deskpro_joomla/test-settings', postData).then(function(res) {
+			Api.sendPostJson('/apps/packages/deskpro_magento/test-settings', postData).then(function(res) {
 				deferred.resolve({
 					log: res.data.log || '',
 					error: res.data.error || false,
@@ -102,7 +92,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			}
 
 			var inst = $modal.open({
-				templateUrl: 'deskpro_joomla/Install/test-settings-modal.html',
+				templateUrl: 'deskpro_magento/Install/test-settings-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
 					function setResults(results) {

@@ -70,15 +70,6 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
 			deferred = $q.defer();
 
-			if (!postData.joomla_url || !postData.joomla_secret) {
-				deferred.resolve({
-					log: 'Missing Joomla URL and/or Joomla Secret.',
-					error: 'Please fill in the Joomla URL and Jommla Secret.',
-					error_code: 1
-				});
-				return deferred.promise;
-			}
-
 			Api.sendPostJson('/apps/packages/deskpro_joomla/test-settings', postData).then(function(res) {
 				deferred.resolve({
 					log: res.data.log || '',
@@ -113,11 +104,6 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 						$scope.error_code  = results.error_code;
 					};
 
-					$scope.test = {
-						username: '',
-						password: ''
-					};
-
 					$scope.resetTest = function() {
 						$scope.show_log    = false;
 						$scope.loading     = false;
@@ -130,7 +116,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 					$scope.dismiss = function() { $modalInstance.dismiss(); }
 					$scope.doTest = function() {
 						$scope.loading = true;
-						runTest($scope.test.username, $scope.test.password).then(function(results) {
+						runTest().then(function(results) {
 							setResults(results);
 						});
 					};
