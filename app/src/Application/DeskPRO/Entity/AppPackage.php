@@ -52,6 +52,7 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property string $native_name
  * @property bool   $is_single
  * @property bool   $is_custom
+ * @property array  $tags
  * @property array  $settings_def
  * @property AppAsset[] $assets
  * @property array  $scopes
@@ -124,6 +125,11 @@ class AppPackage extends DomainObject
 	 * @var bool
 	 */
 	protected $is_custom = false;
+
+	/**
+	 * @var array
+	 */
+	protected $tags = array();
 
 	/**
 	 * @var array
@@ -362,6 +368,13 @@ class AppPackage extends DomainObject
 		));
 
 		$metadata->mapField(array(
+			'columnName' => 'tags',
+			'fieldName'  => 'tags',
+			'type'       => 'simple_array',
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
 			'columnName' => 'settings_def',
 			'fieldName'  => 'settings_def',
 			'type'       => 'json_array',
@@ -372,7 +385,7 @@ class AppPackage extends DomainObject
 			'columnName' => 'scopes',
 			'fieldName'  => 'scopes',
 			'type'       => 'simple_array',
-			'nullable'   => false,
+			'nullable'   => true,
 		));
 
 		$metadata->mapOneToMany(array(

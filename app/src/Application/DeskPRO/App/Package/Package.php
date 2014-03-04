@@ -86,6 +86,7 @@ class Package
 		$def->version_name = $this->manifest->getVersionName();
 		$def->is_single    = $this->manifest->getIsSingle();
 		$def->scopes       = array(AppPackage::SCOPE_AGENT);
+		$def->tags         = $this->manifest->getTags() ?: array();
 		$def->settings_def = $this->manifest->getSettingsDef();
 
 		if (strpos($this->path, DP_ROOT.'/apps') === 0) {

@@ -89,6 +89,11 @@ class Manifest
 	/**
 	 * @var array
 	 */
+	private $tags = array();
+
+	/**
+	 * @var array
+	 */
 	private $settings_def = array();
 
 	/**
@@ -203,6 +208,21 @@ class Manifest
 		return $this->settings_def;
 	}
 
+	/**
+	 * @param array $tags
+	 */
+	public function setTags($tags)
+	{
+		$this->tags = $tags;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getTags()
+	{
+		return $this->tags;
+	}
 
 	/**
 	 * @param string $title

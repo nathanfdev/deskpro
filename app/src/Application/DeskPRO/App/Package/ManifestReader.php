@@ -106,6 +106,8 @@ class ManifestReader
 
 	/**
 	 * @param array $data
+	 * @param null $set_error
+	 * @param array $set_error_detail
 	 */
 	private function __construct(array $data, $set_error = null, array $set_error_detail = null)
 	{
@@ -129,6 +131,7 @@ class ManifestReader
 				'author.name',
 				'author.email',
 				'author.link',
+				'tags',
 				'settings_def'
 			);
 
@@ -138,8 +141,18 @@ class ManifestReader
 				$setter = Strings::underscoreToCamelCase('set_' . str_replace('.', '_', $f));
 				$value = Arrays::getValue($this->data, $f, '___dp_unset___');
 				if ($value === '___dp_unset___') {
+					if ($f == 'tags') {
+						// allowed to be unset
+						continue;
+					}
 					$this->error_details[] = array('missing', $f);
 				} else if ($f == 'settings_def') {
+					if (!is_array($value)) {
+						$this->error_details[] = array('invalid', $f);
+					} else {
+						$this->manifest->$setter($value);
+					}
+				} else if ($f == 'tags') {
 					if (!is_array($value)) {
 						$this->error_details[] = array('invalid', $f);
 					} else {
