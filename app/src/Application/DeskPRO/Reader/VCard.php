@@ -35,6 +35,42 @@ namespace Application\DeskPRO\Reader;
 
 class VCard extends \File_IMC
 {
+    public function applyToPerson($content, \Application\DeskPRO\Entity\Person $person)
+    {
+        $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+
+        $fields = self::parseVCard($content);
+
+        //var_dump($fields); die;
+
+        if (isset($fields['name'])) {
+            $person['name'] = $fields['name'];
+            unset($fields['name']);
+        }
+
+        if (isset($fields['emails']) && is_array($fields['emails'])) {
+            foreach ($fields['emails'] as $email) {
+                // @todo Dupe checking
+                $person->emails->add($email);
+            }
+            unset($fields['emails']);
+        }
+        
+        foreach ($fields as $key => $value) {
+            foreach ($value as $contactData) {
+                $contact_data = new PersonContactData();
+                
+                $contact_data->person = $person;
+
+                $contact_data->contact_type = $key;
+
+                $contact_data->applyFormData($contactData);
+
+                $this->em->persist($contact_data);
+            }
+        }
+    }
+    
     static public function parseVCard($content)
     {
         $parse = self::parse('vCard');
@@ -70,16 +106,21 @@ class VCard extends \File_IMC
                             
                             if (isset($IM['param']['X-SERVICE-TYPE'][0]) && $IM['param']['X-SERVICE-TYPE'][0] == 'GoogleTalk') {
                                 $fields['instant_message'][] = array(
-                                    'field_1'    => $iMFields[1],
-                                    'field_2'    => 'gtalk'
+                                    'username'  => $iMFields[1],
+                                    'service'   => 'gtalk',
+                                    'comment'   => @$IM['param']['TYPE'][0]
                                 );
                             } elseif(isset ($IM['param']['X-SERVICE-TYPE'][0])) {
                                 $fields['instant_message'][] = array(
-                                    'field_1'    => $iMFields[1],
-                                    'field_2'    => strtolower($IM['param']['X-SERVICE-TYPE'][0])
+                                    'username'  => $iMFields[1],
+                                    'service'   => strtolower($IM['param']['X-SERVICE-TYPE'][0]),
+                                    'comment'   => @$IM['param']['TYPE'][0]
                                 );
                             } else {
-                                $fields['instant_message'][] = array('field1' => $iMFields[1]);
+                                $fields['instant_message'][] = array(
+                                    'username'  => $iMFields[1],
+                                    'service'   => $iMFields[0]
+                                );
                             }
                         }
                     }
@@ -89,9 +130,34 @@ class VCard extends \File_IMC
                     //print_r($vc['TEL']); die;
                     $fields['phone'] = array();
                     foreach ($vc['TEL'] as $TEL) {
-                        if (@isset($TEL['value'][0][0])) {
+                        if (isset($TEL['value'][0][0])) {
+                            $TEL['value'][0][0] = '9007728285';
+                            
+                            $countryCode    = null;
+                            
+                            $type           = @$TEL['param']['TYPE'][1];
+                            
+                            $comment        = @$TEL['param']['TYPE'][0];
+                            
+                            if ($TEL['value'][0][0][0] === '+') {
+                                // International number with a plus sign and a country code
+                                $countryCode = substr($TEL['value'][0][0], 1, 2);
+                                
+                                $phoneNumber = substr($TEL['value'][0][0], 3);
+                            } elseif (strlen($TEL['value'][0][0]) >= 12) {
+                                // International number without a plus sign
+                                $countryCode = substr($TEL['value'][0][0], 0, 2);
+                                
+                                $phoneNumber = substr($TEL['value'][0][0], 2);
+                            } else {
+                                $phoneNumber = $TEL['value'][0][0];
+                            }
+                            
                             $fields['phone'][] = array(
-                                'field_2'   => $TEL['value'][0][0]
+                                'comment'               => $comment,
+                                'country_calling_code'  => $countryCode,
+                                'number'                => $phoneNumber,
+                                'type'                  => $type
                             );
                         }
                     }
