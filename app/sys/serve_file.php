@@ -1206,7 +1206,8 @@ class FilestorageLoader extends LoaderAbstract
 			$type_f = "{$type}/";
 		}
 
-		$filepath = @realpath(DP_ROOT."/apps/$app_name/{$type_f}$filename");
+		$basepath = DP_ROOT."/apps/$app_name/{$type_f}";
+		$filepath = @realpath($basepath.$filename);
 		if (!$filepath || strpos($filepath, DP_ROOT."/apps/") != 0 && !is_file($filepath)) {
 			if ($this->error_mode == 'exception') {
 				throw new \Exception("App file not found. (bad_path)", 400);
@@ -1221,16 +1222,39 @@ class FilestorageLoader extends LoaderAbstract
 			$mimetype = 'application/octet-stream';
 		}
 
+		$content = null;
+		if ($type == 'html') {
+			$content = file_get_contents($filepath);
+			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($basepath) {
+				$path = @realpath($basepath . $m[1]);
+				if (!$path || !is_file($path) || strpos($path, $basepath) !== 0) {
+					return '<!-- Invalid include file: ' . $m[1] . ' -->';
+				}
+
+				$inc_content = @file_get_contents($path);
+				return $inc_content;
+			}, $content);
+
+			$filesize = strlen($content);
+		} else {
+			$filesize = filesize($filepath);
+			$content = null;
+		}
+
 		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
-		header('Content-Length: ' . filesize($filepath));
+		header('Content-Length: ' . $filesize);
 		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
 		header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
 		header('Cache-Control: max-age=31556926,private');
 
-		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
-			header("X-Sendfile: $filepath");
+		if ($content !== null) {
+			echo $content;
 		} else {
-			readfile($filepath);
+			if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
+				header("X-Sendfile: $filepath");
+			} else {
+				readfile($filepath);
+			}
 		}
 	}
 }

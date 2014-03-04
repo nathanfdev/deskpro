@@ -51,7 +51,7 @@ class Package
 
 	public function __construct($path)
 	{
-		$this->path = $path;
+		$this->path = rtrim($path, '/');
 
 		$reader = ManifestReader::newFromFile($path . '/manifest.json');
 		if ($reader->isError()) {
@@ -102,6 +102,15 @@ class Package
 	public function getManifest()
 	{
 		return $this->manifest;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getPath()
+	{
+		return $this->path;
 	}
 
 

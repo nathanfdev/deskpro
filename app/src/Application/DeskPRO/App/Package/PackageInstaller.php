@@ -199,19 +199,19 @@ class PackageInstaller
 		#------------------------------
 
 		foreach ($package->getJsAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'js', $old_blobs);
+			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'js', $old_blobs);
 			$this->em->persist($asset);
 		}
 		foreach ($package->getHtmlAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'html', $old_blobs);
+			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'html', $old_blobs);
 			$this->em->persist($asset);
 		}
 		foreach ($package->getCssAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'css', $old_blobs);
+			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'css', $old_blobs);
 			$this->em->persist($asset);
 		}
 		foreach ($package->getResAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($def, $asset_info, 'res', $old_blobs);
+			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'res', $old_blobs);
 			$this->em->persist($asset);
 		}
 
@@ -232,20 +232,41 @@ class PackageInstaller
 
 
 	/**
+	 * @param Package $package
 	 * @param AppPackage $def
 	 * @param array $asset_info
-	 * @param string $tag
+	 * @param $tag
+	 * @param array $old_blobs
 	 * @return \Application\DeskPRO\Entity\AppAsset
 	 */
-	private function _addAssetFromInfo(AppPackage $def, array $asset_info, $tag, array &$old_blobs)
+	private function _addAssetFromInfo(Package $package, AppPackage $def, array $asset_info, $tag, array &$old_blobs)
 	{
 		$mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
 
-		$blob = $this->blob_storage->createBlobRecordFromFile(
-			$asset_info['real_path'],
-			$asset_info['name'],
-			$mimetype
-		);
+		if ($tag == 'html') {
+			$content = file_get_contents($asset_info['real_path']);
+			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($package) {
+				$path = @realpath($package->getPath() . '/html/' . $m[1]);
+				if (!$path || !is_file($path) || strpos($path, $package->getPath()) !== 0) {
+					return '<!-- Invalid include file: ' . $m[1] . ' -->';
+				}
+
+				$inc_content = @file_get_contents($path);
+				return $inc_content;
+			}, $content);
+
+			$blob = $this->blob_storage->createBlobRecordFromString(
+				$content,
+				$asset_info['name'],
+				$mimetype
+			);
+		} else {
+			$blob = $this->blob_storage->createBlobRecordFromFile(
+				$asset_info['real_path'],
+				$asset_info['name'],
+				$mimetype
+			);
+		}
 
 		$asset = $this->_addAssetBlob($def, $blob, $tag, $asset_info['path'], $old_blobs);
 		return $asset;
@@ -255,9 +276,10 @@ class PackageInstaller
 	/**
 	 * @param AppPackage $def
 	 * @param Blob $blob
-	 * @param string $tag
-	 * @param string $filename
-	 * @return \Application\DeskPRO\Entity\AppAsset
+	 * @param null $tag
+	 * @param null $filename
+	 * @param array $old_blobs
+	 * @return \Application\DeskPRO\Entity\AppAsset|null
 	 */
 	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
 	{
