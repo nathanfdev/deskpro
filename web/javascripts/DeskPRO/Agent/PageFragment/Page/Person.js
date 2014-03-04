@@ -332,7 +332,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 			this.uploadVcard = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard(this, {
 				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/upload-vcard-overlay",
-				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
+				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
+                                person_id: this.meta.person_id
 			});
 			this.ownObject(this.changePic);
 			this.ownObject(this.uploadVcard);

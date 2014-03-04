@@ -8,7 +8,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 
 		this.options = {
 			loadUrl: '',
-			saveUrl: ''
+			saveUrl: '',
+                        person_id: null
 		};
 
 		this.setOptions(options);
@@ -52,6 +53,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 	},
 
 	_initControls: function() {
+                var self    = this;
 		var wrapper = this.overlay.getWrapper();
 
 		DeskPRO_Window.util.fileupload(wrapper, {
@@ -63,11 +65,12 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 				value: 0
 			}],
 			completed: function() {
-                            var blobId = $('input.new_blob_id', this.wrapperEl).val();
-                            $('.files .in', wrapper).css('height', 'auto').css('margin', '10px -10px').html("Loading . . .");
+                            self.blobId = $('input.new_blob_id', this.wrapperEl).val();
+                            
+                            $('.files .in', wrapper).css('height', 'auto').css('margin', '10px -15px').html("Loading . . .");
                             
                             $.ajax({
-                                url: BASE_URL + 'agent/misc/parse-vcard/' + blobId,
+                                url: BASE_URL + 'agent/misc/parse-vcard/' + self.blobId,
                                 type: 'GET',
                                 dataType: 'json',
                                 data: {
@@ -80,7 +83,15 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 
                                     for(var prop in vCard) {
                                         if(vCard.hasOwnProperty(prop))
-                                            $('.files .in', wrapper).append(prop + ": " + vCard[prop] + "<br/>");
+                                            if (typeof vCard[prop] === 'object') {
+                                                for(var prop2 in vCard[prop]) {
+                                                    if (typeof vCard[prop][prop2] === 'string') {
+                                                        $('.files .in', wrapper).append(prop + ": " + vCard[prop][prop2] + "<br/>");
+                                                    }
+                                                }
+                                            } else {
+                                                $('.files .in', wrapper).append(prop + ": " + vCard[prop] + "<br/>");
+                                            }
                                     }
                                 }
                             });
@@ -99,57 +110,32 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 
 	_doSave: function(e) {
 		e.preventDefault();
+                
+                var self = this;
+                
+                var formData = [];
 
-		var type = $('input[name=set_pic_opt]:checked', this.overlay.getWrapper()).val();
+                if (!this.blobId) {
+                    return;
+                }
 
-		var newImgSrc = null;
-		var action = null;
+                formData.push({ name: 'blob_id', value: this.blobId });
 
-		var formData = [];
-
-		switch (type) {
-			case 'nochange':
-				this.close();
-				return;
-
-			case 'remove':
-				formData.push({ name: 'action', value: 'delete-picture' });
-				formData.push({ name: 'disable_picture', value: '1' });
-				newImgSrc = $('img.pic-default', this.wrapperEl).attr('src');
-				break;
-
-			case 'gravatar':
-				formData.push({ name: 'action', value: 'delete-picture' });
-				newImgSrc = $('img.pic-gravatar', this.wrapperEl).attr('src');
-				break;
-
-			case 'newpic':
-				formData.push({ name: 'action', value: 'set-picture' });
-				var blobId = $('input.new_blob_id', this.wrapperEl).val();
-
-				if (!blobId) {
-					return;
-				}
-
-				formData.push({ name: 'blob_id', value: blobId });
-				newImgSrc = $('img.pic-new', this.wrapperEl).data('setted-size');
-
-				break;
-
-			default:
-				return;
-		}
+                formData.push({ name: 'action', value: 'upload-vcard' });
 
 		$.ajax({
 			url: this.options.saveUrl,
 			type: 'POST',
 			dataType: 'json',
-			data: formData
+			data: formData,
+                        success: function() {
+                            return true;
+                            DeskPRO_Window.removePage(self.page);
+                            DeskPRO_Window.loadPage(BASE_URL + 'agent/people/' + self.page.meta.person_id, {ignoreExist:true});
+                        }
 		});
 
-		this.page.getEl('picture_display').attr('src', newImgSrc);
-
-		this.close();
+		//this.close();
 	},
 
 	open: function() {

@@ -601,24 +601,9 @@ JS;
             $content = file_get_contents($file[0]->getPathName());
         }        
         
-        $parse = \File_IMC::parse('vCard');
-        $vcard = $parse->fromText($content);
-        $fields = array();
-
-        if(isset($vcard['VCARD'])) {
-            foreach($vcard['VCARD'] as $vc) {
-
-                if(isset($vc['EMAIL'])
-                && isset($vc['EMAIL'][0]['value'])) {
-                    $fields['email'] = $vc['EMAIL'][0]['value'][0][0];
-                }
-
-                if(isset($vc['FN'])
-                && isset($vc['FN'][0]['value'])) {
-                    $fields['name'] = $vc['FN'][0]['value'][0][0];
-                }
-            }
-        }
+        $fields = \Application\DeskPRO\Reader\VCard::parseVCard($content);
+        
+        //var_dump($fields); die;
 
         $res = $this->createJsonResponse(array(array('fields' => $fields)));
 

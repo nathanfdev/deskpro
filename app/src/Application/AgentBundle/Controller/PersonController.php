@@ -680,6 +680,62 @@ class PersonController extends AbstractController
 					}
 				}
 				break;
+                        case 'upload-vcard':
+                                $blobId = $this->in->getUint('blob_id');
+                                
+                                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+
+                                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+                                
+                                $fields = \Application\DeskPRO\Reader\VCard::parseVCard($content);
+                                
+                                //var_dump($fields); die;
+                                
+                                if (isset($fields['name'])) {
+                                    $person['name'] = $fields['name'];
+                                    unset($fields['name']);
+                                }
+                                
+                                if (isset($fields['emails']) && is_array($fields['emails'])) {
+                                    foreach ($fields['emails'] as $email) {
+                                        $person['email'] = $email;
+                                    }
+                                    unset($fields['emails']);
+                                }
+                                
+                                if (isset($fields['instant_message'])) {
+                                    foreach ($fields['instant_message'] as $key => $value) {
+                                        //var_dump($value);
+                                        $contact_data = new PersonContactData();
+
+                                        $contact_data->contact_type = 'instant_message';
+
+                                        $contact_data->field_1 = $value['field_1'];
+                                        $contact_data->field_2 = $value['field_2'];
+
+                                        $contact_data->person = $person;
+
+                                        $this->em->persist($contact_data);
+                                    }
+                                }
+                                
+                                if (isset($fields['phone'])) {
+                                    foreach ($fields['phone'] as $key => $value) {
+                                        //var_dump($value);
+                                        $contact_data = new PersonContactData();
+
+                                        $contact_data->contact_type = 'phone';
+
+                                        $contact_data->field_2 = $value['field_2'];
+                                        $contact_data->field_3 = 'phone';
+
+                                        $contact_data->person = $person;
+
+                                        $this->em->persist($contact_data);
+                                    }
+                                }
+                                
+                                break;
 
 			default:
 				return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
