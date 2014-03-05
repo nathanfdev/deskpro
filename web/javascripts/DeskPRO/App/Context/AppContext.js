@@ -1,7 +1,11 @@
 define([
-	'DeskPRO/App/Context/TabContext/TicketTabContext'
+	'DeskPRO/App/Context/TabContext/TicketTabContext',
+	'DeskPRO/App/Context/TabContext/UserTabContext',
+	'DeskPRO/App/Context/TabContext/OrgTabContext',
 ], function(
-	TicketTabContext
+	TicketTabContext,
+	UserTabContext,
+	OrgTabContext
 ) {
 	return new Orb.Class({
 		initialize: function(contextParams) {
@@ -118,6 +122,16 @@ define([
 				switch (type) {
 					case 'ticket':
 						baseClass = TicketTabContext;
+						break;
+					case 'user':
+					case 'person':
+						type = 'person';
+						baseClass = UserTabContext;
+						break;
+					case 'organization':
+					case 'org':
+						type = 'organization';
+						baseClass = OrgTabContext;
 						break;
 				}
 

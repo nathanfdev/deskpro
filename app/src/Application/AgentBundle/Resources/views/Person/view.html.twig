@@ -16,6 +16,7 @@ pageMeta.personGravatarIcon = '{{ person.primary_email.getGravatarUrl() }}&s=13'
 {% endif %}
 
 pageMeta.person = {{ person_api|json_encode|raw }};
+pageMeta.api_data = {{ person.toApiData()|json_encode|raw }};
 
 pageMeta.perms = {{ perms|json_encode|raw }};
 
