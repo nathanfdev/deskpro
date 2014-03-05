@@ -133,5 +133,10 @@
 		'into'    => DP_ROOT.'/vendor/zend',
 		'repos'   => 'git://github.com/zendframework/zf2.git',
 		'version' => 'release-2.0.0beta3',
-	)
+	),
+        'ical' => array(
+                'into'      => DP_ROOT . '/vendor/ical',
+                'repos'     => 'git://github.com/eluceo/iCal.git',
+                'version'   => 'HEAD'
+        )
 );

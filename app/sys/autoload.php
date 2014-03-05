@@ -32,7 +32,8 @@ $loader->registerNamespaces(array(
 	'Guzzle'                         => DP_ROOT.'/vendor/guzzle/src',
 	'Metadata'                       => DP_ROOT.'/vendor/metadata/src',
 	'Spork'                          => DP_ROOT.'/vendor/spork/src',
-	'Leth\\IPAddress'                => DP_ROOT.'/vendor/php_ipaddress/classes'
+	'Leth\\IPAddress'                => DP_ROOT.'/vendor/php_ipaddress/classes',
+        'Eluceo'                         => DP_ROOT . '/vendor/ical/src',
 ));
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 
