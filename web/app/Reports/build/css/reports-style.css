@@ -8632,6 +8632,16 @@ div.dp-appalt-section > section header h3 {
   text-align: center;
 }
 
+.dp-paneblock .article-section-title {
+  margin-top: 15px;
+}
+
+.dp-paneblock .article-section-title h3 {
+  display: inline-block;
+  font-weight: bold;
+  border-bottom: 3px solid #aaa;
+}
+
 .dp-paneblock .dp-sep-top {
   border-top: 1px dotted #ccc !important;
 }

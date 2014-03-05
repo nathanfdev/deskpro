@@ -38,6 +38,12 @@
             _this.packages = _this.packages.filter(function(x) {
               return !x.is_custom;
             });
+            _this.general_packages = _this.packages.filter(function(x) {
+              return !(x.tags.indexOf('usersource') !== -1 && x.tags.length === 1);
+            });
+            _this.auth_packages = _this.packages.filter(function(x) {
+              return x.tags.indexOf('usersource') !== -1;
+            });
             _this.apps = result.data.apps.apps.filter(function(x) {
               return !x["package"].is_custom;
             });

@@ -253,6 +253,8 @@ class AppPackage extends DomainObject
 		$data['api_version']  = $this->api_version;
 		$data['is_single']    = $this->is_single;
 		$data['is_custom']    = $this->is_custom;
+		$data['tags']         = $this->tags;
+		$data['scopes']       = $this->scopes;
 
 		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
 		foreach ($sizes as $size) {
