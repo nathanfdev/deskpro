@@ -39,6 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Markdown;
+use Orb\Util\Strings;
 
 /**
  * Ticket messages
@@ -225,6 +226,31 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->_message_length = strlen(strip_tags($this->message));
 		return $this->_message_length;
+	}
+
+	public function getMessagePreviewText($max_length = 0, $ellipses = '...')
+	{
+		$message = $this->getMessageHtml();
+		$sig_pos = strpos($message, '<div class="dp-signature-start">');
+
+		if ($sig_pos !== false) {
+			$message = substr($message, 0, $sig_pos);
+		}
+
+		$message = Strings::standardEol($message);
+		$message = str_replace(array('<br/>', '<br>', '<br />', '<p>', '</p>'), "\n", $message);
+		$message = strip_tags($message);
+		$message = Strings::decodeHtmlEntities($message);
+		$message = preg_replace('#\s+#', ' ', $message);
+		$message = trim($message);
+
+		if ($max_length && isset($message[$max_length])) {
+			$message = substr($message, 0, $max_length);
+			$message = trim($message);
+			$message .= $ellipses;
+		}
+
+		return $message;
 	}
 
 	public function getMessageHtmlClipped($max_length)

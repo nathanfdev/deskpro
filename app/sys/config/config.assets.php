@@ -58,7 +58,6 @@ $CONFIG['agent'] = array(
 $CONFIG['agent_vendors'] = array(
 	'out' => 'js/agent-vendors.js',
 	'files' => array(
-		'vendor/tracekit.js',
 		'vendor/modernizr.min.js',
 		'javascripts/Orb/modernizr-ext.js',
 
@@ -72,6 +71,8 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/tmpl.min.js',
 
+		'vendor/underscore/underscore-min.js',
+
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
 		'vendor/jquery/jquery.scrollTo.js',
@@ -80,6 +81,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.hotkeys.js',
 		'vendor/jquery/jquery.textarea-expander.js',
 		'vendor/jquery/jquery.serializeJSON.min.js',
+		'vendor/jquery/jquery.dotdotdot.min.js',
 		'vendor/jqTree/tree.jquery.js',
 
 		'vendor/jquery/jquery-checkbox/jquery.checkbox.js',
@@ -102,7 +104,10 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/ZeroClipboard/ZeroClipboard.min.js',
 		'vendor/idbstore/idbstore.min.js',
 		'vendor/twig/twig.js',
-		'vendor/angular/angular.min.js'
+		'vendor/angular/angular.min.js',
+		'vendor/angular/angular-animate.min.js',
+		'vendor/angular/modules/bindonce.min.js',
+		'vendor/momentjs/moment.min.js',
 	)
 );
 
@@ -182,6 +187,8 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterSearch.js',
+
+		'javascripts/DeskPRO/Agent/PageFragment/List/TicketList.js',
 	)
 );
 

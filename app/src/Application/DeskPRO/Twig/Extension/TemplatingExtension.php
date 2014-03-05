@@ -139,6 +139,11 @@ class TemplatingExtension extends \Twig_Extension
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 
+			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
+			'ng_static_var'                    => new \Twig_Function_Method($this, 'ngStaticVar', array('is_safe' => array('html'))),
+			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
+
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
             'path' => new \Twig_Function_Method($this, 'getPath'),
@@ -160,6 +165,7 @@ class TemplatingExtension extends \Twig_Extension
 			'date'                   => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
 			'to_jqueryui_dateformat' => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
 			'time_length'            => new \Twig_Filter_Method($this, 'timeLength'),
+			'momentjs_format'        => new \Twig_Filter_Method($this, 'momentJsFormat'),
 			'slugify'                => new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words'        => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
 			'strip_linebreaks'       => new \Twig_Filter_Method($this, 'stripLinebreaks'),
@@ -565,7 +571,7 @@ class TemplatingExtension extends \Twig_Extension
 		return Strings::slugifyTitle($str);
 	}
 
-	public function userDate($context, $date, $format = 'F j, Y H:i', $timezone = null)
+	public function userDate($context, $date, $format = 'fulltime', $timezone = null)
 	{
 		// Backwards compat calls: args shifted back one
 		if (!is_array($context)) {
@@ -700,6 +706,38 @@ class TemplatingExtension extends \Twig_Extension
 	public function timeLength($length, $max_unit = null)
 	{
 		return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit);
+	}
+
+	public function momentJsFormat($format)
+	{
+		switch ($format) {
+			case 'full':
+				//D, jS M Y
+				$format = App::getSetting('core.date_full');
+				break;
+
+			case 'fulltime':
+				//D, jS M Y g:ia
+				$format = App::getSetting('core.date_fulltime');
+				break;
+
+			case 'day':
+				//M j Y
+				$format = App::getSetting('core.date_day');
+				break;
+
+			case 'day_short':
+				//M j
+				$format = App::getSetting('core.date_day_short');
+				break;
+
+			case 'time':
+				//g:i a
+				$format = App::getSetting('core.date_time');
+				break;
+		}
+
+		return \Application\DeskPRO\Util::momentJsDateFormat($format);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')
@@ -1512,6 +1550,43 @@ class TemplatingExtension extends \Twig_Extension
 		$source = str_replace('</script>',  '%endScript%', $source);
 		$source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">' . $source . '</script>';
 		return $source;
+	}
+
+	public function ngVar($var)
+	{
+		return '{{' . $var . '}}';
+	}
+
+	public function ngBind($var)
+	{
+		return '<span ng-bind="' . htmlspecialchars($var) . '"></span>';
+	}
+
+	public function ngStaticVar($var)
+	{
+		return '<span bo-bind="'.htmlspecialchars($var).'"></span>';
+	}
+
+	public function ngIncTpl($context, $tpl_name, $save_name = null)
+	{
+		$name = $tpl_name;
+
+		$tpl = App::getContainer()->getTemplating();
+		if (!$tpl->exists($name)) {
+			return '<!-- No such template exists: ' . $name . ' -->';
+		}
+
+		$rendered = $tpl->render($name, $context);
+
+		if (!$save_name) {
+			$save_name = $tpl_name;
+			$save_name = preg_replace('#^(AdminInterface|Admin|Agent)Bundle:#', '$1/', $save_name);
+			$save_name = str_replace(':', '/', $save_name);
+			$save_name = preg_replace('#\.twig$#', '', $save_name);
+		}
+
+		$html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
+		return $html;
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)

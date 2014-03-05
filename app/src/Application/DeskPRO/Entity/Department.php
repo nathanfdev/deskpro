@@ -277,6 +277,33 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['user_title'] = $this->getRealUserTitle();
+
+		if ($this->parent) {
+			$data['title_full']       = $this->parent->title . ' > ' . $this->title;
+			$data['parent_id']        = $this->parent->getId();
+			$data['parent_ids']       = array($this->parent->getId());
+			$data['title_parts']      = array($this->parent->title, $this->title);
+			$data['user_title_parts'] = array($this->parent->getUserTitle(), $this->getUserTitle());
+			$data['has_children']     = false;
+		} else {
+			$data['title_full']       = $this->title;
+			$data['parent_id']        = null;
+			$data['parent_ids']       = array();
+			$data['title_parts']      = array($this->title);
+			$data['user_title_parts'] = array($this->getUserTitle());
+			$data['has_children']     = count($this->children) != 0;
+		}
+
+		return $data;
+	}
+
 
 	############################################################################
 	# Doctrine Metadata

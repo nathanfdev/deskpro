@@ -2297,7 +2297,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$data['display_name'] = $this->getDisplayName();
 		$data['primary_email'] = $this->getPrimaryEmailAddress();
-		$data['picture_url'] = $this->getPictureUrl();
+
+		$data['picture_url']    = $this->getPictureUrl();
+		$data['picture_url_80'] = $this->getPictureUrl(80);
+		$data['picture_url_64'] = $this->getPictureUrl(64);
+		$data['picture_url_50'] = $this->getPictureUrl(50);
+		$data['picture_url_45'] = $this->getPictureUrl(45);
+		$data['picture_url_32'] = $this->getPictureUrl(32);
+		$data['picture_url_22'] = $this->getPictureUrl(22);
+		$data['picture_url_16'] = $this->getPictureUrl(16);
 
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('person_fields_manager');
@@ -2367,7 +2375,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), )  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));

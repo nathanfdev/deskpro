@@ -63,7 +63,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket_updated', function(info) {
 			var ticketId = info.ticket_id;
-			self.addTicket(ticketId, true);
+			self.refreshTicketResults([ticketId]);
 		}, null, [this.OBJ_ID]);
 
 		this.contentWrapper = $('.layout-content:first', this.wrapper);
@@ -216,7 +216,14 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.selectionBar.restoreFromSessionStorage();
 	},
 
-	handleAutoAdd: function(ticketId) {
+	addTicketResults: function(ticketIds) {
+		var i;
+		for (i = 0; i < ticketIds.length; i++) {
+			this._removeTicketResult(ticketIds[i]);
+		}
+	},
+
+	_addTicketResult: function(ticketId) {
 		if (this.resultsHelper) this.resultsHelper.options.refreshMode = true;
 		var self = this;
 		self.reloadIfStale = false;
@@ -261,7 +268,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			}
 		}
 
-		self.addTicket(ticketId, false);
+		self.addTicketResults([ticketId]);
 		return true;
 	},
 
@@ -270,11 +277,24 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.layout.resizeAll();
 	},
 
-	addTicket: function(ticket_id, replace_existing) {
+	addTicketResults: function(ticketIds) {
+		this.refreshTicketResults(ticketIds, true);
+	},
+
+	refreshTicketResults: function(ticket_ids, is_adding) {
+		var i;
+		for (i = 0; i < ticket_ids.length; i++) {
+			this._removeTicketResult(ticket_ids[i], is_adding);
+		}
+	},
+
+	_refreshTicketResult: function(ticket_id, is_adding) {
 		var self = this;
 		if (!this.meta.loadSingleUrl) {
 			return;
 		}
+
+		var replace_existing = !is_adding
 
 		var exist = self.getEl('results_wrap').find('article.ticket-' + ticket_id);
 		if (exist[0] && exist.hasClass('removing')) {
@@ -353,7 +373,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		}
 	},
 
-	delTicket: function(ticket_id) {
+	_removeTicketResult: function(ticket_id) {
 		var self = this;
 		if (this.resultsHelper) this.resultsHelper.options.refreshMode = true;
 		var el = $('.ticket-' + ticket_id, this.contentWrapper);
@@ -375,6 +395,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			self.updateTicketCountLabels();
 			self.updateUi();
 		});
+	},
+
+	removeTicketResults: function(ticket_ids) {
+		var i;
+		for (i = 0; i < ticket_ids.length; i++) {
+			this._removeTicketResult(ticket_ids[i]);
+		}
 	},
 
 	updateTicketCountLabels: function() {

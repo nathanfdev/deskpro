@@ -67,6 +67,32 @@ class Util
 	}
 
 
+	/**
+	 * Fixes quirky handling of UTF8 errors in native json_encode.
+	 * See http://stackoverflow.com/q/4663743/18802
+	 *
+	 * @param mixed $data
+	 * @return string
+	 */
+	public static function jsonEncode($data)
+	{
+		$fn = function($val) {
+			if (!is_string($val) || ctype_digit($val)) {
+				return $val;
+			}
+
+			return Strings::utf8_bad_strip($val);
+		};
+
+		if (is_string($data)) {
+			$data = $fn($data);
+		} elseif (is_array($data)) {
+			$data = Arrays::func($data, $fn, array(), true);
+		}
+
+		return @json_encode($data);
+	}
+
 
 	/**
 	 * Tries to build an array of person data using an arbitrary array.
@@ -75,7 +101,7 @@ class Util
 	 * @param array $misc_data
 	 * @return array
 	 */
-public function getPersonData(array $misc_data)
+	public function getPersonData(array $misc_data)
 	{
 		$person_data = array(
 			'standard_fields' => array(),
@@ -195,5 +221,63 @@ public function getPersonData(array $misc_data)
 		}
 
 		return implode(', ', $parts);
+	}
+
+
+	/**
+	 * @param string $format PHP date format
+	 * @return string  The momentjs format
+	 */
+	public static function momentJsDateFormat($format)
+	{
+		// See http://momentjs.com/docs/#/displaying/format/
+		// and https://php.net/manual/en/function.date.php
+		static $php_sym = array(
+			'd' => 'DD', 'D' => 'ddd', 'j' => 'D', 'l' => 'dddd',
+			'N' => 'E', 'S' => '', 'w' => 'd', 'z' => 'ddd',
+			'W' => 'W',
+			'F' => 'MMMM', 'm' => 'MM', 'M' => 'MMM', 'n' => 'M',
+			't' => '',
+			'L' => '', 'o' => '', 'Y' => 'YYYY', 'y' => 'YY',
+			'a' => 'a', 'A' => 'A', 'B' => '', 'g' => 'h',
+			'G' => 'H', 'h' => 'hh', 'H' => 'HH', 'i' => 'mm',
+			's' => 'ss', 'u' => 'SSS',
+			'e' => 'zz', 'O' => 'ZZ', 'P' => 'Z',
+			'c' => 'YYYY-MM-DDTHH:mm:ss.SSSZZ', 'r' => 'ddd, D MMM YYYY HH:mm:ss ZZ',
+			'U' => 'X'
+		);
+
+		// There is no separate ordinal symbol with momentjs like with PHP
+		// So we can only translate 'jS' to 'Do' which is the momentjs '1st' etc for day of month
+		$format = str_replace('jS', 'Do', $format);
+
+		$format_len = strlen($format);
+		$new_format = array();
+		$escaping   = false;
+
+		for($i = 0; $i < $format_len; $i++) {
+			$char = $format[$i];
+			if($char === '\\') {
+				$i++;
+				if($escaping) {
+					$new_format[] = $format[$i];
+				} else {
+					$new_format[] = '\'' . $format[$i];
+				}
+				$escaping = true;
+			} else {
+				if($escaping) {
+					$new_format[] = "'";
+					$escaping = false;
+				}
+				if(isset($php_sym[$char])) {
+					$new_format[] = $php_sym[$char];
+				} else {
+					$new_format[] = $char;
+				}
+			}
+		}
+
+		return implode('', $new_format);
 	}
 }
