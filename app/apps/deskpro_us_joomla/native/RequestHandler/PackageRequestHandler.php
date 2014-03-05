@@ -32,58 +32,73 @@
  * @category Entities
  */
 
-namespace deskpro_joomla;
+namespace deskpro_us_joomla\RequestHandler;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
+use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
+use deskpro_us_joomla\Usersource\Auth\Joomla;
+use Orb\Log\Logger;
+use Orb\Log\Writer\ArrayWriter;
 
-class InstallerHandler implements InstallerHandlerInterface
+class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function install(InstallerContext $context)
+	public function handleApiPackageRequest(ApiPackageRequestContext $context)
 	{
-		$context->getDb()->insert('usersources', array(
-			'app_id'            => $context->getApp()->id,
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'is_enabled'        => '1'
+		switch ($context->getAction()) {
+			case 'test-settings':
+				return $this->testSettingsAction($context);
+				break;
+			default:
+				throw $context->createNotFoundException();
+		}
+	}
+
+
+	/**
+	 * @param ApiPackageRequestContext $context
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function testSettingsAction(ApiPackageRequestContext $context)
+	{
+		$joomla = new Joomla(array(
+			'joomla_url'    => $context->getIn()->getString('joomla_url'),
+			'joomla_secret' => $context->getIn()->getString('joomla_secret'),
 		));
-	}
 
+		$ar_log = new ArrayWriter();
+		$logger = new Logger();
+		$logger->addWriter($ar_log);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
-	}
+		$joomla->setLogger($logger);
 
+		$result_data = array(
+			'log' => '',
+			'error' => false,
+			'error_code' => 0
+		);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$context->getDb()->update('usersources', array(
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'is_enabled'        => '1'
-		), array('app_id' => $context->getApp()->id));
-	}
+		try {
+			$joomla->setFormData(array(
+				'username' => $context->getIn()->getString('username'),
+				'password' => $context->getIn()->getString('password'),
+			));
 
+			$result = $joomla->authenticate();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		// Nothing
+			if (!$result->isValid()) {
+				$result_data['error']      = $result->getMessages('error_message') ?: 'Invalid login';
+				$result_data['error_code'] = $result->getMessages('error_code') ?: 'general';
+			}
+		} catch (\Exception $e) {
+			$result_data['error'] = $e->getMessage();
+			$result_data['error_code'] = $e->getCode();
+		}
+
+		$result_data['log'] = $ar_log->getMessagesAsString();
+
+		return $context->createJsonResponse($result_data);
 	}
 }

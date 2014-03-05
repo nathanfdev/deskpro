@@ -2,6 +2,7 @@
 	"package_name": "deskpro_magento",
 	"title": "Magento",
 	"description": "Enables user authentication through magento and agent interface widgets.",
+	"tags": ["usersources", "profiles"],
 	"api_version": 1,
 	"version": 1,
 	"version_name": "1.0.0",

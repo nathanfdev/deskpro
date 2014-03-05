@@ -29,76 +29,68 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace deskpro_joomla\RequestHandler;
+namespace deskpro_us_joomla\Usersource\Adapter;
 
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use deskpro_joomla\Usersource\Auth\Joomla;
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
+use Orb\Auth\Identity;
+use Orb\Auth\Result;
+use \Application\DeskPRO\App;
 
-class PackageRequestHandler implements ApiPackageRequestHandlerInterface
+class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
+	public function getFieldsFromIdentity(Identity $identity)
 	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-				break;
-			default:
-				throw $context->createNotFoundException();
-		}
+		$info = $identity->getRawData();
+		return array(
+			'name'             => isset($info['name']) ? $info['name'] : '',
+			'email'            => isset($info['email']) ? $info['email'] : '',
+			'username'         => isset($info['username']) ? $info['username'] : '',
+			'email_confirmed'  => true,
+		);
 	}
 
+	/**
+	 * @return \Joomla\Usersource\Auth\Joomla
+	 */
+	protected function _createAuthAdapterObject()
+	{
+		$options = $this->usersource->options;
+		$options['joomla_url'] = App::getSetting("Joomla.joomla_url");
+		$options['joomla_secret'] = App::getSetting("Joomla.joomla_secret");
+
+		return new \deskpro_us_joomla\Usersource\Auth\Joomla($options);
+	}
 
 	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * Find a user identity just by an email address.
+	 *
+	 * @param $id_input
+	 * @return \Orb\Auth\Identity|null
 	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
+	public function findIdentityByInput($id_input)
 	{
-		$joomla = new Joomla(array(
-			'joomla_url'    => $context->getIn()->getString('joomla_url'),
-			'joomla_secret' => $context->getIn()->getString('joomla_secret'),
-		));
+		$adapter = $this->getAuthAdapter();
 
-		$ar_log = new ArrayWriter();
-		$logger = new Logger();
-		$logger->addWriter($ar_log);
-
-		$joomla->setLogger($logger);
-
-		$result_data = array(
-			'log' => '',
-			'error' => false,
-			'error_code' => 0
-		);
-
-		try {
-			$joomla->setFormData(array(
-				'username' => $context->getIn()->getString('username'),
-				'password' => $context->getIn()->getString('password'),
-			));
-
-			$result = $joomla->authenticate();
-
-			if (!$result->isValid()) {
-				$result_data['error']      = $result->getMessages('error_message') ?: 'Invalid login';
-				$result_data['error_code'] = $result->getMessages('error_code') ?: 'general';
-			}
-		} catch (\Exception $e) {
-			$result_data['error'] = $e->getMessage();
-			$result_data['error_code'] = $e->getCode();
+		$userinfo = $adapter->getUserInfoForEmail($id_input);
+		if (!$userinfo) {
+			return null;
 		}
 
-		$result_data['log'] = $ar_log->getMessagesAsString();
+		return $adapter->getIdentityFromUserInfo($userinfo);
+	}
 
-		return $context->createJsonResponse($result_data);
+	/**
+	 * @return array
+	 */
+	public function getCapabilities()
+	{
+		return array(
+			'form_login',
+			'get_user_info',
+			'find_identity',
+			'share_session',
+		);
 	}
 }

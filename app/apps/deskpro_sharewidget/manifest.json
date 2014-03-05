@@ -2,6 +2,7 @@
 	"package_name": "deskpro_sharewidget",
 	"title": "Share Widget",
 	"description": "Add share buttons (Facebook, Twitter, Google+, LinkedIn) to news, articles and feedback.",
+	"tags": ["sharing"],
 	"api_version": 1,
 	"version": 1,
 	"version_name": "1.0.0",

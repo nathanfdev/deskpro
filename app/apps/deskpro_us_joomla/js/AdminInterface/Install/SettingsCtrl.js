@@ -70,7 +70,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
 			deferred = $q.defer();
 
-			Api.sendPostJson('/apps/packages/deskpro_joomla/test-settings', postData).then(function(res) {
+			Api.sendPostJson('/apps/packages/deskpro_us_joomla/test-settings', postData).then(function(res) {
 				deferred.resolve({
 					log: res.data.log || '',
 					error: res.data.error || false,
@@ -93,7 +93,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			}
 
 			var inst = $modal.open({
-				templateUrl: 'deskpro_joomla/Install/test-settings-modal.html',
+				templateUrl: 'deskpro_us_joomla/Install/test-settings-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
 					function setResults(results) {

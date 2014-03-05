@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace deskpro_joomla\Usersource\Auth;
+namespace deskpro_us_joomla\Usersource\Auth;
 
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter;

@@ -2,7 +2,7 @@
 	"package_name": "deskpro_us_phpbb",
 	"title": "phpBB Authentication",
 	"description": "Allows users to log in using their phpBB profile.",
-	"tags": ["usersource"],
+	"tags": ["usersources"],
 	"api_version": 1,
 	"version": 1,
 	"version_name": "1.0.0",

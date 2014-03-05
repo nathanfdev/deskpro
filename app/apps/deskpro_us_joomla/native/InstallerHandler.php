@@ -29,68 +29,61 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @category Entities
  */
 
-namespace deskpro_joomla\Usersource\Adapter;
+namespace deskpro_us_joomla;
 
-use Orb\Auth\Identity;
-use Orb\Auth\Result;
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
 
-class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
+class InstallerHandler implements InstallerHandlerInterface
 {
-	public function getFieldsFromIdentity(Identity $identity)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function install(InstallerContext $context)
 	{
-		$info = $identity->getRawData();
-		return array(
-			'name'             => isset($info['name']) ? $info['name'] : '',
-			'email'            => isset($info['email']) ? $info['email'] : '',
-			'username'         => isset($info['username']) ? $info['username'] : '',
-			'email_confirmed'  => true,
-		);
+		$context->getDb()->insert('usersources', array(
+			'app_id'            => $context->getApp()->id,
+			'title'             => $context->getApp()->title,
+			'source_type'       => 'app',
+			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
+			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
+			'is_enabled'        => '1'
+		));
 	}
 
-	/**
-	 * @return \Joomla\Usersource\Auth\Joomla
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		$options = $this->usersource->options;
-		$options['joomla_url'] = App::getSetting("Joomla.joomla_url");
-		$options['joomla_secret'] = App::getSetting("Joomla.joomla_secret");
 
-		return new \deskpro_joomla\Usersource\Auth\Joomla($options);
+	/**
+	 * {@inheritDoc}
+	 */
+	public function uninstall(InstallerContext $context)
+	{
+		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
 	}
 
+
 	/**
-	 * Find a user identity just by an email address.
-	 *
-	 * @param $id_input
-	 * @return \Orb\Auth\Identity|null
+	 * {@inheritDoc}
 	 */
-	public function findIdentityByInput($id_input)
+	public function updateSettings(InstallerContext $context)
 	{
-		$adapter = $this->getAuthAdapter();
-
-		$userinfo = $adapter->getUserInfoForEmail($id_input);
-		if (!$userinfo) {
-			return null;
-		}
-
-		return $adapter->getIdentityFromUserInfo($userinfo);
+		$context->getDb()->update('usersources', array(
+			'title'             => $context->getApp()->title,
+			'source_type'       => 'app',
+			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
+			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
+			'is_enabled'        => '1'
+		), array('app_id' => $context->getApp()->id));
 	}
 
+
 	/**
-	 * @return array
+	 * {@inheritDoc}
 	 */
-	public function getCapabilities()
+	public function updatePackage(InstallerContext $context)
 	{
-		return array(
-			'form_login',
-			'get_user_info',
-			'find_identity',
-			'share_session',
-		);
+		// Nothing
 	}
 }
