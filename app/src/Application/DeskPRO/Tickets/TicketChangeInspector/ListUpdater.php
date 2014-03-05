@@ -84,51 +84,53 @@ class ListUpdater
 
 		$batch = array();
 
-			foreach ($filter_changes as $change_info) {
-				$filter = $change_info['filter'];
+		foreach ($filter_changes as $change_info) {
+			$filter = $change_info['filter'];
 
-				foreach ($change_info['add'] as $agent) {
-					$count_adds++;
-					$batch[] = array(
-						'channel' => 'agent.filter-update',
-						'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
-						'date_created' => date('Y-m-d H:i:s'),
-						'data' => serialize(array(
-							'ticket_id'  => $ticket_id,
-							'filter_id'  => $filter['id'],
-							'op' => 'add'
-						)),
-						'for_person_id' => $agent->getId(),
-						'created_by_client' => 'sys',
-						'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
-					);
-				}
-				foreach ($change_info['del'] as $agent) {
-					$count_dels++;
-					$batch[] = array(
-						'channel' => 'agent.filter-update',
-						'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
-						'date_created' => date('Y-m-d H:i:s'),
-						'data' => serialize(array(
-							'ticket_id'  => $ticket_id,
-							'filter_id'  => $filter['id'],
-							'op' => 'del'
-						)),
-						'for_person_id' => $agent->getId(),
-						'created_by_client' => 'sys',
-						'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
-					);
-				}
+			foreach ($change_info['add'] as $agent) {
+				$count_adds++;
+				$batch[] = array(
+					'channel' => 'agent.filter-update',
+					'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+					'date_created' => date('Y-m-d H:i:s'),
+					'data' => serialize(array(
+						'ticket_id'  => $ticket_id,
+						'filter_id'  => $filter['id'],
+						'op' => 'add'
+					)),
+					'for_person_id' => $agent->getId(),
+					'created_by_client' => 'sys',
+					'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+				);
 			}
+			foreach ($change_info['del'] as $agent) {
+				$count_dels++;
+				$batch[] = array(
+					'channel' => 'agent.filter-update',
+					'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+					'date_created' => date('Y-m-d H:i:s'),
+					'data' => serialize(array(
+						'ticket_id'  => $ticket_id,
+						'filter_id'  => $filter['id'],
+						'op' => 'del'
+					)),
+					'for_person_id' => $agent->getId(),
+					'created_by_client' => 'sys',
+					'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+				);
+			}
+		}
 
-		$this->em->beginTransaction();
-		try {
-			$this->em->getConnection()->batchInsert('client_messages', $batch);
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+		if ($batch) {
+			$this->em->beginTransaction();
+			try {
+				$this->em->getConnection()->batchInsert('client_messages', $batch);
+				$this->em->flush();
+				$this->em->commit();
+			} catch (\Exception $e) {
+				$this->em->rollback();
+				throw $e;
+			}
 		}
 
 		$this->tracker->logMessage(sprintf("[ListUpdater] Done with $count_adds adds and $count_dels dels messages sent in %.4f seconds",microtime(true)-$time));
