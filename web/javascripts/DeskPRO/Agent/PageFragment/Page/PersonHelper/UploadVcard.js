@@ -15,8 +15,6 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 		this.setOptions(options);
 		this.page = page;
 
-		this.page.getEl('change_user_picture').on('click', this.open.bind(this));
-
 		this.page.addEvent('destroy', this.destroy, this);
 	},
 
@@ -135,7 +133,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
                         }
 		});
 
-		//this.close();
+		this.close();
 	},
 
 	open: function() {
