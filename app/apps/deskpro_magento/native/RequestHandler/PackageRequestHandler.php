@@ -79,10 +79,32 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 				$log[] = "SOAP support is not enabled in PHP";
 				return array('missing_soap', "SOAP support is not enabled in PHP");
 			}
+			$log[] = "SoapClient is ok";
+			return null;
+		};
+
+		$tests[] = function() use (&$log) {
+			$log[] = "Verifying curl is available...";
+			if (!function_exists('curl_init')) {
+				$log[] = "curl is not enabled in PHP";
+				return array('missing_soap', "curl support is not enabled in PHP");
+			}
+			$log[] = "curl is ok";
 			return null;
 		};
 
 		$get_client = function($url) {
+			$url .= '/api?wsdl';
+			$handle = @curl_init($url);
+			@curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+
+			$response = @curl_exec($handle);
+			$httpCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
+			@curl_close($handle);
+			if($httpCode != 200) {
+				return null;
+			}
+
 			return new \SoapClient($url . '/api?wsdl');
 		};
 
@@ -91,7 +113,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 			try {
 				$error = error_reporting();
 				error_reporting($error & ~E_WARNING);
-				$client = @$get_client($url);
+				$client = $get_client($url);
 				error_reporting($error);
 
 				if ($client) {
