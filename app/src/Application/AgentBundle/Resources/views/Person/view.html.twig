@@ -43,6 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 {% endif %}
 
 <header class="page-header">
+	{{ dp_app_loc(baseId, 'header.top') }}
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box tipped" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
 			<img src="{{ person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
@@ -125,9 +126,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<ul id="{{baseId}}_merge_menu" style="display: none;">
 		<li>{{ phrase('agent.people.find_person') }}</li>
 	</ul>
+
+	{{ dp_app_loc(baseId, 'header.bottom') }}
 </header>
 
-{{ dp_widgets(baseId, 'profile', 'header', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'header.after') }}
+{{ dp_app_loc(baseId, 'main.top') }}
 
 <table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
@@ -139,11 +143,10 @@ pageMeta.baseId = '{{ baseId }}';
 	</section>
 </td></tr></table>
 
-{{ dp_widgets(baseId, 'profile', 'footer', 'above', person_api) }}
+{{ dp_app_loc(baseId, 'main.after') }}
+{{ dp_app_loc(baseId, 'footer') }}
 
 {% include 'AgentBundle:Person:contact-overlay.html.twig' %}
-
-{{ dp_widgets(baseId, 'profile', '', '', person_api) }}
 
 <div style="display: none">
 	<div id="{{ baseId }}_delete_confirm">
