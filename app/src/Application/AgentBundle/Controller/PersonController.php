@@ -687,7 +687,7 @@ class PersonController extends AbstractController
 
                                 $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
                                 
-                                $vCardReader = new \Application\DeskPRO\Reader\VCard();
+                                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
                                 
                                 $vCardReader->applyToPerson($content, $person);
                                 

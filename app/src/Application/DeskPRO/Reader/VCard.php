@@ -35,40 +35,77 @@ namespace Application\DeskPRO\Reader;
 
 class VCard extends \File_IMC
 {
+    protected $em;
+    
+    public function __construct(\Application\DeskPRO\ORM\EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+
     public function applyToPerson($content, \Application\DeskPRO\Entity\Person $person)
     {
-        $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
-
         $fields = self::parseVCard($content);
 
         //var_dump($fields); die;
-
+        
         if (isset($fields['name'])) {
-            $person['name'] = $fields['name'];
+            if (isset($fields['name']['firstname'])) {
+                $person['first_name'] = $fields['name']['firstname'];
+            }
+
+            if (isset($fields['name']['lastname'])) {
+                $person['last_name'] = $fields['name']['lastname'];
+            }
+            
             unset($fields['name']);
         }
 
         if (isset($fields['emails']) && is_array($fields['emails'])) {
             foreach ($fields['emails'] as $email) {
-                // @todo Dupe checking
+                $emailExists = \Application\DeskPRO\Entity\PersonEmail::getRepository()->findOneBy(array(
+                    'email' => $email
+                ));
+                
+                if ($emailExists) {
+                    continue;
+                }
+                
                 $person->emails->add($email);
             }
             unset($fields['emails']);
         }
         
+        if (isset($fields['organization'])) {
+            $organization = $this->_lookupOrganizationByName($fields['organization']);
+            
+            if ($organization) {
+                $person['organization'] = $organization;
+            }
+            unset($fields['organization']);
+        }
+        
         foreach ($fields as $key => $value) {
+            if (!is_array($value)) {
+                continue;
+            }
             foreach ($value as $contactData) {
-                $contact_data = new PersonContactData();
+                $contact_data = new \Application\DeskPRO\Entity\PersonContactData();
                 
                 $contact_data->person = $person;
 
                 $contact_data->contact_type = $key;
 
                 $contact_data->applyFormData($contactData);
+                
+                if ($this->_checkMatchingContactAccounts($contact_data, $person)) {
+                    continue;
+                }
 
                 $this->em->persist($contact_data);
             }
         }
+        $this->em->flush();
     }
     
     static public function parseVCard($content)
@@ -90,10 +127,15 @@ class VCard extends \File_IMC
                         }
                     }
                 }
+                
+                if (isset($vc['N'])) {
+                    $fields['name']['firstname'] = @$vc['N'][0]['value'][1][0];
+                    $fields['name']['lastname'] = @$vc['N'][0]['value'][0][0];
+                }
 
                 if(isset($vc['FN'])
                 && isset($vc['FN'][0]['value'])) {
-                    $fields['name'] = $vc['FN'][0]['value'][0][0];
+                    $fields['name']['fullname'] = $vc['FN'][0]['value'][0][0];
                 }
                 
                 if(isset($vc['IMPP'])) {
@@ -131,7 +173,6 @@ class VCard extends \File_IMC
                     $fields['phone'] = array();
                     foreach ($vc['TEL'] as $TEL) {
                         if (isset($TEL['value'][0][0])) {
-                            $TEL['value'][0][0] = '9007728285';
                             
                             $countryCode    = null;
                             
@@ -162,9 +203,78 @@ class VCard extends \File_IMC
                         }
                     }
                 }
+                
+                if (isset($vc['URL']) && is_array($vc['URL'])) {
+                    $fields['website'] = array();
+                    
+                    foreach ($vc['URL'] as $Url) {
+                        if (isset($Url['value'][0][0])) {
+                            $fields['website'][] = array(
+                                'url'   => $Url['value'][0][0]
+                            );
+                        }
+                    }
+                }
+                
+                if (isset($vc['ORG'][0]['value'][0][0])) {
+                    $fields['organization'] = $vc['ORG'][0]['value'][0][0];
+                }
             }
         }
         
         return $fields;
+    }
+    
+    protected function _lookupOrganizationByName($name)
+    {
+        return \Application\DeskPRO\Entity\Organization::getRepository()->findOneBy(array(
+            'name'  => $name
+        ));
+    }
+    
+    protected function _checkMatchingContactAccounts(\Application\DeskPRO\Entity\PersonContactData $contactData, \Application\DeskPRO\Entity\Person $person)
+    {
+        $existingContactDatas = $person->contact_data;
+        
+        $type = $contactData->contact_type;
+        
+        switch ($type) {
+            case 'instant_message':
+                foreach ($existingContactDatas as $existingContactData) {
+                    if ($existingContactData->field_1 === $contactData->field_1 &&
+                            $existingContactData->field_2 === $contactData->field_2) {
+                        return true;
+                    }
+                }
+                break;
+                
+            case 'phone':
+                foreach ($existingContactDatas as $existingContactData) {
+                    if ($existingContactData->field_1 === $contactData->field_1 &&
+                            $existingContactData->field_2 === $contactData->field_2) {
+                        return true;
+                    }
+                }
+                break;
+                
+            case 'facebook':
+                foreach ($existingContactDatas as $existingContactData) {
+                    if ($existingContactData->field_1 === $contactData->field_1) {
+                        return true;
+                    }
+                }
+                break;
+                
+            case 'website':
+                foreach ($existingContactDatas as $existingContactData) {
+                    if ($existingContactData->field_1 === $contactData->field_1) {
+                        return true;
+                    }
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 }
