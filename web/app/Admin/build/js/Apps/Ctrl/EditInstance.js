@@ -124,10 +124,9 @@
       };
 
       Admin_Apps_Ctrl_EditInstance.prototype.saveSettings = function() {
-        var postData;
         this.startSpinner('saving_settings');
         if (this.presaveCallback) {
-          this.presaveCallback().then((function(_this) {
+          return this.presaveCallback().then((function(_this) {
             return function() {
               return _this.doSaveSettings()["catch"](function() {
                 return _this.stopSpinner('saving_settings', true);
@@ -139,14 +138,16 @@
             };
           })(this));
         } else {
-          this.doSaveSettings()["finally"]((function(_this) {
+          return this.doSaveSettings()["finally"]((function(_this) {
             return function() {
               return _this.stopSpinner('saving_settings', true);
             };
-          })(this))({
-            doSaveSettings: function() {}
-          });
+          })(this));
         }
+      };
+
+      Admin_Apps_Ctrl_EditInstance.prototype.doSaveSettings = function() {
+        var postData;
         postData = {
           settings: this.$scope.setting_values
         };

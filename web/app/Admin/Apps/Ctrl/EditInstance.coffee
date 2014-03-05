@@ -98,7 +98,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 					@stopSpinner('saving_settings', true)
 				)
 
-    	doSaveSettings: ->
+		doSaveSettings: ->
 			postData = {
 				settings: @$scope.setting_values
 			}
@@ -109,7 +109,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 					@Growl.success(@getRegisteredMessage('saved_settings'))
 				)
 			)
-
 
 		###
     	# Shows readme modal window
