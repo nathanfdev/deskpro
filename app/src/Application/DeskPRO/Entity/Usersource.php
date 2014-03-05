@@ -41,6 +41,7 @@ use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 /**
  * Defines information about an external user source
@@ -122,11 +123,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 			return $this->_adapter_instance;
 		}
 
-		if (!$this->usersource_plugin) {
-			$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\' . $this->getTypeName();
-		} else {
-			$classname = $this->usersource_plugin->adapter_class;
-		}
+		$classname = $this->source_type;
 		if (!$classname || !class_exists($classname)) {
 			throw new \RuntimeException("Unknown usersource type `$classname`");
 		}
@@ -177,44 +174,8 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getTypeName()
 	{
-		return ucfirst(Strings::underscoreToCamelCase($this->source_type));
+		return ucfirst(Strings::underscoreToCamelCase(Util::getBaseClassname($this->source_type)));
 	}
-
-	public function getFormType()
-	{
-		if (!$this->usersource_plugin) {
-			$type_name = $this->getTypeName();
-			$class = 'Application\\AdminBundle\\Form\\Usersource\\Type\\' . $type_name . 'Type';
-		} else {
-			$class = $this->usersource_plugin->form_type_class;
-		}
-
-		return new $class();
-	}
-
-	public function getFormModel()
-	{
-		if (!$this->usersource_plugin) {
-			$type_name = $this->getTypeName();
-			$class = 'Application\\AdminBundle\\Form\\Usersource\\Model\\' . $type_name . 'Model';
-		} else {
-			$class = $this->usersource_plugin->form_model_class;
-		}
-
-		return new $class($this);
-	}
-
-	public function getFormTemplate()
-	{
-		if (!$this->usersource_plugin) {
-			$template = 'AdminBundle:UserReg:usersource-edit-' . $this->source_type . '.html.twig';
-		} else {
-			$template = $this->usersource_plugin->form_template;
-		}
-
-		return $template;
-	}
-
 
 
 	############################################################################
