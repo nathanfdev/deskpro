@@ -1,8 +1,9 @@
-{# Box Summary #}
-{{ dp_widgets(baseId, 'organization', 'summary', 'above', org_api) }}
+{{ dp_app_loc(baseId, 'left_col.top') }}
 
+{# Box Summary #}
+{{ dp_app_loc(baseId, 'summary.before') }}
 {% if org.summary|length or app.user.hasPerm('agent_org.edit') %}
-	<div class="profile-box-container summary"
+	<div class="profile-box-container dp-simpletab-container summary"
 		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
 		data-form-save-url="{{ path('agent_org_ajaxsave', {'organization_id': org.id}) }}"
 	>
@@ -14,32 +15,34 @@
 				<div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
 			</div>
 			{% endif %}
-			{{ dp_widget_tabs_header(baseId, 'organization', 'summary', {
-				(baseId ~ '_summary_body'): phrase('agent.general.summary')
-			}) }}
+			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+				<ul>
+					<li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
+				</ul>
+			</nav>
 		</header>
-		<section id="{{baseId}}_summary_body">
-			<input type="hidden" name="action" value="set-summary" />
-			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not app.user.hasPerm('agent_org.edit') %}onkeydown="return false;"{% endif %}>{{ org.summary }}</textarea></div>
+		<section>
+			<div id="{{baseId}}_summary_body">
+				<input type="hidden" name="action" value="set-summary" />
+				<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not app.user.hasPerm('agent_org.edit') %}onkeydown="return false;"{% endif %}>{{ org.summary }}</textarea></div>
+			</div>
+			{{ dp_app_loc(baseId, 'summary.tab') }}
 		</section>
-		{{ dp_widget_tabs(baseId, 'organization', 'summary', 'section', org_api) }}
 	</div>
 {% endif %}
-
-{{ dp_widgets(baseId, 'organization', 'summary', 'below', org_api) }}
+{{ dp_app_loc(baseId, 'summary.after') }}
 {# /Box Summary #}
 
-{{ dp_widgets(baseId, 'organization', 'members', 'above', org_api) }}
-
+{{ dp_app_loc(baseId, 'members.before') }}
 <div class="profile-box-container tabbed">
 	<header>
-		<nav>
-			{{ dp_widget_tabs_header(baseId, 'organization', 'members', {
-				(baseId ~ '_members_tab'): phrase('agent.general.members') ~ ' <span class="count" data-tag="org-members-count-' ~ org.id ~ '" id="' ~ baseId ~ '_members_count">' ~ members_count|default(0) ~ '</span>',
-				(baseId ~ '_tickets_tab'): (org_tickets_count ? phrase('agent.general.tickets') ~ ' <span class="count" id="' ~ baseId ~ '_tickets_count">' ~ org_tickets_count|default(0) ~ '</span>' : false),
-				(baseId ~ '_chats_tab'): (org_chats_count ? phrase('agent.general.chats') ~ ' <span class="count" id="' ~ baseId ~ '_chats_count">' ~ org_chats_count|default(0) ~ '</span>' : false),
-				(baseId ~ '_billing_tab'): (org_charges ? 'Billing <span class="count">' ~ org_charge_totals.count ~ '</span>' : false)
-			}) }}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{ baseId }}_members_tab">{{ phrase('agent.general.members') }} <span class="count" data-tag="org-members-count-{{ org.id }}" id="{{ baseId }}_members_count">{{ members_count|default(0) }}</span></li>
+				{% if org_tickets_count %}<li data-tab-for="#{{ baseId }}_tickets_tab">{{ phrase('agent.general.tickets') }} <span class="count" id="{{ baseId }}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>{% endif %}
+				{% if org_chats_count %}<li data-tab-for="#{{ baseId }}_chats_tab">{{ phrase('agent.general.chats') }}</li> <span class="count" id="{{ baseId }}_chats_count">{{ org_chats_count|default(0) }}</span>{% endif %}
+				{% if org_charges %}<li data-tab-for="#{{ baseId }}_billing_tab">Billing <span class="count">{{ org_charge_totals.count }}</span></li>{% endif %}
+			</ul>
 		</nav>
 	</header>
 	<section>
@@ -230,19 +233,17 @@
 		{{ dp_widget_tabs(baseId, 'organization', 'members', 'article', org_api) }}
 	</section>
 </div>
-
-{{ dp_widgets(baseId, 'organization', 'members', 'below', org_api) }}
-
-{{ dp_widgets(baseId, 'organization', 'notes', 'above', org_api) }}
+{{ dp_app_loc(baseId, 'members.after') }}
 
 {% if notes|length or activity_stream|length or app.user.hasPerm('agent_org.notes') %}
-<div class="profile-box-container tabbed">
+{{ dp_app_loc(baseId, 'notes.before') }}
+<div class="profile-box-container dp-simpletab-container tabbed">
 	<header>
-		<nav>
-			{{ dp_widget_tabs_header(baseId, 'organization', 'notes', {
-				(baseId ~ '_notes_tab'): ((notes|length or app.user.hasPerm('agent_org.notes')) ? phrase('agent.general.notes') ~ ' <span class="count" id="' ~ baseId ~ '_notes_count">' ~ notes|length ~ '</span>' : false),
-				(baseId ~ '_activity_tab'): (activity_stream|length ? phrase('agent.general.activity_stream') : false),
-			}) }}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				{% if notes|length or app.user.hasPerm('agent_org.notes') %}<li data-tab-for="#{{baseId}}_notes_tab">{{ phrase('agent.general.notes') }} <span class="count" id="{{ baseId }}_notes_count">{{ notes|length }}</span></li>{% endif %}
+				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
+			</ul>
 		</nav>
 	</header>
 	<section>
@@ -316,9 +317,10 @@
 		{% endif %}
 		{# /Activity Tab #}
 
-		{{ dp_widget_tabs(baseId, 'organization', 'notes', 'article', org_api) }}
+		{{ dp_app_loc(baseId, 'notes.tab') }}
 	</section>
 </div>
+{{ dp_app_loc(baseId, 'notes.after') }}
 {% endif %}
 
-{{ dp_widgets(baseId, 'organization', 'notes', 'below', org_api) }}
+{{ dp_app_loc(baseId, 'left_col.bottom') }}

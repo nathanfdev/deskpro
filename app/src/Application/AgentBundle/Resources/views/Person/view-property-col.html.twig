@@ -37,7 +37,7 @@
 
 {# Box Contact #}
 {{ dp_app_loc(baseId, 'contact.before') }}
-<div class="profile-box-container summary">
+<div class="profile-box-container dp-simpletab-container summary">
 	<header>
 		{% if perms.edit %}<span class="edit-gear contact-edit"></span>{% endif %}
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
@@ -170,7 +170,7 @@
 {# SLAs Box #}
 {{ dp_app_loc(baseId, 'slas.before') }}
 {% if app.getDataService('Sla').getPersonOrgAssociableSlas() and (perms.edit or person.slas|length) %}
-	<div class="profile-box-container summary" id="{{baseId}}_sla_box">
+	<div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_sla_box">
 		<header>
 			{% if perms.edit %}
 			<div class="controls">
@@ -215,7 +215,7 @@
 
 {# Usergroups and Usersources #}
 {{ dp_app_loc(baseId, 'usergroups.before') }}
-<div class="profile-box-container summary" id="{{baseId}}_sla_box">
+<div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_sla_box">
 	<header>
 		{% if perms.edit %}
 			<div class="controls">

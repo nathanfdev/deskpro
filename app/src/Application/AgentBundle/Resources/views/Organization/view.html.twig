@@ -26,6 +26,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /Page Containers #}
 
 <header class="page-header">
+	{{ dp_app_loc(baseId, 'header.top') }}
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box tipped" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
 			<img src="{{ org.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
@@ -72,9 +73,11 @@ pageMeta.baseId = '{{ baseId }}';
 		</nav>
 	</div>
 	<br class="clear" />
+	{{ dp_app_loc(baseId, 'header.bottom') }}
 </header>
 
-{{ dp_widgets(baseId, 'organization', 'header', 'below', org_api) }}
+{{ dp_app_loc(baseId, 'header.after') }}
+{{ dp_app_loc(baseId, 'main.before') }}
 
 <table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
@@ -86,11 +89,10 @@ pageMeta.baseId = '{{ baseId }}';
 	</section>
 </td></tr></table>
 
-{{ dp_widgets(baseId, 'organization', 'footer', 'above', org_api) }}
+{{ dp_app_loc(baseId, 'main.after') }}
+{{ dp_app_loc(baseId, 'footer') }}
 
 {% include 'AgentBundle:Organization:contact-overlay.html.twig' %}
-
-{{ dp_widgets(baseId, 'organization', '', '', org_api) }}
 
 {# Page Containers #}
 </div></div>

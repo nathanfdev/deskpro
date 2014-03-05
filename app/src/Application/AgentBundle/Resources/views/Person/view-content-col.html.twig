@@ -3,7 +3,7 @@
 {# Box Summary #}
 {{ dp_app_loc(baseId, 'summary.before') }}
 {% if person.summary|length or perms.edit %}
-	<div class="profile-box-container dp-simpletab-container summary"
+	<div class="profile-box-container dp-simpletab-container dp-simpletab-container summary"
 		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
 		data-form-save-url="{{ path('agent_people_ajaxsave', {'person_id': person.id}) }}"
 	>
@@ -34,8 +34,8 @@
 {# /Box Summary #}
 
 {# Properties Box #}
-{{ dp_app_loc(baseId, 'properties.above') }}
-<div class="profile-box-container properties" id="{{baseId}}_properties_box">
+{{ dp_app_loc(baseId, 'properties.before') }}
+<div class="profile-box-container dp-simpletab-container properties" id="{{baseId}}_properties_box">
 	<header>
 		{% if perms.edit %}
 			<div class="controls">
@@ -71,7 +71,7 @@
 {# Interaction Tabs #}
 {{ dp_app_loc(baseId, 'interactions.before') }}
 {% if person_tickets_count or person_chats_count or person_charges %}
-<div class="profile-box-container tabbed">
+<div class="profile-box-container dp-simpletab-container tabbed">
 	<header>
 		<nav>
 			<ul>
@@ -218,9 +218,9 @@
 
 {# Info Tabs #}
 {{ dp_app_loc(baseId, 'details.before') }}
-<div class="profile-box-container tabbed">
+<div class="profile-box-container dp-simpletab-container tabbed">
 	<header>
-		<nav>
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				{% if notes|length or perms.notes %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
