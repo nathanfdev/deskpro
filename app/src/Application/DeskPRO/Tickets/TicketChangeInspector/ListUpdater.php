@@ -76,24 +76,20 @@ class ListUpdater
 		$filter_changes = $this->filter_detector->getFilterMatches();
 		$ticket_id = $this->tracker->getTicket()->id;
 
-		$online_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgents(true);
-
 		$count_adds = 0;
 		$count_dels = 0;
 
 		$this->tracker->logMessage('[ListUpdater] run');
 		$time = microtime(true);
 
-		$this->em->beginTransaction();
-		try {
+		$batch = array();
+
 			foreach ($filter_changes as $change_info) {
 				$filter = $change_info['filter'];
 
 				foreach ($change_info['add'] as $agent) {
-					if (!isset($online_agents[$agent->id])) continue;
-
 					$count_adds++;
-					$this->em->getConnection()->insert('client_messages', array(
+					$batch[] = array(
 						'channel' => 'agent.filter-update',
 						'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 						'date_created' => date('Y-m-d H:i:s'),
@@ -105,14 +101,11 @@ class ListUpdater
 						'for_person_id' => $agent->getId(),
 						'created_by_client' => 'sys',
 						'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
-					));
+					);
 				}
 				foreach ($change_info['del'] as $agent) {
-					if (!isset($online_agents[$agent->id])) continue;
-
 					$count_dels++;
-
-					$this->em->getConnection()->insert('client_messages', array(
+					$batch[] = array(
 						'channel' => 'agent.filter-update',
 						'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 						'date_created' => date('Y-m-d H:i:s'),
@@ -124,10 +117,13 @@ class ListUpdater
 						'for_person_id' => $agent->getId(),
 						'created_by_client' => 'sys',
 						'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
-					));
+					);
 				}
 			}
 
+		$this->em->beginTransaction();
+		try {
+			$this->em->getConnection()->batchInsert('client_messages', $batch);
 			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {

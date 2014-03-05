@@ -175,7 +175,7 @@ class Person extends AbstractEntityRepository
 			LEFT JOIN s.person p
 			WHERE (p.is_agent = true AND p.is_deleted = false AND s.date_last > :cutoff) $or_id
 			GROUP BY p.id
-			ORDER BY s.id DESC
+			ORDER BY s.date_last DESC
 		");
 
 		if ($or_id) {
