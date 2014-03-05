@@ -669,9 +669,11 @@ class TaskController extends AbstractController
                 $vCalendar->addEvent($vEvent);
             }
             
-            header('Content-Type: text/calendar; charset=utf-8');
-            header('Content-Disposition: attachment; filename="' . $filter . '.ics"');
+            $response = new \Symfony\Component\HttpFoundation\Response($vCalendar->render());
             
-            echo $vCalendar->render(); exit;
+            $response->headers->set('Content-Type', 'text/calendar; charset=utf-8');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filter . '.ics"');
+            
+            return $response;
         }
 }

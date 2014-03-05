@@ -1615,14 +1615,14 @@ $collection->add('agent_task_ajaxsave', new Route(
 ));
 
 $collection->add('agent_task_ics_all_tasks', new Route(
-	'/tasks/{authcode}/all.ics',
+	'/tasks/{id}-{authcode}/all.ics',
 	array('_controller' => 'AgentBundle:Task:iCal', 'filter' => 'all'),
 	array('authcode' => '.*', 'id' => '^\d+$' ),
 	array()
 ));
 
 $collection->add('agent_task_ics_assigned_tasks', new Route(
-	'/tasks/{authcode}/assigned.ics',
+	'/tasks/{id}-{authcode}/assigned.ics',
 	array('_controller' => 'AgentBundle:Task:iCal', 'filter' => 'assigned'),
 	array('authcode' => '.*', 'id' => '^\d+$' ),
 	array()
