@@ -13,6 +13,29 @@
 		"link": "https://www.deskpro.com/"
 	},
 	"settings_def": [
-		
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "consumer_key",
+			"type": "text",
+			"label": "Consumer Key",
+			"description": "",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "consumer_secret",
+			"type": "text",
+			"label": "Consumer Secret",
+			"description": "",
+			"checkbox_label": "Yes",
+			"native_only": true
+		}
 	]
 }
