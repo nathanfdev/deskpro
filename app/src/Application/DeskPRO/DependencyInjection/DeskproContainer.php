@@ -586,6 +586,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Monolog\LoggerManager
+	 */
+	public function getLoggerManager()
+	{
+		return $this->getSystemService('logger_manager');
+	}
+
+
+	/**
 	 * Get a value from the main system configuration
 	 *
 	 * @param string $name

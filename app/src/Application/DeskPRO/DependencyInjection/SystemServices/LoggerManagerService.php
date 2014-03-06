@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,47 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Monolog\LoggerFactory;
+use Application\DeskPRO\Monolog\LoggerManager;
 
-class TestCommand extends ContainerAwareCommand
+class LoggerManagerService
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function configure()
+	public static function create(DeskproContainer $container)
 	{
-		$this->setName('dp:test');
-	}
+		$factory = new LoggerFactory($container);
+		$manager = new LoggerManager($factory);
 
-
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo __FILE__;
-		echo "\n";
-		return 0;
+		return $manager;
 	}
 }
