@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
@@ -63,7 +62,7 @@ class TicketManager
 	private $container;
 
 	/**
-	 * @param EntityManager $em
+	 * @param DeskproContainer $container
 	 */
 	public function __construct(DeskproContainer $container)
 	{
@@ -87,6 +86,7 @@ class TicketManager
 	/**
 	 * @param Ticket $ticket
 	 * @param ExecutorContext $context
+	 * @throws \Exception
 	 */
 	public function saveTicket(Ticket $ticket, ExecutorContext $context)
 	{
@@ -183,8 +183,8 @@ class TicketManager
 				// Using a custom format.
 				// We just ran into a collision which means the pattern is not a good pattern.
 				// We are going to append a random number automatically if it isn't part of the pattern already
-				if (App::getSetting('core.ref_pattern') && strpos(App::getSetting('core.ref_pattern'), '<?>') === -1 && strpos(App::getSetting('core.ref_pattern'), '<A>') === -1) {
-					$set_pattern = App::getSetting('core.ref_pattern');
+				if ($this->container->getSetting('core.ref_pattern') && strpos($this->container->getSetting('core.ref_pattern'), '<?>') === -1 && strpos($this->container->getSetting('core.ref_pattern'), '<A>') === -1) {
+					$set_pattern = $this->container->getSetting('core.ref_pattern');
 					$set_pattern .= '-<A><A><A>';
 					$this->container->getSettingsHandler()->setSetting('core.ref_pattern', $set_pattern);
 				}
@@ -353,9 +353,10 @@ class TicketManager
 
 	/**
 	 * @param Person $agent
-	 * @param string $event_type
-	 * @param string $event_method
-	 * @return \Application\DeskPRO\Tickets\ExecutorContext
+	 * @param $event_type
+	 * @param $event_method
+	 * @param array $event_method_options
+	 * @return ExecutorContext
 	 */
 	public function createAgentExecutorContext(Person $agent, $event_type, $event_method, array $event_method_options = array())
 	{
@@ -370,9 +371,10 @@ class TicketManager
 
 	/**
 	 * @param Person $user
-	 * @param string $event_type
-	 * @param string $event_method
-	 * @return \Application\DeskPRO\Tickets\ExecutorContext
+	 * @param $event_type
+	 * @param $event_method
+	 * @param array $event_method_options
+	 * @return ExecutorContext
 	 */
 	public function createUserExecutorContext(Person $user, $event_type, $event_method, array $event_method_options = array())
 	{
@@ -388,7 +390,8 @@ class TicketManager
 	/**
 	 * @param string $event_type
 	 * @param string $event_method
-	 * @return \Application\DeskPRO\Tickets\ExecutorContext
+	 * @param array $event_method_options
+	 * @return ExecutorContext
 	 */
 	public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
 	{
