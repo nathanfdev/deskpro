@@ -73,7 +73,7 @@ class DeskproContainer extends Container
 	/**#@-*/
 
 	/**
-	 * @var \DeskPRO\Kernel\BaseAbstractKernel
+	 * @var \DeskPRO\Kernel\AbstractKernel
 	 */
 	public $kernel;
 
@@ -89,7 +89,7 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \DeskPRO\Kernel\BaseAbstractKernel
+	 * @return \DeskPRO\Kernel\AbstractKernel
 	 */
 	public function getKernel()
 	{
@@ -99,6 +99,8 @@ class DeskproContainer extends Container
 
 	public function __construct(ParameterBagInterface $parameterBag = null)
 	{
+		require_once DP_ROOT . '/sys/load_config.php';
+
 		$GLOBALS['DP_CONTAINER'] = $this;
 		parent::__construct($parameterBag);
 	}
@@ -172,6 +174,7 @@ class DeskproContainer extends Container
 	 *
 	 * @throws \InvalidArgumentException
 	 * @param string $id
+	 * @param array $options
 	 * @return mixed
 	 */
 	public function getSystemObject($id, array $options = array())
@@ -436,7 +439,7 @@ class DeskproContainer extends Container
 	/**
 	 * Get the app event dispatcher
 	 *
-	 * @return \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
+	 * @return \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
 	 */
 	public function getEventDispatcher()
 	{
@@ -509,6 +512,7 @@ class DeskproContainer extends Container
 	/**
 	 * Get the queuer
 	 *
+	 * @param string $name
 	 * @return \Application\DeskPRO\Queue\Queue
 	 */
 	public function getQueue($name)
@@ -578,6 +582,7 @@ class DeskproContainer extends Container
 	 * Get the value of a setting.
 	 *
 	 * @param string $name The name of the setting to get
+	 * @param mixed $default
 	 * @return string
 	 */
 	public function getSetting($name, $default = null)
@@ -698,7 +703,7 @@ class DeskproContainer extends Container
 	 */
 	public function getLogDir()
 	{
-		return $this->kernel->getLogDir();
+		return dp_get_log_dir();
 	}
 
 
@@ -726,7 +731,7 @@ class DeskproContainer extends Container
 	 */
 	public function getBlobDir()
 	{
-		return $this->kernel->getBlobDir();
+		return dp_get_blob_dir();
 	}
 
 
@@ -735,7 +740,7 @@ class DeskproContainer extends Container
 	 */
 	public function getBackupDir()
 	{
-		return $this->kernel->getBackupDir();
+		return dp_get_backup_dir();
 	}
 
 

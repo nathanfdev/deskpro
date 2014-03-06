@@ -151,7 +151,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		});
 		$logger->addWriter($wr);
 
-		$log_file_path = $this->getContainer()->getKernel()->getUserLogDir() . '/import.log';
+		$log_file_path = dp_get_log_dir() . '/import.log';
 		if ($mode == 'run' && !$start_step) {
 			@unlink($log_file_path);
 		}
@@ -166,7 +166,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$logger->addWriter($wr);
 		} catch (\Exception $e) {
 			$output->writeln("Log file not writable: $log_file_path");
-			$output->writeln("Make the logs directory ({$this->getContainer()->getKernel()->getUserLogDir()} is writable and try again.");
+			$log_dir = dp_get_log_dir();
+			$output->writeln("Make the logs directory ($log_dir) is writable and try again.");
 			return 1;
 		}
 
@@ -1103,7 +1104,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return;
 		}
 
-		$import_log_path = App::getKernel()->getUserLogDir() . '/import.log';
+		$import_log_path = dp_get_log_dir() . '/import.log';
 		if (!file_exists($import_log_path)) {
 			return;
 		}

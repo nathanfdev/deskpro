@@ -60,6 +60,7 @@ class DpKernel extends AbstractKernel
 	/**
 	 * @param string $environment
 	 * @param bool $debug
+	 * @param string $interface
 	 */
 	public function __construct($environment, $debug, $interface = 'unknown')
 	{
@@ -234,42 +235,12 @@ class DpKernel extends AbstractKernel
 	 * @deprecated Use dp_get_log_dir()
 	 * @return string
 	 */
-	public function getUserLogDir()
-	{
-		require_once DP_ROOT . '/sys/load_config.php';
-		return dp_get_log_dir();
-	}
-
-
-	/**
-	 * @deprecated Use dp_get_log_dir()
-	 * @return string
-	 */
 	public function getLogDir()
 	{
-		return $this->getUserLogDir();
-	}
-
-
-	/**
-	 * @deprecated Use dp_get_backup_dir()
-	 * @return string
-	 */
-	public function getBackupDir()
-	{
-		require_once DP_ROOT . '/sys/load_config.php';
-		return dp_get_backup_dir();
-	}
-
-
-	/**
-	 * @deprecated Use dp_get_blob_dir()
-	 * @return string
-	 */
-	public function getBlobDir()
-	{
-		require_once DP_ROOT . '/sys/load_config.php';
-		return dp_get_blob_dir();
+		if (!function_exists('dp_get_log_dir')) {
+			require_once DP_ROOT . '/sys/load_config.php';
+		}
+		return dp_get_log_dir();
 	}
 
 
