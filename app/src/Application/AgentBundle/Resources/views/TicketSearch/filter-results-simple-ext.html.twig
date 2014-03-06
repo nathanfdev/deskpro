@@ -36,7 +36,7 @@
 
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
-	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
+	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.List.TicketList';
 	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}';
 	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.refreshCursorUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=json&cursor=$cursor&view_name={{ view_name }}';
