@@ -13,6 +13,29 @@
 		"link": "https://www.deskpro.com/"
 	},
 	"settings_def": [
-		
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "app_key",
+			"type": "text",
+			"label": "App Key",
+			"description": "",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "app_secret",
+			"type": "text",
+			"label": "App Secret",
+			"description": "",
+			"checkbox_label": "Yes",
+			"native_only": true
+		}
 	]
 }

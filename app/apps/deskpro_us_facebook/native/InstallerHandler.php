@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace deskpro_us_joomla;
+namespace deskpro_us_facebook;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
@@ -49,8 +49,11 @@ class InstallerHandler implements InstallerHandlerInterface
 			'title'             => $context->getApp()->title,
 			'source_type'       => 'app',
 			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'source_type'       => 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla',
+			'options'           => json_encode(array(
+				'app_key'    => $context->getApp()->getSetting('app_key'),
+				'app_secret' => $context->getApp()->getSetting('app_secret'),
+			)),
+			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook',
 			'is_enabled'        => '1'
 		));
 	}
@@ -74,8 +77,11 @@ class InstallerHandler implements InstallerHandlerInterface
 			'title'             => $context->getApp()->title,
 			'source_type'       => 'app',
 			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'source_type'       => 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla',
+			'options'           => json_encode(array(
+				'app_key'    => $context->getApp()->getSetting('app_key'),
+				'app_secret' => $context->getApp()->getSetting('app_secret'),
+			)),
+			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook',
 			'is_enabled'        => '1'
 		), array('app_id' => $context->getApp()->id));
 	}

@@ -1,0 +1,32 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enabled</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.enable_usersource" />
+			Yes, enable Facebook Authentication
+		</label>
+		<span class="help-block">Enable the app once you have verified all of your settings are correct.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Application Key</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.app_key" />
+		<p ng-show="errors.app_key" class="text-danger">Please enter your Application Key.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Application Secret</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.app_secret" />
+		<p ng-show="errors.app_secret" class="text-danger">Please enter your Application Secret.</p>
+	</div>
+</div>
