@@ -168,9 +168,15 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	public function doAuthenticate()
 	{
 		if (!$this->set_username) {
+			if ($this->logger) {
+				$this->logger->logDebug('No username provided');
+			}
 			return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
 		}
 		if (!$this->set_password) {
+			if ($this->logger) {
+				$this->logger->logDebug('No password provided');
+			}
 			return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
 		}
 
@@ -188,7 +194,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 			$result = $auth->authenticate();
 		} catch (\Exception $e) {
 			if ($this->logger) {
-				$this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
+				$this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
 			}
 			return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
 		}

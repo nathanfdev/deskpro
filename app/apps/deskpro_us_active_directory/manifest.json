@@ -15,7 +15,7 @@
 	"settings_def": [
 		{
 			"name": "enable_usersource",
-			"type": "text",
+			"type": "checkbox",
 			"label": "Enabled?",
 			"description": "Enable this user source?",
 			"checkbox_label": "Yes",

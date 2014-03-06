@@ -1,0 +1,73 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enabled</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.enable_usersource" />
+			Yes, enable Active Directory Authentication
+		</label>
+		<span class="help-block">Enable the app once you have verified all of your settings are correct.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Server</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.host" placeholder="Enter the server hostname here" style="width: 250px;" /> : <input type="text" class="form-control" ng-model="setting_values.port" placeholder="Port" style="width: 75px;" />
+		<span class="help-block">Enter the AD server and port.</span>
+		<p ng-show="errors.host" class="text-danger">Please enter your server hostname.</p>
+
+		<div style="margin: 8px 0 4px 0;">Connection Security</div>
+		<select ng-model="setting_values.secure">
+			<option value=""></option>
+			<option value="ssl">SSL</option>
+			<option value="tls">TLS</option>
+		</select>
+		<span class="help-block">If your server supports connection encryption, you can enable it here.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Base DN</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.base_dn" />
+		<span class="help-block">This is the base DN to search on. Only users who are "below" this node will be found.</span>
+		<p ng-show="errors.base_dn" class="text-danger">Please enter your base DN.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Service Account</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.service_username" placeholder="Service Account Username" style="width: 35%;" />
+		<input type="password" class="form-control" ng-model="setting_values.service_password" placeholder="Service Account Password" style="width: 35%;" />
+		<span class="help-block">
+			The service account is the account used to initially bind to the AD directory. The service account must have sufficient
+			permission to run filter queries against the directory.
+		</span>
+		<p ng-show="errors.service_username || errors.service_password" class="text-danger">Please enter your service user.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Domain Name</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.domain_name" style="width: 50%;" placeholder="Example: acme.com" />
+		<span class="help-block">The FQDN name for users in this directory. For example, a user alice@acme.com would usually have a domain of acme.com.</span>
+
+		<label style="display: block; margin-top: 10px;"><input type="checkbox" ng-model="show_short_domain" ng-init="show_short_domain = !!setting_values.short_domain_name" /> Specify a short domain name</label>
+		<div ng-show="show_short_domain">
+			<input type="text" class="form-control" ng-model="setting_values.short_domain_name" style="width: 50%;" placeholder="Example: ACME" />
+			<span class="help-block">This option should be used to specify the NetBIOS domain name for Windows networks. This option is not required but if it is not supplied, usernames in backslash form (e.g., ACME\alice) are not supported.</span>
+		</div>
+	</div>
+</div>
