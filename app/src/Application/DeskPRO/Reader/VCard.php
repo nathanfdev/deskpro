@@ -139,10 +139,10 @@ class VCard extends \File_IMC
                     $fields['name']['lastname'] = @$vc['N'][0]['value'][0][0];
                 }
 
-                if(isset($vc['FN'])
-                && isset($vc['FN'][0]['value'])) {
-                    $fields['name']['fullname'] = $vc['FN'][0]['value'][0][0];
-                }
+//                if(isset($vc['FN'])
+//                && isset($vc['FN'][0]['value'])) {
+//                    $fields['name']['fullname'] = $vc['FN'][0]['value'][0][0];
+//                }
                 
                 if(isset($vc['IMPP'])) {
                     //print_r($vc['IMPP']); die;

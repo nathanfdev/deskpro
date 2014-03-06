@@ -65,7 +65,11 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 			completed: function() {
                             self.blobId = $('input.new_blob_id', this.wrapperEl).val();
                             
-                            $('.files .in', wrapper).css('height', 'auto').css('margin', '10px -15px').html("Loading . . .");
+                            $('.files .in', wrapper).css({
+                                'height': 'auto',
+                                'margin': '10px -15px',
+                                'text-transform': 'capitalize'
+                            }).html("Loading . . .");
                             
                             $.ajax({
                                 url: BASE_URL + 'agent/misc/parse-vcard/' + self.blobId,
@@ -80,16 +84,23 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
                                     vCard = vCard[0].fields;
 
                                     for(var prop in vCard) {
-                                        if(vCard.hasOwnProperty(prop))
-                                            if (typeof vCard[prop] === 'object') {
-                                                for(var prop2 in vCard[prop]) {
-                                                    if (typeof vCard[prop][prop2] === 'string') {
-                                                        $('.files .in', wrapper).append(prop + ": " + vCard[prop][prop2] + "<br/>");
+                                        if (typeof vCard[prop] === 'object') {
+                                            // it seems to be an array
+                                            for(var prop2 in vCard[prop]) {
+                                                if (typeof vCard[prop][prop2] === 'string') {
+                                                    $('.files .in', wrapper).append(prop2 + ": " + vCard[prop][prop2] + "<br/>");
+                                                } else if(typeof vCard[prop][prop2] === 'object') {
+                                                    $('.files .in', wrapper).append("<hr/>");
+                                                    for (var prop3 in vCard[prop][prop2]) {
+                                                        if (typeof vCard[prop][prop2][prop3] === 'string') {
+                                                    $('.files .in', wrapper).append(prop3 + ": " + vCard[prop][prop2][prop3] + "<br/>");    
+                                                        }
                                                     }
                                                 }
-                                            } else {
-                                                $('.files .in', wrapper).append(prop + ": " + vCard[prop] + "<br/>");
                                             }
+                                        } else {
+                                            $('.result').append(prop + ": " + vCard[prop] + "<br/>");
+                                        }
                                     }
                                 }
                             });
@@ -127,7 +138,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 			dataType: 'json',
 			data: formData,
                         success: function() {
-                            return true;
+                            //return true;
                             DeskPRO_Window.removePage(self.page);
                             DeskPRO_Window.loadPage(BASE_URL + 'agent/people/' + self.page.meta.person_id, {ignoreExist:true});
                         }
