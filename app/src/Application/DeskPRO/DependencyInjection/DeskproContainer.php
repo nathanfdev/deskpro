@@ -49,29 +49,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class DeskproContainer extends Container
 {
-	/**#@+
-	 * Names of common services
-	 */
-	const SERVICE_DB                 = 'database_connection';
-	const SERVICE_ORM                = 'doctrine.orm.entity_manager';
-	const SERVICE_EM                 = 'doctrine.orm.entity_manager';
-	const SERVICE_INPUT_READER       = 'deskpro.core.input_reader';
-	const SERVICE_INPUT_CLEANER      = 'deskpro.core.input_cleaner';
-	const SERVICE_SETTINGS           = 'deskpro.core.settings';
-	const SERVICE_SESSION            = 'session';
-	const SERVICE_ROUTER             = 'router';
-	const SERVICE_REQUEST            = 'request';
-	const SERVICE_RESPONSE           = 'response';
-	const SERVICE_MAILER             = 'mailer';
-	const SERVICE_TRANSLATOR         = 'deskpro.core.translate';
-	const SERVICE_EVENT_DISPATCHER   = 'event_dispatcher';
-	const SERVICE_FORM_FACTORY       = 'form.factory';
-	const SERVICE_SEARCH_ENGINE      = 'deskpro.search_engine';
-	const SERVICE_TEMPLATING         = 'templating';
-	const SERVICE_SEARCH             = 'deskpro.search_adapter';
-	const SERVICE_PERSON_ACTIVITY_LOGGER = 'deskpro.person_activity_logger';
-	/**#@-*/
-
 	/**
 	 * @var \DeskPRO\Kernel\AbstractKernel
 	 */
@@ -103,6 +80,24 @@ class DeskproContainer extends Container
 
 		$GLOBALS['DP_CONTAINER'] = $this;
 		parent::__construct($parameterBag);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isDebug()
+	{
+		return $this->kernel ? $this->kernel->getEnvironment() == 'dev' : true;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getEnvironment()
+	{
+		return $this->kernel ? $this->kernel->getEnvironment() : 'dev';
 	}
 
 
@@ -192,26 +187,11 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * Get the autoloader
-	 *
-	 * @var \Orb\Util\ClassLoader
-	 */
-	public function getClassLoader()
-	{
-		if (isset($GLOBALS['DP_AUTOLOADER'])) {
-			return $GLOBALS['DP_AUTOLOADER'];
-		}
-
-		return null;
-	}
-
-
-	/**
 	 * @return \Application\DeskPRO\Input\Reader
 	 */
 	public function getIn()
 	{
-		return $this->get(self::SERVICE_INPUT_READER);
+		return $this->get('deskpro.core.input_reader');
 	}
 
 
@@ -220,7 +200,7 @@ class DeskproContainer extends Container
 	 */
 	public function getInputCleaner()
 	{
-		return $this->get(self::SERVICE_INPUT_CLEANER);
+		return $this->get('deskpro.core.input_cleaner');
 	}
 
 
@@ -231,7 +211,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSearchAdapter()
 	{
-		return $this->get(self::SERVICE_SEARCH);
+		return $this->get('deskpro.search_adapter');
 	}
 
 
@@ -242,7 +222,7 @@ class DeskproContainer extends Container
 	 */
 	public function getDb()
 	{
-		return $this->get(self::SERVICE_DB);
+		return $this->get('database_connection');
 	}
 
 
@@ -333,7 +313,7 @@ class DeskproContainer extends Container
 	 */
 	public function getOrm()
 	{
-		return $this->get(self::SERVICE_ORM);
+		return $this->get('doctrine.orm.entity_manager');
 	}
 
 
@@ -345,7 +325,7 @@ class DeskproContainer extends Container
 	 */
 	public function getEm()
 	{
-		return $this->get(self::SERVICE_EM);
+		return $this->get('doctrine.orm.entity_manager');
 	}
 
 
@@ -353,11 +333,12 @@ class DeskproContainer extends Container
 	/**
 	 * Get the request
 	 *
+	 * @deprecated Should inject the request into the current controller action
 	 * @return \Symfony\Component\HttpFoundation\Request
 	 */
 	public function getRequest()
 	{
-		return $this->get(self::SERVICE_REQUEST);
+		return $this->get('request');
 	}
 
 
@@ -368,7 +349,7 @@ class DeskproContainer extends Container
 	 */
 	public function getResponse()
 	{
-		return $this->get(self::SERVICE_RESPONSE);
+		return $this->get('response');
 	}
 
 
@@ -379,7 +360,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSession()
 	{
-		return $this->get(self::SERVICE_SESSION);
+		return $this->get('session');
 	}
 
 
@@ -390,7 +371,7 @@ class DeskproContainer extends Container
 	 */
 	public function getMailer()
 	{
-		return $this->get(self::SERVICE_MAILER);
+		return $this->get('mailer');
 	}
 
 
@@ -401,7 +382,7 @@ class DeskproContainer extends Container
 	 */
 	public function getTranslator()
 	{
-		return $this->get(self::SERVICE_TRANSLATOR);
+		return $this->get('deskpro.core.translate');
 	}
 
 
@@ -412,7 +393,7 @@ class DeskproContainer extends Container
 	 */
 	public function getTemplating()
 	{
-		return $this->get(self::SERVICE_TEMPLATING);
+		return $this->get('templating');
 	}
 
 
@@ -423,7 +404,7 @@ class DeskproContainer extends Container
 	 */
 	public function getRouter()
 	{
-		return $this->get(self::SERVICE_ROUTER);
+		return $this->get('router');
 	}
 
 
@@ -443,7 +424,7 @@ class DeskproContainer extends Container
 	 */
 	public function getEventDispatcher()
 	{
-		return $this->get(self::SERVICE_EVENT_DISPATCHER);
+		return $this->get('event_dispatcher');
 	}
 
 
@@ -454,7 +435,7 @@ class DeskproContainer extends Container
 	 */
 	public function getFormFactory()
 	{
-		return $this->get(self::SERVICE_FORM_FACTORY);
+		return $this->get('form.factory');
 	}
 
 
@@ -465,7 +446,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSearchEngine()
 	{
-		return $this->get(self::SERVICE_SEARCH_ENGINE);
+		return $this->get('deskpro.search_engine');
 	}
 
 
@@ -485,7 +466,7 @@ class DeskproContainer extends Container
 	 */
 	public function getPersonActivityLogger()
 	{
-		return $this->get(self::SERVICE_PERSON_ACTIVITY_LOGGER);
+		return $this->get('deskpro.person_activity_logger');
 	}
 
 
@@ -587,7 +568,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSetting($name, $default = null)
 	{
-		$settings = $this->get(self::SERVICE_SETTINGS);
+		$settings = $this->get('deskpro.core.settings');
 		return $settings->get($name, $default);
 	}
 
@@ -599,7 +580,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSettingsHandler()
 	{
-		$settings = $this->get(self::SERVICE_SETTINGS);
+		$settings = $this->get('deskpro.core.settings');
 		return $settings;
 	}
 

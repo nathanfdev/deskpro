@@ -530,7 +530,7 @@ class KernelBooter
 				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 			}
 		} else {
-			if (App::isCacheSkipped()) {
+			if (isset($GLOBALS['DP_SET_SKIP_CACHE']) && $GLOBALS['DP_SET_SKIP_CACHE']) {
 				global $DP_CONFIG;
 				$ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
 				$cache_time = time() + $ttl;
@@ -549,7 +549,7 @@ class KernelBooter
 			}
 		}
 
-		if (!$logged_in && !$skip_cache && !App::isUncachableResult() && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
+		if (!$logged_in && !$skip_cache && !$response->headers->has('X-DeskPRO-Private') && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			if (!is_dir($cache_dir)) {
 				@mkdir($cache_dir, 0777);

@@ -472,7 +472,7 @@ class ArticlesController extends AbstractController
 		// Disable cache for this guest so the flash message
 		// appears and doesnt get cached for everyone
 		if ($this->person->isGuest()) {
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		}
 
 		return $this->redirectRoute('user');
@@ -534,7 +534,7 @@ class ArticlesController extends AbstractController
 
 			$comment = $new_comment->save();
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			if ($new_comment->require_login) {
 				$return_url = $this->generateUrl('user_newcomment_finishlogin', array(

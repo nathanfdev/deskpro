@@ -43,8 +43,11 @@ use Orb\Util\Strings;
 
 class PhpGeneratorDumper extends BasePhpGeneratorDumper
 {
+	private $className;
+
     public function dump(array $options = array())
 	{
+		$this->className = $options['class'];
 		$class = trim(parent::dump($options));
 
 		list($var_code, $method_code) = $this->getClassCode();
@@ -71,7 +74,7 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 
 		foreach ($this->getRoutes()->all() as $name => $route) {
 
-			$route_patterns[$name] = $route->getPattern();
+			$route_patterns[$name] = $route->getPath();
 
 			$a_name = $route->getOption('fragment_name');
 			$a_type = $route->getOption('fragment_type');
@@ -88,6 +91,12 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 		$var_code['fragmentNames']   = 'static private $fragmentNames = ' . var_export($fragment_names, true) . ';';
 		$var_code['fragmentTypes']   = 'static private $fragmentTypes = ' . var_export($fragment_types, true) . ';';
 		$var_code = implode("\n", $var_code);
+
+		if (preg_match('#DevUrlGenerator$#', $this->className)) {
+			$env = 'dev';
+		} else {
+			$env = 'prod';
+		}
 
 		$method_code = <<<EOF
 	public function getRoutePattern(\$route_name)
@@ -165,6 +174,11 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 		}
 
 		return \$fragment;
+	}
+
+	public function getEnvMode()
+	{
+		return '$env';
 	}
 EOF;
 

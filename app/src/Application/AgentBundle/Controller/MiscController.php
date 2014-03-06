@@ -849,7 +849,7 @@ JS;
 		$rjs = new RequireJsConfigGenerator();
 		$rjs->setBaseUrlExpr('ASSETS_BASE_URL');
 
-		if (App::isDebug()) {
+		if ($this->container->isDebug()) {
 			$rjs->setUrlArgsExpr('"bust=" + (new Date()).getTime()');
 		}
 

@@ -303,7 +303,7 @@ class NewsController extends AbstractController
 
 			$comment = $new_comment->save();
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			if ($new_comment->require_login) {
 				return $this->redirectRoute('user_newcomment_finishlogin', array(

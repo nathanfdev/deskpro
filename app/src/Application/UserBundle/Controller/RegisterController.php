@@ -133,7 +133,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			if ($is_valid) {
 				$person = $register->save();
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 				$this->session->setFlash('register_done', 1);
 

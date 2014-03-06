@@ -77,9 +77,14 @@ class UrlGenerator extends BaseUrlGenerator
         $this->context = $context;
     }
 
+	public function getEnvMode()
+	{
+		return 'dev';
+	}
+
 	public function generate($name, $parameters = array(), $absolute = false)
 	{
-		if (App::getEnvironment() == 'dev') {
+		if ($this->getEnvMode() == 'dev') {
 			return parent::generate($name, $parameters, $absolute);
 		}
 

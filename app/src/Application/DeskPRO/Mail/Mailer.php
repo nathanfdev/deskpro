@@ -131,7 +131,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 				$filepath = '%log_dir%/emails';
 			}
 
-			$filepath = str_replace('%log_dir%', App::getLogDir(), $filepath);
+			$filepath = str_replace('%log_dir%', dp_get_log_dir(), $filepath);
 			if (!is_dir($filepath)) {
 				@mkdir($filepath, 0777);
 			}
@@ -145,7 +145,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 					$info_path = '%log_dir%/emails-info';
 				}
 
-				$info_path = str_replace('%log_dir%', App::getLogDir(), $info_path);
+				$info_path = str_replace('%log_dir%', dp_get_log_dir(), $info_path);
 				if (!is_dir($info_path)) {
 					@mkdir($info_path, 0777);
 				}

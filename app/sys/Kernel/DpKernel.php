@@ -81,8 +81,6 @@ class DpKernel extends AbstractKernel
 
 		set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
 		set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
-
-		App::setKernel($this);
 	}
 
 
@@ -96,13 +94,8 @@ class DpKernel extends AbstractKernel
 
 		parent::boot();
 
-		if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing') {
-			App::setContainer($this->container, 'default', true);
-		} else {
-			App::setContainer($this->container, 'default');
-		}
-
 		$this->container->kernel = $this;
+		App::$container = $this->container;
 
 		if ($this->container->has('deskpro.sys_events_loader')) {
 			$this->container->get('deskpro.sys_events_loader');

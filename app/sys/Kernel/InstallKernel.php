@@ -65,8 +65,6 @@ class InstallKernel extends BaseKernel
 
 		set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
 		set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
-
-		App::setKernel($this);
 	}
 
 

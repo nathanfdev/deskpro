@@ -71,8 +71,6 @@ class TwitterController extends AbstractController
 		if ($long->is_public) {
 			$can_view = true;
 		} else {
-			App::setUncachableResult();
-
 			$can_view = (
 				App::getSession()->get('twitter_user_id')
 				&& App::getSession()->get('twitter_user_id') == $long->for_user->id
@@ -91,9 +89,15 @@ class TwitterController extends AbstractController
 			$this->em->flush();
 		}
 
-		return $this->render('UserBundle:Twitter:view-long.html.twig', array(
+		$response = $this->render('UserBundle:Twitter:view-long.html.twig', array(
 			'long' => $long,
 			'can_view' => $can_view
 		));
+
+		if (!$long->is_public) {
+			$response->headers->set('X-DeskPRO-Private', 'true');
+		}
+
+		return $response;
 	}
 }

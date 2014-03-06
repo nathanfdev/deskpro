@@ -246,7 +246,7 @@ class WidgetController extends AbstractController
 			$ticket = $newticket->save();
 			$person = $ticket['person'];
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			return $this->createJsonResponse(array(
 				'ticket_id' => $ticket->id,
@@ -312,7 +312,7 @@ class WidgetController extends AbstractController
 				$feedback_id = $dupe;
 			}
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			return $this->createJsonResponse(array(
 				'feedback_id' => $feedback_id

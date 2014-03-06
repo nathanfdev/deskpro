@@ -126,7 +126,7 @@ class GlobalVariables extends BaseGlobalVariables
 
 	public function isDebug()
 	{
-		return App::isDebug();
+		return $this->container->isDebug();
 	}
 
 	public function isTesting()

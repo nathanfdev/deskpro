@@ -201,7 +201,7 @@ class TemplatingExtension extends \Twig_Extension
 		try {
         	return App::getRouter()->generate($name, $parameters, false);
 		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
-			if (App::isDebug()) {
+			if ($this->container->isDebug()) {
 				throw $e;
 			}
 			return '';
@@ -213,7 +213,7 @@ class TemplatingExtension extends \Twig_Extension
 		try {
         	return App::getRouter()->generate($name, $parameters, true);
 		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
-			if (App::isDebug()) {
+			if ($this->container->isDebug()) {
 				throw $e;
 			}
 			return '';
@@ -1018,7 +1018,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function isDebugMode()
 	{
-		return App::isDebug();
+		return $this->container->isDebug();
 	}
 
 	public function getMd5($string)
@@ -1218,96 +1218,19 @@ class TemplatingExtension extends \Twig_Extension
 		}
 	}
 
-	public function getWidgetHtmlId($baseId, \Application\DeskPRO\Entity\Widget $widget)
+	public function getWidgetHtmlId($baseId, $widget)
 	{
-		return "{$baseId}-widget-{$widget->id}";
+		return '';
 	}
 
-	protected function _insertWidget($baseId, \Application\DeskPRO\Entity\Widget $widget, $wrapper, $data = array())
+	protected function _insertWidget($baseId, $widget, $wrapper, $data = array())
 	{
-		$jsOnly = !$widget->page_location;
-		$htmlId = ($jsOnly ? '' : $this->getWidgetHtmlId($baseId, $widget));
-
-		if (!is_array($data) && !($data instanceof \ArrayAccess)) {
-			$data = array();
-		}
-		$data['base_id'] = $baseId;
-		$data['html_id'] = $htmlId;
-		$data['settings'] = App::get(App::SERVICE_SETTINGS);
-
-		if ($jsOnly) {
-			$output = '';
-		} else {
-			$output = strtr($wrapper, array(
-				'{id}' => $htmlId,
-				'{widget}' => $widget->id,
-				'{html}' => $this->_replaceWidgetPlaceholders($widget->html, $data, 'html'),
-				'{title}' => $widget->title
-			));
-		}
-
-		if ($widget->css) {
-			$css = $this->_replaceWidgetPlaceholders($widget->css, $data, 'css');
-			$hash = md5($css);
-			$output .= '<style type="text/css" data-widget="' . $widget->id . '" data-hash="' . $hash . '">' . $css . '</style>';
-		}
-		if ($widget->js) {
-			$js = $this->_replaceWidgetPlaceholders($widget->js, $data, 'js');
-			$output .= '<script type="text/javascript" data-widget="' . $widget->id . '" data-html-id="' . $htmlId . '">'
-				. $js . '</script>';
-		}
-
-		return $output;
+		return '';
 	}
 
 	protected function _replaceWidgetPlaceholders($content, $data, $context)
 	{
-		return preg_replace_callback('/\{\{\s*([a-z0-9_.]+)\s*\}\}/i', function (array $match) use ($data, $context) {
-			$parts = explode('.', $match[1]);
-			$reference = $data;
-			while (($part = array_shift($parts)) !== null) {
-				if ($part == '') {
-					continue;
-				}
-
-				if (!is_array($reference) && !($reference instanceof \ArrayAccess)) {
-					$reference = '';
-					break;
-				}
-
-				if (isset($reference[$part])) {
-					$reference = $reference[$part];
-
-					if ($reference instanceof \Application\DeskPRO\Settings\Settings) {
-						$reference = ($parts ? $reference[implode('.', $parts)] : '');
-						break;
-					}
-				} else {
-					$reference = '';
-					break;
-				}
-			}
-
-			$reference = strval($reference);
-
-			switch ($context) {
-				case 'html':
-					return htmlspecialchars($reference);
-
-				case 'js':
-					return strtr($reference, array(
-						'"' => '\\"',
-						"'" => "\\'",
-						"\n" => '\n',
-						"\r" => '\r',
-						'\\' => '\\\\',
-						'</script>' => '<\\/script>'
-					));
-
-				default:
-					return $reference;
-			}
-		}, $content);
+		return $content;
 	}
 
 	public function getWidgetTabsHeader($baseId, $page, $location, array $tabs)
@@ -1347,15 +1270,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getWidgetTabsBody($baseId, $page, $location, $wrapper, $data = array())
 	{
-		$output = '';
-		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
-			$output .= $this->_insertWidget($baseId, $widget,
-				'<' . $wrapper . ' class="widget-content" id="{id}" data-widget="{widget}" style="display: none">{html}</' . $wrapper . '>',
-				$data
-			);
-		}
-
-		return $output;
+		return '';
 	}
 
 	public function getJsSsoLoader()

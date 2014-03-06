@@ -126,14 +126,6 @@ class ErrorReporter
 			$info['DEV_MODE'] = 1;
 		}
 
-		if (class_exists('Application\\DeskPRO\\App', false)) {
-			try {
-				$kernel = App::getKernel();
-				$info['Kernel::getEnvironment'] = $kernel->getEnvironment();
-				$info['Kernel::isDebug']        = $kernel->isDebug() ? 'true' : 'false';
-			} catch (\Exception $e) {}
-		}
-
 		if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
 			try {
 				$info['license_id'] = \DeskPRO\Kernel\License::getLicense()->getLicenseId();
