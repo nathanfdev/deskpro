@@ -32,49 +32,61 @@
  * @category Entities
  */
 
-namespace deskpro_us_vbulletin\RequestHandler;
+namespace deskpro_us_xenforo;
 
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use Application\DeskPRO\Usersource\UsersourceTester;
-use deskpro_us_vbulletin\Usersource\AppOptionsMapper;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use deskpro_us_xenforo\Usersource\AppOptionsMapper;
 
-class PackageRequestHandler implements ApiPackageRequestHandlerInterface
+class InstallerHandler implements InstallerHandlerInterface
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
+	public function install(InstallerContext $context)
 	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-				break;
-			default:
-				throw $context->createNotFoundException();
-		}
+		$context->getDb()->insert('usersources', array(
+			'app_id'            => $context->getApp()->id,
+			'title'             => $context->getApp()->title,
+			'source_type'       => 'app',
+			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
+			'options'           => json_encode(AppOptionsMapper::getOptions($context->getApp())),
+			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Xenforo',
+		));
 	}
 
 
 	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * {@inheritDoc}
 	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
+	public function uninstall(InstallerContext $context)
 	{
-		$username = $context->getIn()->getString('username');
-		$password = $context->getIn()->getString('password');
-		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
+		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
+	}
 
-		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin', $options);
-		$tester->test($username, $password);
 
-		$result_data = array(
-			'log'        => $tester->getLog(),
-			'raw_data'   => $tester->getRawData(),
-			'is_valid'   => $tester->isValid(),
-		);
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updateSettings(InstallerContext $context)
+	{
+		$context->getDb()->update('usersources', array(
+			'title'             => $context->getApp()->title,
+			'source_type'       => 'app',
+			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
+			'options'           => json_encode(AppOptionsMapper::getOptions($context->getApp())),
+			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Xenforo',
+		), array('app_id' => $context->getApp()->id));
+	}
 
-		return $context->createJsonResponse($result_data);
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updatePackage(InstallerContext $context)
+	{
+		// Nothing
 	}
 }

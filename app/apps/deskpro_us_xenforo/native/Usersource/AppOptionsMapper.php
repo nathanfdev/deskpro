@@ -29,52 +29,39 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Apps
  */
 
-namespace deskpro_us_vbulletin\RequestHandler;
+namespace deskpro_us_xenforo\Usersource;
 
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use Application\DeskPRO\Usersource\UsersourceTester;
-use deskpro_us_vbulletin\Usersource\AppOptionsMapper;
+use Application\DeskPRO\Entity\AppInstance;
+use Orb\Util\OptionsArray;
 
-class PackageRequestHandler implements ApiPackageRequestHandlerInterface
+class AppOptionsMapper
 {
 	/**
-	 * {@inheritDoc}
+	 * @param array|AppInstance $app_or_settings
+	 * @return array
+	 * @throws \InvalidArgumentException
 	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
+	public static function getOptions($app_or_settings)
 	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-				break;
-			default:
-				throw $context->createNotFoundException();
+		if ($app_or_settings instanceof AppInstance) {
+			$settings = $app_or_settings->getSettings();
+		} else {
+			if (!is_array($app_or_settings)) {
+				throw new \InvalidArgumentException;
+			}
+			$settings = $app_or_settings;
 		}
-	}
 
+		$settings = new OptionsArray($settings);
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
-	{
-		$username = $context->getIn()->getString('username');
-		$password = $context->getIn()->getString('password');
-		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
+		$options = array();
+		$options['db_dsn'] = $settings->get('db_dsn');
+		$options['db_username'] = $settings->get('db_username');
+		$options['db_password'] = $settings->get('db_password');
 
-		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin', $options);
-		$tester->test($username, $password);
-
-		$result_data = array(
-			'log'        => $tester->getLog(),
-			'raw_data'   => $tester->getRawData(),
-			'is_valid'   => $tester->isValid(),
-		);
-
-		return $context->createJsonResponse($result_data);
+		return $options;
 	}
 }

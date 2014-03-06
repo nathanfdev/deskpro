@@ -32,12 +32,12 @@
  * @category Entities
  */
 
-namespace deskpro_us_vbulletin\RequestHandler;
+namespace deskpro_us_xenforo\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
 use Application\DeskPRO\Usersource\UsersourceTester;
-use deskpro_us_vbulletin\Usersource\AppOptionsMapper;
+use deskpro_us_xenforo\Usersource\AppOptionsMapper;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -66,7 +66,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		$password = $context->getIn()->getString('password');
 		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
 
-		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin', $options);
+		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\Xenforo', $options);
 		$tester->test($username, $password);
 
 		$result_data = array(
