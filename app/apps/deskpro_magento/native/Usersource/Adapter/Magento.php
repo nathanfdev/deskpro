@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace deskpro_magento\Adapter;
+namespace deskpro_magento\Usersource\Adapter;
 
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
@@ -53,7 +53,7 @@ class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	}
 
 	/**
-	 * @return \Magento\Usersource\Auth\Magento
+	 * @return \deskpro_magento\Usersource\Auth\Magento
 	 */
 	protected function _createAuthAdapterObject()
 	{
@@ -62,7 +62,7 @@ class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 		$options['api_user'] = App::getSetting("Magento.api_user");
 		$options['api_key'] = App::getSetting("Magento.api_key");
 
-		return new \Magento\Usersource\Auth\Magento($options);
+		return new \deskpro_magento\Usersource\Auth\Magento($options);
 	}
 
 	/**

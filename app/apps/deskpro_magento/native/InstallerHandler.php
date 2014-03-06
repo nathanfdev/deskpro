@@ -55,7 +55,8 @@ class InstallerHandler implements InstallerHandlerInterface
 				'api_key'  => $context->getApp()->getSetting('api_key'),
 				'sso_js'   => $context->getApp()->getSetting('enable_sso') ? true : false,
 			)),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0'
+			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'source_type'       => 'deskpro_magento\\Usersource\\Adapter\\Magento'
 		));
 	}
 
@@ -84,7 +85,8 @@ class InstallerHandler implements InstallerHandlerInterface
 				'api_key'  => $context->getApp()->getSetting('api_key'),
 				'sso_js'   => $context->getApp()->getSetting('enable_sso') ? true : false,
 			)),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0'
+			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'source_type'       => 'deskpro_magento\\Usersource\\Adapter\\Magento'
 		), array('app_id' => $context->getApp()->id));
 	}
 

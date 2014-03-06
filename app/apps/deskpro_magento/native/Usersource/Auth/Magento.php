@@ -85,8 +85,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 	}
 
 	/**
-	 * @param string $username
-	 * @param string $password
+	 * @param array $form_data
 	 */
 	public function setFormData(array $form_data)
 	{
