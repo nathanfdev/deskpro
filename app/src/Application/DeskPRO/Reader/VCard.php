@@ -71,7 +71,13 @@ class VCard extends \File_IMC
                     continue;
                 }
                 
-                $person->emails->add($email);
+                $newEmail = new \Application\DeskPRO\Entity\PersonEmail();
+                
+                $newEmail->email = $email;
+                
+                $newEmail->is_validated = true;
+                
+                $person->addEmailAddress($newEmail);
             }
             unset($fields['emails']);
         }
