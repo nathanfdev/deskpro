@@ -1,0 +1,67 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enabled</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.enable_usersource" />
+			Yes, enable LDAP Authentication
+		</label>
+		<span class="help-block">Enable the app once you have verified all of your settings are correct.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Server</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.host" placeholder="Enter the server hostname here" style="width: 250px;" /> : <input type="text" class="form-control" ng-model="setting_values.port" placeholder="Port" style="width: 75px;" />
+		<span class="help-block">Enter the AD server and port.</span>
+		<p ng-show="errors.host" class="text-danger">Please enter your server hostname.</p>
+
+		<div style="margin: 8px 0 4px 0;">Connection Security</div>
+		<select ng-model="setting_values.secure">
+			<option value=""></option>
+			<option value="ssl">SSL</option>
+			<option value="tls">TLS</option>
+		</select>
+		<span class="help-block">If your server supports connection encryption, you can enable it here.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Base DN</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.base_dn" />
+		<span class="help-block">This is the base DN to search on. Only users who are "below" this node will be found.</span>
+		<p ng-show="errors.base_dn" class="text-danger">Please enter your base DN.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Service Account</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.service_username" placeholder="Service Account DN" style="width: 35%;" />
+		<input type="password" class="form-control" ng-model="setting_values.service_password" placeholder="Service Account Password" style="width: 35%;" />
+		<span class="help-block">
+			The service account is the account used to initially bind to the AD directory. The service account must have sufficient
+			permission to run filter queries against the directory. Make sure to specify the full DN for the account name. For example, <code>CN=DeskPRO,DC=example,DC=com</code>.
+		</span>
+		<p ng-show="errors.service_username || errors.service_password" class="text-danger">Please enter your service user.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Filter</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.account_filter" style="width: 50%;" placeholder="Enter a custom filter" />
+		<span class="help-block">Enter the filter to use to search for users. By default, DeskPRO will search input aginst the dn, mail and uid fields: <code>(|(dn=%s)(mail=%s)(uid=%s))</code></span>
+	</div>
+</div>
