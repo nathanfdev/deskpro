@@ -43,6 +43,6 @@ class Xenforo extends DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\Xenforo($this->getDb(), $this->usersource->options);
+		return new \Orb\Auth\Adapter\Xenforo($this->getDbAsCallback(), $this->usersource->options);
 	}
 }

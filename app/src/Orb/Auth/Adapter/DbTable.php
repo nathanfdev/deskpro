@@ -62,6 +62,11 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	protected $db;
 
 	/**
+	 * @var callable
+	 */
+	protected $db_callback = null;
+
+	/**
 	 * @var \Orb\Log\Logger
 	 */
 	protected $logger;
@@ -81,12 +86,35 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	 */
 	protected $options;
 
-	public function __construct(Connection $db, array $options)
+	public function __construct($db, array $options)
 	{
-		$this->db = $db;
+		if ($db instanceof Connection) {
+			$this->db = $db;
+		} else {
+			$this->db_callback = $db;
+		}
 
 		$this->initOptions();
 		$this->options->setArray($options);
+	}
+
+	/**
+	 * @return Connection|mixed|null
+	 */
+	public function getDb()
+	{
+		if ($this->db) {
+			return $this->db;
+		}
+
+		try {
+			$this->db = call_user_func($this->db_callback);
+		} catch (\Exception $e) {
+			$this->logger->logDebug("Error trying to connect to database: {$e->getCode()} {$e->getMessage()}");
+			return null;
+		}
+
+		return $this->db;
 	}
 
 	protected function initOptions()
@@ -264,10 +292,14 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 			return null;
 		}
 
+		if (!$this->getDb()) {
+			return null;
+		}
+
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_USERNAME];
 		$driver =  $this->db->getDriver()->getName();
-		if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+		if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv') {
           $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
         }
         else {
@@ -294,10 +326,14 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 			return null;
 		}
 
+		if (!$this->getDb()) {
+			return null;
+		}
+
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_EMAIL];
         $driver =  $this->db->getDriver()->getName();
-        if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+		if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv') {
           $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
         }
         else {
@@ -322,8 +358,13 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	{
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_ID];
+
+		if (!$this->getDb()) {
+			return null;
+		}
+
 		$driver =  $this->db->getDriver()->getName();
-		if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+		if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv') {
           $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
         }
         else {

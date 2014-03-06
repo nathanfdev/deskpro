@@ -43,6 +43,6 @@ class PhpBb2 extends DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\PhpBb2($this->getDb(), $this->usersource->options);
+		return new \Orb\Auth\Adapter\PhpBb2($this->getDbAsCallback(), $this->usersource->options);
 	}
 }
