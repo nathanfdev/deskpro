@@ -49,6 +49,6 @@
 			"label": "Enable Profile Widget",
 			"description": "Show the widget on user profiles",
 			"native_only": false
-		},
+		}
 	]
 }
