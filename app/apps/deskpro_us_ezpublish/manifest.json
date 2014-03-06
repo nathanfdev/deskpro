@@ -13,6 +13,34 @@
 		"link": "https://www.deskpro.com/"
 	},
 	"settings_def": [
-		
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "db_dsn",
+			"type": "text",
+			"label": "DSN",
+			"description": "Database DSN",
+			"native_only": true
+		},
+		{
+			"name": "db_username",
+			"type": "text",
+			"label": "DB Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_password",
+			"type": "text",
+			"label": "DB Password",
+			"description": "",
+			"native_only": true
+		}
 	]
 }
