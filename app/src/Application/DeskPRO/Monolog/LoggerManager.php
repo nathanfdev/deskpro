@@ -63,11 +63,17 @@ class LoggerManager
 			return $this->loggers[$id];
 		}
 
-		if (is_array($config) || $config === null) {
-			$this->loggers[$id] = $this->factory->createLogger($id, $config ?: array());
-		} else {
-			$this->loggers[$id] = $this->factory->createLoggerFromPreset($id, $config);
+		if (!$config) {
+			$config = array();
 		}
+		if (is_string($config)) {
+			$config = array('@preset' => $config);
+		}
+		if (!isset($config['@preset'])) {
+			$config['@preset'] = $id;
+		}
+
+		$this->loggers[$id] = $this->factory->createLoggerFromPreset($id, $config);
 
 		return $this->loggers[$id];
 	}
@@ -165,12 +171,14 @@ class LoggerManager
 	 */
 	public function createLogger($channel, $config = null)
 	{
-		if (is_array($config) || $config === null) {
-			$logger = $this->factory->createLogger($channel, $config ?: array());
-		} else {
-			$logger = $this->factory->createLoggerFromPreset($channel, $config);
+		if (!$config) {
+			$config = array();
+		}
+		if (is_string($config)) {
+			$config = array('@preset' => $config);
 		}
 
+		$logger = $this->factory->createLoggerFromPreset($channel, $config);
 		return $logger;
 	}
 }

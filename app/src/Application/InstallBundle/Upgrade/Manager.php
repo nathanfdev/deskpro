@@ -39,6 +39,7 @@ use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Plugin\Package\NativePackages;
+use Monolog\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -77,11 +78,18 @@ class Manager
 	protected $build_list;
 
 	/**
-	 * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
+	 * @var Logger
 	 */
-	public function __construct(DeskproContainer $container)
+	protected $logger;
+
+	/**
+	 * @param DeskproContainer $container
+	 * @param Logger $logger
+	 */
+	public function __construct(DeskproContainer $container, Logger $logger = null)
 	{
 		$this->container = $container;
+		$this->logger = $logger;
 		$this->reset();
 	}
 
@@ -117,8 +125,11 @@ class Manager
 
 		if ($build->shouldRerun()) {
 			$current_run = $build->getStatus('runcount', 0);
+			$next_run = $current_run+1;
+			if ($this->logger) $this->logger->debug(sprintf("runBuild(%d.%d)", $build_id, $next_run));
 			$build->saveStatus('runcount', $current_run+1);
 		} else {
+			if ($this->logger) $this->logger->debug(sprintf("Set core.deskpro_build = %s", $build_id));
 			$this->db_version = $build_id;
 			$this->container->getDb()->update('settings', array('value' => $build_id), array('name' => 'core.deskpro_build'));
 			$this->container->getDb()->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE ?", array(
@@ -133,6 +144,8 @@ class Manager
 	 */
 	public function postUpgrade()
 	{
+		if ($this->logger) $this->logger->debug("Post upgrade begin");
+
 		\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
 		// Clear old CSS blob so it's regenerated
@@ -142,6 +155,7 @@ class Manager
 		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
 		foreach ($langpacks->getLangTitles(true) as $id => $title) {
+			if ($this->logger) $this->logger->debug(sprintf("lang(%s).title = %s", $title, $id));
 			$this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", array($title, $id));
 		}
 
@@ -152,6 +166,7 @@ class Manager
 
 			$flag = $langpacks->getLangInfo($sys_name, 'flag_image');
 			if ($flag) {
+				if ($this->logger) $this->logger->debug(sprintf("lang(%s).flag = %s", $flag, $sys_name));
 				$this->container->getDb()->executeUpdate("UPDATE languages SET flag_image = ? WHERE sys_name = ?", array($flag, $sys_name));
 			}
 		}
@@ -159,12 +174,15 @@ class Manager
 		// Auto-install any new langs
 		$auto_install = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
 		if ($auto_install) {
+			if ($this->logger) $this->logger->debug("running lang auto-install");
 			$this->container->getEm()->getRepository('DeskPRO:Language')->installAll($langpacks);
 		}
 
+		if ($this->logger) $this->logger->debug("invalidate lang cache");
 		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
 		$cache->invalidateLanguageCache();
 
+		if ($this->logger) $this->logger->debug("invalidate lang js cache");
 		$cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
 		$cache->invalidateAll();
 
@@ -176,12 +194,15 @@ class Manager
 		}
 
 		if ($twitter_pid !== 0) {
+			if ($this->logger) $this->logger->debug("restart twitter pid $twitter_pid");
 			@unlink(dp_get_data_dir() . '/twitter.pid');
 		}
 
 		#------------------------------
 		# Apps
 		#------------------------------
+
+		if ($this->logger) $this->logger->debug("Updating native apps...");
 
 		$manager = $this->container->getAppManager();
 		$installer = new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine());
@@ -190,17 +211,22 @@ class Manager
 		foreach ($manager->getAllPackages() as $package) {
 			if (!$package->native_name) continue;
 
+			if ($this->logger) $this->logger->debug("Updating {$package->native_name}");
+
 			// Updates the resource
 			$app_package = new Package(DP_ROOT.'/apps/' . $package->native_name);
 			$installer->installPackage($app_package, $package);
+			if ($this->logger) $this->logger->debug("... done install");
 
 			foreach ($manager->getPackageApps($package) as $app) {
 				$native_app = $manager->getNativeApp($app);
 				$class = $native_app->getConfig()->getInstallerHandlerClass();
 				if ($class) {
+					if ($this->logger) $this->logger->debug("... running update for app #{$app->id}");
 					$context = new InstallerContext($this->container, $native_app);
 					$obj = new $class();
 					$obj->updatePackage($context);
+					if ($this->logger) $this->logger->debug("... done");
 				}
 			}
 		}
@@ -220,8 +246,12 @@ class Manager
 				continue;
 			}
 
+			if ($this->logger) $this->logger->debug("installing new native app {$f}");
 			$installer->installPackage($app_package);
+			if ($this->logger) $this->logger->debug("... done");
 		}
+
+		if ($this->logger) $this->logger->debug("Post upgrade done");
 	}
 
 

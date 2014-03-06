@@ -67,7 +67,12 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		App::getDb()->exec("TRUNCATE TABLE cache");
 		@unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
 
-		$manager = new \Application\InstallBundle\Upgrade\Manager($this->getContainer());
+		$output->setVerbosity(4);
+		$logger = $this->getContainer()->getLoggerManager()->getLogger('upgrader', array('output' => $output));
+		$manager = new \Application\InstallBundle\Upgrade\Manager(
+			$this->getContainer(),
+			$logger
+		);
 
 		#------------------------------
 		# Info

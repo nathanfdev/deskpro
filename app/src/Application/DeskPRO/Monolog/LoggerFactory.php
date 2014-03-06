@@ -36,7 +36,9 @@ namespace Application\DeskPRO\Monolog;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
 use Orb\Util\Util;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 class LoggerFactory
 {
@@ -79,15 +81,27 @@ class LoggerFactory
 	 * @param string $preset_name
 	 * @return Logger
 	 */
-	public function createLoggerFromPreset($channel, $preset_name)
+	public function createLoggerFromPreset($channel, array $config = array())
 	{
-		if (isset($this->presets[$preset_name])) {
-			$config = $this->presets[$preset_name];
-		} else {
-			$config = array();
-		}
+		$preset_name = isset($config['@preset']) ? $config['@preset'] : null;
+		unset($config['@preset']);
 
-		return $this->createLogger($channel, $config);
+		switch ($preset_name) {
+			case 'upgrader':
+				$logger = new $this->logger_class($channel);
+				$handler = new ConsoleHandler($config['output']);
+				$logger->pushHandler($handler);
+
+				return $logger;
+				break;
+			default:
+				if (isset($this->presets[$preset_name])) {
+					$config = $this->presets[$preset_name];
+				} else {
+					$config = array();
+				}
+				return $this->createLogger($channel, $config);
+		}
 	}
 
 
