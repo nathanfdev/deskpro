@@ -689,25 +689,6 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \Application\DeskPRO\Log\LoggerManager
-	 */
-	public function getLoggerManager()
-	{
-		return $this->getSystemService('LoggerManager');
-	}
-
-
-	/**
-	 * @param string $id
-	 * @return \Orb\Log\Logger
-	 */
-	public function getLogger($id)
-	{
-		return $this->getLoggerManager()->get($id);
-	}
-
-
-	/**
 	 * @return string
 	 */
 	public function getBlobDir()
