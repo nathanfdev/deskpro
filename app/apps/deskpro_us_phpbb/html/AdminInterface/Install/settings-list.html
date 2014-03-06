@@ -1,0 +1,68 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enabled</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.enable_usersource" />
+			Yes, enable eZ Publish Authentication
+		</label>
+		<span class="help-block">Enable the app once you have verified all of your settings are correct.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Database Server</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.db_dsn" placeholder="DSN string" style="width: 60%;" />
+		<span class="help-block">Enter the <a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">DSN string</a> for your database.</span>
+		<p ng-show="errors.db_dsn" class="text-danger">Please enter your DSN.</p>
+
+		<div style="margin: 8px 0 4px 0;">Database User</div>
+		<input type="text" class="form-control" ng-model="setting_values.db_username" placeholder="Database Username" style="width: 35%;" />
+		<input type="password" class="form-control" ng-model="setting_values.db_password" placeholder="Database Password" style="width: 35%;" />
+		<p ng-show="errors.db_username || errors.db_password" class="text-danger">Please enter your database username and password.</p>
+
+		<div style="margin: 8px 0 4px 0;">Table Prefix</div>
+		<input type="text" class="form-control" ng-model="setting_values.table_prefix" placeholder="" style="width: 100px;" />
+		<span class="help-block">If your phpBB installation uses a table prefix, enter it here.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>phpBB Version</h3>
+	</div>
+	<div class="col-lg-8">
+		<select ng-model="setting_values.phpbb_version" ng-init="setting_values.phpbb_version = setting_values.phpbb_version || 2">
+			<option value="2">2.x</option>
+			<option value="3">3.x</option>
+		</select>
+	</div>
+</div>
+
+<div class="form-group" ng-if="setting_values.phpbb_version == '3'">
+	<div class="col-lg-4">
+		<h3>DeskPRO Web Service</h3>
+	</div>
+	<div class="col-lg-8">
+		<p>
+			You must upload a special PHP file to the root of your phpBB forum that serves as a web-service for DeskPRO
+			to authenticate user passwords with. Enter the URL to the file here. You should enter the full
+			URL (including http:// or https://).
+		</p>
+		<p>
+			The token should be a secret passphrase you entered within the file.
+		</p>
+		<div style="margin: 8px 0 0 0;">
+			<h3>Service URL</h3>
+			<input type="text" class="form-control" ng-model="setting_values.check_service_url" placeholder="Service URL" style="width: 35%;" />
+		</div>
+		<div style="margin: 8px 0 0 0;">
+			<h3>Service Token</h3>
+			<input type="text" class="form-control" ng-model="setting_values.check_service_key" placeholder="Service URL" style="width: 35%;" />
+		</div>
+	</div>
+</div>
