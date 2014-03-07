@@ -294,15 +294,15 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		}
 
 		switch ($op) {
-			case self::OP_IS:
-			case self::OP_CONTAINS:
+			case 'is':
+			case 'contains':
 				if ($has) {
 					return true;
 				}
 				break;
 
-			case self::OP_NOT:
-			case self::OP_NOTCONTAINS:
+			case 'not':
+			case 'notcontains':
 				if (!$has) {
 					return true;
 				}
@@ -320,48 +320,52 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 * @param string $prop_name
 	 * @param string $id_prop
 	 * @param array $check_ids
+	 * @param string $multi_mode
 	 * @return bool
 	 */
-	protected function isEntityMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, array $check_ids)
+	protected function isEntityMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, array $check_ids, $multi_mode = null)
 	{
-		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
-		$op    = $opts['op'];
-		$value = $opts['value'];
+		$opts       = $this->getValueOpArray($ticket, $context, $prop_name);
+		$op         = $opts['op'];
+		$all_values = $opts['value'];
 
 		if ($opts['is_changed_op'] && !$opts['was_changed']) {
 			return false;
 		}
 
 		$check_ids = array_fill_keys($check_ids, true);
-		$has = false;
-		if ($value === null) {
-			$value_id = 0;
-		} else {
-			$value_id = $value->$id_prop;
-		}
 
-		if (isset($check_ids[$value_id])) {
-			$has = true;
-		}
+		$check_fn = function($value) use ($op, $id_prop, $check_ids) {
+			$has = false;
+			if ($value === null || $value === '0' || $value === 0 || $value === false) {
+				$value_id = 0;
+			} else {
+				$value_id = $value->$id_prop;
+			}
 
-		switch ($op) {
-			case self::OP_IS:
-			case self::OP_CONTAINS:
-				if ($has) {
-					return true;
-				}
-				break;
+			if (isset($check_ids[$value_id])) {
+				$has = true;
+			}
 
-			case self::OP_NOT:
-			case self::OP_NOTCONTAINS:
-				if (!$has) {
-					return true;
-				}
-		}
+			switch ($op) {
+				case 'is':
+				case 'contains':
+					if ($has) {
+						return true;
+					}
+					break;
 
-		$context->getLogger()->info(sprintf("[%s] isEntityMatch no pass on: %s(%s) != %s", Util::getBaseClassname($this), $op, $value_id, implode(', ', array_keys($check_ids))));
+				case 'not':
+				case 'notcontains':
+					if (!$has) {
+						return true;
+					}
+			}
 
-		return false;
+			return false;
+		};
+
+		return $this->getMultiMatchResult($all_values, $check_fn, $op, $multi_mode);
 	}
 
 
@@ -386,12 +390,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		$check_value = $check_value->getTimestamp();
 
 		switch ($op) {
-			case self::OP_IS:     if ($check_value == $value)  return true; break;
-			case self::OP_NOT:    if ($check_value != $value)  return true; break;
-			case self::OP_GT:     if ($check_value > $value)   return true; break;
-			case self::OP_GTE:    if ($check_value >= $value)  return true; break;
-			case self::OP_LT:     if ($check_value < $value)   return true; break;
-			case self::OP_LTE:    if ($check_value <= $value)  return true; break;
+			case 'is':     if ($check_value == $value)  return true; break;
+			case 'not':    if ($check_value != $value)  return true; break;
+			case 'gt':     if ($check_value > $value)   return true; break;
+			case 'gte':    if ($check_value >= $value)  return true; break;
+			case 'lt':     if ($check_value < $value)   return true; break;
+			case 'lte':    if ($check_value <= $value)  return true; break;
 		}
 
 		$context->getLogger()->info(sprintf("[%s] isDateMatch no pass on: %s %s", Util::getBaseClassname($this), $op, $check_value));
@@ -444,12 +448,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		$check_value = (int)$check_value;
 
 		switch ($op) {
-			case self::OP_IS:     if ($check_value == $value)  return true; break;
-			case self::OP_NOT:    if ($check_value != $value)  return true; break;
-			case self::OP_GT:     if ($check_value > $value)   return true; break;
-			case self::OP_GTE:    if ($check_value >= $value)  return true; break;
-			case self::OP_LT:     if ($check_value < $value)   return true; break;
-			case self::OP_LTE:    if ($check_value <= $value)  return true; break;
+			case 'is':   if ($check_value == $value)  return true; break;
+			case 'not':  if ($check_value != $value)  return true; break;
+			case 'gt':   if ($check_value > $value)   return true; break;
+			case 'gte':  if ($check_value >= $value)  return true; break;
+			case 'lt':   if ($check_value < $value)   return true; break;
+			case 'lte':  if ($check_value <= $value)  return true; break;
 		}
 
 		$context->getLogger()->info(sprintf("[%s] isIntMatch no pass on: %s %s", Util::getBaseClassname($this), $op, $check_value));
@@ -506,6 +510,15 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		$check_value_i = Strings::utf8_strtolower($check_value);
 
 		$check_fn = function($value) use ($op, $check_value_i, $check_value) {
+
+			if (!is_string($value)) {
+				if ($value === null || $value === false) {
+					$value = '';
+				} else {
+					$value .= '';
+				}
+			}
+
 			$value_i = Strings::utf8_strtolower($value);
 			switch ($op) {
 				case 'is':
@@ -550,6 +563,28 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			return false;
 		};
 
+		return $this->getMultiMatchResult($all_values, $check_fn, $op, $multi_mode);
+	}
+
+
+	/**
+	 * @param array    $all_values
+	 * @param callback $check_fn
+	 * @param string   $op
+	 * @param string   $multi_mode
+	 * @return bool
+	 */
+	public function getMultiMatchResult(array $all_values, $check_fn, $op, $multi_mode)
+	{
+		$match_count = 0;
+		$check_count = 0;
+		foreach ($all_values as $v) {
+			$check_count++;
+			if (call_user_func($check_fn, $v)) {
+				$match_count++;
+			}
+		}
+
 		// When no mode is provided, we set it based on logic
 		// If i want a trigger where PropertyA IS 'abc', then
 		// if 'any' of those match, then the trigger should match.
@@ -563,27 +598,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			}
 		}
 
-		$has_any = false;
-		$match_count = 0;
-
-		foreach ($all_values as $v) {
-			if (!is_string($v)) {
-				if ($v === null || $v === false) {
-					$v = '';
-				} else {
-					$v .= '';
-				}
-			}
-
-			if ($check_fn($v)) {
-				$has_any = true;
-				$match_count++;
-			}
-		}
-
-		if ($has_any) {
+		if ($match_count) {
 			if ($multi_mode == 'all') {
-				return count($all_values) == $match_count;
+				return $check_count == $match_count;
 			} else {
 				return true;
 			}
