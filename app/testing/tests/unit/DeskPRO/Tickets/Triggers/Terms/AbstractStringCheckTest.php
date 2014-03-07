@@ -27,13 +27,30 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 		$prop_name = $this->getTicketPropertyName();
 
 		$this->ticket1 = new Ticket();
+		$this->ticket1->id = 1;
 		$this->ticket1->$prop_name = "Test subject 123";
+		$this->configureTicket($this->ticket1);
 
 		$this->ticket2 = new Ticket();
+		$this->ticket2->id = 2;
 		$this->ticket2->$prop_name = "Test subject 123 ABC 100 200 XYZ";
+		$this->configureTicket($this->ticket2);
 
 		$this->exec_context = new ExecutorContext();
 	}
+
+
+	/**
+	 * Override this in sub-classes to set additional properties on the test.
+	 *
+	 * @param Ticket $ticket
+	 * @return void
+	 */
+	protected function configureTicket(Ticket $ticket)
+	{
+		// nothing
+	}
+
 
 	/**
 	 * @param string $op
