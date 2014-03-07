@@ -24,9 +24,27 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 
 	public function runBefore()
 	{
-		$this->ticket1 = $this->createTicket(1, "Test subject 123");
-		$this->ticket2 = $this->createTicket(2, "Test subject 123 ABC 100 200 XYZ");
+		$this->ticket1 = $this->createTicket(1, $this->getString1());
+		$this->ticket2 = $this->createTicket(2, $this->getString2());
 		$this->exec_context = new ExecutorContext();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getString1()
+	{
+		return 'Test string 123';
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getString2()
+	{
+		return 'Test string 123 ABC 100 200 XYZ';
 	}
 
 
@@ -79,19 +97,19 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 
 	public function testIsExactMatch()
 	{
-		$check = $this->createChecker('is', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
 		$this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testIsExactCaseMatch()
 	{
-		$check = $this->createChecker('is', array('%OPT%' => 'TEST SUBJECT 123'));
+		$check = $this->createChecker('is', array('%OPT%' => strtoupper($this->getString1())));
 		$this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testIsWithPartialMatch()
 	{
-		$check = $this->createChecker('is', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
 		$this->assertFalse($check->isTriggerMatch($this->ticket2, $this->exec_context));
 	}
 
@@ -112,19 +130,19 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 
 	public function testNotExactMatch()
 	{
-		$check = $this->createChecker('not', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('not', array('%OPT%' => $this->getString1()));
 		$this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testNotExactCaseMatch()
 	{
-		$check = $this->createChecker('not', array('%OPT%' => 'TEST SUBJECT 123'));
+		$check = $this->createChecker('not', array('%OPT%' => strtoupper($this->getString1())));
 		$this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testNotWithPartialMatch()
 	{
-		$check = $this->createChecker('not', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('not', array('%OPT%' => $this->getString1()));
 		$this->assertTrue($check->isTriggerMatch($this->ticket2, $this->exec_context));
 	}
 
@@ -145,25 +163,25 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 
 	public function testContainsExactMatch()
 	{
-		$check = $this->createChecker('contains', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('contains', array('%OPT%' => $this->getString1()));
 		$this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testContainsExactCaseMatch()
 	{
-		$check = $this->createChecker('contains', array('%OPT%' => 'TEST SUBJECT 123'));
+		$check = $this->createChecker('contains', array('%OPT%' => $this->getString1()));
 		$this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testContainsPartialExactMatch()
 	{
-		$check = $this->createChecker('contains', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('contains', array('%OPT%' => $this->getString1()));
 		$this->assertTrue($check->isTriggerMatch($this->ticket2, $this->exec_context));
 	}
 
 	public function testContainsPartialCaseMatch()
 	{
-		$check = $this->createChecker('contains', array('%OPT%' => 'TEST SUBJECT 123'));
+		$check = $this->createChecker('contains', array('%OPT%' => $this->getString1()));
 		$this->assertTrue($check->isTriggerMatch($this->ticket2, $this->exec_context));
 	}
 
@@ -184,25 +202,25 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 
 	public function testNotContainsExactMatch()
 	{
-		$check = $this->createChecker('notcontains', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('notcontains', array('%OPT%' => $this->getString1()));
 		$this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testNotContainsExactCaseMatch()
 	{
-		$check = $this->createChecker('notcontains', array('%OPT%' => 'TEST SUBJECT 123'));
+		$check = $this->createChecker('notcontains', array('%OPT%' => $this->getString1()));
 		$this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testNotContainsPartialExactMatch()
 	{
-		$check = $this->createChecker('notcontains', array('%OPT%' => 'Test subject 123'));
+		$check = $this->createChecker('notcontains', array('%OPT%' => $this->getString1()));
 		$this->assertFalse($check->isTriggerMatch($this->ticket2, $this->exec_context));
 	}
 
 	public function testNotContainsPartialCaseMatch()
 	{
-		$check = $this->createChecker('notcontains', array('%OPT%' => 'TEST SUBJECT 123'));
+		$check = $this->createChecker('notcontains', array('%OPT%' => $this->getString1()));
 		$this->assertFalse($check->isTriggerMatch($this->ticket2, $this->exec_context));
 	}
 
@@ -241,25 +259,41 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 
 	public function testIsRegexWithAnchorStart()
 	{
-		$check = $this->createChecker('is_regex', array('%OPT%' => '^Test'));
+		$GLOBALS['begin'] = true;
+		$check = $this->createChecker('is_regex', array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'/'));
 		$this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context));
+		unset($GLOBALS['begin']);
 	}
 
 	public function testIsRegexWithAnchorEnd()
 	{
-		$check = $this->createChecker('is_regex', array('%OPT%' => 'XYZ$'));
+		$check = $this->createChecker('is_regex', array('%OPT%' => '/'.preg_quote($this->getString2(), '/').'$/'));
 		$this->assertTrue($check->isTriggerMatch($this->ticket2, $this->exec_context));
 	}
 
 	public function testIsRegexWithMod()
 	{
-		$check = $this->createChecker('is_regex', array('%OPT%' => '/^test ticket/i'));
+		$check = $this->createChecker('is_regex', array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'$/i'));
 		$this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 
 	public function testIsRegexWithEvalMod()
 	{
-		$check = $this->createChecker('is_regex', array('%OPT%' => '/^test ticket/e'));
+		$check = $this->createChecker('is_regex', array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'$/e'));
 		$this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context));
+	}
+
+	################# op = is_not_regex #################
+
+	public function testIsNotRegexWithMatch()
+	{
+		$check = $this->createChecker('not_regex', array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'$/i'));
+		$this->assertFalse($check->isTriggerMatch($this->ticket1, $this->exec_context));
+	}
+
+	public function testIsNotRegexMatch()
+	{
+		$check = $this->createChecker('not_regex', array('%OPT%' => '/^5319efc3d06e75319efc3d06e7$/i'));
+		$this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context));
 	}
 }
