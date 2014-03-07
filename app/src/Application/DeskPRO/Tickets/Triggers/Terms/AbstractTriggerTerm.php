@@ -42,8 +42,6 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
-
 
 abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTermInterface
 {
@@ -170,12 +168,52 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 				$parts = explode('.', $prop_name);
 
 				while (($p = array_shift($parts)) !== null) {
+
+					// if we are using special array syntax
+					// we are collecting from an array (below)
+					$is_coll = false;
+					if (substr($p, -2) == '[]') {
+						$is_coll = true;
+						$p = substr($p, 0, -2);
+					}
+
 					if (isset($value->$p)) {
 						$value = $value->$p;
+						if ($is_coll) {
+							break;
+						}
 					} else {
 						$value = null;
 						break;
 					}
+				}
+
+				// Means we found an array collection syntax like emails[]
+				// so we still have values after to get.
+				// E.g., emails[].email means $value is now emails[], but we need
+				// to reduce that down to email
+				if ($is_coll && $parts) {
+					$parts_default = $parts;
+					$all_values = $value;
+					$use_value = array();
+					foreach ($all_values as $value) {
+						$parts = $parts_default;
+						while (($p = array_shift($parts)) !== null) {
+							if (isset($value->$p)) {
+								$value = $value->$p;
+								if ($is_coll) {
+									break;
+								}
+							} else {
+								$value = null;
+								break;
+							}
+						}
+
+						$use_value[] = $value;
+					}
+
+					$value = $use_value;
 				}
 			} else {
 				$value = $ticket->$prop_name;
@@ -452,63 +490,103 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param string $check_value
+	 * @param string $multi_mode
 	 * @return bool
 	 */
-	protected function isStringMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $check_value)
+	protected function isStringMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $check_value, $multi_mode = null)
 	{
-		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
-		$op    = $opts['op'];
-		$value = $opts['value'];
+		$opts       = $this->getValueOpArray($ticket, $context, $prop_name);
+		$op         = $opts['op'];
+		$all_values = $opts['value'];
 
-		if (!is_string($value)) {
-			if ($value === null || $value === false) {
-				$value = '';
+		if (!is_array($all_values)) {
+			$all_values = array($all_values);
+		}
+
+		$check_value_i = Strings::utf8_strtolower($check_value);
+
+		$check_fn = function($value) use ($op, $check_value_i, $check_value) {
+			$value_i = Strings::utf8_strtolower($value);
+			switch ($op) {
+				case 'is':
+				case 'not':
+					if ($value_i == $check_value_i) {
+						if ($op == 'is') return true;
+					} else {
+						if ($op == 'not') return true;
+					}
+					break;
+
+				case 'contains':
+				case 'notcontains':
+					// Special case: empty search string
+					// We consider 'ticket subject has ""' to be true
+					if ($check_value_i === '') {
+						if ($op == 'contains') return true;
+						else return false;
+					}
+
+					if (strpos($value_i, $check_value_i) !== false) {
+						if ($op == 'contains') return true;
+					} else {
+						if ($op == 'notcontains') return true;
+					}
+					break;
+
+				case 'is_regex':
+				case 'not_regex':
+					$regex = Strings::getInputRegexPattern($check_value);
+					if (!$regex) {
+						return false;
+					}
+
+					if (preg_match($regex, $value)) {
+						if ($op == 'is_regex') return true;
+					} else {
+						if ($op == 'not_regex') return true;
+					}
+			}
+
+			return false;
+		};
+
+		// When no mode is provided, we set it based on logic
+		// If i want a trigger where PropertyA IS 'abc', then
+		// if 'any' of those match, then the trigger should match.
+		// Conversely, if I write a trigger where PropertyA IS NOT 'abc',
+		// the trigger should match only if 'all' of those dont match
+		if ($multi_mode === null) {
+			if ($op == 'not' || $op == 'notcontains' || $op == 'not_regex') {
+				$multi_mode = 'all';
 			} else {
-				$value .= '';
+				$multi_mode = 'any';
 			}
 		}
 
-		$value_i       = Strings::utf8_strtolower($value);
-		$check_value_i = Strings::utf8_strtolower($check_value);
+		$has_any = false;
+		$match_count = 0;
 
-		switch ($op) {
-			case self::OP_IS:
-			case self::OP_NOT:
-				if ($value_i == $check_value_i) {
-					if ($op == self::OP_IS) return true;
+		foreach ($all_values as $v) {
+			if (!is_string($v)) {
+				if ($v === null || $v === false) {
+					$v = '';
 				} else {
-					if ($op == self::OP_NOT) return true;
+					$v .= '';
 				}
-				break;
+			}
 
-			case self::OP_CONTAINS:
-			case self::OP_NOTCONTAINS:
-				// Special case: empty search string
-				// We consider 'ticket subject has ""' to be true
-				if ($check_value_i === '') {
-					if ($op == self::OP_CONTAINS) return true;
-					else return false;
-				}
+			if ($check_fn($v)) {
+				$has_any = true;
+				$match_count++;
+			}
+		}
 
-				if (strpos($value_i, $check_value_i) !== false) {
-					if ($op == self::OP_CONTAINS) return true;
-				} else {
-					if ($op == self::OP_NOTCONTAINS) return true;
-				}
-				break;
-
-			case self::OP_IS_REGEX:
-			case self::OP_NOT_REGEX:
-				$regex = Strings::getInputRegexPattern($check_value);
-				if (!$regex) {
-					return false;
-				}
-
-				if (preg_match($regex, $value)) {
-					if (self::OP_IS_REGEX) return true;
-				} else {
-					if (self::OP_NOT_REGEX) return true;
-				}
+		if ($has_any) {
+			if ($multi_mode == 'all') {
+				return count($all_values) == $match_count;
+			} else {
+				return true;
+			}
 		}
 
 		return false;
