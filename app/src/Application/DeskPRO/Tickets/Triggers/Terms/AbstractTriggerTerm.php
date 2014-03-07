@@ -159,7 +159,29 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 */
 	protected function getValueOpArray(Ticket $ticket, ExecutorContextInterface $context, $prop_name)
 	{
-		$value        = $ticket->$prop_name;
+		if ($prop_name instanceof TermValue) {
+			$value = $prop_name->getValue();
+		} else {
+			// Dotted notation lets us go 'deep' within the
+			// object. E.g., person.name = $ticket->person->name
+			if (strpos($prop_name, '.') !== false) {
+
+				$value = $ticket;
+				$parts = explode('.', $prop_name);
+
+				while (($p = array_shift($parts)) !== null) {
+					if (isset($value->$p)) {
+						$value = $value->$p;
+					} else {
+						$value = null;
+						break;
+					}
+				}
+			} else {
+				$value = $ticket->$prop_name;
+			}
+		}
+
 		$op           = $this->op;
 		$is_change_op = false;
 		$was_changed  = false;
@@ -176,7 +198,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 				} else if ($this->op == 'not_changed_to') {
 					$op = 'not';
 				} else {
-					$value = $state->getLastChangeForField($prop_name);
+					if ($prop_name instanceof TermValue) {
+						$value = $state->getLastChangeForField($prop_name);
+					}
 					if ($this->op == 'changed_from') {
 						$op = 'is';
 					} else {
