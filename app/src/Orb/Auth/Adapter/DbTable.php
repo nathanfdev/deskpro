@@ -109,6 +109,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
 		try {
 			$this->db = call_user_func($this->db_callback);
+			if ($this->logger) $this->logger->logDebug("Database connection success");
 		} catch (\Exception $e) {
 			$this->logger->logDebug("Error trying to connect to database: {$e->getCode()} {$e->getMessage()}");
 			return null;
@@ -145,9 +146,11 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	public function authenticate()
 	{
 		if (!$this->set_username) {
+			if ($this->logger) $this->logger->logDebug("Missing username");
 			return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
 		}
 		if (!$this->set_password) {
+			if ($this->logger) $this->logger->logDebug("Missing password");
 			return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
 		}
 
@@ -190,6 +193,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 			}
 
 			if (!$userinfo) {
+				if ($this->logger) $this->logger->logDebug("Invalid credentials");
 				return new Result(Result::FAILURE_INVALID_CREDS);
 			}
 

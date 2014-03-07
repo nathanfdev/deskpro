@@ -34,10 +34,6 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 		};
 
 		$scope.openTestModal = function(existing_results) {
-			if (updateFormErrors()) {
-				return;
-			}
-
 			var inst = $modal.open({
 				templateUrl: 'deskpro_us_db/Install/test-settings-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {

@@ -66,7 +66,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		$password = $context->getIn()->getString('password');
 		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
 
-		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\Xenforo', $options);
+		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
 		$tester->test($username, $password);
 
 		$result_data = array(
