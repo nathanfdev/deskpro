@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class FilterTermComposite implements FilterTermInterface
 {
@@ -116,7 +117,7 @@ class FilterTermComposite implements FilterTermInterface
 	/**
 	 * @return FilterQuery
 	 */
-	public function getFilterQuery(ExecutorContext $context = null)
+	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
 		$filter_query = new FilterQuery();
 

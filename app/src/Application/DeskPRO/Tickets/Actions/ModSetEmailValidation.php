@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
  * Sets the email validation flag for new users submitting tickets by email.
@@ -48,7 +49,7 @@ class ModSetEmailValidation extends AbstractAction implements ActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$context->getVars()->set('enable_email_validation', $this->getActionOption('enable_validation'));
 	}

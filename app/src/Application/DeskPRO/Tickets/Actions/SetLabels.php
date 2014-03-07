@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -62,7 +63,7 @@ class SetLabels extends AbstractAction implements ActionInterface, MacroActionIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		#--------------------
 		# Add labels
@@ -91,7 +92,7 @@ class SetLabels extends AbstractAction implements ActionInterface, MacroActionIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'labels')) {
 			return array('labels');
@@ -104,7 +105,7 @@ class SetLabels extends AbstractAction implements ActionInterface, MacroActionIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

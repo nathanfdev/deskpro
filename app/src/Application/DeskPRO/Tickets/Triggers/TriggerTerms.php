@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Triggers;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
 
@@ -121,7 +122,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	 * @param TicketChangelog $ticket_changelog
 	 * @return bool
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		return $this->criteria->isTriggerMatch($ticket, $context);
 	}

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -60,7 +61,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_status = $this->getActionOption('status');
 		$ticket->setStatus($set_status);
@@ -70,7 +71,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_status = $this->getActionOption('status');
 		if ($ticket->getStatusCode() == $set_status) {
@@ -84,7 +85,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_status = $this->getActionOption('status');
 		if (($set_status == 'hidden.deleted' || $set_status == 'hidden.spam') && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
@@ -107,7 +108,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

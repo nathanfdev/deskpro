@@ -38,6 +38,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -77,7 +78,7 @@ class SetFlag extends AbstractAction implements ActionInterface, MacroActionInte
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		foreach ($context->getContainer()->getAgentData()->getAgents() as $agent) {
 			if ($agent->PermissionsManager->TicketChecker->canView($ticket)) {
@@ -95,7 +96,7 @@ class SetFlag extends AbstractAction implements ActionInterface, MacroActionInte
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		return false;
 	}
@@ -104,7 +105,7 @@ class SetFlag extends AbstractAction implements ActionInterface, MacroActionInte
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->saveFlag(
 			$context->getContainer()->getDb(),

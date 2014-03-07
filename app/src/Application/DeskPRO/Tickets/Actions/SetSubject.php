@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -60,7 +61,7 @@ class SetSubject extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$ticket->subject = $this->getActionOption('subject');
 	}
@@ -69,7 +70,7 @@ class SetSubject extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if ($ticket->subject == $this->getActionOption('subject')) {
 			return true;
@@ -82,7 +83,7 @@ class SetSubject extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
 			return array('fields');
@@ -95,7 +96,7 @@ class SetSubject extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

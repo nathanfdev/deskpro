@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -61,7 +62,7 @@ class SetSlaStatuses extends AbstractAction implements ActionInterface, MacroAct
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$em = $context->getContainer()->getEm();
 		$ticket_slas = $context->getContainer()->getSystemService('ticket_slas');
@@ -82,7 +83,7 @@ class SetSlaStatuses extends AbstractAction implements ActionInterface, MacroAct
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
 			return array('slas');
@@ -95,7 +96,7 @@ class SetSlaStatuses extends AbstractAction implements ActionInterface, MacroAct
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

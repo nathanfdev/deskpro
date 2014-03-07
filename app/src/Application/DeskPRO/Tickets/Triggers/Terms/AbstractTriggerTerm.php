@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\Common\Collections\Collection;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Numbers;
@@ -152,11 +153,11 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @return array
 	 */
-	protected function getValueOpArray(Ticket $ticket, ExecutorContext $context, $prop_name)
+	protected function getValueOpArray(Ticket $ticket, ExecutorContextInterface $context, $prop_name)
 	{
 		$value        = $ticket->$prop_name;
 		$op           = $this->op;
@@ -205,13 +206,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param string $id_prop
 	 * @param array $check_ids
 	 * @return bool
 	 */
-	protected function isCollectionMatch(Ticket $ticket, ExecutorContext $context, $prop_name, $id_prop, array $check_ids)
+	protected function isCollectionMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, array $check_ids)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
 		$op    = $opts['op'];
@@ -253,13 +254,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param string $id_prop
 	 * @param array $check_ids
 	 * @return bool
 	 */
-	protected function isEntityMatch(Ticket $ticket, ExecutorContext $context, $prop_name, $id_prop, array $check_ids)
+	protected function isEntityMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, array $check_ids)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
 		$op    = $opts['op'];
@@ -304,12 +305,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param \DateTime $check_value
 	 * @return bool
 	 */
-	protected function isDateMatch(Ticket $ticket, ExecutorContext $context, $prop_name, \DateTime $check_value)
+	protected function isDateMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, \DateTime $check_value)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
 		$op    = $opts['op'];
@@ -339,13 +340,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param \DateTime $lower
 	 * @param \DateTime $upper
 	 * @return bool
 	 */
-	protected function isDateRangeMatch(Ticket $ticket, ExecutorContext $context, $prop_name, \DateTime $lower, \DateTime $upper)
+	protected function isDateRangeMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, \DateTime $lower, \DateTime $upper)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
 		$value = $opts['value'];
@@ -366,12 +367,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param string $check_value
 	 * @return bool
 	 */
-	protected function isIntMatch(Ticket $ticket, ExecutorContext $context, $prop_name, $check_value)
+	protected function isIntMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $check_value)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
 		$op    = $opts['op'];
@@ -397,13 +398,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param int $lower
 	 * @param int $upper
 	 * @return bool
 	 */
-	protected function isIntRangeMatch(Ticket $ticket, ExecutorContext $context, $prop_name, $lower, $upper)
+	protected function isIntRangeMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $lower, $upper)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
 		$value = $opts['value'];
@@ -424,12 +425,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @param string $prop_name
 	 * @param string $check_value
 	 * @return bool
 	 */
-	protected function isStringMatch(Ticket $ticket, ExecutorContext $context, $prop_name, $check_value)
+	protected function isStringMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $check_value)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
 		$op    = $opts['op'];
@@ -477,8 +478,8 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 	/**
 	 * @param  Ticket $ticket
-	 * @param  ExecutorContext $context
+	 * @param  ExecutorContextInterface $context
 	 * @return bool
 	 */
-	abstract public function isTriggerMatch(Ticket $ticket, ExecutorContext $context);
+	abstract public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context);
 }

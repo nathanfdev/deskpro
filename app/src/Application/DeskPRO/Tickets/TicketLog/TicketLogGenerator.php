@@ -40,6 +40,7 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class TicketLogGenerator
 {
@@ -49,7 +50,7 @@ class TicketLogGenerator
 	private $ticket;
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\ExecutorContext
+	 * @var ExecutorContextInterface
 	 */
 	private $context;
 
@@ -60,9 +61,9 @@ class TicketLogGenerator
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 */
-	public function __construct(Ticket $ticket, ExecutorContext $context)
+	public function __construct(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->ticket  = $ticket;
 		$this->state   = $ticket->getStateChangeRecorder();

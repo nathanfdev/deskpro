@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
  * Checks if a workflow is set
@@ -58,7 +59,7 @@ class CheckWorkflow extends AbstractTriggerTerm
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
 		return $this->isEntityMatch($ticket, $context, 'workflow', 'id', $options['workflow_ids']);

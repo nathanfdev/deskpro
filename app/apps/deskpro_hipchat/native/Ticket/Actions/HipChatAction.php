@@ -38,13 +38,14 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\AbstractAction;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class HipChatAction extends AbstractAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$app = $this->getApp($context);
 		if (!$app) {
@@ -66,10 +67,10 @@ class HipChatAction extends AbstractAction implements ActionInterface
 
 
 	/**
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @return \Application\DeskPRO\Entity\AppInstance|null
 	 */
-	private function getApp(ExecutorContext $context)
+	private function getApp(ExecutorContextInterface $context)
 	{
 		$app_manager = $context->getContainer()->getAppManager();
 		$app_id = $this->getActionOption('app_id');
@@ -85,10 +86,10 @@ class HipChatAction extends AbstractAction implements ActionInterface
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @return string
 	 */
-	public function renderMessage(Ticket $ticket, ExecutorContext $context)
+	public function renderMessage(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$statechange = $ticket->getStateChangeRecorder();
 

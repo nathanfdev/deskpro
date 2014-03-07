@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -110,7 +111,7 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$target_urgency = $this->getUrgencyResult(
 			$this->getActionOption('mode'),
@@ -125,7 +126,7 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$target_urgency = $this->getUrgencyResult(
 			$this->getActionOption('mode'),
@@ -144,7 +145,7 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
 			return array('fields');
@@ -157,7 +158,7 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

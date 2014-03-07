@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class ActionComposite implements ActionInterface
 {
@@ -86,7 +87,7 @@ class ActionComposite implements ActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		foreach ($this->actions as $a) {
 			if ($a instanceof NoopableInterface) {

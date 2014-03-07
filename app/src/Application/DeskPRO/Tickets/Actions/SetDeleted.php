@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
  * Delete the ticket
@@ -46,7 +47,7 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$ticket->setStatus('hidden.deleted');
 	}
@@ -55,7 +56,7 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if ($ticket->getStatusCode() == 'hidden.deleted') {
 			return true;
@@ -68,7 +69,7 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
 			return array('delete');
@@ -81,7 +82,7 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

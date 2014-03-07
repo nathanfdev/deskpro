@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\Actions\ActionContext;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
@@ -100,7 +101,7 @@ class TriggerActions implements \Serializable, ActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->actions->applyAction($ticket, $context);
 	}

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -114,10 +115,10 @@ class FilterTerms implements \Serializable, FilterTermInterface
 
 
 	/**
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @return \Application\DeskPRO\Tickets\Filters\Terms\FilterQuery|null
 	 */
-	public function getFilterQuery(ExecutorContext $context = null)
+	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
 		return $this->criteria->getFilterQuery($context);
 	}

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Orb\Util\Arrays;
@@ -65,7 +66,7 @@ class SendAgentNotifications extends AbstractAction implements ActionInterface, 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		list ($email_agents, $alert_agents, $notify_info) = $this->buildNotifyLists($ticket, $context);
 
@@ -245,10 +246,10 @@ class SendAgentNotifications extends AbstractAction implements ActionInterface, 
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @return array
 	 */
-	private function buildNotifyLists(Ticket $ticket, ExecutorContext $context)
+	private function buildNotifyLists(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$list_builder = $context->createNotifyListBuilder($ticket);
 
@@ -353,7 +354,7 @@ class SendAgentNotifications extends AbstractAction implements ActionInterface, 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if ($ticket->status == 'hidden' || $context->getVars()->get('mute_agent_emails')) {
 			return true;

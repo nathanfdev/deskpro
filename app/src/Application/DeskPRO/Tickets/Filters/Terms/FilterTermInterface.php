@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
  * This interface is used when a TicketCriteria class can be used with filters and escalations.
@@ -45,5 +46,5 @@ interface FilterTermInterface
 	/**
 	 * @return FilterQuery|null
 	 */
-	public function getFilterQuery(ExecutorContext $context = null);
+	public function getFilterQuery(ExecutorContextInterface $context = null);
 }

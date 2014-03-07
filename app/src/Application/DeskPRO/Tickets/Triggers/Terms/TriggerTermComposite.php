@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketChangelog;
 
 class TriggerTermComposite implements TriggerTermInterface
@@ -118,7 +119,7 @@ class TriggerTermComposite implements TriggerTermInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$this->terms) {
 			return true;

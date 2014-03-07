@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
@@ -46,7 +47,7 @@ class FilterIsHold extends AbstractFilterTerm
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFilterQuery(ExecutorContext $context = null)
+	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
 		$query = new FilterQuery();
 		switch ($this->getTermOperator()) {

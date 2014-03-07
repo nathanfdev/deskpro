@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 interface NoopableInterface
 {
@@ -48,8 +49,8 @@ interface NoopableInterface
 	 * We skip no-op actions.
 	 *
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @return bool
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context);
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context);
 }

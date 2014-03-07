@@ -29,89 +29,85 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Actions;
+namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
+use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
+use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 
-/**
- * Adds and removes agent followers from the ticket.
- *
- * @option int[] add_agent_ids     Array of agent IDs to add
- * @option int[] remove_agent_ids  Array of agent IDs to remove
- */
-class SetAgentFollowers extends AbstractAction implements ActionInterface, MacroActionInterface
+class ExecutorContextContainerAware extends ExecutorContext implements ExecutorContextContainerAwareInterface
 {
 	/**
-	 * {@inheritDoc}
+	 * @var DeskproContainer
 	 */
-	protected function getOptionsDef()
+	private $container;
+
+	private $cache_filter_change_detector;
+	private $cache_filter_change_detector_version = 0;
+
+
+	/**
+	 * @param $container DeskproContainer
+	 */
+	public function setContainer(DeskproContainer $container)
 	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('add_agent_ids', 'remove_agent_ids');
-		return $options;
+		$this->container = $container;
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @return DeskproContainer
+	 * @throws \LogicException When no container has been set yet
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+	public function getContainer()
 	{
-		#--------------------
-		# Add followers
-		#--------------------
+		if (!$this->container) {
+			throw new \LogicException("Container has not been set");
+		}
+		return $this->container;
+	}
 
-		foreach ($this->getActionOption('add_agent_ids') as $agent_id) {
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
-			if (!$agent) {
-				continue;
-			}
-
-			if (!$ticket->participants->contains($agent)) {
-				$ticket->addParticipantPerson($agent);
-			}
+	/**
+	 * @param Ticket $ticket
+	 * @return FilterChangeDetector
+	 */
+	public function createFilterChangeDetector(Ticket $ticket)
+	{
+		// Micro-optimisation to prevent two change detectors needing to run right after another.
+		if ($this->cache_filter_change_detector_version == $ticket->getStateChangeRecorder()->getStateVersion()) {
+			return $this->cache_filter_change_detector;
 		}
 
-		#--------------------
-		# Remove followers
-		#--------------------
+		$em = $this->getContainer()->getEm();
+		$filters = $em->getRepository('DeskPRO:TicketFilter')->getFilters();
+		$agents  = $em->getRepository('DeskPRO:Person')->getAgents();
 
-		foreach ($this->getActionOption('remove_agent_ids') as $agent_id) {
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
-			if (!$agent) {
-				continue;
-			}
+		$detector = new FilterChangeDetector($ticket, $filters, $agents);
+		$detector->setLogger($this->getLogger());
 
-			$ticket->removeParticipantPerson($agent);
-		}
+		$this->cache_filter_change_detector = $detector;
+		$this->cache_filter_change_detector_version = $ticket->getStateChangeRecorder()->getStateVersion();
+
+		return $detector;
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param Ticket $ticket
+	 * @return AgentNotifyListBuilder
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+	public function createNotifyListBuilder(Ticket $ticket)
 	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
-			return array('cc');
-		}
+		$list_builder = new AgentNotifyListBuilder(
+			$ticket,
+			$this->createFilterChangeDetector($ticket),
+			$this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
+		);
 
-		return array();
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
+		return $list_builder;
 	}
 }

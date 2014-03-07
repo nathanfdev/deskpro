@@ -85,10 +85,10 @@ class TicketManager
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 * @throws \Exception
 	 */
-	public function saveTicket(Ticket $ticket, ExecutorContext $context)
+	public function saveTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->db->beginTransaction();
 		try {
@@ -102,7 +102,7 @@ class TicketManager
 		return $ret;
 	}
 
-	private function doSaveTicket(Ticket $ticket, ExecutorContext $context)
+	private function doSaveTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$time_start = microtime(true);
 		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
@@ -356,7 +356,7 @@ class TicketManager
 	 * @param $event_type
 	 * @param $event_method
 	 * @param array $event_method_options
-	 * @return ExecutorContext
+	 * @return ExecutorContextInterface
 	 */
 	public function createAgentExecutorContext(Person $agent, $event_type, $event_method, array $event_method_options = array())
 	{
@@ -374,7 +374,7 @@ class TicketManager
 	 * @param $event_type
 	 * @param $event_method
 	 * @param array $event_method_options
-	 * @return ExecutorContext
+	 * @return ExecutorContextInterface
 	 */
 	public function createUserExecutorContext(Person $user, $event_type, $event_method, array $event_method_options = array())
 	{
@@ -391,7 +391,7 @@ class TicketManager
 	 * @param string $event_type
 	 * @param string $event_method
 	 * @param array $event_method_options
-	 * @return ExecutorContext
+	 * @return ExecutorContextInterface
 	 */
 	public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
 	{

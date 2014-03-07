@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -60,7 +61,7 @@ class SetPriority extends AbstractAction implements ActionInterface, MacroAction
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_pri_id = $this->getActionOption('priority_id');
 
@@ -76,7 +77,7 @@ class SetPriority extends AbstractAction implements ActionInterface, MacroAction
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_pri_id    = $this->getActionOption('priority_id');
 		$ticket_pri_id = $ticket->priority ? $ticket->priority->id : 0;
@@ -97,7 +98,7 @@ class SetPriority extends AbstractAction implements ActionInterface, MacroAction
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
 			return array('fields');
@@ -110,7 +111,7 @@ class SetPriority extends AbstractAction implements ActionInterface, MacroAction
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

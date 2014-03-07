@@ -39,6 +39,7 @@ use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Validator\StringEmail;
 
@@ -65,7 +66,7 @@ class SetUserOwner extends AbstractAction implements ActionInterface, MacroActio
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$user_email = $this->getActionOption('email_address');
 
@@ -102,7 +103,7 @@ class SetUserOwner extends AbstractAction implements ActionInterface, MacroActio
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$user_email = $this->getActionOption('email_address');
 		if (!StringEmail::isValueValid($user_email)) {
@@ -119,7 +120,7 @@ class SetUserOwner extends AbstractAction implements ActionInterface, MacroActio
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_agent_id = $this->getActionOption('agent_id');
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
@@ -140,7 +141,7 @@ class SetUserOwner extends AbstractAction implements ActionInterface, MacroActio
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

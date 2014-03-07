@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -60,7 +61,7 @@ class SetEmailGateway extends AbstractAction implements ActionInterface, MacroAc
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_id = $this->getActionOption('email_gateway_id');
 
@@ -76,7 +77,7 @@ class SetEmailGateway extends AbstractAction implements ActionInterface, MacroAc
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_id = $this->getActionOption('email_gateway_id');
 		$has_id = $ticket->email_gateway ? $ticket->email_gateway->id : 0;
@@ -97,7 +98,7 @@ class SetEmailGateway extends AbstractAction implements ActionInterface, MacroAc
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
 			return array('fields');
@@ -110,7 +111,7 @@ class SetEmailGateway extends AbstractAction implements ActionInterface, MacroAc
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

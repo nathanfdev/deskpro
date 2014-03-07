@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -58,7 +59,7 @@ class FilterCategory extends AbstractFilterTerm
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFilterQuery(ExecutorContext $context = null)
+	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
 		$options = $this->getTermOptions();
 		return $this->getIdMatchQuery('tickets.category_id', $options['category_ids']);

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
 
@@ -64,7 +65,7 @@ class AddAgentReply extends AbstractAction implements ActionInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$agent = null;
 		if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {

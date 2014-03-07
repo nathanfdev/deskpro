@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 
@@ -59,7 +60,7 @@ class FilterAgentTeam extends AbstractFilterTerm
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getFilterQuery(ExecutorContext $context = null)
+	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
 		$options = $this->getTermOptions();
 		return $this->getIdMatchQuery('tickets.agent_team_id', $options['team_ids']);

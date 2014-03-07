@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -60,7 +61,7 @@ class SetAgent extends AbstractAction implements ActionInterface, MacroActionInt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_agent_id = $this->getActionOption('agent_id');
 
@@ -76,7 +77,7 @@ class SetAgent extends AbstractAction implements ActionInterface, MacroActionInt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_agent_id    = $this->getActionOption('agent_id');
 		$ticket_agent_id = $ticket->agent ? $ticket->agent->id : 0;
@@ -97,7 +98,7 @@ class SetAgent extends AbstractAction implements ActionInterface, MacroActionInt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_agent_id = $this->getActionOption('agent_id');
 		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
@@ -118,7 +119,7 @@ class SetAgent extends AbstractAction implements ActionInterface, MacroActionInt
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context)
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->applyAction($ticket, $context);
 	}

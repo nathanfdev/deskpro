@@ -132,9 +132,9 @@ class TicketEmail
 
 
 	/**
-	 * @param ExecutorContext $context
+	 * @param ExecutorContextInterface $context
 	 */
-	public function send(ExecutorContext $context, array $vars = array())
+	public function send(ExecutorContextInterface $context, array $vars = array())
 	{
 		$mailer     = $context->getContainer()->getMailer();
 		$translator = $context->getContainer()->getTranslator();

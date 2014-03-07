@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -59,7 +60,7 @@ class CheckDepartment extends AbstractTriggerTerm
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContext $context)
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
 		return $this->isEntityMatch($ticket, $context, 'department', 'id', $options['department_ids']);

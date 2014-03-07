@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Orb\Util\CheckedOptionsArray;
 
@@ -63,7 +64,7 @@ class SendUserEmail extends AbstractAction implements ActionInterface, NoopableI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContext $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$ticket_email = new TicketEmail(
 			$ticket,
@@ -79,7 +80,7 @@ class SendUserEmail extends AbstractAction implements ActionInterface, NoopableI
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isNoop(Ticket $ticket, ExecutorContext $context)
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if ($context->getVars()->get('mute_user_emails')) {
 			return true;

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 interface MacroActionInterface
 {
@@ -49,7 +50,7 @@ interface MacroActionInterface
 	 * @param ActionContext $context
 	 * @return array|null
 	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context);
 
 
 	/**
@@ -58,5 +59,5 @@ interface MacroActionInterface
 	 * @param ActionContext $context
 	 * @return void
 	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContext $context);
+	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context);
 }

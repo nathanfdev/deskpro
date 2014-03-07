@@ -34,16 +34,11 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
-use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Monolog\Logger;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\OptionsArray;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class ExecutorContext implements PersonContextInterface
+class ExecutorContext implements ExecutorContextInterface
 {
 	/**
 	 * @var \Orb\Util\OptionsArray
@@ -80,18 +75,8 @@ class ExecutorContext implements PersonContextInterface
 	 */
 	private $logger;
 
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
-
-	private $cache_filter_change_detector;
-	private $cache_filter_change_detector_version = 0;
-
-
-	public function __construct(DeskproContainer $container, Logger $logger)
+	public function __construct(Logger $logger)
 	{
-		$this->container = $container;
 		$this->vars = new OptionsArray();
 		$this->logger = $logger;
 	}
@@ -214,55 +199,5 @@ class ExecutorContext implements PersonContextInterface
 	public function getEventPerformer()
 	{
 		return $this->event_performer;
-	}
-
-
-	/**
-	 * @return DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return $this->container;
-	}
-
-
-	/**
-	 * @param Ticket $ticket
-	 * @return FilterChangeDetector
-	 */
-	public function createFilterChangeDetector(Ticket $ticket)
-	{
-		// Micro-optimisation to prevent two change detectors needing to run right after another.
-		if ($this->cache_filter_change_detector_version == $ticket->getStateChangeRecorder()->getStateVersion()) {
-			return $this->cache_filter_change_detector;
-		}
-
-		$em = $this->container->getEm();
-		$filters = $em->getRepository('DeskPRO:TicketFilter')->getFilters();
-		$agents  = $em->getRepository('DeskPRO:Person')->getAgents();
-
-		$detector = new FilterChangeDetector($ticket, $filters, $agents);
-		$detector->setLogger($this->logger);
-
-		$this->cache_filter_change_detector = $detector;
-		$this->cache_filter_change_detector_version = $ticket->getStateChangeRecorder()->getStateVersion();
-
-		return $detector;
-	}
-
-
-	/**
-	 * @param Ticket $ticket
-	 * @return AgentNotifyListBuilder
-	 */
-	public function createNotifyListBuilder(Ticket $ticket)
-	{
-		$list_builder = new AgentNotifyListBuilder(
-			$ticket,
-			$this->createFilterChangeDetector($ticket),
-			$this->container->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
-		);
-
-		return $list_builder;
 	}
 }
