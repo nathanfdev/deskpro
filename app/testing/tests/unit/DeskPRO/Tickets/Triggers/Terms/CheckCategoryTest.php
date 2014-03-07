@@ -1,9 +1,9 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
-require_once 'AbstractEntityCheckTest.php';
+require_once 'AbstractTicketEntityCheckTest.php';
 
-class CheckCategoryTest extends AbstractEntityCheckTest
+class CheckCategoryTest extends AbstractTicketEntityCheckTest
 {
 	/**
 	 * {@inheritDoc}

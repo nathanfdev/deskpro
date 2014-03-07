@@ -8,24 +8,22 @@ require_once 'AbstractStringCheckTest.php';
 
 class CheckOrgNameTest extends AbstractStringCheckTest
 {
-	/*
-	 * This test uses 'subject' on the ticket so AbstractStringCheckTest
-	 * does most of the work.
-	 *
-	 * We copy the subject value to the org name that is what CheckOrgName
-	 * actually tests.
-	 */
-
-
 	/**
-	 * @param Ticket $ticket
-	 * @return void
+	 * @param int $id
+	 * @param string $test_string
+	 * @return Ticket
 	 */
-	protected function configureTicket(Ticket $ticket)
+	public function createTicket($id, $test_string)
 	{
 		$org = new Organization();
-		$org->name = $ticket->subject;
+		$org->id = $id;
+		$org->name = $test_string;
+
+		$ticket = new Ticket();
+		$ticket->id = $id;
 		$ticket->organization = $org;
+
+		return $ticket;
 	}
 
 	/**
@@ -42,13 +40,5 @@ class CheckOrgNameTest extends AbstractStringCheckTest
 	protected function getCheckClassOptionKey()
 	{
 		return 'name';
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTicketPropertyName()
-	{
-		return 'subject';
 	}
 }

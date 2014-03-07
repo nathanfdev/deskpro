@@ -8,24 +8,22 @@ require_once 'AbstractStringCheckTest.php';
 
 class CheckUserNameTest extends AbstractStringCheckTest
 {
-	/*
-	 * This test uses 'subject' on the ticket so AbstractStringCheckTest
-	 * does most of the work.
-	 *
-	 * We copy the subject value to the person name that is what CheckUserName
-	 * actually tests.
-	 */
-
-
 	/**
-	 * @param Ticket $ticket
-	 * @return void
+	 * @param int $id
+	 * @param string $test_string
+	 * @return Ticket
 	 */
-	protected function configureTicket(Ticket $ticket)
+	public function createTicket($id, $test_string)
 	{
 		$person = new Person();
-		$person->name = $ticket->subject;
+		$person->id = $id;
+		$person->name = $test_string;
+
+		$ticket = new Ticket();
+		$ticket->id = $id;
 		$ticket->person = $person;
+
+		return $ticket;
 	}
 
 	/**
@@ -42,13 +40,5 @@ class CheckUserNameTest extends AbstractStringCheckTest
 	protected function getCheckClassOptionKey()
 	{
 		return 'name';
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTicketPropertyName()
-	{
-		return 'subject';
 	}
 }

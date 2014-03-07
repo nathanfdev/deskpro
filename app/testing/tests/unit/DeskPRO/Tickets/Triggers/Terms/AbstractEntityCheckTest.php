@@ -29,20 +29,37 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
 	public function runBefore()
 	{
-		$ent_class = $this->getEntityClass();
-		$prop_name = $this->getTicketPropertyName();
-
-		$this->object1 = new $ent_class();
-		$this->object1->id = 1;
-
-		$this->object2 = new $ent_class();
-		$this->object2->id = 1;
+		$this->object1 = $this->createEntityObject(1);
+		$this->object2 = $this->createEntityObject(2);
 
 		$this->exec_context = new ExecutorContext();
 
-		$this->ticket = new Ticket();
-		$this->ticket->$prop_name = $this->object1;
+		$this->ticket = $this->createTicket(1, $this->object1);
 	}
+
+
+	/**
+	 * @param int $id
+	 * @return object
+	 */
+	public function createEntityObject($id)
+	{
+		$ent_class = $this->getEntityClass();
+
+		$object = new $ent_class();
+		$object->id = $id;
+
+		return $object;
+	}
+
+
+	/**
+	 * @param int $id
+	 * @param $object $test_string
+	 * @return Ticket
+	 */
+	abstract public function createTicket($id, $object);
+
 
 	/**
 	 * @param string $op
@@ -63,11 +80,13 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 		return $check;
 	}
 
+
 	/**
 	 * The term checker class
 	 * @return string
 	 */
 	abstract protected function getCheckClass();
+
 
 	/**
 	 * The option key to supply IDs in
@@ -75,17 +94,13 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 	 */
 	abstract protected function getCheckClassOptionKey();
 
+
 	/**
 	 * The entity class we are checking
 	 * @return string
 	 */
 	abstract public function getEntityClass();
 
-	/**
-	 * The property on the ticket that is being checked
-	 * @return string
-	 */
-	abstract public function getTicketPropertyName();
 
 	public function testIsMatchSingleOption()
 	{
