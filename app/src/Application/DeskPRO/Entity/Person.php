@@ -517,13 +517,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('timezone',        'UTC');
 		$this->setModelField('salt',            Strings::random(40));
 
-		// If we're loaded, then set default timezone from setting
-		if (class_exists('Application\\DeskPRO\\App')) {
-			try {
-				$this->setTimezone(App::getSetting('core.default_timezone'));
-			} catch (\Exception $e) {};
-		}
-
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
@@ -2126,6 +2119,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _presavePerson()
 	{
+		// If we're loaded, then set default timezone from setting
+		if (!$this->timezone && class_exists('Application\\DeskPRO\\App')) {
+			try {
+				$this->setTimezone(App::$container->getSetting('core.default_timezone'));
+			} catch (\Exception $e) {};
+		}
+
 		if ($this->_person_logger) {
 			$this->_person_logger->preSave();
 		}
