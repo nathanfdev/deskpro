@@ -1292,10 +1292,39 @@ class PersonController extends AbstractController
 		}
 
 		$newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
+                
+                $isVCard = $this->in->getBoolean('isVCard');
+            
+                if ($isVCard) {
+                    $blobId = $this->in->getBoolean('blobId');
+
+                    if (!$blobId) {
+                        throw new \Exception("Invalid Blob ID");
+                    }
+
+                    $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+
+                    $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+
+                    $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+
+                    $fields = $vCardReader->parseVCard($content);
+
+                    if (!isset($fields['emails']) || !count($fields['emails'])) {
+                        return $this->createJsonResponse(array(
+				'success' => false,
+				'error_messages' => array('No valid email was found in the vCard'),
+			));
+                    }
+                    
+                    $new_email = $fields['emails'][0];
+                } else {
+                    $new_email = $this->in->getString('newperson.email');
+                }
 
 		// Check for dupe email address
-		$new_email = $this->in->getString('newperson.email');
 		if (!$new_email || !\Orb\Validator\StringEmail::isValueValid($new_email)) {
+                    var_dump($fields); die;
 			return $this->createJsonResponse(array(
 				'success' => false,
 				'error_messages' => array('Please enter a valid email address'),
@@ -1314,6 +1343,27 @@ class PersonController extends AbstractController
 				));
 			}
 		}
+                
+                if ($isVCard) {
+                    $newperson->save();
+
+                    $person = $newperson->getPerson();
+                    
+                    $vCardReader->applyToPerson($content, $person);
+
+                    $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+
+                    // Notify about new person
+                    foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
+                            $this->em->persist($cm);
+                    }
+                    $this->em->flush();
+
+                    return $this->createJsonResponse(array(
+                            'success' => true,
+                            'person_id' => $person['id']
+                    ));
+                }
 
 		$formType = new \Application\AgentBundle\Form\Type\NewPerson();
 		$form = $this->get('form.factory')->create($formType, $newperson);

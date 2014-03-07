@@ -37,10 +37,78 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			self.updateUi();
 		});
 
-        DeskPRO_Window.util.fileupload(el, {
-            uploadTemplate: $('.template-upload', el),
-            downloadTemplate: $('.template-download', el),
-            url: BASE_URL + 'agent/misc/parse-vcard'
+//        DeskPRO_Window.util.fileupload(el, {
+//            uploadTemplate: $('.template-upload', el),
+//            downloadTemplate: $('.template-download', el),
+//            url: BASE_URL + 'agent/misc/parse-vcard'
+//        });
+        
+        var wrapper = $(this.wrapper).find('.upload-vcard-wrap');
+        
+        console.log(wrapper);
+        //console.log(this.page);
+        
+        DeskPRO_Window.util.fileupload(wrapper, {
+            page: this.page,
+            uploadTemplate: $('.template-upload', wrapper),
+            downloadTemplate: $('.template-download', wrapper),
+            formData: [{
+                    name: 'is_image',
+                    value: 0
+            }],
+            completed: function() {
+                //var self = this;
+                
+                self.blobId = $('input.new_blob_id', this.wrapper).val();
+
+                $('.files .in', wrapper).css({
+                    'height': 'auto',
+                    'margin': '10px',
+                    'text-transform': 'capitalize'
+                }).html("Loading . . .");
+
+                $.ajax({
+                    url: BASE_URL + 'agent/misc/parse-vcard/' + self.blobId,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        action: 'set-is-disabled',
+                        is_disabled: 1
+                    },
+                    success: function(vCard) {
+                        self.isVCard = true;
+                        $('.files .in', wrapper).html("");
+                        vCard = vCard[0].fields;
+
+                        for(var prop in vCard) {
+                            if (typeof vCard[prop] === 'object') {
+                                // it seems to be an array
+                                for(var prop2 in vCard[prop]) {
+                                    if (typeof vCard[prop][prop2] === 'string') {
+                                        $('.files .in', wrapper).append(prop2 + ": " + vCard[prop][prop2] + "<br/>");
+                                    } else if(typeof vCard[prop][prop2] === 'object') {
+                                        $('.files .in', wrapper).append("<hr/>");
+                                        for (var prop3 in vCard[prop][prop2]) {
+                                            if (typeof vCard[prop][prop2][prop3] === 'string') {
+                                        $('.files .in', wrapper).append(prop3 + ": " + vCard[prop][prop2][prop3] + "<br/>");    
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                $('.result').append(prop + ": " + vCard[prop] + "<br/>");
+                            }
+                        }
+                    }
+                });
+            }
+        }).bind('fileuploadstart', function() {
+                $('p.explain', wrapper).hide();
+        }).bind('fileuploadadd', function() {
+                $('.files', wrapper).empty();
+                $('input[name=set_pic_opt]', wrapper).each(function() {
+                        $(this).attr('checked', $(this).val() == 'newpic');
+                })
         });
 
         el.bind('fileuploaddone', function(event, data) {
@@ -76,7 +144,23 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 	},
 
 	submit: function() {
-		var formData = this.form.serializeArray();
+            var self = this;
+            console.log(self.isVCard);
+            //return true;
+            if (self.isVCard) {
+                $.ajax({
+			url: BASE_URL + 'agent/people/new/save',
+			type: 'POST',
+			data: {isVCard: true, 'blobId': self.blobId},
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+                            console.log(data);
+                            return self.createCallback(data);
+                        }
+                });
+            } else {
+                var formData = this.form.serializeArray();
 
 		$.ajax({
 			url: BASE_URL + 'agent/people/new/save',
@@ -85,30 +169,35 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			success: function(data) {
-				if (data.success) {
-					if (this.getEl('org_id').val().length && this.fromCompanyTab) {
-						DeskPRO_Window.getMessageBroker().sendMessage('new-org-user', {
-							organization_id: this.getEl('org_id').val(),
-							person_id: data.person_id
-						});
-					} else {
-						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
-					}
-
-					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.added', { person_id: data.person_id });
-					this.closeSelf();
-				} else {
-					var errorMessages = $('<div/>');
-					errorMessages.append('<p>Please correct the following errors with your form:</p>');
-
-					Array.each(data.error_messages, function(msg) {
-						errorMessages.append('<div>&bull; ' + msg + '</div>');
-					});
-					DeskPRO_Window.showAlert(errorMessages, 'error');
-				}
+                            return self.createCallback(data);
 			}
 		});
+            }
 	},
+        
+        createCallback: function(data) {
+            if (data.success) {
+                if (this.getEl('org_id').val().length && this.fromCompanyTab) {
+                        DeskPRO_Window.getMessageBroker().sendMessage('new-org-user', {
+                                organization_id: this.getEl('org_id').val(),
+                                person_id: data.person_id
+                        });
+                } else {
+                        DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+                }
+
+                DeskPRO_Window.getMessageBroker().sendMessage('agent.person.added', { person_id: data.person_id });
+                this.closeSelf();
+        } else {
+                var errorMessages = $('<div/>');
+                errorMessages.append('<p>Please correct the following errors with your form:</p>');
+
+                Array.each(data.error_messages, function(msg) {
+                        errorMessages.append('<div>&bull; ' + msg + '</div>');
+                });
+                DeskPRO_Window.showAlert(errorMessages, 'error');
+        }
+        },
 
 	setOrganization: function(org_id, org_name) {
 		this.getEl('org_id').val(org_id);
