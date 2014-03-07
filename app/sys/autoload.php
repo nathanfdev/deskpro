@@ -15,12 +15,15 @@ require DP_ROOT.'/vendor/autoload.php';
 $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
-	'Application'                  => DP_ROOT.'/src',
-	'Cloud'                        => DP_ROOT.'/src',
-    'Bundle'                       => DP_ROOT.'/src',
-	'Orb'                          => DP_ROOT.'/src',
+	'Application'        => DP_ROOT.'/src',
+	'Cloud'              => DP_ROOT.'/src',
+    'Bundle'             => DP_ROOT.'/src',
+	'Orb'                => DP_ROOT.'/src',
 
-	'Metadata'                       => DP_ROOT.'/vendor-src/metadata/src',
+	'DpUnitTests'        => DP_ROOT.'/testing/tests/unit',
+	'DpIntegrationTests' => DP_ROOT.'/testing/tests/integration',
+
+	'Metadata'           => DP_ROOT.'/vendor-src/metadata/src',
 ));
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 

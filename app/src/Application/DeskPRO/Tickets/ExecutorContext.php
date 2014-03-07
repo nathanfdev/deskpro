@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\OptionsArray;
@@ -75,8 +76,13 @@ class ExecutorContext implements ExecutorContextInterface
 	 */
 	private $logger;
 
-	public function __construct(Logger $logger)
+	public function __construct(Logger $logger = null)
 	{
+		if (!$logger) {
+			// Null logger
+			$logger = new Logger('ticket', array(new NullHandler()));
+		}
+
 		$this->vars = new OptionsArray();
 		$this->logger = $logger;
 	}

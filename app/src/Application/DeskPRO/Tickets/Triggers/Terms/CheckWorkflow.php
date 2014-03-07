@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
 
 /**
  * Checks if a workflow is set

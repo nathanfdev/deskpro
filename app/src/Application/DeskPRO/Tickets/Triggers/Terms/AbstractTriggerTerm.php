@@ -451,10 +451,17 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 			case self::OP_CONTAINS:
 			case self::OP_NOTCONTAINS:
+				// Special case: empty search string
+				// We consider 'ticket subject has ""' to be true
+				if ($check_value_i === '') {
+					if ($op == self::OP_CONTAINS) return true;
+					else return false;
+				}
+
 				if (strpos($value_i, $check_value_i) !== false) {
-					if ($op == self::OP_IS) return true;
+					if ($op == self::OP_CONTAINS) return true;
 				} else {
-					if ($op == self::OP_NOT) return true;
+					if ($op == self::OP_NOTCONTAINS) return true;
 				}
 				break;
 
