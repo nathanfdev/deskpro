@@ -460,6 +460,14 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		$op    = $opts['op'];
 		$value = $opts['value'];
 
+		if (!is_string($value)) {
+			if ($value === null || $value === false) {
+				$value = '';
+			} else {
+				$value .= '';
+			}
+		}
+
 		$value_i       = Strings::utf8_strtolower($value);
 		$check_value_i = Strings::utf8_strtolower($check_value);
 
