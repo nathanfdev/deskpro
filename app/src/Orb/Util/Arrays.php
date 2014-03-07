@@ -798,12 +798,17 @@ class Arrays
 	 * @param string $tpl The template to use. Variables {VAL} and {KEY} are available.
 	 * @return string
 	 */
-	public static function implodeTemplate($array, $tpl = '<li>{VAL}</li>')
+	public static function implodeTemplate($array, $tpl = '<li>{VAL}</li>', $key_prefix = null)
 	{
 	    $string = '';
 
 	    foreach ($array as $k => $v) {
-	        $string .= str_replace(array('{KEY}', '{VAL}'), array($k, $v), $tpl);
+			if (is_array($v)) {
+				$string .= self::implodeTemplate($v, $tpl, "$k.");
+			} else {
+				$key_str = ($key_prefix ?: '') . $k;
+				$string .= str_replace(array('{KEY}', '{VAL}'), array($key_str, $v), $tpl);
+			}
 	    }
 
 	    return $string;
