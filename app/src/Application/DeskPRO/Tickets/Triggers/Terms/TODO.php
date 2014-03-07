@@ -28,7 +28,6 @@ class CheckUserLanguage                        extends AbstractTriggerTerm { pub
 class CheckUserIsManager                       extends AbstractTriggerTerm { public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $ticket_changelog) { return true; } }
 class CheckPersonIsDisabled                    extends AbstractTriggerTerm { public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $ticket_changelog) { return true; } }
 class CheckOrgLabels                           extends AbstractTriggerTerm { public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $ticket_changelog) { return true; } }
-class CheckOrgEmailDomain                      extends AbstractTriggerTerm { public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $ticket_changelog) { return true; } }
 class CheckOrgUsergroups                       extends AbstractTriggerTerm { public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $ticket_changelog) { return true; } }
 class CheckDayOfWeek                           extends AbstractTriggerTerm { public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $ticket_changelog) { return true; } }
 class CheckTimeOfDay                           extends AbstractTriggerTerm { public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $ticket_changelog) { return true; } }
