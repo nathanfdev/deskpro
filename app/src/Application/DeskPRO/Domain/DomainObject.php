@@ -39,6 +39,7 @@ use Application\DeskPRO\App;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
 
+use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
@@ -131,7 +132,12 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	protected function setModelField($field, $value)
 	{
-		$old = $this->$field;
+		$real_method = 'getReal' . ucfirst(Strings::underscoreToCamelCase($field));
+		if (method_exists($this, $real_method)) {
+			$old = $this->$real_method();
+		} else {
+			$old = $this->$field;
+		}
 
 		// Detect fields that did not change
 		if (is_null($value) && is_null($old)) {
@@ -153,6 +159,20 @@ abstract class DomainObject extends BasicDomainObject
 		$this->$field = $value;
 
 		$this->_onPropertyChanged($field, $old, $value);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$func = "set" . str_replace('_', '', $offset);
+		if (method_exists($this, $func) || $this->_isCustomCallable(strtolower($func))) {
+			$this->$func($value);
+		} else {
+			$this->setModelField($offset, $value);
+		}
 	}
 
 

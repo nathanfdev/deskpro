@@ -287,7 +287,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 			return call_user_func($this->_custom_callables[$name_l][0], $this->_custom_callables[$name_l][1], $arguments);
 		}
 
-		$orig_name = $name;
 		$name = preg_replace('#([A-Z])#', '_$1', $name);
 
 		$match = null;
@@ -310,12 +309,13 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 				$arguments = array(null);
 			}
 
-			if (isset($this->$prop)) {
-				$old_val = $this->$prop;
-			}
-
 			$this[$prop] = $arguments[0];
 		}
+	}
+
+	protected function _isCustomCallable($name)
+	{
+		return isset($this->_custom_callables[$name]);
 	}
 
 
@@ -367,12 +367,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 	public function offsetSet($offset, $value)
 	{
-		$old_value = isset($this[$offset]) ? $this[$offset] : null;
-
 		$func = "set" . str_replace('_', '', $offset);
 		if (method_exists($this, $func) || isset($this->_custom_callables[strtolower($func)])) {
 			$this->$func($value);
 		} else {
+			$old_value = isset($this[$offset]) ? $this[$offset] : null;
 			$this->$offset = $value;
 			$this->_onPropertyChanged($offset, $old_value, $value);
 		}

@@ -522,7 +522,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_users          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->personscraper_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
