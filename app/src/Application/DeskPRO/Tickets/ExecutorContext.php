@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Application\DeskPRO\Entity\Person;
@@ -130,6 +131,38 @@ class ExecutorContext implements ExecutorContextInterface
 	public function getVars()
 	{
 		return $this->vars;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasEmailContext()
+	{
+		return $this->vars->has('email_reader');
+	}
+
+
+	/**
+	 * @param AbstractReader $reader
+	 */
+	public function setEmailContext(AbstractReader $reader)
+	{
+		$this->vars->set('email_reader', $reader);
+	}
+
+
+	/**
+	 * @return AbstractReader
+	 * @throws \RuntimeException
+	 */
+	public function getEmailContext()
+	{
+		if (!$this->vars->has('email_reader')) {
+			throw new \RuntimeException("No email reader has been set");
+		}
+
+		return $this->vars->get('email_reader');
 	}
 
 

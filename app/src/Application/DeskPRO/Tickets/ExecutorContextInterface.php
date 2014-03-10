@@ -8,6 +8,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -32,6 +33,21 @@ interface ExecutorContextInterface
 	 * @return Person
 	 */
 	public function getPersonContext();
+
+	/**
+	 * @return bool
+	 */
+	public function hasEmailContext();
+
+	/**
+	 * @param AbstractReader $reader
+	 */
+	public function setEmailContext(AbstractReader $reader);
+
+	/**
+	 * @return AbstractReader
+	 */
+	public function getEmailContext();
 
 	/**
 	 * @param string $event_performer
