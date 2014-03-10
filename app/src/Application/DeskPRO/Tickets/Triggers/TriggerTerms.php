@@ -41,9 +41,6 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
 
-// TODO
-require(DP_ROOT.'/src/Application/DeskPRO/Tickets/Triggers/Terms/TODO.php');
-
 /**
  * This is a wrapper around a TriggerTermComposite that is able to serialize.
  * Used as the serialized object in TicketTrigger records.
