@@ -39,11 +39,17 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users belongs to a usergroup
+ * Checks body of an email for a string.
  *
- * @option string name
+ * The check is done against all of these:
+ * - text
+ * - html
+ * - plaintext with whitespace removed
+ * - html with tags and whitespace removed
+ *
+ * @option string body
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckEmailBody extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -51,7 +57,7 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
+		$options->addRequiredNames('body');
 		return $options;
 	}
 
@@ -61,7 +67,28 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if (!$context->hasEmailContext()) {
+			return false;
+		}
+
 		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+
+		$reader = $context->getEmailContext();
+		$strings = array();
+
+		if ($html = $reader->getBodyHtml()->getBodyUtf8()) {
+			$strings[] = $html;
+			$strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($html)));
+		}
+		if ($txt = $reader->getBodyText()->getBodyUtf8()) {
+			$strings[] = $txt;
+			$strings[] = trim(preg_replace('#\s+#' , ' ', $txt));
+		}
+
+		$strings = array_unique($strings);
+
+		$value = TermValue::createWithValue($strings);
+
+		return $this->isStringMatch($ticket, $context, $value, $options['body']);
 	}
 }

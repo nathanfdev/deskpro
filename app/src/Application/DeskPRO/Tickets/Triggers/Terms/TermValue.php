@@ -71,7 +71,7 @@ class TermValue
 	 * @param mixed $value
 	 * @param callback $value_callback
 	 */
-	private function __construct($value, $value_callback)
+	private function __construct($value = null, $value_callback = null)
 	{
 		$this->value = $value;
 		$this->value_callback = $value_callback;

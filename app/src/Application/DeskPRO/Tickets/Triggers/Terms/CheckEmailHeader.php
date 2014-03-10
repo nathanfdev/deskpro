@@ -39,11 +39,12 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users belongs to a usergroup
+ * Checks email header value
  *
  * @option string name
+ * @option string value
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckEmailHeader extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -51,7 +52,8 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
+		$options->addRequiredNames('name');
+		$options->addRequiredNames('value');
 		return $options;
 	}
 
@@ -61,7 +63,24 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if (!$context->hasEmailContext()) {
+			return false;
+		}
+
 		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+
+		$reader = $context->getEmailContext();
+		$header = $reader->getHeader($options['name']);
+		$strings = array();
+
+		if ($header) {
+			foreach ($header->getAllParts() as $val) {
+				$strings[] = $val;
+			}
+		}
+
+		$value = TermValue::createWithValue($strings);
+
+		return $this->isStringMatch($ticket, $context, $value, $options['value']);
 	}
 }
