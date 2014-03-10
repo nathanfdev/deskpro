@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
@@ -62,13 +63,21 @@ class TicketManager
 	private $container;
 
 	/**
-	 * @param DeskproContainer $container
+	 * @var ActionApplicatorInterface
 	 */
-	public function __construct(DeskproContainer $container)
+	private $action_applicator;
+
+	/**
+	 * @param DeskproContainer $container
+	 * @param ActionApplicatorInterface $action_applicator
+	 */
+	public function __construct(DeskproContainer $container, ActionApplicatorInterface $action_applicator)
 	{
 		$this->container = $container;
 		$this->em = $container->getEm();
 		$this->db = $container->getDb();
+
+		$this->action_applicator = $action_applicator;
 	}
 
 
@@ -233,7 +242,7 @@ class TicketManager
 			$context->getLogger()->info(sprintf("[Triggers] (#%d): %s", $trigger->id, $match ? "MATCH" : "no match"));
 
 			if ($match) {
-				$trigger->actions->applyAction($ticket, $context);
+				$this->action_applicator->apply($trigger->actions, $ticket, $context);
 			}
 
 			$context->getLogger()->info(sprintf("[Triggers] (#%d) ----- FINISH %.4fs -----", $trigger->id, microtime(true)-$ts));
@@ -378,7 +387,7 @@ class TicketManager
 	 */
 	public function createUserExecutorContext(Person $user, $event_type, $event_method, array $event_method_options = array())
 	{
-		$context = new ExecutorContext($this->container, $this->createNewLogger());
+		$context = new ExecutorContext($this->createNewLogger());
 		$context->setPersonContext($user);
 		$context->setEventPerformer('user');
 		$context->setEventType($event_type);
@@ -395,7 +404,7 @@ class TicketManager
 	 */
 	public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
 	{
-		$context = new ExecutorContext($this->container, $this->createNewLogger());
+		$context = new ExecutorContext($this->createNewLogger());
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method, $event_method_options);
 		return $context;
