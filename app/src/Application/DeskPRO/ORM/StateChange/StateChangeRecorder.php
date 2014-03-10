@@ -167,7 +167,7 @@ class StateChangeRecorder
 		if (!isset($this->changes_by_field[$field_id])) {
 			$this->changes_by_field[$field_id] = array();
 		}
-		$this->changes_by_field[$field_id] = $change;
+		$this->changes_by_field[$field_id][] = $change;
 
 		self::$global_state_version++;
 		$this->state_version = self::$global_state_version;
