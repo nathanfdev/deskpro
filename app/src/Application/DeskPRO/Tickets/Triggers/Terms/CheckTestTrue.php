@@ -40,7 +40,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 /**
  * A test term that always matches
  */
-class CheckTrue extends AbstractTriggerTerm
+class CheckTestTrue extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}

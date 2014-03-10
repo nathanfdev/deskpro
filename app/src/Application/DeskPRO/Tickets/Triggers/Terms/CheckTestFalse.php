@@ -40,13 +40,13 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 /**
  * A test term that never matches
  */
-class CheckFalse extends AbstractTriggerTerm
+class CheckTestFalse extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		return true;
+		return false;
 	}
 }
