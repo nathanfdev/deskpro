@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int category_id
  */
-class SetCategory extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetCategory extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,7 +65,7 @@ class SetCategory extends AbstractAction implements ActionInterface, MacroAction
 	{
 		$set_cat_id = $this->getActionOption('category_id');
 
-		$cat = $context->getContainer()->getSystemService('ticket_categories')->getSettableById($set_cat_id);
+		$cat = $this->getContainer()->getSystemService('ticket_categories')->getSettableById($set_cat_id);
 		if (!$cat) {
 			return;
 		}
@@ -86,7 +86,7 @@ class SetCategory extends AbstractAction implements ActionInterface, MacroAction
 			return true;
 		}
 
-		$cat = $context->getContainer()->getSystemService('ticket_categories')->getSettableById($set_cat_id);
+		$cat = $this->getContainer()->getSystemService('ticket_categories')->getSettableById($set_cat_id);
 		if (!$cat) {
 			return true;
 		}

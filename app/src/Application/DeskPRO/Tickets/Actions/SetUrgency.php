@@ -53,7 +53,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option int urgency
  * @option int mode
  */
-class SetUrgency extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetUrgency extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	const MODE_SET   = 'set';
 	const MODE_ADD   = 'add';

@@ -46,7 +46,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option int[] add_sla_ids     Array of SLA IDs to add
  * @option int[] remove_sla_ids  Array of SLA IDs to remove
  */
-class SetSlas extends AbstractAction implements ActionInterface, MacroActionInterface
+class SetSlas extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -64,8 +64,8 @@ class SetSlas extends AbstractAction implements ActionInterface, MacroActionInte
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$em = $context->getContainer()->getEm();
-		$ticket_slas = $context->getContainer()->getSystemService('ticket_slas');
+		$em = $this->getContainer()->getEm();
+		$ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
 
 		#--------------------
 		# Add SLAs

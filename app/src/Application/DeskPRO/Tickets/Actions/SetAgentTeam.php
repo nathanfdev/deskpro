@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int agent_team_id
  */
-class SetAgentTeam extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,7 +65,7 @@ class SetAgentTeam extends AbstractAction implements ActionInterface, MacroActio
 	{
 		$set_team_id = $this->getActionOption('agent_team_id');
 
-		$team = $context->getContainer()->getAgentData()->getTeam($set_team_id);
+		$team = $this->getContainer()->getAgentData()->getTeam($set_team_id);
 		if (!$team) {
 			return;
 		}
@@ -86,7 +86,7 @@ class SetAgentTeam extends AbstractAction implements ActionInterface, MacroActio
 			return true;
 		}
 
-		$team = $context->getContainer()->getAgentData()->getTeam($set_team_id);
+		$team = $this->getContainer()->getAgentData()->getTeam($set_team_id);
 		if (!$team) {
 			return true;
 		}

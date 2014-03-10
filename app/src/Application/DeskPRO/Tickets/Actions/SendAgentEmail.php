@@ -47,7 +47,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool template     The template to send
  * @option bool agent_ids    Agents to send to
  */
-class SendAgentEmail extends AbstractAction implements ActionInterface, NoopableInterface
+class SendAgentEmail extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -81,7 +81,7 @@ class SendAgentEmail extends AbstractAction implements ActionInterface, Noopable
 				}
 			}
 
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
+			$agent = $this->getContainer()->getAgentData()->get($agent_id);
 			if ($agent) {
 				$agents[] = $agent;
 			}

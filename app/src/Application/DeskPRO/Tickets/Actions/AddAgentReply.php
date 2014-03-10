@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
@@ -48,7 +47,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option int    by_agent_id
  * @option bool   by_assigned_agent
  */
-class AddAgentReply extends AbstractAction implements ActionInterface
+class AddAgentReply extends AbstractContainerAwareAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -72,21 +71,21 @@ class AddAgentReply extends AbstractAction implements ActionInterface
 			$agent = $ticket->agent;
 		}
 		if (!$agent) {
-			$agent = $context->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
+			$agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
 		}
 
 		if (!$agent) {
 			return;
 		}
 
-		$em = $context->getContainer()->getEm();
+		$em = $this->getContainer()->getEm();
 
 		$message = new TicketMessage();
 		$message->person = $agent;
 		$message->date_created = new \DateTime('+1 second');
 
 		$reply_text = $this->getActionOption('reply_text');
-		$formatter = new SnippetFormatter($context->getContainer()->get('twig'));
+		$formatter = new SnippetFormatter($this->getContainer()->getTwig());
 		$reply_text = $formatter->formatText($reply_text, $ticket);
 		$message->setMessageText($reply_text);
 

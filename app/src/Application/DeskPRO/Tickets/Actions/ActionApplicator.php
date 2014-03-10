@@ -29,26 +29,46 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @category Entities
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-/**
- * Stops the trigger loop by setting the `mute_agent_emails` flag on the context.
- */
-class ModMuteAgentEmails extends AbstractContainerAwareAction implements ActionInterface
+class ActionApplicator implements ActionApplicatorInterface
 {
 	/**
-	 * {@inheritDoc}
+	 * @var DeskproContainer
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+	private $container;
+
+
+	/**
+	 * @param DeskproContainer $container
+	 */
+	public function __construct(DeskproContainer $container)
 	{
-		$context->getVars()->set('mute_agent_emails', true);
+		$this->container = $container;
+	}
+
+
+	/**
+	 * @param ActionInterface $action
+	 * @param Ticket $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return void
+	 */
+	public function apply(ActionInterface $action, Ticket $ticket, ExecutorContextInterface $context)
+	{
+		if ($action instanceof DeskproContainerAwareInterface || $action instanceof ContainerAwareInterface) {
+			$action->setContainer($this->container);
+		}
+
+		$action->applyAction($ticket, $context);
 	}
 }

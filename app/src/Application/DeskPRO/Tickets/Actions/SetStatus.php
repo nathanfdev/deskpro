@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string status
  */
-class SetStatus extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetStatus extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}

@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int workflow_id
  */
-class SetWorkflow extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetWorkflow extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,7 +65,7 @@ class SetWorkflow extends AbstractAction implements ActionInterface, MacroAction
 	{
 		$set_work_id = $this->getActionOption('workflow_id');
 
-		$work = $context->getContainer()->getSystemService('ticket_workflows')->getById($set_work_id);
+		$work = $this->getContainer()->getSystemService('ticket_workflows')->getById($set_work_id);
 		if (!$work) {
 			return;
 		}
@@ -86,7 +86,7 @@ class SetWorkflow extends AbstractAction implements ActionInterface, MacroAction
 			return true;
 		}
 
-		$work = $context->getContainer()->getSystemService('ticket_workflows')->getById($set_work_id);
+		$work = $this->getContainer()->getSystemService('ticket_workflows')->getById($set_work_id);
 		if (!$work) {
 			return true;
 		}

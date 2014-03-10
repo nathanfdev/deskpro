@@ -50,7 +50,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool from_name         Who to send the email from
  * @option bool force_agent_ids   Array of IDs to always send to, even if the agent doesnt have a subscription
  */
-class SendAgentNotifications extends AbstractAction implements ActionInterface, NoopableInterface
+class SendAgentNotifications extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -210,8 +210,8 @@ class SendAgentNotifications extends AbstractAction implements ActionInterface, 
 		# Send alerts
 		#------------------------------
 
-		$tpl = $context->getContainer()->getTemplating();
-		$alert_sender = $context->getContainer()->getAgentAlertSender();
+		$tpl = $this->getContainer()->getTemplating();
+		$alert_sender = $this->getContainer()->getAgentAlertSender();
 
 		foreach ($alert_agents as $agent) {
 			$vars = array(
@@ -307,7 +307,7 @@ class SendAgentNotifications extends AbstractAction implements ActionInterface, 
 				$agent_id = $ticket->agent->id;
 			}
 
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
+			$agent = $this->getContainer()->getAgentData()->get($agent_id);
 			if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
 				$agent = null;
 			}
@@ -325,7 +325,7 @@ class SendAgentNotifications extends AbstractAction implements ActionInterface, 
 
 		if ($context->getVars()->get('mention_agent_ids')) {
 			foreach ($context->getVars()->get('mention_agent_ids') as $agent_id) {
-				$agent = $context->getContainer()->getAgentData()->get($agent_id);
+				$agent = $this->getContainer()->getAgentData()->get($agent_id);
 				if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
 					$agent = null;
 				}

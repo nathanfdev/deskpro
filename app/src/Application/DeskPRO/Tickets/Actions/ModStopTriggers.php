@@ -42,7 +42,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 /**
  * Stops the trigger loop by setting the `stop_triggers` flag on the context.
  */
-class ModStopTriggers extends AbstractAction implements ActionInterface
+class ModStopTriggers extends AbstractContainerAwareAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}

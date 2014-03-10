@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int department_id
  */
-class SetDepartment extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetDepartment extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -64,7 +64,7 @@ class SetDepartment extends AbstractAction implements ActionInterface, MacroActi
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_dep_id = $this->getActionOption('department_id');
-		$dep = $context->getContainer()->getSystemService('ticket_departments')->getSettableById($set_dep_id);
+		$dep = $this->getContainer()->getSystemService('ticket_departments')->getSettableById($set_dep_id);
 
 		if (!$dep) {
 			return;
@@ -86,7 +86,7 @@ class SetDepartment extends AbstractAction implements ActionInterface, MacroActi
 			return true;
 		}
 
-		$dep = $context->getContainer()->getSystemService('ticket_departments')->getSettableById($set_dep_id);
+		$dep = $this->getContainer()->getSystemService('ticket_departments')->getSettableById($set_dep_id);
 		if (!$dep) {
 			return true;
 		}

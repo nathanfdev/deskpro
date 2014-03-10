@@ -48,7 +48,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool from_name    Who to send the email from
  * @option bool do_cc_users  True to CC the email to other user parts in the ticket
  */
-class SendUserEmail extends AbstractAction implements ActionInterface, NoopableInterface
+class SendUserEmail extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}

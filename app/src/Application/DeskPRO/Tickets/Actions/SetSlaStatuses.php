@@ -46,7 +46,7 @@ use Orb\Util\CheckedOptionsArray;
  * @pption string sla_status   The status to set
  * @option int[] sla_ids       SLAs to set the status on
  */
-class SetSlaStatuses extends AbstractAction implements ActionInterface, MacroActionInterface
+class SetSlaStatuses extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -64,8 +64,8 @@ class SetSlaStatuses extends AbstractAction implements ActionInterface, MacroAct
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$em = $context->getContainer()->getEm();
-		$ticket_slas = $context->getContainer()->getSystemService('ticket_slas');
+		$em = $this->getContainer()->getEm();
+		$ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
 
 		foreach ($this->getActionOption('sla_ids') as $sla_id) {
 			$sla = $ticket_slas->getById($sla_id);

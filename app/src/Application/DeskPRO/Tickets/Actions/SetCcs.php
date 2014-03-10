@@ -46,7 +46,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option string[] add_emails      Array of email addresses of users to add
  * @option string[] remove_emails   Array of email addresses of users to remove
  */
-class SetCcs extends AbstractAction implements ActionInterface, MacroActionInterface
+class SetCcs extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -68,13 +68,13 @@ class SetCcs extends AbstractAction implements ActionInterface, MacroActionInter
 		# Add people
 		#------------------------------
 
-		$reg_closed = $context->getContainer()->getSetting('core.user_mode') == 'closed';
+		$reg_closed = $this->getContainer()->getSetting('core.user_mode') == 'closed';
 		foreach ($this->getActionOption('add_emails') as $email) {
 			if ($ticket->hasParticipantEmailAddress($email)) {
 				continue;
 			}
 
-			$person = $context->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
+			$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
 			if ($person) {
 				$ticket->addParticipantPerson($person);
 			} else {

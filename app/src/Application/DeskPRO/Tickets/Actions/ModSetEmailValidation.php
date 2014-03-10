@@ -44,7 +44,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  *
  * @option bool enable_validation
  */
-class ModSetEmailValidation extends AbstractAction implements ActionInterface
+class ModSetEmailValidation extends AbstractContainerAwareAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}

@@ -47,7 +47,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option string[] remove_labels  Array of labels to remove from the ticket
  * @option string[] add_labels     Array of labels to add to the ticket
  */
-class SetLabels extends AbstractAction implements ActionInterface, MacroActionInterface
+class SetLabels extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}

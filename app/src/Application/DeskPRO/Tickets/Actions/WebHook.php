@@ -54,7 +54,7 @@ use Orb\Util\Strings;
  * @option string headers
  * @option int    timeout
  */
-class WebHook extends AbstractAction implements ActionInterface, MacroActionInterface
+class WebHook extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}

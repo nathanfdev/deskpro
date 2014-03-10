@@ -46,7 +46,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option int[] add_agent_ids     Array of agent IDs to add
  * @option int[] remove_agent_ids  Array of agent IDs to remove
  */
-class SetAgentFollowers extends AbstractAction implements ActionInterface, MacroActionInterface
+class SetAgentFollowers extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -69,7 +69,7 @@ class SetAgentFollowers extends AbstractAction implements ActionInterface, Macro
 		#--------------------
 
 		foreach ($this->getActionOption('add_agent_ids') as $agent_id) {
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
+			$agent = $this->getContainer()->getAgentData()->get($agent_id);
 			if (!$agent) {
 				continue;
 			}
@@ -84,7 +84,7 @@ class SetAgentFollowers extends AbstractAction implements ActionInterface, Macro
 		#--------------------
 
 		foreach ($this->getActionOption('remove_agent_ids') as $agent_id) {
-			$agent = $context->getContainer()->getAgentData()->get($agent_id);
+			$agent = $this->getContainer()->getAgentData()->get($agent_id);
 			if (!$agent) {
 				continue;
 			}

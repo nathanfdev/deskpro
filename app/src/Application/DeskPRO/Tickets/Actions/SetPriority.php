@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int priority_id
  */
-class SetPriority extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetPriority extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,7 +65,7 @@ class SetPriority extends AbstractAction implements ActionInterface, MacroAction
 	{
 		$set_pri_id = $this->getActionOption('priority_id');
 
-		$pri = $context->getContainer()->getSystemService('ticket_priorities')->getById($set_pri_id);
+		$pri = $this->getContainer()->getSystemService('ticket_priorities')->getById($set_pri_id);
 		if (!$pri) {
 			return;
 		}
@@ -86,7 +86,7 @@ class SetPriority extends AbstractAction implements ActionInterface, MacroAction
 			return true;
 		}
 
-		$pri = $context->getContainer()->getSystemService('ticket_priorities')->getById($set_pri_id);
+		$pri = $this->getContainer()->getSystemService('ticket_priorities')->getById($set_pri_id);
 		if (!$pri) {
 			return true;
 		}

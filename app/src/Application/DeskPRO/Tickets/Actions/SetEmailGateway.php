@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int email_gateway_id
  */
-class SetEmailGateway extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetEmailGateway extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,7 +65,7 @@ class SetEmailGateway extends AbstractAction implements ActionInterface, MacroAc
 	{
 		$set_id = $this->getActionOption('email_gateway_id');
 
-		$gateway = $context->getContainer()->getSystemService('ticket_accounts')->get($set_id);
+		$gateway = $this->getContainer()->getSystemService('ticket_accounts')->get($set_id);
 		if (!$gateway) {
 			return;
 		}
@@ -86,7 +86,7 @@ class SetEmailGateway extends AbstractAction implements ActionInterface, MacroAc
 			return true;
 		}
 
-		$gateway = $context->getContainer()->getSystemService('ticket_accounts')->get($set_id);
+		$gateway = $this->getContainer()->getSystemService('ticket_accounts')->get($set_id);
 		if (!$gateway) {
 			return true;
 		}

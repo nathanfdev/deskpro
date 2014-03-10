@@ -49,7 +49,7 @@ use Orb\Validator\StringEmail;
  * @option int email_address
  * @option bool add_cc
  */
-class SetUserOwner extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetUserOwner extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -70,8 +70,8 @@ class SetUserOwner extends AbstractAction implements ActionInterface, MacroActio
 	{
 		$user_email = $this->getActionOption('email_address');
 
-		$reg_closed = $context->getContainer()->getSetting('core.user_mode') == 'closed';
-		$person = $context->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
+		$reg_closed = $this->getContainer()->getSetting('core.user_mode') == 'closed';
+		$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
 
 		if (!$person) {
 			if ($reg_closed) {

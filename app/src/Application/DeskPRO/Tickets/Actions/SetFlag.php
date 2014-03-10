@@ -47,7 +47,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string color
  */
-class SetFlag extends AbstractAction implements ActionInterface, MacroActionInterface
+class SetFlag extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -80,10 +80,10 @@ class SetFlag extends AbstractAction implements ActionInterface, MacroActionInte
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		foreach ($context->getContainer()->getAgentData()->getAgents() as $agent) {
+		foreach ($this->getContainer()->getAgentData()->getAgents() as $agent) {
 			if ($agent->PermissionsManager->TicketChecker->canView($ticket)) {
 				$this->saveFlag(
-					$context->getContainer()->getDb(),
+					$this->getContainer()->getDb(),
 					$ticket,
 					$agent,
 					$this->getActionOption('color')
@@ -108,7 +108,7 @@ class SetFlag extends AbstractAction implements ActionInterface, MacroActionInte
 	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->saveFlag(
-			$context->getContainer()->getDb(),
+			$this->getContainer()->getDb(),
 			$ticket,
 			$person,
 			$this->getActionOption('color')

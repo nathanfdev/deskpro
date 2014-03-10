@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int product_id
  */
-class SetProduct extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetProduct extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,7 +65,7 @@ class SetProduct extends AbstractAction implements ActionInterface, MacroActionI
 	{
 		$set_prod_id = $this->getActionOption('product_id');
 
-		$prod = $context->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
+		$prod = $this->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
 		if (!$prod) {
 			return;
 		}
@@ -86,7 +86,7 @@ class SetProduct extends AbstractAction implements ActionInterface, MacroActionI
 			return true;
 		}
 
-		$prod = $context->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
+		$prod = $this->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
 		if (!$prod) {
 			return true;
 		}

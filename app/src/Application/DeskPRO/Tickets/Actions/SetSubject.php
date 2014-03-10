@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string subject
  */
-class SetSubject extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetSubject extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}

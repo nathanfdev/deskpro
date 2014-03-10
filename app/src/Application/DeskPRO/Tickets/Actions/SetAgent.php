@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int agent_id
  */
-class SetAgent extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetAgent extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,7 +65,7 @@ class SetAgent extends AbstractAction implements ActionInterface, MacroActionInt
 	{
 		$set_agent_id = $this->getActionOption('agent_id');
 
-		$agent = $context->getContainer()->getAgentData()->get($set_agent_id);
+		$agent = $this->getContainer()->getAgentData()->get($set_agent_id);
 		if (!$agent) {
 			return;
 		}
@@ -86,7 +86,7 @@ class SetAgent extends AbstractAction implements ActionInterface, MacroActionInt
 			return true;
 		}
 
-		$agent = $context->getContainer()->getAgentData()->get($set_agent_id);
+		$agent = $this->getContainer()->getAgentData()->get($set_agent_id);
 		if (!$agent) {
 			return true;
 		}

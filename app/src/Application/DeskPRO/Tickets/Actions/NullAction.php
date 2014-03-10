@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
-class NullAction extends AbstractAction implements ActionInterface, MacroActionInterface
+class NullAction extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{

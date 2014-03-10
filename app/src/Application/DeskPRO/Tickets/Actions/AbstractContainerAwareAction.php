@@ -29,26 +29,41 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @category Entities
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 
-/**
- * Stops the trigger loop by setting the `mute_agent_emails` flag on the context.
- */
-class ModMuteAgentEmails extends AbstractContainerAwareAction implements ActionInterface
+abstract class AbstractContainerAwareAction extends AbstractAction implements DeskproContainerAwareInterface
 {
 	/**
-	 * {@inheritDoc}
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+	private $container;
+
+	/**
+	 * @param DeskproContainer $container
+	 */
+	public function setContainer(DeskproContainer $container)
 	{
-		$context->getVars()->set('mute_agent_emails', true);
+		$this->container = $container;
+	}
+
+	/**
+	 * Gets the set container.
+	 *
+	 * @return DeskproContainer
+	 * @throws \RuntimeException When no container has been set yet
+	 */
+	protected function getContainer()
+	{
+		if (!$this->container) {
+			throw new \RuntimeException("No container has been set");
+		}
+
+		return $this->container;
 	}
 }

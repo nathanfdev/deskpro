@@ -29,26 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Actions;
+namespace Application\DeskPRO\DependencyInjection;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-
-/**
- * Stops the trigger loop by setting the `mute_agent_emails` flag on the context.
- */
-class ModMuteAgentEmails extends AbstractContainerAwareAction implements ActionInterface
+interface DeskproContainerAwareInterface
 {
 	/**
-	 * {@inheritDoc}
+	 * @param DeskproContainer $container
+	 * @return void
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getVars()->set('mute_agent_emails', true);
-	}
+	public function setContainer(DeskproContainer $container);
 }

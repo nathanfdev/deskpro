@@ -78,7 +78,9 @@ class DeskproContainer extends Container
 	{
 		require_once DP_ROOT . '/sys/load_config.php';
 
-		$GLOBALS['DP_CONTAINER'] = $this;
+		if (!isset($GLOBALS['DP_CONTAINER'])) {
+			$GLOBALS['DP_CONTAINER'] = $this;
+		}
 		parent::__construct($parameterBag);
 	}
 
@@ -394,6 +396,17 @@ class DeskproContainer extends Container
 	public function getTemplating()
 	{
 		return $this->get('templating');
+	}
+
+
+	/**
+	 * Get the twig service
+	 *
+	 * @return \Application\DeskPRO\Twig\Environment
+	 */
+	public function getTwig()
+	{
+		return $this->get('twig');
 	}
 
 
