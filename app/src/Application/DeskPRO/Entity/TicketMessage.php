@@ -43,6 +43,25 @@ use Application\DeskPRO\Markdown;
 /**
  * Ticket messages
  *
+ * @property int $id
+ * @property Ticket $ticket
+ * @property Person $person
+ * @property EmailSource $email_source
+ * @property Visitor $visitor
+ * @property TicketAttachment[] $attachments
+ * @property \DateTime $date_created
+ * @property bool $is_agent_note
+ * @property string $creation_system
+ * @property string $ip_address
+ * @property string $geo_country
+ * @property string $email
+ * @property string $message_hash
+ * @property TicketMessageTranslated $primary_translation
+ * @property string $message
+ * @property string $message_full
+ * @property string $message_raw
+ * @property bool $show_full_hint
+ * @property string $lang_code
  */
 class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 {
