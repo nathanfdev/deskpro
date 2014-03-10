@@ -43,7 +43,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int[] usergroup_ids
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckOrgUsergroup extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -62,6 +62,6 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+		return $this->isEntityMatch($ticket, $context, 'organization.usergroups[]', 'id', $options['usergroup_ids']);
 	}
 }

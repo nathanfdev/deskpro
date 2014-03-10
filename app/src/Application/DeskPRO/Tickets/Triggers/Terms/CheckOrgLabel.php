@@ -41,9 +41,9 @@ use Orb\Util\CheckedOptionsArray;
 /**
  * Checks if the users belongs to a usergroup
  *
- * @option int[] usergroup_ids
+ * @option string[] labels
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckOrgLabel extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -51,7 +51,7 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
+		$options->addRequiredNames('labels');
 		return $options;
 	}
 
@@ -62,6 +62,6 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+		return $this->isEntityMatch($ticket, $context, 'organization.labels[]', 'label', $options['labels']);
 	}
 }

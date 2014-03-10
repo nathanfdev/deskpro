@@ -81,7 +81,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 * @param string $op
 	 * @param array  $options
 	 */
-	public function __construct($op, array $options)
+	public function __construct($op, array $options = array())
 	{
 		$this->op = $op;
 		$this->_initOptions($options);

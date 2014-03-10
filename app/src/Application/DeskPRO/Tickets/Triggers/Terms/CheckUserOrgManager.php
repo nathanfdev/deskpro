@@ -36,32 +36,32 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users belongs to a usergroup
- *
- * @option int[] usergroup_ids
+ * Checks if the user is a manager of their org
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckUserOrgManager extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
-		return $options;
-	}
-
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+		$person = $ticket->person;
+		$op = $this->getTermOperator();
+
+		if (!$person->organization) {
+			$is_manager = false;
+		} else {
+			$is_manager = (bool)$person->organization_manager;
+		}
+
+		if ($is_manager) {
+			if ($op == 'is') return true;
+			else return false;
+		} else {
+			if ($op == 'is') return false;
+			else return true;
+		}
 	}
 }

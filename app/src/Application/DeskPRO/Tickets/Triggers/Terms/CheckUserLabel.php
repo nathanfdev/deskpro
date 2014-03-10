@@ -39,11 +39,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users belongs to a usergroup
+ * Checks if the user has a label
  *
- * @option int[] usergroup_ids
+ * @option string[] labels
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckUserLabel extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -51,7 +51,7 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
+		$options->addRequiredNames('labels');
 		return $options;
 	}
 
@@ -62,6 +62,6 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+		return $this->isEntityMatch($ticket, $context, 'person.labels[]', 'label', $options['labels']);
 	}
 }

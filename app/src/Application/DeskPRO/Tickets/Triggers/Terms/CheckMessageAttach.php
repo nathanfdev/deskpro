@@ -39,11 +39,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users belongs to a usergroup
+ * Checks added message to see if it contains an attachment
  *
- * @option int[] usergroup_ids
+ * @option string filename
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckMessageAttach extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -51,7 +51,7 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
+		$options->addRequiredNames('filename');
 		return $options;
 	}
 
@@ -62,6 +62,27 @@ class CheckUserUsergroup extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+		$state = $ticket->getStateChangeRecorder();
+
+		if (!$state->hasNewReply()) {
+			if ($this->getTermOperator() == 'not_isset') {
+				return true;
+			}
+			return false;
+		}
+		if ($this->getTermOperator() == 'isset') {
+			return true;
+		}
+
+		$strings = array();
+		foreach ($state->getNewAgentReplies() as $reply) {
+			foreach ($reply->attachments as $attach) {
+				$strings[] = $attach->blob->filename;
+			}
+		}
+
+		$value = TermValue::createWithValue($strings);
+
+		return $this->isStringMatch($ticket, $context, $value, $options['filename']);
 	}
 }
