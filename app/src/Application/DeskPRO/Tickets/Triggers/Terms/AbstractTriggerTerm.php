@@ -57,6 +57,8 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_IS_REGEX    = 'is_regex';
 	const OP_NOT_REGEX   = 'not_regex';
+	const OP_ISSET       = 'isset';
+	const OP_NOTISSET    = 'not_isset';
 
 	const OP_CHANGED            = 'changed';
 	const OP_CHANGED_TO         = 'changed_to';
@@ -141,7 +143,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	/**
 	 * Get's an array of options
 	 *
-	 * @return array
+	 * @return \Orb\Util\OptionsArray
 	 */
 	public function getTermOptions()
 	{
