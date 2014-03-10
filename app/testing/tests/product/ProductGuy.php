@@ -52,126 +52,6 @@ class ProductGuy extends \Codeception\AbstractGuy
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
-     * @return \Doctrine\ORM\EntityManager
-     * @see Codeception\Module\DpControlHelper::getEm()
-     * @return \Codeception\Maybe
-     */
-    public function getEm() {
-        $this->scenario->addStep(new \Codeception\Step\Action('getEm', func_get_args()));
-        if ($this->scenario->running()) {
-            $result = $this->scenario->runStep();
-            return new Maybe($result);
-        }
-        return new Maybe();
-    }
-
- 
-    /**
-     * This method is generated.
-     * Documentation taken from corresponding module.
-     * ----------------------------------------------
-     *
-     * @return \Application\DeskPRO\DBAL\Connection
-     * @see Codeception\Module\DpControlHelper::getDb()
-     * @return \Codeception\Maybe
-     */
-    public function getDb() {
-        $this->scenario->addStep(new \Codeception\Step\Action('getDb', func_get_args()));
-        if ($this->scenario->running()) {
-            $result = $this->scenario->runStep();
-            return new Maybe($result);
-        }
-        return new Maybe();
-    }
-
- 
-    /**
-     * This method is generated.
-     * Documentation taken from corresponding module.
-     * ----------------------------------------------
-     *
-     * @return \Symfony\Component\Validator\Validator
-     * @see Codeception\Module\DpControlHelper::getValidator()
-     * @return \Codeception\Maybe
-     */
-    public function getValidator() {
-        $this->scenario->addStep(new \Codeception\Step\Action('getValidator', func_get_args()));
-        if ($this->scenario->running()) {
-            $result = $this->scenario->runStep();
-            return new Maybe($result);
-        }
-        return new Maybe();
-    }
-
- 
-    /**
-     * This method is generated.
-     * Documentation taken from corresponding module.
-     * ----------------------------------------------
-     *
-     * @param string|\Symfony\Component\Form\FormTypeInterface $type
-	 * @param mixed  $data
-	 * @param array $options
-	 *
-	 * @return \Symfony\Component\Form\Form
-     * @see Codeception\Module\DpControlHelper::createForm()
-     * @return \Codeception\Maybe
-     */
-    public function createForm($type, $data = null, $options = null) {
-        $this->scenario->addStep(new \Codeception\Step\Action('createForm', func_get_args()));
-        if ($this->scenario->running()) {
-            $result = $this->scenario->runStep();
-            return new Maybe($result);
-        }
-        return new Maybe();
-    }
-
- 
-    /**
-     * This method is generated.
-     * Documentation taken from corresponding module.
-     * ----------------------------------------------
-     *
-     * @param $obj
-	 *
-	 * @return \Symfony\Component\Validator\ConstraintViolationList[]
-     * @see Codeception\Module\DpControlHelper::validateObject()
-     * @return \Codeception\Maybe
-     */
-    public function validateObject($obj) {
-        $this->scenario->addStep(new \Codeception\Step\Action('validateObject', func_get_args()));
-        if ($this->scenario->running()) {
-            $result = $this->scenario->runStep();
-            return new Maybe($result);
-        }
-        return new Maybe();
-    }
-
- 
-    /**
-     * This method is generated.
-     * Documentation taken from corresponding module.
-     * ----------------------------------------------
-     *
-     * @return int
-     * @see Codeception\Module\DpControlHelper::getContainerCounter()
-     * @return \Codeception\Maybe
-     */
-    public function getContainerCounter() {
-        $this->scenario->addStep(new \Codeception\Step\Action('getContainerCounter', func_get_args()));
-        if ($this->scenario->running()) {
-            $result = $this->scenario->runStep();
-            return new Maybe($result);
-        }
-        return new Maybe();
-    }
-
- 
-    /**
-     * This method is generated.
-     * Documentation taken from corresponding module.
-     * ----------------------------------------------
-     *
      * Sets the database set to a version of the set. If it already exists,
 	 * it will be re-used (not recreated).
 	 *
@@ -218,6 +98,7 @@ class ProductGuy extends \Codeception\AbstractGuy
      * Like enableDatabaseSet except this will reset the database set afterwards.
 	 *
 	 * @param string $set_name
+	 * @param bool $reset True to mark the db for reset
      * @see Codeception\Module\DpControlHelper::enableDestructiveDatabaseSet()
      * @return \Codeception\Maybe
      */
@@ -258,8 +139,8 @@ class ProductGuy extends \Codeception\AbstractGuy
      * Loads fixtures into the current database.
 	 * Note that this will mark the database to be reset.
 	 *
-	 * @param array $fixtures
-	 * @param array $fixtures...
+	 * @param array $f...
+	 * @throws \InvalidArgumentException
      * @see Codeception\Module\DpControlHelper::loadFixtures()
      * @return \Codeception\Maybe
      */

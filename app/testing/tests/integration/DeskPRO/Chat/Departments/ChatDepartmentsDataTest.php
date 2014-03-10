@@ -32,7 +32,7 @@ class ChatDepartmentsDataTest extends \DpIntegrationTestCase
 
 	public function testUpdatingOfChatDepartmentsDisplayOrders()
 	{
-		$editor = new ChatDepartmentEditor($this->helper->getEm());
+		$editor = new ChatDepartmentEditor($this->helper->getSymfonyContainer()->getEm());
 
 		$editor->updateDisplayOrders(
 			array(3, 4, 1, 2)

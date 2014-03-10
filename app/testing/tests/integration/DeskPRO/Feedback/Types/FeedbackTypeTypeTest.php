@@ -25,7 +25,7 @@ class FeedbackTypeTypeTest extends \DpIntegrationTestCase
 
 		$this->feedback_type = $this->helper->getSymfonyContainer()->getSystemService('feedback_types')->getById(1);
 		$feedback_type_edit  = new FeedbackTypeEdit($this->feedback_type);
-		$this->form          = $this->helper->createForm(new FeedbackTypeType(), $feedback_type_edit);
+		$this->form          = $this->helper->getSymfonyContainer()->getFormFactory()->create(new FeedbackTypeType(), $feedback_type_edit);
 	}
 
 	public function testSuccessfulValidationOfFeedbackTypeForm()

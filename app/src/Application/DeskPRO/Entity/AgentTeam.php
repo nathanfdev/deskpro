@@ -67,14 +67,6 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	protected $members = null;
 
 	/**
-	 * Creates a new team.
-	 */
-	public function __construct()
-	{
-		$this->assigned_tasks = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
-	/**
 	 * @return int
 	 */
 	public function getId()

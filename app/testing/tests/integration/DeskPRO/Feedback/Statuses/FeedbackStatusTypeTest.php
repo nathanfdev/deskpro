@@ -25,7 +25,7 @@ class FeedbackStatusTypeTest extends \DpIntegrationTestCase
 
 		$this->feedback_status = $this->helper->getSymfonyContainer()->getSystemService('feedback_statuses')->getById(1);
 		$feedback_status_edit  = new FeedbackStatusEdit($this->feedback_status);
-		$this->form            = $this->helper->createForm(new FeedbackStatusType(), $feedback_status_edit);
+		$this->form            = $this->helper->getSymfonyContainer()->getFormFactory()->create(new FeedbackStatusType(), $feedback_status_edit);
 	}
 
 	public function testSuccessfulValidationOfFeedbackStatusForm()

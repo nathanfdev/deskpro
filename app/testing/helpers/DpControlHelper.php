@@ -14,66 +14,6 @@ class DpControlHelper extends \Codeception\Module
 		return \DpTestEnv::getContainer();
 	}
 
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-
-	public function getEm()
-	{
-		return \DpTestEnv::getContainer()->getEm();
-	}
-
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-
-	public function getDb()
-	{
-		return \DpTestEnv::getContainer()->getDb();
-	}
-
-	/**
-	 * @return \Symfony\Component\Validator\Validator
-	 */
-
-	public function getValidator()
-	{
-		return \DpTestEnv::getContainer()->getValidator();
-	}
-
-	/**
-	 * @param string|\Symfony\Component\Form\FormTypeInterface $type
-	 * @param mixed  $data
-	 * @param array $options
-	 *
-	 * @return \Symfony\Component\Form\Form
-	 */
-
-	public function createForm($type, $data = null, array $options = array())
-	{
-		return \DpTestEnv::getContainer()->get('form.factory')->create($type, $data, $options);
-	}
-
-	/**
-	 * @param $obj
-	 *
-	 * @return \Symfony\Component\Validator\ConstraintViolationList[]
-	 */
-
-	public function validateObject($obj)
-	{
-		$validator = \DpTestEnv::getContainer()->getValidator();
-		return $validator->validate($obj);
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getContainerCounter()
-	{
-		return \DpTestEnv::getCountainerCounter();
-	}
-
 
 	/**
 	 * Sets the database set to a version of the set. If it already exists,
@@ -102,6 +42,7 @@ class DpControlHelper extends \Codeception\Module
 	 * Like enableDatabaseSet except this will reset the database set afterwards.
 	 *
 	 * @param string $set_name
+	 * @param bool $reset True to mark the db for reset
 	 */
 	public function enableDestructiveDatabaseSet($set_name, $reset = false)
 	{
@@ -122,8 +63,8 @@ class DpControlHelper extends \Codeception\Module
 	 * Loads fixtures into the current database.
 	 * Note that this will mark the database to be reset.
 	 *
-	 * @param array $fixtures
-	 * @param array $fixtures...
+	 * @param array $f...
+	 * @throws \InvalidArgumentException
 	 */
 	public function loadFixtures($f)
 	{

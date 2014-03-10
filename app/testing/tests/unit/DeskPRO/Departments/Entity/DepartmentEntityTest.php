@@ -20,7 +20,7 @@ class FeedbackStatusCategoryEntityTest extends \DpUnitTestCase
 	public function runBefore()
 	{
 		$this->entity    = new Department();
-		$this->validator = $this->helper->getValidator();
+		$this->validator = $this->helper->getSymfonyContainer()->getValidator();
 	}
 
 	public function testSuccessfulValidationOfDepartmentEntity()

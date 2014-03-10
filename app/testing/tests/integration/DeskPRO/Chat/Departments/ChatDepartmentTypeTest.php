@@ -23,9 +23,9 @@ class ChatDepartmentTypeTest extends \DpIntegrationTestCase
 		$this->helper->enableDatabaseSet('EmptyDb');
 		$this->helper->loadFixtures('General/ChatDepartmentsWithPermissionsData');
 
-		$this->chat_departments = $this->helper->getSymfonyContainer()->getSystemService('feedback_statuses')->getById(1);
+		$this->chat_departments = $this->helper->getSymfonyContainer()->getSystemService('chat_departments')->getById(1);
 		$chat_department_edit   = new ChatDepartmentEdit($this->chat_departments);
-		$this->form             = $this->helper->createForm(new ChatDepartmentType(), $chat_department_edit);
+		$this->form             = $this->helper->getSymfonyContainer()->getFormFactory()->create(new ChatDepartmentType(), $chat_department_edit);
 	}
 
 	public function testSuccessfulValidationOfChatDepartmentForm()
