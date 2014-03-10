@@ -53,6 +53,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	const OP_LTE         = 'lte';
 	const OP_GTE         = 'gte';
 	const OP_BETWEEN     = 'between';
+	const OP_NOTBETWEEN  = 'notbetween';
 	const OP_CONTAINS    = 'contains';
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_IS_REGEX    = 'is_regex';
@@ -254,11 +255,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			$value = $value->toArray();
 		}
 
-		$context->getLogger()->info(sprintf("[%s] Real op: %s, processed op: %s", Util::getBaseClassname($this), $this->op, $op));
-		if ($is_change_op && !$was_changed) {
-			$context->getLogger()->info(sprintf("[%s]\t(Field was not changed)", Util::getBaseClassname($this), $this->op, $op));
-		}
-
 		return array(
 			'op'            => $op,
 			'value'         => $value,
@@ -309,8 +305,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 					return true;
 				}
 		}
-
-		$context->getLogger()->info(sprintf("[%s] isCollectionMatch no pass on: %s %s", Util::getBaseClassname($this), $op, implode(', ', array_keys($check_ids))));
 
 		return false;
 	}
@@ -404,8 +398,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			case 'lte':    if ($check_value <= $value)  return true; break;
 		}
 
-		$context->getLogger()->info(sprintf("[%s] isDateMatch no pass on: %s %s", Util::getBaseClassname($this), $op, $check_value));
-
 		return false;
 	}
 
@@ -431,7 +423,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			return true;
 		}
 
-		$context->getLogger()->info(sprintf("[%s] isDateRangeMatch no pass on: %s to %s", Util::getBaseClassname($this), $lower, $upper));
 
 		return false;
 	}
@@ -454,15 +445,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		$check_value = (int)$check_value;
 
 		switch ($op) {
-			case 'is':   if ($check_value == $value)  return true; break;
-			case 'not':  if ($check_value != $value)  return true; break;
-			case 'gt':   if ($check_value > $value)   return true; break;
-			case 'gte':  if ($check_value >= $value)  return true; break;
-			case 'lt':   if ($check_value < $value)   return true; break;
-			case 'lte':  if ($check_value <= $value)  return true; break;
+			case 'is':   if ($value == $check_value)  return true; break;
+			case 'not':  if ($value != $check_value)  return true; break;
+			case 'gt':   if ($value >  $check_value)   return true; break;
+			case 'gte':  if ($value >= $check_value)  return true; break;
+			case 'lt':   if ($value <  $check_value)   return true; break;
+			case 'lte':  if ($value <= $check_value)  return true; break;
 		}
-
-		$context->getLogger()->info(sprintf("[%s] isIntMatch no pass on: %s %s", Util::getBaseClassname($this), $op, $check_value));
 
 		return false;
 	}
@@ -479,6 +468,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	protected function isIntRangeMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $lower, $upper)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
+		$op    = $opts['op'];
 		$value = $opts['value'];
 
 		$value = (int)$value;
@@ -486,12 +476,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		$upper = (int)$upper;
 
 		if (Numbers::inRange($value, $lower, $upper)) {
-			return true;
+			if ($op == 'between') return true;
+			else return false;
+		} else {
+			if ($op == 'notbetween') return true;
+			else return false;
 		}
-
-		$context->getLogger()->info(sprintf("[%s] isIntRangeMatch no pass on: %s to %s", Util::getBaseClassname($this), $lower, $upper));
-
-		return false;
 	}
 
 
