@@ -241,7 +241,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->is_new = true;
 		$this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
 		$this->setModelField('user_token', Strings::random(8, Strings::CHARS_KEY));
 		$this->setModelField('date_created', new \DateTime());

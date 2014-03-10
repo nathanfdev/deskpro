@@ -15,7 +15,7 @@ class WebHelper extends \Codeception\Module
 	{
 		// We dont need to refresh the page and regenerate a new session
 		// if we already have a session and the db has not changed
-		$container_count = $this->getDpControlHelper()->getContainerCounter();
+		$container_count = (int)$this->getDpControlHelper()->getContainerCounter();
 		if ($container_count === $this->openAdminInterface_containerCount && $this->getModule('WebDriver')->grabCookie('dptest-has-agent-sid') && preg_match('#/admin/#', $this->getModule('WebDriver')->grabFromCurrentUrl())) {
 			return;
 		}

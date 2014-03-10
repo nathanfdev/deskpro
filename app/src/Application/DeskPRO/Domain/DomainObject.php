@@ -132,10 +132,8 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	protected function setModelField($field, $value)
 	{
-		$real_method = 'getReal' . ucfirst(Strings::underscoreToCamelCase($field));
-		if (method_exists($this, $real_method)) {
-			$old = $this->$real_method();
-		} else {
+		$old = null;
+		if (property_exists($this, $field)) {
 			$old = $this->$field;
 		}
 

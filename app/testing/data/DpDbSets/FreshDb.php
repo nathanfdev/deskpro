@@ -57,7 +57,7 @@ class FreshDb extends AbstractDbSet
 		$agent->first_name = 'Admin';
 		$agent->last_name = 'Admin';
 		$agent->setEmail('admin@example.com', true);
-		$agent->setPassword('password');
+		$agent->setPassword('pass');
 		$agent->is_user = true;
 		$agent->is_confirmed = true;
 		$agent->is_agent_confirmed = true;

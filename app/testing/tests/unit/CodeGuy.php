@@ -135,6 +135,25 @@ class CodeGuy extends \Codeception\AbstractGuy
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
+     * @return int
+     * @see Codeception\Module\DpControlHelper::getContainerCounter()
+     * @return \Codeception\Maybe
+     */
+    public function getContainerCounter() {
+        $this->scenario->addStep(new \Codeception\Step\Action('getContainerCounter', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
      * Loads fixtures into the current database.
 	 * Note that this will mark the database to be reset.
 	 *

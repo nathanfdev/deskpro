@@ -60,6 +60,15 @@ class DpControlHelper extends \Codeception\Module
 
 
 	/**
+	 * @return int
+	 */
+	public function getContainerCounter()
+	{
+		return \DpTestEnv::getCountainerCounter();
+	}
+
+
+	/**
 	 * Loads fixtures into the current database.
 	 * Note that this will mark the database to be reset.
 	 *

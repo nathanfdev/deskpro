@@ -216,7 +216,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 				$vis['page_url']     = $url;
 				$vis['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 				$vis['ip_address']   = $user_ip;
-				$vis['user_Agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+				$vis['user_agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
 
 				// If there have been multiple requests from the same ip
 				// and those visitor counts arent increasing, it probably means

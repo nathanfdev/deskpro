@@ -208,6 +208,10 @@ abstract class LoaderAbstract
 
 			/** @var $container \Application\DeskPRO\DependencyInjection\DeskproContainer */
 			$container = $kernel->getContainer();
+
+			// Set PDO now that we are connected...
+			$this->pdo = $container->getDb();
+			$this->pdo_read = $container->getDb();
 		}
 
 		return $container;

@@ -484,8 +484,10 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				$tr->title = '';
 				$tr->transport_type = 'mail';
 
-				$e = new \RuntimeException("No default transport found");
-				\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+				if (!App::getConfig('debug.mail.disable_send')) {
+					$e = new \RuntimeException("No default transport found");
+					\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+				}
 
 				$tr = $tr->getTransport();
 			}
