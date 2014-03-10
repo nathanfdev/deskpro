@@ -22,7 +22,7 @@ if (!isset($is_authed) || !$is_authed) {
 	$auth = isset($_GET['auth']) ? $_GET['auth'] : false;
 	if ($auth && dp_get_config('phpinfo_auth') && dp_get_config('phpinfo_auth') == $auth) {
 		$is_authed = true;
-	} elseif (!file_exists(dp_get_data_dir() . '/is_installed.dat')) {
+	} elseif (!file_exists(dp_get_data_dir() . '/is_installed.dat') || dp_get_config('debug.dev')) {
 		$is_authed = true;
 	}
 }
