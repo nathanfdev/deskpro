@@ -7,5 +7,5 @@ define('PHP_COVERALLS_VERSION', '0.6.1');
 
 use Contrib\Bundle\CoverallsBundle\Console\Application;
 
-$app = new Application(realpath(__DIR__.'/../../'), 'PHP client library for Coveralls API', PHP_COVERALLS_VERSION);
+$app = new Application(realpath(__DIR__.'/../'), 'PHP client library for Coveralls API', PHP_COVERALLS_VERSION);
 $app->run();
