@@ -2,7 +2,6 @@
 
 namespace DpTestingMocks;
 
-use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
 use Mockery as m;
 
 class ContainerMock

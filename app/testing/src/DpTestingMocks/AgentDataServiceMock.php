@@ -34,6 +34,8 @@ class AgentDataServiceMock
 			}
 			$agents[$id]= new Person();
 			$agents[$id]->id = $id;
+			$agents[$id]->is_agent = true;
+			$agents[$id]->name = "Agent{$id}_FN Agent{$id}_LN";
 			return $agents[$id];
 		});
 		return $this;

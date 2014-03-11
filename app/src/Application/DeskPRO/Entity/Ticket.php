@@ -859,7 +859,7 @@ class Ticket extends DomainObject
 		}
 
 		foreach ($this->participants as $p) {
-			if ($p['person']['id'] == $person_id) {
+			if ($p->person->id == $person_id) {
 				return $p;
 			}
 		}
@@ -886,7 +886,7 @@ class Ticket extends DomainObject
 			return null;
 		}
 
-		if ($person->id == $this->person->id && DP_INTERFACE != 'agent') {
+		if ($this->person && $person->id == $this->person->id && DP_INTERFACE != 'agent') {
 			return null;
 		}
 

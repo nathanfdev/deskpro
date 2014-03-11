@@ -40,22 +40,6 @@ class SetAgentTest extends \DpUnitTestCase
 		$this->assertEquals(55, $ticket->agent->id);
 	}
 
-	public function testSetAgentMacro()
-	{
-		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
-		$exec   = new ExecutorContext();
-
-		$action = new SetAgent(array('agent_id' => 55));
-		$action->setContainer($this->getMockContainer());
-
-		$person = new Person();
-		$action->applyMacro($person, $ticket, $exec);
-
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
-		$this->assertEquals(55, $ticket->agent->id);
-	}
-
 	public function testNoop()
 	{
 		$ticket = new Ticket();
