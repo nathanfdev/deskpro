@@ -44,20 +44,27 @@ use Orb\Util\Arrays;
 
 /**
  * News
+ * 
+ * @SWG\Model (id="News")
  */
 class News extends ContentAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\NewsCategory
+	 * 
+	 * @SWG\Property(name="category", type="NewsCategory")
 	 */
 	protected $category;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * 
+	 * @SWG\Property(name="revisions", type="array", @SWG\Items("NewsRevision"))
 	 */
 	protected $revisions;
 
 	/**
+	 * @SWG\Property(name="labels", type="array", @SWG\Items("string"))
 	 */
 	protected $labels;
 
