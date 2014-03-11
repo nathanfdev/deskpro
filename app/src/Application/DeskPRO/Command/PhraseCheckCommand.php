@@ -105,10 +105,8 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		))->getIterator());
 
 		$other_list = iterator_to_array(Finder::create()->files()->in(array(
-			DP_ROOT.'/src/Application/BillingBundle',
 			DP_ROOT.'/src/Application/DeskPRO',
 			DP_ROOT.'/src/Application/InstallBundle',
-			DP_ROOT.'/src/Cloud/BillingBundle',
 		))->getIterator());
 
 		foreach ($check_phrases as $phrase) {
