@@ -19,13 +19,13 @@ echo ""
 
 bin/codecept run integration --coverage --xml
 
-if [ -f logs/coverage.xml ]; then
-	mv logs/coverage.xml logs/coverage-clover/integration-tests-coverage.xml
-fi
-
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Unit Integration Failure !!!"
 	IS_ERROR=1
+fi
+
+if [ -f logs/coverage.xml ]; then
+	mv logs/coverage.xml logs/coverage-clover/integration-tests-coverage.xml
 fi
 
 if [ $IS_ERROR -ne 0 ] ; then

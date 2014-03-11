@@ -21,13 +21,13 @@ echo ""
 
 bin/codecept run acceptance --coverage --xml
 
-if [ -f logs/coverage.xml ]; then
-	mv logs/coverage.xml logs/coverage-clover/acceptance-tests-coverage.xml
-fi
-
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Acceptance Tests Failure !!!"
 	IS_ERROR=1
+fi
+
+if [ -f logs/coverage.xml ]; then
+	mv logs/coverage.xml logs/coverage-clover/acceptance-tests-coverage.xml
 fi
 
 if [ $IS_ERROR -ne 0 ] ; then

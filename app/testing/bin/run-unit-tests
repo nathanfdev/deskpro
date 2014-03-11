@@ -19,13 +19,13 @@ echo ""
 
 bin/codecept run unit --steps --xml
 
-if [ -f logs/coverage.xml ]; then
-	mv logs/coverage.xml logs/coverage-clover/unit-tests-coverage.xml
-fi
-
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Unit Test Failure !!!"
 	IS_ERROR=1
+fi
+
+if [ -f logs/coverage.xml ]; then
+	mv logs/coverage.xml logs/coverage-clover/unit-tests-coverage.xml
 fi
 
 if [ $IS_ERROR -ne 0 ] ; then
