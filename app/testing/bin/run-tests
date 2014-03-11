@@ -4,6 +4,12 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 cd ..
 
+if [ -d logs/coverage-clover ]; then
+	rm -rf logs/coverage-clover
+fi
+mkdir logs/coverage-clover
+rm -rf logs/coverage.xml
+
 IS_ERROR=0
 
 echo ""
@@ -12,7 +18,11 @@ echo "Running Unit Tests"
 echo "=========================="
 echo ""
 
-bin/codecept run unit --steps
+bin/codecept run unit --coverage --xml
+
+if [ -f logs/coverage.xml ]; then
+	mv logs/coverage.xml logs/coverage-clover/unit-tests-coverage.xml
+fi
 
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Unit Test Failure !!!"
@@ -26,7 +36,11 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "=========================="
 	echo ""
 
-	bin/codecept run integration --steps
+	bin/codecept run integration --coverage --xml
+
+	if [ -f logs/coverage.xml ]; then
+		mv logs/coverage.xml logs/coverage-clover/integration-tests-coverage.xml
+	fi
 
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Unit Integration Failure !!!"
@@ -47,7 +61,11 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "========================"
 	echo ""
 
-	bin/codecept run acceptance --steps
+	bin/codecept run acceptance --coverage --xml
+
+	if [ -f logs/coverage.xml ]; then
+		mv logs/coverage.xml logs/coverage-clover/acceptance-tests-coverage.xml
+	fi
 
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Acceptance Tests Failure !!!"
@@ -62,7 +80,11 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "========================"
 	echo ""
 
-	bin/codecept run product --steps
+	bin/codecept run product --coverage --xml
+
+	if [ -f logs/coverage.xml ]; then
+		mv logs/coverage.xml logs/coverage-clover/product-tests-coverage.xml
+	fi
 
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Product Tests Failure !!!"

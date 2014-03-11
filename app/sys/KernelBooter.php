@@ -119,6 +119,13 @@ class KernelBooter
 
 		require(DP_ROOT . '/sys/Kernel/compat.php');
 		require(DP_ROOT . '/sys/system.php');
+
+		if (array_key_exists('HTTP_X_CODECEPTION_CODECOVERAGE', $_SERVER) && isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG']) {
+			define('C3_CODECOVERAGE_MEDIATE_STORAGE', DP_ROOT.'/testing/logs/c3tmp');
+			define('C3_CODECEPTION_CONFIG_PATH', DP_ROOT.'/testing/codeception.yml');
+			define('C3_CODECOVERAGE_PROJECT_ROOT', DP_ROOT);
+			require(DP_ROOT.'/testing/src/c3.php');
+		}
 	}
 
 
