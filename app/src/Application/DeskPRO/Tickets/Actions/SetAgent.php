@@ -68,7 +68,7 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 	{
 		if ($set_agent_id == -1) {
 			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
-				return;
+				throw new \RuntimeException();
 			}
 			$agent = $context->getPersonContext();
 		} elseif ($set_agent_id == 0) {
@@ -91,6 +91,8 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 	{
 		try {
 			$agent = $this->resolveAgent($this->getActionOption('agent_id'), $context);
+		} catch (\RuntimeException $e) {
+			return;
 		} catch (\InvalidArgumentException $e) {
 			return;
 		}
@@ -104,15 +106,18 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 	 */
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$set_agent_id    = $this->getActionOption('agent_id');
-		$ticket_agent_id = $ticket->agent ? $ticket->agent->id : 0;
-
-		if ($ticket_agent_id == $set_agent_id) {
+		try {
+			$agent = $this->resolveAgent($this->getActionOption('agent_id'), $context);
+		} catch (\RuntimeException $e) {
+			return true;
+		} catch (\InvalidArgumentException $e) {
 			return true;
 		}
 
-		$agent = $this->getContainer()->getAgentData()->get($set_agent_id);
-		if (!$agent) {
+		$set_agent_id    = $agent ? $agent->id : 0;
+		$ticket_agent_id = $ticket->agent ? $ticket->agent->id : 0;
+
+		if ($ticket_agent_id == $set_agent_id) {
 			return true;
 		}
 

@@ -1,7 +1,6 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Actions\SetAgent;
 use DpTestingMocks\ContainerMock;
 use Mockery as m;

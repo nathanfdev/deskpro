@@ -2,6 +2,7 @@
 
 namespace DpTestingMocks;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Mockery as m;
 
@@ -38,6 +39,21 @@ class AgentDataServiceMock
 			$agents[$id]->name = "Agent{$id}_FN Agent{$id}_LN";
 			return $agents[$id];
 		});
+
+		$this->mock->shouldReceive('getTeam')->andReturnUsing(function($id) {
+			static $teams = array();
+			if (isset($teams[$id])) {
+				return $teams[$id];
+			}
+			if ($id > 100) {
+				return null;
+			}
+			$teams[$id]= new AgentTeam();
+			$teams[$id]->id = $id;
+			$teams[$id]->name = "AgentTeam{$id}";
+			return $teams[$id];
+		});
+
 		return $this;
 	}
 

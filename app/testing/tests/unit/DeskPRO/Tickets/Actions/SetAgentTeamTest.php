@@ -1,7 +1,7 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\Actions\SetAgent;
+use Application\DeskPRO\Tickets\Actions\SetAgentTeam;
 use DpTestingMocks\ContainerMock;
 use Mockery as m;
 use Application\DeskPRO\Entity\Ticket;
@@ -27,26 +27,68 @@ class SetAgentTeamTest extends \DpUnitTestCase
 	public function testSetAgent()
 	{
 		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
+		$ticket->agent_team = $this->getMockContainer()->getAgentData()->getTeam(1);
 		$exec   = new ExecutorContext();
 
-		$action = new SetAgent(array('agent_id' => 55));
+		$action = new SetAgentTeam(array('agent_team_id' => 55));
 		$action->setContainer($this->getMockContainer());
 
 		$action->applyAction($ticket, $exec);
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
-		$this->assertEquals(55, $ticket->agent->id);
+		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\AgentTeam', $ticket->agent_team);
+		$this->assertEquals(55, $ticket->agent_team->id);
+	}
+
+	public function testSetUnassigned()
+	{
+		$ticket = new Ticket();
+		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
+		$exec   = new ExecutorContext();
+
+		$action = new SetAgentTeam(array('agent_team_id' => 0));
+		$action->setContainer($this->getMockContainer());
+
+		$action->applyAction($ticket, $exec);
+
+		$this->assertNull($ticket->agent_team);
+	}
+
+	public function testSetSelf()
+	{
+		$ticket = new Ticket();
+		$ticket->agent_team = $this->getMockContainer()->getAgentData()->getTeam(1);
+
+		$exec = new ExecutorContext();
+
+		$agent = m::mock('Application\\DeskPRO\\Entity\\Person')->makePartial();
+		$agent->id = 500;
+		$agent->is_agent = true;
+
+		$agent_helper = m::mock();
+		$agent_helper->shouldReceive('getTeams')->andReturn(array(
+			$this->getMockContainer()->getAgentData()->getTeam(5)
+		));
+		$agent->shouldReceive('getHelper')->andReturn($agent_helper);
+
+		$exec->setPersonContext($agent);
+
+		$action = new SetAgentTeam(array('agent_team_id' => -1));
+		$action->setContainer($this->getMockContainer());
+
+		$action->applyAction($ticket, $exec);
+
+		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\AgentTeam', $ticket->agent_team);
+		$this->assertEquals(5, $ticket->agent_team->id);
 	}
 
 	public function testNoop()
 	{
 		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(55);
+		$ticket->agent_team = $this->getMockContainer()->getAgentData()->get(55);
 
 		$exec = new ExecutorContext();
 
-		$action = new SetAgent(array('agent_id' => 55));
+		$action = new SetAgentTeam(array('agent_team_id' => 55));
 		$action->setContainer($this->container);
 
 		$this->assertTrue($action->isNoop($ticket, $exec));
@@ -57,10 +99,10 @@ class SetAgentTeamTest extends \DpUnitTestCase
 		$ticket = new Ticket();
 		$exec = new ExecutorContext();
 
-		$action = new SetAgent(array('agent_id' => 200));
+		$action = new SetAgentTeam(array('agent_team_id' => 200));
 		$action->setContainer($this->getMockContainer());
 		$action->applyAction($ticket, $exec);
 
-		$this->assertNull($ticket->agent);
+		$this->assertNull($ticket->agent_team);
 	}
 }

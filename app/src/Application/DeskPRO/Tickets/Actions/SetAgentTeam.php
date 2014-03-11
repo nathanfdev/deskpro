@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -59,18 +58,54 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
 
 
 	/**
+	 * @param $set_team_id
+	 * @param ExecutorContextInterface $context
+	 * @return \Application\DeskPRO\Entity\AgentTeam|null
+	 * @throws \RuntimeException
+	 * @throws \InvalidArgumentException
+	 */
+	private function resolveTeam($set_team_id, ExecutorContextInterface $context)
+	{
+		if ($set_team_id == -1) {
+			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
+				throw new \RuntimeException();
+			}
+			$agent = $context->getPersonContext();
+			$agent->loadHelper('Agent');
+			$teams = $agent->getHelper('Agent')->getTeams();
+
+			if (!count($teams)) {
+				return null;
+			}
+
+			$team = $teams[0];
+		} elseif ($set_team_id == 0) {
+			$team = null;
+		} else {
+			$team = $this->getContainer()->getAgentData()->getTeam($set_team_id);
+			if (!$team) {
+				throw new \InvalidArgumentException();
+			}
+		}
+
+		return $team;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$set_team_id = $this->getActionOption('agent_team_id');
-
-		$team = $this->getContainer()->getAgentData()->getTeam($set_team_id);
-		if (!$team) {
+		try {
+			$team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
+		} catch (\RuntimeException $e) {
+			return;
+		} catch (\InvalidArgumentException $e) {
 			return;
 		}
 
-		$ticket->team = $team;
+		$ticket->agent_team = $team;
 	}
 
 
@@ -79,15 +114,18 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
 	 */
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$set_team_id    = $this->getActionOption('agent_team_id');
-		$ticket_team_id = $ticket->agent_team ? $ticket->agent_team->id : 0;
-
-		if ($ticket_team_id == $set_team_id) {
+		try {
+			$team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
+		} catch (\RuntimeException $e) {
+			return true;
+		} catch (\InvalidArgumentException $e) {
 			return true;
 		}
 
-		$team = $this->getContainer()->getAgentData()->getTeam($set_team_id);
-		if (!$team) {
+		$set_team_id    = $team ? $team->id : 0;
+		$ticket_team_id = $ticket->agent_team ? $ticket->agent_team->id : 0;
+
+		if ($ticket_team_id == $set_team_id) {
 			return true;
 		}
 
