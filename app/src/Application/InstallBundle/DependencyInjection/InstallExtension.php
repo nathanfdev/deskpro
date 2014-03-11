@@ -51,7 +51,6 @@ class InstallExtension extends Extension
 				'core'  => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
 				'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
 				'user'  => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
-				'dev'   => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
 			),
 			new Reference('database_connection')
 		));

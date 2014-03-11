@@ -169,7 +169,7 @@ class TemplateFiles
 		$map = array();
 
 		foreach ($raw_map as $k => $info) {
-			if (strpos($k, 'AdminBundle:') !== false || strpos($k, 'AgentBundle:') !== false || strpos($k, 'DeskPRO:') !== false) {
+			if (strpos($k, 'AdminInterfaceBundle:') !== false || strpos($k, 'AgentBundle:') !== false || strpos($k, 'DeskPRO:') !== false) {
 				$map[$k] = $info;
 			}
 		}
