@@ -80,10 +80,8 @@ class TemplateFiles
 	public function genTemplateMap()
 	{
 		$paths = array(
-			'AdminBundle'   => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
 			'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
 			'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-			'ReportBundle'  => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
 			'UserBundle'    => DP_ROOT.'/src/Application/UserBundle/Resources/views',
 		);
 

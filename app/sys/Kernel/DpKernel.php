@@ -326,10 +326,8 @@ class DpKernel extends AbstractKernel
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
-			new \Application\AdminBundle\AdminBundle(),
 			new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
 			new \Application\AgentBundle\AgentBundle(),
-			new \Application\ReportBundle\ReportBundle(),
 			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
 			new \Application\UserBundle\UserBundle(),
 			new \Application\ApiBundle\ApiBundle(),
@@ -337,7 +335,6 @@ class DpKernel extends AbstractKernel
 
 		if (defined('DPC_IS_CLOUD')) {
 			$bundles = array_merge($bundles, array(
-				new \Cloud\AdminBundle\CloudAdminBundle(),
 				new \Cloud\ApiBundle\CloudApiBundle()
 			));
 		}
