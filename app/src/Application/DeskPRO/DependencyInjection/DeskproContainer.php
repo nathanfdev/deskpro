@@ -78,9 +78,7 @@ class DeskproContainer extends Container
 	{
 		require_once DP_ROOT . '/sys/load_config.php';
 
-		if (!isset($GLOBALS['DP_CONTAINER'])) {
-			$GLOBALS['DP_CONTAINER'] = $this;
-		}
+		$GLOBALS['DP_CONTAINER'] = $this;
 		parent::__construct($parameterBag);
 	}
 

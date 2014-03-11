@@ -15,6 +15,7 @@ class DpUnitTestCase extends \Codeception\TestCase\Test
 	protected function _after()
 	{
 		$this->runAfter();
+		\Mockery::close();
 	}
 
 	public function runBefore() {}

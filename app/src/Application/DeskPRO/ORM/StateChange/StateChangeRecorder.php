@@ -263,7 +263,7 @@ class StateChangeRecorder
 
 	/**
 	 * @param $field_id
-	 * @return ChangeInterface
+	 * @return ChangeInterface|null
 	 */
 	public function getFirstChangeForField($field_id)
 	{
@@ -277,7 +277,7 @@ class StateChangeRecorder
 
 	/**
 	 * @param $field_id
-	 * @return null
+	 * @return ChangeInterface|null
 	 */
 	public function getLastChangeForField($field_id)
 	{

@@ -65,9 +65,13 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 	{
 		$set_agent_id = $this->getActionOption('agent_id');
 
-		$agent = $this->getContainer()->getAgentData()->get($set_agent_id);
-		if (!$agent) {
-			return;
+		if ($set_agent_id == 0) {
+			$agent = null;
+		} else {
+			$agent = $this->getContainer()->getAgentData()->get($set_agent_id);
+			if (!$agent) {
+				return;
+			}
 		}
 
 		$ticket->agent = $agent;
