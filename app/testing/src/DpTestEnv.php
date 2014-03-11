@@ -72,6 +72,12 @@ class DpTestEnv
 	}
 
 
+	public static function getMockBuilder($name)
+	{
+
+	}
+
+
 	/**
 	 * @return int
 	 */

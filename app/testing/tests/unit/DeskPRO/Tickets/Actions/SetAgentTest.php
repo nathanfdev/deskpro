@@ -3,6 +3,7 @@ namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Actions\SetAgent;
+use DpTestingMocks\ContainerMock;
 use Mockery as m;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
@@ -20,21 +21,7 @@ class SetAgentTest extends \DpUnitTestCase
 	private function getMockContainer()
 	{
 		if ($this->container) return $this->container;
-
-		$agent_data = m::mock('Application\\DeskPRO\\DependencyInjection\\SystemServices\\AgentDataService');
-		$agent_data->shouldReceive('get')->andReturnUsing(function($id) {
-			if ($id == 200) {
-				return null;
-			}
-			$agent = new Person();
-			$agent->id = $id;
-			return $agent;
-		});
-
-		$container = m::mock('Application\\DeskPRO\\DependencyInjection\\DeskproContainer');
-		$container->shouldReceive('getAgentData')->andReturn($agent_data);
-
-		$this->container = $container;
+		$this->container = ContainerMock::create()->withAgentData()->get();
 		return $this->container;
 	}
 
@@ -48,6 +35,22 @@ class SetAgentTest extends \DpUnitTestCase
 		$action->setContainer($this->getMockContainer());
 
 		$action->applyAction($ticket, $exec);
+
+		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
+		$this->assertEquals(55, $ticket->agent->id);
+	}
+
+	public function testSetAgentMacro()
+	{
+		$ticket = new Ticket();
+		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
+		$exec   = new ExecutorContext();
+
+		$action = new SetAgent(array('agent_id' => 55));
+		$action->setContainer($this->getMockContainer());
+
+		$person = new Person();
+		$action->applyMacro($person, $ticket, $exec);
 
 		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
 		$this->assertEquals(55, $ticket->agent->id);

@@ -22,6 +22,7 @@ $loader->registerNamespaces(array(
 
 	'DpUnitTests'        => DP_ROOT.'/testing/tests/unit',
 	'DpIntegrationTests' => DP_ROOT.'/testing/tests/integration',
+	'DpTestingMocks'     => DP_ROOT.'/testing/src',
 
 	'Metadata'           => DP_ROOT.'/vendor-src/metadata/src',
 ));
