@@ -35,8 +35,6 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
@@ -44,7 +42,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  *
  * @option bool enable_validation
  */
-class ModSetEmailValidation extends AbstractContainerAwareAction implements ActionInterface
+class ModSetEmailValidation extends AbstractAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}

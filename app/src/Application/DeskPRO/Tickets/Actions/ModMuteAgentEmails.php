@@ -35,14 +35,12 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
  * Stops the trigger loop by setting the `mute_agent_emails` flag on the context.
  */
-class ModMuteAgentEmails extends AbstractContainerAwareAction implements ActionInterface
+class ModMuteAgentEmails extends AbstractAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}
