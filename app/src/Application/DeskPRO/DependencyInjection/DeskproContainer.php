@@ -553,6 +553,51 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Departments\TicketDepartments
+	 */
+	public function getTicketDepartments()
+	{
+		return $this->getSystemService('ticket_departments');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketCategories
+	 */
+	public function getTicketCategories()
+	{
+		return $this->getSystemService('ticket_categories');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketPriorities
+	 */
+	public function getTicketPriorities()
+	{
+		return $this->getSystemService('ticket_priorities');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketWorkflows
+	 */
+	public function getTicketWorkflows()
+	{
+		return $this->getSystemService('ticket_workflows');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Products\Products
+	 */
+	public function getProducts()
+	{
+		return $this->getSystemService('products');
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\CustomFields\PersonFieldManager
 	 */
 	public function getPersonFieldManager()

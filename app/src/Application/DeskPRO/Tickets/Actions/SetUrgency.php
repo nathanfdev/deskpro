@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -53,7 +52,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option int urgency
  * @option int mode
  */
-class SetUrgency extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetUrgency extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	const MODE_SET   = 'set';
 	const MODE_ADD   = 'add';
@@ -86,7 +85,7 @@ class SetUrgency extends AbstractContainerAwareAction implements ActionInterface
 				return $num;
 
 			case self::MODE_ADD:
-				return max(10, $current_urgency+$num);
+				return min(10, $current_urgency+$num);
 
 			case self::MODE_SUB:
 				return max(1, $current_urgency-$num);

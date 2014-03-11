@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -45,7 +44,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string subject
  */
-class SetSubject extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetSubject extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -63,6 +62,10 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if (!$this->getActionOption('subject')) {
+			return;
+		}
+
 		$ticket->subject = $this->getActionOption('subject');
 	}
 
@@ -72,7 +75,7 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
 	 */
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if ($ticket->subject == $this->getActionOption('subject')) {
+		if ($ticket->subject == $this->getActionOption('subject') || !$this->getActionOption('subject')) {
 			return true;
 		}
 

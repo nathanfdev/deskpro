@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -65,9 +64,13 @@ class SetProduct extends AbstractContainerAwareAction implements ActionInterface
 	{
 		$set_prod_id = $this->getActionOption('product_id');
 
-		$prod = $this->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
-		if (!$prod) {
-			return;
+		if ($set_prod_id) {
+			$prod = $this->getContainer()->getProducts()->getSettableById($set_prod_id);
+			if (!$prod) {
+				return;
+			}
+		} else {
+			$prod = null;
 		}
 
 		$ticket->product = $prod;
@@ -86,9 +89,11 @@ class SetProduct extends AbstractContainerAwareAction implements ActionInterface
 			return true;
 		}
 
-		$prod = $this->getContainer()->getSystemService('products')->getSettableById($set_prod_id);
-		if (!$prod) {
-			return true;
+		if ($set_prod_id) {
+			$prod = $this->getContainer()->getProducts()->getSettableById($set_prod_id);
+			if (!$prod) {
+				return true;
+			}
 		}
 
 		return false;

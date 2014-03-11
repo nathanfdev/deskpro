@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -45,7 +44,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string status
  */
-class SetStatus extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetStatus extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -59,11 +58,30 @@ class SetStatus extends AbstractContainerAwareAction implements ActionInterface,
 
 
 	/**
+	 * @param string $status
+	 * @return bool
+	 */
+	private function isValidStatus($status)
+	{
+		static $valid_statuses = array(
+			'awaiting_agent', 'awaiting_user', 'resolved', 'closed',
+			'hidden.spam', 'hidden.deleted', 'hidden.temp', 'hidden.validating'
+		);
+
+		return in_array($status, $valid_statuses);
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_status = $this->getActionOption('status');
+		if (!$this->isValidStatus($set_status)) {
+			return;
+		}
+
 		$ticket->setStatus($set_status);
 	}
 
@@ -74,7 +92,7 @@ class SetStatus extends AbstractContainerAwareAction implements ActionInterface,
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$set_status = $this->getActionOption('status');
-		if ($ticket->getStatusCode() == $set_status) {
+		if ($ticket->getStatusCode() == $set_status || !$this->isValidStatus($set_status)) {
 			return true;
 		}
 

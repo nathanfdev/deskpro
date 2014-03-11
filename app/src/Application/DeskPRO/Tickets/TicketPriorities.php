@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Collection\LazyCollection;
+use Orb\Util\Arrays;
 
 class TicketPriorities extends LazyCollection
 {
@@ -48,7 +49,9 @@ class TicketPriorities extends LazyCollection
 	 */
 	protected function loadRecords()
 	{
-		return $this->em->getRepository('DeskPRO:TicketPriority')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:TicketPriority')->findAll();
+		$recs = Arrays::keyFromData($recs, 'id');
+		return $recs;
 	}
 
 

@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -65,9 +64,13 @@ class SetPriority extends AbstractContainerAwareAction implements ActionInterfac
 	{
 		$set_pri_id = $this->getActionOption('priority_id');
 
-		$pri = $this->getContainer()->getSystemService('ticket_priorities')->getById($set_pri_id);
-		if (!$pri) {
-			return;
+		if ($set_pri_id) {
+			$pri = $this->getContainer()->getTicketPriorities()->getById($set_pri_id);
+			if (!$pri) {
+				return;
+			}
+		} else {
+			$pri = null;
 		}
 
 		$ticket->priority = $pri;
@@ -86,9 +89,11 @@ class SetPriority extends AbstractContainerAwareAction implements ActionInterfac
 			return true;
 		}
 
-		$pri = $this->getContainer()->getSystemService('ticket_priorities')->getById($set_pri_id);
-		if (!$pri) {
-			return true;
+		if ($set_pri_id) {
+			$pri = $this->getContainer()->getTicketPriorities()->getById($set_pri_id);
+			if (!$pri) {
+				return true;
+			}
 		}
 
 		return false;

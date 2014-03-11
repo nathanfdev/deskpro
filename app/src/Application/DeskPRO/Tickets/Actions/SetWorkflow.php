@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -65,9 +64,13 @@ class SetWorkflow extends AbstractContainerAwareAction implements ActionInterfac
 	{
 		$set_work_id = $this->getActionOption('workflow_id');
 
-		$work = $this->getContainer()->getSystemService('ticket_workflows')->getById($set_work_id);
-		if (!$work) {
-			return;
+		if ($set_work_id) {
+			$work = $this->getContainer()->getTicketWorkflows()->getById($set_work_id);
+			if (!$work) {
+				return;
+			}
+		} else {
+			$work = null;
 		}
 
 		$ticket->workflow = $work;
@@ -86,9 +89,11 @@ class SetWorkflow extends AbstractContainerAwareAction implements ActionInterfac
 			return true;
 		}
 
-		$work = $this->getContainer()->getSystemService('ticket_workflows')->getById($set_work_id);
-		if (!$work) {
-			return true;
+		if ($set_work_id) {
+			$work = $this->getContainer()->getTicketWorkflows()->getById($set_work_id);
+			if (!$work) {
+				return true;
+			}
 		}
 
 		return false;

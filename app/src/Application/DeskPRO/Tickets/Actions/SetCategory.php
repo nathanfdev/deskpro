@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -65,9 +64,13 @@ class SetCategory extends AbstractContainerAwareAction implements ActionInterfac
 	{
 		$set_cat_id = $this->getActionOption('category_id');
 
-		$cat = $this->getContainer()->getSystemService('ticket_categories')->getSettableById($set_cat_id);
-		if (!$cat) {
-			return;
+		if ($set_cat_id) {
+			$cat = $this->getContainer()->getTicketCategories()->getSettableById($set_cat_id);
+			if (!$cat) {
+				return; //invalid
+			}
+		} else {
+			$cat = null;
 		}
 
 		$ticket->category = $cat;
@@ -86,9 +89,11 @@ class SetCategory extends AbstractContainerAwareAction implements ActionInterfac
 			return true;
 		}
 
-		$cat = $this->getContainer()->getSystemService('ticket_categories')->getSettableById($set_cat_id);
-		if (!$cat) {
-			return true;
+		if ($set_cat_id) {
+			$cat = $this->getContainer()->getTicketCategories()->getSettableById($set_cat_id);
+			if (!$cat) {
+				return true; //invalid
+			}
 		}
 
 		return false;

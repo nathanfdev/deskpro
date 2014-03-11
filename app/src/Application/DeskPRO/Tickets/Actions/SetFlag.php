@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 

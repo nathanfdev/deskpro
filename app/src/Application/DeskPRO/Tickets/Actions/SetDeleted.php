@@ -36,13 +36,12 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
  * Delete the ticket
  */
-class SetDeleted extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetDeleted extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}

@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Collection\LazyCollection;
+use Orb\Util\Arrays;
 
 class TicketWorkflows extends LazyCollection
 {
@@ -48,7 +49,9 @@ class TicketWorkflows extends LazyCollection
 	 */
 	protected function loadRecords()
 	{
-		return $this->em->getRepository('DeskPRO:TicketWorkflow')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:TicketWorkflow')->findAll();
+		$recs = Arrays::keyFromData($recs, 'id');
+		return $recs;
 	}
 
 

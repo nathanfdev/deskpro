@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Products;
 
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
+use Orb\Util\Arrays;
 
 class Products extends LazyPreloadedHierarchy
 {
@@ -48,7 +49,9 @@ class Products extends LazyPreloadedHierarchy
 	 */
 	protected function loadRecords()
 	{
-		return $this->em->getRepository('DeskPRO:Product')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:Product')->findAll();
+		$recs = Arrays::keyFromData($recs, 'id');
+		return $recs;
 	}
 
 	public function setDefaultProductPreference($obj_or_id)
