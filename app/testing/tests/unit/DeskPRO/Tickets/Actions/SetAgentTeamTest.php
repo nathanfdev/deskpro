@@ -1,14 +1,13 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Actions\SetAgent;
 use DpTestingMocks\ContainerMock;
 use Mockery as m;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-class SetAgentTest extends \DpUnitTestCase
+class SetAgentTeamTest extends \DpUnitTestCase
 {
 	/**
 	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -32,37 +31,6 @@ class SetAgentTest extends \DpUnitTestCase
 		$exec   = new ExecutorContext();
 
 		$action = new SetAgent(array('agent_id' => 55));
-		$action->setContainer($this->getMockContainer());
-
-		$action->applyAction($ticket, $exec);
-
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
-		$this->assertEquals(55, $ticket->agent->id);
-	}
-
-	public function testSetUnassigned()
-	{
-		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
-		$exec   = new ExecutorContext();
-
-		$action = new SetAgent(array('agent_id' => 0));
-		$action->setContainer($this->getMockContainer());
-
-		$action->applyAction($ticket, $exec);
-
-		$this->assertNull($ticket->agent);
-	}
-
-	public function testSetSelf()
-	{
-		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
-
-		$exec = new ExecutorContext();
-		$exec->setPersonContext($this->getMockContainer()->getAgentData()->get(55));
-
-		$action = new SetAgent(array('agent_id' => -1));
 		$action->setContainer($this->getMockContainer());
 
 		$action->applyAction($ticket, $exec);

@@ -43,7 +43,7 @@ use Orb\Util\CheckedOptionsArray;
 /**
  * Set the assigned agent.
  *
- * @option int agent_id
+ * @option int agent_id   The agent to set. -1 for current user, 0 for unassigned and >0 for specified agent
  */
 class SetAgent extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
@@ -59,19 +59,40 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 
 
 	/**
-	 * {@inheritDoc}
+	 * @param $set_agent_id
+	 * @param ExecutorContextInterface $context
+	 * @return Person|null
+	 * @throws \InvalidArgumentException
 	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+	private function resolveAgent($set_agent_id, ExecutorContextInterface $context)
 	{
-		$set_agent_id = $this->getActionOption('agent_id');
-
-		if ($set_agent_id == 0) {
+		if ($set_agent_id == -1) {
+			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
+				return;
+			}
+			$agent = $context->getPersonContext();
+		} elseif ($set_agent_id == 0) {
 			$agent = null;
 		} else {
 			$agent = $this->getContainer()->getAgentData()->get($set_agent_id);
 			if (!$agent) {
-				return;
+				throw new \InvalidArgumentException();
 			}
+		}
+
+		return $agent;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		try {
+			$agent = $this->resolveAgent($this->getActionOption('agent_id'), $context);
+		} catch (\InvalidArgumentException $e) {
+			return;
 		}
 
 		$ticket->agent = $agent;
