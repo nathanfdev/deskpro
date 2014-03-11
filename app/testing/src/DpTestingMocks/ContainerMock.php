@@ -21,9 +21,32 @@ class ContainerMock
 		return new self();
 	}
 
-	public function withAgentData()
+	public function withNullEm()
 	{
-		$this->mock->shouldReceive('getAgentData')->andReturn(AgentDataServiceMock::create()->withStandard()->get());
+		$em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
+		$em->shouldIgnoreMissing();
+		$this->mock->shouldReceive('getEm')->andReturn($em);
+		$this->mock->shouldReceive('getOrm')->andReturn($em);
+		return $this;
+	}
+
+	public function withAgentData($obj = null)
+	{
+		if ($obj === null) {
+			$obj = AgentDataServiceMock::create()->withStandard()->get();
+		}
+
+		$this->mock->shouldReceive('getAgentData')->andReturn($obj);
+		return $this;
+	}
+
+	public function withTwig($obj = null)
+	{
+		if ($obj === null) {
+			$obj = TwigEnvMock::create()->withRenderStringTemplateNoop()->get();
+		}
+
+		$this->mock->shouldReceive('getTwig')->andReturn($obj);
 		return $this;
 	}
 

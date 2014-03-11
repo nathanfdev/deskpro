@@ -46,6 +46,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option string reply_text
  * @option int    by_agent_id
  * @option bool   by_assigned_agent
+ * @option bool   with_formatter
  */
 class AddAgentReply extends AbstractContainerAwareAction implements ActionInterface
 {
@@ -58,6 +59,7 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 		$options->addRequiredNames('by_agent_id');
 		$options->addRequiredNames('reply_text');
 		$options->addValidNames('by_assigned_agent');
+		$options->addValidNames('with_formatter');
 		return $options;
 	}
 
@@ -85,8 +87,12 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 		$message->date_created = new \DateTime('+1 second');
 
 		$reply_text = $this->getActionOption('reply_text');
-		$formatter = new SnippetFormatter($this->getContainer()->getTwig());
-		$reply_text = $formatter->formatText($reply_text, $ticket);
+
+		if ($this->getActionOption('with_formatter')) {
+			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
+			$reply_text = $formatter->formatText($reply_text, $ticket);
+		}
+
 		$message->setMessageText($reply_text);
 
 		$ticket->addMessage($message);
