@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -496,6 +497,16 @@ class Ticket extends DomainObject
 	 * @internal
 	 */
 	public $__dp_is_processing_ticket = false;
+
+	/**
+	 * @internal
+	 */
+	public $__dp_last_process_save = null;
+
+	/**
+	 * @internal
+	 */
+	public $__dp_ticket_change_tracker = null;
 
 	public function __construct()
 	{
@@ -2960,6 +2971,21 @@ class Ticket extends DomainObject
 		return parent::getStateChangeRecorder();
 	}
 
+
+	/**
+	 * @return TicketChangeTracker
+	 */
+	public function getTicketLogger()
+	{
+		if ($this->__dp_ticket_change_tracker) {
+			return $this->__dp_ticket_change_tracker;
+		}
+
+		$this->__dp_ticket_change_tracker = new TicketChangeTracker($this);
+		return $this->__dp_ticket_change_tracker;
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -2977,6 +3003,15 @@ class Ticket extends DomainObject
 		}
 
 		if ($this->auto_ticket_process) {
+
+			// Detect when we last did a save
+			if ($this->__dp_last_process_save) {
+				$state = $this->getStateChangeRecorder();
+				if ($state->getStateVersion() <= $this->__dp_last_process_save) {
+					return;
+				}
+			}
+
 			$tm = App::$container->getTicketManager();
 
 			$context = new ExecutorContext();

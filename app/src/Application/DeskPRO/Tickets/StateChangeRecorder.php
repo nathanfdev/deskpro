@@ -51,6 +51,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
 	public function __construct(Ticket $ticket)
 	{
+		parent::__construct();
+
 		$this->ticket = $ticket;
 		if (!$ticket->id) {
 			$this->no_id = true;

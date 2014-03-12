@@ -380,6 +380,7 @@ class TicketManager
 		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
 
 		$ticket->resetStateChangeRecorder();
+		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
 	}
 
 

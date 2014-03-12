@@ -60,6 +60,20 @@ class StateChangeRecorder
 	 */
 	private $changes_by_field = array();
 
+	public function __construct()
+	{
+		$this->state_version = self::$global_state_version;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public static function getGlobalStateVersion()
+	{
+		return self::$global_state_version;
+	}
+
 
 	/**
 	 * An incrementing counter that increases every time any change is made
@@ -121,7 +135,7 @@ class StateChangeRecorder
 		$this->changes_by_field[$field_id][] = $change;
 
 		self::$global_state_version++;
-		$this->state_version = self::$global_state_version;
+		$this->state_version++;
 
 		return $change;
 	}
@@ -142,7 +156,7 @@ class StateChangeRecorder
 		$this->changes_by_field[$field_id][] = $change;
 
 		self::$global_state_version++;
-		$this->state_version = self::$global_state_version;
+		$this->state_version++;
 	}
 
 
@@ -162,7 +176,7 @@ class StateChangeRecorder
 		$this->changes_by_field[$field_id][] = $change;
 
 		self::$global_state_version++;
-		$this->state_version = self::$global_state_version;
+		$this->state_version++;
 
 		return $change;
 	}
@@ -189,7 +203,7 @@ class StateChangeRecorder
 		$this->changes_by_field[$field_id][] = $change;
 
 		self::$global_state_version++;
-		$this->state_version = self::$global_state_version;
+		$this->state_version++;
 
 		return $change;
 	}
