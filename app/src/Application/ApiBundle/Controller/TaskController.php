@@ -434,6 +434,13 @@ class TaskController extends AbstractController
 	 * 		summary="Updates a Task.",
 	 *		@SWG\Parameters (
 	 *			@SWG\Parameter(
+	 *				name="task_id",
+	 *				description="ID of the task that needs to be updated",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
 	 *				name="assigned_agent_id",
 	 *				description="Updated ID of agent assigned to the task.",
 	 *				paramType="query",
@@ -455,7 +462,7 @@ class TaskController extends AbstractController
 	 *				type="boolean"
 	 *			),
 	 *		),
-	 *		@SWG\ResponseMessage(code=404, message="Glossary definition not found")
+	 *		@SWG\ResponseMessage(code=404, message="Task definition not found")
 	 * 	)
 	 * )
 	 */
