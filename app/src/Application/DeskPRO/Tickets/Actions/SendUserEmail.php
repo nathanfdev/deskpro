@@ -35,18 +35,17 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\TicketEmail;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
  * Send an email to the user
  *
- * @option bool template     The template to send
- * @option bool from_name    Who to send the email from
- * @option bool do_cc_users  True to CC the email to other user parts in the ticket
+ * @option bool template       The template to send
+ * @option bool from_name      Who to send the email from
+ * @option bool from_account   The account to send from (falsey for ticket account)
+ * @option bool do_cc_users    True to CC the email to other user parts in the ticket
  */
 class SendUserEmail extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
@@ -56,7 +55,8 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addValidNames('template', 'from_name', 'do_cc_users');
+		$options->addRequiredNames('template');
+		$options->addValidNames('from_name', 'from_account', 'do_cc_users');
 		return $options;
 	}
 
@@ -66,14 +66,57 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$ticket_email = new TicketEmail(
-			$ticket,
-			$ticket->person,
-			TicketEmail::MODE_USER,
-			$this->getActionOption('template')
-		);
+		try {
+			$from_account = $this->getFromEmailAccountOption($ticket, $context);
+		} catch (\InvalidArgumentException $e) {
+			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+			return;
+		}
 
-		$ticket_email->send($context);
+		try {
+			$template = $this->getEmailTemplateOption($ticket, $context, false);
+		} catch (\InvalidArgumentException $e) {
+			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+			return;
+		}
+
+		#-------------------------
+		# Vars
+		#-------------------------
+
+		$default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
+
+		#-------------------------
+		# Send emails
+		#-------------------------
+
+		$start_time = microtime(true);
+
+		$build = TicketEmailBuilder::createFromContainer($this->getContainer())
+			->setTicket($ticket)
+			->setToPerson($ticket->person)
+			->setUserMode()
+			->setTemplateName($template)
+			->setFromName($this->getActionOption('from_name'))
+			->setFromEmailAccount($from_account);
+
+		if ($this->getActionOption('do_cc_users')) {
+			$build->enableUserCc();
+		}
+
+		$ticket_email = $build->buildTicketEmail();
+
+		try {
+			$ticket_email->send($default_vars);
+			$this->recordEmailTicketLog($ticket_email, $ticket, $context);
+		} catch (\Exception $e) {
+			$context->getLogger()->error(
+				sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+				array('exception' => $e)
+			);
+		}
+
+		$context->getLogger()->warn("[SendAgentEmail] Sent message in %.3fs", microtime(true)-$start_time);
 	}
 
 
@@ -83,6 +126,7 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if ($context->getVars()->get('mute_user_emails')) {
+			$context->getLogger()->debug("[SendUserEmail] mute_user_emails = true");
 			return true;
 		}
 

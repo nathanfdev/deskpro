@@ -128,6 +128,25 @@ class StateChangeRecorder
 
 
 	/**
+	 * @param ChangeInterface $change
+	 */
+	public function recordChange(ChangeInterface $change)
+	{
+		$this->changes[] = $change;
+
+		$field_id = $change->getField();
+
+		if (!isset($this->changes_by_field[$field_id])) {
+			$this->changes_by_field[$field_id] = array();
+		}
+		$this->changes_by_field[$field_id][] = $change;
+
+		self::$global_state_version++;
+		$this->state_version = self::$global_state_version;
+	}
+
+
+	/**
 	 * @param string $field_id
 	 * @param array $data
 	 * @return ChangeDate

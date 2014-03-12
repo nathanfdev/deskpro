@@ -34,8 +34,9 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Monolog\NullLogger;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Orb\Util\CheckedOptionsArray;
 
 class TicketEmail
 {
@@ -43,9 +44,44 @@ class TicketEmail
 	const MODE_AGENT = 'agent';
 
 	/**
+	 * @var \Application\DeskPRO\Mail\Mailer
+	 */
+	private $mailer;
+
+	/**
+	 * @var \Application\DeskPRO\Translate\Translate
+	 */
+	private $translate;
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	private $em;
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\TicketFieldManager
+	 */
+	private $ticket_field_manager;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	private $to_person;
+
+	/**
+	 * @var string
+	 */
+	private $sent_to_email;
+
+	/**
+	 * @var string
+	 */
+	private $sent_to_name;
+
+	/**
+	 * @var string[]
+	 */
+	private $sent_with_ccs;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
@@ -53,19 +89,24 @@ class TicketEmail
 	private $ticket;
 
 	/**
-	 * @var mode
+	 * @var string
 	 */
-	private $mode;
+	private $user_mode;
 
 	/**
 	 * @var string
 	 */
-	private $template;
+	private $template_name;
 
 	/**
 	 * @var string|null
 	 */
 	private $from_name;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailAccount
+	 */
+	private $from_email_account;
 
 	/**
 	 * @var bool
@@ -78,70 +119,136 @@ class TicketEmail
 	private $do_cc_users = true;
 
 	/**
-	 * @param Ticket $ticket     The ticket to send to
-	 * @param Person $to_person  Who the email should be sent to
-	 * @param string $mode       Context this is being sent in (e.g. agents get notes etc)
-	 * @param string $template   Email template to send
-	 * @param string $from_name  The from name to send the email with. The from address is automatically fetched based on the ticket values.
-	 * @throws \InvalidArgumentException
+	 * @var \Monolog\Logger
 	 */
-	public function __construct(Ticket $ticket, Person $to_person, $mode, $template, $from_name = null)
-	{
-		$this->ticket    = $ticket;
-		$this->to_person = $to_person;
-		$this->mode      = $mode;
-		$this->template  = $template;
-		$this->from_name = $from_name;
+	private $logger;
 
-		if ($mode == self::MODE_AGENT && !$to_person->is_agent) {
+	/**
+	 * Use TicketEmailBuilder to build the options array easier.
+	 *
+	 * @param array $options
+	 * @throws \InvalidArgumentException When there are invalid options
+	 */
+	public function __construct(array $options)
+	{
+		$opt = new CheckedOptionsArray();
+		$opt->addRequiredNames(
+			'mailer',
+			'translate',
+			'em',
+			'ticket_field_manager',
+			'ticket',
+			'to_person',
+			'user_mode',
+			'template_name'
+		);
+		$opt->addValidNames(
+			'from_name',
+			'from_email_account',
+			'cc_users',
+			'is_auto',
+			'logger'
+		);
+		$opt->setAll($options);
+		$opt->ensureRequired();
+
+		$this->to_person            = $opt->get('to_person');
+		$this->ticket               = $opt->get('ticket');
+		$this->user_mode            = $opt->get('user_mode');
+		$this->template_name        = $opt->get('template_name');
+		$this->from_name            = $opt->get('from_name', '');
+
+		$this->mailer               = $opt->get('mailer');
+		$this->translate            = $opt->get('translate');
+		$this->em                   = $opt->get('em');
+		$this->ticket_field_manager = $opt->get('ticket_field_manager');
+		$this->from_email_account   = $opt->get('from_email_account', null);
+
+		$this->do_cc_users          = $opt->get('cc_users', false);
+		$this->is_auto              = $opt->get('is_auto', false);
+
+		if ($opt->has('logger')) {
+			$this->logger = $opt->get('logger');
+		} else {
+			$this->logger = new NullLogger();
+		}
+
+		if ($this->do_cc_users && self::MODE_AGENT) {
+			throw new \InvalidArgumentException("CC Users does not work on agent emails");
+		}
+
+		if ($this->user_mode == self::MODE_AGENT && !$this->to_person->is_agent) {
 			throw new \InvalidArgumentException("Agent mode but person is not an agent");
 		}
 	}
 
 
 	/**
-	 * @param bool $is_auto
+	 * @return \Application\DeskPRO\Entity\EmailAccount
 	 */
-	public function setIsAuto($is_auto = true)
+	public function getFromEmailAccount()
 	{
-		$this->is_auto = (bool)$is_auto;
+		return $this->from_email_account;
 	}
 
 
 	/**
-	 * Enable CC users
-	 * @throws \InvalidArgumentException
+	 * @return null|string
 	 */
-	public function enableCcUsers()
+	public function getFromName()
 	{
-		if ($this->mode == self::MODE_AGENT) {
-			throw new \InvalidArgumentException("CC Users does not work on agent emails");
-		}
-
-		$this->do_cc_users = true;
+		return $this->from_name;
 	}
 
 
 	/**
-	 * Disable cc users
+	 * @return boolean
 	 */
-	public function disableCcUsers()
+	public function getDoCcUsers()
 	{
-		$this->do_cc_users = false;
+		return $this->do_cc_users;
 	}
 
 
 	/**
-	 * @param ExecutorContextInterface $context
+	 * @return string
 	 */
-	public function send(ExecutorContextInterface $context, array $vars = array())
+	public function getTemplateName()
 	{
-		$mailer     = $context->getContainer()->getMailer();
-		$translator = $context->getContainer()->getTranslator();
-		$em         = $context->getContainer()->getEm();
+		return $this->template_name;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Ticket
+	 */
+	public function getTicket()
+	{
+		return $this->ticket;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getToPerson()
+	{
+		return $this->to_person;
+	}
+
+
+	/**
+	 * @param array $vars
+	 */
+	public function send(array $vars = array())
+	{
+		$mailer     = $this->mailer;
+		$translator = $this->translate;
+		$em         = $this->em;
+		$field_manager = $this->ticket_field_manager;
 
 		$ticketdisplay = new TicketDisplay($this->ticket, $this->to_person);
-		$ticketdisplay->setPersonContext($this->to_person, $this->mode);
+		$ticketdisplay->setPersonContext($this->to_person, $this->user_mode);
 
 		$vars['ticket']        = $this->ticket;
 		$vars['person']        = $this->to_person;
@@ -150,7 +257,6 @@ class TicketEmail
 		$vars['is_auto']       = $this->is_auto;
 
 		/*
-		 * $field_manager = $context->getContainer()->getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
 		$ticket_display = new TicketPageZoneCollection('view');
@@ -160,45 +266,49 @@ class TicketEmail
 		 *
 		 */
 
-		$context->getLogger()->info(sprintf("[TicketEmail] Template: %s -- Mode: %s", $this->template, $this->mode));
+		$this->logger->info(sprintf("[TicketEmail] Template: %s -- Mode: %s", $this->template_name, $this->user_mode));
 
 		$to_name  = $this->to_person->getDisplayName();
 
-		if ($this->mode == self::MODE_USER && $this->ticket->person_email && $this->ticket->person_email->person == $this->to_person) {
+		if ($this->user_mode == self::MODE_USER && $this->ticket->person_email && $this->ticket->person_email->person == $this->to_person) {
 			$to_email = $this->ticket->person_email->email;
-			$context->getLogger()->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
+			$this->logger->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
 		} else if ($this->ticket->person_email_validating) {
 			$to_email = $this->ticket->person_email_validating->email;
 			$vars['validating_email'] = $this->ticket->person_email_validating;
-			$context->getLogger()->info(sprintf("[TicketEmail] to_email(2): %s -- validating", $to_email));
+			$this->logger->info(sprintf("[TicketEmail] to_email(2): %s -- validating", $to_email));
 		} else if ($this->to_person->primary_email) {
 			$to_email = $this->to_person->primary_email->email;
-			$context->getLogger()->info(sprintf("[TicketEmail] to_email(3): %s", $to_email));
+			$this->logger->info(sprintf("[TicketEmail] to_email(3): %s", $to_email));
 		} else {
 			$vars['validating_email'] = $em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->to_person);
 
 			if (!$vars['validating_email']) {
-				$context->getLogger()->info(sprintf("[TicketEmail] to_email(4): no email and no validating email"));
+				$this->logger->info(sprintf("[TicketEmail] to_email(4): no email and no validating email"));
 				return;
 			}
 
 			$to_email = $vars['validating_email']->email;
-			$context->getLogger()->info(sprintf("[TicketEmail] to_email(4): %s -- validating", $to_email));
+			$this->logger->info(sprintf("[TicketEmail] to_email(4): %s -- validating", $to_email));
 		}
 
 		$tac = null;
-		if ($this->mode == self::MODE_AGENT) {
+		if ($this->user_mode == self::MODE_AGENT) {
 			$tac = TicketUtil::getTacForPerson($this->ticket, $this->to_person);
 		}
 		$vars['tac'] = $tac;
 
+		$this->sent_to_name = $to_name;
+		$this->sent_to_email = $to_email;
+		$this->sent_with_ccs = array();
+
 		$message = $mailer->createMessage();
 		$message->setTo(array($to_name => $to_email));
-		$context->getLogger()->info(sprintf("[TicketEmail] To: %s -- Name: %s", $to_email, $to_name));
+		$this->logger->info(sprintf("[TicketEmail] To: %s -- Name: %s", $to_email, $to_name));
 		$message->setContextId('ticket_gateway');
-		$message->setTemplate($this->template, $vars);
+		$message->setTemplate($this->template_name, $vars);
 
-		if ($this->mode == self::MODE_USER && $this->do_cc_users) {
+		if ($this->user_mode == self::MODE_USER && $this->do_cc_users) {
 			foreach ($this->ticket->getUserParticipants() as $p) {
 				if ($p->getPrimaryEmailAddress()) {
 					$cc_email = $p->getPrimaryEmailAddress();
@@ -207,21 +317,28 @@ class TicketEmail
 						continue;
 					}
 
+					$this->sent_with_ccs[] = $cc_email;
+
 					$message->addCc($cc_email, $cc_name);
-					$context->getLogger()->info(sprintf("[TicketEmail] CC: %s -- Name: %s", $cc_email, $cc_name));
+					$this->logger->info(sprintf("[TicketEmail] CC: %s -- Name: %s", $cc_email, $cc_name));
 				}
 			}
 		}
 
-		$from_email = $mailer->getFromAddressForTicket($this->ticket);
-		$from_name  = $this->from_name;
+		if ($this->from_email_account) {
+			$from_email = $this->from_email_account;
+		} else {
+			$from_email = $mailer->getFromAddressForTicket($this->ticket);
+			$this->from_email_account = $from_email;
+		}
+		$from_name = $this->from_name;
 
 		if (!$from_email) {
-			$context->getLogger()->info(sprintf("[TicketEmail] No from email to send mail from!"));
+			$this->logger->info(sprintf("[TicketEmail] No from email to send mail from!"));
 			return;
 		}
 
-		$context->getLogger()->info(sprintf("[TicketEmail] From: %s -- Name: %s", $from_email, $from_name));
+		$this->logger->info(sprintf("[TicketEmail] From: %s -- Name: %s", $from_email, $from_name));
 		$message->setFrom($from_email, $from_name);
 
 		if ($tac) {
@@ -235,7 +352,7 @@ class TicketEmail
 		if (isset($vars['is_auto']) && $vars['is_auto']) {
 			$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
 			$message->setSuppressAutoreplies(true);
-			$context->getLogger()->info(sprintf("[TicketEmail] Is auto"));
+			$this->logger->info(sprintf("[TicketEmail] Is auto"));
 		}
 
 		$translator->setTemporaryLanguage($this->to_person->getLanguage(), function() use ($message) {
@@ -243,5 +360,32 @@ class TicketEmail
 		});
 
 		$mailer->send($message);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSentToEmail()
+	{
+		return $this->sent_to_email;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSentToName()
+	{
+		return $this->sent_to_name;
+	}
+
+
+	/**
+	 * @return \string[]
+	 */
+	public function getSentWithCcs()
+	{
+		return $this->sent_with_ccs;
 	}
 }

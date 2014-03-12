@@ -84,12 +84,12 @@ class EmailAccount extends DomainObject
 	/**
 	 * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
 	 */
-	protected $incoming_account;
+	protected $incoming_account = null;
 
 	/**
 	 * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
 	 */
-	protected $outgoing_account;
+	protected $outgoing_account = null;
 
 	/**
 	 * @var bool
@@ -265,6 +265,11 @@ class EmailAccount extends DomainObject
 		$data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : array();
 
 		return $data;
+	}
+
+	public function __toString()
+	{
+		return sprintf("<EmailAccount:%d> %s", $this->id, implode(', ', $this->getAllAddresses()));
 	}
 
 

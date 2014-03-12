@@ -123,9 +123,7 @@ class EmailAccountManager
 			return $acc;
 		}
 
-		if ($acc === null) {
-			throw new \OutOfBoundsException();
-		}
+		throw new \OutOfBoundsException();
 	}
 
 

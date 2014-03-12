@@ -35,19 +35,19 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\TicketEmail;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
  * Send an email to one or more agents
  *
- * @option bool template     The template to send
- * @option bool agent_ids    Agents to send to
+ * @option bool template       The template to send
+ * @option bool agent_ids      Agents to send to
+ * @option bool from_name      Who to send the email from
+ * @option bool from_account   The account to send from (falsey for ticket account)
  */
-class SendAgentEmail extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
+class SendAgentEmail extends AbstractEmailAction implements ActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -56,8 +56,69 @@ class SendAgentEmail extends AbstractContainerAwareAction implements ActionInter
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('agent_ids');
-		$options->addRequiredNames('template');
+		$options->addRequiredNames('template', 'from_name', 'from_account');
 		return $options;
+	}
+
+	/**
+	 * @param Ticket $ticket
+	 * @param array $agent_ids
+	 * @param ExecutorContextInterface $context
+	 * @return array
+	 */
+	private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
+	{
+		$agents = array();
+
+		foreach ($agent_ids as $aid) {
+			// -1 = current user
+			if ($aid == -1) {
+				if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
+					$agents[] = $context->getPersonContext();
+				}
+
+			// assigned agent
+			} else if ($aid == 'agent') {
+				if ($ticket->agent) {
+					$agents[] = $ticket->agent;
+				}
+
+			// agents of assigned team
+			} else if ($aid == 'team') {
+				if ($ticket->agent_team) {
+					foreach ($ticket->agent_team->members as $agent) {
+						$agents[] = $agent;
+					}
+				}
+
+			// followers
+			} else if ($aid == 'followers') {
+				if ($agent_followers = $ticket->getAgentParticipants()) {
+					foreach ($agent_followers as $agent) {
+						$agents[] = $agent;
+					}
+				}
+
+			// based on notify list
+			} else if ($aid == 'notify_list') {
+
+				// TODO get from notify list
+
+			// specific agents
+			} else {
+				if ($agent = $this->getContainer()->getAgentData()->get($aid)) {
+					$agent[] = $agent;
+				}
+			}
+		}
+
+		if (!$agents) {
+			return array();
+		}
+
+		$agents = array_unique($agents);
+
+		return $agents;
 	}
 
 
@@ -66,45 +127,93 @@ class SendAgentEmail extends AbstractContainerAwareAction implements ActionInter
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		#-------------------------
-		# Build list of agents to send to
-		#-------------------------
+		$agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
-		$agents = array();
-
-		foreach ($this->getActionOption('agent_ids') as $agent_id) {
-			if ($agent_id == -1) {
-				if ($ticket->agent) {
-					$agent_id = $ticket->agent->id;
-				} else {
-					continue;
-				}
-			}
-
-			$agent = $this->getContainer()->getAgentData()->get($agent_id);
-			if ($agent) {
-				$agents[] = $agent;
-			}
+		if (!$agents) {
+			$context->getLogger()->debug("[SendAgentEmail] No agents to send to");
+			return;
 		}
 
-		if (!$agent) {
+		try {
+			$from_account = $this->getFromEmailAccountOption($ticket, $context);
+		} catch (\InvalidArgumentException $e) {
+			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
 			return;
+		}
+
+		try {
+			$template = $this->getEmailTemplateOption($ticket, $context, true);
+		} catch (\InvalidArgumentException $e) {
+			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+			return;
+		}
+
+		#-------------------------
+		# Vars
+		#-------------------------
+
+		$default_vars = $this->getStandardEmailVars($ticket, $context, 'agent');
+
+		#------------------------------
+		# Sort out which template to use for 'default'
+		#------------------------------
+
+		if (!$template || $template == false || $template == 0) {
+			switch ($default_vars['type']) {
+				case 'newticket':
+					$template = 'DeskPRO:emails_agent:new-ticket.html.twig';
+					break;
+
+				case 'updated':
+					$template = 'DeskPRO:emails_agent:ticket-update.html.twig';
+					break;
+
+				case 'newreply':
+					if ($default_vars['is_new_agent_reply'] || $default_vars['is_new_agent_note']) {
+						$template = 'DeskPRO:emails_agent:new-reply-agent.html.twig';
+					} else {
+						$template = 'DeskPRO:emails_agent:new-reply-user.html.twig';
+					}
+					break;
+			}
 		}
 
 		#-------------------------
 		# Send emails
 		#-------------------------
 
-		foreach ($agents as $agent) {
-			$ticket_email = new TicketEmail(
-				$ticket,
-				$agent,
-				TicketEmail::MODE_AGENT,
-				$this->getActionOption('template')
-			);
+		$start_time = microtime(true);
+		$sent_count = 0;
 
-			$ticket_email->send($context);
+		foreach ($agents as $agent) {
+			$sent_count++;
+
+			$context->getLogger()->debug(sprintf("[SendAgentEmail] Sending to <Person:%d> %s", $agent->id, $agent->getDisplayName()));
+
+			$vars = $default_vars;
+
+			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
+				->setTicket($ticket)
+				->setToPerson($agent)
+				->setFromName($this->getActionOption('from_name'))
+				->setFromEmailAccount($from_account)
+				->setAgentMode()
+				->setTemplateName($template)
+				->setLogger($context->getLogger())
+				->buildTicketEmail();
+
+			try {
+				$ticket_email->send($vars);
+				$this->recordEmailTicketLog($ticket_email, $ticket, $context);
+			} catch (\Exception $e) {
+				$context->getLogger()->error(
+					sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+					array('exception' => $e)
+				);
+			}
 		}
+
+		$context->getLogger()->warn("[SendAgentEmail] Send %d messages in %.3fs", $sent_count, microtime(true)-$start_time);
 	}
 
 
@@ -114,6 +223,7 @@ class SendAgentEmail extends AbstractContainerAwareAction implements ActionInter
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if ($context->getVars()->get('mute_agent_emails')) {
+			$context->getLogger()->debug("[SendAgentEmail] mute_agent_emails = true");
 			return true;
 		}
 
