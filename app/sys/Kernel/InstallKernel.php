@@ -71,6 +71,18 @@ class InstallKernel extends BaseKernel
 	/**
 	 * {@inheritDoc}
 	 */
+	public function boot()
+	{
+		parent::boot();
+
+		$this->container->kernel = $this;
+		App::$container = $this->container;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function registerBundles()
 	{
 		$bundles = array(

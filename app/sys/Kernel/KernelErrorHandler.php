@@ -250,7 +250,7 @@ class KernelErrorHandler
 	 */
 	public static function tryCleanup()
 	{
-		if (class_exists('Application\DeskPRO\App')) {
+		if (class_exists('Application\DeskPRO\App', false) && App::$container) {
 			try {
 				$db = App::getDb();
 				if ($db->isTransactionActive()) {
