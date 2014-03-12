@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 
-use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -53,7 +52,7 @@ use Application\DeskPRO\App;
  * @property string $title
  * @property bool $is_enabled
  * @property string $sys_name
- * @property \Application\DeskPRO\Tickets\Filters\FilterTerms $terms
+ * @property array $terms
  * @property string $group_by
  * @property string $order_by
  * @property string $display_order
@@ -101,9 +100,9 @@ class TicketFilter extends DomainObject
 	protected $sys_name = null;
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\Filters\FilterTerms
+	 * @var array
 	 */
-	protected $terms;
+	protected $terms = array();
 
 	/**
 	 * @var string
@@ -125,11 +124,6 @@ class TicketFilter extends DomainObject
 	 * @var array
 	 */
 	protected $_results = null;
-
-	public function __construct()
-	{
-		$this->terms   = new FilterTerms();
-	}
 
 	/**
 	 * @return int
@@ -377,26 +371,6 @@ class TicketFilter extends DomainObject
 		return (string)$this->id;
 	}
 
-	/**
-	 * @param FilterTerms $terms
-	 */
-	public function setTerms($terms)
-	{
-		if (is_array($terms)) {
-			$terms_array = $terms;
-			$terms = new FilterTerms();
-
-			foreach ($terms_array as $info) {
-				$terms->addTermFromArray($info);
-			}
-		}
-
-		if (!($terms instanceof FilterTerms)) {
-			throw new \InvalidArgumentException();
-		}
-
-		$this->setModelField('terms', $terms);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -404,7 +378,6 @@ class TicketFilter extends DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
-		$data['terms'] = $this->terms->exportToArray();
 		return $data;
 	}
 
@@ -471,7 +444,7 @@ class TicketFilter extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'terms',
 			'fieldName'  => 'terms',
-			'type'       => 'object',
+			'type'       => 'array',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
