@@ -51,7 +51,7 @@ use Application\DeskPRO\Publish\RelatedContentUpdate;
 * @SWG\Resource(
 * 	resourcePath="/news",
 * 	description="Operations about News Items",
-* 	basePath="/api/news"
+* 	basePath="/api"
 * )
 */
 class NewsController extends AbstractController
