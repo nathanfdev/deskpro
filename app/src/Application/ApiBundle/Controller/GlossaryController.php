@@ -194,14 +194,13 @@ class GlossaryController extends AbstractController
 	 * 	@SWG\Operation(
 	 * 		method="DELETE",
 	 * 		summary="Deletes a glossary word by ID.",
-	 *		type="GlossaryWord",
 	 *		@SWG\Parameters (
 	 *			@SWG\Parameter(
 	 *				name="word_id",
 	 *				description="ID of the word that needs to be deleted.",
 	 *				paramType="path",
 	 *				required=true,
-	 *				type="string"
+	 *				type="integer"
 	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Glossary word not found")
