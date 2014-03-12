@@ -587,7 +587,7 @@ class FeedbackController extends AbstractController
 	 *				type="string"
 	 *			)
 	 *		),
-	 *		@SWG\ResponseMessage(code=404, message="Task not found")
+	 *		@SWG\ResponseMessage(code=404, message="Feedback not found")
 	 * 	)
 	 * )
 	 */
@@ -885,7 +885,7 @@ class FeedbackController extends AbstractController
 	 *				type="integer"
 	 *			)
 	 *		),
-	 *		@SWG\ResponseMessage(code=404, message="Task not found")
+	 *		@SWG\ResponseMessage(code=404, message="Feedback not found")
 	 * 	)
 	 * )
 	 */
