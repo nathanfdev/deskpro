@@ -332,7 +332,6 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
 		'javascripts/DeskPRO/Agent/Notifications.js',
 		'javascripts/DeskPRO/Agent/RecentTabs.js',
-		'javascripts/DeskPRO/Agent/AgentApp.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',

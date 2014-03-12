@@ -649,11 +649,21 @@ $collection->create('agent_ticketsearch_singleticketrow', array(
 	'requirements'  => array('content_id' => '\\d+'),
 ));
 
+$collection->create('agent_ticketsearch_getticketrows', array(
+	'path'       => '/ticket-search/single-ticket-row/{content_type}/{content_id}',
+	'controller' => 'AgentBundle:TicketSearch:getTicketRows',
+));
+
 $collection->create('agent_ticketsearch_runfilter', array(
 	'path'          => '/ticket-search/filter/{filter_id}',
 	'controller'    => 'AgentBundle:TicketSearch:runFilter',
 	'requirements'  => array('filter_id' => '\\d+'),
 	'options'       => array('fragment_name' => 'filter', 'fragment_type' => 'list'),
+));
+
+$collection->create('agent_ticketsearch_getsubgroupcounts', array(
+	'path'       => '/ticket-search/subgroup-counts.json',
+	'controller' => 'AgentBundle:TicketSearch:getSubgroupCounts',
 ));
 
 $collection->create('agent_ticketsearch_runnamedfilter', array(
