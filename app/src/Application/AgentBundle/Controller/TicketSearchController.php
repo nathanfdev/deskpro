@@ -1596,11 +1596,8 @@ class TicketSearchController extends AbstractController
 			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 		}
 
-		$actions = $macro->getActionsArrayForCollection($tickets);
-
 		$data = array();
 		$data['raw_actions'] = array();
-		$data['ticket_actions'] = $actions;
 
 		$raw_actions = $macro->getActionsArray();
 		if (!empty($raw_actions['new_reply'])) {

@@ -29,69 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-class TicketEmailMessage extends AbstractLogAction
+class Build1394627194 extends AbstractBuild
 {
-	protected $message;
-	protected $who_emailed;
-	protected $who_cced;
-
-	public function __construct(array $info)
+	public function run()
 	{
-		$this->message = '';
-		if (!empty($info['message'])) {
-			$this->message = $info['message'];
-		} elseif (!empty($info['template'])) {
-			$this->message = $info['template'];
-		}
-		$this->who_emailed = $info['emailed'];
-		$this->who_cced = $info['cced'];
-	}
-
-	public function getLogName()
-	{
-		return 'user_notify';
-	}
-
-	public function getLogDetails()
-	{
-		$details = array();
-		$details['message'] = $this->message;
-		$details['who_emailed'] = array();
-		$details['who_cced'] = array();
-
-		foreach ($this->who_emailed as $person) {
-			$details['who_emailed'][] = array(
-				'person_id'    => $person['id'],
-				'person_name'  => $person['display_name'],
-				'person_email' => $person['primary_email_address']
-			);
-		}
-		foreach ($this->who_cced as $part) {
-			$person = $part->person;
-			$details['who_cced'][] = array(
-				'person_id'    => $person['id'],
-				'person_name'  => $person['display_name'],
-				'person_email' => $person['primary_email_address']
-			);
-		}
-
-		if (!$details['who_emailed'] && !$details['who_cced']) {
-			return array();
-		}
-
-		return $details;
-	}
-
-	public function getEventType()
-	{
-		return 'ticket_email_message';
+		$this->execMutateSql("DROP TABLE IF EXISTS ticket_changetracker_logs");
 	}
 }

@@ -39,8 +39,6 @@ use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-
 use Orb\Util\Dates;
 use Orb\Util\Numbers;
 use Orb\Util\Arrays;
@@ -87,7 +85,7 @@ class TicketTerms
 	protected $term_ids_map = array();
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+	 * @var null
 	 */
 	protected $tracker = null;
 
@@ -194,7 +192,6 @@ class TicketTerms
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @param TicketChangeTracker|null $tracker
 	 * @return bool
 	 */
 	public function doesTicketMatchAny(Entity\Ticket $ticket)
