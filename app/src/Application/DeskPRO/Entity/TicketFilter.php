@@ -250,6 +250,10 @@ class TicketFilter extends DomainObject
 	public function getTitle()
 	{
 		if ($this->sys_name) {
+			if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing') {
+				return $this->sys_name;
+			}
+
 			$tr = App::getTranslator();
 
 			switch ($this->sys_name) {

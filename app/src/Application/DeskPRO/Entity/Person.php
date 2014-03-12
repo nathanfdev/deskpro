@@ -644,6 +644,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->getHelperManager()->getHelper($name);
 	}
 
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function isHelperLoader($name)
+	{
+		return $this->getHelperManager()->hasHelper($name);
+	}
+
 	protected function _onNotCallable($name, $arguments)
 	{
 		if ($this->_helper_manager) {
