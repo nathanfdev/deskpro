@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
@@ -102,12 +103,26 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 			// based on notify list
 			} else if ($aid == 'notify_list') {
 
-				// TODO get from notify list
+				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
+				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
+				$list_builder  = new AgentNotifyListBuilder(
+					$ticket,
+					$change_set,
+					$this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
+				);
+
+				$notify = $list_builder->genNotifyList();
+
+				foreach ($notify as $n) {
+					if (in_array('email', $n['types'])) {
+						$agents[] = $n['agent'];
+					}
+				}
 
 			// specific agents
 			} else {
 				if ($agent = $this->getContainer()->getAgentData()->get($aid)) {
-					$agent[] = $agent;
+					$agents[] = $agent;
 				}
 			}
 		}

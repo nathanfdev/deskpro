@@ -36,10 +36,12 @@ namespace Application\DeskPRO\Tickets\Notifications;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
 use Application\DeskPRO\EntityRepository\TicketFilterSubscription;
+use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
+use Application\DeskPRO\Tickets\Filters\FilterChangeSet;
 use Monolog\Logger;
 
 class AgentNotifyListBuilder implements PersonContextInterface
@@ -55,9 +57,9 @@ class AgentNotifyListBuilder implements PersonContextInterface
 	private $state;
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\Filters\FilterChangeDetector
+	 * @var \Application\DeskPRO\Tickets\Filters\FilterChangeSet
 	 */
-	private $filter_detector;
+	private $filter_changes;
 
 	/**
 	 * @var \Monolog\Logger
@@ -76,15 +78,17 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
 	/**
 	 * @param Ticket $ticket
-	 * @param FilterChangeDetector $filter_detector
+	 * @param FilterChangeSet $filter_changes
 	 * @param TicketFilterSubscription $filter_sub_repos
 	 */
-	public function __construct(Ticket $ticket, FilterChangeDetector $filter_detector, TicketFilterSubscriptionRepos $filter_sub_repos)
+	public function __construct(Ticket $ticket, FilterChangeSet $filter_changes, TicketFilterSubscriptionRepos $filter_sub_repos)
 	{
 		$this->ticket          = $ticket;
 		$this->state           = $ticket->getStateChangeRecorder();
-		$this->filter_detector = $filter_detector;
+		$this->filter_changes  = $filter_changes;
 		$this->subs_repos      = $filter_sub_repos;
+
+		$this->logger = new NullLogger();
 	}
 
 
@@ -181,7 +185,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 		$agent_subs  = $this->getMatchingSubscriptions();
 		$notify_list = array();
 
-		foreach ($this->filter_detector->getFilterChanges() as $filter_change) {
+		foreach ($this->filter_changes->getChangedFilters() as $filter_change) {
 			$filter = $filter_change->getFilter();
 			$agents_with_newmatch = array();
 
@@ -226,16 +230,17 @@ class AgentNotifyListBuilder implements PersonContextInterface
 	/**
 	 * @param array $notify_list
 	 * @param Person $agent
-	 * @param Filter $filter
+	 * @param TicketFilter $filter
 	 * @param $change_type
 	 * @param array $notify_types
 	 */
-	private function addTypesToList(array &$notify_list, Person $agent, Filter $filter, $change_type, array $notify_types)
+	private function addTypesToList(array &$notify_list, Person $agent, TicketFilter $filter, $change_type, array $notify_types)
 	{
 		if (!isset($notify_list[$agent->id])) {
 			$notify_list[$agent->id] = array(
 				'agent'       => $agent,
-				'filter_subs' => array()
+				'filter_subs' => array(),
+				'types'       => array()
 			);
 		}
 		if (!isset($notify_list[$agent->id]['filter_subs'][$filter->id])) {
@@ -250,6 +255,9 @@ class AgentNotifyListBuilder implements PersonContextInterface
 		$notify_list[$agent->id]['filter_subs'][$filter->id]["is_$change_type"] = true;
 		$notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_merge($notify_list[$agent->id][$filter->id]['types'], $notify_types);
 		$notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_unique($notify_list[$agent->id][$filter->id]['types']);
+
+		$notify_list[$agent->id]['types'] = array_merge($notify_list[$agent->id]['types'], $notify_types);
+		$notify_list[$agent->id]['types'] = array_unique($notify_list[$agent->id]['types']);
 	}
 
 
@@ -366,16 +374,16 @@ class AgentNotifyListBuilder implements PersonContextInterface
 		$for_agent_ids  = array();
 		$for_filter_ids = array();
 
-		foreach ($this->filter_detector->getFilterMatches() as $filter_id => $changes) {
+		foreach ($this->filter_changes->getChangedFilters() as $filter_id => $changes) {
 			$for_filter_ids[] = $filter_id;
 
-			foreach ($changes['orig_match'] as $agent) {
+			foreach ($changes->getAgentsWithOriginalMatch() as $agent) {
 				if ($this->person_context && $this->person_context->id == $agent->id) {
 					continue;
 				}
 				$for_agent_ids[] = $agent->id;
 			}
-			foreach ($changes['new_match'] as $agent) {
+			foreach ($changes->getAgentsWithNewMatch() as $agent) {
 				if ($this->person_context && $this->person_context->id == $agent->id) {
 					continue;
 				}

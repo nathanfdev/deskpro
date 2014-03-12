@@ -589,6 +589,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Tickets\Filters\FilterChangeDetector
+	 */
+	public function getTicketFilterChangeDetector()
+	{
+		return $this->getSystemService('ticket_filter_change_detector_service');
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Products\Products
 	 */
 	public function getProducts()
