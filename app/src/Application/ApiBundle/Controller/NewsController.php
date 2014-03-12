@@ -69,28 +69,28 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="Category ID that needs to be searched",
 	 *				paramType="query",
-	 *				required="false",
+	 *				required=false,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="category_id_specific",
 	 *				description="Specific Category ID that needs to be searched",
 	 *				paramType="query",
-	 *				required="false",
+	 *				required=false,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="label",
 	 *				description="News label that needs to be searched",
 	 *				paramType="query",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="status",
 	 *				description="News status that needs to be searched",
 	 *				paramType="query",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
 	 *			)
 	 *		)
@@ -171,7 +171,7 @@ class NewsController extends AbstractController
 	 *				name="body",
 	 *				description="News Object to Add",
 	 *				paramType="body",
-	 *				required="true",
+	 *				required=true,
 	 *				type="News"
 	 *			)
 	 *		)
@@ -252,7 +252,7 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be fetched",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -387,7 +387,7 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be deleted",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -418,7 +418,7 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -446,7 +446,7 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -455,7 +455,7 @@ class NewsController extends AbstractController
 	 *				name="content",
 	 *				description="Comment content",
 	 *				paramType="query",
-	 *				required="true",
+	 *				required=true,
 	 *				type="string"
 	 *			)
 	 *		),
@@ -464,7 +464,7 @@ class NewsController extends AbstractController
 	 *				name="person_id",
 	 *				description="ID of the person making the comment",
 	 *				paramType="query",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -473,7 +473,7 @@ class NewsController extends AbstractController
 	 *				name="status",
 	 *				description="status of the comment",
 	 *				paramType="query",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -528,14 +528,14 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="comment_id",
 	 *				description="ID of the comment that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -565,28 +565,28 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="comment_id",
 	 *				description="ID of the comment that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="status",
 	 *				description="status of the comment",
 	 *				paramType="query",
-	 *				required="false",
+	 *				required=false,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="content",
 	 *				description="Comment content",
 	 *				paramType="query",
-	 *				required="false",
+	 *				required=false,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -636,14 +636,14 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="comment_id",
 	 *				description="ID of the comment that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -679,7 +679,7 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for labels",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -705,7 +705,7 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -714,7 +714,7 @@ class NewsController extends AbstractController
 	 *				name="label",
 	 *				description="Label",
 	 *				paramType="query",
-	 *				required="true",
+	 *				required=true,
 	 *				type="string"
 	 *			)
 	 *		),
@@ -754,14 +754,14 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="label",
 	 *				description="label that needs to be searched",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -792,14 +792,14 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="comment_id",
 	 *				description="ID of the comment that needs to be searched for comments",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -942,7 +942,7 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category that needs to be fetched",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -1047,7 +1047,7 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category that needs to be deleted",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -1079,7 +1079,7 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category that needs to be searched",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -1137,7 +1137,7 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category that needs to be searched",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -1163,14 +1163,14 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category where the new group needs to be added",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="id",
 	 *				description="ID of the group to add access for.",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -1221,14 +1221,14 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category that needs to be checked",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="group_id",
 	 *				description="ID of the group that needs to be checked",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
@@ -1262,14 +1262,14 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category that needs to be checked",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="group_id",
 	 *				description="ID of the group that needs to be checked",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			)
 	 *		),
