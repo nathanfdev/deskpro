@@ -40,10 +40,10 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;
+use Application\DeskPRO\Monolog\Logger as DpLogger;
 
 class TicketManager
 {
@@ -82,12 +82,35 @@ class TicketManager
 
 
 	/**
+	 * Create a new ticket object. When you are ready to persist it, call saveTicket().
+	 *
+	 * @return Ticket
+	 */
+	public function createTicket()
+	{
+		$ticket = new Ticket();
+		$ticket->disableAutoTicketProcess();
+
+		return $ticket;
+	}
+
+
+	/**
+	 * Finds a ticket and returns it.
+	 *
+	 * NOTE: This will disable auto-ticket processing,
+	 * which means if you make changes, you need to use the saveTicket() method to
+	 * have those changes run the other related systems (like triggers etc).
+	 *
 	 * @param int $id
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	public function getTicket($id)
 	{
 		$ticket = $this->em->find('DeskPRO:Ticket', $id);
+		if ($ticket) {
+			$ticket->disableAutoTicketProcess();
+		}
 		return $ticket;
 	}
 
@@ -367,10 +390,14 @@ class TicketManager
 	 * @param array $event_method_options
 	 * @return ExecutorContextInterface
 	 */
-	public function createAgentExecutorContext(Person $agent, $event_type, $event_method, array $event_method_options = array())
+	public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->container, $this->createNewLogger());
-		$context->setPersonContext($agent);
+
+		if ($agent) {
+			$context->setPersonContext($agent);
+		}
+
 		$context->setEventPerformer('agent');
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method, $event_method_options);
@@ -385,10 +412,14 @@ class TicketManager
 	 * @param array $event_method_options
 	 * @return ExecutorContextInterface
 	 */
-	public function createUserExecutorContext(Person $user, $event_type, $event_method, array $event_method_options = array())
+	public function createUserExecutorContext(Person $user = null, $event_type, $event_method, array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->createNewLogger());
-		$context->setPersonContext($user);
+
+		if ($user) {
+			$context->setPersonContext($user);
+		}
+
 		$context->setEventPerformer('user');
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method, $event_method_options);
@@ -415,13 +446,11 @@ class TicketManager
 	 */
 	protected function createNewLogger()
 	{
-		$logger = new Logger('tickets');
+		$logger = new DpLogger('tickets');
 
-		$formatter = new LineFormatter("[%datetime%] %message%\n");
-		$stream_handler = new StreamHandler('php://stdout', 'DEBUG');
-		$stream_handler->setFormatter($formatter);
+		$null = new NullHandler();
+		$logger->pushHandler($null);
 
-		$logger->pushHandler($stream_handler);
 		return $logger;
 	}
 }

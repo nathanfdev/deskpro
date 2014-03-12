@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Tickets\ExecutorContext;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -510,6 +511,30 @@ class Ticket extends DomainObject
 		$this['date_status'] = new \DateTime();
 
 		$this['auth'] = Strings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
+
+		$this->auto_ticket_process = true;
+	}
+
+	/**
+	 * By default, all ticket chagnes go through the full ticket processing routines
+	 * (triggers, filters etc) automatically on every flush.
+	 *
+	 * This is mostly for legacy reasons though. It's recommneded you always handle it yourself.
+	 * So if you are manually managing the ticket will save the ticket through the TicketManager,
+	 * you should disable auto-processing.
+	 */
+	public function disableAutoTicketProcess()
+	{
+		$this->auto_ticket_process = false;
+	}
+
+	/**
+	 * Enable auto ticket processing
+	 * @see disableAutoTicketProcess
+	 */
+	public function enableAutoTicketProcess()
+	{
+		$this->auto_ticket_process = true;
 	}
 
 	/**
@@ -2937,6 +2962,51 @@ class Ticket extends DomainObject
 	public function _setOriginalId()
 	{
 		$this->_original_id = $this->id;
+		$this->auto_ticket_process = true;
+	}
+
+	public function _autoProcessTicket()
+	{
+		if ($this->auto_ticket_process) {
+			$tm = App::$container->getTicketManager();
+
+			$context = new ExecutorContext();
+			if (App::getCurrentPerson()) {
+				$context->setPersonContext(App::getCurrentPerson(), true);
+			}
+
+			if (defined('DP_INTERFACE')) {
+				switch (DP_INTERFACE) {
+					case 'admin':
+					case 'agent':
+						$context = $tm->createAgentExecutorContext(
+							App::getCurrentPerson(),
+							'web'
+						);
+						break;
+					case 'user':
+						$context = $tm->createUserExecutorContext(
+							App::getCurrentPerson(),
+							'web'
+						);
+						break;
+					case 'api':
+						$context = $tm->createAgentExecutorContext(
+							App::getCurrentPerson(),
+							'api'
+						);
+						break;
+					default:
+						$context = $tm->createSystemExecutorContext(
+							App::getCurrentPerson(),
+							'api'
+						);
+						break;
+				}
+			}
+
+			$tm->saveTicket($this, $context);
+		}
 	}
 
 	public static function loadMetadata(ClassMetadata $metadata)
@@ -2946,6 +3016,8 @@ class Ticket extends DomainObject
 		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
 		$metadata->addLifecycleCallback('_setOriginalId', 'postLoad');
+		$metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
+		$metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
 		$metadata->setPrimaryTable(array(
 			'name'    => 'tickets',
 			'indexes' => array(
