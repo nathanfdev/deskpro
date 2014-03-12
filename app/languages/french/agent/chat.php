@@ -1,0 +1,15 @@
+<?php return array(
+	'agent.chat.chat_history'                                              => 'Historique du chat',
+	'agent.chat.filter_title_mine'                                         => 'Mes chats',
+	'agent.chat.invite_another_agent'                                      => 'Inviter un autre agent',
+	'agent.chat.join_chat'                                                 => 'Rejoindre le chat',
+	'agent.chat.new_chat'                                                  => 'Nouveau chat',
+	'agent.chat.new_ticket_by'                                             => 'Nouveau ticket par {{name}} ({{email}})',
+	'agent.chat.no_department'                                             => 'Aucun département',
+	'agent.chat.no_online_agents'                                          => 'Il n&#039;y a pas d&#039;autres agents connectés',
+	'agent.chat.offline'                                                   => 'Hors ligne',
+	'agent.chat.online'                                                    => 'Connecté',
+	'agent.chat.other_agents'                                              => 'Autres agents',
+	'agent.chat.title_active_chats'                                        => 'Tous les chats ouverts',
+	'agent.chat.title_leave_chat_prompt'                                   => 'Quitter le chat?',
+);

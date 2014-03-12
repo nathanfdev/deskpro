@@ -68,6 +68,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 			$email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
 		}
 
+		$fwd_footer = '';
+		$fwd_footer_html = '';
 		if ($fwd_for) {
 			$fwd_footer = "\n\n----- Forwarded Message -----\nFrom: $fwd_for\nSubject: $subject\n\nOriginal message from the user\n\n";
 			$fwd_footer_html = "<div>" . nl2br($fwd_footer) . "</div>";

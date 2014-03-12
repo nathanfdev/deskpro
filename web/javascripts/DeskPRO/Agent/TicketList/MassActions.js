@@ -326,7 +326,16 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		this.textarea = textarea;
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
+
+			var sig = this.wrapper.find('textarea.signature-value-html').val() || "";
+			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
+
+			if (sig) {
+				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
+			}
+
 			isWysiwyg = true;
+			self.getElById('is_html_reply').val('1');
 
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
@@ -337,7 +346,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
 					obj.addBtnSeparatorAfter('dp_attach');
 
-					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+					var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
 					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
 					snippetBtn.on('click', function(ev) {
 						Orb.cancelEvent(ev);
@@ -530,6 +539,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 	},
 
 	getActionFormValues: function(appendArray, isApply, info) {
+		var self = this;
 		appendArray = appendArray || [];
 
 		if (!info) info = {};
@@ -567,8 +577,19 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			}
 
 			// Dont send reply type when we're just fetching previews
-			if (!isApply && name == 'actions[reply]') {
+			if (!isApply && name == 'actions[reply][reply_text]') {
 				return;
+			}
+
+			// Empty reply, dont add it
+			if (name == 'actions[reply][reply_text]') {
+				var copy = $.trim(self.wrapper.find('.ticketreply').find('.redactor_editor').text()).replace(/\s/g, ' ');
+				var tmp = $('<div/>').html(self.wrapper.find('textarea.signature-value-html').val());
+				var sig = $.trim(tmp.text()).replace(/\s/g, ' ');
+
+				if (!copy || copy == sig) {
+					return;
+				}
 			}
 
 			appendArray.push({

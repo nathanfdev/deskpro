@@ -371,7 +371,7 @@ class MainController extends AbstractController
 		// We dont know about past ref formats, so just always try to find
 		// a ref if its a valid form
 		if (preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
-			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef($q);
+			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef(strtoupper($q));
 			if ($ticket) {
 				if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 					$results['ticket'][] = $ticket;
@@ -409,7 +409,7 @@ class MainController extends AbstractController
 		});
 
 		$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
-		$after_id = $after_id - 8000;
+		$after_id = $after_id - 10000;
 
 		if ($words) {
 			$db = App::getDbRead();
@@ -518,7 +518,7 @@ class MainController extends AbstractController
 							$email = substr($q, 1);
 							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
-							if ($this->settings->get('core_tablecounts.people') < 15000) {
+							if ($this->settings->get('core_tablecounts.people') < 150000) {
 								$people_ids = $this->db->fetchAllCol("
 									SELECT people.id
 									FROM people
@@ -543,7 +543,7 @@ class MainController extends AbstractController
 						} else {
 							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
-							if ($this->settings->get('core_tablecounts.people') < 15000) {
+							if ($this->settings->get('core_tablecounts.people') < 150000) {
 								$people_ids = $this->db->fetchAllCol("
 									SELECT people.id
 									FROM people
@@ -590,7 +590,7 @@ class MainController extends AbstractController
 					$q = preg_replace('#\s+#', ' ', $q);
 					$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
-					if ($this->settings->get('core_tablecounts.people') < 15000) {
+					if ($this->settings->get('core_tablecounts.people') < 150000) {
 						$people_ids = $this->db->fetchAllCol("
 							SELECT people.id
 							FROM people
@@ -610,9 +610,10 @@ class MainController extends AbstractController
 							SELECT people.id
 							FROM people
 							LEFT JOIN tickets ON (tickets.person_id = people.id)
+							LEFT JOIN tickets_participants ON (tickets_participants.person_id = people.id)
 							LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 							WHERE
-								tickets.id > ?
+								(tickets.id > ? OR tickets_participants.ticket_id > ?)
 								AND (
 									people.name LIKE ?
 									OR people.first_name LIKE ?
@@ -622,7 +623,7 @@ class MainController extends AbstractController
 								)
 							ORDER BY tickets.id DESC
 							LIMIT 15
-						", array($after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
+						", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
 					}
 
 					if ($people_ids) {

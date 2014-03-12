@@ -17,7 +17,7 @@
 	'user.defaults.feedback_type_bug-report'                               => 'Reportar Erro',
 	'user.defaults.feedback_type_feature-request'                          => 'Solicitação de recurso',
 	'user.defaults.feedback_type_suggestion'                               => 'Sugestão',
-	'user.defaults.language_english'                                       => 'Inglês',
+	'user.defaults.language_english'                                       => 'Portuguese',
 	'user.defaults.news_category_general'                                  => 'Geral',
 	'user.defaults.news_example_content'                                   => 'Isto é um exemplo de postar notícia. Esteja à vontade de o editar ou apagar do interface do agente.',
 	'user.defaults.news_example_title'                                     => 'Exemplo de postar notícia',

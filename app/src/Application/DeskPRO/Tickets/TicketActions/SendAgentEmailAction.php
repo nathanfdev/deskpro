@@ -143,6 +143,9 @@ class SendAgentEmailAction extends AbstractAction
 		$page = $ticket_display->getDepartmentPage($ticket->getDepartmentId());
 		$page_display = $page->getPageDisplay('default')->data;
 
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
 		foreach ($agent_ids as $agent_id) {
 
 			/** @var $agent \Application\DeskPRO\Entity\Person */
@@ -199,6 +202,7 @@ class SendAgentEmailAction extends AbstractAction
 			$vars['ticket'] = $ticket;
 			$vars['person'] = $agent;
 			$vars['tac'] = $tac;
+			$vars['custom_fields'] = $custom_fields;
 
 			$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $agent);
 			$vars['ticketdisplay'] = $ticketdisplay;

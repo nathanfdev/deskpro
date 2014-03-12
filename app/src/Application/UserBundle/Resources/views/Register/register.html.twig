@@ -29,6 +29,7 @@
 </script>
 {% endblock %}
 {% block content %}
+{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
 
 <div class="dp-register-page">
 
@@ -109,7 +110,7 @@
 								{% if app.getSetting('core.user_mode') != 'closed' %}<a style="margin-{% if is_rtl() %}right{% else %}left{% endif %}: 9px;" href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a>{% endif %}
 							</div>
 							<div>
-								<input type="password" value="" name="password" size="20" />
+								<input type="password" autocomplete="off" value="" name="password" size="20" />
 							</div>
 						</td>
 						<td style="text-align: center; vertical-align: middle;" valign="middle">
@@ -132,7 +133,7 @@
 			</header>
 			<article id="user_type_exist_pass_form" class="dp-well dp-well-light" {% if this_page != 'reset' %}style="display:none"{% endif %}>
 				<form action="{{ path('user_login_resetpass_send') }}" class="form login" method="post" class="with-form-validator">
-					{{ form_token() }}
+					{{ form_token('user_login') }}
 					<table cellspacing="0" cellpadding="0">
 						<tr>
 							<td width="40%">
@@ -172,6 +173,12 @@
 			<article id="user_type_new_form" class="dp-well dp-well-light" {% if this_page != 'register' %}style="display:none"{% endif %}>
 				<form action="{{ path('user_register') }}" method="post">
 					{{ form_token() }}
+					<div class="dp-its-a-trap">
+						{# Spam trap: If these fields contain values when submitted, the system knows a bot submitted the form #}
+						<input type="text" name="first_name" value="" />
+						<input type="text" name="last_name" value="" />
+						<input type="text" name="email" value="" />
+					</div>
 					<input type="hidden" name="process" value="1" />
 
 					<div class="dp-control-group {% if error_fields['name'] %}dp-error{% endif %}">

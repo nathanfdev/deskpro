@@ -14,7 +14,7 @@
 	<small>
 		{% if is_new_ticket %}
 			{% if ticket.person.id != performer.id %}
-				{{ phrase('agent.tickets.notify_new_ticket_by_for', {name: performer.name, user: ticket.person.name ~ '(' ~ ticket.person.email_address ~ ')' }) }}
+				{{ phrase('agent.tickets.notify_new_ticket_by_for', {name: performer.name, user: ticket.person.name ~ ' (' ~ ticket.person.email_address ~ ')' }) }}
 			{% else %}
             	{{ phrase('agent.chat.new_ticket_by', {'name':performer.name,'email':performer.primary_email_address}) }}
 			{% endif %}

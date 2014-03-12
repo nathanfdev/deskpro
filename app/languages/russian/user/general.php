@@ -46,6 +46,7 @@
 	'user.general.upload_allowed_exts'                                     => 'Допустимые форматы: {{types}}',
 	'user.general.upload_maxsize'                                          => 'Максимальный размер файла: {{size}}',
 	'user.general.uploading'                                               => 'Отправка:',
+	'user.general.wait_attach_loading'                                     => 'Дождитесь окончания загрузки...',
 	'user.general.you'                                                     => 'Вы',
 	'user.general.your_comment_agent_validation'                           => 'Перед тем, как быть опубликованным, Ваш комментарий должен быть утвержден нашим сотрудником',
 	'user.general.your_email_address'                                      => 'Адрес Вашей электронной почты',

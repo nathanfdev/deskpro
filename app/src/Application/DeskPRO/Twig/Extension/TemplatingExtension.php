@@ -82,6 +82,7 @@ class TemplatingExtension extends \Twig_Extension
 			'url_full'                         => new \Twig_Function_Method($this, 'urlFull'),
 			'url_display'                      => new \Twig_Function_Method($this, 'urlDisplay'),
 			'helpdesk_url'                     => new \Twig_Function_Method($this, 'helpdeskUrl'),
+			'is_helpdesk_path'                 => new \Twig_Function_Method($this, 'isHelpdeskPath'),
 			'deskpro_debug'                    => new \Twig_Function_Method($this, 'isDebugMode'),
 			'render_custom_field'              => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
 			'render_custom_field_text'         => new \Twig_Function_Method($this, 'renderCustomFieldText'),
@@ -144,6 +145,11 @@ class TemplatingExtension extends \Twig_Extension
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 			'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
 
+			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
+			'ng_static_var'                    => new \Twig_Function_Method($this, 'ngStaticVar', array('is_safe' => array('html'))),
+			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
+
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
             'path' => new \Twig_Function_Method($this, 'getPath'),
@@ -165,7 +171,9 @@ class TemplatingExtension extends \Twig_Extension
 			'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
 			'date'                   => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
+			'to_jqueryui_dateformat' => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
 			'time_length'            => new \Twig_Filter_Method($this, 'timeLength'),
+			'momentjs_format'        => new \Twig_Filter_Method($this, 'momentJsFormat'),
 			'slugify'                => new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words'        => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
 			'strip_linebreaks'       => new \Twig_Filter_Method($this, 'stripLinebreaks'),
@@ -571,7 +579,7 @@ class TemplatingExtension extends \Twig_Extension
 		return Strings::slugifyTitle($str);
 	}
 
-	public function userDate($context, $date, $format = 'F j, Y H:i', $timezone = null)
+	public function userDate($context, $date, $format = 'fulltime', $timezone = null)
 	{
 		// Backwards compat calls: args shifted back one
 		if (!is_array($context)) {
@@ -659,9 +667,85 @@ class TemplatingExtension extends \Twig_Extension
 		return $this->container->getTranslator()->date($format, $date, $prefix);
 	}
 
+	public function jqueryUiDateFormat($format) {
+		// Map of PHP symbols to jQuery date format symbols
+		static $php_sym = array(
+			'd' => 'dd', 'D' => 'D', 'j' => 'd', 'l' => 'DD',
+			'N' => '', 'S' => '', 'w' => '', 'z' => 'o',
+			'W' => '',
+			'F' => 'MM', 'm' => 'mm', 'M' => 'M', 'n' => 'm',
+			't' => '',
+			'L' => '', 'o' => '', 'Y' => 'yy', 'y' => 'y',
+			'a' => '', 'A' => '', 'B' => '', 'g' => '',
+			'G' => '', 'h' => '', 'H' => '', 'i' => '',
+			's' => '', 'u' => ''
+		);
+
+		$format_len = strlen($format);
+		$new_format = array();
+		$escaping   = false;
+
+		for($i = 0; $i < $format_len; $i++) {
+			$char = $format[$i];
+			if($char === '\\') {
+				$i++;
+				if($escaping) {
+					$new_format[] = $format[$i];
+				} else {
+					$new_format[] = '\'' . $format[$i];
+				}
+				$escaping = true;
+			} else {
+				if($escaping) {
+					$new_format[] = "'";
+					$escaping = false;
+				}
+				if(isset($php_sym[$char])) {
+					$new_format[] = $php_sym[$char];
+				} else {
+					$new_format[] = $char;
+				}
+			}
+		}
+
+		return implode('', $new_format);
+	}
+
 	public function timeLength($length, $max_unit = null)
 	{
 		return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit);
+	}
+
+	public function momentJsFormat($format)
+	{
+		switch ($format) {
+			case 'full':
+				//D, jS M Y
+				$format = App::getSetting('core.date_full');
+				break;
+
+			case 'fulltime':
+				//D, jS M Y g:ia
+				$format = App::getSetting('core.date_fulltime');
+				break;
+
+			case 'day':
+				//M j Y
+				$format = App::getSetting('core.date_day');
+				break;
+
+			case 'day_short':
+				//M j
+				$format = App::getSetting('core.date_day_short');
+				break;
+
+			case 'time':
+				//g:i a
+				$format = App::getSetting('core.date_time');
+				break;
+		}
+
+		return \Application\DeskPRO\Util::momentJsDateFormat($format);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')
@@ -886,6 +970,23 @@ class TemplatingExtension extends \Twig_Extension
 	public function helpdeskUrl($path)
 	{
 		return App::getSetting('core.deskpro_url') . ltrim($path, '/');
+	}
+
+	public function isHelpdeskPath($path)
+	{
+		$pathinfo = @parse_url($path);
+		if (!$pathinfo || !empty($pathinfo['host'])) {
+			return false;
+		}
+
+		$path = Strings::canonicalPath($pathinfo['path']);
+		$root_path = '/' . trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
+
+		if (strpos($path, $root_path) !== 0) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public function urlFragment($name, array $parameters = array())
@@ -1421,6 +1522,16 @@ class TemplatingExtension extends \Twig_Extension
 		return json_encode($positions);
 	}
 
+	public function ngBind($var)
+	{
+		return '<span ng-bind="' . htmlspecialchars($var) . '"></span>';
+	}
+
+	public function ngStaticVar($var)
+	{
+		return '<span bo-bind="'.htmlspecialchars($var).'"></span>';
+	}
+
 	public function ngIncTpl($context, $tpl_name, $save_name = null)
 	{
 		$name = $tpl_name;
@@ -1434,7 +1545,7 @@ class TemplatingExtension extends \Twig_Extension
 
 		if (!$save_name) {
 			$save_name = $tpl_name;
-			$save_name = preg_replace('#^AdminInterfaceBundle:#', '', $save_name);
+			$save_name = preg_replace('#^(AdminInterface|Admin|Agent)Bundle:#', '$1/', $save_name);
 			$save_name = str_replace(':', '/', $save_name);
 			$save_name = preg_replace('#\.twig$#', '', $save_name);
 		}

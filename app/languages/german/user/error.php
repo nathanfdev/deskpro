@@ -12,6 +12,8 @@
 	'user.error.form_choice_max'                                           => 'Bitte wählen Sie höchstens eine Option|Bitte wählen Sie höchstens {{count}} Optionen',
 	'user.error.form_choice_min'                                           => 'Bitte wählen Sie mindestens eine Option|Bitte wählen Sie mindestens {{count}} Optionen',
 	'user.error.form_date_invalid'                                         => 'Bitte geben Sie ein gültiges Datum ein',
+	'user.error.form_date_invalid_dow'                                     => 'Der Wochentag den Sie ausgewählt haben ist nicht erlaubt',
+	'user.error.form_date_invalid_range'                                   => 'Das Datum das Sie ausgewählt haben liegt nicht im erlaubten Bereich',
 	'user.error.form_required'                                             => 'Dieses Feld ist erforderlich',
 	'user.error.form_text_max'                                             => 'Bitte geben Sie maximal ein Zeichen ein|Bitte geben Sie maximal {{count}} Zeichen ein',
 	'user.error.form_text_min'                                             => 'Bitte geben Sie mindestens ein Zeichen ein|Bitte geben Sie mindestens {{count}} Zeichen ein',

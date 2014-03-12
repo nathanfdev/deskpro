@@ -4537,10 +4537,13 @@ blockquote {
 	background-color: #fff;
 	border: 1px solid #888;
 	padding: 0;
-	.rounded(4px);
+	.rounded(2px);
+	z-index: 10000;
 
-	-webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.2);
-	box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.2);
+	max-width: 400px;
+
+	-webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
+	box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
 
 	font-size: 12px;
 
@@ -4555,6 +4558,20 @@ blockquote {
 	i {
 		margin-right: 2px;
 		font-size: 11px;
+	}
+
+	.previewtext-row {
+		line-height: 130%;
+		margin: 8px;
+		overflow: auto;
+
+		cite {
+			font-style: normal;
+			text-decoration: none;
+			font-weight: bold;
+			margin-right: 15px;
+			display: inline-block;
+		}
 	}
 }
 

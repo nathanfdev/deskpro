@@ -1,0 +1,94 @@
+<div class="list-pane-instance">
+	<div class="list-pane-header">
+		<h1><div><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} Tickets</div></h1>
+	</div>
+	<div class="list-pane-content list-pane-view with-header with-subheader with-footer" ng-class="{'with-alert-subheader': hasUnloadedUpdates}">
+		<header class="view-header">
+			<div ng-non-bindable>{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}</div>
+			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
+		</header>
+		<header class="view-subheader">
+			<header class="list-selection-bar">
+				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" ng-change="checkAllTickets(checkedTicketsToggle)" />
+				{{ phrase('agent.general.x_selected', {'num_placeholder': '{{ checkedTicketsCount }}'}, true) }}
+
+				<div class="realtime-indicator half-realtime" ng-show="halfrealtime && massActionsOpen">
+					<em>Limited real-time updating</em>
+					<div dp-sticky-tip offset-top="18" right-align>
+						<div class="previewtext-row" style="max-width: 200px;">
+							While you are working with mass actions, no <em>new</em> tickets will appear in this list.
+							<br/><br/>
+							Updates to tickets <em>already</em> in the list will still appear in real-time as they change.
+						</div>
+					</div>
+				</div>
+				<div class="realtime-indicator" ng-class="{'realtime-on': realtime}" ng-hide="halfrealtime || massActionsOpen">
+					<span class="status" ng-click="toggleRealtimeUpdates();">
+						<div ng-show="realtime">
+							<em>Real-time updates are enabled</em>
+							<i class="icon-retweet"></i>
+							<div dp-sticky-tip offset-top="25" right-align>
+								<div class="previewtext-row">
+									With real-time updates enabled, this list will update with new information as
+									tickets are updated in the helpdesk.
+								</div>
+							</div>
+						</div>
+						<div ng-show="!realtime">
+							<em>Real-time updates are disabled</em>
+							<i class="icon-retweet"></i>
+							<div dp-sticky-tip offset-top="25" right-align>
+								<div class="previewtext-row">
+									With real-time updates disabled, this list will remain static and unchanged.
+									You will see a warning at the top of the list when changes have been detected,
+									but you will need to manually refresh the list to see updates.
+								</div>
+							</div>
+						</div>
+					</span>
+				</div>
+
+				<div ng-non-bindable>
+					{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
+				</div>
+			</header>
+		</header>
+		<header class="view-alert-subheader" ng-show="hasUnloadedUpdates">
+			There have been updates since you loaded this list.
+			<button class="clean-white" ng-click="refreshCursor();">
+				<span ng-hide="refreshCursorLoading">Refresh List</span>
+				<span ng-show="refreshCursorLoading"><i class="spinner-flat"></i></span>
+			</button>
+		</header>
+		<article class="view-body">
+			<div ng-non-bindable>
+				{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
+			</div>
+
+			<div style="padding: 20px; text-align: center;" ng-show="refreshCursorLoading">
+				<i class="spinner-circle-32"></i>
+			</div>
+
+			<section class="list-listing" ng-hide="refreshCursorLoading" ng-class="{'list-animation': isLoaded && !pauseListAnim}">
+				<div
+					bindonce
+					ng-repeat="ticket in tickets track by ticket.id"
+				>
+					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" watch-vars="['ticket']" watch-vars-deep="['display_fields']">
+						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
+					</script>
+				</div>
+			</section>
+
+		</article>
+		<footer class="view-footer results-nav">
+			<div class="cursor">
+				Showing {{ ng_bind('pageCursorStart') }} to {{ ng_bind('pageCursorEnd') }} of {{ ng_bind('ticketCount') }}
+			</div>
+			<ul class="pagenav" ng-class="{'no-prev': !hasPrevPage, 'no-next': !hasNextPage}">
+				<li class="prev" ng-click="loadPrevCursorPage();"></li>
+				<li class="next" ng-click="loadNextCursorPage();"></li>
+			</ul>
+		</footer>
+	</div>
+</div>

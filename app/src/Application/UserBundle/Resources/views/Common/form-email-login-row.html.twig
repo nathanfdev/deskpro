@@ -46,7 +46,7 @@
 					<label><strong>{{ phrase('user.profile.password') }}</strong> <a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></label>
 				</div>
 				<div class="dp-controls">
-					<input type="password" id="dp_inline_login_pass" />
+					<input type="password" autocomplete="off" id="dp_inline_login_pass" />
 					<div class="dp-loading">
 						{{ phrase('user.general.loading') }}
 					</div>

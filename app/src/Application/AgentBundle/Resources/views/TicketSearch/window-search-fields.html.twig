@@ -162,6 +162,32 @@
 		</div>
 		<div class="builder-type-choice" title="{{ phrase('agent.general.choose_criteria') }}" data-rule-type=""></div>
 
+		<div class="builder-type" title="Ticket ID" data-rule-type="id" data-term-type="GenericInputTerm" data-term-triggers="id">
+			<div class="builder-op">
+				<div>
+					<input type="hidden" name="op" value="between" />
+					between
+				</div>
+			</div>
+			<div class="builder-options">
+				<input type="text" size="20" style="width: 60px;" name="min" placeholder="Min ID" />
+				and
+				<input type="text" size="20" style="width: 60px;" name="max" placeholder="Max ID" />
+			</div>
+		</div>
+
+		<div class="builder-type" title="Ticket Ref" data-rule-type="ref" data-term-type="GenericInputTerm" data-term-triggers="ref">
+			<div class="builder-op">
+				<div>
+					<input type="hidden" name="op" value="contains" />
+				</div>
+			</div>
+			<div class="builder-options">
+				starts with
+				<input type="text" size="20" style="width: 200px;" name="ref" placeholder="Ref" />
+			</div>
+		</div>
+
 		<div class="builder-type" title="{{ phrase('agent.general.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 			<div class="builder-op">
 				<select name="op" class="op">

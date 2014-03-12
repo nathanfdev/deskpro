@@ -78,7 +78,7 @@
 						<div class="dp-login-section">
 							<dl>
 								<dt>{{ phrase('user.profile.password') }} {% if app.getSetting('core.deskpro_source_enabled') %}<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em>{% endif %}</dt>
-								<dd><input type="password" value="" name="password" id="dp_login_password" size="20" /></dd>
+								<dd><input type="password" autocomplete="off" value="" name="password" id="dp_login_password" size="20" /></dd>
 							</dl>
 							<div class="dp-btn-row">
 								<label class="dp-remember-me-row"><input type="checkbox" name="remember_me" value="1" /> {{ phrase('user.general.remember_me') }}</label>

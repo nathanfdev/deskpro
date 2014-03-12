@@ -762,8 +762,16 @@ abstract class SearcherAbstract implements PersonContextInterface
 		$where = '1';
 
 		$choice = (array)$choice;
-		$range1 = !empty($choice[0]) ? $choice[0] : null;
-		$range2 = !empty($choice[1]) ? $choice[1] : null;
+		if (!empty($choice['min'])) {
+			$range1 = $choice['min'];
+		} else {
+			$range1 = !empty($choice[0]) ? $choice[0] : null;
+		}
+		if (!empty($choice['max'])) {
+			$range2 = $choice['max'];
+		} else {
+			$range2 = !empty($choice[1]) ? $choice[1] : null;
+		}
 
 		// There should always be at least one date
 		if ($range1 === null AND $range2 === null) {
@@ -779,6 +787,14 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		if ($range1 && $range2) {
 			$op = self::OP_BETWEEN;
+		}
+
+		if ($op == self::OP_BETWEEN) {
+			if (!$range1 && $range2) {
+				$op = self::OP_LTE;
+			} else if ($range1 && !$range2) {
+				$op = self::OP_GTE;
+			}
 		}
 
 		// Between with only one date is invalid, so
@@ -852,7 +868,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 			if ($op == self::OP_CONTAINS) {
 				$where = "$field IN $choices_in";
 			} elseif ($op == self::OP_NOTCONTAINS) {
-				$where = "$field NOT IN $choices_in";
+				$where = "($field NOT IN $choices_in OR $field IS NULL)";
 			}
 
 		} else {
@@ -865,7 +881,15 @@ abstract class SearcherAbstract implements PersonContextInterface
 				$op = ($op == self::OP_IS) ? "=" : "!=";
 			}
 
-			$where = "$field $op $choice";
+			if ($op == '!=') {
+				if ($choice != 'NULL') {
+					$where = "($field $op $choice OR $field IS NULL)";
+				} else {
+					$where = "$field $op $choice";
+				}
+			} else {
+				$where = "$field $op $choice";
+			}
 		}
 
 		return $where;

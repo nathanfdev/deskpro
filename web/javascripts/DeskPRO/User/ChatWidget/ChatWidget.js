@@ -126,7 +126,8 @@ var DpChatWidget = new (function() {
 		btnClass: 'dp-chat-btn',
 		onInitCallback: null,
 		languageId: 0,
-		offlineUrl: null
+		offlineUrl: null,
+		onlyShowDepartments: null
 	};
 
 	var self = this;
@@ -327,6 +328,12 @@ var DpChatWidget = new (function() {
 				qs += '&language_id=' + options.languageId;
 			}
 
+			if (options.onlyShowDepartments && options.onlyShowDepartments.length) {
+				for (var i = 0; i < options.onlyShowDepartments.length; i++) {
+					qs += '&department_ids[]=' + options.onlyShowDepartments[i];
+				}
+			}
+
 			frameSrc = options.deskproUrl + 'widget/chat.html' + qs;
 			chatIframe = document.createElement('iframe');
 			chatIframe.setAttribute('src', frameSrc);
@@ -426,6 +433,9 @@ var DpChatWidget = new (function() {
 
 		if (DpChatWidget_Options.languageId) {
 			options.languageId = parseInt(DpChatWidget_Options.languageId);
+		}
+		if (DpChatWidget_Options.onlyShowDepartments) {
+			options.onlyShowDepartments = DpChatWidget_Options.onlyShowDepartments;
 		}
 
 		// Now load our session script
@@ -657,6 +667,7 @@ var DpChatWidget = new (function() {
 			  padding: 0; \
 			  margin: 0; \
 			  vertical-align: bottom;\
+			  border: none !important;\
 			} \
 			#dpchat_border_table td#dpchat_border_11 div { \
 			  background: " + bgColor + "; \

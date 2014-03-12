@@ -1,6 +1,7 @@
 <?php return array(
 	'user.knowledgebase.article-viewed'                                    => 'Данная статья просматривалась 1 раз|Количество просмотров данной статьи: {{count}}',
 	'user.knowledgebase.article_not_found'                                 => 'Статья не найдена',
+	'user.knowledgebase.auto_action_on_date'                               => 'Автоматически {{action}}  {{date}}',
 	'user.knowledgebase.category_no-articles'                              => 'В этой категории статей не найдено',
 	'user.knowledgebase.knowledgebase'                                     => 'База знаний',
 	'user.knowledgebase.link_view-all'                                     => 'Посмотреть 1 статью|Посмотреть все доступные статьи в количестве: {{count}}',

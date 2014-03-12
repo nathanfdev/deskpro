@@ -119,6 +119,8 @@ class TicketController extends AbstractController
 			$ticket->agent_id = $agentId;
 		}
 
+		$message_blobs = $this->_readTicketMessageAttachments();
+
 		$this->db->beginTransaction();
 
 		// make this check as late as possible to reduce race conditions
@@ -130,7 +132,7 @@ class TicketController extends AbstractController
 		} else if ($this->in->checkIsset('person_email')) {
 			$email = $this->in->getString('person_email');
 
-			if (!\Orb\Validator\StringEmail::isValueValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+			if (!\Orb\Validator\StringEmail::isValueValid($email) || !App::getSystemService('email_address_validator')->isValidUserEmail($email)) {
 				$errors['person_email'] = array('invalid_email', 'Invalid email address');
 			} else {
 				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
@@ -150,6 +152,11 @@ class TicketController extends AbstractController
 
 						$person->organization = $org;
 						$person->organization_position = $this->in->getString('person_organization_position');
+					}
+
+					$this->em->persist($person);
+					if ($person->organization) {
+						$this->em->persist($person->organization);
 					}
 				}
 			}
@@ -171,6 +178,14 @@ class TicketController extends AbstractController
 			$ticket->person_email = $person->getPrimaryEmail();
 		}
 
+		$this->em->persist($ticket);
+
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$post_custom_fields = $this->getCustomFieldInput();
+		if (!empty($post_custom_fields)) {
+			$field_manager->saveFormToObject($post_custom_fields, $ticket);
+		}
+
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message->person = ($this->in->getBool('message_as_agent') ? $this->person : $person);
 		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
@@ -187,9 +202,10 @@ class TicketController extends AbstractController
 			$message->setMessageText($message_text);
 		}
 
-		$this->_insertTicketMessageAttachments($ticket, $message);
-
+		$this->em->persist($message);
 		$ticket->addMessage($message);
+
+		$this->_addTicketMessageAttachments($message_blobs, $ticket, $message);
 
 		// need to ensure we treat things as the message owner
 		App::setCurrentPerson($message->person);
@@ -216,12 +232,6 @@ class TicketController extends AbstractController
 			$this->em->flush();
 
 			App::setCurrentPerson($this->person);
-
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
-			$post_custom_fields = $this->getCustomFieldInput();
-			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $ticket);
-			}
 
 			if ($labels) {
 				$ticket->getLabelManager()->setLabelsArray($labels, $this->em);
@@ -573,7 +583,8 @@ class TicketController extends AbstractController
 			));
 		}
 
-		$this->_insertTicketMessageAttachments($ticket, $message);
+		$message_blobs = $this->_readTicketMessageAttachments();
+		$this->_addTicketMessageAttachments($message_blobs, $ticket, $message);
 
 		$ticket->addMessage($message);
 
@@ -638,7 +649,7 @@ class TicketController extends AbstractController
 		);
 	}
 
-	protected function _insertTicketMessageAttachments(Ticket $ticket, \Application\DeskPRO\Entity\TicketMessage $message)
+	protected function _readTicketMessageAttachments()
 	{
 		$attachments = $this->request->files->get('attach');
 		if (!is_array($attachments)) {
@@ -646,28 +657,31 @@ class TicketController extends AbstractController
 		}
 		$accept = $this->container->getAttachmentAccepter();
 
+		$blobs = array();
+
 		foreach ($attachments AS $file) {
 			$error = $accept->getError($file, 'agent');
 			if (!$error) {
 				$blob = $accept->accept($file);
-				$this->_addTicketMessageAttachment($blob, $ticket, $message);
+				if ($blob) {
+					$blobs[] = $blob;
+				}
 			}
 		}
 
 		foreach ($this->in->getCleanValueArray('attach_id') as $blob_id) {
-			$this->_addTicketMessageAttachment($blob_id, $ticket, $message);
+			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+			if ($blob) {
+				$blobs[] = $blob;
+			}
 		}
+
+		return $blobs;
 	}
 
-	protected function _addTicketMessageAttachment($blob_id, Ticket $ticket, \Application\DeskPRO\Entity\TicketMessage $message)
+	protected function _addTicketMessageAttachments(array $blobs, Ticket $ticket, \Application\DeskPRO\Entity\TicketMessage $message)
 	{
-		if ($blob_id instanceof \Application\DeskPRO\Entity\Blob) {
-			$blob = $blob_id;
-		} else {
-			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
-		}
-
-		if ($blob) {
+		foreach ($blobs as $blob) {
 			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->person;

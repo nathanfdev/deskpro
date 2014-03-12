@@ -221,7 +221,7 @@ class ContentRating
 
 		if ($search_log_id) {
 			$searchlog = App::findEntity('DeskPRO:SearchLog', $search_log_id);
-			if ($searchlog->visitor && $this->visitor && $searchlog->visitor['id'] == $this->visitor['id']) {
+			if ($searchlog && $searchlog->visitor && $this->visitor && $searchlog->visitor['id'] == $this->visitor['id']) {
 				$rating->searchlog = $searchlog;
 			}
 		} else {

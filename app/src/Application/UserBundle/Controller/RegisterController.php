@@ -96,9 +96,14 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
 		$form = $this->get('form.factory')->create($reg_formtype, $register);
 
+		$trap_fail = false;
+		if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+			$trap_fail = true;
+		}
+
 		$error_fields = null;
 		$errors = null;
-		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
+		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit') && !$trap_fail) {
 			$form->handleRequest($this->get('request'));
 			$register->custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 

@@ -12,6 +12,8 @@
 	'user.error.form_choice_max'                                           => 'Количество действий, которые необходимо выбрать: не более {{count}}',
 	'user.error.form_choice_min'                                           => 'Количество действий, которые необходимо выбрать: не менее {{count}}',
 	'user.error.form_date_invalid'                                         => 'Пожалуйста, введите корректную дату',
+	'user.error.form_date_invalid_dow'                                     => 'Выбранный день недели не допускается',
+	'user.error.form_date_invalid_range'                                   => 'Дата выбрана  в пределах недопустимого диапазона',
 	'user.error.form_required'                                             => 'Это поле обязательно для заполнения',
 	'user.error.form_text_max'                                             => 'Количество символов для ввода: не более {{count}}',
 	'user.error.form_text_min'                                             => 'Количество символов для ввода: не менее {{count}}',

@@ -883,12 +883,17 @@ class Translate implements PersonContextInterface
 					} elseif (isset($vars['_context'][$name]->$prop)) {
 						return $vars['_context'][$name]->$prop;
 					}
+				} elseif ($prop) {
+					// If the top var exists, then its just an unset var
+					// so return empty string
+					if (isset($vars[$name]) || isset($vars['_context'][$name])) {
+						return '';
+					}
 				}
 
-				return '';
+				return $m[0];
 			}, $phrase_text);
 		}
-
 		return $phrase_text;
 	}
 

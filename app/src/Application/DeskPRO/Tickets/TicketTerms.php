@@ -841,9 +841,24 @@ class TicketTerms
 				if (!$this->_testChoiceMatch($ticket['language_id'], $op, $choice)) return false;
 				break;
 			case TicketSearch::TERM_AGENT:
+				if (in_array(-1, $choice)) {
+					$person = App::getCurrentPerson();
+					if ($person && $person->is_agent) {
+						$choice[] = $person->id;
+					}
+				}
 				if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) return false;
 				break;
 			case TicketSearch::TERM_AGENT_TEAM:
+				if (in_array(-1, $choice)) {
+					$person = App::getCurrentPerson();
+					if ($person && $person->is_agent) {
+						$person->loadHelper('Agent');
+						foreach ($person->getHelper('Agent')->getTeamIds() as $tid) {
+							$choice[] = $tid;
+						}
+					}
+				}
 				if (!$this->_testChoiceMatch($ticket['agent_team_id'], $op, $choice)) return false;
 				break;
 			case TicketSearch::TERM_LABEL:

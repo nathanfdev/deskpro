@@ -234,6 +234,15 @@ class MiscController extends AbstractController
 			$js[] = "window.DESKPRO_TRANSLATE_SERVICE = " . json_encode($info) . ";";
 		}
 
+		$date_formats = array(
+			'full'      => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_full')),
+			'fulltime'  => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_fulltime')),
+			'day'       => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_day')),
+			'day_short' => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_day_short')),
+			'time'      => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_time')),
+		);
+		$js[] = 'window.DESKPRO_DATE_FORMATS = ' . json_encode($date_formats) . ';';
+
 		$tr = $this->container->getTranslator();
 
 		$js[] = <<<JS

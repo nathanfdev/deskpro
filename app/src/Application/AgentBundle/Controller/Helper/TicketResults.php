@@ -49,7 +49,7 @@ use Orb\Util\Arrays;
 class TicketResults
 {
 	/**
-	 * @var Application\AgentBundle\Controller\AbstractController
+	 * @var \Application\AgentBundle\Controller\AbstractController
 	 */
 	protected $controller;
 
@@ -85,7 +85,9 @@ class TicketResults
 
 
 	/**
-	 * @return Application\AgentBundle\Controller\Helper\TicketResults
+	 * @param $controller
+	 * @param TicketFilter $filter
+	 * @return TicketResults
 	 */
 	public static function newFromFilter($controller, TicketFilter $filter)
 	{
@@ -110,7 +112,9 @@ class TicketResults
 	}
 
 	/**
-	 * @return \Application\AgentBundle\Controller\Helper\TicketResults
+	 * @param $controller
+	 * @param ResultCache $result_cache
+	 * @return TicketResults
 	 */
 	public static function newFromResultCache($controller, ResultCache $result_cache)
 	{
@@ -133,12 +137,10 @@ class TicketResults
 	}
 
 
-
 	public function __construct($controller)
 	{
 		$this->controller = $controller;
 	}
-
 
 
 	/**
@@ -149,7 +151,6 @@ class TicketResults
 	{
 		$this->ticket_ids = $ticket_ids;
 	}
-
 
 
 	/**
@@ -172,7 +173,6 @@ class TicketResults
 	{
 		return count($this->getTicketIds());
 	}
-
 
 
 	/**
@@ -203,10 +203,9 @@ class TicketResults
 	}
 
 
-
 	/**
-	 * Get tickets for a particular page
-	 *
+	 * @param $page
+	 * @param int $per_page
 	 * @return array
 	 */
 	public function getTicketsForPage($page, $per_page = 50)
@@ -215,10 +214,21 @@ class TicketResults
 	}
 
 
+	/**
+	 * @param $cursor_start
+	 * @param int $per_page
+	 * @return mixed
+	 */
+	public function getTicketsForCursorPage($cursor_start, $per_page = 50)
+	{
+		return $this->_getCursorPageFromTicketIds($this->getTicketIds(), $cursor_start, $per_page);
+	}
+
 
 	/**
-	 * Get grouped tickets for a particular page
-	 *
+	 * @param $field_id
+	 * @param $page
+	 * @param int $per_page
 	 * @return array
 	 */
 	public function getGroupedTicketsForPage($field_id, $page, $per_page = 50)
@@ -227,8 +237,24 @@ class TicketResults
 	}
 
 
+	/**
+	 * @param $field_id
+	 * @param $page
+	 * @param int $per_page
+	 * @return array
+	 */
+	public function getGroupedTicketsForCursorPage($field_id, $page, $per_page = 50)
+	{
+		return $this->_getCursorPageFromTicketIds($this->getGroupTicketIds($field_id), $page, $per_page);
+	}
 
 
+	/**
+	 * @param array $ticket_ids
+	 * @param $page
+	 * @param $per_page
+	 * @return array
+	 */
 	protected function _getPageFromTicketIds(array $ticket_ids, $page, $per_page)
 	{
 		$page_ticket_ids = Arrays::getPageChunk($ticket_ids, $page, $per_page);
@@ -247,7 +273,29 @@ class TicketResults
 		return $tickets;
 	}
 
+	/**
+	 * @param array $ticket_ids
+	 * @param $cursor_start
+	 * @param $per_page
+	 * @return array
+	 */
+	protected function _getCursorPageFromTicketIds(array $ticket_ids, $cursor_start, $per_page)
+	{
+		$page_ticket_ids = array_slice($ticket_ids, $cursor_start, $per_page);
+		$tickets_raw = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
 
+		// - We'll get a page of results, but that actual page isn't going to be
+		// sorted the way we want, because MySQL was just sent a list of ID's.
+		// - So we'll re-create the array here according to the order they're supposed to be in.
+		$tickets = array();
+		foreach ($ticket_ids as $tid) {
+			if (isset($tickets_raw[$tid])) {
+				$tickets[$tid] = $tickets_raw[$tid];
+			}
+		}
+
+		return $tickets;
+	}
 
 
 	/**
@@ -277,13 +325,12 @@ class TicketResults
 	 * Set the order by that will be used for sub-grouping. Tickets area
 	 * already sorted, so this is only used for fetching grouped results.
 	 *
-	 * @param arary $order_by
+	 * @param array $order_by
 	 */
 	public function setGroupOrderBy($order_by)
 	{
 		$this->order_by = $order_by;
 	}
-
 
 
 	/**

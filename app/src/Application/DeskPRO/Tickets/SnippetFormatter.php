@@ -50,6 +50,11 @@ class SnippetFormatter implements PersonContextInterface
 	 */
 	protected $person_context;
 
+	/**
+	 * @var arary
+	 */
+	protected $extra_vars;
+
 	public function __construct(Twig_Environment $twig)
 	{
 		$this->twig = $twig;
@@ -62,7 +67,7 @@ class SnippetFormatter implements PersonContextInterface
 
 	public function getVars(Ticket $ticket)
 	{
-		$data = array();
+		$data = $this->extra_vars;
 		$data['ticket'] = $ticket->toApiData();
 
 		if (isset($data['ticket']['person'])) {
@@ -82,6 +87,11 @@ class SnippetFormatter implements PersonContextInterface
 		}
 
 		return $data;
+	}
+
+	public function addVar($name, $value)
+	{
+		$this->extra_vars[$name] = $value;
 	}
 
 	public function formatSnippet($snippet, Ticket $ticket)

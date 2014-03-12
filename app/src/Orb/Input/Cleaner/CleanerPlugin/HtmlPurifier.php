@@ -63,6 +63,14 @@ class HtmlPurifier implements CleanerPlugin
 
 	public function cleanValue($value, $type, array $options, Cleaner $cleaner)
 	{
+		// A lot of tags are not allowed in <pre> (eg <font>)
+		// which means html purifier will strip them out.
+		// So lets just replace pre tags
+		if ($type == 'html_email') {
+			$value = str_replace('<pre', '<div', $value);
+			$value - str_replace('</pre>', '</div>', $value);
+		}
+
 		$value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array(), $cleaner);
 
 		if ($type == 'html_email_postclean') {

@@ -82,6 +82,12 @@ class HelpdeskOfflineMessage
 
 			case 'expired':
 				$tpl_file = 'license-error';
+				$title = 'License Expired';
+
+				if (License::getLicense()->isDemo()) {
+					$title = 'Demo Expired';
+					$tpl_file = 'demo-license-error';
+				}
 				$days = License::getLicense()->isPastExpireDate();
 				if ($days == 1) {
 					$message = 'Your license has expired 1 day ago.';

@@ -92,6 +92,7 @@ class TicketController extends AbstractController
 	public function viewAction($ticket_id)
 	{
         $is_pdf = $this->in->getBool('pdf');
+		$is_print = $this->in->getBool('view_print');
 
 		try	{
 			$ticket = $this->getTicketOr404($ticket_id);
@@ -121,7 +122,7 @@ class TicketController extends AbstractController
 		# Messages
 		#------------------------------
 
-		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 1, $ticket_attachments, $is_pdf);
+		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 1, $ticket_attachments, $is_pdf, $is_print);
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$ticket_attachments = $ticket_messages_blockcache['ticket_attachments'];
 		$ticket_message_attachments = isset($ticket_messages_blockcache['ticket_message_attachments']) ? $ticket_messages_blockcache['ticket_message_attachments'] : array();
@@ -161,6 +162,16 @@ class TicketController extends AbstractController
 		#------------------------------
 
 		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person, true);
+		usort($tasks, function($a, $b) {
+			$a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
+			$b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
+
+			if ($a_time == $b_time) {
+				return 0;
+			}
+
+			return ($a_time < $b_time) ? -1 : 1;
+		});
 
 		$addable_slas = $this->em->getRepository('DeskPRO:Sla')->getAddableSlas($ticket);
 		$ticket_api = array();
@@ -406,7 +417,7 @@ class TicketController extends AbstractController
             return $response;
         }
 
-		if ($this->in->getBool('view_print')) {
+		if ($is_print) {
 			$vars['print'] = true;
 			return $this->render('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
 		}
@@ -526,9 +537,13 @@ class TicketController extends AbstractController
 		return $info;
 	}
 
-	protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page, array $ticket_attachments = null, $is_pdf = false)
+	protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page, array $ticket_attachments = null, $is_pdf = false, $is_print = false)
 	{
 		$per_page = 25;
+
+		if ($is_pdf || $is_print) {
+			$per_page = 500;
+		}
 
 		$all_message_ids = $this->db->fetchAllCol("
 			SELECT id

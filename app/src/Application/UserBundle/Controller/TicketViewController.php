@@ -313,6 +313,8 @@ class TicketViewController extends AbstractController
 				$validator->setPageData($default_page_data);
 				$form->handleRequest($this->get('request'));
 
+				$newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
+
 				if ($validator->isValid($newticket)) {
 					$newticket->save();
 

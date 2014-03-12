@@ -255,6 +255,7 @@ HTML;
 			$return = '';
 		}
 
+		$this->ensureRequestToken('user_login');
 		$result = $this->authLocalInput();
 
 		// Form wasnt inputted (eg direct url)
@@ -733,6 +734,8 @@ HTML;
 
 	public function sendResetPasswordAction($_format = 'html')
 	{
+		$this->ensureRequestToken('user_login');
+
 		$email = $this->in->getString('email');
 
 		if (!$email || !StringEmail::isValueValid($email)) {
@@ -931,6 +934,8 @@ HTML;
 	public function inlineLoginAction()
 	{
 		$result = $this->authLocalInput();
+
+		$this->ensureRequestToken('user_login');
 
 		if (!$result->isValid()) {
 			$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));

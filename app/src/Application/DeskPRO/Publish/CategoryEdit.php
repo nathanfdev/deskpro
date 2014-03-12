@@ -326,12 +326,44 @@ class CategoryEdit
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$counts = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM article_to_categories
-			WHERE category_id = ?
-			LIMIT 1
-		", array($category_id));
+		switch ($type) {
+			case 'articles':
+				$counts = App::getDb()->fetchColumn("
+					SELECT COUNT(*)
+					FROM article_to_categories
+					LEFT JOIN articles ON articles.id = article_to_categories.article_id
+					WHERE category_id = ? AND (articles.hidden_status IS NULL OR articles.hidden_status != 'deleted')
+					LIMIT 1
+				", array($category_id));
+				break;
+			case 'downloads':
+				$counts = App::getDb()->fetchColumn("
+					SELECT COUNT(*)
+					FROM downloads
+					WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
+					LIMIT 1
+				", array($category_id));
+				break;
+			case 'news':
+				$counts = App::getDb()->fetchColumn("
+					SELECT COUNT(*)
+					FROM news
+					WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
+					LIMIT 1
+				", array($category_id));
+				break;
+			case 'feedback':
+				$counts = App::getDb()->fetchColumn("
+					SELECT COUNT(*)
+					FROM feedback
+					WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
+					LIMIT 1
+				", array($category_id));
+				break;
+			default:
+				$count = 0;
+				break;
+		}
 
 		if (count($cat->children) || $counts) {
 			throw new \OutOfBoundsException("Category is not empty");

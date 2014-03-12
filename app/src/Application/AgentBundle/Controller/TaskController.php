@@ -49,6 +49,7 @@ use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\AgentBundle\Form\Type\NewTask;
 use Application\DeskPRO\App;
+use Orb\Util\Numbers;
 
 /**
  * Handles viewing and editing tasks
@@ -174,7 +175,19 @@ class TaskController extends AbstractController
 			if (!empty($task_data['date_due'])) {
 				try {
 					$date_due = new \DateTime($task_data['date_due'], $this->person->getDateTimezone());
-					$date_due->setTime(23, 59, 59);
+
+					if (!empty($task_data['time_due']) && strpos($task_data['time_due'], ':') !== 0) {
+						list ($hour, $min) = explode(':', $task_data['time_due']);
+						$hour = (int)$hour;
+						$min = (int)$min;
+						if (Numbers::inRange($hour, 0, 23) && Numbers::inRange($min, 0, 59)) {
+							$date_due->setTime($hour, $min, 59);
+						} else {
+							$date_due->setTime(23, 59, 59);
+						}
+					} else {
+						$date_due->setTime(23, 59, 59);
+					}
 				} catch (\Exception $e) {
 					$date_due = null;
 				}
@@ -256,6 +269,17 @@ class TaskController extends AbstractController
         } else if ($search_type == 'all') {
             $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person, $search_categoty);
         }
+
+		usort($all_tasks, function($a, $b) {
+			$a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
+			$b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
+
+			if ($a_time == $b_time) {
+				return 0;
+			}
+
+			return ($a_time < $b_time) ? -1 : 1;
+		});
 
 		$tasks = array();
 		$completed_tasks = array();
@@ -477,6 +501,32 @@ class TaskController extends AbstractController
 					}
 				} else {
 					$task->date_due = null;
+				}
+				break;
+
+			case 'time_due':
+				if ($task->date_due) {
+					$time_due = $this->in->getString('value');
+					if (!empty($time_due) && strpos($time_due, ':') !== 0) {
+						list ($hour, $min) = explode(':', $time_due);
+						$hour = (int)$hour;
+						$min = (int)$min;
+						if (Numbers::inRange($hour, 0, 23) && Numbers::inRange($min, 0, 59)) {
+							$date = clone $task->date_due;
+							$date->setTimezone($this->person->getDateTimezone());
+							$date->setTime($hour, $min, 59);
+
+							$task->date_due = Dates::convertToUtcDateTime($date);
+						} else {
+							$date = clone $task->date_due;
+							$date->setTime(23, 59, 59);
+							$task->date_due = $date;
+						}
+					} else {
+						$date = clone $task->date_due;
+						$date->setTime(23, 59, 59);
+						$task->date_due = $date;
+					}
 				}
 				break;
 

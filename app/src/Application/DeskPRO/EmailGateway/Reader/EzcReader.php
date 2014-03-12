@@ -188,7 +188,6 @@ class EzcReader extends AbstractReader
 		$subject = new Item\Subject();
 		$subject->subject = $this->mail->subject;
 		$subject->subject_utf8 = Strings::convertToUtf8($this->mail->subject, $charset);
-		$subject->original_charset = $charset;
 
 		return $subject;
 	}

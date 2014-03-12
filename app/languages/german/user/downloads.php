@@ -1,5 +1,6 @@
 <?php return array(
 	'user.downloads.button-download'                                       => 'Herunterladen',
+	'user.downloads.change_file'                                           => 'Datei ändern',
 	'user.downloads.downloads-count'                                       => 'Diese Datei wurde 1 mal heruntergeladen | Diese Datei wurde {{count}} Mal heruntergeladen',
 	'user.downloads.file_not_found'                                        => 'Die Datei konnte nicht gefunden werden',
 	'user.downloads.message_no-files'                                      => 'Es gibt keine Dateien in diesem Ordner.',

@@ -90,7 +90,7 @@ class NewsController extends AbstractController
 
 			$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
 			$searcher->setPersonContext($this->person);
-			$searcher->addTerm('category', 'is', $category['id']);
+			$searcher->addTerm('category_specific', 'is', $category['id']);
 
 		} else {
 			$category = null;

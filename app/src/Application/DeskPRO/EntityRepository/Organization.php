@@ -129,6 +129,10 @@ class Organization extends AbstractEntityRepository
 	 */
 	public function countMembersFor(OrganizationEntity $org)
 	{
+		if (!$org->id) {
+			return 0;
+		}
+
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM people

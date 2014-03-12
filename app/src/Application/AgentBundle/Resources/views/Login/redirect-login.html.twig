@@ -5,6 +5,7 @@
 	<meta name="robots" content="NOINDEX" />
 	<title></title>
 	<script type="text/javascript">
+		{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
 		var url = '{{ path('agent_login') }}?return=' + escape('{{ return }}' + window.location.hash);
 		window.location = url;
 
