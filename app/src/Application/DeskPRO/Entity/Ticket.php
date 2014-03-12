@@ -492,6 +492,11 @@ class Ticket extends DomainObject
 	 */
 	public $email_reader_action;
 
+	/**
+	 * @internal
+	 */
+	public $__dp_is_processing_ticket = false;
+
 	public function __construct()
 	{
 		$this->_original_id  = null;
@@ -2967,6 +2972,10 @@ class Ticket extends DomainObject
 
 	public function _autoProcessTicket()
 	{
+		if ($this->__dp_is_processing_ticket) {
+			return;
+		}
+
 		if ($this->auto_ticket_process) {
 			$tm = App::$container->getTicketManager();
 
@@ -2975,37 +2984,58 @@ class Ticket extends DomainObject
 				$context->setPersonContext(App::getCurrentPerson(), true);
 			}
 
+			$state = $this->getStateChangeRecorder();
+			if ($state->isNewTicket()) {
+				$event_type = 'newticket';
+			} elseif ($state->hasNewReply()) {
+				$event_type = 'newreply';
+			} else {
+				$event_type = 'update';
+			}
+
 			if (defined('DP_INTERFACE')) {
 				switch (DP_INTERFACE) {
 					case 'admin':
 					case 'agent':
 						$context = $tm->createAgentExecutorContext(
 							App::getCurrentPerson(),
+							$event_type,
 							'web'
 						);
 						break;
 					case 'user':
 						$context = $tm->createUserExecutorContext(
 							App::getCurrentPerson(),
+							$event_type,
 							'web'
 						);
 						break;
 					case 'api':
 						$context = $tm->createAgentExecutorContext(
 							App::getCurrentPerson(),
+							$event_type,
 							'api'
 						);
 						break;
 					default:
 						$context = $tm->createSystemExecutorContext(
 							App::getCurrentPerson(),
+							$event_type,
 							'api'
 						);
 						break;
 				}
 			}
 
-			$tm->saveTicket($this, $context);
+			$this->__dp_is_processing_ticket = true;
+
+			try {
+				$tm->saveTicket($this, $context);
+				$this->__dp_is_processing_ticket = false;
+			} catch (\Exception $e) {
+				$this->__dp_is_processing_ticket = false;
+				throw $e;
+			}
 		}
 	}
 

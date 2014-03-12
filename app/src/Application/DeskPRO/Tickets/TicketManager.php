@@ -330,8 +330,8 @@ class TicketManager
 		# Ticket Filter update
 		#----------------------------------------
 
-		$filter_change_detect = $context->createFilterChangeDetector($ticket);
-		$client_messages = $filter_change_detect->getListUpdateClientMessages();
+		$change_set = $this->container->getTicketFilterChangeDetector()->getFilterChangeSet($ticket, $context);
+		$client_messages = $change_set->getListUpdateClientMessages();
 
 		foreach ($client_messages as $cm) {
 			$this->em->persist($cm);
@@ -392,7 +392,7 @@ class TicketManager
 	 */
 	public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = array())
 	{
-		$context = new ExecutorContext($this->container, $this->createNewLogger());
+		$context = new ExecutorContext($this->createNewLogger());
 
 		if ($agent) {
 			$context->setPersonContext($agent);

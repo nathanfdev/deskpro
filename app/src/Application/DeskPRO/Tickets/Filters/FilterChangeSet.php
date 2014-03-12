@@ -119,7 +119,7 @@ class FilterChangeSet
 		# CMs for filters
 		#------------------------------
 
-		foreach ($this->getFilterChanges() as $filter_change) {
+		foreach ($this->changed_filters as $filter_change) {
 			$filter = $filter_change->getFilter();
 
 			foreach ($filter_change->getAgentsAdded() as $agent) {

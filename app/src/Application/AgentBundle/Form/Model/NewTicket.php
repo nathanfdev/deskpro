@@ -271,11 +271,6 @@ class NewTicket
 			$ticket[$k] = $this->$k;
 		}
 
-		if (!$ticket['notify_template']) {
-			$ticket['notify_template'] = '';
-		}
-
-
 		$ticket->person = $person;
 
 

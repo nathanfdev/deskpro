@@ -602,7 +602,7 @@ class DeskproContainer extends Container
 	 */
 	public function getTicketFilterChangeDetector()
 	{
-		return $this->getSystemService('ticket_filter_change_detector_service');
+		return $this->getSystemService('ticket_filter_change_detector');
 	}
 
 
