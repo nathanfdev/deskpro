@@ -41,6 +41,13 @@ class TicketFilterChangeDetectorService
 {
 	public static function create(DeskproContainer $container)
 	{
+		$agents = $container->getAgentData()->getAgents();
+		foreach ($agents as $a) {
+			$a->loadHelper('AgentPermissions');
+			$a->loadHelper('PermissionsManager');
+			$a->loadHelper('Agent');
+		}
+
 		$x = new FilterChangeDetector(
 			$container->getEm()->getRepository('DeskPRO:TicketFilter')->getFilters(),
 			$container->getAgentData()->getAgents()

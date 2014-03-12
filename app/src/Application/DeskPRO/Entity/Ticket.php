@@ -508,6 +508,11 @@ class Ticket extends DomainObject
 	 */
 	public $__dp_ticket_change_tracker = null;
 
+	/**
+	 * @internal
+	 */
+	public $__dp_auto_ticket_process = false;
+
 	public function __construct()
 	{
 		$this->_original_id  = null;
@@ -528,7 +533,7 @@ class Ticket extends DomainObject
 
 		$this['auth'] = Strings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
 
-		$this->auto_ticket_process = true;
+		$this->__dp_auto_ticket_process = true;
 	}
 
 	/**
@@ -541,7 +546,7 @@ class Ticket extends DomainObject
 	 */
 	public function disableAutoTicketProcess()
 	{
-		$this->auto_ticket_process = false;
+		$this->__dp_auto_ticket_process = false;
 	}
 
 	/**
@@ -550,7 +555,7 @@ class Ticket extends DomainObject
 	 */
 	public function enableAutoTicketProcess()
 	{
-		$this->auto_ticket_process = true;
+		$this->__dp_auto_ticket_process = true;
 	}
 
 	/**
@@ -2993,7 +2998,7 @@ class Ticket extends DomainObject
 	public function _setOriginalId()
 	{
 		$this->_original_id = $this->id;
-		$this->auto_ticket_process = true;
+		$this->__dp_auto_ticket_process = true;
 	}
 
 	public function _autoProcessTicket()
@@ -3002,7 +3007,7 @@ class Ticket extends DomainObject
 			return;
 		}
 
-		if ($this->auto_ticket_process) {
+		if ($this->__dp_auto_ticket_process) {
 
 			// Detect when we last did a save
 			if ($this->__dp_last_process_save) {

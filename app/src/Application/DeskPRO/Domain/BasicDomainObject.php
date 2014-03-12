@@ -499,6 +499,10 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 			}
 
 			$this->_state_clone = clone $this;
+
+			// The clone will clone the important bits
+			// For collections, we want to create a new collection
+			// which will not be affected by add/remove ops elsewhere
 			foreach (get_object_vars($this) as $prop => $val) {
 				if ($prop[0] == '_' || !is_object($val) || !($val instanceof Collection)) {
 					continue;

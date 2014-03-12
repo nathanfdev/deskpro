@@ -135,7 +135,7 @@ class FilterChange
 	 */
 	public function getAgentsRemoved()
 	{
-		return $this->added_for_agents;
+		return $this->removed_for_agents;
 	}
 
 

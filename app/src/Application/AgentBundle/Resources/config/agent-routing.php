@@ -650,7 +650,7 @@ $collection->create('agent_ticketsearch_singleticketrow', array(
 ));
 
 $collection->create('agent_ticketsearch_getticketrows', array(
-	'path'       => '/ticket-search/single-ticket-row/{content_type}/{content_id}',
+	'path'       => '/ticket-search/ticket-rows.json',
 	'controller' => 'AgentBundle:TicketSearch:getTicketRows',
 ));
 

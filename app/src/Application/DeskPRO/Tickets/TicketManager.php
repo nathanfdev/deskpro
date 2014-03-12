@@ -41,6 +41,7 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
@@ -138,6 +139,21 @@ class TicketManager
 	{
 		$time_start = microtime(true);
 		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
+
+		$context->getLogger()->debug(sprintf("EventType: %s", $context->getEventType()));
+		$context->getLogger()->debug(sprintf("EventMethod: %s", $context->getEventMethod()));
+		$context->getLogger()->debug(sprintf("EventPerformer: %s", $context->getEventPerformer()));
+
+		if ($context->getPersonContext()) {
+			$context->getLogger()->debug(sprintf(
+				"PersonContext: <Person:%d> %s %s",
+				$context->getPersonContext()->id,
+				$context->getPersonContext()->getDisplayName(),
+				$context->getPersonContext()->getPrimaryEmailAddress()
+			));
+		} else {
+			$context->getLogger()->debug("PersonContext: NULL");
+		}
 
 		$state = $ticket->getStateChangeRecorder();
 
@@ -449,8 +465,25 @@ class TicketManager
 	{
 		$logger = new DpLogger('tickets');
 
-		$null = new NullHandler();
-		$logger->pushHandler($null);
+		$any = false;
+		if ($logfile = dp_get_config('debug.enable_ticket_log')) {
+			if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === "true") {
+				$logfile = dp_get_log_dir() . '/ticket.log';
+			}
+			$stream = new StreamHandler($logfile);
+			$logger->pushHandler($stream);
+			$any = true;
+		}
+
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
+			$stream = new StreamHandler('php://stdout');
+			$logger->pushHandler($stream);
+			$any = true;
+		}
+
+		if (!$any) {
+			$logger->pushHandler(new NullHandler());
+		}
 
 		return $logger;
 	}

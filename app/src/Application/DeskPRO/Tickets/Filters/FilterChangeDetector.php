@@ -58,12 +58,6 @@ class FilterChangeDetector
 	private $filters;
 
 	/**
-	 * @var \Monolog\Logger
-	 */
-	private $logger;
-
-
-	/**
 	 * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
 	 * @param \Application\DeskPRO\Entity\Person[] $agents
 	 */
@@ -85,25 +79,6 @@ class FilterChangeDetector
 				$this->team_to_agents[$t->id][] = $agent;
 			}
 		}
-
-		$this->logger = new NullLogger();
-	}
-
-
-	/**
-	 * @param Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
-
-	/**
-	 * @return NullLogger|Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
 	}
 
 
@@ -112,16 +87,21 @@ class FilterChangeDetector
 	 * by the changes.
 	 *
 	 * @param Ticket $ticket
+	 * @param Logger $logger
 	 * @return \Application\DeskPRO\Entity\TicketFilter[]|array
 	 */
-	private function getAffectedFilters(Ticket $ticket)
+	private function getAffectedFilters(Ticket $ticket, Logger $logger)
 	{
 
+		if (!$logger) {
+			$logger = new NullLogger();
+		}
+
 		$affected_filters = array();
-		$this->logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> Checking %d filters", $ticket->id, count($this->filters)));
+		$logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> Checking %d filters", $ticket->id, count($this->filters)));
 
 		$changed_fields = $ticket->getStateChangeRecorder()->getChangedFields();
-		$this->logger->debug(sprintf("[FilterChangeDetector] <Ticket:%d> Changed fields: %s", $ticket->id, implode(', ', $changed_fields)));
+		$logger->debug(sprintf("[FilterChangeDetector] <Ticket:%d> Changed fields: %s", $ticket->id, implode(', ', $changed_fields)));
 
 		$is_hidden_change = false;
 		if (isset($changed_fields['hidden_status'])) {
@@ -158,7 +138,7 @@ class FilterChangeDetector
 			}
 		}
 
-		$this->logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> %d filters with affected fields", $ticket->id, count($affected_filters)));
+		$logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> %d filters with affected fields", $ticket->id, count($affected_filters)));
 
 		return $affected_filters;
 	}
@@ -171,6 +151,7 @@ class FilterChangeDetector
 	 */
 	public function getFilterChangeSet(Ticket $ticket, ExecutorContextInterface $context = null)
 	{
+		$logger = $context->getLogger();
 		$state = $ticket->getStateChangeRecorder();
 
 		// See if theres a cached verson on the context
@@ -181,7 +162,7 @@ class FilterChangeDetector
 			}
 		}
 
-		$affected_filters = $this->getAffectedFilters($ticket);
+		$affected_filters = $this->getAffectedFilters($ticket, $logger);
 
 		$old_dep_id = null;
 		$new_dep_id = null;
@@ -209,7 +190,7 @@ class FilterChangeDetector
 		/** @var FilterChange[] $changed */
 		$changed = array();
 
-		$this->logger->info(sprintf("[FilterChangeDetector] Checking %d filters with on %d agents", count($affected_filters), count($this->agents)));
+		$logger->info(sprintf("[FilterChangeDetector] Checking %d filters with on %d agents", count($affected_filters), count($this->agents)));
 
 		foreach ($affected_filters as $filter) {
 			if ($filter->sys_name == 'archive_deleted') {
@@ -221,7 +202,7 @@ class FilterChangeDetector
 			$filter_change = new FilterChange($filter);
 			$changed[$filter->id] = $filter_change;
 
-			$this->logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -----", $filter->id, $filter->title));
+			$logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -----", $filter->id, $filter->title));
 
 			$agent_scopes = array();
 			if ($filter->is_global) {
@@ -308,28 +289,28 @@ class FilterChangeDetector
 				}
 
 				if (!$orig_match AND !$new_match) {
-					$this->logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
+					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
 				} else if ($orig_match AND $new_match) {
-					$this->logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
+					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
 				} else if ($orig_match AND !$new_match) {
-					$this->logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
+					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
 					$filter_change->removeForAgent($agent);
 				} else if (!$orig_match AND $new_match) {
-					$this->logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
+					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
 					$filter_change->addForAgent($agent);
 				}
 
 				if (!$orig_match) {
-					$this->logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
+					$logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
 				}
 				if (!$new_match) {
-					$this->logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
+					$logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
 				}
 
 				$scope_counts++;
 			}
 
-			$this->logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
+			$logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
 		}
 
 		$changed_filters = array();
@@ -339,7 +320,7 @@ class FilterChangeDetector
 			}
 		}
 
-		$this->logger->info(sprintf("[FilterChangeDetector] Found %d filters in %d iterations taking %.4fs", count($changed_filters), $scope_counts, microtime(true)-$time));
+		$logger->info(sprintf("[FilterChangeDetector] Found %d filters in %d iterations taking %.4fs", count($changed_filters), $scope_counts, microtime(true)-$time));
 
 		$set = new FilterChangeSet($ticket, $state->getStateVersion(), $affected_filters, $changed_filters);
 
