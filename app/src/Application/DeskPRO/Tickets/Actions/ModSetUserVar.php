@@ -56,6 +56,6 @@ class ModSetUserVar extends AbstractAction implements ActionInterface
 		}
 
 		$value = $this->getActionOption('value');
-		$context->getVars()->set($name, $value);
+		$context->getUserVars()->set($name, $value);
 	}
 }
