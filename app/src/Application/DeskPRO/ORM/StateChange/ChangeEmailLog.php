@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\ORM\StateChange;
 
-class ChangeEmailLog implements ChangeInterface
+class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
 {
 	/**
 	 * @var string

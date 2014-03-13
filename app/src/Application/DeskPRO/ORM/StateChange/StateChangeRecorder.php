@@ -134,8 +134,10 @@ class StateChangeRecorder
 		}
 		$this->changes_by_field[$field_id][] = $change;
 
-		self::$global_state_version++;
-		$this->state_version++;
+		if (!($change instanceof NonStateTrackingInterface)) {
+			self::$global_state_version++;
+			$this->state_version++;
+		}
 
 		return $change;
 	}
@@ -155,8 +157,10 @@ class StateChangeRecorder
 		}
 		$this->changes_by_field[$field_id][] = $change;
 
-		self::$global_state_version++;
-		$this->state_version++;
+		if (!($change instanceof NonStateTrackingInterface)) {
+			self::$global_state_version++;
+			$this->state_version++;
+		}
 	}
 
 
@@ -167,7 +171,7 @@ class StateChangeRecorder
 	 */
 	public function recordData($field_id, array $data = array())
 	{
-		$change = new ChangeDate($field_id, $data);
+		$change = new ChangeData($field_id, $data);
 		$this->changes[] = $change;
 
 		if (!isset($this->changes_by_field[$field_id])) {
@@ -175,8 +179,10 @@ class StateChangeRecorder
 		}
 		$this->changes_by_field[$field_id][] = $change;
 
-		self::$global_state_version++;
-		$this->state_version++;
+		if (!($change instanceof NonStateTrackingInterface)) {
+			self::$global_state_version++;
+			$this->state_version++;
+		}
 
 		return $change;
 	}
@@ -202,8 +208,10 @@ class StateChangeRecorder
 		}
 		$this->changes_by_field[$field_id][] = $change;
 
-		self::$global_state_version++;
-		$this->state_version++;
+		if (!($change instanceof NonStateTrackingInterface)) {
+			self::$global_state_version++;
+			$this->state_version++;
+		}
 
 		return $change;
 	}
