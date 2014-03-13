@@ -419,8 +419,8 @@ class Message extends \Orb\Mail\Message
 		if (is_array($addresses)) {
 			reset($addresses);
 			$this->set_to = array(
-				'name'  => \Orb\Util\Arrays::getFirstKey($addresses),
-				'email' =>\Orb\Util\Arrays::getFirstItem($addresses),
+				'email'  => \Orb\Util\Arrays::getFirstKey($addresses),
+				'name' =>\Orb\Util\Arrays::getFirstItem($addresses),
 			);
 		} else {
 			$this->set_to = array(
