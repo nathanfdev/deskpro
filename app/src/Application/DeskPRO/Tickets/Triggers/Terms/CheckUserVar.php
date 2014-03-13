@@ -70,7 +70,7 @@ class CheckUserVar extends AbstractTriggerTerm
 			return false;
 		}
 
-		if (!$context->getVars()->has($name)) {
+		if (!$context->getUserVars()->has($name)) {
 			if ($this->getTermOperator() == 'notisset') {
 				return true;
 			}
