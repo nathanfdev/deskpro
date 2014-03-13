@@ -51,8 +51,105 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
 
+/**
+* @SWG\Resource(
+* 	resourcePath="/kb",
+* 	description="Operations about Knowledgebase",
+* 	basePath="/api"
+* )
+*/
 class KbController extends AbstractController
 {
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Search for articles matching criteria",
+	 * 		notes="Returns list of articles that matched.",
+	 *		type="array",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id[]",
+	 *				description="Comma seperated IDs of categories to search in",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="category_id_specific[]",
+	 *				description="Comma seperated IDs of categories to search in",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_created_end",
+	 *				description="Requires the article to have been created before this date. Must be specified as a Unix timestamp.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_created_start",
+	 *				description="Requires the article to have been created after this date. Must be specified as a Unix timestamp.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Requires the article to have this label.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status[]",
+	 *				description="Requires the article to be in this status. Possible values include: published, archived, hidden.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="new",
+	 *				description="If non-0, requires the article to be considered new (created within the last month). If 0, this does nothing.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="boolean"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="popular",
+	 *				description="If non-0, requires the article to be considered popular (50 or more articles). If 0, this does nothing.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="boolean"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to the publishing date.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function searchAction()
 	{
 		$search_map = array(
@@ -117,6 +214,108 @@ class KbController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Creates a new article.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="title",
+	 *				description="Title of the article. ",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="content",
+	 *				description="Content of the article. Marked up using HTML.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="category_id[]",
+	 *				description="ID of the category the article is in. At least one is required.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Comma seperated list of Labels to apply to the article.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="Status of the article. Defaults to new if not overridden by this or status_category_id.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attach[]",
+	 *				description="Attached file that represents the article. See the <a href="https://support.deskpro.com/articles/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				paramType="body",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attach_id[]",
+	 *				description="The ID of an already uploaded file to include with the article. Required if no attach value is provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date",
+	 *				description="If provided, changes the creation/publishing date of the article to the given Unix timestamp. If not provided, defaults to the current time.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_end",
+	 *				description="If provided, sets the Unix timestamp when an action should be taken.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_published",
+	 *				description="If provided and the article is not published, sets the Unix timestamp when an article should be published.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="end_action",
+	 *				description="If provided with a date_end, the action that should be taken when date_end is reached. Possible values are delete or archive.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[]",
+	 *				description="Value for the specified custom field.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *			@SWG\Parameter(
+	 *				name="product_id[]",
+	 *				description="ID of product this article is associated with.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function newArticleAction()
 	{
 		$errors = array();
@@ -258,6 +457,27 @@ class KbController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a article by article ID.",
+	 * 		notes="Information about the article by article ID.",
+	 *		type="Article",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -265,6 +485,108 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('article' => $article->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates an article.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be upated ",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="title",
+	 *				description="Title of the article. ",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="content",
+	 *				description="Content of the article. Marked up using HTML.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="category_id[]",
+	 *				description="ID of the category the article is in. At least one is required.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="Status of the article. Defaults to new if not overridden by this or status_category_id.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attach[]",
+	 *				description="Attached file that represents the article. See the <a href="https://support.deskpro.com/articles/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				paramType="body",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attach_id[]",
+	 *				description="The ID of an already uploaded file to include with the article. Required if no attach value is provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date",
+	 *				description="If provided, changes the creation/publishing date of the article to the given Unix timestamp. If not provided, defaults to the current time.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_end",
+	 *				description="If provided, sets the Unix timestamp when an action should be taken.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_published",
+	 *				description="If provided and the article is not published, sets the Unix timestamp when an article should be published.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="end_action",
+	 *				description="If provided with a date_end, the action that should be taken when date_end is reached. Possible values are delete or archive.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[]",
+	 *				description="Value for the specified custom field.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *			@SWG\Parameter(
+	 *				name="product_id[]",
+	 *				description="ID of product this article is associated with.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function postArticleAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id, 'edit');
@@ -429,6 +751,26 @@ class KbController extends AbstractController
 		}
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETES a article by article ID.",
+	 * 		notes="DELETES the article by article ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteArticleAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id, 'delete');
@@ -440,6 +782,26 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/votes",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the votes for an article.",
+	 * 		notes="Information about the votes on an article by article ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleVotesAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -448,6 +810,26 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('votes' => $this->getApiData($votes)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/comments",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the comments for an article.",
+	 * 		notes="Information about the comments on an article by article ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleCommentsAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -456,6 +838,46 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/comments",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Add a comment for an article.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="content",
+	 *				description="Text of the comment.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="person_id",
+	 *				description="ID of the person that owns the comment. If not provided, defaults to the agent making the request.",
+	 *				paramType="path",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="Status of the comment. Defaults to visible.",
+	 *				paramType="path",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function newArticleCommentAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -490,6 +912,33 @@ class KbController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/comments/{comment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets info about a specific article comment.",
+	 * 		notes="Information about a specific comments on an article by comment ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment_id",
+	 *				description="ID of the article comment that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleCommentAction($article_id, $comment_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -501,6 +950,46 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('comment' => $comment->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/comments/{comment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates an article comment.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment_id",
+	 *				description="ID of the article comment that needs to be updated.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="content",
+	 *				description="Text of the comment.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="Status of the comment. Defaults to visible.",
+	 *				paramType="path",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function postArticleCommentAction($article_id, $comment_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -531,6 +1020,32 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/comments/{comment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETEs an article comment.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment_id",
+	 *				description="ID of the article comment that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteArticleCommentAction($article_id, $comment_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -547,6 +1062,26 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/attachments",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the attachments for an article.",
+	 * 		notes="Information about the attachments on an article by article ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleAttachmentsAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -554,6 +1089,39 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('attachments' => $this->getApiData($article->attachments)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/attachments",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Add an attachment for an article.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attach",
+	 *				description="Attached file that represents the article. See the <a href="https://support.deskpro.com/articles/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				paramType="body",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attach_id",
+	 *				description="The ID of an already uploaded file to include with the article. Required if no attach value is provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function newArticleAttachmentAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id, 'edit');
@@ -594,6 +1162,33 @@ class KbController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/comments/{attachment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets info about a specific article attachment.",
+	 * 		notes="Information about a specific attachment on an article by attachment ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attachment_id",
+	 *				description="ID of the article attachment that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleAttachmentAction($article_id, $attachment_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -608,6 +1203,32 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('exists' => $exists));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/comments/{attachment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETEs info about a specific article attachment.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="attachment_id",
+	 *				description="ID of the article attachment that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteArticleAttachmentAction($article_id, $attachment_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -625,6 +1246,26 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the labels for an article.",
+	 * 		notes="Information about the labels on an article by article ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleLabelsAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -632,6 +1273,32 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('labels' => $this->getApiData($article->labels)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Add a label for an article.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description=" Label to add.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function postArticleLabelsAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id, 'edit');
@@ -651,6 +1318,33 @@ class KbController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if an article has a label.",
+	 * 		notes="Information about a specific label on an article by attachment ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="label that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function getArticleLabelAction($article_id, $label)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -662,6 +1356,32 @@ class KbController extends AbstractController
 		}
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/{article_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes a label from an article.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="article_id",
+	 *				description="ID of the article that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="label that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteArticleLabelAction($article_id, $label)
 	{
 		$article = $this->_getArticleOr404($article_id, 'edit');
@@ -673,6 +1393,15 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/validating-comments",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets article comments that are awaiting validation."
+	 * 	)
+	 * )
+	 */
 	public function getValidatingCommentsAction()
 	{
 		$comments = $this->em->getRepository('DeskPRO:ArticleComment')->getValidatingComments();
@@ -688,6 +1417,15 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('comments' => $output));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available article categories."
+	 * 	)
+	 * )
+	 */
 	public function getCategoriesAction()
 	{
 		$categories = $this->em->getRepository('DeskPRO:ArticleCategory')->getFlatHierarchy();
@@ -695,6 +1433,45 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('categories' => $categories));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Creates an article category.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="title",
+	 *				description="Title of the category.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="parent_id",
+	 *				description="ID of the category's parent. Use 0 for no parent.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="display_order",
+	 *				description="Order of display of categories. Lower numbers will be displayed first.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="usergroup_id[]",
+	 *				description="ID of user group that has access. If not provided, defaults to all users.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function postCategoriesAction()
 	{
 		$errors = array();
@@ -756,6 +1533,25 @@ class KbController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets an article category",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -763,6 +1559,53 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('category' => $category->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates an article category.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category that needs to be updated.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="title",
+	 *				description="Title of the category.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="parent_id",
+	 *				description="ID of the category's parent. Use 0 for no parent.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="display_order",
+	 *				description="Order of display of categories. Lower numbers will be displayed first.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="usergroup_id[]",
+	 *				description="ID of user group that has access. If not provided, defaults to all users.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function postCategoryAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -800,6 +1643,25 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETEs an article category",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteCategoryAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -813,6 +1675,46 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}/articles",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets articles within an article category.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to the publishing date.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryArticlesAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -852,6 +1754,25 @@ class KbController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}/groups",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets groups with access to a article category.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category to look for.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryGroupsAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -859,6 +1780,32 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('groups' => $this->getApiData($category->usergroups)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}/groups",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a group to a article category.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category to look for.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="id",
+	 *				description="ID of the group to add access for.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function postCategoryGroupsAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -891,6 +1838,32 @@ class KbController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}/groups/{group_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if a group has access to a article category.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category to look for.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="group_id",
+	 *				description="ID of the group to look for.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryGroupAction($category_id, $group_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -906,6 +1879,32 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('exists' => $exists));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/categories/{category_id}/groups/{group_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes a group's access to a article category.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the category to look for.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="group_id",
+	 *				description="ID of the group to look for.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Article Category not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteCategoryGroupAction($category_id, $group_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -922,6 +1921,15 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/fields",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available article fields."
+	 * 	)
+	 * )
+	 */
 	public function getFieldsAction()
 	{
 		$field_manager = $this->container->getSystemService('article_fields_manager');
@@ -930,6 +1938,15 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/kb/products",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available article products."
+	 * 	)
+	 * )
+	 */
 	public function getProductsAction()
 	{
 		$products = $this->em->getRepository('DeskPRO:Product')->getFlatHierarchy();
