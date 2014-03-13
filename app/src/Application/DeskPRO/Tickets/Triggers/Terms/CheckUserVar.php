@@ -80,7 +80,7 @@ class CheckUserVar extends AbstractTriggerTerm
 			return true;
 		}
 
-		$value = TermValue::createWithValue($context->getVars()->get($name));
+		$value = TermValue::createWithValue($context->getUserVars()->get($name));
 
 		return $this->isStringMatch($ticket, $context, $value, $options['value']);
 	}
