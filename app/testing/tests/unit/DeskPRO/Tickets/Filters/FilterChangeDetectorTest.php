@@ -65,7 +65,6 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
 			$this->getFilters(),
 			$this->getAgentsArray()
 		);
-		$change_detector->setLogger($logger);
 
 		return $change_detector;
 	}
