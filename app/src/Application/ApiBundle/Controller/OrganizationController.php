@@ -39,8 +39,91 @@ use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Entity\Organization;
 use Orb\Util\Numbers;
 
+/**
+* @SWG\Resource(
+* 	resourcePath="/organization",
+* 	description="Operations about Organization",
+* 	basePath="/api"
+* )
+*/
 class OrganizationController extends AbstractController
 {
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Search for organizations matching criteria",
+	 * 		notes="Returns list of organizations that matched.",
+	 *		type="array",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="address[]",
+	 *				description="Requires an organization's address to contain this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[#][]",
+	 *				description="Requires organization custom field to have the specified value in the listed field.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="im[]",
+	 *				description="Requires an organization to have an instant messenger contact that contains this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Requires organization to be have the specified label.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="name[]",
+	 *				description="Requires an organization to have a name that contains this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="phone[]",
+	 *				description="Requires organization to have a phone number that contains this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to accessing organization's preference or organizations.id:asc.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function searchAction()
 	{
 		$search_map = array(
@@ -104,6 +187,59 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Creates a new organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="name",
+	 *				description="Name of the organization.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="contact_data[#]",
+	 *				description="Components of a contact detail to add. See the Setting Contact Data organization for more information.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[#]",
+	 *				description="Value for the specified custom organization field.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="group_id[]",
+	 *				description="ID of a usergroup to add this organization to.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Label to apply to the ticket.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="summary",
+	 *				description="Summary of the organization's details.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function newOrganizationAction()
 	{
 		if (!$this->person->hasPerm('agent_org.create')) {
@@ -202,6 +338,27 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a organization by organization ID.",
+	 * 		notes="Information about the organization by organization ID.",
+	 *		type="Organization",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -209,6 +366,45 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('organization' => $org->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates a organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be updated.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="name",
+	 *				description="Name of the organization.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[#]",
+	 *				description="Value for the specified custom organization field.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="summary",
+	 *				description="Summary of the organization's details.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -248,6 +444,24 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETEs a organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'delete');
@@ -258,7 +472,31 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
-
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/picture",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a link to an organization's picture.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="size",
+	 *				description="The maximum size (in pixels) that the picture should be. Defaults to 80",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationPictureAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -275,6 +513,38 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/picture",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates an organization's picture.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="file",
+	 *				description="An uploaded image. Required if no blob_id is provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="blob_id",
+	 *				description="ID of a blob record that holds the picture already. Required if no file is provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationPictureAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -311,6 +581,24 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/picture",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETEs an organization's picture.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationPictureAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -322,6 +610,31 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/activity-stream",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets activity stream for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationActivityStreamAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -343,6 +656,45 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/members",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets members of an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to person.name:asc.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache",
+	 *				description="The number of seconds to cache the result for. Defaults to 3600. Use 0 to disable the cache",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationMembersAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
