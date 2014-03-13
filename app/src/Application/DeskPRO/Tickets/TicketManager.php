@@ -270,26 +270,30 @@ class TicketManager
 		/** @var \Application\DeskPRO\Entity\TicketTrigger[] $triggers */
 		foreach ($triggers as $trigger) {
 			if ($context->getVars()->has('stop_triggers')) {
-				$context->getLogger()->info("Stopping triggers");
+				$context->getLogger()->info("[Triggers] Got stop signal");
 				break;
 			}
 
+			$mode_var = null;
 			switch ($context->getEventPerformer()) {
 				case 'agent':
-					$is_method_match = !in_array($context->getEventMethod(), $trigger->by_agent_mode);
+					$mode_var = $trigger->by_agent_mode;
 					break;
 				case 'user':
-					$is_method_match = !in_array($context->getEventMethod(), $trigger->by_user_mode);
-					break;
-				default:
-					$is_method_match = false;
+					$mode_var = $trigger->by_user_mode;
 					break;
 			}
+			if ($mode_var) {
+				$is_method_match = in_array($context->getEventMethod(), $mode_var);
+			} else {
+				$is_method_match = false;
+			}
 			if (!$is_method_match) {
+				$context->getLogger()->info(sprintf("[Triggers] Skip trigger #%s due to method mismatch: %s != (%s) %s", $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: array('NONE'))));
 				continue;
 			}
 
-			$context->getLogger()->info(sprintf("[Triggers] (#%d) ----- BEGIN %s -----", $trigger->id, $trigger->id));
+			$context->getLogger()->info(sprintf("[Triggers] ----- BEGIN TRIGGER #%s -----", $trigger->id));
 			$ts = microtime(true);
 
 			$match = $trigger->terms->isTriggerMatch($ticket, $context);
@@ -299,7 +303,7 @@ class TicketManager
 				$this->action_applicator->apply($trigger->actions, $ticket, $context);
 			}
 
-			$context->getLogger()->info(sprintf("[Triggers] (#%d) ----- FINISH %.4fs -----", $trigger->id, microtime(true)-$ts));
+			$context->getLogger()->info(sprintf("[Triggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
 		}
 
 		#----------------------------------------

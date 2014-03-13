@@ -110,10 +110,17 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 					$change_set,
 					$this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
 				);
+				$list_builder->setLogger($context->getLogger());
 
 				$notify = $list_builder->genNotifyList();
 
+				$person_context = $context->getPersonContext();
 				foreach ($notify as $n) {
+					// dont send to self
+					if ($person_context && $person_context == $n['agent']) {
+						$context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
+						continue;
+					}
 					if (in_array('email', $n['types'])) {
 						$agents[] = $n['agent'];
 					}

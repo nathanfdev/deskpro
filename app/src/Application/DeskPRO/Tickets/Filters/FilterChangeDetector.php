@@ -108,16 +108,6 @@ class FilterChangeDetector
 		$changed_fields = $ticket->getStateChangeRecorder()->getChangedFields();
 		$logger->debug(sprintf("[FilterChangeDetector] <Ticket:%d> Changed fields: %s", $ticket->id, implode(', ', $changed_fields)));
 
-		$is_hidden_change = false;
-		if (isset($changed_fields['hidden_status'])) {
-			$is_hidden_change = true;
-		}
-
-		$is_new_messages = false;
-		if (isset($changed_fields['messages'])) {
-			$is_new_messages = true;
-		}
-
 		// Convert the detected changed fields into names
 		// the searcher defines
 		$changed_fields = array_map(function($field_name) {
@@ -136,6 +126,16 @@ class FilterChangeDetector
 			}
 		}, $changed_fields);
 		$changed_fields = array_combine($changed_fields, $changed_fields);
+
+		$is_hidden_change = false;
+		if (isset($changed_fields['ticket.hidden_status'])) {
+			$is_hidden_change = true;
+		}
+
+		$is_new_messages = false;
+		if (isset($changed_fields['ticket.messages'])) {
+			$is_new_messages = true;
+		}
 
 		foreach ($this->filters as $f) {
 			if ($is_new_messages || $is_hidden_change || $f->getSearcher()->hasAnyAffectedFields($changed_fields)) {

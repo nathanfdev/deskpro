@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
-use Application\DeskPRO\EntityRepository\TicketFilterSubscription;
+use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\Filters\FilterChangeSet;
@@ -129,10 +129,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
 	 */
 	public function genNotifyList()
 	{
-		if ($this->notify_list !== null) {
-			return array();
-		}
-
 		// Never notify about hidden tickets
 		if ($this->ticket->status == 'hidden') {
 			$this->logMessage("ticket hidden, no notifications to send");
@@ -253,8 +249,8 @@ class AgentNotifyListBuilder implements PersonContextInterface
 		}
 
 		$notify_list[$agent->id]['filter_subs'][$filter->id]["is_$change_type"] = true;
-		$notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_merge($notify_list[$agent->id][$filter->id]['types'], $notify_types);
-		$notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_unique($notify_list[$agent->id][$filter->id]['types']);
+		$notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_merge($notify_list[$agent->id]['filter_subs'][$filter->id]['types'], $notify_types);
+		$notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_unique($notify_list[$agent->id]['filter_subs'][$filter->id]['types']);
 
 		$notify_list[$agent->id]['types'] = array_merge($notify_list[$agent->id]['types'], $notify_types);
 		$notify_list[$agent->id]['types'] = array_unique($notify_list[$agent->id]['types']);
