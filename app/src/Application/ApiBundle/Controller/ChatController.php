@@ -42,7 +42,7 @@ use Orb\Util\Numbers;
 /**
 * @SWG\Resource(
 * 	resourcePath="/chats",
-* 	description="Operations about Knowledgebase",
+* 	description="Operations about Chats",
 * 	basePath="/api"
 * )
 */
