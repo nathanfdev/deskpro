@@ -58,6 +58,11 @@ class FilterChangeDetector
 	private $filters;
 
 	/**
+	 * @var bool
+	 */
+	private $extneded_log_info = false;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
 	 * @param \Application\DeskPRO\Entity\Person[] $agents
 	 */
@@ -202,7 +207,7 @@ class FilterChangeDetector
 			$filter_change = new FilterChange($filter);
 			$changed[$filter->id] = $filter_change;
 
-			$logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -----", $filter->id, $filter->title));
+			if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -----", $filter->id, $filter->title));
 
 			$agent_scopes = array();
 			if ($filter->is_global) {
@@ -289,28 +294,28 @@ class FilterChangeDetector
 				}
 
 				if (!$orig_match AND !$new_match) {
-					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
+					if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
 				} else if ($orig_match AND $new_match) {
-					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
+					if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
 				} else if ($orig_match AND !$new_match) {
-					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
+					if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
 					$filter_change->removeForAgent($agent);
 				} else if (!$orig_match AND $new_match) {
-					$logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
+					if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
 					$filter_change->addForAgent($agent);
 				}
 
 				if (!$orig_match) {
-					$logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
+					if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
 				}
 				if (!$new_match) {
-					$logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
+					if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
 				}
 
 				$scope_counts++;
 			}
 
-			$logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
+			if ($this->extneded_log_info) $logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
 		}
 
 		$changed_filters = array();

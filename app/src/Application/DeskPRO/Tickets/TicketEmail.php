@@ -154,7 +154,6 @@ class TicketEmail
 
 		$this->to_person            = $opt->get('to_person');
 		$this->ticket               = $opt->get('ticket');
-		$this->user_mode            = $opt->get('user_mode');
 		$this->template_name        = $opt->get('template_name');
 		$this->from_name            = $opt->get('from_name', '');
 
@@ -167,13 +166,21 @@ class TicketEmail
 		$this->do_cc_users          = $opt->get('cc_users', false);
 		$this->is_auto              = $opt->get('is_auto', false);
 
+		$this->user_mode            = $opt->get('user_mode');
+
+		if ($opt->get('user_mode') == 'user') {
+			$this->user_mode = 'user';
+		} elseif ($opt->get('user_mode') == 'agent') {
+			$this->user_mode = 'agent';
+		}
+
 		if ($opt->has('logger')) {
 			$this->logger = $opt->get('logger');
 		} else {
 			$this->logger = new NullLogger();
 		}
 
-		if ($this->do_cc_users && self::MODE_AGENT) {
+		if ($this->do_cc_users && $this->user_mode == self::MODE_AGENT) {
 			throw new \InvalidArgumentException("CC Users does not work on agent emails");
 		}
 
@@ -243,6 +250,8 @@ class TicketEmail
 	public function send(array $vars = array())
 	{
 		$mailer     = $this->mailer;
+		$mailer->resetLogMessages();
+
 		$translator = $this->translate;
 		$em         = $this->em;
 		$field_manager = $this->ticket_field_manager;
@@ -285,7 +294,7 @@ class TicketEmail
 
 			if (!$vars['validating_email']) {
 				$this->logger->info(sprintf("[TicketEmail] to_email(4): no email and no validating email"));
-				return;
+				throw new \RuntimeException("no email and no validating email");
 			}
 
 			$to_email = $vars['validating_email']->email;
@@ -303,8 +312,8 @@ class TicketEmail
 		$this->sent_with_ccs = array();
 
 		$message = $mailer->createMessage();
-		$message->setTo(array($to_name => $to_email));
 		$this->logger->info(sprintf("[TicketEmail] To: %s -- Name: %s", $to_email, $to_name));
+		$message->setTo(array($to_email => $to_name));
 		$message->setContextId('ticket_gateway');
 		$message->setTemplate($this->template_name, $vars);
 
@@ -325,18 +334,17 @@ class TicketEmail
 			}
 		}
 
-		if ($this->from_email_account) {
-			$from_email = $this->from_email_account;
-		} else {
-			$from_email = $mailer->getFromAddressForTicket($this->ticket);
-			$this->from_email_account = $from_email;
+		if (!$this->from_email_account || !$this->from_email_account->outgoing_account) {
+			$this->from_email_account = $mailer->getEmailAccountForTicket($this->ticket);
 		}
-		$from_name = $this->from_name;
 
-		if (!$from_email) {
-			$this->logger->info(sprintf("[TicketEmail] No from email to send mail from!"));
-			return;
+		if (!$this->from_email_account) {
+			$this->logger->warning(sprintf("[TicketEmail] No from email to send mail from!"));
+			throw new \RuntimeException("No from email to send mail from");
 		}
+
+		$from_email = $this->from_email_account->getUseEmailAddress();
+		$from_name = $this->from_name;
 
 		$this->logger->info(sprintf("[TicketEmail] From: %s -- Name: %s", $from_email, $from_name));
 		$message->setFrom($from_email, $from_name);
@@ -347,7 +355,7 @@ class TicketEmail
 			$message->getHeaders()->get('Message-ID')->setId($this->ticket->getUniqueEmailMessageId());
 		}
 
-		$message->getHeaders()->addIdHeader('References', $$this->ticket->getEmailReferencesHeader());
+		$message->getHeaders()->addIdHeader('References', $this->ticket->getEmailReferencesHeader());
 
 		if (isset($vars['is_auto']) && $vars['is_auto']) {
 			$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
@@ -360,6 +368,10 @@ class TicketEmail
 		});
 
 		$mailer->send($message);
+
+		foreach ($mailer->getLogMessages() as $log_msg) {
+			$this->logger->debug("[TicketEmail][Mailer] $log_msg");
+		}
 	}
 
 

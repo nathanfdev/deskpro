@@ -142,6 +142,9 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		$context->getLogger()->debug("[SendAgentEmail] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
+		$start_time = microtime(true);
+
 		$agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
 		if (!$agents) {
@@ -197,7 +200,6 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		# Send emails
 		#-------------------------
 
-		$start_time = microtime(true);
 		$sent_count = 0;
 
 		foreach ($agents as $agent) {
@@ -228,7 +230,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 			}
 		}
 
-		$context->getLogger()->warn("[SendAgentEmail] Send %d messages in %.3fs", $sent_count, microtime(true)-$start_time);
+		$context->getLogger()->info(sprintf("[SendAgentEmail] Send %d messages in %.3fs", $sent_count, microtime(true)-$start_time));
 	}
 
 

@@ -184,7 +184,7 @@ class EmailAccountManager
 			$parts = explode('|', $crit);
 			$crit = 0;
 			foreach ($parts as $p) {
-				$p = intval(trim($p));
+				$p = trim($p);
 				$p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::' . strtoupper($p);
 				$p_val = constant($p_name);
 				if ($p_val) {
@@ -246,6 +246,23 @@ class EmailAccountManager
 		}
 
 		return $map;
+	}
+
+
+	/**
+	 * "primary" just means the first account that has an outgoing.
+	 *
+	 * @return EmailAccount
+	 */
+	public function getPrimaryEmailAccount()
+	{
+		foreach ($this->getAllActiveAccounts() as $acc) {
+			if ($this->accountHasTransport($acc)) {
+				return $acc;
+			}
+		}
+
+		return null;
 	}
 
 	####################################################################################################################

@@ -1149,6 +1149,16 @@ i.icon-dp-chat:before {
  * Sets border radius on bottom -left corner
  */
 
+.border-box {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+
+     -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+
+          box-sizing: border-box;
+}
+
 /**
  * Standard zindex levels
  */

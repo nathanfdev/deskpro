@@ -73,7 +73,7 @@ use Orb\Util\Util;
  * @property CustomDataTicket[] $custom_data
  * @property LabelTicket[] $labels
  * @property string $sent_to_address
- * @property EmailGateway $email_gateway
+ * @property EmailAccount $email_account
  * @property string $creation_system
  * @property string $creation_system_option
  * @property string $ticket_hash
@@ -277,9 +277,9 @@ class Ticket extends DomainObject
 	/**
 	 * The gateway this ticket originated from
 	 *
-	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
-	protected $email_gateway = null;
+	protected $email_account = null;
 
 	/**
 	 * @var string
@@ -1780,25 +1780,6 @@ class Ticket extends DomainObject
 		}
 	}
 
-	public function getEmailGatewayId()
-	{
-		if (!$this->email_gateway) {
-			return 0;
-		}
-
-		return $this->email_gateway['id'];
-	}
-
-	public function setEmailGatewayId($id)
-	{
-		if ($id) {
-			$g = App::getOrm()->getRepository('DeskPRO:EmailGateway')->find($id);
-			$this['email_gateway'] = $g;
-		} else {
-			$this['email_gateway'] = null;
-		}
-	}
-
 	public function getIsAssigned()
 	{
 		if ($this->agent OR $this->agent_team) {
@@ -2924,7 +2905,7 @@ class Ticket extends DomainObject
 			'agent_team_id'                => $this->agent_team ? $this->agent_team->id : null,
 			'organization_id'              => $this->organization ? $this->organization->id : null,
 			'linked_chat_id'               => $this->linked_chat ? $this->linked_chat->id : null,
-			'email_gateway_id'             => $this->email_gateway ? $this->email_gateway->id : null,
+			'email_gateway_id'             => null,
 			'locked_by_agent'              => $this->locked_by_agent ? $this->locked_by_agent->id : null,
 			'ref'                          => $this->ref,
 			'auth'                         => $this->auth,
@@ -3510,10 +3491,10 @@ class Ticket extends DomainObject
 			'orphanRemoval'        => true
 		));
 		$metadata->mapManyToOne(array(
-			'fieldName'            => 'email_gateway',
-			'targetEntity'         => 'Application\\DeskPRO\\Entity\\EmailGateway',
+			'fieldName'            => 'email_account',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\EmailAccount',
 			'joinColumns'          => array(array(
-				'name'                 => 'email_gateway_id',
+				'name'                 => 'email_account_id',
 				'referencedColumnName' => 'id',
 				'nullable'             => true,
 				'onDelete'             => 'set null',

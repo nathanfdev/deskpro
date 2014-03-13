@@ -47,7 +47,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool from_account   The account to send from (falsey for ticket account)
  * @option bool do_cc_users    True to CC the email to other user parts in the ticket
  */
-class SendUserEmail extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
+class SendUserEmail extends AbstractEmailAction
 {
 	/**
 	 * {@inheritDoc}
@@ -65,17 +65,20 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		$context->getLogger()->debug("[SendUserEmail] Begin");
+		$start_time = microtime(true);
+
 		try {
 			$from_account = $this->getFromEmailAccountOption($ticket, $context);
 		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+			$context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
 			return;
 		}
 
 		try {
 			$template = $this->getEmailTemplateOption($ticket, $context, false);
 		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+			$context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
 			return;
 		}
 
@@ -89,14 +92,13 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 		# Send emails
 		#-------------------------
 
-		$start_time = microtime(true);
-
 		$build = TicketEmailBuilder::createFromContainer($this->getContainer())
 			->setTicket($ticket)
 			->setToPerson($ticket->person)
 			->setUserMode()
 			->setTemplateName($template)
 			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context))
+			->setLogger($context->getLogger())
 			->setFromEmailAccount($from_account);
 
 		if ($this->getActionOption('do_cc_users')) {
@@ -115,7 +117,7 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 			);
 		}
 
-		$context->getLogger()->warn("[SendAgentEmail] Sent message in %.3fs", microtime(true)-$start_time);
+		$context->getLogger()->info(sprintf("[SendUserEmail] Sent message in %.3fs", microtime(true)-$start_time));
 	}
 
 

@@ -189,9 +189,18 @@ class EmailAccount extends DomainObject
 	 */
 	public function getAllAddresses()
 	{
-		$addrs = $this->other_addresses;
+		$addrs = $this->other_addresses ?: array();
 		array_unshift($addrs, $this->address);
 		return $addrs;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getUseEmailAddress()
+	{
+		return $this->address;
 	}
 
 
@@ -331,7 +340,7 @@ class EmailAccount extends DomainObject
 			'columnName' => 'other_addresses',
 			'fieldName'  => 'other_addresses',
 			'type'       => 'simple_array',
-			'nullable'   => false
+			'nullable'   => true
 		));
 		$metadata->mapField(array(
 			'columnName' => 'options',

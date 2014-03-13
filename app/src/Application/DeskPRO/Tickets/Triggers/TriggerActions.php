@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\Triggers;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\ActionContext;
@@ -51,12 +53,17 @@ use DeskPRO\Kernel\KernelErrorHandler;
  * *save* the term to the db if it also implements the standard ActionDefinitionInterface which defines
  * a standard interface for getting a term name and options (so we can recreate a term object again).
  */
-class TriggerActions implements \Serializable, ActionInterface
+class TriggerActions implements \Serializable, ActionInterface, DeskproContainerAwareInterface
 {
 	/**
 	 * @var ActionComposite
 	 */
 	private $actions;
+
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	private $container;
 
 	public function __construct()
 	{
@@ -99,10 +106,39 @@ class TriggerActions implements \Serializable, ActionInterface
 
 
 	/**
+	 * @param DeskproContainer $container
+	 */
+	public function setContainer(DeskproContainer $container)
+	{
+		$this->container = $container;
+	}
+
+
+	/**
+	 * Gets the set container.
+	 *
+	 * @return DeskproContainer
+	 * @throws \RuntimeException When no container has been set yet
+	 */
+	protected function getContainer()
+	{
+		if (!$this->container) {
+			throw new \RuntimeException("No container has been set");
+		}
+
+		return $this->container;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if ($this->container && $this->actions instanceof DeskproContainerAwareInterface) {
+			$this->actions->setContainer($this->container);
+		}
+
 		$this->actions->applyAction($ticket, $context);
 	}
 

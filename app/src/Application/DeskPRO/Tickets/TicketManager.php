@@ -274,6 +274,21 @@ class TicketManager
 				break;
 			}
 
+			switch ($context->getEventPerformer()) {
+				case 'agent':
+					$is_method_match = !in_array($context->getEventMethod(), $trigger->by_agent_mode);
+					break;
+				case 'user':
+					$is_method_match = !in_array($context->getEventMethod(), $trigger->by_user_mode);
+					break;
+				default:
+					$is_method_match = false;
+					break;
+			}
+			if (!$is_method_match) {
+				continue;
+			}
+
 			$context->getLogger()->info(sprintf("[Triggers] (#%d) ----- BEGIN %s -----", $trigger->id, $trigger->id));
 			$ts = microtime(true);
 

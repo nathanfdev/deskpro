@@ -17,7 +17,7 @@ $container->setParameter('controller_resolver.class', 'Application\\DeskPRO\\Htt
 $container->setParameter('debug.controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\TraceableControllerResolver');
 $container->setParameter('session.class', 'Application\\DeskPRO\\HttpFoundation\\Session');
 $container->setParameter('swiftmailer.class', 'Application\\DeskPRO\\Mail\\Mailer');
-$container->setParameter('twig.loader.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
+$container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
 $container->setParameter('file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
 $container->setParameter('routing.file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
@@ -107,10 +107,10 @@ $container->setDefinition('deskpro.mail_logger', $definition);
 // swiftmailer.mailer
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
+$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailerFactory');
+$definition->setFactoryMethod('create');
 $definition->setArguments(array(
-	new Reference('swiftmailer.transport'),
-	new Reference('templating'),
-	new Reference('deskpro.mail_logger')
+	new Reference('service_container')
 ));
 $container->setDefinition('swiftmailer.mailer', $definition);
 

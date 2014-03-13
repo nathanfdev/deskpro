@@ -29,107 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\Actions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-
-class ActionComposite implements ActionInterface, DeskproContainerAwareInterface
+class Build1394726436 extends AbstractBuild
 {
-	/**
-	 * @var ActionInterface[]
-	 */
-	private $actions = array();
-
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
-
-	/**
-	 * @param ActionInterface[] $actions
-	 */
-	public function __construct(array $actions = array())
+	public function run()
 	{
-		$this->setAll($actions);
-	}
-
-
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function setContainer(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
-
-		/**
-		 * Gets the set container.
-		 *
-		 * @return DeskproContainer
-		 * @throws \RuntimeException When no container has been set yet
-		 */
-		protected function getContainer()
-	{
-		if (!$this->container) {
-			throw new \RuntimeException("No container has been set");
-		}
-
-		return $this->container;
-	}
-
-
-	/**
-	 * @param ActionInterface $term
-	 */
-	public function add(ActionInterface $term)
-	{
-		$this->actions[] = $term;
-	}
-
-
-	/**
-	 * @param ActionInterface[] $actions
-	 */
-	public function setAll(array $actions)
-	{
-		$this->actions = array();
-		foreach ($actions as $t) {
-			$this->add($t);
-		}
-	}
-
-
-	/**
-	 * @return ActionInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->actions;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		foreach ($this->actions as $a) {
-			if ($a instanceof DeskproContainerAwareInterface) {
-				$a->setContainer($this->getContainer());
-			}
-			if ($a instanceof NoopableInterface) {
-				if ($a->isNoop($ticket, $context)) {
-					continue;
-				}
-			}
-
-			$a->applyAction($ticket, $context);
-		}
+		$this->execMutateSql("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4FBCC7CDF");
+		$this->execMutateSql("DROP INDEX IDX_54469DF4FBCC7CDF ON tickets");
+		$this->execMutateSql("ALTER TABLE tickets CHANGE email_gateway_id email_account_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE tickets ADD CONSTRAINT FK_54469DF437D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE INDEX IDX_54469DF437D8AD65 ON tickets (email_account_id)");
 	}
 }

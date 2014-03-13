@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
@@ -56,9 +57,9 @@ class Mailer extends \Swift_Mailer implements Loggable
 	protected $templating;
 
 	/**
-	 * @var \Application\DeskPRO\TicketAccounts\TicketAccounts
+	 * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
 	 */
-	protected $ticket_accounts;
+	protected $email_accounts;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -85,8 +86,16 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 */
 	protected $is_sending_queue = false;
 
-	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
+	public function __construct(
+		EmailAccountManager $email_accounts,
+		\Swift_Transport $transport,
+		\Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating,
+		Logger $logger = null
+	)
 	{
+
+		$this->email_accounts = $email_accounts;
+
 		$tmpdir = dp_get_tmp_dir() . '/swiftmailer-cache';
 		if (!is_dir(dp_get_tmp_dir() . '/swiftmailer-cache')) {
 			if (!@mkdir($tmpdir, 0777, true)) {
@@ -211,6 +220,11 @@ class Mailer extends \Swift_Mailer implements Loggable
 	public function getLogMessages()
 	{
 		return $this->messagesLog->getMessages();
+	}
+
+	public function resetLogMessages()
+	{
+		$this->messagesLog->clear();
 	}
 
 	/**
@@ -449,10 +463,24 @@ class Mailer extends \Swift_Mailer implements Loggable
 
 	/**
 	 * @param Ticket $ticket
-	 * @return null|string
+	 * @return \Application\DeskPRO\Entity\EmailAccount|null
 	 */
-	public function getFromAddressForTicket(Ticket $ticket)
+	public function getEmailAccountForTicket(Ticket $ticket)
 	{
-		return $this->ticket_accounts->getEmailAddressForTicket($ticket);
+		if ($ticket->email_account) {
+			return $ticket->email_account->address;
+		}
+
+		return $this->email_accounts->getPrimaryEmailAccount();
+	}
+
+
+	/**
+	 * @param string $address
+	 * @return \Application\DeskPRO\Entity\EmailAccount|null
+	 */
+	public function findEmailAccountForAddress($address)
+	{
+		return $this->email_accounts->findAccountForEmailAddress($address, EmailAccountManager::IS_ENABLED & EmailAccountManager::WITH_TRANSPORT);
 	}
 }
