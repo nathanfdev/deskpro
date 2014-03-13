@@ -48,6 +48,11 @@ class ExecutorContext implements ExecutorContextInterface
 	private $vars;
 
 	/**
+	 * @var \Orb\Util\OptionsArray
+	 */
+	private $user_vars;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	private $person_context;
@@ -85,6 +90,7 @@ class ExecutorContext implements ExecutorContextInterface
 		}
 
 		$this->vars = new OptionsArray();
+		$this->user_vars = new OptionsArray();
 		$this->logger = $logger;
 	}
 
@@ -131,6 +137,15 @@ class ExecutorContext implements ExecutorContextInterface
 	public function getVars()
 	{
 		return $this->vars;
+	}
+
+
+	/**
+	 * @return OptionsArray
+	 */
+	public function getUserVars()
+	{
+		return $this->user_vars;
 	}
 
 

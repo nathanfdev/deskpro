@@ -15,8 +15,8 @@ class ModSetUserVarTest extends \DpUnitTestCase
 		$action = new ModSetUserVar(array('name' => 'testvar', 'value' => 'test123'));
 		$action->applyAction($ticket, $exec);
 
-		$this->assertTrue($exec->getVars()->has('uservar_testvar'));
-		$this->assertEquals('test123', $exec->getVars()->get('uservar_testvar'));
+		$this->assertTrue($exec->getUserVars()->has('testvar'));
+		$this->assertEquals('test123', $exec->getUserVars()->get('testvar'));
 	}
 
 	public function testNotSet()
@@ -27,6 +27,6 @@ class ModSetUserVarTest extends \DpUnitTestCase
 		$action = new ModSetUserVar(array('name' => 'xxx', 'value' => 'test123'));
 		$action->applyAction($ticket, $exec);
 
-		$this->assertFalse($exec->getVars()->has('uservar_testvar'));
+		$this->assertFalse($exec->getUserVars()->has('testvar'));
 	}
 }

@@ -29,59 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
-
-/**
- * Checks the value of a user var
- *
- * @option string name  The name of the user var
- * @option string value Value to check for (not used for isset/notisset)
- */
-class CheckUserVar extends AbstractTriggerTerm
+class Build1394709559 extends AbstractBuild
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
+	public function run()
 	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		$options->addValidNames('value');
-		return $options;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-
-		$name = $options->get('name');
-		if (!$name) {
-			return false;
-		}
-
-		if (!$context->getVars()->has($name)) {
-			if ($this->getTermOperator() == 'notisset') {
-				return true;
-			}
-			return false;
-		}
-		if ($this->getTermOperator() == 'isset') {
-			return true;
-		}
-
-		$value = TermValue::createWithValue($context->getVars()->get($name));
-
-		return $this->isStringMatch($ticket, $context, $value, $options['value']);
+		$this->execMutateSql("ALTER TABLE ticket_triggers ADD is_hidden TINYINT(1) NOT NULL, ADD is_editable TINYINT(1) NOT NULL, ADD sys_name VARCHAR(150) DEFAULT NULL");
 	}
 }

@@ -55,8 +55,7 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('template');
-		$options->addValidNames('from_name', 'from_account', 'do_cc_users');
+		$options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users');
 		return $options;
 	}
 
@@ -97,7 +96,7 @@ class SendUserEmail extends AbstractContainerAwareAction implements ActionInterf
 			->setToPerson($ticket->person)
 			->setUserMode()
 			->setTemplateName($template)
-			->setFromName($this->getActionOption('from_name'))
+			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context))
 			->setFromEmailAccount($from_account);
 
 		if ($this->getActionOption('do_cc_users')) {

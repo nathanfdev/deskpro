@@ -86,6 +86,11 @@ interface ExecutorContextInterface
 	public function getVars();
 
 	/**
+	 * @return OptionsArray
+	 */
+	public function getUserVars();
+
+	/**
 	 * @param string $event_method Event method (email, api, or web)
 	 * @param array $event_method_options Event options (eg a URL etc)
 	 */

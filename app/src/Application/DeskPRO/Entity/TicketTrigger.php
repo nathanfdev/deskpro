@@ -49,8 +49,8 @@ use Orb\Util\Arrays;
  * @property string $title
  * @property bool $is_enabled
  * @property string $event_trigger
- * @property string $by_agent_mode
- * @property string $by_user_mode
+ * @property array $by_agent_mode
+ * @property array $by_user_mode
  * @property \Application\DeskPRO\Tickets\Triggers\TriggerTerms $terms
  * @property \Application\DeskPRO\Tickets\Triggers\TriggerActions $actions
  * @property int $run_order
@@ -96,19 +96,34 @@ class TicketTrigger extends DomainObject
 	protected $is_enabled = true;
 
 	/**
+	 * @var bool
+	 */
+	protected $is_hidden = false;
+
+	/**
+	 * @var bool
+	 */
+	protected $is_editable = true;
+
+	/**
+	 * @var string
+	 */
+	protected $sys_name = null;
+
+	/**
 	 * @var string
 	 */
 	protected $event_trigger;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
-	protected $by_agent_mode = null;
+	protected $by_agent_mode = array();
 
 	/**
-	 * @var string
+	 * @var array
 	 */
-	protected $by_user_mode = null;
+	protected $by_user_mode = array();
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
@@ -147,7 +162,7 @@ class TicketTrigger extends DomainObject
 	public function setByAgentMode($modes)
 	{
 		if (!$modes) {
-			$this->setModelField('by_agent_mode', null);
+			$this->setModelField('by_agent_mode', array());
 		} else {
 			if (!is_array($modes)) {
 				$modes = explode(',', $modes);
@@ -156,7 +171,6 @@ class TicketTrigger extends DomainObject
 			$modes = Arrays::func($modes, 'trim');
 			$modes = Arrays::func($modes, 'strtolower');
 			sort($modes, \SORT_STRING);
-			$modes = implode(',', $modes);
 			$this->setModelField('by_agent_mode', $modes);
 		}
 	}
@@ -168,7 +182,7 @@ class TicketTrigger extends DomainObject
 	public function setByUserMode($modes)
 	{
 		if (!$modes) {
-			$this->setModelField('by_user_mode', null);
+			$this->setModelField('by_user_mode', array());
 		} else {
 			if (!is_array($modes)) {
 				$modes = explode(',', $modes);
@@ -177,33 +191,8 @@ class TicketTrigger extends DomainObject
 			$modes = Arrays::func($modes, 'trim');
 			$modes = Arrays::func($modes, 'strtolower');
 			sort($modes, \SORT_STRING);
-			$modes = implode(',', $modes);
 			$this->setModelField('by_user_mode', $modes);
 		}
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getByAgentModeArray()
-	{
-		if (!$this->by_agent_mode) {
-			return array();
-		}
-		return explode(',', $this->by_agent_mode);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getByUserModeArray()
-	{
-		if (!$this->by_user_mode) {
-			return array();
-		}
-		return explode(',', $this->by_user_mode);
 	}
 
 
@@ -213,8 +202,8 @@ class TicketTrigger extends DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
-		$data['by_agent_mode'] = $this->getByAgentModeArray();
-		$data['by_user_mode']  = $this->getByAgentModeArray();
+		$data['by_agent_mode'] = $this->by_agent_mode;
+		$data['by_user_mode']  = $this->by_user_mode;
 		$data['terms']         = $this->terms->exportToArray();
 		$data['actions']       = $this->actions->exportToArray();
 		return $data;
@@ -260,20 +249,39 @@ class TicketTrigger extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'by_agent_mode',
 			'fieldName'  => 'by_agent_mode',
-			'type'       => 'string',
-			'nullable'   => 255,
+			'type'       => 'simple_array',
+			'nullable'   => true,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'by_user_mode',
 			'fieldName'  => 'by_user_mode',
-			'type'       => 'string',
-			'nullable'   => 255,
+			'type'       => 'simple_array',
+			'nullable'   => true,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'is_enabled',
 			'fieldName'  => 'is_enabled',
 			'type'       => 'boolean',
 			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'is_hidden',
+			'fieldName'  => 'is_hidden',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'is_editable',
+			'fieldName'  => 'is_editable',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'sys_name',
+			'fieldName'  => 'sys_name',
+			'type'       => 'string',
+			'length'     => 150,
+			'nullable'   => true,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'terms',

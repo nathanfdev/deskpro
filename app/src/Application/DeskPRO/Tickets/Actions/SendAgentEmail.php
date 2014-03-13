@@ -57,7 +57,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('agent_ids');
-		$options->addRequiredNames('template', 'from_name', 'from_account');
+		$options->addValidNames('template', 'from_name', 'from_account');
 		return $options;
 	}
 
@@ -210,7 +210,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
 				->setTicket($ticket)
 				->setToPerson($agent)
-				->setFromName($this->getActionOption('from_name'))
+				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context))
 				->setFromEmailAccount($from_account)
 				->setAgentMode()
 				->setTemplateName($template)

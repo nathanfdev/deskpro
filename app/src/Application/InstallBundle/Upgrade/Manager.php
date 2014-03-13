@@ -38,7 +38,9 @@ use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Monolog\Handler\OrbLoggerAdpaterHandler;
 use Application\DeskPRO\Plugin\Package\NativePackages;
+use Application\InstallBundle\Data\DefaultDataProcessor;
 use Monolog\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -197,6 +199,16 @@ class Manager
 			if ($this->logger) $this->logger->debug("restart twitter pid $twitter_pid");
 			@unlink(dp_get_data_dir() . '/twitter.pid');
 		}
+
+		#------------------------------
+		# Data
+		#------------------------------
+
+		$data_proc = new DefaultDataProcessor($this->container);
+		if ($this->logger) {
+			$data_proc->setLogger($this->logger);
+		}
+		$data_proc->runUpgrade();
 
 		#------------------------------
 		# Apps

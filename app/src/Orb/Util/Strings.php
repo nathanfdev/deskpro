@@ -227,6 +227,18 @@ class Strings
 
 
 	/**
+	 * Replace all whitespace with a single space.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function collapseWhitespace($string)
+	{
+		return preg_replace("#\\s+#", ' ', $string);
+	}
+
+
+	/**
 	 * Return the first line of a string.
 	 *
 	 * @param    string    $string The string to work on

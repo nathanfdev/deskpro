@@ -64,6 +64,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\AsseticCommand',
 			'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
 			'Application\\DeskPRO\\Command\\DecodeTacCommand',
+			'Application\\DeskPRO\\Command\\DefaultDataCommand',
 			'Application\\DeskPRO\\Command\\DevBuildLangCommand',
 			'Application\\DeskPRO\\Command\\DevCheckReservedWordsCommand',
 			'Application\\DeskPRO\\Command\\DevCommand',

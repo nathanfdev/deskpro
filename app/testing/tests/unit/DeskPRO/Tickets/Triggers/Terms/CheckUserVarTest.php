@@ -26,7 +26,7 @@ class CheckUserVarTest extends AbstractStringCheckTest
 	public function createExecutorContext(Ticket $ticket)
 	{
 		$exec = new ExecutorContext();
-		$exec->getVars()->set("uservar_testvar", $ticket->subject);
+		$exec->getUserVars()->set("testvar", $ticket->subject);
 		return $exec;
 	}
 

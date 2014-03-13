@@ -32,56 +32,67 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\DeskPRO\Monolog\Handler;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
+use Monolog\Handler\AbstractHandler;
+use Orb\Log\Logger as OrbLogger;
 
-/**
- * Checks the value of a user var
- *
- * @option string name  The name of the user var
- * @option string value Value to check for (not used for isset/notisset)
- */
-class CheckUserVar extends AbstractTriggerTerm
+class OrbLoggerAdpaterHandler extends AbstractHandler
 {
 	/**
-	 * {@inheritDoc}
+	 * @var \Orb\Log\Logger
 	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		$options->addValidNames('value');
-		return $options;
-	}
+	private $orb_logger;
 
+	/**
+	 * @var array
+	 */
+	private static $pri_map = array(
+		100 => 'DEBUG',
+		200 => 'INFO',
+		250 => 'NOTICE',
+		300 => 'WARN',
+		400 => 'ERR',
+		500 => 'CRIT',
+		550 => 'ALERT',
+		600 => 'EMERG',
+	);
+
+	public function __construct(OrbLogger $logger)
+	{
+		$this->orb_logger = $logger;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+	public function isHandling(array $record)
 	{
-		$options = $this->getTermOptions();
+		if (!$this->orb_logger->isEnabled()) {
+			return false;
+		}
+		if (!count($this->orb_logger->getWriterChain())) {
+			return false;
+		}
+		return true;
+	}
 
-		$name = $options->get('name');
-		if (!$name) {
+	public function handle(array $record)
+	{
+		if (!$this->isHandling($record)) {
 			return false;
 		}
 
-		if (!$context->getVars()->has($name)) {
-			if ($this->getTermOperator() == 'notisset') {
-				return true;
-			}
-			return false;
-		}
-		if ($this->getTermOperator() == 'isset') {
-			return true;
+		$record = $this->processRecord($record);
+
+		if (!isset(self::$pri_map[$record['level']])) {
+			$pri = 'NOTICE';
+		} else {
+			$pri = self::$pri_map[$record['level']];
 		}
 
-		$value = TermValue::createWithValue($context->getVars()->get($name));
+		$this->orb_logger->log($record['message'], $pri);
 
-		return $this->isStringMatch($ticket, $context, $value, $options['value']);
+		return false;
 	}
 }

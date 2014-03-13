@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 abstract class AbstractEmailAction extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
@@ -199,5 +200,34 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 		);
 
 		$state->recordChange($change);
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param Ticket $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return string
+	 */
+	protected function renderFromName($name ,Ticket $ticket, ExecutorContextInterface $context)
+	{
+		if (!$name) {
+			return '';
+		}
+
+		try {
+			$name = $this->getContainer()->getTwig()->renderStringTemplate($name, array(
+				'performer'     => $context->getPersonContext(),
+				'ticket'        => $ticket,
+				'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
+				'site_name'     => $this->getContainer()->getSetting('core.site_name'),
+				'user_vars'     => $context->getUserVars(),
+			));
+
+			return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
+		} catch (\Exception $e) {
+			$context->getLogger()->warn('Invalid name pattern syntax: ' . $name . '. Exception: ' . $e->getMessage(), array('exception' => $e));
+			return '';
+		}
 	}
 }

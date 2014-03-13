@@ -29,59 +29,104 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Install
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\InstallBundle\Data\DefaultData;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Monolog\Logger;
 
-/**
- * Checks the value of a user var
- *
- * @option string name  The name of the user var
- * @option string value Value to check for (not used for isset/notisset)
- */
-class CheckUserVar extends AbstractTriggerTerm
+class AbstractDefaultData
 {
 	/**
-	 * {@inheritDoc}
+	 * Gets the priority. Lower numbers run first.
+	 * This typically only makes sense for runInstall.
 	 */
-	protected function getOptionsDef()
+	const PRIORITY = 500;
+
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	private $container;
+
+	/**
+	 * @var Logger
+	 */
+	private $logger;
+
+	/**
+	 * @param DeskproContainer $container
+	 * @param Logger $logger
+	 */
+	public function __construct(DeskproContainer $container, Logger $logger)
 	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		$options->addValidNames('value');
-		return $options;
+		$this->container = $container;
+		$this->logger = $logger;
 	}
 
 
 	/**
-	 * {@inheritDoc}
+	 * @return Logger
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+	public function getLogger()
 	{
-		$options = $this->getTermOptions();
+		return $this->logger;
+	}
 
-		$name = $options->get('name');
-		if (!$name) {
-			return false;
-		}
 
-		if (!$context->getVars()->has($name)) {
-			if ($this->getTermOperator() == 'notisset') {
-				return true;
-			}
-			return false;
-		}
-		if ($this->getTermOperator() == 'isset') {
-			return true;
-		}
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	protected function getEm()
+	{
+		return $this->container->getEm();
+	}
 
-		$value = TermValue::createWithValue($context->getVars()->get($name));
 
-		return $this->isStringMatch($ticket, $context, $value, $options['value']);
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	protected function getDb()
+	{
+		return $this->container->getDb();
+	}
+
+
+	/**
+	 * Called during a fresh install.
+	 */
+	public function runInstall()
+	{
+
+	}
+
+
+	/**
+	 * Called automatically during an upgrade when the system doesnt have the class installed.
+	 * Usually the same as runInstall.
+	 */
+	public function runInstallViaUpgrade()
+	{
+		$this->runInstall();
+	}
+
+
+	/**
+	 * Called automatically during upgrades when the package has been installed before.
+	 * This is used to sync the database with any changes (e.g. adding new records or updating them).
+	 */
+	public function runSync()
+	{
+
+	}
+
+
+	/**
+	 * Called with the dp:reset-default-data command specifically. Usually the same as runSync.
+	 */
+	public function runReset()
+	{
+		$this->runSync();
 	}
 }
