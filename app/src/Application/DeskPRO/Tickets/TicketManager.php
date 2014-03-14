@@ -407,27 +407,19 @@ class TicketManager
 		# Recount stats
 		#----------------------------------------
 
-		if ($state->isNewTicket()) {
-			$ticket->count_agent_replies = count($state->getNewAgentReplies());
-			$ticket->count_user_replies  = count($state->getNewUserReplies());
-		} else if ($state->hasChangedField('messages')) {
+		if ($state->isNewTicket() || $state->hasChangedField('messages')) {
 			$agent_ids_in = implode(',', $this->container->getAgentData()->getIds());
 
 			$ticket->count_agent_replies = $this->db->fetchColumn("
 				SELECT COUNT(*)
 				FROM tickets_messages
-				WHERE
-					ticket_id = ?
-					AND is_agent_note = 0
-					AND person_id IN ($agent_ids_in)
+				WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
 			", array($ticket->id));
 
-			$this->count_user_replies = $this->db->fetchColumn("
+			$ticket->count_user_replies = $this->db->fetchColumn("
 				SELECT COUNT(*)
 				FROM tickets_messages
-				WHERE
-					ticket_id = ?
-					AND person_id NOT IN ($agent_ids_in)
+				WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
 			", array($ticket->id));
 		}
 
