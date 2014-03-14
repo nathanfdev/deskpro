@@ -29,72 +29,81 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+
+use Application\DeskPRO\Domain\DomainObject;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity;
 
 /**
- * Goes through tickets marked as spam and deletes them
+ * Class Ticket
+ *
+ * @property string $obj_type
+ * @property string $ref
  */
-class DeleteSpamTickets extends AbstractJob
+class RefReserve extends DomainObject
 {
-	const DEFAULT_INTERVAL = 86400;
+	/**
+	 * @var string
+	 */
+	protected $obj_type = null;
 
-	public function run()
+	/**
+	 * @var string
+	 */
+	protected $ref = null;
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_created;
+
+	public function __construct()
 	{
-		$secs = App::getSetting('core_tickets.spam_delete_time');
+		$this->date_created = new \DateTime();
+	}
 
-		// 0 means disable
-		if ($secs < 1) {
-			return;
-		}
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
 
-		$secs = 0;
-		$date_cut = new \DateTime('@' . (time() - $secs));
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->inheritanceType = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType = ClassMetadataInfo::GENERATOR_TYPE_NONE;
+		$metadata->setPrimaryTable(array(
+			'name' => 'ref_reserve'
+		));
 
-		#------------------------------
-		# find tickets to proc
-		#------------------------------
-
-		$ticket_count = 0;
-
-		$all_tickets = App::getDb()->fetchAll("
-			SELECT id, person_id
-			FROM tickets
-			WHERE tickets.hidden_status = 'spam' AND tickets.date_status < ?
-			LIMIT 1000
-		", array($date_cut->format('Y-m-d H:i:s')));
-
-		$this->logger->log(sprintf("[DeleteSpamTickets] %d tickets to delete", count($all_tickets)), 'DEBUG');
-		$date_str = date('Y-m-d H:i:s');
-
-		foreach ($all_tickets as $ticket) {
-
-			App::getDb()->beginTransaction();
-			try {
-				$this->logger->log(sprintf("[DeleteSpamTickets] Deleted ticket %d", $ticket['id']), 'DEBUG');
-
-				App::getDb()->delete('tickets_deleted', array('ticket_id' => $ticket['id']));
-				App::getDb()->replace('tickets_deleted', array('ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)'));
-
-				App::getDb()->delete('tickets', array('id' => $ticket['id']));
-				App::getDb()->delete('tickets_search_active', array('id' => $ticket['id']));
-
-				$ticket_count++;
-
-				App::getDb()->commit();
-			} catch (\Exception $e) {
-				App::getDb()->rollback();
-				throw $e;
-			}
-		}
-
-		if ($ticket_count) {
-			$this->logStatus("Removed " . count($ticket_count) . " spam tickets");
-		}
+		$metadata->mapField(array(
+			'columnName' => 'obj_type',
+			'fieldName'  => 'obj_type',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+			'id'         => true
+		));
+		$metadata->mapField(array(
+			'columnName' => 'ref',
+			'fieldName'  => 'ref',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+			'id'         => true
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_created',
+			'columnName' => 'date_created',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
 	}
 }

@@ -411,15 +411,8 @@ class ImportTicket
 		$set_data_content = $set_data;
 		$set_data_content['content'] = $search_content;
 
-		$this->importer->db->replace('tickets_search_message', $set_data_content);
-		$this->importer->db->replace('tickets_search_subject', array(
-			'id' => $ticket_id,
-			'subject' => $insert_ticket['subject']
-		));
-
 		if ($insert_ticket['status'] != 'closed' && $insert_ticket['status'] != 'hidden') {
 			$this->importer->db->replace('tickets_search_active', $set_data);
-			$this->importer->db->replace('tickets_search_message_active', $set_data_content);
 		}
 
 		return $ticket_id;

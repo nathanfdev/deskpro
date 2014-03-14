@@ -221,9 +221,6 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 		}
 
 		App::getDb()->delete('tickets_search_active', array('id' => $old_id));
-		App::getDb()->delete('tickets_search_message_active', array('id' => $old_id));
-		App::getDb()->delete('tickets_search_message', array('id' => $old_id));
-		App::getDb()->delete('tickets_search_subject', array('id' => $old_id));
 
 		return true;
 	}

@@ -49,12 +49,6 @@ class SearchExtension extends Extension
 		$definition->setFactoryMethod('getSearchAdapter');
 		$container->setDefinition('deskpro.search_adapter', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Search\\EntityListener', array(new Reference('deskpro.search_adapter')));
-		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostUpdate'));
-		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostPersist'));
-		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostRemove'));
-		$container->setDefinition('deskpro.search_adapter_entity_listener', $definition);
-
 		// Doctrine listener to support search engine
 		$definition = new Definition('Application\\DeskPRO\\Search\\EntityWatcher\\EntityWatcher', array(new Reference('service_container')));
 		$definition->addTag('doctrine.event_subscriber');

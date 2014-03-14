@@ -52,11 +52,6 @@ class CreateIndexesStep extends AbstractDeskpro3Step
 		'tickets_participant_indexes',
 		'custom_data_ticket_indexes',
 		'tickets_search_active_indexes',
-		'tickets_search_message_fulltext',
-		'tickets_search_message_indexes',
-		'tickets_search_message_active_fulltext',
-		'tickets_search_message_active_indexes',
-		'tickets_search_subject_indexes',
 	);
 
 	public static function getTitle()
@@ -128,30 +123,5 @@ class CreateIndexesStep extends AbstractDeskpro3Step
 	public function tickets_search_active_indexes()
 	{
 		$this->importer->restoreTableIndexes('tickets_search_active');
-	}
-
-	public function tickets_search_message_fulltext()
-	{
-		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message (content)");
-	}
-
-	public function tickets_search_message_indexes()
-	{
-		$this->importer->restoreTableIndexes('tickets_search_message');
-	}
-
-	public function tickets_search_message_active_fulltext()
-	{
-		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message_active (content)");
-	}
-
-	public function tickets_search_message_active_indexes()
-	{
-		$this->importer->restoreTableIndexes('tickets_search_message_active');
-	}
-
-	public function tickets_search_subject_indexes()
-	{
-		$this->importer->restoreTableIndexes('tickets_search_subject');
 	}
 }

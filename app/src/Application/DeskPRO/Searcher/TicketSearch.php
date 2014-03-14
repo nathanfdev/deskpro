@@ -1754,13 +1754,6 @@ class TicketSearch extends SearcherAbstract
 					case self::TERM_SUBJECT:
 						$this->affected_fields[] = 'ticket.subject';
 						$field = 'tickets.subject';
-						if (!$this->is_archive) {
-							$joins[] = array(
-								'tickets_search_subject',
-								"LEFT JOIN tickets_search_subject AS $join_name ON ($join_name.id = tickets.id)"
-							);
-							$field = "$join_name.subject";
-						}
 
 						if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 							if (!$this->is_testing) $this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice));
@@ -1773,14 +1766,6 @@ class TicketSearch extends SearcherAbstract
 					case self::TERM_SUBJECT_ADV:
 						$this->affected_fields[] = 'ticket.subject';
 						$field = 'tickets.subject';
-						if (!$this->is_archive) {
-							$joins[] = array(
-								'tickets_search_subject',
-								"LEFT JOIN tickets_search_subject AS $join_name ON ($join_name.id = tickets.id)"
-							);
-							$field = "$join_name.subject";
-						}
-
 						$string = $choice['query'];
 						$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
@@ -1804,14 +1789,9 @@ class TicketSearch extends SearcherAbstract
 						$type = 'and';
 
 						if (!App::getSetting('tickets_enable_like_search')) {
-							if ($this->is_archive) {
-								$t = 'tickets_search_message';
-							} else {
-								$t = 'tickets_search_message_active';
-							}
 							$joins[] = array(
-								$t,
-								"LEFT JOIN $t AS $join_name ON ($join_name.id = tickets.id)"
+								'tickets_messages',
+								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
 							);
 							$field = "$join_name.content";
 
@@ -1839,14 +1819,9 @@ class TicketSearch extends SearcherAbstract
 						$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
 						if (!App::getSetting('tickets_enable_like_search') || $type == 'fulltext') {
-							if ($this->is_archive) {
-								$t = 'tickets_search_message';
-							} else {
-								$t = 'tickets_search_message_active';
-							}
 							$joins[] = array(
-								$t,
-								"LEFT JOIN $t AS $join_name ON ($join_name.id = tickets.id)"
+								'tickets_messages',
+								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.id = tickets.id)"
 							);
 							$field = "$join_name.content";
 

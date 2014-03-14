@@ -76,9 +76,6 @@ class HardDeleteTickets extends AbstractJob
 			try {
 				// Ticket log already has the deletion record, we're doing the physical delete of the actual rows here
 				App::getDb()->delete('tickets_search_active', array('id' => $ticket_id));
-				App::getDb()->delete('tickets_search_message', array('id' => $ticket_id));
-				App::getDb()->delete('tickets_search_message_active', array('id' => $ticket_id));
-				App::getDb()->delete('tickets_search_subject', array('id' => $ticket_id));
 				App::getDb()->delete('tickets', array('id' => $ticket_id));
 				App::getDb()->commit();
 			} catch (\Exception $e) {

@@ -676,20 +676,6 @@ class Connection extends \Doctrine\DBAL\Connection
 		$level = $this->getTransactionNestingLevel();
 
 		if ($is_unexpected) {
-			// Set in SearchUpdater::run
-			// - This flag means we've updated records in the search tables.
-			// - Search tables are no innodb which means they cant be rolled back
-			// - So we have to set this reset flag so the cron job will regenerate them next turn
-			if (isset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'])) {
-				unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
-				try {
-					$this->executeUpdate("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '1'");
-
-					$e = new \RuntimeException("Rollback will result in corrupted search tables");
-					KernelErrorHandler::logException($e, false);
-				} catch (\Exception $e) {}
-			}
-
 			if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
 				$this->running_trans_event = true;
 				$eventArgs = new Event\PostCommit($this);

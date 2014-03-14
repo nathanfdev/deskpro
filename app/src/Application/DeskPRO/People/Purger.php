@@ -124,12 +124,6 @@ class Purger implements PersonContextInterface
 		#------------------------------
 
 		$this->db->delete('tickets_search_active', array('person_id' => $this->person->getId()));
-		$this->db->delete('tickets_search_message', array('person_id' => $this->person->getId()));
-		$this->db->delete('tickets_search_message_active', array('person_id' => $this->person->getId()));
-
-		if ($ticket_ids) {
-			$this->db->executeUpdate("DELETE FROM tickets_search_subject WHERE id IN (" . implode(',', $ticket_ids) . ")");
-		}
 	}
 
 

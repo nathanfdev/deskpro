@@ -271,6 +271,21 @@ class CleanupDaily extends AbstractJob
 		}
 
 		#------------------------------
+		# ref_reserve
+		#------------------------------
+
+		$cutoff = 86400; // 1 day
+		$datecut = date('Y-m-d H:i:s', time() - $cutoff);
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM ref_reserve
+			WHERE date_created < ?
+		", array($datecut));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num ref_reserve records");
+		}
+
+		#------------------------------
 		# Enable/disable like search
 		#------------------------------
 

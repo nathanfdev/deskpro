@@ -104,13 +104,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->removeTableIndexes('tickets_participant');
 		$this->importer->removeTableIndexes('custom_data_ticket');
 
-		$this->db->exec("ALTER TABLE tickets_search_message DROP INDEX content");
-		$this->db->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
-
 		$this->importer->removeTableIndexes('tickets_search_active');
-		$this->importer->removeTableIndexes('tickets_search_message');
-		$this->importer->removeTableIndexes('tickets_search_message_active');
-		$this->importer->removeTableIndexes('tickets_search_subject');
 
 		// Try to fix possible dupe ref's on very old db's
 		$refs = $this->olddb->fetchAllCol("SELECT id FROM ticket GROUP BY ref HAVING COUNT(*) > 1");
