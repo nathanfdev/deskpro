@@ -3313,7 +3313,8 @@ class Ticket extends DomainObject
 				'referencedColumnName' => 'id',
 				'nullable'             => true,
 				'onDelete'             => 'set null'
-			))
+			)),
+			'dpApi'                => true
 		));
 		$metadata->mapManyToOne(array(
 			'fieldName'            => 'language',
@@ -3324,6 +3325,7 @@ class Ticket extends DomainObject
 				'nullable'             => true,
 				'onDelete'             => 'set null',
 			)),
+			'dpApi'                => true
 		));
 		$metadata->mapManyToOne(array(
 			'fieldName'            => 'department',
@@ -3401,6 +3403,7 @@ class Ticket extends DomainObject
 				'nullable'             => true,
 				'onDelete'             => 'set null',
 			)),
+			'dpApi'                => true,
 		));
 		$metadata->mapManyToOne(array(
 			'fieldName'            => 'person_email_validating',
@@ -3411,6 +3414,7 @@ class Ticket extends DomainObject
 				'nullable'             => true,
 				'onDelete'             => 'set null',
 			)),
+			'dpApi'                => true,
 		));
 		$metadata->mapManyToOne(array(
 			'fieldName'            => 'agent',
