@@ -78,6 +78,7 @@ class TicketLogGenerator
 	{
 		$group = new TicketLog();
 		$group->ticket      = $this->ticket;
+		$group->person      = $this->context->getPersonContext();
 		$group->action_type = 'action_starter';
 		$group->details     = array(
 			'event'           => $this->context->getEventType(),
