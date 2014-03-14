@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\StateChange\ChangeTriggerLog;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
+use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\NullHandler;
@@ -387,6 +388,13 @@ class TicketManager
 		foreach ($client_messages as $cm) {
 			$this->em->persist($cm);
 		}
+
+		$agent_alert_action = new SendAgentAlert(array(
+			'agent_ids'   => array('notify_list'),
+			'ticket_logs' => $logs
+		));
+		$agent_alert_action->setContainer($this->container);
+		$agent_alert_action->applyAction($ticket, $context);
 
 		#----------------------------------------
 		# Update search

@@ -31,7 +31,7 @@
 			{% for log in log_items %}
 				{% set notify_html %}{% include 'AgentBundle:TicketSearch:notify-row-log.html.twig' %}{% endset %}
 				{% if notify_html %}
-					{{ notify_html|raw }}{% if not loop.last %},{% endif %}
+					{% if not loop.first %} &middot; {% endif %}{{ notify_html|raw }}
 				{% endif %}
 			{% endfor %}
 		{% endif %}
