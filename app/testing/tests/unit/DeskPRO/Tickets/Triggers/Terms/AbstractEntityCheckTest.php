@@ -39,6 +39,11 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
 
 	/**
+	 * Called exactly twice with $id being 1 and 2.
+	 *
+	 * IMPORTANT:
+	 * 1) The first object should reset the state, then attempt to re-apply the object property (for checking 'touched' types).
+	 *
 	 * @param int $id
 	 * @return object
 	 */

@@ -132,6 +132,8 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	protected function setModelField($field, $value)
 	{
+		$this->getStateChangeRecorder()->touchField($field);
+
 		$old = null;
 		if (property_exists($this, $field)) {
 			$old = $this->$field;

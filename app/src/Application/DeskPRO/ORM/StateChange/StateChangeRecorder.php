@@ -51,6 +51,11 @@ class StateChangeRecorder
 	private $state_version;
 
 	/**
+	 * @var array
+	 */
+	private $touched_fields = array();
+
+	/**
 	 * @var \Application\DeskPRO\ORM\StateChange\ChangeInterface[]
 	 */
 	private $changes = array();
@@ -118,6 +123,8 @@ class StateChangeRecorder
 			$id = spl_object_hash($change);
 			$this->change_metadata[$id] = $this->current_change_metadata;
 		}
+
+		$this->touched_fields[$field_id] = true;
 	}
 
 
@@ -153,6 +160,8 @@ class StateChangeRecorder
 		} else {
 			$change = new ChangeSimple($field_id, $old, $new);
 		}
+
+		$this->touched_fields[$field_id] = true;
 
 		if ($skip_same && $change->isSame()) {
 			return null;
@@ -386,5 +395,44 @@ class StateChangeRecorder
 	public function clearCurrentChangeMetaData()
 	{
 		$this->current_change_metadata = null;
+	}
+
+
+	/**
+	 * A touched field is one that has been changed or tried to be changed.
+	 * Usually, if you set a value that is already set, we dont consider that
+	 * a change so there would be no record of that.
+	 *
+	 * Using touched fields, we store any assignment request so you can know if
+	 * a field set was ever attempted.
+	 *
+	 * The practical use for this is with triggers to determine if a field was "specified"
+	 *
+	 * @param string $field_id
+	 * @return bool
+	 */
+	public function hasTouchedField($field_id)
+	{
+		return isset($this->touched_fields[$field_id]);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getTouchedFields()
+	{
+		return $this->touched_fields;
+	}
+
+
+	/**
+	 * Touch a field
+	 *
+	 * @param string $field_id
+	 */
+	public function touchField($field_id)
+	{
+		$this->touched_fields[$field_id] = true;
 	}
 }

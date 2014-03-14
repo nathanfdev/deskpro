@@ -123,6 +123,24 @@ class CheckedOptionsArray extends OptionsArray
 
 
 	/**
+	 * @return array
+	 */
+	public function getRequiredNames()
+	{
+		return array_keys($this->required_names);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getValidNames()
+	{
+		return array_keys($this->valid_names);
+	}
+
+
+	/**
 	 * Adds a checked option. When $name is set, it will run through the validator.
 	 *
 	 * @param string $name

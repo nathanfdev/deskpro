@@ -547,6 +547,8 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 */
 	protected function _onPropertyChanged($prop, $old, $new)
 	{
+		$this->getStateChangeRecorder()->touchField($prop);
+
         if (!empty($this->_listeners['property'])) {
             foreach ($this->_listeners['property'] as $listener) {
                 $listener->propertyChanged($this, $prop, $old, $new);
