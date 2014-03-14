@@ -37,6 +37,10 @@ namespace Application\InstallBundle\Data\DefaultData;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Actions\SendAgentEmail;
 use Application\DeskPRO\Tickets\Actions\SendUserEmail;
+use Application\DeskPRO\Tickets\Actions\SetAgent;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgent;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgentTeam;
+use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 
 class TriggerData extends AbstractDefaultData
 {
@@ -135,6 +139,28 @@ class TriggerData extends AbstractDefaultData
 			'do_cc_users' => true,
 			'from_name' => '{{performer.display_name_user}}',
 		)));
+
+		#-----
+		# newreply: when agent replies via email, assign them if they havent set
+		#-----
+
+		$trigger = new TicketTrigger();
+		$trigger->event_trigger = 'newticket';
+		$trigger->run_order = 1000;
+		$trigger->by_agent_mode = array('email');
+		$trigger->is_enabled = true;
+		$trigger->sys_name = 'default_newreply_agent_assignself';
+		$trigger->title = "Assign self when replying by email";
+
+		$set = new TriggerTermComposite();
+		$set->add(new CheckAgent('nottouched'));
+		$set->add(new CheckAgent('is', array('agent_ids' => 0)));
+		$set->add(new CheckAgentTeam('nottouched'));
+		$set->add(new CheckAgentTeam('is', array('team_ids' => 0)));
+		$set->setOperator('AND');
+		$trigger->terms->addTerm($set);
+
+		$trigger->actions->addAction(new SetAgent(array('agent_id' => -1)));
 
 		$this->getEm()->persist($trigger);
 
