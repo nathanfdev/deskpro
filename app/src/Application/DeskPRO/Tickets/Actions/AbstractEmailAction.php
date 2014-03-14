@@ -191,6 +191,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
 		$change = new ChangeEmailLog(
 			'ticket_email',
+			$ticket_email->getUserMode(),
 			$ticket_email->getSentToName(),
 			$ticket_email->getSentToEmail(),
 			$ticket_email->getSentWithCcs(),

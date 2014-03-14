@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\ORM\StateChange\ChangeTriggerLog;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -293,17 +294,32 @@ class TicketManager
 				continue;
 			}
 
-			$context->getLogger()->info(sprintf("[Triggers] ----- BEGIN TRIGGER #%s -----", $trigger->id));
+			$context->getLogger()->info(sprintf("[Triggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
 			$ts = microtime(true);
+
+			$state->setCurrentChangeMetadata(array('trigger' => $trigger));
+
+			$change = new ChangeTriggerLog(
+				'trigger',
+				$trigger->id,
+				$trigger->title
+			);
+			$state->recordChange($change);
 
 			$match = $trigger->terms->isTriggerMatch($ticket, $context);
 			$context->getLogger()->info(sprintf("[Triggers] (#%d): %s", $trigger->id, $match ? "MATCH" : "no match"));
 
 			if ($match) {
-				$this->action_applicator->apply($trigger->actions, $ticket, $context);
+				try {
+					$this->action_applicator->apply($trigger->actions, $ticket, $context);
+				} catch (\Exception $e) {
+					$context->getLogger()->error(sprintf("[Triggers] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
+				}
 			}
 
 			$context->getLogger()->info(sprintf("[Triggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
+
+			$state->clearCurrentChangeMetaData();
 		}
 
 		#----------------------------------------

@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\ORM\StateChange;
 
-class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
+class ChangeTriggerLog implements ChangeInterface, NonStateTrackingInterface
 {
 	/**
 	 * @var string
@@ -44,59 +44,24 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
 	/**
 	 * @var string
 	 */
-	private $user_mode;
+	private $trigger_id;
 
 	/**
 	 * @var string
 	 */
-	private $to_name;
-
-	/**
-	 * @var string
-	 */
-	private $to_email;
-
-	/**
-	 * @var array
-	 */
-	private $cc_emails;
-
-	/**
-	 * @var string
-	 */
-	private $from_name;
-
-	/**
-	 * @var string
-	 */
-	private $from_email;
-
-	/**
-	 * @var string
-	 */
-	private $template;
+	private $trigger_title;
 
 
 	/**
-	 * @param string $field_id
-	 * @param string $user_mode
-	 * @param string $to_name
-	 * @param string $to_email
-	 * @param string[] $cc_emails
-	 * @param string $from_name
-	 * @param string $from_email
-	 * @param string $template
+	 * @param $field_id
+	 * @param $trigger_id
+	 * @param $trigger_title
 	 */
-	public function __construct($field_id, $user_mode, $to_name, $to_email, $cc_emails, $from_name, $from_email, $template)
+	public function __construct($field_id, $trigger_id, $trigger_title)
 	{
-		$this->field_id   = $field_id;
-		$this->user_mode  = $user_mode;
-		$this->to_name    = $to_name;
-		$this->to_email   = $to_email;
-		$this->cc_emails  = $cc_emails ?: array();
-		$this->from_name  = $from_name;
-		$this->from_email = $from_email;
-		$this->template   = $template;
+		$this->field_id      = $field_id;
+		$this->trigger_id    = $trigger_id;
+		$this->trigger_title = $trigger_title;
 	}
 
 
@@ -124,14 +89,9 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
 	public function getNew()
 	{
 		return array(
-			'field_id'   => $this->field_id,
-			'user_mode'  => $this->user_mode,
-			'to_name'    => $this->to_name,
-			'to_email'   => $this->to_email,
-			'cc_emails'  => $this->cc_emails,
-			'from_name'  => $this->from_name,
-			'from_email' => $this->from_email,
-			'template'   => $this->template,
+			'field_id'      => $this->field_id,
+			'trigger_id'    => $this->trigger_id,
+			'trigger_title' => $this->trigger_title,
 		);
 	}
 
@@ -139,63 +99,18 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
 	/**
 	 * @return string
 	 */
-	public function getUserMode()
+	public function getTriggerId()
 	{
-		return $this->user_mode;
+		return $this->trigger_id;
 	}
 
 
 	/**
 	 * @return string
 	 */
-	public function getFromEmail()
+	public function getTriggerTitle()
 	{
-		return $this->from_email;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getFromName()
-	{
-		return $this->from_name;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getTemplate()
-	{
-		return $this->template;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getToEmail()
-	{
-		return $this->to_email;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getToName()
-	{
-		return $this->to_name;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getCcEmails()
-	{
-		return $this->cc_emails;
+		return $this->trigger_title;
 	}
 
 

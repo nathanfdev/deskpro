@@ -60,6 +60,16 @@ class StateChangeRecorder
 	 */
 	private $changes_by_field = array();
 
+	/**
+	 * @var array
+	 */
+	private $change_metadata = array();
+
+	/**
+	 * @var array
+	 */
+	private $current_change_metadata = array();
+
 	public function __construct()
 	{
 		$this->state_version = self::$global_state_version;
@@ -89,6 +99,27 @@ class StateChangeRecorder
 		return $this->state_version;
 	}
 
+	private function addChange(ChangeInterface $change)
+	{
+		$field_id = $change->getField();
+		$this->changes[] = $change;
+
+		if (!isset($this->changes_by_field[$field_id])) {
+			$this->changes_by_field[$field_id] = array();
+		}
+		$this->changes_by_field[$field_id][] = $change;
+
+		if (!($change instanceof NonStateTrackingInterface)) {
+			self::$global_state_version++;
+			$this->state_version++;
+		}
+
+		if ($this->current_change_metadata) {
+			$id = spl_object_hash($change);
+			$this->change_metadata[$id] = $this->current_change_metadata;
+		}
+	}
+
 
 	/**
 	 * Record a new change
@@ -111,7 +142,7 @@ class StateChangeRecorder
 
 		if (is_object($use_type)) {
 			if ($use_type instanceof \DateTime) {
-				$change = new ChangeDate($use_type);
+				$change = new ChangeDate($field_id, $use_type);
 			} else if ($use_type instanceof DomainObject) {
 				$change = new ChangeObject($field_id, $old, $new);
 			} else {
@@ -127,17 +158,7 @@ class StateChangeRecorder
 			return null;
 		}
 
-		$this->changes[] = $change;
-
-		if (!isset($this->changes_by_field[$field_id])) {
-			$this->changes_by_field[$field_id] = array();
-		}
-		$this->changes_by_field[$field_id][] = $change;
-
-		if (!($change instanceof NonStateTrackingInterface)) {
-			self::$global_state_version++;
-			$this->state_version++;
-		}
+		$this->addChange($change);
 
 		return $change;
 	}
@@ -148,19 +169,7 @@ class StateChangeRecorder
 	 */
 	public function recordChange(ChangeInterface $change)
 	{
-		$this->changes[] = $change;
-
-		$field_id = $change->getField();
-
-		if (!isset($this->changes_by_field[$field_id])) {
-			$this->changes_by_field[$field_id] = array();
-		}
-		$this->changes_by_field[$field_id][] = $change;
-
-		if (!($change instanceof NonStateTrackingInterface)) {
-			self::$global_state_version++;
-			$this->state_version++;
-		}
+		$this->addChange($change);
 	}
 
 
@@ -172,17 +181,7 @@ class StateChangeRecorder
 	public function recordData($field_id, array $data = array())
 	{
 		$change = new ChangeData($field_id, $data);
-		$this->changes[] = $change;
-
-		if (!isset($this->changes_by_field[$field_id])) {
-			$this->changes_by_field[$field_id] = array();
-		}
-		$this->changes_by_field[$field_id][] = $change;
-
-		if (!($change instanceof NonStateTrackingInterface)) {
-			self::$global_state_version++;
-			$this->state_version++;
-		}
+		$this->addChange($change);
 
 		return $change;
 	}
@@ -201,17 +200,7 @@ class StateChangeRecorder
 			return null;
 		}
 
-		$this->changes[] = $change;
-
-		if (!isset($this->changes_by_field[$field_id])) {
-			$this->changes_by_field[$field_id] = array();
-		}
-		$this->changes_by_field[$field_id][] = $change;
-
-		if (!($change instanceof NonStateTrackingInterface)) {
-			self::$global_state_version++;
-			$this->state_version++;
-		}
+		$this->addChange($change);
 
 		return $change;
 	}
@@ -360,5 +349,42 @@ class StateChangeRecorder
 		}
 
 		return $change->getOld();
+	}
+
+
+	/**
+	 * @param ChangeInterface $change
+	 * @return null
+	 */
+	public function getMetaDataForChange(ChangeInterface $change)
+	{
+		$id = spl_object_hash($change);
+		if (isset($this->change_metadata[$id])) {
+			return $this->change_metadata[$id];
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @param array $data An array of data. If metadata already exists it will be merged.
+	 */
+	public function setCurrentChangeMetadata(array $data)
+	{
+		if ($this->current_change_metadata) {
+			$this->current_change_metadata = array_merge($this->current_change_metadata, $data);
+		} else {
+			$this->current_change_metadata = $data;
+		}
+	}
+
+
+	/**
+	 * @return void
+	 */
+	public function clearCurrentChangeMetaData()
+	{
+		$this->current_change_metadata = null;
 	}
 }

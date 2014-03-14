@@ -113,6 +113,12 @@ class TicketLog extends DomainObject
 	protected $trigger_id = null;
 
 	/**
+	 * If the change was caused by an escalation
+	 * @var int
+	 */
+	protected $escalation_id = null;
+
+	/**
 	 * If the change was caused by an SLA, the SLA
 	 *
 	 * @var Sla|null
@@ -183,6 +189,14 @@ class TicketLog extends DomainObject
 		$this->setModelField('details', $details);
 	}
 
+	public function setDetailItem($name, $value)
+	{
+		$details = $this->details;
+		$details[$name] = $value;
+
+		$this->setModelField('details', $details);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -199,6 +213,7 @@ class TicketLog extends DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id_before', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'id_before', ));
 		$metadata->mapField(array( 'fieldName' => 'id_after', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'id_after', ));
 		$metadata->mapField(array( 'fieldName' => 'trigger_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'trigger_id', ));
+		$metadata->mapField(array( 'fieldName' => 'escalation_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'escalation_id', ));
 		$metadata->mapField(array( 'fieldName' => 'sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sla_status', ));
 		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'details', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

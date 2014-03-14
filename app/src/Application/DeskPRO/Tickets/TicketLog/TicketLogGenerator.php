@@ -83,6 +83,9 @@ class TicketLogGenerator
 			'event'           => $this->context->getEventType(),
 			'event_method'    => $this->context->getEventMethod(),
 			'event_performer' => $this->context->getEventPerformer(),
+			'person_id'       => $this->context->getPersonContext() ? $this->context->getPersonContext()->id : null,
+			'person_name'     => $this->context->getPersonContext() ? $this->context->getPersonContext()->getDisplayName() : null,
+			'person_email'    => $this->context->getPersonContext() ? $this->context->getPersonContext()->getPrimaryEmailAddress() : null,
 		);
 
 		$logs = array();
@@ -101,6 +104,8 @@ class TicketLogGenerator
 				$log_data_set = array($log_data);
 			}
 
+			$log_metadata = $this->state->getMetaDataForChange($change);
+
 			foreach ($log_data_set as $log_data) {
 				$log = $this->getLogFromData($log_data);
 				if (!$log) {
@@ -108,6 +113,17 @@ class TicketLogGenerator
 				}
 				if (!$log->action_type) {
 					$log->action_type = $change->getField();
+				}
+
+				if ($log_metadata) {
+					if (!empty($log_metadata['trigger'])) {
+						$log->trigger_id = $log_metadata['trigger']->id;
+						$log->setDetailItem('trigger_title', $log_metadata['trigger']->title);
+					}
+					if (!empty($log_metadata['escalation'])) {
+						$log->escalation_id = $log_metadata['escalation']->id;
+						$log->setDetailItem('escalation_title', $log_metadata['escalation']->title);
+					}
 				}
 
 				$this->context->getLogger()->info(sprintf("[TicketLogGenerator] %s -> %s", $change->getField(), $log->action_type));
@@ -174,7 +190,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_agent',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_agent_id'    => $old ? $old->id : null,
 					'old_agent_name'  => $old ? $old->display_name : null,
@@ -189,7 +205,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_agent_team',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_agent_team_id'    => $old ? $old->id : null,
 					'old_agent_team_name'  => $old ? $old->name : null,
@@ -202,7 +218,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_category',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_category_id'    => $old ? $old->id : null,
 					'old_category_name'  => $old ? $old->title : null,
@@ -235,7 +251,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_department',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_department_id'    => $old ? $old->id : null,
 					'old_department_name'  => $old ? $old->getFullTitle() : null,
@@ -287,7 +303,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_language',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_language_id'    => $old ? $old->id : null,
 					'old_language_title' => $old ? $old->title : null,
@@ -336,7 +352,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_organization',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_organization_id'    => $old ? $old->id : null,
 					'old_organization_name'  => $old ? $old->name : null,
@@ -357,7 +373,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_person',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_person_id'    => $old ? $old->id : null,
 					'old_person_name'  => $old ? $old->display_name : null,
@@ -372,7 +388,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_priority',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_priority_id'    => $old ? $old->id : null,
 					'old_priority_title' => $old ? $old->title : null,
@@ -387,7 +403,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_product',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_product_id'    => $old ? $old->id : null,
 					'old_product_title' => $old ? $old->title : null,
@@ -442,7 +458,7 @@ class TicketLogGenerator
 				return array(
 					'action_type' => 'changed_workflow',
 					'id_before'   => $old ? $old->id : null,
-					'id_after'    => $old ? $old->id : null,
+					'id_after'    => $new ? $new->id : null,
 
 					'old_workflow_id'    => $old ? $old->id : null,
 					'old_workflow_title' => $old ? $old->title : null,
@@ -450,6 +466,29 @@ class TicketLogGenerator
 					'new_workflow_title' => $new ? $new->title : null,
 				);
 				break;
+
+			case 'trigger':
+				return array(
+					'action_type' => 'trigger',
+					'id_after'    => $new['trigger_id'],
+
+					'trigger_id'    => $new['trigger_id'],
+					'trigger_title' => $new['trigger_title'],
+				);
+				break;
+
+			case 'ticket_email':
+				return array(
+					'action_type' => 'ticket_email',
+
+					'user_mode'  => $new['user_mode'],
+					'to_name'    => $new['to_name'],
+					'to_email'   => $new['to_email'],
+					'cc_emails'  => $new['cc_emails'],
+					'from_name'  => $new['from_name'],
+					'from_email' => $new['from_email'],
+					'template'   => $new['template'],
+				);
 
 			default:
 				return array();

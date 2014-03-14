@@ -191,6 +191,15 @@ class TicketEmail
 
 
 	/**
+	 * @return string
+	 */
+	public function getUserMode()
+	{
+		return $this->user_mode;
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Entity\EmailAccount
 	 */
 	public function getFromEmailAccount()

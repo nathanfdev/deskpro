@@ -35,7 +35,31 @@
 	{% elseif log.details.event == 'update.escalation' %}
 		{{ phrase('agent.tickets.log_update_escalation') }}
 	{% else %}
-		{{ log.details.event }}
+
+		{# New-style log format #}
+		{% if log.details.event_performer == 'agent' %}
+			{% if log.details.event == 'newticket' %}
+				New ticket by agent
+			{% elseif log.details.event == 'newreply' %}
+				New agent reply
+			{% else %}
+				Updated by agent
+			{% endif %}
+		{% elseif log.details.event_performer == 'user' %}
+			{% if log.details.event == 'newticket' %}
+				New ticket by user
+			{% elseif log.details.event == 'newreply' %}
+				New user reply
+			{% else %}
+				Updated by user
+			{% endif %}
+		{% else %}
+			{% if log.details.escalation_id %}
+				Updated by escalation
+			{% else %}
+				Updated by system
+			{% endif %}
+		{% endif %}
 	{% endif %}
 {% elseif log.action_type == 'changed_agent' %}
 	<span class="type">{{ phrase('agent.general.assigned_agent') }}</span> {{ phrase('agent.tickets.changed_from') }}
@@ -297,6 +321,31 @@
 		<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">{{ phrase('agent.tickets.log_message_old_message') }}<br/>
 			<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.old_message }}</textarea>
 		</div>
+	</div>
+{% elseif log.action_type == 'trigger' %}
+	<span class="type">Trigger</span>
+	<span class="new-val">#{{ log.details.trigger_id }}</span> {{ log.details.trigger_title }}
+{% elseif log.action_type == 'escalation' %}
+	<span class="type">Escalation</span>
+	<span class="new-val">#{{ log.details.escalation_id }}</span> {{ log.details.escalation_title }}
+{% elseif log.action_type == 'ticket_email' %}
+	{% if log.details.user_mode == 'user' %}
+		<span class="new-val expand" data-set=".set-detail">User emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
+		{% if log.details.cc_emails %}(+{{ log.details.cc_emails.length }} cc'ed){% endif %}
+	{% else %}
+		<span class="new-val expand" data-set=".set-detail">Agents emaile</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
+	{% endif %}
+
+	<div class="expand-set set-detail" style="display: none">
+		From: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
+		Template: {{ log.details.template }}<br/>
+		{% if log.details.cc_emails %}
+			<ul>
+				{% for eml in log.details.cc_emails %}
+					<li>{{ eml }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 	</div>
 {% elseif hide_unknow%}
 	{{ log.action_type }}
