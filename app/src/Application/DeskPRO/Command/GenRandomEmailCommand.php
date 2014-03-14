@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -715,11 +716,7 @@ SRC;
 			$message->setSubject('Test Email - ' . $time);
 			$message->getBody("Test Message\n\n" . uniqid('eml-', true));
 
-			$tr = new \Application\DeskPRO\Entity\EmailTransport();
-			$tr->match_type = 'all';
-			$tr->title = 'contact';
-			$tr->transport_type = 'mail';
-
+			$tr = App::$container->getEmailAccountManager()->getTransportFactory()->createPhpMailTransport(new PhpMailConfig());
 			$message->setForceTransport($tr);
 
 			App::getMailer()->send($message);

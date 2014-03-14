@@ -29,72 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-class EmailGatewayAddress extends AbstractEntityRepository
+class Build1394823640 extends AbstractBuild
 {
-	public function getOptions($for_ids = null)
+	public function run()
 	{
-		if ($for_ids) {
-			$for_ids = (array)$for_ids;
-			$for_ids = Arrays::castToType($for_ids, 'int');
-			$for_ids = implode(',', $for_ids);
-
-			if (!$for_ids) {
-				return array();
-			}
-
-			$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-				SELECT id, match_pattern
-				FROM email_gateway_addresses
-				WHERE id IN ($for_ids)
-			");
-		} else {
-			$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-				SELECT id, match_pattern
-				FROM email_gateway_addresses
-			");
-		}
-
-		return $opts;
-	}
-
-
-	/**
-	 * Gets exact email addresses. That is, matches of type 'exact'
-	 *
-	 * @return array
-	 */
-	public function getEmailAddresses()
-	{
-		return $this->_em->createQuery("
-			SELECT a
-			FROM DeskPRO:EmailGatewayAddress a
-			WHERE a.match_type = 'exact'
-			ORDER BY a.match_pattern ASC
-		")->execute();
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDefaultTicketAddress()
-	{
-		return App::getDb()->fetchColumn("
-			SELECT email_gateway_addresses.match_pattern
-			FROM email_gateway_addresses
-			LEFT JOIN email_gateways ON email_gateways.id = email_gateway_addresses.email_gateway_id
-			WHERE email_gateway_addresses.match_type = 'exact' AND email_gateways.gateway_type = 'tickets'
-			ORDER BY email_gateway_addresses.run_order ASC, email_gateway_addresses.id ASC
-			LIMIT 1
-		");
+		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+		$this->execMutateSql("DROP TABLE IF EXISTS email_gateway_addresses");
+		$this->execMutateSql("DROP TABLE IF EXISTS email_gateways");
+		$this->execMutateSql("DROP TABLE IF EXISTS email_transports");
+		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
 	}
 }

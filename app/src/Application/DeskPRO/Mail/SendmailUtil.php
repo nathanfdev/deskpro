@@ -90,10 +90,11 @@ class SendmailUtil
 			$json = json_decode(implode("\n", $json), true);
 			$json['from_addresses'] = array($new_from);
 
-			$use_tr = App::getEntityRepository('DeskPRO:EmailTransport')->findTransportForAddress($new_from);
-			if (!$use_tr) {
-				$use_tr = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport();
+			$account = App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_from, 'is_enabled | with_transport');
+			if (!$account) {
+				$account = App::$container->getEmailAccountManager()->getPrimaryEmailAccount();
 			}
+			$use_tr = App::$container->getEmailAccountManager()->getTransportForAccount($account);
 			unset($json['smtp_options']);
 
 			if ($use_tr && $smtp_options = $use_tr->getSmtpOptions()) {

@@ -2124,6 +2124,7 @@ class TicketSearch extends SearcherAbstract
 						break;
 
 					case self::TERM_GATEWAY_ADDRESS:
+						//TODO
 						if (!$this->is_testing) $this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.sent_to_gateway_address'), $op, $choice, function($choice) {
 							$titles = App::getEntityRepository('DeskPRO:EmailGatewayAddress')->getOptions((array)$choice);
 							return $titles;

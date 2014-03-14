@@ -29,50 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-class EmailTransport extends AbstractEntityRepository
+class Build1394823636 extends AbstractBuild
 {
-	public function findAll()
+	public function run()
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:EmailTransport t
-			ORDER BY t.run_order ASC
-		")->execute();
-	}
+		$this->execMutateSql("ALTER TABLE email_sources DROP FOREIGN KEY FK_6F9D0D3D577F8E00");
+		$this->execMutateSql("DROP INDEX IDX_6F9D0D3D577F8E00 ON email_sources");
+		$this->execMutateSql("ALTER TABLE email_sources CHANGE gateway_id email_account_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE email_sources ADD CONSTRAINT FK_6F9D0D3D37D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_6F9D0D3D37D8AD65 ON email_sources (email_account_id)");
 
-	public function findTransportForAddress($address)
-	{
-		$transports = $this->findAll();
+		$this->execMutateSql("ALTER TABLE email_uids DROP FOREIGN KEY FK_6D08D1BD577F8E00");
+		$this->execMutateSql("DROP INDEX IDX_6D08D1BD577F8E00 ON email_uids");
+		$this->execMutateSql("ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL, CHANGE gateway_id email_account_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE email_uids ADD CONSTRAINT FK_6D08D1BD37D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_6D08D1BD37D8AD65 ON email_uids (email_account_id)");
 
-		foreach ($transports as $tr) {
-			if ($tr->match_type != 'all' && $tr->doesMatchFromAddress($address)) {
-				return $tr;
-			}
-		}
-
-		return null;
-	}
-
-	public function getDefaultTransport()
-	{
-		$transports = $this->findAll();
-
-		foreach ($transports as $tr) {
-			if ($tr->match_type == 'all') {
-				return $tr;
-			}
-		}
-
-		return null;
+		$this->execMutateSql("ALTER TABLE ticket_triggers DROP FOREIGN KEY FK_8BA775CCFBCC7CDF");
+		$this->execMutateSql("DROP INDEX IDX_8BA775CCFBCC7CDF ON ticket_triggers");
+		$this->execMutateSql("ALTER TABLE ticket_triggers CHANGE email_gateway_id email_account_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE ticket_triggers ADD CONSTRAINT FK_8BA775CC37D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_8BA775CC37D8AD65 ON ticket_triggers (email_account_id)");
 	}
 }

@@ -33,12 +33,7 @@
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
-use Application\DeskPRO\Email\EditTransport;
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\DeskPRO\Entity\EmailGateway;
-use Application\DeskPRO\Entity\EmailGatewayAddress;
-use Application\DeskPRO\Entity\EmailTransport;
-use Doctrine\ORM\EntityManager;
 use Orb\Validator\StringEmail;
 
 class EditEmailAccount

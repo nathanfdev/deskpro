@@ -81,9 +81,9 @@ class TicketTrigger extends DomainObject
 	protected $department;
 
 	/**
-	 * @var EmailGateway
+	 * @var EmailAccount
 	 */
-	protected $email_gateway;
+	protected $email_account;
 
 	/**
 	 * @var string
@@ -313,10 +313,10 @@ class TicketTrigger extends DomainObject
 			))
 		));
 		$metadata->mapManyToOne(array(
-			'fieldName'    => 'email_gateway',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway',
+			'fieldName'    => 'email_account',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
 			'joinColumns'  => array(array(
-				'name'                 => 'email_gateway_id',
+				'name'                 => 'email_account_id',
 				'referencedColumnName' => 'id',
 				'nullable'             => true,
 				'onDelete'             => 'CASCADE',
