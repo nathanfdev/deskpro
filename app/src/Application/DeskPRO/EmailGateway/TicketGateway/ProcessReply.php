@@ -197,7 +197,7 @@ class ProcessReply extends ProcessAbstract
 			$this->ticket->email_reader_action = 'agent_note';
 		}
 
-		$this->ticket_attach = array();
+		$ticket_attach = array();
 		foreach ($this->processBlobs() as $blob) {
 
 			if (isset($this->dupe_inline_blobs[$blob->getId()])) {
@@ -213,11 +213,11 @@ class ProcessReply extends ProcessAbstract
 			}
 
 			$message->addAttachment($attach);
-			$this->ticket_attach[] = $attach;
+			$ticket_attach[] = $attach;
 		}
 
 		$has_message = true;
-		if (!$this->ticket_attach && !trim(strip_tags($email_info->body))) {
+		if (!$ticket_attach && !trim(strip_tags($email_info->body))) {
 			$has_message = false;
 		}
 
@@ -250,7 +250,7 @@ class ProcessReply extends ProcessAbstract
 				App::getOrm()->detach($this->ticket);
 				App::getOrm()->detach($message);
 
-				foreach ($this->ticket_attach as $a) {
+				foreach ($ticket_attach as $a) {
 					$a->ticket = null;
 					$a->message = null;
 					App::getOrm()->detach($a);

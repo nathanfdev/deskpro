@@ -102,8 +102,8 @@ class Dp3Detector implements TicketDetectorInterface
 	 * Subject codes like: [AAAA-0000-AAAA] [ABC123D4]
 	 * That is (1) ticket ref and (2) ticket authcode.
 	 *
-	 * @param string $subject
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * @param string $subject_text
+	 * @return \Application\DeskPRO\Entity\Ticket|null
 	 */
 	public function userMatchSubject($subject_text)
 	{

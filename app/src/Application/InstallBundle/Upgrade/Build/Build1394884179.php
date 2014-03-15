@@ -29,23 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\People\EmailAddressValidator;
-
-class EmailAddressValidatorService
+class Build1394884179 extends AbstractBuild
 {
-	public static function create(DeskproContainer $container)
+	public function run()
 	{
-		$v = new EmailAddressValidator(
-			$container->getSystemService('gateway_address_matcher'),
-			$container->getEm()->getRepository('DeskPRO:BanEmail')
-		);
-
-		return $v;
+		$this->execMutateSql("ALTER TABLE tickets ADD email_account_address VARCHAR(255) NOT NULL");
 	}
 }

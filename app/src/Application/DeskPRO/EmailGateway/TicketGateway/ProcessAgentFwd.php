@@ -34,13 +34,19 @@
 
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\Attachment;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use Orb\Util\Strings;
 
 class ProcessAgentFwd extends ProcessAbstract
 {
@@ -55,9 +61,9 @@ class ProcessAgentFwd extends ProcessAbstract
 	private $ticket_email;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
-	protected $email_gateway;
+	protected $account;
 
 	/**
 	 * @var \Orb\Input\Cleaner\Cleaner
@@ -65,13 +71,13 @@ class ProcessAgentFwd extends ProcessAbstract
 	protected $cleaner;
 
 	/**
-	 * @param EmailGateway $email_gateway
+	 * @param EmailAccount $account
 	 * @param Person $person
 	 * @param TicketIncomingEmail $ticket_email
 	 */
-	public function __construct(EmailGateway $email_gateway, Person $person, TicketIncomingEmail $ticket_email)
+	public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email)
 	{
-		$this->email_gateway = $email_gateway;
+		$this->account       = $account;
 		$this->person        = $person;
 		$this->ticket_email  = $ticket_email;
 		$this->reader        = $ticket_email->reader;
@@ -124,9 +130,9 @@ class ProcessAgentFwd extends ProcessAbstract
 			}
 
 			if ($fwd_cutter->getErrorCode() == 'unknown_email') {
-				$this->setError(\Application\DeskPRO\EmailSource::ERR_INVALID_FWD_EMAIL);
+				$this->setError(EmailSource::ERR_INVALID_FWD_EMAIL);
 			} else {
-				$this->setError(\Application\DeskPRO\EmailSource::ERR_INVALID_FWD);
+				$this->setError(EmailSource::ERR_INVALID_FWD);
 			}
 
 			$message = App::getMailer()->createMessage();
@@ -177,7 +183,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		$ticket->subject       = $email_info['subject'];
 		$ticket->person        = $user;
 		$ticket->status        = 'awaiting_agent';
-		$ticket->email_gateway = $this->email_gateway;
+		$ticket->email_account = $this->account;
 		$ticket->creation_system = 'gateway.agent';
 
 		$ticket_message = new TicketMessage();
@@ -343,7 +349,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		$ticket->subject       = $user_reader->getSubject()->getSubjectUtf8();
 		$ticket->person        = $user;
 		$ticket->status        = 'awaiting_agent';
-		$ticket->email_gateway = $this->email_gateway;
+		$ticket->email_account = $this->account;
 		$ticket->creation_system = 'gateway.agent';
 
 		$ticket_message = new TicketMessage();

@@ -816,7 +816,7 @@ class TicketController extends AbstractController
 					'error' => true,
 					'error_code' => 'invalid_email'
 				));
-			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($email_address)) {
+			} elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($email_address)) {
 				return $this->createJsonResponse(array(
 					'error' => true,
 					'error_code' => 'invalid_email_gatewayaccount'
@@ -1217,7 +1217,7 @@ class TicketController extends AbstractController
 
 		if ($add_cc_emails) {
 			foreach ($add_cc_emails as $email) {
-				if (!$email || !$email_validator->isValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+				if (!$email || !$email_validator->isValid($email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
 					continue;
 				}
 
@@ -2546,7 +2546,7 @@ class TicketController extends AbstractController
 					'success' => false,
 					'error' => 'Please enter a valid email address',
 				));
-			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+			} elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
 				return $this->createJsonResponse(array(
 					'success' => false,
 					'error' => 'The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot set an email account as the ticket user.',
@@ -3109,7 +3109,7 @@ class TicketController extends AbstractController
 					$errors['person_no_user'] = true;
 				} elseif (!\Orb\Validator\StringEmail::isValueValid($new_email)) {
 					$errors['person_email_address'] = true;
-				} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+				} elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_email)) {
 					$errors['person_email_address_gateway'] = true;
 				}
 

@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Numbers;
-use Zend\Mail\Protocol\Exception\RuntimeException;
 
 /**
  * Fetches mail from a pop3 server
@@ -95,15 +93,15 @@ class Pop3 extends AbstractFetcher
 	protected function _initConnection()
 	{
 		$options = array();
-		$options['host']     = isset($this->gateway['connection_options']['host'])     ? $this->gateway['connection_options']['host']     : 'localhost';
-		$options['port']     = isset($this->gateway['connection_options']['port'])     ? $this->gateway['connection_options']['port']     : '110';
-		$options['user']     = isset($this->gateway['connection_options']['username']) ? $this->gateway['connection_options']['username'] : '';
-		$options['password'] = isset($this->gateway['connection_options']['password']) ? $this->gateway['connection_options']['password'] : '';
+		$options['host']     = isset($this->account['connection_options']['host'])     ? $this->account['connection_options']['host']     : 'localhost';
+		$options['port']     = isset($this->account['connection_options']['port'])     ? $this->account['connection_options']['port']     : '110';
+		$options['user']     = isset($this->account['connection_options']['username']) ? $this->account['connection_options']['username'] : '';
+		$options['password'] = isset($this->account['connection_options']['password']) ? $this->account['connection_options']['password'] : '';
 
 		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
-		if (isset($this->gateway['connection_options']['secure']) AND $this->gateway['connection_options']['secure']) {
-			$options['ssl'] = strtoupper($this->gateway['connection_options']['secure']); // 'ssl' or 'tls'
+		if (isset($this->account['connection_options']['secure']) AND $this->account['connection_options']['secure']) {
+			$options['ssl'] = strtoupper($this->account['connection_options']['secure']); // 'ssl' or 'tls'
 			$this->logger->log('SSL Enabled', 'debug');
 		}
 
@@ -155,7 +153,7 @@ class Pop3 extends AbstractFetcher
 			return;
 		}
 
-		if ($this->gateway->keep_read) {
+		if ($this->account->keep_read) {
 			if (!$this->canUniqueId()) {
 				try {
 					$capas = $this->getStorage()->getProtocolCapabilities();
@@ -163,9 +161,9 @@ class Pop3 extends AbstractFetcher
 				} catch (\Exception $e) {
 					$capas = '<unknown>';
 				}
-				$this->logger->log("Gateway does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
+				$this->logger->log("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
 
-				$e = new \InvalidArgumentException("Gateway does not support uniqueid");
+				$e = new \InvalidArgumentException("Email account does not support uniqueid");
 				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 				$einfo['no_send_error'] = true;
 				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
@@ -193,8 +191,8 @@ class Pop3 extends AbstractFetcher
 			$read_ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM email_uids
-				WHERE gateway_id = ?
-			", array($this->gateway->getId()));
+				WHERE email_account_id = ?
+			", array($this->account->getId()));
 
 			$this->logger->log("System has " . count($read_ids) . " tracked IDs", 'debug');
 
@@ -360,7 +358,7 @@ class Pop3 extends AbstractFetcher
 			return;
 		}
 
-		if ($this->gateway->keep_read) {
+		if ($this->account->keep_read) {
 			$this->logger->log(sprintf("Done read, but keep_read is enabled"), 'debug');
 			return;
 		}

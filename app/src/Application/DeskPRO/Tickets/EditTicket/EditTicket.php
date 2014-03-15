@@ -132,7 +132,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 
 				foreach ($ccs as &$_) {
 					$_ = trim(strtolower($_));
-					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::getSystemService('gateway_address_matcher')->isManagedAddress($_)) {
+					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($_)) {
 						$_ = null;
 					}
 				}
@@ -157,14 +157,12 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 
 	public function handleCc(Ticket $ticket, $cc_email)
 	{
-		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
-
 		if (!\Orb\Validator\StringEmail::isValueValid($cc_email)) {
 			return null;
 		}
 
-		$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
-		if ($addr) {
+		$account_manager = App::$container->getEmailAccountManager();
+		if ($account_manager->findAccountForEmailAddress($cc_email)) {
 			return null;
 		}
 

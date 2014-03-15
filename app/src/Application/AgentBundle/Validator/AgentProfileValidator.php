@@ -61,7 +61,7 @@ class AgentProfileValidator extends AbstractValidator
 			$this->addError('name.short');
 		}
 
-		if (!\Orb\Validator\StringEmail::isValueValid($this->profile->email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($this->profile->email)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($this->profile->email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->profile->email)) {
 			$this->addError('email.invalid');
 		} else {
 			$check_exist = App::getDb()->fetchColumn("
@@ -85,7 +85,7 @@ class AgentProfileValidator extends AbstractValidator
 
 		if ($this->profile->new_emails) {
 			foreach ($this->profile->new_emails as $new_email) {
-				if (!\Orb\Validator\StringEmail::isValueValid($new_email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+				if (!\Orb\Validator\StringEmail::isValueValid($new_email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_email)) {
 					$this->addError('email.invalid');
 				} else {
 					$check_exist = App::getDb()->fetchColumn("

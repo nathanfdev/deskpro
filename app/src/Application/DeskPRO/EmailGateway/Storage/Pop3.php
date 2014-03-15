@@ -120,8 +120,8 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 		}
 
 		$this->capa_res = $this->getProtocol()->capa();
-		$this->capa_res = \Orb\Util\Arrays::func($this->capa_res, 'trim');
-		$this->capa_res = \Orb\Util\Arrays::removeFalsey($this->capa_res);
+		$this->capa_res = Arrays::func($this->capa_res, 'trim');
+		$this->capa_res = Arrays::removeFalsey($this->capa_res);
 
 		return $this->capa_res;
 	}

@@ -35,9 +35,9 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Util\Strings;
+use Orb\Input\Cleaner\Cleaner;
 
 class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 {
@@ -82,6 +82,7 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 	public $charset_error;
 
 	/**
+	 * @param Ticket $ticket
 	 * @param TicketIncomingEmail $ticket_email
 	 * @param Cleaner $cleaner
 	 */

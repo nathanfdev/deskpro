@@ -35,8 +35,6 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Numbers;
 
 /**
  * Fetches mail from a imap server
@@ -73,15 +71,15 @@ class Imap extends AbstractFetcher
 	protected function _initConnection()
 	{
 		$options = array();
-		$options['host']     = isset($this->gateway['connection_options']['host'])     ? $this->gateway['connection_options']['host']     : 'localhost';
-		$options['port']     = isset($this->gateway['connection_options']['port'])     ? $this->gateway['connection_options']['port']     : '110';
-		$options['user']     = isset($this->gateway['connection_options']['username']) ? $this->gateway['connection_options']['username'] : '';
-		$options['password'] = isset($this->gateway['connection_options']['password']) ? $this->gateway['connection_options']['password'] : '';
+		$options['host']     = isset($this->account['connection_options']['host'])     ? $this->account['connection_options']['host']     : 'localhost';
+		$options['port']     = isset($this->account['connection_options']['port'])     ? $this->account['connection_options']['port']     : '110';
+		$options['user']     = isset($this->account['connection_options']['username']) ? $this->account['connection_options']['username'] : '';
+		$options['password'] = isset($this->account['connection_options']['password']) ? $this->account['connection_options']['password'] : '';
 
 		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
-		if (isset($this->gateway['connection_options']['secure']) AND $this->gateway['connection_options']['secure']) {
-			$options['ssl'] = strtoupper($this->gateway['connection_options']['secure']); // 'ssl' or 'tls'
+		if (isset($this->account['connection_options']['secure']) AND $this->account['connection_options']['secure']) {
+			$options['ssl'] = strtoupper($this->account['connection_options']['secure']); // 'ssl' or 'tls'
 			$this->logger->log('SSL Enabled', 'debug');
 		}
 

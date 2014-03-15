@@ -36,11 +36,13 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
-use Application\DeskPRO\Entity\EmailGateway;
+use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use Orb\Util\Strings;
 
 class ProcessNew extends ProcessAbstract
 {
@@ -60,24 +62,35 @@ class ProcessNew extends ProcessAbstract
 	protected $reader;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
-	protected $email_gateway;
+	protected $account;
 
 	/**
 	 * @var \Orb\Input\Cleaner\Cleaner
 	 */
 	protected $cleaner;
 
-	public function __construct(EmailGateway $email_gateway, Person $person, TicketIncomingEmail $ticket_email)
+
+	/**
+	 * @param EmailAccount $account
+	 * @param Person $person
+	 * @param TicketIncomingEmail $ticket_email
+	 */
+	public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email)
 	{
-		$this->email_gateway = $email_gateway;
+		$this->account       = $account;
 		$this->person        = $person;
 		$this->ticket_email  = $ticket_email;
 		$this->reader        = $ticket_email->reader;
 		$this->cleaner       = App::get('deskpro.core.input_cleaner');
 	}
 
+
+	/**
+	 * @return Ticket|mixed
+	 * @throws \Exception
+	 */
 	public function run()
 	{
 		$this->person = $this->person;
@@ -124,7 +137,7 @@ class ProcessNew extends ProcessAbstract
 					$this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()
 					&& !($this->reader->getHeader('X-DeskPRO-Auto') && $this->reader->getHeader('X-DeskPRO-Auto')->getHeader())
 				) {
-					$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info->body, 1));
+					$body = trim(Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info->body, 1));
 					if ($body) {
 						$email_info->body = $body;
 					}
@@ -136,7 +149,7 @@ class ProcessNew extends ProcessAbstract
 				$txt = $this->ticket_email->email_body_text;
 				if (!$txt && $this->ticket_email->email_body_text) {
 					$txt = $this->ticket_email->email_body_text;
-					$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+					$email_info->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 				}
 
 				if (strlen($txt) > 25000) {
@@ -160,7 +173,7 @@ class ProcessNew extends ProcessAbstract
 				$email_info->body = $this->cleaner->clean($email_info->body, 'html_email');
 			}
 
-			$email_info->body = \Orb\Util\Strings::trimHtml($email_info->body);
+			$email_info->body = Strings::trimHtml($email_info->body);
 		}
 
 		$email_info->body = $this->cleaner->clean($email_info->body, 'html_email_postclean');
@@ -230,7 +243,7 @@ class ProcessNew extends ProcessAbstract
 		$ticket->subject       = $email_info->subject;
 		$ticket->person        = $this->person;
 		$ticket->status        = 'awaiting_agent';
-		$ticket->email_gateway = $this->email_gateway;
+		$ticket->email_account = $this->account;
 
 		// Set the proper email address on the ticket from the users account
 		if ($this->reader->getFromAddress()->email != $this->person->getPrimaryEmailAddress()) {
@@ -273,7 +286,7 @@ class ProcessNew extends ProcessAbstract
 
 		if ($this->person && !$this->person->isNewPerson()) {
 			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
-				$this->setError(\Application\DeskPRO\Entity\EmailSource::ERR_DUPE);
+				$this->setError(EmailSource::ERR_DUPE);
 				$this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
 				return $dupe_message;
 			}

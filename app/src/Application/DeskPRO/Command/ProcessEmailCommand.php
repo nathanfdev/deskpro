@@ -33,24 +33,26 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\Logger;
 use Orb\Util\Strings;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
 
 use Application\DeskPRO\App;
 
-class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class ProcessEmailCommand extends ContainerAwareCommand
 {
 	protected function configure()
 	{
 		$this->setName('dp:process-email');
-		$this->addOption('gateway', null, InputOption::VALUE_REQUIRED, 'ID of the gateway to process the source under. If not provided, then the first ticket gateway will be used.');
+		$this->addOption('account', null, InputOption::VALUE_REQUIRED, 'ID of the gateway to process the source under. If not provided, then the account will be detected based on the  to/cc address (default if none found)');
+		$this->addOption('account-force', null, InputOption::VALUE_NONE, 'Use the account even if its disabled');
 		$this->addOption('to', null, InputOption::VALUE_REQUIRED, 'The TO address to interpret the email to. If provided, the gateway will be determiend based on this.');
 		$this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
 		$this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
@@ -66,47 +68,14 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 		return parent::getContainer();
 	}
 
+	private function findEmailAccountFrom(AbstractReader $reader)
+	{
+
+	}
+
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$success_string = $input->getOption('success-string');
-
-		#----------------------------------------
-		# Get gateway account
-		#----------------------------------------
-
-		$gateway_id = $input->getOption('gateway');
-		$gateway = null;
-
-		if (!$gateway_id and $input->getOption('to')) {
-			$matcher = App::getSystemService('gateway_address_matcher');
-			$addr = $matcher->getMatchingAddress($input->getOption('to'));
-			if ($addr) {
-				$gateway = $addr->gateway;
-			}
-		}
-
-		if (!$gateway) {
-			if ($gateway_id) {
-				$gateway = $this->getContainer()->getEm()->find('DeskPRO:EmailGateway', $input->getOption('gateway'));
-
-				if (!$gateway) {
-					$output->writeln("<error>Could not find gateway</error>");
-					return 1;
-				}
-			} else {
-				$gateway = $this->getContainer()->getEm()->createQuery("
-					SELECT g
-					FROM DeskPRO:EmailGateway g
-					WHERE g.gateway_type = 'tickets'
-					ORDER BY g.id ASC
-				")->setMaxResults(1)->getOneOrNullResult();
-
-				if (!$gateway) {
-					$output->writeln("<error>No ticket gateways exist</error>");
-					return 1;
-				}
-			}
-		}
 
 		#----------------------------------------
 		# Read/save source object
@@ -118,6 +87,14 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 			if (!$source) {
 				$output->writeln("<error>Could not find source</error>");
 				return 1;
+			}
+
+			$reader = new EzcReader();
+			$reader->setRawSource($source['raw_source']);
+			$account = $source->email_account;
+
+			if (!$account) {
+				$account = $this->findEmailAccountFrom($reader);
 			}
 		} else {
 
@@ -148,18 +125,22 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
 			$raw_headers = trim(substr($raw_source,0, $header_end));
 
+			$reader = new EzcReader();
+			$reader->setRawSource($raw_source);
+			$account = $this->findEmailAccountFrom($reader);
+
 			$source = new EmailSource();
 			$source->fromArray(array(
-				'gateway' => $gateway,
+				'email_account' => $account,
 				'headers' => $raw_headers,
-				'status' => 'inserted'
+				'status' => 'inserted',
 			));
 
 			// Rough matching, just for info purposes when browsing a list
 			$source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
 			$source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
 			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
-			$source->object_type    = ($gateway->gateway_type == 'tickets' ? 'ticket' : $gateway->gateway_type);
+			$source->object_type    = 'ticket';
 
 			$t = microtime(true);
 			$output->writeln("<info>Saving blob...</info>");
@@ -183,6 +164,23 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 		}
 
 		#----------------------------------------
+		# Get gateway account
+		#----------------------------------------
+
+		$account_id = $input->getOption('account');
+		if ($account_id) {
+			$account_manager = App::$container->getEmailAccountManager();
+			if ($account_manager->hasAcccount($account_id)) {
+				$output->writeln("<error>No account with ID $account_id</error>");
+			}
+
+			$account = $account_manager->getAccount($account_id);
+			if ($input->getOption('account-force') && !$account->is_enabled) {
+				$output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
+			}
+		}
+
+		#----------------------------------------
 		# Run the gateway
 		#----------------------------------------
 
@@ -193,7 +191,7 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 		$runner = new Runner();
 		$runner->setLogger($logger);
 		$runner->setPhpTimeLimit(900);
-		$runner->executeSource($source);
+		$runner->executeSource($source, $reader);
 
 		if ($success_string) {
 			echo "\n";

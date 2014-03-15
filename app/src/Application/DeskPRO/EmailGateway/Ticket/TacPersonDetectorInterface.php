@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use Application\DeskPRO\Entity\Ticket;
 
 /**
  * A detector class may also be able to detect people from a TAC code.

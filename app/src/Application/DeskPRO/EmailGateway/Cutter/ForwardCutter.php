@@ -98,7 +98,7 @@ class ForwardCutter
 
 		if (!$this->forward_info['fwd_message_body']) {
 			$this->error_code = 'unknown_body';
-		} elseif (!$this->forward_info['fwd_from_email'] || !\Orb\Validator\StringEmail::isValueValid($this->forward_info['fwd_from_email']) || App::getSystemService('gateway_address_matcher')->isManagedAddress($this->forward_info['fwd_from_email'])) {
+		} elseif (!$this->forward_info['fwd_from_email'] || !\Orb\Validator\StringEmail::isValueValid($this->forward_info['fwd_from_email']) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->forward_info['fwd_from_email'])) {
 			$this->error_code = 'unknown_email';
 		}
 	}

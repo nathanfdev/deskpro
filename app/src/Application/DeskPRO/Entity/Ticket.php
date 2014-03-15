@@ -74,6 +74,7 @@ use Orb\Util\Util;
  * @property LabelTicket[] $labels
  * @property string $sent_to_address
  * @property EmailAccount $email_account
+ * @property string $email_account_address
  * @property string $creation_system
  * @property string $creation_system_option
  * @property string $ticket_hash
@@ -268,7 +269,8 @@ class Ticket extends DomainObject
 	protected $labels;
 
 	/**
-	 * The email address the ticket was sent to if it came in via a gateway
+	 * The email address the ticket was sent to if it came in via a gateway.
+	 * This is a full string (e.g., including CC's) of the original.
 	 *
 	 * @var string
 	 */
@@ -280,6 +282,13 @@ class Ticket extends DomainObject
 	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
 	protected $email_account = null;
+
+	/**
+	 * The email address (from list of to/cc) that matched with the email account.
+	 *
+	 * @var string
+	 */
+	protected $email_account_address = '';
 
 	/**
 	 * @var string
@@ -3107,6 +3116,13 @@ class Ticket extends DomainObject
 			'fieldName'  => 'sent_to_address',
 			'type'       => 'string',
 			'length'     => 200,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'email_account_address',
+			'fieldName'  => 'email_account_address',
+			'type'       => 'string',
+			'length'     => 255,
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(

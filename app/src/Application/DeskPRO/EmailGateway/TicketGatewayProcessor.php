@@ -35,16 +35,19 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
 use Application\DeskPRO\EmailGateway\Ticket\BounceDetector;
 use Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
 use Application\DeskPRO\EmailGateway\Ticket\CompositeDetector;
 use Application\DeskPRO\EmailGateway\Ticket\Dp3Detector;
 use Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
 use Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
+use Application\DeskPRO\EmailGateway\TicketGateway\AgentReplyCodes;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessAgentFwd;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessNew;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessReply;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
 
 class TicketGatewayProcessor extends AbstractGatewayProcessor
@@ -59,6 +62,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $source_info;
 
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
+	 * @throws \Exception
+	 */
 	public function run()
 	{
 		#-------------------------
@@ -194,15 +202,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			} else {
 				$this->logMessage('[TicketGatewayProcessor] Message is being rejected because ticket is resolved');
 
-				$email_to = '';
-				if ($this->gateway_address) {
-					$email_to = $this->gateway_address->match_pattern;
+				if ($this->account_email_address) {
+					$email_to = $this->account_email_address;
 				} else {
-					$email_trans = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport();
-					if ($email_trans) {
-						$email_to = $email_trans->match_pattern;
-					}
+					$email_to = $this->account->address;
 				}
+
+				$from_address = $this->container->getMailer()->getEmailAccountForTicket($ticket)->address;
 
 				// user is disabled so can't create/reply to tickets
 				$message = $this->container->getMailer()->createMessage();
@@ -214,6 +220,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					'email_to' => $email_to
 				));
 				$message->setTo($this->reader->getFromAddress()->getEmail());
+				$message->setFrom($from_address);
 				$message->attach(\Swift_Attachment::newInstance(
 					$this->reader->getRawSource(),
 					'message.eml',
@@ -295,6 +302,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	/**
 	 * @param TicketIncomingEmail $ticket_email
+	 * @return \Application\DeskPRO\Entity\TicketMessage|null
 	 */
 	private function runReply(TicketIncomingEmail $ticket_email)
 	{
@@ -378,6 +386,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	/**
 	 * @param TicketIncomingEmail $ticket_email
+	 * @param bool $reply_as_new
+	 * @return \Application\DeskPRO\Entity\Ticket|null
 	 */
 	private function runNew(TicketIncomingEmail $ticket_email, $reply_as_new = false)
 	{
@@ -395,12 +405,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] Creating new contact');
 			if ($this->container->getSetting('core.user_mode') == 'closed') {
 				$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
-				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
+				$this->error = EmailSource::ERR_PERM_INSUFFICIENT;
 
-				$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
+				$account_manager = App::$container->getEmailAccountManager();
 				$user_email = $this->reader->getFromAddress()->getEmail();
 
-				if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$gateway_address_matcher->getMatchingAddress($user_email) && !$gateway_address_matcher->isHelpdeskAddress($user_email)) {
+				if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
 					$message = $this->container->getMailer()->createMessage();
 					$message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
 						'subject' => $this->reader->getSubject()->getSubjectUtf8(),
@@ -446,7 +456,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($this->container->getSetting('core_tickets.process_agent_fwd') AND $person->is_agent AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
 			$this->logMessage('[TicketGatewayProcessor] runNewForwardedTicket');
 
-			$fwd_proc = new ProcessAgentFwd($person, $ticket_email);
+			$fwd_proc = new ProcessAgentFwd($this->account, $person, $ticket_email);
 			$fwd_proc->setLogger($this->logger);
 
 			$obj = $fwd_proc->run();
@@ -462,7 +472,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$ticket_email->force_reply_cutter = $reply_as_new;
 
-			$new_proc = new ProcessNew($this->gateway, $person, $ticket_email);
+			$new_proc = new ProcessNew($this->account, $person, $ticket_email);
 			$new_proc->setLogger($this->logger);
 
 			$obj = $new_proc->run();

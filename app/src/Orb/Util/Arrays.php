@@ -1436,6 +1436,45 @@ class Arrays
 	}
 
 
+	/**
+	 * Use a callback function to get the value of first match in an array.
+	 *
+	 * @param  array    $array
+	 * @param  callable $callback
+	 * @param  mixed    $default
+	 * @return mixed
+	 */
+	public static function findValue($array, $callback, $default = null)
+	{
+		foreach ($array as $k => $v) {
+			if (call_user_func($callback, $v, $k)) {
+				return $v;
+			}
+		}
+
+		return $default;
+	}
+
+
+	/**
+	 * Use a callback function to find the key of the first match in an array
+	 *
+	 * @param  array     $array
+	 * @param  callback $callback
+	 * @param  mixed    $default
+	 * @return mixed
+	 */
+	public static function findKey($array, $callback, $default = null)
+	{
+		foreach ($array as $k => $v) {
+			if (call_user_func($callback, $v, $k)) {
+				return $k;
+			}
+		}
+
+		return $default;
+	}
+
 
 	/**
 	 * Takes an array and normalizes all keys to lowercase.

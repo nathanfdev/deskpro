@@ -84,8 +84,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
 	protected $mode = 'untrusted';
 
-	public $gateway;
-	public $gateway_address;
+	public $account;
+	public $account_address;
 	public $sent_to;
 
 	/**
@@ -292,14 +292,11 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 				$ticket['sent_to_address'] = $this->sent_to;
 			}
 
-			if ($this->gateway) {
-				$ticket->email_gateway = $this->gateway;
+			if ($this->account) {
+				$ticket->email_account = $this->account;
 			}
-			if ($this->gateway_address) {
-				$ticket->email_gateway_address = $this->gateway_address;
-			}
-			if (!$this->gateway) {
-				$ticket['notify_email'] = $this->ticket->notify_email;
+			if ($this->account_address) {
+				$ticket->email_account_address = $this->account_address;
 			}
 
 			if ($email_validating) {
@@ -462,7 +459,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
 				foreach ($ccs as &$_) {
 					$_ = trim(strtolower($_));
-					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::getSystemService('gateway_address_matcher')->isManagedAddress($_)) {
+					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($_)) {
 						$_ = null;
 					}
 				}
@@ -494,14 +491,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
 	public function handleCc(Entity\Ticket $ticket, $cc_email)
 	{
-		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
-
-		if (!\Orb\Validator\StringEmail::isValueValid($cc_email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($cc_email)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($cc_email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($cc_email)) {
 			return null;
 		}
 
-		$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
-		if ($addr) {
+		$account_manager = App::$container->getEmailAccountManager();
+		if ($account_manager->findAccountForEmailAddress($cc_email)) {
 			return null;
 		}
 

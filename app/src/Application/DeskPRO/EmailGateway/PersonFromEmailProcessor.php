@@ -35,7 +35,6 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use DeskPRO\Kernel\KernelErrorHandler;
 

@@ -80,11 +80,6 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	protected $logger;
 
 	/**
-	 * @var \Application\DeskPRO\EmailGateway\AddressMatcher
-	 */
-	protected $gateway_address_matcher;
-
-	/**
 	 * @var \Orb\Log\Writer\ArrayWriter
 	 */
 	protected $message_log_writer;

@@ -254,7 +254,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Email address should be validated by the time we get here,
 		// this is a failsafe check
-		if (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->email)) {
+		if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->email)) {
 			throw new \RuntimeException("`{$this->email}`` is an a gateway account address");
 		}
 	}

@@ -195,6 +195,37 @@ class EmailAccount extends DomainObject
 
 
 	/**
+	 * Given an address, see if it matches in this account and return the matched address.
+	 *
+	 * At the moment this method only handles exact matches, but theres a possibility it could be extended
+	 * to allow for patterns.
+	 *
+	 * @param string $address
+	 * @return null|string
+	 */
+	public function getEmailAddressMatch($address)
+	{
+		$address = strtolower($address);
+
+		if ($this->address == $address) {
+			return $address;
+		}
+
+		foreach ($this->other_addresses as $addr) {
+			if ($addr == $address) {
+				return $address;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Gets the real address to use for this account.
+	 * E.g., this account might have many addresses and aliases, this is the one to use
+	 * by default for outgoing messages.s
+	 *
 	 * @return string
 	 */
 	public function getUseEmailAddress()

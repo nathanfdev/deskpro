@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EmailGateway\FetcherStorage;
 
 use Orb\Log\Logger;
+use Application\DeskPRO\EmailGateway\Storage\Pop3;
 
 class Pop3Storage implements FetcherStorageInterface
 {
@@ -121,7 +122,7 @@ class Pop3Storage implements FetcherStorageInterface
 			$options['logger'] = $this->logger;
 		}
 
-		$storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3($options);
+		$storage = new Pop3($options);
 		return $storage;
 	}
 

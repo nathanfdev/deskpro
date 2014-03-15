@@ -69,9 +69,9 @@ class FinderFilter
 	private $date_end = null;
 
 	/**
-	 * @var null|EmailGateway
+	 * @var null|EmailAccount
 	 */
-	private $gateway = null;
+	private $account = null;
 
 	/**
 	 * @var string
@@ -184,12 +184,12 @@ class FinderFilter
 	}
 
 	/**
-	 * @param EmailGateway $gateway
+	 * @param EmailAccount $account
 	 * @return $this
 	 */
-	public function setGateway(EmailGateway $gateway = null)
+	public function setGateway(EmailAccount $account = null)
 	{
-		$this->gateway = $gateway;
+		$this->account = $account;
 		return $this;
 	}
 
@@ -266,11 +266,11 @@ class FinderFilter
 	}
 
 	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway|null
+	 * @return \Application\DeskPRO\Entity\EmailAccount|null
 	 */
-	public function getGateway()
+	public function getAccount()
 	{
-		return $this->gateway;
+		return $this->account;
 	}
 
 	/**

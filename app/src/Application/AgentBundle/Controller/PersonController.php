@@ -845,7 +845,8 @@ class PersonController extends AbstractController
 						continue;
 					}
 
-					if (App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+					$account_manager = App::$container->getEmailAccountManager();
+					if ($account_manager->findAccountForEmailAddress($email)) {
 						$errors[] = "\"$email\" was not saved because it belongs to a ticket account";
 						continue;
 					}
@@ -1263,6 +1264,8 @@ class PersonController extends AbstractController
 
 		$newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
 
+		$account_manager = App::$container->getEmailAccountManager();
+
 		// Check for dupe email address
 		$new_email = $this->in->getString('newperson.email');
 		if (!$new_email || !\Orb\Validator\StringEmail::isValueValid($new_email)) {
@@ -1270,7 +1273,7 @@ class PersonController extends AbstractController
 				'success' => false,
 				'error_messages' => array('Please enter a valid email address'),
 			));
-		} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+		} elseif ($account_manager->findAccountForEmailAddress($new_email)) {
 			return $this->createJsonResponse(array(
 				'success' => false,
 				'error_messages' => array('That email address is in use by a ticket account'),

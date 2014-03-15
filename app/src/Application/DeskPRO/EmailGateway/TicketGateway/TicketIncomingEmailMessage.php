@@ -35,10 +35,10 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Input\Cleaner\Cleaner;
 use Orb\Log\Logger;
+use Orb\Util\Strings;
 
 class TicketIncomingEmailMessage
 {
@@ -88,8 +88,10 @@ class TicketIncomingEmailMessage
 	private $logger;
 
 	/**
+	 * @param Ticket $ticket
 	 * @param TicketIncomingEmail $ticket_email
 	 * @param Cleaner $cleaner
+	 * @param null $token_replace_callback
 	 */
 	public function __construct(Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, $token_replace_callback = null)
 	{
@@ -127,7 +129,7 @@ class TicketIncomingEmailMessage
 				$reader->getHeader('X-DeskPRO-Build') && $reader->getHeader('X-DeskPRO-Build')->getHeader()
 				&& !($reader->getHeader('X-DeskPRO-Auto') && $reader->getHeader('X-DeskPRO-Auto')->getHeader())
 			) {
-				$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $this->body, 1));
+				$body = trim(Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $this->body, 1));
 				if ($body) {
 					$this->body = $body;
 				}
@@ -326,7 +328,7 @@ class TicketIncomingEmailMessage
 			$this->body = $cleaner->clean($this->body, 'html_email_preclean');
 			$this->body = $cleaner->clean($this->body, 'html_email_basicclean');
 			$this->body = $cleaner->clean($this->body, 'html_email');
-			$this->body = \Orb\Util\Strings::trimHtmlAdvanced($this->body);
+			$this->body = Strings::trimHtmlAdvanced($this->body);
 			$this->body = $cleaner->clean($this->body, 'html_email_postclean');
 		}
 

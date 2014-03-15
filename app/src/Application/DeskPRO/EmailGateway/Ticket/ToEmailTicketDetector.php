@@ -70,7 +70,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	 * $detector = new ToEmailTicketDetector('ticket-TAC@example.com');
 	 * </code>
 	 *
-	 * @param string The pattern with the special token TICKET_CODE in it.
+	 * @param string $account_pattern The pattern with the special token TICKET_CODE in it.
 	 */
 	public function __construct($account_pattern)
 	{

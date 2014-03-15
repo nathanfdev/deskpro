@@ -35,39 +35,43 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailSource;
-use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Application\DeskPRO\Entity\EmailAccount;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Numbers;
-use Orb\Util\Strings;
+use Orb\Util\Util;
 
 /**
- * This runs collection and processsing in gateways
+ * This runs collection and processsing in accounts
  */
 class Runner
 {
 	/**
 	 * @var \Application\DeskPRO\Log\Logger
 	 */
-	protected $logger;
+	private $logger;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway[]
+	 * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
 	 */
-	protected $gateways;
+	private $account_manager;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailAccount[]
+	 */
+	private $accounts;
 
 	/**
 	 * @var \Orb\Log\Writer\ArrayWriter
 	 */
-	protected $log_messages;
+	private $log_messages;
 
 	/**
 	 * When non-0, sets the PHP time limit per iteration
 	 *
 	 * @var int
 	 */
-	protected $set_time_limit = 0;
+	private $set_time_limit = 0;
 
 	/**
 	 * When non-0, sets when the email loop will break early when
@@ -75,7 +79,7 @@ class Runner
 	 *
 	 * @var int
 	 */
-	protected $soft_time_limit = 0;
+	private $soft_time_limit = 0;
 
 	/**
 	 * When non-0, sets when the email loop will break early
@@ -83,16 +87,17 @@ class Runner
 	 *
 	 * @var int
 	 */
-	protected $message_limit = 0;
+	private $message_limit = 0;
 
 	/**
 	 * @var int
 	 */
-	protected $message_count = 0;
+	private $message_count = 0;
 
 	public function __construct()
 	{
 		$this->logger = new \Application\DeskPRO\Log\Logger();
+		$this->account_manager = App::$container->getEmailAccountManager();
 	}
 
 
@@ -140,27 +145,27 @@ class Runner
 
 
 	/**
-	 * Set the gateways to process
+	 * Set the accounts to process
 	 *
-	 * @param $gateways
+	 * @param EmailAccount[] $accounts
 	 */
-	public function setGateways(array $gateways)
+	public function setAccounts(array $accounts)
 	{
-		$this->gateways = $gateways;
+		$this->accounts = $accounts;
 	}
 
 
 	/**
-	 * Load gateways from the database
+	 * Load accounts from the database
 	 *
-	 * @param bool $include_disabled True to also include disabled gateways
+	 * @param bool $include_disabled True to also include disabled account
 	 */
-	public function loadGatewaysFromDb($include_disabled = false)
+	public function loadAccountsFromDb($include_disabled = false)
 	{
 		if ($include_disabled) {
-			$this->gateways = App::getOrm()->getRepository('DeskPRO:EmailGateway')->findAll();
+			$this->accounts = $this->account_manager->getAllAccounts('with_fetcher');
 		} else {
-			$this->gateways = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getAllEnabled();
+			$this->accounts = $this->account_manager->getAllActiveAccounts('with_fetcher');
 		}
 	}
 
@@ -178,10 +183,10 @@ class Runner
 
 		$this->logger->logDebug("Time limit: " . $time_limit);
 
-		if ($this->gateways) {
-			foreach ($this->gateways as $gateway) {
+		if ($this->accounts) {
+			foreach ($this->accounts as $account) {
 				App::getDb()->avoidTimeout();
-				$this->executeGateway($gateway, $time_limit);
+				$this->executeAccount($account, $time_limit);
 
 				$time_so_far = time() - $exec_start;
 				$this->logger->logDebug("Time taken so far: " . $time_so_far);
@@ -199,9 +204,11 @@ class Runner
 	 * Executes a single source. Good for re-processing.
 	 *
 	 * @param \Application\DeskPRO\Entity\EmailSource $source
+	 * @param AbstractReader $reader
 	 * @throws \Exception
+	 * @return string Status code
 	 */
-	public function executeSource(EmailSource $source)
+	public function executeSource(EmailSource $source, AbstractReader $reader = null)
 	{
 		if (!$this->log_messages) {
 			$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
@@ -210,7 +217,7 @@ class Runner
 
 		$this->logger->logDebug('Executing Source ' . $source->getId());
 
-		$gateway = $source->gateway;
+		$account = $source->email_account;
 
 		// Attempt to detect if we should break due to memory
 		$mem = memory_get_usage();
@@ -239,37 +246,42 @@ class Runner
 		App::getOrm()->persist($source);
 		App::getOrm()->flush();
 
-		try {
-			$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-			$reader->setRawSource($source['raw_source']);
+		if (!$reader) {
+			try {
+				$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+				$reader->setRawSource($source['raw_source']);
+			} catch (\Exception $e) {
+				$this->logger->log(sprintf("Could not set source: %s", $e->getMessage()), 'info');
+
+				$e->_dp_sn = KernelErrorHandler::genSessionName();
+				$errinfo = KernelErrorHandler::getExceptionInfo($e);
+				KernelErrorHandler::logErrorInfo($errinfo);
+
+				$source['status'] = 'error';
+				$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+				$source['source_info'] = $errinfo;
+
+				$this->_updateSource($source);
+				if ($this->log_messages) {
+					$this->log_messages->clear();
+				}
+				$source->clearRawSource();
+				App::getOrm()->detach($source);
+				$source = null;
+
+				if ($reader) {
+					$reader->_kill();
+					$reader = null;
+				}
+
+				gc_collect_cycles();
+
+				return 'decode_error';
+			}
+		}
+
+		if (!$reader->hasProperty('email_source')) {
 			$reader->setProperty('email_source', $source);
-		} catch (\Exception $e) {
-			$this->logger->log(sprintf("Could not set source: %s", $e->getMessage()), 'info');
-
-			$e->_dp_sn = KernelErrorHandler::genSessionName();
-			$errinfo = KernelErrorHandler::getExceptionInfo($e);
-			KernelErrorHandler::logErrorInfo($errinfo);
-
-			$source['status'] = 'error';
-			$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
-			$source['source_info'] = $errinfo;
-
-			$this->_updateSource($source);
-			if ($this->log_messages) {
-				$this->log_messages->clear();
-			}
-			$source->clearRawSource();
-			App::getOrm()->detach($source);
-			$source = null;
-
-			if ($reader) {
-				$reader->_kill();
-				$reader = null;
-			}
-
-			gc_collect_cycles();
-
-			return 'decode_error';
 		}
 
 		$to = array();
@@ -287,7 +299,7 @@ class Runner
 
 		try {
 
-			$pre_processor = new PreProcessor($gateway, $reader, array('logger' => $this->logger));
+			$pre_processor = new PreProcessor($account, $reader, array('logger' => $this->logger));
 			$pre_processor->run();
 
 			$created_obj = null;
@@ -297,7 +309,7 @@ class Runner
 				$this->logger->log("Preprocessor complete", 'info');
 
 				try {
-					$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
+					$proc = $account->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
 					$created_obj = $proc->run();
 
 					if ($proc->isValid()) {
@@ -391,27 +403,29 @@ class Runner
 	}
 
 	/**
-	 * Execute a gateway
+	 * Execute an account
 	 *
 	 * $time_limit is the max time before the while loop breaks. The method will usually continue to process mail
 	 * until there is no email left. If you specify a time limit then the process will break after $time_limit seconds.
 	 * Note this check is done after processing of a message, it does not abort. This means that it's possible the time
 	 * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
 	 *
-	 * @param \Application\DeskPRO\Entity\EmailGateway $gateway
+	 * @param \Application\DeskPRO\Entity\EmailAccount $account
 	 * @param int $time_limit The max time spent processing email before we break.
 	 * @throws \Exception
 	 */
-	public function executeGateway(EmailGateway $gateway, $time_limit = 0)
+	public function executeAccount(EmailAccount $account, $time_limit = 0)
 	{
 		gc_enable();
 
-		$this->logger->log("Start processing {$gateway['title']} {$gateway['gateway_type']}:{$gateway['connection_type']}", 'info');
+		$this->logger->log("Start processing {$account['title']} {$account['account_type']}", 'info');
 		$start_time = microtime(true);
 
 		/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
-		$fetcher = $gateway->getFetcher();
+		$fetcher = $this->account_manager->getFetcherStorageForAccount($account);
 		$fetcher->setLogger($this->logger);
+
+		$this->logger->log("Fetcher type: " . Util::getBaseClassname($fetcher), 'info');
 
 		$max_size = App::getSetting('core.gateway_max_email');
 		if (!$max_size) {
@@ -427,9 +441,9 @@ class Runner
 		$inserted_source_ids = App::getDb()->fetchAllCol("
 			SELECT id FROM
 			email_sources
-			WHERE status = 'inserted' AND gateway_id = ?
+			WHERE status = 'inserted' AND email_account_id = ?
 			ORDER BY id ASC
-		", array($gateway->getId()));
+		", array($account->getId()));
 
 		$this->logger->logDebug(sprintf("%d inserted messages being processed first", count($inserted_source_ids)));
 
@@ -464,16 +478,16 @@ class Runner
 				$source = App::getOrm()->find('DeskPRO:EmailSource', $next_inserted_id);
 			} else {
 				try {
-					$source = $fetcher->readNext($gateway->getSourceObjectType());
+					$source = $fetcher->readNext($account->getSourceObjectType());
 					if (!$source) {
 						$this->logger->logDebug("No more messages in inbox");
 
 						// If this is the first time we've reached the end
-						// save a start date to the gateway
-						if (!$gateway->start_date_limit) {
-							$gateway->start_date_limit = new \DateTime("-10 days");
-							App::getOrm()->persist($gateway);
-							App::getOrm()->flush($gateway);
+						// save a start date to the account
+						if (!$account->start_date_limit) {
+							$account->start_date_limit = new \DateTime("-10 days");
+							App::getOrm()->persist($account);
+							App::getOrm()->flush($account);
 						}
 
 						break;
@@ -497,10 +511,10 @@ class Runner
 				@set_time_limit($this->set_time_limit);
 			}
 
-			$this->logger->log("[Gateway {$gateway['id']}] Read source ID {$source['id']}", 'debug');
+			$this->logger->log("[Account {$account['id']}] Read source ID {$source['id']}", 'debug');
 
 			// Already marked as an error (e.g., message too big) so we dont
-			// process it through the gateway handlers
+			// process it through the account handlers
 			if ($source->status == 'error') {
 				$this->logger->log(sprintf("Source marked as error :: %s", $source->error_code), 'debug');
 
@@ -561,7 +575,7 @@ class Runner
 
 		$end_time = microtime(true);
 		$this->logger->log(sprintf(
-			"Finished processing gateway. Took %.2f seconds. Peak memory %.2f MB (current %.2f MB).",
+			"Finished processing account. Took %.2f seconds. Peak memory %.2f MB (current %.2f MB).",
 			$end_time - $start_time,
 			memory_get_peak_usage() / 1024 / 1024,
 			memory_get_usage() / 1024 / 1024

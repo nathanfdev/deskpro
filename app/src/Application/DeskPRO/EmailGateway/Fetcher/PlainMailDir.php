@@ -72,7 +72,7 @@ class PlainMailDir extends AbstractFetcher
 	 */
 	protected function _initConnection()
 	{
-		$this->maildir = $this->gateway['connection_options']['dir'];
+		$this->maildir = $this->account['connection_options']['dir'];
 		$this->maildir = str_replace('%DP_DATA_DIR%', dp_get_data_dir(), $this->maildir);
 
 		$this->logger->logDebug("Reading from: {$this->maildir}");

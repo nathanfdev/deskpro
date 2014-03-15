@@ -36,7 +36,9 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
+use Orb\Validator\StringEmail;
 
 abstract class ProcessAbstract
 {
@@ -143,7 +145,7 @@ abstract class ProcessAbstract
 
 	public function handleCc($ticket, array $ccs)
 	{
-		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
+		$account_manager = App::$container->getEmailAccountManager();
 
 		$count = 0;
 		foreach ($ccs as $cc) {
@@ -163,13 +165,8 @@ abstract class ProcessAbstract
 				continue;
 			}
 
-			$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
-			if ($addr) {
-				$this->logMessage("Skipping cc: $cc_email (matches gateway address {$addr->id})");
-				continue;
-			}
-			if ($gateway_address_matcher->isHelpdeskAddress($cc_email)) {
-				$this->logMessage("Skipping cc: $cc_email (matches helpdesk address)");
+			if ($account_manager->findAccountForEmailAddress($cc_email)) {
+				$this->logMessage("Skipping cc: $cc_email (matches helpdesk account address)");
 				continue;
 			}
 
@@ -231,7 +228,6 @@ abstract class ProcessAbstract
 				$attach->getFileName(),
 				$attach->getMimeType()
 			);
-			$blob_id = $blob->getId();
 
 			$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
 			$this->processed_blobs[$blob->id] = $blob;

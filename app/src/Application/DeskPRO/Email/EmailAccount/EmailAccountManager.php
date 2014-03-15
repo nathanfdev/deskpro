@@ -38,6 +38,7 @@ use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\Entity\EmailAccount;
+use Orb\Util\Arrays;
 
 class EmailAccountManager
 {
@@ -61,8 +62,8 @@ class EmailAccountManager
 	private $fetcher_storage_factory;
 
 	/**
-	 * Array of string=>account
-	 * @var EmailAccount[]
+	 * Array of string=>EmailAccount[]
+	 * @var array
 	 */
 	private $email_address_map;
 
@@ -128,20 +129,30 @@ class EmailAccountManager
 
 
 	/**
+	 * @param int|string $criteria Standard criteria filter
 	 * @return \Application\DeskPRO\Entity\EmailAccount[]
 	 */
-	public function getAllAccounts()
+	public function getAllAccounts($criteria = 0)
 	{
-		return $this->repos->getAccounts();
+		if ($criteria) {
+			return $this->filterAccountCollection($this->repos->getAccounts(), $criteria);
+		} else {
+			return $this->repos->getAccounts();
+		}
 	}
 
 
 	/**
+	 * @param int|string $criteria Standard criteria filter
 	 * @return \Application\DeskPRO\Entity\EmailAccount[]
 	 */
-	public function getAllActiveAccounts()
+	public function getAllActiveAccounts($criteria = 0)
 	{
-		return $this->repos->getEnabledAccounts();
+		if ($criteria) {
+			return $this->filterAccountCollection($this->repos->getEnabledAccounts(), $criteria);
+		} else {
+			return $this->repos->getEnabledAccounts();
+		}
 	}
 
 
@@ -169,54 +180,80 @@ class EmailAccountManager
 	/**
 	 * Find an email account for a given email address
 	 *
-	 * @param string     $address  The address to search for
-	 * @param int|string $crit     Criteria. Use constants, or a string of the constant names like 'is_enabled|with_transport'
+	 * @param string     $address    The address to search for
+	 * @param int|string $criteria   Criteria. Use constants, or a string of the constant names like 'is_enabled|with_transport'
 	 * @return EmailAccount|null
 	 */
-	public function findAccountForEmailAddress($address, $crit = 0)
+	public function findAccountForEmailAddress($address, $criteria = 0)
 	{
 		if ($this->email_address_map === null) {
 			$this->email_address_map = $this->buildEmailAddressMap();
 		}
 
-		//
-		if ($crit && is_string($crit)) {
-			$parts = explode('|', $crit);
-			$crit = 0;
+		$address = strtolower($address);
+
+		if (isset($this->email_address_map[$address])) {
+			$self = $this;
+			return Arrays::findValue($this->email_address_map[$address], function($account) use ($criteria, $self) {
+				return $self->checkAccountCriteriaMatch($account, $criteria);
+			});
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @param array $accounts
+	 * @param int $criteria
+	 * @return array
+	 */
+	public function filterAccountCollection(array $accounts, $criteria = 0)
+	{
+		if (!$criteria) {
+			return $accounts;
+		}
+
+		return array_filter($accounts, array($this, 'checkAccountCriteriaMatch'));
+	}
+
+
+	/**
+	 * @param EmailAccount $account
+	 * @param $criteria
+	 * @return bool
+	 */
+	public function checkAccountCriteriaMatch(EmailAccount $account, $criteria)
+	{
+		if ($criteria && is_string($criteria)) {
+			$parts = explode('|', $criteria);
+			$criteria = 0;
 			foreach ($parts as $p) {
 				$p = trim($p);
 				$p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::' . strtoupper($p);
 				$p_val = constant($p_name);
 				if ($p_val) {
-					$crit = $crit | $p_val;
+					$criteria = $criteria | $p_val;
 				}
 			}
 		}
 
-		$address = strtolower($address);
-
-		if (isset($this->email_address_map[$address])) {
-			foreach ($this->email_address_map[$address] as $acc) {
-				// Check for enabled
-				if ($crit && $crit & self::IS_ENABLED && !$acc->is_enabled) {
-					continue;
-				}
-
-				// Check for transport
-				if ($crit && $crit & self::WITH_TRANSPORT && !$this->accountHasTransport($acc)) {
-					continue;
-				}
-
-				// Check for fetcher
-				if ($crit && $crit & self::WITH_FETCHER && !$this->accountHasFetcherStorage($acc)) {
-					continue;
-				}
-
-				return $acc;
-			}
+		// Check for enabled
+		if ($criteria && $criteria & self::IS_ENABLED && !$account->is_enabled) {
+			return false;
 		}
 
-		return null;
+		// Check for transport
+		if ($criteria && $criteria & self::WITH_TRANSPORT && !$this->accountHasTransport($account)) {
+			return false;
+		}
+
+		// Check for fetcher
+		if ($criteria && $criteria & self::WITH_FETCHER && !$this->accountHasFetcherStorage($account)) {
+			return false;
+		}
+
+		return true;
 	}
 
 

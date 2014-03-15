@@ -34,17 +34,17 @@
 
 namespace Application\DeskPRO\People;
 
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\EmailGateway\AddressMatcher;
 use Application\DeskPRO\EntityRepository\BanEmail;
 use Orb\Validator\StringEmail;
 
 class EmailAddressValidator
 {
 	/**
-	 * @var \Application\DeskPRO\EmailGateway\AddressMatcher
+	 * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
 	 */
-	private $address_matcher;
+	private $account_manager;
 
 	/**
 	 * @var \Application\DeskPRO\EntityRepository\BanEmail
@@ -56,9 +56,13 @@ class EmailAddressValidator
 	 */
 	private $format_validator;
 
-	public function __construct(AddressMatcher $address_matcher, BanEmail $ban_repos)
+	/**
+	 * @param EmailAccountManager $account_manager
+	 * @param BanEmail $ban_repos
+	 */
+	public function __construct(EmailAccountManager $account_manager, BanEmail $ban_repos)
 	{
-		$this->address_matcher  = $address_matcher;
+		$this->account_manager  = $account_manager;
 		$this->ban_repos        = $ban_repos;
 		$this->format_validator = new StringEmail();
 	}
@@ -77,7 +81,7 @@ class EmailAddressValidator
 		if (!$this->format_validator->isValid($email)) {
 			return false;
 		}
-		if ($this->address_matcher->isManagedAddress($email)) {
+		if ($this->account_manager->findAccountForEmailAddress($email)) {
 			return false;
 		}
 		if ($this->ban_repos->isEmailBanned($email)) {
@@ -91,7 +95,7 @@ class EmailAddressValidator
 	/**
 	 * Check if a person has any banned emails
 	 *
-	 * @param Person $peron
+	 * @param Person $person
 	 * @return bool
 	 */
 	public function personHasBannedEmail(Person $person)

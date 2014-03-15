@@ -37,8 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 
-use Orb\Util\Strings;
-
 /**
  * Detects a ticket based off of REF codes in the subject
  */
