@@ -471,7 +471,20 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 						data: { domain: newInput.val().trim() },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
-							replaceEditor(newDisplayHtml);
+							if (newDisplayHtml.match(/data\-error\-code/)) {
+								var match = newDisplayHtml.match(/data-org-id="(\d+)"/);
+								var orgId = match[1];
+								var html = $("<div>Could not assign that domain: It is already in use.<br/><button class=\"clean-white\">View the organization using this domain</button></div>");
+								html.find('button').attr('data-route', "page:" + BASE_URL + "agent/organizations/" + orgId).on('click', function() {
+									window.setTimeout(function() {
+										if (self.emailDomainOverlay) self.emailDomainOverlay.close();
+										if(DeskPRO_Window._alertOverlay) DeskPRO_Window._alertOverlay.close();
+									}, 10);
+								});
+								DeskPRO_Window.showAlert(html);
+							} else {
+								replaceEditor(newDisplayHtml);
+							}
 						}
 					});
 				});
