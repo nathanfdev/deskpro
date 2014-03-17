@@ -1188,7 +1188,7 @@ class TicketSearchController extends AbstractController
 
             if($view_type != 'csv') {
 				if ($cursor) {
-					$tickets = $results_helper->getGroupedTicketsForCursorPage($grouping_option, $page, $per_page);
+					$tickets = $results_helper->getGroupedTicketsForCursorPage($grouping_option, $cursor, $per_page);
 				} else {
 					$tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
 				}
@@ -1286,7 +1286,7 @@ class TicketSearchController extends AbstractController
 			'type_id'            => $type_id,
 			'ticket_display'     => $ticket_display,
 			'tickets'            => $tickets,
-			'all_ticket_ids'     => $results_helper->getTicketIds(),
+			'all_ticket_ids'     => $is_grouping ? $results_helper->getGroupTicketIds($grouping_option) : $results_helper->getTicketIds(),
 			'count'              => $results_helper->getCount(),
 			'flagged_tickets'    => $flagged_tickets,
 			'ticket_options'     => $ticket_options,

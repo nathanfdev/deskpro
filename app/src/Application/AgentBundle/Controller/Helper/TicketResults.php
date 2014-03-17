@@ -198,6 +198,7 @@ class TicketResults
 		}
 
 		$this->grouped_ticket_ids = $searcher->getMatches();
+		$this->grouped_ticket_ids = Arrays::castToType($this->grouped_ticket_ids, 'int');
 
 		return $this->grouped_ticket_ids;
 	}
