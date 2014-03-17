@@ -89,7 +89,7 @@
 					<tr>
 						<th>
 							<span style="float:right">
-								<time class="timeago" datetime="{{ f.date_created|date('c') }}"></time>
+								<time class="timeago" datetime="{{ f.date_created|date('c', 'UTC') }}"></time>
 							</span>
 
 							<h3>
