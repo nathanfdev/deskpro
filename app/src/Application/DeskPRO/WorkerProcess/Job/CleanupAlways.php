@@ -60,8 +60,8 @@ class CleanupAlways extends AbstractJob
 		// client messages are nearly instant, so this timesnip is very low
 		$datetime = date('Y-m-d H:i:s', time() - 120);
 
-		// Long-lived channels are still only deleted after 3 days
-		$datetime2 = date('Y-m-d H:i:s', time() - 259200);
+		// Long-lived channels are still deleted after 14 days
+		$datetime2 = date('Y-m-d H:i:s', time() - 1209600);
 
 		$long_lived_channels = array(
 			'agent_chat.new-message'
