@@ -71,7 +71,7 @@
 	<div class="content">
 		<div id="dp_overlay_navtabs" class="head tabset">
 			<a data-tab-for="#newticket" class="btn active"><i class="icon icon-call"></i> {{ phrase('user.widget.tab_ticket') }}</a>
-			<a data-tab-for="#newfeedback" class="btn"><i class="icon icon-mail"></i> {{ phrase('user.widget.tab_feedback') }}</a>
+			{% if show_feedback %}<a data-tab-for="#newfeedback" class="btn"><i class="icon icon-mail"></i> {{ phrase('user.widget.tab_feedback') }}</a>{% endif %}
 			{% if chat_active %}<a data-tab-for="#newchat" class="btn"><i class="icon icon-chat"></i> {{ phrase('user.widget.tab_chat') }}</a>{% endif %}
 		</div>
 		<div class="widget-content">

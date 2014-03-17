@@ -164,21 +164,21 @@ class LatestContent
 		$results = array();
 
 		if ($this->use_selections) {
-			if (!empty($this->use_selections['articles'])) {
+			if (!empty($this->use_selections['articles']) && $this->max_article !== 0) {
 				$res = $this->em->getRepository('DeskPRO:Article')->getByIds($this->use_selections['articles']);
 				foreach ($res as $r) {
 					$results[] = array('type' => 'article', 'item' => $r);
 				}
 			}
 
-			if (!empty($this->use_selections['downloads'])) {
+			if (!empty($this->use_selections['downloads']) && $this->max_download !== 0) {
 				$res = $this->em->getRepository('DeskPRO:Download')->getByIds($this->use_selections['downloads']);
 				foreach ($res as $r) {
 					$results[] = array('type' => 'download', 'item' => $r);
 				}
 			}
 
-			if (!empty($this->use_selections['news'])) {
+			if (!empty($this->use_selections['news']) && $this->max_news !== 0) {
 				$res = $this->em->getRepository('DeskPRO:News')->getByIds($this->use_selections['news']);
 				foreach ($res as $r) {
 					$results[] = array('type' => 'news', 'item' => $r);
