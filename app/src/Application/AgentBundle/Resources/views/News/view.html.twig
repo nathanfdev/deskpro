@@ -91,6 +91,12 @@ pageMeta.baseId = '{{ baseId }}';
 		</header>
 		<section class="description-area">
 			<dl class="info-list">
+				<dt>URL Slug</dt>
+				<dd>
+					<span id="{{ baseId }}_slug">{{ news.slug }}</span>
+					<button class="clean-white" id="{{ baseId }}_editslug">Edit Slug</button>
+				</dd>
+
 				<dt>{{ phrase('agent.general.rating') }}</dt>
 				<dd>
                     {% set phrase_part %}

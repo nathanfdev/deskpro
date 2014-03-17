@@ -400,10 +400,13 @@ class KbController extends AbstractController
 
 			case 'title':
 				$article['title'] = $this->in->getString('title');
-
 				$rev = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
 				$rev['title'] = $article['title'];
+				break;
 
+			case 'slug':
+				$article['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
+				$data['slug'] = $article['slug'];
 				break;
 
 			case 'delete':

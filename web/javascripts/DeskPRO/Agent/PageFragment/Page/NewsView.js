@@ -45,6 +45,8 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			}
 
 			this.getEl('edit_btn').on('click', this.showEditor.bind(this));
+
+			this._initEditSlug();
 		}
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
@@ -505,5 +507,34 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		overlay.openOverlay();
+	},
+
+	//#################################################################
+	//# Edit Slug
+	//#################################################################
+
+	_initEditSlug: function() {
+		var slugEl = this.getEl('slug');
+		var id = this.meta.news_id;
+
+		this.getEl('editslug').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			DeskPRO_Window.showPrompt("Enter new URL slug (only letters, numbers, dashes and underscores)", function(newSlug) {
+				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
+				slugEl.text(newSlug);
+				$.ajax({
+					url: BASE_URL + 'agent/news/post/' + id + '/ajax-save',
+					type: 'POST',
+					data: { slug: newSlug, action: 'slug' },
+					context: this,
+					dataType: 'json',
+					success: function(data) {
+						if (data.slug) {
+							slugEl.text(data.slug);
+						}
+					}
+				});
+			});
+		});
 	}
 });

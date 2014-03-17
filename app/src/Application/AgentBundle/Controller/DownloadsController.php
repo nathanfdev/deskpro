@@ -221,10 +221,13 @@ class DownloadsController extends AbstractController
 
 			case 'title':
 				$download['title'] = $this->in->getString('title');
-
 				$rev = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
 				$rev['title'] = $download['title'];
+				break;
 
+			case 'slug':
+				$download['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
+				$data['slug'] = $download['slug'];
 				break;
 
 			case 'add-related':

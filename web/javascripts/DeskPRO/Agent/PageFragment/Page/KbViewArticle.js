@@ -36,6 +36,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this._initPostArea();
 			this._initAutoUnpublishOptions();
 			this._initAutoPublishOptions();
+			this._initEditSlug();
 
 			var btn = $('.kb-editor-edit', this.wrapper);
 			btn.on('click', this.showEditor.bind(this));
@@ -1090,6 +1091,35 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				success: function(data) {
 					row.removeClass('is-status-neg').addClass('is-status-pos');
 				}
+			});
+		});
+	},
+
+	//#################################################################
+	//# Edit Slug
+	//#################################################################
+
+	_initEditSlug: function() {
+		var slugEl = this.getEl('slug');
+		var id = this.meta.article_id;
+
+		this.getEl('editslug').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			DeskPRO_Window.showPrompt("Enter new URL slug (only letters, numbers, dashes and underscores)", function(newSlug) {
+				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
+				slugEl.text(newSlug);
+				$.ajax({
+					url: BASE_URL + 'agent/kb/article/' + id + '/ajax-save',
+					type: 'POST',
+					data: { slug: newSlug, action: 'slug' },
+					context: this,
+					dataType: 'json',
+					success: function(data) {
+						if (data.slug) {
+							slugEl.text(data.slug);
+						}
+					}
+				});
 			});
 		});
 	}
