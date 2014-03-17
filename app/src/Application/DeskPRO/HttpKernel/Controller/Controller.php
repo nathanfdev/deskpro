@@ -33,6 +33,7 @@
  */
 
 namespace Application\DeskPRO\HttpKernel\Controller;
+use Application\DeskPRO\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -220,7 +221,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		$response->setStatusCode($status_code);
 
 		if (is_array($content)) {
-			$content = json_encode($content);
+			$content = Util::jsonEncode($content);
 		}
 
 		$response->setContent($content);
