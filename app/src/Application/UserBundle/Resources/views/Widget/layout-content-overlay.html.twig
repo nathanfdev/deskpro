@@ -23,7 +23,7 @@
 	<body id="dp_content_overlay">
 		<div id="dp">
 
-			<article id="dp_article_content">
+			<article id="dp_article_content" {% if not app.getSetting('user.portal_enabled') %}style="bottom: 0;"{% endif %}>
 				{{ content|raw }}
 			</article>
 		</div>

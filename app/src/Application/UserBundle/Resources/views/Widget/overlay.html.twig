@@ -46,7 +46,8 @@
 	<script type="text/javascript">
 		window.DeskPRO_Window = new DeskPRO.User.Window();
 		var OverlayWin = new DeskPRO.User.WebsiteWidget.OverlayWin({
-			parentUrl: {{ parent_url|json_encode|raw }}
+			parentUrl: {{ parent_url|json_encode|raw }},
+			isPortalEnabled: {% if app.getSetting('user.portal_enabled') %}true{% else %}false{% endif %}
 		});
 		$(document).ready(function() {
 			window.DeskPRO_Window.initPage();

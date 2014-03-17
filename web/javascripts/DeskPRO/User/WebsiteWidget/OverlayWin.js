@@ -6,7 +6,8 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	initialize: function(options) {
 
 		this.options = {
-			parentUrl: null
+			parentUrl: null,
+			isPortalEnabled: false
 		};
 		this.setOptions(options);
 
@@ -168,7 +169,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			}
 			url = url.replace(/:/g, '__DP_COL__');
 
-			self.tellParent('showContentPage', [url]);
+			self.tellParent('showContentPage', [self.options.isPortalEnabled ? 1 : 0, url]);
 		});
 
 		// Sync name and email fields, and save them to cookies for next time too

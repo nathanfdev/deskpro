@@ -335,6 +335,12 @@ var DpOverlayWidget = new (function() {
 
 				var top = (winHeight - myHeight) / 2;
 
+				var showOpenWinBtn = true;
+				// if this isnt 1, then the portal is disabled and we need to hide the 'open in new win' button
+				if (parseInt(data[0]) !== 1) {
+					showOpenWinBtn = false;
+				}
+
 				var css = [];
 				css.push('position: fixed');
 				css.push('border: 1px solid #7F8394');
@@ -409,7 +415,7 @@ var DpOverlayWidget = new (function() {
 				css.push('overflow: hidden');
 				css = css.join(';');
 
-				var url = data[0];
+				var url = data[1];
 				url = url.replace(/__DP_COL__/g, ':');
 				if (url.indexOf('?') == -1) {
 					url += '?';
@@ -421,51 +427,53 @@ var DpOverlayWidget = new (function() {
 				tmp = util.createEl('<iframe src="' + url + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
 				inner.appendChild(tmp);
 
-				// Controls to open in new window
-				css = [];
-				css.push('position: absolute');
-				css.push('left: 0');
-				css.push('right: 0');
-				css.push('bottom: 0');
-				css.push('height: 22px');
-				css.push('height: 48px');
-				css.push('line-height: 100%');
-				css.push('background-color: #E8E8E8');
-				css.push('z-index: 1');
-				css = css.join(';');
-				tmpi = util.createEl('<div style="'+css+'"></div>');
-				inner.appendChild(tmpi);
+				if (showOpenWinBtn) {
+					// Controls to open in new window
+					css = [];
+					css.push('position: absolute');
+					css.push('left: 0');
+					css.push('right: 0');
+					css.push('bottom: 0');
+					css.push('height: 22px');
+					css.push('height: 48px');
+					css.push('line-height: 100%');
+					css.push('background-color: #E8E8E8');
+					css.push('z-index: 1');
+					css = css.join(';');
+					tmpi = util.createEl('<div style="' + css + '"></div>');
+					inner.appendChild(tmpi);
 
-				css = [];
-				css.push('float: right');
-				css.push('background-color: #FFFFFF');
-				css.push('border-radius: 5px');
-				css.push('border: 1px solid #CCCCCC');
-				css.push('display: block');
-				css.push('padding: 5px 12px');
-				css.push('text-decoration: none');
-				css.push('margin: 10px 10px 0 0');
-				css = css.join(';');
+					css = [];
+					css.push('float: right');
+					css.push('background-color: #FFFFFF');
+					css.push('border-radius: 5px');
+					css.push('border: 1px solid #CCCCCC');
+					css.push('display: block');
+					css.push('padding: 5px 12px');
+					css.push('text-decoration: none');
+					css.push('margin: 10px 10px 0 0');
+					css = css.join(';');
 
-				// Not a partial for full link
-				url = url.replace(/_partial=overlayWidget/, '');
+					// Not a partial for full link
+					url = url.replace(/_partial=overlayWidget/, '');
 
-				tmp = util.createEl('<a href="'+url+'" style="'+css+'" target="_blank">Open in new window</a>');
-				tmpi.appendChild(tmp);
+					tmp = util.createEl('<a href="' + url + '" style="' + css + '" target="_blank">Open in new window</a>');
+					tmpi.appendChild(tmp);
 
-				util.bind(tmp, 'click', function(ev) {
+					util.bind(tmp, 'click', function (ev) {
 
-					var embeddedIframe = document.getElementById('dp_helpdesk_iframe');
-					if (embeddedIframe) {
-						if (ev && ev.preventDefault) ev.preventDefault();
-						else window.event.returnValue = false;
+						var embeddedIframe = document.getElementById('dp_helpdesk_iframe');
+						if (embeddedIframe) {
+							if (ev && ev.preventDefault) ev.preventDefault();
+							else window.event.returnValue = false;
 
-						self.close();
+							self.close();
 
-						embeddedIframe.src = url;
-						return false;
-					}
-				});
+							embeddedIframe.src = url;
+							return false;
+						}
+					});
+				}
 
 				break;
 		}

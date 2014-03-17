@@ -72,6 +72,7 @@ class UserKernel extends AbstractKernel
 			&& !preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
 			&& !preg_match('#^/logout#', $request->getPathInfo())
 			&& !preg_match('#^/login#', $request->getPathInfo())
+			&& (!isset($_REQUEST['_partial']) || $_REQUEST['_partial'] != 'overlayWidget')
 		) {
 			try {
 				if (!App::getSetting('user.portal_enabled')) {

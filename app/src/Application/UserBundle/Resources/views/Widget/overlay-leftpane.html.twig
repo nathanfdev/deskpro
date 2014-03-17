@@ -19,9 +19,11 @@
 				</div>
 			</form>
 
-			<div class="helpdesk-link">
-				<a href="{{ app.getSetting('core.deskpro_url') }}" target="_blank">{{ phrase('user.widget.website_link', {url:app.getSetting('core.deskpro_url')}) }} ▸</a>
-			</div>
+			{% if app.getSetting('user.portal_enabled') %}
+				<div class="helpdesk-link">
+					<a href="{{ app.getSetting('core.deskpro_url') }}" target="_blank">{{ phrase('user.widget.website_link', {url:app.getSetting('core.deskpro_url')}) }} ▸</a>
+				</div>
+			{% endif %}
 		</div>
 	</div>
 	<div class="area clearfix">
