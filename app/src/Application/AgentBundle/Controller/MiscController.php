@@ -160,7 +160,10 @@ class MiscController extends AbstractController
 			if ($snippet_cat['snippets']) {
 				foreach ($snippet_cat['snippets'] as $snippet) {
 					if ($snippet->shortcut_code) {
-						$snippet_short_codes[$snippet->shortcut_code] = $snippet->id;
+						if (!isset($snippet_short_codes[$snippet->shortcut_code])) {
+							$snippet_short_codes[$snippet->shortcut_code] = array();
+						}
+						$snippet_short_codes[$snippet->shortcut_code][] = $snippet->id;
 					}
 				}
 			}

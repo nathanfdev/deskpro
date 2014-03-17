@@ -642,129 +642,131 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES && window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
 						ev.preventDefault();
 
-						var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo];
+						for (var i = 0; i < window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo].length; i++) {
+							var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo][i];
 
-						var focus = api.getFocus(),
-							focusNode = $(focus[0]),
-							testText;
+							var focus = api.getFocus(),
+								focusNode = $(focus[0]),
+								testText;
 
-						if (focus[0].nodeType == 3) {
-							testText = focusNode.text().substring(0, focus[1]);
-						} else {
-							focus[0] = focusNode.contents().get(focus[1] - 1);
-							focusNode = $(focus[0]);
-							testText = focusNode.text();
-							focus[1] = testText.length;
-						}
+							if (focus[0].nodeType == 3) {
+								testText = focusNode.text().substring(0, focus[1]);
+							} else {
+								focus[0] = focusNode.contents().get(focus[1] - 1);
+								focusNode = $(focus[0]);
+								testText = focusNode.text();
+								focus[1] = testText.length;
+							}
 
-						var	lastAt = testText.lastIndexOf('%'), matches = [];
+							var lastAt = testText.lastIndexOf('%'), matches = [];
 
-						if (lastAt != -1) {
-							api.setSelection(focus[0], lastAt, focus[0], focus[1]);
-						}
+							if (lastAt != -1) {
+								api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+							}
 
-						// web kit handles content editable without an issue. this prevents the span
-						// from being extended unnecessarily
-						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
+							// web kit handles content editable without an issue. this prevents the span
+							// from being extended unnecessarily
+							var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+							api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet</span>');
 
-						if (!self.page) {
-							self.page = self.el.closest('.with-page-fragment').data('page-fragment');
-						}
+							if (!self.page) {
+								self.page = self.el.closest('.with-page-fragment').data('page-fragment');
+							}
 
-						if (self.page) self.page.pauseSend = true;
-						$.ajax({
-							url: BASE_URL + 'agent/text-snippets/tickets/'+snippetId+'.json',
-							dataType: 'json',
-							complete: function() {
-								if (self.page) self.page.pauseSend = false;
-							},
-							success: function(data) {
+							if (self.page) self.page.pauseSend = true;
+							$.ajax({
+								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
+								dataType: 'json',
+								complete: function () {
+									if (self.page) self.page.pauseSend = false;
+								},
+								success: function (data) {
 
-								var snippet = data.snippet;
-								var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
-								var snippetId    = snippet.id;
-								var snippetCode  = snippet.snippet;
+									var snippet = data.snippet;
+									var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
+									var snippetId = snippet.id;
+									var snippetCode = snippet.snippet;
 
-								var agentText;
-								var defaultText;
-								var wantText;
-								var useText;
-								var result;
+									var agentText;
+									var defaultText;
+									var wantText;
+									var useText;
+									var result;
 
-								Array.each(snippetCode, function(info) {
-									if (info.language_id == ticketLangId) {
-										wantText = info.value;
-									}
-									if (info.language_id == DESKPRO_PERSON_LANG_ID) {
-										agentText = info.value;
-									}
-									if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-										defaultText = info.value;
-									}
-									useText = info.value;
-								});
-
-								if (wantText) {
-									useText = wantText;
-								} else if (agentText) {
-									useText = agentText;
-								} else if (defaultText) {
-									useText = defaultText;
-								}
-
-								try {
-									var tpl = twig({
-										data: useText,
-										strict_variables: false
+									Array.each(snippetCode, function (info) {
+										if (info.language_id == ticketLangId) {
+											wantText = info.value;
+										}
+										if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+											agentText = info.value;
+										}
+										if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+											defaultText = info.value;
+										}
+										useText = info.value;
 									});
-									if (tpl) {
-										result = tpl.render({
-											ticket: self.page.meta.api_data
-										}, {
+
+									if (wantText) {
+										useText = wantText;
+									} else if (agentText) {
+										useText = agentText;
+									} else if (defaultText) {
+										useText = defaultText;
+									}
+
+									try {
+										var tpl = twig({
+											data: useText,
 											strict_variables: false
 										});
-									} else {
+										if (tpl) {
+											result = tpl.render({
+												ticket: self.page.meta.api_data
+											}, {
+												strict_variables: false
+											});
+										} else {
+											result = useText;
+										}
+									} catch (e) {
+										console.log("Snippet render failed: %o", e);
 										result = useText;
 									}
-								} catch(e) {
-									console.log("Snippet render failed: %o", e);
-									result = useText;
+
+									var data = result;
+
+									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+									data = $('<div>' + data + '</div>');
+
+									// trailing newlines
+									var coll = data.find('> br');
+									coll.last().remove();
+
+									var cursor = $('<span class="_cursor"></span>');
+									var cursorPos = data.find('> p');
+									if (!cursorPos[0]) {
+										cursorPos = data;
+									}
+
+									el.after(data);
+									cursorPos.append(cursor);
+									el.remove();
+
+									var next = data.next();
+									if (next.is('br')) {
+										next.remove();
+									}
+									if (cursor.next().is('br')) {
+										cursor.next().remove();
+									}
+									if (cursor.prev().is('br')) {
+										cursor.prev().remove();
+									}
+									api.setSelection(cursor[0], 0, cursor[0], 0);
+									api.syncCode();
 								}
-
-								var data = result;
-
-								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-								data = $('<div>' + data + '</div>');
-
-								// trailing newlines
-								var coll = data.find('> br');
-								coll.last().remove();
-
-								var cursor = $('<span class="_cursor"></span>');
-								var cursorPos = data.find('> p');
-								if (!cursorPos[0]) {
-									cursorPos = data;
-								}
-
-								el.after(data);
-								cursorPos.append(cursor);
-								el.remove();
-
-								var next = data.next();
-								if (next.is('br')) {
-									next.remove();
-								}
-								if (cursor.next().is('br')) {
-									cursor.next().remove();
-								}
-								if (cursor.prev().is('br')) {
-									cursor.prev().remove();
-								}
-								api.setSelection(cursor[0], 0, cursor[0], 0);
-								api.syncCode();
-							}
-						});
+							});
+						}
 					}
 				}
 			});
