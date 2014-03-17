@@ -1449,6 +1449,7 @@ class TicketController extends AbstractController
 			'error_messages'                   => $error_messages ?: false,
 			'notified_agents'                  => $notify_agent_ids,
 			'can_view'                         => $this->person->PermissionsManager->TicketChecker->canView($ticket),
+			'api_data'                         => $ticket->toApiData()
 		));
 
 		return $this->createJsonResponse($data);
@@ -1510,6 +1511,7 @@ class TicketController extends AbstractController
 			'agent_team_id' => $ticket['agent_team_id'],
 			'status' => $ticket['status'],
 			'close_tab' => false,
+			'api_data' => $ticket->toApiData()
 		));
 
 		return $this->createJsonResponse($data);
@@ -2003,6 +2005,8 @@ class TicketController extends AbstractController
 				$data['data']['refresh'] = true;
 			}
 		}
+
+		$data['data']['api_data'] = $ticket->toApiData();
 
 		return $this->createJsonResponse($data);
 	}

@@ -265,6 +265,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 						DeskPRO_Window.showAlert(div);
 					}
 
+					if (data.data && data.data.api_data && self.ticketPage) {
+						self.ticketPage.meta.api_data = data.data.api_data;
+					}
+
 					if (callback) {
 						callback(data);
 					}
@@ -377,6 +381,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 						});
 
 						DeskPRO_Window.showAlert(div);
+					}
+
+					if (data.data && data.data.api_data && self.ticketPage) {
+						self.ticketPage.meta.api_data = data.data.api_data;
 					}
 
 					if (callback) {

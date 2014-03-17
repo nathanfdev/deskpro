@@ -1132,6 +1132,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
+		if (data.api_data) {
+			this.meta.api_data = data.api_data;
+		}
+
 		var new_messages = null;
 		if (data.ticket_messages_block) {
 			new_messages = $(data.ticket_messages_block);
