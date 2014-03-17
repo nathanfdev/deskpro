@@ -79,6 +79,7 @@ class AdvancedSettings extends SettingFiles
 			'core_tickets.gateway_agent_require_marker',
 			'core_tickets.gateway_enable_subject_match',
 			'core.agent_translate_debug',
+			'core.enable_agent_translation',
 			'core_email.enable_date_limit_rejection',
 		);
 
