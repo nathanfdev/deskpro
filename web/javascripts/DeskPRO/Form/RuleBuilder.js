@@ -374,6 +374,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 				});
 			}
 		}
+		row.find('.select2').css('max-width', 150);
 		DP.select(row.find('.select2'));
 
 		if (row.data('form-base-name')) {
