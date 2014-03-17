@@ -268,6 +268,11 @@ $q['terms']      = array(array(
 		'options'   => array('agent'     => '0',)
 	),
 	array(
+		'type'      => 'agent_team',
+		'op'        => 'is',
+		'options'   => array('agent_team' => '0',)
+	),
+	array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'awaiting_agent',)
@@ -402,6 +407,11 @@ $q['terms']      = array(array(
 		'type'      => 'agent',
 		'op'        => 'is',
 		'options'   => array('agent'     => '0',)
+	),
+	array(
+		'type'      => 'agent_team',
+		'op'        => 'is',
+		'options'   => array('agent_team' => '0',)
 	),
 	array(
 		'type'      => 'status',
