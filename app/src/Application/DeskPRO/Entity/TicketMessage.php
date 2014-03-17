@@ -575,7 +575,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessage';
-		$metadata->setPrimaryTable(array( 'name' => 'tickets_messages', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'tickets_messages',
+			'indexes' => array(
+				'date_created_idx' => array('columns' => array('date_created'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('initHashCode', 'prePersist');
 		$metadata->addLifecycleCallback('incTicketCount', 'prePersist');
