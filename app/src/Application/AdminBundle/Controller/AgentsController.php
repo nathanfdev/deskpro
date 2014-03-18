@@ -681,6 +681,9 @@ class AgentsController extends AbstractController
 				$message = $this->container->getMailer()->createMessage();
 				$message->setToPerson($agent);
 				$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+				$attach = \Swift_Attachment::fromPath(DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf', 'application/pdf');
+				$attach->setFilename('Getting Started with DeskPRO.pdf');
+				$message->attach($attach);
 				$this->container->getMailer()->send($message);
 
 				$new_agents[] = $agent;
@@ -1191,6 +1194,9 @@ class AgentsController extends AbstractController
 			$message = $this->container->getMailer()->createMessage();
 			$message->setToPerson($agent);
 			$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+			$attach = \Swift_Attachment::fromPath(DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf', 'application/pdf');
+			$attach->setFilename('Getting Started with DeskPRO.pdf');
+			$message->attach($attach);
 			$this->container->getMailer()->send($message);
 
 			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());

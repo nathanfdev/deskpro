@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
 
+use DeskPRO\Kernel\License;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
 class GlobalVariables extends BaseGlobalVariables
@@ -122,6 +123,11 @@ class GlobalVariables extends BaseGlobalVariables
 	public function isDebug()
 	{
 		return App::isDebug();
+	}
+
+	public function isDemo()
+	{
+		return License::getLicense()->isDemo();
 	}
 
 	public function getStyle()
