@@ -140,6 +140,40 @@ class FieldDisplayArray implements \ArrayAccess
 				$this->data['form']     = $form;
 				$this->data['formView'] = $formView;
 				break;
+
+			case 'formViewCriteria':
+				if ($this->field_def->handler_class == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice' && !$this->field_def->getOption('multiple')) {
+					$handler = $this->field_def->getHandler();
+					$handler->enableMultiple();
+
+					$field_group = $this->field_group;
+					if (!$field_group) {
+						$field_group = App::get('form.factory')->createNamedBuilder('form', 'custom_fields');
+					}
+
+					$f = $handler->getFormField($this->data['value']);
+
+					if ($field_group) {
+						if (!$field_group->has($this->data['name'])) {
+							$field_group->add($f);
+						}
+
+						$form = $field_group->getForm();
+						$formView = $form->createView();
+						$formView = $formView[$this->data['name']];
+					} else {
+						$form = $f->getForm();
+						$formView = $form->createView();
+					}
+
+					$this->data['formViewCriteria'] = $formView;
+
+					$handler->disableMultiple();
+				} else {
+					$this->initValue('formView');
+					$this->data['formViewCriteria'] = $this->data['formView'];
+				}
+				break;
 		}
 	}
 

@@ -52,6 +52,16 @@ class Choice extends HandlerAbstract
 		$this->expanded = $this->field_def->getOption('expanded', false);
 	}
 
+	public function enableMultiple()
+	{
+		$this->multiple = true;
+	}
+
+	public function disableMultiple()
+	{
+		$this->multiple = false;
+	}
+
 	public function renderHtml($data = null, array $template_vars = array())
 	{
 		if ($data === null) return '';
