@@ -340,48 +340,54 @@ DeskPRO.Agent.AgentAppFactory = function() {
 					element.hide();
 				};
 
-				targetEl.on('mouseover', function() {
-					if (hideTimeoutId) {
-						$timeout.cancel(hideTimeoutId);
-						hideTimeoutId = null;
-					}
-				});
-
-				if (!noHoverTip) {
-					element.on('mouseover', function() {
+				$timeout(function() {
+					targetEl.on('mouseover', function () {
 						if (hideTimeoutId) {
 							$timeout.cancel(hideTimeoutId);
 							hideTimeoutId = null;
 						}
 					});
-				}
 
-				targetEl.on('mouseout', function() {
-					if (timeoutId) {
-						$timeout.cancel(timeoutId);
-						timeoutId = null;
+					if (!noHoverTip) {
+						element.on('mouseover', function () {
+							if (hideTimeoutId) {
+								$timeout.cancel(hideTimeoutId);
+								hideTimeoutId = null;
+							}
+						});
 					}
-					if (hideTimeoutId) {
-						$timeout.cancel(hideTimeoutId);
-					}
-					hideTimeoutId = $timeout(function() { hide(); }, hideTimeoutMs);
-				});
 
-				if (!noHoverTip) {
-					element.on('mouseout', function() {
+					targetEl.on('mouseout', function () {
+						if (timeoutId) {
+							$timeout.cancel(timeoutId);
+							timeoutId = null;
+						}
 						if (hideTimeoutId) {
 							$timeout.cancel(hideTimeoutId);
 						}
-						hideTimeoutId = $timeout(function() { hide(); }, hideTimeoutMs);
+						hideTimeoutId = $timeout(function () {
+							hide();
+						}, hideTimeoutMs);
 					});
-				}
 
-				targetEl.on('mouseover', function() {
-					if (timeoutId) return;
-					timeoutId = $timeout(function() {
-						timeoutId = null;
-						show();
-					}, timeoutMs);
+					if (!noHoverTip) {
+						element.on('mouseout', function () {
+							if (hideTimeoutId) {
+								$timeout.cancel(hideTimeoutId);
+							}
+							hideTimeoutId = $timeout(function () {
+								hide();
+							}, hideTimeoutMs);
+						});
+					}
+
+					targetEl.on('mouseover', function () {
+						if (timeoutId) return;
+						timeoutId = $timeout(function () {
+							timeoutId = null;
+							show();
+						}, timeoutMs);
+					});
 				});
 
 				scope.$on('$destroy', function() {
