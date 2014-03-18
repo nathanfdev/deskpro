@@ -420,7 +420,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 					});
 
 					el.trigger('fileremoved', [li]);
-				});
+				}).on('fileuploadfailed', function(e, data) {
+					console.log(e);
+					console.log(data);
+					if (data.errorThrown == "Request Entity Too Large") {
+						$(el).find('.error').remove();
+						$(el).find('.files').append('<li class="error">The file you are trying to upload is too big.</li>');
+					}
+				})
 
 				return $(el).fileupload(options);
 			},
