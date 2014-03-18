@@ -34,19 +34,8 @@
 
 namespace Application\UserBundle\Controller;
 
-use Application\DeskPRO\HttpFoundation\Cookie;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
-
-use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
-use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
 
 /**
  * Handles ticket searches
