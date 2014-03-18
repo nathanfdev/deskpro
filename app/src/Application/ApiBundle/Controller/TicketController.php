@@ -1699,7 +1699,7 @@ class TicketController extends AbstractController
 	 * 	path="/ticket/{ticket_id}/billing-charges/{charge_id}",
 	 * 	@SWG\Operation(
 	 * 		method="DELETE",
-	 * 		summary="Deletes a charge exists for a ticket.",
+	 * 		summary="Deletes a charge for a ticket.",
 	 *		@SWG\Parameters (
 	 *			@SWG\Parameter(
 	 *				name="ticket_id",
@@ -1736,6 +1736,25 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/slas",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a list of automatically applied SLAs for a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function getTicketSlasAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -1745,6 +1764,32 @@ class TicketController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/slas",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds an SLA to the automatically applied SLAs for a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of SLA to add.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function postTicketSlasAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_slas');
@@ -1768,6 +1813,32 @@ class TicketController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/slas/{sla_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if a ticket SLA exists for a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of the SLA that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function getTicketSlaAction($ticket_id, $ticket_sla_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -1784,6 +1855,32 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('exists' => $exists));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/slas/{sla_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Deletes a ticket SLA for a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of the SLA that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteTicketSlaAction($ticket_id, $ticket_sla_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_slas');
@@ -1804,6 +1901,25 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/participants",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the participants in a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function getParticipantsAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -1811,6 +1927,39 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('participants' => $this->getApiData($ticket->participants)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/participants",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a participant to a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="person_id",
+	 *				description="ID of the person to add to the ticket.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="email",
+	 *				description="Email address of the person to add to the ticket. If no person can be found with this email, one will be created.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function postParticipantsAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_cc');
@@ -1872,6 +2021,32 @@ class TicketController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/participants/{participant_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if a person is participating in a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="participant_id",
+	 *				description="ID of the Person that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function getParticipantAction($ticket_id, $person_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -1894,6 +2069,32 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('exists' => true));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/participants/{participant_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes a participant from a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="participant_id",
+	 *				description="ID of the Person that needs to be removed.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteParticipantAction($ticket_id, $person_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_cc');
@@ -1927,6 +2128,25 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the labels for a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function getLabelsAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -1934,6 +2154,32 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('labels' => $this->getApiData($ticket->labels)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a label to a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="Label to add.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function postLabelsAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_labels');
@@ -1953,6 +2199,32 @@ class TicketController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if the ticket has the label.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="label to check",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function getLabelAction($ticket_id, $label)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -1964,6 +2236,32 @@ class TicketController extends AbstractController
 		}
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/{ticket_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes a label from a ticket.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="ticket_id",
+	 *				description="ID of the ticket that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="label that needs to deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteLabelAction($ticket_id, $label)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_labels');
@@ -1975,6 +2273,15 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/fields",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available custom ticket fields."
+	 * 	)
+	 * )
+	 */
 	public function getFieldsAction()
 	{
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
@@ -1983,6 +2290,15 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/departments",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available ticket departments."
+	 * 	)
+	 * )
+	 */
 	public function getDepartmentsAction()
 	{
 		$department_list = $this->em->getRepository('DeskPRO:Department')->findAll();
@@ -1996,6 +2312,15 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('departments' => $departments));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/products",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available ticket products."
+	 * 	)
+	 * )
+	 */
 	public function getProductsAction()
 	{
 		$products = $this->em->getRepository('DeskPRO:Product')->getFlatHierarchy();
@@ -2003,6 +2328,15 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('products' => $products));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/categories",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available ticket categories."
+	 * 	)
+	 * )
+	 */
 	public function getCategoriesAction()
 	{
 		$categories = $this->em->getRepository('DeskPRO:TicketCategory')->getFlatHierarchy();
@@ -2010,6 +2344,15 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('categories' => $categories));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/priorities",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available ticket priorities."
+	 * 	)
+	 * )
+	 */
 	public function getPrioritiesAction()
 	{
 		$priorities = $this->em->createQuery("
@@ -2021,6 +2364,15 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('priorities' => $this->getApiData($priorities)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/workflows",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available ticket workflows."
+	 * 	)
+	 * )
+	 */
 	public function getWorkflowsAction()
 	{
 		$workflows = $this->em->createQuery("
@@ -2032,6 +2384,15 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('workflows' => $this->getApiData($workflows)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/slas",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available ticket SLAs."
+	 * 	)
+	 * )
+	 */
 	public function getSlasAction()
 	{
 		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
@@ -2039,6 +2400,25 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('slas' => $this->getApiData($slas)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/slas/{sla_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets an SLA.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of the SLA that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
+	 * 	)
+	 * )
+	 */
 	public function getSlaAction($sla_id)
 	{
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
@@ -2049,6 +2429,25 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('sla' => $sla->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/slas/{sla_id}/people",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets list of people that automatically apply this SLA.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of the SLA that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
+	 * 	)
+	 * )
+	 */
 	public function getSlaPeopleAction($sla_id)
 	{
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
@@ -2059,6 +2458,25 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('people' => $this->getApiData($sla->people)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets/slas/{sla_id}/organizations",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets list of organizations that automatically apply this SLA.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of the SLA that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
+	 * 	)
+	 * )
+	 */
 	public function getSlaOrganizationsAction($sla_id)
 	{
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
