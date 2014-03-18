@@ -77,7 +77,7 @@
 			</thead>
 			<tbody>
 			<tr>
-				<td class="title" width="100">License ID</td>
+				<td class="title" width="180">License ID</td>
 				<td class="prop">{{ lic.getLicenseId() }}</td>
 			</tr>
 			{% if lic.get('org') %}
@@ -131,12 +131,13 @@
 			{% endif %}
 
 				<tr>
-					<td class="title" width="100">License Code</td>
+					<td class="title" width="180">
+						License Code
+					</td>
 					<td class="prop">
 						<div id="lic_show">
-							<textarea readonly="readonly">{{ lic.getLicenseCode() }}</textarea>
-							<br />
-							<button class="clean-white" id="show_editlic_trigger">Update</button>
+							<div class="txt">{{ lic.getLicenseCode() }}</div>
+							<a id="show_editlic_trigger">Update your license code &rarr;</a>
 						</div>
 						<div id="lic_edit" style="display: none;">
 							<div class="alert-message block-message error errors-box" id="editlic_err" style="display: none">
