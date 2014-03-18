@@ -1833,11 +1833,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if(routeData && routeData.routeTriggerEl && routeData.routeTriggerEl.data('route-notabreload')) {
 					DeskPRO_Window.TabBar.tabToFrontTabById(existTab.id);
 					DeskPRO_Window.TabBar.activateTabById(existTab.id);
-				}
-				else {
-					DeskPRO_Window.TabBar.removeTabById(existTab.id);
-					if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
-						routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
+				} else {
+					if (DeskPRO_Window.TabBar.currentTabId == existTab.id) {
+						DeskPRO_Window.TabBar.removeTabById(existTab.id);
+						if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
+							routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
+						}
+					} else {
+						DeskPRO_Window.TabBar.activateTab(existTab);
 					}
 				}
 				return;
