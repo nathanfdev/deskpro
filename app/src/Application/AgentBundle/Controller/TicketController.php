@@ -327,8 +327,15 @@ class TicketController extends AbstractController
 
 		$logs_block_info = $this->_getTicketLogsBlockInfo($ticket);
 
+		$agents_with_perm = array();
+		foreach ($this->container->getAgentData()->getAgents() as $agent) {
+			$agent->loadHelper('AgentPermissions');
+			$agents_with_perm[$agent->id] = $agent->PermissionsManager->TicketChecker->canView($ticket);
+		}
+
 		$vars = array(
 			'agents'                     => $agents,
+			'agents_with_perm'           => $agents_with_perm,
 			'agent_teams'                => $agent_teams,
 			'agent_map'                  => $agent_map,
 			'tasks'                      => $tasks,

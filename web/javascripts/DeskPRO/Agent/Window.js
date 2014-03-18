@@ -3610,7 +3610,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return DeskPRO.Agent.RteEditor.initRteAgentReply(textarea, options);
 	},
 
-	initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable) {
+	initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable, verifyCallback) {
 		var api = textarea.data('redactor');
 		if (!api) {
 			return;
@@ -3643,6 +3643,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			self.hideAgentNotifyList(obj);
+
+			if (verifyCallback) {
+				if (!verifyCallback(agentId)) {
+					return;
+				}
+			}
 
 			var focus = api.getFocus(),
 				focusNode = $(focus[0]),

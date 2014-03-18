@@ -1304,9 +1304,25 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	_initAgentNotifier: function(textarea) {
+		var self = this;
 		DeskPRO_Window.initAgentNotifierForRte(
-			this, textarea,
-			this.page && this.page.meta.agentMap ? this.page.meta.agentMap : false
+			this,
+			textarea,
+			this.page && this.page.meta.agentMap ? this.page.meta.agentMap : false,
+			false,
+			function(agentId) {
+				agentId = parseInt(agentId);
+				if (
+					!self.page.meta.agents_with_perm[agentId]
+					&& parseInt(self.page.getEl('value_form').find('.agent_id').val()) != agentId
+					&& !self.page.getEl('followers_list').find('.agent-' + agentId)[0]
+				) {
+					DeskPRO_Window.showAlert("That agent does not have permission to view this ticket. Add them as a follower before trying to mention them.");
+					return false;
+				}
+
+				return true;
+			}
 		);
 	},
 
