@@ -23,6 +23,13 @@ $collection->add('serve_blob', new Route(
 	array()
 ));
 
+$collection->add('serve_dp_asset', new Route(
+	'/file.php/dp-asset/{filename}',
+	array('_controller' => '(see: serve_file.php)'),
+	array(),
+	array()
+));
+
 $collection->add('serve_blob_size', new Route(
 	'/file.php/size/{s}/{blob_auth_id}/{filename}',
 	array('_controller' => '(see: serve_file.php)'),

@@ -121,6 +121,10 @@ class FilestorageLoader extends LoaderAbstract
 			} elseif (preg_match('#^/o-avatar/default#', $pathinfo)) {
 				$this->defaultOrgAvatarAction();
 
+			// A standard asset
+			} elseif (preg_match('#^/dp-asset/([a-zA-Z0-9_\.\-]+)$#', $pathinfo, $m)) {
+				$this->dpAsset($m[1]);
+
 			// Org avatar: /o-avatar/13
 			} elseif (preg_match('#^/o-avatar/([0-9]+)#', $pathinfo, $m)) {
 				$this->orgAvatarAction($m[1]);
@@ -612,6 +616,41 @@ class FilestorageLoader extends LoaderAbstract
 		}
 
 		$this->showBlob($blob, $size);
+	}
+
+
+	/**
+	 * @param string $asset_name
+	 * @throws \Exception
+	 */
+	public function dpAsset($asset_name)
+	{
+		switch ($asset_name) {
+			case 'Getting-Started-with-DeskPRO.pdf':
+				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf';
+				$filename = 'Getting Started with DeskPRO.pdf';
+				$mimetype = 'application/pdf';
+				break;
+
+			default:
+				if ($this->error_mode == 'exception') {
+					throw new \Exception("File not found. (300)", 400);
+				}
+				header("HTTP/1.0 404 Not Found");
+				echo "File not found. (300)";
+				return;
+		}
+
+		$filesize = filesize($path);
+
+		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
+		header('Content-Length: ' . $filesize);
+		header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
+		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
+			header("X-Sendfile: $path");
+		} else {
+			readfile($path);
+		}
 	}
 
 
