@@ -37,8 +37,6 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-
 use Application\UserBundle\Form\NewTicketType;
 
 class NewTicketController extends AbstractController
@@ -92,6 +90,8 @@ class NewTicketController extends AbstractController
 		}
 
 		$newticket_formtype = new NewTicketType($this->person);
+
+		/** @var \Symfony\Component\Form\Form $form */
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
 		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
@@ -140,8 +140,8 @@ class NewTicketController extends AbstractController
 
 		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
 		$fm = $this->container->getSystemService('TicketFieldsManager');
-		if (isset($_POST['newticket']['custom_ticket_fields'])) {
-			$field_data = $fm->getStrucutredDataFromForm($_POST['newticket']['custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
+		if (isset($_REQUEST['newticket']['custom_ticket_fields'])) {
+			$field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket']['custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
 
 			$field_form_data = $fm->createFieldDataFromArray($field_data);
 			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
@@ -256,6 +256,10 @@ class NewTicketController extends AbstractController
 			} else {
 				$errors = $validator->getErrors(true);
 				$error_fields = $validator->getErrorGroups(true);
+			}
+		} else {
+			if (isset($_REQUEST['newticket'])) {
+				$form->bind($_REQUEST['newticket']);
 			}
 		}
 
