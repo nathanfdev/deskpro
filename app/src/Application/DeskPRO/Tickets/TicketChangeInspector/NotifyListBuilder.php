@@ -201,6 +201,11 @@ class NotifyListBuilder
 			$filter = $change_info['filter'];
 
 			$new_match_agents = array();
+			$old_match_agents = array();
+
+			foreach ($change_info['orig_match'] as $agent) {
+				$old_match_agents[$agent->getId()] = $agent->getId();
+			}
 
 			// Notify about tickets entering a list
 			// AKA a ticket changed such that it was added into a new list it wasnt before
@@ -227,7 +232,7 @@ class NotifyListBuilder
 					} else {
 						if (
 							$sub->email_property_change
-							|| (!$filter->sys_name && $sub->email_new)
+							|| (!$filter->sys_name && $sub->email_new && !isset($old_match_agents[$agent->id]))
 							|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $assign_change && $sub->email_new)
 							|| ($filter->sys_name == 'agent_team' && $assign_team_change && $sub->email_new)
 							|| ($filter->sys_name == 'participant' && $assign_follow_change && $sub->email_new)
@@ -236,7 +241,7 @@ class NotifyListBuilder
 						}
 						if (
 							$sub->alert_property_change
-							|| (!$filter->sys_name && $sub->alert_new)
+							|| (!$filter->sys_name && $sub->alert_new && !isset($old_match_agents[$agent->id]))
 							|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $assign_change && $sub->alert_new)
 							|| ($filter->sys_name == 'agent_team' && $assign_team_change && $sub->alert_new)
 							|| ($filter->sys_name == 'participant' && $assign_follow_change && $sub->alert_new)
