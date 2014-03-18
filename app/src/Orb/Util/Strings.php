@@ -2359,8 +2359,22 @@ class Strings
 	 */
 	public static function utf8_bad_strip($string)
 	{
-		if (function_exists('iconv')) {
-			return @iconv('UTF-8', 'UTF-8//IGNORE', $string);
+		static $skip_iconv = false;
+
+		if (!$skip_iconv && function_exists('iconv')) {
+
+			// depending on how iconv is compiled on the host
+			// then //ignore might do nothing and the return value
+			// will be false.
+			// @see https://bugs.php.net/bug.php?id=61484
+
+			$ret = @iconv('UTF-8', 'UTF-8//IGNORE', $string);
+			if ($ret === false) {
+				$skip_iconv = true;
+				return self::utf8_bad_strip($string);
+			}
+
+			return $ret;
 		} elseif (function_exists('mb_convert_encoding')) {
 			return @mb_convert_encoding($string, 'UTF-8', 'UTF-8');
 		} else {
