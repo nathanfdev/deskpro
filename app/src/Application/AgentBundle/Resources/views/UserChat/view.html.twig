@@ -243,7 +243,7 @@ pageMeta.baseId = '{{ baseId }}';
 									</div>
 								</div>
 								<time>{{ message.date_created|date('time') }}</time>
-								<span class="ack-icon" {% if message.date_received %}title="User recieved message at: {{ message.date_received|date('fulltime') }}"{% endif %}></span>
+								<span class="ack-icon" {% if message.date_received %}title="User received message at: {{ message.date_received|date('fulltime') }}"{% endif %}></span>
 								<div class="chat-clear"></div>
 							</div>
 						{% else %}
