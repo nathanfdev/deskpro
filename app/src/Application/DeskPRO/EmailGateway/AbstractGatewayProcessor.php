@@ -131,7 +131,7 @@ abstract class AbstractGatewayProcessor
 			$this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $account->id));
 		}
 
-		$to_addresses = $reader->getReceivedAddresses();
+		$to_addresses = array_map(function($e) { return $e->email; }, $reader->getReceivedAddresses());
 		$this->sent_to = implode(',', $to_addresses);
 
 		$this->logMessage('sent_to: ' . $this->sent_to);

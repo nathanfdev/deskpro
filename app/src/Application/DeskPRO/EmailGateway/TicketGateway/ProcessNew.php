@@ -231,7 +231,7 @@ class ProcessNew extends ProcessAbstract
 
 		$executor_context = $this->getTicketManager()->createUserExecutorContext(
 			$this->person,
-			'new',
+			'newticket',
 			'email'
 		);
 
@@ -239,7 +239,7 @@ class ProcessNew extends ProcessAbstract
 		# Create the ticket
 		#------------------------------
 
-		$ticket = new Ticket();
+		$ticket = $this->getTicketManager()->createTicket();
 		$ticket->subject       = $email_info->subject;
 		$ticket->person        = $this->person;
 		$ticket->status        = 'awaiting_agent';

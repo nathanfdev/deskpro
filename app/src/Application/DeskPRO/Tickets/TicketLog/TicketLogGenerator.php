@@ -92,6 +92,16 @@ class TicketLogGenerator
 		$logs = array();
 		$logs[] = $group;
 
+		if ($this->state->isNewTicket() || $this->context->getEventType() == 'newticket') {
+			$log = $this->getLogFromData(array(
+				'action_type' => 'ticket_created',
+				'id_after'    => $this->ticket->id,
+				'ticket_id'   => $this->ticket->id,
+			));
+			$log->parent = $group;
+			$logs[] = $log;
+		}
+
 		foreach ($this->state->getChanges() as $change) {
 			$log_data = $this->getLogDataForChange($change);
 			if (!$log_data) {
@@ -255,9 +265,9 @@ class TicketLogGenerator
 					'id_after'    => $new ? $new->id : null,
 
 					'old_department_id'    => $old ? $old->id : null,
-					'old_department_name'  => $old ? $old->getFullTitle() : null,
+					'old_department_title' => $old ? $old->getFullTitle() : null,
 					'new_department_id'    => $new ? $new->id : null,
-					'new_department_name'  => $new ? $new->getFullTitle() : null,
+					'new_department_title' => $new ? $new->getFullTitle() : null,
 				);
 				break;
 

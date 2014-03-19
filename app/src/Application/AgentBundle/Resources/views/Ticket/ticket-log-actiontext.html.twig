@@ -93,7 +93,11 @@
 		</div>
 	{% endif %}
 {% elseif log.action_type == 'subject' %}
-	{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.new_subject }}</span>
+	{% if log.details.old_subject %}
+		{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.new_subject }}</span>
+	{% else %}
+		Subject set to <span class="new-val">{{ log.details.new_subject }}</span>
+	{% endif %}
 {% elseif log.action_type == 'ticket_split' %}
     {{ phrase('agent.tickets.ticket_split_from') }} <span class="old-val">{{ phrase('agent.general.id') }} {{log.details.from_ticket_id}}</span>
 {% elseif log.action_type == 'ticket_split_to' %}
@@ -125,8 +129,12 @@
 	<span class="type">{{ phrase('agent.general.category') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_category_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_category_title|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_department' %}
-	<span class="type">{{ phrase('agent.general.department') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{log.details.old_department_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
+	{% if log.details.old_department_title %}
+		<span class="type">{{ phrase('agent.general.department') }}</span> {{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">{{log.details.old_department_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
+	{% else %}
+		Department set to <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
+	{% endif %}
 {% elseif log.action_type == 'changed_language' %}
 	<span class="type">{{ phrase('agent.general.language') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_language_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_language_title|default(phrase('agent.general.none'))}}</span>
@@ -134,11 +142,18 @@
 	<span class="type">{{ phrase('agent.general.organization') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_org_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_org_name|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_subject' %}
-	<span class="type">{{ phrase('agent.general.subject') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{log.details.old_subject|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_subject|default(phrase('agent.general.none'))}}</span>
+	{% if log.details.old_subject %}
+		{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.new_subject }}</span>
+	{% else %}
+		Subject set to <span class="new-val">{{ log.details.new_subject }}</span>
+	{% endif %}
 {% elseif log.action_type == 'changed_person' %}
-	<span class="type">{{ phrase('admin.api.user_owner') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{ phrase('agent.general.id') }} {{log.details.old_person_id}} {{old_person_name}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.new_person_id}} {{new_person_name}}</span>
+	{% if log.details.old_person_id %}
+		<span class="type">{{ phrase('admin.api.user_owner') }}</span> {{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">{{ phrase('agent.general.id') }} {{log.details.old_person_id}} {{old_person_name}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.new_person_id}} {{new_person_name}}</span>
+	{% else %}
+		User Owner set to <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.new_person_id}}</span>
+	{% endif %}
 {% elseif log.action_type == 'executed_triggers' %}
 	<span class="type">{{ phrase('agent.general.ticket_triggers') }}</span> {{ phrase('agent.tickets.applied') }}:
 	<span class="new-val">{{ log.details.trigger_titles }}</span>
@@ -161,7 +176,7 @@
     {{ phrase('agent.tickets.from_email', {'address':log.details.email}) }}
 	{% endif %}
 	&mdash;	
-	<a href="{#{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: log.details.message_id, _rt: security_token('request_token', 10800)}) }}" onclick="window.open($(this).attr('href'), 'msgwin', 'status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=600,width=780'); return false;">{{ phrase('agent.general.view') }#} <i class="icon-external-link" style="font-size: 11px;"></i></a>
+	<a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: log.details.message_id, _rt: security_token('request_token', 10800)}) }}" onclick="window.open($(this).attr('href'), 'msgwin', 'status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=600,width=780'); return false;">{{ phrase('agent.general.view') }} <i class="icon-external-link" style="font-size: 11px;"></i></a>
 {% elseif log.action_type == 'message_removed' %}
 	{% if log.details.is_agent_note %}
 		<span class="type">{{ phrase('agent.tickets.log_note_deleted') }}</span>
@@ -202,15 +217,18 @@
 		{% if log.details.message_person_name %} {{ log.details.message_person_name }}{% endif %}
 	{% endif %}
 {% elseif log.action_type == 'changed_status' %}
-	<span class="type">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	{% if log.details.old_status %}
+		<span class="type">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.old_status|replace({'.': '_'}) %}
 		<span class="old-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.old_status }}{% endif %}</span>
+
+		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
+		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
 	{% else %}
-		<span class="old-val">{{ phrase('agent.general.none') }}</span>
+		Status set to
+		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
+		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
 	{% endif %}
-	{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
-	{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
 {% elseif log.action_type == 'changed_hold' %}
 	{% if log.details.is_hold %}{{ phrase('agent.tickets.ticket_put_on_hold') }}{% else %}{{ phrase('agent.tickets.ticket_removed_from_hold') }}{% endif %}
 {% elseif log.action_type == 'changed_custom_field' %}

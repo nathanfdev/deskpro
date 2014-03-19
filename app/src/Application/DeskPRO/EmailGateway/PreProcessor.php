@@ -111,10 +111,11 @@ class PreProcessor extends AbstractGatewayProcessor
 		# on the account
 		#------------------------------
 
-		if ($this->account->start_date_limit && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
-			if ($email_date < $this->account->start_date_limit) {
+		if ($this->account->getOption('start_date_limit') && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
+			$start_date_limit = \DateTime::createFromFormat('Y-m-d H:i:s', $this->account->getOption('start_date_limit'));
+			if ($email_date < $start_date_limit) {
 				$this->error = EmailSource::ERR_DATE_LIMIT;
-				$this->source_info[] = "Gateway date limit: " . $this->account->start_date_limit->format(\DateTime::RFC2822);
+				$this->source_info[] = "Gateway date limit: " . $start_date_limit->format(\DateTime::RFC2822);
 				$this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
 				return;
 			}

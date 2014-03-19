@@ -37,6 +37,8 @@ namespace Application\DeskPRO\Email\EmailAccount;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Entity\EmailAccount;
 use Orb\Util\Arrays;
 
@@ -486,11 +488,32 @@ class EmailAccountManager
 			try {
 				$fetcher->closeStorage();
 			} catch (\Exception $e) {
-				$collect_exceptions = array('exception' => $e, 'fetcher_storage' => $tr);
+				$collect_exceptions = array('exception' => $e, 'fetcher_storage' => $fetcher);
 			}
 		}
 
 		$this->loaded_fetcher_storages = array();
+	}
+
+
+	####################################################################################################################
+	# Working with processors
+	####################################################################################################################
+
+	/**
+	 * @param EmailAccount $account
+	 * @param AbstractReader $reader
+	 * @param array $options
+	 * @return TicketGatewayProcessor|null
+	 */
+	public function getEmailProcessor(EmailAccount $account, AbstractReader $reader, array $options = array())
+	{
+		if ($account->account_type != 'tickets') {
+			return null;
+		}
+
+		$proc = new TicketGatewayProcessor($account, $reader, $options);
+		return $proc;
 	}
 
 

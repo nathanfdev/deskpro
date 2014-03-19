@@ -51,7 +51,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 	protected function configure()
 	{
 		$this->setName('dp:process-email');
-		$this->addOption('account', null, InputOption::VALUE_REQUIRED, 'ID of the gateway to process the source under. If not provided, then the account will be detected based on the  to/cc address (default if none found)');
+		$this->addOption('account', null, InputOption::VALUE_REQUIRED, 'ID or email address of the gateway to process the source under. -1 for default. If not provided, then the account will be detected based on the to/cc address.');
 		$this->addOption('account-force', null, InputOption::VALUE_NONE, 'Use the account even if its disabled');
 		$this->addOption('to', null, InputOption::VALUE_REQUIRED, 'The TO address to interpret the email to. If provided, the gateway will be determiend based on this.');
 		$this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
@@ -66,11 +66,6 @@ class ProcessEmailCommand extends ContainerAwareCommand
 	public function getContainer()
 	{
 		return parent::getContainer();
-	}
-
-	private function findEmailAccountFrom(AbstractReader $reader)
-	{
-
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -168,21 +163,44 @@ class ProcessEmailCommand extends ContainerAwareCommand
 		#----------------------------------------
 
 		$account_id = $input->getOption('account');
+
+		if (!$source->email_account && !$account_id) {
+			$output->writeln("<error>Could not find account for email. Specify an account using --account</error>");
+			return 1;
+		}
+
 		if ($account_id) {
 			$account_manager = App::$container->getEmailAccountManager();
-			if ($account_manager->hasAcccount($account_id)) {
-				$output->writeln("<error>No account with ID $account_id</error>");
+
+			if (ctype_digit($account_id)) {
+				if ($account_manager->hasAcccount($account_id)) {
+					$output->writeln("<error>No account with ID $account_id</error>");
+					return 1;
+				}
+
+				$account = $account_manager->getAccount($account_id);
+			} else {
+				$account = $account_manager->findAccountForEmailAddress($account_id);
+
+				if (!$account) {
+					$output->writeln("<error>No account with address $account_id</error>");
+					return 1;
+				}
 			}
 
-			$account = $account_manager->getAccount($account_id);
+
 			if ($input->getOption('account-force') && !$account->is_enabled) {
 				$output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
 			}
 		}
 
+		$source->email_account = $account;
+
 		#----------------------------------------
 		# Run the gateway
 		#----------------------------------------
+
+		$output->setVerbosity(3);
 
 		$logger = new Logger();
 		$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
@@ -204,5 +222,24 @@ class ProcessEmailCommand extends ContainerAwareCommand
 		}
 
 		return 0;
+	}
+
+
+	/**
+	 * @param AbstractReader $reader
+	 * @return \Application\DeskPRO\Entity\EmailAccount|null
+	 */
+	private function findEmailAccountFrom(AbstractReader $reader)
+	{
+		$account_manager = App::$container->getEmailAccountManager();
+
+		foreach ($reader->getReceivedAddresses() as $email) {
+			$account = $account_manager->findAccountForEmailAddress($email->email, 'is_enabled');
+			if ($account) {
+				return $account;
+			}
+		}
+
+		return null;
 	}
 }

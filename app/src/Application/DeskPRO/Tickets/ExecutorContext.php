@@ -182,7 +182,14 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
-	 * @param $event_type
+	 * The event type. This indicates what kind of triggers are fired as well.
+	 *
+	 * Possible values:
+	 * - newticket
+	 * - newreply
+	 * - update
+	 *
+	 * @param string $event_type
 	 */
 	public function setEventType($event_type)
 	{
@@ -200,6 +207,8 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
+	 * The event method is how the event is being fired.
+	 *
 	 * @param string $event_method          Event method (email, api, or web)
 	 * @param array  $event_method_options  Event options (eg a URL etc)
 	 */

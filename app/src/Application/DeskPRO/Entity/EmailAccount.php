@@ -41,7 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * @property int       $id
- * @property string    $account_Type
+ * @property string    $account_type
  * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $incoming_account
  * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $outgoing_account
  * @property bool      $is_enabled

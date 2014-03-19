@@ -185,6 +185,12 @@ class Runner
 
 		if ($this->accounts) {
 			foreach ($this->accounts as $account) {
+
+				// only tickets supported at the moment
+				if ($account->account_type != 'tickets') {
+					continue;
+				}
+
 				App::getDb()->avoidTimeout();
 				$this->executeAccount($account, $time_limit);
 
@@ -309,7 +315,7 @@ class Runner
 				$this->logger->log("Preprocessor complete", 'info');
 
 				try {
-					$proc = $account->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
+					$proc = $this->account_manager->getEmailProcessor($account, $reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
 					$created_obj = $proc->run();
 
 					if ($proc->isValid()) {
