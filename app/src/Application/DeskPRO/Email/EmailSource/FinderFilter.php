@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Email\EmailSource;
 
-use Application\DeskPRO\Entity\EmailGateway;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Orb\Util\Arrays;
 

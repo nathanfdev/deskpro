@@ -82,8 +82,6 @@ class TicketSearch extends SearcherAbstract
 	const TERM_ARCHIVE_SEARCH            = 'archive_search';
 	const TERM_DELETED                   = 'deleted';
 	const TERM_CREATION_SYSTEM           = 'creation_system';
-	const TERM_RECEIVING_GATEWAY         = 'gateway_account';
-	const TERM_GATEWAY_ADDRESS           = 'gateway_address';
 	const TERM_HOLD                      = 'is_hold';
 	const TERM_FLAGGED                   = 'flagged';
 	const TERM_TEXT                      = 'text';
@@ -2124,35 +2122,16 @@ class TicketSearch extends SearcherAbstract
 						$wheres[] = $this->_stringMatch("$tickets_table.creation_system", $op, $choice, true, true);
 						break;
 
-					case self::TERM_GATEWAY_ADDRESS:
-						//TODO
-						if (!$this->is_testing) $this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.sent_to_gateway_address'), $op, $choice, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:EmailGatewayAddress')->getOptions((array)$choice);
-							return $titles;
-						});
-
-						if (count($choice) == 1) {
-							$this->specific_fields[] = self::TERM_GATEWAY_ADDRESS;
-						}
-
-						$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_address_id", $op, $choice, true);
-
-						// Need to use full ticket table for email_gateway_address_id field
-						$this->enableArchiveSearch();
-
+					case 'gateway_address':
+						$e = new \RuntimeException("not supported");
+						KernelErrorHandler::logException($e, true, 'TicketSearch::TERM_GATEWAY_ADDRESS');
+						$wheres[] = '0';
 						break;
 
-					case self::TERM_RECEIVING_GATEWAY:
-						if (!$this->is_testing) $this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.receiving_gateway'), $op, $choice, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice);
-							return $titles;
-						});
-
-						if (count($choice) == 1) {
-							$this->specific_fields[] = self::TERM_RECEIVING_GATEWAY;
-						}
-
-						$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice, true);
+					case 'gateway_account':
+						$e = new \RuntimeException("not supported");
+						KernelErrorHandler::logException($e, true, 'TicketSearch::TERM_RECEIVING_GATEWAY');
+						$wheres[] = '0';
 						break;
 
 					case 'escalation_eliminator':
@@ -2467,12 +2446,15 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_GATEWAY_ADDRESS:
-					$id = $ticket->email_gateway_address ? $ticket->email_gateway_address->getId() : 0;
-					if (!$this->_testChoiceMatch($id, $op, $choice. true)) return false;
+					$e = new \RuntimeException("not supported");
+					KernelErrorHandler::logException($e, true);
+					return false;
 					break;
 
 				case self::TERM_RECEIVING_GATEWAY:
-					if (!$this->_testChoiceMatch($ticket['email_gateway_id'], $op, $choice. true)) return false;
+					$e = new \RuntimeException("not supported");
+					KernelErrorHandler::logException($e, true);
+					return false;
 					break;
 
 				case self::TERM_DATE_CLOSED:

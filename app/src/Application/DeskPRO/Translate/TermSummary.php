@@ -531,13 +531,6 @@ class TermSummary
 				$summary = $tr->phrase('agent.tickets.creation_system_via') . ' ' . $vals;
 				break;
 
-			case 'gateway_address':
-				$summary = $this->_choiceSummary($tr->phrase('agent.tickets.sent_to_gateway_address'), $op, $choice, function($choice) {
-					$titles = App::getEntityRepository('DeskPRO:EmailGatewayAddress')->getOptions((array)$choice);
-					return $titles;
-				});
-				break;
-
 			case 'recieving_gateway':
 				$summary = $this->_choiceSummary($tr->phrase('agent.tickets.receiving_gateway'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice);
@@ -611,15 +604,6 @@ class TermSummary
 
 			case 'is_not_new_user':
 				$summary = $tr->phrase('agent.general.not_new_user_summary');
-				break;
-
-			case 'gateway_account':
-				$names = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice['gateway_account']);
-				if ($op == self::OP_NOT) {
-					$summary = $tr->phrase('agent.general.gateway_is_not_summary', array('names' => implode(', ', $names)));
-				} else {
-					$summary = $tr->phrase('agent.general.gateway_is_summary', array('names' => implode(', ', $names)));
-				}
 				break;
 
 			case 'action_performer':

@@ -2914,7 +2914,7 @@ class Ticket extends DomainObject
 			'agent_team_id'                => $this->agent_team ? $this->agent_team->id : null,
 			'organization_id'              => $this->organization ? $this->organization->id : null,
 			'linked_chat_id'               => $this->linked_chat ? $this->linked_chat->id : null,
-			'email_gateway_id'             => null,
+			'email_account_id'             => $this->email_account ? $this->email_account->id : null,
 			'locked_by_agent'              => $this->locked_by_agent ? $this->locked_by_agent->id : null,
 			'ref'                          => $this->ref,
 			'auth'                         => $this->auth,

@@ -1356,8 +1356,7 @@ class TicketSearchController extends AbstractController
             'agent_team_id',
             'organization_id',
             'linked_chat_id',
-            'email_gateway_id',
-            'email_gateway_address_id',
+            'email_account_id',
             'locked_by_agent',
             'ref',
             'auth',
@@ -1406,7 +1405,7 @@ class TicketSearchController extends AbstractController
                 case 'category_id':
                 case 'workflow_id':
                 case 'product_id':
-                case 'email_gateway_id':
+                case 'email_account_id':
                     $row[] = $display_field;
                     $row[] = preg_replace('/id$/' , 'title', $display_field);
                     break;
@@ -1464,7 +1463,7 @@ class TicketSearchController extends AbstractController
                     case 'category_id':
                     case 'workflow_id':
                     case 'product_id':
-                    case 'email_gateway_id':
+                    case 'email_account_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
                         $entity = $ticket->{$name};

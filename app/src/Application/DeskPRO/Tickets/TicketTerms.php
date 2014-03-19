@@ -39,6 +39,7 @@ use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Dates;
 use Orb\Util\Numbers;
 use Orb\Util\Arrays;
@@ -1076,17 +1077,15 @@ class TicketTerms
 				break;
 
 			case 'gateway_account':
-				$gid = $ticket->email_gateway ? $ticket->email_gateway->getId() : 0;
-				if (!$this->_testChoiceMatch($gid, $op, $choice)) {
-					return false;
-				}
+				$e = new \RuntimeException("not supported");
+				KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
+				return false;
 				break;
 
 			case 'gateway_address':
-				$gid = $ticket->email_gateway_address ? $ticket->email_gateway_address->getId() : 0;
-				if (!$this->_testChoiceMatch($gid, $op, $choice)) {
-					return false;
-				}
+				$e = new \RuntimeException("not supported");
+				KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
+				return false;
 				break;
 
 			case 'api_key':

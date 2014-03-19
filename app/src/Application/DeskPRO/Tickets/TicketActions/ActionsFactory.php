@@ -42,6 +42,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -182,7 +183,8 @@ class ActionsFactory
 				break;
 
 			case 'set_gateway_address':
-				$options['gateway_address_id'] = $value['gateway_address_id'];
+				$e = new \RuntimeException("not supported");
+				KernelErrorHandler::logException($e, true, 'ActionsFactory::set_gateway_address');
 				break;
 
 			case 'set_from_address':

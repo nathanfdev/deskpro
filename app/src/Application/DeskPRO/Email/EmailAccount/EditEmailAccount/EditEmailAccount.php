@@ -79,7 +79,7 @@ class EditEmailAccount
 	public $out_smtp_account;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
 	private $account;
 

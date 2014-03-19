@@ -41,7 +41,7 @@ use Orb\Util\Strings;
 
 /**
  * A fetcher takes makes a conenction to a resource described in
- * an EmailGateway record, and reads messages into the database for storage.
+ * an EmailAccount record, and reads messages into the database for storage.
  */
 abstract class AbstractFetcher
 {

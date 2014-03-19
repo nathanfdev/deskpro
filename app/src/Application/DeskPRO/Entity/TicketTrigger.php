@@ -45,7 +45,7 @@ use Orb\Util\Arrays;
 /**
  * @property int $id
  * @property Department $department
- * @property EmailGateway $email_gateway
+ * @property EmailAccount $email_account
  * @property string $title
  * @property bool $is_enabled
  * @property string $event_trigger
