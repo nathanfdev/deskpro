@@ -2775,19 +2775,30 @@ class TicketController extends AbstractController
 		$date_created->setTimezone($this->person->getDateTimezone());
 		$date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
 
-		$top = '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 11px; color: #888888; padding: 0; margin: 0;">';
-		$top .= 'This message has been forwarded to you from <a href="'. $this->container->getSetting('core.deskpro_url') .'">'. $this->container->getSetting('core.deskpro_name') .'</a> ';
-		$top .= 'by '. $this->person->getDisplayName() .' &lt;<a href="mailto:'. $this->person->getPrimaryEmailAddress() .'">'. $this->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
-		$top .= 'Please do NOT reply to this message. If you need to reply, consider replying directly to '. $ticket->person->getDisplayName() .' &lt;<a href="mailto:'. $ticket->person->getPrimaryEmailAddress() .'">'. $ticket->person->getPrimaryEmailAddress() .'</a>&gt;';
-		$top .= '</div>';
+		$top = '';
+
+		if (!$this->container->getSetting('core_tickets.fwd_use_agent_address')) {
+			$top = '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 11px; color: #888888; padding: 0; margin: 0;">';
+			$top .= 'This message has been forwarded to you from <a href="' . $this->container->getSetting('core.deskpro_url') . '">' . $this->container->getSetting('core.deskpro_name') . '</a> ';
+			$top .= 'by ' . $this->person->getDisplayName() . ' &lt;<a href="mailto:' . $this->person->getPrimaryEmailAddress() . '">' . $this->person->getPrimaryEmailAddress() . '</a>&gt;<br/>';
+			$top .= 'Please do NOT reply to this message. If you need to reply, consider replying directly to ' . $ticket->person->getDisplayName() . ' &lt;<a href="mailto:' . $ticket->person->getPrimaryEmailAddress() . '">' . $ticket->person->getPrimaryEmailAddress() . '</a>&gt;';
+			$top .= '</div>';
+		}
 
 		if ($custom_message) {
-			$top .= '<br/><br/><div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
+			if ($top) {
+				$top .= '<br/><br/>';
+			}
+			$top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
 			$top .= nl2br(htmlspecialchars($custom_message));
 			$top .= '</div>';
 		}
 
-		$top .= '<br/><br/><div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
+		if ($top) {
+			$top .= '<br/><br/>';
+		}
+
+		$top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
 		$top .= '--- Forwarded Message ---<br/>';
 		$top .= 'From: '. $message->person->getDisplayName() .' &lt;<a href="mailto:'. $message->person->getPrimaryEmailAddress() .'">'. $message->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
 
@@ -2810,9 +2821,41 @@ class TicketController extends AbstractController
 		$email->setBody($message_raw, 'text/html');
 		$email->setSubject($subject);
 
-		$from_email = $this->container->getSetting('core.default_from_email');
+		$tr = null;
+		$account = null;
+		if ($this->container->getSetting('core_tickets.fwd_use_account')) {
+			$account = $this->container->getEm()->find('DeskPRO:EmailGateway', $this->container->getSetting('core_tickets.fwd_use_account'));
+			if ($account && $account->is_enabled && $account->linked_transport) {
+				$tr = $account->linked_transport->getTransport();
+			}
+		}
+		if (!$tr) {
+			$tr_rec = $this->container->getEm()->getRepository('DeskPRO:EmailTransport')->getDefaultTransport();
+			if ($tr_rec) {
+				$tr = $tr_rec->getTransport();
+			}
+		}
+
+		if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
+			$from_email = $this->person->getEmailAddress();
+		} else {
+			$from_email = null;
+			if ($account) {
+				if (!($from_email = $account->getAliasEmailAddress())) {
+					$from_email = $account->getPrimaryEmailAddress();
+				}
+ 			}
+			if (!$from_email) {
+				$from_email = $this->container->getSetting('core.default_from_email');
+			}
+		}
+
 		$from_name = $this->person->getDisplayName();
 		$email->setFrom($from_email, $from_name);
+
+		if ($tr) {
+			$email->setForceTransport($tr);
+		}
 
 		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $this->person);
 

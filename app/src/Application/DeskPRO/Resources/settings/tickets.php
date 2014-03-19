@@ -77,4 +77,14 @@
 	'core_tickets.default_ticket_reverse_order' => true,
 
 	'core_tickets.work_hours' => 'a:8:{s:11:"active_time";s:3:"all";s:10:"start_hour";i:9;s:12:"start_minute";i:0;s:8:"end_hour";i:17;s:10:"end_minute";i:0;s:4:"days";a:5:{i:1;b:1;i:2;b:1;i:3;b:1;i:4;b:1;i:5;b:1;}s:8:"timezone";N;s:8:"holidays";a:0:{}}',
+
+	/**
+	 * The account to use when forwarding messages out
+	 */
+	'core_tickets.fwd_use_account' => 0,
+
+	/**
+	 * True to set the 'from' address on forwarded messages out
+	 */
+	'core_tickets.fwd_use_agent_address' => false,
 );

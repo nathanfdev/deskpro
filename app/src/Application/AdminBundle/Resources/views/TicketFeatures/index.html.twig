@@ -353,6 +353,47 @@
 </div>
 
 <div class="setting_field_row">
+	<h4>Ticket Forwarding</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<p>
+				These settings control how messages are forwarded out of the helpdesk using the "Forward Message" function from the Agent Interface.
+				This feature is available from the gear menu on each message in a ticket.
+			</p>
+			<input type="hidden" name="set_settings_falseable[]" value="core_tickets.fwd_use_account" />
+			<input type="hidden" name="set_settings_falseable[]" value="core_tickets.fwd_use_agent_address" />
+		</div>
+		<div class="field_row">
+			<label>
+				Select the account to send messages from
+			</label>
+			<select name="settings[core_tickets.fwd_use_account]">
+				<option value="0">Default no-reply account</option>
+				{% for account in email_accounts %}
+					<option value="{{ account.id }}" {% if account.id == app.getSetting('core_tickets.fwd_use_account') %}selected="selected"{% endif %}>
+						{{ account.getAliasEmailAddress()|default(account.getPrimaryEmailAddress()) }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="field_row">
+			<label>
+				<input id="fwd_use_agent_address" type="checkbox" name="settings[core_tickets.fwd_use_agent_address]" {% if app.getSetting('core_tickets.fwd_use_agent_address') %}checked="checked"{% endif %} />
+				Send messages with the agent's email address in the "From" line
+			</label>
+			<p>
+				This will make forwarded messages appear as though they came from the agent's personal email account, and means replies will
+				go directly to the agent.
+			</p>
+			<p>
+				<strong>Important:</strong> For this feature to work, the email account selected above must be able to send messages from arbitrary email addresses. This may require special
+				configuration on your email server.
+			</p>
+		</div>
+	</div>
+</div>
+
+<div class="setting_field_row">
 	<h4>Ticket Refs</h4>
 	<div class="setting_fields">
 		<div class="field_row">

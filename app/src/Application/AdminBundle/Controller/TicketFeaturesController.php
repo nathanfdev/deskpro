@@ -53,9 +53,12 @@ class TicketFeaturesController extends AbstractController
 		$message_templates = $this->container->getDataService('TicketMessageTemplate')->getAll();
 		$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
 
+		$email_accounts = $this->container->getEm()->getRepository('DeskPRO:EmailGateway')->getAllEnabled();
+
 		return $this->render('AdminBundle:TicketFeatures:index.html.twig', array(
 			'work_hours' => $work_hours,
-			'message_templates' => $message_templates
+			'message_templates' => $message_templates,
+			'email_accounts' => $email_accounts,
 		));
 	}
 
