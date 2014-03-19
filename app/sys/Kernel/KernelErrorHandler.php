@@ -1005,14 +1005,36 @@ class KernelErrorHandler
 	{
 		$trace = '';
 
+		$longest_filename = 0;
+
+		foreach($backtrace as &$v) {
+			if (!empty($v['file'])) {
+				$v['orig_file'] = $v['file'];
+				$v['file'] = self::stripPathPrefix($v['file']);
+				$longest_filename = max($longest_filename, strlen(self::stripPathPrefix($v['file'])));
+			}
+		}
+		unset($v);
+
+		$longest_filename += 15;
+
+		$x = 0;
 		foreach($backtrace as $k=>$v){
 
-			$prefix = "#$k ";
+			if (!empty($v['object'])) {
+				if (strpos(get_class($v['object']), 'KernelErrorHandler')) continue;
+			}
+			if (!empty($v['class'])) {
+				if (strpos($v['class'], 'KernelErrorHandler')) continue;
+			}
+
+			$x++;
+
+			$prefix = sprintf("[#%02d] ", $x);
 			$line = '';
 
 			if (!empty($v['file'])) {
-				$v['file'] = self::stripPathPrefix($v['file']);
-				$prefix .= "[{$v['file']}:{$v['line']}] ";
+				$prefix .= "{$v['file']}:{$v['line']} ";
 			}
 
 			if (isset($v['object'])) {
@@ -1029,7 +1051,7 @@ class KernelErrorHandler
 
 			$line .= ")";
 
-			$trace .= $prefix . ' ' . trim($line) . "\n";
+			$trace .= sprintf("%-{$longest_filename}s", $prefix) . "\t---\t" . trim($line) . "\n";
 		}
 
 		$trace = preg_replace('#PDO::__construct(.*?)$#m', 'PDO::__construct(...)', $trace);
@@ -1054,18 +1076,43 @@ class KernelErrorHandler
 	public static function varToString($var, $_depth = 0)
     {
         if (is_object($var)) {
-            return sprintf('[object](%s)', get_class($var));
+            return sprintf('<%s>', get_class($var));
         }
         if (is_array($var)) {
             $a = array();
+			$len = count($var);
+			$is_array = true;
+
+			for ($i = 0; $i < $len; $i++) {
+				if (!array_key_exists($i, $var)) {
+					$is_array = false;
+					break;
+				}
+			}
+
             foreach ($var as $k => $v) {
 				if ($_depth > 8) {
-					$a[] = sprintf('%s => %s', $k, '(string)');
+					if ($is_array) {
+						$a[] = '(string)';
+					} else {
+						$a[] = sprintf('%s => %s', $k, '(string)');
+					}
 				} else {
-					$a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+					if ($is_array) {
+						$a[] = self::varToString($v, $_depth+1);
+					} else {
+						if (!is_numeric($k)) {
+							$k = "'$k'";
+						}
+						$a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+					}
 				}
             }
-            return sprintf("[array](%s)", implode(', ', $a));
+			if ($_depth == 0) {
+				return implode(', ', $a);
+			} else {
+				return sprintf("array(%s)", implode(', ', $a));
+			}
         }
         if (is_resource($var)) {
             return '[resource]';
