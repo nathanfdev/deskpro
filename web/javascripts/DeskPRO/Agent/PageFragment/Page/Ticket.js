@@ -915,6 +915,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var ajaxHit = false;
 		var hitRun = false;
 		var reply_form = handler.el;
+		var nextTicketId = null;
 
 		formData.push({
 			name: 'client_messages_since',
@@ -949,6 +950,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('replybox_wrap').find('textarea.touched').removeClass('touched');
 
+		function findNextTicketId() {
+			var listPage = DeskPRO_Window.getListPage();
+			if (!listPage) return null;
+
+			var idx = listPage.listTicketIds.indexOf(parseInt(self.getMetaData('ticket_id')));
+			if (idx !== -1 && listPage.listTicketIds.length >= idx) {
+				return listPage.listTicketIds[idx+1];
+			}
+		}
+
 		DeskPRO_Window.getMessageChanneler().poller.pause();
 		function hitDone() {
 			hitRun = true;
@@ -957,20 +968,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (!keepOpen) {
 				self.closeSelf();
 
-				if (self.getMetaData('goNextOnReply')) {
-					var listPage = DeskPRO_Window.getListPage();
-					if (listPage && listPage.wrapper) {
-						console.log(listPage.wrapper);
-						var ticketListEl = listPage.wrapper.find('article.row-item.ticket-' + self.getMetaData('ticket_id'));
-						if (ticketListEl.length) {
-							var next = ticketListEl.next('article.row-item');
-							console.log(ticketListEl);
-							console.log(next);
-							if (next.length) {
-								DeskPRO_Window.runPageRouteFromElement(next);
-							}
-						}
-					}
+				if (self.getMetaData('goNextOnReply') && nextTicketId) {
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL+'agent/tickets/' + nextTicketId);
 				}
 
 				return;
@@ -1039,6 +1038,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window._globalHandleAjaxError(event, xhr, ajaxOptions, errorThrown, force);
 			},
 			success: function(result) {
+
+				nextTicketId = findNextTicketId();
 
 				// Always perform CM processing right now
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
@@ -1130,6 +1131,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		// Might be unloaded by the time this callback is called
 		if (!this.changeManager) {
 			return;
+		}
+
+		if (data.api_data) {
+			this.meta.api_data = data.api_data;
 		}
 
 		var new_messages = null;

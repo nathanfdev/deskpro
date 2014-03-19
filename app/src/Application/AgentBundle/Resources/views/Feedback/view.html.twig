@@ -81,6 +81,13 @@ pageMeta.baseId = '{{ baseId }}';
 	</header>
 	<section class="description-area">
 		<dl class="info-list">
+
+			<dt>URL Slug</dt>
+			<dd>
+				<span id="{{ baseId }}_slug">{{ feedback.slug }}</span>
+				<button class="clean-white" id="{{ baseId }}_editslug">Edit Slug</button>
+			</dd>
+
 			<dt>{{ phrase('agent.general.votes') }}:</dt>
 			<dd>
 				<span class="link-look who-voted-trigger">

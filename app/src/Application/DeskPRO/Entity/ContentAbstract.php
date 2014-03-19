@@ -183,9 +183,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setTitle($title)
 	{
+		$old_title = $this->title;
 		$this->setModelField('title', $title);
 
-		if (!$this->slug) {
+		if (!$this->slug || $this->slug == Strings::slugifyTitle($old_title)) {
 			$this['slug']  = Strings::slugifyTitle($title);
 			if (!$this['slug']) {
 				$this['slug'] = 'view';

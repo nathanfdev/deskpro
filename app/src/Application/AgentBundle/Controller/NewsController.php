@@ -187,10 +187,13 @@ class NewsController extends AbstractController
 
 			case 'title':
 				$news['title'] = $this->in->getString('title');
-
 				$rev = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
 				$rev['title'] = $news['title'];
+				break;
 
+			case 'slug':
+				$news['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
+				$data['slug'] = $news['slug'];
 				break;
 
 			case 'add-related':

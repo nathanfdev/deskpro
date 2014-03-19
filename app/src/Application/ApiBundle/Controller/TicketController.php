@@ -1043,6 +1043,10 @@ class TicketController extends AbstractController
 			return $this->createApiErrorResponse('not_found', 'Person not found');
 		}
 
+		if ($person->id && $person->id == $ticket->person->id) {
+			return $this->createApiErrorResponse('owner', 'person is already the owner of the ticket');
+		}
+
 		if ($person->id && $ticket->hasParticipantPerson($person)) {
 			return $this->createApiCreateResponse(
 				array('person_id' => $person->id),

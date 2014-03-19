@@ -131,19 +131,33 @@ class WidgetController extends AbstractController
 
 		$feedback_categories = $structure->getFeedbackRootCategories();
 
+		$show_feedback = $this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use');
+
 
 		#------------------------------
 		# Fetch latest content
 		#------------------------------
 
 		$latest_content = new \Application\DeskPRO\Publish\LatestContent($this->em);
+		$latest_content->setMaxCount(10);
+
+		if (!$show_feedback) {
+			$latest_content->setMaxFeedback(0);
+		}
+		if (!($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use'))) {
+			$latest_content->setMaxNews(0);
+		}
+		if (!($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use'))) {
+			$latest_content->setMaxArticles(0);
+		}
+		if (!($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use'))) {
+			$latest_content->setMaxDownloads(0);
+		}
 
 		$ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
 		if ($ds && $ds->getData('selections')) {
 			$latest_content->useSelections($ds->getData('selections'));
 		}
-
-		$latest_content->setMaxCount(10);
 
 		$chat_active = false;
 		if (App::getSetting('core.apps_chat')) {
@@ -184,6 +198,7 @@ class WidgetController extends AbstractController
 			'ticket_options'        => $newticket_formtype->getTicketOptions(),
 			'ticketform'            => $ticketform->createView(),
 
+			'show_feedback'         => $show_feedback,
 			'newfeedback'           => $newfeedback,
 			'feedbackform'          => $feedbackform->createView(),
 			'feedback_categories'   => $feedback_categories,

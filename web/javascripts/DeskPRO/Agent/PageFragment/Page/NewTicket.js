@@ -1235,73 +1235,75 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES && window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
 						ev.preventDefault();
 
-						var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo];
+						for (var i = 0; i < window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo].length; i++) {
+							var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo][i];
 
-						var focus = api.getFocus(),
-							focusNode = $(focus[0]),
-							testText;
+							var focus = api.getFocus(),
+								focusNode = $(focus[0]),
+								testText;
 
-						if (focus[0].nodeType == 3) {
-							testText = focusNode.text().substring(0, focus[1]);
-						} else {
-							focus[0] = focusNode.contents().get(focus[1] - 1);
-							focusNode = $(focus[0]);
-							testText = focusNode.text();
-							focus[1] = testText.length;
-						}
-
-						var	lastAt = testText.lastIndexOf('%'), matches = [];
-
-						if (lastAt != -1) {
-							api.setSelection(focus[0], lastAt, focus[0], focus[1]);
-						}
-
-						// web kit handles content editable without an issue. this prevents the span
-						// from being extended unnecessarily
-						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
-
-						var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
-						self.pauseSend = true
-						$.ajax({
-							url: BASE_URL + 'agent/tickets/0/get-snippet/' + snippetId,
-							dataType: 'text',
-							data: {person_id: personId},
-							complete: function() {
-								self.pauseSend = false;
-							},
-							success: function(data) {
-								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-								data = $('<div>' + data + '</div>');
-
-								// trailing newlines
-								var coll = data.find('> br');
-								coll.last().remove();
-
-								var cursor = $('<span class="_cursor"></span>');
-								var cursorPos = data.find('> p');
-								if (!cursorPos[0]) {
-									cursorPos = data;
-								}
-
-								el.after(data);
-								cursorPos.append(cursor);
-								el.remove();
-
-								var next = data.next();
-								if (next.is('br')) {
-									next.remove();
-								}
-								if (cursor.next().is('br')) {
-									cursor.next().remove();
-								}
-								if (cursor.prev().is('br')) {
-									cursor.prev().remove();
-								}
-								api.setSelection(cursor[0], 0, cursor[0], 0);
-								api.syncCode();
+							if (focus[0].nodeType == 3) {
+								testText = focusNode.text().substring(0, focus[1]);
+							} else {
+								focus[0] = focusNode.contents().get(focus[1] - 1);
+								focusNode = $(focus[0]);
+								testText = focusNode.text();
+								focus[1] = testText.length;
 							}
-						});
+
+							var lastAt = testText.lastIndexOf('%'), matches = [];
+
+							if (lastAt != -1) {
+								api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+							}
+
+							// web kit handles content editable without an issue. this prevents the span
+							// from being extended unnecessarily
+							var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+							api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
+
+							var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
+							self.pauseSend = true
+							$.ajax({
+								url: BASE_URL + 'agent/tickets/0/get-snippet/' + snippetId,
+								dataType: 'text',
+								data: {person_id: personId},
+								complete: function () {
+									self.pauseSend = false;
+								},
+								success: function (data) {
+									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+									data = $('<div>' + data + '</div>');
+
+									// trailing newlines
+									var coll = data.find('> br');
+									coll.last().remove();
+
+									var cursor = $('<span class="_cursor"></span>');
+									var cursorPos = data.find('> p');
+									if (!cursorPos[0]) {
+										cursorPos = data;
+									}
+
+									el.after(data);
+									cursorPos.append(cursor);
+									el.remove();
+
+									var next = data.next();
+									if (next.is('br')) {
+										next.remove();
+									}
+									if (cursor.next().is('br')) {
+										cursor.next().remove();
+									}
+									if (cursor.prev().is('br')) {
+										cursor.prev().remove();
+									}
+									api.setSelection(cursor[0], 0, cursor[0], 0);
+									api.syncCode();
+								}
+							});
+						}
 					}
 				}
 			});

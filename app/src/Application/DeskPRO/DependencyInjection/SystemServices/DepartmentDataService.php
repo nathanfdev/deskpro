@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Orb\Util\Arrays;
 
 class DepartmentDataService extends BaseRepositoryService
 {
@@ -244,9 +245,12 @@ class DepartmentDataService extends BaseRepositoryService
 		}
 
 		$online_dep_ids = array_unique($online_dep_ids, \SORT_NUMERIC);
+		$online_dep_ids = array_values($online_dep_ids);
+		$online_dep_ids = Arrays::castToType($online_dep_ids, 'int');
 
 		// We only want these specific IDs
 		if ($only_ids) {
+			$only_ids = Arrays::castToType($only_ids, 'int');
 			$online_dep_ids = array_intersect($online_dep_ids, $only_ids);
 		}
 

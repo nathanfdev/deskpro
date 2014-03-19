@@ -345,6 +345,11 @@ class MainController extends AbstractController
 			'chat'                   => array()
 		);
 
+		if (!$this->person->hasPerm('agent_people.use')) {
+			unset($type_to_ent['person']);
+			unset($type_to_ent['organization']);
+		}
+
 		$result_meta = array();
 
 		$people_top = false;
@@ -496,188 +501,198 @@ class MainController extends AbstractController
 
 		} else {
 
-			if (!$is_label) {
-				#------------------------------
-				# Email address: Full or partial
-				#------------------------------
+			if ($this->person->hasPerm('agent_people.use')) {
+				if (!$is_label) {
+					#------------------------------
+					# Email address: Full or partial
+					#------------------------------
 
-				if (preg_match('#^\S*@\S*$#', $q)) {
+					if (preg_match('#^\S*@\S*$#', $q)) {
 
-					$people_top = true;
-					$people = array();
-
-					// Complete email address
-					if (\Orb\Validator\StringEmail::isValueValid($q)) {
-						$p = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+						$people_top = true;
 						$people = array();
-						if ($p) {
-							$people[] = $p;
-						}
-					} else {
-						if (strpos($q, '@') === 0) {
-							$email = substr($q, 1);
-							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
-							if ($this->settings->get('core_tablecounts.people') < 150000) {
-								$people_ids = $this->db->fetchAllCol("
-									SELECT people.id
-									FROM people
-									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-									WHERE people_emails.email_domain LIKE ?
-									ORDER BY people.id DESC
-									LIMIT 15
-								", array($email));
-							} else {
-								$people_ids = $this->db->fetchAllCol("
-									SELECT people.id
-									FROM people
-									LEFT JOIN tickets ON (tickets.person_id = people.id)
-									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-									WHERE
-										tickets.id > ?
-										AND people_emails.email_domain LIKE ?
-									ORDER BY tickets.id DESC
-									LIMIT 15
-								", array($after_id, $email));
+						// Complete email address
+						if (\Orb\Validator\StringEmail::isValueValid($q)) {
+							$p = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+							$people = array();
+							if ($p) {
+								$people[] = $p;
 							}
 						} else {
-							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+							if (strpos($q, '@') === 0) {
+								$email = substr($q, 1);
+								$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
-							if ($this->settings->get('core_tablecounts.people') < 150000) {
-								$people_ids = $this->db->fetchAllCol("
-									SELECT people.id
-									FROM people
-									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-									WHERE people_emails.email LIKE ?
-									ORDER BY people.id DESC
-									LIMIT 15
-								", array($email));
+								if ($this->settings->get('core_tablecounts.people') < 150000) {
+									$people_ids = $this->db->fetchAllCol("
+										SELECT people.id
+										FROM people
+										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										WHERE people_emails.email_domain LIKE ?
+										ORDER BY people.id DESC
+										LIMIT 15
+									", array($email));
+								} else {
+									$people_ids = $this->db->fetchAllCol("
+										SELECT people.id
+										FROM people
+										LEFT JOIN tickets ON (tickets.person_id = people.id)
+										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										WHERE
+											tickets.id > ?
+											AND people_emails.email_domain LIKE ?
+										ORDER BY tickets.id DESC
+										LIMIT 15
+									", array($after_id, $email));
+								}
 							} else {
-								$people_ids = $this->db->fetchAllCol("
-									SELECT people.id
-									FROM people
-									LEFT JOIN tickets ON (tickets.person_id = people.id)
-									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-									WHERE
-										tickets.id > ?
-										AND people_emails.email LIKE ?
-									ORDER BY tickets.id DESC
-									LIMIT 15
-								", array($after_id, $email));
+								$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+
+								if ($this->settings->get('core_tablecounts.people') < 150000) {
+									$people_ids = $this->db->fetchAllCol("
+										SELECT people.id
+										FROM people
+										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										WHERE people_emails.email LIKE ?
+										ORDER BY people.id DESC
+										LIMIT 15
+									", array($email));
+								} else {
+									$people_ids = $this->db->fetchAllCol("
+										SELECT people.id
+										FROM people
+										LEFT JOIN tickets ON (tickets.person_id = people.id)
+										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										WHERE
+											tickets.id > ?
+											AND people_emails.email LIKE ?
+										ORDER BY tickets.id DESC
+										LIMIT 15
+									", array($after_id, $email));
+								}
+							}
+
+							if ($people_ids) {
+								$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
 							}
 						}
 
-						if ($people_ids) {
-							$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
+						foreach ($people as $p) {
+							$results['person'][$p->id] = $p;
+
+							if ($p->organization) {
+								$results['organization'][$p->organization->id] = $p->organization;
+							}
 						}
-					}
 
-					foreach ($people as $p) {
-						$results['person'][$p->id] = $p;
+						#------------------------------
+						# Search for string match in name or email
+						#------------------------------
 
-						if ($p->organization) {
-							$results['organization'][$p->organization->id] = $p->organization;
-						}
-					}
-
-				#------------------------------
-				# Search for string match in name or email
-				#------------------------------
-
-				} else {
-					$people = array();
-
-					$q = preg_replace('#\s+#', ' ', $q);
-					$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
-
-					if ($this->settings->get('core_tablecounts.people') < 150000) {
-						$people_ids = $this->db->fetchAllCol("
-							SELECT people.id
-							FROM people
-							LEFT JOIN tickets ON (tickets.person_id = people.id)
-							LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-							WHERE
-								people.name LIKE ?
-								OR people.first_name LIKE ?
-								OR people.last_name LIKE ?
-								OR people_emails.email LIKE ?
-								OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
-							ORDER BY people.id DESC
-							LIMIT 15
-						", array($q_search, $q_search, $q_search, $q_search, $q_search));
 					} else {
-						$people_ids = $this->db->fetchAllCol("
-							SELECT people.id
-							FROM people
-							LEFT JOIN tickets ON (tickets.person_id = people.id)
-							LEFT JOIN tickets_participants ON (tickets_participants.person_id = people.id)
-							LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-							WHERE
-								(tickets.id > ? OR tickets_participants.ticket_id > ?)
-								AND (
+						$people = array();
+
+						$q = preg_replace('#\s+#', ' ', $q);
+						$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+
+						if ($this->settings->get('core_tablecounts.people') < 150000) {
+							$people_ids = $this->db->fetchAllCol("
+								SELECT people.id
+								FROM people
+								LEFT JOIN tickets ON (tickets.person_id = people.id)
+								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+								WHERE
 									people.name LIKE ?
 									OR people.first_name LIKE ?
 									OR people.last_name LIKE ?
 									OR people_emails.email LIKE ?
 									OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
-								)
-							ORDER BY tickets.id DESC
-							LIMIT 15
-						", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
-					}
-
-					if ($people_ids) {
-						$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
-					}
-
-					foreach ($people as $p) {
-						$results['person'][$p->id] = $p;
-
-						if ($p->organization) {
-							$results['organization'][$p->organization->id] = $p->organization;
+								ORDER BY people.id DESC
+								LIMIT 15
+							", array($q_search, $q_search, $q_search, $q_search, $q_search));
+						} else {
+							$people_ids = $this->db->fetchAllCol("
+								SELECT people.id
+								FROM people
+								LEFT JOIN tickets ON (tickets.person_id = people.id)
+								LEFT JOIN tickets_participants ON (tickets_participants.person_id = people.id)
+								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+								WHERE
+									(tickets.id > ? OR tickets_participants.ticket_id > ?)
+									AND (
+										people.name LIKE ?
+										OR people.first_name LIKE ?
+										OR people.last_name LIKE ?
+										OR people_emails.email LIKE ?
+										OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
+									)
+								ORDER BY tickets.id DESC
+								LIMIT 15
+							", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
 						}
-					}
 
-					// Organizations
-					$orgs = $this->em->getRepository('DeskPRO:Organization')->search($q, 25);
-					$oids = array();
-					foreach ($orgs as $o) {
-						$results['organization'][$o->id] = $o;
-						$oids[] = $o->getId();
-					}
+						if ($people_ids) {
+							$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
+						}
 
-					if ($oids) {
-						// Fetch users of these orgs too
-						$people = $this->em->createQuery("
-							SELECT p
-							FROM DeskPRO:Person p
-							WHERE p.organization IN (?0)
-							ORDER BY p.date_last_login DESC, p.id DESC
-						")->setMaxResults(100)->execute(array($oids));
 						foreach ($people as $p) {
 							$results['person'][$p->id] = $p;
-						}
-					}
-				}
 
-				if ($results['person']) {
-					$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 250);
-					foreach ($tickets as $t) {
-						if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
-							if (!isset($results['person_related'][$t->person->getId()])) {
-								$results['person_related'][$t->person->getId()] = array();
+							if ($p->organization) {
+								$results['organization'][$p->organization->id] = $p->organization;
 							}
-							$results['person_related'][$t->person->getId()][] = $t;
+						}
+
+						// Organizations
+						$orgs = $this->em->getRepository('DeskPRO:Organization')->search($q, 25);
+						$oids = array();
+						foreach ($orgs as $o) {
+							$results['organization'][$o->id] = $o;
+							$oids[] = $o->getId();
+						}
+
+						if ($oids) {
+							// Fetch users of these orgs too
+							$people = $this->em->createQuery("
+								SELECT p
+								FROM DeskPRO:Person p
+								WHERE p.organization IN (?0)
+								ORDER BY p.date_last_login DESC, p.id DESC
+							")->setMaxResults(100)->execute(array($oids));
+							foreach ($people as $p) {
+								$results['person'][$p->id] = $p;
+							}
 						}
 					}
-				}
-			} // is label
+
+					if ($results['person']) {
+						$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 250);
+						foreach ($tickets as $t) {
+							if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
+								if (!isset($results['person_related'][$t->person->getId()])) {
+									$results['person_related'][$t->person->getId()] = array();
+								}
+								$results['person_related'][$t->person->getId()][] = $t;
+							}
+						}
+					}
+				} // is label
+			} // agent_people.use perm
 
 			#------------------------------
 			# Labels
 			#------------------------------
 
 			$label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
+
+			$search_types = array('article', 'download', 'feedback', 'news', 'ticket');
+
+			if ($this->person->hasPerm('agent_people.use')) {
+				$search_types[] = 'organization';
+				$search_types[] = 'person';
+			}
+
 			$label_results = $label_search->search($is_label ? $is_label : $q);
 
 			if ($label_results) {

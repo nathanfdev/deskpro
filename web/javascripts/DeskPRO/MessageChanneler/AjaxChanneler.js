@@ -91,7 +91,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		if (data.messages && data.messages.length) {
 			for (x = 0; x < data.messages.length; x++) {
 				d = data.messages[x];
-				if (d[0] && (parseInt(d[0], 10) <= this.lastMessageId) && (!d[3] || !d[3]['offline_messsage'])) {
+				if (d[0] && (parseInt(d[0], 10) <= this.lastMessageId) && (!d[3] || !d[3]['offline_messsage']) && (d[1] != 'agent_chat.new-message')) {
 					console.debug("%o Dropping message older than lastMessageId %d", d, this.lastMessageId);
 					return;
 				}

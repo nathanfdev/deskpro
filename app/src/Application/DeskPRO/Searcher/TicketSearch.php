@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Tickets\TicketTerms;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Util;
 use Orb\Util\Strings;
@@ -2538,6 +2539,13 @@ class TicketSearch extends SearcherAbstract
                             return !$exists;
                     }
                     break;
+				default:
+					$terms = new TicketTerms(array(array(
+						'type' => $term,
+						'op' => $op,
+						'options' => $choice
+					)));
+					return $terms->doesTicketMatch($ticket);
 			}
 		}
 

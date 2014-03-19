@@ -196,6 +196,12 @@ pageMeta.baseId = '{{ baseId }}';
 							</dd>
 						{% endif %}
 
+						<dt>URL Slug</dt>
+						<dd>
+							<span id="{{ baseId }}_slug">{{ article.slug }}</span>
+							<button class="clean-white" id="{{ baseId }}_editslug">Edit Slug</button>
+						</dd>
+
 						<dt>{{ phrase('agent.general.rating') }}</dt>
 						<dd>
 							{% set phrase_part %}

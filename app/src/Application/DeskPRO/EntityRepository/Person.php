@@ -239,17 +239,13 @@ class Person extends AbstractEntityRepository
 	 */
 	public function findOneByEmail($email)
 	{
-		try {
-			$person = $this->getEntityManager()->createQuery("
-				SELECT p
-				FROM DeskPRO:Person p
-				LEFT JOIN p.emails e
-				WHERE e.email = ?1
-				ORDER BY p.id ASC
-			")->setParameter(1, $email)->setMaxResults(1)->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			return null;
-		}
+		$person = $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			LEFT JOIN p.emails e
+			WHERE e.email = ?1
+			ORDER BY p.id ASC
+		")->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
 
 		return $person;
 	}

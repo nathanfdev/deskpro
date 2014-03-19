@@ -420,7 +420,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 					});
 
 					el.trigger('fileremoved', [li]);
-				});
+				}).on('fileuploadfailed', function(e, data) {
+					console.log(e);
+					console.log(data);
+					if (data.errorThrown == "Request Entity Too Large") {
+						$(el).find('.error').remove();
+						$(el).find('.files').append('<li class="error">The file you are trying to upload is too big.</li>');
+					}
+				})
 
 				return $(el).fileupload(options);
 			},
@@ -1904,11 +1911,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if(routeData && routeData.routeTriggerEl && routeData.routeTriggerEl.data('route-notabreload')) {
 					DeskPRO_Window.TabBar.tabToFrontTabById(existTab.id);
 					DeskPRO_Window.TabBar.activateTabById(existTab.id);
-				}
-				else {
-					DeskPRO_Window.TabBar.removeTabById(existTab.id);
-					if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
-						routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
+				} else {
+					if (DeskPRO_Window.TabBar.currentTabId == existTab.id) {
+						DeskPRO_Window.TabBar.removeTabById(existTab.id);
+						if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
+							routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
+						}
+					} else {
+						DeskPRO_Window.TabBar.activateTab(existTab);
 					}
 				}
 				return;
@@ -3672,7 +3682,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return DeskPRO.Agent.RteEditor.initRteAgentReply(textarea, options);
 	},
 
-	initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable) {
+	initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable, verifyCallback) {
 		var api = textarea.data('redactor');
 		if (!api) {
 			return;
@@ -3705,6 +3715,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			self.hideAgentNotifyList(obj);
+
+			if (verifyCallback) {
+				if (!verifyCallback(agentId)) {
+					return;
+				}
+			}
 
 			var focus = api.getFocus(),
 				focusNode = $(focus[0]),

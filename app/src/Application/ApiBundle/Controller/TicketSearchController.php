@@ -82,7 +82,8 @@ class TicketSearchController extends AbstractController
 		foreach ($search_map AS $input => $search_key) {
 			$value = $this->in->getCleanValueArray($input, 'raw', 'discard');
 			if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
-				$terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+				$op = $this->in->getString($search_key . '_op') ?: 'contains';
+				$terms[] = array('type' => $search_key, 'op' => $op, 'options' => $value);
 			}
 		}
 
@@ -95,7 +96,8 @@ class TicketSearchController extends AbstractController
 		}
 
 		if ($ref = $this->in->getString('ref')) {
-			$terms[] = array('type' => 'ref', 'op' => 'contains', 'options' => array('ref' => $ref));
+			$op = $this->in->getString('ref_op') ?: 'contains';
+			$terms[] = array('type' => 'ref', 'op' => $op, 'options' => array('ref' => $ref));
 		}
 
 		$proc_date_input = function($date_input) {

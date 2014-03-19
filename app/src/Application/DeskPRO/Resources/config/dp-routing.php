@@ -23,6 +23,11 @@ $collection->create('serve_blob', array(
 	'controller'  => '(see: serve_file.php)',
 ));
 
+$collection->create('serve_dp_asset', array(
+	'path'        => '/file.php/dp-asset/{filename}',
+	'controller'  => '(see: serve_file.php)',
+));
+
 $collection->create('serve_blob_size', array(
 	'path'        => '/file.php/size/{s}/{blob_auth_id}/{filename}',
 	'controller'  => '(see: serve_file.php)',

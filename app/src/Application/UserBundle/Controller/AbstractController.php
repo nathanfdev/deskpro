@@ -235,6 +235,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$tpl_globals->setVariable('portal_tabs_order', $val);
 		}
 
+		$can_see_any_publish = false;
+		if ($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use')) {
+			$can_see_any_publish = true;
+		} elseif ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')) {
+			$can_see_any_publish = true;
+		} elseif ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')) {
+			$can_see_any_publish = true;
+		} elseif ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')) {
+			$can_see_any_publish = true;
+		}
+
+		$tpl_globals->setVariable('can_see_any_publish', $can_see_any_publish);
+
 		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
 			if ($this->request->isXmlHttpRequest()) {
 				$data = array(

@@ -304,6 +304,11 @@ var DP = {
 				});
 
 				largest += 35;
+				var maxWidth = parseInt(el.css('max-width'));
+
+				if (largest > maxWidth) {
+					largest = maxWidth;
+				}
 
 				return largest + 'px';
 			};

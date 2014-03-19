@@ -17,7 +17,12 @@
 	<div class="extended-search-dialog" id="dp_header_help">
 		<h3>{{ phrase('agent.chrome.help-contact-us') }}</h3>
 		<div class="description">
-			{{ phrase('agent.chrome.help-contact-us-explain') }}
+			<p>
+				{{ phrase('agent.chrome.help-contact-us-explain') }}
+			</p>
+			<p>
+				{{ phrase('agent.chrome.help-quickstart-guide-link', {link: path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }) }}
+			</p>
 		</div>
 
 		{% if app.getSetting('core.agent_enable_kb_shortcuts') %}

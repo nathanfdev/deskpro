@@ -627,17 +627,20 @@ select.dpe_select, select.with-select2 {
 			.opacity(0);
 			min-height: 1px;
 			margin: 0;
+			padding: 0;
 		}
 
 		> a div, > a span, > a b, > a abbr {
 			.opacity(0);
 			min-height: 1px;
 			margin: 0;
+			padding: 0;
 		}
 
 		> .select2-drop {
 			.opacity(0);
 			min-height: 1px;
+			padding: 0;
 		}
 
 		&.right {
@@ -685,6 +688,17 @@ select.dpe_select, select.with-select2 {
 			color: transparent;
 		}
 	}
+}
+
+.task-row .task-info ul li select {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) {

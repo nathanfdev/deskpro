@@ -364,6 +364,15 @@ $DP_CONFIG['debug']['enable_ticket_log'] = false;
 $DP_CONFIG['debug']['enable_usersource_log'] = false;
 
 ######################################################
+# OPTIONAL : Request error log                       #
+######################################################
+# This enables logging of 404 errors, permission     #
+# errors and request method errors.                  #
+######################################################
+
+$DP_CONFIG['enable_request_errorlog'] = false;
+
+######################################################
 # OPTIONAL : Mail Debug                              #
 ######################################################
 #                                                    #

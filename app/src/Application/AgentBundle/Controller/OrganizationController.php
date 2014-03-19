@@ -560,8 +560,8 @@ class OrganizationController extends AbstractController
 		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
 		$domain = $this->in->getString('domain');
 
-		if ($org_domain_manager->isInUse($domain)) {
-			return $this->createResponse('<div class="error" data-error-code="in_use" />');
+		if ($in_use = $org_domain_manager->isInUse($domain)) {
+			return $this->createResponse('<div class="error" data-error-code="in_use" data-org-id="'.$in_use->id.'" />');
 		}
 
 		$org_domain_manager->assignDomain($domain, $org);

@@ -401,10 +401,13 @@ class FeedbackController extends AbstractController
 
 			case 'title':
 				$feedback['title'] = $this->in->getString('title');
-
 				$rev = ContentRevisionUtil::findOrCreate($feedback, 'title', $this->person);
 				$rev['title'] = $feedback['title'];
+				break;
 
+			case 'slug':
+				$feedback['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
+				$data['slug'] = $feedback['slug'];
 				break;
 
 			case 'add-related':

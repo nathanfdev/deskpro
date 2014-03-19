@@ -190,8 +190,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			this.groupingTerms.push({ field: this.meta.topGroupingTerm, value: this.meta.topGroupingOption || 0 });
 		}
 		if (this.meta.groupBy) {
-			$scope.$watch('ticketCount', function(n) {
-				self.getEl('total_grouped_count').find('span').text(n);
+			$scope.$watch('ticketCount', function(newCount, oldCount) {
+				var diff = newCount - oldCount;
+				var groupCountEl = self.getEl('total_grouped_count').find('span');
+				var currentCount = parseInt(groupCountEl.text()) + diff;
+				groupCountEl.text(currentCount);
 			});
 		}
 		if (this.meta.groupBy && this.meta.groupByOption && this.meta.groupByOption != 'DP_NOT_SET') {
@@ -234,6 +237,15 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				self.queueChangeEvent('addTicketResults', [ticketId]);
 			}
 		}, null, [this.OBJ_ID]);
+
+		if (this.meta.groupBy && this.filterId) {
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', function(data) {
+				var filterId = parseInt(data.filter_id);
+				if (filterId == this.filterId) {
+					this.updateSubgroupingBubbles('refresh');
+				}
+			}, this);
+		}
 
 		// Tab indicator
 		this.addEvent('watchedTabAdded', function(tab) {
@@ -741,10 +753,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				}
 
 				for (var k in data.group_display.counts) {
-					if (!data.group_display.counts.hasOwnProperty(ticketValue)) continue;
+					if (!data.group_display.counts.hasOwnProperty(k)) continue;
 					groupingBar.find('li').each(function() {
 						var el = $(this), num = data.group_display.counts[k].total || 0;
-						if (el.data('grouping-option') == ticketValue) {
+						if (el.data('grouping-option') == k) {
 							el.find('span').text(num);
 							if (num == 0) {
 								el.hide();

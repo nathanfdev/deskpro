@@ -68,7 +68,7 @@
 	'user.tickets.rate-negative'                       => 'It was not good',
 	'user.tickets.rate-neutral'                        => 'It was OK',
 	'user.tickets.rate-positive'                       => 'It was great',
-	'user.tickets.rate-question'                       => 'How would you rate the support you recieved?',
+	'user.tickets.rate-question'                       => 'How would you rate the support you received?',
 	'user.tickets.rate-thanks-vialink'                 => 'Thank you for submitting your rating. You can optionally leave a comment below.',
 	'user.tickets.rate_helpful'                        => 'Helpful',
 	'user.tickets.rate_support'                        => 'Rate your support',

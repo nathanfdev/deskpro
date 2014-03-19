@@ -206,105 +206,108 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES && window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo]) {
 						ev.preventDefault();
 
-						var snippetId = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo];
+						for (var i = 0; i < window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo].length; i++) {
 
-						var focus = api.getFocus(),
-							focusNode = $(focus[0]),
-							testText;
+							var snippetId = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo][i];
 
-						if (focus[0].nodeType == 3) {
-							testText = focusNode.text().substring(0, focus[1]);
-						} else {
-							focus[0] = focusNode.contents().get(focus[1] - 1);
-							focusNode = $(focus[0]);
-							testText = focusNode.text();
-							focus[1] = testText.length;
-						}
+							var focus = api.getFocus(),
+								focusNode = $(focus[0]),
+								testText;
 
-						var	lastAt = testText.lastIndexOf('%'), matches = [];
-
-						if (lastAt != -1) {
-							api.setSelection(focus[0], lastAt, focus[0], focus[1]);
-						}
-
-						// web kit handles content editable without an issue. this prevents the span
-						// from being extended unnecessarily
-						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
-
-						$.ajax({
-							url: BASE_URL + 'agent/text-snippets/chat/'+snippetId+'.json',
-							dataType: 'json',
-							success: function(data) {
-
-								var snippet = data.snippet;
-								var snippetId    = snippet.id;
-								var snippetCode  = snippet.snippet;
-
-								var agentText;
-								var defaultText;
-								var wantText;
-								var useText;
-								var result;
-
-								Array.each(snippetCode, function(info) {
-									if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-										defaultText = info.value;
-									}
-									useText = info.value;
-								});
-
-								if (wantText) {
-									useText = wantText;
-								} else if (agentText) {
-									useText = agentText;
-								} else if (defaultText) {
-									useText = defaultText;
-								}
-
-								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-
-								var wrapper = $('<div/>');
-								wrapper.html(useText);
-
-								if (wrapper.find('> div, > p, > span')[0]) {
-									data = wrapper.find('> *');
-								} else {
-									data = wrapper;
-								}
-
-								// trailing newlines
-								var coll;
-								if (data.length == 1) {
-									coll = data;
-								} else {
-									coll = data.find('> p');
-								}
-								coll.each(function() {
-									var l = $(this).find('> *').last();
-									if (l.is('br')) {
-										l.remove();
-									}
-								});
-
-								if (data.find('> div, > span, > p').length == 1) {
-									var span = $('<span></span>');
-									span.append(data.find('> *'));
-									data = span;
-								} else if (data.find('> *').length == 0) {
-									var span = $('<span></span>');
-									span.html(data.html());
-									data = span;
-								}
-
-								data.append('<span class="_cursor"></span>');
-								var cursor = data.find('._cursor');
-
-								el.after(data);
-								el.remove();
-								api.setSelection(cursor[0], 0, cursor[0], 0);
+							if (focus[0].nodeType == 3) {
+								testText = focusNode.text().substring(0, focus[1]);
+							} else {
+								focus[0] = focusNode.contents().get(focus[1] - 1);
+								focusNode = $(focus[0]);
+								testText = focusNode.text();
+								focus[1] = testText.length;
 							}
-						});
+
+							var lastAt = testText.lastIndexOf('%'), matches = [];
+
+							if (lastAt != -1) {
+								api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+							}
+
+							// web kit handles content editable without an issue. this prevents the span
+							// from being extended unnecessarily
+							var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+							api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
+
+							$.ajax({
+								url: BASE_URL + 'agent/text-snippets/chat/' + snippetId + '.json',
+								dataType: 'json',
+								success: function (data) {
+
+									var snippet = data.snippet;
+									var snippetId = snippet.id;
+									var snippetCode = snippet.snippet;
+
+									var agentText;
+									var defaultText;
+									var wantText;
+									var useText;
+									var result;
+
+									Array.each(snippetCode, function (info) {
+										if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+											defaultText = info.value;
+										}
+										useText = info.value;
+									});
+
+									if (wantText) {
+										useText = wantText;
+									} else if (agentText) {
+										useText = agentText;
+									} else if (defaultText) {
+										useText = defaultText;
+									}
+
+									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+
+									var wrapper = $('<div/>');
+									wrapper.html(useText);
+
+									if (wrapper.find('> div, > p, > span')[0]) {
+										data = wrapper.find('> *');
+									} else {
+										data = wrapper;
+									}
+
+									// trailing newlines
+									var coll;
+									if (data.length == 1) {
+										coll = data;
+									} else {
+										coll = data.find('> p');
+									}
+									coll.each(function () {
+										var l = $(this).find('> *').last();
+										if (l.is('br')) {
+											l.remove();
+										}
+									});
+
+									if (data.find('> div, > span, > p').length == 1) {
+										var span = $('<span></span>');
+										span.append(data.find('> *'));
+										data = span;
+									} else if (data.find('> *').length == 0) {
+										var span = $('<span></span>');
+										span.html(data.html());
+										data = span;
+									}
+
+									data.append('<span class="_cursor"></span>');
+									var cursor = data.find('._cursor');
+
+									el.after(data);
+									el.remove();
+									api.setSelection(cursor[0], 0, cursor[0], 0);
+								}
+							});
+						}
 					}
 				}
 			});

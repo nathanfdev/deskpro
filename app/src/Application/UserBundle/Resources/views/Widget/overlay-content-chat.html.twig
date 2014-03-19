@@ -5,6 +5,7 @@
 <div id="newchat" class="tab" style="display: none; min-height: 300px;">
 	<form method="POST" id="dp_newchat_form" class="with-form-validator">
 		{{ form_token() }}
+
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 		<div class="socials">
 			<div>
@@ -42,24 +43,26 @@
 					</td>
 				</tr>
 
-				<tr>
-					<th>
-						{{ phrase('user.widget.ticket_form_department') }}
-					</th>
-					<td>
-						<div class="fields-row dp-form-row-ticket_department_id">
-							<select name="department_id">
-								<option value=""></option>
-								{% for cat in app.departments.getPersonDepartments(app.user, 'chat') %}
-									{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
-								{% endfor %}
-							</select>
-							<span class="tooltip-error">
-								<span>{{ phrase('user.widget.chat_form_error_department') }}</span>
-							</span>
-						</div>
-					</td>
-				</tr>
+				{% if app.departments.getPersonDepartments(app.user, 'chat')|length > 1 %}
+					<tr>
+						<th>
+							{{ phrase('user.widget.ticket_form_department') }}
+						</th>
+						<td>
+							<div class="fields-row dp-form-row-ticket_department_id">
+								<select name="department_id">
+									<option value=""></option>
+									{% for cat in app.departments.getPersonDepartments(app.user, 'chat') %}
+										{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
+									{% endfor %}
+								</select>
+								<span class="tooltip-error">
+									<span>{{ phrase('user.widget.chat_form_error_department') }}</span>
+								</span>
+							</div>
+						</td>
+					</tr>
+				{% endif %}
 
 				<tr>
 					<th>&nbsp;</th>
@@ -69,6 +72,14 @@
 				</tr>
 			</tbody>
 		</table>
+
+		{% if app.departments.getPersonDepartments(app.user, 'chat')|length == 1 %}
+			{% for cat in app.departments.getPersonDepartments(app.user, 'chat') %}
+				<div style="overflow: hidden; height: 1px; width: 1px; visibility: hidden;">
+					<select name="department_id"><option value="{{ cat.id }}" selected="selected"></option></select>
+				</div>
+			{% endfor %}
+		{% endif %}
 
 	</form>
 
