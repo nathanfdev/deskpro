@@ -1038,12 +1038,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// Clean out PTAC's on this ticket to prevent mistakes with forwarding
 		// (Check on ticket since this can still be called from newticket if the users original ticket was closed)
-		if ($this->ticket) {
-			foreach ($this->ticket->access_codes as $code) {
-				$email_info['body']      = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body']);
-				$email_info['body_full'] = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body_full']);
-			}
-		}
+		$email_info['body']      = $this->cleanReplyCodes($email_info['body']);
+		$email_info['body_full'] = $this->cleanReplyCodes($email_info['body_full']);
 
 		$email_info['body_raw'] = $body_raw;
 
@@ -2059,6 +2055,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$text = str_replace("\n\n", "\n", $text);
 		}
 
+		$text = $this->cleanReplyCodes($text);
+
 		return $text;
 	}
 
@@ -2129,5 +2127,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					break;
 			}
 		}
+	}
+
+	/**
+	 * @param string $string
+	 * @return string
+	 */
+	private function cleanReplyCodes($string)
+	{
+		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$authcode_min_len = $auth_len + 1;
+		$authcode_max_len = $auth_len + 7;
+
+		return preg_replace_callback('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', function($m) {
+			return '';
+		}, $string);
 	}
 }
