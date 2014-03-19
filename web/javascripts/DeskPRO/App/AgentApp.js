@@ -368,42 +368,48 @@ define(['angular'], function(angular) {
 					element.hide();
 				};
 
-				targetEl.on('mouseover', function() {
-					if (hideTimeoutId) {
-						$timeout.cancel(hideTimeoutId);
-						hideTimeoutId = null;
-					}
-				});
-				element.on('mouseover', function() {
-					if (hideTimeoutId) {
-						$timeout.cancel(hideTimeoutId);
-						hideTimeoutId = null;
-					}
-				});
+				$timeout(function() {
+					targetEl.on('mouseover', function () {
+						if (hideTimeoutId) {
+							$timeout.cancel(hideTimeoutId);
+							hideTimeoutId = null;
+						}
+					});
+					element.on('mouseover', function () {
+						if (hideTimeoutId) {
+							$timeout.cancel(hideTimeoutId);
+							hideTimeoutId = null;
+						}
+					});
 
-				targetEl.on('mouseout', function() {
-					if (timeoutId) {
-						$timeout.cancel(timeoutId);
-						timeoutId = null;
-					}
-					if (hideTimeoutId) {
-						$timeout.cancel(hideTimeoutId);
-					}
-					hideTimeoutId = $timeout(function() { hide(); }, hideTimeoutMs);
-				});
-				element.on('mouseout', function() {
-					if (hideTimeoutId) {
-						$timeout.cancel(hideTimeoutId);
-					}
-					hideTimeoutId = $timeout(function() { hide(); }, hideTimeoutMs);
-				});
+					targetEl.on('mouseout', function () {
+						if (timeoutId) {
+							$timeout.cancel(timeoutId);
+							timeoutId = null;
+						}
+						if (hideTimeoutId) {
+							$timeout.cancel(hideTimeoutId);
+						}
+						hideTimeoutId = $timeout(function () {
+							hide();
+						}, hideTimeoutMs);
+					});
+					element.on('mouseout', function () {
+						if (hideTimeoutId) {
+							$timeout.cancel(hideTimeoutId);
+						}
+						hideTimeoutId = $timeout(function () {
+							hide();
+						}, hideTimeoutMs);
+					});
 
-				targetEl.on('mouseover', function() {
-					if (timeoutId) return;
-					timeoutId = $timeout(function() {
-						timeoutId = null;
-						show();
-					}, timeoutMs);
+					targetEl.on('mouseover', function () {
+						if (timeoutId) return;
+						timeoutId = $timeout(function () {
+							timeoutId = null;
+							show();
+						}, timeoutMs);
+					});
 				});
 
 				scope.$on('$destroy', function() {
