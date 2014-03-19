@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
+use Application\DeskPRO\People\AgentNotifPrefs\PrefsPersister;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\People\Agents\AgentDelete;
@@ -260,6 +261,19 @@ class AgentsController extends AbstractController implements ProtectedController
 		}
 
 		$edit_agent->save($this->em);
+
+		#-------------------------
+		# Save subscriptions
+		#-------------------------
+
+		$notif_pref_loader = new AgentNotifPrefsLoader($agent, $this->em);
+		$notif_prefs = $notif_pref_loader->getPrefsFromArray(
+			$this->in->getArrayValue('filter_subs'),
+			$this->in->getArrayValue('other_subs')
+		);
+
+		$notif_perist = new PrefsPersister($this->person, $this->em);
+		$notif_perist->savePrefs($notif_prefs);
 
 		#-------------------------
 		# Send welcome email

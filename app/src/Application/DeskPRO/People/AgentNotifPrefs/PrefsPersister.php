@@ -35,6 +35,9 @@
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketFilterSubscription;
+use Doctrine\ORM\EntityManager;
+use Orb\Util\Arrays;
 
 class PrefsPersister
 {
@@ -60,11 +63,112 @@ class PrefsPersister
 		$this->db     = $em->getConnection();
 	}
 
-	public function saveFilterSubs(array $subs)
+
+	/**
+	 * @param Prefs $prefs
+	 * @throws \Exception
+	 */
+	public function savePrefs(Prefs $prefs)
 	{
 		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
 		$filters = Arrays::keyFromData($filters, 'id');
 
 
+		#------------------------------
+		# Create sub records
+		#------------------------------
+
+		$filter_subs = array();
+
+		$person = $this->person;
+		$fn_get_sub = function($filter_id) use (&$filter_subs, $person, $filters) {
+			if (!isset($filter_subs[$filter_id])) {
+				$filter_subs[$filter_id] = new TicketFilterSubscription();
+				$filter_subs[$filter_id]->filter = $filters[$filter_id];
+				$filter_subs[$filter_id]->person = $this->person;
+			}
+
+			return $filter_subs[$filter_id];
+		};
+
+		foreach ($prefs->getFilterSubs('email') as $filter_id => $subs) {
+			$sub = $fn_get_sub($filter_id);
+
+			foreach ($subs as $name => $v) {
+				if (!$v) continue;
+				$sub->{'email_' . $name} = true;
+			}
+		}
+		foreach ($prefs->getFilterSubs('alert') as $filter_id => $subs) {
+			$sub = $fn_get_sub($filter_id);
+
+			foreach ($subs as $name => $v) {
+				if (!$v) continue;
+				$sub->{'alert_' . $name} = true;
+			}
+		}
+
+		#------------------------------
+		# Pref records
+		#------------------------------
+
+		$pref_records = array();
+
+		foreach (array(
+			 'chat',
+			 'task',
+			 'twitter',
+			 'feedback',
+			 'publish',
+			 'crm',
+			 'account'
+		) as $app_name) {
+			foreach (array('email', 'alert') as $type) {
+				$subs = $prefs->getAppSubs($type, $app_name);
+				foreach ($subs as $name => $v) {
+					if (!$v) continue;
+					$pref_records[] = array(
+						'person_id' => $this->person->id,
+						'name'      => "agent_notif.{$name}.$type",
+						'value_str' => '1',
+					);
+				}
+			}
+		}
+
+		#------------------------------
+		# Save
+		#------------------------------
+
+		$this->db->beginTransaction();
+
+		try {
+			$this->db->delete('ticket_filter_subscriptions', array('person_id' => $this->person->id));
+			$this->db->executeUpdate("
+				DELETE FROM people_prefs
+				WHERE name LIKE 'agent_notif.%'
+				AND person_id = ?
+			", array($this->person->id));
+
+			if ($pref_records) {
+				if ($filter_subs) {
+					foreach ($filter_subs as $s) {
+						$this->em->persist($s);
+					}
+				}
+
+				if ($pref_records) {
+					$this->db->batchInsert('people_prefs', $pref_records, true);
+				}
+
+				$this->em->flush();
+			}
+
+			$this->db->commit();
+
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
 	}
 }

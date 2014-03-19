@@ -173,7 +173,7 @@ class PrefsLoader
 			 'publish',
 			 'crm',
 			 'account'
-		 ) as $app_name) {
+		) as $app_name) {
 			foreach (array('email', 'alert') as $type) {
 				$subs = $prefs->getAppSubs($type, $app_name);
 				foreach (array_keys($subs) as $name) {
@@ -185,6 +185,82 @@ class PrefsLoader
 					}
 				}
 				$prefs->setAppSubs($type, $app_name, $subs);
+			}
+		}
+
+		return $prefs;
+	}
+
+
+	/**
+	 * @param array $filter_subs
+	 * @param array $other_subs
+	 * @return Prefs
+	 */
+	public function getPrefsFromArray(array $filter_subs = array(), array $other_subs = array())
+	{
+		$prefs = new Prefs();
+
+		#------------------------------
+		# Load filters
+		#------------------------------
+
+		if ($filter_subs) {
+			$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+			$filters = Arrays::keyFromData($filters, 'id');
+
+			foreach ($filter_subs as $info) {
+				$filter_id   = !empty($info['filter_id']) ? $info['filter_id'] : null;
+				$email_types = !empty($info['email']) ? $info['email'] : array();
+				$alert_types = !empty($info['alert']) ? $info['alert'] : array();
+
+				if ($filter_id && !isset($filters[$filter_id])) {
+					continue;
+				}
+
+				if ($email_types) {
+					$email_types = array_combine($email_types, $email_types);
+					$prefs->setFilterSubs('email', $filters[$filter_id], $email_types);
+				}
+				if ($alert_types) {
+					$alert_types = array_combine($alert_types, $alert_types);
+					$prefs->setFilterSubs('alert', $filters[$filter_id], $alert_types);
+				}
+			}
+		}
+
+		#------------------------------
+		# Load others
+		#------------------------------
+
+		if ($other_subs) {
+			$valid_apps = array(
+				'chat' => true,
+				'task' => true,
+				'twitter' => true,
+				'feedback' => true,
+				'publish' => true,
+				'crm' => true,
+				'account' => true,
+			);
+
+			foreach ($other_subs as $info) {
+				$app_name    = !empty($info['type']) ? $info['type'] : null;
+				$email_types = !empty($info['email']) ? $info['email'] : array();
+				$alert_types = !empty($info['alert']) ? $info['alert'] : array();
+
+				if (!$app_name || !isset($valid_apps[$app_name])) {
+					continue;
+				}
+
+				if ($email_types) {
+					$email_types = array_combine($email_types, $email_types);
+					$prefs->setAppSubs('email', $app_name, $email_types);
+				}
+				if ($alert_types) {
+					$alert_types = array_combine($alert_types, $alert_types);
+					$prefs->setAppSubs('alert', $app_name, $alert_types);
+				}
 			}
 		}
 

@@ -135,7 +135,7 @@ class Prefs
 			return array();
 		}
 
-		return $this->filter_subs;
+		return $this->filter_subs[$type];
 	}
 
 
@@ -193,7 +193,7 @@ class Prefs
 	 * @param string $app_name
 	 * @return mixed
 	 */
-	public function getAppSubs($type, $app_name)
+	public function getAppSubs($type, $app_name = null)
 	{
 		return $this->app_subs[$app_name][$type];
 	}
