@@ -357,6 +357,27 @@ class DpKernel extends AbstractKernel
 	 */
 	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
+		if ($this->interface == 'user' && $this->container) {
+			if (
+				!preg_match('#^/widget/#', $request->getPathInfo())
+				&& !preg_match('#^/chat/#', $request->getPathInfo())
+				&& !preg_match('#^/tickets/new-simple#', $request->getPathInfo())
+				&& !preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
+				&& !preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
+				&& !preg_match('#^/logout#', $request->getPathInfo())
+				&& !preg_match('#^/login#', $request->getPathInfo())
+				&& (!isset($_REQUEST['_partial']) || $_REQUEST['_partial'] != 'overlayWidget')
+			) {
+				try {
+					if (!$this->container->getSetting('user.portal_enabled')) {
+						$response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
+						return $response;
+					}
+				} catch (\Exception $e) {
+				}
+			}
+		}
+
 		if (
 			(isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
 			|| strpos($request->getPathInfo(), '/admin/') === 0
@@ -513,6 +534,7 @@ class DpKernel extends AbstractKernel
 					|| preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
 					|| preg_match('#^/logout#', $request->getPathInfo())
 					|| preg_match('#^/login#', $request->getPathInfo())
+					|| isset($_REQUEST['_partial'])
 				) {
 					return false;
 				}
