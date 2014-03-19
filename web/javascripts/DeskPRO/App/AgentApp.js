@@ -283,6 +283,7 @@ define(['angular'], function(angular) {
 					maxWidth       = attrs['maxWidth'] ? attrs['maxWidth'] : null,
 					widthCalc      = attrs['widthCalc'] ? scope.$eval(attrs['widthCalc']) : null,
 					width          = attrs['width'] ? attrs['width'] : null,
+					noHoverTip     = typeof attrs['noHoverTip'] != 'undefined',
 					hasInit        = false,
 					m;
 
@@ -375,12 +376,15 @@ define(['angular'], function(angular) {
 							hideTimeoutId = null;
 						}
 					});
-					element.on('mouseover', function () {
-						if (hideTimeoutId) {
-							$timeout.cancel(hideTimeoutId);
-							hideTimeoutId = null;
-						}
-					});
+
+					if (!noHoverTip) {
+						element.on('mouseover', function () {
+							if (hideTimeoutId) {
+								$timeout.cancel(hideTimeoutId);
+								hideTimeoutId = null;
+							}
+						});
+					}
 
 					targetEl.on('mouseout', function () {
 						if (timeoutId) {
@@ -394,14 +398,17 @@ define(['angular'], function(angular) {
 							hide();
 						}, hideTimeoutMs);
 					});
-					element.on('mouseout', function () {
-						if (hideTimeoutId) {
-							$timeout.cancel(hideTimeoutId);
-						}
-						hideTimeoutId = $timeout(function () {
-							hide();
-						}, hideTimeoutMs);
-					});
+
+					if (!noHoverTip) {
+						element.on('mouseout', function () {
+							if (hideTimeoutId) {
+								$timeout.cancel(hideTimeoutId);
+							}
+							hideTimeoutId = $timeout(function () {
+								hide();
+							}, hideTimeoutMs);
+						});
+					}
 
 					targetEl.on('mouseover', function () {
 						if (timeoutId) return;
