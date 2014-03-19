@@ -69,21 +69,17 @@ class ExceptionListener
 	protected function _logException(\Exception $exception)
 	{
 		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-			try {
-				$req = App::getRequest();
-				if ($req && $req->isXmlHttpRequest()) {
-					$this->_log404($exception);
-				}
-			} catch (\Exception $e) {}
-
+			$this->logRequestException('not_found', $exception);
 			return;
 		}
 
 		if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
+			$this->logRequestException('no_permission', $exception);
 			return;
 		}
 
 		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+			$this->logRequestException('bad_method', $exception);
 			return;
 		}
 
@@ -93,28 +89,26 @@ class ExceptionListener
 		KernelErrorHandler::logErrorInfo($errinfo);
 	}
 
-	public function _log404(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $exception)
+	private function logRequestException($type, \Exception $e)
 	{
-		return;
-		$summary = $exception->getMessage();
+		$log_file = dp_get_log_dir() . '/request_errors.log';
 
-		$trace = KernelErrorHandler::formatBacktrace($exception->getTrace());
-		$trace = KernelErrorHandler::stripPathPrefix($trace);
+		$url = '';
+		if (defined('DP_REQUEST_URL')) {
+			$url = DP_REQUEST_URL;
+		} elseif (defined('DP_INTERFACE')) {
+			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+			if (class_exists('Application\\DeskPRO\\App', false)) {
+				try {
+					$url = App::getRequest()->getUri();
+				} catch (\Exception $e) {}
+			}
+		}
 
-		$exception->_dp_sn = KernelErrorHandler::genSessionName();
+		$top = sprintf("[%s] %s: %s", date('Y-m-d H:i:s'), $type, $url);
+		$lines = sprintf("Type: %s\nException: %s %s\n%s", get_class($e), $e->getCode(), $e->getMessage(), KernelErrorHandler::formatBacktrace($e->getTrace()));
+		$lines = Strings::modifyLines($lines, "\t");
 
-		try {
-			$logger = App::createNewLogger('error_not_found', null);
-			$logger->log($summary, 3, array(
-				'session_name' => $exception->_dp_sn,
-				'trace' => $trace,
-				'class' => get_class($exception),
-				'file' => $exception->getFile(),
-				'line' => $exception->getLine()
-			));
-		} catch (\Exception $e) {}
-
-		$errinfo = KernelErrorHandler::getExceptionInfo($exception);
-		KernelErrorHandler::logErrorInfo($errinfo);
+		@file_put_contents($log_file, $top . "\n" . $lines, \FILE_APPEND);
 	}
 }
