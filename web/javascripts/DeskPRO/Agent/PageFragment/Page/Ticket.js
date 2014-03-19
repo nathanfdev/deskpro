@@ -2224,7 +2224,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				var wrapper = overlay.getWrapper(),
 					form = wrapper.find('form'),
 					sendBtn = wrapper.find('.save-trigger'),
-					footer = wrapper.find('.overlay-footer');
+					footer = wrapper.find('.overlay-footer'),
+					emailInput = wrapper.find('.email-address-input'),
+					emailInputWrap = wrapper.find('.email-address-wrap');
+
+				DeskPRO.ElementHandler_Exec(wrapper);
+
+				emailInputWrap.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+					emailInput.val(email);
+					sb.close();
+				});
 
 				form.on('submit', function(ev) {
 					ev.preventDefault();

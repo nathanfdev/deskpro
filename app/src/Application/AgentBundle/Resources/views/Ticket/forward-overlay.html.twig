@@ -8,7 +8,40 @@
 			<div class="forward-wrapper">
 				<div class="header-line">
 					<div class="label">{{ phrase('agent.general.to') }}:</div>
-					<div class="input"><input type="text" name="to" value="" placeholder="{{ phrase('agent.general.email_address') }}" /></div>
+
+					{% set to_id = el_uid() %}
+					<div
+						class="input email-address-wrap"
+						data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+						data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'with_agents': 1}) }}"
+						data-search-param="term"
+						data-position-bound="#{{to_id}}"
+					>
+						<input
+							id="{{to_id}}"
+							class="email-address-input term"
+							type="text"
+							name="to"
+							value=""
+							placeholder="{{ phrase('agent.general.email_address') }}"
+						/>
+
+						<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+							<li>
+								<a>
+								<span class="user-name"></span>
+								<address>&lt;<span class="user-email"></span>&gt;</address>
+								<div class="bound-fade"></div>
+							</a></li>
+						</script>
+						<div class="person-search-box" style="display: none">
+							<section>
+								<ul class="results-list">
+
+								</ul>
+							</section>
+						</div>
+					</div>
 				</div>
 				<div class="header-line last">
 					<div class="label">{{ phrase('agent.general.subject') }}:</div>
