@@ -91,6 +91,10 @@ class ExceptionListener
 
 	private function logRequestException($type, \Exception $e)
 	{
+		if (!dp_get_config('enable_request_errorlog')) {
+			return;
+		}
+
 		$log_file = dp_get_log_dir() . '/request_errors.log';
 
 		$url = '';
