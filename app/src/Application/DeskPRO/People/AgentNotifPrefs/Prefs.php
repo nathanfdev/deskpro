@@ -126,11 +126,29 @@ class Prefs
 	/**
 	 * This gets the filter sub settings for all set filters.
 	 *
-	 * @param $type
+	 * @param string|null $type
 	 * @return array
 	 */
-	public function getFilterSubs($type)
+	public function getFilterSubs($type = null)
 	{
+		if ($type === null) {
+			$ret = array();
+			foreach (array('email', 'alert') as $type) {
+				foreach ($this->getFilterSubs($type) as $filter_id => $subs) {
+					if (!isset($ret[$filter_id])) {
+						$ret[$filter_id] = array();
+					}
+
+					foreach ($subs as $s => $v) {
+						if ($v) {
+							$ret[$filter_id]["{$type}_{$s}"] = true;
+						}
+					}
+				}
+			}
+			return $ret;
+		}
+
 		if (!isset($this->filter_subs[$type])) {
 			return array();
 		}

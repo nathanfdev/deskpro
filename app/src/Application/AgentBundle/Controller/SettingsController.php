@@ -35,7 +35,9 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
+use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 
 class SettingsController extends AbstractController
 {
@@ -255,15 +257,17 @@ class SettingsController extends AbstractController
 
 	public function ticketNotificationsAction()
 	{
-		$filter_info      = App::getApi('tickets.filters')->getGroupedFiltersForPerson($this->person);
-		$all_filters      = $filter_info['all_filters'];
-		$sys_filters      = $filter_info['sys_filters'];
-		$sys_filters_hold = $filter_info['sys_filters_hold'];
-		$custom_filters   = $filter_info['custom_filters'];
+		$loader    = new AgentNotifPrefsLoader($this->person, $this->em);
+		$prefs     = $loader->getPrefs();
 
-		$my_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgent($this->person);
+		$filters = new TicketFilterCollection($this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person));
 
-		$admin_triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->findTriggersForcingNotificationForAgent($this->person);
+		$all_filters      = $filters->getAllFilters();
+		$sys_filters      = $filters->getSystemFilters();
+		$sys_filters_hold = $filters->getSystemHoldFilters();
+		$custom_filters   = $filters->getCustomFilters();
+
+		$my_subs = $prefs->getFilterSubs();
 
 		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
 			'all_filters'      => $all_filters,
@@ -271,7 +275,6 @@ class SettingsController extends AbstractController
 			'sys_filters_hold' => $sys_filters_hold,
 			'custom_filters'   => $custom_filters,
 			'my_subs'          => $my_subs,
-			'admin_triggers'   => $admin_triggers,
 		));
 	}
 
