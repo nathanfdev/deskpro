@@ -2791,6 +2791,11 @@ class TicketController extends AbstractController
 			}
 			$top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
 			$top .= nl2br(htmlspecialchars($custom_message));
+
+			if ($sig = $this->person->getSignatureHtml()) {
+				$top .= '<br/><br/>' . $sig . '<br/><br/><br/>';
+			}
+
 			$top .= '</div>';
 		}
 

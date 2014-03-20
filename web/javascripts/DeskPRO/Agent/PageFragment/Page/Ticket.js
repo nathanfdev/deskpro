@@ -2225,7 +2225,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					form = wrapper.find('form'),
 					sendBtn = wrapper.find('.save-trigger'),
 					footer = wrapper.find('.overlay-footer'),
+					msgInput = wrapper.find('textarea.note'),
 					emailInput = wrapper.find('.email-address-input'),
+					sigPreview = wrapper.find('.agent-sig-view'),
 					emailInputWrap = wrapper.find('.email-address-wrap');
 
 				DeskPRO.ElementHandler_Exec(wrapper);
@@ -2234,6 +2236,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					emailInput.val(email);
 					sb.close();
 				});
+
+				msgInput.on('change keyup keydown', function() {
+					var txt = $.trim($(this).val());
+					if (txt.length) {
+						sigPreview.show();
+					} else {
+						sigPreview.hide();
+					}
+				})
 
 				form.on('submit', function(ev) {
 					ev.preventDefault();
