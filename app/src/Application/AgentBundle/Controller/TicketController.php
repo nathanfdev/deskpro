@@ -618,6 +618,24 @@ class TicketController extends AbstractController
 
 		$all_feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedbackForTicket($ticket);
 
+		// Ticket logs to do with forwarded messages
+		$fwd_logs = $this->em->createQuery("
+			SELECT log, person
+			FROM DeskPRO:TicketLog log
+			LEFT JOIN log.person person
+			WHERE log.ticket = ?0 AND log.action_type = 'message_forwarded'
+		")->execute(array($ticket));
+
+		$ticket_fwd_logs = array();
+		foreach ($fwd_logs as $log) {
+			$mid = $log->details['message_id'];
+			if (!isset($ticket_fwd_logs[$mid])) {
+				$ticket_fwd_logs[$mid] = array();
+			}
+
+			$ticket_fwd_logs[$mid][] = $log;
+		}
+
 		if ($ticket_messages) {
             if($is_pdf) {
                 $tpl = 'DeskPRO:pdf_agent:ticket-messages-batch.html.twig';
@@ -631,6 +649,7 @@ class TicketController extends AbstractController
 				'ticket_messages_translated' => $ticket_messages_translated,
 				'ticket_messages_num'        => $ticket_messages_num,
 				'ticket_message_attachments' => $ticket_message_attachments,
+				'ticket_fwd_logs'            => $ticket_fwd_logs,
 				'ticket_attachments'         => $ticket_attachments,
 				'all_feedback'               => $all_feedback,
 				'message_page'               => $page,
@@ -2897,8 +2916,16 @@ class TicketController extends AbstractController
 		$this->db->insert('tickets_logs', array(
 			'ticket_id'    => $ticket->id,
 			'person_id'    => $this->person->id,
-			'action_type'  => 'free',
-			'details'      => serialize(array('message' => 'Forwarded message ID '.$message_id. ' to ' . implode(', ', array_keys($to)))),
+			'action_type'  => 'message_forwarded',
+			'details'      => serialize(array(
+				'message_id' => $message_id,
+				'agent_id'   => $this->person->id,
+				'agent_name' => $this->person->getDisplayName(),
+				'to'         => array_keys($to),
+				'to_string'  => implode(', ', array_keys($to)),
+				'from_email' => $from_email,
+				'from_name'  => $from_name
+			)),
 			'date_created' => date('Y-m-d H:i:s')
 		));
 
