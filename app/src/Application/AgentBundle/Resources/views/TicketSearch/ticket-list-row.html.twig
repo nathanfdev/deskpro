@@ -64,6 +64,10 @@
 			<% if (ticket.agent) { %>
 				<span class="tipped agent-inline-icon" title="<%- ticket.agent.display_name %>" style="background-image: url('<%- ticket.agent.picture_url_16 %>');"></span>
 			<% } %>
+
+			<% if (ticket.flag) { %>
+				<i class="flag <%= ticket.flag %>"></i>
+			<% } %>
 			<br class="clear" />
 		</div>
 	</div>

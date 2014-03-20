@@ -67,6 +67,8 @@ class TicketListRenderer
 				);
 			}
 
+			$data['flag'] = $ticket_display->getFlaggedColor($ticket);
+
 			$json_array[] = $data;
 		}
 

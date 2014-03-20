@@ -645,6 +645,32 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 
 	/**
+	 * Applies some arbitrary data to a ticket in the current list view.
+	 * Use this to apply specific known changes to the view.
+	 *
+	 * @param {Integer} ticketId
+	 * @param {Object} data Data to apply
+	 */
+	mergeTicketData: function(ticketId, data) {
+		var $scope = this.$scope,
+			idx = null,
+			newTicket;
+
+		$scope.tickets.forEach(function(ticket, i) {
+			if (ticket.id != ticketId) return;
+			newTicket = _.extend({}, ticket, data || {});
+			idx = i;
+		});
+
+		if (idx !== null) {
+			$scope.$safeApply(function() {
+				$scope.tickets.splice(idx, 1, newTicket);
+			});
+		}
+	},
+
+
+	/**
 	 * Given a ticket model object, check if it belongs in the list based on grouping vals.
 	 * For example, if viewing grouped by agent and I have selected 'me', then only tickets with ticket.agent.id == me
 	 * would return true.
