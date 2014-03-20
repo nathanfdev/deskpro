@@ -39,6 +39,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}]);
 
 		this.addEvent('destroy', function() {
+			if (self.queuedChangeEvents_timeout) {
+				self.$timeout.cancel(self.queuedChangeEvents_timeout);
+				self.queuedChangeEvents_timeout = null;
+			}
 			if (self.$scope) {
 				self.$scope.$destroy();
 				self.$scope = null;
@@ -204,13 +208,20 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			this.groupingTerms.push({ field: this.meta.groupBy, value: this.meta.groupByOption || 0 });
 		}
 
+		if (this.groupingTerms[0]) {
+			this.isClientSideGroupingLogic = this.fieldUtil.isSupportedField(this.groupingTerms[0].field);
+		}
+		if (this.isClientSideGroupingLogic && this.groupingTerms[1]) {
+			this.isClientSideGroupingLogic = this.fieldUtil.isSupportedField(this.groupingTerms[1].field);
+		}
+
 		// Events about updates
 		// More updates happen in the Section.Tickets controller where
 		// we are told about specific additions/removals of tickets to the list
 		// Those events are called directly on this controller as addTicketResults/removeTicketResults
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', function(ticket_ids) {
 			self.queueChangeEvent('removeTicketResults', ticket_ids);
-		}).bind(this), null, [this.OBJ_ID])
+		}, null, [this.OBJ_ID]);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
 			var ticketId = parseInt(info.ticket_id),
@@ -241,10 +252,30 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		if (this.meta.groupBy && this.filterId) {
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', function(data) {
 				var filterId = parseInt(data.filter_id);
-				if (filterId == this.filterId) {
-					this.updateSubgroupingBubbles('refresh');
+				var ticketId = parseInt(data.ticket_id || 0);
+				if (filterId == self.filterId) {
+					if (ticketId && data.op) {
+						if (data.op == 'add') {
+							if (!self.isClientSideGroupingLogic) {
+								self.refreshCursor(null, true);
+								self.updateSubgroupingBubbles('refresh');
+							} else {
+								self.updateSubgroupingBubbles('refresh');
+								if ($scope.tickets.filter(function (x) {
+									return x.id === ticketId;
+								}).length === 1) {
+									self.queueChangeEvent('refreshTicketResults', [ticketId]);
+								} else {
+									self.queueChangeEvent('addTicketResults', [ticketId]);
+								}
+							}
+						} else if (data.op == 'del') {
+							self.queueChangeEvent('removeTicketResults', [ticketId]);
+							self.updateSubgroupingBubbles('refresh');
+						}
+					}
 				}
-			}, this);
+			}, null, [this.OBJ_ID]);
 		}
 
 		// Tab indicator
@@ -752,11 +783,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					return;
 				}
 
+				var touched = [];
+
 				for (var k in data.group_display.counts) {
 					if (!data.group_display.counts.hasOwnProperty(k)) continue;
 					groupingBar.find('li').each(function() {
 						var el = $(this), num = data.group_display.counts[k].total || 0;
 						if (el.data('grouping-option') == k) {
+							touched.push(this);
 							el.find('span').text(num);
 							if (num == 0) {
 								el.hide();
@@ -766,6 +800,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						}
 					});
 				}
+
+				// Ones with no numbers need to be hidden
+				groupingBar.find('li').each(function() {
+					if (touched.indexOf(this) === -1) {
+						$(this).hide().find('span').text('0');
+					}
+				});
 			}
 		});
 	},
@@ -1089,7 +1130,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.loadNextCursorPage = function() { if ($scope.hasNextPage) self.loadNextCursorPage(); };
 	},
 
-	refreshCursor: function(cursor) {
+	refreshCursor: function(cursor, invisibleLoad) {
 		var self = this,
 			$scope = this.$scope,
 			$q = this.$q,
@@ -1098,7 +1139,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			time1 = new Date(),
 			time2;
 
-		if (typeof cursor == 'undefined') {
+		if (typeof cursor == 'undefined' || cursor === null) {
 			cursor = this.realCursorStart - 1;
 		}
 
@@ -1111,7 +1152,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		def = new $q.defer();
-		$scope.refreshCursorLoading = true;
+		if (!invisibleLoad) {
+			$scope.refreshCursorLoading = true;
+		}
+
 		this.refreshCursorAjax = $.ajax({
 			url: this.meta.refreshCursorUrl.replace(/\$cursor/g, cursor),
 			dataType: 'json',
@@ -1182,12 +1226,26 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 //######################################################################################################################
 
 DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
+
+	isSupportedField: function(f) {
+		return this.getSupportedFields().indexOf(f) !== -1;
+	},
+
+	getSupportedFields: function() {
+		return [
+			'department', 'category', 'product', 'organization', 'person',
+			'language', 'agent', 'agent_team', 'agent_team', 'urgency',
+		];
+	},
+
 	getFieldValue: function(field, ticket) {
 		switch (field) {
 			case 'department':
 				return ticket.department ? ticket.department.id : null;
 			case 'category':
 				return ticket.category ? ticket.category.id : null;
+			case 'product':
+				return ticket.product ? ticket.product.id : null;
 			case 'organization':
 				return ticket.organization ? ticket.organization.id : null;
 			case 'person':
@@ -1203,6 +1261,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 			case 'urgency':
 				return ticket.urgency ? ticket.urgency : null;
 			default:
+				console.log("[getFieldValue] Unknown field: %s", field);
 				return '__UNKNOWN__';
 		}
 	},
@@ -1215,6 +1274,8 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 				return (ticket.department && ticket.department.id === intValue) || (!ticket.department && intValue === 0);
 			case 'category':
 				return (ticket.category && ticket.category.id === intValue) || (!ticket.category && intValue === 0);
+			case 'product':
+				return (ticket.product && ticket.product.id === intValue) || (!ticket.product && intValue === 0);
 			case 'organization':
 				return (ticket.organization && ticket.organization.id === intValue) || (!ticket.organization && intValue === 0);
 			case 'person':
@@ -1230,6 +1291,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 			case 'urgency':
 				return ticket.urgency === intValue;
 			default:
+				console.log("[checkEquality] Unknown field: %s", field);
 				return false;
 		}
 	},
