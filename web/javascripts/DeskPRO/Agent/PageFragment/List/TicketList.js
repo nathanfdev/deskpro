@@ -1380,7 +1380,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 				if (ticketA.date_user_waiting) {
 					valA = ticketA.date_user_waiting_ts;
 				}
-				if (ticketB.date_closed) {
+				if (ticketB.date_user_waiting) {
 					valB = ticketB.date_user_waiting_ts;
 				}
 				break;
