@@ -989,6 +989,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						return !!ticket.department;
 					case 'language':
 						return !!ticket.language;
+					case 'product':
+						return !!ticket.product;
 					case 'category':
 						return !!ticket.category;
 					case 'priority':
