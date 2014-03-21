@@ -952,7 +952,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		function findNextTicketId() {
 			var listPage = DeskPRO_Window.getListPage();
-			if (!listPage) return null;
+			if (!listPage || !listPage.listTicketIds || !listPage.listTicketIds.length) return null;
 
 			var idx = listPage.listTicketIds.indexOf(parseInt(self.getMetaData('ticket_id')));
 			if (idx !== -1 && listPage.listTicketIds.length >= idx) {
