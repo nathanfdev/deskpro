@@ -306,8 +306,13 @@ unset($errors);
 
 //==BEGIN:MONITORING==
 if (extension_loaded('newrelic')) {
-	if (defined('DPC_SITE_DOMAIN')) newrelic_add_custom_parameter('dpc_domain', DPC_SITE_DOMAIN);
-	newrelic_capture_params(true);
-	newrelic_disable_autorum();
+	if ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'web') || !defined('DP_BOOT_MODE')) {
+		if (defined('DPC_SITE_DOMAIN')) newrelic_add_custom_parameter('dpc_domain', DPC_SITE_DOMAIN);
+		newrelic_capture_params(true);
+		newrelic_disable_autorum();
+	} else {
+		newrelic_ignore_transaction();
+		newrelic_ignore_apdex();
+	}
 }
 //==END:MONITORING==
