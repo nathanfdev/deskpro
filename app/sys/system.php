@@ -175,7 +175,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		}
 
 		// Make sure we arent banned ip
-		if (!preg_match('#^/admin/?#', $path)) {
+		if (!preg_match('#^/admin/?#', $path) && !preg_match('#^/agent/?#', $path)) {
 			$ip = dp_get_user_ip_address();
 			$ip_long = sprintf("%u", ip2long($ip));
 
@@ -194,7 +194,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		}
 
 		// Make sure we arent offline
-		if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
+		if (!defined('DP_INTERFACE') || !(DP_INTERFACE == 'agent' || DP_INTERFACE == 'admin')) {
 			$response = new Response();
 			$response->setContent(HelpdeskOfflineMessage::getOfflinePage());
 			return $response;
