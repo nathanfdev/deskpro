@@ -710,6 +710,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var def = this.$q.defer(),
 			formData = [];
 
+		if (!ticketIds || !ticketIds.length) {
+			def.resolve([]);
+			return def.promise;
+		}
 
 		ticketIds.forEach(function(tid) {
 			formData.push({ name: 'ticket_ids[]', value: tid });;
@@ -734,7 +738,130 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 
 	/**
-	 * Updates grouping bubble with some info about what happened
+	 * Loads ticket rows with change data to preview changes.
+	 *
+	 * @param ticketIds
+	 * @param changes
+	 * @returns {promise}
+	 */
+	getTicketChangePreviewRows: function(ticketIds, changes, runSingle) {
+		var def = this.$q.defer(),
+			formData = [];
+
+		if (runSingle && this.runningChangePreviewAjax) {
+			this.runningChangePreviewAjax.abort();
+			this.runningChangePreviewAjax = null;
+		}
+
+		if (!ticketIds || !ticketIds.length || !changes || !changes.length) {
+			def.resolve([]);
+			return def.promise;
+		}
+
+		ticketIds.forEach(function(tid) {
+			formData.push({ name: 'ticket_ids[]', value: tid });;
+		});
+
+		changes.forEach(function(c) {
+			formData.push(c);
+		});
+
+		this.runningChangePreviewAjax = $.ajax({
+			url: BASE_URL + "agent/ticket-search/ticket-rows.json",
+			type: 'POST',
+			dataType: 'json',
+			data: formData,
+			noErrorOverride: true,
+			complete: function() {
+				this.runningChangePreviewAjax = null;
+			},
+			success: function(data) {
+				def.resolve(data);
+			},
+			error: function() {
+				def.reject();
+			}
+		});
+
+		return def.promise;
+	},
+
+
+	/**
+	 * Applies data from getTicketChangePreviewRows to the current ticket array so the changes
+	 * are visible.
+	 *
+	 * @param {Array} tickets
+	 */
+	applyTicketChangePreviews: function(tickets) {
+		var ticketMap = {};
+		tickets.forEach(function(t) { ticketMap[t.id] = t; });
+
+		this.$scope.tickets.forEach(function(ticket) {
+			if (ticketMap[ticket.id]) {
+				ticket.preview_changes = ticketMap[ticket.id];
+
+				if (!ticket.version_id) ticket.version_id = 0;
+				ticket.version_id++;
+			}
+		});
+		console.log(this.$scope.tickets);
+	},
+
+
+	/**
+	 * Clear preview data from all tickets
+	 */
+	clearAllTicketChangePreviews: function() {
+		this.$scope.tickets.forEach(function(ticket) {
+			if (ticket.preview_changes) {
+				ticket.preview_changes = null;
+				delete ticket.preview_changes;
+
+				if (!ticket.version_id) ticket.version_id = 0;
+				ticket.version_id++;
+			}
+		});
+	},
+
+
+	/**
+	 * Clear preview data from specific tickets
+	 *
+	 * @param {Array} ticketIds      Clear these ticket IDs
+	 * @param {Array} notTicketIds   Clear tickets that are not these IDs
+	 */
+	clearTicketChangePreviews: function(ticketIds, notTicketIds) {
+		var map = null, notMap = null;
+
+		if (ticketIds) {
+			map = {};
+			ticketIds.forEach(function(t) { map[t] = true; });
+		}
+		if (notTicketIds) {
+			notMap = {};
+			notTicketIds.forEach(function(t) { notMap[t] = true; });
+		}
+
+		this.$scope.tickets.forEach(function(ticket) {
+			if ((map && map[ticket.id]) || (notMap && !notMap[ticket.id])) {
+				if (ticket.preview_changes) {
+					ticket.preview_changes = null;
+					delete ticket.preview_changes;
+
+					if (!ticket.version_id) ticket.version_id = 0;
+					ticket.version_id++;
+				}
+			}
+		});
+	},
+
+
+	/**
+	 * Updates grouping bubble with some info about what happened.
+	 * This is called automatically when a ticket is updated. If we know how to handle
+	 * a grouping field, we can update the grouping counts now. Otherwise, we need to
+	 * refresh on the server side.
 	 *
 	 * @param op
 	 * @param ticket
@@ -795,6 +922,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 	},
 
+
+	/**
+	 * Refreshes the subgroup changes from the server.
+	 */
 	refreshSubgroupNumbers: function() {
 		var self = this;
 		if (!this.meta.refreshSubgroupCounts) {
@@ -842,7 +973,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	//#########################################################################
 
 	_initMassActions: function() {
-		var self = this, $scope = this.$scope;
+		var self = this,
+			$scope = this.$scope;
 
 		//------------------------------
 		// Checkbox management
@@ -874,6 +1006,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			} else if (!$scope.checkedTicketsCount && self.massActions) {
 				self.massActions.close();
 			}
+
+			self.updateMassActionPreviewsStatus();
 		}, true);
 
 		$scope.checkAllTickets = function(isChecked) {
@@ -895,13 +1029,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					templateElement: self.wrapper.find('.mass-actions-overlay-tpl'),
 					"$scope": self.$scope,
 					onPostApply: function(inst, data, info) {
-						$scope.checkedTickets = {};
+						$scope.$safeApply(function() {
+							$scope.checkedTickets = {};
+							self.clearAllTicketChangePreviews();
 
-						if (data.ticket_data) {
-							self.applyTicketData(data.ticket_data);
-						}
-
-						$scope.$safeApply();
+							if (data.ticket_data) {
+								self.applyTicketData(data.ticket_data);
+							}
+						});
 					},
 					getCheckedIds: function() {
 						var ids = [];
@@ -918,16 +1053,72 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 							self.massActions.destroy();
 						}
 
-						$scope.checkedTickets = {};
-						$scope.$safeApply();
+						$scope.$safeApply(function() {
+							self.clearAllTicketChangePreviews();
+							$scope.checkedTickets = {};
+						});
 
 						self.massActions = null;
+					},
+					onFormUpdated: function(changes) {
+						self.updateMassActionPreviews(changes);
 					}
 				});
 			}
 
 			self.massActions.open();
 		};
+
+		this.updateMassActionPreviewsDebounced = _.debounce(this.updateMassActionPreviews, 500);
+	},
+
+	updateMassActionPreviewsStatus: function() {
+		var $scope = this.$scope,
+			ids = [],
+			self = this;
+
+		for (var i in $scope.checkedTickets) {
+			if ($scope.checkedTickets.hasOwnProperty(i)) {
+				ids.push(parseInt(i));
+			}
+		}
+
+		$scope.$safeApply(function() {
+			if (!ids.length) {
+				self.clearAllTicketChangePreviews();
+			} else {
+				self.clearTicketChangePreviews(null, ids);
+			}
+		});
+	},
+
+	updateMassActionPreviews: function(changes) {
+		var $scope = this.$scope,
+			ids = [],
+			self = this;
+
+		for (var i in $scope.checkedTickets) {
+			if ($scope.checkedTickets.hasOwnProperty(i)) {
+				ids.push(parseInt(i));
+			}
+		}
+
+		if (!ids.length || !changes.length) {
+			$scope.$safeApply(function() {
+				self.clearAllTicketChangePreviews();
+			});
+			return;
+		}
+
+		// Clear all previews except for ones we want
+		this.clearTicketChangePreviews(null, ids);
+
+		// Load preview data for selected tickets
+		this.getTicketChangePreviewRows(ids, changes, true).then(function(data) {
+			$scope.$safeApply(function() {
+				self.applyTicketChangePreviews(data);
+			});
+		});
 	},
 
 	//#########################################################################
@@ -964,62 +1155,60 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			return maxW;
 		};
 
-		$scope.isFieldDisplayable = function(ticket) {
-			return function(field) {
-				var fieldM;
-				switch (field) {
-					case 'ref':
-					case 'agent':
-					case 'agent_team':
-					case 'date_created':
-						return true;
-					case 'date_user_waiting':
-						return !!ticket.date_user_waiting;
-					case 'date_resolved':
-						return !!ticket.date_resolved;
-					case 'total_user_waiting':
-						return (ticket.total_user_waiting || ticket.date_user_waiting);
-					case 'date_last_user_reply':
-						return !!ticket.date_last_user_reply;
-					case 'date_last_agent_reply':
-						return !!ticket.date_last_agent_reply;
-					case 'date_last_reply':
-						return (ticket.date_last_user_reply || ticket.date_last_agent_reply);
-					case 'department':
-						return !!ticket.department;
-					case 'language':
-						return !!ticket.language;
-					case 'product':
-						return !!ticket.product;
-					case 'category':
-						return !!ticket.category;
-					case 'priority':
-						return !!ticket.priority;
-					case 'workflow':
-						return !!ticket.workflow;
-					case 'organization':
-						return !!ticket.organization;
-					case 'labels':
-						return ticket.labels && ticket.labels.length > 0;
-					case 'slas':
-						return ticket.ticket_slas && ticket.ticket_slas.length > 0;
-					default:
-						fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
+		$scope.isFieldDisplayable = function(ticket, field) {
+			var fieldM;
+			switch (field) {
+				case 'ref':
+				case 'agent':
+				case 'agent_team':
+				case 'date_created':
+					return true;
+				case 'date_user_waiting':
+					return !!ticket.date_user_waiting;
+				case 'date_resolved':
+					return !!ticket.date_resolved;
+				case 'total_user_waiting':
+					return (ticket.total_user_waiting || ticket.date_user_waiting);
+				case 'date_last_user_reply':
+					return !!ticket.date_last_user_reply;
+				case 'date_last_agent_reply':
+					return !!ticket.date_last_agent_reply;
+				case 'date_last_reply':
+					return (ticket.date_last_user_reply || ticket.date_last_agent_reply);
+				case 'department':
+					return !!ticket.department;
+				case 'language':
+					return !!ticket.language;
+				case 'product':
+					return !!ticket.product;
+				case 'category':
+					return !!ticket.category;
+				case 'priority':
+					return !!ticket.priority;
+				case 'workflow':
+					return !!ticket.workflow;
+				case 'organization':
+					return !!ticket.organization;
+				case 'labels':
+					return ticket.labels && ticket.labels.length > 0;
+				case 'slas':
+					return ticket.ticket_slas && ticket.ticket_slas.length > 0;
+				default:
+					fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
+					if (fieldM) {
+						if (ticket['field' + fieldM[1]]) {
+							return true;
+						}
+					} else {
+						fieldM = field.match(/^person_fields\[(\d+)\]$/);
 						if (fieldM) {
-							if (ticket['field' + fieldM[1]]) {
+							if (ticket.person['field' + fieldM[1]]) {
 								return true;
 							}
-						} else {
-							fieldM = field.match(/^person_fields\[(\d+)\]$/);
-							if (fieldM) {
-								if (ticket.person['field' + fieldM[1]]) {
-									return true;
-								}
-							}
 						}
-						return false;
-				}
-			};
+					}
+					return false;
+			}
 		};
 
 		displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
@@ -1466,6 +1655,8 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			return;
 		}
 
+		this._formUpdatedDebounce = _.debounce(this._formUpdated, 500);
+
 		this._resetWrapper();
 
 		this.backdropEls = null;
@@ -1531,6 +1722,18 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 	 */
 	getElement: function() {
 		return this.wrapper;
+	},
+
+
+	/**
+	 * Form updated, fire the updated callback
+	 */
+	_formUpdated: function() {
+		var info = {};
+		var changes = [];
+
+		this.getActionFormValues(changes, false, info);
+		this.fireEvent('formUpdated', [changes]);
 	},
 
 
@@ -1604,6 +1807,8 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 					newEls.removeClass('radio-on');
 					$(this).addClass('radio-on');
 				}
+
+				self._formUpdatedDebounce();
 			};
 
 			els.each(function() {
@@ -1639,6 +1844,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 
 		$('select.macro', this.wrapper).on('change', function() {
 			self.loadMacro($(this).val());
+			self._formUpdatedDebounce();
 		});
 
 		$('.apply-actions', this.wrapper).on('click', (function(ev) {
@@ -1823,6 +2029,10 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			self.actionsEditor.addNewRow($('.search-terms', actList), basename);
 			self.updatePositions();
 		});
+
+		this.wrapper.find('input, select, textarea').on('click change blur focus', function() {
+			self._formUpdatedDebounce();
+		});
 	},
 
 	getElById: function(id) {
@@ -1869,6 +2079,9 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 
 			// Dont send reply type when we're just fetching previews
 			if (!isApply && name == 'actions[reply][reply_text]') {
+				return;
+			}
+			if (!isApply && name == 'actions[reply][is_html]') {
 				return;
 			}
 

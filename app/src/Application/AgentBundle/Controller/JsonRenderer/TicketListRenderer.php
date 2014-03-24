@@ -39,7 +39,7 @@ use Application\DeskPRO\Util;
 
 class TicketListRenderer
 {
-	public function renderTicketDisplay(TicketResultsDisplay $ticket_display, $as_array = false)
+	public function renderTicketDisplayArray(TicketResultsDisplay $ticket_display, $fn_visitor = null)
 	{
 		if (!$ticket_display->getCount()) {
 			return '[]';
@@ -69,14 +69,19 @@ class TicketListRenderer
 
 			$data['flag'] = $ticket_display->getFlaggedColor($ticket);
 
+			if ($fn_visitor) {
+				$data = call_user_func($fn_visitor, $ticket, $data);
+			}
+
 			$json_array[] = $data;
 		}
 
-		if ($as_array) {
-			return $json_array;
-		}
+		return $json_array;
+	}
 
-		return Util::jsonEncode($json_array);
+	public function renderTicketDisplayJson(TicketResultsDisplay $ticket_display)
+	{
+		return Util::jsonEncode($this->renderTicketDisplayArray($ticket_display));
 	}
 
 	public function renderTicket(Ticket $ticket)

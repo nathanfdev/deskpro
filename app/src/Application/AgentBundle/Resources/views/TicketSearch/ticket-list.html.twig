@@ -73,8 +73,9 @@
 				<div
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
+					dp-removed="uncheckTicketId(ticket.id)"
 				>
-					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" watch-vars="['ticket']" watch-vars-deep="['display_fields']">
+					<script type="text/plain" dp-tpl tpl-id="ticket_list_row" watch-vars="['ticket', 'ticket.version_id']" watch-vars-deep="['display_fields']">
 						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
 					</script>
 				</div>
