@@ -290,13 +290,13 @@ var DP = {
 
 						el.find('option').each(function() {
 							var s_el = $(this);
-							tmp = ($.trim(s_el.text()).length * charsize) + 15; // +15 for optgroup indent
+							tmp = ($.trim(s_el.text()).length * charsize) + 22; // +15 for optgroup indent
 							if (tmp > largest) {
 								largest = tmp;
 							}
 						});
 					} else {
-						tmp = ($.trim(el.text()).length * charsize);
+						tmp = ($.trim(el.text()).length * charsize) + 10;
 						if (tmp > largest) {
 							largest = tmp;
 						}
