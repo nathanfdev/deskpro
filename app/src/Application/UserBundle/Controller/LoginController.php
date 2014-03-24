@@ -40,7 +40,6 @@ use Application\DeskPRO\Entity\TmpData;
 
 use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
@@ -937,7 +936,7 @@ HTML;
 	{
 		$result = $this->authLocalInput();
 
-		$this->ensureRequestToken('user_login');
+		$this->ensureStandardRequestToken();
 
 		if (!$result->isValid()) {
 			$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));
