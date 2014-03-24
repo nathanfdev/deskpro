@@ -481,6 +481,10 @@ var DpChatWidget = new (function() {
 			url += '&vut=' + encodeURIComponent(vut);
 		}
 
+		if (options.onlyShowDepartments) {
+			url += '&department_ids=' + options.onlyShowDepartments.join(',');
+		}
+
 		if (DpChatWidget_Options && DpChatWidget_Options.visitorUpdateTrackId) {
 			url += '&v_tid=' + encodeURIComponent(DpChatWidget_Options.visitorUpdateTrackId);
 		} else if (window.DESKPRO_VISITOR_TRACK_ID) {
