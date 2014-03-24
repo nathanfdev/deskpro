@@ -954,7 +954,7 @@ class PersonController extends AbstractController
 
 		return $this->createApiCreateResponse(
 			array('id' => $note->id),
-			$this->generateUrl('api_people_person_notes_note', array('person_id' => $person->id, 'note_id' => $note->id), true)
+			$this->generateUrl('api_people_person_notes', array('person_id' => $person->id), true)
 		);
 	}
 
