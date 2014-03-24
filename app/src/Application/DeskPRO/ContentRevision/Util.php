@@ -50,7 +50,7 @@ class Util
 
 		$em = App::getOrm();
 
-		$timesnip = date_create('-1 hours');
+		$timesnip = date_create('-10 minutes');
 
 		// For us to reuse a rev, it has to:
 		// - be the latest one (ie no other revisions by other people)
@@ -69,6 +69,8 @@ class Util
 			foreach ((array)$edit_field as $f) {
 				if ($rev[$f]) {
 					$has_field = true;
+				} else {
+					$has_field = false;
 					break;
 				}
 			}

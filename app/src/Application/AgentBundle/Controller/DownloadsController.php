@@ -466,6 +466,12 @@ class DownloadsController extends AbstractController
 
 			$download = $newdownload->getDownload();
 
+			$rev = ContentRevisionUtil::findOrCreate($download, array('title', 'content'), $this->person);
+			if ($rev) {
+				$this->em->persist($rev);
+				$this->em->flush();
+			}
+
 			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
 			return $this->createJsonResponse(array(

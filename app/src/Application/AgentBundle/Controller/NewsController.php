@@ -397,6 +397,12 @@ class NewsController extends AbstractController
 
 			$news = $newnews->getNews();
 
+			$rev = ContentRevisionUtil::findOrCreate($news, array('title', 'content'), $this->person);
+			if ($rev) {
+				$this->em->persist($rev);
+				$this->em->flush();
+			}
+
 			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
 			return $this->createJsonResponse(array(
