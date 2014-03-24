@@ -184,6 +184,20 @@
 				{% endfor %}
 			</ul>
 		{%endif%}
+		{% if ticket_fwd_logs[message.id] %}
+			<ul class="attachment-list">
+				{% for log in ticket_fwd_logs[message.id] %}
+					<li style="background: none; padding-left: 0;">
+						{% if log.person %}
+							<span class="agent-icon" style="background-image: url({{ log.person.getPictureUrl(16) }});">{{ log.person.display_name }}</span>
+						{% else %}
+							{{ log.details.from_name }}
+						{% endif %}
+						forwarded this message to {{ log.details.to_string }} (sent from {{ log.details.from_email }}).
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 		{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and all_feedback[message.id] %}
 			{% set feedback = all_feedback[message.id] %}
 			<div class="feedback">

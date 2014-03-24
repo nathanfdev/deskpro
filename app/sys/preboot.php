@@ -120,7 +120,7 @@ if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgra
 			}
 
 			if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-				header('HTTP/1.0 503 Service Unavailable');
+				header('HTTP/1.0 420 Service Unavailable');
 				header('Content-Type: application/json');
 				echo json_encode(array(
 					'error' => 'update_running'
@@ -306,7 +306,13 @@ unset($errors);
 
 //==BEGIN:MONITORING==
 if (extension_loaded('newrelic')) {
-	if (defined('DPC_SITE_DOMAIN')) newrelic_add_custom_parameter('dpc_domain', DPC_SITE_DOMAIN);
-	newrelic_capture_params(true);
+	if ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'web') || !defined('DP_BOOT_MODE')) {
+		if (defined('DPC_SITE_DOMAIN')) newrelic_add_custom_parameter('dpc_domain', DPC_SITE_DOMAIN);
+		newrelic_capture_params(true);
+		newrelic_disable_autorum();
+	} else {
+		newrelic_ignore_transaction();
+		newrelic_ignore_apdex();
+	}
 }
 //==END:MONITORING==

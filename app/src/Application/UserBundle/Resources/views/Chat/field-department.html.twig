@@ -1,10 +1,12 @@
 {% set online_chat_deps = departments %}
 {% if app.departments.getPersonDepartments(app.user, 'chat').length == 1 %}
 	{% for cat in online_chat_deps %}
-		<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
+		{% if not cat.children|length %}
+			<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
+		{% endif %}
 	{% endfor %}
 {% else %}
-	{% if online_chat_deps|length == 1 and (online_chat_deps|first).children|length == 1 %}
+	{% if online_chat_deps|length == 1 and (online_chat_deps|first).children|length <= 1 %}
 		{% for cat in online_chat_deps %}
 			<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
 		{% endfor %}

@@ -92,6 +92,7 @@ class AccountValidator
 
 		try {
 			$this->email->is_validated = true;
+			$this->em->persist($this->email);
 			$this->em->flush();
 
 			if (!$this->person->primary_email) {
@@ -109,6 +110,11 @@ class AccountValidator
 				'is_confirmed' => 1,
 				'primary_email_id' => $this->email->getId()
 			), array('id' => $this->person->getId()));
+
+			$this->db->update('people_emails', array(
+				'is_validated' => 1,
+				'date_validated' => $this->email->date_validated->format('Y-m-d H:i:s')
+			), array('id' => $this->email->getId()));
 
 			// Find tickets with this email awaiting validation
 			if ($this->ticket_ids) {

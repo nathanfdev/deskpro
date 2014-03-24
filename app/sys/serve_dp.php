@@ -600,6 +600,51 @@ class DpLoader extends LoaderAbstract
 				$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
 			}
 
+			// If departments were specified, we need to see if those specific
+			// departments are online
+			if ($online_time && !empty($_REQUEST['department_ids'])) {
+
+				$dep_ids = $_REQUEST['department_ids'];
+				$dep_ids = explode(',', $dep_ids);
+				$dep_ids = array_map(function($v) { return (int)$v; }, $dep_ids);
+				if (!$dep_ids) {
+					$dep_ids = array(0);
+				}
+
+				$q = $this->getPdo()->prepare("
+					SELECT DISTINCT(sessions.person_id)
+					FROM sessions
+					LEFT JOIN people ON (people.id = sessions.person_id)
+					WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
+				");
+				$q->execute(array(date('Y-m-d H:i:s', time() - 20)));
+
+				$agents_online_ids = array();
+				while ($aid = $q->fetchColumn()) {
+					if ($aid) {
+						$agents_online_ids[] = $aid;
+					}
+				}
+
+				if ($agents_online_ids) {
+					$q = $this->getPdo()->prepare("
+						SELECT COUNT(*)
+						FROM department_permissions
+						WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND department_id IN (" . implode(',', $dep_ids) . ")
+						LIMIT 1
+					");
+					$q->execute();
+					$any_online = $q->fetchColumn();
+
+					if (!$any_online) {
+						$online_time = 0;
+					}
+
+				} else {
+					$online_time = 0;
+				}
+			}
+
 			if ($online_time && $online_time > time() - 900) {
 
 				$session_id = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;

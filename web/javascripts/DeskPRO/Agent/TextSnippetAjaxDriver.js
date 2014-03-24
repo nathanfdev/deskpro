@@ -64,7 +64,12 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 		var languageId   = filter.languageId || 0;
 		var page         = filter.page || 1;
 
-		$.ajax({
+		if (this.runningAjax) {
+			this.runningAjax.abort();
+			this.runningAjax = null;
+		}
+
+		this.runningAjax = $.ajax({
 			url: BASE_URL + 'agent/text-snippets/'+this.typename+'/filter.json',
 			data: {
 				category_id: categoryId,
@@ -73,6 +78,9 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 			},
 			type: 'GET',
 			dataType: 'json',
+			complete: function() {
+				this.runningAjax = null;
+			},
 			success: function(snippet_data) {
 				var snippets = [];
 

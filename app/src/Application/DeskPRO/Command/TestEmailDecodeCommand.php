@@ -72,6 +72,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
+		$this->addOption('convert-text', null, InputOption::VALUE_NONE, 'Convert HTML email into text');
 		$this->addOption('forward', null, InputOption::VALUE_NONE, 'Test splitting as a forwarded message');
 		$this->addOption('save-attach', null, InputOption::VALUE_NONE, 'This will save attachments from the email in the same directory as the file');
 		$this->addOption('show-cutters', null, InputOption::VALUE_NONE, 'Displays the cutters that were used');
@@ -203,6 +204,20 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		} else {
 			if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
 				$body = $raw_body = $r->getBodyHtml()->getBodyUtf8();
+
+				if ($input->getOption('convert-text')) {
+					$text = Strings::standardEol($body);
+					$text = str_replace("\n", ' ', $text);
+					$text = preg_replace('#<br/?>#', "<br/>\n", $text);
+					$text = preg_replace('#(<div[^>]+>)#', "$1\n", $text);
+					$text = preg_replace('#(<p[^>]+>)#', "$1\n", $text);
+					$text = preg_replace('#</div>#', "</div>\n", $text);
+					$text = preg_replace('#</p>#', "</p>\n", $text);
+					$text = strip_tags($text);
+					echo $text;
+					echo "\n";
+					return 0;
+				}
 
 				if ($input->getOption('raw')) {
 					echo $body;

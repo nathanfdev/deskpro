@@ -341,6 +341,8 @@ JS;
 			$passData = file_get_contents('php://input');
 		}
 
+		unset($passData['_rt']);
+
 		switch (strtolower($method)) {
 			case 'get': $method = 'GET'; break;
 			case 'post': $method = 'POST'; break;
@@ -386,7 +388,12 @@ JS;
 			$response->setStatusCode($info['http_code']);
 		}
 
-		$response->setContent($contents);
+		if ($contents) {
+			$response->setContent($contents);
+		} else {
+			$response->setContent('');
+		}
+
 
 		return $response;
 	}

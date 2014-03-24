@@ -2315,6 +2315,9 @@ class TicketSearch extends SearcherAbstract
 					if (isset($choice['agent_ids'])) {
 						$choice = $choice['agent_ids'];
 					}
+					if (isset($choice['agent'])) {
+						$choice = $choice['agent'];
+					}
 					$info = $this->_normalizeAgentChoice($choice);
 
 					$unassigned = $info['unassigned'];
@@ -2342,6 +2345,9 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_AGENT_TEAM:
 					if (isset($choice['team_ids'])) {
 						$choice = $choice['team_ids'];
+					}
+					if (isset($choice['agent_team'])) {
+						$choice = $choice['agent_team'];
 					}
 					$info = $this->_normalizeAgentTeamChoice($choice);
 					$no_team = $info['no_team'];

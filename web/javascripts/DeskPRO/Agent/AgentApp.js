@@ -197,6 +197,8 @@ DeskPRO.Agent.AgentAppFactory = function() {
 
 						// Prevents re-compiling the element with angular needlessly
 						if (oldHtml != newHtml) {
+							element.contents().remove();
+
 							element.html(newHtml);
 							element.data('oldTplHtml', newHtml);
 							$compile(element.contents())(scope);

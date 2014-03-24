@@ -96,7 +96,11 @@
 							<div class="dp-help-inline dp-error-explain">
 								{{ phrase('user.feedback.form_new_error_message') }}
 							</div>
-							{% include 'UserBundle:Common:form-upload-input.html.twig' %}
+
+							<div style="margin-top: 10px;">
+								<label><strong>{{ phrase('user.general.attachments') }}</strong></label>
+								{% include 'UserBundle:Common:form-upload-input.html.twig' %}
+							</div>
 						</div>
 					</div>
 

@@ -36,8 +36,6 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
 use Application\DeskPRO\Searcher\TicketSearch;
-use Application\DeskPRO\Entity\TicketFilter;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
@@ -1273,7 +1271,7 @@ class TicketSearchController extends AbstractController
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
 		$ticket_display->setPersonContext($this->person);
 
-		$json_renderer = new TicketListRenderer();
+		$json_renderer = new TicketListRenderer($ticket_display);
 
 		if (!$this->container->getSetting('core.tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
 			$vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
@@ -1315,11 +1313,11 @@ class TicketSearchController extends AbstractController
 
 		if ($view_type == 'json') {
 			return $this->createJsonResponse(array(
-				'tickets'        => $json_renderer->renderTicketDisplay($ticket_display, true),
+				'tickets'        => $json_renderer->renderTicketDisplayArray(),
 				'all_ticket_ids' => $vars['all_ticket_ids']
 			));
 		} else {
-			$vars['ticket_json'] = $json_renderer->renderTicketDisplay($ticket_display);
+			$vars['ticket_json'] = $json_renderer->renderTicketDisplayJson();
 
 			$html = $this->renderView($tpl, $vars);
 
@@ -1588,13 +1586,73 @@ class TicketSearchController extends AbstractController
 		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
 		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
 
+		$display_fields = array();
+		$changed_fields = array();
+
+		if ($macro_id = $this->in->getUint('run_macro_id')) {
+			$macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
+			$actions = null;
+			$collection = $macro->getActionsCollection();
+
+			foreach ($collection->getActions() as $action) {
+				if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ActionInterface) {
+					$action->setMetaData(array('is_preview' => true));
+				}
+			}
+		} else {
+			$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+			$collection = null;
+		}
+
+		if (($actions || $collection) && $tickets) {
+			if (!$collection) {
+				$factory = new ActionsFactory();
+				$collection = new ActionsCollection();
+				foreach ($actions as $name => $opt) {
+					$action = $factory->createFromForm($name, $opt);
+					if ($action) {
+						if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ActionInterface) {
+							$action->setMetaData(array('is_preview' => true));
+						}
+
+						$collection->add($action);
+
+						$display_fields[] = $name;
+					}
+				}
+			}
+
+			foreach ($tickets as $t) {
+				$ticket_changes = $collection->getApplyActions($t, $this->person);
+				$collection->apply(null, $t, $this->person);
+
+				if ($ticket_changes) {
+					$ticket_changed_fields = array();
+					foreach ($ticket_changes as $change) {
+						$ticket_changed_fields[$change['action']] = true;
+						$changed_fields[$t['id']] = $ticket_changed_fields;
+					}
+				}
+			}
+
+			$display_fields = array_unique($display_fields);
+		}
+
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
 		$ticket_display->setPersonContext($this->person);
 
-		$json_renderer = new TicketListRenderer();
-		$ticket_json = $json_renderer->renderTicketDisplay($ticket_display);
+		$json_renderer = new TicketListRenderer($ticket_display);
 
-		return $this->createJsonResponse($ticket_json);
+		if ($actions || $collection) {
+			$ticket_data = $json_renderer->renderTicketDisplayArray(function(Entity\Ticket $ticket, array $data) use ($display_fields) {
+				$data['force_display_fields'] = $display_fields;
+				return $data;
+			});
+		} else {
+			$ticket_data = $json_renderer->renderTicketDisplayArray();
+		}
+
+		return $this->createJsonResponse($ticket_data);
 	}
 
 	public function getSingleTicketRowAction($content_type, $content_id)
@@ -1885,8 +1943,8 @@ class TicketSearchController extends AbstractController
 			$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
 			$ticket_display->setPersonContext($this->person);
 
-			$json_renderer = new TicketListRenderer();
-			$ticket_data = $json_renderer->renderTicketDisplay($ticket_display, true);
+			$json_renderer = new TicketListRenderer($ticket_display);
+			$ticket_data = $json_renderer->renderTicketDisplayArray();
 		}
 
 		return $this->createJsonResponse(array(

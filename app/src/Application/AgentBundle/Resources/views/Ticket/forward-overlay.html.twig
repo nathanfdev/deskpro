@@ -63,6 +63,9 @@
 					{% endif %}
 					<div class="real-textarea"><textarea placeholder="{{ phrase('agent.tickets.optionally_enter_message') }}" name="custom_message" class="note"></textarea></div>
 					<div class="fwd-headers">
+						<div class="agent-sig-view" style="display: none; padding-top: 10px; padding-bottom: 20px;">
+							{{ app.user.getSignatureHtml()|raw }}
+						</div>
 						--- {{ phrase('agent.tickets.forwarded_message') }} ---<br/>
 						{{ phrase('agent.general.from') }}: {{ ticket.person.getDisplayName() }} &lt;<a href="mailto:{{ ticket.person.getPrimaryEmailAddress() }}">{{ ticket.person.getPrimaryEmailAddress() }}</a>&gt;<br/>
 						{{ phrase('agent.general.to') }}: {{ ticket.getFromAddress().name }} &lt;<a href="mailto:{{ ticket.getFromAddress().email }}">{{ ticket.getFromAddress().email }}</a>&gt;<br/>

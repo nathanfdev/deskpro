@@ -453,9 +453,10 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 			foreach ($this->email_domains AS $domain) {
 				$data['email_domains'][] = $domain->domain;
 			}
+
+			$data['member_count'] = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($this);
 		}
 
-		$data['member_count'] = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($this);
 		$data['picture_url'] = $this->getPictureUrl();
 
 		$field_manager = App::getContainer()->getSystemService('org_fields_manager');

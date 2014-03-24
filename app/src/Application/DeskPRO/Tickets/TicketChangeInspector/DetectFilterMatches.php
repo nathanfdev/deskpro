@@ -200,6 +200,7 @@ class DetectFilterMatches
 
 		$changed_fields = $this->getChangedFields();
 		$new_messages = $this->tracker->getChangedProperty('messages') ? true : false;
+		$is_new = $this->tracker->isNewTicket();
 
 		$hidden_changed = false;
 		if (in_array('ticket.hidden_status', $changed_fields)) {
@@ -207,7 +208,7 @@ class DetectFilterMatches
 		}
 
 		foreach ($filters as $filter) {
-			if ($new_messages || $hidden_changed || $filter->getSearcher()->hasAnyAffectedFields($changed_fields)) {
+			if ($is_new || $new_messages || $hidden_changed || $filter->getSearcher()->hasAnyAffectedFields($changed_fields)) {
 				$filters_apply[] = $filter;
 			}
 		}
