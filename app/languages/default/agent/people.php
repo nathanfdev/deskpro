@@ -72,7 +72,7 @@
 	'agent.people.user_is_agent'                            => '{{name}} is an agent on this helpdesk.',
 	'agent.people.user_is_autoresponder'                    => 'User is an auto-responder. Auto-replies will not be sent.',
 	'agent.people.user_landed_on_page'                      => 'User landed on page',
-	'agent.people.user_not_autoresponder'                   => 'User is not an auto-repsonder',
+	'agent.people.user_not_autoresponder'                   => 'User is not an auto-responder',
 	'agent.people.user_will_be_perm_deleted'                => 'The user will be permanantly deleted.',
 	'agent.people.user_will_be_perm_deleted_banned'         => 'The user will be permanantly deleted and their email address banned.',
 	'agent.people.view_profile'                             => 'View Profile',
