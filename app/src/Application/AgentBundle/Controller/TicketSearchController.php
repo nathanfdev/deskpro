@@ -1271,7 +1271,7 @@ class TicketSearchController extends AbstractController
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
 		$ticket_display->setPersonContext($this->person);
 
-		$json_renderer = new TicketListRenderer();
+		$json_renderer = new TicketListRenderer($ticket_display);
 
 		if (!$this->container->getSetting('core.tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
 			$vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
@@ -1313,11 +1313,11 @@ class TicketSearchController extends AbstractController
 
 		if ($view_type == 'json') {
 			return $this->createJsonResponse(array(
-				'tickets'        => $json_renderer->renderTicketDisplayArray($ticket_display),
+				'tickets'        => $json_renderer->renderTicketDisplayArray(),
 				'all_ticket_ids' => $vars['all_ticket_ids']
 			));
 		} else {
-			$vars['ticket_json'] = $json_renderer->renderTicketDisplayJson($ticket_display);
+			$vars['ticket_json'] = $json_renderer->renderTicketDisplayJson();
 
 			$html = $this->renderView($tpl, $vars);
 
@@ -1641,15 +1641,15 @@ class TicketSearchController extends AbstractController
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
 		$ticket_display->setPersonContext($this->person);
 
-		$json_renderer = new TicketListRenderer();
+		$json_renderer = new TicketListRenderer($ticket_display);
 
 		if ($actions || $collection) {
-			$ticket_data = $json_renderer->renderTicketDisplayArray($ticket_display, function(Entity\Ticket $ticket, array $data) use ($display_fields) {
+			$ticket_data = $json_renderer->renderTicketDisplayArray(function(Entity\Ticket $ticket, array $data) use ($display_fields) {
 				$data['force_display_fields'] = $display_fields;
 				return $data;
 			});
 		} else {
-			$ticket_data = $json_renderer->renderTicketDisplayArray($ticket_display);
+			$ticket_data = $json_renderer->renderTicketDisplayArray();
 		}
 
 		return $this->createJsonResponse($ticket_data);
@@ -1943,8 +1943,8 @@ class TicketSearchController extends AbstractController
 			$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
 			$ticket_display->setPersonContext($this->person);
 
-			$json_renderer = new TicketListRenderer();
-			$ticket_data = $json_renderer->renderTicketDisplayArray($ticket_display);
+			$json_renderer = new TicketListRenderer($ticket_display);
+			$ticket_data = $json_renderer->renderTicketDisplayArray();
 		}
 
 		return $this->createJsonResponse(array(

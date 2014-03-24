@@ -230,7 +230,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getMessagePreviewText($max_length = 0, $ellipses = '...')
 	{
-		$message = $this->getMessageHtml();
+		$message = $this->message;
+		$message = preg_replace('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', '', $message);
+
 		$sig_pos = strpos($message, '<div class="dp-signature-start">');
 
 		if ($sig_pos !== false) {
