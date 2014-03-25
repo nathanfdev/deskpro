@@ -203,7 +203,7 @@ class TicketListRenderer
 				case 'department':
 					$dep = $this->container->getDataService('Department')->get($ticket->department->getId());
 					if ($dep) {
-						$data['department'] = array('id' => $dep->id, 'title' => $dep->title, 'full_title' => $dep->getFullTitle());
+						$data['department'] = array('id' => $dep->id, 'title' => $dep->title, 'title_full' => $dep->getFullTitle());
 					}
 					break;
 
