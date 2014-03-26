@@ -37,6 +37,8 @@
  */
 abstract class ezcMailPart
 {
+	public $dp_raw_source = '';
+
     /**
      * An associative array containing all the headers set for this part.
      *

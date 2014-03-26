@@ -74,6 +74,9 @@ class ezcMailRfc822DigestParser extends ezcMailPartParser
     public function finish()
     {
         $digest = new ezcMailRfc822Digest( $this->mailParser->finish() );
+		if (!empty($this->mailParser->dp_raw_source)) {
+			$digest->dp_raw_source = $this->mailParser->dp_raw_source;
+		}
         ezcMailPartParser::parsePartHeaders( $this->headers, $digest );
         $digest->size = $this->size;
         return $digest;

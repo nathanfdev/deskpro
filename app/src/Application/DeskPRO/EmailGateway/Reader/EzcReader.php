@@ -248,38 +248,40 @@ class EzcReader extends AbstractReader
 
 				} elseif ($part instanceof \ezcMailRfc822Digest) {
 
-					// ezC doesnt keep track of the raw sources while walking
-					// the parts. So we need to 'generateBody' which basically
-					// re-constructs the message based on the parsed message.
+					// - We have hacked ezc to keep track of the raw mail source
+					// so we can just use that
+					if (!empty($part->dp_raw_source)) {
+						$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
+						file_put_contents($attach->tmp_file, $part->dp_raw_source);
 
-					// ezC also has auto-charset conversion to utf-8.
-					// we nullify that operation because we generally want to keep
-					// track of that sort of thing ourself (eg within ticket gateway code).
-					// But internally ezc considers the $part utf8
+					// If for some reason we dont have the raw source, this is the original way to read the mail
+					// based on the parsed source. I dont think this sholud ever happen though.
+					} else {
+						// ezc does charset conversion that makes the charset think its utf8
+						// but it may not be. we need to copy the original
+						if (isset($part->mail->body->originalCharset)) {
+							$body_charset = $part->mail->body->originalCharset;
+							$attach->original_charset = $body_charset;
+						}
 
-					// So we have this case of ezc thinking $part is utf-8, but
-					// we nullified the charset conversion so it's not actually utf-8
-
-					// This is fine except when it comes to these embedded digests.
-					// ezC thinks its utf-8, but the source is actually say iso-8895-1
-					// But when 'generateBody' to reconstruct the body, it'll output content-type:utf-8
-
-					// *then* if we were to try and re-process the message (eg agent forwarded attachment)
-					// it'll try to decode as utf-8 but the body is actually iso-8895-1
-
-					// And that is why we store this original charset. When we need to process
-					// digests, we need to override the charset to the real original.
-
-					if (isset($part->mail->body->originalCharset)) {
-						$body_charset = $part->mail->body->originalCharset;
-						$attach->original_charset = $body_charset;
+						$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
+						file_put_contents($attach->tmp_file, $part->generateBody());
 					}
 
-					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
-					file_put_contents($attach->tmp_file, $part->generateBody());
-
 					$attach->tmp_file = $attach->tmp_file;
-					$attach->file_name = 'email.eml';
+
+					if (isset($part->mail->headers) && !empty($part->mail->headers['subject'])) {
+						$filename = $part->mail->headers['subject'];
+						$filename = Strings::utf8_accents_to_ascii($filename);
+						$filename = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename);
+						$filename = preg_replace('#\-{2,}#', '-', $filename);
+						$filename = trim($filename);
+						$filename = trim($filename, '-');
+						$attach->file_name = $filename . '.eml';
+					}
+					if (!$attach->file_name) {
+						$attach->file_name = 'email.eml';
+					}
 					$attach->mime_type = 'message/rfc822';
 				} else {
 					$attach->tmp_file   = $part->fileName;
