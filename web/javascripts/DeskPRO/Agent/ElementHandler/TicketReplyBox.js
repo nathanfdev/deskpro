@@ -1131,7 +1131,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			window.DESKPRO_MACRO_LABELS = [];
 			statusMacroListMap = {};
 			statusMacroList.find('li').each(function() {
-				var label = $(this).data('macro-title').toLowerCase();
+				// the weird casting here is to make sure numeric
+				// titles are treated as a string. jquery will convert data-macro-title="123" into an int which has no toLowerCase
+				var label = (($(this).data('macro-title') || '')+'').toLowerCase();
 				var macro_id = parseInt($(this).data('macro-id'));
 				window.DESKPRO_MACRO_LABELS.push([macro_id, label.toLowerCase()])
 				statusMacroListMap[macro_id] = this;
