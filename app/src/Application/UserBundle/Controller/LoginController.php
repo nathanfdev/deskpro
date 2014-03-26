@@ -286,7 +286,7 @@ HTML;
 
 			// Send alert
 			$attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
-			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
+			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
 				$message = $this->container->getMailer()->createMessage();
 				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => $this->session->getEntity()));
 				$message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
