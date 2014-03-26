@@ -393,11 +393,12 @@ class App
 	 * Gets a read-only DB connect
 	 *
 	 * @param string $type
+	 * @param array $context
 	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
-	public static function getDbRead($type = 'default')
+	public static function getDbRead($type = 'default', array $context = null)
 	{
-		return self::getContainer()->getDbRead($type);
+		return self::getContainer()->getDbRead($type, $context);
 	}
 
 
