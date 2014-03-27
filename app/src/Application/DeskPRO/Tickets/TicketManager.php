@@ -119,6 +119,35 @@ class TicketManager
 
 
 	/**
+	 * Disables auto-ticket processing on the ticket. This means you should save the ticket
+	 * via $this->saveTicket().
+	 *
+	 * This is used when interacting with legacy code where ticket processing is expected to happen
+	 * automatically.
+	 *
+	 * @param Ticket $ticket
+	 */
+	public function markAsManaged(Ticket $ticket)
+	{
+		$ticket->disableAutoTicketProcess();
+	}
+
+
+	/**
+	 * Re-enables auto-ticket processing on the ticket.
+	 *
+	 * This is used when interacting with legacy code where ticket processing is expected to happen
+	 * automatically.
+	 *
+	 * @param Ticket $ticket
+	 */
+	public function markAsUnmanaged(Ticket $ticket)
+	{
+		$ticket->enableAutoTicketProcess();
+	}
+
+
+	/**
 	 * @param Ticket $ticket
 	 * @param ExecutorContextInterface $context
 	 * @throws \Exception

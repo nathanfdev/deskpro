@@ -501,6 +501,22 @@ class TicketLogGenerator
 					'template'   => $new['template'],
 				);
 
+			case 'split_to':
+				return array(
+					'action_type' => 'split_to',
+					'id_after'    => $new['new_ticket_id'],
+
+					'message_ids' => $new['message_ids'],
+				);
+
+			case 'split_from':
+				return array(
+					'action_type' => 'split_from',
+					'id_before'   => $new['old_ticket_id'],
+
+					'message_ids' => $new['message_ids'],
+				);
+
 			default:
 				return array();
 		}

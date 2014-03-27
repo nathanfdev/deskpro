@@ -2601,10 +2601,27 @@ class Ticket extends DomainObject
 		return $this->_label_manager;
 	}
 
+
+	/**
+	 * Copy this ticket properties to a new ticket.
+	 *
+	 * @return Ticket
+	 */
 	public function copy()
 	{
-		$alt_ticket = new Ticket();
+		$ticket = new Ticket();
+		$this->copyTo($ticket);
+		return $ticket;
+	}
 
+
+	/**
+	 * Copy this ticket properties on to another ticket.
+	 *
+	 * @param Ticket $ticket
+	 */
+	public function copyTo(Ticket $ticket)
+	{
 		$load = array(
 			'agent',
 			'agent_team',
@@ -2624,7 +2641,7 @@ class Ticket extends DomainObject
 		);
 
 		foreach ($load as $k) {
-			$alt_ticket[$k] = $this[$k];
+			$ticket[$k] = $this[$k];
 		}
 
 		// Custom field data
@@ -2632,10 +2649,8 @@ class Ticket extends DomainObject
 			$new_custom_data = clone $custom_data;
 			$new_custom_data->ticket = $alt_ticket;
 
-			$alt_ticket->addCustomData($new_custom_data);
+			$ticket->addCustomData($new_custom_data);
 		}
-
-		return $alt_ticket;
 	}
 
 

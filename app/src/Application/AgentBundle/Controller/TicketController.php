@@ -2710,6 +2710,7 @@ class TicketController extends AbstractController
 		$subject = $this->in->getString('subject');
 
 		$split = new TicketSplit($ticket);
+		$split->setPersonContext($this->person);
 
 		try {
 			$this->em->beginTransaction();
