@@ -408,7 +408,7 @@ class TicketSearch extends SearcherAbstract
 		$this->getLogger()->logDebug("Search Query: " . $sql);
 		$time = microtime(true);
 
-		$db = App::getDbRead('search.filter.tickets');
+		$db = App::getDbRead('search.filter.tickets', array('query' => $sql));
 
 		try {
 			$ticket_ids = $db->fetchAllCol($sql);
@@ -605,7 +605,7 @@ class TicketSearch extends SearcherAbstract
 		$this->getLogger()->logDebug("Search Count Query: " . $count_sql);
 		$time = microtime(true);
 
-		$db = App::getDbRead('search.filter.tickets');
+		$db = App::getDbRead('search.filter.tickets', array('query' => $count_sql));
 
 		try {
 			$result = $db->fetchColumn($count_sql);
@@ -1008,7 +1008,8 @@ class TicketSearch extends SearcherAbstract
 
 		$tickets_table = 'tickets';
 
-		$tr = $this->getTranslate();
+		$db = App::getDb();
+		$tr = App::getTranslator();
 
 		$wheres = array();
 		$joins = array();
@@ -1113,7 +1114,7 @@ class TicketSearch extends SearcherAbstract
 							"LEFT JOIN content_search AS $join_name ON ($join_name.object_type = 'ticket' AND $join_name.object_id = tickets.id)"
 						);
 
-						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDbRead('search.filter.tickets')->quote($choice) . ")";
+						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDb()->quote($choice) . ")";
 
 						if (!$this->is_testing) $this->summary[] = "Ticket content matches: " . $choice;
 						break;
@@ -2269,6 +2270,9 @@ class TicketSearch extends SearcherAbstract
 					if (isset($choice['agent_ids'])) {
 						$choice = $choice['agent_ids'];
 					}
+					if (isset($choice['agent'])) {
+						$choice = $choice['agent'];
+					}
 					$info = $this->_normalizeAgentChoice($choice);
 
 					$unassigned = $info['unassigned'];
@@ -2296,6 +2300,9 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_AGENT_TEAM:
 					if (isset($choice['team_ids'])) {
 						$choice = $choice['team_ids'];
+					}
+					if (isset($choice['agent_team'])) {
+						$choice = $choice['agent_team'];
 					}
 					$info = $this->_normalizeAgentTeamChoice($choice);
 					$no_team = $info['no_team'];

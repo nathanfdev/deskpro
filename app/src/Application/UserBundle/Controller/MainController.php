@@ -235,7 +235,7 @@ class MainController extends AbstractController
 
 		// Validating the account
 		} else {
-			$validator = new AccountValidator($ticket->person, $ticket->person_email);
+			$validator = new AccountValidator($ticket->person, $ticket->person_email ?: $ticket->person->getPrimaryEmailAddress());
 			$validator->validate();
 
 			$email = $ticket->person_email;

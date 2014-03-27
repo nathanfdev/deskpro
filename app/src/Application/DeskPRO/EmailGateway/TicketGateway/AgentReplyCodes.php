@@ -95,6 +95,8 @@ class AgentReplyCodes implements Loggable
 
 		$text = $this->orig_body;
 		if ($this->is_html) {
+			$text = Strings::standardEol($text);
+			$text = str_replace("\n", ' ', $text);
 			$text = preg_replace('#<br/?>#', "<br/>\n", $text);
 			$text = preg_replace('#(<div[^>]+>)#', "$1\n", $text);
 			$text = preg_replace('#(<p[^>]+>)#', "$1\n", $text);

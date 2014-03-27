@@ -560,7 +560,12 @@ class GroupingCounter
 				if ($ids) {
 					$ids_str = implode(',', $ids);
 					$all = App::getDb()->fetchAll("
-						SELECT id, name, first_name, last_name FROM people WHERE id IN ($ids_str)
+						SELECT
+							people.id, people.name, people.first_name, people.last_name,
+							people_emails.email
+						FROM people
+						LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+						WHERE people.id IN ($ids_str)
 					");
 
 					foreach ($all as $r) {
@@ -572,6 +577,15 @@ class GroupingCounter
 							$name = $r['last_name'];
 						} elseif ($r['first_name']) {
 							$name = $r['first_name'];
+						} elseif ($r['email']) {
+							$email = $r['email'];
+							list ($name,) = explode('@', $email, 2);
+
+							$name = str_replace('_', ' ', $name);
+							$name = str_replace('.', ' ', $name);
+							$name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+
+							$name = Strings::utf8_ucwords($name);
 						} else {
 							$name = 'Person #'.$r['id'];
 						}

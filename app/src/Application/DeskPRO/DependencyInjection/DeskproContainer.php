@@ -248,10 +248,19 @@ class DeskproContainer extends Container
 	 * databases to choose from and one is selected at random.
 	 *
 	 * @param string $type
+	 * @param array $context = null
 	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
-	public function getDbRead($type = 'default')
+	public function getDbRead($type = 'default', array $context = null)
 	{
+		$type_key_fn = dp_get_config('db_read_mapper');
+		if ($type_key_fn) {
+			$new_type = call_user_func($type_key_fn, $type, $context);
+			if ($new_type) {
+				$type = $new_type;
+			}
+		}
+
 		// Already initialised
 		if (isset($this->db_read_conns[$type])) {
 			return $this->db_read_conns[$type];

@@ -33,6 +33,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		var snippetList = this.getEl('snippet_list');
 		var filterInput = this.getEl('filter');
 		var langSelect  = this.getEl('show_language_id');
+		var lastUpdateRequest = null;
 
 		var rowsTpl = twig({
 			data: DeskPRO_Window.util.getPlainTpl($('#snippet_rows_tpl'))
@@ -102,6 +103,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		var updateCatList = function(categoryId, filterString, languageId) {
 
+			// used to debounce the UI between rapidly
+			// clicking through categories
+			var lastUpdateRequest = (new Date()).getTime();
 			var myLangId   = DESKPRO_PERSON_LANG_ID;
 			var showLangId = langSelect.val();
 
@@ -111,6 +115,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					filterString: filterString || null,
 					languageId: languageId || null
 				}, function(snippets) {
+					var thisRequestTime = lastUpdateRequest;
 					var newList = $('<ul></ul>');
 
 					Array.each(snippets, function(s) {
@@ -120,12 +125,21 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 					snippets = sortSnippets(snippets);
 
+					if (lastUpdateRequest && thisRequestTime != lastUpdateRequest) {
+						return;
+					}
+
 					newList.html(rowsTpl.render({
 						snippets: snippets
 					}));
 
+					if (lastUpdateRequest && thisRequestTime != lastUpdateRequest) {
+						return;
+					}
+
 					snippetList.empty().append(newList);
 					self.updateUi();
+					lastUpdateRequest = null;
 				});
 			} else {
 				var catIds = [];
@@ -192,6 +206,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							return;
 						}
 
+						var thisRequestTime = lastUpdateRequest;
+
 						Array.each(catIds, function(cid) {
 
 							var catSnippets = snippets.filter(function(s) { return s.category_id == cid; });
@@ -219,15 +235,24 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 							var newList = $('<ul></ul>');
 
+							if (lastUpdateRequest && thisRequestTime != lastUpdateRequest) {
+								return;
+							}
+
 							newList.html(rowsTpl.render({
 								snippets: catSnippets
 							}));
+
+							if (lastUpdateRequest && thisRequestTime != lastUpdateRequest) {
+								return;
+							}
 
 							newListWrap.append(newList);
 							snippetList.append(newListWrap);
 						});
 
 						self.updateUi();
+						lastUpdateRequest = null;
 					});
 				}
 			}

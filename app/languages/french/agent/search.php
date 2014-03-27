@@ -1,0 +1,15 @@
+<?php return array(
+	'agent.search.by'                                                      => 'Par',
+	'agent.search.chat_conversations'                                      => 'Conversations Chat',
+	'agent.search.find_by_above_criteria'                                  => 'Trouver par le critère ci-dessus',
+	'agent.search.find_person'                                             => 'Trouver personne',
+	'agent.search.loading'                                                 => 'En cours de chargement',
+	'agent.search.no_email'                                                => 'Pas d&#039;email',
+	'agent.search.no_people_match_your_criteria'                           => 'Personne ne correspond aux critères de recherche',
+	'agent.search.no_results_found'                                        => 'Pas de résultats trouvés',
+	'agent.search.number_of_tickets'                                       => 'Nombre de tickets',
+	'agent.search.person_id'                                               => 'ID personne',
+	'agent.search.select'                                                  => 'Sélectionner',
+	'agent.search.simple'                                                  => 'Simple',
+	'agent.search.view_all_results'                                        => 'Voir tous les résultats',
+);

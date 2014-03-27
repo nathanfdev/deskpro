@@ -6,9 +6,14 @@
 	data-route-title="@selector(a.subject)"
 	data-route-openclass="open"
 >
+	<% if (ticket.preview_changes) {
+		ticket_display = ticket.preview_changes;
+	} else {
+		ticket_display = ticket;
+	} %>
 	<div class="item-hover-over-indicator"></div>
 	<div class="loading-arrow">{{ phrase('agent.general.loading') }}</div>
-	<input type="checkbox" class="item-select" ng-model="checkedTickets[<%= ticket.id %>]" dp-removed="uncheckTicketId(<%= ticket.id %>)" />
+	<input type="checkbox" class="item-select" ng-model="checkedTickets[<%= ticket.id %>]" />
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>
@@ -26,117 +31,121 @@
 		</div>
 		<div class="top-row-right">
 			<div class="bound-fade"></div>
-			<% if (ticket.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
-			<div class="status-pill status urgency-<%= ticket.urgency %> <%= ticket.status %> <%= ticket.status %>_<%= ticket.hidden_status %>">
-				<% if (ticket.status == 'awaiting_agent') { %>
+			<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
+			<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
+				<% if (ticket_display.status == 'awaiting_agent') { %>
 					<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
 				<% } %>
-				<% if (ticket.status == 'awaiting_user') { %>
+				<% if (ticket_display.status == 'awaiting_user') { %>
 					<label>{{ phrase('agent.tickets.status_awaiting_user') }}</label>
 				<% } %>
-				<% if (ticket.status == 'resolved') { %>
+				<% if (ticket_display.status == 'resolved') { %>
 					<label>{{ phrase('agent.tickets.status_resolved') }}</label>
 				<% } %>
-				<% if (ticket.status == 'closed') { %>
+				<% if (ticket_display.status == 'closed') { %>
 					<label>{{ phrase('agent.tickets.status_closed') }}</label>
 				<% } %>
-				<% if (ticket.status == 'hidden' && !ticket.hidden_status) { %>
+				<% if (ticket_display.status == 'hidden' && !ticket_display.hidden_status) { %>
 					<label>{{ phrase('agent.tickets.status_hidden') }}</label>
 				<% } %>
-				<% if (ticket.status == 'hidden' && ticket.hidden_status == 'deleted') { %>
+				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'deleted') { %>
 					<label>{{ phrase('agent.tickets.status_hidden_deleted') }}</label>
 				<% } %>
-				<% if (ticket.status == 'hidden' && ticket.hidden_status == 'spam') { %>
+				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'spam') { %>
 					<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
 				<% } %>
-				<% if (ticket.status == 'hidden' && ticket.hidden_status == 'temp') { %>
+				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'temp') { %>
 					<label>{{ phrase('agent.tickets.status_hidden_temp') }}</label>
 				<% } %>
-				<% if (ticket.status == 'hidden' && ticket.hidden_status == 'validating') { %>
+				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'validating') { %>
 					<label>{{ phrase('agent.tickets.status_hidden_validating') }}</label>
 				<% } %>
 
-				<% if (ticket.status == 'awaiting_agent') { %>
-					<i class="ticket-urgency"><%= ticket.urgency %></i>
+				<% if (ticket_display.status == 'awaiting_agent') { %>
+					<i class="ticket-urgency"><%= ticket_display.urgency %></i>
 				<% } %>
 			</div>
 
-			<% if (ticket.agent) { %>
-				<span class="tipped agent-inline-icon" title="<%- ticket.agent.display_name %>" style="background-image: url('<%- ticket.agent.picture_url_16 %>');"></span>
+			<% if (ticket_display.agent) { %>
+				<span class="tipped agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>');"></span>
+			<% } %>
+
+			<% if (ticket_display.flag) { %>
+				<i class="flag <%= ticket_display.flag %>"></i>
 			<% } %>
 			<br class="clear" />
 		</div>
 	</div>
 	<div class="userinfo">
-		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
-			<span class="with-icon" style="background-image: url('<%- ticket.person.picture_url_16 %>');"><%- ticket.person.display_name %></span></a>
+		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket_display.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
+			<span class="with-icon" style="background-image: url('<%- ticket_display.person.picture_url_16 %>');"><%- ticket_display.person.display_name %></span></a>
 			<% if (ticket.person.primary_email.email) { %>
 				<span class="email">&lt;<%- ticket.person.primary_email.email %>&gt;</span>
 			<% } %>
-			<% if (ticket.person.organization) { %>
+			<% if (ticket_display.organization) { %>
 				<span class="org">
-					<% if (ticket.person.organization_position) { %><%= ticket.person.organization_position %>, <% } %><%- ticket.person.organization.name %>
+					<% if (ticket_display.person.organization_position) { %><%= ticket_display.person.organization_position %>, <% } %><%- ticket_display.organization.name %>
 				</span>
 			<% } %>
 		<div class="bound-fade"></div>
 	</div>
 	<div class="extra-fields">
 		<ul>
-			<% for (var i = 0; i < display_fields.length; i++) { var field = display_fields[i]; if (!this.isFieldDisplayable(ticket)(field)) continue; %>
+			<% for (var i = 0; i < display_fields.length; i++) { var field = display_fields[i]; if (!this.isFieldDisplayable(ticket, field)) continue; %>
 				<li>
 					<% if (field == 'department') { %>
 						<span class="prop-title">{{ phrase('agent.general.department') }}:</span>
-						<span class="prop-val"><%- ticket.department.title_full %></span>
+						<span class="prop-val"><%- ticket_display.department.title_full %></span>
 					<% } %>
 
 					<% if (field == 'ref') { %>
 						<span class="prop-title">{{ phrase('agent.general.ref') }}:</span>
-						<span class="prop-val"><%- ticket.ref %></span>
+						<span class="prop-val"><%- ticket_display.ref %></span>
 					<% } %>
 
 					<% if (field == 'language') { %>
 						<span class="prop-title">{{ phrase('agent.general.language') }}:</span>
-						<span class="prop-val"><%= ticket.language.title %></span>
+						<span class="prop-val"><%= ticket_display.language.title %></span>
 					<% } %>
 
 					<% if (field == 'category') { %>
 						<span class="prop-title">{{ phrase('agent.general.category') }}:</span>
-						<span class="prop-val"><%= ticket.category.title %></span>
+						<span class="prop-val"><%= ticket_display.category.title %></span>
 					<% } %>
 
 					<% if (field == 'priority') { %>
 						<span class="prop-title">{{ phrase('agent.general.priority') }}:</span>
-						<span class="prop-val"><%= ticket.priority.title %></span>
+						<span class="prop-val"><%= ticket_display.priority.title %></span>
 					<% } %>
 
 					<% if (field == 'workflow') { %>
 						<span class="prop-title">{{ phrase('agent.general.workflow') }}:</span>
-						<span class="prop-val"><%= ticket.workflow.title %></span>
+						<span class="prop-val"><%= ticket_display.workflow.title %></span>
 					<% } %>
 
 					<% if (field == 'product') { %>
 						<span class="prop-title">{{ phrase('agent.general.product') }}:</span>
-						<span class="prop-val"><%= ticket.product.title %></span>
+						<span class="prop-val"><%= ticket_display.product.title %></span>
 					<% } %>
 
 					<% if (field == 'agent') { %>
 						<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
-						<% if (ticket.agent && ticket.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><%- ticket.agent.display_name %></span><% } %>
-						<% if (ticket.agent && ticket.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link"><%- ticket.agent.display_name %></a></span><% } %>
-						<% if (!ticket.agent) { %><span class="prop-val">{{ phrase('agent.general.unassigned') }}</span><% } %>
+						<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><%- ticket_display.agent.display_name %></span><% } %>
+						<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link"><%- ticket_display.agent.display_name %></a></span><% } %>
+						<% if (!ticket_display.agent) { %><span class="prop-val">{{ phrase('agent.general.unassigned') }}</span><% } %>
 					<% } %>
 
 					<% if (field == 'agent_team') { %>
 						<span class="prop-title">{{ phrase('agent.general.agent_team') }}:</span>
-						<% if (ticket.agent_team) { %><span class="prop-val"><%- ticket.agent_team.name %></span><% } %>
-						<% if (!ticket.agent_team) { %><span class="prop-val">{{ phrase('agent.general.no_team') }}</span><% } %>
+						<% if (ticket_display.agent_team) { %><span class="prop-val"><%- ticket_display.agent_team.name %></span><% } %>
+						<% if (!ticket_display.agent_team) { %><span class="prop-val">{{ phrase('agent.general.no_team') }}</span><% } %>
 					<% } %>
 
 					<% if (field == 'labels') { %>
 						<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
 						<span class="prop-val">
-							<% for (var labelIdx = 0; labelIdx < ticket.labels.length; labelIdx++) { %>
-								<span class="listing-tag"><%- ticket.labels[labelIdx] %></span>
+							<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
+								<span class="listing-tag"><%- ticket_display.labels[labelIdx] %></span>
 							<% } %>
 						</span>
 					<% } %>
@@ -144,54 +153,54 @@
 					<% if (field == 'organization') { %>
 						<span class="prop-title">{{ phrase('agent.general.organization') }}:</span>
 						<span class="prop-val">
-							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket.organization.id %>'}) }}" data-route-title="@text"><%- ticket.organization.name %></a>
+							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'}) }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
 						</span>
 					<% } %>
 
 					<% if (field == 'date_created') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_created') }}:</span>
 						<span class="prop-val">
-							<span dp-timeago timestamp="<%= ticket.date_created_ts %>" />
+							<span dp-timeago timestamp="<%= ticket_display.date_created_ts %>" />
 						</span>
 					<% } %>
 
 					<% if (field == 'date_user_waiting') { %>
 						<span class="prop-title">{{ phrase('agent.general.user_waiting') }}:</span>
 						<span class="prop-val">
-							<span dp-timeago timestamp="<%= ticket.date_user_waiting_ts %>" no-suffix />
+							<span dp-timeago timestamp="<%= ticket_display.date_user_waiting_ts %>" no-suffix />
 						</span>
 					<% } %>
 
 					<% if (field == 'date_resolved') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_resolved') }}:</span>
 						<span class="prop-val">
-							<span dp-timeago timestamp="<%= ticket.date_resolved_ts %>" />
+							<span dp-timeago timestamp="<%= ticket_display.date_resolved_ts %>" />
 						</span>
 					<% } %>
 
 					<% if (field == 'date_last_user_reply') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_of_last_user_reply') }}:</span>
 						<span class="prop-val">
-							<span dp-timeago timestamp="<%= ticket.date_last_user_reply_ts %>" />
+							<span dp-timeago timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
 						</span>
 					<% } %>
 
 					<% if (field == 'date_last_agent_reply') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_of_last_agent_reply') }}:</span>
 						<span class="prop-val">
-							<span dp-timeago timestamp="<%= ticket.date_last_agent_reply_ts %>" />
+							<span dp-timeago timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
 						</span>
 					<% } %>
 
 					<% if (field == 'date_last_reply') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_of_last_reply') }}:</span>
-						<% if (ticket.date_last_agent_reply && (!ticket.date_last_user_reply || ticket.date_last_agent_reply_ts > ticket.date_last_user_reply_ts)) { %>
+						<% if (ticket_display.date_last_agent_reply && (!ticket_display.date_last_user_reply || ticket_display.date_last_agent_reply_ts > ticket_display.date_last_user_reply_ts)) { %>
 							<span class="prop-val">
-								<span dp-timeago timestamp="<%= ticket.date_last_agent_reply_ts %>" />
+								<span dp-timeago timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
 							</span>
 						<% } %>
-						<% if (ticket.date_last_user_reply && (!ticket.date_last_agent_reply || ticket.date_last_user_reply_ts > ticket.date_last_agent_reply_ts)) { %>
-							<span dp-timeago timestamp="<%= ticket.date_last_user_reply_ts %>" />
+						<% if (ticket_display.date_last_user_reply && (!ticket_display.date_last_agent_reply || ticket_display.date_last_user_reply_ts > ticket_display.date_last_agent_reply_ts)) { %>
+							<span dp-timeago timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
 						<% } %>
 					<% } %>
 
@@ -199,9 +208,9 @@
 						<span class="prop-title">{{ phrase('agent.general.total_time_waiting') }}:</span>
 						<span class="prop-val">
 							<span ng-bind="<%= parseInt(
-								(ticket.total_user_waiting || 0)
+								(ticket_display.total_user_waiting || 0)
 								+ (
-									(ticket.date_user_waiting_ts || ticket.date_created_ts)
+									(ticket_display.date_user_waiting_ts || ticket_display.date_created_ts)
 									- ((new Date()).getTime()/1000)
 								)
 							) %>|formatSeconds"></span>
@@ -211,7 +220,7 @@
 					<% if (field == 'slas') { %>
 						<span class="prop-title">{{ phrase('agent.general.slas') }}:</span>
 						<span class="prop-val">
-							<% for (var slaIdx = 0; slaIdx < ticket.ticket_slas.length; slaIdx++) { var ticket_sla = ticket.ticket_slas[slaIdx]; %>
+							<% for (var slaIdx = 0; slaIdx < ticket_display.ticket_slas.length; slaIdx++) { var ticket_sla = ticket_display.ticket_slas[slaIdx]; %>
 							<span class="prop-val sla-status-<%= ticket_sla.sla_status %>">
 								<%- ticket_sla.sla.title %>
 								<% if (ticket_sla.next_trigger_date_ts) { %>
@@ -225,13 +234,13 @@
 					{% for field in app.getCustomFieldManager('tickets').getFields() %}
 						<% if (field == 'ticket_fields[{{ field.id }}]') { %>
 							<span class="prop-title">{{ field.title }}:</span>
-							<span class="prop-val"><%- ticket.field{{ field.id }} %></span>
+							<span class="prop-val"><%- ticket_display.field{{ field.id }} %></span>
 						<% } %>
 					{% endfor %}
 					{% for field in app.getCustomFieldManager('people').getFields() %}
 						<% if (field == 'person_fields[{{ field.id }}]') { %>
 							<span class="prop-title">{{ field.title }}:</span>
-							<span class="prop-val"><%- ticket.person.field{{ field.id }} %></span>
+							<span class="prop-val"><%- ticket_display.person.field{{ field.id }} %></span>
 						<% } %>
 					{% endfor %}
 				</li>

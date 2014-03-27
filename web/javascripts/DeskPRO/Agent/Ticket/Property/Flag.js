@@ -45,5 +45,10 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 		} else {
 			this.ticketPage.getEl('flagtext').text('');
 		}
+
+		// Update list view if the page is visible
+		if (DeskPRO_Window.listPage && DeskPRO_Window.listPage.refreshTicketResults) {
+			DeskPRO_Window.listPage.mergeTicketData(parseInt(this.ticketPage.meta.ticket_id), {flag: value});
+		}
 	}
 });

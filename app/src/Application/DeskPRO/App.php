@@ -183,9 +183,9 @@ class App
 	 * @param string $type
 	 * @return DBAL\Connection
 	 */
-	public static function getDbRead($type = 'default')
+	public static function getDbRead($type = 'default', array $context = null)
 	{
-		return self::getContainer()->getDbRead($type);
+		return self::getContainer()->getDbRead($type, $context);
 	}
 
 

@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 use Application\DeskPRO\People\PersonContextInterface;
+use Orb\Util\Strings;
 
 class TicketResultsDisplay implements PersonContextInterface
 {
@@ -87,6 +88,11 @@ class TicketResultsDisplay implements PersonContextInterface
 	protected $people;
 
 	/**
+	 * @var array
+	 */
+	protected $people_ids;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person_context;
@@ -95,6 +101,21 @@ class TicketResultsDisplay implements PersonContextInterface
 	 * @var array
 	 */
 	protected $person_flagged;
+
+	/**
+	 * @var array
+	 */
+	protected $all_ticket_field_data;
+
+	/**
+	 * @var array
+	 */
+	protected $all_user_field_data;
+
+	/**
+	 * @var array
+	 */
+	protected $all_org_field_data;
 
 	public function setPersonContext(Person $person)
 	{
@@ -123,6 +144,7 @@ class TicketResultsDisplay implements PersonContextInterface
 
 		$this->dep_names = App::getDataService('Department')->getFullNames();
 		$this->people = App::getDataService('Person')->getPeopleResultsFromIds($people_ids);
+		$this->people_ids = $people_ids;
 	}
 
 
@@ -165,6 +187,84 @@ class TicketResultsDisplay implements PersonContextInterface
 		", array(), 'ticket_id', null, 'label');
 
 		return $this->all_labels;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllUserFieldData()
+	{
+		if ($this->all_user_field_data !== null) return $this->all_user_field_data;
+		$data = $this->em->createQuery("
+			SELECT d, def, root_def
+			FROM DeskPRO:CustomDataPerson AS d
+			LEFT JOIN d.field def
+			LEFT JOIN d.root_field root_def
+			WHERE d.person IN (?0)
+		")->execute(array(array_values($this->people_ids)));
+
+		$this->all_user_field_data = array();
+		foreach ($data as $d) {
+			$tid = $d->person->getId();
+			if (!isset($this->all_user_field_data[$tid])) {
+				$this->all_user_field_data[$tid] = array();
+			}
+
+			$this->all_user_field_data[$tid][] = $d;
+		}
+
+		return $this->all_user_field_data;
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 * @return array
+	 */
+	public function getUserFieldData(Person $person)
+	{
+		$this->getAllUserFieldData();
+		return isset($this->all_user_field_data[$person->getId()]) ? $this->all_user_field_data[$person->getId()] : array();
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllTicketFieldData()
+	{
+		if ($this->all_ticket_field_data !== null) return $this->all_ticket_field_data;
+		$data = $this->em->createQuery("
+			SELECT d, def, root_def
+			FROM DeskPRO:CustomDataTicket AS d
+			LEFT JOIN d.field def
+			LEFT JOIN d.root_field root_def
+			WHERE d.ticket IN (?0)
+		")->execute(array(array_values($this->ticket_ids)));
+
+		$this->all_ticket_field_data = array();
+		foreach ($data as $d) {
+			$tid = $d->ticket->getId();
+			if (!isset($this->all_ticket_field_data[$tid])) {
+				$this->all_ticket_field_data[$tid] = array();
+			}
+
+			$this->all_ticket_field_data[$tid][] = $d;
+		}
+
+		return $this->all_ticket_field_data;
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 * @return array
+	 */
+	public function getTicketFieldData(Ticket $ticket)
+	{
+		$this->getAllTicketFieldData();
+		return isset($this->all_ticket_field_data[$ticket->id]) ? $this->all_ticket_field_data[$ticket->id] : array();
 	}
 
 
@@ -326,25 +426,70 @@ class TicketResultsDisplay implements PersonContextInterface
 			return $this->all_previews;
 		}
 
-		$messages = $this->em->createQuery("
-			SELECT DISTINCT partial t.{id}, m, partial p.{id,name,first_name,last_name,is_agent}
-			FROM DeskPRO:TicketMessage m
-			LEFT JOIN m.ticket t
-			LEFT JOIN m.person p
-			WHERE m.ticket IN (?0)
-			ORDER BY m.id DESC
-		")->setParameters(array(array_keys($this->ticket_ids)))->execute();
+		$message_data = $this->db->fetchAllKeyed("
+			SELECT
+				DISTINCT(tickets_messages.ticket_id), tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
+				people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent
+			FROM tickets_messages
+			LEFT JOIN people ON (people.id = tickets_messages.person_id)
+			WHERE tickets_messages.ticket_id IN (" . implode(',', $this->ticket_ids) . ")
+			ORDER BY tickets_messages.id DESC
+		", array(), 'id');
 
 		$this->all_previews = array();
-		foreach ($messages as $m) {
-			if (!isset($this->all_previews[$m->ticket->id])) {
-				$this->all_previews[$m->ticket->id] = array();
+		foreach ($message_data as $m) {
+			if (!isset($this->all_previews[$m['ticket_id']])) {
+				$this->all_previews[$m['ticket_id']] = array();
 			}
-			$this->all_previews[$m->ticket->id][] = $m;
+
+			$m['date_created'] = \DateTime::createFromFormat('Y-m-d H:i:s', $m['date_created']);
+
+			if ($m['first_name'] && $m['last_name']) {
+				$m['display_name'] = $m['first_name'] . ' ' . $m['last_name'];
+			} else if ($m['name']) {
+				$m['display_name'] = $m['name'];
+			} else if ($m['last_name']) {
+				$m['display_name'] = $m['last_name'];
+			} else if ($m['first_name']) {
+				$m['display_name'] = $m['first_name'];
+			} else {
+				$m['display_name'] = 'User';
+			}
+
+			$m['preview_text'] = $this->_getMessagePreviewText($m['message'], 750);
+
+			$this->all_previews[$m['ticket_id']][] = $m;
 		}
 
 		return $this->all_previews;
 	}
+
+	private function _getMessagePreviewText($message, $max_length = 0, $ellipses = '...')
+	{
+		$message = preg_replace('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', '', $message);
+
+		$sig_pos = strpos($message, '<div class="dp-signature-start">');
+
+		if ($sig_pos !== false) {
+			$message = substr($message, 0, $sig_pos);
+		}
+
+		$message = Strings::standardEol($message);
+		$message = str_replace(array('<br/>', '<br>', '<br />', '<p>', '</p>'), "\n", $message);
+		$message = strip_tags($message);
+		$message = Strings::decodeHtmlEntities($message);
+		$message = preg_replace('#\s+#', ' ', $message);
+		$message = trim($message);
+
+		if ($max_length && isset($message[$max_length])) {
+			$message = substr($message, 0, $max_length);
+			$message = trim($message);
+			$message .= $ellipses;
+		}
+
+		return $message;
+	}
+
 
 
 	/**

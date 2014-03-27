@@ -983,6 +983,12 @@ class KbController extends AbstractController
 				}
 			}
 
+			$rev = ContentRevisionUtil::findOrCreate($article, array('title', 'content'), $this->person);
+			if ($rev) {
+				$this->em->persist($rev);
+				$this->em->flush();
+			}
+
 			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
 			return $this->createJsonResponse(array(

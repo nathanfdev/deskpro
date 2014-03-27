@@ -20,6 +20,8 @@
  */
 class ezcMailRfc822Parser extends ezcMailPartParser
 {
+	public $dp_raw_source = '';
+
     /**
      * Holds the headers parsed.
      *
@@ -70,6 +72,8 @@ class ezcMailRfc822Parser extends ezcMailPartParser
      */
     public function parseBody( $origLine )
     {
+		$this->dp_raw_source .= $origLine;
+
         $line = rtrim( $origLine, "\r\n" );
         if ( $this->parserState == self::PARSE_STATE_HEADERS && $line == '' )
         {

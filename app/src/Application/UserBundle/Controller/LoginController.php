@@ -40,7 +40,6 @@ use Application\DeskPRO\Entity\TmpData;
 
 use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
@@ -285,7 +284,7 @@ HTML;
 
 			// Send alert
 			$attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
-			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
+			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
 				$message = $this->container->getMailer()->createMessage();
 				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => $this->session->getEntity()));
 				$message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
@@ -935,7 +934,7 @@ HTML;
 	{
 		$result = $this->authLocalInput();
 
-		$this->ensureRequestToken('user_login');
+		$this->ensureStandardRequestToken();
 
 		if (!$result->isValid()) {
 			$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));

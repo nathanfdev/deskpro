@@ -952,7 +952,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		function findNextTicketId() {
 			var listPage = DeskPRO_Window.getListPage();
-			if (!listPage) return null;
+			if (!listPage || !listPage.listTicketIds || !listPage.listTicketIds.length) return null;
 
 			var idx = listPage.listTicketIds.indexOf(parseInt(self.getMetaData('ticket_id')));
 			if (idx !== -1 && listPage.listTicketIds.length >= idx) {
@@ -2224,7 +2224,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				var wrapper = overlay.getWrapper(),
 					form = wrapper.find('form'),
 					sendBtn = wrapper.find('.save-trigger'),
-					footer = wrapper.find('.overlay-footer');
+					footer = wrapper.find('.overlay-footer'),
+					msgInput = wrapper.find('textarea.note'),
+					emailInput = wrapper.find('.email-address-input'),
+					sigPreview = wrapper.find('.agent-sig-view'),
+					emailInputWrap = wrapper.find('.email-address-wrap');
+
+				DeskPRO.ElementHandler_Exec(wrapper);
+
+				emailInputWrap.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+					emailInput.val(email);
+					sb.close();
+				});
+
+				msgInput.on('change keyup keydown', function() {
+					var txt = $.trim($(this).val());
+					if (txt.length) {
+						sigPreview.show();
+					} else {
+						sigPreview.hide();
+					}
+				})
 
 				form.on('submit', function(ev) {
 					ev.preventDefault();
