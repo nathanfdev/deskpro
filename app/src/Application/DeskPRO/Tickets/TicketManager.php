@@ -168,6 +168,11 @@ class TicketManager
 
 	private function doSaveTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		// Noop is sometimes used when we need to save a ticket and have appropriate client-messages
+		// sent to update agent filters, but we dont want the usual triggers etc to run.
+		// This is usually done when the ticket is being deleted.
+		$is_noop = $context->getEventType() == 'noop';
+
 		$time_start = microtime(true);
 		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
 
@@ -186,14 +191,62 @@ class TicketManager
 			$context->getLogger()->debug("PersonContext: NULL");
 		}
 
-		$state = $ticket->getStateChangeRecorder();
-
 		$this->em->persist($ticket);
 
 		#----------------------------------------
 		# Set the creation system
 		#----------------------------------------
 
+		if (!$is_noop) {
+			$this->_doSaveTicket_verifyCreationSystem($ticket, $context);
+			$this->_doSaveTicket_verifyDepartment($ticket, $context);
+			$this->_doSaveTicket_verifyRef($ticket, $context);
+			$this->_doSaveTicket_verifyOrgManagers($ticket, $context);
+			$this->_doSaveTicket_execTriggers($ticket, $context);
+			$this->_doSaveTicket_recalcSlas($ticket, $context);
+
+			if (!$ticket->ticket_hash) {
+				$ticket->recomputeHash();
+			}
+		}
+
+		$this->em->flush();
+
+		if (!$is_noop) {
+			$logs = $this->_doSaveTicket_runTicketLog($ticket, $context);
+		} else {
+			$logs = array();
+		}
+
+		$this->_doSaveTicket_runFilterUpdates($ticket, $context);
+
+		if (!$is_noop) {
+			$this->_doSaveTicket_recalcStats($ticket, $context);
+
+			$agent_alert_action = new SendAgentAlert(array(
+				'agent_ids'   => array('notify_list'),
+				'ticket_logs' => $logs
+			));
+			$agent_alert_action->setContainer($this->container);
+			$agent_alert_action->applyAction($ticket, $context);
+
+			$search_updater = new TicketSearchUpdater($this->db, $ticket);
+			$search_updater->update();
+		}
+
+		#----------------------------------------
+		# Done
+		#----------------------------------------
+
+		$this->em->flush();
+		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
+
+		$ticket->resetStateChangeRecorder();
+		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
+	}
+
+	private function _doSaveTicket_verifyCreationSystem(Ticket $ticket, ExecutorContextInterface $context)
+	{
 		if (!$ticket->creation_system) {
 			if ($context->getEventMethod() == 'email') {
 				$creation_system = 'gateway.';
@@ -233,11 +286,10 @@ class TicketManager
 				$ticket->creation_system_option = $context->getEventMethodOption('origin_url');
 			}
 		}
+	}
 
-		#----------------------------------------
-		# Set or verify the department
-		#----------------------------------------
-
+	private function _doSaveTicket_verifyDepartment(Ticket $ticket, ExecutorContextInterface $context)
+	{
 		/** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
 		$ticket_deps = $this->container->getSystemService('TicketDepartments');
 
@@ -248,11 +300,10 @@ class TicketManager
 		if ($ticket_deps->getChildren($ticket->department)) {
 			$ticket->department = $ticket_deps->getDefaultDepartment();
 		}
+	}
 
-		#----------------------------------------
-		# Sort out ref
-		#----------------------------------------
-
+	private function _doSaveTicket_verifyRef(Ticket $ticket, ExecutorContextInterface $context)
+	{
 		if (!$ticket->ref) {
 			try {
 				$ticket->ref = $this->container->getRefGenerator()->generateReference('DeskPRO:Ticket');
@@ -273,11 +324,10 @@ class TicketManager
 				$ticket->ref = $ref;
 			}
 		}
+	}
 
-		#----------------------------------------
-		# Automtically add org managers of the ticket
-		#----------------------------------------
-
+	private function _doSaveTicket_verifyOrgManagers(Ticket $ticket, ExecutorContextInterface $context)
+	{
 		if ($ticket->organization) {
 			$managers = $this->em->getRepository('DeskPRO:Organization')->getManagers($this->organization);
 			foreach ($managers AS $manager) {
@@ -286,10 +336,11 @@ class TicketManager
 				}
 			}
 		}
+	}
 
-		#----------------------------------------
-		# Triggers
-		#----------------------------------------
+	private function _doSaveTicket_execTriggers(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$state = $ticket->getStateChangeRecorder();
 
 		$triggers = $this->em->createQuery("
 			SELECT t
@@ -351,10 +402,11 @@ class TicketManager
 
 			$state->clearCurrentChangeMetaData();
 		}
+	}
 
-		#----------------------------------------
-		# Recalculate SLAs
-		#----------------------------------------
+	private function _doSaveTicket_recalcSlas(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$state = $ticket->getStateChangeRecorder();
 
 		if ($state->isNewTicket() && !$ticket->hidden_status) {
 			$reset_slas = false;
@@ -381,25 +433,10 @@ class TicketManager
 				}
 			}
 		}
+	}
 
-		#----------------------------------------
-		# Calculate ticket hash
-		#----------------------------------------
-
-		if (!$ticket->ticket_hash) {
-			$ticket->recomputeHash();
-		}
-
-		#----------------------------------------
-		# Initial flush
-		#----------------------------------------
-
-		$this->em->flush();
-
-		#----------------------------------------
-		# Ticket Log
-		#----------------------------------------
-
+	private function _doSaveTicket_runTicketLog(Ticket $ticket, ExecutorContextInterface $context)
+	{
 		$ticketlog_generator = new TicketLogGenerator($ticket, $context);
 		$logs = $ticketlog_generator->getLogEntries();
 
@@ -407,34 +444,22 @@ class TicketManager
 			$this->em->persist($l);
 		}
 
-		#----------------------------------------
-		# Ticket Filter update
-		#----------------------------------------
+		return $logs;
+	}
 
+	private function _doSaveTicket_runFilterUpdates(Ticket $ticket, ExecutorContextInterface $context)
+	{
 		$change_set = $this->container->getTicketFilterChangeDetector()->getFilterChangeSet($ticket, $context);
 		$client_messages = $change_set->getListUpdateClientMessages();
 
 		foreach ($client_messages as $cm) {
 			$this->em->persist($cm);
 		}
+	}
 
-		$agent_alert_action = new SendAgentAlert(array(
-			'agent_ids'   => array('notify_list'),
-			'ticket_logs' => $logs
-		));
-		$agent_alert_action->setContainer($this->container);
-		$agent_alert_action->applyAction($ticket, $context);
-
-		#----------------------------------------
-		# Update search
-		#----------------------------------------
-
-		$search_updater = new TicketSearchUpdater($this->db, $ticket);
-		$search_updater->update();
-
-		#----------------------------------------
-		# Recount stats
-		#----------------------------------------
+	private function _doSaveTicket_recalcStats(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$state = $ticket->getStateChangeRecorder();
 
 		if ($state->isNewTicket() || $state->hasChangedField('messages')) {
 			$agent_ids_in = implode(',', $this->container->getAgentData()->getIds());
@@ -451,18 +476,7 @@ class TicketManager
 				WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
 			", array($ticket->id));
 		}
-
-		#----------------------------------------
-		# Done
-		#----------------------------------------
-
-		$this->em->flush();
-		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
-
-		$ticket->resetStateChangeRecorder();
-		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
 	}
-
 
 	/**
 	 * @param Person $agent

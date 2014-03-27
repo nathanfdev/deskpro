@@ -375,8 +375,8 @@ class TicketLogGenerator
 			case 'participants':
 				return array(
 					'action_type' => 'changed_participants',
-					'added'   => array_map(function($l) { return $l->label; }, $added),
-					'removed' => array_map(function($l) { return $l->label; }, $removed)
+					'added'   => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added),
+					'removed' => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed)
 				);
 				break;
 
@@ -515,6 +515,13 @@ class TicketLogGenerator
 					'id_before'   => $new['old_ticket_id'],
 
 					'message_ids' => $new['message_ids'],
+				);
+
+			case 'merged_from':
+				return array(
+					'action_type' => 'merged_from',
+					'id_before'   => $new['old_ticket_id'],
+					'lost_data'   => $new['lost_data']
 				);
 
 			default:

@@ -468,7 +468,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 	public function getEmailAccountForTicket(Ticket $ticket)
 	{
 		if ($ticket->email_account) {
-			return $ticket->email_account->address;
+			return $ticket->email_account;
 		}
 
 		return $this->email_accounts->getPrimaryEmailAccount();
