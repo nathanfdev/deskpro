@@ -155,10 +155,6 @@ class TicketListRenderer
 		$data['ref']                     = $ticket->ref;
 		$data['auth']                    = $ticket->auth;
 		$data['sent_to_address']         = $ticket->sent_to_address;
-		$data['notify_email']            = $ticket->notify_email;
-		$data['notify_email_name']       = $ticket->notify_email_name;
-		$data['notify_email_agent']      = $ticket->notify_email_agent;
-		$data['notify_email_name_agent'] = $ticket->notify_email_name_agent;
 		$data['creation_system']         = $ticket->creation_system;
 		$data['creation_system_option']  = $ticket->creation_system_option;
 		$data['ticket_hash']             = $ticket->ticket_hash;
