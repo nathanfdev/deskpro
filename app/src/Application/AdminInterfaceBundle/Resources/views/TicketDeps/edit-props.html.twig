@@ -73,16 +73,16 @@
 				<h3>New Ticket Trigger</h3>
 			</div>
 			<div class="col-lg-9">
-				<div class="inner-group">
+				<div class="inner-group" ng-if="EditCtrl.email_accounts.length">
 					Email account:&nbsp;
 					<select
-							name="email_gateway_id"
-							ui-select2
-							ng-model="EditCtrl.form.email_gateway_id"
-							style="min-width: 240px"
-							class="no-search"
-							>
-						<option value="{{ ng_var('account.id') }}" ng-repeat="account in EditCtrl.email_accounts">{{ ng_var('account.email_address') }}</option>
+						name="email_gateway"
+						ui-select2
+						ng-model="EditCtrl.form.email_gateway"
+						style="min-width: 240px"
+						class="no-search"
+					>
+						<option value="{{ ng_var('account.id') }}" ng-repeat="account in EditCtrl.email_accounts">{{ ng_var('account.address') }}</option>
 					</select>
 				</div>
 

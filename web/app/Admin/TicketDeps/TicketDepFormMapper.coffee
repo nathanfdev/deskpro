@@ -6,16 +6,18 @@ define [
 	Util
 ) ->
 	class TicketDepFormMapper
-		getFormFromModel: (dep, layouts, depPerms, agents, agentgroups, usergroups) ->
+		getFormFromModel: (dep, layouts, depPerms, agents, agentgroups, usergroups, email_accounts) ->
 			form = {
 				title: '',
 				user_title: '',
 				parent_id: '0',
-				email_gateway_id: '0',
 				enable_user_title: false,
 				default_layout: {},
 				custom_layout: {},
-				use_custom_layout: false
+				use_custom_layout: false,
+				trigger: {
+					email_gateway_id: '0'
+				}
 			}
 
 			if dep.id
@@ -26,9 +28,13 @@ define [
 					form.enable_user_title = true
 
 				if not Util.isBlank(dep.parent_id)
-					form.parent_id = dep.parent_id+""
-				if not Util.isBlank(dep.email_gateway_id)
-					form.email_gateway_id = dep.email_gateway_id+""
+					form.parent_id = dep.parent_id+''
+
+
+			if not Util.isBlank(dep.email_gateway_id)
+				form.email_gateway_id = dep.email_gateway_id+''
+			else if email_accounts.length
+				form.email_gateway_id = email_accounts[0].id+''
 
 			form.default_layout = {
 				agent: layouts.default_layout.agent.fields,

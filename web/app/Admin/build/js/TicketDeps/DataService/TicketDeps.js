@@ -127,7 +127,7 @@
               custom_layout: result.customLayoutInfo ? result.customLayoutInfo.layout : null,
               use_custom_layout: result.customLayoutInfo && !result.customLayoutInfo.is_default ? true : false
             };
-            data.form = _this.getFormMapper().getFormFromModel(data.dep, layouts, data.depPerms, data.agents, data.agentgroups, data.usergroups);
+            data.form = _this.getFormMapper().getFormFromModel(data.dep, layouts, data.depPerms, data.agents, data.agentgroups, data.usergroups, data.email_accounts);
             return deferred.resolve(data);
           };
         })(this));
@@ -136,10 +136,10 @@
 
 
       /*
-       * Gets an option array of full-title departments.
-       *
-       * @param {Integer} exclude_id  Dont include this dep in the list
-       * @return {Array}
+      		 * Gets an option array of full-title departments.
+      		 *
+      		 * @param {Integer} exclude_id  Dont include this dep in the list
+      		 * @return {Array}
        */
 
       TicketDeps.prototype.getLeafOptionsArray = function(exclude_id) {
@@ -175,9 +175,9 @@
 
 
       /*
-       * Remove a model from the list by ID.
-       *
-       * @return {Object/null} The removed object or null if object could not be found
+      		 * Remove a model from the list by ID.
+      		 *
+      		 * @return {Object/null} The removed object or null if object could not be found
        */
 
       TicketDeps.prototype.removeListModelById = function(id) {
@@ -231,7 +231,7 @@
       		 *
       		 * @param {Integer} id Department id
       		 * @param {Integer} move_to - id to which we want to move department data
-      	  * @return {promise}
+      		 * @return {promise}
        */
 
       TicketDeps.prototype.deleteDepartmentById = function(id, move_to) {

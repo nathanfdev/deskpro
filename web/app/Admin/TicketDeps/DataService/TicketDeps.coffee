@@ -122,7 +122,8 @@ define [
 					data.depPerms,
 					data.agents,
 					data.agentgroups,
-					data.usergroups
+					data.usergroups,
+					data.email_accounts
 				)
 
 				deferred.resolve(data)
@@ -132,12 +133,11 @@ define [
 
 
 		###
-  # Gets an option array of full-title departments.
-  #
-  # @param {Integer} exclude_id  Dont include this dep in the list
-  # @return {Array}
-  ###
-
+		# Gets an option array of full-title departments.
+		#
+		# @param {Integer} exclude_id  Dont include this dep in the list
+		# @return {Array}
+		###
 		getLeafOptionsArray: (exclude_id) ->
 
 			list = []
@@ -166,11 +166,10 @@ define [
 			return list
 
 		###
-  # Remove a model from the list by ID.
-  #
-  # @return {Object/null} The removed object or null if object could not be found
+		# Remove a model from the list by ID.
+		#
+		# @return {Object/null} The removed object or null if object could not be found
 		###
-
 		removeListModelById: (id) ->
 
 			if not @isListLoaded then return
@@ -213,9 +212,8 @@ define [
 		#
 		# @param {Integer} id Department id
 		# @param {Integer} move_to - id to which we want to move department data
-	 # @return {promise}
+		# @return {promise}
 		###
-
 		deleteDepartmentById: (id, move_to) ->
 			promise = @Api.sendDelete('/ticket_deps/' + id, {
 				move_to: move_to

@@ -26,15 +26,15 @@
         set_options = [];
         options = [];
         options.push({
-          title: 'Change Assigned Agent',
+          title: 'Set Assigned Agent',
           value: 'SetAgent'
         });
         options.push({
-          title: 'Change Assigned Team',
+          title: 'Set Assigned Team',
           value: 'SetAgentTeam'
         });
         options.push({
-          title: 'Change Agent Followers',
+          title: 'Set Agent Followers',
           value: 'SetAgentFollowers'
         });
         set_options.push({
@@ -43,47 +43,47 @@
         });
         options = [];
         options.push({
-          title: 'Change Department',
+          title: 'Set Department',
           value: 'SetDepartment'
         });
         options.push({
-          title: 'Change Product',
+          title: 'Set Product',
           value: 'SetProduct'
         });
         options.push({
-          title: 'Change Category',
+          title: 'Set Category',
           value: 'SetCategory'
         });
         options.push({
-          title: 'Change Priority',
+          title: 'Set Priority',
           value: 'SetPriority'
         });
         options.push({
-          title: 'Change Workflow',
+          title: 'Set Workflow',
           value: 'SetWorkflow'
         });
         options.push({
-          title: 'Change Urgency',
+          title: 'Set Urgency',
           value: 'SetUrgency'
         });
         options.push({
-          title: 'Change Subject',
+          title: 'Set Subject',
           value: 'SetSubject'
         });
         options.push({
-          title: 'Change Labels',
+          title: 'Set Labels',
           value: 'SetLabels'
         });
         options.push({
-          title: 'Change Flag',
+          title: 'Set Flag',
           value: 'SetFlag'
         });
         options.push({
-          title: 'Change Email Account',
+          title: 'Set Email Account',
           value: 'SetEmailAccount'
         });
         options.push({
-          title: 'Change CC\'d Users',
+          title: 'Set CC\'d Users',
           value: 'SetCcUsers'
         });
         set_options.push({
@@ -92,15 +92,15 @@
         });
         options = [];
         options.push({
-          title: 'Change SLAs',
+          title: 'Set SLAs',
           value: 'SetSlas'
         });
         options.push({
-          title: 'Change SLA Condition Status (Passing/Failing)',
+          title: 'Set SLA Condition Status (Passing/Failing)',
           value: 'SetSlaStatus'
         });
         options.push({
-          title: 'Change SLA State (Waiting/Finished)',
+          title: 'Set SLA State (Waiting/Finished)',
           value: 'SetSlaRequirements'
         });
         set_options.push({
@@ -109,7 +109,7 @@
         });
         options = [];
         options.push({
-          title: 'Change Ticket User',
+          title: 'Set Ticket User',
           value: 'ChangeUser'
         });
         options.push({
@@ -225,7 +225,7 @@
             'ticket_pris': '/ticket_pris',
             'ticket_works': '/ticket_works',
             'ticket_slas': '/ticket_slas',
-            'ticket_accounts': '/email_accounts',
+            'email_accounts': '/email_accounts',
             'usergroups': '/user_groups'
           }).then((function(_this) {
             return function(result) {
@@ -240,7 +240,7 @@
               options_data['ticket_works'] = data.ticket_works.workflows;
               options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
               options_data['ticket_slas'] = (_ref1 = data.ticket_slas) != null ? _ref1.slas : void 0;
-              options_data['email_accounts'] = data.ticket_accounts.email_accounts;
+              options_data['email_accounts'] = data.email_accounts.email_accounts;
               options_data['usergroups'] = data.usergroups.groups;
               return _this.options_data = options_data;
             };
@@ -354,7 +354,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'gateway_ids';
+        options.propName = 'email_account_id';
         options.dataName = 'email_accounts';
         options.optionsFormatter = function(options) {
           var acc, opts, _i, _len;
@@ -363,7 +363,7 @@
             acc = options[_i];
             opts.push({
               value: acc.id,
-              title: acc.email_address
+              title: acc.address
             });
           }
           return opts;
@@ -532,6 +532,71 @@
         }
         def = this.getStandardIs(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendAgentEmail = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentemail.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  template: value.template || '',
+                  agent_ids: [],
+                  from_name: value.from_name || 'performer',
+                  from_name_type: value.from_name || 'performer',
+                  from_account: 0
+                };
+              },
+              getValue: function(model, data) {
+                var k, v, value, _ref;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  template: model.template || '',
+                  agent_ids: [],
+                  from_name: model.from_name || 'performer',
+                  from_account: 0
+                };
+                if (model.agent_ids) {
+                  _ref = model.agent_ids;
+                  for (v in _ref) {
+                    if (!__hasProp.call(_ref, v)) continue;
+                    k = _ref[v];
+                    if (v) {
+                      if (k === 'notify_list') {
+                        options.agent_ids.push('notify_list');
+                      } else {
+                        options.agent_ids.push(parseInt(k));
+                      }
+                    }
+                  }
+                }
+                if (model.from_account) {
+                  options.from_accounts = parseInt(model.from_account);
+                }
+                value = {};
+                value.type = 'SendAgentEmail';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getWebHook = function(options) {

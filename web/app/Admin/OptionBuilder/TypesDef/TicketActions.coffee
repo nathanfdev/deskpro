@@ -16,17 +16,17 @@ define [
 
 			options = []
 			options.push({
-				title: 'Change Assigned Agent',
+				title: 'Set Assigned Agent',
 				value: 'SetAgent'
 			})
 
 			options.push({
-				title: 'Change Assigned Team',
+				title: 'Set Assigned Team',
 				value: 'SetAgentTeam'
 			})
 
 			options.push({
-				title: 'Change Agent Followers',
+				title: 'Set Agent Followers',
 				value: 'SetAgentFollowers'
 			})
 
@@ -42,57 +42,57 @@ define [
 			options = []
 
 			options.push({
-				title: 'Change Department',
+				title: 'Set Department',
 				value: 'SetDepartment'
 			})
 
 			options.push({
-				title: 'Change Product',
+				title: 'Set Product',
 				value: 'SetProduct'
 			})
 
 			options.push({
-				title: 'Change Category',
+				title: 'Set Category',
 				value: 'SetCategory'
 			})
 
 			options.push({
-				title: 'Change Priority',
+				title: 'Set Priority',
 				value: 'SetPriority'
 			})
 
 			options.push({
-				title: 'Change Workflow',
+				title: 'Set Workflow',
 				value: 'SetWorkflow'
 			})
 
 			options.push({
-				title: 'Change Urgency',
+				title: 'Set Urgency',
 				value: 'SetUrgency'
 			})
 
 			options.push({
-				title: 'Change Subject',
+				title: 'Set Subject',
 				value: 'SetSubject'
 			})
 
 			options.push({
-				title: 'Change Labels',
+				title: 'Set Labels',
 				value: 'SetLabels'
 			})
 
 			options.push({
-				title: 'Change Flag',
+				title: 'Set Flag',
 				value: 'SetFlag'
 			})
 
 			options.push({
-				title: 'Change Email Account',
+				title: 'Set Email Account',
 				value: 'SetEmailAccount'
 			})
 
 			options.push({
-				title: 'Change CC\'d Users',
+				title: 'Set CC\'d Users',
 				value: 'SetCcUsers'
 			})
 
@@ -108,17 +108,17 @@ define [
 			options = []
 
 			options.push({
-				title: 'Change SLAs',
+				title: 'Set SLAs',
 				value: 'SetSlas'
 			})
 
 			options.push({
-				title: 'Change SLA Condition Status (Passing/Failing)',
+				title: 'Set SLA Condition Status (Passing/Failing)',
 				value: 'SetSlaStatus'
 			})
 
 			options.push({
-				title: 'Change SLA State (Waiting/Finished)',
+				title: 'Set SLA State (Waiting/Finished)',
 				value: 'SetSlaRequirements'
 			})
 
@@ -134,7 +134,7 @@ define [
 			options = []
 
 			options.push({
-				title: 'Change Ticket User',
+				title: 'Set Ticket User',
 				value: 'ChangeUser'
 			})
 
@@ -258,7 +258,7 @@ define [
 					'ticket_pris':     '/ticket_pris',
 					'ticket_works':    '/ticket_works',
 					'ticket_slas':     '/ticket_slas',
-					'ticket_accounts': '/email_accounts',
+					'email_accounts':  '/email_accounts',
 					'usergroups':      '/user_groups',
 				}).then( (result) =>
 					data = result.data
@@ -271,7 +271,7 @@ define [
 					options_data['ticket_works']     = data.ticket_works.workflows
 					options_data['ticket_prods']     = data.ticket_prods?.products
 					options_data['ticket_slas']      = data.ticket_slas?.slas
-					options_data['email_accounts']   = data.ticket_accounts.email_accounts
+					options_data['email_accounts']   = data.email_accounts.email_accounts
 					options_data['usergroups']       = data.usergroups.groups
 					@options_data = options_data
 				)
@@ -334,7 +334,7 @@ define [
 			return def
 
 		getSetEmailAccount: (options = {}) ->
-			options.propName = 'gateway_ids'
+			options.propName = 'email_account_id'
 			options.dataName = 'email_accounts'
 			options.optionsFormatter = (options) ->
 				opts = []
@@ -342,7 +342,7 @@ define [
 				for acc in options
 					opts.push({
 						value: acc.id,
-						title: acc.email_address
+						title: acc.address
 					})
 
 				return opts
@@ -441,25 +441,71 @@ define [
 			def = @getStandardIs(options)
 			return def
 
+		getSendAgentEmail: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentemail.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								template: value.template || '',
+								agent_ids: [],
+								from_name: value.from_name || 'performer',
+								from_name_type: value.from_name || 'performer',
+								from_account: 0
+							}
+						getValue: (model = {}, data) ->
+
+							options = {
+								template: model.template || '',
+								agent_ids: [],
+								from_name: model.from_name || 'performer',
+								from_account: 0
+							}
+
+							if model.agent_ids
+								for own v, k of model.agent_ids
+									if v
+										if k == 'notify_list'
+											options.agent_ids.push('notify_list')
+										else
+											options.agent_ids.push(parseInt(k))
+
+							if model.from_account
+								options.from_accounts = parseInt(model.from_account)
+
+							value = {}
+							value.type = 'SendAgentEmail'
+							value.options = options
+							return value
+					}
+			}
+
 		getWebHook: (options = {}) ->
 			me = @
 			return {
-			getTemplate: ->
-				return me.dpTemplateManager.get('OptionBuilder/type-actions-webhook.html')
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-webhook.html')
 
-			getData: ->
-				return {}
+				getData: ->
+					return {}
 
-			getDataFormatter: ->
-				return {
-				getViewValue: (value = {}, data) ->
-					return value
-				getValue: (model = {}, data) ->
-					value = {}
-					value.type = 'webhook'
-					value.options = model
-					return value
-				}
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return value
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'webhook'
+							value.options = model
+							return value
+						}
 			}
 
 		getSetSlas: (options = {}) ->

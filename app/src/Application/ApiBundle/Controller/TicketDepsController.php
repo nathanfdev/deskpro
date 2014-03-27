@@ -41,6 +41,7 @@ use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
 
@@ -102,6 +103,21 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			'agentgroups' => array(),
 			'agents'      => array()
 		);
+
+		$trigger = null;
+		if ($dep) {
+			$trigger = $this->em->createQuery("
+				SELECT trigger
+				FROM DeskPRO:TicketTrigger trigger
+				WHERE trigger.department = ?0
+			")->setParameters(array($dep))->getOneOrNullResult();
+		}
+
+		if (!$trigger) {
+			$trigger = new TicketTrigger();
+		}
+
+		$data['trigger'] = $trigger->toApiData();
 
 		foreach ($perms as $perm) {
 			if ($perm['usergroup_id']) {
