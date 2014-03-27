@@ -367,7 +367,7 @@ class KernelErrorHandler
 				$str[] = sprintf("\tURL: %s\n", $errinfo['url']);
 				$str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
 			}
-			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
+			$str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
 		} else {
 			$line = sprintf("DeskPRO Error: %s (%s line %s): %s", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
 			$str[] = sprintf("Error: %s\n", $errinfo['errstr']);
@@ -378,14 +378,19 @@ class KernelErrorHandler
 				$str[] = sprintf("\tURL: %s\n", $errinfo['url']);
 				$str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
 			}
-			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
+			$str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
 		}
 
 		$errinfo['trace'] = trim($errinfo['trace']);
 		if ($errinfo['trace']) {
 			$lines = explode("\n", $errinfo['trace']);
 			foreach ($lines as $l) {
-				$str[] = sprintf("\t-> %s\n", trim($l));
+				$l = trim($l);
+				if (substr($l, 0, 5) == '>>>>>') {
+					$str[] = sprintf("\t   %s\n", trim($l));
+				} else {
+					$str[] = sprintf("\t-> %s\n", trim($l));
+				}
 			}
 		}
 
@@ -778,10 +783,6 @@ class KernelErrorHandler
 			return true;
 		}
 
-		if ($exception instanceof \Zend\Ldap\Exception && strpos($exception->getMessage(), 'LDAP extension not loaded') !== false) {
-			return true;
-		}
-
 		return false;
 	}
 
@@ -1018,6 +1019,8 @@ class KernelErrorHandler
 
 		$longest_filename += 15;
 
+		$prev_line = null;
+
 		$x = 0;
 		foreach($backtrace as $k=>$v){
 
@@ -1031,13 +1034,46 @@ class KernelErrorHandler
 			$x++;
 
 			$prefix = sprintf("[#%02d] ", $x);
+			$pre_line = '';
 			$line = '';
 
 			if (!empty($v['file'])) {
 				$prefix .= "{$v['file']}:{$v['line']} ";
+			} else {
+				$prefix .= "<callback> ";
 			}
 
+			$show_vars_string = null;
+
 			if (isset($v['object'])) {
+				if ($v['object'] instanceof \Twig_Template && method_exists($v['object'], 'getTemplateName')) {
+					$show_vars_string = '<template_context>';
+					try {
+						$tpl = @$v['object']->getTemplateName();
+						if ($tpl) {
+							$line .= '<' . @$v['object']->getTemplateName() . '>';
+
+							if ($prev_line && method_exists($v['object'], 'getDebugInfo')) {
+								$debug_info = @$v['object']->getDebugInfo();
+								if ($debug_info) {
+									$l = $prev_line + 1;
+									while (--$l > 0) {
+										if (isset($debug_info[$l])) {
+											$pre_line = ">>>>> Template: $tpl:{$debug_info[$l]}";
+											break;
+										}
+									}
+								}
+							}
+						}
+					} catch (\Exception $e) {}
+				} else if ($v['object'] instanceof \Application\DeskPRO\Templating\Engine || $v['object'] instanceof \Symfony\Bundle\TwigBundle\Debug\TimedTwigEngine) {
+					if ($v['function'] == 'render') {
+						$show_vars_string = '<template_context>';
+					}
+				} else if ($v['function'] == 'renderView') {
+					$show_vars_string = '<template_context>';
+				}
 				$line .= get_class($v['object']) . "::";
 			} elseif (isset($v['class'])) {
 				$line .= $v['class'] . "::";
@@ -1045,13 +1081,28 @@ class KernelErrorHandler
 
 			$line .= "{$v['function']}(";
 
-			if (!empty($v['args'])) {
-				$line .= self::varToString($v['args']);
+			if ($show_vars_string) {
+				if (!empty($v['args'])) {
+					$line .= $show_vars_string;
+				}
+			} else {
+				if (!empty($v['args'])) {
+					$line .= self::varToString($v['args']);
+				}
 			}
 
 			$line .= ")";
 
+			if ($pre_line) {
+				$trace .= $pre_line."\n";
+			}
+
 			$trace .= sprintf("%-{$longest_filename}s", $prefix) . "\t---\t" . trim($line) . "\n";
+
+			$prev_line = null;
+			if (isset($v['line'])) {
+				$prev_line = $v['line'];
+			}
 		}
 
 		$trace = preg_replace('#PDO::__construct(.*?)$#m', 'PDO::__construct(...)', $trace);
