@@ -34,12 +34,9 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\Exception\ValidationException;
-
 use Application\DeskPRO\ApiKeys\ApiKeyEdit;
 use Application\DeskPRO\ApiKeys\Form\Type\ApiKeyType;
+use Application\DeskPRO\Exception\ValidationException;
 
 class ApiKeysController extends AbstractController implements ProtectedControllerInterface
 {

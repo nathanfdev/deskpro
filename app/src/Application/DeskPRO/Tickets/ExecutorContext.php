@@ -35,9 +35,9 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\Person;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
-use Application\DeskPRO\Entity\Person;
 use Orb\Util\OptionsArray;
 
 class ExecutorContext implements ExecutorContextInterface

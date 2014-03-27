@@ -34,12 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Data\ContentTypes;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 

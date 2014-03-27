@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\Attachments;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Various tests that can be run on a file to see if we should accept it.

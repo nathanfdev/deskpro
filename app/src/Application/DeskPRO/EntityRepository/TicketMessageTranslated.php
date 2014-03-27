@@ -35,11 +35,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
-
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
+use Application\DeskPRO\Entity;
 
 
 class TicketMessageTranslated extends AbstractEntityRepository

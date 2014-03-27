@@ -1,23 +1,34 @@
 <?php
 /* This file has been auto-generated (2013-10-07). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
-use Doctrine\ORM\Configuration, Doctrine\ORM\Persisters, Doctrine\ORM\EntityManager, Doctrine\ORM\Events, Doctrine\ORM\Event, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder, Doctrine\ORM\PersistentCollection, Doctrine\ORM\ORMInvalidArgumentException, Doctrine\ORM\ORMException, Doctrine\ORM\OptimisticLockException, Doctrine\ORM\TransactionRequiredException, Doctrine\ORM\EntityNotFoundException;
-use Exception;
-use InvalidArgumentException;
-use UnexpectedValueException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\PropertyChangedListener;
 use Doctrine\Common\Persistence\ObjectManagerAware;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\Event;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Doctrine\ORM\Event\PreFlushEventArgs;
+use Doctrine\ORM\Event\ListenersInvoker;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
-use Doctrine\ORM\Event\ListenersInvoker;
+use Doctrine\ORM\Event\PreFlushEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Events;
+use Doctrine\ORM\Internal;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Persisters;
+use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\TransactionRequiredException;
+use Exception;
+use InvalidArgumentException;
+use UnexpectedValueException;
+
 class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
 {
     const STATE_MANAGED = 1;

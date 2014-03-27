@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\OrganizationEmailDomain;
 
 class CompaniesStep extends AbstractDeskpro3Step
 {

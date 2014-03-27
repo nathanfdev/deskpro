@@ -37,7 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketPageDisplay as TicketPageDisplayEntity;
-use Doctrine\ORM\EntityRepository;
 
 class TicketPageDisplay extends AbstractEntityRepository
 {

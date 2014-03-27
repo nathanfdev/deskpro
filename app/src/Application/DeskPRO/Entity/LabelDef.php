@@ -34,14 +34,10 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * These are pre-defined labels that are allowed to be used.

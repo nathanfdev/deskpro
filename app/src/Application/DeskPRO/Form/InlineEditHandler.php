@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Form;
 
-use Orb\Util\Arrays;
-
 /**
  * A helper that helps build and respond to the DeskPRO/InlineEdit.js system.
  */

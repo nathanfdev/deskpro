@@ -34,15 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Translate\HasPhraseName;
-use Application\DeskPRO\Translate\Translate;
-
-use Orb\Util\Strings;
-use Orb\Util\Util;
 
 class KbSubscription extends \Application\DeskPRO\Domain\DomainObject
 {

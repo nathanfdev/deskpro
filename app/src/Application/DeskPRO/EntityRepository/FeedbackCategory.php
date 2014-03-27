@@ -35,14 +35,11 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
-
-use Doctrine\ORM\Query, Doctrine\ORM\Proxy\Proxy;
-
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\FeedbackSearch;
-
+use Doctrine\ORM\Query;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 

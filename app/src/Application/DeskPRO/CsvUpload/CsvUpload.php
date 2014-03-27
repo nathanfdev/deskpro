@@ -34,10 +34,8 @@
 namespace Application\DeskPRO\CsvUpload;
 
 use Application\DeskPRO\App;
-
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CsvUpload
 {

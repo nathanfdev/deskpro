@@ -36,12 +36,9 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
-use Application\UserBundle\Form\EditTicketType;
-use Application\UserBundle\Form\NewTicketReplyType;
 use Application\UserBundle\Form\NewTicketParticipantType;
+use Application\UserBundle\Form\NewTicketReplyType;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 class TicketsController extends AbstractController

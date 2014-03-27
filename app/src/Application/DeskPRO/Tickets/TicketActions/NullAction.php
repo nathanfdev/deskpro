@@ -35,10 +35,7 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
 
 /**
  * Represents an empty action. This is mostly important for actions added by plugins,

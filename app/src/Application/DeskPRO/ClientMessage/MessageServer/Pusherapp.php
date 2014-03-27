@@ -34,11 +34,8 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageServer;
 
-use Symfony\Component\EventDispatcher\Event;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
 use Orb\Util\Strings;
 
 /**

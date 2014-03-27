@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\ReportBuilder;
-
 use Doctrine\ORM\EntityManager;
 
 class ReportEdit

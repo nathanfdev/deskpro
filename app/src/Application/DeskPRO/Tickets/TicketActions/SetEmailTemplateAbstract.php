@@ -34,11 +34,9 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\Entity\Ticket;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 abstract class SetEmailTemplateAbstract extends AbstractAction
 {

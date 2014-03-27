@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
 
 class UsersStep extends AbstractZendeskStep

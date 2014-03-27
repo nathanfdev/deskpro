@@ -2,9 +2,6 @@
 
 namespace Application\JiraBundle;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-
 /**
  * 
  */

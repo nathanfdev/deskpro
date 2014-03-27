@@ -35,13 +35,10 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
-use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
 use Application\DeskPRO\Entity\TicketFeedback as TicketFeedbackEntity;
-use Doctrine\ORM\EntityRepository;
-
+use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
 use Orb\Util\Arrays;
 
 class TicketFeedback extends AbstractEntityRepository

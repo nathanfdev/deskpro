@@ -34,13 +34,12 @@
 namespace Application\DeskPRO\Templating\Templates;
 
 use Application\DeskPRO\Entity\Style;
+use Application\DeskPRO\Entity\Template as TemplateEntity;
 use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Twig_Environment;
-
-use Application\DeskPRO\Entity\Template as TemplateEntity;
 
 class TemplateSet
 {

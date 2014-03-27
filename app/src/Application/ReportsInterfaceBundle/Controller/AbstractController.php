@@ -34,7 +34,6 @@
 namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {

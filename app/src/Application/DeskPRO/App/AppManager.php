@@ -36,8 +36,8 @@ namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\App\Native\NativePackageConfig;
-use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\AppPackage;
 
 class AppManager implements AppManagerInterface
 {

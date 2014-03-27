@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleRevision;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\ArticleRevision;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 

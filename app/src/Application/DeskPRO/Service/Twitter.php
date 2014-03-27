@@ -37,11 +37,11 @@ namespace Application\DeskPRO\Service;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TwitterAccount;
 use Application\DeskPRO\Entity\TwitterAccountStatus;
-use Application\DeskPRO\Entity\TwitterUser;
 use Application\DeskPRO\Entity\TwitterStatus;
 use Application\DeskPRO\Entity\TwitterStatusMention;
 use Application\DeskPRO\Entity\TwitterStatusTag;
 use Application\DeskPRO\Entity\TwitterStatusUrl;
+use Application\DeskPRO\Entity\TwitterUser;
 
 class Twitter
 {

@@ -36,7 +36,6 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterUser;
 

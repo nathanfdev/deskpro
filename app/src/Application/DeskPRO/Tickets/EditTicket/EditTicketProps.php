@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Tickets\EditTicket;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Ticket;
 
 /**

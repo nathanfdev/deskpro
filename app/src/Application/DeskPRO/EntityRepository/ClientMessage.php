@@ -35,11 +35,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\HttpFoundation\Session as HttpSession;
-
-use Doctrine\ORM\EntityRepository;
 
 class ClientMessage extends AbstractEntityRepository
 {

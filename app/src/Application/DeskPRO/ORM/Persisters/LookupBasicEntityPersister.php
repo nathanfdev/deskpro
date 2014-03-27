@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\ORM\Persisters;
 
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\PersistentCollection;
 
 class LookupBasicEntityPersister extends BasicEntityPersister
 {

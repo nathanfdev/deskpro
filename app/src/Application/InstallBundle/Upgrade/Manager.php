@@ -38,7 +38,6 @@ use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdpaterHandler;
 use Application\DeskPRO\Plugin\Package\NativePackages;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Monolog\Logger;

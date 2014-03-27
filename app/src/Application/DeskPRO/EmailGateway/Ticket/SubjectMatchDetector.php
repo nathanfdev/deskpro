@@ -36,11 +36,10 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
-
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Orb\Log\Logger;
-use Orb\Log\Loggable;
 
 /**
  * Detects a ticket based off of a common subject and From email address.

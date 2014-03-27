@@ -35,21 +35,17 @@
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Entity\Language as LanguageEntity;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EventDispatcher\DataEvent;
+use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Translate\Loader\LoaderInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
-
-use Application\DeskPRO\Translate\Loader\LoaderInterface;
-use Application\DeskPRO\Entity\Language as LanguageEntity;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Person;
-
-use Application\DeskPRO\EventDispatcher\DataEvent;
-
-use Application\DeskPRO\HttpFoundation\Session;
+use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

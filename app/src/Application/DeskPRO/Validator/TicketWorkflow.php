@@ -35,8 +35,6 @@
 namespace Application\DeskPRO\Validator;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Person;
 
 class TicketWorkflow extends AbstractPersonContextValidator
 {

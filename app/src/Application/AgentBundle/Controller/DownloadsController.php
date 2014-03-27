@@ -34,24 +34,14 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\UI\RuleBuilder;
-
-use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\AgentBundle\Controller\Helper\DownloadResults;
-
+use Application\DeskPRO\App;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
-use Orb\Util\Util;
-use Orb\Util\Numbers;
-
-use FineDiff;
+use Orb\Util\Strings;
 
 class DownloadsController extends AbstractController
 {

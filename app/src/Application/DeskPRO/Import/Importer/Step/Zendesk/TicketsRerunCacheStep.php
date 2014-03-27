@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Orb\Util\Arrays;
-
 class TicketsRerunCacheStep extends AbstractZendeskStep
 {
 	public $on_rerun = true;

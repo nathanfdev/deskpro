@@ -34,15 +34,13 @@
 
 namespace Application\DeskPRO\Twig\Extension;
 
+use Application\DeskPRO\App;
 use Orb\Data\Countries;
 use Orb\Util\Arrays;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Util;
-use Orb\Util\Strings;
 use Orb\Util\Dates;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TemplatingExtension extends \Twig_Extension
 {

@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\DBAL\Types;
 
+use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\ObjectType;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Types\ConversionException;
 
 class DpObjectType extends ObjectType
 {

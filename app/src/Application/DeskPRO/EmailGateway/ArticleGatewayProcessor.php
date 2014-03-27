@@ -34,10 +34,9 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EmailGateway\AbstractGatewayProcessor;
 use Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
+use Application\DeskPRO\Entity;
 
 class ArticleGatewayProcessor extends AbstractGatewayProcessor
 {

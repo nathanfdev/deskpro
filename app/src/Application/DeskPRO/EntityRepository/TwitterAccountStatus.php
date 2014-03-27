@@ -35,9 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\TwitterAccount AS TwitterAccountEntity;
-
-use Orb\Util\Numbers;
+use Application\DeskPRO\Entity\TwitterAccount as TwitterAccountEntity;
 
 class TwitterAccountStatus extends AbstractEntityRepository
 {

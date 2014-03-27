@@ -35,11 +35,9 @@
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Permission;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity;
 
 /**
  * Loads general usergroup permissions likes flags and the like.

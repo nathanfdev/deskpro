@@ -34,9 +34,9 @@
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
 
 class FeedbackModerate implements PersonContextInterface
 {

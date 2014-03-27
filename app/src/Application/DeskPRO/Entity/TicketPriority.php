@@ -34,12 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Translate\HasPhraseName;
+use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Translate\Translate;
-use Application\DeskPRO\Translate\HasPhraseName;
 
 /**
  * Ticket priorities

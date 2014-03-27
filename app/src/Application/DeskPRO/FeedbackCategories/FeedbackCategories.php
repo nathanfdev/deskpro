@@ -33,9 +33,8 @@
 
 namespace Application\DeskPRO\FeedbackCategories;
 
-use Doctrine\ORM\EntityManager;
-
 use Application\DeskPRO\Entity\CustomDefFeedback;
+use Doctrine\ORM\EntityManager;
 
 class FeedbackCategories
 {

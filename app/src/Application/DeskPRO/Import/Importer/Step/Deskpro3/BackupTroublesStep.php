@@ -34,10 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleComment;
-
 class BackupTroublesStep extends AbstractDeskpro3Step
 {
 	public static function getTitle()

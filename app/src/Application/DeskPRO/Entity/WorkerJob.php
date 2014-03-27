@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Log\Logger;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\Log\Logger;
 
 /**
  * A worker job is some task that needs to run regularly, or on a schedule.

@@ -34,13 +34,12 @@
 
 namespace Application\DeskPRO\Tickets\Macros;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\Actions\MacroActionComposite;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\ActionContext;
-use Application\DeskPRO\Tickets\Actions\MacroActionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
-use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\Actions\MacroActionComposite;
+use Application\DeskPRO\Tickets\Actions\MacroActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**

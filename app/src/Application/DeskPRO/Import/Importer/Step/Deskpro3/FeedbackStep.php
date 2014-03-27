@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackRevision;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\FeedbackRevision;
 
 class FeedbackStep extends AbstractDeskpro3Step
 {

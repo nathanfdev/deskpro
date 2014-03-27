@@ -35,13 +35,11 @@
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
-use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\People\PersonContextInterface;
-
-use Orb\Util\Arrays;
 use Orb\Util\Util;
 
 /**

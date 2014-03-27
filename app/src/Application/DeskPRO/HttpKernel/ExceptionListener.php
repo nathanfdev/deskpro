@@ -35,13 +35,10 @@
 namespace Application\DeskPRO\HttpKernel;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Exception\ValidationException;
-use Orb\Log\Logger;
-use Orb\Util\Strings;
-
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Strings;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {

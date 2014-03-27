@@ -35,13 +35,12 @@
 namespace Application\DeskPRO\Log;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\HttpFoundation\Session;
-
-use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\PageViewLog;
+use Application\DeskPRO\HttpFoundation\Session;
 
 class ViewLog
 {

@@ -43,7 +43,6 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Application\DeskPRO\Languages\PhraseData;
 use Application\DeskPRO\ResourceScanner\LanguagePhrases;
-use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 class LanguagesController extends AbstractController implements ProtectedControllerInterface

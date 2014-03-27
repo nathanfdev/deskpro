@@ -35,10 +35,8 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\UserBundle\Form\ProfileType;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
-use Application\DeskPRO\Entity\TmpData;
+use Application\UserBundle\Form\ProfileType;
 
 class ProfileController extends AbstractController implements RequireUserInterface
 {

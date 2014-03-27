@@ -35,14 +35,9 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Orb\Util\Strings;
 use Orb\Util\Numbers;
-use Orb\Util\Arrays;
-use Orb\Util\Web;
 
 /**
  * Permissions are flags applied groups or specific users.

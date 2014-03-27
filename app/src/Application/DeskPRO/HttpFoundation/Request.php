@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\HttpFoundation;
 
 use Symfony\Component\HttpFoundation\SessionStorage\NativeSessionStorage;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Request extends \Symfony\Component\HttpFoundation\Request
 {

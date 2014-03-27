@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
-
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 

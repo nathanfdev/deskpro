@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
-use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 class LayoutCollection

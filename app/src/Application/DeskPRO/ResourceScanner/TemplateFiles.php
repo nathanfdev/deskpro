@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\ResourceScanner;
 
 use Application\DeskPRO\App;
-use Orb\Util\Arrays;
 
 /**
  * Scans the filesystem for an array of all templates

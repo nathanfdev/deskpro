@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-use Zend\Feed\Reader\Reader;
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PortalPageDisplay;
+use Zend\Feed\Reader\Reader;
 
 class Feed extends PortalItemAbstract implements CacheableItem
 {

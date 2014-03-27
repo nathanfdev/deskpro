@@ -37,8 +37,6 @@ namespace Application\DeskPRO\People;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Arrays;
-
 /**
  * The personlistener listens for changes to a ticket, and then runs inspections once the changes
  * are committed.

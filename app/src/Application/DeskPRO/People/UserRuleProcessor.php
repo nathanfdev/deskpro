@@ -33,9 +33,9 @@
 
 namespace Application\DeskPRO\People;
 
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\ORM\EntityManager;
 
 class UserRuleProcessor
 {

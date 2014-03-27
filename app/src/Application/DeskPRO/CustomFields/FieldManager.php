@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\ORM\EntityManager;
 

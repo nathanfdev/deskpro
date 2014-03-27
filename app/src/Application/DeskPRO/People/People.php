@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 
 class People
 {

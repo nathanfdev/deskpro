@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 class ContentLabelCloud

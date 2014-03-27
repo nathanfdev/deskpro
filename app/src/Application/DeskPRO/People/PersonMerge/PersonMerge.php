@@ -37,8 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
-use Orb\Util\Arrays;
-
 /**
  * Handles merging of one person into the other
  */

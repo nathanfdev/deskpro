@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Entity\Person;
-
 class OrgsStep extends AbstractZendeskStep
 {
 	public $on_rerun = false;

@@ -34,9 +34,8 @@
 
 namespace Application\ApiBundle\Form\CustomField\Model;
 
-use Application\DeskPRO\Entity\CustomDefAbstract;
-
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 
 abstract class CustomFieldAbstract
 {

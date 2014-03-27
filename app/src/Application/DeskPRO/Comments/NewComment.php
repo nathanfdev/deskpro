@@ -38,9 +38,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
-
-use Orb\Util\Arrays;
-
 use Symfony\Component\Form;
 
 class NewComment implements \Application\DeskPRO\People\PersonContextInterface

@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\TwitterAccounts;
 
 use Application\DeskPRO\Entity\TwitterAccount;
-
 use Doctrine\ORM\EntityManager;
 
 class TwitterAccountEdit

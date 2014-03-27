@@ -35,10 +35,9 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Arrays;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Util;
 
 abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermInterface

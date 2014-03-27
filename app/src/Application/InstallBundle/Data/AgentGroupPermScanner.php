@@ -37,8 +37,6 @@ namespace Application\InstallBundle\Data;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Strings;
-
 /**
  * Scans the permtable template to extract the names of permissions so we can dynamically create
  * the "all" permission group.

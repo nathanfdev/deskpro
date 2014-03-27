@@ -37,8 +37,6 @@ namespace Application\InstallBundle\Data;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Strings;
-
 class UserGroupPermScanner
 {
 	protected $path;

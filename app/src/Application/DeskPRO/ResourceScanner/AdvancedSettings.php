@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\ResourceScanner;
 
 use Application\DeskPRO\App;
-use Orb\Util\Arrays;
 
 /**
  * Defines which settings are to be displayed in the 'advanced' page

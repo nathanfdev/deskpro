@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\UserRules\Form\Type;
 
-use Application\DeskPRO\UserRules\Form\Type\UserRulePropsType;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\App;
 
-use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\AppPackage;
 
 interface AppManagerInterface
 {

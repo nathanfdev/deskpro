@@ -35,12 +35,8 @@
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\PersonActivity;
-use Application\DeskPRO\People\PersonContextInterface;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Person;
 
 class NewChat extends ActionTypeAbstract
 {

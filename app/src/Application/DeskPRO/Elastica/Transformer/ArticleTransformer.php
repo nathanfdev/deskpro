@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Elastica\Transformer;
 
-use Application\DeskPRO\Entity\Article;
-
 class ArticleTransformer implements TransformerInterface
 {
 	public function transform($article)

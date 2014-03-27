@@ -34,14 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * Description of layout of the user portal

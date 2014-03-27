@@ -37,8 +37,6 @@ namespace Application\DeskPRO\People\PermissionLoader;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Arrays;
-
 /**
  * A permission loader knows how to load permissions for a thing.
  */

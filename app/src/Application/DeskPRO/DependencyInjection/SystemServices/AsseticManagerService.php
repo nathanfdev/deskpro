@@ -34,13 +34,8 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-
 use Application\DeskPRO\App;
-use Assetic\AssetManager;
-use Assetic\Asset\FileAsset;
-use Assetic\Asset\AssetCollection;
-use Assetic\Asset\AssetReference;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 
 class AsseticManagerService

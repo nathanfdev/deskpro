@@ -35,10 +35,7 @@
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-
-use Orb\Util\Arrays;
 
 class TicketChecker extends AbstractChecker
 {

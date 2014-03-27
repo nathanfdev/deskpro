@@ -36,14 +36,11 @@ namespace Application\DeskPRO\Searcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
-
 use Application\DeskPRO\People\PersonContextInterface;
-
 use Orb\Log\Logger;
-
-use Orb\Util\Util;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Util;
 
 abstract class SearcherAbstract implements PersonContextInterface
 {

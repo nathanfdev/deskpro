@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Auth\Adapter;
 use Orb\Auth\Result;
 
 
-
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */

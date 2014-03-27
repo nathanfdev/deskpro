@@ -35,19 +35,9 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\BlobStorage\MoveBlobsUtil;
-use Orb\Log\Logger;
-use Orb\Log\Writer\ConsoleOutputWriter;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Application\DeskPRO\App;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 
 class VerifyBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand

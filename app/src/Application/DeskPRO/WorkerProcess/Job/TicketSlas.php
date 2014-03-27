@@ -34,14 +34,8 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
-
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\Entity\TicketTrigger;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
+use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 
 /**
  * Handles SLA warn/fail updates

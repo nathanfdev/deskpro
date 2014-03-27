@@ -36,8 +36,6 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * A result cache is a cached result from a search or filter.

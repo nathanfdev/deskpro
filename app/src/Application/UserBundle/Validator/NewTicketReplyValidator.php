@@ -36,8 +36,6 @@ namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
 
 class NewTicketReplyValidator extends AbstractValidator

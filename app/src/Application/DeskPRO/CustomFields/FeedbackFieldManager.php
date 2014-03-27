@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\CustomFields;
 
-use Application\DeskPRO\Entity\CustomDefFeedback;
-
 class FeedbackFieldManager extends FieldManager
 {
 	/**

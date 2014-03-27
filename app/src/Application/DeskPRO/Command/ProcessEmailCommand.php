@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\EmailGateway\Runner;
@@ -40,11 +41,9 @@ use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\Logger;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use Application\DeskPRO\App;
 
 class ProcessEmailCommand extends ContainerAwareCommand
 {

@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\Controller\Helper;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Controller\AbstractController;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Controller\AbstractController;
 
 class LoginHelper
 {

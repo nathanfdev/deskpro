@@ -35,10 +35,8 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Entity\Usersource;
-use Symfony\Component\Templating\EngineInterface;
-
-use Orb\Util\CapabilityInformerInterface;
 use Orb\Auth\Identity;
+use Orb\Util\CapabilityInformerInterface;
 use Orb\Util\Util;
 
 abstract class AbstractAdapter implements CapabilityInformerInterface

@@ -34,17 +34,13 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
-use Application\DeskPRO\Entity\Organization;
-
-use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
 
 /**
  * Handles viewing and editing a person

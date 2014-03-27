@@ -35,15 +35,12 @@
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
-
-use Application\DeskPRO\Entity\PersonContactData;
-use Orb\Util\Arrays;
-use Orb\Auth\Identity;
-
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
+use Orb\Auth\Identity;
+use Orb\Util\Arrays;
 
 class LoginProcessor
 {

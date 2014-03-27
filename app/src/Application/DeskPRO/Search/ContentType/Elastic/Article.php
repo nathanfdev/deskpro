@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Search\ContentType\Elastic;
 
 use Application\DeskPRO\Search\ContentType\AbstractContentType;
-use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 use Application\DeskPRO\Search\Indexer\Document;
 
 class Article extends AbstractContentType

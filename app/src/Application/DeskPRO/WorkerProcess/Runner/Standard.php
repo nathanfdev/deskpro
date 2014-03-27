@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\App;
 
 /**
  * A standard runner executes all jobs in sequence one at a time

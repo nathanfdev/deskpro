@@ -36,14 +36,7 @@ namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Application\DeskPRO\Tickets\NewTicket\NewTicket;
-use Application\DeskPRO\Tickets\NewTicket\PersonProps;
-use Application\DeskPRO\Tickets\NewTicket\TicketProps;
-
 use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
-
-use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
 
 class NewTicketValidator extends AbstractValidator

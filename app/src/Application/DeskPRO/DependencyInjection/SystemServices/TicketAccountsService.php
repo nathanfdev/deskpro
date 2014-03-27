@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Departments\TicketDepartments;
 use Application\DeskPRO\TicketAccounts\TicketAccounts;
 
 class TicketAccountsService

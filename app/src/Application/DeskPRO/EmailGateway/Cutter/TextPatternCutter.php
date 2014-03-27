@@ -33,9 +33,9 @@
 
 namespace Application\DeskPRO\EmailGateway\Cutter;
 
-use Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextPattern;
-use Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextMatcher;
 use Application\DeskPRO\EmailGateway\Cutter\Def\QuoteDef;
+use Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextMatcher;
+use Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextPattern;
 
 class TextPatternCutter implements QuoteDef
 {

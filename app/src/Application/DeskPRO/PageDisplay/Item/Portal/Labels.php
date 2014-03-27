@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 
 class Labels extends PortalItemAbstract implements CacheableItem

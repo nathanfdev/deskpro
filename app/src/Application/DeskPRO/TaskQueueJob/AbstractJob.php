@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 use Application\DeskPRO\Entity\TaskQueue;
+use Application\DeskPRO\Log\Logger;
 
 abstract class AbstractJob
 {

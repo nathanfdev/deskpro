@@ -34,22 +34,15 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
-use Orb\Util\Util;
-
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Translate\Translate;
-
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Session;
-use Application\DeskPRO\Entity\Visitor;
+use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
-
-use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
-use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Translate\Translate;
+use Doctrine\ORM\EntityManager;
 use Orb\Validator\StringEmail;
 
 /**

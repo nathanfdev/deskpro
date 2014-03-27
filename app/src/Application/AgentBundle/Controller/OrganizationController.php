@@ -34,16 +34,13 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Searcher\TicketSearch;
-
-use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 /**
  * Handles viewing and editing an org

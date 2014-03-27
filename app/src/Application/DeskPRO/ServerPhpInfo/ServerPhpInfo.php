@@ -33,12 +33,10 @@
 
 namespace Application\DeskPRO\ServerPhpInfo;
 
-use Doctrine\ORM\EntityManager;
-
 use Application\DeskPRO\App;
-
-use Orb\Util\Util;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Env;
+use Orb\Util\Util;
 
 class ServerPhpInfo
 {

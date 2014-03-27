@@ -36,9 +36,9 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 class TestCommand extends ContainerAwareCommand
 {

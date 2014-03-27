@@ -33,19 +33,12 @@
 
 namespace Application\DeskPRO\Command;
 
-use Orb\Util\Strings;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Log\Logger;
-
-use Orb\Util\Util;
-use Orb\Util\Numbers;
+use Orb\Util\Strings;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

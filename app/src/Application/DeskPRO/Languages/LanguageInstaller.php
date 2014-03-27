@@ -33,8 +33,8 @@
 
 namespace Application\DeskPRO\Languages;
 
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\Language;
+use Doctrine\ORM\EntityManager;
 
 class LanguageInstaller
 {

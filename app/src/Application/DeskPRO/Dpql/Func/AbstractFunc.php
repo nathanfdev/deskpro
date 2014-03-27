@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
-use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
  * Abstract base for all DPQL function calls.

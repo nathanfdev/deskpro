@@ -37,7 +37,6 @@ namespace Application\DeskPRO\WorkerProcess\Runner;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Logger;
-use Orb\Log\LogItem;
 
 /**
  * A Runner is a thing that knows how to run jobs.

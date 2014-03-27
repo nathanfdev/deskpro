@@ -34,13 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Orb\Util\Util;
 use Orb\Util\Strings;
-
-use Application\DeskPRO\App;
+use Orb\Util\Util;
 
 /**
  * For each participant on a ticket, they get an access code. Normally user

@@ -35,18 +35,9 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\Tickets\TicketActions\Mapper;
-use Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Util;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Validator\StringEmail;
+use Orb\Util\Util;
 
 /**
  * Creates action objects

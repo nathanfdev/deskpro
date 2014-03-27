@@ -33,15 +33,14 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\FragmentRouter;
+use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
-use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
-use Application\AgentBundle\FragmentRouter;
-
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class MiscController extends AbstractController
 {

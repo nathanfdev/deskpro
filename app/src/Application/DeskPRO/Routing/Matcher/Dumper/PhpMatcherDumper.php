@@ -11,8 +11,6 @@
 
 namespace Application\DeskPRO\Routing\Matcher\Dumper;
 
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper as BasePhpMatcherDumper;
 
 class PhpMatcherDumper extends BasePhpMatcherDumper

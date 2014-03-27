@@ -35,19 +35,16 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
-use Application\DeskPRO\Searcher\TicketSearch;
-use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
-
-use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
-
+use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\UI\RuleBuilder;
-
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 /**
  * Handles ticket searches

@@ -34,8 +34,6 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-
 class Build1332789319 extends AbstractBuild
 {
 	public function run()

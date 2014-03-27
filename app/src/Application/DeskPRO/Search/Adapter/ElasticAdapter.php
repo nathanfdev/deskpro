@@ -34,18 +34,9 @@
 
 namespace Application\DeskPRO\Search\Adapter;
 
-use Orb\Util\CapabilityInformerInterface;
-
 use Application\DeskPRO\App;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Application\DeskPRO\Search\EntityListener;
-
 use Application\DeskPRO\Search\Searcher\Elastic\ContentSearcher;
-
-use Application\DeskPRO\Search\SearcherResult\ResultSet;
-use Application\DeskPRO\Search\SearcherResult\ResultInterface;
-
 use Orb\Util\Strings;
 
 /**

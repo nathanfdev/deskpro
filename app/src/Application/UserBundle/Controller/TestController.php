@@ -37,8 +37,6 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-
 class TestController extends AbstractController
 {
 	public function indexAction()

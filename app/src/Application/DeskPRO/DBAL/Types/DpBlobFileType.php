@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\DBAL\Types;
 
-use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Types\BlobType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\BlobType;
 
 /**
  * Some enhancements to Doctrine's connection class.

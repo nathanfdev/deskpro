@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use Application\DeskPRO\Entity\Person as PersonEntity;
-
 class PersonEmail extends AbstractEntityRepository
 {
 	public function getEmail($email_address)

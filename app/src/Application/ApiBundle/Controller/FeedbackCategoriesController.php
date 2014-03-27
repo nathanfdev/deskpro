@@ -39,8 +39,6 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Exception\ValidationException;
 
-use Orb\Util\Arrays;
-
 class FeedbackCategoriesController extends AbstractController implements ProtectedControllerInterface
 {
 	/**

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\EventDispatcher;
 
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * An event that is filterable is able to tell if a Plugin should be fired based
  * on whatever criteria.

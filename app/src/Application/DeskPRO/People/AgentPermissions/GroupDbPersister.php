@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\People\AgentPermissions;
 
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\Usergroup;
+use Doctrine\ORM\EntityManager;
 
 class GroupDbPersister
 {

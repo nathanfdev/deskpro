@@ -34,10 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\App;
-use Doctrine\ORM\EntityRepository;
 
 class Usersource extends AbstractEntityRepository
 {

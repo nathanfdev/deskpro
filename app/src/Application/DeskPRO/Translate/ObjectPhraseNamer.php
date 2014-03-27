@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
-
 use Orb\Util\Util;
 
 /**

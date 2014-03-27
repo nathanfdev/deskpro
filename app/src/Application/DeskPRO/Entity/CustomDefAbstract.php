@@ -34,17 +34,10 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\Domain\DomainObject;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 use Application\DeskPRO\App;
-use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Translate\HasPhraseName;
+use Application\DeskPRO\Translate\Translate;
 use Orb\Util\Numbers;
-use Orb\Util\Util;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * A custom field definition

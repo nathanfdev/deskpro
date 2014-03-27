@@ -36,22 +36,17 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
-
 use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
-
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
-use Orb\Util\Strings;
-use Orb\Util\Numbers;
 use Orb\Util\Arrays;
-use Orb\Util\Util;
+use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class PublishController extends AbstractController
 {

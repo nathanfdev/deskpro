@@ -39,7 +39,6 @@ use Application\DeskPRO\Email\EmailSource\Finder as EmailSourceFinder;
 use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilter;
 use Application\DeskPRO\Email\SendmailQueue\Finder as SendmailQueueFinder;
 use Application\DeskPRO\Email\SendmailQueue\FinderFilter as SendmailQueueFinderFilter;
-use Doctrine\ORM\EntityRepository;
 
 class EmailStatusController extends AbstractController implements ProtectedControllerInterface
 {

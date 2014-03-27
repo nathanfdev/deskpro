@@ -33,11 +33,9 @@
 
 namespace Application\DeskPRO\UserRules\Form\DataTransformer;
 
-use Symfony\Component\Form\DataTransformerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
-
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Symfony\Component\Form\DataTransformerInterface;
 
 class EmailPatternsDataTransformer implements DataTransformerInterface
 {

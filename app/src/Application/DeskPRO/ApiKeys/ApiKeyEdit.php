@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\ApiKeys;
 
 use Application\DeskPRO\Entity\ApiKey;
-
 use Doctrine\ORM\EntityManager;
 
 class ApiKeyEdit

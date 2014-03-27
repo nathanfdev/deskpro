@@ -36,12 +36,9 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * @property int $id

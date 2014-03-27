@@ -35,13 +35,11 @@
 namespace Application\DeskPRO\PageDisplay\Page;
 
 use Application\DeskPRO\App;
-
-use Application\DeskPRO\People\PersonContextInterface;
-
-use Application\DeskPRO\Entity\PageDisplayAbstract;
-use Application\DeskPRO\Entity\TicketPageDisplay;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\PageDisplayAbstract;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketPageDisplay;
+use Application\DeskPRO\People\PersonContextInterface;
 
 /**
  * Ticket layouts have three components:

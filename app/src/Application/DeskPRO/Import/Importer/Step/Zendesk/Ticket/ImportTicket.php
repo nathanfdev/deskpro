@@ -34,9 +34,7 @@
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk\Ticket;
 
 use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
-use Orb\Service\Zendesk\ApiException;
 use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
 
 class ImportTicket
 {

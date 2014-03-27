@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\TicketPriority;
-
 class TicketSnippetsStep extends AbstractDeskpro3Step
 {
 	public $cat_map = array();

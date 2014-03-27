@@ -33,8 +33,8 @@
  */
 
 namespace Application\DeskPRO;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 /**
  * A simple utility class.

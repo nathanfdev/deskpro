@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-use Application\DeskPRO\Entity\PortalPageDisplay;
-
 class Nav extends Template
 {
 	protected function init()

@@ -35,8 +35,6 @@ namespace Application\DeskPRO\AuditLog;
 
 use Application\DeskPRO\AuditLog\AuditWriter\AuditDbWriter;
 use Application\DeskPRO\AuditLog\AuditWriter\AuditFileWriter;
-use Application\DeskPRO\DBAL\Connection;
-use Symfony\Component\DependencyInjection\Container;
 
 class AuditManagerFactory
 {

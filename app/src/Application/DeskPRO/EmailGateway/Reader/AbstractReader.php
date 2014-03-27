@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\App;
-
 use Orb\Util\Strings;
 
 abstract class AbstractReader

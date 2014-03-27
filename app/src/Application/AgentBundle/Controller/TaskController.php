@@ -36,19 +36,12 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Orb\Util\Arrays;
-use Orb\Util\Dates;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonContactData;
-use Application\DeskPRO\Entity\PersonNote;
-use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;
-use Application\DeskPRO\Entity\ClientMessage;
-use Application\AgentBundle\Form\Type\NewTask;
-use Application\DeskPRO\App;
+use Orb\Util\Arrays;
+use Orb\Util\Dates;
 use Orb\Util\Numbers;
 
 /**

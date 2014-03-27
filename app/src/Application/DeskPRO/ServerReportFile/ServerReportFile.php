@@ -34,15 +34,11 @@
 namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\ServerPhpInfo\ServerPhpInfo;
-use Application\DeskPRO\Service\ErrorReporter;
 use Application\DeskPRO\ORM\Util\Util;
+use Application\DeskPRO\Service\ErrorReporter;
 use DeskPRO\Kernel\License;
-
-use Orb\Util\Strings;
-
 use Doctrine\ORM\EntityManager;
-
+use Orb\Util\Strings;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 

@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Templating\Asset;
 
-use Symfony\Component\HttpFoundation\Request;
 use Application\DeskPRO\App;
+use Symfony\Component\HttpFoundation\Request;
 
 class PathPackage extends UrlPackage
 {

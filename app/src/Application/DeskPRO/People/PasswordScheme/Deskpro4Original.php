@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\People\PasswordScheme;
 
-use Application\DeskPRO\People\PasswordSchemeInterface;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PasswordSchemeInterface;
 
 class Deskpro4Original implements PasswordSchemeInterface
 {

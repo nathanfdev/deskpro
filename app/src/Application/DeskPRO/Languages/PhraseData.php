@@ -42,7 +42,6 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\ArticleCategory as ArticleCategoryRepository;
 use Application\DeskPRO\EntityRepository\Phrase as PhraseRepository;
-use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Products\Products;
 use Application\DeskPRO\Tickets\TicketCategories;
 use Application\DeskPRO\Tickets\TicketPriorities;

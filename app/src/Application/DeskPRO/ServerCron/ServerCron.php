@@ -35,10 +35,8 @@ namespace Application\DeskPRO\ServerCron;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-
-use Orb\Util\Dates;
-
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Dates;
 
 class ServerCron
 {

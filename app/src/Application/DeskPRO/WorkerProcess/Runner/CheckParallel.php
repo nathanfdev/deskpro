@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Log\Logger;
 
 /**
  * This runner continuously runs in a loop, used by the CheckableInterface items

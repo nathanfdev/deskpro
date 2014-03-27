@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Monolog;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Monolog\Handler\NullHandler;
-use Monolog\Handler\StreamHandler;
 use Orb\Util\Util;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 

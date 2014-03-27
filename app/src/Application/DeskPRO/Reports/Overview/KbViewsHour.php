@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PageViewLog;
-
 use Orb\Util\Dates;
 
 class KbViewsHour extends AbstractTableOverviewStat

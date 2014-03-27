@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\CustomFields\PersonFieldManager;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class PersonFieldsManagerService
 {

@@ -35,20 +35,11 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\App;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
 
 class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

@@ -36,8 +36,6 @@ namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Monolog\Logger;
 
 class FilterChangeSet
 {

@@ -34,15 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\Markdown;
 use Application\DeskPRO\App;
-
-use Orb\Util\Util;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 /**
  * Base comments

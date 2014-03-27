@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\DBAL;
 
-use Application\DeskPRO\DBAL\Connection;
-
 class DatabaseStats
 {
 	/**

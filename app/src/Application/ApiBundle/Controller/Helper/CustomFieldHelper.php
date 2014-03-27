@@ -36,7 +36,6 @@ namespace Application\ApiBundle\Controller\Helper;
 
 use Application\ApiBundle\Controller\AbstractController;
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
 
 class CustomFieldHelper

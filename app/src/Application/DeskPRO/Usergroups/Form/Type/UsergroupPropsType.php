@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\Usergroups\Form\Type;
 
-use Application\DeskPRO\Form\Type\PermissionRowType;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

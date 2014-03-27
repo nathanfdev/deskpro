@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer;
 
-use Orb\Log\Logger;
 use Application\DeskPRO\DBAL\Logging\QueryLogger;
 
 class Deskpro3Importer extends AbstractImporter

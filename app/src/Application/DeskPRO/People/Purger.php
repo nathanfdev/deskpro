@@ -33,8 +33,8 @@
 
 namespace Application\DeskPRO\People;
 
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
 
 class Purger implements PersonContextInterface
 {

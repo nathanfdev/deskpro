@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\App;
 use Orb\Auth\Identity;
-use Orb\Util\Arrays;
 
 class ActiveDirectory extends AbstractAdapter
 {

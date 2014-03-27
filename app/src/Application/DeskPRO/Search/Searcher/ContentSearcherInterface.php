@@ -35,10 +35,6 @@
 namespace Application\DeskPRO\Search\Searcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Interface for 'ContentSearcher'

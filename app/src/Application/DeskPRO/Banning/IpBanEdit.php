@@ -33,9 +33,8 @@
 
 namespace Application\DeskPRO\Banning;
 
-use Application\DeskPRO\Entity\BanIp;
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Entity\BanIp;
 use Doctrine\ORM\EntityManager;
 
 class IpBanEdit

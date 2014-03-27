@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\NewsRevision;
 
 class UserNewsStep extends AbstractDeskpro3Step
 {

@@ -34,14 +34,10 @@
 
 namespace Application\DeskPRO\Queue\Adapter;
 
-use Orb\Util\Strings;
-use Orb\Util\Util;
-use Application\DeskPRO\Entity\QueueItem;
+use ZendQueue\Exception as QueueException;
+use ZendQueue\Message;
+use ZendQueue\Queue;
 
-
-use \ZendQueue\Queue;
-use \ZendQueue\Exception as QueueException;
-use \ZendQueue\Message;
 
 /**
  * Adapter to use the QueueItemEntity

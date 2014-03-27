@@ -35,9 +35,7 @@ namespace Application\DeskPRO\ServerReqs;
 
 use Application\DeskPRO\App;
 use Application\InstallBundle\Install\ServerChecks;
-
 use Doctrine\ORM\EntityManager;
-
 use Orb\Util\Env;
 
 class ServerReqs

@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\TwitterAccounts\Form\Type;
 
-use Application\DeskPRO\TwitterAccounts\Form\Type\TwitterAccountPropsType;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

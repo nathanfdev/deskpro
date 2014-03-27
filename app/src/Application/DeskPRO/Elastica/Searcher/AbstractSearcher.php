@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Elastica\Searcher;
 
 use Application\DeskPRO\Elastica\ElasticaManager;
 use Application\DeskPRO\Entity\Person;
-
 use Orb\Util\Strings;
 
 /**

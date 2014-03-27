@@ -35,21 +35,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleAttachment;
-use Application\DeskPRO\Entity\ArticleComment;
-use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Searcher\ArticleSearch;
-use Application\DeskPRO\UI\RuleBuilder;
-use Orb\Util\Numbers;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
-
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-
-use Application\AgentBundle\Controller\Helper\ArticleResults;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Searcher\ArticleSearch;
+use Orb\Util\Numbers;
 
 class KbController extends AbstractController
 {

@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\UserRules;
 
 use Application\DeskPRO\Entity\UserRule;
-
 use Doctrine\ORM\EntityManager;
 
 class UserRuleEdit

@@ -34,15 +34,14 @@
 namespace Application\DeskPRO\BlobStorage;
 
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
+use Application\DeskPRO\Entity\Blob as BlobEntity;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\BlobStorage\Blob;
-use Application\DeskPRO\Entity\Blob as BlobEntity;
 use Orb\Data\ContentTypes;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
-use Orb\Log\Logger;
 
 class DeskproBlobStorage implements Loggable
 {

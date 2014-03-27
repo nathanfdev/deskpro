@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\Usergroups;
 
 use Application\DeskPRO\Entity\Usergroup;
-
 use Doctrine\ORM\EntityManager;
 
 class UsergroupEdit

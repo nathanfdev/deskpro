@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\ORM;
 
-use Application\DeskPRO\ORM\Unprivate\UnprivateUnitOfWork as DoctrineUnitOfWork;
-use Doctrine\ORM\EntityManager as DoctrineEntityManager;
 use Application\DeskPRO\EntityRepository\Preloadable;
+use Application\DeskPRO\ORM\Unprivate\UnprivateUnitOfWork as DoctrineUnitOfWork;
 
 class UnitOfWork extends DoctrineUnitOfWork
 {

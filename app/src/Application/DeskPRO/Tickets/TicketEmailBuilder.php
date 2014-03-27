@@ -40,8 +40,8 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Mail\Mailer;
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Orb\Util\OptionsArray;
 

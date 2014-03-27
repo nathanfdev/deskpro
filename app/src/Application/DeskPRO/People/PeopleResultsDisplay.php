@@ -35,7 +35,6 @@ namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
-use Orb\Util\Arrays;
 
 class PeopleResultsDisplay
 {

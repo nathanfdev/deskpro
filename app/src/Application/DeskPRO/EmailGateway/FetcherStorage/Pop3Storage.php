@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\EmailGateway\FetcherStorage;
 
-use Orb\Log\Logger;
 use Application\DeskPRO\EmailGateway\Storage\Pop3;
+use Orb\Log\Logger;
 
 class Pop3Storage implements FetcherStorageInterface
 {

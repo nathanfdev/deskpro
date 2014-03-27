@@ -34,11 +34,10 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Validator\ViolationApiRenderer;
-use Symfony\Component\Form\Form;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\Validator\ViolationApiRenderer;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**

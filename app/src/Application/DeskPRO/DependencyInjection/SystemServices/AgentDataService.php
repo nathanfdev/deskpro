@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 class AgentDataService

@@ -34,9 +34,7 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Import\Importer\Step\Zendesk\Ticket\ImportTicket;
 use Orb\Util\Arrays;
-use Orb\Util\Numbers;
 
 class TicketsDataCacheStep extends AbstractZendeskStep
 {

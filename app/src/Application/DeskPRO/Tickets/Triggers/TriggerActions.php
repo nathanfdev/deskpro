@@ -39,9 +39,8 @@ use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\ActionContext;
-use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
-use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 

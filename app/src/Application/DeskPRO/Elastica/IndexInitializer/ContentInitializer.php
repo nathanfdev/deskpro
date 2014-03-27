@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Elastica\IndexInitializer;
 
-use Orb\Log\Logger;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Elastica\Type\AbstractType;
+use Orb\Log\Logger;
 
 class ContentInitializer extends AbstractInitializer
 {

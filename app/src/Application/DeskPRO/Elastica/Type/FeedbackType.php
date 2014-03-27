@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Elastica\Type;
 
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Elastica\Transformer\FeedbackTransformer;
-
 use APplication\DeskPRO\App;
+use Application\DeskPRO\Elastica\Transformer\FeedbackTransformer;
+use Application\DeskPRO\Entity\Feedback;
 
 /**
  * Type for the Feedback entity

@@ -35,11 +35,10 @@
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
-
-use Orb\Util\Numbers;
+use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Dates;
+use Orb\Util\Numbers;
 
 class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonContextInterface
 {

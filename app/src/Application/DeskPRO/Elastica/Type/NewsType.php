@@ -34,10 +34,8 @@
 
 namespace Application\DeskPRO\Elastica\Type;
 
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Elastica\Transformer\NewsTransformer;
-
 use APplication\DeskPRO\App;
+use Application\DeskPRO\Elastica\Transformer\NewsTransformer;
 
 /**
  * Type for the News entity

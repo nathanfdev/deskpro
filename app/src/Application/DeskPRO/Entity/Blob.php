@@ -34,14 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Orb\Util\Strings;
 use Orb\Util\Numbers;
-
-use Application\DeskPRO\Entity\LabelBlob;
+use Orb\Util\Strings;
 
 /**
  * A blob is just a pointer to data.

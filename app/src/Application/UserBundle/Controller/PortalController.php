@@ -36,9 +36,6 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PortalPageDisplay;
-use Application\DeskPRO\PageDisplay\Page\PortalPage;
-
 use Application\UserBundle\Controller\Helper\ContentRating;
 
 class PortalController extends AbstractController

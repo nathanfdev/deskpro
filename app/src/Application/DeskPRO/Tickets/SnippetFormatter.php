@@ -33,10 +33,10 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Twig\Environment as Twig_Environment;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
 
 class SnippetFormatter implements PersonContextInterface
 {

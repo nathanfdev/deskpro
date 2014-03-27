@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\FeedbackTypes;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
-
 use Doctrine\ORM\EntityManager;
 
 class FeedbackTypeEdit

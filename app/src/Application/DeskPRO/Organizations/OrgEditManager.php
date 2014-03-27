@@ -35,12 +35,7 @@
 namespace Application\DeskPRO\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\PersonEmail;
-
 use Doctrine\ORM\EntityManager;
-
-use Orb\Util\Strings;
-use Orb\Util\Util;
 
 class OrgEditManager
 {

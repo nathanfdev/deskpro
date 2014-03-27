@@ -35,11 +35,10 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
-
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 

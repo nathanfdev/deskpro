@@ -37,8 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use \Doctrine\ORM\EntityRepository;
-
 class TicketMacro extends AbstractEntityRepository
 {
 	public function getMacros()

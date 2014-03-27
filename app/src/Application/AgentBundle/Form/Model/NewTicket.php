@@ -34,14 +34,14 @@
 
 namespace Application\AgentBundle\Form\Model;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketAttachment;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\App;
 
 class NewTicket
 {

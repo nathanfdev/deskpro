@@ -34,13 +34,11 @@
 
 namespace Application\AgentBundle\Controller\Helper;
 
-use Application\DeskPRO\Searcher\TicketSearch;
-use Application\DeskPRO\Entity\TicketFilter;
-use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
-use Orb\Util\Strings;
+use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 
 /**

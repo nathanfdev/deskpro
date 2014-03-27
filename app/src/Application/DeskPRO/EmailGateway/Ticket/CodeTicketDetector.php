@@ -36,8 +36,8 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
 
 /**
  * Detects a ticket based off of codes in the subject or body.

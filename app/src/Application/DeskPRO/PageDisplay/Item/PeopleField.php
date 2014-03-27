@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item;
 
-use Application\DeskPRO\PageDisplay\Item\ItemInterface;
-
 class PeopleField extends ItemAbstract
 {
 	public function getType()

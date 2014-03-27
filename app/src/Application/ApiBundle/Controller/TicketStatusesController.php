@@ -35,14 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
-use Application\DeskPRO\Departments\TicketDepartmentEdit;
-use Application\DeskPRO\Departments\TicketDepartmentEditor;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
-use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Tickets\TicketPurger;
-use Orb\Util\Arrays;
 
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {

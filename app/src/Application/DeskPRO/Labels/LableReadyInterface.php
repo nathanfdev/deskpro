@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Labels;
 
-use Symfony\Component\DependencyInjection\Container;
-
 interface LableReadyInterface
 {
 	public function removeLabel($label);

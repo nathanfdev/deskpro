@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Elastica\Transformer;
 
-use Application\DeskPRO\Entity\News;
-
 class TicketMessageTransformer implements TransformerInterface
 {
 	public function transform($ticket_message)

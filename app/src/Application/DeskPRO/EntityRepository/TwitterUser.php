@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
 class TwitterUser extends AbstractEntityRepository
 {
 	public function getByScreenName($name, $pull_from_api = false)

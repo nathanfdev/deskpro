@@ -35,10 +35,9 @@
 namespace Application\UserBundle\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketAttachment;
-use Application\DeskPRO\Entity\Person;
 
 class NewReply extends \ArrayObject
 {

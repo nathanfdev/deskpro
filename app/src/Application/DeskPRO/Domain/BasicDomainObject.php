@@ -35,15 +35,14 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
+use Application\DeskPRO\ORM\StateChange\StateRecorder;
 use Application\DeskPRO\Tickets\StateChangeRecorder as TicketStateChangeRecorder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
-use Application\DeskPRO\ORM\StateChange\StateRecorder;
 
 /**
  * The basic entitiy class

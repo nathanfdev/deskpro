@@ -36,12 +36,18 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Debug\Data\TicketData;
 use Application\DeskPRO\Debug\Data\TicketFilterData;
 use Application\DeskPRO\Debug\Data\TicketLogsData;
 use Application\DeskPRO\Debug\Data\TicketPersonData;
 use Application\DeskPRO\Debug\Data\TicketTriggerData;
-use Application\DeskPRO\Debug\DataReportGenerator;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ArticlePendingCreate;
+use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -50,26 +56,13 @@ use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
+use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
+use Application\DeskPRO\Tickets\TicketSplit;
 use Doctrine\Common\Collections\ArrayCollection;
+use Orb\Util\Dates;
+use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
-
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Entity\TicketLog;
-use Application\DeskPRO\App;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
-use Orb\Util\Dates;
-
-use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
-use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
-
-use Application\DeskPRO\Tickets\TicketSplit;
-use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 
 /**
  * Handles ticket searches

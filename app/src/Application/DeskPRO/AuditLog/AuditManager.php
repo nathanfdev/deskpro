@@ -35,9 +35,9 @@ namespace Application\DeskPRO\AuditLog;
 
 use Application\DeskPRO\AuditLog\AuditWriter\AuditWriterInterface;
 use Application\DeskPRO\Entity\AuditLog;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\CompositeCaller;
-use Application\DeskPRO\Entity\Person;
 
 class AuditManager
 {

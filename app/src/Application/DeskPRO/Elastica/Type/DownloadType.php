@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Elastica\Type;
 
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Elastica\Transformer\DownloadTransformer;
-
 use APplication\DeskPRO\App;
+use Application\DeskPRO\Elastica\Transformer\DownloadTransformer;
+use Application\DeskPRO\Entity\Download;
 
 /**
  * Type for the Download entity

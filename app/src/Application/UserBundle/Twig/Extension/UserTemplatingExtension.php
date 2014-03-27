@@ -34,11 +34,8 @@
 
 namespace Application\UserBundle\Twig\Extension;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Application\DeskPRO\App;
-
-use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserTemplatingExtension extends \Twig_Extension
 {

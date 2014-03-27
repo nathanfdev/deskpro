@@ -35,9 +35,6 @@ namespace Application\DeskPRO\EmailGateway\Reader\Item;
 
 use Application\DeskPRO\App;
 
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 class Attachment
 {
 	public $tmp_file;

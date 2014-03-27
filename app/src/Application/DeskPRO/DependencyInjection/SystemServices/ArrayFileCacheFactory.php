@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-
 class ArrayFileCacheFactory
 {
 	public static function create($cache_name)

@@ -33,9 +33,8 @@
 
 namespace Application\DeskPRO\Debug\Data;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\App;
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Ticket;
 
 class TicketPersonData implements DataInterface
 {

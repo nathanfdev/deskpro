@@ -38,12 +38,11 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Blob;
 use Doctrine\ORM\EntityManager;
-use Orb\Data\ContentTypes;
-use Imagine\Image\Box as ImageBox;
-use Imagine\Image\Point as ImagePoint;
-use Imagine\Image\ImageInterface;
-use Imagine\Image\ImagineInterface;
 use Imagine\Exception as ImageException;
+use Imagine\Image\Box as ImageBox;
+use Imagine\Image\ImagineInterface;
+use Imagine\Image\Point as ImagePoint;
+use Orb\Data\ContentTypes;
 
 class PackageInstaller
 {

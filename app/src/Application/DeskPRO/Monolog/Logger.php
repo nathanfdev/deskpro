@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Monolog;
 
-use Monolog\Handler\GroupHandler;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger as BaseLogger;
 

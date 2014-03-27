@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
 

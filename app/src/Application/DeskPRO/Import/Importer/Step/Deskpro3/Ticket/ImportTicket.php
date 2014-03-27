@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3\Ticket;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Import\Importer\Step\Deskpro3\TicketsRerunStep;
-use Application\DeskPRO\Import\Importer\Step\Deskpro3\TicketsStep;
 use Application\DeskPRO\Import\Importer\Step\Deskpro3\User\ImportUser;
 use Orb\Util\Arrays;
 

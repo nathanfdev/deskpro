@@ -36,9 +36,8 @@ namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManager;
-
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 

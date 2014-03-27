@@ -34,11 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketAttachment;
-use Application\DeskPRO\Entity\TicketParticipant;
-
 class TicketsSavedStep extends AbstractDeskpro3Step
 {
 	public static function getTitle()

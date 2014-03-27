@@ -37,8 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
-use \Doctrine\ORM\EntityRepository;
-
 class OrganizationNote extends AbstractEntityRepository
 {
 	public function getNotesForOrganization(OrganizationEntity $org)

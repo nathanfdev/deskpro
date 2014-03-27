@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\Actions\ActionDef;
 
-use Orb\Util\Arrays;
 use Application\DeskPRO\Entity\TicketActionDef;
+use Orb\Util\Arrays;
 
 class TicketActionDefManager
 {

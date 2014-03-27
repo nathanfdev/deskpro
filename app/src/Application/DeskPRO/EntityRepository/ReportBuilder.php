@@ -37,9 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-
 class ReportBuilder extends AbstractEntityRepository
 {
 	/**

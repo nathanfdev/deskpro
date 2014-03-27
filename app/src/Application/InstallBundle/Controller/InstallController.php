@@ -36,9 +36,8 @@ namespace Application\InstallBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Orb\Util\Strings;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Installation

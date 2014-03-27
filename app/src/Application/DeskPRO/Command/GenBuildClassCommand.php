@@ -33,15 +33,10 @@
 
 namespace Application\DeskPRO\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Process\Process;
-
 use Application\DeskPRO\App;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

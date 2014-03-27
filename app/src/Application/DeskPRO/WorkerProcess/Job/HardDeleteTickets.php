@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 
 /**
  * Goes through soft-deleted tickets that were deleted long ago,

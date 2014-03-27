@@ -35,8 +35,9 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\ORM\StateChange\ChangeTriggerLog;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
@@ -46,7 +47,6 @@ use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;
-use Application\DeskPRO\Monolog\Logger as DpLogger;
 
 class TicketManager
 {

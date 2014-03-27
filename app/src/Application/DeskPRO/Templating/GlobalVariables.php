@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
-
 use DeskPRO\Kernel\License;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 

@@ -34,18 +34,10 @@
 
 namespace Application\DeskPRO\Search\Adapter;
 
-use Orb\Util\CapabilityInformerInterface;
-
 use Application\DeskPRO\App;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use Application\DeskPRO\Search\Searcher\Mysql\ContentSearcher;
-use Application\DeskPRO\Search\Searcher\Mysql\ChatConversationSearcher;
 use Application\DeskPRO\Search\Searcher\Mysql\AgentCombinedSearcher;
-
-use Application\DeskPRO\Search\SearcherResult\ResultSet;
-use Application\DeskPRO\Search\SearcherResult\ResultInterface;
-
+use Application\DeskPRO\Search\Searcher\Mysql\ChatConversationSearcher;
+use Application\DeskPRO\Search\Searcher\Mysql\ContentSearcher;
 use Orb\Util\Strings;
 
 /**

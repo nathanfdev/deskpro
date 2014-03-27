@@ -34,12 +34,9 @@
 
 namespace Application\DeskPRO\DBAL;
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher;
-
-use \Doctrine\ORM\Event\LifecycleEventArgs;
-use \Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use \Doctrine\ORM\Event\PreUpdateEventArgs;
-use \Doctrine\ORM\Event\OnFlushEventArgs;
 
 /**
  * This connects some of the Doctrine events to the symfony event dispatcher

@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
-use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
 class ApiToken extends AbstractEntityRepository

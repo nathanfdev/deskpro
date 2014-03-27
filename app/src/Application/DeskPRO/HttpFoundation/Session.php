@@ -34,13 +34,10 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
-use Orb\Util\Strings;
-use Orb\Util\Util;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Strings;
 use Orb\Util\Web;
-use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
  * Session is able to load up a user, their language etc.

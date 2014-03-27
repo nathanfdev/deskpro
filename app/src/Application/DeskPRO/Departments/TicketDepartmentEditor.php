@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Departments;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
 

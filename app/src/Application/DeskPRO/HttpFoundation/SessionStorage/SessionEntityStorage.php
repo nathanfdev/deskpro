@@ -35,8 +35,6 @@
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
 use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;

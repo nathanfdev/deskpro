@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\Log\Logger;
-
 /**
  * A job is "checkable" when it's easily tested to see if work needs to be done.
  * Most of these jobs are meant to listen for events in a daemon that is continuously

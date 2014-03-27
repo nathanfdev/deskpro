@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\ApiKeys\Form\Type;
 
-use Application\DeskPRO\ApiKeys\Form\Type\ApiKeyPropsType;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

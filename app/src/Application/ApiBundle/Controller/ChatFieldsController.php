@@ -36,7 +36,6 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 
 class ChatFieldsController extends AbstractController implements ProtectedControllerInterface
 {

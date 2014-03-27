@@ -35,16 +35,11 @@
 namespace Application\UserBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Visitor;
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Rating;
-
+use Application\DeskPRO\Entity\Visitor;
 use Symfony\Component\HttpFoundation\Request;
-
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
 
 class ContentRating
 {

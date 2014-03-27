@@ -34,7 +34,6 @@
 namespace Application\UserBundle;
 
 use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class UserBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {

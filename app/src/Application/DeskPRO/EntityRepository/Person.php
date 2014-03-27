@@ -35,11 +35,9 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
-
-use Orb\Util\Numbers;
 
 class Person extends AbstractEntityRepository
 {

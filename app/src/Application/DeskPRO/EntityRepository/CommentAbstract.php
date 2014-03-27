@@ -35,11 +35,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\ORM\QueryPartial;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Visitor as VisitorEntity;
-
-use Doctrine\ORM\EntityRepository;
 
 class CommentAbstract extends AbstractEntityRepository
 {

@@ -2,8 +2,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Doctrine\ORM\EntityRepository;
-
 /**
  * ArticleAttachment
  *

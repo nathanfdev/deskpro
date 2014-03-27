@@ -34,8 +34,6 @@
 namespace Application\DeskPRO\AuditLog\AuditWriter;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\AuditLog;
 
 class AuditDbWriter implements AuditWriterInterface
 {

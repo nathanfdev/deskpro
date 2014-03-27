@@ -35,16 +35,12 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Comments\NewCommentFormType;
-
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\UserBundle\Controller\Helper\ContentRating;
+use Application\DeskPRO\Entity;
 use Application\UserBundle\Controller\Helper\Comments;
-use Application\UserBundle\Controller\Helper\FacebookLike;
+use Application\UserBundle\Controller\Helper\ContentRating;
+use Orb\Util\Numbers;
 
 class DownloadsController extends AbstractController
 {

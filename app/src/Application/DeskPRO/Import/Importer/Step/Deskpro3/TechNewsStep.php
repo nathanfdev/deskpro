@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
 
 class TechNewsStep extends AbstractDeskpro3Step
 {

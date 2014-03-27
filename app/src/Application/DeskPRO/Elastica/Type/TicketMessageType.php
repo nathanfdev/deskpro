@@ -34,10 +34,8 @@
 
 namespace Application\DeskPRO\Elastica\Type;
 
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Elastica\Transformer\ArticleTransformer;
-
 use APplication\DeskPRO\App;
+use Application\DeskPRO\Entity\TicketMessage;
 
 /**
  * Type for the TicketMessage entity

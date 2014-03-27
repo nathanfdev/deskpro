@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**

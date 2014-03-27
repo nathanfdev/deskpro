@@ -34,14 +34,9 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\App;
-use Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
-use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
-use Orb\Util\Numbers;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class DepartmentPermission extends AbstractEntityRepository
 {

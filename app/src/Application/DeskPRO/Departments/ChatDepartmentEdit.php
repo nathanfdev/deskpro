@@ -36,9 +36,7 @@ namespace Application\DeskPRO\Departments;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-
 use Doctrine\ORM\EntityManager;
-
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;

@@ -34,10 +34,8 @@
 
 namespace Application\DeskPRO\Import\Importer;
 
-use Doctrine\ORM\Query;
-use Orb\Log\Logger;
 use Application\DeskPRO\DBAL\Logging\QueryLogger;
-use Orb\Service\Zendesk\Zendesk;
+use Doctrine\ORM\Query;
 
 class ZendeskImporter extends AbstractImporter
 {

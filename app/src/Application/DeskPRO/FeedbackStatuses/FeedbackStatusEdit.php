@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\FeedbackStatuses;
 
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
-
 use Doctrine\ORM\EntityManager;
 
 class FeedbackStatusEdit

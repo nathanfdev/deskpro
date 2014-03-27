@@ -34,8 +34,8 @@
 
 namespace Application\UserBundle\Controller;
 
-use Application\DeskPRO\People\EmailValidator;
 use Application\DeskPRO\People\AccountValidator;
+use Application\DeskPRO\People\EmailValidator;
 
 class MainController extends AbstractController
 {

@@ -36,9 +36,6 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
 use Application\UserBundle\Form\RegisterType;
 
 class RegisterController extends \Application\DeskPRO\Controller\AbstractController

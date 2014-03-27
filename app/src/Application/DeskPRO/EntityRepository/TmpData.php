@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\TmpData as TmpDataEntity;
 
-use Doctrine\ORM\EntityRepository;
-
 class TmpData extends AbstractEntityRepository
 {
 	public function getByCode($code, $type = null)

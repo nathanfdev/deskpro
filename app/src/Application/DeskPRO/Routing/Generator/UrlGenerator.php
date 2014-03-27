@@ -33,13 +33,8 @@
 
 namespace Application\DeskPRO\Routing\Generator;
 
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
-use Application\DeskPRO\Routing\Generator\ObjectUrlGenerator;
-use Orb\Util\Strings;
-
 use Application\DeskPRO\App;
+use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 
 /**

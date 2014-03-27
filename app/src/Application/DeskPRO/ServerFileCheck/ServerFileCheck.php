@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\ServerFileCheck;
 
 use Application\DeskPRO\Distribution\VerifyChecksums;
-
 use Doctrine\ORM\EntityManager;
 
 class ServerFileCheck

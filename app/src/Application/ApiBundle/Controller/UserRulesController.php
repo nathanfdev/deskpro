@@ -34,11 +34,9 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\UserRules\UserRuleEdit;
-use Application\DeskPRO\UserRules\Form\Type\UserRuleType;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\UserRules\Form\Type\UserRuleType;
+use Application\DeskPRO\UserRules\UserRuleEdit;
 
 class UserRulesController extends AbstractController implements ProtectedControllerInterface
 {

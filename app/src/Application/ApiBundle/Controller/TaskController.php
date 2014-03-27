@@ -35,8 +35,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Searcher\TaskSearch;
 use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Searcher\TaskSearch;
 use Orb\Util\Numbers;
 
 class TaskController extends AbstractController

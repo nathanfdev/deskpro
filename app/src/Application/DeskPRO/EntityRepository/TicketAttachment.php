@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use Orb\Util\Arrays;
-
 class TicketAttachment extends AbstractEntityRepository
 {
 	/**

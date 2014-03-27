@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The abstract controller sets up some default objects.

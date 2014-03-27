@@ -35,9 +35,9 @@
 namespace Application\DeskPRO\Tickets\TicketMerge;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketDeleted;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\StateChange\Ticket\ChangeMerge;
 use Application\DeskPRO\People\PersonContextInterface;
 

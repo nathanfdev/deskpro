@@ -34,11 +34,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
 use Application\DeskPRO\Server\ApcStatus;
 use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
-use Application\DeskPRO\Exception\ValidationException;
 
 class ServerController extends AbstractController implements ProtectedControllerInterface
 {

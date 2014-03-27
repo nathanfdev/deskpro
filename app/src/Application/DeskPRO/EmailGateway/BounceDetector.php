@@ -34,9 +34,9 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Doctrine\ORM\EntityManager;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
-use Doctrine\ORM\EntityManager;
 
 class BounceDetector
 {

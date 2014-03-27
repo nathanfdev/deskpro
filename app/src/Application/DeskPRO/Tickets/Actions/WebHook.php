@@ -34,13 +34,12 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\CheckedOptionsArray;
 use Guzzle\Http\Client as HttpClient;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
 
 /**

@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 
-use Doctrine\ORM\EntityRepository;
-
 class DataStore extends AbstractEntityRepository
 {
 	public function getByCode($code, $type = null)

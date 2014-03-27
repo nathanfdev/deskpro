@@ -34,14 +34,14 @@
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\Criteria\CriteriaTermInterface;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\Common\Collections\Collection;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use Application\DeskPRO\Criteria\CriteriaTermInterface;
-use Application\DeskPRO\Entity\Ticket;
 
 abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTermInterface
 {

@@ -35,10 +35,8 @@
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
-
 use Application\DeskPRO\Searcher\OrganizationSearch;
+use Orb\Util\Arrays;
 
 /**
  * Summarizes terms

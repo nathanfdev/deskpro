@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Orb\Auth\Identity;
-
 class Vbulletin extends DbTablePhpPasswordCheck
 {
 	/**

@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 {

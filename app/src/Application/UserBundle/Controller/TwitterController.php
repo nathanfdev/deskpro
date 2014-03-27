@@ -34,8 +34,6 @@
 
 namespace Application\UserBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-
 use Application\DeskPRO\App;
 
 

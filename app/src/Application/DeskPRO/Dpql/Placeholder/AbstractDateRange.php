@@ -36,9 +36,9 @@ namespace Application\DeskPRO\Dpql\Placeholder;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
-use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
 /**
  * Abstract base for a date range placeholder (such as %TODAY% or %THIS_YEAR%).

@@ -36,9 +36,8 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Application\UserBundle\Form\NewTicketType;
 use Application\UserBundle\Form\NewFeedbackType;
+use Application\UserBundle\Form\NewTicketType;
 
 class WidgetController extends AbstractController
 {

@@ -37,8 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 
-use \Doctrine\ORM\EntityRepository;
-
 class PersonNote extends AbstractEntityRepository
 {
 	public function getNotesForPerson(PersonEntity $person)

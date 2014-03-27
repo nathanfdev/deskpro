@@ -34,10 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\Arrays;
-use Orb\Util\CheckedOptionsArray;
 
 /**
  * Filters based on hold status

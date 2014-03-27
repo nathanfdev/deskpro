@@ -35,13 +35,9 @@
 namespace Application\DeskPRO\Search\EntityWatcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Search\Adapter\AbstractAdapter;
-use Application\DeskPRO\DBAL\DoctrineEvent;
-use Doctrine\ORM\Event\OnFlushEventArgs;
-use Orb\Util\Util;
-use Orb\Filter\FilterInterface;
-
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Doctrine\ORM\Event\OnFlushEventArgs;
+use Orb\Filter\FilterInterface;
 
 class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {

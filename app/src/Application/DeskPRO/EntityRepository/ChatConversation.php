@@ -35,11 +35,9 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Organization as OrganizationEntity;
-use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
-
+use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Orb\Util\Arrays;
 
 class ChatConversation extends AbstractEntityRepository

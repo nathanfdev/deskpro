@@ -35,14 +35,10 @@
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\Download;
-use \Application\DeskPRO\HttpFoundation\Session as HttpSession;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\HttpFoundation\Session as HttpSession;
 
 class UserPublishChecker extends AbstractChecker
 {

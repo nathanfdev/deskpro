@@ -35,7 +35,6 @@
 namespace Application\ApiBundle\PermissionStrategy;
 
 use Application\ApiBundle\ApiUser;
-use Application\DeskPRO\Entity\ApiKey;
 
 class UserTypePermission implements PermissionStrategyInterface
 {

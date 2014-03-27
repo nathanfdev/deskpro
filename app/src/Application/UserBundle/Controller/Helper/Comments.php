@@ -37,9 +37,6 @@ namespace Application\UserBundle\Controller\Helper;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-use Orb\Util\Util;
-
 class Comments
 {
 	protected $entity;

@@ -33,12 +33,10 @@
 
 namespace Application\DeskPRO\ServerErrorLogs;
 
-use Doctrine\ORM\EntityManager;
-
-use Orb\Util\Util;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
+use Doctrine\ORM\EntityManager;
+use Orb\Util\Util;
 
 class ServerErrorLogs
 {

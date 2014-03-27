@@ -34,11 +34,8 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
-
 use Application\DeskPRO\Entity\Organization;
+use Orb\Util\Util;
 
 class OrganizationSearch extends SearcherAbstract
 {

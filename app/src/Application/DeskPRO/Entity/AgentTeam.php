@@ -34,12 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
-
+use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Application\DeskPRO\Entity;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.

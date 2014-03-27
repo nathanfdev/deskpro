@@ -33,8 +33,6 @@
 
 namespace Application\InstallBundle\Install;
 
-use Orb\Util\Strings;
-
 class InstallDataReader implements \IteratorAggregate, \Countable
 {
 	protected $filename;

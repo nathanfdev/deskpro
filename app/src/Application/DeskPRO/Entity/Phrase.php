@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * Templates used in the system

@@ -36,11 +36,8 @@ namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomDataTicket;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\CustomDefTicket;
 
 /**
  * Merges custom fields

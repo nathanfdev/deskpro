@@ -35,9 +35,9 @@
 namespace Application\DeskPRO\Tickets\NewTicket;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form

@@ -35,7 +35,6 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\GlossaryWord;
 
 
 class GlossaryController extends AbstractController

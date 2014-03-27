@@ -33,26 +33,23 @@
 
 namespace Application\DeskPRO\Reports;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Log\Logger;
 use Application\DeskPRO\Reports\Overview\ChatGroupingField;
 use Application\DeskPRO\Reports\Overview\ChatsCreated;
 use Application\DeskPRO\Reports\Overview\GroupingField;
 use Application\DeskPRO\Reports\Overview\KbViewsHour;
-use Application\DeskPRO\Reports\Overview\TicketSlaStatus;
 use Application\DeskPRO\Reports\Overview\TicketsAwaitingAgent;
+use Application\DeskPRO\Reports\Overview\TicketSlaStatus;
 use Application\DeskPRO\Reports\Overview\TicketsOpenedHour;
 use Application\DeskPRO\Reports\Overview\TicketsResolved;
 use Application\DeskPRO\Reports\Overview\TicketsResponseTime;
 use Application\DeskPRO\Reports\Overview\TicketsStatus;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Log\Logger;
-
 use Application\DeskPRO\Reports\Overview\TicketsUserWaitingTime;
 use Doctrine\ORM\EntityManager;
-
-use Orb\Util\OptionsArray;
 use Orb\Log\Writer\Stream;
+use Orb\Util\OptionsArray;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Overview

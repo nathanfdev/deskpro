@@ -34,15 +34,13 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\TicketTerms;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Util;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
-
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Ticket;
+use Orb\Util\Strings;
+use Orb\Util\Util;
 
 class TicketSearch extends SearcherAbstract
 {

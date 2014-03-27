@@ -35,16 +35,10 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\UI\RuleBuilder;
-
-use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-use Application\AgentBundle\Controller\Helper\DownloadResults;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Orb\Util\Numbers;
 
 class DownloadController extends AbstractController

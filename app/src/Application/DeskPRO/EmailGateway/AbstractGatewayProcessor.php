@@ -33,10 +33,9 @@
 
 namespace Application\DeskPRO\EmailGateway;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\App;
-
 use Orb\Util\Arrays;
 
 abstract class AbstractGatewayProcessor

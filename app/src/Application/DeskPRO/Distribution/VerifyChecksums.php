@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Distribution;
 
-use Symfony\Component\Finder\Finder;
-
 class VerifyChecksums
 {
 	protected $standard_hashes;

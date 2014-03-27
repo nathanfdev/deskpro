@@ -35,7 +35,6 @@
 namespace Application\ApiBundle\Form\CustomField\Model;
 
 use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class ChoiceField extends CustomFieldAbstract
 {

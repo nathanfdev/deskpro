@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-
-use Orb\Util\Arrays;
 
 /**
  * A standard property on a ticket where only one value can exist.

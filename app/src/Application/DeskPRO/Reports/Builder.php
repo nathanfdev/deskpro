@@ -35,10 +35,9 @@ namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Compiler;
-use Application\DeskPRO\Entity\ReportBuilder;
-use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
-
+use Application\DeskPRO\Entity\ReportBuilder;
 use Doctrine\ORM\EntityManager;
 
 class Builder

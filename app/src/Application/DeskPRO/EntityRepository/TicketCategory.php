@@ -35,9 +35,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
-
-use Orb\Util\Arrays;
 
 class TicketCategory extends AbstractCategoryRepository
 {

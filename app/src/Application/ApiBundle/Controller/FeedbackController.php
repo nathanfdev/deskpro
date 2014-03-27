@@ -35,14 +35,10 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Orb\Util\Numbers;
-
-use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
 
 class FeedbackController extends AbstractController
 {

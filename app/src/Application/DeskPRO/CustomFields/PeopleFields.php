@@ -34,9 +34,6 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketFilter;
-use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
  * @deprecated Use the FieldFanager with the field manager service

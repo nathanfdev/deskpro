@@ -36,10 +36,8 @@ namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-use Orb\Validator\AbstractValidator;
 use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
+use Orb\Validator\AbstractValidator;
 
 class NewFeedbackValidator extends AbstractValidator
 {

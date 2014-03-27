@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
 class TwitterUserFriend extends AbstractEntityRepository
 {
 	public function getByUserAndFriends($user_id, array $friend_ids)

@@ -35,15 +35,10 @@
 namespace Application\DeskPRO\PageDisplay\Page;
 
 use Application\DeskPRO\App;
-
-use Application\DeskPRO\People\PersonContextInterface;
-
-use Application\DeskPRO\Entity\PageDisplayAbstract;
-use Application\DeskPRO\Entity\TicketPageDisplay;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Department;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketPageDisplay;
+use Application\DeskPRO\People\PersonContextInterface;
 
 /**
  * This is a collection of TicketPageZone's meant to group a bunch of layouts

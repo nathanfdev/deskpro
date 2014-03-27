@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Tickets
 {

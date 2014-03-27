@@ -35,14 +35,12 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Searcher\TicketSearch;
-use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\OrganizationSearch;
-
+use Application\DeskPRO\Searcher\PersonSearch;
+use Application\DeskPRO\Searcher\TicketSearch;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Dates;
-use Orb\Util\Numbers;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 class TicketTerms

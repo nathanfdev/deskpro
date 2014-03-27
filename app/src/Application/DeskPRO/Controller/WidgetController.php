@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Util;
-use Orb\Util\Strings;
-
 class WidgetController extends AbstractController
 {
 	/**

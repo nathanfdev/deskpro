@@ -34,15 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
+use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Markdown;
-
-use Orb\Util\Strings;
 
 /**
  * Article

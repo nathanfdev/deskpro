@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Orb\Util\Strings;
-use Orb\Data\ContentTypes;
-
 class KbBlobsStep extends AbstractBlobsStep
 {
 	public static function getTitle()

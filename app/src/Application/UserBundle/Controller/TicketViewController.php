@@ -34,16 +34,12 @@
 
 namespace Application\UserBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
-
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\UserBundle\Form\NewTicketReplyType;
-
-use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Response;
 
 class TicketViewController extends AbstractController
 {

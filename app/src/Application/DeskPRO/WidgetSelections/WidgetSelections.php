@@ -33,10 +33,9 @@
 
 namespace Application\DeskPRO\WidgetSelections;
 
-use Doctrine\ORM\EntityManager;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
+use Doctrine\ORM\EntityManager;
 
 class WidgetSelections
 {

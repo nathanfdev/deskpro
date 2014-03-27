@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Logger;
-
-use Application\DeskPRO\App;
 
 /**
  * This runner goes through all the cron jobs and executes them in their own process

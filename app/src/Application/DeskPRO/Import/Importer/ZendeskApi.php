@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer;
 
-use Orb\Log\Logger;
 use Orb\Service\Zendesk\ApiException;
 use Orb\Service\Zendesk\Zendesk;
 use Orb\Util\Arrays;

@@ -37,9 +37,6 @@ namespace Application\DeskPRO\People;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 /**
  * A website visitor when we have no information about them
  */

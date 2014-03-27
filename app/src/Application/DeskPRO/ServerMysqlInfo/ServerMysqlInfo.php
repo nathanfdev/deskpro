@@ -33,10 +33,9 @@
 
 namespace Application\DeskPRO\ServerMysqlInfo;
 
-use Doctrine\ORM\EntityManager;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util;
+use Doctrine\ORM\EntityManager;
 
 class ServerMysqlInfo
 {

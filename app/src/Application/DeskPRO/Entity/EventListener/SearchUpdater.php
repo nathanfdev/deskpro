@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Entity\EventListener;
 
-use Doctrine\ORM\Events;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Events;
 
 /**
  * This listens for Doctrine events on objects we care about

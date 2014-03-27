@@ -35,17 +35,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
-use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Numbers;
-
-use Application\AgentBundle\Controller\Helper\NewsResults;
-use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
 
 class NewsController extends AbstractController
 {

@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Elastica\Type;
 
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Elastica\Transformer\ArticleTransformer;
-
 use APplication\DeskPRO\App;
+use Application\DeskPRO\Elastica\Transformer\ArticleTransformer;
+use Application\DeskPRO\Entity\Article;
 
 /**
  * Type for the Article entity

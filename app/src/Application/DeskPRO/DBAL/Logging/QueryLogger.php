@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\DBAL\Logging;
 
 use Application\DeskPRO\App;
-
 use Orb\Log\Logger;
 
 /**

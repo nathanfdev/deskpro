@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 

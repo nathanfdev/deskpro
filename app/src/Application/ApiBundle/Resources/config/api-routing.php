@@ -4,7 +4,6 @@ require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
 require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
 
 use Application\DeskPRO\Routing\RouteCollection;
-use Application\DeskPRO\Routing\Route;
 
 $collection = new RouteCollection();
 

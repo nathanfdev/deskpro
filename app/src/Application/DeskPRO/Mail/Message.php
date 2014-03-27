@@ -34,14 +34,14 @@
 
 namespace Application\DeskPRO\Mail;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Html\Html2Text;
 use Orb\Util\Arrays;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\App;
 
 class Message extends \Orb\Mail\Message
 {

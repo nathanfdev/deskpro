@@ -35,12 +35,8 @@ namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Symfony\Component\Finder\Finder;
-
-use Orb\Util\Util;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class Deskpro3RedirectController extends AbstractController
 {

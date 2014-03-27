@@ -36,8 +36,8 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\Entity\Ticket;
-use Orb\Util\Strings;
 use Orb\Input\Cleaner\Cleaner;
+use Orb\Util\Strings;
 
 class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 {

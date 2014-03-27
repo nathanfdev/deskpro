@@ -35,10 +35,10 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Markdown;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Application\DeskPRO\Markdown;
-use Application\DeskPRO\App;
 
 /**
  * TaskComment entity definition

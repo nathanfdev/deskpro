@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
-
 use Orb\Util\Dates;
 
 class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat

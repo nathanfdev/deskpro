@@ -34,8 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Entity\Ticket AS Ticket;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket as Ticket;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 

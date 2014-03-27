@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
-use \Browser;
+use Browser;
 
 class UserAgentRequirementCheck
 {

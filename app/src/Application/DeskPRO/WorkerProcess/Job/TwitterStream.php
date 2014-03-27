@@ -35,17 +35,12 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-
 use Application\DeskPRO\Entity\TwitterAccount;
-use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterAccountFollower;
+use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterAccountStatus;
-use Application\DeskPRO\Entity\TwitterStatus;
-use Application\DeskPRO\Entity\TwitterStatusMention;
-use Application\DeskPRO\Entity\TwitterStatusTag;
-use Application\DeskPRO\Entity\TwitterStatusUrl;
 use Application\DeskPRO\Entity\TwitterUser;
+
 /**
  * Processes Twitter stream events.
  */

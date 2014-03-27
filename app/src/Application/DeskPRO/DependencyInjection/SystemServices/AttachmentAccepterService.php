@@ -34,11 +34,9 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Attachments\AcceptAttachment;
-
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Attachments\AcceptAttachment;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Orb\Util\Env as EnvUtil;
 
 class AttachmentAccepterService

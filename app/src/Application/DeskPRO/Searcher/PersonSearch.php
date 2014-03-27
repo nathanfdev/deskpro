@@ -34,13 +34,10 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\BigMode;
-use Orb\Util\Util;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 class PersonSearch extends SearcherAbstract
 {

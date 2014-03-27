@@ -34,8 +34,8 @@
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
 use Application\UserBundle\Controller\Helper\ContentRating;
 
 class SaveRating implements PersonContextInterface

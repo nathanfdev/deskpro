@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-use Application\DeskPRO\Entity\PortalPageDisplay;
-
 class Contact extends Template
 {
 	protected function init()

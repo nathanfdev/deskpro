@@ -33,10 +33,10 @@
 
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
-use Orb\Log\Loggable;
-use Orb\Util\OptionsArray;
 use Application\DeskPRO\BlobStorage\Blob;
+use Orb\Log\Loggable;
 use Orb\Log\Logger;
+use Orb\Util\OptionsArray;
 
 abstract class AbstractStorageAdapter implements Loggable
 {

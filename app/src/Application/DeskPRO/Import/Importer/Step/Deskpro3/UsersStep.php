@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Import\Importer\Step\Deskpro3\User\ImportUser;
 
 class UsersStep extends AbstractDeskpro3Step

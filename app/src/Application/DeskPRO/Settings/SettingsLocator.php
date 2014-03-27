@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;
 
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 /**
  * This class locates a settings file based on the group name
  */

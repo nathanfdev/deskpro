@@ -36,7 +36,6 @@ namespace Application\DeskPRO\ORM\StateChange;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\Collection;
-use Orb\Util\Util;
 
 class StateChangeRecorder
 {

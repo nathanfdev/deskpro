@@ -34,10 +34,8 @@
 
 namespace Application\ApiBundle\Form\CustomField\Type;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
 use Application\DeskPRO\App;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class DataFieldType extends CustomFieldTypeAbstract
 {

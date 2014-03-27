@@ -34,8 +34,8 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 
 class TicketDisplay implements PersonContextInterface

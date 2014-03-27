@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Translate\Loader;
 
-use Orb\Util\Arrays;
-
 /**
  * Loads phrases from filesystem and then database
  */

@@ -37,8 +37,6 @@ namespace Application\DeskPRO\Domain;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-
 /**
  * This change tracker is meant to listen to changes on an object, and then after all changes
  * were committed, it calls listeners.

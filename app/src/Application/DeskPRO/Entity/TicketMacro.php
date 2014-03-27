@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Tickets\Macros\MacroActions;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Application\DeskPRO\Tickets\Macros\MacroActions;
 
 /**
  * Ticket macros

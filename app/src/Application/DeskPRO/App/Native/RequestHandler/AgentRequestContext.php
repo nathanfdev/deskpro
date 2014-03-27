@@ -34,11 +34,11 @@
 
 namespace Application\DeskPRO\App\Native\RequestHandler;
 
+use Application\AgentBundle\Controller\AbstractController;
 use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\HttpFoundation\Request;
-use Application\AgentBundle\Controller\AbstractController;
 
 class AgentRequestContext extends AbstractRequestContext
 {

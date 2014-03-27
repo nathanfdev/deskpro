@@ -35,11 +35,6 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
-
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\PropertyChangedListener;
-
-use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**

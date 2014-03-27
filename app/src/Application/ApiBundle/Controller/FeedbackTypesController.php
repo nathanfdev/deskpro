@@ -37,12 +37,9 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\FeedbackTypes\FeedbackTypes;
 use Application\DeskPRO\Exception\ValidationException;
-
-use Application\DeskPRO\FeedbackTypes\Form\Type\FeedbackTypeType;
 use Application\DeskPRO\FeedbackTypes\FeedbackTypeEdit;
-
+use Application\DeskPRO\FeedbackTypes\Form\Type\FeedbackTypeType;
 use Orb\Util\Arrays;
 
 class FeedbackTypesController extends AbstractController implements ProtectedControllerInterface

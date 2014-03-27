@@ -36,14 +36,10 @@ namespace Application\DeskPRO\Search\Searcher\Elastic;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
-
 use Application\DeskPRO\Search\Adapter\ElasticAdapter;
 use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
-
 use Application\DeskPRO\Search\SearcherResult\Elastic\ResultSet;
-use Application\DeskPRO\Search\SearcherResult\Elastic\Result;
 
 /**
  * The content searcher searches: articles, downloads, feedback, news

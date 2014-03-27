@@ -35,9 +35,7 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Zend\Loader\Exception\InvalidArgumentException;
 

@@ -34,14 +34,10 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Util;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * Log of searches on userend

@@ -34,14 +34,7 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
-use Orb\Util\Util;
-
-use Application\DeskPRO\Entity\Session as SessionEntity;
-use Application\DeskPRO\Entity\Visitor;
-
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
 
 /**
  * Manages how chats are assigned automatically

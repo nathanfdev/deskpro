@@ -35,21 +35,16 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Comments\NewCommentFormType;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-
-use Application\UserBundle\Form\NewFeedbackType;
-use Application\DeskPRO\Comments\NewCommentFormType;
-
+use Application\DeskPRO\Feedback\FeedbackCollection;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\FacebookLike;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-
-use Application\DeskPRO\Feedback\FeedbackCollection;
+use Application\UserBundle\Form\NewFeedbackType;
+use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 class FeedbackController extends AbstractController
 {

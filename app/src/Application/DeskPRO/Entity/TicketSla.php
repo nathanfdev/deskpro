@@ -34,11 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
 
 /**
  * Entity for an ticket SLA record

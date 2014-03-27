@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Language;
 use Orb\Util\Arrays;
 
 class LanguageDataService extends BaseRepositoryService

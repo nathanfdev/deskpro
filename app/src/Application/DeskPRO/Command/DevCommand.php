@@ -33,17 +33,12 @@
 
 namespace Application\DeskPRO\Command;
 
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Process\Process;
-
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

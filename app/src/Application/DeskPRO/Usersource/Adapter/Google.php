@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Application\DeskPRO\Entity\Usersource;
-
-use Orb\Util\CapabilityInformerInterface;
 use Orb\Auth\Identity;
 
 class Google extends AbstractAdapter

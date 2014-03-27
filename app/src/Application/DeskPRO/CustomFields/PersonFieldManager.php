@@ -35,10 +35,9 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
-
-use Orb\Auth\Identity;
-use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usersource;
+use Orb\Auth\Identity;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 

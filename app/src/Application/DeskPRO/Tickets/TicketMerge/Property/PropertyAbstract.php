@@ -38,8 +38,6 @@ namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
-use Orb\Util\Arrays;
-
 /**
  * A property is something that can be merged in a ticket
  */

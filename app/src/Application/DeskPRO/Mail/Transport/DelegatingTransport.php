@@ -35,18 +35,14 @@
 namespace Application\DeskPRO\Mail\Transport;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Mail\Loggers\MessageLogWriter;
 use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 use Orb\Log\Filter\SimpleLineFormatter;
-use Orb\Mail\Transport\QueueTransport;
-use Orb\Mail\Message;
-use Orb\Util\Strings;
-use Orb\Util\Util;
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
-use Orb\Log\Writer\ArrayWriter as LogArrayWriter;
+use Orb\Log\Logger;
+use Orb\Mail\Message;
+use Orb\Mail\Transport\QueueTransport;
 
 /**
  * This transport takes care of initializing any other transports based on settings

@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\Reports\Form\Type;
 
-use Application\DeskPRO\Reports\Form\Type\ReportPropsType;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

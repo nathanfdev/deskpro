@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Settings;
 use Orb\Util\Arrays;
-use Orb\Util\Util;
 
 class GeneralSettings
 {

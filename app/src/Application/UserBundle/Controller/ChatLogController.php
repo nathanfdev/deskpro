@@ -35,8 +35,6 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
 
 class ChatLogController extends AbstractController implements RequireUserInterface
 {

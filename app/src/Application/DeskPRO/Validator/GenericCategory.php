@@ -35,9 +35,6 @@
 namespace Application\DeskPRO\Validator;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Person;
-
 use Orb\Util\Numbers;
 
 class GenericCategory extends AbstractPersonContextValidator

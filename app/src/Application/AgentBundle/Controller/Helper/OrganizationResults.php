@@ -34,12 +34,9 @@
 
 namespace Application\AgentBundle\Controller\Helper;
 
-use Application\DeskPRO\Searcher\OrganizationSearch;
-use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
-use Orb\Util\Strings;
+use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 /**

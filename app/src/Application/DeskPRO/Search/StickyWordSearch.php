@@ -34,13 +34,13 @@
 
 namespace Application\DeskPRO\Search;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 /**

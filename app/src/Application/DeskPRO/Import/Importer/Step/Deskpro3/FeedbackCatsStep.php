@@ -34,10 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackComment;
-
 class FeedbackCatsStep extends AbstractDeskpro3Step
 {
 	public $cat_field;

@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\DBAL;
 
-use DeskPRO\Kernel\KernelErrorHandler;
-use PDO;
 use Orb\Log\Logger;
+use PDO;
 
 /**
  * Some enhancements to Doctrine's connection class.

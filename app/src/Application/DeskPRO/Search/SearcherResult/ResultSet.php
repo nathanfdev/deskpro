@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Search\SearcherResult;
 
 use Application\DeskPRO\App;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Search adapter

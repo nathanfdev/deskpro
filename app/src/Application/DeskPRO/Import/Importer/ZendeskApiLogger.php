@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer;
 
-use Orb\Log\Logger;
-use Orb\Service\Zendesk\Zendesk;
-
 class ZendeskApiLogger
 {
 	public $count = 0;

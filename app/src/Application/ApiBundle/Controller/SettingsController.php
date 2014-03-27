@@ -36,13 +36,12 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
-use Application\DeskPRO\Server\CronStatus;
-use Application\DeskPRO\Settings\RegistrationSettings;
-use Application\DeskPRO\Settings\TicketSettings;
-use Application\DeskPRO\Settings\ServerSettings;
-use Application\DeskPRO\Settings\GeneralSettings;
 use Application\DeskPRO\Settings\EmailSettings;
+use Application\DeskPRO\Settings\GeneralSettings;
 use Application\DeskPRO\Settings\PortalSettings;
+use Application\DeskPRO\Settings\RegistrationSettings;
+use Application\DeskPRO\Settings\ServerSettings;
+use Application\DeskPRO\Settings\TicketSettings;
 use Orb\Util\Env;
 use Orb\Util\Strings;
 

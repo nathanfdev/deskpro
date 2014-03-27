@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Log\ErrorLog;
 
-use Orb\Util\Dates;
-
 class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 {
 	/**

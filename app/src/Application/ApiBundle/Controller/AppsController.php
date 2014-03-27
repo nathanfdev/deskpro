@@ -38,9 +38,9 @@ use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Imagine\Image\Box as ImageBox;
 use Symfony\Component\HttpFoundation\Request;
 
 class AppsController extends AbstractController

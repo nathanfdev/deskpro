@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\CustomDefTicket;
-use Application\DeskPRO\Entity\CustomDefPerson;
-use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Import\Importer\Deskpro3Importer;
 
 class CustomFieldsStep extends AbstractDeskpro3Step

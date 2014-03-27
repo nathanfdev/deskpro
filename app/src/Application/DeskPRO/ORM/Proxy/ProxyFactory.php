@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\ORM\Proxy;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Common\Util\ClassUtils;
 use Application\DeskPRO\ORM\Unprivate\UnprivateProxyFactory;
 
 /**

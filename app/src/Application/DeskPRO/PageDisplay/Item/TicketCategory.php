@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item;
 
-use Application\DeskPRO\PageDisplay\Item\ItemInterface;
-
 class TicketCategory extends TicketItemAbstract
 {
 	public function getType()

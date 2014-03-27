@@ -36,12 +36,8 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\SearchLog;
-
 use Application\DeskPRO\Labels\ContentLabelCloud;
-
 use Application\DeskPRO\Search\StickyWordSearch;
-
-use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 class SearchController extends AbstractController

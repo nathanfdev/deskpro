@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\Dpql\Placeholder;
 
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
-use Application\DeskPRO\Dpql\Exception;
 
 /**
  * Abstract base for all placeholder (%NAME%) references.

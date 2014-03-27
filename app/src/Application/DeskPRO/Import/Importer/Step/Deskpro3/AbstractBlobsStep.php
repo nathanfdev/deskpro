@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Orb\Util\Strings;
 use Orb\Data\ContentTypes;
 
 // DP3's blob table doesnt store any info about the type of file, filesize etc

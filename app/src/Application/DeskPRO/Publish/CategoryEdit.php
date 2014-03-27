@@ -35,16 +35,10 @@
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
-use Application\DeskPRO\People\PersonContextInterface;
-
-use Application\DeskPRO\Searcher\ArticleSearch;
-
 use Orb\Util\Arrays;
-use Orb\Util\Util;
 
 /**
  * Helps fetch info related to structure of Publish

@@ -37,12 +37,9 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
-use Application\DeskPRO\FeedbackStatuses\FeedbackStatusEdit;
-use Application\DeskPRO\FeedbackStatuses\FeedbackStatuses;
-use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusType;
 use Application\DeskPRO\Exception\ValidationException;
-
+use Application\DeskPRO\FeedbackStatuses\FeedbackStatusEdit;
+use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusType;
 use Orb\Util\Arrays;
 
 class FeedbackStatusesController extends AbstractController implements ProtectedControllerInterface

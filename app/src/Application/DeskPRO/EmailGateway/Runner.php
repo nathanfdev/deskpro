@@ -34,9 +34,9 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\EmailSource;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Numbers;
 use Orb\Util\Util;

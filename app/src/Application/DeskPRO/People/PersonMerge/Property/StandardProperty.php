@@ -36,9 +36,6 @@ namespace Application\DeskPRO\People\PersonMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-
-use Orb\Util\Arrays;
 
 /**
  * A standard property on a person where only one value can exist.

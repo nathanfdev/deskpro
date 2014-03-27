@@ -35,13 +35,6 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
 
 class UserTrackController extends AbstractController
 {

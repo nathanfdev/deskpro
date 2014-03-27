@@ -35,11 +35,6 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\GlossaryWord;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
 
 /**
  * Glossary listing and editing

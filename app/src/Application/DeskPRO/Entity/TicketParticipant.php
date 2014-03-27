@@ -34,12 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Orb\Util\Strings;
-
-use Application\DeskPRO\App;
 
 /**
  * Links participants to tickets

@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\SendmailQueue;
-use Orb\Util\Strings;
 
 class SendmailUtil
 {

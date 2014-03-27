@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
-use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;

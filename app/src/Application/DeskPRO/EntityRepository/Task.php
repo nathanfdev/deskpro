@@ -35,14 +35,11 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Orb\Util\Dates;
-use Symfony\Component\Validator\Constraints\DateTime;
-
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
+use Application\DeskPRO\Entity;
+use Orb\Util\Dates;
 
 class Task extends AbstractEntityRepository
 {

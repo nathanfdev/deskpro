@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\Banning\Form\Type;
 
-use Application\DeskPRO\Banning\Form\Type\EmailBanPropsType;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

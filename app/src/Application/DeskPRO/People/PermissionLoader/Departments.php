@@ -36,10 +36,7 @@ namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
-
-use Orb\Util\Arrays;
 
 class Departments extends AbstractLoader implements NoCache, PersonContextInterface
 {

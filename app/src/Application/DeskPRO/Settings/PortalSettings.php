@@ -32,7 +32,6 @@
  */
 
 namespace Application\DeskPRO\Settings;
-use Orb\Util\Util;
 
 class PortalSettings
 {

@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\Search\ContentType\Mysql;
 
-use Application\DeskPRO\Search\ContentType\AbstractContentType;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
-use Application\DeskPRO\Search\SearcherResult\ResultInterface;
+use Application\DeskPRO\Search\ContentType\AbstractContentType;
 use Application\DeskPRO\Search\Indexer\Document;
 
 class Download extends AbstractContentType

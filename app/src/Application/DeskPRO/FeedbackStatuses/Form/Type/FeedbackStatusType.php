@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\FeedbackStatuses\Form\Type;
 
-use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusPropsType;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

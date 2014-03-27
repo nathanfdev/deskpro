@@ -34,13 +34,13 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
-use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
-use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
  * Links to the specified content if possible (based on output type).

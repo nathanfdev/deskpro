@@ -34,9 +34,7 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Orb\Util\Strings;
 use Application\DeskPRO\App;
-use Orb\Data\ContentTypes;
 
 abstract class AbstractSearchIndexStep extends AbstractDeskpro3Step
 {

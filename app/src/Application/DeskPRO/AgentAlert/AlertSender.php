@@ -35,10 +35,8 @@ namespace Application\DeskPRO\AgentAlert;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
-use Application\DeskPRO\ORM\EntityManager;
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Tickets\TicketActions\AgentAlertNotificationAction;
+use Application\DeskPRO\ORM\EntityManager;
 
 class AlertSender
 {

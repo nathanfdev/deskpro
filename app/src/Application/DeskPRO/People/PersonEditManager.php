@@ -35,14 +35,8 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
-
 use Doctrine\ORM\EntityManager;
-
-use Orb\Util\Strings;
-use Orb\Util\Util;
 
 class PersonEditManager implements PersonContextInterface
 {

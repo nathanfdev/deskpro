@@ -35,15 +35,10 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
-
-use Doctrine\ORM\Query, Doctrine\ORM\Proxy\Proxy;
-
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Feedback as NewsEntity;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\NewsSearch;
-
-use Orb\Util\Arrays;
+use Doctrine\ORM\Query;
 use Orb\Util\Strings;
 
 class NewsCategory extends AbstractCategoryRepository

@@ -36,8 +36,8 @@ namespace Application\DeskPRO\Validator\Mapping;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use Symfony\Component\Validator\Mapping\ClassMetadataFactory as BaseClassMetadataFactory;
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
+use Symfony\Component\Validator\Mapping\ClassMetadataFactory as BaseClassMetadataFactory;
 
 /**
  * This custom factory is the same as the default, except we intercept constraints and prefix the default

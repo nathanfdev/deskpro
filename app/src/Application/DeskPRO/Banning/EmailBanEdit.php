@@ -33,9 +33,8 @@
 
 namespace Application\DeskPRO\Banning;
 
-use Application\DeskPRO\Entity\BanEmail;
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Entity\BanEmail;
 use Doctrine\ORM\EntityManager;
 
 class EmailBanEdit

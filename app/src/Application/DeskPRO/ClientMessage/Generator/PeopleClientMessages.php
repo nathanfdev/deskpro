@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\ClientMessage\Generator;
 
 use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 
 class PeopleClientMessages
 {

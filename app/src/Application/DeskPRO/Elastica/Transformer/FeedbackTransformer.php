@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Elastica\Transformer;
 
-use Application\DeskPRO\Entity\Feedback;
-
 class FeedbackTransformer implements TransformerInterface
 {
 	public function transform($feedback)

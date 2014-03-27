@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Orb\Auth\Identity;
-use Doctrine\DBAL\Connection;
 
 class DbTablePhpPasswordCheck extends AbstractAdapter
 {

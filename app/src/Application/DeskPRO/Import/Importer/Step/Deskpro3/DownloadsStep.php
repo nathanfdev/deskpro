@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadRevision;
 

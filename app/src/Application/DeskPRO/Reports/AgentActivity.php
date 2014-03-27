@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
-
 use Doctrine\ORM\EntityManager;
 
 class AgentActivity

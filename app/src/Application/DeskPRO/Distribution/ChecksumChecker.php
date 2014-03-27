@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Distribution;
 
-use Symfony\Component\Finder\Finder;
-
 class ChecksumChecker extends \Orb\File\ChecksumChecker
 {
 	public function __construct($chunk_size = 200)

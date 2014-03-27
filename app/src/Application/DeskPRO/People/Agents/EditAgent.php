@@ -37,12 +37,11 @@ namespace Application\DeskPRO\People\Agents;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\ORM\CollectionHelper;
+use Application\DeskPRO\Validator\Constraints as DeskproConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-
 use Orb\Util\Arrays;
 use Symfony\Component\Validator\Constraints;
-use Application\DeskPRO\Validator\Constraints as DeskproConstraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class EditAgent

@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailGatewayAddress;
 use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class PopAccountsStep extends AbstractDeskpro3Step
 {

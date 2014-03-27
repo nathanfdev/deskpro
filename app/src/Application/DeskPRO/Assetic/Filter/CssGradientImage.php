@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Assetic\Filter;
 
-use Assetic\Filter\FilterInterface;
 use Assetic\Asset\AssetInterface;
+use Assetic\Filter\FilterInterface;
 use Assetic\Util\ProcessBuilder;
-
 use Orb\Images\Util as ImageUtil;
 
 class CssGradientImage implements FilterInterface

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Orb\Auth\Identity;
-
 class Dp3CustomMysql extends DbTablePhpPasswordCheck
 {
 	/**

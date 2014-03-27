@@ -35,12 +35,7 @@
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
-
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\DBAL\Connection;
-
-use Orb\Util\Arrays;
-use Orb\Util\Util;
 
 /**
  * Handles linking glossary words in texts

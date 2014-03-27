@@ -33,9 +33,8 @@
 
 namespace Application\DeskPRO\ServerMysqlStatus;
 
-use Doctrine\ORM\EntityManager;
-
 use Application\DeskPRO\App;
+use Doctrine\ORM\EntityManager;
 
 class ServerMysqlStatus
 {

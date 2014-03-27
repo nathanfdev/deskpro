@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\App;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Monolog\Logger;
 use Orb\Util\Strings;
@@ -43,8 +44,6 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use Application\DeskPRO\App;
 
 class DefaultDataCommand extends ContainerAwareCommand
 {

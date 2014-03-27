@@ -37,10 +37,6 @@ namespace Application\AgentBundle\Validator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity;
-
-use Application\AgentBundle\Form\Model\NewTicket;
-
-use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
 
 class NewTicketValidator extends AbstractValidator

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Elastica\Transformer;
 
-use Application\DeskPRO\Entity\Download;
-
 class DownloadTransformer implements TransformerInterface
 {
 	public function transform($download)

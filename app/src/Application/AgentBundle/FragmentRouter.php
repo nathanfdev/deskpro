@@ -35,7 +35,6 @@
 namespace Application\AgentBundle;
 
 use Application\DeskPRO\App;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * This generates JS hash router

@@ -37,14 +37,11 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\Departments\ChatDepartmentEditor;
-use Application\DeskPRO\Exception\ValidationException;
-
-use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Departments\ChatDepartmentEdit;
+use Application\DeskPRO\Departments\ChatDepartmentEditor;
 use Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Exception\ValidationException;
 
 class ChatDepsController extends AbstractController implements ProtectedControllerInterface
 {

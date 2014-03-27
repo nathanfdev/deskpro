@@ -34,11 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
  * Adds SLA

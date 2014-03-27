@@ -35,11 +35,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
-use Application\DeskPRO\Exception\ValidationException;
-use Application\DeskPRO\Banning\IpBanEdit;
-use Application\DeskPRO\Banning\Form\Type\IpBanType;
 use Application\DeskPRO\Banning\EmailBanEdit;
 use Application\DeskPRO\Banning\Form\Type\EmailBanType;
+use Application\DeskPRO\Banning\Form\Type\IpBanType;
+use Application\DeskPRO\Banning\IpBanEdit;
+use Application\DeskPRO\Exception\ValidationException;
 
 class BanningController extends AbstractController implements ProtectedControllerInterface
 {

@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\Twig\Loader;
 
 use Application\DeskPRO\App;
-use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\Templating\TemplateNameParserInterface;
 
 /**
  * This hybrid loader loads templates from the filesystem first, and then from the

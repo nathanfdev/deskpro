@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
-use Orb\Util\OptionsArray;
 use Application\DeskPRO\TicketLayout\Terms;
+use Orb\Util\OptionsArray;
 
 class LayoutField implements \Serializable
 {

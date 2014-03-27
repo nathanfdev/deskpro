@@ -33,9 +33,8 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
-use Symfony\Component\HttpFoundation\Cookie as BaseCookie;
-
 use Application\DeskPRO\App;
+use Symfony\Component\HttpFoundation\Cookie as BaseCookie;
 
 class Cookie extends BaseCookie
 {

@@ -7,13 +7,8 @@
  */
 namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
-use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Monolog\Logger;
 use Orb\Util\OptionsArray;
 

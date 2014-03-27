@@ -35,13 +35,10 @@
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\Ticket;
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
-use Orb\Util\Strings;
-use Orb\Util\Util;
+use Orb\Log\Logger;
 
 require_once(DP_ROOT . '/vendor/swiftmailer/swiftmailer/lib/swift_required.php');
 

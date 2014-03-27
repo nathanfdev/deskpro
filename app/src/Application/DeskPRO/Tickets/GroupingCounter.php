@@ -36,11 +36,8 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\TicketSearch;
-
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Orb\Util\Util;
-use Orb\Validator\StringEmail;
 
 class GroupingCounter
 {

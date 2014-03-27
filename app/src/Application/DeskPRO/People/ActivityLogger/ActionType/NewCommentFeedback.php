@@ -35,12 +35,6 @@
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\CommentAbstract;
-use Application\DeskPRO\Entity\PersonActivity;
-use Application\DeskPRO\People\PersonContextInterface;
-
-use Orb\Util\Arrays;
 
 class NewCommentFeedback extends NewCommentAbstract
 {

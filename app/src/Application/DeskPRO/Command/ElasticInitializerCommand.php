@@ -33,17 +33,13 @@
 
 namespace Application\DeskPRO\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Elastica\IndexInitializer\ContentInitializer;
+use Application\DeskPRO\Entity;
+use Orb\Log\Logger;
+use Orb\Log;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Orb\Log;
-use Orb\Log\Logger;
-use Application\DeskPRO\Elastica\IndexInitializer\ContentInitializer;
 
 class ElasticInitializerCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
