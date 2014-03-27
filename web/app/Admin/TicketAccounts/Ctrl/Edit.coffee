@@ -76,7 +76,7 @@ define [
 				promise = @Api.sendPutJson('/email_accounts', postData)
 
 			promise.success( (result) =>
-				@account.id = result.id
+				@account.id = result.email_account_id
 				@account.is_enabled = true
 				@stopSpinner('saving_account', true).then(=>
 					@Growl.success(@getRegisteredMessage('saved_account'))

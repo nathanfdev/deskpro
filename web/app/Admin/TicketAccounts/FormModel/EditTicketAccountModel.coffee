@@ -2,6 +2,7 @@ define ->
 	class Admin_TicketAccounts_Form_EditTicketAccountModel
 		constructor: (@account) ->
 			@form = {}
+			@form.account_type     = @account.account_type || 'tickets';
 			@form.address          = @account.address
 			@form.incoming_type    = 'pop3'
 			@form.in_gmail_account = {}

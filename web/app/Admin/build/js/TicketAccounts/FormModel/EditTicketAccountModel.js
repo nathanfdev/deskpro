@@ -5,6 +5,7 @@
       function Admin_TicketAccounts_Form_EditTicketAccountModel(account) {
         this.account = account;
         this.form = {};
+        this.form.account_type = this.account.account_type || 'tickets';
         this.form.address = this.account.address;
         this.form.incoming_type = 'pop3';
         this.form.in_gmail_account = {};

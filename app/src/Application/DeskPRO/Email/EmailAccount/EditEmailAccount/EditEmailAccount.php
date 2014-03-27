@@ -46,6 +46,11 @@ class EditEmailAccount
 	/**
 	 * @var string
 	 */
+	public $account_type;
+
+	/**
+	 * @var string
+	 */
 	public $other_addresses;
 
 	/**
@@ -88,6 +93,7 @@ class EditEmailAccount
 		$this->account         = $account;
 
 		$this->address         = $account->address;
+		$this->account_type    = $account->account_type;
 		$this->other_addresses = implode(', ', $account->other_addresses ?: array());
 		$this->incoming_type   = $account->incoming_account ? $account->incoming_account->getType() : '';
 		$this->outgoing_type   = $account->outgoing_account ? $account->outgoing_account->getType() : '';
@@ -100,6 +106,7 @@ class EditEmailAccount
 	public function apply()
 	{
 		$this->account->address = strtolower($this->address);
+		$this->account->account_type = strtolower($this->account_type);
 
 		if ($this->other_addresses) {
 			$emails_arr = array();
