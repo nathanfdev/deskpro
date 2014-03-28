@@ -40,23 +40,30 @@ define [
 						transport_options: {}
 					}
 				}
-
-				@form_model = new EditTicketAccountModel(@account)
-				@form_model.form.incoming_account_type = ''
-				@form_model.form.outgoing_account_type = 'smtp'
-				@$scope.form = @form_model.form
-
-				return dep_promise
+				@trigger = {}
+				final_promise = dep_promise
 			else
 				data_promise = @Api.sendDataGet({
 					'email_account': '/email_accounts/' + @accountId
 				}).then( (result) =>
 					@account = result.data.email_account.email_account
+					@trigger = result.data.email_account.trigger
 					@form_model = new EditTicketAccountModel(@account)
 					@$scope.form = @form_model.form
 				)
 
-				return @$q.all([dep_promise, data_promise])
+				final_promise = @$q.all([dep_promise, data_promise])
+
+			final_promise.then(=>
+				@form_model = new EditTicketAccountModel(@account, @deps, @trigger)
+
+				if not @accountId
+					@form_model.form.incoming_account_type = ''
+					@form_model.form.outgoing_account_type = 'smtp'
+
+				@$scope.form = @form_model.form
+			)
+			return final_promise
 
 
 		###
@@ -76,7 +83,7 @@ define [
 				promise = @Api.sendPutJson('/email_accounts', postData)
 
 			promise.success( (result) =>
-				@account.id = result.email_account_id
+				@account.id = result.email_account_id || @account.id
 				@account.is_enabled = true
 				@stopSpinner('saving_account', true).then(=>
 					@Growl.success(@getRegisteredMessage('saved_account'))

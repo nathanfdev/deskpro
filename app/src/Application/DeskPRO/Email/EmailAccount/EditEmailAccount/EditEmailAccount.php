@@ -34,6 +34,10 @@
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\ORM\EntityManager;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Orb\Validator\StringEmail;
 
 class EditEmailAccount
@@ -125,6 +129,56 @@ class EditEmailAccount
 		$this->account->outgoing_account = $this->getOutgoingAccountConfig();
 	}
 
+	/**
+	 * @param EntityManager $em
+	 * @param array         $trigger_actions
+	 * @return TicketTrigger
+	 */
+	public function saveTrigger(EntityManager $em, array $trigger_actions)
+	{
+		$trigger = $em->createQuery("
+			SELECT trigger
+			FROM DeskPRO:TicketTrigger trigger
+			WHERE trigger.email_account = ?0
+		")->setParameters(array($this->account))->getOneOrNullResult();
+
+		if (!$trigger_actions || $this->account->account_type != 'tickets') {
+			if ($trigger) {
+				$em->remove($trigger);
+				$em->flush();
+			}
+			return null;
+		}
+
+		if (!$trigger) {
+			$trigger = new TicketTrigger();
+			$trigger->email_account = $this->account;
+			$trigger->event_trigger = 'newticket';
+			$trigger->by_agent_mode = array('email');
+			$trigger->by_user_mode  = array('email');
+		}
+
+		$actions = new TriggerActions();
+		try {
+			$actions->importFromArray(array('actions' => $trigger_actions));
+		} catch (\Exception $e) {}
+
+		$terms = new TriggerTerms();
+		$terms->addTermFromArray(array(
+			'type'    => 'CheckEmailAccount',
+			'op'      => 'is',
+			'options' => array('email_account_ids' => array($this->account->id))
+		));
+
+		$trigger->title   = "{$this->account->address} : New Ticket";
+		$trigger->actions = $actions;
+		$trigger->terms   = $terms;
+
+		$em->persist($trigger);
+		$em->flush();
+
+		return $trigger;
+	}
 
 	/**
 	 * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface

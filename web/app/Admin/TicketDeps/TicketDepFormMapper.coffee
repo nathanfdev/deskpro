@@ -6,7 +6,7 @@ define [
 	Util
 ) ->
 	class TicketDepFormMapper
-		getFormFromModel: (dep, layouts, depPerms, agents, agentgroups, usergroups, email_accounts) ->
+		getFormFromModel: (dep, trigger, layouts, depPerms, agents, agentgroups, usergroups, email_accounts) ->
 			form = {
 				title: '',
 				user_title: '',
@@ -15,8 +15,16 @@ define [
 				default_layout: {},
 				custom_layout: {},
 				use_custom_layout: false,
-				trigger: {
-					email_gateway_id: '0'
+				trigger_actions: {
+					SetEmailAccount: {
+						options: {
+							email_account_id: '0'
+						}
+					},
+					SendUserEmail: {
+						enabled: false,
+						options: {}
+					}
 				}
 			}
 
@@ -31,10 +39,26 @@ define [
 					form.parent_id = dep.parent_id+''
 
 
-			if not Util.isBlank(dep.email_gateway_id)
-				form.email_gateway_id = dep.email_gateway_id+''
-			else if email_accounts.length
-				form.email_gateway_id = email_accounts[0].id+''
+			if email_accounts.length
+				form.trigger_actions.SetEmailAccount.options.email_account_id = email_accounts[0].id+''
+
+			if trigger and trigger.actions?.actions?.length
+				for act in trigger.actions.actions
+					if act.type == 'SetEmailAccount'
+						form.trigger_actions.SetEmailAccount.options = act.options
+					else if act.type == 'SendUserEmail'
+						form.trigger_actions.SendUserEmail.enabled = true
+						form.trigger_actions.SendUserEmail.options = act.options
+
+						if ['helpdesk_name', 'site_name'].indexOf(form.trigger_actions.SendUserEmail.options.from_name) == -1
+							form.trigger_actions.SendUserEmail.options.from_name_custom = form.trigger_actions.SendUserEmail.options.from_name
+							form.trigger_actions.SendUserEmail.options.from_name = 'custom'
+
+			if not form.trigger_actions.SendUserEmail.enabled
+				form.trigger_actions.SendUserEmail.options = {
+					template: 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+					from_name: 'helpdesk_name'
+				}
 
 			form.default_layout = {
 				agent: layouts.default_layout.agent.fields,
@@ -98,9 +122,31 @@ define [
 						value: 1
 					})
 
+			trigger_actions = []
+			email_account_id = parseInt(formModel.trigger_actions.SetEmailAccount?.options?.email_account_id || 0)
+			if email_account_id
+				trigger_actions.push({
+					type: 'SetEmailAccount',
+					options: {
+						email_account_id: email_account_id
+					}
+				})
+			if formModel.trigger_actions.SendUserEmail?.enabled
+				options = formModel.trigger_actions.SendUserEmail.options
+
+				trigger_actions.push({
+					type: 'SendUserEmail',
+					options: {
+						template:  options.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+						from_name: if options.from_name == 'custom' then (options.from_name_custom || '') else (options.from_name || ''),
+						do_cc_users: true,
+						from_account: 0
+					}
+				})
 
 			postData = {
 				department: depData,
+				trigger_actions: trigger_actions,
 				permissions: permData
 			}
 

@@ -41,6 +41,7 @@ use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\TicketTrigger;
 
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -88,6 +89,21 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
 		$data['email_account'] = $account->toApiData();
 
+		$trigger = null;
+		if ($account) {
+			$trigger = $this->em->createQuery("
+				SELECT trigger
+				FROM DeskPRO:TicketTrigger trigger
+				WHERE trigger.email_account = ?0
+			")->setParameters(array($account))->getOneOrNullResult();
+		}
+
+		if (!$trigger) {
+			$trigger = new TicketTrigger();
+		}
+
+		$data['trigger'] = $trigger->toApiData();
+
 		return $this->createApiResponse($data);
 	}
 
@@ -128,6 +144,8 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
 		$this->em->persist($account);
 		$this->em->flush();
+
+		$edit_account->saveTrigger($this->em, $this->in->getArrayValue('trigger_actions'));
 
 		if ($id) {
 			return $this->createApiSuccessResponse();

@@ -34,6 +34,9 @@
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -118,6 +121,58 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 		$matrix = new DepartmentPermissionMatrix($agents, $groups);
 		$matrix->setPermArray($this->permissions);
 		$matrix->save($this->department, $em);
+	}
+
+
+	/**
+	 * @param EntityManager $em
+	 * @param array         $trigger_actions
+	 * @return TicketTrigger
+	 */
+	public function saveTrigger(EntityManager $em, array $trigger_actions)
+	{
+		$trigger = $em->createQuery("
+			SELECT trigger
+			FROM DeskPRO:TicketTrigger trigger
+			WHERE trigger.department = ?0
+		")->setParameters(array($this->department))->getOneOrNullResult();
+
+		if (!$trigger_actions) {
+			if ($trigger) {
+				$em->remove($trigger);
+				$em->flush();
+			}
+			return null;
+		}
+
+		if (!$trigger) {
+			$trigger = new TicketTrigger();
+			$trigger->department = $this->department;
+			$trigger->event_trigger = 'newticket';
+			$trigger->by_agent_mode = array('api', 'web');
+			$trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
+		}
+
+		$actions = new TriggerActions();
+		try {
+			$actions->importFromArray(array('actions' => $trigger_actions));
+		} catch (\Exception $e) {}
+
+		$terms = new TriggerTerms();
+		$terms->addTermFromArray(array(
+			'type'    => 'CheckDepartment',
+			'op'      => 'is',
+			'options' => array('department_ids' => array($this->department->id))
+		));
+
+		$trigger->title   = "{$this->department->title} : New Ticket";
+		$trigger->actions = $actions;
+		$trigger->terms   = $terms;
+
+		$em->persist($trigger);
+		$em->flush();
+
+		return $trigger;
 	}
 
 	############################################################################

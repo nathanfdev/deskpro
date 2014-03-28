@@ -39,7 +39,9 @@
 									{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
 									<option value="custom">Enter a custom name</option>
 								</select>
-								<input type="text" ng-model="model.from_name_custom" ng-show="model.from_name == 'custom'" />
+								<div style="padding-top: 3px; width: 250px;">
+									<input type="text" class="form-control" ng-model="model.from_name_custom" ng-show="model.from_name == 'custom'" />
+								</div>
 							</td>
 						</tr>
 						<tr>

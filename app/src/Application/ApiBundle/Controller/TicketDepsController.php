@@ -160,11 +160,11 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			$dep = Department::createTicketDepartment();
 		}
 
-		$ticket_edit = new TicketDepartmentEdit($dep);
+		$dep_edit = new TicketDepartmentEdit($dep);
 
 		$form = $this->createForm(
 			new TicketDepartmentType(),
-			$ticket_edit,
+			$dep_edit,
 			array(
 				'cascade_validation' => true
 			)
@@ -177,12 +177,14 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		// todo handle "This form should not contain extra fields."
 
 		if ($form->isValid() || 1) {
-			$ticket_edit->save($this->em);
-			$ticket_edit->savePermissions(
+			$dep_edit->save($this->em);
+			$dep_edit->savePermissions(
 				$this->em,
 				$this->container->getAgentData()->getAgents(),
 				$this->container->getDataService('Usergroup')->getAll()
 			);
+
+			$dep_edit->saveTrigger($this->em, $this->in->getArrayValue('trigger_actions'));
 
 			return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
 		} else {

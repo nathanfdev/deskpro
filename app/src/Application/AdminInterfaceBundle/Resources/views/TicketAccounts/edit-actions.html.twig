@@ -4,54 +4,47 @@
 	</div>
 	<div class="col-lg-9">
 		<div class="inner-group">
-			Department:&nbsp; <select
-					ui-select2
-					ng-model="form.department"
-					style="min-width: 240px"
-					>
-				<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketAccountsEdit.deps">{{ ng_var('dep.full_title') }}</option>
+			Department: <select
+				ui-select2="{dropdownAutoWidth:true}"
+				ng-model="form.trigger_actions.SetDepartment.options.department_id"
+				style="min-width: 240px"
+				class="no-search"
+			>
+				<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketAccountsEdit.deps">{{ ng_var('dep.title_full') }}</option>
 			</select>
 		</div>
+
 		{# Send newticket auto-response #}
 		<div class="inner-group">
 			<label style="font-weight: normal">
-				<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled" value="1" />
+				<input type="checkbox" ng-model="form.trigger_actions.SendUserEmail.enabled" value="1" />
 				Send user an auto-response confirming their new ticket
 			</label>
-			<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled">
-				<table class="display-table">
+			<div class="ng-hide" ng-show="form.trigger_actions.SendUserEmail.enabled">
+				<table class="display-table spaced">
 					<tr>
 						<td>Template:</td>
 						<td>
-							<select
-									ui-select2
-									ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name"
-									style="min-width: 240px"
-									class="no-search"
-									>
-								<option value="">Default template</option>
-								<option value="CUSTOM">Custom template</option>
+							<select ui-select2="{dropdownAutoWidth:true}" ng-model="form.trigger_actions.SendUserEmail.options.template" style="min-width: 50px;">
+								{% for email in [
+								'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+								] %}
+									<option value="{{ email }}">{{ email }}</option>
+								{% endfor %}
+								<option value="CREATE">Create a new template...</option>
 							</select>
-							<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-ticket.html.twig'); $event.preventDefault();">Edit Template</button>
 						</td>
 					</tr>
-
 					<tr>
 						<td>From Name:</td>
 						<td>
-							<select
-									ui-select2
-									ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name"
-									style="min-width: 240px"
-									class="no-search"
-									>
-								<option value="department_title">Department title</option>
-								<option value="helpdesk_name">Helpdesk name</option>
-								<option value="website_name">Website name</option>
-								<option value="CUSTOM">Custom</option>
+							<select ui-select2="{dropdownAutoWidth:true}" ng-model="form.trigger_actions.SendUserEmail.options.from_name" ng-init="" style="min-width: 50px;">
+								<option value="helpdesk_name">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
+								{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
+								<option value="custom">Enter a custom name</option>
 							</select>
-							<div ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name == 'CUSTOM'">
-								<input type="text" class="form-control" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name_custom" />
+							<div style="padding-top: 3px; width: 250px;">
+								<input type="text" class="form-control" ng-model="form.trigger_actions.SendUserEmail.options.from_name_custom" ng-show="form.trigger_actions.SendUserEmail.options.from_name == 'custom'" />
 							</div>
 						</td>
 					</tr>

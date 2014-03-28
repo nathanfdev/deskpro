@@ -31,7 +31,7 @@
       };
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
-        var data_promise, dep_promise;
+        var data_promise, dep_promise, final_promise;
         dep_promise = this.DataService.get('TicketDeps').loadList().then((function(_this) {
           return function(list) {
             return _this.deps = list;
@@ -50,23 +50,32 @@
               transport_options: {}
             }
           };
-          this.form_model = new EditTicketAccountModel(this.account);
-          this.form_model.form.incoming_account_type = '';
-          this.form_model.form.outgoing_account_type = 'smtp';
-          this.$scope.form = this.form_model.form;
-          return dep_promise;
+          this.trigger = {};
+          final_promise = dep_promise;
         } else {
           data_promise = this.Api.sendDataGet({
             'email_account': '/email_accounts/' + this.accountId
           }).then((function(_this) {
             return function(result) {
               _this.account = result.data.email_account.email_account;
+              _this.trigger = result.data.email_account.trigger;
               _this.form_model = new EditTicketAccountModel(_this.account);
               return _this.$scope.form = _this.form_model.form;
             };
           })(this));
-          return this.$q.all([dep_promise, data_promise]);
+          final_promise = this.$q.all([dep_promise, data_promise]);
         }
+        final_promise.then((function(_this) {
+          return function() {
+            _this.form_model = new EditTicketAccountModel(_this.account, _this.deps, _this.trigger);
+            if (!_this.accountId) {
+              _this.form_model.form.incoming_account_type = '';
+              _this.form_model.form.outgoing_account_type = 'smtp';
+            }
+            return _this.$scope.form = _this.form_model.form;
+          };
+        })(this));
+        return final_promise;
       };
 
 
@@ -89,7 +98,7 @@
         }
         promise.success((function(_this) {
           return function(result) {
-            _this.account.id = result.email_account_id;
+            _this.account.id = result.email_account_id || _this.account.id;
             _this.account.is_enabled = true;
             _this.stopSpinner('saving_account', true).then(function() {
               return _this.Growl.success(_this.getRegisteredMessage('saved_account'));

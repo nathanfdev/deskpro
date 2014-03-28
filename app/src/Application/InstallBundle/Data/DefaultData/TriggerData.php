@@ -104,7 +104,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
 			'do_cc_users' => true,
-			'from_name' => 'performer',
+			'from_name' => 'helpdesk_name',
 		)));
 
 		$this->getEm()->persist($trigger);
@@ -123,7 +123,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
 			'do_cc_users' => true,
-			'from_name' => 'performer',
+			'from_name' => 'helpdesk_name',
 		)));
 
 		$this->getEm()->persist($trigger);

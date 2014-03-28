@@ -127,7 +127,7 @@
               custom_layout: result.customLayoutInfo ? result.customLayoutInfo.layout : null,
               use_custom_layout: result.customLayoutInfo && !result.customLayoutInfo.is_default ? true : false
             };
-            data.form = _this.getFormMapper().getFormFromModel(data.dep, layouts, data.depPerms, data.agents, data.agentgroups, data.usergroups, data.email_accounts);
+            data.form = _this.getFormMapper().getFormFromModel(data.dep, result.depInfo.trigger || {}, layouts, data.depPerms, data.agents, data.agentgroups, data.usergroups, data.email_accounts);
             return deferred.resolve(data);
           };
         })(this));

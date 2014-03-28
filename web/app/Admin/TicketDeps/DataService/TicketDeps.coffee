@@ -118,6 +118,7 @@ define [
 
 				data.form = @getFormMapper().getFormFromModel(
 					data.dep,
+					result.depInfo.trigger || {},
 					layouts,
 					data.depPerms,
 					data.agents,

@@ -89,6 +89,15 @@ class KernelErrorHandler
 	 */
 	public static function handleError($errno, $errstr, $errfile, $errline)
 	{
+		if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
+			// NFS can sometimes be a little slow and result in these stat failures during dev
+			// but they are distracting to fill error log with a giant stack trace. so just log a single line
+			if (strpos($errstr, 'filemtime(): stat failed for') !== false) {
+				error_log("$errstr ($errfile:$errline)");
+				return;
+			}
+		}
+
 		$GLOBALS['DP_LAST_ERROR'] = array('type' => $errno, 'message' => $errstr, 'file' => $errfile, 'line' => $errline);
 
 		if (!(error_reporting() & $errno)) {
