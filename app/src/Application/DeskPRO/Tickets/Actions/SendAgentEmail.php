@@ -219,7 +219,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
 				->setTicket($ticket)
 				->setToPerson($agent)
-				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context))
+				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
 				->setFromEmailAccount($from_account)
 				->setAgentMode()
 				->setTemplateName($template)

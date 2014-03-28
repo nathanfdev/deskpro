@@ -2,7 +2,7 @@
 	<div class="dp-ob-standard-row">
 		<table class="display-table">
 			<tr>
-				<td class="nowrap"><label>Send Agent Email</label></td>
+				<td class="nowrap"><label>Send User Email</label></td>
 				<td>
 					<table class="display-table spaced">
 						<tr>
@@ -15,23 +15,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td style="vertical-align: top;">Agents:</td>
+							<td>Include CC's:</td>
 							<td>
-								<ul class="checkbox-list" style="min-width: 200px">
-									<li style="border-bottom: 1px solid #ccc;">
-										<label>
-											<input type="checkbox" ng-model="model.agent_ids.notify_list" />
-											Subscribed agents
-											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="All agents have notification subscription preferences. This option will send the email to any agent who is subscribed to whatever action initiated this event. For example, if this action was fired via a new ticket, then this option will send an email to any agent subscribed to 'new tickets'."></i>
-										</label>
-									</li>
-									<li ng-repeat="agent in agents">
-										<label>
-											<input type="checkbox" ng-model="model.agent_ids[agent.id]" />
-											{{ ng_var('agent.display_name') }}
-										</label>
-									</li>
-								</ul>
+								<label>
+									<input type="checkbox" ng-model="model.do_cc_users" />
+									CC in all additional user participants.
+								</label>
 							</td>
 						</tr>
 						<tr>

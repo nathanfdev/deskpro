@@ -97,7 +97,7 @@ class SendUserEmail extends AbstractEmailAction
 			->setToPerson($ticket->person)
 			->setUserMode()
 			->setTemplateName($template)
-			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context))
+			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
 			->setLogger($context->getLogger())
 			->setFromEmailAccount($from_account);
 

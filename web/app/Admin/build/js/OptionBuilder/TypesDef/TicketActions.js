@@ -534,6 +534,67 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendUserEmail = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-senduseremail.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var from_name, from_name_custom;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                from_name = options.from_name || 'helpdesk_name';
+                from_name_custom = null;
+                if (from_name !== 'performer' && from_name !== 'helpdesk_name' && from_name !== 'site_name') {
+                  from_name = 'custom';
+                  from_name_custom = options.from_name;
+                }
+                return {
+                  template: options.template || '',
+                  do_cc_users: !!options.do_cc_users,
+                  from_name: from_name,
+                  from_name_custom: from_name_custom,
+                  from_account: (parseInt(options.from_account || 0) || 0) + ''
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  template: model.template || '',
+                  do_cc_users: !!model.do_cc_users,
+                  from_name: '',
+                  from_account: parseInt(model.from_account || 0)
+                };
+                if (model.from_name === 'custom') {
+                  options.from_name = model.from_name_custom || '';
+                } else {
+                  options.from_name = model.from_name || '';
+                }
+                value = {};
+                value.type = 'SendUserEmail';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendAgentEmail = function(options) {
         var me;
         if (options == null) {
@@ -550,15 +611,36 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var agent_ids, aid, from_name, from_name_custom, _i, _len, _ref;
                 if (value == null) {
                   value = {};
                 }
+                options = (value != null ? value.options : void 0) || {};
+                from_name = options.from_name || 'helpdesk_name';
+                from_name_custom = null;
+                if (from_name !== 'performer' && from_name !== 'helpdesk_name' && from_name !== 'site_name') {
+                  from_name = 'custom';
+                  from_name_custom = options.from_name;
+                }
+                agent_ids = {};
+                if (options.agent_ids) {
+                  _ref = options.agent_ids;
+                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    aid = _ref[_i];
+                    if (aid !== 'notify_list') {
+                      aid = parseInt(aid);
+                    }
+                    agent_ids[aid] = true;
+                  }
+                } else {
+                  agent_ids['notify_list'] = true;
+                }
                 return {
-                  template: value.template || '',
-                  agent_ids: [],
-                  from_name: value.from_name || 'performer',
-                  from_name_type: value.from_name || 'performer',
-                  from_account: 0
+                  template: options.template || '',
+                  agent_ids: agent_ids,
+                  from_name: from_name,
+                  from_name_custom: from_name_custom,
+                  from_account: (parseInt(options.from_account || 0) || 0) + ''
                 };
               },
               getValue: function(model, data) {
@@ -569,9 +651,14 @@
                 options = {
                   template: model.template || '',
                   agent_ids: [],
-                  from_name: model.from_name || 'performer',
-                  from_account: 0
+                  from_name: '',
+                  from_account: parseInt(model.from_account || 0)
                 };
+                if (model.from_name === 'custom') {
+                  options.from_name = model.from_name_custom || '';
+                } else {
+                  options.from_name = model.from_name || '';
+                }
                 if (model.agent_ids) {
                   _ref = model.agent_ids;
                   for (v in _ref) {
@@ -585,9 +672,6 @@
                       }
                     }
                   }
-                }
-                if (model.from_account) {
-                  options.from_accounts = parseInt(model.from_account);
                 }
                 value = {};
                 value.type = 'SendAgentEmail';

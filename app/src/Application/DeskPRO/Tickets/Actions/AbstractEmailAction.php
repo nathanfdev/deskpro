@@ -208,9 +208,10 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 	 * @param string $name
 	 * @param Ticket $ticket
 	 * @param ExecutorContextInterface $context
+	 * @param string $email_mode 'user' or 'agent'
 	 * @return string
 	 */
-	protected function renderFromName($name, Ticket $ticket, ExecutorContextInterface $context)
+	protected function renderFromName($name, Ticket $ticket, ExecutorContextInterface $context, $email_mode)
 	{
 		if (!$name) {
 			return '';
@@ -218,7 +219,16 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
 		switch ($name) {
 			case 'performer':
-				return $context->getPersonContext();
+				$person = $context->getPersonContext();
+				if (!$person) {
+					return '';
+				}
+
+				if ($email_mode == 'agent') {
+					return $person->getDisplayName();
+				} else {
+					return $person->getDisplayNameUser();
+				}
 			case 'helpdesk_name':
 				return $this->getContainer()->getSetting('core.deskpro_name');
 			case 'site_name':

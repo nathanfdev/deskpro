@@ -10759,6 +10759,11 @@ table.display-table > tr > td.nowrap {
   text-wrap: none;
 }
 
+table.display-table.spaced > tbody > tr > td,
+table.display-table.spaced > tr > td {
+  padding: 4px;
+}
+
 .urgency-tag.urgency-1 {
   padding: 1px 4px;
   line-height: 18px;

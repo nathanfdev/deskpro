@@ -441,6 +441,53 @@ define [
 			def = @getStandardIs(options)
 			return def
 
+		getSendUserEmail: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-senduseremail.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+
+							from_name = options.from_name || 'helpdesk_name'
+							from_name_custom = null
+							if from_name not in ['performer', 'helpdesk_name', 'site_name']
+								from_name = 'custom'
+								from_name_custom = options.from_name
+
+							return {
+								template: options.template || '',
+								do_cc_users: !!options.do_cc_users,
+								from_name: from_name,
+								from_name_custom: from_name_custom,
+								from_account: (parseInt(options.from_account || 0) || 0)+''
+							}
+						getValue: (model = {}, data) ->
+							options = {
+								template: model.template || '',
+								do_cc_users: !!model.do_cc_users,
+								from_name: '',
+								from_account: parseInt(model.from_account || 0)
+							}
+
+							if model.from_name == 'custom'
+								options.from_name = model.from_name_custom || ''
+							else
+								options.from_name = model.from_name || ''
+
+							value = {}
+							value.type = 'SendUserEmail'
+							value.options = options
+							return value
+					}
+			}
+
 		getSendAgentEmail: (options = {}) ->
 			me = @
 			return {
@@ -453,21 +500,41 @@ define [
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+
+							from_name = options.from_name || 'helpdesk_name'
+							from_name_custom = null
+							if from_name not in ['performer', 'helpdesk_name', 'site_name']
+								from_name = 'custom'
+								from_name_custom = options.from_name
+
+							agent_ids = {}
+							if options.agent_ids
+								for aid in options.agent_ids
+									if aid != 'notify_list' then aid = parseInt(aid)
+									agent_ids[aid] = true
+							else
+								agent_ids['notify_list'] = true
+
 							return {
-								template: value.template || '',
-								agent_ids: [],
-								from_name: value.from_name || 'performer',
-								from_name_type: value.from_name || 'performer',
-								from_account: 0
+								template: options.template || '',
+								agent_ids: agent_ids,
+								from_name: from_name,
+								from_name_custom: from_name_custom,
+								from_account: (parseInt(options.from_account || 0) || 0)+''
 							}
 						getValue: (model = {}, data) ->
-
 							options = {
 								template: model.template || '',
 								agent_ids: [],
-								from_name: model.from_name || 'performer',
-								from_account: 0
+								from_name: '',
+								from_account: parseInt(model.from_account || 0)
 							}
+
+							if model.from_name == 'custom'
+								options.from_name = model.from_name_custom || ''
+							else
+								options.from_name = model.from_name || ''
 
 							if model.agent_ids
 								for own v, k of model.agent_ids
@@ -476,9 +543,6 @@ define [
 											options.agent_ids.push('notify_list')
 										else
 											options.agent_ids.push(parseInt(k))
-
-							if model.from_account
-								options.from_accounts = parseInt(model.from_account)
 
 							value = {}
 							value.type = 'SendAgentEmail'

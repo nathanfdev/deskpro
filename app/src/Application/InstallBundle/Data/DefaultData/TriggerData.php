@@ -60,7 +60,7 @@ class TriggerData extends AbstractDefaultData
 			$trigger->title = "Send agent notifications";
 			$trigger->actions->addAction(new SendAgentEmail(array(
 				'agent_ids' => array('notify_list'),
-				'from_name' => '{{helpdesk_name}}',
+				'from_name' => 'performer',
 			)));
 
 			$this->getEm()->persist($trigger);
@@ -80,7 +80,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:new-ticket-agent.html.twig',
 			'do_cc_users' => true,
-			'from_name' => '{{performer.display_name_user}}',
+			'from_name' => 'performer',
 		)));
 
 		$this->getEm()->persist($trigger);
@@ -99,7 +99,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:new-ticket.html.twig',
 			'do_cc_users' => true,
-			'from_name' => '{{performer.display_name_user}}',
+			'from_name' => 'performer',
 		)));
 
 		$this->getEm()->persist($trigger);
@@ -118,7 +118,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:new-reply-user.html.twig',
 			'do_cc_users' => true,
-			'from_name' => '{{performer.display_name_user}}',
+			'from_name' => 'performer',
 		)));
 
 		$this->getEm()->persist($trigger);
@@ -137,8 +137,10 @@ class TriggerData extends AbstractDefaultData
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:new-reply-agent.html.twig',
 			'do_cc_users' => true,
-			'from_name' => '{{performer.display_name_user}}',
+			'from_name' => 'performer',
 		)));
+
+		$this->getEm()->persist($trigger);
 
 		#-----
 		# newreply: when agent replies via email, assign them if they havent set
