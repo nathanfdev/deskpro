@@ -56,9 +56,9 @@ class RegistrationSettings
 	public $email_validation;
 	public $existing_account_login;
 
-	public $email_validation_trigger_web;
-	public $email_validation_trigger_email;
-	public $email_validation_trigger_widget;
+	public $email_validation_ticket_web;
+	public $email_validation_ticket_email;
+	public $email_validation_ticket_widget;
 
 	public $everyone_group_enabled;
 
@@ -87,9 +87,9 @@ class RegistrationSettings
 		$this->email_validation       = (bool)$this->settings->get('core.email_validation');
 		$this->existing_account_login = (bool)$this->settings->get('core.existing_account_login');
 
-		$this->email_validation_trigger_web    = false;
-		$this->email_validation_trigger_email  = false;
-		$this->email_validation_trigger_widget = false;
+		$this->email_validation_ticket_web    = (bool)$this->settings->get('core.email_validation_ticket_web');
+		$this->email_validation_ticket_email  = (bool)$this->settings->get('core.email_validation_ticket_email');
+		$this->email_validation_ticket_widget = (bool)$this->settings->get('core.email_validation_ticket_widget');
 
 		$this->everyone_group_enabled = $this->everyone_group->is_enabled;
 	}
@@ -104,9 +104,9 @@ class RegistrationSettings
 			'user_mode'                       => $this->user_mode,
 			'email_validation'                => $this->email_validation,
 			'existing_account_login'          => $this->existing_account_login,
-			'email_validation_trigger_web'    => $this->email_validation_trigger_web,
-			'email_validation_trigger_email'  => $this->email_validation_trigger_email,
-			'email_validation_trigger_widget' => $this->email_validation_trigger_widget,
+			'email_validation_ticket_web'    => $this->email_validation_ticket_web,
+			'email_validation_ticket_email'  => $this->email_validation_ticket_email,
+			'email_validation_ticket_widget' => $this->email_validation_ticket_widget,
 			'everyone_group_enabled'          => $this->everyone_group_enabled,
 		);
 		return $export_settings;
@@ -134,6 +134,10 @@ class RegistrationSettings
 		$this->settings->setSetting("core.user_mode",              $this->user_mode);
 		$this->settings->setSetting("core.email_validation",       (int)$this->email_validation);
 		$this->settings->setSetting("core.existing_account_login", (int)$this->existing_account_login);
+
+		$this->settings->setSetting("core.email_validation_ticket_web",    (int)$this->email_validation_ticket_web);
+		$this->settings->setSetting("core.email_validation_ticket_email",  (int)$this->email_validation_ticket_email);
+		$this->settings->setSetting("core.email_validation_ticket_widget", (int)$this->email_validation_ticket_widget);
 
 		$this->everyone_group->is_agent_group = (bool)$this->everyone_group_enabled;
 		$this->em->persist($this->everyone_group);

@@ -35,6 +35,18 @@
 		</article>
 	</section>
 
+	{% if app.getSetting('core.user_mode') == 'require_reg_agent_validation' or app.getSetting('') %}
+	<section class="dp-paneblock dp-listpane" ng-if="TicketTriggersList.eventType == 'newticket'">
+		<header>
+			<nav>
+				<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="TicketTriggersList.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
+		</header>
+		<article>
+		</article>
+	</section>
+
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>

@@ -1594,7 +1594,27 @@ class Ticket extends DomainObject
 		}
 	}
 
+
+	/**
+	 * @deprecated
+	 * @return PersonEmail
+	 */
 	public function getPersonEmail()
+	{
+		if ($this->person_email) {
+			return $this->person_email;
+		} else {
+			return $this->person['primary_email'];
+		}
+	}
+
+
+	/**
+	 * Gets the email address that sholud be used for this ticket.
+	 *
+	 * @return PersonEmail
+	 */
+	public function getTicketPersonEmail()
 	{
 		if ($this->person_email) {
 			return $this->person_email;

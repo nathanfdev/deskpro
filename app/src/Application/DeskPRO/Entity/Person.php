@@ -193,16 +193,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $disable_autoresponses_log = '';
 
 	/**
-	 * Has this user ever confirmed themselves via email?
-	 * Individual email addresses must be confirmed as well, but this
-	 * is an account-wide flag that says the user is at least real.
-	 *
+	 * @deprecated
 	 * @var bool
 	 */
 	protected $is_confirmed = true;
 
 	/**
 	 * Has this user ever confirmed themselves via email?
+	 *
+	 * This is set to true unless agent validation options are enabled,
+	 * in which case it is only switched to true once an agent validates.
 	 *
 	 * @var bool
 	 */
