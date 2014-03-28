@@ -38,11 +38,11 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
-use Application\DeskPRO\Tickets\Actions\ActionContext;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Types\JsonObjectSerializable;
 
 /**
  * This is a wrapper around an ActionComposite that is able to serialize.
@@ -52,7 +52,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
  * *save* the term to the db if it also implements the standard ActionDefinitionInterface which defines
  * a standard interface for getting a term name and options (so we can recreate a term object again).
  */
-class TriggerActions implements \Serializable, ActionInterface, DeskproContainerAwareInterface
+class TriggerActions implements \Serializable, ActionInterface, DeskproContainerAwareInterface, JsonObjectSerializable
 {
 	/**
 	 * @var ActionComposite
@@ -191,6 +191,35 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
 		foreach ($data['actions'] as $action_info) {
 			$this->addActionFromArray($action_info);
 		}
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function serializeJsonArray()
+	{
+		return $this->exportToArray();
+	}
+
+
+	/**
+	 * @param array $data
+	 * @return TriggerActions
+	 */
+	public static function unserializeJsonArray(array $data)
+	{
+		$obj = new self();
+		foreach ($data['actions'] as $action_info) {
+			try {
+				$obj->addActionFromArray($action_info);
+			} catch (\Exception $e) {
+				if (!empty($action_info['type'])) {
+					KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
+				}
+			}
+		}
+		return $obj;
 	}
 
 

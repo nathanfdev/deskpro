@@ -285,13 +285,13 @@ class TicketTrigger extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'terms',
 			'fieldName'  => 'terms',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'actions',
 			'fieldName'  => 'actions',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(

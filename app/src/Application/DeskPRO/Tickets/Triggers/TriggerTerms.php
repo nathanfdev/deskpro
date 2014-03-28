@@ -39,6 +39,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Types\JsonObjectSerializable;
 
 /**
  * This is a wrapper around a TriggerTermComposite that is able to serialize.
@@ -48,7 +50,7 @@ use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
  * *save* the term to the db if it also implements the standard CriteriaTermInterface which defines
  * a standard interface for getting a term name and options (so we can recreate a term object again).
  */
-class TriggerTerms implements \Serializable, TriggerTermInterface
+class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSerializable
 {
 	/**
 	 * @var TriggerTermComposite
@@ -196,6 +198,36 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	public function serialize()
 	{
 		return $this->exportToJson();
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function serializeJsonArray()
+	{
+		return $this->exportToArray();
+	}
+
+
+	/**
+	 * @param array $data
+	 * @return TriggerTerms
+	 */
+	public static function unserializeJsonArray(array $data)
+	{
+		$obj = new self();
+		foreach ($data['terms'] as $term_info) {
+			try {
+				$obj->addTermFromArray($term_info);
+			} catch (\Exception $e) {
+				if (!empty($term_info['type'])) {
+					KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
+				}
+			}
+		}
+
+		return $obj;
 	}
 
 
