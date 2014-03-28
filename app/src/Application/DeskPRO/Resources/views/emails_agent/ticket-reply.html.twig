@@ -1,10 +1,20 @@
 {{ set_tplvar('agent_notification_footer', 'ticket-notify') }}
 {{ set_tplvar('agent_reply_above_line', true) }}
 <dp:subject>
-	{{ phrase('agent.emails.new_user_reply_ticket_subject') }}
+	{% if performer_type == 'agent' %}
+		{% if is_my_mention %}
+			{{ phrase('agent.emails.new_mention_ticket_subject') }}
+		{% elseif new_message.is_agent_note %}
+			{{ phrase('agent.emails.new_note_ticket_subject') }}
+		{% else %}
+			{{ phrase('agent.emails.new_agent_reply_ticket_subject') }}
+		{% endif %}
+	{% else %}
+		{{ phrase('agent.emails.new_user_reply_ticket_subject') }}
+	{% endif %}
 </dp:subject>
 
-<dp:user-reply />
+<dp:last-reply />
 
 <br /><br />
 

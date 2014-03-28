@@ -50,7 +50,11 @@ class TriggerData extends AbstractDefaultData
 		# Send agent notifications
 		#-----
 
-		foreach (array('newticket', 'newreply', 'update') as $event_trigger) {
+		foreach (array(
+			'newticket' => 'DeskPRO:emails_agent:ticket-new.html.twig',
+			'newreply'  => 'DeskPRO:emails_agent:ticket-reply.html.twig',
+			'update'    => 'DeskPRO:emails_agent:ticket-update.html.twig',
+		) as $event_trigger => $template_name) {
 			$trigger = new TicketTrigger();
 			$trigger->event_trigger = $event_trigger;
 			$trigger->by_user_mode = array('api', 'email', 'form', 'portal', 'widget');
@@ -59,6 +63,7 @@ class TriggerData extends AbstractDefaultData
 			$trigger->sys_name = "default_{$event_trigger}_agentemail";
 			$trigger->title = "Send agent notifications";
 			$trigger->actions->addAction(new SendAgentEmail(array(
+				'template'  => $template_name,
 				'agent_ids' => array('notify_list'),
 				'from_name' => 'performer',
 			)));
@@ -78,9 +83,9 @@ class TriggerData extends AbstractDefaultData
 		$trigger->sys_name = 'default_newticket_byagent';
 		$trigger->title = "Send user new ticket by agent";
 		$trigger->actions->addAction(new SendUserEmail(array(
-			'template' => 'DeskPRO:emails_user:new-ticket-agent.html.twig',
+			'template'    => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
 			'do_cc_users' => true,
-			'from_name' => 'performer',
+			'from_name'   => 'performer',
 		)));
 
 		$this->getEm()->persist($trigger);
@@ -97,7 +102,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->sys_name = 'default_newticket_userautoreply';
 		$trigger->title = "Send auto-reply confirmation to user";
 		$trigger->actions->addAction(new SendUserEmail(array(
-			'template' => 'DeskPRO:emails_user:new-ticket.html.twig',
+			'template' => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
 			'do_cc_users' => true,
 			'from_name' => 'performer',
 		)));
@@ -116,7 +121,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->sys_name = 'default_newreply_userautoreply';
 		$trigger->title = "Send auto-reply confirmation to user";
 		$trigger->actions->addAction(new SendUserEmail(array(
-			'template' => 'DeskPRO:emails_user:new-reply-user.html.twig',
+			'template' => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
 			'do_cc_users' => true,
 			'from_name' => 'performer',
 		)));
@@ -135,7 +140,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->sys_name = 'default_newreply_fromagent';
 		$trigger->title = "Send user new reply from agent";
 		$trigger->actions->addAction(new SendUserEmail(array(
-			'template' => 'DeskPRO:emails_user:new-reply-agent.html.twig',
+			'template' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
 			'do_cc_users' => true,
 			'from_name' => 'performer',
 		)));

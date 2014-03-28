@@ -166,6 +166,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
 		$vars = array(
 			'type'               => $type,
+			'performer_type'     => $context->getEventPerformer(),
 			'is_new_ticket'      => $is_new_ticket,
 			'is_new_agent_reply' => $is_new_agent_reply,
 			'is_new_agent_note'  => $is_new_agent_note,

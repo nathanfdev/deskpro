@@ -167,7 +167,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		}
 
 		try {
-			$template = $this->getEmailTemplateOption($ticket, $context, true);
+			$template = $this->getEmailTemplateOption($ticket, $context, false);
 		} catch (\InvalidArgumentException $e) {
 			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
 			return;
@@ -178,30 +178,6 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		#-------------------------
 
 		$default_vars = $this->getStandardEmailVars($ticket, $context, 'agent');
-
-		#------------------------------
-		# Sort out which template to use for 'default'
-		#------------------------------
-
-		if (!$template || $template == false || $template == 0) {
-			switch ($default_vars['type']) {
-				case 'newticket':
-					$template = 'DeskPRO:emails_agent:new-ticket.html.twig';
-					break;
-
-				case 'updated':
-					$template = 'DeskPRO:emails_agent:ticket-update.html.twig';
-					break;
-
-				case 'newreply':
-					if ($default_vars['is_new_agent_reply'] || $default_vars['is_new_agent_note']) {
-						$template = 'DeskPRO:emails_agent:new-reply-agent.html.twig';
-					} else {
-						$template = 'DeskPRO:emails_agent:new-reply-user.html.twig';
-					}
-					break;
-			}
-		}
 
 		#-------------------------
 		# Send emails
