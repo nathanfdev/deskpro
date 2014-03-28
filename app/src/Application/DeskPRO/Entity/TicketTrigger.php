@@ -201,6 +201,8 @@ class TicketTrigger extends DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
+		$data['department']    = $this->department ? array('id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()) : null;
+		$data['email_account'] = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
 		$data['by_agent_mode'] = $this->by_agent_mode;
 		$data['by_user_mode']  = $this->by_user_mode;
 		$data['terms']         = $this->terms->exportToArray();

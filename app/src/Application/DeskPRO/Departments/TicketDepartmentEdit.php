@@ -165,9 +165,10 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 			'options' => array('department_ids' => array($this->department->id))
 		));
 
-		$trigger->title   = "{$this->department->title} : New Ticket";
-		$trigger->actions = $actions;
-		$trigger->terms   = $terms;
+		$trigger->title     = "New Ticket";
+		$trigger->run_order = -100;
+		$trigger->actions   = $actions;
+		$trigger->terms     = $terms;
 
 		$em->persist($trigger);
 		$em->flush();

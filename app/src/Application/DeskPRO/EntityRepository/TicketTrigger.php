@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\App;
+
 class TicketTrigger extends AbstractEntityRepository
 {
 	/**
@@ -56,5 +58,27 @@ class TicketTrigger extends AbstractEntityRepository
 				ORDER BY t.run_order, t.title ASC
 			")->execute();
 		}
+	}
+
+
+	/**
+	 * @param array $run_orders
+	 */
+	public function updateRunOrders(array $run_orders)
+	{
+		$run_orders = array_keys($run_orders);
+
+		$db = $this->_em->getConnection();
+		$db->beginTransaction();
+
+		$x = 0;
+		foreach ($run_orders as $tr_id) {
+			$x += 10;
+			$db->update('ticket_triggers', array('run_order' => $x), array('id' => $tr_id));
+		}
+
+		$db->executeUpdate("UPDATE ticket_triggers SET run_order = -100 WHERE department_id IS NOT NULL OR email_account_id IS NOT NULL");
+
+		$db->commit();
 	}
 }

@@ -11,7 +11,10 @@ define [
 		@DEPS = ['$state', '$stateParams']
 
 		init: ->
-			@triggers = null
+			@dep_triggers = []
+			@email_triggers = []
+			@triggers = []
+
 			@eventType = @$stateParams.type
 
 			if @$stateParams.type == 'newticket'
@@ -41,7 +44,15 @@ define [
 		###
 		initialLoad: ->
 			promise = @dpTriggers.loadList().then( (list) =>
-				@triggers = list
+				@all_triggers = list
+
+				for tr in @all_triggers
+					if tr.department
+						@dep_triggers.push(tr)
+					else if tr.email_account
+						@email_triggers.push(tr)
+					else
+						@triggers.push(tr)
 			)
 
 			return promise

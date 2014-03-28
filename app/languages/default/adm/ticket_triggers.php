@@ -6,4 +6,6 @@
 	'adm.ticket_triggers.trigger_newticket_email' => 'Email the user an automated message about their new ticket',
 	'adm.ticket_triggers.no_triggers'    => 'You have not created any triggers here yet.',
 	'adm.ticket_triggers.count_triggers' => '{{count}} Trigger|{{count}} Triggers',
+	'adm.ticket_triggers.count_dep_triggers' => '{{count}} Department Trigger|{{count}} Department Triggers',
+	'adm.ticket_triggers.count_email_triggers' => '{{count}} Email Account Trigger|{{count}} Email Account Triggers',
 );

@@ -18,7 +18,9 @@
       Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams'];
 
       Admin_TicketTriggers_Ctrl_List.prototype.init = function() {
-        this.triggers = null;
+        this.dep_triggers = [];
+        this.email_triggers = [];
+        this.triggers = [];
         this.eventType = this.$stateParams.type;
         if (this.$stateParams.type === 'newticket') {
           this.dpTriggers = this.DataService.get('TriggersNew');
@@ -54,7 +56,21 @@
         var promise;
         promise = this.dpTriggers.loadList().then((function(_this) {
           return function(list) {
-            return _this.triggers = list;
+            var tr, _i, _len, _ref, _results;
+            _this.all_triggers = list;
+            _ref = _this.all_triggers;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              tr = _ref[_i];
+              if (tr.department) {
+                _results.push(_this.dep_triggers.push(tr));
+              } else if (tr.email_account) {
+                _results.push(_this.email_triggers.push(tr));
+              } else {
+                _results.push(_this.triggers.push(tr));
+              }
+            }
+            return _results;
           };
         })(this));
         return promise;

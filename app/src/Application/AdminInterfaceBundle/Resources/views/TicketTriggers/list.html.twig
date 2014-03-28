@@ -1,5 +1,40 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
+
+	<section class="dp-paneblock dp-listpane" ng-if="TicketTriggersList.dep_triggers.length">
+		<header>
+			<h3 ng-pluralize count="TicketTriggersList.dep_triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_dep_triggers') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="trigger in TicketTriggersList.dep_triggers">
+					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: trigger.department.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('trigger.department.title_full') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane" ng-if="TicketTriggersList.email_triggers.length">
+		<header>
+			<h3 ng-pluralize count="TicketTriggersList.email_triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_email_triggers') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="trigger in TicketTriggersList.email_triggers">
+					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: trigger.email_account.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('trigger.email_account.address') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
