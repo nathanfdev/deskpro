@@ -680,6 +680,27 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
 
 	/**
+	 * @param string $name
+	 * @param string $value
+	 */
+	public function setFlash($name, $value)
+	{
+		$this->getFlashBag()->set($name, $value);
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param mixed  $default
+	 * @return array
+	 */
+	public function getFlash($name, array $default = array())
+	{
+		return $this->getFlashBag()->get($name, $default);
+	}
+
+
+	/**
 	 * @param string $k
 	 * @param mixed $v
 	 */
