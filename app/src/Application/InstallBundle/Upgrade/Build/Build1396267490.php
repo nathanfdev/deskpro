@@ -29,28 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Criteria\CriteriaTermInterface;
-use Application\DeskPRO\Entity\Ticket;
-
-interface TicketLayoutTermInterface extends CriteriaTermInterface
+class Build1396267490 extends AbstractBuild
 {
-	/**
-	 * Should return a JS function that accepts a ticket object and returns true/false
-	 * depending on if the term passes/fails.
-	 *
-	 * @return string
-	 */
-	public function compileJsCheck();
-
-
-	/**
-	 * @param Ticket $ticket
-	 * @return bool
-	 */
-	public function isTicketMatch(Ticket $ticket);
+	public function run()
+	{
+		$this->execMutateSql("DROP TABLE IF EXISTS ticket_page_display");
+	}
 }

@@ -139,18 +139,8 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = ' . json_encode($system_filters) . ';';
 
 		// Ticket display elements
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-		$ticket_display->addPagesFromDb();
-		$js[] = "window.DESKPRO_TICKET_DISPLAY = {}";
-		$js[] = "window.DESKPRO_TICKET_DISPLAY.create = " . $ticket_display->compileJs() . ";";
-
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('modify');
-		$ticket_display->addPagesFromDb();
-		$js[] = "window.DESKPRO_TICKET_DISPLAY.modify = " . $ticket_display->compileJs() . ";";
-
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('view');
-		$ticket_display->addPagesFromDb();
-		$js[] = "window.DESKPRO_TICKET_DISPLAY.view = " . $ticket_display->compileJs() . ";";
+		$layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
+		$js[] = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
 
 		// Snippet short codes
 		$ticket_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);

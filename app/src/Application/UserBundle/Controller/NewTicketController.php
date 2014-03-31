@@ -36,6 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\UserBundle\Form\NewTicketType;
 
 class NewTicketController extends AbstractController
@@ -93,31 +94,37 @@ class NewTicketController extends AbstractController
 		/** @var \Symfony\Component\Form\Form $form */
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-		$ticket_display->setPersonContext($this->person);
-		$ticket_display->addPagesFromDb();
-		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
-		$ticket_display_js .= "\nwindow.DESKPRO_TICKET_PRI_MAP = " . json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()) . ';';
+		$set_dep_id = null;
+		if ($this->in->getUint('set_dep_id')) {
+			$for_department_id = $this->in->getUint('set_dep_id');
+		}
 
-		$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
+		if ($for_department_id) {
+			$newticket->ticket->department_id = $for_department_id;
+			$set_dep_id = $newticket->ticket->department_id;
+		}
+
+		$layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
+		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
+
+		if ($newticket->ticket->department_id) {
+			$default_page = $layouts->getLayout($newticket->ticket->department_id);
+		} else {
+			$default_page = $layouts->getDefaultLayout();
+		}
+
+		$default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::NEW_TICKET);
 
 		if ($default_page) {
-			$default_page_data = $default_page->getPageDisplay('default')->data;
 			$page_data_field_ids = array();
-			foreach ($default_page->getPageDisplay('default')->data as $info) {
-				$page_data_field_ids[] = $info['id'];
+			foreach ($default_page as $field) {
+				$page_data_field_ids[] = $field->getId();
 			}
 		} else {
-			$default_page_data = array();
 			$page_data_field_ids = array();
 		}
 
-		$unique_items = array();
-		foreach ($ticket_display->getPagesData() as $page) {
-			foreach ($page as $item) {
-				$unique_items[$item['id']] = $item;
-			}
-		}
+		$unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
 		$captcha = null;
 		if (isset($unique_items['captcha']) && empty($this->person->id)) {
@@ -136,16 +143,32 @@ class NewTicketController extends AbstractController
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
 		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
+		$custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
 
 		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
 		$fm = $this->container->getSystemService('TicketFieldsManager');
 		if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
+			if (empty($_REQUEST['newticket_custom_ticket_fields']) || !is_array($_REQUEST['newticket_custom_ticket_fields'])) {
+				$_REQUEST['newticket_custom_ticket_fields'] = array();
+			}
 			$field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
-
 			$field_form_data = $fm->createFieldDataFromArray($field_data);
 			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
 		} else {
 			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
+		}
+
+		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+		$ufm = $this->container->getSystemService('PersonFieldsManager');
+		if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
+			if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
+				$_REQUEST['newticket_custom_user_fields'] = array();
+			}
+			$field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+			$field_form_data = $ufm->createFieldDataFromArray($field_data);
+			$custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, false);
+		} else {
+			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person);
 		}
 
 		$captcha_html = '';
@@ -153,19 +176,9 @@ class NewTicketController extends AbstractController
 			$captcha_html = $captcha->getHtml();
 		}
 
-		$set_dep_id = null;
-		if ($this->in->getUint('set_dep_id')) {
-			$for_department_id = $this->in->getUint('set_dep_id');
-		}
-
-		if ($for_department_id) {
-			$newticket->ticket->department_id = $for_department_id;
-			$set_dep_id = $newticket->ticket->department_id;
-		}
-
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 
-			$validator->setPageData($default_page_data);
+			$validator->setLayout($default_page);
 
 			if (!$this->consumeRequest('newticket')) {
 				return $this->redirectRoute('user');
@@ -270,28 +283,27 @@ class NewTicketController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
-			'set_dep_id' => $set_dep_id,
-			'all_items' => $unique_items,
+			'set_dep_id'            => $set_dep_id,
+			'all_items'             => $unique_items,
 
-			'newticket' => $newticket,
-			'ticket_options' => $newticket_formtype->getTicketOptions(),
-			'newticket_formtype' => $newticket_formtype,
-			'form' => $form->createView(),
-			'custom_fields' => $custom_fields,
-			'ticket_display_js' => $ticket_display_js,
+			'newticket'             => $newticket,
+			'newticket_formtype'    => $newticket_formtype,
+			'form'                  => $form->createView(),
+			'custom_fields'         => $custom_fields,
+			'custom_user_fields'    => $custom_user_fields,
+			'ticket_display_js'     => $ticket_display_js,
 
-			'captcha_html' => $captcha_html,
-			'errors' => $errors,
-			'error_fields' => $error_fields,
+			'captcha_html'          => $captcha_html,
+			'errors'                => $errors,
+			'error_fields'          => $error_fields,
 
-			'default_page_data' => $default_page_data,
-			'page_data_field_ids' => $page_data_field_ids,
+			'page_data_field_ids'   => $page_data_field_ids,
 
-			'redirect_after' => $redirect_after,
-			'website_url' => $website_url,
+			'redirect_after'        => $redirect_after,
+			'website_url'           => $website_url,
 
-			'hide_name_field'  => $hide_name_field,
-			'hide_email_field' => $hide_email_field,
+			'hide_name_field'       => $hide_name_field,
+			'hide_email_field'      => $hide_email_field,
 		));
     }
 

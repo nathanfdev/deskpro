@@ -29,28 +29,29 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\Criteria\CriteriaTermInterface;
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\TicketLayout\TicketLayoutManager;
+use Orb\Types\JsonObjectSerializer;
 
-interface TicketLayoutTermInterface extends CriteriaTermInterface
+class TicketLayoutManagerService
 {
-	/**
-	 * Should return a JS function that accepts a ticket object and returns true/false
-	 * depending on if the term passes/fails.
-	 *
-	 * @return string
-	 */
-	public function compileJsCheck();
+	public static function create(DeskproContainer $container)
+	{
+		$ticket_layouts = array_map(function($row) {
+			$row['user_layout']  = JsonObjectSerializer::unserialize($row['user_layout']);
+			$row['agent_layout'] = JsonObjectSerializer::unserialize($row['agent_layout']);
+			return $row;
+		}, $container->getDb()->fetchAll("
+			SELECT department_id, user_layout, agent_layout
+			FROM ticket_layouts
+		"));
 
-
-	/**
-	 * @param Ticket $ticket
-	 * @return bool
-	 */
-	public function isTicketMatch(Ticket $ticket);
+		$x = TicketLayoutManager::createWithLayoutArrays($ticket_layouts);
+		return $x;
+	}
 }

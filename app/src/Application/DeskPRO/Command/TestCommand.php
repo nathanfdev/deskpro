@@ -65,7 +65,11 @@ class TestCommand extends ContainerAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo __FILE__;
+		/** @var \Application\DeskPRO\Entity\TicketLayout $rec */
+		$rec = $this->getContainer()->getEm()->find('DeskPRO:TicketLayout', 3);
+
+		echo $rec->agent_layout->compileJsObj();
+
 		echo "\n";
 		return 0;
 	}

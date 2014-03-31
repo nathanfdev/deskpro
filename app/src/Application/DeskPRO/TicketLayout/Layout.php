@@ -114,7 +114,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
 
 	/**
-	 * @return \ArrayIterator|\Traversable
+	 * @return \ArrayIterator
 	 */
 	public function getIterator()
 	{
@@ -128,17 +128,25 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 	public function compileJsObj()
 	{
 		$js = "(function() {\n";
-		$js .= "\tvar i, fields = [\n";
+		$js .= "\tvar fields = [\n";
 
 		$fields_js = array();
 		foreach ($this->fields as $field) {
-			$check_fn = trim(Strings::modifyLines($field->compileJsCheck(), "\t\t\t\t"));
+			if ($field->hasCriteria()) {
+				$check_fn = trim(Strings::modifyLines($field->compileJsCheck(), "\t\t\t\t"));
+			} else {
+				$check_fn = 'null';
+			}
 
 			$bit_js = "\t\t{\n";
-			$bit_js .= "\t\t\tid:         '{$field->getId()}',\n";
-			$bit_js .= "\t\t\tfield_type: '{$field->getFieldType()}',\n";
-			$bit_js .= "\t\t\tfield_id:   '{$field->getFieldId()}',\n";
-			$bit_js .= "\t\t\tcheckFn: $check_fn\n";
+			$bit_js .= "\t\t\tid:                    '{$field->getId()}',\n";
+			$bit_js .= "\t\t\tfield_type:            '{$field->getFieldType()}',\n";
+			$bit_js .= "\t\t\tfield_id:              " . ($field->getFieldId() ? "'{$field->getFieldId()}'" : 'null') . ",\n";
+			$bit_js .= "\t\t\tisVisibleOnNew:        " . ($field->isVisibleOnNew() ? 'true' : 'false') . ",\n";
+			$bit_js .= "\t\t\tisVisibleOnView:       " . ($field->isVisibleOnView() ? 'true' : 'false') . ",\n";
+			$bit_js .= "\t\t\tisVisibleOnViewAlways: " . ($field->isVisibleOnViewAlways() ? 'true' : 'false') . ",\n";
+			$bit_js .= "\t\t\tisVisibleOnEdit:       " . ($field->isVisibleOnEdit() ? 'true' : 'false') . ",\n";
+			$bit_js .= "\t\t\tcheckFn:               $check_fn\n";
 			$bit_js .= "\t\t}";
 			$fields_js[] = $bit_js;
 		}
@@ -148,8 +156,11 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 		$js .= "\treturn {\n";
 		$js .= "\t\tgetMatchingFields: function(ticket) {\n";
 		$js .= "\t\t\tvar match = [];\n";
-		$js .= "\t\t\tfor(i = 0; i < fields.length; i++) { if (fields[i].checkFn(ticket)) match.push(fields[i]); }\n";
+		$js .= "\t\t\tfor(var i = 0; i < fields.length; i++) { if (fields[i].checkFn(ticket)) match.push(fields[i]); }\n";
 		$js .= "\t\t\treturn match;\n";
+		$js .= "\t\t},\n";
+		$js .= "\t\tgetFields: function() {\n";
+		$js .= "\t\t\treturn fields;\n";
 		$js .= "\t\t}\n";
 		$js .= "\t};\n";
 

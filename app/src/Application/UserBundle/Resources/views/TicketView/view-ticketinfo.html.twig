@@ -34,30 +34,42 @@
 		</tr>
 
 		{% for item in page_display %}
-			{% if item.field_type == 'ticket_department' %}
+			{% if item.getFieldType() == 'department' %}
 				<tr>
 					<th width="150">{{ phrase('user.tickets.fields_department') }}</th>
 					<td>{{ dp.full_title(ticket.department) }}</td>
 				</tr>
-			{% elseif item.field_type == 'ticket_category' and ticket.category %}
+			{% elseif item.getFieldType() == 'category' and ticket.category %}
 				<tr>
 					<th>{{ phrase('user.tickets.fields_category') }}</th>
 					<td>{{ ticket.category.full_title }}</td>
 				</tr>
-			{% elseif item.field_type == 'ticket_product' and ticket.product %}
+			{% elseif item.getFieldType() == 'product' and ticket.product %}
 				<tr>
 					<th>{{ phrase('user.tickets.fields_product') }}</th>
 					<td>{{ ticket.product.full_title }}</td>
 				</tr>
-			{% elseif item.field_type == 'ticket_priority' and ticket.priority %}
+			{% elseif item.getFieldType() == 'priority' and ticket.priority %}
 				<tr>
 					<th>{{ phrase('user.tickets.fields_priority') }}</th>
 					<td>{{ ticket.priority.title }}</td>
 				</tr>
 			{% else %}
 				{% for f in custom_fields %}
-					{% if item.field_type == 'ticket_field' and item.field_id == f.id and not (f.field_def.isFormField() and not ticket.hasCustomField(f.id)) %}
+					{% if item.getFieldType() == 'ticket_field' and item.getFieldId() == f.id and not (f.field_def.isFormField() and not ticket.hasCustomField(f.id)) %}
 						{% if ticket.hasCustomField(f.field_def.id) %}
+							<tr>
+								<th>{{f.title}}</th>
+								<td>
+									{{ render_custom_field(f) }}
+								</td>
+							</tr>
+						{% endif %}
+					{% endif %}
+				{% endfor %}
+				{% for f in custom_user_fields %}
+					{% if item.getFieldType() == 'user_field' and item.getFieldId() == f.id and not (f.field_def.isFormField() and not ticket.person.hasCustomField(f.id)) %}
+						{% if ticket.person.hasCustomField(f.field_def.id) %}
 							<tr>
 								<th>{{f.title}}</th>
 								<td>

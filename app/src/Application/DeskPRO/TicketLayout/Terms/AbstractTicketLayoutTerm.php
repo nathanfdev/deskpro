@@ -102,7 +102,7 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
 	 * @param Ticket $ticket
 	 * @return bool
 	 */
-	abstract public function isLayoutTermMatch(Ticket $ticket);
+	abstract public function isTicketMatch(Ticket $ticket);
 
 	/**
 	 * Should return a JS function that accepts a ticket object and returns true/false

@@ -36,7 +36,7 @@ namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Util\Strings;
 
-class LayoutCollection
+class LayoutCollection implements \Countable, \IteratorAggregate
 {
 	/**
 	 * Array of layouts keyed by some unique key
@@ -49,7 +49,7 @@ class LayoutCollection
 	 * Adds a layout to the collection
 	 *
 	 * @param Layout $layout   The layout to add
-	 * @param string $key      The layout key, or null for 'default'
+	 * @param string $key      The layout key, or null
 	 * @throws \OutOfBoundsException
 	 */
 	public function addLayout($layout, $key)
@@ -63,6 +63,56 @@ class LayoutCollection
 		}
 
 		$this->layouts[$key] = $layout;
+	}
+
+
+	/**
+	 * @param string $key
+	 * @return bool
+	 */
+	public function hasLayout($key)
+	{
+		return isset($this->layouts[$key]);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasDefaultLayout()
+	{
+		return isset($this->layouts[0]);
+	}
+
+
+	/**
+	 * @param string $key
+	 * @return Layout
+	 * @throws \InvalidArgumentException
+	 */
+	public function getLayout($key)
+	{
+		if (isset($this->layouts[$key])) {
+			return $this->layouts[$key];
+		} else if (isset($this->layouts[0])) {
+			return $this->layouts[0];
+		}
+
+		throw new \InvalidArgumentException("No layout exists");
+	}
+
+
+	/**
+	 * @return Layout
+	 * @throws \InvalidArgumentException
+	 */
+	public function getDefaultLayout()
+	{
+		if (!isset($this->layouts[0])) {
+			throw new \InvalidArgumentException("No default layout exists");
+		}
+
+		return $this->layouts[0];
 	}
 
 
@@ -88,12 +138,30 @@ class LayoutCollection
 
 		$js .= "\treturn {\n";
 		$js .= "\t\tgetLayout: function(id) {\n";
-		$js .= "\t\t\treturn return layoutMap[id+''] || layoutMap['0'] || null;\n";
+		$js .= "\t\t\treturn layoutMap[id+''] || layoutMap['0'] || null;\n";
 		$js .= "\t\t}\n";
 		$js .= "\t};\n";
 
 		$js .= "})()";
 
 		return $js;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->layouts);
+	}
+
+
+	/**
+	 * @return \ArrayIterator
+	 */
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->layouts);
 	}
 }

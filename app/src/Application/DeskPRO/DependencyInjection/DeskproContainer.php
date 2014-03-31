@@ -561,6 +561,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\TicketLayout\TicketLayoutManager
+	 */
+	public function getTicketLayoutManager()
+	{
+		return $this->getSystemService('ticket_layout_manager');
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\CustomFields\TicketFieldManager
 	 */
 	public function getTicketFieldManager()

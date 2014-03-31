@@ -213,6 +213,15 @@ class LayoutField implements \Serializable
 
 
 	/**
+	 * @return bool
+	 */
+	public function isVisibleOnNew()
+	{
+		return $this->on_newticket;
+	}
+
+
+	/**
 	 * Enables field on ticket view
 	 *
 	 * @param string $mode  View mode: Always show field or only show when there is a value
@@ -235,6 +244,24 @@ class LayoutField implements \Serializable
 
 
 	/**
+	 * @return bool
+	 */
+	public function isVisibleOnView()
+	{
+		return $this->on_viewticket;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isVisibleOnViewAlways()
+	{
+		return $this->on_viewticket_mode == self::VIEW_ALWAYS;
+	}
+
+
+	/**
 	 * Enable field on ticket edit
 	 */
 	public function enableOnEdit()
@@ -249,6 +276,39 @@ class LayoutField implements \Serializable
 	public function disableOnEdit()
 	{
 		$this->on_editticket = false;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isVisibleOnEdit()
+	{
+		return $this->on_editticket;
+	}
+
+
+	/**
+	 * True if there is a criteria object and that object has at least one term.
+	 *
+	 * @return bool
+	 */
+	public function hasCriteria()
+	{
+		if ($this->criteria && count($this->criteria) > 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @return LayoutFieldCriteria
+	 */
+	public function getCriteria()
+	{
+		return $this->criteria;
 	}
 
 

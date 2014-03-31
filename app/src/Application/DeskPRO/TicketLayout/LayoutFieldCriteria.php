@@ -34,10 +34,11 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface;
 use Orb\Util\Strings;
 
-class LayoutFieldCriteria implements \Serializable
+class LayoutFieldCriteria implements \Serializable, \Countable
 {
 	const CRIT_ALL = 'all';
 	const CRIT_ANY = 'any';
@@ -70,7 +71,7 @@ class LayoutFieldCriteria implements \Serializable
 
 
 	/**
-	 * @param CriteriaTermInterface $term
+	 * @param TicketLayoutTermInterface $term
 	 */
 	public function addTerm(TicketLayoutTermInterface $term)
 	{
@@ -107,6 +108,30 @@ class LayoutFieldCriteria implements \Serializable
 
 
 	/**
+	 * @param Ticket $ticket
+	 * @return bool
+	 */
+	public function isTicketMatch(Ticket $ticket)
+	{
+		if ($this->mode == self::CRIT_ALL) {
+			foreach ($this->terms as $t) {
+				if (!$t->isTicketMatch($ticket)) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			foreach ($this->terms as $t) {
+				if ($t->isTicketMatch($ticket)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function compileJsCheck()
@@ -116,7 +141,7 @@ class LayoutFieldCriteria implements \Serializable
 		}
 
 		$js = "(function() {\n";
-		$js .= "\tvar i, checkFn = [\n";
+		$js .= "\tvar checkFn = [\n";
 		$fn_bits = array();
 		foreach ($this->terms as $t) {
 			$t_js = $t->compileJsCheck();
@@ -127,7 +152,7 @@ class LayoutFieldCriteria implements \Serializable
 		$js .= "\n\t];\n";
 
 		$js .= "\treturn function(ticket) {\n";
-		$js .= "\t\tfor(i = 0; i < checkFn.length; i++) { ";
+		$js .= "\t\tfor(var i = 0; i < checkFn.length; i++) { ";
 		if ($this->mode == self::CRIT_ANY) {
 			$js .= "if (checkFn[i](ticket)) return true;";
 		} else {
@@ -213,5 +238,14 @@ class LayoutFieldCriteria implements \Serializable
 
 		$this->__construct($data['field_type'], $data['field_id']);
 		$this->importFromArray($data);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->terms);
 	}
 }

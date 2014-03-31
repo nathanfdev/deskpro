@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\EditTicket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\TicketLayout\Layout;
 
 class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
@@ -64,16 +65,17 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 	public $ticket;
 
 	public $custom_ticket_fields = array();
+	public $custom_user_fields = array();
 
 	/**
 	 * @var array
 	 */
 	protected $display_fields = array();
 
-	public function setPageData($page_data)
+	public function setLayout(Layout $layout)
 	{
-		foreach ($page_data as $i) {
-			$this->display_fields[$i['id']] = $i['id'];
+		foreach ($layout as $field) {
+			$this->display_fields[$field->getId()] = $field->getId();
 		}
 	}
 
@@ -84,6 +86,9 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 
 		for ($i = 0; $i < 500; $i++) {
 			$this->custom_ticket_fields["field_$i"] = null;
+		}
+		for ($i = 0; $i < 500; $i++) {
+			$this->custom_user_fields["field_$i"] = null;
 		}
 	}
 
@@ -96,19 +101,19 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 	{
 		App::getDb()->beginTransaction();
 		try {
-			if (isset($this->display_fields['ticket_subject'])) {
+			if (isset($this->display_fields['subject'])) {
 				$this->ticket_object->subject = $this->ticket->subject;
 			}
-			if (isset($this->display_fields['ticket_department'])) {
+			if (isset($this->display_fields['department'])) {
 				$this->ticket_object->department = $this->ticket->department_id ? App::findEntity('DeskPRO:Department', $this->ticket->department_id) : null;
 			}
-			if (isset($this->display_fields['ticket_category'])) {
+			if (isset($this->display_fields['category'])) {
 				$this->ticket_object->category   = $this->ticket->department_id ? App::findEntity('DeskPRO:TicketCategory', $this->ticket->category_id) : null;
 			}
-			if (isset($this->display_fields['ticket_priority'])) {
+			if (isset($this->display_fields['priority'])) {
 				$this->ticket_object->priority   = $this->ticket->department_id ? App::findEntity('DeskPRO:TicketPriority', $this->ticket->priority_id) : null;
 			}
-			if (isset($this->display_fields['ticket_product'])) {
+			if (isset($this->display_fields['product'])) {
 				$this->ticket_object->product    = $this->ticket->department_id ? App::findEntity('DeskPRO:Product', $this->ticket->product_id) : null;
 			}
 
@@ -118,6 +123,12 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 				$field_manager->saveFormToObject($post_custom_fields, $this->ticket_object);
 			}
 
+			$user_field_manager = App::getSystemService('person_fields_manager');
+			$post_custom_fields = App::getRequest()->request->get('custom_user_fields', array());
+			if (!empty($post_custom_fields)) {
+				$user_field_manager->saveFormToObject($post_custom_fields, $this->ticket_object->person);
+			}
+
 			if ($this->ticket->remove_ccs) {
 				foreach ($this->ticket->remove_ccs AS $remove_person_id) {
 					$this->ticket_object->removeParticipantPerson($remove_person_id);
@@ -125,6 +136,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 			}
 
 			App::getOrm()->persist($this->ticket_object);
+			App::getOrm()->persist($this->ticket_object->person);
 			App::getOrm()->flush();
 
 			if ($this->ticket->cc_emails) {

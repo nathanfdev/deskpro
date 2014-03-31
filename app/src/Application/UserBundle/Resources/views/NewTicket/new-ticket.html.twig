@@ -6,46 +6,29 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
 <script type="text/javascript">
-var ticketReader = {
-	getCategoryId: function() {
-		var cat = $('select.category_id');
-		var catId = cat.val();
-
-		return parseInt(catId) || 0;
-	},
-	getPriorityVal: function() {
-		var id = this.getPriorityId();
-		if (!id) {
-			return -999999999;
-		}
-
-		if (!window.DESKPRO_TICKET_PRI_MAP || !window.DESKPRO_TICKET_PRI_MAP[id]) {
+var ticketReader = (function() {
+	return {
+		getDepartmentId: function() {
+			return parseInt($('#dp_newticket_form').find('.department_id').val()) || 0;
+		},
+		getCategoryId: function() {
+			return parseInt($('#dp_newticket_form').find('select.category_id').val()) || 0;
+		},
+		getPriorityId: function() {
+			return parseInt($('#dp_newticket_form').find('select.priority_id').val()) || 0;
+		},
+		getProductId: function() {
+			return parseInt($('#dp_newticket_form').find('select.product_id').val()) || 0;
+		},
+		getOrganizationId: function() {
+			return {{ app.user.organization.id|default(0) }};
+		},
+		getWorkflowId: function() {
 			return 0;
 		}
+	};
+})();
 
-		return parseInt(window.DESKPRO_TICKET_PRI_MAP[id]);
-	},
-	getPriorityId: function() {
-		var cat = $('select.priority_id');
-		var catId = cat.val();
-
-		return parseInt(catId) || 0;
-	},
-	getProductId: function() {
-		var cat = $('select.product_id');
-		var catId = cat.val();
-
-		return parseInt(catId) || 0;
-	},
-	getOrganizationId: function() {
-		return {{ app.user.organization.id|default(0) }};
-	},
-	getWorkflow: function() {
-		return 0;
-	}
-};
-</script>
-<script type="text/javascript">
 {{ ticket_display_js|raw }}
 </script>
 <link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/vendor/jquery-ui/portal-theme/jquery-ui.css') }}" />
@@ -95,7 +78,7 @@ var ticketReader = {
 			{#--- FIELDS CONTAINER ---#}
 			<div id="fields_container">
 				{# First time outputs items in order and visible depending on the page data #}
-				{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
+				{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with { 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
 			</div>
 			{#--- FIELDS CONTAINER ---#}
 

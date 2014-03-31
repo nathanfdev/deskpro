@@ -48,7 +48,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
-use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -262,11 +262,9 @@ class TicketController extends AbstractController
 		$newticket->setValuesFromTicket($ticket);
 
 		$validator = new NewTicketValidator();
-		$ticket_display = new TicketPageZoneCollection('create');
-		$ticket_display->setPersonContext($this->person);
-		$ticket_display->addPagesFromDb();
-		$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
-		$validator->setPageData($default_page->getPageDisplay('default')->data);
+		$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id ?: 0);
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET);
+		$validator->setLayout($layout);
 
 		$validator_errors = array();
 		if (!$validator->isValid($newticket)) {
@@ -1432,11 +1430,10 @@ class TicketController extends AbstractController
 			$newticket = new NewTicket($this->em, $this->person);
 			$newticket->setValuesFromTicket($ticket);
 			$validator = new NewTicketValidator();
-			$ticket_display = new TicketPageZoneCollection('create');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
-			$default_page = $ticket_display->getDepartmentPage($ticket->department->id);
-			$validator->setPageData($default_page->getPageDisplay('default')->data);
+
+			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->department->id);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
+			$validator->setLayout($layout);
 			if (!$validator->isValid($newticket)) {
 				foreach ($validator->getErrorsInfo() as $info) {
 					$error_messages[] = $info['message'];
@@ -1848,11 +1845,9 @@ class TicketController extends AbstractController
 			}
 
 			$validator = new NewTicketValidator();
-			$ticket_display = new TicketPageZoneCollection('create');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
-			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
-			$validator->setPageData($default_page->getPageDisplay('default')->data);
+			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket);
+			$validator->setLayout($layout);
 
 			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
 			if (count($actions) == 1 && isset($actions['department_id'])) {
@@ -1971,40 +1966,41 @@ class TicketController extends AbstractController
 		// then we'll need to refresh the ticket so those new validation options
 		// are enforced
 		if (!isset($data['data']['refresh']) && $old_department_id != $ticket->getDepartmentId()) {
-			$ticket_display = new TicketPageZoneCollection('create');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
-
 			$old_page_ids = array();
 			$new_page_ids = array();
 
-			$old_page = $ticket_display->getDepartmentPage($old_department_id);
-			$new_page = $ticket_display->getDepartmentPage($new_department_id);
+			$old_page = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($old_department_id);
+			$new_page = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($new_department_id);
 
 			// - We only care about fields that have validation
 			// - The actual field show/hide changes are handled in JS on the client
 			// - So only when the current validation scheme changes do
 			// we need to resort to re-loading the ticket tab
 			$fn_check_has_validator = function($x) use ($field_manager) {
-				switch ($x['field_type']) {
-					case 'ticket_product':
+				switch ($x->getFieldType()) {
+					case 'product':
 						return App::getSetting('core_tickets.field_validation_ticket_prod_agent_required');
 						break;
 
-					case 'ticket_category':
+					case 'category':
 						return App::getSetting('core_tickets.field_validation_ticket_cat_agent_required');
 						break;
 
-					case 'ticket_priority':
+					case 'priority':
 						return App::getSetting('core_tickets.field_validation_ticket_pri_agent_required');
 						break;
 
-					case 'ticket_workflow':
+					case 'workflow':
 						return App::getSetting('core_tickets.field_validation_ticket_work_agent_required');
 						break;
 
 					case 'ticket_field':
-						$field = $field_manager->getFieldFromId($x['field_id']);
+						$field = $field_manager->getFieldFromId($x->getFieldId());
+						if (!$field) return false;
+						return $field->getOption('agent_required');
+						break;
+					case 'user_field':
+						$field = $field_manager->getFieldFromId($x->getFieldId());
 						if (!$field) return false;
 						return $field->getOption('agent_required');
 						break;
@@ -2013,14 +2009,14 @@ class TicketController extends AbstractController
 				return false;
 			};
 
-			foreach ($old_page->getPageDisplay('default')->data as $x) {
+			foreach ($old_page as $x) {
 				if ($fn_check_has_validator($x)) {
-					$old_page_ids[$x['id']] = $x['id'];
+					$old_page_ids[$x->getId()] = $x->getId();
 				}
 			}
-			foreach ($new_page->getPageDisplay('default')->data as $x) {
+			foreach ($new_page as $x) {
 				if ($fn_check_has_validator($x)) {
-					$new_page_ids[$x['id']] = $x['id'];
+					$new_page_ids[$x->getId()] = $x->getId();
 				}
 			}
 
@@ -3236,13 +3232,11 @@ class TicketController extends AbstractController
 
 			// Validate based on department...
 			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
-			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
+			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket);
 			$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
 			$newticket->status = $set_status;
-			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
-			$validator->setPageData($default_page->getPageDisplay('default')->data);
+			$validator->setLayout($layout);
 
 			if (!$validator->isValid($newticket)) {
 				$free = array();

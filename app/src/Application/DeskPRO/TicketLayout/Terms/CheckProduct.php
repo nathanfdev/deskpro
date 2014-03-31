@@ -41,7 +41,7 @@ class CheckProduct extends AbstractTicketLayoutTerm
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isLayoutTermMatch(Ticket $ticket)
+	public function isTicketMatch(Ticket $ticket)
 	{
 		$have_id = $ticket->category ? $ticket->category->getId() : 0;
 		$is_match = in_array($have_id, $this->options['product_ids']);
