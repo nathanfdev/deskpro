@@ -8,23 +8,23 @@
         var action, form, rowId, setId, term, termSet, x, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
         form = {};
         form.title = model.title || '';
-        form.typeForm = {
-          by_user: true,
-          by_agent: false,
-          by_agent_mode: {
-            web: true,
-            email: true,
-            api: true
-          },
-          by_user_mode: {
-            portal: true,
-            widget: true,
-            form: true,
-            email: true,
-            api: true
-          }
-        };
         if (model.id) {
+          form.typeForm = {
+            by_user: false,
+            by_agent: false,
+            by_agent_mode: {
+              web: false,
+              email: false,
+              api: false
+            },
+            by_user_mode: {
+              portal: false,
+              widget: false,
+              form: false,
+              email: false,
+              api: false
+            }
+          };
           if (model.by_agent_mode.length) {
             form.typeForm.by_agent = true;
             _ref = model.by_agent_mode;
@@ -41,6 +41,23 @@
               form.typeForm.by_user_mode[x] = true;
             }
           }
+        } else {
+          form.typeForm = {
+            by_user: true,
+            by_agent: true,
+            by_agent_mode: {
+              web: true,
+              email: true,
+              api: true
+            },
+            by_user_mode: {
+              portal: true,
+              widget: true,
+              form: true,
+              email: true,
+              api: true
+            }
+          };
         }
         form.terms_set = {};
         form.actions = {};

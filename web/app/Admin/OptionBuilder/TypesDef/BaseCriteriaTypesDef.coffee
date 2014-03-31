@@ -54,10 +54,15 @@ define ->
 			form_type = options.formType || 'select'
 			operators = @getOperators(options)
 			options_formatter = options.optionsFormatter || null
+			extraOptions = options.extraOptions || null
 
 			if not options_formatter
 				options_formatter = (options) ->
 					opts = []
+
+					if extraOptions
+						for opt in extraOptions
+							opts.push(opt)
 
 					for opt in options
 						if opt.title
@@ -137,7 +142,7 @@ define ->
 			me = @
 			return {
 				getTemplate: ->
-					return me.dpTemplateManager.get('')
+					return me.dpTemplateManager.get(me.isTemplate)
 
 				getData: ->
 					return {}

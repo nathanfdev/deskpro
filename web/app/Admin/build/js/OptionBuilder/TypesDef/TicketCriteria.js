@@ -177,6 +177,18 @@
           value: 'CheckUserIsManager'
         });
         options.push({
+          title: 'User is new',
+          value: 'CheckUserIsNew'
+        });
+        options.push({
+          title: 'User is awaiting agent validation',
+          value: 'CheckUserValidAgent'
+        });
+        options.push({
+          title: 'User is awaiting email validation',
+          value: 'CheckUserValidEmail'
+        });
+        options.push({
           title: 'Is disabled',
           value: 'CheckPersonIsDisabled'
         });
@@ -265,7 +277,13 @@
         }
         options.propName = 'workflow_ids';
         options.dataName = 'ticket_works';
-        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
+        options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -277,7 +295,13 @@
         }
         options.propName = 'priority_ids';
         options.dataName = 'ticket_pris';
-        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
+        options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -289,7 +313,13 @@
         }
         options.propName = 'category_ids';
         options.dataName = 'ticket_cats';
-        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
+        options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -301,7 +331,7 @@
         }
         options.propName = 'department_ids';
         options.dataName = 'ticket_deps';
-        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
+        options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -313,6 +343,16 @@
         }
         options.propName = 'agent_ids';
         options.dataName = 'agents';
+        options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
+        options.extraOptions = [
+          {
+            title: 'Unassigned',
+            value: 0
+          }, {
+            title: 'Current Agent',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -324,6 +364,16 @@
         }
         options.propName = 'agent_team_ids';
         options.dataName = 'agent_teams';
+        options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
+        options.extraOptions = [
+          {
+            title: 'No Team',
+            value: 0
+          }, {
+            title: 'Current Agent\'s Team',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -335,7 +385,13 @@
         }
         options.propName = 'product_ids';
         options.dataName = 'ticket_prods';
-        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
+        options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -590,6 +646,36 @@
           options = {};
         }
         options.propName = 'is_disabled';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserIsNew = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'is_new';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserValidAgent = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'is_valid_agent';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserValidEmail = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'is_valid_email';
         def = this.getStandardIs(options);
         return def;
       };

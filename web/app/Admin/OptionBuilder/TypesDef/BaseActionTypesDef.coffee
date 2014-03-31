@@ -48,10 +48,15 @@ define ->
 			data_name = options.dataName
 			options_formatter = options.optionsFormatter || null
 			is_multi  = options.isMulti
+			extraOptions = options.extraOptions || null
 
 			if not options_formatter
 				options_formatter = (options) ->
 					opts = []
+
+					if extraOptions
+						for opt in extraOptions
+							opts.push(opt)
 
 					for opt in options
 						if opt.title
@@ -82,7 +87,7 @@ define ->
 
 			return {
 				getTemplate: ->
-					return me.dpTemplateManager.get(me.selectTemplate)
+					return me.dpTemplateManager.get(options.template || me.selectTemplate)
 
 				getData: ->
 					if data_name

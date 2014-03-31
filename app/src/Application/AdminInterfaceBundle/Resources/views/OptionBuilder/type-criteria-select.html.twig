@@ -15,6 +15,7 @@
 						<option ng-if="operators.indexOf('not_contains') !== -1" value="not_contains">does not contain</option>
 						<option ng-if="operators.indexOf('is_regex') !== -1" value="is_regex">matches regex</option>
 						<option ng-if="operators.indexOf('not_regex') !== -1" value="not_regex">does not match regex</option>
+						<option ng-if="operators.indexOf('nottouched') !== -1" value="nottouched">no value set</option>
 						<option ng-if="operators.indexOf('changed') !== -1" value="changed">changed</option>
 						<option ng-if="operators.indexOf('changed_to') !== -1" value="changed_to">changed to</option>
 						<option ng-if="operators.indexOf('changed_from') !== -1" value="changed_from">changed from</option>
@@ -25,7 +26,7 @@
 					</select>
 					<select
 						ng-if="!multiselect"
-						ng-hide="model.op == 'changed'"
+						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched'"
 						ui-select2
 						ng-model="model.value"
 						style="min-width: 140px"
@@ -34,7 +35,7 @@
 					</select>
 					<select
 						ng-if="multiselect"
-						ng-hide="model.op == 'changed'"
+						ng-hide="model.op == 'changed' || model.op == 'touched' || model.op == 'nottouched'"
 						multiple
 						ui-select2
 						ng-model="model.value"

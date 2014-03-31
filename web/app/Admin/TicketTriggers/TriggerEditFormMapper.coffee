@@ -4,24 +4,24 @@ define ->
 			form = {}
 			form.title = model.title || ''
 
-			form.typeForm = {
-				by_user: true,
-				by_agent: false,
-				by_agent_mode: {
-					web: true,
-					email: true,
-					api: true
-				},
-				by_user_mode: {
-					portal: true,
-					widget: true,
-					form: true,
-					email: true,
-					api: true
-				}
-			}
-
 			if model.id
+				form.typeForm = {
+					by_user: false,
+					by_agent: false,
+					by_agent_mode: {
+						web: false,
+						email: false,
+						api: false
+					},
+					by_user_mode: {
+						portal: false,
+						widget: false,
+						form: false,
+						email: false,
+						api: false
+					}
+				}
+
 				if model.by_agent_mode.length
 					form.typeForm.by_agent = true
 					for x in model.by_agent_mode
@@ -30,6 +30,23 @@ define ->
 					form.typeForm.by_user = true
 					for x in model.by_user_mode
 						form.typeForm.by_user_mode[x] = true
+			else
+				form.typeForm = {
+					by_user: true,
+					by_agent: true,
+					by_agent_mode: {
+						web: true,
+						email: true,
+						api: true
+					},
+					by_user_mode: {
+						portal: true,
+						widget: true,
+						form: true,
+						email: true,
+						api: true
+					}
+				}
 
 			form.terms_set = {}
 			form.actions = {}

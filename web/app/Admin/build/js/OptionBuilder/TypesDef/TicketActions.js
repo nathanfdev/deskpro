@@ -43,6 +43,10 @@
         });
         options = [];
         options.push({
+          title: 'Set Status',
+          value: 'SetStatus'
+        });
+        options.push({
           title: 'Set Department',
           value: 'SetDepartment'
         });
@@ -121,8 +125,8 @@
           value: 'AddAgentReply'
         });
         options.push({
-          title: 'Force User Email Validation',
-          value: 'ModForceEmailValidation'
+          title: 'Require User Email Validation',
+          value: 'SetRequireValidation'
         });
         options.push({
           title: 'Call Web Hook',
@@ -256,6 +260,15 @@
         }
         options.propName = 'agent_id';
         options.dataName = 'agents';
+        options.extraOptions = [
+          {
+            title: 'Unassign',
+            value: 0
+          }, {
+            title: 'Current Agent',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -279,6 +292,15 @@
         }
         options.propName = 'agent_team_id';
         options.dataName = 'agent_teams';
+        options.extraOptions = [
+          {
+            title: 'No Agent',
+            value: 0
+          }, {
+            title: 'Current Agent\'s Team',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -290,6 +312,12 @@
         }
         options.propName = 'workflow_ids';
         options.dataName = 'ticket_works';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -301,6 +329,12 @@
         }
         options.propName = 'workflow_ids';
         options.dataName = 'ticket_works';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -312,6 +346,12 @@
         }
         options.propName = 'priority_ids';
         options.dataName = 'ticket_pris';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -323,6 +363,23 @@
         }
         options.propName = 'category_ids';
         options.dataName = 'ticket_cats';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetStatus = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'status';
+        options.template = 'OptionBuilder/type-actions-status.html';
         def = this.getStandardSelect(options);
         return def;
       };
@@ -345,6 +402,12 @@
         }
         options.propName = 'product_ids';
         options.dataName = 'ticket_prods';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -496,12 +559,12 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModForceEmailValidation = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetRequireValidation = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'force_email_validation';
+        options.propName = 'require_validation';
         def = this.getStandardIs(options);
         return def;
       };

@@ -76,19 +76,26 @@
        */
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getStandardSelect = function(options) {
-        var data_name, form_type, me, operators, options_formatter, prop_name, type;
+        var data_name, extraOptions, form_type, me, operators, options_formatter, prop_name, type;
         type = options.type;
         prop_name = options.propName;
         data_name = options.dataName;
         form_type = options.formType || 'select';
         operators = this.getOperators(options);
         options_formatter = options.optionsFormatter || null;
+        extraOptions = options.extraOptions || null;
         if (!options_formatter) {
           options_formatter = function(options) {
-            var opt, opts, title, val, _i, _len;
+            var opt, opts, title, val, _i, _j, _len, _len1;
             opts = [];
-            for (_i = 0, _len = options.length; _i < _len; _i++) {
-              opt = options[_i];
+            if (extraOptions) {
+              for (_i = 0, _len = extraOptions.length; _i < _len; _i++) {
+                opt = extraOptions[_i];
+                opts.push(opt);
+              }
+            }
+            for (_j = 0, _len1 = options.length; _j < _len1; _j++) {
+              opt = options[_j];
               if (opt.title) {
                 title = opt.title;
               } else if (opt.name) {
@@ -184,7 +191,7 @@
         me = this;
         return {
           getTemplate: function() {
-            return me.dpTemplateManager.get('');
+            return me.dpTemplateManager.get(me.isTemplate);
           },
           getData: function() {
             return {};

@@ -42,7 +42,6 @@ use Application\DeskPRO\Tickets\Actions\SetAgent;
 use Application\DeskPRO\Tickets\Actions\SetRequireValidation;
 use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgent;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgentTeam;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserIsNew;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidEmail;
@@ -167,9 +166,7 @@ class TriggerData extends AbstractDefaultData
 
 		$set = new TriggerTermComposite();
 		$set->add(new CheckAgent('nottouched'));
-		$set->add(new CheckAgent('is', array('agent_ids' => 0)));
-		$set->add(new CheckAgentTeam('nottouched'));
-		$set->add(new CheckAgentTeam('is', array('team_ids' => 0)));
+		$set->add(new CheckAgent('is', array('agent_ids' => array(0))));
 		$set->setOperator('AND');
 		$trigger->terms->addTerm($set);
 
@@ -181,19 +178,22 @@ class TriggerData extends AbstractDefaultData
 		# newticket: set require validation
 		#-----
 
-		foreach (array('email', 'form', 'portal', 'widget') as $mode) {
-			$trigger = new TicketTrigger();
-			$trigger->event_trigger = 'newticket';
-			$trigger->run_order     = -1000;
-			$trigger->by_user_mode  = array($mode);
-			$trigger->is_enabled    = true;
-			$trigger->is_hidden     = true;
-			$trigger->sys_name      = 'default_newticket_requirevalid_' . $mode;
-			$trigger->title         = 'Set validation';
-			$trigger->terms->addTerm(new CheckUserIsNew('is'));
-			$trigger->actions->addAction(new SetRequireValidation(array('require_validation' => true)));
-			$this->getEm()->persist($trigger);
-		}
+		$trigger = new TicketTrigger();
+		$trigger->event_trigger = 'newticket';
+		$trigger->run_order     = -1000;
+		$trigger->by_user_mode  = array('email', 'form', 'portal', 'widget');
+		$trigger->is_enabled    = true;
+		$trigger->is_hidden     = true;
+		$trigger->sys_name      = 'default_newticket_requirevalid';
+		$trigger->title         = 'Enable email validation';
+
+		$set = new TriggerTermComposite();
+		$set->setOperator('AND');
+		$set->add(new CheckUserIsNew('is'));
+		$trigger->terms->addTerm($set);
+
+		$trigger->actions->addAction(new SetRequireValidation(array('require_validation' => true)));
+		$this->getEm()->persist($trigger);
 
 		#-----
 		# newticket: check validation
@@ -207,7 +207,12 @@ class TriggerData extends AbstractDefaultData
 		$trigger->is_hidden     = true;
 		$trigger->sys_name      = 'default_newticket_validemail';
 		$trigger->title         = 'Check email validation';
-		$trigger->terms->addTerm(new CheckUserValidEmail('not'));
+
+		$set = new TriggerTermComposite();
+		$set->setOperator('AND');
+		$set->add(new CheckUserValidEmail('not'));
+		$trigger->terms->addTerm($set);
+
 		$trigger->actions->addAction(new SetStatus(array('status' => 'hidden.validating')));
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
@@ -230,7 +235,12 @@ class TriggerData extends AbstractDefaultData
 		$trigger->is_hidden     = true;
 		$trigger->sys_name      = 'default_newticket_validagent';
 		$trigger->title         = 'Check agent validation';
-		$trigger->terms->addTerm(new CheckUserValidAgent('not'));
+
+		$set = new TriggerTermComposite();
+		$set->setOperator('AND');
+		$set->add(new CheckUserValidAgent('not'));
+		$trigger->terms->addTerm($set);
+
 		$trigger->actions->addAction(new SetStatus(array('status' => 'hidden.validating')));
 		$trigger->actions->addAction(new ModStopTriggers());
 

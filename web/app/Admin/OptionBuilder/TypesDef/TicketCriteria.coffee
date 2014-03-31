@@ -209,6 +209,21 @@ define [
 			})
 
 			options.push({
+				title: 'User is new',
+				value: 'CheckUserIsNew'
+			})
+
+			options.push({
+				title: 'User is awaiting agent validation',
+				value: 'CheckUserValidAgent'
+			})
+
+			options.push({
+				title: 'User is awaiting email validation',
+				value: 'CheckUserValidEmail'
+			})
+
+			options.push({
 				title: 'Is disabled',
 				value: 'CheckPersonIsDisabled'
 			})
@@ -309,47 +324,69 @@ define [
 		getCheckWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
-			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
+			options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
-			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
+			options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckCategory: (options = {}) ->
 			options.propName = 'category_ids'
 			options.dataName = 'ticket_cats'
-			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
+			options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckDepartment: (options = {}) ->
 			options.propName = 'department_ids'
 			options.dataName = 'ticket_deps'
-			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
+			options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckAgent: (options = {}) ->
 			options.propName = 'agent_ids'
 			options.dataName = 'agents'
+			options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
+			options.extraOptions = [
+				{title: 'Unassigned', value: 0},
+				{title: 'Current Agent', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckAgentTeam: (options = {}) ->
 			options.propName = 'agent_team_ids'
 			options.dataName = 'agent_teams'
+			options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
+			options.extraOptions = [
+				{title: 'No Team', value: 0},
+				{title: 'Current Agent\'s Team', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckProduct: (options = {}) ->
 			options.propName = 'product_ids'
 			options.dataName = 'ticket_prods'
-			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
+			options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
@@ -493,6 +530,21 @@ define [
 
 		getCheckPersonIsDisabled: (options = {}) ->
 			options.propName = 'is_disabled'
+			def = @getStandardIs(options)
+			return def
+
+		getCheckUserIsNew: (options = {}) ->
+			options.propName = 'is_new'
+			def = @getStandardIs(options)
+			return def
+
+		getCheckUserValidAgent: (options = {}) ->
+			options.propName = 'is_valid_agent'
+			def = @getStandardIs(options)
+			return def
+
+		getCheckUserValidEmail: (options = {}) ->
+			options.propName = 'is_valid_email'
 			def = @getStandardIs(options)
 			return def
 

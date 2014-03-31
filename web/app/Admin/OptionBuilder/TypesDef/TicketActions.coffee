@@ -42,6 +42,11 @@ define [
 			options = []
 
 			options.push({
+				title: 'Set Status',
+				value: 'SetStatus'
+			})
+
+			options.push({
 				title: 'Set Department',
 				value: 'SetDepartment'
 			})
@@ -149,8 +154,8 @@ define [
 			})
 
 			options.push({
-				title: 'Force User Email Validation',
-				value: 'ModForceEmailValidation'
+				title: 'Require User Email Validation',
+				value: 'SetRequireValidation'
 			})
 
 			options.push({
@@ -281,6 +286,10 @@ define [
 		getSetAgent: (options = {}) ->
 			options.propName = 'agent_id'
 			options.dataName = 'agents'
+			options.extraOptions = [
+				{title: 'Unassign', value: 0},
+				{title: 'Current Agent', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 
@@ -294,30 +303,52 @@ define [
 		getSetAgentTeam: (options = {}) ->
 			options.propName = 'agent_team_id'
 			options.dataName = 'agent_teams'
+			options.extraOptions = [
+				{title: 'No Agent', value: 0},
+				{title: 'Current Agent\'s Team', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getSetWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getSetWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getSetPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getSetCategory: (options = {}) ->
 			options.propName = 'category_ids'
 			options.dataName = 'ticket_cats'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
+			def = @getStandardSelect(options)
+			return def
+
+		getSetStatus: (options = {}) ->
+			options.propName = 'status'
+			options.template = 'OptionBuilder/type-actions-status.html'
 			def = @getStandardSelect(options)
 			return def
 
@@ -330,6 +361,9 @@ define [
 		getSetProduct: (options = {}) ->
 			options.propName = 'product_ids'
 			options.dataName = 'ticket_prods'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
@@ -423,8 +457,8 @@ define [
 			def = @getStandardIs(options)
 			return def
 
-		getModForceEmailValidation: (options = {}) ->
-			options.propName = 'force_email_validation'
+		getSetRequireValidation: (options = {}) ->
+			options.propName = 'require_validation'
 			def = @getStandardIs(options)
 			return def
 
