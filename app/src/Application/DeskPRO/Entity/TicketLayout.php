@@ -138,13 +138,13 @@ class TicketLayout extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'user_layout',
 			'fieldName'  => 'user_layout',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false
 		));
 		$metadata->mapField(array(
 			'columnName' => 'agent_layout',
 			'fieldName'  => 'agent_layout',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false
 		));
 

@@ -34,9 +34,10 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
+use Orb\Types\JsonObjectSerializable;
 use Orb\Util\Strings;
 
-class Layout implements \IteratorAggregate, \Serializable
+class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializable
 {
 	/**
 	 * @var LayoutField[]
@@ -213,5 +214,26 @@ class Layout implements \IteratorAggregate, \Serializable
 	{
 		$data = json_decode($data, true);
 		$this->importFromArray($data);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function serializeJsonArray()
+	{
+		return $this->exportToArray();
+	}
+
+
+	/**
+	 * @param array $data
+	 * @return Layout
+	 */
+	public static function unserializeJsonArray(array $data)
+	{
+		$obj = new self();
+		$obj->importFromArray($data);
+		return $obj;
 	}
 }
