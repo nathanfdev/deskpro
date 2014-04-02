@@ -34,12 +34,14 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Mail\Mailer;
+use Application\DeskPRO\TicketLayout\TicketLayoutManager;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
@@ -75,7 +77,9 @@ class TicketEmailBuilder
 		$build->setEm($container->getEm())
 			->setMailer($container->getMailer())
 			->setTranslate($container->getTranslator())
-			->setTicketFieldManager($container->getTicketFieldManager());
+			->setTicketFieldManager($container->getTicketFieldManager())
+			->setUserFieldManager($container->getPersonFieldManager())
+			->setTicketLayoutManager($container->getTicketLayoutManager());
 
 		return $build;
 	}
@@ -127,6 +131,29 @@ class TicketEmailBuilder
 		$this->options->set('ticket_field_manager', $field_manager);
 		return $this;
 	}
+
+
+	/**
+	 * @param PersonFieldManager $field_manager
+	 * @return TicketEmailBuilder
+	 */
+	public function setUserFieldManager(PersonFieldManager $field_manager)
+	{
+		$this->options->set('user_field_manager', $field_manager);
+		return $this;
+	}
+
+
+	/**
+	 * @param TicketLayoutManager $ticket_layout_manager
+	 * @return TicketEmailBuilder
+	 */
+	public function setTicketLayoutManager(TicketLayoutManager $ticket_layout_manager)
+	{
+		$this->options->set('ticket_layout_manager', $ticket_layout_manager);
+		return $this;
+	}
+
 
 	/**
 	 * @param Ticket $ticket

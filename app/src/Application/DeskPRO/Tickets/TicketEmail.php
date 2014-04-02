@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Monolog\NullLogger;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Orb\Util\CheckedOptionsArray;
 
@@ -62,6 +63,16 @@ class TicketEmail
 	 * @var \Application\DeskPRO\CustomFields\TicketFieldManager
 	 */
 	private $ticket_field_manager;
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\PersonFieldManager
+	 */
+	private $user_field_manager;
+
+	/**
+	 * @var \Application\DeskPRO\TicketLayout\TicketLayoutManager
+	 */
+	private $ticket_layout_manager;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -136,13 +147,15 @@ class TicketEmail
 			'mailer',
 			'translate',
 			'em',
-			'ticket_field_manager',
 			'ticket',
 			'to_person',
 			'user_mode',
 			'template_name'
 		);
 		$opt->addValidNames(
+			'ticket_field_manager',
+			'user_field_manager',
+			'ticket_layout_manager',
 			'from_name',
 			'from_email_account',
 			'cc_users',
@@ -152,21 +165,23 @@ class TicketEmail
 		$opt->setAll($options);
 		$opt->ensureRequired();
 
-		$this->to_person            = $opt->get('to_person');
-		$this->ticket               = $opt->get('ticket');
-		$this->template_name        = $opt->get('template_name');
-		$this->from_name            = $opt->get('from_name', '');
+		$this->to_person               = $opt->get('to_person');
+		$this->ticket                  = $opt->get('ticket');
+		$this->template_name           = $opt->get('template_name');
+		$this->from_name               = $opt->get('from_name', '');
 
-		$this->mailer               = $opt->get('mailer');
-		$this->translate            = $opt->get('translate');
-		$this->em                   = $opt->get('em');
-		$this->ticket_field_manager = $opt->get('ticket_field_manager');
-		$this->from_email_account   = $opt->get('from_email_account', null);
+		$this->mailer                  = $opt->get('mailer');
+		$this->translate               = $opt->get('translate');
+		$this->em                      = $opt->get('em');
+		$this->ticket_field_manager    = $opt->get('ticket_field_manager');
+		$this->user_field_manager      = $opt->get('user_field_manager');
+		$this->ticket_layout_manager   = $opt->get('ticket_layout_manager');
+		$this->from_email_account      = $opt->get('from_email_account', null);
 
-		$this->do_cc_users          = $opt->get('cc_users', false);
-		$this->is_auto              = $opt->get('is_auto', false);
+		$this->do_cc_users             = $opt->get('cc_users', false);
+		$this->is_auto                 = $opt->get('is_auto', false);
 
-		$this->user_mode            = $opt->get('user_mode');
+		$this->user_mode               = $opt->get('user_mode');
 
 		if ($opt->get('user_mode') == 'user') {
 			$this->user_mode = 'user';
@@ -263,7 +278,6 @@ class TicketEmail
 
 		$translator = $this->translate;
 		$em         = $this->em;
-		$field_manager = $this->ticket_field_manager;
 
 		$ticketdisplay = new TicketDisplay($this->ticket, $this->to_person);
 		$ticketdisplay->setPersonContext($this->to_person, $this->user_mode);
@@ -274,15 +288,33 @@ class TicketEmail
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages());
 		$vars['is_auto']       = $this->is_auto;
 
-		/*
-		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+		if ($this->ticket_layout_manager) {
+			$layout_id = $this->ticket->department ? $this->ticket->department->id : null;
 
-		$ticket_display = new TicketPageZoneCollection('view');
-		$ticket_display->addPagesFromDb('agent');
-		$page = $ticket_display->getDepartmentPage($ticket->department ? $ticket->department->id : 0);
-		$page_display = $page->getPageDisplay('default')->data;
-		 *
-		 */
+			if ($this->user_mode == self::MODE_AGENT) {
+				$layout = $this->ticket_layout_manager->getAgentLayouts()->getLayout($layout_id);
+				$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $this->ticket);
+			} else {
+				$layout = $this->ticket_layout_manager->getUserLayouts()->getLayout($layout_id);
+				$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $this->ticket);
+			}
+
+			if ($this->ticket_field_manager) {
+				$custom_fields = $this->ticket_field_manager->getDisplayArrayForObject($this->ticket);
+			} else {
+				$custom_fields = array();
+			}
+
+			if ($this->user_field_manager) {
+				$custom_user_fields = $this->user_field_manager->getDisplayArrayForObject($this->ticket->person);
+			} else {
+				$custom_user_fields = array();
+			}
+
+			$vars['ticket_layout']      = $layout;
+			$vars['custom_fields']      = $custom_fields;
+			$vars['custom_user_fields'] = $custom_user_fields;
+		}
 
 		$this->logger->info(sprintf("[TicketEmail] Template: %s -- Mode: %s", $this->template_name, $this->user_mode));
 
