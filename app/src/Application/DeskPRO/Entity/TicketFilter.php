@@ -445,7 +445,7 @@ class TicketFilter extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'terms',
 			'fieldName'  => 'terms',
-			'type'       => 'array',
+			'type'       => 'json_array',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
