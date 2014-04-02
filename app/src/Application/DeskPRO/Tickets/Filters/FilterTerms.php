@@ -63,6 +63,15 @@ class FilterTerms implements \Serializable, FilterTermInterface
 
 
 	/**
+	 * @return FilterTermInterface[]
+	 */
+	public function getTerms()
+	{
+		return $this->criteria->getAll();
+	}
+
+
+	/**
 	 * @param FilterTermInterface $term
 	 * @throws \InvalidArgumentException
 	 */

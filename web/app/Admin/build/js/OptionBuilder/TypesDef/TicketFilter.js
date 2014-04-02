@@ -23,6 +23,10 @@
         set_options = [];
         options = [];
         options.push({
+          title: 'Status',
+          value: 'FilterStatus'
+        });
+        options.push({
           title: 'Department',
           value: 'FilterDepartment'
         });
@@ -53,6 +57,10 @@
         options.push({
           title: 'Subject',
           value: 'FilterSubject'
+        });
+        options.push({
+          title: 'Hold',
+          value: 'FilterHoldStatus'
         });
         set_options.push({
           title: 'Ticket Criteria',
@@ -161,6 +169,12 @@
         }
         options.propName = 'workflow_ids';
         options.dataName = 'ticket_works';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -172,6 +186,12 @@
         }
         options.propName = 'priority_ids';
         options.dataName = 'ticket_pris';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -185,6 +205,59 @@
         options.dataName = 'ticket_cats';
         def = this.getStandardSelect(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterStatus = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'status';
+        options.template = 'OptionBuilder/type-filter-status.html';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterHoldStatus = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-filter-hold.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: 'is',
+                  value: value.is_hold ? '1' : '0'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'FilterHoldStatus';
+                value.op = model.op;
+                value.options = {
+                  is_hold: parseInt(model.value) === 1 ? true : false
+                };
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDepartment = function(options) {
@@ -205,6 +278,15 @@
         }
         options.propName = 'agent_ids';
         options.dataName = 'agents';
+        options.extraOptions = [
+          {
+            title: 'Unassigned',
+            value: 0
+          }, {
+            title: 'Current Agent',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -216,6 +298,15 @@
         }
         options.propName = 'agent_team_ids';
         options.dataName = 'agent_teams';
+        options.extraOptions = [
+          {
+            title: 'No Team',
+            value: 0
+          }, {
+            title: 'Current Agent\'s Team',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -227,6 +318,12 @@
         }
         options.propName = 'product_ids';
         options.dataName = 'ticket_prods';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };

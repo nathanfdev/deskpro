@@ -38,13 +38,9 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on ticket user email address.
- *
- * If the first character of 'email' is the at-symbol, we automatically search against the email domain.
- *
- * @option string email
+ * Filters based on hold status
  */
-class FilterUserEmailAddress extends AbstractFilterTerm
+class FilterHoldStatus extends AbstractFilterTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -52,28 +48,28 @@ class FilterUserEmailAddress extends AbstractFilterTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('email');
+		$options->addRequiredNames('is_hold');
 		return $options;
 	}
-
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
-		$options = $this->getTermOptions();
+		$query = new FilterQuery();
+		$query->setParameter('hold', $this->getTermOptions()->get('is_hold') ? 1 : 0);
 
-		$email = $options['email'];
-		$is_domain = $email[0] === '@';
-
-		if ($is_domain) {
-			$query = $this->getStringMatchQuery('user_email.email_domain', $email);
-		} else {
-			$query = $this->getStringMatchQuery('user_email.email', $email);
+		switch ($this->getTermOperator()) {
+			case self::OP_IS:
+				$query->andWhere('tickets.is_hold = {param.hold}');
+			case self::OP_NOT:
+				$query->andWhere('tickets.is_hold != {param.hold}');
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
 		}
 
-		$query->addJoin('tickets.person.email', 'people_emails', 'user_email', 'user_email.person_id = tickets.person_id');
 		return $query;
 	}
 }

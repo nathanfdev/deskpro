@@ -123,6 +123,9 @@
         me = this;
         return {
           getTemplate: function() {
+            if (options.template) {
+              return me.dpTemplateManager.get(options.template);
+            }
             switch (form_type) {
               case 'input':
                 return me.dpTemplateManager.get(me.inputTemplate);

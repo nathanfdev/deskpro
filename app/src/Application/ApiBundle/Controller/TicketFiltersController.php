@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
+use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {
@@ -91,8 +92,14 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 			throw $this->createNotFoundException();
 		}
 
+		$trans = new LegacyTermsTransformer();
+		$crit = $trans->toFilterTerms($filter->terms);
+
+		$filter = $this->getApiData($filter);
+		$filter['terms'] = $crit->exportToArray();
+
 		return $this->createApiResponse(array(
-			'filter' => $this->getApiData($filter)
+			'filter' => $filter
 		));
 	}
 
@@ -126,10 +133,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 			$filter->agent_team = $this->container->getAgentData()->getTeam($this->in->getUint('filter.agent_team_id'));
 		}
 
-		$filter->terms = new FilterTerms();
+		$crit = new FilterTerms();
 		foreach ($this->in->getArrayValue('filter.terms') as $term_info) {
-			$filter->terms->addTermFromArray($term_info);
+			$crit->addTermFromArray($term_info);
 		}
+
+		$trans = new LegacyTermsTransformer();
+		$filter->terms = $trans->toLegacyTerms($crit);
 
 		$this->em->persist($filter);
 		$this->em->flush();

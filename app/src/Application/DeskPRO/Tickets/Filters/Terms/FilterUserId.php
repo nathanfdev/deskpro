@@ -35,28 +35,33 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on hold status
+ * Filters based on ticket org id
+ *
+ * @option string user_ids
  */
-class FilterIsHold extends AbstractFilterTerm
+class FilterUserId extends AbstractFilterTerm
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('user_ids');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
-		$query = new FilterQuery();
-		switch ($this->getTermOperator()) {
-			case self::OP_IS:
-				$query->andWhere('tickets.is_hold = 1');
-			case self::OP_NOT:
-				$query->andWhere('tickets.is_hold = 0');
-				break;
-			default:
-				throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
-		}
-
+		$options = $this->getTermOptions();
+		$query = $this->getIdMatchQuery('tickets.person_id', $options->get('user_ids'));
 		return $query;
 	}
 }

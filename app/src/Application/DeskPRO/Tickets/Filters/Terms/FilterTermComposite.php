@@ -114,7 +114,8 @@ class FilterTermComposite implements FilterTermInterface
 
 
 	/**
-	 * @return FilterQuery
+	 * @param ExecutorContextInterface $context
+	 * @return FilterQuery|null
 	 */
 	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{

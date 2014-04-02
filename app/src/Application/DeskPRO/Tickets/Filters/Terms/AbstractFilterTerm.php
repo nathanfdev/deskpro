@@ -50,6 +50,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 	const OP_LTE         = 'lte';
 	const OP_GTE         = 'gte';
 	const OP_BETWEEN     = 'between';
+	const OP_NOTBETWEEN  = 'notbetween';
 	const OP_CONTAINS    = 'contains';
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_IS_REGEX    = 'is_regex';
@@ -211,6 +212,163 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 
 	/**
 	 * @param string $field_name
+	 * @param int $int
+	 * @return FilterQuery
+	 * @throws \InvalidArgumentException
+	 */
+	protected function getIntMatchQuery($field_name, $int)
+	{
+		$query = new FilterQuery();
+		$query->setParameter('int', (int)$int);
+
+		switch ($this->getTermOperator()) {
+			case self::OP_IS:
+				$query->andWhere("$field_name = {param.int}");
+				break;
+			case self::OP_NOT:
+				$query->andWhere("$field_name != {param.int}");
+				break;
+			case self::OP_LT:
+				$query->andWhere("$field_name < {param.int}");
+				break;
+			case self::OP_LTE:
+				$query->andWhere("$field_name <= {param.int}");
+				break;
+			case self::OP_GT:
+				$query->andWhere("$field_name > {param.int}");
+				break;
+			case self::OP_GTE:
+				$query->andWhere("$field_name >= {param.int}");
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
+		}
+
+		return $query;
+	}
+
+
+	/**
+	 * @param string $field_name
+	 * @param int $int1
+	 * @param int $int2
+	 * @return FilterQuery
+	 * @throws \InvalidArgumentException
+	 */
+	protected function getIntRangeMatch($field_name, $int1, $int2)
+	{
+		$int1 = (int)$int1;
+		$int2 = (int)$int2;
+
+		if ($int1 > $int2) {
+			$x = $int1;
+			$int1 = $int2;
+			$int2 = $x;
+			unset($x);
+		}
+
+		$query = new FilterQuery();
+		$query->setParameter('int1', $int1);
+		$query->setParameter('int2', $int2);
+
+		switch ($this->getTermOperator()) {
+			case self::OP_BETWEEN:
+				$query->andWhere("$field_name BETWEEN {param.int1} AND {param.int2}");
+				break;
+			case self::OP_NOTBETWEEN:
+				$query->andWhere("$field_name NOT BETWEEN {param.int1} AND {param.int2}");
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
+		}
+
+		return $query;
+	}
+
+
+	/**
+	 * @param string $field_name
+	 * @param \DateTime $date
+	 * @return FilterQuery
+	 * @throws \InvalidArgumentException
+	 */
+	protected function getDateMatchQuery($field_name, \DateTime $date)
+	{
+		$query = new FilterQuery();
+
+		$date = clone $date;
+		$date->setTimezone(new \DateTimeZone('UTC'));
+		$query->setParameter('date', $date->format('Y-m-d H:i:s'));
+
+		switch ($this->getTermOperator()) {
+			case self::OP_IS:
+				$query->andWhere("$field_name = {param.date}");
+				break;
+			case self::OP_NOT:
+				$query->andWhere("$field_name != {param.date}");
+				break;
+			case self::OP_LT:
+				$query->andWhere("$field_name < {param.date}");
+				break;
+			case self::OP_LTE:
+				$query->andWhere("$field_name <= {param.date}");
+				break;
+			case self::OP_GT:
+				$query->andWhere("$field_name > {param.date}");
+				break;
+			case self::OP_GTE:
+				$query->andWhere("$field_name >= {param.date}");
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
+		}
+
+		return $query;
+	}
+
+
+	/**
+	 * @param string $field_name
+	 * @param \DateTime $date1
+	 * @param \DateTime $date2
+	 * @return FilterQuery
+	 * @throws \InvalidArgumentException
+	 */
+	protected function getDateRangeMatch($field_name, \DateTime $date1, \DateTime $date2)
+	{
+		if ($date1 > $date2) {
+			$x = $date1;
+			$date1 = $date2;
+			$date2 = $x;
+			unset($x);
+		}
+
+		$date1 = clone $date1;
+		$date1->setTimezone(new \DateTimeZone('UTC'));
+		$date2 = clone $date2;
+		$date2->setTimezone(new \DateTimeZone('UTC'));
+
+		$query = new FilterQuery();
+		$query->setParameter('date1', $date1->format('Y-m-d H:i:s'));
+		$query->setParameter('date2', $date2->format('Y-m-d H:i:s'));
+
+		switch ($this->getTermOperator()) {
+			case self::OP_BETWEEN:
+				$query->andWhere("$field_name BETWEEN {param.date1} AND {param.date2}");
+				break;
+			case self::OP_NOTBETWEEN:
+				$query->andWhere("$field_name NOT BETWEEN {param.date1} AND {param.date2}");
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
+		}
+
+		return $query;
+	}
+
+
+	/**
+	 * @param string $field_name
 	 * @param string|string[] $check_value
 	 * @return FilterQuery
 	 * @throws \InvalidArgumentException
@@ -229,7 +387,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 				case self::OP_NOT:
 					$use_op = $this->getTermOptions() == self::OP_NOT ? '!=' : '=';
 					$query->orWhere("$field_name $use_op {param.str$k}");
-					$query->setParameter('str'.$k, $str);
+					$query->setParameter('str' . $k, $str);
 					break;
 				case self::OP_NOT:
 				case self::OP_CONTAINS:
@@ -240,7 +398,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 					$like_value = str_replace('%', '%%', $like_value);
 					$like_value = str_replace('_', '__', $like_value);
 					$like_value = '%' . $like_value . '%';
-					$query->orParameter('str.$k', $like_value);
+					$query->setParameter('str.$k', $like_value);
 					break;
 				default:
 					throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");

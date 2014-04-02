@@ -16,6 +16,11 @@ define [
 			options = []
 
 			options.push({
+				title: 'Status',
+				value: 'FilterStatus'
+			})
+
+			options.push({
 				title: 'Department',
 				value: 'FilterDepartment'
 			})
@@ -53,6 +58,11 @@ define [
 			options.push({
 				title: 'Subject',
 				value: 'FilterSubject'
+			})
+
+			options.push({
+				title: 'Hold',
+				value: 'FilterHoldStatus'
 			})
 
 			set_options.push({
@@ -174,12 +184,18 @@ define [
 		getFilterWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getFilterPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 
@@ -188,6 +204,39 @@ define [
 			options.dataName = 'ticket_cats'
 			def = @getStandardSelect(options)
 			return def
+
+		getFilterStatus: (options = {}) ->
+			options.propName = 'status'
+			options.template = 'OptionBuilder/type-filter-status.html'
+			def = @getStandardSelect(options)
+			return def
+
+		getFilterHoldStatus: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-filter-hold.html')
+
+				getData: ->
+					return {}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								op: 'is',
+								value: if value.is_hold then '1' else '0'
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'FilterHoldStatus'
+							value.op = model.op
+							value.options = {
+								is_hold: if parseInt(model.value) == 1 then true else false
+							}
+							return value
+					}
+			}
 
 		getFilterDepartment: (options = {}) ->
 			options.propName = 'department_ids'
@@ -198,18 +247,29 @@ define [
 		getFilterAgent: (options = {}) ->
 			options.propName = 'agent_ids'
 			options.dataName = 'agents'
+			options.extraOptions = [
+				{title: 'Unassigned', value: 0},
+				{title: 'Current Agent', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getFilterAgentTeam: (options = {}) ->
 			options.propName = 'agent_team_ids'
 			options.dataName = 'agent_teams'
+			options.extraOptions = [
+				{title: 'No Team', value: 0},
+				{title: 'Current Agent\'s Team', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 
 		getFilterProduct: (options = {}) ->
 			options.propName = 'product_ids'
 			options.dataName = 'ticket_prods'
+			options.extraOptions = [
+				{title: 'None', value: 0}
+			]
 			def = @getStandardSelect(options)
 			return def
 

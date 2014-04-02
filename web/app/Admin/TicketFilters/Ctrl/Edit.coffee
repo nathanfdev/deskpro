@@ -34,6 +34,7 @@ define [
 					for term in @filter.terms.terms
 						rowId = Util.uid('term')
 						@filter_criteria[rowId] = term
+
 				else
 					@filter = {
 						is_global: true

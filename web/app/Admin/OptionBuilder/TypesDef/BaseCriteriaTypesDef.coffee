@@ -91,6 +91,8 @@ define ->
 
 			return {
 				getTemplate: ->
+					if options.template
+						return me.dpTemplateManager.get(options.template)
 					switch form_type
 						when 'input'
 							return me.dpTemplateManager.get(me.inputTemplate)

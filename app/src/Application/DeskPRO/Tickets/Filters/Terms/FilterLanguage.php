@@ -38,13 +38,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on ticket user email address.
+ * Filters based on set language
  *
- * If the first character of 'email' is the at-symbol, we automatically search against the email domain.
- *
- * @option string email
+ * @option int[] language_ids
  */
-class FilterUserEmailAddress extends AbstractFilterTerm
+class FilterLanguage extends AbstractFilterTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -52,7 +50,7 @@ class FilterUserEmailAddress extends AbstractFilterTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('email');
+		$options->addRequiredNames('language_ids');
 		return $options;
 	}
 
@@ -63,17 +61,6 @@ class FilterUserEmailAddress extends AbstractFilterTerm
 	public function getFilterQuery(ExecutorContextInterface $context = null)
 	{
 		$options = $this->getTermOptions();
-
-		$email = $options['email'];
-		$is_domain = $email[0] === '@';
-
-		if ($is_domain) {
-			$query = $this->getStringMatchQuery('user_email.email_domain', $email);
-		} else {
-			$query = $this->getStringMatchQuery('user_email.email', $email);
-		}
-
-		$query->addJoin('tickets.person.email', 'people_emails', 'user_email', 'user_email.person_id = tickets.person_id');
-		return $query;
+		return $this->getIdMatchQuery('tickets.language_id', $options['language_ids']);
 	}
 }
