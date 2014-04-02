@@ -29,65 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Monolog\Logger;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdpaterHandler;
-use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
-use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
-use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
-
-/**
- * Handles time-based triggers
- */
-class TicketTriggers extends AbstractJob
+class Build1396462563 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 60;
-
-	protected $count_success;
-	protected $count_failed;
-
 	public function run()
 	{
-		$escalations = App::$container->getEm()->createQuery("
-			SELECT e
-			FROM DeskPRO:TicketEscalation e
-			WHERE e.is_enabled = true
-			ORDER BY e.date_last_run ASC
-		")->execute();
-
-		if (!count($escalations)) {
-			return;
-		}
-
-		$batch_size = 100;
-		$time_limit = 200;
-
-		$orb_adapter = new OrbLoggerAdpaterHandler($this->getLogger());
-		$logger = new Logger('TicketTriggers');
-		$logger->pushHandler($orb_adapter);
-
-		$matcher  = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
-		$matcher->setLogger($logger);
-
-		$executor = new EscalationExecutor(App::$container->getTicketManager());
-		$executor->setLogger($logger);
-
-		$runner = new EscalationsRunner(
-			$escalations,
-			$matcher,
-			$executor,
-			$batch_size,
-			$time_limit
-		);
-		$runner->setLogger($logger);
-
-		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
-		$runner->run();
-		unset($GLOBALS['DP_ESCALATION_RUNNING']);
+		$this->execMutateSql("ALTER TABLE ticket_escalations ADD terms_any LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', ADD date_created DATETIME NOT NULL, ADD date_last_run DATETIME DEFAULT NULL, DROP run_order");
 	}
 }

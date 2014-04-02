@@ -35,11 +35,21 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Tickets\Escalations\EscalationTerms;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property bool $is_enabled
+ * @property string $event_trigger
+ * @property int $event_trigger_time
+ * @property array $terms
+ * @property \Application\DeskPRO\Tickets\Triggers\TriggerActions $actions
+ * @property \DateTime $date_created
+ * @property \DateTime $date_last_run
+ */
 class TicketEscalation extends DomainObject
 {
 	const EVENT_TYPE_TIME_OPEN                  = 'time.open';
@@ -79,18 +89,29 @@ class TicketEscalation extends DomainObject
 	protected $terms = array();
 
 	/**
+	 * @var array
+	 */
+	protected $terms_any = array();
+
+	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
 	 */
 	protected $actions;
 
 	/**
-	 * @var int
+	 * @var \DateTime
 	 */
-	protected $run_order = 0;
+	protected $date_created;
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_last_run = null;
 
 	public function __construct()
 	{
 		$this->actions = new TriggerActions();
+		$this->date_created = new \DateTime();
 	}
 
 
@@ -101,6 +122,35 @@ class TicketEscalation extends DomainObject
 	{
 		return $this->id;
 	}
+
+
+	/**
+	 * Gets the relevant time field on ticket for a particular ticket trigger.
+	 * For example, 'EVENT_TYPE_TIME_USER_WAITING' is dependant on ticket.date_user_waiting
+	 *
+	 * @return string
+	 */
+	public function getTicketTimeField()
+	{
+		switch ($this->event_trigger) {
+			case self::EVENT_TYPE_TIME_OPEN:
+				return 'date_created';
+
+			case self::EVENT_TYPE_TIME_USER_WAITING:
+			case self::EVENT_TYPE_TIME_TOTAL_USER_WAITING:
+				return 'date_user_waiting';
+
+			case self::EVENT_TYPE_TIME_AGENT_WAITING:
+				return 'date_agent_waiting';
+				break;
+
+			case self::EVENT_TYPE_TIME_RESOLVED:
+				return 'date_resolved';
+		}
+
+		return null;
+	}
+
 
 
 	/**
@@ -170,16 +220,28 @@ class TicketEscalation extends DomainObject
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
+			'columnName' => 'terms_any',
+			'fieldName'  => 'terms_any',
+			'type'       => 'json_array',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
 			'columnName' => 'actions',
 			'fieldName'  => 'actions',
 			'type'       => 'dp_json_obj',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
-			'columnName' => 'run_order',
-			'fieldName'  => 'run_order',
-			'type'       => 'integer',
+			'fieldName'  => 'date_created',
+			'columnName' => 'date_created',
+			'type'       => 'datetime',
 			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_last_run',
+			'columnName' => 'date_last_run',
+			'type'       => 'datetime',
+			'nullable'   => true,
 		));
 	}
 }

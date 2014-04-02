@@ -2135,15 +2135,15 @@ class TicketSearch extends SearcherAbstract
 
 					case 'escalation_eliminator':
 						/** @var $trigger \Application\DeskPRO\Entity\TicketTrigger */
-						$trigger = $choice;
-						$field = $trigger->getTicketTimeField();
+						$escalation = $choice['escalation'];
+						$field = $escalation->getTicketTimeField();
 						if (!$field) {
 							break;
 						}
 
 						$joins[] = array(
-							'ticket_trigger_logs',
-							"LEFT JOIN ticket_trigger_logs AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.trigger_id = {$trigger->id} AND $join_name.date_criteria = tickets.$field)"
+							'ticket_escalation_logs',
+							"LEFT JOIN ticket_escalation_logs AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.escalation_id = {$escalation->id} AND $join_name.date_criteria = tickets.$field)"
 						);
 
 						$wheres[] = "$join_name.id IS NULL";

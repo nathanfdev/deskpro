@@ -29,65 +29,68 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Tickets\Escalations;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Monolog\Logger;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdpaterHandler;
-use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
-use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
-use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketEscalation;
+use Application\DeskPRO\Monolog\NullLogger;
+use Application\DeskPRO\Tickets\TicketManager;
+use Monolog\Logger;
 
-/**
- * Handles time-based triggers
- */
-class TicketTriggers extends AbstractJob
+class EscalationExecutor
 {
-	const DEFAULT_INTERVAL = 60;
+	/**
+	 * @var TicketManager
+	 */
+	private $ticket_manager;
 
-	protected $count_success;
-	protected $count_failed;
+	/**
+	 * @var Logger
+	 */
+	private $logger;
 
-	public function run()
+	public function __construct(TicketManager $ticket_manager)
 	{
-		$escalations = App::$container->getEm()->createQuery("
-			SELECT e
-			FROM DeskPRO:TicketEscalation e
-			WHERE e.is_enabled = true
-			ORDER BY e.date_last_run ASC
-		")->execute();
+		$this->ticket_manager = $ticket_manager;
+		$this->logger = new NullLogger();
+	}
 
-		if (!count($escalations)) {
-			return;
-		}
 
-		$batch_size = 100;
-		$time_limit = 200;
+	/**
+	 * @param Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
 
-		$orb_adapter = new OrbLoggerAdpaterHandler($this->getLogger());
-		$logger = new Logger('TicketTriggers');
-		$logger->pushHandler($orb_adapter);
 
-		$matcher  = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
-		$matcher->setLogger($logger);
+	/**
+	 * @param TicketEscalation $esc
+	 * @param Ticket           $ticket
+	 */
+	public function applyEscalation(TicketEscalation $esc, Ticket $ticket)
+	{
+		$this->_doApplyEscalation($esc, $ticket);
+	}
 
-		$executor = new EscalationExecutor(App::$container->getTicketManager());
-		$executor->setLogger($logger);
 
-		$runner = new EscalationsRunner(
-			$escalations,
-			$matcher,
-			$executor,
-			$batch_size,
-			$time_limit
-		);
-		$runner->setLogger($logger);
+	/**
+	 * @param TicketEscalation $esc
+	 * @param Ticket           $ticket
+	 */
+	private function _doApplyEscalation(TicketEscalation $esc, Ticket $ticket)
+	{
+		$this->ticket_manager->markAsManaged($ticket);
 
-		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
-		$runner->run();
-		unset($GLOBALS['DP_ESCALATION_RUNNING']);
+		$context = $this->ticket_manager->createSystemExecutorContext();
+		$state = $ticket->getStateChangeRecorder();
+		$state->setCurrentChangeMetadata(array('escalation' => $esc));
+
+		$this->ticket_manager->getActionApplicator()->apply($esc->actions, $ticket, $context);
+		$this->ticket_manager->saveTicket($ticket, $context);
 	}
 }

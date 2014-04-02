@@ -35,13 +35,18 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ticket trigger log
+ * @property int $id
+ * @property Ticket $ticket
+ * @property TicketEscalation $escalation
+ * @property \DateTime $date_ran
+ * @property \DateTime $date_criteria
  */
-class TicketTriggerLog extends \Application\DeskPRO\Domain\DomainObject
+class TicketEscalationLog extends DomainObject
 {
 	/**
 	 * @var int
@@ -49,14 +54,14 @@ class TicketTriggerLog extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
+	 * @var Ticket
 	 */
-	protected $ticket_id;
+	protected $ticket;
 
 	/**
-	 * @var int
+	 * @var TicketEscalation
 	 */
-	protected $trigger_id;
+	protected $escalation;
 
 	/**
 	 * The date the trigger was executed on the ticket.
@@ -93,19 +98,54 @@ class TicketTriggerLog extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->setPrimaryTable(array(
-			'name' => 'ticket_trigger_logs',
-			'indexes' => array(
-				'ticket_id_idx' => array('columns' => array('ticket_id', 'trigger_id', 'date_criteria'))
-			)
+			'name' => 'ticket_escalation_logs'
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_id', ));
-		$metadata->mapField(array( 'fieldName' => 'trigger_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'trigger_id', ));
-		$metadata->mapField(array( 'fieldName' => 'date_ran', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_ran', ));
-		$metadata->mapField(array( 'fieldName' => 'date_criteria', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_criteria', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+
+		$metadata->mapField(array(
+			'id'         => true,
+			'fieldName'  => 'id',
+			'columnName' => 'id',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_ran',
+			'columnName' => 'date_ran',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_criteria',
+			'columnName' => 'date_criteria',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'ticket',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+			'joinColumns'  => array(array(
+				'name'                 => 'ticket_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+				'columnDefinition'    => NULL
+			))
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'escalation',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketEscalation',
+			'joinColumns'  => array(array(
+				'name'                 => 'escalation_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+				'columnDefinition'    => NULL
+			))
+		));
 	}
 }

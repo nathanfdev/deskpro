@@ -565,4 +565,13 @@ class TicketManager
 
 		return $logger;
 	}
+
+
+	/**
+	 * @return ActionApplicatorInterface
+	 */
+	public function getActionApplicator()
+	{
+		return $this->action_applicator;
+	}
 }

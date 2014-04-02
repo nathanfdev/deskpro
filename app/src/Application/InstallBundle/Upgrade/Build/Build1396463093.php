@@ -29,65 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Monolog\Logger;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdpaterHandler;
-use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
-use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
-use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
-
-/**
- * Handles time-based triggers
- */
-class TicketTriggers extends AbstractJob
+class Build1396463093 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 60;
-
-	protected $count_success;
-	protected $count_failed;
-
 	public function run()
 	{
-		$escalations = App::$container->getEm()->createQuery("
-			SELECT e
-			FROM DeskPRO:TicketEscalation e
-			WHERE e.is_enabled = true
-			ORDER BY e.date_last_run ASC
-		")->execute();
+		$this->execMutateSql("CREATE TABLE ticket_escalation_logs (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, escalation_id INT DEFAULT NULL, date_ran DATETIME NOT NULL, date_criteria DATETIME NOT NULL, INDEX IDX_10B6C273700047D2 (ticket_id), INDEX IDX_10B6C273703EE70D (escalation_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE ticket_escalation_logs ADD CONSTRAINT FK_10B6C273700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE ticket_escalation_logs ADD CONSTRAINT FK_10B6C273703EE70D FOREIGN KEY (escalation_id) REFERENCES ticket_escalations (id) ON DELETE CASCADE");
 
-		if (!count($escalations)) {
-			return;
-		}
-
-		$batch_size = 100;
-		$time_limit = 200;
-
-		$orb_adapter = new OrbLoggerAdpaterHandler($this->getLogger());
-		$logger = new Logger('TicketTriggers');
-		$logger->pushHandler($orb_adapter);
-
-		$matcher  = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
-		$matcher->setLogger($logger);
-
-		$executor = new EscalationExecutor(App::$container->getTicketManager());
-		$executor->setLogger($logger);
-
-		$runner = new EscalationsRunner(
-			$escalations,
-			$matcher,
-			$executor,
-			$batch_size,
-			$time_limit
-		);
-		$runner->setLogger($logger);
-
-		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
-		$runner->run();
-		unset($GLOBALS['DP_ESCALATION_RUNNING']);
+		$this->execMutateSql("DROP TABLE IF EXISTS ticket_trigger_logs");
 	}
 }
