@@ -11,14 +11,18 @@ define [
 			form.event_trigger_time = escModel.event_trigger_time || 3600
 			form.actions            = escModel.actions?.actions || {}
 
-			form.terms_set       = {}
-			form.terms_set.first = {}
+			form.terms = {}
+			form.actions = {}
 
-			termSetCount = 0
 			if escModel.terms?.terms?.length
 				for term in escModel.terms.terms
-					rowId = Util.uid('term')
-					form.terms_set.first[rowId] = term
+					rowId = _.uniqueId('term')
+					form.terms[rowId] = term
+
+			if escModel.actions?.actions?.length
+				for action in escModel.actions.actions
+					rowId = _.uniqueId('action')
+					form.actions[rowId] = action
 
 			return form
 

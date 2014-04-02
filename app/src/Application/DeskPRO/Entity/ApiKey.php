@@ -166,7 +166,7 @@ class ApiKey extends DomainObject
 			'columnName' => 'flags',
 			'fieldName'  => 'flags',
 			'type'       => 'simple_array',
-			'nullable'   => false,
+			'nullable'   => true,
 		));
 
 		$metadata->mapManyToOne(array(

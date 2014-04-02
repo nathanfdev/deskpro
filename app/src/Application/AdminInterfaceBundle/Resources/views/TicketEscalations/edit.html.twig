@@ -33,7 +33,7 @@
 										ui-select2
 										style="width: 300px;"
 										>
-									<option value="time.open">The ticket has been unresolved for...</option>
+									<option value="time.open">The ticket has been open for...</option>
 									<option value="time.user_waiting">The user has been waiting for...</option>
 									<option value="time.total_user_waiting">The total time the user has been waiting
 										is...
@@ -68,7 +68,7 @@
 								</header>
 								<article>
 									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
-													   save-target="EditCtrl.form.terms_set.first"
+													   save-target="EditCtrl.form.terms"
 													   options="{tag_first: false, tag_after: 'and'}"
 													   option-types="EditCtrl.criteriaOptionTypes">
 										<add-btn-label>Criteria</add-btn-label>

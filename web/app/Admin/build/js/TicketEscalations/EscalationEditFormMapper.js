@@ -7,21 +7,28 @@
       function Admin_TicketEscalations_EscalationEditFormMapper() {}
 
       Admin_TicketEscalations_EscalationEditFormMapper.prototype.getFormFromModel = function(escModel) {
-        var form, rowId, term, termSetCount, _i, _len, _ref, _ref1, _ref2, _ref3;
+        var action, form, rowId, term, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
         form = {};
         form.title = escModel.title || '';
         form.event_trigger = escModel.event_trigger || 'time.open';
         form.event_trigger_time = escModel.event_trigger_time || 3600;
         form.actions = ((_ref = escModel.actions) != null ? _ref.actions : void 0) || {};
-        form.terms_set = {};
-        form.terms_set.first = {};
-        termSetCount = 0;
+        form.terms = {};
+        form.actions = {};
         if ((_ref1 = escModel.terms) != null ? (_ref2 = _ref1.terms) != null ? _ref2.length : void 0 : void 0) {
           _ref3 = escModel.terms.terms;
           for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
             term = _ref3[_i];
-            rowId = Util.uid('term');
-            form.terms_set.first[rowId] = term;
+            rowId = _.uniqueId('term');
+            form.terms[rowId] = term;
+          }
+        }
+        if ((_ref4 = escModel.actions) != null ? (_ref5 = _ref4.actions) != null ? _ref5.length : void 0 : void 0) {
+          _ref6 = escModel.actions.actions;
+          for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
+            action = _ref6[_j];
+            rowId = _.uniqueId('action');
+            form.actions[rowId] = action;
           }
         }
         return form;

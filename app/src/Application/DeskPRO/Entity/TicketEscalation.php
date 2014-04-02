@@ -34,16 +34,13 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Tickets\Escalations\EscalationTerms;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-/**
- * Ticket triggers
- *
- */
-class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
+class TicketEscalation extends DomainObject
 {
 	const EVENT_TYPE_TIME_OPEN                  = 'time.open';
 	const EVENT_TYPE_TIME_USER_WAITING          = 'time.user_waiting';
@@ -77,9 +74,9 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 	protected $event_trigger_time;
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\Escalations\EscalationTerms
+	 * @var array
 	 */
-	protected $terms;
+	protected $terms = array();
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
@@ -93,7 +90,6 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->terms   = new EscalationTerms();
 		$this->actions = new TriggerActions();
 	}
 
@@ -113,7 +109,7 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
-		$data['terms']   = $this->terms->exportToArray();
+		$data['terms']   = $this->terms;
 		$data['actions'] = $this->actions->exportToArray();
 		return $data;
 	}
@@ -170,13 +166,13 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'terms',
 			'fieldName'  => 'terms',
-			'type'       => 'object',
+			'type'       => 'json_array',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'actions',
 			'fieldName'  => 'actions',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(

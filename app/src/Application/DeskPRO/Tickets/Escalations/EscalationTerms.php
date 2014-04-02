@@ -38,9 +38,6 @@ use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
 
-// TODO
-require_once(DP_ROOT.'/src/Application/DeskPRO/Tickets/Filters/Terms/TODO.php');
-
 class EscalationTerms implements \Serializable, FilterTermInterface
 {
 	/**

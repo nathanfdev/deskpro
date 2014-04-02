@@ -39,6 +39,8 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketEscalation;
 use Application\DeskPRO\Tickets\Escalations\EscalationTerms;
+use Application\DeskPRO\Tickets\Filters\FilterTerms;
+use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 
 class TicketEscalationsController extends AbstractController implements ProtectedControllerInterface
@@ -94,8 +96,14 @@ class TicketEscalationsController extends AbstractController implements Protecte
 			throw $this->createNotFoundException();
 		}
 
+		$trans = new LegacyTermsTransformer();
+		$crit = $trans->toFilterTerms($esc->terms);
+
+		$esc = $this->getApiData($esc);
+		$esc['terms'] = $crit->exportToArray();
+
 		return $this->createApiResponse(array(
-			'escalation' => $this->getApiData($esc)
+			'escalation' => $esc
 		));
 	}
 
@@ -119,12 +127,13 @@ class TicketEscalationsController extends AbstractController implements Protecte
 		$esc->event_trigger = $this->in->getString('event_trigger');
 		$esc->event_trigger_time = $this->in->getUint('event_trigger_time') ?: 1;
 
-		$terms = new EscalationTerms();
-		foreach ($this->in->getArrayValue('terms') as $term) {
-			if ($term) {
-				$terms->addTermFromArray($term);
-			}
+		$crit = new FilterTerms();
+		foreach ($this->in->getArrayValue('terms') as $term_info) {
+			$crit->addTermFromArray($term_info);
 		}
+
+		$trans = new LegacyTermsTransformer();
+		$esc->terms = $trans->toLegacyTerms($crit);
 
 		$actions = new TriggerActions();
 		foreach ($this->in->getArrayValue('actions') as $act) {
@@ -132,8 +141,6 @@ class TicketEscalationsController extends AbstractController implements Protecte
 				$actions->addActionFromArray($act);
 			}
 		}
-
-		$esc->terms = $terms;
 		$esc->actions = $actions;
 
 		$this->em->persist($esc);
