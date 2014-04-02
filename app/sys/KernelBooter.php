@@ -37,6 +37,7 @@ require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Console\CronApplication;
 use Application\DeskPRO\PageLog\PageLogger;
 
 class KernelBooter
@@ -894,7 +895,11 @@ class KernelBooter
 			throw $e;
 		}
 
-		$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
+		if ($mode == 'cron') {
+			$app = new CronApplication($kernel);
+		} else {
+			$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
+		}
 		$app->setCatchExceptions(false);
 		return $app;
 	}

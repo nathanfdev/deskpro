@@ -36,7 +36,6 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
 /**
