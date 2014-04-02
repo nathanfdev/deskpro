@@ -188,11 +188,30 @@ if (!defined('DPC_IS_CLOUD') && ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cr
 		$data['error_log_real'] = DP_REAL_ERROR_LOG;
 
 		if ($data['error_log'] && file_exists($data['error_log']) && is_readable($data['error_log'])) {
-			$data['error_log_hash'] = md5_file($data['error_log']);
+			if (filesize($data['error_log']) < 512000) {
+				$data['error_log_hash'] = md5_file($data['error_log']);
+			} else {
+				$data['error_log_hash'] = filemtime($data['error_log']);
+			}
 
 			if ($last_error_log_hash != $data['error_log_hash']) {
-				@copy($data['error_log'], dp_get_log_dir() . '/cli-phperr.log');
-				@chmod(dp_get_log_dir() . '/cli-phperr.log', 0777);
+				// Small log files, just copy
+				if (filesize($data['error_log']) < 512000) {
+					@copy($data['error_log'], dp_get_log_dir() . '/cli-phperr.log');
+					@chmod(dp_get_log_dir() . '/cli-phperr.log', 0777);
+
+				// Large log files, get the tailing 500kb
+				} else {
+					$fp_write = @fopen(dp_get_log_dir() . '/cli-phperr.log', 'w');
+					$fp_read  = @fopen($data['error_log'], 'r');
+					if ($fp_write && $fp_read) {
+						@fseek($fp_read, -512000, SEEK_END);
+						@stream_copy_to_stream($fp_read, $fp_write);
+					}
+					if ($fp_write) @fclose($fp_write);
+					if ($fp_read) @fclose($fp_read);
+					@chmod(dp_get_log_dir() . '/cli-phperr.log', 0777);
+				}
 			}
 		}
 
