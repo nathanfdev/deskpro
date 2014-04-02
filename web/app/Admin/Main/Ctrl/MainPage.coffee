@@ -14,6 +14,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					@$scope.isBillingInterface = true
 				else
 					@$scope.isBillingInterface = false
+
+				$('.dp-layout-appbody').scrollTop(0);
 			)
 			return
 

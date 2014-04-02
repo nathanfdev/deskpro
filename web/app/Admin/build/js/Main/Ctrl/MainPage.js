@@ -24,10 +24,11 @@
         this.$rootScope.$on('$locationChangeSuccess', (function(_this) {
           return function() {
             if (_this.$location.path() === '/license') {
-              return _this.$scope.isBillingInterface = true;
+              _this.$scope.isBillingInterface = true;
             } else {
-              return _this.$scope.isBillingInterface = false;
+              _this.$scope.isBillingInterface = false;
             }
+            return $('.dp-layout-appbody').scrollTop(0);
           };
         })(this));
       };
