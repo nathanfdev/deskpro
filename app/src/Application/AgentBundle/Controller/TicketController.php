@@ -1846,7 +1846,7 @@ class TicketController extends AbstractController
 
 			$validator = new NewTicketValidator();
 			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
-			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
 			$validator->setLayout($layout);
 
 			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');

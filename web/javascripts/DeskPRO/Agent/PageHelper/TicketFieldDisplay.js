@@ -14,22 +14,25 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 		department_id = parseInt(department_id);
 		DP.console.log('[TicketFieldDisplay] department %i', department_id);
 
-		var depItems = [];
-		if (window.DESKPRO_TICKET_DISPLAY && window.DESKPRO_TICKET_DISPLAY[this.mode]) {
+		var depItems = [], layout, filterFn;
+		if (window.DESKPRO_TICKET_DISPLAY) {
+			layout = window.DESKPRO_TICKET_DISPLAY.getLayout(department_id);
+			depItems = layout.getFields();
 
-			if (this.mode == 'view') {
-				if (typeof window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] == 'undefined' && typeof window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] == 'undefined') {
-					DP.console.log('[TicketFieldDisplay] Dynamic switch mode to create');
-					this.mode = 'create';
-				}
+			switch (this.mode) {
+				case 'view':
+					filterFn = function(i) { return !!i.isVisibleOnView; }
+					break;
+				case 'modify':
+					filterFn = function(i) { return !!i.isVisibleOnEdit; }
+					break;
+				case 'create':
+					filterFn = function(i) { return !!i.isVisibleOnNew; }
+					break;
 			}
 
-			if (typeof window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] == 'undefined') {
-				DP.console.log('[TicketFieldDisplay] Dynamic switch to dep 0');
-				depItems = window.DESKPRO_TICKET_DISPLAY[this.mode][0] || [];
-			} else {
-				DP.console.log('[TicketFieldDisplay] Using dep');
-				depItems = window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] || [];
+			if (filterFn) {
+				depItems = depItems.filter(filterFn);
 			}
 		}
 
@@ -55,15 +58,16 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 		//------------------------------
 
 		Array.each(depItems, function(item) {
-			if (!items[item.section]) {
-				items[item.section] = [];
+			var section = 'default';
+			if (!items[section]) {
+				items[section] = [];
 			}
 
-			switch (item.section) {
+			switch (section) {
 				case 'default':
 					var state = this.runCheckForItem(item);
 					if (state) {
-						items[item.section].push(item);
+						items[section].push(item);
 					}
 					break;
 			}
@@ -82,7 +86,7 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 		var visible = true;
 
 		// If the check function passes, then inverse visibility
-		if (item.check && !item.check(this.ticketReader)) {
+		if (item.checkFn && !item.checkFn(this.ticketReader)) {
 			visible = false;
 		}
 

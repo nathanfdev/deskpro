@@ -208,21 +208,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var depSel = this.getEl('dep');
 
 		var ticketReader = {
+			getDepartmentId: function() {
+				return parseInt(depSel.val()) || 0;
+			},
 			getCategoryId: function() {
 				var catId = self.getEl('cat').val();
 				return parseInt(catId) || 0;
-			},
-			getPriorityVal: function() {
-				var id = this.getPriorityId();
-				if (!id) {
-					return -999999999;
-				}
-
-				if (!window.DESKPRO_TICKET_PRI_MAP || !window.DESKPRO_TICKET_PRI_MAP[id]) {
-					return 0;
-				}
-
-				return parseInt(window.DESKPRO_TICKET_PRI_MAP[id]);
 			},
 			getPriorityId: function() {
 				var catId = self.getEl('pri').val();
@@ -235,7 +226,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			getOrganizationId: function() {
 				return 0;
 			},
-			getWorkflow: function() {
+			getWorkflowId: function() {
 				var catId = self.getEl('work').val();
 				return parseInt(catId) || 0;
 			}

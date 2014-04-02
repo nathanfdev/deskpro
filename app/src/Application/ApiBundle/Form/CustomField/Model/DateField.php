@@ -70,6 +70,9 @@ class DateField extends CustomFieldAbstract
 		if ($this->_field->getOption('agent_required')) {
 			$this->agent_required = true;
 		}
+		if ($this->_field->getOption('agent_validation_resolve')) {
+			$this->agent_validation_resolve = true;
+		}
 
 		if ($this->_field->getOption('date_valid_dow')) {
 			$this->date_valid_dow = $this->_field->getOption('date_valid_dow');

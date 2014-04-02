@@ -160,7 +160,7 @@ pageMeta.baseId = '{{ baseId }}';
 				</tbody>
 
 				{% if app.getSetting('core.use_ticket_category') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_category inline-field" style="display: none;">
+					<tbody class="col fieldprop ticket-field item-on category inline-field" style="display: none;">
 						<th>{{ phrase('agent.general.category') }}</th>
 						<td>
 							<div>
@@ -177,7 +177,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_priority') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_priority inline-field" style="display: none;">
+					<tbody class="col fieldprop ticket-field item-on priority inline-field" style="display: none;">
 						<th>{{ phrase('agent.general.priority') }}</th>
 						<td>
 							{% include 'AgentBundle:Common:select-priority.html.twig' with {
@@ -193,7 +193,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_workflow') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_workflow inline-field" style="clear:both;display: none;">
+					<tbody class="col fieldprop ticket-field item-on workflow inline-field" style="clear:both;display: none;">
 						<th>{{ phrase('agent.general.workflow') }}</th>
 						<td>
 							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
@@ -209,7 +209,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_product') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_product inline-field" style="clear:both;display: none;">
+					<tbody class="col fieldprop ticket-field item-on product inline-field" style="clear:both;display: none;">
 						<th>{{ phrase('agent.general.product') }}</th>
 						<td>
 							{% include 'AgentBundle:Common:select-product.html.twig' with {

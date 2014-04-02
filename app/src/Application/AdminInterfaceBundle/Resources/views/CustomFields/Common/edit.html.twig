@@ -123,11 +123,11 @@
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.text.user_validation" value="required" /> Require the user to provide a value</label>
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.text.user_validation" value="regex" /> Match regular expression</label>
 										<p ng-show="EditCtrl.form.text.user_validation == 'required'">
-											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.user_validation_minlength" style="width: 50px;" />
-											Max characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.user_validation_maxlength" style="width: 50px;" />
+											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.user_min_length" style="width: 50px;" />
+											Max characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.user_max_length" style="width: 50px;" />
 										</p>
 										<p ng-show="EditCtrl.form.text.user_validation == 'regex'">
-											<input type="text" class="form-control" ng-model="EditCtrl.form.text.user_validation_regex" style="width: 50%;" placeholder="Enter pattern here" />
+											<input type="text" class="form-control" ng-model="EditCtrl.form.text.user_regex" style="width: 50%;" placeholder="Enter pattern here" />
 										</p>
 									</div>
 								</div>
@@ -143,11 +143,11 @@
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.text.agent_validation" value="required" /> Require the agent to provide a value</label>
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.text.agent_validation" value="regex" /> Match regular expression</label>
 										<p ng-show="EditCtrl.form.text.agent_validation == 'required'">
-											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.agent_validation_minlength" style="width: 50px;" />
-											Max characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.agent_validation_maxlength" style="width: 50px;" />
+											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.agent_min_length" style="width: 50px;" />
+											Max characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.agent_max_length" style="width: 50px;" />
 										</p>
 										<p ng-show="EditCtrl.form.text.agent_validation == 'regex'">
-											<input type="text" class="form-control" ng-model="EditCtrl.form.text.agent_validation_regex" style="width: 50%;" placeholder="Enter pattern here" />
+											<input type="text" class="form-control" ng-model="EditCtrl.form.text.agent_regex" style="width: 50%;" placeholder="Enter pattern here" />
 										</p>
 										<p ng-show="EditCtrl.form.text.agent_validation && EditCtrl.form.text.agent_validation != '0'">
 											<label style="font-weight: normal">

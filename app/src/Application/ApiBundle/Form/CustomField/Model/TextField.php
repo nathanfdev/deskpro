@@ -75,6 +75,9 @@ class TextField extends CustomFieldAbstract
 			$this->agent_validation_type = 'regex';
 			$this->agent_regex = $this->_field->getOption('agent_regex');
 		}
+		if ($this->_field->getOption('agent_validation_resolve')) {
+			$this->agent_validation_resolve = true;
+		}
 	}
 
 	protected function setFieldProperties()
@@ -83,40 +86,51 @@ class TextField extends CustomFieldAbstract
 
 		$field->default_value = $this->default_value;
 
-		if ($this->validation_type == 'required') {
+		if ($this->min_length || $this->max_length) {
+			$this->validation_type = 'required';
 			$field->setOption('required', true);
 			$field->setOption('min_length', $this->min_length);
 			$field->setOption('max_length', $this->max_length);
-		} elseif ($this->validation_type == 'regex') {
-			$field->setOption('required', false);
-
+			$field->setOption('regex', null);
+		} else if ($this->regex) {
 			// No delims
 			if ($this->regex[0] != substr($this->regex, -1, 1)) {
 				$this->regex = '/' . $this->regex . '/';
 			}
 
+			$this->validation_type = 'regex';
+			$field->setOption('required', null);
 			$field->setOption('regex', $this->regex);
+			$field->setOption('min_length', null);
+			$field->setOption('max_length', null);
 		} else {
+			$this->validation_type = null;
 			$field->setOption('required', null);
 			$field->setOption('regex', null);
 			$field->setOption('min_length', null);
 			$field->setOption('max_length', null);
 		}
 
-		if ($this->agent_validation_type == 'required') {
+		if ($this->agent_min_length || $this->agent_max_length) {
+			$this->agent_validation_type = 'required';
 			$field->setOption('agent_required', true);
 			$field->setOption('agent_min_length', $this->agent_min_length);
 			$field->setOption('agent_max_length', $this->agent_max_length);
-		} elseif ($this->agent_validation_type == 'regex') {
-			$field->setOption('agent_required', false);
+			$field->setOption('agent_regex', null);
+		} else if ($this->agent_regex) {
+			$this->agent_validation_type = 'regex';
 
 			// No delims
 			if ($this->agent_regex[0] != substr($this->agent_regex, -1, 1)) {
 				$this->agent_regex = '/' . $this->agent_regex . '/';
 			}
 
+			$field->setOption('agent_required', null);
 			$field->setOption('agent_regex', $this->agent_regex);
+			$field->setOption('agent_min_length', null);
+			$field->setOption('agent_max_length', null);
 		} else {
+			$this->agent_validation_type = null;
 			$field->setOption('agent_required', null);
 			$field->setOption('agent_regex', null);
 			$field->setOption('agent_min_length', null);

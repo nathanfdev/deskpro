@@ -87,6 +87,10 @@ class ChoiceField extends CustomFieldAbstract
 			$this->agent_max_length = $this->_field->getOption('agent_max_length');
 		}
 
+		if ($this->_field->getOption('agent_validation_resolve')) {
+			$this->agent_validation_resolve = true;
+		}
+
 		if ($this->multiple) {
 			if ($this->expanded) {
 				$this->field_type = 'checkbox';
@@ -130,21 +134,25 @@ class ChoiceField extends CustomFieldAbstract
 		$field->setOption('multiple', $this->multiple);
 		$field->setOption('expanded', $this->expanded);
 
-		if ($this->validation_type == 'required') {
+		if ($this->min_length || $this->max_length) {
+			$this->validation_type = 'required';
 			$field->setOption('required', true);
 			$field->setOption('min_length', $this->min_length);
 			$field->setOption('max_length', $this->max_length);
 		} else {
+			$this->validation_type = null;
 			$field->setOption('required', null);
 			$field->setOption('min_length', null);
 			$field->setOption('max_length', null);
 		}
 
-		if ($this->agent_validation_type == 'required') {
-			$field->setOption('agent_required',   true);
+		if ($this->agent_max_length || $this->agent_min_length) {
+			$this->agent_validation_type = 'required';
+			$field->setOption('agent_required', true);
 			$field->setOption('agent_min_length', $this->agent_min_length);
 			$field->setOption('agent_max_length', $this->agent_max_length);
 		} else {
+			$this->agent_validation_type = null;
 			$field->setOption('agent_required', null);
 			$field->setOption('agent_min_length', null);
 			$field->setOption('agent_max_length', null);

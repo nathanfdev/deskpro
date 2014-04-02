@@ -109,6 +109,35 @@ class NewTicket
 		$this->person = new NewTicketPerson();
 	}
 
+
+	/**
+	 * @return Ticket
+	 */
+	public function getMockTicket()
+	{
+		$t = new Ticket();
+
+		if ($this->department_id) {
+			$t->setDepartmentId($this->department_id);
+		}
+		if ($this->workflow_id) {
+			$t->setWorkflowId($this->workflow_id);
+		}
+		if ($this->product_id) {
+			$t->setProductId($this->product_id);
+		}
+		if ($this->priority_id) {
+			$t->setPriorityId($this->priority_id);
+		}
+		if ($this->category_id) {
+			$t->setCategoryId($this->category_id);
+		}
+		if ($this->status) {
+			$t->setStatus($this->status);
+		}
+		return $t;
+	}
+
 	public function setValuesFromTicket(Ticket $ticket)
 	{
 		$this->exist_ticket  = $ticket;
