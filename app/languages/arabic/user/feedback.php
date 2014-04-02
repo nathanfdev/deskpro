@@ -31,6 +31,7 @@
 	'user.feedback.title-feedback'                                         => 'هناك {{count}} أقتراح| هناك 1 أقتراحات',
 	'user.feedback.title-feedback-closed'                                  => '1 أقتراح مغلق|{{count}} أقتراحات مغلقة',
 	'user.feedback.title-status'                                           => '1 أقتراح نشط|{{count}} أقتراحات نشطة',
+	'user.feedback.type'                                                   => 'النوع',
 	'user.feedback.type_feedback'                                          => 'أقتراح',
 	'user.feedback.voting_button-yes'                                      => 'موافق',
 	'user.feedback.voting_closed'                                          => 'التصويت مغلق',

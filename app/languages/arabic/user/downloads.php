@@ -1,5 +1,6 @@
 <?php return array(
 	'user.downloads.button-download'                                       => 'تحميل',
+	'user.downloads.change_file'                                           => 'تغيير الملف',
 	'user.downloads.downloads-count'                                       => 'هذا الملف تم تحميله مره واحده | عدد مرات تحميل الملف  {{count}}',
 	'user.downloads.file_not_found'                                        => 'لا يمكن العثور علي هذا الملف',
 	'user.downloads.message_no-files'                                      => 'لا توجد ملفات في هذا المجلد',

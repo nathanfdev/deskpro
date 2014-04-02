@@ -8,7 +8,7 @@
 	'user.knowledgebase.link_view-all'                                     => 'Den 1 Artikel ansehen|Alle {{count}} Artikel ansehen',
 	'user.knowledgebase.related_articles'                                  => 'Verwandte Artikel',
 	'user.knowledgebase.sidebar_description'                               => 'Unsere Wissensdatenbank enthält 1 Frage geschrieben von unserem Support-Team um Ihnen zu helfen Ihre Frage zu beantworten|Unsere Wissensdatenbank enthält {{count}} Fragen geschrieben von unserem Support-Team um Ihnen zu helfen Ihre Frage zu beantworten',
-	'user.knowledgebase.subscribe-article'                                 => '<a href="{{link}}">Abonnieren</a> Sie diesen Artikel um eine Benachrichtigung zu erhalten sobald er aktualisiert wird.',
+	'user.knowledgebase.subscribe-article'                                 => '<a href="{{link}}">Abonnieren</a> Sie diesen Artikel um eine Benachrichtigung per Email zu erhalten sobald er aktualisiert wird.',
 	'user.knowledgebase.subscribe-category'                                => '<a href="{{link}}">Abonnieren</a> Sie diese Kategorie um eine Benachrichtigung per Email zu erhalten sobald neue Artikel publiziert werden.',
 	'user.knowledgebase.title'                                             => 'Knowledgebase',
 	'user.knowledgebase.title-articles'                                    => 'Es gibt 1 Artikel|Es gibt {{count}} Artikel',

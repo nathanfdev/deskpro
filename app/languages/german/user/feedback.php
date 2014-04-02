@@ -31,6 +31,7 @@
 	'user.feedback.title-feedback'                                         => 'Es gibt einen Artikel mit Feedback|Es gibt {{count}} Artikel mit Feedback',
 	'user.feedback.title-feedback-closed'                                  => 'Ein Artikel mit geschlossenem Feedback|{{count}} Artikel mit geschlossenem Feedback',
 	'user.feedback.title-status'                                           => 'Ein Artikel mit offenem und aktivem Feedback|{{count}} Artikel mit offenem und aktivem Feedback',
+	'user.feedback.type'                                                   => 'Typ',
 	'user.feedback.type_feedback'                                          => 'Vorschalg',
 	'user.feedback.voting_button-yes'                                      => 'Ich stimme zu',
 	'user.feedback.voting_closed'                                          => 'Voting geschlossen',

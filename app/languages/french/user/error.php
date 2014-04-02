@@ -1,10 +1,10 @@
 <?php return array(
 	'user.error.attach_ext-allowed'                                        => 'Seuls les types de fichiers suivants peuvent être téléchargés:{{error_detail}}',
 	'user.error.attach_ext-not-allow'                                      => 'Le type de fichier que vous avez téléchargé n\'est pas supporté.',
-	'user.error.attach_failed'                                             => 'Votre pièce-jointe n\'a pas pu être téléchargée (avez-vous annulé le téléchargement?). Vous devriez réessayer.',
+	'user.error.attach_failed'                                             => 'Votre pièce jointe n\'a pas pu être téléchargée (avez-vous annulé le téléchargement?). Vous devriez réessayer.',
 	'user.error.attach_no-file'                                            => 'Sélectionnez un fichier à télécharger',
-	'user.error.attach_size'                                               => 'Votre pièce-jointe est trop lourde. Votre fichier ne doit pas dépasser {{error_detail}}',
-	'user.error.attach_unknown-error'                                      => 'Un problème avec notre serveur est survenu lors du téléchargement de votre pièce-jointe. Merci de réessayer.',
+	'user.error.attach_size'                                               => 'Votre pièce jointe est trop lourde. Votre fichier ne doit pas dépasser {{error_detail}}',
+	'user.error.attach_unknown-error'                                      => 'Un problème avec notre serveur est survenu lors du téléchargement de votre pièce jointe. Merci de réessayer.',
 	'user.error.error_code'                                                => 'Code d\'erreur',
 	'user.error.error_title'                                               => 'Erreur',
 	'user.error.expired-token'                                             => 'Le délai d\'attente pour afficher la page choisie a expiré. Merci de revenir en arrière et réessayer.',
