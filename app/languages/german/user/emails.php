@@ -23,6 +23,7 @@
 	'user.emails.kb-new-articles'                                          => '1 neuer Artikel|{{count}} neue Artikel',
 	'user.emails.kb-updated-articles'                                      => '1 aktualisierter Artikel|{{count}} aktualisierte Artikel',
 	'user.emails.label_view-online'                                        => 'Online ansehen',
+	'user.emails.message-clipped'                                          => '(Nachricht wurde abgeschnitten)',
 	'user.emails.password_agent-reset'                                     => 'Ein Agent hat Ihr Kennwort zurückgesetzt. Sie können sich mit diesen Anmeldeinformationen anmelden',
 	'user.emails.password_reset'                                           => 'Sie baten um einen Kennwort-Reset. Um Ihr Kennwort zurückzusetzen klicken Sie auf den untenstehenden Link:',
 	'user.emails.profile_email-new-confirm'                                => 'Um das Hinzufügen dieser sekundären Email Adresse zu Ihrem Konto abzuschliessen einfach auf den folgenden Validierungslink klicken',

@@ -1,10 +1,10 @@
 <?php return array(
 	'agent.deal.add_organization'                                          => 'Ajouter une organisation',
 	'agent.deal.add_user'                                                  => 'Ajouter un utilisateur',
-	'agent.deal.change_organization'                                       => 'Modifier l&#039;organisation',
+	'agent.deal.change_organization'                                       => 'Modifier l\'organisation',
 	'agent.deal.created_by'                                                => 'Créé par',
 	'agent.deal.custom_field_a'                                            => 'Champ personnalisé A',
-	'agent.deal.due_today'                                                 => 'Prévu pour aujourd&#039;hui',
+	'agent.deal.due_today'                                                 => 'Prévu pour aujourd\'hui',
 	'agent.deal.edit_custome_fields'                                       => 'Editer les champs personnalisables',
 	'agent.deal.edit_name'                                                 => 'éditer un nom',
 	'agent.deal.enter_note_'                                               => 'Faire une note...',

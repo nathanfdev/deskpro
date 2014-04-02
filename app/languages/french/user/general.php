@@ -1,6 +1,6 @@
 <?php return array(
 	'user.general.add'                                                     => 'Ajouter',
-	'user.general.attachments'                                             => 'Pièce-jointes',
+	'user.general.attachments'                                             => 'Pièce jointes',
 	'user.general.can-view-because-agent'                                  => 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.',
 	'user.general.comments_add-comment'                                    => 'Ajouter un commentaire',
 	'user.general.comments_logged_in_as'                                   => 'Connecté en tant que',
