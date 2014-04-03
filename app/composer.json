@@ -26,11 +26,12 @@
 		"phpmd/phpmd": "1.5.0",
 		"satooshi/php-coveralls": "~0.6",
 		"codeception/codeception": "*",
-		"erusev/parsedown": "dev-master"
+		"erusev/parsedown": "dev-master",
+		"deskpro/deskpro-api-php": "dev-master"
 	},
 	"scripts": {
-		"pre-update-cmd":   ["rm -rf vendor/", "mkdir vendor"],
-		"pre-install-cmd":   ["rm -rf vendor/", "mkdir vendor", "rm composer.lock"],
+		"pre-update-cmd":   ["test -d vendor && rm -rf vendor/ || true", "mkdir vendor"],
+		"pre-install-cmd":  ["test -d vendor && rm -rf vendor/ || true", "mkdir vendor", "test -f composer.lock && rm composer.lock || true"],
 		"post-update-cmd":  ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git", "rm -rf vendor/**/**/**/**.git"],
  		"post-install-cmd": ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git", "rm -rf vendor/**/**/**/**.git"]
 	},
