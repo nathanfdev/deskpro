@@ -255,7 +255,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		$per_page = 25; $page = 1; $top = false;
 
 		// Fulltext matches
-		$r = $this->query($query_text, 10, 1, $limit_types, true);
+		$r = $this->query($query_text, $per_page, $page, $limit_types, true);
 		if ($r->count()) {
 			return $r;
 		}
