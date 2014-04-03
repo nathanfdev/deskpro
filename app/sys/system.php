@@ -301,7 +301,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				# Expiry checks
 				#------------------------------
 
-				if (DP_INTERFACE != 'billing') {
+				if (DP_INTERFACE != 'billing' && !preg_match('#^/(index\.php/)?agent/login#', $request->getRequestUri()) && !preg_match('#^/(index\.php/)?login#', $request->getRequestUri())) {
 					if (defined('DPC_IS_CLOUD')) {
 						// Demos have a set expiry date
 						if (License::getLicense()->isPastExpireDate()) {
