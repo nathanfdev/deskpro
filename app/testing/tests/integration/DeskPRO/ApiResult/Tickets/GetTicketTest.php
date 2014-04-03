@@ -203,10 +203,10 @@ class GetTicketTest extends AbstractApiResultTest
 				'is_own_validated' => false,
 				'is_validated' => true,
 				'comment' => '',
-				'date_created' => '2014-04-03 11:51:12',
+				'date_created' => '2014-04-03 11:51:13',
 				'date_created_ts' => 1396525872,
 				'date_created_ts_ms' => 1396525872000,
-				'date_validated' => '2014-04-03 11:51:12',
+				'date_validated' => '2014-04-03 11:51:13',
 				'date_validated_ts' => 1396525872,
 				'date_validated_ts_ms' => 1396525872000,
 			),
@@ -228,17 +228,7 @@ class GetTicketTest extends AbstractApiResultTest
 			),
 			'labels' =>
 			array(
-			),
-			'total_user_waiting_real' => 2998,
-			'total_user_waiting_work' => 2998,
-			'current_user_waiting' => 2998,
-			'current_user_waiting_work' => 2998,
-			'total_to_first_reply_work' => 0,
-			'total_to_resolution' => NULL,
-			'total_to_resolution_work' => NULL,
-			'access_code' => 'BA2DBANYHQAACM8W',
-			'access_code_email_body_token' => '(#BA2DBANYHQAACM8W)',
-			'access_code_email_header_token' => 'PTAC-BA2DBANYHQAACM8W',
+			)
 		);
 		$ticketId = 1;
 
@@ -254,13 +244,43 @@ class GetTicketTest extends AbstractApiResultTest
 
 		// Some values keep updating with time, so we need to check/unset them
 		$timeKeys = array(
+			'ref',
+			'auth',
+			'access_code',
+			'access_code_email_body_token',
+			'access_code_email_header_token',
+			'date_created',
+			'date_created_ts',
+			'date_created_ts_ms',
+			'date_first_agent_reply',
+			'date_first_agent_reply_ts',
+			'date_first_agent_reply_ts_ms',
+			'date_last_agent_reply',
+			'date_last_agent_reply_ts',
+			'date_last_agent_reply_ts_ms',
+			'date_user_waiting',
+			'date_user_waiting_ts',
+			'date_user_waiting_ts_ms',
+			'date_status',
+			'date_status_ts',
+			'date_status_ts_ms',
+			'person',
+			'person_email',
+			//'date_created',
+			//'date_created_ts',
+			//'date_created_ts_ms',
+			//'date_created_ts_ms',
 			'total_user_waiting_real',
 			'total_user_waiting_work',
 			'current_user_waiting',
-			'current_user_waiting_work'
+			'current_user_waiting_work',
+			'total_to_first_reply_work',
+			'total_to_resolution',
+			'total_to_resolution_work'
 		);
 
 		foreach ($timeKeys as $key) {
+			$this->assertArrayHasKey($key, $retrievedTicketArray);
 			unset($retrievedTicketArray[$key]);
 			unset($expectedTicketArray[$key]);
 		}
