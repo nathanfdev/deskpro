@@ -19,7 +19,6 @@ return array(
     'Pheanstalk' => array($vendorDir . '/pda/pheanstalk/classes'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'PHP_' => array($vendorDir . '/pdepend/pdepend/src/main/php'),
-    'Monolog' => array($vendorDir . '/monolog/monolog/src'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'Leth\\IPAddress' => array($vendorDir . '/leth/ip-address/classes'),
     'Imagine' => array($vendorDir . '/imagine/imagine/lib'),

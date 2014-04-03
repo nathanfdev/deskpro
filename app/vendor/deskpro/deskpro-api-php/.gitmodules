@@ -1,0 +1,3 @@
+[submodule "examples"]
+	path = examples
+	url = https://github.com/DeskPRO/deskpro-api-php-examples.git
