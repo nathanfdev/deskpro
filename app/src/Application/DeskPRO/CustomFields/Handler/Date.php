@@ -98,10 +98,15 @@ class Date extends HandlerAbstract
 		$setData = null;
 		if ($data AND !empty($data['value'])) {
 			try {
-				$date = new \DateTime('@' . $data['value']);
-				$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-				//$setData = $date->getTimestamp();
-				$setData = $date->format('Y-m-d');
+				if (ctype_digit($data['value'])) {
+					$date = new \DateTime('@' . $data['value']);
+					$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+					$setData = $date->format('Y-m-d');
+				} else {
+					$date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+					$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+					$setData = $date->format('Y-m-d');
+				}
 			} catch (\Exception $e) {
 				$setData = null;
 			}
