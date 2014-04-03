@@ -325,6 +325,11 @@ unset($errors);
 
 //==BEGIN:MONITORING==
 if (extension_loaded('newrelic')) {
+
+	// We report errors to newrelic in the error handler.
+	// Having this enabled results in bogus errors being reported (eg a try/catch around a date we expect to fail)
+	ini_set('newrelic.error_collector.enabled', false);
+
 	if ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'web') || !defined('DP_BOOT_MODE')) {
 		if (defined('DPC_SITE_DOMAIN')) newrelic_add_custom_parameter('dpc_domain', DPC_SITE_DOMAIN);
 		newrelic_capture_params(true);
