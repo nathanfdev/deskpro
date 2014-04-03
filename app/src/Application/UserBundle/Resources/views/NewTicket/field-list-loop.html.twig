@@ -85,13 +85,12 @@
  # Custom Fields
  ###############}
 
-{% for f in custom_fields %}
-{% if item.field_type == 'ticket_field' and item.field_id == f.id %}
-<div data-field-id="ticket_field[{{f.id}}]" class="dp-control-group custom-field ticket_field_{{f.id}} ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
-	{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
-</div>
+{% if item.field_type == 'ticket_field' and custom_fields[item.field_id] %}
+	{% set f = custom_fields[item.field_id] %}
+	<div data-field-id="ticket_field[{{f.id}}]" class="dp-control-group custom-field ticket_field_{{f.id}} ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+		{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
+	</div>
 {% endif %}
-{% endfor %}
 
 {% if captcha_html %}
 {% if item.field_type == 'captcha' %}
