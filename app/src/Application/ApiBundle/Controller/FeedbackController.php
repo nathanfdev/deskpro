@@ -233,7 +233,7 @@ class FeedbackController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="string"
-	 *			),
+	 *			)
 	 *		)
 	 * 	)
 	 * )
@@ -394,7 +394,7 @@ class FeedbackController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="string"
-	 *			),
+	 *			)
 	 *		)
 	 * 	)
 	 * )
@@ -646,7 +646,7 @@ class FeedbackController extends AbstractController
 	 *				paramType="path",
 	 *				required=true,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Feedback not found")
 	 * 	)
@@ -754,7 +754,7 @@ class FeedbackController extends AbstractController
 	 *				paramType="path",
 	 *				required=true,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Feedback not found")
 	 * 	)
@@ -796,7 +796,7 @@ class FeedbackController extends AbstractController
 	 *				paramType="path",
 	 *				required=true,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Feedback not found")
 	 * 	)
@@ -949,7 +949,7 @@ class FeedbackController extends AbstractController
 	 *				paramType="path",
 	 *				required=true,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Feedback not found")
 	 * 	)
@@ -990,7 +990,7 @@ class FeedbackController extends AbstractController
 	 *				paramType="path",
 	 *				required=true,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Feedback not found")
 	 * 	)

@@ -254,7 +254,7 @@ class DownloadController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach",
-	 *				description="Attached file that represents the download. See the <a href="https://support.deskpro.com/downloads/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"
@@ -420,7 +420,7 @@ class DownloadController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach",
-	 *				description="Attached file that represents the download. See the <a href="https://support.deskpro.com/downloads/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"
@@ -670,7 +670,7 @@ class DownloadController extends AbstractController
 	 *				paramType="path",
 	 *				required=true,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Download not found")
 	 * 	)

@@ -323,7 +323,7 @@ class PersonController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="contact_data[#]",
-	 *				description="Components of a contact detail to add. See the <a href="https://support.deskpro.com/kb/articles/104-setting-contact-data">Setting Contact Data</a> article for more information.",
+	 *				description="Components of a contact detail to add. See the <a href='https://support.deskpro.com/kb/articles/104-setting-contact-data'>Setting Contact Data</a> article for more information.",
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="string"
@@ -1014,7 +1014,7 @@ class PersonController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="string"
-	 *			)
+	 *			),
 	 *			@SWG\Parameter(
 	 *				name="set_primary",
 	 *				description="If non-0, this email is set as the person's primary email address.",
@@ -1994,7 +1994,7 @@ class PersonController extends AbstractController
 	 *				paramType="query",
 	 *				required=true,
 	 *				type="string"
-	 *			)
+	 *			),
 	 *			@SWG\Parameter(
 	 *				name="comment",
 	 *				description="Comment or label for the contact detail.",

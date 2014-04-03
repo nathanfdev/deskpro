@@ -279,44 +279,44 @@ class NewsController extends AbstractController
 	 *				name="news_id",
 	 *				description="ID of the news item that needs to be updated",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="title",
 	 *				description="Updated title of the News Item",
 	 *				paramType="form",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="status",
 	 *				description="Updated status of the News Item",
 	 *				paramType="form",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="date_published",
 	 *				description="Updated published date of the News Item",
 	 *				paramType="form",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="content",
 	 *				description="Updated content of the News Item",
 	 *				paramType="form",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="category_id",
 	 *				description="Updated category_id of the News Item",
 	 *				paramType="form",
-	 *				required="false",
+	 *				required=false,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
 	 * 	)
@@ -969,30 +969,30 @@ class NewsController extends AbstractController
 	 *				name="category_id",
 	 *				description="ID of the news category that needs to be updated",
 	 *				paramType="path",
-	 *				required="true",
+	 *				required=true,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="title",
 	 *				description="Updated category title",
 	 *				paramType="path",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="parent_id",
 	 *				description="Updated parent ID",
 	 *				paramType="path",
-	 *				required="false",
+	 *				required=false,
 	 *				type="integer"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="display_order",
 	 *				description="Updated display order",
 	 *				paramType="path",
-	 *				required="false",
+	 *				required=false,
 	 *				type="string"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
 	 * 	)

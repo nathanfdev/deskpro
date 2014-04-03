@@ -258,7 +258,7 @@ class KbController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach[]",
-	 *				description="Attached file that represents the article. See the <a href="https://support.deskpro.com/articles/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"
@@ -304,7 +304,7 @@ class KbController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="integer"
-	 *			)
+	 *			),
 	 *			@SWG\Parameter(
 	 *				name="product_id[]",
 	 *				description="ID of product this article is associated with.",
@@ -529,7 +529,7 @@ class KbController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach[]",
-	 *				description="Attached file that represents the article. See the <a href="https://support.deskpro.com/articles/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"
@@ -575,7 +575,7 @@ class KbController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="integer"
-	 *			)
+	 *			),
 	 *			@SWG\Parameter(
 	 *				name="product_id[]",
 	 *				description="ID of product this article is associated with.",
@@ -1105,7 +1105,7 @@ class KbController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach",
-	 *				description="Attached file that represents the article. See the <a href="https://support.deskpro.com/articles/articles/88-api-basics">API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"

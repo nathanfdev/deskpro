@@ -161,7 +161,7 @@ class TaskController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="integer"
-	 *			),
+	 *			)
 	 *		)
 	 * 	)
 	 * )
@@ -312,7 +312,7 @@ class TaskController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="boolean"
-	 *			),
+	 *			)
 	 *		)
 	 * 	)
 	 * )
@@ -460,7 +460,7 @@ class TaskController extends AbstractController
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="boolean"
-	 *			),
+	 *			)
 	 *		),
 	 *		@SWG\ResponseMessage(code=404, message="Task definition not found")
 	 * 	)
