@@ -454,6 +454,9 @@ class AgentsController extends AbstractController
 				WHERE person_id = ?
 			", array($agent->id));
 
+			App::getDb()->delete('api_keys', array('person_id' => $agent->getId()));
+			App::getDb()->delete('api_token', array('person_id' => $agent->getId()));
+
 			// Agent groups
 			$agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
 			if ($agent_groups) {
@@ -1314,6 +1317,8 @@ class AgentsController extends AbstractController
 				App::getDb()->delete('permissions', array('person_id' => $agent->getId()));
 				App::getDb()->delete('agent_team_members', array('person_id' => $agent->getId()));
 				App::getDb()->delete('ticket_filter_subscriptions', array('person_id' => $agent->getId()));
+				App::getDb()->delete('api_keys', array('person_id' => $agent->getId()));
+				App::getDb()->delete('api_token', array('person_id' => $agent->getId()));
 
 				// Any open tickets should be unassigned
 				$this->db->executeUpdate("

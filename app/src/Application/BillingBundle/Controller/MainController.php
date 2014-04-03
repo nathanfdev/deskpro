@@ -68,7 +68,7 @@ class MainController extends AbstractController
 
 		$tpl = 'BillingBundle:Main:index.html.twig';
 
-		if ($lic->isManagedLicense() || 1) {
+		if ($lic->isManagedLicense()) {
 			$tpl = 'BillingBundle:Main:managed-license.html.twig';
 		}
 
