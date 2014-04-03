@@ -100,12 +100,16 @@ class Date extends HandlerAbstract
 			try {
 				if (ctype_digit($data['value'])) {
 					$date = new \DateTime('@' . $data['value']);
-					$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-					$setData = $date->format('Y-m-d');
+					if ($date) {
+						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+						$setData = $date->format('Y-m-d');
+					}
 				} else {
 					$date = \DateTime::createFromFormat('Y-m-d', $data['value']);
-					$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-					$setData = $date->format('Y-m-d');
+					if ($date) {
+						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+						$setData = $date->format('Y-m-d');
+					}
 				}
 			} catch (\Exception $e) {
 				$setData = null;
