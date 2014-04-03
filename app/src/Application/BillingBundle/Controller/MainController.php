@@ -66,7 +66,13 @@ class MainController extends AbstractController
 			$ma_login_url = str_replace('http://', 'https://', $ma_login_url);
 		}
 
-		return $this->render('BillingBundle:Main:index.html.twig', array(
+		$tpl = 'BillingBundle:Main:index.html.twig';
+
+		if ($lic->isManagedLicense() || 1) {
+			$tpl = 'BillingBundle:Main:managed-license.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'lic'              => $lic,
 			'is_expired'       => $is_expired,
 			'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',

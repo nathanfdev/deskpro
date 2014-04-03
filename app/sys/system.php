@@ -638,6 +638,9 @@ final class License
 					case 'XLIC':
 						$this->options['xlic'] = $val;
 						break;
+					case 'MANAGED':
+						$this->options['managed'] = (bool)$val;
+						break;
 				}
 			}
 		}
@@ -693,6 +696,16 @@ final class License
 	public function isXlic()
 	{
 		return isset($this->options['xlic']);
+	}
+
+	/**
+	 * A managed license is one DeskPRO manages manually. It just disables the license input on the billing page.
+	 *
+	 * @return bool
+	 */
+	public function isManagedLicense()
+	{
+		return isset($this->options['managed']);
 	}
 
 	public function getLicenseCode()
