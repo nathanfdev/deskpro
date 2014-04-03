@@ -1,8 +1,26 @@
+{% macro custom_field_errors(field) %}
+	{% if field.getOption('agent_required') %}<div class="error-reason required">{{ phrase('user.error.form_required') }}</div>{% endif %}
+	{% if field.getTypeName() == 'date' %}
+		<div class="error-reason invalid_date_dow">{{ phrase('user.error.form_date_invalid') }} {{ phrase('user.error.form_date_invalid_dow') }}</div>
+		<div class="error-reason invalid_date_range">{{ phrase('user.error.form_date_invalid') }} {{ phrase('user.error.form_date_invalid_range') }}</div>
+	{% elseif field.getTypeName() == 'choice' %}
+		<div class="error-reason invalid_choice">{{ phrase('user.error.form_choice_invalid') }}</div>
+		{% if field.getOption('agent_min_length') %}<div class="error-reason min_length">{{ phrase('user.error.form_choice_min', {count: field.getOption('agent_min_length')}) }}</div>{% endif %}
+		{% if field.getOption('agent_max_length') %}<div class="error-reason max_length">{{ phrase('user.error.form_choice_max', {count: field.getOption('agent_max_length')}) }}</div>{% endif %}
+	{% else %}
+		{% if field.getOption('agent_min_length') %}<div class="error-reason min_length">{{ phrase('user.error.form_text_min', {count: field.getOption('agent_min_length')}) }}</div>{% endif %}
+		{% if field.getOption('agent_max_length') %}<div class="error-reason max_length">{{ phrase('user.error.form_text_max', {count: field.getOption('agent_max_length')}) }}</div>{% endif %}
+		{% if field.getOption('agent_regex') %}<div class="error-reason regex_fail">{{ phrase('user.error.form_text_regex') }}</div>{% endif %}
+	{% endif %}
+{% endmacro %}
 <table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
 {% for f in custom_fields %}
 	<tr>
 		<th>{{ f.title }}</th>
-		<td>{{ render_custom_field_form(f) }}</td>
+		<td>
+			<div>{{ render_custom_field_form(f) }}</div>
+			<div class="error-row field_{{ f.id }}" style="display: none">{{ _self.custom_field_errors(f.field_def) }}</div>
+		</td>
 	</tr>
 {% endfor %}
 	<tr>
