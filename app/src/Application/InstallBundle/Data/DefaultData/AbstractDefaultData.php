@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class AbstractDefaultData
 {
@@ -57,9 +58,9 @@ class AbstractDefaultData
 
 	/**
 	 * @param DeskproContainer $container
-	 * @param Logger $logger
+	 * @param LoggerInterface $logger
 	 */
-	public function __construct(DeskproContainer $container, Logger $logger)
+	public function __construct(DeskproContainer $container, LoggerInterface $logger)
 	{
 		$this->container = $container;
 		$this->logger = $logger;
