@@ -117,6 +117,7 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
 				$tickets = $this->matcher->getMatches($esc, $this->batch_size);
 			} catch (\Exception $e) {
 				$this->logger->error("[EscalationsRunner] Error with escalation query: " . $e->getMessage());
+				$this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
 				KernelErrorHandler::logException($e, true, 'escalation_query_'.$esc->id);
 				$tickets = array();
 			}
@@ -125,6 +126,7 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
 					$this->executor->applyEscalation($esc, $t);
 				} catch (\Exception $e) {
 					$this->logger->error("[EscalationsRunner] Error applying escalation to ticket: " . $e->getMessage());
+					$this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
 					KernelErrorHandler::logException($e, true, 'escalation_apply_'.$esc->id);
 				}
 			}

@@ -120,29 +120,33 @@ class EscalationTicketMatcher
 		$has_user_terms = false;
 		$has_org_terms  = false;
 
-		foreach ($esc->terms as $term) {
-			if ($term['op'] != 'ignore') {
-				if (strpos($term['type'], 'person_') === 0) {
-					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
-					$has_user_terms = true;
-				} elseif (strpos($term['type'], 'org_') === 0) {
-					$org_searcher->addTerm($term['type'], $term['op'], $term['options']);
-					$has_org_terms = true;
-				} else {
-					$searcher->addTerm($term['type'], $term['op'], $term['options']);
+		if ($esc->terms) {
+			foreach ($esc->terms as $term) {
+				if ($term['op'] != 'ignore') {
+					if (strpos($term['type'], 'person_') === 0) {
+						$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
+						$has_user_terms = true;
+					} elseif (strpos($term['type'], 'org_') === 0) {
+						$org_searcher->addTerm($term['type'], $term['op'], $term['options']);
+						$has_org_terms = true;
+					} else {
+						$searcher->addTerm($term['type'], $term['op'], $term['options']);
+					}
 				}
 			}
 		}
-		foreach ($esc->terms_any as $term) {
-			if ($term['op'] != 'ignore') {
-				if (strpos($term['type'], 'person_') === 0) {
-					$user_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
-					$has_user_terms = true;
-				} elseif (strpos($term['type'], 'org_') === 0) {
-					$org_searcher->addTerm($term['type'], $term['op'], $term['options']);
-					$has_org_terms = true;
-				} else {
-					$searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
+		if ($esc->terms_any) {
+			foreach ($esc->terms_any as $term) {
+				if ($term['op'] != 'ignore') {
+					if (strpos($term['type'], 'person_') === 0) {
+						$user_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
+						$has_user_terms = true;
+					} elseif (strpos($term['type'], 'org_') === 0) {
+						$org_searcher->addTerm($term['type'], $term['op'], $term['options']);
+						$has_org_terms = true;
+					} else {
+						$searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
+					}
 				}
 			}
 		}

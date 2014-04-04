@@ -2134,8 +2134,12 @@ class TicketSearch extends SearcherAbstract
 						break;
 
 					case 'escalation_eliminator':
-						/** @var $trigger \Application\DeskPRO\Entity\TicketTrigger */
-						$escalation = $choice['escalation'];
+						/** @var $trigger \Application\DeskPRO\Entity\TicketEscalation */
+						if ($choice instanceof Entity\TicketEscalation) {
+							$escalation = $choice;
+						} else {
+							$escalation = $choice['escalation'];
+						}
 						$field = $escalation->getTicketTimeField();
 						if (!$field) {
 							break;

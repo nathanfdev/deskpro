@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Monolog\Handler;
 use Monolog\Handler\AbstractHandler;
 use Orb\Log\Logger as OrbLogger;
 
-class OrbLoggerAdpaterHandler extends AbstractHandler
+class OrbLoggerAdapterHandler extends AbstractHandler
 {
 	/**
 	 * @var \Orb\Log\Logger
@@ -82,8 +82,6 @@ class OrbLoggerAdpaterHandler extends AbstractHandler
 		if (!$this->isHandling($record)) {
 			return false;
 		}
-
-		$record = $this->processRecord($record);
 
 		if (!isset(self::$pri_map[$record['level']])) {
 			$pri = 'NOTICE';

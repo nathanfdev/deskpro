@@ -36,7 +36,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdpaterHandler;
+use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
 use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
@@ -67,7 +67,7 @@ class TicketEscalations extends AbstractJob
 		$batch_size = 100;
 		$time_limit = 200;
 
-		$orb_adapter = new OrbLoggerAdpaterHandler($this->getLogger());
+		$orb_adapter = new OrbLoggerAdapterHandler($this->getLogger());
 		$logger = new Logger('TicketTriggers');
 		$logger->pushHandler($orb_adapter);
 

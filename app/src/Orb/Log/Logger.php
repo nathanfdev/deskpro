@@ -138,7 +138,7 @@ class Logger
 	 */
 	public function isEnabled()
 	{
-		return $this->disabled;
+		return !$this->disabled;
 	}
 
 
