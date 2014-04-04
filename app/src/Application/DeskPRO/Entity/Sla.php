@@ -35,10 +35,13 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\WorkHoursSet;
+use Orb\Util\WorkHoursSetAll;
 
 /**
  * Entity for an SLA record
@@ -61,11 +64,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string $fail_time_unit
  * @property TriggerActions $fail_actions
  */
-class Sla extends \Application\DeskPRO\Domain\DomainObject
+class Sla extends DomainObject
 {
 	const TYPE_FIRST_RESPONSE = 'first_response';
-	const TYPE_RESOLUTION = 'resolution';
-	const TYPE_WAITING_TIME = 'waiting_time';
+	const TYPE_RESOLUTION     = 'resolution';
+	const TYPE_WAITING_TIME   = 'waiting_time';
 
 	/**
 	 * The unique ID.
@@ -190,42 +193,6 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @return float
-	 */
-	public function getWorkStartHour()
-	{
-		return floor($this->work_start / 3600);
-	}
-
-
-	/**
-	 * @return float
-	 */
-	public function getWorkStartMinute()
-	{
-		return floor(($this->work_start % 3600) / 60);
-	}
-
-
-	/**
-	 * @return float
-	 */
-	public function getWorkEndHour()
-	{
-		return floor($this->work_end / 3600);
-	}
-
-
-	/**
-	 * @return float
-	 */
-	public function getWorkEndMinute()
-	{
-		return floor(($this->work_end % 3600) / 60);
-	}
-
-
-	/**
 	 * @param array $days
 	 * @param bool $raw
 	 */
@@ -243,6 +210,7 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		}
 		$this->_onPropertyChanged('work_days', $old, $this->work_days);
 	}
+
 
 	/**
 	 * Resets holidays
@@ -264,6 +232,7 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		unset($this->work_holidays[$key]);
 		$this->_onPropertyChanged('work_holidays', $old, $this->work_holidays);
 	}
+
 
 	/**
 	 * Adds a holiday
@@ -331,202 +300,27 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		return $holidays;
 	}
 
-	//TODO
-	public function calculateWarnDate(Ticket $ticket)
-	{
-		if (!$this->warning_trigger) {
-			return null;
-		}
-
-		$hours_set = $this->getWorkHoursSet();
-		return $this->_calculateTriggerDate($this->warning_trigger->getOptionSeconds($hours_set), $ticket);
-	}
-
-	//TODO
-	public function calculateFailDate(Ticket $ticket)
-	{
-		if (!$this->warning_trigger) {
-			return null;
-		}
-
-		if (!$this->fail_trigger) {
-			return null;
-		}
-
-		$hours_set = $this->getWorkHoursSet();
-		return $this->_calculateTriggerDate($this->fail_trigger->getOptionSeconds($hours_set), $ticket);
-	}
 
 	/**
 	 * @return \Orb\Util\WorkHoursSet
 	 */
 	public function getWorkHoursSet()
 	{
-		if (!$this->_work_hours_set) {
-			if ($this->active_time == 'default') {
-				$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
-				$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
-					$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
-					$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
-					$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
-				);
-			} else {
-				$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
-					$this->active_time, $this->work_start, $this->work_end,
-					$this->work_days, $this->work_timezone, $this->work_holidays
-				);
-			}
-		}
-
-		return $this->_work_hours_set;
-	}
-
-
-	/**
-	 * @param $end_ts
-	 * @param Ticket $ticket
-	 * @return int
-	 */
-	public function calculateSlaTimeUntil($end_ts, Ticket $ticket)
-	{
-		if ($this->sla_type == self::TYPE_WAITING_TIME) {
-			$time = 0;
-			$work_hours_set = $this->getWorkHoursSet();
-			foreach ($ticket->waiting_times AS $waiting) {
-				if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
-					$time += $work_hours_set->getWorkTimeBetween($waiting['start'], min($end_ts, $waiting['end']));
-				}
-			}
-
-			return $time;
-		} else {
-			return $this->getWorkHoursSet()->getWorkTimeBetween($ticket->date_created, $end_ts);
-		}
-	}
-
-
-	/**
-	 * @param $delay
-	 * @param Ticket $ticket
-	 * @return \DateTime|null
-	 */
-	protected function _calculateTriggerDate($delay, Ticket $ticket)
-	{
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE || $this->sla_type == self::TYPE_RESOLUTION) {
-			return $this->getWorkHoursSet()->calculateWorkHoursDelay($ticket->date_created, $delay);
-		}
-
-		if ($this->sla_type == self::TYPE_WAITING_TIME) {
-			if ($ticket->status != 'awaiting_agent') {
-				// can't know when it will expire
-				return null;
-			}
-
-			$work_hours_set = $this->getWorkHoursSet();
-
-			if ($work_hours_set->getActiveTime() == \Orb\Util\WorkHoursSet::ACTIVE_24X7) {
-				$wait_time = $ticket->total_user_waiting;
-				if ($ticket->date_user_waiting) {
-					$wait_time += time() - $ticket->date_user_waiting->getTimestamp();
-				}
-
-				return new \DateTime('+' . ($delay - $wait_time) . ' seconds', new \DateTimeZone('UTC'));
-			} else {
-				$work_day_length = $this->work_end - $this->work_start;
-				if ($work_day_length <= 0) {
-					return null;
-				}
-
-				$wait_time = 0;
-				if ($ticket->waiting_times) {
-					foreach ($ticket->waiting_times AS $waiting) {
-						if ($waiting['type'] == 'user') {
-							$wait_time += $work_hours_set->getWorkTimeBetween($waiting['start'], $waiting['end']);
-						}
-					}
-				}
-
-				if ($ticket->date_user_waiting && $ticket->status == 'awaiting_agent') {
-					// ticket is waiting but we don't have an end so add that
-					$wait_time += $work_hours_set->getWorkTimeBetween($ticket->date_user_waiting);
-				}
-
-				return $work_hours_set->calculateWorkHoursDelay(new \DateTime(), $delay - $wait_time);
-			}
+		if ($this->active_time == 'all') {
+			return new WorkHoursSetAll();
+		} else if ($this->active_time == 'work_hours') {
+			return new WorkHoursSet(
+				$this->work_start,
+				$this->work_end,
+				$this->work_days,
+				$this->work_timezone,
+				$this->work_holidays
+			);
 		}
 
 		return null;
 	}
 
-
-	/**
-	 * @param Ticket $ticket
-	 * @return mixed|null
-	 */
-	public function calculateCompleted(Ticket $ticket)
-	{
-		$dates = array();
-
-		if ($ticket->status == 'resolved') {
-			if ($ticket->date_resolved) {
-				$dates[] = $ticket->date_resolved->getTimestamp();
-			} else {
-				$dates[] = time();
-			}
-		}
-
-		if ($ticket->status == 'hidden' && ($ticket->hidden_status == 'spam' || $ticket->hidden_status == 'deleted')) {
-			$dates[] = time();
-		}
-
-		if ($ticket->date_closed) {
-			$dates[] = $ticket->date_closed->getTimestamp();
-		}
-
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
-			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
-				// don't auto resolve sla on ticket creation, even if created by an agent
-				$dates[] = $ticket->date_first_agent_reply->getTimestamp();
-			}
-		}
-
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
-			$dates[] = $ticket->date_status->getTimestamp();
-		}
-
-		if ($dates) {
-			return min($dates);
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * @param Ticket $ticket
-	 * @return mixed
-	 */
-	public function getSlaTestTime(Ticket $ticket)
-	{
-		$times = array(time());
-
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
-			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
-				// don't auto resolve sla on ticket creation, even if created by an agent
-				$times[] = $ticket->date_first_agent_reply->getTimestamp();
-			}
-		}
-
-		if ($ticket->date_closed) {
-			$times[] = $ticket->date_closed->getTimestamp();
-		}
-
-		if ($ticket->status == 'resolved' && $ticket->date_resolved) {
-			$times[] = $ticket->date_resolved->getTimestamp();
-		}
-
-		return min($times);
-	}
 
 	/**
 	 * {@inheritDoc}

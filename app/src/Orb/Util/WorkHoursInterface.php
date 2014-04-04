@@ -26,64 +26,41 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @category Tickets
+ * @package Orb
+ * @category Util
  */
 
-namespace Application\DeskPRO\Tickets\TicketSaveActions;
+namespace Orb\Util;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Doctrine\ORM\EntityManager;
-use Orb\Util\Arrays;
-
-class ApplySlas implements TicketSaveActionInterface
+interface WorkHoursInterface
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Sla[]
+	 * @param  \DateTime $date_start
+	 * @param  int $delay
+	 * @return \DateTime
 	 */
-	private $slas;
+	public function calculateWorkHoursDelay(\DateTime $date_start, $delay);
 
 	/**
-	 * @var EntityManager
+	 * @param \DateTime $date
+	 * @param int|null  $time_remaining
+	 * @return bool
 	 */
-	private $em;
-
+	public function isInWorkDay(\DateTime $date, &$time_remaining = null);
 
 	/**
-	 * @param \Application\DeskPRO\Entity\Sla[] $slas
-	 * @param EntityManager $em
+	 * @param \DateTime $date
+	 * @param bool      $backwards
+	 * @return \DateTime
 	 */
-	public function __construct(array $slas, EntityManager $em)
-	{
-		$this->slas = Arrays::keyFromData($slas, 'id');
-		$this->em = $em;
-	}
-
+	public function getNextWorkDayStart(\DateTime $date, $backwards = false);
 
 	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
+	 * @param int|\DateTime $start
+	 * @param int|\DateTime|null $end
+	 * @return int
 	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
-
-		$has_slas = array_map(function($s) { return $s->sla->id; }, $ticket->ticket_slas);
-		$has_slas = array_combine($has_slas, $has_slas);
-
-		foreach ($this->slas as $sla) {
-			if (isset($has_slas[$sla->id])) continue;
-
-			if ($sla->apply_terms->isTriggerMatch($ticket, $context)) {
-				$ticket_sla = $ticket->addSla($sla);
-				$this->em->persist($ticket_sla);
-			}
-		}
-	}
+	public function getWorkTimeBetween($start, $end = null);
 }

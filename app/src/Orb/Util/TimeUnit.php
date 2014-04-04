@@ -26,64 +26,118 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @category Tickets
+ * @package Orb
+ * @category Util
  */
 
-namespace Application\DeskPRO\Tickets\TicketSaveActions;
+namespace Orb\Util;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Doctrine\ORM\EntityManager;
-use Orb\Util\Arrays;
-
-class ApplySlas implements TicketSaveActionInterface
+class TimeUnit
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Sla[]
-	 */
-	private $slas;
+	const SECONDS = 'seconds';
+	const MINUTES = 'minutes';
+	const HOURS   = 'hours';
+	const DAYS    = 'days';
+	const WEEKS   = 'weeks';
+	const MONTHS  = 'months';
+	const YEARS   = 'years';
 
 	/**
-	 * @var EntityManager
+	 * @var string
 	 */
-	private $em;
+	private $unit;
+
+	/**
+	 * @var int
+	 */
+	private $value;
+
+	/**
+	 * @var int
+	 */
+	private $secs;
 
 
 	/**
-	 * @param \Application\DeskPRO\Entity\Sla[] $slas
-	 * @param EntityManager $em
+	 * @param int $value
+	 * @param string $unit
 	 */
-	public function __construct(array $slas, EntityManager $em)
+	private function __construct($value, $unit)
 	{
-		$this->slas = Arrays::keyFromData($slas, 'id');
-		$this->em = $em;
+		$this->value = $value;
+		$this->unit  = $unit;
+
+		$this->secs = Dates::getUnitInSeconds($this->value, $this->unit);
 	}
 
 
 	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
+	 * @return int
 	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+	public function getSecs()
 	{
-		if ($context->getEventType() == 'noop') {
-			return;
+		return $this->secs;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getUnit()
+	{
+		return $this->unit;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getValue()
+	{
+		return $this->value;
+	}
+
+
+	/**
+	 * @param int|TimeUnit $val
+	 * @return bool
+	 * @throws \InvalidArgumentException
+	 */
+	public function equals($val)
+	{
+		if (is_int($val)) {
+			$val_secs = $val;
+		} else if ($val instanceof TimeUnit) {
+			$val_secs = $val->getSecs();
+		} else {
+			throw new \InvalidArgumentException("Can only compare integers and TimeUnit");
 		}
 
-		$has_slas = array_map(function($s) { return $s->sla->id; }, $ticket->ticket_slas);
-		$has_slas = array_combine($has_slas, $has_slas);
+		return $val_secs === $this->secs;
+	}
 
-		foreach ($this->slas as $sla) {
-			if (isset($has_slas[$sla->id])) continue;
 
-			if ($sla->apply_terms->isTriggerMatch($ticket, $context)) {
-				$ticket_sla = $ticket->addSla($sla);
-				$this->em->persist($ticket_sla);
-			}
+	/**
+	 * @param int|TimeUnit $val
+	 * @return int
+	 * @throws \InvalidArgumentException
+	 */
+	public function compare($val)
+	{
+		if (is_int($val)) {
+			$val_secs = $val;
+		} else if ($val instanceof TimeUnit) {
+			$val_secs = $val->getSecs();
+		} else {
+			throw new \InvalidArgumentException("Can only compare integers and TimeUnit");
 		}
+
+		if ($val_secs === $this->secs) {
+			return 0;
+		}
+
+		return $val_secs < $this->secs ? -1 : 1;
 	}
 }

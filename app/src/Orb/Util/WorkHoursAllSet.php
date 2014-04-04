@@ -26,64 +26,69 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @category Tickets
+ * @package Orb
+ * @category Util
  */
 
-namespace Application\DeskPRO\Tickets\TicketSaveActions;
+namespace Orb\Util;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Doctrine\ORM\EntityManager;
-use Orb\Util\Arrays;
-
-class ApplySlas implements TicketSaveActionInterface
+class WorkHoursSetAll implements WorkHoursInterface
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Sla[]
+	 * @param  \DateTime $date_start
+	 * @param  int $delay
+	 * @return \DateTime
 	 */
-	private $slas;
-
-	/**
-	 * @var EntityManager
-	 */
-	private $em;
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Sla[] $slas
-	 * @param EntityManager $em
-	 */
-	public function __construct(array $slas, EntityManager $em)
+	public function calculateWorkHoursDelay(\DateTime $date_start, $delay)
 	{
-		$this->slas = Arrays::keyFromData($slas, 'id');
-		$this->em = $em;
+		$date = $date_start->getTimestamp() + $delay;
+		return new \DateTime("@$date");
 	}
 
 
 	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
+	 * @param \DateTime $date
+	 * @param int|null  $time_remaining
+	 * @return bool
 	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+	public function isInWorkDay(\DateTime $date, &$time_remaining = null)
 	{
-		if ($context->getEventType() == 'noop') {
-			return;
+		return true;
+	}
+
+
+	/**
+	 * @param \DateTime $date
+	 * @param bool      $backwards
+	 * @return \DateTime
+	 */
+	public function getNextWorkDayStart(\DateTime $date, $backwards = false)
+	{
+		$work_date = clone $date;
+		$adjust = ($backwards ? '-1 day' : '+1 day');
+
+		$work_date->modify($adjust);
+		$work_date->setTime(0, 0, 0);
+		return $work_date;
+	}
+
+
+	/**
+	 * @param int|\DateTime $start
+	 * @param int|\DateTime|null $end
+	 * @return int
+	 */
+	public function getWorkTimeBetween($start, $end = null)
+	{
+		if (!$end) {
+			$end = time();
 		}
 
-		$has_slas = array_map(function($s) { return $s->sla->id; }, $ticket->ticket_slas);
-		$has_slas = array_combine($has_slas, $has_slas);
+		$start = ($start instanceof \DateTime ? $start->getTimestamp() : intval($start));
+		$end = ($end instanceof \DateTime ? $end->getTimestamp() : intval($end));
 
-		foreach ($this->slas as $sla) {
-			if (isset($has_slas[$sla->id])) continue;
-
-			if ($sla->apply_terms->isTriggerMatch($ticket, $context)) {
-				$ticket_sla = $ticket->addSla($sla);
-				$this->em->persist($ticket_sla);
-			}
-		}
+		return $end - $start;
 	}
 }

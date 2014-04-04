@@ -36,33 +36,9 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Doctrine\ORM\EntityManager;
-use Orb\Util\Arrays;
 
-class ApplySlas implements TicketSaveActionInterface
+class UpdateSlaStatus implements TicketSaveActionInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Sla[]
-	 */
-	private $slas;
-
-	/**
-	 * @var EntityManager
-	 */
-	private $em;
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Sla[] $slas
-	 * @param EntityManager $em
-	 */
-	public function __construct(array $slas, EntityManager $em)
-	{
-		$this->slas = Arrays::keyFromData($slas, 'id');
-		$this->em = $em;
-	}
-
-
 	/**
 	 * @param Ticket                   $ticket
 	 * @param ExecutorContextInterface $context
@@ -74,16 +50,6 @@ class ApplySlas implements TicketSaveActionInterface
 			return;
 		}
 
-		$has_slas = array_map(function($s) { return $s->sla->id; }, $ticket->ticket_slas);
-		$has_slas = array_combine($has_slas, $has_slas);
-
-		foreach ($this->slas as $sla) {
-			if (isset($has_slas[$sla->id])) continue;
-
-			if ($sla->apply_terms->isTriggerMatch($ticket, $context)) {
-				$ticket_sla = $ticket->addSla($sla);
-				$this->em->persist($ticket_sla);
-			}
-		}
+		$this->ticket->updateWorstSlaStatus();
 	}
 }
