@@ -180,7 +180,7 @@
 	'agent.tickets.log_on_article'                                         => 'sur l\'article "{{title}} (ID {{id}})',
 	'agent.tickets.log_on_download'                                        => 'sur téléchargement "{{title}} (ID {{id}})',
 	'agent.tickets.log_on_feedback'                                        => 'sur le feedback "{{title}} (ID {{id}})',
-	'agent.tickets.log_on_news'                                            => 'sur la news "{{title}} (ID {{id}})',
+	'agent.tickets.log_on_news'                                            => 'sur l\'actualité "{{title}} (ID {{id}})',
 	'agent.tickets.log_sent_from'                                          => 'Envoyé depuis {{email}}',
 	'agent.tickets.log_sla_added'                                          => 'SLA ajouté',
 	'agent.tickets.log_sla_removed'                                        => 'SLA supprimé',

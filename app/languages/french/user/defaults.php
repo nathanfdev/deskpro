@@ -1,6 +1,6 @@
 <?php return array(
 	'user.defaults.article_category_general'                               => 'Général',
-	'user.defaults.article_example_content'                                => 'Ceci est un exemple d\'article de la base de connaissance',
+	'user.defaults.article_example_content'                                => 'Ceci est un exemple d\'article de la base de connaissances',
 	'user.defaults.article_example_title'                                  => 'Exemple d\'article',
 	'user.defaults.department_sales'                                       => 'Service Commercial',
 	'user.defaults.department_support'                                     => 'Centre d\'aide',
