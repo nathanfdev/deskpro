@@ -303,7 +303,7 @@ class Dates
 	 * @return string
 	 * @throws \Exception
 	 */
-	public static function secsToReadable($seconds, $detail = 2, array $lang = null)
+	public static function secsToReadable($seconds, $detail = 2, $lang = null)
 	{
 		static $lang_en = array(
 			'seconds' => '%d seconds',

@@ -179,14 +179,9 @@ class CoreExtension extends Extension
 	protected function loadSettings(ContainerBuilder $container)
 	{
 		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-			array(
-				'core'  => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
-				'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
-				'user'  => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
-			),
+			DP_ROOT . '/sys/config/settings.php',
 			new Reference('database_connection')
 		));
-		$definition->addMethodCall('loadGroups', array('core'));
 		$container->setDefinition('deskpro.core.settings', $definition);
 	}
 
