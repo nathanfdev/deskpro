@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\TicketSaveActions;
 use Monolog\Handler\NullHandler;
@@ -63,11 +62,6 @@ class TicketManager
 	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
 	private $container;
-
-	/**
-	 * @var ActionApplicatorInterface
-	 */
-	private $action_applicator;
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\TicketSaveActions\TicketSaveActionInterface[]
@@ -97,7 +91,7 @@ class TicketManager
 		$this->save_actions->insert(new TicketSaveActions\VerifyRef($container->getRefGenerator()), 30);
 		$this->save_actions->insert(new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization')), 40);
 		$this->save_actions->insert(new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container)), 50);
-		$this->save_actions->insert(new TicketSaveActions\ApplySlas(), 60);
+		$this->save_actions->insert(new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm()), 60);
 		$this->save_actions->insert(new TicketSaveActions\RecalculateSlas(), 70);
 
 		$this->post_save_actions->insert(new TicketSaveActions\SaveTicketLogs($container->getEm()), 10);
@@ -356,14 +350,5 @@ class TicketManager
 		}
 
 		return $logger;
-	}
-
-
-	/**
-	 * @return ActionApplicatorInterface
-	 */
-	public function getActionApplicator()
-	{
-		return $this->action_applicator;
 	}
 }

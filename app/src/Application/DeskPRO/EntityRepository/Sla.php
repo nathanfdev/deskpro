@@ -57,6 +57,18 @@ class Sla extends AbstractEntityRepository
 		return $this->_all_slas;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Sla[]
+	 */
+	public function getAutoSlas()
+	{
+		return $this->_em->createQuery("
+			SELECT s
+			FROM DeskPRO:TicketSla s
+			WHERE s.apply_type = 'auto'
+		")->execute();
+	}
+
 	public function clearSlaCache()
 	{
 		$this->_all_slas = null;

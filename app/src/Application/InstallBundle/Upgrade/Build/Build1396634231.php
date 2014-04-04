@@ -29,74 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\Escalations;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketEscalation;
-use Application\DeskPRO\Monolog\NullLogger;
-use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
-use Application\DeskPRO\Tickets\TicketManager;
-use Monolog\Logger;
-
-class EscalationExecutor
+class Build1396634231 extends AbstractBuild
 {
-	/**
-	 * @var TicketManager
-	 */
-	private $ticket_manager;
-
-	/**
-	 * @var ActionApplicatorInterface
-	 */
-	private $action_applicator;
-
-	/**
-	 * @var Logger
-	 */
-	private $logger;
-
-	public function __construct(TicketManager $ticket_manager, ActionApplicatorInterface $action_applicator)
+	public function run()
 	{
-		$this->ticket_manager = $ticket_manager;
-		$this->logger = new NullLogger();
-	}
-
-
-	/**
-	 * @param Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
-
-
-	/**
-	 * @param TicketEscalation $esc
-	 * @param Ticket           $ticket
-	 */
-	public function applyEscalation(TicketEscalation $esc, Ticket $ticket)
-	{
-		$this->_doApplyEscalation($esc, $ticket);
-	}
-
-
-	/**
-	 * @param TicketEscalation $esc
-	 * @param Ticket           $ticket
-	 */
-	private function _doApplyEscalation(TicketEscalation $esc, Ticket $ticket)
-	{
-		$this->ticket_manager->markAsManaged($ticket);
-
-		$context = $this->ticket_manager->createSystemExecutorContext();
-		$state = $ticket->getStateChangeRecorder();
-		$state->setCurrentChangeMetadata(array('escalation' => $esc));
-
-		$this->action_applicator->apply($esc->actions, $ticket, $context);
-		$this->ticket_manager->saveTicket($ticket, $context);
+		$this->execMutateSql("ALTER TABLE slas ADD apply_type VARCHAR(25) NOT NULL");
 	}
 }

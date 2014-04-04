@@ -135,6 +135,13 @@ class Sla extends DomainObject
 	protected $work_holidays = array();
 
 	/**
+	 * Controls how the SLA is applied to tickets: all, auto, manual
+	 *
+	 * @var string
+	 */
+	protected $apply_type = 'all';
+
+	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
 	 */
 	protected $apply_terms = null;
@@ -369,6 +376,7 @@ class Sla extends DomainObject
 			'length'     => 50,
 			'nullable'   => false,
 		));
+
 		$metadata->mapField(array(
 			'columnName' => 'work_start',
 			'fieldName'  => 'work_start',
@@ -399,6 +407,13 @@ class Sla extends DomainObject
 			'fieldName'  => 'work_holidays',
 			'type'       => 'json_array',
 			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'apply_type',
+			'fieldName'  => 'apply_type',
+			'type'       => 'string',
+			'length'     => 25,
+			'nullable'   => false,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'apply_terms',

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
 use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
@@ -74,7 +75,7 @@ class TicketEscalations extends AbstractJob
 		$matcher  = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
 		$matcher->setLogger($logger);
 
-		$executor = new EscalationExecutor(App::$container->getTicketManager());
+		$executor = new EscalationExecutor(App::$container->getTicketManager(), new ActionApplicator(App::$container));
 		$executor->setLogger($logger);
 
 		$runner = new EscalationsRunner(
