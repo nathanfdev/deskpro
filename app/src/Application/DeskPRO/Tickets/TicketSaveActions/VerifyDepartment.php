@@ -29,20 +29,51 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Actions\ActionApplicator;
+use Application\DeskPRO\Departments\TicketDepartments;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketManager;
 
-class TicketManagerService
+class VerifyDepartment implements TicketSaveActionInterface
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var TicketDepartments
+	 */
+	private $ticket_deps;
+
+
+	/**
+	 * @param TicketDepartments $ticket_deps
+	 */
+	public function __construct(TicketDepartments $ticket_deps)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$this->ticket_deps = $ticket_deps;
 	}
+
+
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return void
+	 */
+	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		if ($context->getEventType() == 'noop') {
+			return;
+		}
+
+		if (!$ticket->department) {
+			$ticket->department = $this->ticket_deps->getDefaultDepartment();
+		}
+
+		if ($this->ticket_deps->getChildren($ticket->department)) {
+			$ticket->department = $this->ticket_deps->getDefaultDepartment();
+		}
+	}
+
 }

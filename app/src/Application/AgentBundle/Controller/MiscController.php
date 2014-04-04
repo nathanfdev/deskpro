@@ -593,8 +593,7 @@ JS;
 					'ticket_id'      => $content_id,
 					'draft_html'     => $html,
 					'via_person'     => $this->person->id
-				)),
-				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+				))
 			));
 		}
 

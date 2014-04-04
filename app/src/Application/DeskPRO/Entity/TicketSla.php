@@ -333,8 +333,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 				'original_is_completed' => $this->getOriginalIsCompleted(),
 				'removed'        => $removed,
 				'via_person'     => $person_id
-			)),
-			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			))
 		));
 	}
 

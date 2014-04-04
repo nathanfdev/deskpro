@@ -29,20 +29,66 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Doctrine\DBAL\Driver\Connection;
 
-class TicketManagerService
+class RecalculateTicketStats implements TicketSaveActionInterface
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var int[]
+	 */
+	private $agent_ids = array();
+
+	/**
+	 * @var Connection
+	 */
+	private $db;
+
+
+	/**
+	 * @param array      $agent_ids
+	 * @param Connection $db
+	 */
+	public function __construct(array $agent_ids, Connection $db)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$this->agent_ids = $agent_ids;
+		$this->db = $db;
 	}
+
+
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 */
+	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		if ($context->getEventType() == 'noop') {
+			return;
+		}
+
+		$state = $ticket->getStateChangeRecorder();
+
+		if ($state->isNewTicket() || $state->hasChangedField('messages')) {
+			$agent_ids_in = implode(',', $this->container->getAgentData()->getIds());
+
+			$ticket->count_agent_replies = $this->db->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets_messages
+				WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
+			", array($ticket->id));
+
+			$ticket->count_user_replies = $this->db->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets_messages
+				WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
+			", array($ticket->id));
+		}
+	}
+
 }

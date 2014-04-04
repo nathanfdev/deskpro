@@ -29,20 +29,53 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
-class TicketManagerService
+class RecalculateSlas implements TicketSaveActionInterface
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return void
+	 */
+	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		if ($context->getEventType() == 'noop') {
+			return;
+		}
+
+		$state = $ticket->getStateChangeRecorder();
+
+		if ($state->isNewTicket() && !$ticket->hidden_status) {
+			$reset_slas = false;
+			$recalculate_slas = false;
+
+			if ($state->hasChangedField('status') || $state->hasChangedField('hidden_status')) {
+				$reset_slas = true;
+				$recalculate_slas = true;
+			}
+
+			if ($state->hasChangedField('messages')) {
+				$recalculate_slas = true;
+			}
+
+			if ($reset_slas || $recalculate_slas) {
+				foreach ($ticket->ticket_slas AS $ticket_sla) {
+					if ($reset_slas && !$ticket_sla->is_completed_set) {
+						$ticket_sla->is_completed = false;
+					}
+					if ($recalculate_slas) {
+						$ticket_sla->calculateSlaDates();
+					}
+					$this->em->persist($ticket_sla);
+				}
+			}
+		}
 	}
 }

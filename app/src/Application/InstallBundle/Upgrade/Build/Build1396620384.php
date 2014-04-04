@@ -29,20 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\TicketManager;
-
-class TicketManagerService
+class Build1396620384 extends AbstractBuild
 {
-	public static function create(DeskproContainer $container)
+	public function run()
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$this->execMutateSql("ALTER TABLE client_messages DROP handler_class");
 	}
 }

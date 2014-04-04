@@ -38,11 +38,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
-use Application\DeskPRO\ORM\StateChange\ChangeTriggerLog;
+use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
-use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
-use DeskPRO\Kernel\KernelErrorHandler;
+use Application\DeskPRO\Tickets\TicketSaveActions;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -71,16 +70,39 @@ class TicketManager
 	private $action_applicator;
 
 	/**
-	 * @param DeskproContainer $container
-	 * @param ActionApplicatorInterface $action_applicator
+	 * @var \Application\DeskPRO\Tickets\TicketSaveActions\TicketSaveActionInterface[]
 	 */
-	public function __construct(DeskproContainer $container, ActionApplicatorInterface $action_applicator)
+	private $save_actions;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketSaveActions\TicketSaveActionInterface[]
+	 */
+	private $post_save_actions;
+
+
+	/**
+	 * @param DeskproContainer $container
+	 */
+	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
 		$this->em = $container->getEm();
 		$this->db = $container->getDb();
 
-		$this->action_applicator = $action_applicator;
+		$this->save_actions      = new \SplPriorityQueue();
+		$this->post_save_actions = new \SplPriorityQueue();
+
+		$this->save_actions->insert(new TicketSaveActions\VerifyCreationSystem(), 10);
+		$this->save_actions->insert(new TicketSaveActions\VerifyDepartment($container->getTicketDepartments()), 20);
+		$this->save_actions->insert(new TicketSaveActions\VerifyRef($container->getRefGenerator()), 30);
+		$this->save_actions->insert(new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization')), 40);
+		$this->save_actions->insert(new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container)), 50);
+		$this->save_actions->insert(new TicketSaveActions\ApplySlas(), 60);
+		$this->save_actions->insert(new TicketSaveActions\RecalculateSlas(), 70);
+
+		$this->post_save_actions->insert(new TicketSaveActions\SaveTicketLogs($container->getEm()), 10);
+		$this->post_save_actions->insert(new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector()), 20);
+		$this->post_save_actions->insert(new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb()), 30);
 	}
 
 
@@ -197,31 +219,22 @@ class TicketManager
 		# Set the creation system
 		#----------------------------------------
 
-		if (!$is_noop) {
-			$this->_doSaveTicket_verifyCreationSystem($ticket, $context);
-			$this->_doSaveTicket_verifyDepartment($ticket, $context);
-			$this->_doSaveTicket_verifyRef($ticket, $context);
-			$this->_doSaveTicket_verifyOrgManagers($ticket, $context);
-			$this->_doSaveTicket_execTriggers($ticket, $context);
-			$this->_doSaveTicket_recalcSlas($ticket, $context);
+		foreach ($this->save_actions as $action) {
+			$action->processTicket($ticket, $context);
+		}
 
-			if (!$ticket->ticket_hash) {
-				$ticket->recomputeHash();
-			}
+		if (!$is_noop && !$ticket->ticket_hash) {
+			$ticket->recomputeHash();
 		}
 
 		$this->em->flush();
 
-		if (!$is_noop) {
-			$logs = $this->_doSaveTicket_runTicketLog($ticket, $context);
-		} else {
-			$logs = array();
+		foreach ($this->post_save_actions as $action) {
+			$action->processTicket($ticket, $context);
 		}
 
-		$this->_doSaveTicket_runFilterUpdates($ticket, $context);
-
 		if (!$is_noop) {
-			$this->_doSaveTicket_recalcStats($ticket, $context);
+			$logs = $context->getVars()->get('ticket_logs', array());
 
 			$agent_alert_action = new SendAgentAlert(array(
 				'agent_ids'   => array('notify_list'),
@@ -230,253 +243,32 @@ class TicketManager
 			$agent_alert_action->setContainer($this->container);
 			$agent_alert_action->applyAction($ticket, $context);
 
+			$this->db->insert('client_messages', array(
+				'channel' => 'agent.ticket-updated',
+				'auth' => Strings::random(15, Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array(
+					'ticket_id'      => $ticket->getId(),
+					'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
+				))
+			));
+
 			$search_updater = new TicketSearchUpdater($this->db, $ticket);
 			$search_updater->update();
 		}
+
+		$this->em->flush();
 
 		#----------------------------------------
 		# Done
 		#----------------------------------------
 
-		$this->em->flush();
 		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
 
 		$ticket->resetStateChangeRecorder();
 		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
 	}
 
-	private function _doSaveTicket_verifyCreationSystem(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$ticket->creation_system) {
-			if ($context->getEventMethod() == 'email') {
-				$creation_system = 'gateway.';
-
-				if ($context->getEventPerformer() == 'agent') {
-					$creation_system .= 'agent';
-				} else {
-					$creation_system .= 'person';
-				}
-			} else if ($context->getEventMethod() == 'api') {
-				$creation_system = 'web.api.';
-
-				if ($context->getEventPerformer() == 'agent') {
-					$creation_system .= 'agent';
-				} else {
-					$creation_system .= 'person';
-				}
-			} else {
-				$creation_system = 'web.';
-
-				if ($context->getEventPerformer() == 'agent') {
-					$creation_system .= 'agent.portal';
-				} else {
-					if ($context->getEventMethodOption('is_widget')) {
-						$creation_system .= 'person.widget';
-					} else if ($context->getEventMethodOption('is_embedded')) {
-						$creation_system .= 'person.embed';
-					} else {
-						$creation_system .= 'person.portal';
-					}
-				}
-			}
-
-			$ticket->creation_system = $creation_system;
-
-			if ($context->getEventMethodOption('origin_url')) {
-				$ticket->creation_system_option = $context->getEventMethodOption('origin_url');
-			}
-		}
-	}
-
-	private function _doSaveTicket_verifyDepartment(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		/** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
-		$ticket_deps = $this->container->getSystemService('TicketDepartments');
-
-		if (!$ticket->department) {
-			$ticket->department = $ticket_deps->getDefaultDepartment();
-		}
-
-		if ($ticket_deps->getChildren($ticket->department)) {
-			$ticket->department = $ticket_deps->getDefaultDepartment();
-		}
-	}
-
-	private function _doSaveTicket_verifyRef(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$ticket->ref) {
-			try {
-				$ticket->ref = $this->container->getRefGenerator()->generateReference('DeskPRO:Ticket');
-			} catch (\Exception $e) {
-				KernelErrorHandler::logException($e);
-
-				// Using a custom format.
-				// We just ran into a collision which means the pattern is not a good pattern.
-				// We are going to append a random number automatically if it isn't part of the pattern already
-				if ($this->container->getSetting('core.ref_pattern') && strpos($this->container->getSetting('core.ref_pattern'), '<?>') === -1 && strpos($this->container->getSetting('core.ref_pattern'), '<A>') === -1) {
-					$set_pattern = $this->container->getSetting('core.ref_pattern');
-					$set_pattern .= '-<A><A><A>';
-					$this->container->getSettingsHandler()->setSetting('core.ref_pattern', $set_pattern);
-				}
-
-				// Log and fallback to a random ref
-				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
-				$ticket->ref = $ref;
-			}
-		}
-	}
-
-	private function _doSaveTicket_verifyOrgManagers(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($ticket->organization) {
-			$managers = $this->em->getRepository('DeskPRO:Organization')->getManagers($this->organization);
-			foreach ($managers AS $manager) {
-				if ($manager->getPref('org.manager_auto_add')) {
-					$ticket->addParticipantPerson($manager);
-				}
-			}
-		}
-	}
-
-	private function _doSaveTicket_execTriggers(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$state = $ticket->getStateChangeRecorder();
-
-		$triggers = $this->em->createQuery("
-			SELECT t
-			FROM DeskPRO:TicketTrigger t
-			WHERE t.event_trigger = :event_type
-			ORDER BY t.run_order
-		")->execute(array('event_type' => $context->getEventType()));
-
-		/** @var \Application\DeskPRO\Entity\TicketTrigger[] $triggers */
-		foreach ($triggers as $trigger) {
-			if ($context->getVars()->has('stop_triggers')) {
-				$context->getLogger()->info("[Triggers] Got stop signal");
-				break;
-			}
-
-			$mode_var = null;
-			switch ($context->getEventPerformer()) {
-				case 'agent':
-					$mode_var = $trigger->by_agent_mode;
-					break;
-				case 'user':
-					$mode_var = $trigger->by_user_mode;
-					break;
-			}
-			if ($mode_var) {
-				$is_method_match = in_array($context->getEventMethod(), $mode_var);
-			} else {
-				$is_method_match = false;
-			}
-			if (!$is_method_match) {
-				$context->getLogger()->info(sprintf("[Triggers] Skip trigger #%s due to method mismatch: %s != (%s) %s", $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: array('NONE'))));
-				continue;
-			}
-
-			$context->getLogger()->info(sprintf("[Triggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
-			$ts = microtime(true);
-
-			$state->setCurrentChangeMetadata(array('trigger' => $trigger));
-
-			$change = new ChangeTriggerLog(
-				'trigger',
-				$trigger->id,
-				$trigger->title
-			);
-			$state->recordChange($change);
-
-			$match = $trigger->terms->isTriggerMatch($ticket, $context);
-			$context->getLogger()->info(sprintf("[Triggers] (#%d): %s", $trigger->id, $match ? "MATCH" : "no match"));
-
-			if ($match) {
-				try {
-					$this->action_applicator->apply($trigger->actions, $ticket, $context);
-				} catch (\Exception $e) {
-					$context->getLogger()->error(sprintf("[Triggers] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
-				}
-			}
-
-			$context->getLogger()->info(sprintf("[Triggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
-
-			$state->clearCurrentChangeMetaData();
-		}
-	}
-
-	private function _doSaveTicket_recalcSlas(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$state = $ticket->getStateChangeRecorder();
-
-		if ($state->isNewTicket() && !$ticket->hidden_status) {
-			$reset_slas = false;
-			$recalculate_slas = false;
-
-			if ($state->hasChangedField('status') || $state->hasChangedField('hidden_status')) {
-				$reset_slas = true;
-				$recalculate_slas = true;
-			}
-
-			if ($state->hasChangedField('messages')) {
-				$recalculate_slas = true;
-			}
-
-			if ($reset_slas || $recalculate_slas) {
-				foreach ($ticket->ticket_slas AS $ticket_sla) {
-					if ($reset_slas && !$ticket_sla->is_completed_set) {
-						$ticket_sla->is_completed = false;
-					}
-					if ($recalculate_slas) {
-						$ticket_sla->calculateSlaDates();
-					}
-					$this->em->persist($ticket_sla);
-				}
-			}
-		}
-	}
-
-	private function _doSaveTicket_runTicketLog(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$ticketlog_generator = new TicketLogGenerator($ticket, $context);
-		$logs = $ticketlog_generator->getLogEntries();
-
-		foreach ($logs as $l) {
-			$this->em->persist($l);
-		}
-
-		return $logs;
-	}
-
-	private function _doSaveTicket_runFilterUpdates(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$change_set = $this->container->getTicketFilterChangeDetector()->getFilterChangeSet($ticket, $context);
-		$client_messages = $change_set->getListUpdateClientMessages();
-
-		foreach ($client_messages as $cm) {
-			$this->em->persist($cm);
-		}
-	}
-
-	private function _doSaveTicket_recalcStats(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$state = $ticket->getStateChangeRecorder();
-
-		if ($state->isNewTicket() || $state->hasChangedField('messages')) {
-			$agent_ids_in = implode(',', $this->container->getAgentData()->getIds());
-
-			$ticket->count_agent_replies = $this->db->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets_messages
-				WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
-			", array($ticket->id));
-
-			$ticket->count_user_replies = $this->db->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets_messages
-				WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
-			", array($ticket->id));
-		}
-	}
 
 	/**
 	 * @param Person $agent

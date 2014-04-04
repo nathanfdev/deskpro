@@ -29,20 +29,54 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
-class TicketManagerService
+class VerifyOrgManagers implements TicketSaveActionInterface
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var OrganizationRepository
+	 */
+	private $org_repos;
+
+
+	/**
+	 * @param OrganizationRepository $org_repos
+	 */
+	public function __construct(OrganizationRepository $org_repos)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$this->org_repos = $org_repos;
 	}
+	
+
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @throws \Doctrine\ORM\TransactionRequiredException
+	 * @throws \Doctrine\ORM\ORMException
+	 * @throws \Doctrine\ORM\OptimisticLockException
+	 * @throws \Doctrine\ORM\ORMInvalidArgumentException
+	 */
+	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		if ($context->getEventType() == 'noop') {
+			return;
+		}
+
+		if ($ticket->organization) {
+			$managers = $this->org_repos->getManagers($this->organization);
+			foreach ($managers AS $manager) {
+				if ($manager->getPref('org.manager_auto_add')) {
+					$ticket->addParticipantPerson($manager);
+				}
+			}
+		}
+	}
+
 }

@@ -29,20 +29,55 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\RefGenerator\RefGeneratorInterface;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Strings;
 
-class TicketManagerService
+class VerifyRef implements TicketSaveActionInterface
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var RefGeneratorInterface
+	 */
+	private $ref_generator;
+
+
+	/**
+	 * @param RefGeneratorInterface $ref_generator
+	 */
+	public function __construct(RefGeneratorInterface $ref_generator)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$this->ref_generator = $ref_generator;
 	}
+	
+
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return void
+	 */
+	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		if ($context->getEventType() == 'noop') {
+			return;
+		}
+
+		if (!$ticket->ref) {
+			try {
+				$ticket->ref = $this->ref_generator->generateReference('DeskPRO:Ticket');
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e);
+
+				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+				$ticket->ref = $ref;
+			}
+		}
+	}
+
 }

@@ -372,8 +372,7 @@ class TwitterStream extends AbstractJob
 								'channel' => 'agent.twitter-friend',
 								'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 								'date_created' => date('Y-m-d H:i:s'),
-								'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),
-								'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+								'data' => serialize(array('action' => 'new', 'account_id' => $account->id))
 							));
 						}
 					} else if ($targetUser->id == $account->getUserId()) {
@@ -391,8 +390,7 @@ class TwitterStream extends AbstractJob
 								'channel' => 'agent.twitter-follower',
 								'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 								'date_created' => date('Y-m-d H:i:s'),
-								'data' => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id)),
-								'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+								'data' => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id))
 							));
 						}
 					}

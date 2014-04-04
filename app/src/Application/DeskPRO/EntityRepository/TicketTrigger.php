@@ -39,6 +39,22 @@ use Application\DeskPRO\App;
 class TicketTrigger extends AbstractEntityRepository
 {
 	/**
+	 * @param string $event_type
+	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
+	 */
+	public function getTriggersForEventType($event_type)
+	{
+		$triggers = $this->_em->createQuery("
+			SELECT t
+			FROM DeskPRO:TicketTrigger t
+			WHERE t.event_trigger = :event_type
+			ORDER BY t.run_order
+		")->execute(array('event_type' => $event_type));
+
+		return $triggers;
+	}
+
+	/**
 	 * @param string|null $type
 	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
 	 */

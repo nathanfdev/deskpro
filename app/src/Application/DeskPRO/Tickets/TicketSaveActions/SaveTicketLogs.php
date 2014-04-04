@@ -29,20 +29,48 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
+use Doctrine\ORM\EntityManager;
 
-class TicketManagerService
+class SaveTicketLogs implements TicketSaveActionInterface
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	private $em;
+
+
+	/**
+	 * @param EntityManager $em
+	 */
+	public function __construct(EntityManager $em)
 	{
-		$s = new TicketManager($container);
-		return $s;
+		$this->em = $em;
 	}
+
+
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return void
+	 */
+	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$ticketlog_generator = new TicketLogGenerator($ticket, $context);
+		$logs = $ticketlog_generator->getLogEntries();
+
+		foreach ($logs as $l) {
+			$this->em->persist($l);
+		}
+
+		$context->getVars()->set('ticket_logs', $logs);
+	}
+
 }

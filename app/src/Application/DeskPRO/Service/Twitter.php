@@ -889,8 +889,7 @@ class Twitter
 			'channel' => 'agent.tweet-added',
 			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize($this->_getCmBaseData($account_status)),
-			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			'data' => serialize($this->_getCmBaseData($account_status))
 		));
 	}
 
@@ -902,8 +901,7 @@ class Twitter
 			'channel' => 'agent.tweet-updated',
 			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize($data),
-			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			'data' => serialize($data)
 		));
 	}
 

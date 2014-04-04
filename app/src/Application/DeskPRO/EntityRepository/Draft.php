@@ -176,8 +176,7 @@ class Draft extends AbstractEntityRepository
 						'ticket_id'      => $content_id,
 						'draft_html'     => false,
 						'via_person'     => $person->getId()
-					)),
-					'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+					))
 				));
 			}
 		}

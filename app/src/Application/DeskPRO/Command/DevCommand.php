@@ -276,7 +276,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 					'for_person_id' => $aid,
 					'channel'       => 'agent-notify.tickets',
 					'auth'          => Strings::random(15, Strings::CHARS_ALPHANUM_I),
-					'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
 					'data'          => serialize($alert),
 					'date_created'  => date('Y-m-d H:i:s'),
 				));
