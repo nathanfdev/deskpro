@@ -591,12 +591,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 		}
 
 		// Make sure the language is complete for the interface we're seeing
-		if (!App::getSetting('core.enable_agent_translation')) {
-			if (DP_INTERFACE == 'agent' && !$this->language->has_agent) {
-				$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
-			} elseif ((DP_INTERFACE == 'admin' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing') && (!$this->language->has_agent || !$this->language->has_admin)) {
-				$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
-			}
+		if (DP_INTERFACE == 'agent' && !$this->language->has_agent) {
+			$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
+		} elseif ($this->language->has_admin && (DP_INTERFACE == 'admin' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing')) {
+			$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
 		}
 
 		return $this->language;

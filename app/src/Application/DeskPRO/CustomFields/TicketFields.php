@@ -44,6 +44,15 @@ class TicketFields extends AbstractFields
 	const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefTicket';
 	const ENTITY_NAME  = 'DeskPRO:CustomDefTicket';
 
+	/**
+	 * @var \Application\DeskPRO\CustomFields\TicketFieldManager
+	 */
+	private $fm;
+
+	public function __construct()
+	{
+		$this->fm = App::getContainer()->getSystemService('TicketFieldsManager');
+	}
 
 	public function userDisplayRuleFilter($ticket_fields)
 	{
@@ -53,5 +62,25 @@ class TicketFields extends AbstractFields
 			WHERE d.is_agent_only = ?1
 			ORDER BY d.display_order ASC
 		")->execute(array(1=>false));
+	}
+
+	public function getFieldsDisplayArray($field_defs, $data_structured = array(), $field_group = null)
+	{
+		return $this->fm->getDisplayArray($data_structured, $field_group);
+	}
+
+	public function getFields()
+	{
+		return $this->fm->getFields();
+	}
+
+	public function getEnabledFields()
+	{
+		return $this->fm->getFields();
+	}
+
+	public function getFieldFromId($field_id)
+	{
+		return $this->fm->getFieldFromId($field_id);
 	}
 }

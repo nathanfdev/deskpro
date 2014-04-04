@@ -902,7 +902,7 @@ class DpLoader extends LoaderAbstract
 
 			$tr = $container->getTranslator();
 			$lang = $container->getEm()->getRepository('DeskPRO:Language')->find($language_id);
-			if ($lang) {
+			if ($lang && $lang->has_agent) {
 				$tr->setLanguage($lang);
 			} else {
 				$language_id = 0;

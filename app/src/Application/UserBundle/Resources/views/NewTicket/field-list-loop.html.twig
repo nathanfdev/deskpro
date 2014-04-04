@@ -75,20 +75,19 @@
 # Custom Fields
 ###############}
 
-{% for f in custom_fields %}
-	{% if item.field_type == 'ticket_field' and item.field_id == f.id %}
-		<div data-field-id="ticket_field_{{f.id}}" class="dp-control-group custom-field {{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
-			{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
-		</div>
-	{% endif %}
-{% endfor %}
-{% for f in custom_user_fields %}
-	{% if item.field_type == 'user_field' and item.field_id == f.id %}
-		<div data-field-id="user_field_{{f.id}}" class="dp-control-group custom-field {{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
-			{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
-		</div>
-	{% endif %}
-{% endfor %}
+{% if item.field_type == 'ticket_field' and custom_fields[item.field_id] %}
+	{% set f = custom_fields[item.field_id] %}
+	<div data-field-id="ticket_field_{{f.id}}" class="dp-control-group custom-field {{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+		{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
+	</div>
+{% endif %}
+
+{% if item.field_type == 'user_field' and custom_user_fields[item.field_id] %}
+	{% set f = custom_user_fields[item.field_id] %}
+	<div data-field-id="user_field_{{f.id}}" class="dp-control-group custom-field {{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+		{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
+	</div>
+{% endif %}
 
 {% if captcha_html and item.field_type == 'captcha' %}
 <div data-field-id="captcha" class="ticket-display-field captcha">

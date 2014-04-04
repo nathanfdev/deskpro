@@ -246,7 +246,6 @@ class TemplatingExtension extends \Twig_Extension
 			'DPC_ACCOUNT_ID'        => true,
 			'DPC_BILL_OVERDUE'      => true,
 			'DPC_BILL_DATE'         => true,
-			'DP_ENABLE_AGENT_LANG'  => true,
 		);
 
 		if (!$name || !defined($name) || !isset($whitelist[$name])) {

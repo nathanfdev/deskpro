@@ -722,13 +722,29 @@ class PersonController extends AbstractController
 			$language = null;
 		}
 
+		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
+		$invalid_custom_fields = array();
+		$is_valid = true;
+		foreach ($field_manager->getFields() as $field) {
+			$errors = $field->getHandler()->validateFormData($custom_fields ?: array());
+			foreach ($errors as $code) {
+				$invalid_custom_fields['field_' . $field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
+				$is_valid = false;
+			}
+		}
+		if (!$is_valid) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'invalid_custom_fields' => $invalid_custom_fields
+			));
+		}
+
 		$this->em->beginTransaction();
 
 		try {
-			$field_manager = $this->container->getSystemService('person_fields_manager');
-			$post_custom_fields = $this->request->request->get('custom_fields', array());
-			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $person);
+			if (!empty($custom_fields)) {
+				$field_manager->saveFormToObject($custom_fields, $person);
 			}
 
 			if ($timezone) {
@@ -747,10 +763,13 @@ class PersonController extends AbstractController
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($person);
 
-		return $this->render('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
-			'timezone_options' => $timezone_options,
-			'person' => $person,
-			'custom_fields' => $custom_fields,
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'tpl' => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+				'timezone_options' => $timezone_options,
+				'person' => $person,
+				'custom_fields' => $custom_fields,
+			))
 		));
 	}
 

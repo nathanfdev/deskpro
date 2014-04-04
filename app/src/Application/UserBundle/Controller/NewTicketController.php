@@ -99,6 +99,17 @@ class NewTicketController extends AbstractController
 			$for_department_id = $this->in->getUint('set_dep_id');
 		}
 
+		// Check if user only has access to a single dep
+		if (!$for_department_id) {
+			$deps = $this->container->getDataService('Department')->getPersonDepartments($this->person, 'tickets');
+			if (count($deps) == 1) {
+				$first = Arrays::getFirstItem($deps);
+				if (count($first->children) == 1) {
+					$set_dep_id = Arrays::getFirstItem($first->children)->id;
+				}
+			}
+		}
+
 		if ($for_department_id) {
 			$newticket->ticket->department_id = $for_department_id;
 			$set_dep_id = $newticket->ticket->department_id;

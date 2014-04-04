@@ -11,6 +11,7 @@
 	'user.portal.search.new-feedback'                                      => 'أرسل التنويه',
 	'user.portal.search.new-ticket'                                        => 'إتصل بنا',
 	'user.portal.search.no_matches'                                        => 'لا شئ مناسب؟...',
+	'user.portal.search_label-search_show'                                 => 'عرض',
 	'user.portal.search_label-search_with'                                 => 'المصنف بـ',
 	'user.portal.search_labels_title'                                      => 'ابحث في التصنيفات',
 	'user.portal.search_more-results'                                      => 'شاهد بقية نتائج البحث',

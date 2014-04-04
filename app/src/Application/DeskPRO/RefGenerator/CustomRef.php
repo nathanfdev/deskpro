@@ -343,7 +343,7 @@ class CustomRef implements RefGeneratorInterface
 		}
 
 		if ($this->append_count) {
-			$regex[] = '(?P<count>[0-9]+)';
+			$regex[] = '(?P<count>[0-9]{'.$this->append_count.'})';
 		}
 
 		$regex[] = ')';

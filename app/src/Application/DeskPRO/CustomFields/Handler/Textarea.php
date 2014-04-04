@@ -36,12 +36,23 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Util;
 
 /**
  * Handles the text field
  */
 class Textarea extends Text
 {
+	public function getRenderTemplateVars($context = 'html')
+	{
+		if ($context == 'html') {
+			return array('nl2br' => true);
+		}
+
+		return array();
+	}
+
 	public function getFormField($data = null)
 	{
 		$setData = null;

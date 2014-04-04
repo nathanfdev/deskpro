@@ -59,7 +59,7 @@
 		'flag_image' => 'fr.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
-		'has_agent'  => false,
+		'has_agent'  => true,
 		'has_admin'  => false,
 		'is_managed' => true
 	),
@@ -202,7 +202,7 @@
 		'flag_image' => 'ru.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
-		'has_agent'  => false,
+		'has_agent'  => true,
 		'has_admin'  => false,
 		'is_managed' => true
 	),

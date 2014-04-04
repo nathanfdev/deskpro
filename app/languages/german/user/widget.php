@@ -35,4 +35,5 @@
 	'user.widget.ticket_form_subject'                                      => 'Betreff',
 	'user.widget.ticket_form_submit'                                       => 'Email senden',
 	'user.widget.ticket_form_upload-drag'                                  => 'Lassen Sie Ihre Datei hier fallen um sie hochzuladen',
+	'user.widget.website_link'                                             => 'Sehen Sie mehr unter {{url}}',
 );
