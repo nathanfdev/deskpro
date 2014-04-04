@@ -362,7 +362,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'agent_team_ids';
+        options.propName = 'team_ids';
         options.dataName = 'agent_teams';
         options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from'];
         options.extraOptions = [

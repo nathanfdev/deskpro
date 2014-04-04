@@ -135,13 +135,6 @@ class Sla extends DomainObject
 	protected $work_holidays = array();
 
 	/**
-	 * Controls how the SLA is applied to tickets
-	 *
-	 * @var string
-	 */
-	protected $apply_type = 'all';
-
-	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
 	 */
 	protected $apply_terms = null;
@@ -391,7 +384,7 @@ class Sla extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'work_days',
 			'fieldName'  => 'work_days',
-			'type'       => 'array',
+			'type'       => 'simple_array',
 			'nullable'   => true,
 		));
 		$metadata->mapField(array(
@@ -404,20 +397,13 @@ class Sla extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'work_holidays',
 			'fieldName'  => 'work_holidays',
-			'type'       => 'array',
+			'type'       => 'json_array',
 			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'apply_type',
-			'fieldName'  => 'apply_type',
-			'type'       => 'string',
-			'length'     => 25,
-			'nullable'   => false,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'apply_terms',
 			'fieldName'  => 'apply_terms',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
@@ -436,7 +422,7 @@ class Sla extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'warn_actions',
 			'fieldName'  => 'warn_actions',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
@@ -455,7 +441,7 @@ class Sla extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'fail_actions',
 			'fieldName'  => 'fail_actions',
-			'type'       => 'object',
+			'type'       => 'dp_json_obj',
 			'nullable'   => false,
 		));
 	}
