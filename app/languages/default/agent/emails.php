@@ -57,7 +57,6 @@
 	'agent.emails.ticket_action_status_resolved'        => 'RESOLVED',
 	'agent.emails.ticket_action_status_user'            => 'AWAITING USER',
 	'agent.emails.ticket_action_updated'                => 'UPDATED',
-	'agent.emails.ticket_created_link'                  => '{{name}} ({{email}}) has created an agent account for you on {{link}}',
 	'agent.emails.ticket_sla_failed'                    => 'SLA FAILED',
 	'agent.emails.ticket_sla_warning'                   => 'SLA WARNING',
 	'agent.emails.ticket_was_created'                   => '{{name}} created a new ticket',
