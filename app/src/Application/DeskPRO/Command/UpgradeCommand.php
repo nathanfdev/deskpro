@@ -144,17 +144,6 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		}
 
 		#------------------------------
-		# Auto-crrect keys
-		#------------------------------
-
-		if (!defined('DP_UPGRADE_NO_CORRECT_KEYS') && !defined('DPC_IS_CLOUD')) {
-			$output->writeln("<info>Running automatic schema correction</info>");
-			$cmd = dp_get_php_command('cmd.php', 'dp:schema-correction --apply');
-			$ret = null;
-			passthru($cmd, $ret);
-		}
-
-		#------------------------------
 		# Post Run
 		#------------------------------
 
