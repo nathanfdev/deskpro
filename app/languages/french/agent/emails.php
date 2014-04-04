@@ -51,7 +51,7 @@
 	'agent.emails.ticket_action_status_resolved'                           => 'RÉSOLU',
 	'agent.emails.ticket_action_status_user'                               => 'EN ATTENTE DE L\'UTILISATEUR',
 	'agent.emails.ticket_action_updated'                                   => 'MIS À JOUR',
-	'agent.emails.ticket_created_link'                                     => '{{name}} <{{email}}> a créé un compte agent pour vous sur {{link}}',
+	'agent.emails.ticket_created_link'                                     => '{{name}} ({{email}}) a créé un compte agent pour vous sur {{link}}',
 	'agent.emails.ticket_sla_failed'                                       => 'ECHEC DU SLA',
 	'agent.emails.ticket_sla_warning'                                      => 'AVERTISSEMENT DU SLA',
 	'agent.emails.ticket_was_created'                                      => '{{name}} a créé un nouveau ticket',
