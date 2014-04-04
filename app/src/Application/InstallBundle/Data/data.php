@@ -805,12 +805,12 @@ $em->flush();
 
 ##BEGIN:create_jobs.ticket_triggers##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'ticket_triggers';
-$j['worker_group'] = 'ticket_triggers';
-$j['title'] = 'Ticket Triggers';
-$j['description'] = 'Executes time-based ticket triggers';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\TicketTriggers';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TicketTriggers::DEFAULT_INTERVAL;
+$j['id'] = 'ticket_escalations';
+$j['worker_group'] = 'ticket_escalations';
+$j['title'] = 'Ticket Escalations';
+$j['description'] = 'Executes ticket escalations';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\TicketEscalations';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TicketEscalations::DEFAULT_INTERVAL;
 $em->persist($j);
 $em->flush();
 

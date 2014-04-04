@@ -42,9 +42,9 @@ use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
 
 /**
- * Handles time-based triggers
+ * Executes escalations
  */
-class TicketTriggers extends AbstractJob
+class TicketEscalations extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 60;
 
