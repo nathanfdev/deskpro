@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket AS Ticket;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Labels\LabelManager;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 
@@ -231,11 +232,13 @@ class TicketController extends AbstractController
 			$this->em->persist($message);
 			$this->em->flush();
 
-			App::setCurrentPerson($this->person);
-
 			if ($labels) {
-				$ticket->getLabelManager()->setLabelsArray($labels, $this->em);
+				foreach ($labels as $l) {
+					$this->db->replace('labels_tickets', array('ticket_id' => $ticket->id, 'label' => LabelManager::normalizeLabel($l)));
+				}
 			}
+
+			App::setCurrentPerson($this->person);
 
 			$this->em->flush();
 
