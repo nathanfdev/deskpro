@@ -256,7 +256,12 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 									}
 								}, this);
 							} else {
-								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval).change();
+								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"], [name$="'+this.makeArrayName(sub_name+'[]',true)+'"]', new_row).first();
+								if (el.is('select')) {
+									el.find('[value="' + subval + '"]').prop('selected', true);
+								} else {
+									el.val(subval).change();
+								}
 							}
 						}, this);
 					} else if (typeOf(val) == 'array') {

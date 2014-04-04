@@ -571,14 +571,27 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			$('.save', box).hide();
 			$('.cancel', box).hide();
 
+			fieldsForm.find('.error-row').hide();
+			fieldsForm.find('.error-reason').hide();
 			$.ajax({
 				url: BASE_URL + 'agent/person/' + self.meta.person_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
-				dataType: 'html',
-				success: function(rendered) {
-					fieldsRendered.empty().html(rendered);
-					propToggle('display');
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						fieldsRendered.empty().html(data.tpl);
+						propToggle('display');
+					} else if (data.invalid_custom_fields) {
+						$('.is-loading', box).hide();
+						$('.save', box).show();
+						$('.cancel', box).show();
+
+						for (var i in data.invalid_custom_fields) {
+							if (!data.invalid_custom_fields.hasOwnProperty(i)) continue;
+							fieldsForm.find('.' + i + '.error-row').show().find('.' + data.invalid_custom_fields[i]).show();
+						}
+					}
 				}
 			});
 		});

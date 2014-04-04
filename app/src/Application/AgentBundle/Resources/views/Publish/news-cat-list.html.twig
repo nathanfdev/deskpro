@@ -16,7 +16,7 @@
 		</div>
 		{% if news_repo.getChildren(cat)|length %}
 			<ul class="nav-list nav-list-small indented" style="display: none;">
-				{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': download_repo.getChildren(cat), 'counts': counts, 'depth': depth+1 } %}
+				{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_repo.getChildren(cat), 'counts': counts, 'depth': depth+1 } %}
 			</ul>
 		{% endif %}
 	</li>

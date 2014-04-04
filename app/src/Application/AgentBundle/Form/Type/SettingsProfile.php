@@ -50,9 +50,12 @@ class SettingsProfile extends AbstractType
 		));
 
 		$lang_names = array();
-		foreach (App::getDataService('Language')->getAll() as $l) {
-			$lang_names[$l->getId()] = App::getTranslator()->getPhraseObject($l, 'title');
+		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+			if ($lang->has_agent) {
+				$lang_names[$lang->id] = App::getTranslator()->getPhraseObject($lang, 'title');
+			}
 		}
+
 		$builder->add('language_id', 'choice', array(
 			'choices' => $lang_names
 		));

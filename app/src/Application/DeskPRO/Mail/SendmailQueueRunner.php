@@ -157,7 +157,7 @@ class SendmailQueueRunner implements Loggable
 		// Update next time so if we happen to crash, it doesnt constantly rerun
 		$this->db->update(
 			'sendmail_queue',
-			array('date_next_attempt' => null),
+			array('date_next_attempt' => null, 'has_sent' => 1),
 			array('id' => $sendmail['id'])
 		);
 
@@ -219,7 +219,7 @@ class SendmailQueueRunner implements Loggable
 
 			$this->db->update(
 				'sendmail_queue',
-				array('date_next_attempt' => $next_attempt, 'attempts' => $sendmail['attempts']+1, 'log' => $sendmail['log']),
+				array('has_sent' => false, 'date_next_attempt' => $next_attempt, 'attempts' => $sendmail['attempts']+1, 'log' => $sendmail['log']),
 				array('id' => $sendmail['id'])
 			);
 		}

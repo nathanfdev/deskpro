@@ -346,6 +346,20 @@ class TriggerExecutor
 		// are already run. For example: Template overrides, disabling notifications,
 		// adding more users to notifications, etc.
 
+		// SLA application triggers sholud always be run at the end
+		$sla_trigger_ids = App::getDb()->fetchAllCol("SELECT apply_trigger_id FROM slas WHERE apply_trigger_id IS NOT NULL");
+		$sla_triggers = array();
+		if ($sla_trigger_ids) {
+			foreach ($all_triggers as &$t) {
+				if (isset($sla_trigger_ids[$t->id])) {
+					$sla_triggers[] = $t;
+					$t = null;
+				}
+			}
+			unset($t);
+			$all_triggers = Arrays::removeFalsey($all_triggers);
+		}
+
 		#------------------------------
 		# Notify the user of course
 		#------------------------------
@@ -524,6 +538,31 @@ class TriggerExecutor
 			if ($actions_collection->hasModifierType('StopActions')) {
 				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Got StopActions signal', microtime(true)-$trigger_time));
 				$stop_actions = true;
+			}
+		}
+		foreach ($sla_triggers as $trigger) {
+			$trigger_time = microtime(true);
+			if ($this->verbose_logging) {
+				$this->tracker->logMessage("[TriggerExecutor] Testing SLA trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->terms_any,true) . print_r($trigger->actions, true));
+			} else {
+				$this->tracker->logMessage("[TriggerExecutor] Testing SLA trigger match {$trigger->id} {$trigger->event_trigger}");
+			}
+			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
+
+				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Match', microtime(true) - $trigger_time));
+				$this->tracker->recordExtraMulti('trigger', $trigger);
+
+				foreach ($trigger['actions'] as $action_info) {
+					$action = $factory->createFromInfo($action_info);
+
+					if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
+						$action->setExecutionContext('trigger');
+					}
+
+					if ($action) {
+						$actions_collection->add($action, array('trigger' => $trigger));
+					}
+				}
 			}
 		}
 

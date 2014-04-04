@@ -134,11 +134,14 @@ class Manager
 		// Clear old CSS blob so it's regenerated
 		$this->container->getDb()->executeUpdate("UPDATE styles SET css_blob_id = NULL, css_blob_rtl_id = NULL");
 
-		// Update lang titles
+		// Update lang titles and has_agent flags
 		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
 		foreach ($langpacks->getLangTitles(true) as $id => $title) {
 			$this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", array($title, $id));
+
+			$info = $langpacks->getLangInfo($id);
+			$this->container->getDb()->executeUpdate("UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?", array($info['has_user'], $info['has_agent'], $info['has_admin'], $id));
 		}
 
 		// Update flags if theyre blank
