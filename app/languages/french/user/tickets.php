@@ -79,7 +79,7 @@
 	'user.tickets.resolve_my_ticket_btn'                                   => 'Clôturer mon ticket',
 	'user.tickets.resolve_my_ticket_send_feedback_btn'                     => 'Clôturer mon ticket et faire une remarque',
 	'user.tickets.resolve_ticket'                                          => 'Clôturer le ticket: {{subject}}',
-	'user.tickets.resolve_ticket_explain'                                  => 'Êtes-vous sûr de vouloir clôturer ce ticket ? Une fois votre ticket clôturé nos agents ne vous répondrons plus.',
+	'user.tickets.resolve_ticket_explain'                                  => 'Êtes-vous sûr de vouloir clôturer ce ticket ? Une fois votre ticket clôturé nos agents ne vous répondront plus.',
 	'user.tickets.status_open'                                             => 'Ouvert',
 	'user.tickets.status_resolved'                                         => 'Clôturé',
 	'user.tickets.subject'                                                 => 'Sujet',

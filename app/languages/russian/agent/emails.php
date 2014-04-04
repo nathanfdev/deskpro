@@ -49,5 +49,11 @@
 	'agent.emails.task_due_today'                                          => 'Задача {{title}} истекает сегодня',
 	'agent.emails.ticket_action_assigned'                                  => 'НАЗНАЧЕНО',
 	'agent.emails.ticket_action_assigned_team'                             => 'НАЗНАЧЕННАЯ КОМАНДА',
+	'agent.emails.tweet_assigned_to_you_by'                                => 'Твит, который назначил на вас {{agent}}',
+	'agent.emails.updated_ticket_assigned'                                 => 'и назначить на вас',
+	'agent.emails.updated_ticket_assigned_team'                            => 'и назначить на вашу команду {{team}}',
 	'agent.emails.updated_ticket_followed'                                 => 'и подписаться',
+	'agent.emails.view_delegated_tasks'                                    => 'Показать переданные вами задачи',
+	'agent.emails.view_your_tasks'                                         => 'Показать ваши задачи',
+	'agent.emails.view_your_teams_tasks'                                   => 'Показать задачи вашей команды',
 );

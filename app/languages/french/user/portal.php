@@ -22,7 +22,7 @@
 	'user.portal.tab_downloads-description'                                => 'Consulter nos documents à télécharger',
 	'user.portal.tab_feedback'                                             => 'Remarques',
 	'user.portal.tab_feedback-description'                                 => 'Suggestions de clients',
-	'user.portal.tab_knowledgebase'                                        => 'Base de connaissance',
+	'user.portal.tab_knowledgebase'                                        => 'Base de connaissances',
 	'user.portal.tab_knowledgebase-description'                            => 'Lire les articles d\'aide',
 	'user.portal.tab_news'                                                 => 'Actualités',
 	'user.portal.tab_news-description'                                     => 'Actualités et mises à jour',
