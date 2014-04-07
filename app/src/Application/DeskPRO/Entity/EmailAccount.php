@@ -196,6 +196,30 @@ class EmailAccount extends DomainObject
 
 
 	/**
+	 * @param string $address
+	 * @return bool
+	 */
+	public function hasAddress($address)
+	{
+		$address = strtolower($address);
+
+		if ($this->address == $address) {
+			return true;
+		}
+
+		if ($this->other_addresses) {
+			foreach ($this->other_addresses as $addr) {
+				if ($addr == $address) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Given an address, see if it matches in this account and return the matched address.
 	 *
 	 * At the moment this method only handles exact matches, but theres a possibility it could be extended

@@ -79,7 +79,7 @@ class FilterData extends AbstractDefaultData
 			'sys_name' => 'unassigned',
 			'order_by' => 'ticket.urgency:desc',
 			'terms'    => array(
-				array('type' => 'agent',       'op' => 'is', 'options' => array('agent' => '0')),
+				array('type' => 'agent',      'op' => 'is', 'options' => array('agent' => '0')),
 				array('type' => 'agent_team', 'op' => 'is', 'options' => array('agent_team' => '0')),
 				array('type' => 'status',     'op' => 'is', 'options' => array('status' => 'awaiting_agent')
 			))
@@ -90,7 +90,61 @@ class FilterData extends AbstractDefaultData
 			'sys_name' => 'all',
 			'order_by' => 'ticket.urgency:desc',
 			'terms'    => array(
-				array('type' => 'status',     'op' => 'is', 'options' => array('status' => 'awaiting_agent')
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent')
+			))
+		);
+
+		$filters[] = array(
+			'title'    => 'Awaiting User',
+			'sys_name' => 'archive_awaiting_user',
+			'order_by' => 'ticket.urgency:desc',
+			'terms'    => array(
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_user')
+			))
+		);
+
+		$filters[] = array(
+			'title'    => 'Resolved',
+			'sys_name' => 'archive_resolved',
+			'order_by' => 'ticket.urgency:desc',
+			'terms'    => array(
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'resolved')
+			))
+		);
+
+		$filters[] = array(
+			'title'    => 'Archived',
+			'sys_name' => 'archive_closed',
+			'order_by' => 'ticket.urgency:desc',
+			'terms'    => array(
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'closed')
+			))
+		);
+
+		$filters[] = array(
+			'title'    => 'Awaiting Validation',
+			'sys_name' => 'archive_validating',
+			'order_by' => 'ticket.urgency:desc',
+			'terms'    => array(
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.validating')
+			))
+		);
+
+		$filters[] = array(
+			'title'    => 'Spam',
+			'sys_name' => 'archive_spam',
+			'order_by' => 'ticket.urgency:desc',
+			'terms'    => array(
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.spam')
+			))
+		);
+
+		$filters[] = array(
+			'title'    => 'Deleted',
+			'sys_name' => 'archive_deleted',
+			'order_by' => 'ticket.urgency:desc',
+			'terms'    => array(
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.deleted')
 			))
 		);
 
@@ -107,7 +161,13 @@ class FilterData extends AbstractDefaultData
 		$order = 1;
 		foreach (array(0, 1) as $is_hold) {
 			foreach ($filters as $f) {
-				$f['terms'] = json_encode($f['terms']);
+
+				$is_archive = strpos($f['sys_name'], 'archive_') === 0;
+
+				if ($is_archive && $is_hold) {
+					continue;
+				}
+
 				$f['is_global'] = 1;
 				$f['is_enabled'] = 1;
 				$f['display_order'] = $order++;
@@ -116,6 +176,12 @@ class FilterData extends AbstractDefaultData
 					$f['title'] .= ' (Hold)';
 					$f['sys_name'] .= '_w_hold';
 				}
+
+				if (!$is_archive) {
+					$f['terms'][] = array('type' => 'is_hold', 'op' => 'is', 'options' => array('is_hold' => $is_hold));
+				}
+
+				$f['terms'] = json_encode($f['terms']);
 
 				$exist_id = isset($exist_id_map[$f['sys_name']]) ? $exist_id_map[$f['sys_name']] : null;
 				if ($exist_id) {

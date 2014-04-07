@@ -34,22 +34,15 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1396876083 extends AbstractBuild
+class Build1396876130 extends AbstractBuild
 {
 	public function run()
 	{
-		$db = $this->container->getDb();
+		$this->out("Remove old plugin tables");
 
-		$this->out("Set tickets.email_account_id");
-		$valid_account_ids = $db->fetchAllKeyValue("SELECT id FROM email_accounts", array(), 0, 0);
-
-		if ($valid_account_ids) {
-			$valid_account_ids = implode(', ', $valid_account_ids);
-			$db->executeUpdate("
-				UPDATE tickets
-				SET email_account_id = email_gateway_id
-				WHERE email_gateway_id IN ($valid_account_ids)
-			");
-		}
+		$this->container->getDb()->exec("DROP TABLE IF EXISTS ticket_trigger_plugin_actions");
+		$this->container->getDb()->exec("DROP TABLE IF EXISTS plugin_listeners");
+		$this->container->getDb()->exec("DROP TABLE IF EXISTS widgets");
+		$this->container->getDb()->exec("DROP TABLE IF EXISTS plugins");
 	}
 }

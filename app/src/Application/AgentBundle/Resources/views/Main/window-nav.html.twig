@@ -44,7 +44,7 @@
 				</li>
 			{% endif %}
 
-			{% if true or (app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length) %}
+			{% if (app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length) %}
 				<li id="twitter_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Twitter">
 					<span class="count-badge" style="display: none"><span></span></span>
 					<a title="{{ phrase('agent.interface.app-twitter') }}"><i class="app-icon app-icon-twitter"></i></a>

@@ -34,22 +34,26 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1396876083 extends AbstractBuild
+use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutField;
+
+class Build1396876120 extends AbstractBuild
 {
 	public function run()
 	{
-		$db = $this->container->getDb();
+		$this->out("Insert default ticket layout");
 
-		$this->out("Set tickets.email_account_id");
-		$valid_account_ids = $db->fetchAllKeyValue("SELECT id FROM email_accounts", array(), 0, 0);
+		$ticket_layout = new TicketLayout();
+		$ticket_layout->is_enabled = true;
 
-		if ($valid_account_ids) {
-			$valid_account_ids = implode(', ', $valid_account_ids);
-			$db->executeUpdate("
-				UPDATE tickets
-				SET email_account_id = email_gateway_id
-				WHERE email_gateway_id IN ($valid_account_ids)
-			");
-		}
+		$ticket_layout->user_layout = new Layout();
+		$ticket_layout->user_layout->add(new LayoutField('department'));
+
+		$ticket_layout->agent_layout = new Layout();
+		$ticket_layout->agent_layout->add(new LayoutField('department'));
+
+		$this->container->getEm()->persist($ticket_layout);
+		$this->container->getEm()->flush();
 	}
 }

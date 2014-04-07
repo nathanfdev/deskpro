@@ -34,14 +34,195 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\Entity\EmailAccount;
+
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
+
 class Build1396876082 extends AbstractBuild
 {
 	public function run()
 	{
 		$db = $this->container->getDb();
 
-		$this->out("Upgrade email accounts");
-		$this->out("TODO");
-		// TODO
+		$this->out("Upgrading email accounts...");
+
+		$gateways      = $db->fetchAllKeyed("SELECT * FROM email_gateways");
+		$gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC", array(), 'email_gateway_id');
+		$transports    = $db->fetchAllKeyed("SELECT * FROM email_transports");
+
+		$new_accounts = array();
+		foreach ($gateways as $gateway) {
+			if ($gateway['gateway_type'] != 'tickets') {
+				$this->out("Skipping {$gateway['id']}: Must be ticket type");
+			}
+
+			if (!empty($gateway['linked_transport_id']) && isset($transports[$gateway['linked_transport_id']])) {
+				$tr = $transports[$gateway['linked_transport_id']];
+			} else {
+				$tr = null;
+			}
+
+			if (isset($gateway_addrs[$gateway['id']])) {
+				$addrs = $gateway_addrs[$gateway['id']];
+			} else {
+				$addrs = null;
+			}
+
+			if (!$addrs) {
+				$this->out("Skipping {$gateway['id']}: No addresses");
+			}
+			if (!$tr) {
+				$this->out("Skipping {$gateway['id']}: No transport");
+			}
+
+			$new_accounts[] = $this->_convertGatewayAccount($gateway, $tr, $addrs);
+		}
+
+		$default_tr = Arrays::findValue($transports, function($tr) {
+			return $tr['match_type'] == 'all';
+		});
+		if ($default_tr) {
+			$tr_account = new EmailAccount(EmailAccount::TYPE_OUT);
+			$tr_account->address = $default_tr['match_pattern'];
+			$tr_account->is_enabled = true;
+			$tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
+
+			$addr_exists = Arrays::findValue($new_accounts, function($account) use ($tr_account) {
+				return $account->hasAddress($tr_account->address);
+			});
+
+			if (!$addr_exists) {
+				$new_accounts[] = $tr_account;
+			}
+		}
+	}
+
+
+	/**
+	 * @param array $gateway
+	 * @param array $tr
+	 * @param array $addrs
+	 * @return EmailAccount
+	 */
+	private function _convertGatewayAccount(array $gateway, array $tr, array $addrs)
+	{
+		$account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+
+		if ($gateway['connection_options']) {
+			$gateway['connection_options'] = unserialize($gateway['connection_options']);
+		} else {
+			$gateway['connection_options'] = null;
+		}
+
+		$conn_opts = new OptionsArray(!empty($gateway['connection_options']) ? $gateway['connection_options'] : array());
+
+		switch ($gateway['connection_type']) {
+			case 'pop3':
+				$pop3_config = new IncomingAccount\Pop3Config();
+				$pop3_config->host     = $conn_opts->get('host', 'localhost');
+				$pop3_config->port     = $conn_opts->get('port', 995);
+				$pop3_config->user     = $conn_opts->get('username');
+				$pop3_config->password = $conn_opts->get('password');
+
+				if ($conn_opts->get('secure') == 'ssl') {
+					$pop3_config->secure_mode = 'ssl';
+				} elseif ($conn_opts->get('secure') == 'tls') {
+					$pop3_config->secure_mode = 'tls';
+				}
+
+				$account->incoming_account = $pop3_config;
+				break;
+
+			case 'gmail':
+				$gmail_config = new IncomingAccount\GmailConfig();
+				$gmail_config->user     = $conn_opts->get('username');
+				$gmail_config->password = $conn_opts->get('password');
+
+				$account->incoming_account = $gmail_config;
+				break;
+
+			default:
+				throw new \InvalidArgumentException("Unknown account type: {$gateway['connection_type']}");
+		}
+
+		$account->outgoing_account = $this->_getTransportConfig($tr);
+
+		if ($gateway['keep_read']) {
+			$account->setOption('keep_read', true);
+		}
+
+		if (!empty($gateway['date_last_check'])) {
+			$account->date_last_incoming = \DateTime::createFromFormat('Y-m-d H:i:s', $gateway['date_last_check']);
+		}
+		if (!empty($gateway['start_date_limit'])) {
+			$account->date_read_start = \DateTime::createFromFormat('Y-m-d H:i:s', $gateway['start_date_limit']);
+		}
+
+		$dates = array($account->date_created, $account->date_last_incoming, $account->date_read_start);
+		$dates = Arrays::removeFalsey($dates);
+		$account->date_created = min($dates);
+
+		$account->address = $addrs[0]['match_pattern'];
+		if (isset($addrs[1])) {
+			array_shift($addrs);
+			$account->other_addresses = array_map(function($a) { return $a['match_pattern']; }, $addrs);
+		}
+
+		$account->is_enabled = (bool)$gateway['is_enabled'];
+
+		// We want the same ids
+		$account->id = $gateway['id'];
+
+		return $account;
+	}
+
+
+	/**
+	 * @param array $tr
+	 * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
+	 * @throws \InvalidArgumentException
+	 */
+	private function _getTransportConfig(array $tr)
+	{
+		if ($tr['transport_options']) {
+			$tr['transport_options'] = unserialize($tr['transport_options']);
+		} else {
+			$tr['transport_options'] = null;
+		}
+
+		$conn_opts = new OptionsArray(!empty($tr['transport_options']) ? $tr['transport_options'] : array());
+
+		switch ($tr['transport_type']) {
+			case 'mail':
+				$mail_config = new OutgoingAccount\PhpMailConfig();
+				return $mail_config;
+
+			case 'smtp':
+				$smtp_config = new OutgoingAccount\SmtpConfig();
+				$smtp_config->host     = $conn_opts->get('host', 'localhost');
+				$smtp_config->port     = $conn_opts->get('port', 25);
+				$smtp_config->user     = $conn_opts->get('username');
+				$smtp_config->password = $conn_opts->get('password');
+
+				if ($conn_opts->get('secure') == 'ssl') {
+					$smtp_config->secure_mode = 'ssl';
+				} elseif ($conn_opts->get('secure') == 'tls') {
+					$smtp_config->secure_mode = 'tls';
+				}
+
+				return $smtp_config;
+
+			case 'gmail':
+				$gmail_config = new OutgoingAccount\GmailConfig();
+				$gmail_config->user     = $conn_opts->get('username');
+				$gmail_config->password = $conn_opts->get('password');
+				return $gmail_config;
+
+			default:
+				throw new \InvalidArgumentException("Unknown mail account: {$tr['transport_type']}");
+		}
 	}
 }
