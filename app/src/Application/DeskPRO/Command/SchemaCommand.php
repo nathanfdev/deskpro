@@ -71,13 +71,15 @@ class SchemaCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 						// If it failed, log the error and force it with FK checks off
 						try {
-							//App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
-							//App::getDb()->exec($line);
-							//App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
+							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
+							App::getDb()->exec($line);
+							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
 							$t2 = microtime(true);
 							$output->writeln(sprintf("<info>-> Retry okay (%.4fs)</info>", $t2-$t1));
 						} catch (\Exception $e) {
 							$output->writeln("<warning>-> Retry failed: {$e->getMessage()}</warning>");
+							$output->writeln("Aborting...");
+							break;
 						}
 					}
 				}

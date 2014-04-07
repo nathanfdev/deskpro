@@ -32,17 +32,24 @@
  * @subpackage Import
  */
 
-namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
+namespace Application\DeskPRO\People\PasswordScheme;
 
-class UserChatBlobsStep extends AbstractBlobsStep
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PasswordSchemeInterface;
+
+class Deskpro3 implements PasswordSchemeInterface
 {
-	public static function getTitle()
+	public function hashPassword(Person $person, $plain_password)
 	{
-		return 'Import User Chat Blobs';
+		if ($person->password_scheme == 'deskpro3_tech') {
+			return sha1($plain_password . $person->salt);
+		} else {
+			return md5($plain_password . $person->salt);
+		}
 	}
 
-	public function getTable()
+	public function checkPassword(Person $person, $hashed_password, $plain_password)
 	{
-		return 'chat_attachment';
+		return ($hashed_password === $this->hashPassword($person, $plain_password));
 	}
 }
