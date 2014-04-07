@@ -41,10 +41,12 @@ class Build1396876085 extends AbstractBuild
 		$db = $this->container->getDb();
 
 		$this->out("Convert email_uids.gateway_id -> email_uids.email_account_id");
-		$db->exec("ALTER TABLE email_uids DROP KEY IDX_6D08D1BD577F8E00");
 		$db->exec("ALTER TABLE email_uids DROP FOREIGN KEY FK_6D08D1BD577F8E00");
+		$db->exec("ALTER TABLE email_uids DROP KEY IDX_6D08D1BD577F8E00");
 		$db->exec("ALTER TABLE email_uids CHANGE gateway_id email_account_id INT DEFAULT NULL");
+		$db->exec("SET FOREIGN_KEY_CHECKS = 0");
 		$db->exec("ALTER TABLE email_uids ADD CONSTRAINT FK_6D08D1BD37D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
 		$db->exec("CREATE INDEX IDX_6D08D1BD37D8AD65 ON email_uids (email_account_id)");
+		$db->exec("SET FOREIGN_KEY_CHECKS = 1");
 	}
 }
