@@ -32,8 +32,8 @@
 	"scripts": {
 		"pre-update-cmd":   ["test -d vendor && rm -rf vendor/ || true", "mkdir vendor"],
 		"pre-install-cmd":  ["test -d vendor && rm -rf vendor/ || true", "mkdir vendor", "test -f composer.lock && rm composer.lock || true"],
-		"post-update-cmd":  ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git", "rm -rf vendor/**/**/**/**.git"],
- 		"post-install-cmd": ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git", "rm -rf vendor/**/**/**/**.git"]
+		"post-update-cmd":  ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git", "rm -rf vendor/**/**/**/**.git", "bin/clean-vendors.sh"],
+ 		"post-install-cmd": ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git", "rm -rf vendor/**/**/**/**.git", "bin/clean-vendors.sh"]
 	},
 	"preferred-install": "dist"
 }
