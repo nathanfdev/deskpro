@@ -107,13 +107,15 @@ class TicketLog extends DomainObject
 	protected $id_after = null;
 
 	/**
-	 * If the change was caused by a trigger, the trigger id
+	 * If the change was caused by a trigger, the trigger id.
+	 * Note this is the integer ID (not a FK relation) so the record is kept even if the trigger itself is deleted.
 	 * @var int
 	 */
 	protected $trigger_id = null;
 
 	/**
 	 * If the change was caused by an escalation
+	 * Note this is the integer ID (not a FK relation) so the record is kept even if the esc itself is deleted.
 	 * @var int
 	 */
 	protected $escalation_id = null;

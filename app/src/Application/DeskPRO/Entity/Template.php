@@ -58,25 +58,11 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	protected $style;
 
 	/**
-	 * If this template is used by a specific trigger, then this is that trigger.
-	 *
-	 * @var TicketTrigger
-	 */
-	protected $ticket_trigger;
-
-	/**
 	 * The logical name of the template. E.g., UserBundle:Main:resources.html.twig
 	 *
 	 * @var string
 	 */
 	protected $name;
-
-	/**
-	 * The "parent" template that this is a variant of.
-	 *
-	 * @var string
-	 */
-	protected $variant_of;
 
 	/**
 	 * The raw template
@@ -148,12 +134,10 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-		$metadata->mapField(array( 'fieldName' => 'variant_of', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'variant_of', ));
 		$metadata->mapField(array( 'fieldName' => 'template_code', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_code', ));
 		$metadata->mapField(array( 'fieldName' => 'template_compiled', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_compiled', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'ticket_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'CASCADE', 'columnDefinition' => NULL, ), ), ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'style', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Style', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'style_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
