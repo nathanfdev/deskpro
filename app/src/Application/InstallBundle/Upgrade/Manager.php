@@ -38,7 +38,6 @@ use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Plugin\Package\NativePackages;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Monolog\Logger;
 use Orb\Util\Arrays;
@@ -289,7 +288,14 @@ class Manager
 	 */
 	public function getBuildClass($build_id)
 	{
-		return 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $build_id;
+		$class = 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $build_id;
+
+		if (!class_exists($class, false)) {
+			$file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/' . date('Y/m', $build_id) . '/Build' . $build_id . '.php';
+			require_once $file;
+		}
+
+		return $class;
 	}
 
 

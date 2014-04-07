@@ -44,13 +44,18 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 	{
 		$this->setName('dpdev:gen-build-class');
 		$this->addOption('out', null, InputOption::VALUE_NONE, 'Output code instead of writing it');
+		$this->addOption('no-schema', null, InputOption::VALUE_NONE, 'Do not try to auto-detect schema diff');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$time = time();
 
-		$diff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql(App::getOrm());
+		if (!$input->getOption('no-schema')) {
+			$diff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql(App::getOrm());
+		} else {
+			$diff = array();
+		}
 
 		if ($diff) {
 			$defaultcode = array();
@@ -114,7 +119,13 @@ $defaultcode
 }
 CODE;
 
-		$path = DP_ROOT . "/src/Application/InstallBundle/Upgrade/Build/Build$time.php";
+		$path_dir = DP_ROOT . "/src/Application/InstallBundle/Upgrade/Build/" . date('Y/m', $time);
+
+		if (!is_dir($path_dir)) {
+			mkdir($path_dir, 0644, true);
+		}
+
+		$path = "$path_dir/Build$time.php";
 
 		if ($input->getOption('out')) {
 			echo $tpl;
