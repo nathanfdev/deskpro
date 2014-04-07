@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\ORM\StateChange;
 
+use Orb\Util\Arrays;
+
 class ChangeArray implements ChangeInterface
 {
 	/**
@@ -72,7 +74,7 @@ class ChangeArray implements ChangeInterface
 		if ($old === $new) {
 			$this->is_same = true;
 		} elseif ($old && $new && count($this->old) == count($this->new)) {
-			if (array_diff_assoc($this->old, $this->new) || array_diff_assoc($this->new, $this->old)) {
+			if (Arrays::arrayDiffAssocRecursive($this->old, $this->new) || Arrays::arrayDiffAssocRecursive($this->new, $this->old)) {
 				$this->is_same = true;
 			}
 		}

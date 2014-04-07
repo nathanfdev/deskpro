@@ -440,6 +440,34 @@ class Arrays
 
 
 	/**
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	public static function arrayDiffAssocRecursive(array $array1, array $array2)
+	{
+		$diff = array();
+
+		foreach($array1 as $key => $value) {
+			if (is_array($value)) {
+				if (array_key_exists($key, $array2) || !is_array($array2[$key])) {
+					$diff[$key] = $value;
+				} else {
+					$new_diff = self::arrayDiffAssocRecursive($value, $array2[$key]);
+					if (!empty($new_diff)) {
+						$diff[$key] = $new_diff;
+					}
+				}
+			} elseif (!array_key_exists($key,$array2) || $array2[$key] !== $value) {
+				$diff[$key] = $value;
+			}
+		}
+
+		return $diff;
+	}
+
+
+	/**
 	 * Remove all falsey values from an array.
 	 *
 	 * @param    array    $array    The array to work on
