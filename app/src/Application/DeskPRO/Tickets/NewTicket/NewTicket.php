@@ -199,7 +199,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 							$person->name = $this->person->name;
 						}
 						$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
-						$person->is_confirmed = false;
 
 						if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
 							$person->is_agent_confirmed = false;
@@ -208,7 +207,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 						$email = new \Application\DeskPRO\Entity\PersonEmail();
 						$email->setEmail($this->person->email);
 						$email->person = $person;
-						$email->setIsValidated(false);
 						$person->addEmailAddress($email);
 
 						App::getOrm()->persist($person);
@@ -255,6 +253,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			#------------------------------
 
 			$ticket = new Entity\Ticket();
+			$ticket->disableAutoTicketProcess();
 			if ($this->logger) {
 				$ticket->getTicketLogger()->setLogger($this->logger);
 			}
@@ -474,6 +473,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 				}
 			}
 
+			$ticket_manager = App::$container->getTicketManager();
+			$context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'web');
+
+			$ticket_manager->saveTicket($ticket, $context);
 			App::getOrm()->flush();
 			App::getOrm()->commit();
 
