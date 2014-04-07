@@ -2870,12 +2870,7 @@ class Ticket extends DomainObject
 	public function getWorkHoursSet()
 	{
 		if (!$this->_work_hours_set) {
-			$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
-			$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
-				$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
-				$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
-				$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
-			);
+			$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
 		}
 
 		return $this->_work_hours_set;

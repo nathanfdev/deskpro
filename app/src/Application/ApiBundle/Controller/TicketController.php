@@ -467,33 +467,6 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
-	public function getTicketLogsAction($ticket_id)
-	{
-		$ticket = $this->_getTicketOr404($ticket_id);
-
-		$ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
-		foreach ($ticket_logs AS $key => $log)
-		{
-			if ($log->action_type == 'executed_triggers') {
-				unset($ticket_logs[$key]);
-			} elseif ($log->action_type == 'executed_escalations') {
-				unset($ticket_logs[$key]);
-			}
-		}
-
-		$trackers = App::getDb()->fetchAllCol("
-			SELECT log
-			FROM ticket_changetracker_logs
-			WHERE ticket_id = ?
-			ORDER BY id ASC
-		", array($ticket->getId()));
-
-		return $this->createApiResponse(array(
-			'logs' => $this->getApiData($ticket_logs),
-			'tracker_logs' => $trackers
-		));
-	}
-
 	public function getTicketMessagesAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);

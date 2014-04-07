@@ -462,6 +462,10 @@ class FieldManager
 		$prop = $this->options->get('custom_data_property');
 		$data = $object->$prop;
 
+		if (!$data) {
+			$data = array();
+		}
+
 		return $this->createFieldDataFromArray($data);
 	}
 

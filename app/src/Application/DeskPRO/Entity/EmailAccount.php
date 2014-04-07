@@ -134,6 +134,7 @@ class EmailAccount extends DomainObject
 	{
 		$this->setAccountType($account_type);
 		$this->date_created = new \DateTime();
+		$this->date_read_start = new \DateTime();
 	}
 
 

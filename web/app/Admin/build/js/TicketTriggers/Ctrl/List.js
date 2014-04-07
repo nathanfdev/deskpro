@@ -82,7 +82,7 @@
        */
 
       Admin_TicketTriggers_Ctrl_List.prototype.updateTriggerEnabledState = function(trigger) {
-        return this.dpTriggers.saveEnabledState(trigger);
+        return this.dpTriggers.saveEnabledStateById(trigger.id, trigger.is_enabled);
       };
 
 

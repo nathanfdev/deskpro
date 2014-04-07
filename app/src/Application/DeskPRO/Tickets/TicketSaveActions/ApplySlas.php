@@ -74,8 +74,12 @@ class ApplySlas implements TicketSaveActionInterface
 			return;
 		}
 
-		$has_slas = array_map(function($s) { return $s->sla->id; }, $ticket->ticket_slas);
-		$has_slas = array_combine($has_slas, $has_slas);
+		if (count($ticket->ticket_slas)) {
+			$has_slas = array_map(function($s) { return $s->sla->id; }, is_array($ticket->ticket_slas) ? $ticket->ticket_slas : $ticket->ticket_slas->toArray());
+			$has_slas = array_combine($has_slas, $has_slas);
+		} else {
+			$has_slas = array();
+		}
 
 		foreach ($this->slas as $sla) {
 			if (isset($has_slas[$sla->id])) continue;

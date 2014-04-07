@@ -90,10 +90,10 @@ class TicketManager
 		$this->save_actions->insert(new TicketSaveActions\VerifyDepartment($container->getTicketDepartments()), 20);
 		$this->save_actions->insert(new TicketSaveActions\VerifyRef($container->getRefGenerator()), 30);
 		$this->save_actions->insert(new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization')), 40);
-		$this->save_actions->insert(new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container)), 50);
-		$this->save_actions->insert(new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm()), 60);
-		$this->save_actions->insert(new TicketSaveActions\RecalculateSlas(), 70);
 
+		$this->post_save_actions->insert(new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container)), 50);
+		$this->post_save_actions->insert(new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm()), 60);
+		$this->post_save_actions->insert(new TicketSaveActions\RecalculateSlas(), 70);
 		$this->post_save_actions->insert(new TicketSaveActions\SaveTicketLogs($container->getEm()), 10);
 		$this->post_save_actions->insert(new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector()), 20);
 		$this->post_save_actions->insert(new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb()), 30);

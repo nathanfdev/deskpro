@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 
 class ProcessReply extends ProcessAbstract
 {
@@ -96,15 +97,20 @@ class ProcessReply extends ProcessAbstract
 		if ($context == 'user') {
 			$executor_context = $this->getTicketManager()->createUserExecutorContext(
 				$this->person,
-				'reply',
+				'newreply',
 				'email'
 			);
 		} else {
 			$executor_context = $this->getTicketManager()->createAgentExecutorContext(
 				$this->person,
-				'reply',
+				'newreply',
 				'email'
 			);
+		}
+
+		if ($this->logger) {
+			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
+			$executor_context->getLogger()->pushHandler($orb_logger_adapter);
 		}
 
 		//TODO

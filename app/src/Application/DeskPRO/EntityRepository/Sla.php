@@ -64,7 +64,7 @@ class Sla extends AbstractEntityRepository
 	{
 		return $this->_em->createQuery("
 			SELECT s
-			FROM DeskPRO:TicketSla s
+			FROM DeskPRO:Sla s
 			WHERE s.apply_type = 'auto'
 		")->execute();
 	}

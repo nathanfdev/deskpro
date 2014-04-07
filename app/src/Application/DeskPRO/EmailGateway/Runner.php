@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\EmailGateway\Fetcher;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
@@ -321,6 +322,7 @@ class Runner
 					if ($proc->isValid()) {
 						$this->logger->log("Processor complete", 'info');
 						$source['status'] = 'complete';
+						$source['error_code'] = null;
 					} else {
 						$source['status'] = 'error';
 						$source['error_code'] = $proc->getErrorCode();
@@ -424,11 +426,11 @@ class Runner
 	{
 		gc_enable();
 
-		$this->logger->log("Start processing {$account['title']} {$account['account_type']}", 'info');
+		$this->logger->log("Start processing {$account['address']} {$account['account_type']}", 'info');
 		$start_time = microtime(true);
 
 		/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
-		$fetcher = $this->account_manager->getFetcherStorageForAccount($account);
+		$fetcher = $this->createFetcher($account);
 		$fetcher->setLogger($this->logger);
 
 		$this->logger->log("Fetcher type: " . Util::getBaseClassname($fetcher), 'info');
@@ -484,14 +486,14 @@ class Runner
 				$source = App::getOrm()->find('DeskPRO:EmailSource', $next_inserted_id);
 			} else {
 				try {
-					$source = $fetcher->readNext($account->getSourceObjectType());
+					$source = $fetcher->readNext();
 					if (!$source) {
 						$this->logger->logDebug("No more messages in inbox");
 
 						// If this is the first time we've reached the end
 						// save a start date to the account
-						if (!$account->start_date_limit) {
-							$account->start_date_limit = new \DateTime("-10 days");
+						if (!$account->date_read_start) {
+							$account->date_read_start = new \DateTime("-10 days");
 							App::getOrm()->persist($account);
 							App::getOrm()->flush($account);
 						}
@@ -609,5 +611,22 @@ class Runner
 			'error_code'  => $source['error_code'],
 			'source_info' => serialize($source['source_info'] ?: array()),
 		), array('id' => $source->getId()));
+	}
+
+
+	private function createFetcher(EmailAccount $account)
+	{
+		if (!$account->incoming_account) {
+			throw new \InvalidArgumentException("No incoming email account");
+		}
+
+		switch ($account->incoming_account->getType()) {
+			case 'pop3':
+				return new Fetcher\Pop3($account, 20971520);
+			case 'gmail':
+				return new Fetcher\Pop3($account, 20971520);
+			default:
+				throw new \InvalidArgumentException("Unknown incoming email account: {$account->incoming_account->getType()}");
+		}
 	}
 }

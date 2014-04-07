@@ -93,15 +93,37 @@ class Pop3 extends AbstractFetcher
 	protected function _initConnection()
 	{
 		$options = array();
-		$options['host']     = isset($this->account['connection_options']['host'])     ? $this->account['connection_options']['host']     : 'localhost';
-		$options['port']     = isset($this->account['connection_options']['port'])     ? $this->account['connection_options']['port']     : '110';
-		$options['user']     = isset($this->account['connection_options']['username']) ? $this->account['connection_options']['username'] : '';
-		$options['password'] = isset($this->account['connection_options']['password']) ? $this->account['connection_options']['password'] : '';
 
-		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+		if ($this->account->incoming_account->getType() == 'pop3') {
+			/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3_config */
+			$pop3_config = $this->account->incoming_account;
 
-		if (isset($this->account['connection_options']['secure']) AND $this->account['connection_options']['secure']) {
-			$options['ssl'] = strtoupper($this->account['connection_options']['secure']); // 'ssl' or 'tls'
+			$options['host']     = $pop3_config->host;
+			$options['port']     = $pop3_config->port;
+			$options['user']     = $pop3_config->user;
+			$options['password'] = $pop3_config->password;
+
+			$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+
+			if ($pop3_config->secure_mode == 'ssl') {
+				$options['ssl'] = 'SSL';
+				$this->logger->log('SSL Enabled', 'debug');
+			} elseif ($pop3_config->secure_mode == 'tls') {
+				$options['ssl'] = 'TLS';
+				$this->logger->log('TLS Enabled', 'debug');
+			}
+		} else {
+			/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
+			$gmail_config = $this->account->incoming_account;
+
+			$options['host']     = 'pop.gmail.com';
+			$options['port']     = 995;
+			$options['user']     = $gmail_config->user;
+			$options['password'] = $gmail_config->password;
+
+			$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+
+			$options['ssl'] = 'SSL';
 			$this->logger->log('SSL Enabled', 'debug');
 		}
 
@@ -153,7 +175,7 @@ class Pop3 extends AbstractFetcher
 			return;
 		}
 
-		if ($this->account->keep_read) {
+		if ($this->account->getOption('keep_read')) {
 			if (!$this->canUniqueId()) {
 				try {
 					$capas = $this->getStorage()->getProtocolCapabilities();
@@ -358,7 +380,7 @@ class Pop3 extends AbstractFetcher
 			return;
 		}
 
-		if ($this->account->keep_read) {
+		if ($this->account->getOption('keep_read')) {
 			$this->logger->log(sprintf("Done read, but keep_read is enabled"), 'debug');
 			return;
 		}

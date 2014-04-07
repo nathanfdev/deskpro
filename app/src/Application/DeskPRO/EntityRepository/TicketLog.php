@@ -60,7 +60,8 @@ class TicketLog extends AbstractEntityRepository
 		$qb->select('log, p')
 			->from('DeskPRO:TicketLog', 'log')
 			->leftJoin('log.person', 'p')
-			->andWhere('log.ticket = :ticket_id');
+			->andWhere('log.ticket = :ticket_id')
+			->andWhere('log.action_type NOT IN (\'trigger\')');
 
 		if ($options['order_dir'] == 'ASC') {
 			$qb->orderBy('log.date_created', 'ASC');

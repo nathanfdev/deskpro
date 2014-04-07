@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -207,9 +208,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				$this->recordEmailTicketLog($ticket_email, $ticket, $context);
 			} catch (\Exception $e) {
 				$context->getLogger()->error(
-					sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+					sprintf("[SendAgentEmail] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
 					array('exception' => $e)
 				);
+				KernelErrorHandler::logException($e);
 			}
 		}
 

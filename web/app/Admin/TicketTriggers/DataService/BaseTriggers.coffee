@@ -48,9 +48,9 @@ define [
 		###
 		saveEnabledStateById: (triggerId, isEnabled) ->
 			if isEnabled
-				return @Api.sendPost("/ticket_triggers/triggerId/enable")
+				return @Api.sendPost("/ticket_triggers/#{triggerId}/enable")
 			else
-				return @Api.sendPost("/ticket_triggers/triggerId/disable")
+				return @Api.sendPost("/ticket_triggers/#{triggerId}/disable")
 
 
 		###

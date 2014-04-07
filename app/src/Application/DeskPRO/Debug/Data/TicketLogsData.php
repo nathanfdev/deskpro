@@ -53,11 +53,6 @@ class TicketLogsData implements DataInterface
 		$data = array();
 		$data['logs']     = App::getDb()->fetchAll("SELECT * FROM tickets_logs WHERE ticket_id = ? ORDER BY id ASC", array($this->ticket->id));
 
-		$changetracker_log = App::getDb()->fetchColumn("SELECT log FROM ticket_changetracker_logs WHERE ticket_id = ?", array($this->ticket->id));
-		if ($changetracker_log) {
-			$data['changetracker_log'] = $changetracker_log;
-		}
-
 		return $data;
 	}
 }

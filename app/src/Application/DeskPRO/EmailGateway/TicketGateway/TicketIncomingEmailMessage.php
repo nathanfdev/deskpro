@@ -231,7 +231,7 @@ class TicketIncomingEmailMessage
 			}
 
 			// Run generic cutter as well, in case it matches higher
-			$parts = $this->cutterDef->splitFromFirstHeaderText($this->body);
+			$parts = $cut->splitFromFirstHeaderText($this->body);
 			if ($parts && count($parts) == 2) {
 				$this->logMessage("Split header cutter matched, cut from standard quote headers");
 				$this->body = trim($parts[0]);

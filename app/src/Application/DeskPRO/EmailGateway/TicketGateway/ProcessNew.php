@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Orb\Util\Strings;
 
 class ProcessNew extends ProcessAbstract
@@ -234,6 +235,11 @@ class ProcessNew extends ProcessAbstract
 			'newticket',
 			'email'
 		);
+
+		if ($this->logger) {
+			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
+			$executor_context->getLogger()->pushHandler($orb_logger_adapter);
+		}
 
 		#------------------------------
 		# Create the ticket

@@ -216,7 +216,9 @@ class EmailAccountManager
 			return $accounts;
 		}
 
-		return array_filter($accounts, array($this, 'checkAccountCriteriaMatch'));
+		$self = $this;
+
+		return array_filter($accounts, function($a) use ($self, $criteria) { return $self->checkAccountCriteriaMatch($a, $criteria); });
 	}
 
 

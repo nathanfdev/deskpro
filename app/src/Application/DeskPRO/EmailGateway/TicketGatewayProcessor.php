@@ -250,8 +250,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($check_person && $check_person->is_agent) {
-			if ($this->email_body_html) {
-				$rc = new AgentReplyCodes($this->email_body_html, true);
+			if ($email_body_html) {
+				$rc = new AgentReplyCodes($email_body_html, true);
 				$rc->setLogger($this->logger);
 
 				$reply_actions = $rc->getProperties();
@@ -259,7 +259,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$email_body_html = $rc->getNewBody();
 				}
 			} else {
-				$rc = new AgentReplyCodes($this->email_body_text, false);
+				$rc = new AgentReplyCodes($email_body_text, false);
 				$rc->setLogger($this->logger);
 
 				$reply_actions = $rc->getProperties();
@@ -293,6 +293,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$ticket_email->is_dp3_reply    = $is_dp3_reply;
 
 		if ($ticket && $person) {
+			App::$container->getTicketManager()->markAsManaged($ticket);
 			return $this->runReply($ticket_email);
 		} else {
 			return $this->runNew($ticket_email, $reply_as_new);

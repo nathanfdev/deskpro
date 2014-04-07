@@ -62,7 +62,7 @@ define [
 		# Update the enabled state of a trigger
 		###
 		updateTriggerEnabledState: (trigger) ->
-			return @dpTriggers.saveEnabledState(trigger)
+			return @dpTriggers.saveEnabledStateById(trigger.id, trigger.is_enabled)
 
 
 		###

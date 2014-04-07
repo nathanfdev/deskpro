@@ -228,20 +228,6 @@ class CleanupDaily extends AbstractJob
 		}
 
 		#------------------------------
-		# Log Items
-		#------------------------------
-
-		$datecut = date('Y-m-d H:i:s', time() - 259200);
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM ticket_changetracker_logs
-			WHERE date_created < ?
-		", array($datecut));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num old ticket change tracker logs");
-		}
-
-		#------------------------------
 		# result caches
 		#------------------------------
 

@@ -47,7 +47,7 @@ class TicketTrigger extends AbstractEntityRepository
 		$triggers = $this->_em->createQuery("
 			SELECT t
 			FROM DeskPRO:TicketTrigger t
-			WHERE t.event_trigger = :event_type
+			WHERE t.event_trigger = :event_type AND t.is_enabled = true
 			ORDER BY t.run_order
 		")->execute(array('event_type' => $event_type));
 

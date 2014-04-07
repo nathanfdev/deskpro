@@ -141,6 +141,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 				FROM settings
 			"));
 		}
+
+		if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
+			$this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
+		}
 	}
 
 
@@ -214,7 +218,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 		$ret = array();
 		foreach ($this->default_settings as $k => $v) {
 			if (substr($k, 0, $len) === $group_dot) {
-				$ret[$k] = $v;
+				$k_short = substr($k, $len);
+				$ret[$k_short] = $v;
 			}
 		}
 
@@ -242,7 +247,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 		$ret = array();
 		foreach ($this->settings as $k => $v) {
 			if (substr($k, 0, $len) === $group_dot) {
-				$ret[$k] = $v;
+				$k_short = substr($k, $len);
+				$ret[$k_short] = $v;
 			}
 		}
 

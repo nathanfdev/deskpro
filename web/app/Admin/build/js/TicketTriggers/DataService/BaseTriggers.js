@@ -60,9 +60,9 @@
 
       Admin_TicketTriggers_DataService_BaseTriggers.prototype.saveEnabledStateById = function(triggerId, isEnabled) {
         if (isEnabled) {
-          return this.Api.sendPost("/ticket_triggers/triggerId/enable");
+          return this.Api.sendPost("/ticket_triggers/" + triggerId + "/enable");
         } else {
-          return this.Api.sendPost("/ticket_triggers/triggerId/disable");
+          return this.Api.sendPost("/ticket_triggers/" + triggerId + "/disable");
         }
       };
 

@@ -39,6 +39,7 @@ use Application\DeskPRO\EntityRepository\TicketTrigger as TicketTriggerRepositor
 use Application\DeskPRO\ORM\StateChange\ChangeTriggerLog;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class ExecTriggers implements TicketSaveActionInterface
 {
@@ -79,6 +80,9 @@ class ExecTriggers implements TicketSaveActionInterface
 
 		$triggers = $this->trigger_repos->getTriggersForEventType($context->getEventType());
 
+		$trigger_ids = array_map(function($t) { return $t->id; }, is_array($triggers) ? $triggers : $triggers->toArray());
+		$context->getLogger()->info(sprintf("[ExecTriggers] Triggers for event %s: %s", $context->getEventType(), implode(', ', $trigger_ids)));
+
 		/** @var \Application\DeskPRO\Entity\TicketTrigger[] $triggers */
 		foreach ($triggers as $trigger) {
 			if ($context->getVars()->has('stop_triggers')) {
@@ -101,36 +105,35 @@ class ExecTriggers implements TicketSaveActionInterface
 				$is_method_match = false;
 			}
 			if (!$is_method_match) {
-				$context->getLogger()->info(sprintf("[Triggers] Skip trigger #%s due to method mismatch: %s != (%s) %s", $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: array('NONE'))));
+				$context->getLogger()->info(sprintf("[ExecTriggers] Skip trigger #%s due to method mismatch: %s != (%s) %s", $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: array('NONE'))));
 				continue;
 			}
 
-			$context->getLogger()->info(sprintf("[Triggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
 			$ts = microtime(true);
 
-			$state->setCurrentChangeMetadata(array('trigger' => $trigger));
-
-			$change = new ChangeTriggerLog(
-				'trigger',
-				$trigger->id,
-				$trigger->title
-			);
-			$state->recordChange($change);
-
 			$match = $trigger->terms->isTriggerMatch($ticket, $context);
-			$context->getLogger()->info(sprintf("[Triggers] (#%d): %s", $trigger->id, $match ? "MATCH" : "no match"));
 
 			if ($match) {
+				$state->setCurrentChangeMetadata(array('trigger' => $trigger));
+				$context->getLogger()->info(sprintf("[ExecTriggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
+
+				$change = new ChangeTriggerLog(
+					'trigger',
+					$trigger->id,
+					$trigger->title
+				);
+				$state->recordChange($change);
+
 				try {
 					$this->action_applicator->apply($trigger->actions, $ticket, $context);
 				} catch (\Exception $e) {
-					$context->getLogger()->error(sprintf("[Triggers] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
+					$context->getLogger()->error(sprintf("[ExecTriggers] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
+					KernelErrorHandler::logException($e);
 				}
+
+				$context->getLogger()->info(sprintf("[ExecTriggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
+				$state->clearCurrentChangeMetaData();
 			}
-
-			$context->getLogger()->info(sprintf("[Triggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
-
-			$state->clearCurrentChangeMetaData();
 		}
 	}
 }
