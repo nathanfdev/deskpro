@@ -46,6 +46,7 @@ class Build1396876082 extends AbstractBuild
 	public function run()
 	{
 		$db = $this->container->getDb();
+		$em = $this->container->getEm();
 
 		$this->out("Upgrading email accounts...");
 
@@ -85,8 +86,10 @@ class Build1396876082 extends AbstractBuild
 			return $tr['match_type'] == 'all';
 		});
 		if ($default_tr) {
+			$default_tr_address = $this->container->getSetting('core.default_from_email');
+
 			$tr_account = new EmailAccount(EmailAccount::TYPE_OUT);
-			$tr_account->address = $default_tr['match_pattern'];
+			$tr_account->address = $default_tr_address;
 			$tr_account->is_enabled = true;
 			$tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
 
@@ -98,6 +101,11 @@ class Build1396876082 extends AbstractBuild
 				$new_accounts[] = $tr_account;
 			}
 		}
+
+		foreach ($new_accounts as $account) {
+			$em->persist($account);
+		}
+		$em->flush();
 	}
 
 
