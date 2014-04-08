@@ -45,13 +45,14 @@ class Build1396876120 extends AbstractBuild
 		$this->out("Insert default ticket layout");
 
 		$ticket_layout = new TicketLayout();
-		$ticket_layout->is_enabled = true;
-
-		$ticket_layout->user_layout = new Layout();
-		$ticket_layout->user_layout->add(new LayoutField('department'));
-
+		$ticket_layout->is_enabled   = true;
+		$ticket_layout->user_layout  = new Layout();
 		$ticket_layout->agent_layout = new Layout();
-		$ticket_layout->agent_layout->add(new LayoutField('department'));
+
+		foreach (array('department', 'subject', 'message') as $field) {
+			$ticket_layout->user_layout->add(new LayoutField($field));
+			$ticket_layout->agent_layout->add(new LayoutField($field));
+		}
 
 		$this->container->getEm()->persist($ticket_layout);
 		$this->container->getEm()->flush();
