@@ -29,7 +29,7 @@ done
 echo ""
 
 for f in $TEST_LOGS ; do
-	if [[ $f =~ \.png$ ]] ; then
+	if [[ $f =~ \.png$ ]] || [[ $f =~ coverage\.serialized$ ]] ; then
 		true
 	else
 		echo ""
