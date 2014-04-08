@@ -46,9 +46,9 @@ class Build1396876000 extends AbstractBuild
 			if (!$recs) $recs = array();
 			$recs = json_encode($recs);
 
-			$db->executeUpdate("DELETE FROM install_data WHERE build = 1396875000 AND name = 'upgrade_data_{$table}'");
+			$db->executeUpdate("DELETE FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_{$table}'");
 			$db->insert('install_data', array(
-				'build' => 1396875000,
+				'build' => 1396876000,
 				'name'  => "upgrade_data_{$table}",
 				'data'  => $recs
 			));
