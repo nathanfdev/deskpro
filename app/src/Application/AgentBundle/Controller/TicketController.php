@@ -62,6 +62,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -3704,7 +3705,7 @@ class TicketController extends AbstractController
 		fclose($fp);
 
 		unlink($outfile);
-		$fs = new \Symfony\Component\HttpKernel\Util\Filesystem();
+		$fs = new Filesystem();
 		$fs->remove($tmpdir);
 		exit;
 	}
