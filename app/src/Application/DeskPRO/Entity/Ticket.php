@@ -3064,7 +3064,7 @@ class Ticket extends DomainObject
 						$context = $tm->createUserExecutorContext(
 							App::getCurrentPerson(),
 							$event_type,
-							'web'
+							'portal'
 						);
 						break;
 					case 'api':
