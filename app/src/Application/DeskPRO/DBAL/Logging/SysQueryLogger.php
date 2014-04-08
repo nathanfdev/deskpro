@@ -179,7 +179,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function writeLog()
 	{
-		$start_time = DP_START_TIME;
+		$start_time = defined('DP_START_TIME') ? DP_START_TIME : time();
 
 		$total_time = microtime(true) - $start_time;
 		$db_time    = $this->_db_time;

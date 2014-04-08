@@ -60,6 +60,8 @@ if ($proc_kernel === null) {
 
 	@ini_set('memory_limit', '524288000');
 
+	require_once DP_ROOT . '/sys/load_config.php';
+
 	$class = $kernel_classes[$proc_kernel];
 	$kernel = new $class('prod', false);
 

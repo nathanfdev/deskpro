@@ -119,9 +119,9 @@ class DpKernel extends AbstractKernel
 			// If the container doesnt exist and we're in prod, then means we're installing an update.
 			// Halt now. This prevents the system from trying to generate the cache itself,
 			// even though the new files will be installed in a second.
-			$cache_file = $this->getCacheDir().'/'.$this->getContainerClass().'.php';
+			$cache_file = $this->getCacheDir().$this->getContainerClass().'.php';
 			if (!is_file($cache_file)) {
-				echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates');
+				echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
 				exit;
 			}
 		}

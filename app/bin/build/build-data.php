@@ -18,11 +18,29 @@ require DP_ROOT.'/sys/system.php';
 # Build cloudflare IPs data
 #------------------------------
 
+$fn_get_url = function($url) {
+	for ($i = 0; $i < 5; $i++) {
+		$content = trim(file_get_contents($url));
+		if ($content) {
+			break;
+		}
+
+		sleep(1);
+	}
+
+	if (!$content) {
+		echo "Could not download IPs\n";
+		die(1);
+	}
+
+	return $content;
+};
+
 $data_path = DP_ROOT.'/sys/Resources/cloudflare-ips.php';
 
-$lines = trim(file_get_contents('https://www.cloudflare.com/ips-v4'));
+$lines = $fn_get_url('https://www.cloudflare.com/ips-v4');
 $lines .= "\n";
-$lines .= trim(file_get_contents('https://www.cloudflare.com/ips-v6'));
+$lines .= $fn_get_url('https://www.cloudflare.com/ips-v6');
 $lines = trim($lines);
 $lines = \Orb\Util\Strings::standardEol($lines);
 

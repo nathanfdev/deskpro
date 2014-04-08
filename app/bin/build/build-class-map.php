@@ -12,6 +12,7 @@ define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
 require DP_ROOT . '/bin/build/inc.php';
+require_once DP_ROOT . '/sys/load_config.php';
 require DP_ROOT.'/sys/system.php';
 
 $dirs = array(
@@ -61,5 +62,5 @@ echo "\n";
 $map[] = ");";
 $map = implode("\n", $map);
 
-file_put_contents(DP_ROOT.'/sys/cache/classmap.php', $map);
+file_put_contents(dp_get_cache_dir().'/classmap.php', $map);
 unset($map);

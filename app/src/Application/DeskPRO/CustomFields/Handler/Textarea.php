@@ -36,7 +36,6 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\App;
 use Orb\Util\Util;
 
 /**

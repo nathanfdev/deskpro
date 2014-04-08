@@ -38,5 +38,7 @@ $kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
 
 $_SERVER['argv'] = array('x', 'dpdev:lang:check-phrase-ids');
 
+require_once DP_ROOT . '/sys/load_config.php';
+
 $application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 $application->run();

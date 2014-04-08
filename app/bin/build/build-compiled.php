@@ -16,6 +16,8 @@ require(DP_ROOT . '/bin/build/inc.php');
 use Symfony\Component\ClassLoader\ClassCollectionLoader;
 use Symfony\Component\Finder\Finder;
 
+require_once DP_ROOT . '/sys/load_config.php';
+
 $cachefile = DP_ROOT.'/sys/compiled.php';
 if (file_exists($cachefile)) {
     unlink($cachefile);
@@ -25,13 +27,31 @@ if (file_exists($cachefile)) {
 # Files that symfony thinks we should preload
 ######################################################################
 
-$files = require DP_ROOT.'/sys/cache/prod/classes.map';
+$files = require dp_get_cache_dir().'/prod/classes.map';
 
 ######################################################################
 # Our files
 ######################################################################
 
 $files = array_merge($files, array(
+	'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface',
+	// Cannot be included because annotations will parse the big compiled class file
+	//'Symfony\\Component\\DependencyInjection\\ContainerAware',
+	'Symfony\\Component\\DependencyInjection\\ContainerInterface',
+	'Symfony\\Component\\DependencyInjection\\Container',
+	'Symfony\\Component\\HttpKernel\\HttpKernelInterface',
+	'Symfony\\Component\\HttpKernel\\KernelInterface',
+	'Symfony\\Component\\HttpKernel\\Kernel',
+	'Symfony\\Component\\ClassLoader\\ClassCollectionLoader',
+	'Symfony\\Component\\ClassLoader\\UniversalClassLoader',
+	'Symfony\\Component\\HttpKernel\\Bundle\\Bundle',
+	'Symfony\\Component\\HttpKernel\\Bundle\\BundleInterface',
+	'Symfony\\Component\\Config\\ConfigCache',
+	// cannot be included as commands are discovered based on the path to this class via Reflection
+	//'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle',
+
+	'Orb\Util\ClassLoader',
+
 	'Orb\\Helper\\HelperManager',
 	'Orb\\Helper\\ShortCallableInterface',
 
@@ -69,7 +89,6 @@ $files = array_merge($files, array(
 	'Application\\DeskPRO\\ORM\\QueryPartial',
 
 	'Application\\DeskPRO\\Settings\\Settings',
-	'Application\\DeskPRO\\Settings\\SettingsLocator',
 
 	'Application\\DeskPRO\\Templating\\Asset\\UrlPackage',
 	'Application\\DeskPRO\\Templating\\GlobalVariables',
@@ -78,7 +97,6 @@ $files = array_merge($files, array(
 	'Application\\DeskPRO\\Translate\\Loader\\CombinationLoader',
 	'Application\\DeskPRO\\Translate\\Loader\\DbLoader',
 	'Application\\DeskPRO\\Translate\\Loader\\LoaderInterface',
-	'Application\\DeskPRO\\Translate\\Loader\\PluginLoader',
 	'Application\\DeskPRO\\Translate\\Loader\\SystemLoader',
 	'Application\\DeskPRO\\Translate\\DelegatePhrase',
 	'Application\\DeskPRO\\Translate\\DelegatePhraseInterface',
@@ -91,6 +109,16 @@ $files = array_merge($files, array(
 	'Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension',
 	'Application\\DeskPRO\\Twig\\Loader\\HybridLoader',
 ));
+
+$finder = new \Symfony\Component\Finder\Finder();
+$finder->in(DP_ROOT.'/src/Application/DeskPRO/DependencyInjection/SystemServices')->files()->name('*.php');
+foreach ($finder as $file) {
+	/** @var $file \SplFileInfo */
+	$name = $file->getFilename();
+	$name = str_replace('.php', '', $name);
+
+	//$files[] = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\' . $name;
+}
 
 ClassCollectionLoader::load($files, dirname($cachefile), basename($cachefile, '.php'), false, false, '.php');
 

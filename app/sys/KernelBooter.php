@@ -108,7 +108,6 @@ class KernelBooter
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
 		} else {
 			require(DP_ROOT . '/sys/bootstrap.php');
-			require(DP_ROOT . '/sys/compiled.php');
 		}
 
 		if (isset($GLOBALS['DP_AUTOLOADER']) && !dp_get_config('no_use_classmap_file') && file_exists(DP_ROOT.'/sys/cache/classmap.php')) {

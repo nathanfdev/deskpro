@@ -38,5 +38,6 @@ $kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
 
 $_SERVER['argv'] = array('x', 'dp:generate-schema-file', '-w', '--verbose');
 
+require_once DP_ROOT . '/sys/load_config.php';
 $application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 $application->run();
