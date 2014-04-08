@@ -34,6 +34,7 @@
 namespace DpDbSets;
 
 use Application\DeskPRO\ORM\EntityManager;
+use Application\InstallBundle\Data\DefaultDataProcessor;
 use Orb\Util\Util;
 
 class FreshDb extends AbstractDbSet
@@ -89,6 +90,9 @@ class FreshDb extends AbstractDbSet
 		$em->flush();
 
 		\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+
+		$data_proc = new DefaultDataProcessor($this->getContainer());
+		$data_proc->runInstall();
 
 		// For the all agent group, fetch permissions from the template
 		if ($AGENTGROUP_ALL) {
