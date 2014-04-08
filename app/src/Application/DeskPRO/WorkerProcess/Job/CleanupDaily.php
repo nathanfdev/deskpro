@@ -355,7 +355,7 @@ class CleanupDaily extends AbstractJob
 		}
 
 		if ($cleanup_list) {
-			$file_util = new \Symfony\Component\HttpKernel\Util\Filesystem();
+			$file_util = new \Symfony\Component\Filesystem\Filesystem();
 			foreach ($cleanup_list as $f) {
 				@$file_util->remove($f);
 			}
