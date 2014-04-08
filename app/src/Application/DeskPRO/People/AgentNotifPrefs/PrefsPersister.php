@@ -85,7 +85,7 @@ class PrefsPersister
 			if (!isset($filter_subs[$filter_id])) {
 				$filter_subs[$filter_id] = new TicketFilterSubscription();
 				$filter_subs[$filter_id]->filter = $filters[$filter_id];
-				$filter_subs[$filter_id]->person = $this->person;
+				$filter_subs[$filter_id]->person = $person;
 			}
 
 			return $filter_subs[$filter_id];
