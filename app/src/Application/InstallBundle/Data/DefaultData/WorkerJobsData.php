@@ -92,6 +92,15 @@ class WorkerJobsData extends AbstractDefaultData
 		);
 
 		$jobs[] = array(
+			'id'           => 'process_email_gateways',
+			'worker_group' => 'process_email_gateways',
+			'title'        => 'Process Email Gateways',
+			'description'  => 'Processes email from all defined email gateways',
+			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\ProcessEmailGateways',
+			'run_interval' => Job\ProcessEmailGateways::DEFAULT_INTERVAL
+		);
+
+		$jobs[] = array(
 			'id'           => 'archive_tickets',
 			'worker_group' => 'archive_tickets',
 			'title'        => 'Archive Tickets',
@@ -285,6 +294,11 @@ class WorkerJobsData extends AbstractDefaultData
 	}
 
 	public function runReset()
+	{
+		$this->runInstall();
+	}
+
+	public function runSync()
 	{
 		$this->runInstall();
 	}

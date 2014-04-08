@@ -197,4 +197,9 @@ class FilterData extends AbstractDefaultData
 	{
 		$this->runInstall();
 	}
+
+	public function runSync()
+	{
+		$this->runInstall();
+	}
 }

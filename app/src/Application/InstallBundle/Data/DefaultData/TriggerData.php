@@ -254,4 +254,9 @@ class TriggerData extends AbstractDefaultData
 		$this->getDb()->executeUpdate("DELETE FROM ticket_triggers WHERE sys_name IS NOT NULL");
 		$this->runInstall();
 	}
+
+	public function runSync()
+	{
+		$this->runInstall();
+	}
 }
