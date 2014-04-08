@@ -119,7 +119,7 @@ class Logger extends BaseLogger
 			}
 		}
 
-		$log = implode("\n", $log);
+		$log = trim(implode('', $log));
 
 		return $log;
 	}

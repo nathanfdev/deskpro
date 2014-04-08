@@ -3620,7 +3620,7 @@ class TicketController extends AbstractController
 
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . uniqid('dpd', true);
+		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . "ticket-debug-" . $ticket->id . "_" . date('YmdHis') . "_" . Strings::random(4, Strings::CHARS_ALPHANUM_IU);
 		if (!mkdir($tmpdir, 0777, true)) {
 			echo "Could not create temp dir: " . $tmpdir;
 			exit;
@@ -3657,7 +3657,11 @@ class TicketController extends AbstractController
 			file_put_contents($tmpdir . '/message-'.$message->id.'.json', json_encode($data));
 
 			if ($message->email_source && $message->email_source->blob) {
-				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
+				try {
+					$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
+				} catch (\Exception $e) {
+					file_put_contents($tmpdir . '/message-' . $message->id . '-source.eml', "Could not download blob: {$e->getMessage()}");
+				}
 			}
 
 			if ($message->email_source && $message->email_source->source_info) {
@@ -3665,9 +3669,24 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$tm_logs = $this->em->createQuery("
+			SELECT tm_log, b
+			FROM DeskPRO:TicketProcLog tm_log
+			LEFT JOIN tm_log.blob b
+			WHERE tm_log.ticket = ?0
+		")->execute(array($ticket));
+
+		foreach ($tm_logs as $tm_log) {
+			try {
+				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/' . $tm_log->blob->filename, $tm_log->blob);
+			} catch (\Exception $e) {
+				file_put_contents($tmpdir . '/message-' . $message->id . '-source.eml', "Could not download blob: {$e->getMessage()}");
+			}
+		}
+
 		$outfile = $tmpdir.'/zip';
 
-		require_once(DP_ROOT . '/vendor/pclzip/pclzip.lib.php');
+		require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
 		$zip = new \PclZip($outfile);
 		$zip->add(
 			$tmpdir,

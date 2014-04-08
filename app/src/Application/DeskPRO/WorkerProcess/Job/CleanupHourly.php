@@ -240,5 +240,35 @@ class CleanupHourly extends AbstractJob
 		}
 
 		App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
+
+		#------------------------------
+		# Delete old ticket manager logs
+		#------------------------------
+
+		$storetime = App::$container->getSetting('core.ticket_manager_log_storetime');
+		if ($storetime) {
+			$timesnip = date('Y-m-d H:i:s', time() - $storetime);
+			$em = App::$container->getEm();
+			$bs = App::$container->getBlobStorage();
+
+			for ($i = 0; $i < 50; $i++) {
+				$batch = $em->createQuery("
+					SELECT log, blob
+					FROM DeskPRO:TicketProcLog log
+					LEFT JOIN log.blob blob
+					WHERE log.date_created < ?0
+				")->execute(array($timesnip));
+
+				if (!count($batch)) {
+					break;
+				}
+
+				foreach ($batch as $b) {
+					try {
+						$bs->deleteBlobRecord($b->blob);
+					} catch (\Exception $e) {}
+				}
+			}
+		}
 	}
 }

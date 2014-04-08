@@ -37,10 +37,12 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketProcLog;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\TicketSaveActions;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -73,6 +75,11 @@ class TicketManager
 	 */
 	private $post_save_actions;
 
+	/**
+	 * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
+	 */
+	private $blob_storage;
+
 
 	/**
 	 * @param DeskproContainer $container
@@ -82,6 +89,7 @@ class TicketManager
 		$this->container = $container;
 		$this->em = $container->getEm();
 		$this->db = $container->getDb();
+		$this->blob_storage = $container->getBlobStorage();
 
 		$this->save_actions      = new \SplPriorityQueue();
 		$this->post_save_actions = new \SplPriorityQueue();
@@ -261,6 +269,23 @@ class TicketManager
 
 		$ticket->resetStateChangeRecorder();
 		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
+
+		if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
+			$log_text = $context->getLogger()->getSavedMessages();
+			if ($log_text) {
+				try {
+					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d_H-i-s') . '.log', 'plain/text');
+					$proc_log = new TicketProcLog();
+					$proc_log->ticket = $ticket;
+					$proc_log->blob = $blob;
+
+					$this->em->persist($proc_log);
+					$this->em->flush();
+				} catch (\Exception $e) {
+					KernelErrorHandler::logException($e);
+				}
+			}
+		}
 	}
 
 
@@ -328,25 +353,19 @@ class TicketManager
 	protected function createNewLogger()
 	{
 		$logger = new DpLogger('tickets');
+		$logger->enableSavedMessages();
 
-		$any = false;
 		if ($logfile = dp_get_config('debug.enable_ticket_log')) {
 			if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === "true") {
 				$logfile = dp_get_log_dir() . '/ticket.log';
 			}
 			$stream = new StreamHandler($logfile);
 			$logger->pushHandler($stream);
-			$any = true;
 		}
 
 		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv']))) {
 			$stream = new StreamHandler('php://stdout');
 			$logger->pushHandler($stream);
-			$any = true;
-		}
-
-		if (!$any) {
-			$logger->pushHandler(new NullHandler());
 		}
 
 		return $logger;

@@ -192,6 +192,11 @@
 	'core.email_source_storetime_rejection' => 1296000, // 15 days
 
 	/**
+	 * How long to store ticket manager logs for
+	 */
+	'core.ticket_manager_log_storetime' => 604800, // 7 days
+
+	/**
 	 * When to use the mail queue: never, hint, always
 	 */
 	'core.use_mail_queue'  => 'hint',
