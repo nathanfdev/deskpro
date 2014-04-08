@@ -272,7 +272,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$this->in->getArrayValue('other_subs')
 		);
 
-		$notif_perist = new PrefsPersister($this->person, $this->em);
+		$notif_perist = new PrefsPersister($agent, $this->em);
 		$notif_perist->savePrefs($notif_prefs);
 
 		#-------------------------
