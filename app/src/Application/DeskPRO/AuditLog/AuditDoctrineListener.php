@@ -91,7 +91,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 			}
 
 			if (isset($this->defs[$table]['do_log_check'])) {
-				if (!$this->defs[$table]['do_log_check']($entity, AuditLog::UPDATE)) {
+				$fn = $this->defs[$table]['do_log_check'];
+				if (!$fn($entity, AuditLog::UPDATE)) {
 					return;
 				}
 			}
@@ -106,7 +107,14 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
 			if (isset($this->defs[$table]['save_as_change'])) {
 				$save_as     = $this->defs[$table]['save_as_change'];
-				$save_obj    = is_string($save_as['object_field_id']) ? $entity[$save_as['object_field_id']] : $save_as['object_field_id']($entity);
+
+				if (is_string($save_as['object_field_id'])) {
+					$save_obj = $entity[$save_as['object_field_id']];
+				} else {
+					$fn = $save_as['object_field_id'];
+					$save_obj = $fn($entity);
+				}
+
 				$save_field  = $save_as['as_field_id'];
 			} else {
 				$save_obj    = $entity;
@@ -141,7 +149,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 		}
 
 		if (isset($this->defs[$table]['do_log_check'])) {
-			if (!$this->defs[$table]['do_log_check']($entity, AuditLog::DELETE)) {
+			$fn = $this->defs[$table]['do_log_check'];
+			if (!$fn($entity, AuditLog::DELETE)) {
 				return;
 			}
 		}
@@ -160,18 +169,27 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
 		} else {
 			$save_as     = $this->defs[$table]['save_as_change'];
-			$save_obj    = is_string($save_as['object_field_id']) ? $entity[$save_as['object_field_id']] : $save_as['object_field_id']($entity);
+
+			if (is_string($save_as['object_field_id'])) {
+				$save_obj = $entity[$save_as['object_field_id']];
+			} else {
+				$fn = $save_as['object_field_id'];
+				$save_obj = $fn($entity);
+			}
+
 			$save_field  = $save_as['as_field_id'];
 			$save_table  = $save_obj->getTableName();
 
 			if (isset($this->defs[$save_table]['do_log_check'])) {
-				if (!$this->defs[$table['do_log_check']]($save_obj, AuditLog::DELETE)) {
+				$fn = $this->defs[$table['do_log_check']];
+				if (!$fn($save_obj, AuditLog::DELETE)) {
 					return;
 				}
 			}
 
 			if (isset($save_as['render_value'])) {
-				$val = $save_as['render_value']($entity, AuditLog::DELETE);
+				$fn = $save_as['render_value'];
+				$val = $fn($entity, AuditLog::DELETE);
 			} else {
 				$val = AuditLog::getObjectNameFromVar($entity);
 			}
@@ -199,7 +217,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 		}
 
 		if (isset($this->defs[$table]['do_log_check'])) {
-			if (!$this->defs[$table]['do_log_check']($entity, AuditLog::DELETE)) {
+			$fn = $this->defs[$table]['do_log_check'];
+			if (!$fn($entity, AuditLog::DELETE)) {
 				return;
 			}
 		}
@@ -218,18 +237,27 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
 		} else {
 			$save_as     = $this->defs[$table]['save_as_change'];
-			$save_obj    = is_string($save_as['object_field_id']) ? $entity[$save_as['object_field_id']] : $save_as['object_field_id']($entity);
+
+			if (is_string($save_as['object_field_id'])) {
+				$save_obj = $entity[$save_as['object_field_id']];
+			} else {
+				$fn = $save_as['object_field_id'];
+				$save_obj = $fn($entity);
+			}
+
 			$save_field  = $save_as['as_field_id'];
 			$save_table  = $save_obj->getTableName();
 
 			if (isset($this->defs[$save_table]['do_log_check'])) {
-				if (!$this->defs[$save_table]['do_log_check']($save_obj, AuditLog::CREATE)) {
+				$fn = $this->defs[$save_table]['do_log_check'];
+				if (!$fn($save_obj, AuditLog::CREATE)) {
 					return;
 				}
 			}
 
 			if (isset($save_as['render_value'])) {
-				$val = $save_as['render_value']($entity, AuditLog::CREATE);
+				$fn = $save_as['render_value'];
+				$val = $fn($entity, AuditLog::CREATE);
 			} else {
 				$val = AuditLog::getObjectNameFromVar($entity);
 			}
