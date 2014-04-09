@@ -40,6 +40,7 @@ use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\Request;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -238,7 +239,7 @@ HTML;
 		}
 	}
 
-	public function authenticateLocalAction($usersource_id)
+	public function authenticateLocalAction(Request $request, $usersource_id)
 	{
 		if ($this->request->getMethod() != 'POST') {
 			return $this->redirectRoute('user_login');
@@ -258,7 +259,7 @@ HTML;
 
 		// Form wasnt inputted (eg direct url)
 		if (!$this->in->getString('email') || !$this->in->getString('password')) {
-			if ($this->getRequest()->getMethod() == 'POST') {
+			if ($request->getMethod() == 'POST') {
 				$this->session->set('failed_login_name', true);
 				$this->session->save();
 				return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
