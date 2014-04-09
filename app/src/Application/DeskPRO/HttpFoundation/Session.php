@@ -683,7 +683,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function setFlash($name, $value)
 	{
-		$this->getFlashBag()->set($name, $value);
+		$this->getFlashBag()->set($name, !is_array($value) ? array('value' => $value) : $value);
 	}
 
 
@@ -695,6 +695,34 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	public function getFlash($name, array $default = array())
 	{
 		return $this->getFlashBag()->get($name, $default);
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function hasFlash($name)
+	{
+		return $this->getFlashBag()->has($name);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasAnyFlashes()
+	{
+		return count($this->getFlashBag()->peekAll()) > 0;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllFlahses()
+	{
+		return $this->getFlashBag()->all();
 	}
 
 
