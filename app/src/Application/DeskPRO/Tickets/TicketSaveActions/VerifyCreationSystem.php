@@ -46,10 +46,6 @@ class VerifyCreationSystem implements TicketSaveActionInterface
 	 */
 	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
-
 		if (!$ticket->creation_system) {
 			if ($context->getEventMethod() == 'email') {
 				$creation_system = 'gateway.';
