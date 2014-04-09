@@ -86,7 +86,11 @@ spl_autoload_register(function($classname) {
 
 	static $paths = null;
 	if (!$paths) {
-		$paths = dp_get_config('app_paths', array());
+		if (isset($GLOBALS['DP_CONFIG']['app_paths'])) {
+			$paths = $GLOBALS['DP_CONFIG']['app_paths'];
+		} else {
+			$paths = array();
+		}
 		$paths['default'] = DP_ROOT.'/apps';
 	}
 
