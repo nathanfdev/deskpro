@@ -58,9 +58,7 @@ class UserGroupPermScanner
 		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
 			$obj = $perms->$coll_name;
 			foreach ($obj->getNames() as $prop) {
-				if ($obj->$prop) {
-					$set_perms[] = $real_name . '.' . $prop;
-				}
+				$set_perms[] = $real_name . '.' . $prop;
 			}
 		}
 
