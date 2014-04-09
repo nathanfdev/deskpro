@@ -7541,6 +7541,10 @@ button.close {
   min-width: 745px;
 }
 
+.dp-layout-fullpage {
+  min-width: 800px;
+}
+
 a,
 a:focus {
   outline: none;
