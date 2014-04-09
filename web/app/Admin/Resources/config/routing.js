@@ -1588,6 +1588,13 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'apps.resync',
+		url: '/resync',
+		templateName: 'Apps/apps_resync.html',
+		controller: 'Admin_Apps_Ctrl_Resync'
+	});
+
+	routes.push({
 		id: 'apps.apps.instance',
 		url: '/{id:\\d+}',
 		templateName: 'Apps/instance.html',

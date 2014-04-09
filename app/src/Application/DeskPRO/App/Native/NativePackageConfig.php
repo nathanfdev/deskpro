@@ -56,29 +56,38 @@ class NativePackageConfig
 	private $config;
 
 	/**
+	 * @var string
+	 */
+	private $app_dir;
+
+	/**
 	 * @param AppPackage $package
+	 * @param string $app_dir
 	 * @return NativePackageConfig
 	 */
-	public static function createFromPackage(AppPackage $package)
+	public static function createFromPackage(AppPackage $package, $app_dir)
 	{
-		$path = DP_ROOT.'/apps/' . $package->native_name . '/native/native_config.php';
+		$path = $app_dir . '/native/native_config.php';
+
 		if (file_exists($path)) {
 			$config = require($path);
 		} else {
 			$config = array();
 		}
 
-		return new self($package->name, $config);
+		return new self($package->name, $app_dir, $config);
 	}
 
 
 	/**
 	 * @param string $native_name
+	 * @param string $app_dir
 	 * @param array $config
 	 */
-	public function __construct($native_name, array $config)
+	public function __construct($native_name, $app_dir, array $config)
 	{
 		$this->native_name = $native_name;
+		$this->app_dir = $app_dir;
 
 		$config = Arrays::flattenKeyValueArray($config);
 		$this->config =  new OptionsArray($config);
@@ -164,8 +173,17 @@ class NativePackageConfig
 	/**
 	 * @return string
 	 */
+	public function getAppDir()
+	{
+		return $this->app_dir;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getNativeDir()
 	{
-		return DP_ROOT.'/apps/' . $this->native_name . '/native';
+		return $this->app_dir . '/native';
 	}
 }

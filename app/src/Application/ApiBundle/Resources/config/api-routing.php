@@ -4164,6 +4164,12 @@ $collection->create('api_apps', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_apps_resync_packages', array(
+	'path'        => '/apps/resync-packages',
+	'controller'  => 'ApiBundle:Apps:resyncPackages',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_apps_custom_new', array(
 	'path'        => '/apps/custom',
 	'controller'  => 'ApiBundle:Apps:createCustomApp',

@@ -84,12 +84,22 @@ spl_autoload_register(function($classname) {
 		return false;
 	}
 
-	$appname = array_shift($parts);
-	$path = DP_ROOT.'/apps/'. $appname . '/native/' . implode('/', $parts) . '.php';
+	static $paths = null;
+	if (!$paths) {
+		$paths = dp_get_config('app_paths', array());
+		$paths['default'] = DP_ROOT.'/apps';
+	}
 
-	if (file_exists($path)) {
-		require_once($path);
-		return true;
+	$appname = array_shift($parts);
+
+	foreach ($paths as $prefix => $base_path) {
+		if ($prefix === 'default' || strpos($appname, $prefix) === 0) {
+			$path = $base_path . '/'. $appname . '/native/' . implode('/', $parts) . '.php';
+			if (file_exists($path)) {
+				require_once($path);
+				return true;
+			}
+		}
 	}
 
 	return false;

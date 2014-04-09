@@ -73,15 +73,29 @@ class AppManager implements AppManagerInterface
 	 */
 	private $app_service_container;
 
+	/**
+	 * Paths to apps on the filesystem
+	 * @var array
+	 */
+	private $app_paths = array();
+
 
 	/**
 	 * @param AppPackage[] $packages
 	 * @param AppInstance[] $apps
 	 * @param AppServiceContainer $app_service_container
 	 */
-	public function __construct(array $packages, array $apps, AppServiceContainer $app_service_container)
+	public function __construct(array $packages, array $apps, array $app_paths, AppServiceContainer $app_service_container)
 	{
 		$this->app_service_container = $app_service_container;
+
+		if (isset($app_paths['default']) && count($app_paths) > 1) {
+			$default = $app_paths['default'];
+			unset($app_paths['default']);
+			$app_paths['default'] = $default;
+		}
+
+		$this->app_paths = $app_paths;
 
 		foreach ($packages as $package) {
 			$this->packages[$package->name] = $package;
@@ -285,7 +299,7 @@ class AppManager implements AppManagerInterface
 		if (isset($this->native_package_configs[$package->name])) {
 			return $this->native_package_configs[$package->name];
 		} else {
-			$native_config = NativePackageConfig::createFromPackage($package);
+			$native_config = NativePackageConfig::createFromPackage($package, $this->getAppPath($package->name));
 			$this->native_package_configs[$package->name] = $native_config;
 		}
 
@@ -335,5 +349,33 @@ class AppManager implements AppManagerInterface
 	public function getService($name, $app = null)
 	{
 		return $this->app_service_container->getService($name, $app);
+	}
+
+
+	/**
+	 * Gets the base app path for a given app name.
+	 *
+	 * @param string $app_name
+	 * @return string|null
+	 */
+	public function getAppPath($app_name)
+	{
+		foreach ($this->app_paths as $prefix => $path) {
+			if ($prefix === 'default') {
+				return $path . '/' . $app_name;
+			} else if (strpos($app_name, $prefix) === 0) {
+				return $path . '/' . $app_name;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function getAppReposPaths()
+	{
+		return $this->app_paths;
 	}
 }

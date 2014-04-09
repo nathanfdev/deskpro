@@ -35,13 +35,17 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
+use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Monolog\Logger;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Templating\Asset\Package;
 
 class AppsController extends AbstractController
 {
@@ -732,5 +736,35 @@ class AppsController extends AbstractController
 		$result = $handler->handleApiAppRequest($context);
 
 		return $result;
+	}
+
+	####################################################################################################################
+	# rsync-packages
+	####################################################################################################################
+	
+	public function resyncPackagesAction()
+	{
+		$logger = new Logger('apps');
+		$logger->enableSavedMessages();
+
+		$app_syncer = new NativeAppsSync(
+			$this->container->getAppManager(),
+			new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
+			$logger
+		);
+
+		try {
+			$app_syncer->runUpdates();
+			$app_syncer->runSync();
+
+			$log = $logger->getSavedMessages();
+		} catch (\Exception $e) {
+			$log = $e->getMessage();
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'log'     => $log
+		));
 	}
 }

@@ -63,7 +63,17 @@ class AppManagerService
 
 		$app_service_container = new AppServiceContainer($container);
 
-		$app_manager = new AppManager($packages, $apps, $app_service_container);
+		$app_paths = array(
+			'default' => DP_ROOT.'/apps'
+		);
+
+		if (dp_get_config('app_paths')) {
+			foreach (dp_get_config('app_paths') as $prefix => $path) {
+				$app_paths[$prefix] = $path;
+			}
+		}
+
+		$app_manager = new AppManager($packages, $apps, $app_paths, $app_service_container);
 		return $app_manager;
 	}
 }
