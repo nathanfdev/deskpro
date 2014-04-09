@@ -70,7 +70,7 @@ class VerifyOrgManagers implements TicketSaveActionInterface
 		}
 
 		if ($ticket->organization) {
-			$managers = $this->org_repos->getManagers($this->organization);
+			$managers = $this->org_repos->getManagers($ticket->organization);
 			foreach ($managers AS $manager) {
 				if ($manager->getPref('org.manager_auto_add')) {
 					$ticket->addParticipantPerson($manager);
