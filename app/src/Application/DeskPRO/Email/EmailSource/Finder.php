@@ -84,7 +84,7 @@ class Finder
 	public function getResults()
 	{
 		$q = $this->getQb();
-		$q->select('s, g')
+		$q->select('s, acct')
 		  ->orderBy('s.id', 'DESC')
 		  ->setMaxResults($this->filter->getPerPage())
 		  ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
@@ -100,16 +100,16 @@ class Finder
 	{
 		$q = $this->em->createQueryBuilder();
 		$q->from('DeskPRO:EmailSource', 's')
-		  ->leftJoin('s.gateway', 'g');
+		  ->leftJoin('s.email_account', 'acct');
 
 		if ($opt = $this->filter->getStatuses()) {
 			$q->andWhere('s.status IN (:statuses)');
 			$q->setParameter('statuses', $opt);
 		}
 
-		if ($opt = $this->filter->getGateway()) {
-			$q->andWhere('s.gateway = :gateway');
-			$q->setParameter('gateway', $opt);
+		if ($opt = $this->filter->getEmailAccount()) {
+			$q->andWhere('s.email_account = :email_account');
+			$q->setParameter('email_account', $opt);
 		}
 
 		$d1 = $this->filter->getDateStart();

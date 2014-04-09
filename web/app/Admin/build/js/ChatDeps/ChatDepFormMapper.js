@@ -1,4 +1,6 @@
 (function() {
+  var __hasProp = {}.hasOwnProperty;
+
   define(['Admin/Main/Model/DepAgentPermMatrix', 'DeskPRO/Util/Util'], function(DepAgentPermMatrix, Util) {
     var ChatDepFormMapper;
     return ChatDepFormMapper = (function() {
@@ -42,7 +44,7 @@
         for (_k = 0, _len2 = usergroups.length; _k < _len2; _k++) {
           u = usergroups[_k];
           form.usergroup_perms[u.id] = {
-            use: false
+            full: false
           };
         }
         if (depPerms.usergroups) {
@@ -64,7 +66,7 @@
        */
 
       ChatDepFormMapper.prototype.getPostDataFromForm = function(formModel) {
-        var depData, permData, postData, usergroup, _i, _len, _ref;
+        var depData, permData, postData, uid, usergroup, _ref;
         depData = {};
         depData.title = formModel.title;
         depData.parent = formModel.parent_id || "0";
@@ -77,12 +79,13 @@
         }
         permData = formModel.agent_perms.getPermsData();
         _ref = formModel.usergroup_perms;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          usergroup = _ref[_i];
-          if (usergroup.use) {
+        for (uid in _ref) {
+          if (!__hasProp.call(_ref, uid)) continue;
+          usergroup = _ref[uid];
+          if (usergroup.full) {
             permData.push({
-              usergroup_id: usergroup.id,
-              name: 'use',
+              usergroup_id: uid,
+              name: 'full',
               value: 1
             });
           }

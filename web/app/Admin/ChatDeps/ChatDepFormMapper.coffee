@@ -40,7 +40,7 @@ define [
 
 			form.usergroup_perms = {}
 			for u in usergroups
-				form.usergroup_perms[u.id] = { use: false }
+				form.usergroup_perms[u.id] = { full: false }
 
 			if depPerms.usergroups
 				for p in depPerms.usergroups
@@ -71,11 +71,11 @@ define [
 
 			permData = formModel.agent_perms.getPermsData()
 
-			for usergroup in formModel.usergroup_perms
-				if usergroup.use
+			for own uid,usergroup of formModel.usergroup_perms
+				if usergroup.full
 					permData.push({
-						usergroup_id: usergroup.id,
-						name: 'use',
+						usergroup_id: uid,
+						name: 'full',
 						value: 1
 					})
 
