@@ -203,14 +203,27 @@ class CleanupDaily extends AbstractJob
 		#------------------------------
 
 		$datecut = date('Y-m-d H:i:s', time() - 1728000); // 20 days
-		$num = App::getDb()->executeUpdate("
-			UPDATE email_sources
-			SET source_info = NULL
-			WHERE date_created < ?
+		$email_sources = App::getDb()->fetchAll("
+			SELECT email_sources.id, email_sources.log_blob_id
+			FROM email_sources
+			WHERE email_sources.date_created < ? AND email_sources.log_blob_id IS NOT NULL
+			ORDER BY email_sources.date_created DESC
+			LIMIT 2000
 		", array($datecut));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num email source process logs");
+		if ($email_sources) {
+			$blob_ids   = array_map(function($r) { return $r['log_blob_id']; }, $email_sources);
+			$blobs = App::$container->getEm()->getRepository('DeskPRO:Blob')->getByIds($blob_ids);
+			foreach ($email_sources as $source) {
+				if (isset($blobs[$source['log_blob_id']])) {
+					try {
+						App::$container->getBlobStorage()->deleteBlobRecord($blobs[$source['log_blob_id']]);
+					} catch (\Exception $e) {}
+				}
+			}
+
+			$this->logStatus("Cleaned up " . count($blobs) . " email source process logs");
+			unset($blobs);
 		}
 
 		#------------------------------
@@ -356,11 +369,15 @@ class CleanupDaily extends AbstractJob
 
 		if ($cleanup_list) {
 			$file_util = new \Symfony\Component\Filesystem\Filesystem();
+			$x = 0;
 			foreach ($cleanup_list as $f) {
-				@$file_util->remove($f);
+				try {
+					$file_util->remove($f);
+					$x++;
+				} catch (\Exception $e) {}
 			}
 
-			$this->logStatus("Cleaned up " . count($cleanup_list) . " old files");
+			$this->logStatus("Cleaned up $x of " . count($cleanup_list) . " old files");
 		}
 	}
 }

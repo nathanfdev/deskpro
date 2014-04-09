@@ -71,5 +71,10 @@ class Build1396876010 extends AbstractBuild
 		$db->exec("CREATE TABLE ticket_proc_log (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, blob_id INT DEFAULT NULL, date_created DATETIME NOT NULL, INDEX IDX_F3CC6D4B700047D2 (ticket_id), INDEX IDX_F3CC6D4BED3E8EA5 (blob_id), INDEX date_created_idx (date_created), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$db->exec("ALTER TABLE ticket_proc_log ADD CONSTRAINT FK_F3CC6D4B700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
 		$db->exec("ALTER TABLE ticket_proc_log ADD CONSTRAINT FK_F3CC6D4BED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+
+		$this->out("Create new ticket_proc_log table");
+		$db->exec("ALTER TABLE email_sources ADD log_blob_id INT DEFAULT NULL");
+		$db->exec("ALTER TABLE email_sources ADD CONSTRAINT FK_6F9D0D3DD5F3B632 FOREIGN KEY (log_blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
+		$db->exec("CREATE INDEX IDX_6F9D0D3DD5F3B632 ON email_sources (log_blob_id)");
 	}
 }

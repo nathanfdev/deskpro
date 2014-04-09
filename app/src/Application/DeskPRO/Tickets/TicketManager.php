@@ -43,7 +43,6 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\TicketSaveActions;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;

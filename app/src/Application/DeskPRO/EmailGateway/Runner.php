@@ -329,7 +329,15 @@ class Runner
 						$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
 					}
 
-					$source['source_info'] = $proc->getSourceInfo();
+					$source_info = $proc->getSourceInfo();
+					if ($source_info) {
+						$source_info = implode("\n", $source_info);
+						try {
+							$blob = App::$container->getBlobStorage()->createBlobRecordFromString($source_info, 'email-process.log', 'plain/text');
+							$source['log_blob'] = $blob;
+						} catch (\Exception $e) {}
+					}
+
 					$proc = null;
 
 					App::getOrm()->commit();
@@ -362,7 +370,16 @@ class Runner
 			} else {
 				$source['status'] = 'error';
 				$source['error_code'] = $pre_processor->getErrorCode();
-				$source['source_info'] = $pre_processor->getSourceInfo();
+
+				$source_info = $pre_processor->getSourceInfo();
+				if ($source_info) {
+					$source_info = implode("\n", $source_info);
+					try {
+						$blob = App::$container->getBlobStorage()->createBlobRecordFromString($source_info, 'email-process.log', 'plain/text');
+						$source['log_blob'] = $blob;
+					} catch (\Exception $e) {}
+				}
+
 				$pre_processor = null;
 
 				$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
@@ -610,6 +627,7 @@ class Runner
 			'status'      => $source['status'],
 			'error_code'  => $source['error_code'],
 			'source_info' => serialize($source['source_info'] ?: array()),
+			'log_blob_id' => $source['log_blob'] ? $source['log_blob']->getId() : null
 		), array('id' => $source->getId()));
 	}
 

@@ -174,6 +174,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	protected $source_info = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Blob
+	 */
+	protected $log_blob = null;
+
+	/**
 	 * @var \DateTime
 	 */
 	protected $date_created;
@@ -208,6 +213,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the full raw source of the email
 	 *
+	 * @deprecated
 	 * @return string
 	 */
 	public function getRawSource()
@@ -217,6 +223,23 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
 		return $this->_raw;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSourceInfoAsString()
+	{
+		if (!$this->source_info) {
+			return '';
+		}
+
+		if (isset($this->source_info[0])) {
+			return implode("\n", $this->source_info);
+		} else {
+			return print_r($this->source_info, true);
+		}
 	}
 
 
@@ -266,23 +289,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->error_code;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getSourceInfoAsString()
-	{
-		if (!$this->source_info) {
-			return '';
-		}
-
-		if (isset($this->source_info[0])) {
-			return implode("\n", $this->source_info);
-		} else {
-			return print_r($this->source_info, true);
-		}
 	}
 
 
@@ -339,5 +345,15 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'email_account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'log_blob',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'joinColumns'  => array(array(
+				'name'                 => 'log_blob_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			))
+		));
 	}
 }

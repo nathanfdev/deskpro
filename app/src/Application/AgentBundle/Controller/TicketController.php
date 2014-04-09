@@ -3666,7 +3666,11 @@ class TicketController extends AbstractController
 			}
 
 			if ($message->email_source && $message->email_source->source_info) {
-				file_put_contents($tmpdir . '/message-'.$message->id.'.log', $message->email_source->getSourceInfoAsString());
+				file_put_contents($tmpdir . '/message-'.$message->id.'.source_info.txt', $message->email_source->getSourceInfoAsString());
+			}
+
+			if ($message->email_source && $message->email_source->log_blob) {
+				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-'.$message->id.'.log', $message->email_source->log_blob);
 			}
 		}
 

@@ -59,6 +59,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * Get a collection of entities by ID
 	 *
+	 * @param array $ids
 	 * @param bool $keep_order True to order the resulting array in the same order that ids are provided in $ids
 	 * @return array
 	 */

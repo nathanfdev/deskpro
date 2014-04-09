@@ -505,10 +505,21 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Message $message_id not found in $ticket_id");
 		}
 
+		$email_log = '';
+		if ($message->email_source && $message->email_source->source_info) {
+			$email_log .= $message->email_source->getSourceInfoAsString() . "\n\n";;
+		}
+		if ($message->email_source && $message->email_source->log_blob) {
+			$email_log .= $this->container->getBlobStorage()->copyBlobRecordToString($message->email_source->log_blob);
+		}
+		if (!$email_log) {
+			$email_log = null;
+		}
+
 		return $this->createApiResponse(array(
-			'unformatted' => $message->message_text,
+			'unformatted'  => $message->message_text,
 			'email_source' => $message->email_source ? $message->email_source->raw_source : null,
-			'email_log' => $message->email_source ? implode("\n", $message->email_source->source_info) : null
+			'email_log'    => $email_log
 		));
 	}
 
