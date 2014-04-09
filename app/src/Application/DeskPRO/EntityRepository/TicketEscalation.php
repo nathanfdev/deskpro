@@ -44,24 +44,6 @@ class TicketEscalation extends AbstractEntityRepository
 		return $this->_em->createQuery("
 			SELECT te
 			FROM DeskPRO:TicketEscalation te
-			ORDER BY te.run_order ASC
 		")->execute();
-	}
-
-	/**
-	 * Updates run orders of $escalation_ids
-	 * @param array $escalation_ids
-	 */
-	public function updateRunOrder(array $escalation_ids)
-	{
-		$x = 0;
-		foreach ($escalation_ids as $fid) {
-			$x += 10;
-			$this->_em->getConnection()->executeUpdate("
-				UPDATE ticket_escalations
-				SET run_order = ?
-				WHERE id = ?
-			", array($x, $fid));
-		}
 	}
 }
