@@ -42,7 +42,7 @@ class TicketActionDefManagerService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$defs = $container->getEm()->getRepository('DeskPRO:TicketACtionDef')->getActions();
+		$defs = $container->getEm()->getRepository('DeskPRO:TicketActionDef')->getActions();
 		if ($defs instanceof ArrayCollection) {
 			$defs = $defs->toArray();
 		}
