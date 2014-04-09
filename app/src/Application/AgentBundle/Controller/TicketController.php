@@ -3234,7 +3234,7 @@ class TicketController extends AbstractController
 			// Validate based on department...
 			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
 			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
-			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
 			$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
 			$newticket->status = $set_status;
 			$validator->setLayout($layout);
