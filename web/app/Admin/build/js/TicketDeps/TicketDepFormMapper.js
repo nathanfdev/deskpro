@@ -1,4 +1,6 @@
 (function() {
+  var __hasProp = {}.hasOwnProperty;
+
   define(['Admin/Main/Model/DepAgentPermMatrix', 'DeskPRO/Util/Util'], function(DepAgentPermMatrix, Util) {
     var TicketDepFormMapper;
     return TicketDepFormMapper = (function() {
@@ -89,7 +91,7 @@
         for (_l = 0, _len3 = usergroups.length; _l < _len3; _l++) {
           u = usergroups[_l];
           form.usergroup_perms[u.id] = {
-            use: false
+            full: false
           };
         }
         if (depPerms.usergroups) {
@@ -106,7 +108,7 @@
       };
 
       TicketDepFormMapper.prototype.getPostDataFromForm = function(formModel) {
-        var depData, email_account_id, options, permData, postData, trigger_actions, usergroup, _i, _len, _ref, _ref1, _ref2, _ref3;
+        var depData, email_account_id, options, permData, postData, trigger_actions, uid, usergroup, _ref, _ref1, _ref2, _ref3;
         depData = {};
         depData.title = formModel.title;
         depData.parent = formModel.parent_id || "0";
@@ -123,12 +125,13 @@
         }
         permData = formModel.agent_perms.getPermsData();
         _ref = formModel.usergroup_perms;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          usergroup = _ref[_i];
-          if (usergroup.use) {
+        for (uid in _ref) {
+          if (!__hasProp.call(_ref, uid)) continue;
+          usergroup = _ref[uid];
+          if (usergroup.full) {
             permData.push({
-              usergroup_id: usergroup.id,
-              name: 'use',
+              usergroup_id: uid,
+              name: 'full',
               value: 1
             });
           }
