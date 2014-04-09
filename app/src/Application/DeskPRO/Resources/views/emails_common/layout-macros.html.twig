@@ -22,9 +22,9 @@
 {% macro show_first_message(context) %}
 	{% set message = context.messages|first %}
 	{% if message.person.is_agent %}
-		{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' with {message: message} %}
+		{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
 	{% else %}
-		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message} %}
+		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
 	{% endif %}
 {% endmacro %}
 
@@ -32,7 +32,7 @@
 # Shows the first message of the messages array (a new reply) in quoted style
 ##}
 {% macro show_latest_message(context) %}
-	{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {message: context.messages|first} %}
+	{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {message: context.messages|first, ticketdisplay: context.ticketdisplay } %}
 {% endmacro %}
 
 {##
@@ -41,7 +41,8 @@
 {% macro show_all_messages(context) %}
 	{% for message in context.messages %}
 		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-			message: message
+			message: message,
+			ticketdisplay: context.ticketdisplay
 		} %}
 	{% endfor %}
 {% endmacro %}
@@ -52,7 +53,8 @@
 {% macro show_rest_message(context) %}
 	{% for message in context.messages|slice(1) %}
 		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-			message: message
+			message: message,
+			ticketdisplay: context.ticketdisplay
 		} %}
 	{% endfor %}
 {% endmacro %}
@@ -66,6 +68,7 @@
 	{% for message in messages %}
 		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
 			message: message,
+			ticketdisplay: context.ticketdisplay,
 			show_author_email: true,
 			is_to_agent: true
 		} %}

@@ -98,6 +98,7 @@ class SendUserEmail extends AbstractEmailAction
 			->setUserMode()
 			->setTemplateName($template)
 			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
+			->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 			->setLogger($context->getLogger())
 			->setFromEmailAccount($from_account);
 

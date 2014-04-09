@@ -40,6 +40,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Mail\Mailer;
 use Application\DeskPRO\TicketLayout\TicketLayoutManager;
 use Application\DeskPRO\Translate\Translate;
@@ -268,6 +269,19 @@ class TicketEmailBuilder
 	public function setIsNotAuto()
 	{
 		$this->options->set('is_auto', true);
+		return $this;
+	}
+
+
+	/**
+	 * Sets the maximum size of attachments that will be sent with the message.
+	 *
+	 * @param int $size
+	 * @return TicketEmailBuilder
+	 */
+	public function setMaxAttachSize($size)
+	{
+		$this->options->set('max_attach_size', (int)$size);
 		return $this;
 	}
 

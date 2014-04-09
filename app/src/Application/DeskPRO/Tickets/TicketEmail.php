@@ -34,9 +34,11 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
 class TicketEmail
@@ -130,6 +132,11 @@ class TicketEmail
 	private $do_cc_users = true;
 
 	/**
+	 * @var int
+	 */
+	private $max_attach_size = 0;
+
+	/**
 	 * @var \Monolog\Logger
 	 */
 	private $logger;
@@ -160,6 +167,7 @@ class TicketEmail
 			'from_email_account',
 			'cc_users',
 			'is_auto',
+			'max_attach_size',
 			'logger'
 		);
 		$opt->setAll($options);
@@ -180,6 +188,7 @@ class TicketEmail
 
 		$this->do_cc_users             = $opt->get('cc_users', false);
 		$this->is_auto                 = $opt->get('is_auto', false);
+		$this->max_attach_size         = $opt->get('max_attach_size', 0);
 
 		$this->user_mode               = $opt->get('user_mode');
 
@@ -320,6 +329,26 @@ class TicketEmail
 
 		$to_name  = $this->to_person->getDisplayName();
 
+		$state = $this->ticket->getStateChangeRecorder();
+		$ticket_attachments = array();
+		if ($state->hasNewReply()) {
+			$last_message = Arrays::getFirstItem($vars['messages']);
+			$this->logger->info(sprintf("[TicketEmail] New reply on #%d checking for attachments <= %d", $last_message->id, $this->max_attach_size));
+			if (count($last_message->attachments)) {
+				$this->logger->info(sprintf("[TicketEmail] Message has %d attachments", count($last_message->attachments)));
+				foreach ($last_message->attachments as $a) {
+					if ($a->blob->filesize <= $this->max_attach_size) {
+						$this->logger->info(sprintf("[TicketEmail] Adding attachment %s", $a->blob->filename));
+						$ticket_attachments[$a->id] = $a;
+					} else {
+						$this->logger->info(sprintf("[TicketEmail] Skipping attachment %s", $a->blob->filename));
+					}
+				}
+			} else {
+				$this->logger->info(sprintf("[TicketEmail] Message has no attachments"));
+			}
+		}
+
 		if ($this->user_mode == self::MODE_USER && $this->ticket->person_email && $this->ticket->person_email->person == $this->to_person) {
 			$to_email = $this->ticket->person_email->email;
 			$this->logger->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
@@ -356,6 +385,15 @@ class TicketEmail
 		$this->logger->info(sprintf("[TicketEmail] To: %s -- Name: %s", $to_email, $to_name));
 		$message->setTo(array($to_email => $to_name));
 		$message->setContextId('ticket_gateway');
+
+		if ($ticket_attachments) {
+			$vars['attached_blobs'] = $ticket_attachments;
+			foreach ($ticket_attachments as $a) {
+				$ticketdisplay->setIgnoreAttachment($a);
+				$message->attachBlob($a->blob, $a->blob->getDownloadUrl(true));
+			}
+		}
+
 		$message->setTemplate($this->template_name, $vars);
 
 		if ($this->user_mode == self::MODE_USER && $this->do_cc_users) {
