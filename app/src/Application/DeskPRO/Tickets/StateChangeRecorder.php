@@ -68,7 +68,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 		// If the ticket is not a proxy object it means it was created now.
 		// - If there was no ID at the time this state recorder was created,
 		// it means its part of the same state transaction. (eg state recorder wasnt reset)
-		if ($this->no_id && get_class($this) === 'Application\\DeskPRO\\Entity\\Ticket') {
+		if ($this->no_id && get_class($this->ticket) === 'Application\\DeskPRO\\Entity\\Ticket') {
 			return true;
 		}
 

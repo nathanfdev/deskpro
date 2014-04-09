@@ -170,7 +170,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 			$event_types['agent_reply'] = true;
 			$this->logMessage("notify_agent_reply = true");
 		} else if ($this->state->hasNewUserReply()) {
-			$event_types['user_note'] = true;
+			$event_types['user_reply'] = true;
 			$this->logMessage("notify_user_reply = true");
 		}
 
