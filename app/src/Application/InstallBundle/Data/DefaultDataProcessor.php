@@ -36,7 +36,7 @@ namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -86,9 +86,9 @@ class DefaultDataProcessor
 
 
 	/**
-	 * @param Logger $logger
+	 * @param LoggerInterface $logger
 	 */
-	public function setLogger(Logger $logger)
+	public function setLogger(LoggerInterface $logger)
 	{
 		$this->logger = $logger;
 	}

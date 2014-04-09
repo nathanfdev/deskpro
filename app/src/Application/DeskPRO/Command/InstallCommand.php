@@ -36,6 +36,9 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\InstallBundle\Data\DefaultDataProcessor;
+use Monolog\Logger;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -167,6 +170,13 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			foreach ($install_data as $php) {
 				eval($php);
 			}
+
+			$data_proc = new DefaultDataProcessor($this->getContainer());
+			if ($logger) {
+				$orb_logger_adapter = new OrbLoggerAdapterHandler($logger);
+				$data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
+			}
+			$data_proc->runInstall();
 
 			$this->getOrm()->flush();
 
