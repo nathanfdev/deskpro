@@ -75,7 +75,7 @@
 						<div class="dp-control-group dp-error-static {% if error_fields['usercat'] %}dp-error{% endif %}">
 							<label class="dp-control-label"><strong>{{ phrase('user.feedback.category') }}</strong></label>
 							<div class="dp-controls dp-fill">
-								{{ render_custom_field_form(newfeedback_cat_field, {field_group: 'feedback[custom_fields]'}) }}
+								{{ render_custom_field_form(newfeedback_cat_field, {field_group: 'feedback_custom_fields'}) }}
 								<div class="dp-help-inline dp-error-explain">
 									{{ phrase('user.feedback.form_new_error_category') }}
 								</div>

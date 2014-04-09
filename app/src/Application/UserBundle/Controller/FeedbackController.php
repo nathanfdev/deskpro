@@ -231,7 +231,7 @@ class FeedbackController extends AbstractController
 				$validator->setCaptcha($captcha);
 			}
 
-			$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
+			$newfeedback->custom_fields = $this->in->getRaw('feedback_custom_fields');
 			$form->handleRequest($this->get('request'));
 
 			// Try to set a default name from usersource
@@ -313,7 +313,7 @@ class FeedbackController extends AbstractController
 		));
 	}
 
-		/**
+	/**
 	 * View an feedback
 	 *
 	 * @param  $feedback_id
