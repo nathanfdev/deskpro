@@ -9,7 +9,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Signature';
 			<div class="dp-form-label"><label>{{ phrase('agent.settings.ticket_signature') }}</label></div>
 			<div class="dp-form-input" style="width: 590px;">
 				<div style="padding-bottom: 10px;" class="unreset">
-					<textarea name="ticket_signature" id="agent_settings_signature" data-rte="{% if can_signature_html %}1{% else %}0{% endif %}"></textarea>
+					<textarea name="ticket_signature" id="agent_settings_signature" data-rte="1"></textarea>
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.settings.drop_here_insert_signature') }}</h1></div>
 				</div>
 				<em class="desc" style="display: block; float: none; width: 80%;">{{ phrase('agent.settings.ticket_signature_desc') }}</em>

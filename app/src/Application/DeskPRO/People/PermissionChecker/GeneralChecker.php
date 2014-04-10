@@ -52,15 +52,6 @@ class GeneralChecker extends AbstractChecker
 		return $this->person->hasPerm('agent_general.signature');
 	}
 
-	public function canSetSignatureRte()
-	{
-		if (!$this->canSetSignature()) {
-			return false;
-		}
-
-		return $this->person->hasPerm('agent_general.signature_rte');
-	}
-
 	public function canSetPicture()
 	{
 		if (!$this->person->is_agent) {
