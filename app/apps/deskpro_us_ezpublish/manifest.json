@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_ezpublish",
+	"is_native": true,
 	"title": "eZ Publish Authentication",
 	"description": "Enables user authentication against an eZ Publish site.",
 	"tags": ["usersources"],

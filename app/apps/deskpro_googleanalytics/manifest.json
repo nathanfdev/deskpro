@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_googleanalytics",
+	"is_native": true,
 	"title": "Google Analytics",
 	"description": "Add your Google Analytics tracking code to all user interface pages.",
 	"tags": ["analytics"],

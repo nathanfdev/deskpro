@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_joomla",
+	"is_native": true,
 	"title": "Joomla Authentication",
 	"description": "Enables the Joomla usersource option for single-signon with Joomla.",
 	"tags": ["usersources"],

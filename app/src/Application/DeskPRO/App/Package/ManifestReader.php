@@ -122,6 +122,7 @@ class ManifestReader
 		} else {
 			$fields = array(
 				'package_name',
+				'is_native',
 				'title',
 				'description',
 				'api_version',
@@ -132,7 +133,7 @@ class ManifestReader
 				'author.email',
 				'author.link',
 				'tags',
-				'settings_def'
+				'settings_def',
 			);
 
 			$docheck = array();
@@ -165,6 +166,9 @@ class ManifestReader
 					} else {
 						$this->manifest->$setter($value);
 					}
+				} else if ($f == 'is_native') {
+					$value = (bool)$value;
+					$this->manifest->setIsNative($value);
 				} else {
 					if (!is_scalar($value)) {
 						$this->error_details[] = array('invalid', $f);

@@ -124,7 +124,7 @@ class PackageInstaller
 			$this->em->persist($asset);
 
 			$largest = array($path, $size, $blob);
-			$have_sizes[$size] = array($path, $size, $blob);
+			$have_sizes[$size] = $blob;
 		}
 
 		// Missing sizes we'll just scale whatever
@@ -223,7 +223,7 @@ class PackageInstaller
 		// Need to delete old blobs at the end after AppAsset.blob has been overwritten
 		// because AppAsset.blob has a delete cascade relation.
 		foreach ($old_blobs as $b) {
-			$this->blob_storage->deleteBlobRecord($b);
+			//$this->blob_storage->deleteBlobRecord($b);
 		}
 
 		return $def;
@@ -296,17 +296,16 @@ class PackageInstaller
 			}
 
 			if ($asset) {
-				// Asset already exists, replace it
-				if ($asset->blob) {
+				if ($asset->blob && $asset->blob->id != $blob->id) {
 					$old_blobs[] = $asset->blob;
 				}
-				$asset->blob = $blob;
 			}
 		}
 
 		if (!$asset) {
-			// New asset
 			$asset = $def->addAssetFromBlob($blob);
+		} else {
+			$asset->blob = $blob;
 		}
 
 		$asset->name = $filename ? $filename : $blob->filename;

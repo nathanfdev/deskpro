@@ -42,6 +42,11 @@ class Manifest
 	private $package_name;
 
 	/**
+	 * @var bool
+	 */
+	private $is_native = false;
+
+	/**
 	 * @var string
 	 */
 	private $title;
@@ -110,6 +115,22 @@ class Manifest
 	public function getPackageName()
 	{
 		return $this->package_name;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function getIsNative()
+	{
+		return $this->is_native;
+	}
+
+	/**
+	 * @param bool $is_native
+	 */
+	public function setIsNative($is_native)
+	{
+		$this->is_native = (bool)$is_native;
 	}
 
 	/**

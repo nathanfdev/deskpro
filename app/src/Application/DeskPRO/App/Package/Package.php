@@ -67,6 +67,7 @@ class Package
 
 	/**
 	 * @param AppPackage  $def Existing app package to update. Otherwise, a new package is created.
+	 * @param string $native_name
 	 * @return AppPackage
 	 */
 	public function createAppPackage(AppPackage $def = null)
@@ -88,10 +89,7 @@ class Package
 		$def->scopes       = array(AppPackage::SCOPE_AGENT);
 		$def->tags         = $this->manifest->getTags() ?: array();
 		$def->settings_def = $this->manifest->getSettingsDef();
-
-		if (strpos($this->path, DP_ROOT.'/apps') === 0) {
-			$def->native_name = basename($this->path);
-		}
+		$def->native_name  = $this->manifest->getIsNative() ? $def->name : null;
 
 		return $def;
 	}

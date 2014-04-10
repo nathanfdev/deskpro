@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_vbulletin",
+	"is_native": true,
 	"title": "vBulletin Authentication",
 	"description": "Allows users to log in using their vBulletin profile.",
 	"tags": ["usersources"],
