@@ -689,7 +689,7 @@ class Ticket extends DomainObject
 
 		foreach ($this['participants'] as $p) {
 			if (!$p['person']['is_agent']) {
-				$ret[] = $p;
+				$ret[] = $p->person;
 			}
 		}
 
@@ -705,7 +705,7 @@ class Ticket extends DomainObject
 		$ret = array();
 		foreach ($this->participants as $p) {
 			if ($p->person['is_agent']) {
-				$ret[] = $p;
+				$ret[] = $p->person;
 			}
 		}
 
