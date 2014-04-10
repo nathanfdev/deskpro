@@ -13,7 +13,6 @@
 		"mockery/mockery": "dev-master",
 		"monolog/monolog": ">=1.0.0",
 		"pda/pheanstalk": "2.1.*",
-		"leth/ip-address": "dev-master",
 		"symfony/symfony": "~2.3",
 		"symfony/monolog-bundle": "*",
 		"doctrine/doctrine-bundle": "*",
@@ -27,7 +26,8 @@
 		"satooshi/php-coveralls": "~0.6",
 		"codeception/codeception": "*",
 		"erusev/parsedown": "dev-master",
-		"deskpro/deskpro-api-php": "dev-master"
+		"deskpro/deskpro-api-php": "dev-master",
+        "friendsofsymfony/elastica-bundle": "3.0.*@dev"
 	},
 	"scripts": {
 		"pre-update-cmd":   ["test -d vendor && rm -rf vendor/ || true", "mkdir vendor"],

@@ -26,7 +26,9 @@ $loader->registerNamespaces(array(
 	'DpTestingMocks'     => DP_ROOT.'/testing/src',
 
 	'Metadata'           => DP_ROOT.'/vendor-src/metadata/src',
+    'Leth'               => DP_ROOT.'/vendor-src/php-ipaddress/classes'
 ));
+
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 
 $loader->registerPrefixes(array(
@@ -64,6 +66,7 @@ $loader->registerClassNames(array(
 
 	'phpthumb_ico'                    => DP_ROOT.'/vendor-src/phpthumb/phpthumb.ico.php',
 	'PasswordHash'                    => DP_ROOT.'/vendor-src/phpass/PasswordHash.php',
+    ''
 ));
 
 spl_autoload_register(function($classname) {

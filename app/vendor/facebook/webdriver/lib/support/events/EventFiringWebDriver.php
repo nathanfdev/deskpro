@@ -47,8 +47,7 @@ class EventFiringWebDriver implements WebDriver {
   }
 
   /**
-   * @param mixed $method
-   * @return void
+   * @param $method
    */
   protected function dispatch($method) {
     if (!$this->dispatcher) {
@@ -76,7 +75,7 @@ class EventFiringWebDriver implements WebDriver {
   }
 
   /**
-   * @param mixed $url
+   * @param $url
    * @return $this
    * @throws WebDriverException
    */
@@ -229,7 +228,7 @@ class EventFiringWebDriver implements WebDriver {
   }
 
   /**
-   * @param null|string $save_as
+   * @param null $save_as
    * @return string
    * @throws WebDriverException
    */
@@ -290,31 +289,6 @@ class EventFiringWebDriver implements WebDriver {
   public function switchTo() {
     try {
       return $this->driver->switchTo();
-    } catch (WebDriverException $exception) {
-      $this->dispatchOnException($exception);
-    }
-  }
-
-  /**
-   * @return WebDriverTouchScreen
-   * @throws WebDriverException
-   */
-  public function getTouch() {
-    try {
-      return $this->driver->getTouch();
-    } catch (WebDriverException $exception) {
-      $this->dispatchOnException($exception);
-    }
-  }
-
-  /**
-   * Get the element on the page that currently has focus.
-   *
-   * @return WebDriverElement
-   */
-  public function getActiveElement() {
-    try {
-      return $this->driver->getActiveElement();
     } catch (WebDriverException $exception) {
       $this->dispatchOnException($exception);
     }

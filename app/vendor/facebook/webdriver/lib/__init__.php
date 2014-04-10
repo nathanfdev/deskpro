@@ -20,7 +20,6 @@ require_once('WebDriverElement.php');
 require_once('WebDriverCommandExecutor.php');
 require_once('WebDriverAction.php');
 require_once('WebDriverEventListener.php');
-require_once('remote/FileDetector.php');
 
 // abstract class
 require_once('interactions/internal/WebDriverKeysRelatedAction.php');
@@ -56,8 +55,6 @@ require_once('interactions/internal/WebDriverDoubleClickAction.php');
 require_once('interactions/internal/WebDriverMouseMoveAction.php');
 require_once('interactions/internal/WebDriverMoveToOffsetAction.php');
 require_once('internal/WebDriverLocatable.php');
-require_once('remote/LocalFileDetector.php');
-require_once('remote/UselessFileDetector.php');
 require_once('remote/RemoteMouse.php');
 require_once('remote/RemoteKeyboard.php');
 require_once('remote/RemoteWebDriver.php');
@@ -73,19 +70,3 @@ require_once('support/events/EventFiringWebDriver.php');
 require_once('support/events/EventFiringWebDriverNavigation.php');
 require_once('WebDriverDispatcher.php');
 require_once('support/events/EventFiringWebElement.php');
-
-// touch
-require_once('interactions/WebDriverTouchScreen.php');
-require_once('remote/RemoteTouchScreen.php');
-require_once('interactions/WebDriverTouchActions.php');
-require_once('interactions/touch/WebDriverTouchAction.php');
-require_once('interactions/touch/WebDriverDoubleTapAction.php');
-require_once('interactions/touch/WebDriverDownAction.php');
-require_once('interactions/touch/WebDriverFlickAction.php');
-require_once('interactions/touch/WebDriverFlickFromElementAction.php');
-require_once('interactions/touch/WebDriverLongPressAction.php');
-require_once('interactions/touch/WebDriverMoveAction.php');
-require_once('interactions/touch/WebDriverScrollAction.php');
-require_once('interactions/touch/WebDriverScrollFromElementAction.php');
-require_once('interactions/touch/WebDriverTapAction.php');
-require_once('interactions/touch/WebDriverUpAction.php');

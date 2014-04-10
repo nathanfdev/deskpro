@@ -140,11 +140,6 @@ cd $DIR_VENDOR/kriswallsmith/assetic
 echo "Cleaning $(pwd)"
 rm -rf CHANGELOG-1.0.md CHANGELOG-1.1.md composer.json Gemfile package.json README.md
 
-cd $DIR_VENDOR/leth/ip-address
-echo "Cleaning $(pwd)"
-rm -rf tests/
-rm -rf .travis.yml composer.json LICENSE.txt phpunit.xml.dist README.md
-
 cd $DIR_VENDOR/mockery/mockery
 echo "Cleaning $(pwd)"
 rm -rf docs/ examples/ tests/
@@ -320,3 +315,13 @@ cd $DIR_VENDOR/zendframework/zendframework
 echo "Cleaning $(pwd)"
 rm -rf tests/
 rm -rf CHANGELOG.md composer.json CONTRIBUTING.md INSTALL.md README.md README-GIT.md
+
+cd $DIR_VENDOR/friendsofsymfony/elastica-bundle/FOS/ElasticaBundle
+echo "Cleaning $(pwd)"
+rm -rf */Tests
+rm -rf .travis.yml CHANGELOG-2.0.md CHANGELOG-2.1.md CHANGELOG-3.0.md composer.json LICENSE.txt phpunit.xml.dist README.md UPGRADE-3.0.md
+
+cd $DIR_VENDOR/ruflin/elastica
+echo "Cleaning $(pwd)"
+rm -rf test/
+rm -rf .coveralls.yml .gitignore .travis.yml build.xml changes.txt composer.json LICENSE.txt phpdoc.xml.dist README.markdown Vagrantfile

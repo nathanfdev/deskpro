@@ -18,83 +18,23 @@ class RemoteWebDriver implements WebDriver {
   protected $executor;
   protected $mouse;
   protected $keyboard;
-  protected $touch;
 
-  protected function __construct() {}
-
-  /**
-   * Construct the RemoteWebDriver by a desired capabilities.
-   *
-   * @param string $url The url of the remote server
-   * @param array $desired_capabilities The webdriver desired capabilities
-   * @param int $timeout_in_ms
-   * @return RemoteWebDriver
-   */
-  public static function create(
-    $url = 'http://localhost:4444/wd/hub',
-    $desired_capabilities = array(),
-    $timeout_in_ms = 300000
-  ) {
+  public function __construct(
+      $url = 'http://localhost:4444/wd/hub',
+      $desired_capabilities = array()) {
     $url = preg_replace('#/+$#', '', $url);
+
     $command = array(
       'url' => $url,
       'name' => 'newSession',
       'parameters' => array('desiredCapabilities' => $desired_capabilities),
     );
+    $response = HttpCommandExecutor::remoteExecute($command);
 
-    $response = static::remoteExecuteHttpCommand($timeout_in_ms, $command);
-    $driver = new static();
-    $executor = static::createHttpCommandExecutor($url, $response);
-
-    return $driver->setCommandExecutor($executor);
-  }
-
-  /**
-   * [Experimental] Construct the RemoteWebDriver by an existing session.
-   *
-   * This constructor can boost the performance a lot by reusing the same
-   * browser for the whole test suite. You do not have to pass the desired
-   * capabilities because the session was created before.
-   *
-   * @param string $url The url of the remote server
-   * @param string $session_id The existing session id
-   * @return RemoteWebDriver
-   */
-  public static function createBySessionID(
-    $session_id,
-    $url = 'http://localhost:4444/wd/hub'
-  ) {
-    $driver = new static();
-    $driver->setCommandExecutor(new HttpCommandExecutor($url, $session_id));
-    return $driver;
-  }
-
-  /**
-   * @param string $url
-   * @param array  $response
-   * @return HttpCommandExecutor
-   */
-  public static function createHttpCommandExecutor($url, $response) {
-    $executor = new HttpCommandExecutor(
+    $this->executor = new HttpCommandExecutor(
       $url,
       $response['sessionId']
     );
-    return $executor;
-  }
-
-  /**
-   * @param int   $timeout_in_ms
-   * @param array $command
-   * @return array
-   */
-  public static function remoteExecuteHttpCommand($timeout_in_ms, $command) {
-    $response = HttpCommandExecutor::remoteExecute(
-      $command,
-      array(
-        CURLOPT_CONNECTTIMEOUT_MS => $timeout_in_ms,
-      )
-    );
-    return $response;
   }
 
   /**
@@ -112,7 +52,7 @@ class RemoteWebDriver implements WebDriver {
    * Find the first WebDriverElement using the given mechanism.
    *
    * @param WebDriverBy $by
-   * @return WebDriverElement NoSuchElementException is thrown in
+   * @return WebDriverElement NoSuchElementWebDriverError is thrown in
    *    HttpCommandExecutor if no element is found.
    * @see WebDriverBy
    */
@@ -212,27 +152,6 @@ class RemoteWebDriver implements WebDriver {
   }
 
   /**
-   * Prepare arguments for JavaScript injection
-   *
-   * @param array $arguments
-   * @return array
-   */
-  private function prepareScriptArguments(array $arguments) {
-    $args = array();
-    foreach ($arguments as $arg) {
-      if ($arg instanceof WebDriverElement) {
-        $args[] = array('ELEMENT'=>$arg->getID());
-      } else {
-        if (is_array($arg)) {
-          $arg = $this->prepareScriptArguments($arg);
-        }
-        $args[] = $arg;
-      }
-    }
-    return $args;
-  }
-
-  /**
    * Inject a snippet of JavaScript into the page for execution in the context
    * of the currently selected frame. The executed script is assumed to be
    * synchronous and the result of evaluating the script will be returned.
@@ -242,10 +161,23 @@ class RemoteWebDriver implements WebDriver {
    * @return mixed The return value of the script.
    */
   public function executeScript($script, array $arguments = array()) {
-    $params = array(
-      'script' => $script,
-      'args' => $this->prepareScriptArguments($arguments),
-    );
+    $script = str_replace('"', '\"', $script);
+    $args = array();
+    foreach ($arguments as $arg) {
+      if ($arg instanceof WebDriverElement) {
+        array_push($args, array('ELEMENT' => $arg->getID()));
+      } else {
+        // TODO: Handle the case where arg is a collection
+        if (is_array($arg)) {
+          throw new Exception(
+            "executeScript with collection paramatar is unimplemented"
+          );
+        }
+        array_push($args, $arg);
+      }
+    }
+
+    $params = array('script' => $script, 'args' => $args);
     $response = $this->executor->execute('executeScript', $params);
     return $response;
   }
@@ -253,7 +185,7 @@ class RemoteWebDriver implements WebDriver {
   /**
    * Take a screenshot of the current page.
    *
-   * @param string $save_as The path of the screenshot to be saved.
+   * @param $save_as The path of the screenshot to be saved.
    * @return string The screenshot in PNG format.
    */
   public function takeScreenshot($save_as = null) {
@@ -336,32 +268,12 @@ class RemoteWebDriver implements WebDriver {
   }
 
   /**
-   * @return WebDriverTouchScreen
-   */
-  public function getTouch() {
-    if (!$this->touch) {
-      $this->touch = new RemoteTouchScreen($this->executor);
-    }
-    return $this->touch;
-  }
-
-  /**
    * Construct a new action builder.
    *
    * @return WebDriverActions
    */
   public function action() {
     return new WebDriverActions($this);
-  }
-
-  /**
-   * Get the element on the page that currently has focus.
-   *
-   * @return WebDriverElement
-   */
-  public function getActiveElement() {
-    $response = $this->executor->execute('getActiveElement');
-    return $this->newElement($response['ELEMENT']);
   }
 
   /**
@@ -372,33 +284,5 @@ class RemoteWebDriver implements WebDriver {
    */
   private function newElement($id) {
     return new RemoteWebElement($this->executor, $id);
-  }
-
-  /**
-   * Set the command executor of this RemoteWebdrver
-   *
-   * @param WebDriverCommandExecutor $executor
-   * @return WebDriver
-   */
-  public function setCommandExecutor(WebDriverCommandExecutor $executor) {
-    $this->executor = $executor;
-    return $this;
-  }
-
-  /**
-   * Set the command executor of this RemoteWebdriver
-   *
-   * @return WebDriverCommandExecutor
-   */
-  public function getCommandExecutor() {
-    return $this->executor;
-  }
-
-  /**
-   * Get current selenium sessionID
-   * @return sessionID
-   */
-  public function getSessionID() {
-    return $this->executor->getSessionID();
   }
 }

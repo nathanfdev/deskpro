@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
+class EventFiringWebElement implements WebDriverElement {
 
   /**
    * @var WebDriverElement
@@ -44,8 +44,7 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
   }
 
   /**
-   * @param mixed $method
-   * @return void
+   * @param $method
    */
   protected function dispatch($method) {
     if (!$this->dispatcher) {
@@ -72,7 +71,7 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
   }
 
   /**
-   * @param mixed $value
+   * @param $value
    * @return $this
    * @throws WebDriverException
    */
@@ -172,7 +171,7 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
   }
 
   /**
-   * @param string $attribute_name
+   * @param $attribute_name
    * @return string
    * @throws WebDriverException
    */
@@ -185,7 +184,7 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
   }
 
   /**
-   * @param string $css_property_name
+   * @param $css_property_name
    * @return string
    * @throws WebDriverException
    */
@@ -220,18 +219,6 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
       $this->dispatchOnException($exception);
     }
   }
-
-  /**
-   * @return WebDriverCoordinates
-   */
-  public function getCoordinates() {
-    try {
-      return $this->element->getCoordinates();
-    } catch (WebDriverException $exception) {
-      $this->dispatchOnException($exception);
-    }
-  }
-
 
   /**
    * @return WebDriverDimension
@@ -330,21 +317,6 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
     }
   }
 
-
-  /**
-   * Test if two element IDs refer to the same DOM element.
-   *
-   * @param WebDriverElement $other
-   * @return bool
-   */
-  public function equals(WebDriverElement $other) {
-    try {
-      return $this->element->equals($other);
-    } catch (WebDriverException $exception) {
-      $this->dispatchOnException($exception);
-    }
-  }
-
   private function dispatchOnException($exception) {
     $this->dispatch(
       'onException',
@@ -353,6 +325,4 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
     );
     throw $exception;
   }
-
-
 }
