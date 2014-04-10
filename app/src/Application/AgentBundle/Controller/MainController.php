@@ -417,13 +417,12 @@ class MainController extends AbstractController
 		$after_id = $after_id - 10000;
 
 		if ($words) {
-			$db = App::getDbRead();
 
-			#------------------------------
+            #------------------------------
 			# Ticket Subject
 			#------------------------------
 
-			$where = array();
+            /* $where = array();
 			foreach ($words as $w) {
 				$where[] = "(subject LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
 			}
@@ -447,11 +446,24 @@ class MainController extends AbstractController
 						$results['ticket'][] = $ticket;
 					}
 				}
-			}
+			} */
+
+            $tickets = $this->searchTicketSubject($q);
+
+            if ($tickets) {
+                foreach ($tickets as $ticket) {
+                    if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                        $results['ticket'][] = $ticket;
+                    }
+                }
+            }
+
 
 			#------------------------------
 			# Titles
 			#------------------------------
+
+            $db = App::getDbRead();
 
 			$where = array();
 			foreach ($words as $w) {
@@ -716,4 +728,21 @@ class MainController extends AbstractController
 			'people_top' => $people_top,
 		));
 	}
+
+    private function searchTicketSubject($phrase)
+    {
+        $finder = $this->getContainer()->get('fos_elastica.finder.deskpro.ticket');
+
+        $fieldQuery = new \Elastica\Query\Match();
+        $fieldQuery->setFieldQuery('subject', $phrase);
+        $fieldQuery->setFieldFuzziness('subject', 0.7);
+
+        $result = $finder->find($fieldQuery);
+
+        if ($result) {
+            return $result;
+        }
+
+        return array();
+    }
 }

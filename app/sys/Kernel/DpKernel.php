@@ -331,6 +331,7 @@ class DpKernel extends AbstractKernel
 			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
 			new \Application\UserBundle\UserBundle(),
 			new \Application\ApiBundle\ApiBundle(),
+            new \FOS\ElasticaBundle\FOSElasticaBundle()
 		);
 
 		if (defined('DPC_IS_CLOUD')) {

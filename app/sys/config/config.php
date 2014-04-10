@@ -284,6 +284,56 @@ $container->loadFromExtension('swiftmailer', array(
 	'transport' => 'dp_delegating'
 ));
 
+############################################################################
+# FOS Elastica Configuration
+############################################################################
+
+$container->loadFromExtension('fos_elastica', array(
+
+    'clients' => array(
+        'default' => array('host' => 'localhost', 'port' => 9200, 'logger' => true)
+    ),
+
+    'indexes' => array(
+        'deskpro' => array(
+            'settings' => array(
+                'analysis' => array(
+                    'analyzer' => array(
+                        'index_analyzer' => array(
+                            'tokenizer' => 'nGram',
+                            'filter' => array('lowercase', 'snowball')
+                        ),
+                        'search_analyzer' => array(
+                            'tokenizer' => 'nGram',
+                            'filter' => array('lowercase', 'snowball')
+                        )
+                    ),
+                    'filter' => array(
+                        'snowball' => array(
+                            'type' => 'snowball',
+                            'language' => 'English'
+                        )
+                    )
+                )
+            ),
+            'types' => array(
+                'ticket' => array(
+                    'mappings' => array(
+                        'subject' => array()
+                    ),
+                    'persistence' => array(
+                        'driver' => 'orm',
+                        'model' => 'Application\DeskPRO\Entity\Ticket',
+                        'provider' => array(),
+                        'listener' => array(),
+                        'finder' => array()
+                    )
+                )
+            )
+        )
+    )
+
+));
 
 ############################################################################
 # DeskPRO Configuration
