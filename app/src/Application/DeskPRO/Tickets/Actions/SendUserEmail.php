@@ -116,6 +116,8 @@ class SendUserEmail extends AbstractEmailAction
 				sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()),
 				array('exception' => $e)
 			);
+
+			throw $e;
 		}
 
 		$context->getLogger()->info(sprintf("[SendUserEmail] Sent message in %.3fs", microtime(true)-$start_time));

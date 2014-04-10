@@ -212,7 +212,8 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 					sprintf("[SendAgentEmail] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
 					array('exception' => $e)
 				);
-				KernelErrorHandler::logException($e);
+
+				throw $e;
 			}
 		}
 
