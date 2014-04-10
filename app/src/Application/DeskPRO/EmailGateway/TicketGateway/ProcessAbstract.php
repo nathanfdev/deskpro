@@ -180,7 +180,7 @@ abstract class ProcessAbstract
 			$cc_person = $person_processor->findPerson($cc);
 			if (!$cc_person) {
 				// Closed helpdesk and an unknown CC means we drop it
-				if (App::getContainer()->getSetting('core.user_mode') == 'closed') {
+				if (!App::getContainer()->getSetting('core.reg_enabled')) {
 					$this->logMessage("Skipping cc: $cc_email (no person match and closed helpdesk)");
 					continue;
 				}

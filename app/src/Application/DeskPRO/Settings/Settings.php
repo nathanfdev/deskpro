@@ -93,7 +93,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 		$this->db = $db;
 
 		$this->virtual_settings['core.interact_require_login'] = function($settings) {
-			return in_array($settings->get('core.user_mode'), array('require_reg', 'require_reg_agent_validation', 'closed'));
+			return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
 		};
 
 		$this->virtual_settings['default_timezone'] = function($settings) {

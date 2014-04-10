@@ -107,7 +107,7 @@
 						<td>
 							<div style="padding-bottom: 5px;">
 								{{ phrase('user.profile.password') }}
-								{% if app.getSetting('core.user_mode') != 'closed' %}<a style="margin-{% if is_rtl() %}right{% else %}left{% endif %}: 9px;" href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a>{% endif %}
+								{% if app.getSetting('core.reg_enabled') %}<a style="margin-{% if is_rtl() %}right{% else %}left{% endif %}: 9px;" href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a>{% endif %}
 							</div>
 							<div>
 								<input type="password" autocomplete="off" value="" name="password" size="20" tabindex="101" />

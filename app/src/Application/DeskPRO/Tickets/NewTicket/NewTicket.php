@@ -200,7 +200,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 						}
 						$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
 
-						if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+						if (App::getSetting('core.agent_validation')) {
 							$person->is_agent_confirmed = false;
 						}
 

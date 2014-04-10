@@ -28,6 +28,7 @@
         }).then((function(_this) {
           return function(res) {
             _this.$scope.settings = res.data.settings.registration_settings;
+            console.log(_this.$scope.settings);
             return _this.settings = angular.copy(_this.$scope.settings);
           };
         })(this));
@@ -50,6 +51,11 @@
         postData = {
           registration_settings: this.$scope.settings
         };
+        if (postData.registration_settings.reg_enabled === "1" || postData.registration_settings.reg_enabled === 1 || postData.registration_settings.reg_enabled === true) {
+          postData.registration_settings.reg_enabled = true;
+        } else {
+          postData.registration_settings.reg_enabled = false;
+        }
         this.startSpinner('saving');
         return promise = this.Api.sendPostJson('/registration_settings', postData).success((function(_this) {
           return function() {

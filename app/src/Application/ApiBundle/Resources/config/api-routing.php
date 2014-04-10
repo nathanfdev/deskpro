@@ -2433,7 +2433,7 @@ $collection->create('api_ticket_settings_save', array(
 
 $collection->create('api_registration_settings', array(
 	'path'        => '/registraton_settings',
-	'controller'  => 'ApiBundle:Settings:registratonSettings',
+	'controller'  => 'ApiBundle:Settings:registrationSettings',
 	'methods'     => array('GET'),
 ));
 

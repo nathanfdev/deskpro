@@ -10,10 +10,24 @@
 	'core.emergency_contact' => 'emergency-contact@example.com',
 
 	/**
-	 * User registration mode: open, require_reg, require_reg_agent_validation, closed
-	 * See AdminBundle:UserReg
+	 * Is registration enbaled?
 	 */
-	'core.user_mode' => 'open',
+	'core.reg_enabled' => true,
+
+	/**
+	 * Is registration required?
+	 */
+	'core.reg_required' => false,
+
+	/**
+	 * Is email validation enabled?
+	 */
+	'core.email_validation' => false,
+
+	/**
+	 * Is agent validation enabled?
+	 */
+	'core.agent_validation' => false,
 
 	/**
 	 * Enable URL rewriting (removes index.php/ from URLs)

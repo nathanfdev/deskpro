@@ -404,7 +404,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] Creating new contact');
-			if ($this->container->getSetting('core.user_mode') == 'closed') {
+			if (!$this->container->getSetting('core.reg_enabled')) {
 				$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
 				$this->error = EmailSource::ERR_PERM_INSUFFICIENT;
 

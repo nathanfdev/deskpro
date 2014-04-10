@@ -53,7 +53,7 @@ class PortalController extends AbstractController
 
 			// The user cant see anything on the page based on reg settings
 			if (!$portal_page->getSectionDisplayItems('portal')) {
-				if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
+				if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.reg_required'))) {
 					return $this->redirectRoute('user_login');
 				} else {
 					return $this->redirectRoute('user_tickets_new');
