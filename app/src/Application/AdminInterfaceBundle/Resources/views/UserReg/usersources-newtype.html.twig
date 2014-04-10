@@ -3,68 +3,22 @@
 	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
-				<div class="panel panel-fill indent">
-					<div class="panel-body">
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="active_directory" /> Active Directory</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="ldap" /> LDAP</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="custom" /> Custom Database</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="vbulletin" /> vBulletin (v3 or v4)</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="xenforo" /> XenForo (v1)</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="phpbb2" /> phpBB (v2)</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="phpbb3" /> phpBB (v3)</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="ez_publish" /> eZ Publish</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.usersource_type" value="magento" /> Magento</label></h3>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-12">
-								<div class="alert alert-info">
-									More types are available by installing new apps<br/>
-									<a href="{{ ng_href('apps.apps') }}" class="btn btn-info">Go to Apps <i class="fa fa-chevron-right"></i></a>
-								</div>
-							</div>
-						</div>
+				<div class="panel-body">
+					<div class="panel panel-fill indent">
+						<p>
+							You can extend DeskPRO with more authentication sources by installing apps from the apps section.
+						</p>
+						<p>
+							For example, there are apps that connect DeskPRO to your custom MySQL or MS SQL database,
+							Active Directory, LDAP and more.
+						</p>
 					</div>
 				</div>
 			</article>
 			<footer>
 				<div class="dp-content">
 					<div class="dp-btn-controls">
-						<button class="btn btn-primary" dp-submit-form>Continue <i class="fa fa-arrow-right"></i></button>
+						<a class="btn btn-primary" href="{{ ng_href('apps.apps') }}">Go to the Apps section <i class="fa fa-arrow-right"></i></a>
 					</div>
 				</div>
 			</footer>

@@ -815,14 +815,25 @@ define(function() {
 		controller: 'Admin_UserReg_Ctrl_UsersourceList'
 	});
 
-	//###
-	//# User Sources
-	//###
 	routes.push({
 		id: 'crm.usersources.newtype',
-		url: '/usersources/new-choose-type',
+		url: '/new',
 		templateName: 'UserReg/usersources-newtype.html',
-		controller: 'Admin_UserReg_Ctrl_UsersourceNewType'
+		controller: 'Admin_Main_Ctrl_Bare'
+	});
+
+	routes.push({
+		id: 'crm.usersources.deskpro',
+		url: '/deskpro',
+		templateName: 'UserReg/usersources-deskpro.html',
+		controller: 'Admin_Main_Ctrl_Bare'
+	});
+
+	routes.push({
+		id: 'crm.usersources.app',
+		url: '/{id:\\d+}',
+		templateName: 'Apps/instance.html',
+		controller: 'Admin_Apps_Ctrl_EditInstance'
 	});
 
 	//###

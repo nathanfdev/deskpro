@@ -235,7 +235,6 @@ requirejs([
 	'Admin/UserGroups/Ctrl/List',
 	'Admin/UserGroups/Ctrl/Edit',
 	'Admin/UserReg/Ctrl/UsersourceList',
-	'Admin/UserReg/Ctrl/UsersourceNewType',
 	'Admin/ChatFields/Ctrl/List',
 	'Admin/ChatSetup/Ctrl/ChatSetup',
 	'Admin/ChatDeps/Ctrl/List',

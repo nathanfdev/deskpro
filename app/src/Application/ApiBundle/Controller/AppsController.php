@@ -72,6 +72,28 @@ class AppsController extends AbstractController
 			$packages[] = $p_data;
 		}
 
+		if ($tags = $this->in->getString('tags')) {
+			$tags = explode(',', $tags);
+			$package_ids = array();
+
+			$packages = array_filter($packages, function($p) use ($tags, &$package_ids) {
+				$has = false;
+				foreach ($tags as $t) {
+					if ($p['tags'] && in_array($t, $p['tags'])) {
+						$has = true;
+						$package_ids[$p['name']] = true;
+						break;
+					}
+				}
+
+				return $has;
+			});
+
+			$apps = array_filter($apps, function($a) use ($package_ids) {
+				return isset($package_ids[$a['package_name']]);
+			});
+		}
+
 		return $this->createApiResponse(array('packages' => $packages, 'apps' => $apps));
 	}
 
