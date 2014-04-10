@@ -89,7 +89,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
 
 		foreach ($this->detectors as $detector) {
 			if ($this->is_bounce_mode && $detector instanceof BounceAwareInterface) {
-				$detector->enableBounceMode();
+				$detector->enableBouncedMode();
 			}
 
 			$t = $detector->findExistingTicket($reader);
