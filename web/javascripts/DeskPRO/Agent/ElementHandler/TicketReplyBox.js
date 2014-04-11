@@ -1394,10 +1394,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			return;
 		}
 
+		var textarea = this.textarea;
+		var api = this.textarea.data('redactor');
+
 		var formData = {
 			from: 'me',
 			to: to,
-			message_text: this.getElById('replybox_txt').val()
+			message_text: textarea.val()
 		};
 
 		var translateControls = this.el.find('.translate-controls');
