@@ -1599,6 +1599,20 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'apps.go_apps',
+		url: '/go-apps',
+		templateName: 'Index/blank.html',
+		controller: ['$state', function ($state) { $state.go('apps.apps'); }]
+	});
+
+	routes.push({
+		id: 'apps.go_apps_install',
+		url: '/{name:go\-apps\-(.*?)}',
+		templateName: 'Index/blank.html',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.install_package', { name: $stateParams.name.replace(/^go\-apps\-/, '') + '.install' }); }]
+	});
+
+	routes.push({
 		id: 'apps.resync',
 		url: '/resync',
 		templateName: 'Apps/apps_resync.html',

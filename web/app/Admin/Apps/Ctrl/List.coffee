@@ -95,4 +95,64 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				]
 			});
 
+		showUploadApp: ->
+
+			me = @
+			@$modal.open({
+				templateUrl: @getTemplatePath('Apps/upload-package-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+
+					uploadDone = (data) ->
+						$modalInstance.dismiss()
+						me.$timeout(->
+							me.$state.go('apps.go_apps_install', {name: data.package_name})
+						, 250)
+
+					uploadError = (data) ->
+						$scope.form.error = data?.error_code || 'general'
+
+					$scope.form = {}
+					$scope.form.upload_type = 'upload'
+					$scope.form.is_active = false
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+
+					$scope.fileUploadOptions = {
+						singleFileUploads: true,
+						limitMultiFileUploads: 1,
+						formData: {
+							"API-TOKEN": window.DP_API_TOKEN,
+							"REQUEST-TOKEN": window.DP_REQUEST_TOKEN,
+							"SESSION-ID": window.DP_SESSION_ID
+						}
+					}
+
+					$scope.$on('fileuploaddone', (e, data) ->
+						$scope.form.is_active = false
+						uploadDone(data.result, $modalInstance)
+
+					)
+					$scope.$on('fileuploadfail', (e, data) ->
+						$scope.form.is_active = false
+						uploadError(data.result || {}, $modalInstance)
+					)
+
+					$scope.startUpload = ->
+						$scope.form.error = null
+						if $scope.form.upload_type == 'upload'
+							$scope.form.is_active = true
+							$scope.form.uploadScope.submit()
+						else
+							$scope.form.is_active = true
+							me.Api.sendPost('/apps/upload-package', { file_url: $scope.form.upload_url }).then( (result) ->
+								$scope.form.is_active = false
+								uploadDone(result.data, $modalInstance)
+							, (result) ->
+								$scope.form.is_active = false
+								uploadError(result.data || {}, $modalInstance)
+							)
+				]
+			});
+
 	Admin_Apps_Ctrl_List.EXPORT_CTRL()

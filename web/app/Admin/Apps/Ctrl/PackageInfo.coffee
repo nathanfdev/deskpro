@@ -17,4 +17,29 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 			return promise
 
+		startDelete: ->
+			doDelete = =>
+				@Api.sendDelete('/apps/packages/' + @pack.name).success( =>
+					@$state.go('apps.go_apps')
+				)
+
+			@$modal.open({
+				templateUrl: @getTemplatePath('Apps/package-delete-modal.html'),
+				controller: ['pack', '$scope', '$modalInstance', (pack, $scope, $modalInstance) ->
+					$scope.pack = pack
+					$scope.dismiss = ->
+						$modalInstance.close();
+
+					$scope.confirm = ->
+						$scope.is_loading = true
+						doDelete().then(->
+							$modalInstance.close();
+						)
+				],
+				resolve: {
+					pack: =>
+						return @pack
+				}
+			});
+
 	Admin_Apps_Ctrl_PackageInfo.EXPORT_CTRL()

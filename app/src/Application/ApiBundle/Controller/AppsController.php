@@ -37,15 +37,17 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
+use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Monolog\Logger;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Templating\Asset\Package;
 
 class AppsController extends AbstractController
 {
@@ -168,7 +170,7 @@ class AppsController extends AbstractController
 	{
 		$manager = $this->container->getAppManager();
 
-		if (!$manager->getPackage($name)) {
+		if (!$manager->hasPackage($name)) {
 			throw $this->createNotFoundException();
 		}
 
@@ -789,5 +791,120 @@ class AppsController extends AbstractController
 			'success' => true,
 			'log'     => $log
 		));
+	}
+
+	####################################################################################################################
+	# upload-package
+	####################################################################################################################
+
+	public function uploadPackageAction(Request $request)
+	{
+		/** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+		$file = $request->files->get('file');
+
+		if ($file) {
+			if (!$file->isValid()) {
+				return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
+			}
+
+			$temp_name = $file->getRealPath();
+		} elseif ($upload_url = $this->in->getString('file_url')) {
+			$temp_name = @tempnam(dp_get_tmp_dir(), 'app_upload');
+			register_shutdown_function(function() use ($temp_name) {
+				@unlink($temp_name);
+			});
+
+			if (!$temp_name) {
+				return $this->createApiErrorResponse('copy_error', 'Failed to copy file to temp directory');
+			}
+
+			if (!@copy($upload_url, $temp_name)) {
+				return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
+			}
+		} else {
+			return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
+		}
+
+		require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
+		$zip = new \PclZip($temp_name);
+
+		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . time() . '-' . mt_rand(1000,9999);
+		if (!@mkdir($tmpdir)) {
+			return $this->createApiErrorResponse('copy_error', 'Failed to create extraction directory');
+		}
+
+		register_shutdown_function(function() use ($tmpdir) {
+			if (!is_dir($tmpdir)) {
+				return;
+			}
+			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmpdir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
+				$path->isFile() ? @unlink($path->getPathname()) : @rmdir($path->getPathname());
+			}
+			@rmdir($tmpdir);
+		});
+
+		if (!is_array($zip->extract(
+			\PCLZIP_OPT_PATH, $tmpdir,
+			\PCLZIP_OPT_ADD_TEMP_FILE_ON,
+			\PCLZIP_OPT_STOP_ON_ERROR
+		))) {
+			switch ($zip->errorName()) {
+				case 'PCLZIP_ERR_BAD_FORMAT':
+				case 'PCLZIP_ERR_INVALID_ZIP':
+				case 'PCLZIP_ERR_INVALID_ARCHIVE_ZIP':
+				case 'PCLZIP_ERR_UNSUPPORTED_COMPRESSION':
+				case 'PCLZIP_ERR_UNSUPPORTED_ENCRYPTION':
+					return $this->createApiErrorResponse('invalid_file', 'Invalid ZIP file: ' . $zip->errorName(true));
+				default:
+					return $this->createApiErrorResponse('extract_failed', 'Invalid ZIP file: ' . $zip->errorName(true));
+			}
+		}
+
+		$app_dir = $tmpdir;
+
+		// See if we should go one level deep (sometimes the zip is a zip of a dir)
+		if (!is_file($app_dir.'/manifest.json')) {
+			$dir = dir($tmpdir);
+			while (($f = $dir->read()) !== null) {
+				if ($f != '.' && $f != '..' && is_dir($dir->path . '/' . $f)) {
+					$app_dir = $dir->path . '/' . $f;
+					break;
+				}
+			}
+			$dir->close();
+		}
+
+		if (!is_file($app_dir.'/manifest.json')) {
+			return $this->createApiErrorResponse('missing_manifest', 'Missing manifest.json');
+		}
+
+		try {
+			$app_package = new Package($app_dir);
+		} catch (\Exception $e) {
+			return $this->createApiErrorResponse('invalid_manifest', 'Invalid manifest file: ' . $e->getMessage());
+		}
+
+		if ($app_package->getManifest()->getIsNative()) {
+			return $this->createApiErrorResponse('invalid_native', 'Native apps cannot be uploaded using this method');
+		}
+
+		$installer = new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine());
+
+		if ($this->container->getAppManager()->hasPackage($app_package->getManifest()->getPackageName())) {
+			$def = $this->container->getAppManager()->getPackage($app_package->getManifest()->getPackageName());
+		} else {
+			$def = null;
+		}
+
+		try {
+			$def = $installer->installPackage($app_package, $def);
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e);
+			return $this->createApiErrorResponse('install_error', 'There was a problem installing the package: ' . $e->getMessage());
+		}
+
+		return $this->createApiCreateResponse(array(
+			'package_name' => $def->name,
+		), $this->generateUrl('api_apps_package', array('name' => $def->name)));
 	}
 }

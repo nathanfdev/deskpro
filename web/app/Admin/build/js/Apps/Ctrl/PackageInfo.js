@@ -33,6 +33,41 @@
         return promise;
       };
 
+      Admin_Apps_Ctrl_PackageInfo.prototype.startDelete = function() {
+        var doDelete;
+        doDelete = (function(_this) {
+          return function() {
+            return _this.Api.sendDelete('/apps/packages/' + _this.pack.name).success(function() {
+              return _this.$state.go('apps.go_apps');
+            });
+          };
+        })(this);
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('Apps/package-delete-modal.html'),
+          controller: [
+            'pack', '$scope', '$modalInstance', function(pack, $scope, $modalInstance) {
+              $scope.pack = pack;
+              $scope.dismiss = function() {
+                return $modalInstance.close();
+              };
+              return $scope.confirm = function() {
+                $scope.is_loading = true;
+                return doDelete().then(function() {
+                  return $modalInstance.close();
+                });
+              };
+            }
+          ],
+          resolve: {
+            pack: (function(_this) {
+              return function() {
+                return _this.pack;
+              };
+            })(this)
+          }
+        });
+      };
+
       return Admin_Apps_Ctrl_PackageInfo;
 
     })(Admin_Ctrl_Base);

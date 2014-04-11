@@ -14,11 +14,12 @@
 					{{ ng_var('Ctrl.pack.description') }}
 				</p>
 
-				<div ng-show="!Ctrl.pack.is_installed">
-					<a class="btn btn-primary" href="{{ ng_href('apps.apps.install_package', "{name: Ctrl.pack.name+'.install'}") }}">
-						<i class="fa fa-dropbox"></i> Install App
-					</a>
-				</div>
+				<a ng-hide="Ctrl.pack.is_installed" class="btn btn-primary" href="{{ ng_href('apps.apps.install_package', "{name: Ctrl.pack.name+'.install'}") }}">
+					<i class="fa fa-dropbox"></i> Install App
+				</a>
+				<button ng-show="Ctrl.startDelete && !Ctrl.pack.native_name" type="button" class="btn btn-danger" ng-click="Ctrl.startDelete()">
+					<i class="fa fa-trash-o"></i> Remove App Package
+				</button>
 			</div>
 		</div>
 
