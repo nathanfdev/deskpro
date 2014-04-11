@@ -95,7 +95,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
 		$cookie_name = 'dpsid';
 		if (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin') {
-			$cookie_name .= '-agent';
+			$cookie_name .= '-' . DP_INTERFACE;
 		}
 
 		$this->options['name'] = $cookie_name;

@@ -94,28 +94,52 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
 		$this->is_first_page = empty($_SESSION);
 
-		if (DP_INTERFACE != 'admin' && (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id'])) {
-			list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
+		if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id'])) {
+			// See if we should carry an agent session
+			if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
 
-			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
-			if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
-				$this->_setCurrentPerson($person);
+				$sid = Entity\Session::getIdFromCode($_COOKIE['dpsid-agent']);
+				if ($sid) {
+					$agent_session = App::getDb()->fetchAssoc("
+						SELECT person_id, auth
+						FROM sessions
+						WHERE id = ? AND date_last > ?
+					", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
 
-				// Set last login date
-				App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+					list (, $auth) = explode('-', $_COOKIE['dpsid-agent']);
 
-				// Insert log
-				if ($person->is_agent) {
-					App::getDb()->insert('login_log', array(
-						'person_id'    => $person_id,
-						'area'         => DP_INTERFACE,
-						'is_success'   => 1,
-						'ip_address'   => dp_get_user_ip_address(),
-						'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-						'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-						'date_created' => date('Y-m-d H:i:s'),
-						'via_cookie'   => 1
-					));
+					if ($agent_session && $agent_session['auth'] == $auth) {
+						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
+						if ($person && $person->is_agent) {
+							$person_id = $person->id;
+							$this->_setCurrentPerson($person);
+						}
+					}
+				}
+
+			} elseif (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) {
+				list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
+
+				$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+				if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
+					$this->_setCurrentPerson($person);
+
+					// Set last login date
+					App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+
+					// Insert log
+					if ($person->is_agent) {
+						App::getDb()->insert('login_log', array(
+							'person_id'    => $person_id,
+							'area'         => DP_INTERFACE,
+							'is_success'   => 1,
+							'ip_address'   => dp_get_user_ip_address(),
+							'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+							'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+							'date_created' => date('Y-m-d H:i:s'),
+							'via_cookie'   => 1
+						));
+					}
 				}
 			}
 		}
