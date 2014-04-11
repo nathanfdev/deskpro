@@ -760,9 +760,9 @@ class Ticket extends DomainObject
 
 		// Any of the participants
 		} else {
-			foreach ($this->getUserParticipants() as $part) {
-				if ($part->person->findEmailAddress($email_address)) {
-					return $part->person;
+			foreach ($this->getUserParticipants() as $person) {
+				if ($person->findEmailAddress($email_address)) {
+					return $person;
 				}
 			}
 		}

@@ -346,6 +346,8 @@ class Runner
 
 					$this->logger->log(sprintf("Processor exception: %s", $e->getMessage()), 'info');
 
+					KernelErrorHandler::logException($e);
+
 					if (App::getDb()->isTransactionActive()) {
 						App::getDb()->rollback();
 					}
