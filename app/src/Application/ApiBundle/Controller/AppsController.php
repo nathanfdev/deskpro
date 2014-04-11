@@ -770,6 +770,7 @@ class AppsController extends AbstractController
 		$logger->enableSavedMessages();
 
 		$app_syncer = new NativeAppsSync(
+			$this->container,
 			$this->container->getAppManager(),
 			new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
 			$logger

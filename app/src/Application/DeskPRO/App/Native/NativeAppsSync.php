@@ -38,6 +38,7 @@ use Application\DeskPRO\App\AppManager;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Monolog\NullLogger;
 use Psr\Log\LoggerInterface;
@@ -48,6 +49,11 @@ class NativeAppsSync
 	 * @var \Psr\Log\LoggerInterface
 	 */
 	private $logger;
+
+	/**
+	 * @var DeskproContainer
+	 */
+	private $container;
 
 	/**
 	 * @var \Application\DeskPRO\App\AppManager
@@ -61,12 +67,14 @@ class NativeAppsSync
 
 
 	/**
+	 * @param DeskproContainer $container
 	 * @param AppManager       $manager
 	 * @param PackageInstaller $package_installer
 	 * @param LoggerInterface  $logger
 	 */
-	public function __construct(AppManager $manager, PackageInstaller $package_installer, LoggerInterface $logger = null)
+	public function __construct(DeskproContainer $container, AppManager $manager, PackageInstaller $package_installer, LoggerInterface $logger = null)
 	{
+		$this->container         = $container;
 		$this->manager           = $manager;
 		$this->package_installer = $package_installer;
 
