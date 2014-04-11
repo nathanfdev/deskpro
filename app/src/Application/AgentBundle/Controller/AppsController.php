@@ -53,12 +53,12 @@ class AppsController extends AbstractController
 		try {
 			$native_app = $manager->getNativeApp($app_id);
 		} catch (\InvalidArgumentException $e) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException($e->getMessage());
 		}
 
 		$handler_class = $native_app->getConfig()->getAgentRequestHandlerClass();
 		if (!$handler_class) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException("Bad handler class");
 		}
 
 		$context = new AgentRequestContext(

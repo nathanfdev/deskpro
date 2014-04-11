@@ -82,6 +82,7 @@ class AppManager implements AppManagerInterface
 
 	/**
 	 * @param AppPackage[] $packages
+	 * @param array $app_paths
 	 * @param AppInstance[] $apps
 	 * @param AppServiceContainer $app_service_container
 	 */
