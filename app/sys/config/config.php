@@ -187,6 +187,20 @@ $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-urls.php'));
 $container->setDefinition('deskpro.service_urls', $definition);
 
+// deskpro.search_manager.elasticsearch
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Manager\\Elasticsearch');
+$definition->addMethodCall('setContainer', array(new Reference('service_container')));
+$container->setDefinition('deskpro.search_manager.elasticsearch', $definition);
+
+// deskpro.search_manager.doctrine
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Manager\\Doctrine');
+$definition->addMethodCall('setContainer', array(new Reference('service_container')));
+$definition->addMethodCall('setEntityManager', array(new Reference('doctrine.orm.entity_manager')));
+$definition->addMethodCall('setSettings', array(new Reference('deskpro.core.settings')));
+$container->setDefinition('deskpro.search_manager.doctrine', $definition);
+
 ############################################################################
 # Validators and Constraints
 ############################################################################
@@ -236,7 +250,8 @@ $container->loadFromExtension('framework', array(
 $container->loadFromExtension('monolog', array(
 	'handlers' => array(
 		'main' => array(
-			'type' => 'null',
+			'type' => 'stream',
+            'path' => '/tmp/main.log'
 		)
 	)
 ));
@@ -295,38 +310,126 @@ $container->loadFromExtension('fos_elastica', array(
     ),
 
     'indexes' => array(
+
         'deskpro' => array(
+
             'settings' => array(
                 'analysis' => array(
-                    'analyzer' => array(
-                        'index_analyzer' => array(
-                            'tokenizer' => 'nGram',
-                            'filter' => array('lowercase', 'snowball')
-                        ),
-                        'search_analyzer' => array(
-                            'tokenizer' => 'nGram',
-                            'filter' => array('lowercase', 'snowball')
+                    'filter' => array(
+                        'nGram_filter' => array(
+                            'type' => 'nGram',
+                            'min_gram' => 2,
+                            'max_gram' => 20,
+                            'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                         )
                     ),
-                    'filter' => array(
-                        'snowball' => array(
-                            'type' => 'snowball',
-                            'language' => 'English'
+                    'analyzer' => array(
+                        'nGram_analyzer'  => array(
+                            'type' => 'custom',
+                            'tokenizer' => 'whitespace',
+                            'filter'    => array('lowercase', 'asciifolding', 'nGram_filter')
+                        ),
+                        'whitespace_analyzer' => array(
+                            'type' => 'custom',
+                            'tokenizer' => 'whitespace',
+                            'filter'    => array('lowercase', 'asciifolding')
                         )
                     )
                 )
             ),
-            'types' => array(
-                'ticket' => array(
-                    'mappings' => array(
-                        'subject' => array()
+
+            'types'    => array(
+                'ticket'   => array(
+                    'mappings'    => array(
+                        'subject'  => array('analyzer' => 'nGram_analyzer'),
+                        'ref'      => array(),
+                        'messages' => array('type' => 'nested', 'properties' => array(
+                            'message' => array()
+                        )),
+                        'labels'   => array()
                     ),
                     'persistence' => array(
-                        'driver' => 'orm',
-                        'model' => 'Application\DeskPRO\Entity\Ticket',
+                        'driver'   => 'orm',
+                        'model'    => 'Application\DeskPRO\Entity\Ticket',
                         'provider' => array(),
-                        'listener' => array(),
-                        'finder' => array()
+                        'finder'   => array()
+                    )
+                ),
+                'article'  => array(
+                    'mappings'    => array(
+                        'title' => array(),
+                        'labels'   => array()
+                    ),
+                    'persistence' => array(
+                        'driver'   => 'orm',
+                        'model'    => 'Application\DeskPRO\Entity\Article',
+                        'provider' => array(),
+                        'finder'   => array()
+                    )
+                ),
+                'download' => array(
+                    'mappings'    => array(
+                        'title' => array(),
+                        'labels'   => array()
+                    ),
+                    'persistence' => array(
+                        'driver'   => 'orm',
+                        'model'    => 'Application\DeskPRO\Entity\Download',
+                        'provider' => array(),
+                        'finder'   => array()
+                    )
+                ),
+                'feedback' => array(
+                    'mappings'    => array(
+                        'title' => array(),
+                        'labels'   => array()
+                    ),
+                    'persistence' => array(
+                        'driver'   => 'orm',
+                        'model'    => 'Application\DeskPRO\Entity\Feedback',
+                        'provider' => array(),
+                        'finder'   => array()
+                    )
+                ),
+                'news'     => array(
+                    'mappings'    => array(
+                        'title' => array(),
+                        'labels'   => array()
+                    ),
+                    'persistence' => array(
+                        'driver'   => 'orm',
+                        'model'    => 'Application\DeskPRO\Entity\News',
+                        'provider' => array(),
+                        'finder'   => array()
+                    )
+                ),
+                'person'   => array(
+                    'mappings'    => array(
+                        'name'       => array(),
+                        'first_name' => array(),
+                        'last_name'  => array(),
+                        'emails' => array('type' => 'nested', 'properties' => array(
+                            'email' => array()
+                        ))
+                    ),
+                    'persistence' => array(
+                        'driver'   => 'orm',
+                        'model'    => 'Application\DeskPRO\Entity\Person',
+                        'provider' => array(),
+                        'finder'   => array()
+                    )
+                ),
+                'organization'   => array(
+                    'mappings'    => array(
+                        'name'    => array(),
+                        'labels'  => array(),
+                        'email_domains' => array()
+                    ),
+                    'persistence' => array(
+                        'driver'   => 'orm',
+                        'model'    => 'Application\DeskPRO\Entity\Organization',
+                        'provider' => array(),
+                        'finder'   => array()
                     )
                 )
             )
