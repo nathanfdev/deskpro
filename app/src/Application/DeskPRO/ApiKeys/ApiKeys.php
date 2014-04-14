@@ -110,10 +110,7 @@ class ApiKeys
 			$data['keyString']                 = $api_key->keyString;
 
 			if ($api_key->person) {
-
-				$data['user']['picture_url'] = $api_key->person->getPictureUrl(33);
-				$data['user']['name']        = $api_key->person->getDisplayName();
-				$data['user']['id']          = $api_key->person->getId();
+				$data['person'] = $api_key->person->toApiData(false, false);
 			}
 
 			$resultData = $data;
@@ -151,10 +148,7 @@ class ApiKeys
 			$data['keyString']                 = $api_key->keyString;
 
 			if ($api_key->person) {
-
-				$data['user']['picture_url'] = $api_key->person->getPictureUrl(33);
-				$data['user']['name']        = $api_key->person->getDisplayName();
-				$data['user']['id']          = $api_key->person->getId();
+				$data['person'] = $api_key->person->toApiData(false, false);
 			}
 
 			$resultData[] = $data;

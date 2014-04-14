@@ -91,7 +91,7 @@
               var data;
               data = {};
               data.api_key = {
-                user: {}
+                person: {}
               };
               data.all_agents = result.data.agents;
               data.form = _this.getFormMapper().getFormFromModel(data);
