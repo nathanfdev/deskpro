@@ -46,7 +46,7 @@
       };
 
       Admin_License_Ctrl_License.prototype.downloadKeyfile = function() {
-        return this.$window.location = this.Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + this.Api.api_token;
+        return this.$window.location = this.Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN;
       };
 
       Admin_License_Ctrl_License.prototype.goToMembersArea = function() {

@@ -29,7 +29,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			return @reloadLicData()
 
 		downloadKeyfile: ->
-			@$window.location = @Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + @Api.api_token
+			@$window.location = @Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
 
 		goToMembersArea: ->
 			@$window.location = 'https://www.deskpro.com/members/'
