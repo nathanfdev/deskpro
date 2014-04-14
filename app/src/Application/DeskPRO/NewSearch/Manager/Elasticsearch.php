@@ -18,56 +18,71 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     protected $person;
 
     /**
-     * Elasticsearch Finders
+     * Objects to search
      *
      * @var array
      */
-    protected $finders = array(
-        'article',
-        'download',
-        'feedback',
-        'news',
-        'person',
-        'organization',
+    protected $objects = array(
+        'article'      => 'DeskPRO:Article',
+        'download'     => 'DeskPRO:Download',
+        'feedback'     => 'DeskPRO:Feedback',
+        'news'         => 'DeskPRO:News',
+        'ticket'       => 'DeskPRO:Ticket',
+        'person'       => 'DeskPRO:Person',
+        'organization' => 'DeskPRO:Organization'
+    );
+
+    /**
+     * Permission requirement
+     *
+     * @var array
+     */
+    protected $requiresPermission = array(
         'ticket'
     );
 
+    /**
+     * Search results
+     *
+     * @var array
+     */
+    protected $results;
+
     public function quickSearch($q)
     {
-        $results     = array();
         $result_meta = array();
         $people_top  = false;
 
-        foreach ($this->finders as $finder) {
+        $repositoryManager = $this->container->get('fos_elastica.manager');
 
-            if (!$this->isAllowed($finder)) {
+        foreach ($this->objects as $object => $model) {
+
+            if (!$this->isAllowed($object)) {
                 continue;
             }
 
-            $finderService = $this->container->get(sprintf('fos_elastica.finder.deskpro.%s', $finder));
+            $repository = $repositoryManager->getRepository($model);
+
+            if ($this->requiresPermission($object)) {
+                $repository->setPersonContext($this->person);
+            }
 
             if (Numbers::isInteger($q)) {
-                $result = $finderService->find('_id:' . $q);
+                $result = $repository->find('_id:' . $q);
             } else {
-                $result = $finderService->find($q);
+                $result = $repository->find($q);
             }
 
-            $results[$finder] = $this->handleResult($finder, $result);
+            $this->handleResult($object, $result);
 
         }
 
-        foreach ($results['ticket'] as $index => $ticket) {
-            if ($this->person->PermissionsManager->TicketChecker->canView($ticket) === false) {
-                unset ($results['ticket'][$index]);
-            }
-        }
-
-        return array($results, $result_meta, $people_top);
+        return array($this->results, $result_meta, $people_top);
     }
 
-    private function isAllowed($finder)
+    private function isAllowed($object)
     {
-        switch ($finder) {
+        switch ($object) {
 
             case 'person':
             case 'organization':
@@ -79,11 +94,24 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
         }
     }
 
-    private function handleResult($finder, $result)
+    private function handleResult($object, $result)
     {
-        switch ($finder) {
+        switch ($object) {
 
             case 'person':
+
+                $newResult = array();
+
+                foreach ($result as $person) {
+                    $newResult[$person->id] = $person;
+                    if ($person->organization) {
+                        $this->results['organization'][$person->organization->id] = $person->organization;
+                    }
+                }
+
+                $this->results[$object] = $result;
+                break;
+
             case 'organization':
 
                 $newResult = array();
@@ -92,12 +120,18 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
                     $newResult[$item->id] = $item;
                 }
 
-                return $newResult;
+                $this->results[$object] = $result;
+                break;
 
             default:
 
-                return $result;
+                $this->results[$object] = $result;
         }
+    }
+
+    private function requiresPermission($object)
+    {
+        return in_array($object, $this->requiresPermission);
     }
 
     public function setPersonContext($person)

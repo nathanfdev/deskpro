@@ -201,6 +201,12 @@ $definition->addMethodCall('setEntityManager', array(new Reference('doctrine.orm
 $definition->addMethodCall('setSettings', array(new Reference('deskpro.core.settings')));
 $container->setDefinition('deskpro.search_manager.doctrine', $definition);
 
+// deskpro.search.ticket_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\TicketToElasticaTransformer');
+$container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $definition);
+
+
 ############################################################################
 # Validators and Constraints
 ############################################################################
@@ -250,7 +256,8 @@ $container->loadFromExtension('framework', array(
 $container->loadFromExtension('monolog', array(
 	'handlers' => array(
 		'main' => array(
-			'type' => 'null'
+			'type' => 'stream',
+            'path' => '/tmp/elastic.log'
 		)
 	)
 ));
@@ -340,18 +347,22 @@ $container->loadFromExtension('fos_elastica', array(
             'types'    => array(
                 'ticket'   => array(
                     'mappings'    => array(
-                        'subject'  => array('analyzer' => 'nGram_analyzer'),
-                        'ref'      => array(),
-                        'messages' => array('type' => 'nested', 'properties' => array(
-                            'message' => array()
-                        )),
-                        'labels'   => array()
+                        'subject'       => array('analyzer' => 'nGram_analyzer'),
+                        'ref'           => array(),
+                        'department_id' => array(),
+                        'agent_id'      => array(),
+                        'agent_team_id' => array(),
+                        'labels'        => array(),
+                        'participants'  => array(),
+                        'messages'      => array()
                     ),
                     'persistence' => array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Ticket',
                         'provider' => array(),
-                        'finder'   => array()
+                        'finder'   => array(),
+                        'model_to_elastica_transformer' => array('service' => 'deskpro.search.ticket_to_elastica_transformer'),
+                        'repository' => 'Application\DeskPRO\NewSearch\Repository\TicketRepository'
                     )
                 ),
                 'article'  => array(
