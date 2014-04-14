@@ -9,7 +9,7 @@
 				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents.edit.{{ ng_var('agent.id') }}">
 					<a href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}">
 						<div style="float:right">
-							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to admin interface" ng-show="agent.can_admin"><i class="fa fa-asterisk"></i></span>
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to admin interface" ng-show="agent.can_admin"><i class="fa fa-wrench"></i></span>
 							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to reports interface" ng-show="agent.can_reports"><i class="fa fa-bar-chart-o"></i></span>
 						</div>
 						<h4>
