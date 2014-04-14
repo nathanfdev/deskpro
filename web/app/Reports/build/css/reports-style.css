@@ -9624,6 +9624,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .agent-icon {
   display: inline-block;
+  vertical-align: text-bottom;
   background-color: transparent;
   background-position: 50% 50%;
   background-repeat: no-repeat;
@@ -9633,6 +9634,11 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
           background-clip: padding-box;
+}
+
+.agent-icon.agent-icon-16x {
+  width: 16px;
+  height: 16px;
 }
 
 .agent-icon.agent-icon-22x {
