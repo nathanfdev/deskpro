@@ -163,7 +163,7 @@
 							</div>
 							<p ng-show="support_sent" class="text-success">
 								Your support request has been submitted successfully. One of our agents will respond
-								to you as soon as possible.
+								to you as soon as possible. <button type="button" class="btn btn-default" ng-click="support_sent = false; submit_ticket.subject = ''; submit_ticket.message = '';">Click here to send another</button>
 							</p>
 						</div>
 					</article>
