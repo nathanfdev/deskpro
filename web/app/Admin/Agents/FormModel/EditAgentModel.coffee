@@ -11,7 +11,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 
 			if agent.override_display_name
 				@form.enable_display_name = true
-				@form.override_name = agent.enable_display_name
+				@form.override_name = agent.override_display_name
 			else
 				@form.enable_display_name = false
 				@form.override_name = ''
