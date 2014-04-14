@@ -8325,6 +8325,12 @@ div.info-message.well {
   }
 }
 
+@media all and (max-height: 800px) {
+  .dp-appstrip ul.btm {
+    display: none;
+  }
+}
+
 nav.dp-appnav ul {
   padding: 0;
   margin: 0;
