@@ -42,10 +42,10 @@ define [
 
 	AdminUpgradeModule.config(['$routeProvider', ($routeProvider) ->
 		$routeProvider.when('/', {
-			templateUrl: 'Upgrade/home.html',
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Upgrade/home.html',
 			controller: 'AdminUpgrade_Main_Ctrl_UpgradeHome'
 		}).when('/progress', {
-			templateUrl: 'Upgrade/watch.html',
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Upgrade/watch.html',
 			controller: 'AdminUpgrade_Main_Ctrl_UpgradeWatch'
 		}).otherwise({
 			redirectTo: '/'
