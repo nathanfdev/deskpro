@@ -193,13 +193,10 @@
 							Max file size a user can upload
 						</h4>
 					</label>
-					<div class="dp-slider-control">
-						<label>{{ ng_var('settings.attach_user_maxsize | filesize_display') }}</label>
-						<div class="slider-wrap">
-							<slider floor="0" ceiling="{{ ng_var('maxUploadSize') }}" step="100" precision="2" ng-model="settings.attach_user_maxsize"></slider>
-						</div>
-						<div class="slider-note" ng-show="settings.attach_user_maxsize >= maxUploadSize">
-							The max file size is limited by your server. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+					<div>
+						<dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
+						<div class="alert alert-danger" ng-show="settings.attach_user_maxsize >= maxUploadSize" style="margin-top: 5px;">
+							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
 						</div>
 					</div>
 				</div>
@@ -242,16 +239,13 @@
 				<div class="inner-group">
 					<label>
 						<h4>
-							Max file size a user can upload
+							Max file size a agent can upload
 						</h4>
 					</label>
-					<div class="dp-slider-control">
-						<label>{{ ng_var('settings.attach_agent_maxsize | filesize_display') }}</label>
-						<div class="slider-wrap">
-							<slider floor="0" ceiling="{{ ng_var('maxUploadSize') }}" step="100" precision="2" ng-model="settings.attach_agent_maxsize"></slider>
-						</div>
-						<div class="slider-note" ng-show="settings.attach_agent_maxsize >= maxUploadSize">
-							The max file size is limited by your server. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+					<div>
+						<dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
+						<div class="alert alert-danger" ng-show="settings.attach_agent_maxsize >= maxUploadSize" style="margin-top: 5px;">
+							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
 						</div>
 					</div>
 				</div>

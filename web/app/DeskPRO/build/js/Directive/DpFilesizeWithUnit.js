@@ -5,42 +5,39 @@
         * Description
         * -----------
         *
-        * This directive adds a new form element for a time period described as a number and a unit. For example,
-        * "2 days" or "5 hours". In the model, the number is saved as the time in seconds.
+        * This directive adds a new form element for a filesize described as a number and a unit. For example,
+        * "2 mb" or "5 gb". In the model, the number is saved as the size in bytes.
         *
         * Add a "model-type" attribute to the element to change how the time is represented in the model:
-        * - seconds (default): Convert time into seconds. E.g., 1 hour is saved as 3600
-        * - array: Save as an array: [time, unit]. E.g., 1 hour is [1, 'hours']
-        * - object: Save in an object: { time: time, unit: unit}. E.g., 1 hour is {time: 1, unit: 'hours'}
-        * - "X:Y": Save in an object using X and Y as keys: {X: time, Y: unit}
+        * - bytes (default): Convert size into bytes. E.g., 1 kb is saved as 1024
+        * - array: Save as an array: [size, unit]. E.g., 1 kb is [1, 'kb']
+        * - object: Save in an object: { size: size, unit: unit}. E.g., 1 kb is {size: 1, unit: 'kb'}
+        * - "X:Y": Save in an object using X and Y as keys: {X: size, Y: unit}
         *
         * Example Controller
         * ------------------
-        * $scope.my_model = 7200
-        * $scope.my_model_alt = {num: 4, time_unit: "hours"}
+        * $scope.my_model = 1024
+        * $scope.my_model_alt = {num: 1, size_unit: "kb"}
         *
         * Example View
         * ------------
-        * <dp-time-with-unit ng-model="my_model" />
-        * (7200 will render as "2 hours")
-        *
-        * <dp-time-with-unit model-type="num:time_unit" ng-model="my_model" />
-        * (Renders as "4 hours")
+        * <dp-filesize-with-unit ng-model="my_model" />
+        * (1024 will render as "1 kb")
      */
-    var DeskPRO_Directive_DpTimeWithUnit;
-    DeskPRO_Directive_DpTimeWithUnit = [
+    var DeskPRO_Directive_DpFilesizeWithUnit;
+    DeskPRO_Directive_DpFilesizeWithUnit = [
       function() {
         return {
           restrict: 'E',
-          template: "<div class=\"dp-time-unit\">\n	<input type=\"text\" ng-model=\"time_num\" class=\"form-control time_num\" />\n	<select\n		ng-model=\"time_unit\"\n		ui-select2\n		style=\"min-width: 100px;\"\n	>\n		<option value=\"minutes\">minutes</option>\n		<option value=\"hours\">hours</option>\n		<option value=\"days\">days</option>\n		<option value=\"weeks\">weeks</option>\n		<option value=\"months\">months</option>\n		<option value=\"years\">years</option>\n	</select>\n</div>",
+          template: "<div class=\"dp-filesize-unit\">\n	<input type=\"text\" ng-model=\"size_num\" class=\"form-control size_num\" />\n	<select\n		ng-model=\"size_unit\"\n		ui-select2\n		style=\"min-width: 100px;\"\n	>\n		<option value=\"b\">B</option>\n		<option value=\"kb\">KB</option>\n		<option value=\"mb\">MB</option>\n		<option value=\"gb\">GB</option>\n	</select>\n</div>",
           scope: {},
           require: 'ngModel',
           replace: true,
           link: function(scope, iElement, iAttrs, ngModel) {
             var modelType, multiplierMap, multiplierTypes, objModelKeys;
-            scope.time_num = '';
-            scope.time_unit = 'minutes';
-            modelType = 'seconds';
+            scope.size_num = '';
+            scope.size_unit = 'mb';
+            modelType = 'b';
             objModelKeys = null;
             if (iAttrs.modelType) {
               if (iAttrs.modelType === 'object' || iAttrs.modelType.indexOf(':') !== -1) {
@@ -48,28 +45,26 @@
                 if (iAttrs.modelType.indexOf(':') !== -1) {
                   objModelKeys = iAttrs.modelType.split(':');
                 } else {
-                  objModelKeys = ['time', 'unit'];
+                  objModelKeys = ['size', 'unit'];
                 }
               } else if (iAttrs.modelType === 'array') {
                 modelType = 'array';
               } else {
-                modelType = 'seconds';
+                modelType = 'b';
               }
             }
             multiplierMap = {
-              seconds: 1,
-              minutes: 60,
-              hours: 3600,
-              days: 86400,
-              weeks: 604800,
-              months: 2419200,
-              years: 31536000
+              b: 1,
+              kb: 1024,
+              mb: 1048576,
+              gb: 1073741824,
+              tb: 1099511627776
             };
-            multiplierTypes = ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years'];
+            multiplierTypes = ['b', 'kb', 'mb', 'gb', 'tb'];
             multiplierTypes.reverse();
             ngModel.$parsers.push(function(viewValue) {
               var arr, num, obj, secs, unit;
-              unit = viewValue.unit || 'minutes';
+              unit = viewValue.unit || 'kb';
               num = viewValue.num || 1;
               switch (modelType) {
                 case "object":
@@ -86,8 +81,8 @@
               }
             });
             ngModel.$formatters.push(function(modelValue) {
-              var num, unit, unitName, _i, _len;
-              unit = 'minutes';
+              var num, unit, unitName, _i, _j, _len, _len1;
+              unit = false;
               num = '';
               switch (modelType) {
                 case "object":
@@ -110,13 +105,28 @@
                   modelValue = parseInt(modelValue || 0);
                   for (_i = 0, _len = multiplierTypes.length; _i < _len; _i++) {
                     unitName = multiplierTypes[_i];
+                    if (unitName === 'b') {
+                      continue;
+                    }
                     if (modelValue % multiplierMap[unitName] === 0) {
                       unit = unitName;
                       break;
                     }
                   }
                   if (!unit) {
-                    unit = 'minutes';
+                    for (_j = 0, _len1 = multiplierTypes.length; _j < _len1; _j++) {
+                      unitName = multiplierTypes[_j];
+                      if (unitName === 'b') {
+                        continue;
+                      }
+                      if ((modelValue / multiplierMap[unitName]) >= 1.0) {
+                        unit = unitName;
+                        break;
+                      }
+                    }
+                  }
+                  if (!unit) {
+                    unit = 'kb';
                   }
                   if (modelValue) {
                     num = modelValue / multiplierMap[unit];
@@ -124,14 +134,14 @@
               }
               return {
                 unit: unit,
-                num: num
+                num: parseFloat(num).toFixed(2)
               };
             });
-            scope.$watch('time_unit + time_num', function() {
-              if (scope.time_unit && scope.time_num) {
+            scope.$watch('size_unit + size_num', function() {
+              if (scope.size_unit && scope.size_num) {
                 return ngModel.$setViewValue({
-                  unit: scope.time_unit,
-                  num: parseInt(scope.time_num)
+                  unit: scope.size_unit,
+                  num: parseInt(scope.size_num)
                 });
               }
             });
@@ -139,8 +149,8 @@
               var viewValue;
               viewValue = ngModel.$viewValue;
               if (viewValue) {
-                scope.time_num = viewValue.num;
-                scope.time_unit = viewValue.unit;
+                scope.size_num = viewValue.num;
+                scope.size_unit = viewValue.unit;
                 return iElement.find('select').first().select2('val', viewValue.unit);
               }
             };
@@ -149,9 +159,9 @@
         };
       }
     ];
-    return DeskPRO_Directive_DpTimeWithUnit;
+    return DeskPRO_Directive_DpFilesizeWithUnit;
   });
 
 }).call(this);
 
-//# sourceMappingURL=DpTimeWithUnit.js.map
+//# sourceMappingURL=DpFilesizeWithUnit.js.map

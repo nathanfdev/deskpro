@@ -3,45 +3,40 @@ define ->
     # Description
     # -----------
     #
-    # This directive adds a new form element for a time period described as a number and a unit. For example,
-    # "2 days" or "5 hours". In the model, the number is saved as the time in seconds.
+    # This directive adds a new form element for a filesize described as a number and a unit. For example,
+    # "2 mb" or "5 gb". In the model, the number is saved as the size in bytes.
     #
     # Add a "model-type" attribute to the element to change how the time is represented in the model:
-    # - seconds (default): Convert time into seconds. E.g., 1 hour is saved as 3600
-    # - array: Save as an array: [time, unit]. E.g., 1 hour is [1, 'hours']
-    # - object: Save in an object: { time: time, unit: unit}. E.g., 1 hour is {time: 1, unit: 'hours'}
-    # - "X:Y": Save in an object using X and Y as keys: {X: time, Y: unit}
+    # - bytes (default): Convert size into bytes. E.g., 1 kb is saved as 1024
+    # - array: Save as an array: [size, unit]. E.g., 1 kb is [1, 'kb']
+    # - object: Save in an object: { size: size, unit: unit}. E.g., 1 kb is {size: 1, unit: 'kb'}
+    # - "X:Y": Save in an object using X and Y as keys: {X: size, Y: unit}
     #
     # Example Controller
     # ------------------
-    # $scope.my_model = 7200
-    # $scope.my_model_alt = {num: 4, time_unit: "hours"}
+    # $scope.my_model = 1024
+    # $scope.my_model_alt = {num: 1, size_unit: "kb"}
     #
     # Example View
     # ------------
-    # <dp-time-with-unit ng-model="my_model" />
-    # (7200 will render as "2 hours")
-    #
-    # <dp-time-with-unit model-type="num:time_unit" ng-model="my_model" />
-    # (Renders as "4 hours")
+    # <dp-filesize-with-unit ng-model="my_model" />
+    # (1024 will render as "1 kb")
     ###
-	DeskPRO_Directive_DpTimeWithUnit = [ ->
+	DeskPRO_Directive_DpFilesizeWithUnit = [ ->
 		return {
 			restrict: 'E',
 			template: """
-				<div class="dp-time-unit">
-					<input type="text" ng-model="time_num" class="form-control time_num" />
+				<div class="dp-filesize-unit">
+					<input type="text" ng-model="size_num" class="form-control size_num" />
 					<select
-						ng-model="time_unit"
+						ng-model="size_unit"
 						ui-select2
 						style="min-width: 100px;"
 					>
-						<option value="minutes">minutes</option>
-						<option value="hours">hours</option>
-						<option value="days">days</option>
-						<option value="weeks">weeks</option>
-						<option value="months">months</option>
-						<option value="years">years</option>
+						<option value="b">B</option>
+						<option value="kb">KB</option>
+						<option value="mb">MB</option>
+						<option value="gb">GB</option>
 					</select>
 				</div>
 			""",
@@ -50,10 +45,10 @@ define ->
 			replace: true,
 			link: (scope, iElement, iAttrs, ngModel) ->
 
-				scope.time_num = ''
-				scope.time_unit = 'minutes'
+				scope.size_num = ''
+				scope.size_unit = 'mb'
 
-				modelType = 'seconds';
+				modelType = 'b';
 				objModelKeys = null
 
 				if iAttrs.modelType
@@ -63,35 +58,31 @@ define ->
 						if iAttrs.modelType.indexOf(':') != -1
 							objModelKeys = iAttrs.modelType.split(':')
 						else
-							objModelKeys = ['time', 'unit']
+							objModelKeys = ['size', 'unit']
 					else if iAttrs.modelType == 'array'
 						modelType = 'array'
 					else
-						modelType = 'seconds'
+						modelType = 'b'
 
 				multiplierMap = {
-					seconds:   1,
-					minutes:   60,
-					hours:  3600,
-					days:   86400,
-					weeks:  604800,
-					months: 2419200,
-					years:  31536000
+					b:   1,
+					kb:  1024,
+					mb:  1048576,
+					gb:  1073741824,
+					tb:  1099511627776
 				}
 
 				multiplierTypes = [
-					'seconds',
-					'minutes',
-					'hours',
-					'days',
-					'weeks',
-					'months',
-					'years'
+					'b',
+					'kb',
+					'mb',
+					'gb',
+					'tb'
 				]
 				multiplierTypes.reverse()
 
 				ngModel.$parsers.push( (viewValue) ->
-					unit = viewValue.unit || 'minutes'
+					unit = viewValue.unit || 'kb'
 					num  = viewValue.num || 1
 
 					switch modelType
@@ -109,7 +100,7 @@ define ->
 				)
 
 				ngModel.$formatters.push( (modelValue) ->
-					unit = 'minutes'
+					unit = false
 					num  = ''
 
 					switch modelType
@@ -127,39 +118,47 @@ define ->
 							modelValue = parseInt(modelValue || 0)
 
 							for unitName in multiplierTypes
+								if unitName == 'b' then continue
 								if modelValue % multiplierMap[unitName] == 0
 									unit = unitName
 									break
 
 							if not unit
-								unit = 'minutes'
+								for unitName in multiplierTypes
+									if unitName == 'b' then continue
+									if (modelValue / multiplierMap[unitName]) >= 1.0
+										unit = unitName
+										break
+
+							if not unit
+								unit = 'kb'
 
 							if modelValue
 								num = modelValue / multiplierMap[unit]
 
 					return {
 						unit: unit,
-						num:  num
+						num:  parseFloat(num).toFixed(2)
 					}
 				)
 
-				scope.$watch('time_unit + time_num', ->
-					if scope.time_unit and scope.time_num
+				scope.$watch('size_unit + size_num', ->
+					if scope.size_unit and scope.size_num
 						ngModel.$setViewValue({
-							unit: scope.time_unit
-							num:  parseInt(scope.time_num)
+							unit: scope.size_unit
+							num:  parseInt(scope.size_num)
 						})
 				)
 
 				ngModel.$render = ->
 					viewValue = ngModel.$viewValue
 					if viewValue
-						scope.time_num  = viewValue.num
-						scope.time_unit = viewValue.unit
+						scope.size_num  = viewValue.num
+						scope.size_unit = viewValue.unit
 						iElement.find('select').first().select2('val', viewValue.unit)
 
 				ngModel.$render()
 		}
 	]
 
-	return DeskPRO_Directive_DpTimeWithUnit
+	return DeskPRO_Directive_DpFilesizeWithUnit

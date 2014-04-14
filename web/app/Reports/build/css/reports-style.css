@@ -11372,6 +11372,21 @@ li.dp-layout-editor-layout-field span {
   margin: 0;
 }
 
+.dp-filesize-unit {
+  display: inline-block;
+}
+
+.dp-filesize-unit input.size_num {
+  width: 100px;
+  height: 26px;
+  margin: 0;
+  line-height: 100%;
+}
+
+.dp-filesize-unit .select2-container {
+  margin: 0;
+}
+
 #dp_dev_bar_btn {
   position: absolute;
   top: 6px;

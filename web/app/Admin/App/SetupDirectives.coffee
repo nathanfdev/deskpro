@@ -1,5 +1,6 @@
 define [
 	'DeskPRO/Directive/DpTimeWithUnit',
+	'DeskPRO/Directive/DpFilesizeWithUnit',
 	'DeskPRO/Directive/DpStateMark',
 	'DeskPRO/Directive/DpHelpPage',
 	'DeskPRO/Directive/DpNavSubnav',
@@ -33,6 +34,7 @@ define [
 	'Admin/TicketDeps/Directive/LayoutEditorField',
 ], (
 	DeskPRO_Directive_DpTimeWithUnit,
+	DeskPRO_Directive_DpFilesizeWithUnit,
 	DeskPRO_Directive_DpStateMark,
 	DeskPRO_Directive_DpHelpPage,
 	DeskPRO_Directive_DpNavSubnav,
@@ -67,6 +69,7 @@ define [
 ) ->
 	return (Module) ->
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
+		Module.directive('dpFilesizeWithUnit',             DeskPRO_Directive_DpFilesizeWithUnit)
 		Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)
 		Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
 		Module.directive('dpNavSubnav',                    DeskPRO_Directive_DpNavSubnav)
