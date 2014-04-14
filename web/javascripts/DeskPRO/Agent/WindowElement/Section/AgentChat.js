@@ -59,6 +59,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			$('#agent_online_list').find('li').not('.no-agents').remove();
 			$('#agent_online_list').find('li.no-agents').show();
 			$('#agent_offline_list').find('li').show();
+			$('#agent_chat_online_icons').find('li').not('.agent-me').hide();
 			self.onlineCountEl.html('0');
 
 			Array.each(info.online_agents, function(agent_id) {
