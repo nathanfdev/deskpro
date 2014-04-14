@@ -33,7 +33,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 	},
 
 	open: function(with_hash, callback) {
-		var self = this, hash;
+		var self = this, hash, frameId = this.frameId;
 
 		if (window['DP_FRAME_OVERLAYS']) {
 			for (var k in window['DP_FRAME_OVERLAYS']) {
@@ -75,7 +75,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 			var frame = self.frame.get(0);
 			var iWin = frame.contentWindow;
-			var localHash = hash.substr(6);
+			var localHash = hash.substr(frameId.length+1);
 
 			if (localHash == '/' + self.closeKey) {
 				self.close();
@@ -103,6 +103,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 			hash = '';
 		}
 
+		hash = hash.replace(/^#/, '')
 		hash = this.frameId + ':' + hash;
 		window.location.hash = '#' + hash;
 	},

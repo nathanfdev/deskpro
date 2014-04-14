@@ -59,13 +59,13 @@
 
 			{% if app.user.can_reports %}
 				<li class="no-click-switch is-nav-btn">
-					<a
-							title="{{ phrase('agent.chrome.nav_reports') }}"
-							target="_blank"
-							href="{{ app.request.getBaseUrl() }}/reports/"
-							data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
-							data-frame-id="reports"
-							>
+					<a id="reports_interface_trigger"
+						title="{{ phrase('agent.chrome.nav_reports') }}"
+						target="_blank"
+						href="{{ app.request.getBaseUrl() }}/reports/"
+						data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+						data-frame-id="reports"
+					>
 						<i class="app-icon app-icon-reports-ifce"></i>
 					</a>
 				</li>
@@ -91,7 +91,7 @@
 					   href="{{ app.request.getBaseUrl() }}/admin/"
 					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
 					   data-frame-id="admin"
-							>
+					>
 						<i class="app-icon app-icon-admin-ifce"></i>
 					</a>
 				</li>

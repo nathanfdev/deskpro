@@ -33,7 +33,13 @@ define [
 	SetupRouting(AdminModule)
 	SetupTemplates(AdminModule)
 
-	if window.parent?.DP_FRAME_OVERLAY_admin
-		window.parent?.DP_FRAME_OVERLAY_admin.callLoaded();
+	if window.parent?.DP_FRAME_OVERLAYS?.admin
+		window.parent.DP_FRAME_OVERLAYS.admin.callLoaded()
+
+		AdminModule.run(['$rootScope', ($rootScope) ->
+			$rootScope.$on('$stateChangeSuccess', ->
+				window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash)
+			)
+		])
 
 	return AdminModule

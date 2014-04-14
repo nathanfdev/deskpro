@@ -9,10 +9,15 @@
     SetupDirectives(AdminModule);
     SetupRouting(AdminModule);
     SetupTemplates(AdminModule);
-    if ((_ref = window.parent) != null ? _ref.DP_FRAME_OVERLAY_admin : void 0) {
-      if ((_ref1 = window.parent) != null) {
-        _ref1.DP_FRAME_OVERLAY_admin.callLoaded();
-      }
+    if ((_ref = window.parent) != null ? (_ref1 = _ref.DP_FRAME_OVERLAYS) != null ? _ref1.admin : void 0 : void 0) {
+      window.parent.DP_FRAME_OVERLAYS.admin.callLoaded();
+      AdminModule.run([
+        '$rootScope', function($rootScope) {
+          return $rootScope.$on('$stateChangeSuccess', function() {
+            return window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash);
+          });
+        }
+      ]);
     }
     return AdminModule;
   });
