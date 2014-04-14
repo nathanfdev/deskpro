@@ -16,17 +16,12 @@
 				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents_deleted.restore.{{ ng_var('agent.id') }}">
 					<a href="{{ ng_href('agents.agents_deleted.restore', '{id: agent.id}') }}">
 						<h4>
+							<span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
 							<span class="title-text">{{ ng_var('agent.display_name') }}</span>
 						</h4>
 					</a>
 				</li>
 			</ul>
-			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('agents.agents.create') }}">
-					<i class="fa fa-plus"></i>
-					{{ phrase('agent.general.add') }}
-				</a>
-			</div>
 		</article>
 	</section>
 {% endblock %}
