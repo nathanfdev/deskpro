@@ -97,23 +97,34 @@
 	<div class="dp-dashboard">
 		<div class="row">
 			<div class="col-xs-6">
-				<div class="dp-item" style="min-height: 284px;">
+				<div class="dp-item" style="min-height: 284px;" ng-class="{'with-error': Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0 }">
 					<header>
 						<h3>DeskPRO Updates</h3>
 					</header>
 					<article style="padding: 10px;">
 						<p>
 							You are currently using DeskPRO version <strong>#{{ ng_var('Home.version_info.build_name') }}</strong>.
-							<span ng-show="Home.latest_version_status == 'okay'">
-								The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
-								<span ng-show="Home.latest_version.count_behind > 0">
-									You are behind by {{ ng_var('Home.latest_version.count_behind') }} versions.<br/><a class="btn btn-primary" href="{{ path('admin_upgrade_index') }}">Update DeskPRO Now &rarr;</a>
-								</span>
-								<span ng-show="Home.latest_version.count_behind <= 0">
-									You are up to date!
-								</span>
-							</span>
 						</p>
+						<div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0">
+							<header>
+								<div class="icon bad"><i class="fa fa-warning"></i></div>
+								<strong>
+									The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
+									You are behind by {{ ng_var('Home.latest_version.count_behind') }} versions.<br/>
+								</strong>
+							</header>
+							<article>
+								<p>
+									<a class="btn btn-primary" href="{{ path('admin_upgrade_index') }}">Update DeskPRO Now &rarr;</a>
+								</p>
+							</article>
+						</div>
+						<div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind < 0">
+							<header>
+								<div class="icon okay"><i class="fa fa-check"></i></div>
+								<strong>You are up to date!</strong>
+							</header>
+						</div>
 						<div ng-show="Home.news_status == 'okay'" class="news-content">
 							<strong>News</strong>
 							<ul>
