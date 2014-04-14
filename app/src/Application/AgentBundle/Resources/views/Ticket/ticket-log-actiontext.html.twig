@@ -372,7 +372,7 @@
 		<span class="new-val expand" data-set=".set-detail">User emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
 		{% if log.details.cc_emails %}(+{{ log.details.cc_emails.length }} cc'ed){% endif %}
 	{% else %}
-		<span class="new-val expand" data-set=".set-detail">Agents emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
+		<span class="new-val expand" data-set=".set-detail">Agent emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
 	{% endif %}
 
 	<div class="expand-set set-detail" style="display: none">
