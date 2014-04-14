@@ -141,7 +141,7 @@ class EditAgent
 		$agent->can_agent             = true;
 
 		$agent->name                  = $this->name;
-		$agent->override_display_name = $this->override_name;
+		$agent->override_display_name = $this->override_name ?: '';
 
 		$agent->can_admin             = in_array('admin', $this->zones);
 		$agent->can_reports           = in_array('reports', $this->zones);

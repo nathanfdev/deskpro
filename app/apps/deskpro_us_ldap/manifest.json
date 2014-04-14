@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_ldap",
+	"is_native": true,
 	"title": "LDAP Authentication",
 	"description": "Enables user authentication against any LDAP directory.",
 	"tags": ["usersources"],

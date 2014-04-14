@@ -106,6 +106,8 @@ requirejs([
 	'Reports/Main/Ctrl/MainPage',
 	'Reports/Main/Ctrl/Bare',
 
+	'Reports/Main/Ctrl/BackToAgent',
+
 	'Reports/Overview/Ctrl/Overview',
 	'Reports/Builder/Ctrl/List',
 	'Reports/Builder/Ctrl/Edit',

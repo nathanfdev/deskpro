@@ -170,6 +170,71 @@
         });
       };
 
+      Admin_Apps_Ctrl_List.prototype.showUploadApp = function() {
+        var me;
+        me = this;
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('Apps/upload-package-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              var uploadDone, uploadError;
+              uploadDone = function(data) {
+                $modalInstance.dismiss();
+                return me.$timeout(function() {
+                  return me.$state.go('apps.go_apps_install', {
+                    name: data.package_name
+                  });
+                }, 250);
+              };
+              uploadError = function(data) {
+                return $scope.form.error = (data != null ? data.error_code : void 0) || 'general';
+              };
+              $scope.form = {};
+              $scope.form.upload_type = 'upload';
+              $scope.form.is_active = false;
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              $scope.fileUploadOptions = {
+                singleFileUploads: true,
+                limitMultiFileUploads: 1,
+                formData: {
+                  "API-TOKEN": window.DP_API_TOKEN,
+                  "REQUEST-TOKEN": window.DP_REQUEST_TOKEN,
+                  "SESSION-ID": window.DP_SESSION_ID
+                }
+              };
+              $scope.$on('fileuploaddone', function(e, data) {
+                $scope.form.is_active = false;
+                return uploadDone(data.result, $modalInstance);
+              });
+              $scope.$on('fileuploadfail', function(e, data) {
+                $scope.form.is_active = false;
+                return uploadError(data.result || {}, $modalInstance);
+              });
+              return $scope.startUpload = function() {
+                $scope.form.error = null;
+                if ($scope.form.upload_type === 'upload') {
+                  $scope.form.is_active = true;
+                  return $scope.form.uploadScope.submit();
+                } else {
+                  $scope.form.is_active = true;
+                  return me.Api.sendPost('/apps/upload-package', {
+                    file_url: $scope.form.upload_url
+                  }).then(function(result) {
+                    $scope.form.is_active = false;
+                    return uploadDone(result.data, $modalInstance);
+                  }, function(result) {
+                    $scope.form.is_active = false;
+                    return uploadError(result.data || {}, $modalInstance);
+                  });
+                }
+              };
+            }
+          ]
+        });
+      };
+
       return Admin_Apps_Ctrl_List;
 
     })(Admin_Ctrl_Base);

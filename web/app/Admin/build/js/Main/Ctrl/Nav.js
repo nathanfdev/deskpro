@@ -13,7 +13,17 @@
 
       Admin_Main_Ctrl_Nav.CTRL_ID = 'Admin_Main_Ctrl_Nav';
 
-      Admin_Main_Ctrl_Nav.prototype.init = function() {};
+      Admin_Main_Ctrl_Nav.DEPS = ['$timeout'];
+
+      Admin_Main_Ctrl_Nav.prototype.init = function() {
+        var depth;
+        depth = this.$state.current.name.split('.').length;
+        if (depth === 1) {
+          this.$timeout(function() {
+            return $('.dp-layout-appnav').find('li').first().find('a').click();
+          }, 10);
+        }
+      };
 
       return Admin_Main_Ctrl_Nav;
 

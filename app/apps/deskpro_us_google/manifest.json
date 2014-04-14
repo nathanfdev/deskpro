@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_google",
+	"is_native": true,
 	"title": "Google Authentication",
 	"description": "Allows users to log in using their Google profile.",
 	"tags": ["usersources"],

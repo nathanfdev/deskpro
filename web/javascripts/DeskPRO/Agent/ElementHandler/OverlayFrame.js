@@ -19,20 +19,10 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		});
 	},
 
-	initFrame: function(with_hash) {
+	initFrame: function() {
 		this.frameWrap = $('<div class="overlay-frame-wrap" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999999999;"></div>');
 		this.frame = $('<iframe frameborder="0" width="100%" height="100%" scrolling="auto" marginheight="0" marginwidth="0" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: 0; padding: 0;"></iframe>');
 		this.frame.appendTo(this.frameWrap);
-
-		var url = this.frameUrl;
-		if (with_hash) {
-			if (url.indexOf('#') !== -1) {
-				url = url.substr(0, url.indexOf('#'));
-			}
-
-			url += '#' + with_hash
-		}
-		this.frame.attr('src', url);
 
 		window['DP_FRAME_OVERLAY_' + this.frameId] = this;
 
@@ -43,7 +33,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 	},
 
 	open: function(with_hash, callback) {
-		var self = this;
+		var self = this, hash;
 
 		if (window['DP_FRAME_OVERLAYS']) {
 			for (var k in window['DP_FRAME_OVERLAYS']) {
@@ -59,7 +49,15 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 		this.callback = callback;
 
-		var url = this.frame.attr('src');
+		var url = this.frameUrl;
+		if (with_hash) {
+			if (url.indexOf('#') !== -1) {
+				url = url.substr(0, url.indexOf('#'));
+			}
+
+			url += '#' + with_hash
+		}
+
 		if (url.indexOf('#') !== -1) {
 			hash = url.substr(url.indexOf('#')+1);
 		} else {
@@ -68,6 +66,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 		this.setHash(hash);
 		this.frameWrap.show();
+		this.frame.attr('src', url);
 
 		DeskPRO_Window.disableHashPath(function(hash) {
 			if (hash.indexOf(self.frameId + ':') !== 0) {

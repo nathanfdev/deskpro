@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_highrise",
+	"is_native": true,
 	"title": "Highrise",
 	"description": "Integrates widgets to the ticket and profile pages in the agent interface to show information from Highrise.",
 	"tags": ["profiles"],

@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_db",
+	"is_native": true,
 	"title": "Database Authentication",
 	"description": "Allows users to log in using credentials from a standard database (with custom PHP password checking).",
 	"tags": ["usersources"],

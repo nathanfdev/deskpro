@@ -36,6 +36,7 @@ namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Orb\Util\Arrays;
 
 class AppServiceContainer
 {
@@ -87,11 +88,10 @@ class AppServiceContainer
 		// Set up services
 		$app_services = $native_app->getConfig()->getServices();
 		if ($app_services) {
-			$this->package_service_names[$package->name] = $app_services;
 
-			$app_services = array_map(function($x) use ($app) {
-				return array($app, $x);
-			}, $app_services);
+			$app_services = Arrays::keyFromData($app_services, 'id');
+			$app_services = array_map(function($x) use ($app) { $x['app'] = $app; return $x; }, $app_services);
+			$this->package_service_names[$package->name] = $app_services;
 
 			if ($package->is_single) {
 				if (!isset($this->package_service_names['@single'])) {
@@ -128,13 +128,14 @@ class AppServiceContainer
 				}
 
 				$service_info = $this->package_service_names[$package->name][$name];
-				$service_factory = $service_info[1];
-				$service = $service_factory::create($this->container, $app);
+				$service_factory = $service_info['class'];
+				$service = $service_factory::create($this->container, $app, isset($service_info['options']) ? $service_info['options'] : null);
 
-				if (!isset($this->app_services[$package->name])) {
-					$this->app_services[$package->name] = array();
+				if (!isset($this->app_services[$app->id])) {
+					$this->app_services[$app->id] = array();
 				}
-				$this->package_service_names[$package->name][$name] = $service;
+
+				$this->app_services[$app->id][$name] = $service;
 
 				if ($app->package->is_single) {
 					if (!isset($this->app_services['@single'])) {
@@ -157,8 +158,8 @@ class AppServiceContainer
 			}
 
 			$service_info = $this->package_service_names['@single'][$name];
-			$service_factory = $service_info[1];
-			$service = $service_factory::create($this->container, $service_info[0]);
+			$service_factory = $service_info['class'];
+			$service = $service_factory::create($this->container, $service_info['app'], isset($service_info['options']) ? $service_info['options'] : null);
 
 			if (!isset($this->app_services['@single'])) {
 				$this->app_services['@single'] = array();

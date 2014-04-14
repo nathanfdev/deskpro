@@ -117,13 +117,6 @@ class ExecTriggers implements TicketSaveActionInterface
 				$state->setCurrentChangeMetadata(array('trigger' => $trigger));
 				$context->getLogger()->info(sprintf("[ExecTriggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
 
-				$change = new ChangeTriggerLog(
-					'trigger',
-					$trigger->id,
-					$trigger->title
-				);
-				$state->recordChange($change);
-
 				try {
 					$this->action_applicator->apply($trigger->actions, $ticket, $context);
 				} catch (\Exception $e) {

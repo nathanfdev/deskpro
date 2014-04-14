@@ -2433,7 +2433,7 @@ $collection->create('api_ticket_settings_save', array(
 
 $collection->create('api_registration_settings', array(
 	'path'        => '/registraton_settings',
-	'controller'  => 'ApiBundle:Settings:registratonSettings',
+	'controller'  => 'ApiBundle:Settings:registrationSettings',
 	'methods'     => array('GET'),
 ));
 
@@ -4162,6 +4162,18 @@ $collection->create('api_apps', array(
 	'path'        => '/apps',
 	'controller'  => 'ApiBundle:Apps:list',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_apps_resync_packages', array(
+	'path'        => '/apps/resync-packages',
+	'controller'  => 'ApiBundle:Apps:resyncPackages',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_apps_upload_package', array(
+	'path'        => '/apps/upload-package',
+	'controller'  => 'ApiBundle:Apps:uploadPackage',
+	'methods'     => array('POST'),
 ));
 
 $collection->create('api_apps_custom_new', array(

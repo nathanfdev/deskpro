@@ -69,7 +69,7 @@
 	<article>
 		<div class="alert alert-info dp-alert-ribbon">
 			<button class="btn btn-default btn-xs" ng-click="ListCtrl.showNewApp()"><i class="fa fa-asterisk"></i> Create App</button>
-			<button class="btn btn-default btn-xs"><i class="fa fa-upload"></i> Upload App</button>
+			<button class="btn btn-default btn-xs" ng-click="ListCtrl.showUploadApp()"><i class="fa fa-upload"></i> Upload App</button>
 		</div>
 		<ul class="dp-item-list dp-icon-list">
 			<li ng-repeat="package in ListCtrl.general_packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.install.{{ ng_var('package.name') }}">
@@ -88,6 +88,11 @@
 		</ul>
 	</article>
 </section>
+
+<div style="margin-top: 4px; margin-bottom: 8px; margin-right: 18px; text-align: right;">
+	<a href="{{ ng_href('apps.resync') }}">Re-sync app packages &rarr;</a>
+</div>
+
 {{ ng_tpl('AdminInterfaceBundle:Apps:new-app-modal.html.twig') }}
 {% endblock %}
 {% block listpane_help %}

@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\UserBundle\Form\NewTicketType;
+use Orb\Util\Arrays;
 
 class NewTicketController extends AbstractController
 {

@@ -155,7 +155,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 	 */
 	private function translateTextAction(AgentRequestContext $context)
 	{
-		$message_text = $context->getIn()->getUint('message_text');
+		$message_text = $context->getIn()->getRaw('message_text');
 		$from         = $context->getIn()->getString('from');
 		$to           = $context->getIn()->getString('to');
 

@@ -815,14 +815,25 @@ define(function() {
 		controller: 'Admin_UserReg_Ctrl_UsersourceList'
 	});
 
-	//###
-	//# User Sources
-	//###
 	routes.push({
 		id: 'crm.usersources.newtype',
-		url: '/usersources/new-choose-type',
+		url: '/new',
 		templateName: 'UserReg/usersources-newtype.html',
-		controller: 'Admin_UserReg_Ctrl_UsersourceNewType'
+		controller: 'Admin_Main_Ctrl_Bare'
+	});
+
+	routes.push({
+		id: 'crm.usersources.deskpro',
+		url: '/deskpro',
+		templateName: 'UserReg/usersources-deskpro.html',
+		controller: 'Admin_Main_Ctrl_Bare'
+	});
+
+	routes.push({
+		id: 'crm.usersources.app',
+		url: '/{id:\\d+}',
+		templateName: 'Apps/instance.html',
+		controller: 'Admin_Apps_Ctrl_EditInstance'
 	});
 
 	//###
@@ -1585,6 +1596,27 @@ define(function() {
 		url: '/apps',
 		templateName: 'Apps/list.html',
 		controller: 'Admin_Apps_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'apps.go_apps',
+		url: '/go-apps',
+		templateName: 'Index/blank.html',
+		controller: ['$state', function ($state) { $state.go('apps.apps'); }]
+	});
+
+	routes.push({
+		id: 'apps.go_apps_install',
+		url: '/{name:go\-apps\-(.*?)}',
+		templateName: 'Index/blank.html',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.install_package', { name: $stateParams.name.replace(/^go\-apps\-/, '') + '.install' }); }]
+	});
+
+	routes.push({
+		id: 'apps.resync',
+		url: '/resync',
+		templateName: 'Apps/apps_resync.html',
+		controller: 'Admin_Apps_Ctrl_Resync'
 	});
 
 	routes.push({

@@ -56,7 +56,7 @@
 	<section class="dp-sidebar-block">
 		<header>
 			<h3>
-				{% if app.getSetting('core.user_mode') != 'closed' %}
+				{% if app.getSetting('core.reg_enabled') %}
 					{{ phrase('user.profile.register_or_login_below', {'url': path('user_register')}) }}
 				{% else %}
 					{{ phrase('user.general.login_below') }}

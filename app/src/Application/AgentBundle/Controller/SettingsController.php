@@ -174,7 +174,6 @@ class SettingsController extends AbstractController
 	        'signature'          => $this->person->getSignature(),
 	        'signature_html'     => $this->person->getSignatureHtml(),
 			'tweet_signature'    => $this->person->getTweetSignature(),
-	        'can_signature_html' => $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte(),
 		));
 	}
 
@@ -184,7 +183,7 @@ class SettingsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		if ($this->in->getBool('is_html_signature') && $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte()) {
+		if ($this->in->getBool('is_html_signature')) {
 			$signature_html = $this->in->getHtmlCore('ticket_signature');
 			$signature_html = \Orb\Util\Strings::trimHtml($signature_html);
 

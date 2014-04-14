@@ -67,7 +67,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 		# Add people
 		#------------------------------
 
-		$reg_closed = $this->getContainer()->getSetting('core.user_mode') == 'closed';
+		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
 		foreach ($this->getActionOption('add_emails') as $email) {
 			if ($ticket->hasParticipantEmailAddress($email)) {
 				continue;

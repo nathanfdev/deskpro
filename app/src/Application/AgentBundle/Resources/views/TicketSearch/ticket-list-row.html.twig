@@ -79,8 +79,8 @@
 	<div class="userinfo">
 		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket_display.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- ticket_display.person.picture_url_16 %>');"><%- ticket_display.person.display_name %></span></a>
-			<% if (ticket.person.primary_email.email) { %>
-				<span class="email">&lt;<%- ticket.person.primary_email.email %>&gt;</span>
+			<% if (ticket_display.person.primary_email.email) { %>
+				<span class="email">&lt;<%- ticket_display.person.primary_email.email %>&gt;</span>
 			<% } %>
 			<% if (ticket_display.organization) { %>
 				<span class="org">

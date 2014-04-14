@@ -106,7 +106,7 @@ class Register implements \ArrayAccess
 				}
 			}
 
-			if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+			if (App::getSetting('core.agent_validation')) {
 				$person->is_agent_confirmed = false;
 			}
 

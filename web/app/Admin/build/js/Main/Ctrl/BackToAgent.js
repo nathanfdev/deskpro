@@ -17,10 +17,10 @@
 
       Admin_Main_Ctrl_BackToAgent.prototype.init = function() {
         console.log("here");
-        if (!window.parent || !window.parent.DP_FRAME_OVERLAY_admin) {
+        if (!window.parent || !window.parent.DP_FRAME_OVERLAYS || !window.parent.DP_FRAME_OVERLAYS.admin) {
           return window.location.href = window.DP_BASE_URL + 'agent/';
         } else {
-          return window.parent.DP_FRAME_OVERLAY_admin.close();
+          return window.parent.DP_FRAME_OVERLAYS.admin.close();
         }
       };
 

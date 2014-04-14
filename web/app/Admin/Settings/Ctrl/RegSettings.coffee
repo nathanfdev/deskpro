@@ -12,6 +12,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				'settings': '/registration_settings'
 			}).then( (res) =>
 				@$scope.settings = res.data.settings.registration_settings
+				console.log(@$scope.settings)
 				@settings = angular.copy(@$scope.settings)
 			)
 
@@ -28,6 +29,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			postData = {
 				registration_settings: @$scope.settings
 			}
+
+			if postData.registration_settings.reg_enabled == "1" or postData.registration_settings.reg_enabled == 1 or postData.registration_settings.reg_enabled == true
+				postData.registration_settings.reg_enabled = true
+			else
+				postData.registration_settings.reg_enabled = false
 
 			@startSpinner('saving')
 			promise = @Api.sendPostJson('/registration_settings', postData).success( =>

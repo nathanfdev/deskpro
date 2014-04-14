@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_ms_translator",
+	"is_native": true,
 	"title": "Microsoft Translator",
 	"description": "Adds translation controls to ticket messages to translate messages between languages, and also allows agents to translate their replies before sending.",
 	"tags": ["translation"],

@@ -7,22 +7,16 @@
 		<article>
 			<ul class="dp-item-list">
 				<li>
-					<a href="">
-						<div class="pull-right toggle-wrapper">
-							<button dp-toggle-switch ng-model="x"></button>
-						</div>
+					<a href="{{ ng_href('crm.usersources.deskpro') }}">
 						<h4>
 							<span class="title-text">DeskPRO</span>
 						</h4>
 					</a>
 				</li>
-				<li>
-					<a href="">
-						<div class="pull-right toggle-wrapper">
-							<button dp-toggle-switch ng-model="y"></button>
-						</div>
+				<li ng-repeat="app in ListCtrl.apps" dp-state-mark="crm.usersources.app.{{ ng_var('app.id') }}">
+					<a href="{{ ng_href('crm.usersources.app', '{id: app.id}') }}">
 						<h4>
-							<span class="title-text">Active Directory</span>
+							<span class="title-text">{{ ng_var('app.title') }}</span>
 						</h4>
 					</a>
 				</li>

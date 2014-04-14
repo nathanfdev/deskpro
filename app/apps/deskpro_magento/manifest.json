@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_magento",
+	"is_native": true,
 	"title": "Magento",
 	"description": "Enables user authentication through magento and agent interface widgets.",
 	"tags": ["usersources", "profiles"],

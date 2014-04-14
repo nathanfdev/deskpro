@@ -34,8 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Package\Package;
+use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\InstallBundle\Data\DefaultDataProcessor;
@@ -215,54 +214,15 @@ class Manager
 		# Apps
 		#------------------------------
 
-		if ($this->logger) $this->logger->debug("Updating native apps...");
+		$app_syncer = new NativeAppsSync(
+			$this->container,
+			$this->container->getAppManager(),
+			new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
+			$this->logger ?: null
+		);
 
-		$manager = $this->container->getAppManager();
-		$installer = new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine());
-
-		// Update apps
-		foreach ($manager->getAllPackages() as $package) {
-			if (!$package->native_name) continue;
-
-			if ($this->logger) $this->logger->debug("Updating {$package->native_name}");
-
-			// Updates the resource
-			$app_package = new Package(DP_ROOT.'/apps/' . $package->native_name);
-			$installer->installPackage($app_package, $package);
-			if ($this->logger) $this->logger->debug("... done install");
-
-			foreach ($manager->getPackageApps($package) as $app) {
-				$native_app = $manager->getNativeApp($app);
-				$class = $native_app->getConfig()->getInstallerHandlerClass();
-				if ($class) {
-					if ($this->logger) $this->logger->debug("... running update for app #{$app->id}");
-					$context = new InstallerContext($this->container, $native_app);
-					$obj = new $class();
-					$obj->updatePackage($context);
-					if ($this->logger) $this->logger->debug("... done");
-				}
-			}
-		}
-
-		// Sync new native apps
-		$path = DP_ROOT.'/apps';
-		$dir = dir($path);
-		while (($f = $dir->read()) !== false) {
-			$f_path = $path.'/'.$f;
-			if ($f == '.' || $f == '..' || !is_dir($f_path)) {
-				continue;
-			}
-
-			$app_package = new Package($f_path);
-			if ($manager->hasPackage($app_package->getManifest()->getPackageName())) {
-				// already installed (will have been updated)
-				continue;
-			}
-
-			if ($this->logger) $this->logger->debug("installing new native app {$f}");
-			$installer->installPackage($app_package);
-			if ($this->logger) $this->logger->debug("... done");
-		}
+		$app_syncer->runUpdates();
+		$app_syncer->runSync();
 
 		if ($this->logger) $this->logger->debug("Post upgrade done");
 	}

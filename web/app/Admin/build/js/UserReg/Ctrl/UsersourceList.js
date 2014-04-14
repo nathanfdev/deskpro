@@ -19,6 +19,18 @@
 
       Admin_UserReg_Ctrl_UsersourceList.prototype.init = function() {};
 
+      Admin_UserReg_Ctrl_UsersourceList.prototype.initialLoad = function() {
+        var promise;
+        promise = this.Api.sendGet('/apps?tags=usersources').then((function(_this) {
+          return function(result) {
+            return _this.apps = result.data.apps.filter(function(x) {
+              return !x["package"].is_custom;
+            });
+          };
+        })(this));
+        return promise;
+      };
+
       return Admin_UserReg_Ctrl_UsersourceList;
 
     })(Admin_Ctrl_Base);

@@ -8,7 +8,7 @@
         this.form.name = agent.name;
         if (agent.override_display_name) {
           this.form.enable_display_name = true;
-          this.form.override_name = agent.enable_display_name;
+          this.form.override_name = agent.override_display_name;
         } else {
           this.form.enable_display_name = false;
           this.form.override_name = '';

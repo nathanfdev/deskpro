@@ -51,37 +51,44 @@ class NativePackageConfig
 	private $class_namespace;
 
 	/**
-	 * @var OptionsArray
+	 * @var array
 	 */
 	private $config;
 
 	/**
+	 * @var string
+	 */
+	private $app_dir;
+
+	/**
 	 * @param AppPackage $package
+	 * @param string $app_dir
 	 * @return NativePackageConfig
 	 */
-	public static function createFromPackage(AppPackage $package)
+	public static function createFromPackage(AppPackage $package, $app_dir)
 	{
-		$path = DP_ROOT.'/apps/' . $package->native_name . '/native/native_config.php';
+		$path = $app_dir . '/native/native_config.php';
+
 		if (file_exists($path)) {
 			$config = require($path);
 		} else {
 			$config = array();
 		}
 
-		return new self($package->name, $config);
+		return new self($package->name, $app_dir, $config);
 	}
 
 
 	/**
 	 * @param string $native_name
+	 * @param string $app_dir
 	 * @param array $config
 	 */
-	public function __construct($native_name, array $config)
+	public function __construct($native_name, $app_dir, array $config)
 	{
 		$this->native_name = $native_name;
-
-		$config = Arrays::flattenKeyValueArray($config);
-		$this->config =  new OptionsArray($config);
+		$this->app_dir = $app_dir;
+		$this->config = $config;
 	}
 
 
@@ -99,7 +106,7 @@ class NativePackageConfig
 	 */
 	public function getApiPackageRequestHandlerClass()
 	{
-		return $this->config->get('api.package_request_handler', null);
+		return isset($this->config['api']['package_request_handler']) ? $this->config['api']['package_request_handler'] : null;
 	}
 
 
@@ -108,7 +115,7 @@ class NativePackageConfig
 	 */
 	public function getApiAppRequestHandlerClass()
 	{
-		return $this->config->get('api.app_request_handler', null);
+		return isset($this->config['api']['app_request_handler']) ? $this->config['api']['app_request_handler'] : null;
 	}
 
 
@@ -117,7 +124,7 @@ class NativePackageConfig
 	 */
 	public function getAgentRequestHandlerClass()
 	{
-		return $this->config->get('agent.request_handler', null);
+		return isset($this->config['agent']['request_handler']) ? $this->config['agent']['request_handler'] : null;
 	}
 
 
@@ -126,7 +133,7 @@ class NativePackageConfig
 	 */
 	public function getInstallerHandlerClass()
 	{
-		return $this->config->get('install.handler', null);
+		return isset($this->config['install']['handler']) ? $this->config['install']['handler'] : null;
 	}
 
 
@@ -135,7 +142,7 @@ class NativePackageConfig
 	 */
 	public function getEventHandlerClass()
 	{
-		return $this->config->get('event.handler', null);
+		return isset($this->config['event']['handler']) ? $this->config['event']['handler'] : null;
 	}
 
 
@@ -144,7 +151,7 @@ class NativePackageConfig
 	 */
 	public function getServices()
 	{
-		return $this->config->get('services', array());
+		return isset($this->config['services']) ? $this->config['services'] : array();
 	}
 
 
@@ -164,8 +171,17 @@ class NativePackageConfig
 	/**
 	 * @return string
 	 */
+	public function getAppDir()
+	{
+		return $this->app_dir;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getNativeDir()
 	{
-		return DP_ROOT.'/apps/' . $this->native_name . '/native';
+		return $this->app_dir . '/native';
 	}
 }

@@ -1245,9 +1245,8 @@ class FilestorageLoader extends LoaderAbstract
 			$type_f = "{$type}/";
 		}
 
-		$basepath = DP_ROOT."/apps/$app_name/{$type_f}";
-		$filepath = @realpath($basepath.$filename);
-		if (!$filepath || strpos($filepath, DP_ROOT."/apps/") != 0 && !is_file($filepath)) {
+		$path_info = $this->_getAppsPath($app_name, $type_f, $filename);
+		if (!$path_info) {
 			if ($this->error_mode == 'exception') {
 				throw new \Exception("App file not found. (bad_path)", 400);
 			}
@@ -1255,6 +1254,9 @@ class FilestorageLoader extends LoaderAbstract
 			echo "App file not found. (bad_path)";
 			return;
 		}
+
+		$filepath = $path_info['filepath'];
+		$basepath = $path_info['basepath'];
 
 		$mimetype = ContentTypes::getContentTypeFromFilename($filename);
 		if (!$mimetype) {
@@ -1295,6 +1297,35 @@ class FilestorageLoader extends LoaderAbstract
 				readfile($filepath);
 			}
 		}
+	}
+
+	private function _getAppsPath($appname, $type_f, $filename)
+	{
+		static $paths = null;
+		if (!$paths) {
+			if (isset($GLOBALS['DP_CONFIG']['app_paths'])) {
+				$paths = $GLOBALS['DP_CONFIG']['app_paths'];
+			} else {
+				$paths = array();
+			}
+			$paths['default'] = DP_ROOT.'/apps';
+		}
+
+		$filename = str_replace('..', '', $filename);
+
+		foreach ($paths as $prefix => $base_path) {
+			if ($prefix === 'default' || strpos($appname, $prefix) === 0) {
+				$path = $base_path . '/'. $appname . '/'. $type_f . $filename;
+				if (file_exists($path)) {
+					return array(
+						'filepath' => $path,
+						'basepath' => $base_path . '/'. $appname . '/'. $type_f
+					);
+				}
+			}
+		}
+
+		return null;
 	}
 }
 

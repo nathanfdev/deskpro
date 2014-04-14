@@ -138,7 +138,7 @@ class PersonFromEmailProcessor
 		$email->is_validated = true;
 		$person->is_confirmed = true;
 
-		if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+		if (App::getSetting('core.agent_validation')) {
 			$person->is_agent_confirmed = false;
 		}
 

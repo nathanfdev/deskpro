@@ -1,5 +1,12 @@
 <?php return array(
 	'services' => array(
-		'ms_translator' => 'deskpro_ms_translator\\DependencyInjection\\MsTranslateService'
+		array(
+			'id'    => 'ms_translator',
+			'class' => 'deskpro_ms_translator\\DependencyInjection\\MsTranslatorService'
+		)
+	),
+
+	'agent' => array(
+		'request_handler' => 'deskpro_ms_translator\\AgentRequestHandler'
 	)
 );

@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_phpbb",
+	"is_native": true,
 	"title": "phpBB Authentication",
 	"description": "Allows users to log in using their phpBB profile.",
 	"tags": ["usersources"],

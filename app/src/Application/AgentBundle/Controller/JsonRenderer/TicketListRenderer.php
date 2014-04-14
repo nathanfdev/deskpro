@@ -292,7 +292,12 @@ class TicketListRenderer
 		$data['date_created_ts'] = $person->date_created->getTimestamp();
 
 		$data['display_name']  = $person->getDisplayName();
-		$data['primary_email'] = $person->getPrimaryEmailAddress();
+		if ($person->primary_email) {
+			$data['primary_email'] = array(
+				'id'    => $person->primary_email->id,
+				'email' => $person->primary_email->email
+			);
+		}
 
 		$data['picture_url']    = $person->getPictureUrl();
 		$data['picture_url_80'] = $person->getPictureUrl(80);

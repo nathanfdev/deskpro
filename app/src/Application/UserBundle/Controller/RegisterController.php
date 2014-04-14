@@ -46,7 +46,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			return $this->redirectRoute('user');
 		}
 
-		if ($this->container->getSetting('core.user_mode') == 'closed') {
+		if ($this->container->getSetting('core.reg_enabled')) {
 			return $this->redirectRoute('user');
 		}
 

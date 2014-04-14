@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_hipchat",
+	"is_native": true,
 	"title": "HipChat",
 	"description": "Allows you to add a ticket trigger that inserts a message into a HipChat room when matched.",
 	"tags": ["notifications", "ticket-triggers"],

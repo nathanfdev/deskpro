@@ -1,5 +1,6 @@
 {
 	"package_name": "deskpro_us_xenforo",
+	"is_native": true,
 	"title": "XenForo Authentication",
 	"description": "Allows users to log in using their XenForo profile.",
 	"tags": ["usersources"],
