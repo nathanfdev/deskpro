@@ -256,8 +256,7 @@ $container->loadFromExtension('framework', array(
 $container->loadFromExtension('monolog', array(
 	'handlers' => array(
 		'main' => array(
-			'type' => 'stream',
-            'path' => '/tmp/elastic.log'
+			'type' => 'null'
 		)
 	)
 ));
