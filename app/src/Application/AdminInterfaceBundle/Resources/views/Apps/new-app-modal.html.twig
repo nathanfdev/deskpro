@@ -1,7 +1,7 @@
 {% extends "AdminInterfaceBundle:Layout:widget-modal.html.twig" %}
 {% block modal_title %}
 	<h4 class="modal-title">
-		New App
+		New Widget
 	</h4>
 {% endblock %}
 {% block modal_body %}
@@ -9,12 +9,12 @@
 
 		<div class="alert alert-info">
 			<p>
-				This form will create a new basic app for you. Use this for simple apps where you want to use basic
-				Javascript and render simple HTML templates to pre-defined locations.
+				A widget is a basic app that lets you add simple HTML and Javascript to pre-defined locations in
+				the agent interface.
 			</p>
 			<p>
-				Apps are capable of doing much more than this. If you want more information about how to build
-				and package advanced apps, refer to the <a href="http://support.deskpro.com/" target="_blank">Apps Developer Guide</a>.
+				Full apps are capable of doing much more than this. If you want more information about how to build
+				and package apps, refer to the <a href="http://support.deskpro.com/" target="_blank">Apps Developer Guide</a>.
 			</p>
 		</div>
 
@@ -546,7 +546,7 @@
 {% endblock %}
 {% block modal_footer %}
 	<div ng-hide="is_loading">
-		<button class="btn btn-primary" ng-click="doCreate()">Create New App</button>
+		<button class="btn btn-primary" ng-click="doCreate()">Create Widget</button>
 	</div>
 	<div ng-show="is_loading">
 		<i class="spinner-flat"></i>

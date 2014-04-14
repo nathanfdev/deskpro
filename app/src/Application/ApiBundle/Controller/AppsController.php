@@ -481,7 +481,8 @@ class AppsController extends AbstractController
 		$package = new AppPackage();
 		$package->name         = "com.deskpro.custom." . Strings::random(15, Strings::CHARS_ALPHA_I);
 		$package->title        = $this->in->getString('options.title') ?: "Untitled";
-		$package->description  = $this->in->getString('options.description') ?: "";
+		$package->description  = $package->title;
+		$package->tags         = array('custom');
 		$package->author_name  = $this->person->getDisplayName();
 		$package->author_email = $this->person->getEmailAddress();
 		$package->author_link  = $this->container->getSetting('core.deskpro_url');
@@ -572,7 +573,7 @@ class AppsController extends AbstractController
 		# Get app icons
 		#------------------------------
 
-		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256);
+		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
 		$have_sizes = array();
 		$largest = null;
 

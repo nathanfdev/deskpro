@@ -43,6 +43,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 		removeAppInstance: (instanceId) ->
 			app = @apps.find((x) -> return x.id == instanceId)
 			@apps = @apps.filter((x) -> return x.id != instanceId)
+			@custom_apps = @custom_apps.filter((x) -> return x.id != instanceId)
 
 			# we just removed an app so we might need to switch the
 			# is_installed flag on the package so it appears back in the list

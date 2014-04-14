@@ -87,6 +87,9 @@
         this.apps = this.apps.filter(function(x) {
           return x.id !== instanceId;
         });
+        this.custom_apps = this.custom_apps.filter(function(x) {
+          return x.id !== instanceId;
+        });
         if (app) {
           hasOtherApp = false;
           this.apps.map(function(x) {
