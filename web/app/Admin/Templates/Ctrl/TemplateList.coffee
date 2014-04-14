@@ -22,7 +22,7 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 		###
 		openEditor: (tpl) ->
 			modalInstance = @$modal.open({
-				templateUrl: 'Templates/modal-template-editor.html',
+				templateUrl: @getTemplatePath('Templates/modal-template-editor.html'),
 				controller: 'Admin_Templates_Ctrl_TemplateEditor',
 				resolve: {
 					templateName: ->
