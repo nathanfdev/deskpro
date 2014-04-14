@@ -2,6 +2,20 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
+			<h3>Default Language</h3>
+		</header>
+		<article>
+			<div style="padding: 0 0 11px 10px;">
+				<select ui-select2 ng-model="ListCtrl.default_lang_id" style="width: 60%">
+					<option ng-repeat="pack in ListCtrl.installedPacks" value="{{ ng_var('pack.installed_language_id') }}" data-flag-image="{{ ng_var('pack.flag_image') }}">{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})</option>
+				</select>
+				<span dp-show-spinning="saving_default_lang"><i class="spinner-flat"></i></span>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
 			<h3>Installed Languages</h3>
 		</header>
 		<article>
@@ -9,7 +23,7 @@
 				<li ng-repeat="pack in ListCtrl.installedPacks">
 					<a href="{{ ng_href('setup.languages.edit', '{id: pack.id}') }}" dp-state-mark="setup.languages.edit.{{ ng_var('pack.id') }}">
 						<h4>
-							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
+							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; text-align: baseline;" />
 							<span class="title-text">
 								{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})
 							</span>
@@ -17,20 +31,6 @@
 					</a>
 				</li>
 			</ul>
-		</article>
-	</section>
-
-	<section class="dp-paneblock dp-listpane">
-		<header>
-			<h3>Default Language</h3>
-		</header>
-		<article>
-			<div style="padding: 0 14px;">
-				<select ui-select2 ng-model="ListCtrl.default_lang_id" style="width: 60%">
-					<option ng-repeat="pack in ListCtrl.installedPacks" value="{{ ng_var('pack.installed_language_id') }}" data-flag-image="{{ ng_var('pack.flag_image') }}">{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})</option>
-				</select>
-				<span dp-show-spinning="saving_default_lang"><i class="spinner-flat"></i></span>
-			</div>
 		</article>
 	</section>
 
@@ -43,7 +43,7 @@
 				<li ng-repeat="pack in ListCtrl.availablePacks">
 					<a href="{{ ng_href('setup.languages.install', "{id: 'install-' + pack.id}") }}" dp-state-mark="setup.languages.install.install-{{ ng_var('pack.id') }}">
 						<h4>
-							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px;" />
+							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; text-align: baseline;" />
 							<span class="title-text">
 								{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})
 							</span>

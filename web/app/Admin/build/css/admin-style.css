@@ -8688,6 +8688,16 @@ div.dp-appalt-section > section header h3 {
   max-width: 1000px;
 }
 
+.dp-layout-list-editpane .dp-paneblock.nomaxw > header,
+.dp-layout-list-editpane .dp-paneblock.nomaxw > article,
+.dp-layout-list-editpane .dp-paneblock.nomaxw > nav.dp-blocktabs {
+  max-width: none;
+}
+
+.dp-layout-list-editpane .dp-paneblock.nomaxw > footer .dp-content {
+  max-width: none;
+}
+
 .dp-paneblock.dp-panelink:hover {
   border-color: #a5b6cf;
 }
