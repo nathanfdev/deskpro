@@ -1105,6 +1105,7 @@ section.dp-help-content-wrapper {
 }
 
 .dp-help-content {
+	background: #fff9e5;
 	> header {
 		background: #fcf8e3;
 		color: #8a6d3b;
@@ -1121,7 +1122,7 @@ section.dp-help-content-wrapper {
 			}
 		}
 		h1 {
-			font-size: 120%;
+			font-size: 18px;
 			padding: 10px 10px 10px 0;
 			margin: 0 0 0 50px;
 		}
@@ -1134,25 +1135,55 @@ section.dp-help-content-wrapper {
 	> article {
 		display: none;
 
-		article {
-			margin-bottom: 15px;
-			padding: 0 15px;
+		section {
+			background: #fff;
+			border: 1px solid #d6d1c0;
+			border-radius: 3px;
+			margin: 10px;
 
-			h1 { font-size: 24px; }
-			h2 { font-size: 20px; }
-			h3 { font-size: 16px; }
+			h2 {
+				font-size: 16px;
+				margin: 10px 0 14px 10px;
+
+				span {
+					border-bottom: 2px solid #c7c7c7;
+				}
+			}
+
 			p {
-				margin: 14px 0;
+				margin: 14px;
+				line-height: 130%;
+			}
+
+			ul li {
+				line-height: 130%;
 			}
 
 			dl {
-				margin: 0;
+				margin: 14px;
+
+				em {
+					font-style: normal;
+					font-size: 12px;
+					display: inline-block;
+					width: 25px;
+					background: #efefef;
+					border-radius: 4px;
+					text-align: center;
+					margin-right: 3px;
+				}
+
 				dt {
 					margin-top: 10px;
+					margin-bottom: 3px;
+					font-weight: normal;
 
 					&:first-child {
 						margin-top: 0;
 					}
+				}
+				dd {
+
 				}
 			}
 		}
