@@ -3905,11 +3905,6 @@ $collection->create('api_templates_delete', array(
 	'methods'     => array('DELETE'),
 ));
 
-$collection->create('api_templates_create_random_variant', array(
-	'path'        => '/templates/{name}/create-random-variant',
-	'controller'  => 'ApiBundle:Templates:createRandomVariant',
-	'methods'     => array('POST'),
-));
 
 ########################################################################################################################
 # Email Templates
