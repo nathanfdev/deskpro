@@ -17,6 +17,8 @@
 					<li class="pipe">|</li>
 					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-key"></i> Permissions</a></li>
 					<li class="pipe">|</li>
+					<li dp-tab-btn="main.deps"><a href="#"><i class="fa fa-key"></i> Departments</a></li>
+					<li class="pipe">|</li>
 					<li dp-tab-btn="main.notif_prefs"><a href="#"><i class="fa fa-envelope"></i> Ticket Notifications</a></li>
 					<li class="pipe">|</li>
 					<li dp-tab-btn="main.othernotif_prefs"><a href="#"><i class="fa fa-envelope-o"></i> Other Notifications</a></li>
@@ -28,6 +30,9 @@
 				</div>
 				<div dp-tab-body="main.perms">
 					{% include 'AdminInterfaceBundle:Agents:edit-perms.html.twig' %}
+				</div>
+				<div dp-tab-body="main.deps">
+					{% include 'AdminInterfaceBundle:Agents:edit-deps.html.twig' %}
 				</div>
 				<div dp-tab-body="main.notif_prefs">
 					{% include 'AdminInterfaceBundle:Agents:edit-ticket-notifs.html.twig' %}

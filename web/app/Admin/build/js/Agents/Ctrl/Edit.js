@@ -34,18 +34,23 @@
             teams: "/agent_teams",
             groups: "/agent_groups",
             groupPerms: "/agent_groups/all/permissions",
-            notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables"
+            notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables",
+            ticketDeps: "/ticket_deps?with_perms=1",
+            chatDeps: "/chat_deps?with_perms=1"
           });
         } else {
           promise = this.Api.sendDataGet({
             teams: "/agent_teams",
             groups: "/agent_groups",
             groupPerms: "/agent_groups/all/permissions",
-            notif_prefs_table: "/agents/0/notify-prefs/get-tables"
+            notif_prefs_table: "/agents/0/notify-prefs/get-tables",
+            ticketDeps: "/ticket_deps?with_perms=1",
+            chatDeps: "/chat_deps?with_perms=1"
           });
         }
         promise.then((function(_this) {
           return function(result) {
+            var dep, _i, _j, _len, _len1, _ref, _ref1, _results;
             if (_this.agentId) {
               _this.agent = result.data.agent.agent;
             } else {
@@ -60,6 +65,8 @@
             _this.teams = result.data.teams.agent_teams;
             _this.groups = result.data.groups.groups;
             _this.groupPerms = result.data.groupPerms.groups;
+            _this.ticketDeps = result.data.ticketDeps.departments;
+            _this.chatDeps = result.data.chatDeps.departments;
             _this.agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
             _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
             _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams);
@@ -68,7 +75,28 @@
               return _this.updateEffectiveUgPerms();
             }, true);
             _this.perm_form = _this.agent.perms;
-            return _this.updateHasPermOverridesStatus();
+            _this.updateHasPermOverridesStatus();
+            _this.deps_perms = {
+              tickets: {},
+              chat: {}
+            };
+            _ref = _this.ticketDeps;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              dep = _ref[_i];
+              _this.deps_perms.tickets[dep.id] = {
+                assign: false,
+                full: false
+              };
+            }
+            _ref1 = _this.chatDeps;
+            _results = [];
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              dep = _ref1[_j];
+              _results.push(_this.deps_perms.chat[dep.id] = {
+                full: false
+              });
+            }
+            return _results;
           };
         })(this));
         return promise;

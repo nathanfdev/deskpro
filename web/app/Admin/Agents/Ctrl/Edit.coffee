@@ -27,14 +27,18 @@ define [
 					teams: "/agent_teams",
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
-					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables"
+					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
+					ticketDeps: "/ticket_deps?with_perms=1"
+					chatDeps: "/chat_deps?with_perms=1"
 				})
 			else
 				promise = @Api.sendDataGet({
 					teams: "/agent_teams",
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
-					notif_prefs_table: "/agents/0/notify-prefs/get-tables"
+					notif_prefs_table: "/agents/0/notify-prefs/get-tables",
+					ticketDeps: "/ticket_deps?with_perms=1",
+					chatDeps: "/chat_deps?with_perms=1"
 				})
 
 			promise.then( (result) =>
@@ -53,6 +57,9 @@ define [
 				@groups = result.data.groups.groups
 				@groupPerms = result.data.groupPerms.groups
 
+				@ticketDeps = result.data.ticketDeps.departments
+				@chatDeps   = result.data.chatDeps.departments
+
 				@agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)
 				@notif_prefs = @agentNotifPrefsModel.prefsTable
 
@@ -65,6 +72,20 @@ define [
 
 				@perm_form = @agent.perms
 				@updateHasPermOverridesStatus()
+
+				#--------------------
+				# Departments
+				#--------------------
+
+				@deps_perms = {
+					tickets: {},
+					chat: {}
+				}
+
+				for dep in @ticketDeps
+					@deps_perms.tickets[dep.id] = { assign: false, full: false }
+				for dep in @chatDeps
+					@deps_perms.chat[dep.id] = { full: false }
 			)
 			return promise
 
