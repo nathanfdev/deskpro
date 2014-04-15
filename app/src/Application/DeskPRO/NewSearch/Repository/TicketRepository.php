@@ -89,14 +89,21 @@ class TicketRepository extends Repository
      */
     private function getFilters()
     {
-        $teams = $this->person->getHelper('Agent')->getTeamIds();
-        $departments = $this->person->getHelper('AgentPermissions')->getAllowedDepartments();
+        $departmentIds = array();
+        $departments   = $this->person->getHelper('AgentPermissions')->getAllowedDepartments();
+
+        foreach ($departments as $department) {
+            $departmentId = (int) $department;
+            if (!in_array($departmentId, $departmentIds)) {
+                $departmentIds[] = $departmentId;
+            }
+        }
 
         $filters = array(
             array('term' => array('agent' => $this->person->getId())),
-            array('term' => array('agent_team' => $teams)),
+            array('term' => array('agent_team' => $this->person->getHelper('Agent')->getTeamIds())),
             array('term' => array('participants' => $this->person->getId())),
-            array('term' => array('department' => array_unique(array_values($departments))))
+            array('term' => array('department' => $departmentIds))
         );
 
         return $filters;
