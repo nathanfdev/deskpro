@@ -401,6 +401,20 @@ class AgentNotificationAction extends AbstractAction
 			$vars['ticketdisplay'] = $ticketdisplay;
 			$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
+			// Smart-limit the history to make sure its not huge
+			$vars['message_limit'] = 0;
+			$count = 0;
+			$x = 0;
+			foreach ($vars['messages'] as $m) {
+				$count += strlen($m->message);
+				$x++;
+
+				if ($count >= 358400) {
+					$vars['message_limit'] = $x;
+					break;
+				}
+			}
+
 			$message = App::getMailer()->createMessage();
 			$message->setContextId('ticket_gateway');
 			$message->setTemplate($tpl, $vars);
