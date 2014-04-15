@@ -19,51 +19,72 @@
         *
         * If a is three-levels deep (e.g., nav > list > edit) then the 'id' param is appended and used as the last segment.
         *
+        * You can prefix the string with a comma-separated list of target route paramters. For example, if a route
+        * takes 'id' and 'type', you can specify the match param like:
+        *
+        *     dp-state-mark="id,type:my.example.type.123"
+        *
+        * And the match will be done against <route_name>.<id>.<type>
+        *
         * Example View
         * ------------
         * <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
      */
     var DeskPRO_Directive_DpStateMark;
     DeskPRO_Directive_DpStateMark = [
-      '$rootScope', '$state', function($rootScope, $state) {
+      '$state', function($state) {
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
-            var myStateData, myStateId, myStateIdRe, updateMarker;
+            var currentStateVars, m, myStateId, myStateIdReBase, updateMarker;
             myStateId = attrs.dpStateMark;
-            myStateIdRe = new RegExp(Strings.escapeRegex(myStateId));
-            myStateData = attrs.dpStateMark ? scope.$eval(attrs.dpStateMark) : null;
+            currentStateVars = null;
+            m = myStateId.match(/^(.*?):(.*?)$/);
+            if (m) {
+              myStateId = m[2];
+              currentStateVars = m[1].split(',');
+            }
+            myStateIdReBase = Strings.escapeRegex(myStateId);
             element.on('click', function() {
               element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active');
               element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
               return element.addClass('state-on active');
             });
             updateMarker = function() {
-              var currentStateId, firstRegExpOccurrence, firstStateOccurrence, isOn, occurrenceFound;
+              var currentStateId, firstRegExpOccurrence, firstStateOccurrence, isOn, myStateIdRe, occurrenceFound, v, _i, _len;
+              myStateIdRe = myStateIdReBase;
               currentStateId = $state.current.name;
               isOn = false;
-              if (myStateData) {
-                if (currentStateId.match(myStateIdRe) && Util.equals(myStateData, $state.params)) {
-                  isOn = true;
+              if (true) {
+                if (currentStateVars) {
+                  for (_i = 0, _len = currentStateVars.length; _i < _len; _i++) {
+                    v = currentStateVars[_i];
+                    if ($state.params[v] != null) {
+                      currentStateId += '.' + $state.params[v];
+                    } else {
+                      currentStateId += '.0';
+                    }
+                  }
+                } else {
+                  if ($state.params.type) {
+                    currentStateId += '.' + $state.params.type;
+                  }
+                  if ($state.params.id) {
+                    currentStateId += '.' + $state.params.id;
+                  }
                 }
-              } else {
-                if ($state.params.id) {
-                  currentStateId += '.' + $state.params.id;
-                }
-                if ($state.params.type) {
-                  currentStateId += '.' + $state.params.type;
-                }
+                myStateIdRe += '(\\.|$)';
                 if (currentStateId.match(myStateIdRe)) {
 
                   /*
-                   						 * This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
-                   						 * In this case both the elements will be highlighted
-                   						 *
-                   						 * If you will need to understand what is done uncomment following lines of code:
-                   						 *
-                   						 * console.log currentStateId, myStateIdRe
-                   						 * console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
-                   						 * console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
+                  							 * This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
+                  							 * In this case both the elements will be highlighted
+                  							 *
+                  							 * If you will need to understand what is done uncomment following lines of code:
+                  							 *
+                  							 * console.log currentStateId, myStateIdRe
+                  							 * console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
+                  							 * console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
                    */
                   firstStateOccurrence = currentStateId.split('.')[0];
                   firstRegExpOccurrence = myStateIdRe.toString().split('.')[0];
@@ -82,7 +103,7 @@
                 return element.removeClass('state-on active');
               }
             };
-            $rootScope.$on('$stateChangeSuccess', function() {
+            scope.$on('$stateChangeSuccess', function() {
               return updateMarker();
             });
             return updateMarker();
