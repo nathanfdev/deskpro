@@ -1,22 +1,5 @@
 <div class="panel panel-innertable">
 
-	<div class="alert alert-info">
-		<p>
-			Permission groups are pre-defined sets of permissions you can easily apply to multiple agents.
-		</p>
-		<p>
-			Select the permission groups to apply to this agent:
-		</p>
-		<ul class="checkbox-list" style="min-width: 250px">
-			<li ng-repeat="group in EditCtrl.form.agent_groups">
-				<label>
-					<input type="checkbox" ng-model="group.value" />
-					<span>{{ ng_var('group.title') }}</span>
-				</label>
-			</li>
-		</ul>
-	</div>
-
 	<nav class="dp-tabletabs">
 		<ul>
 			<li class="active" dp-tab-btn="main.deps.tickets"><a href="#">Tickets</a></li>
@@ -44,17 +27,14 @@
 						<input
 							dp-slider-switch
 							ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
-							is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
-							is-locked="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
-							locked-tip-e="(EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full) && 'This permission is locked because the permission is granted through an enabled agent group' || 'This permission is locked because you have enabled the Full permission'"
+							is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full"
 						/>
 					</td>
 					<td class="text-center">
 						<input
 							dp-slider-switch
 							ng-model="EditCtrl.deps_perms.tickets[dep.id].full"
-							is-on="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
-							is-locked="EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
+							is-on="EditCtrl.deps_perms.tickets[dep.id].full"
 							locked-tip="This permission is locked because the permission is granted through an enabled agent group"
 						/>
 					</td>
@@ -82,9 +62,7 @@
 						<input
 							dp-slider-switch
 							ng-model="EditCtrl.deps_perms.chat[dep.id].full"
-							is-on="EditCtrl.deps_perms.chat[dep.id].full || EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
-							is-locked="EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
-							locked-tip="This permission is locked because the permission is granted through an enabled agent group"
+							is-on="EditCtrl.deps_perms.chat[dep.id].full"
 						/>
 					</td>
 				</tr>

@@ -41,6 +41,8 @@ use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsPersister;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
+use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
+use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
@@ -266,14 +268,58 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save subscriptions
 		#-------------------------
 
-		$notif_pref_loader = new AgentNotifPrefsLoader($agent, $this->em);
-		$notif_prefs = $notif_pref_loader->getPrefsFromArray(
-			$this->in->getArrayValue('filter_subs'),
-			$this->in->getArrayValue('other_subs')
-		);
+		if ($this->in->checkIsset('filter_subs') && $this->in->checkIsset('other_subs')) {
+			$notif_pref_loader = new AgentNotifPrefsLoader($agent, $this->em);
+			$notif_prefs = $notif_pref_loader->getPrefsFromArray(
+				$this->in->getArrayValue('filter_subs'),
+				$this->in->getArrayValue('other_subs')
+			);
 
-		$notif_perist = new PrefsPersister($agent, $this->em);
-		$notif_perist->savePrefs($notif_prefs);
+			$notif_perist = new PrefsPersister($agent, $this->em);
+			$notif_perist->savePrefs($notif_prefs);
+		}
+
+		#-------------------------
+		# Save permission overrides
+		#-------------------------
+
+		if ($this->in->checkIsset('perm_overrides')) {
+			$perms = new AgentPermissions();
+			$perms->fromArray($this->in->getArrayValue('perm_overrides'));
+
+			$persister = new GroupDbPersister($this->em);
+			$persister->saveOverridePerms($agent, $perms);
+		}
+
+		#-------------------------
+		# Save department permission overrides
+		#-------------------------
+
+		if ($this->in->checkIsset('dep_perm_overrides')) {
+			$ticket_deps = $this->container->getTicketDepartments();
+			$chat_deps   = $this->container->getChatDepartments();
+
+			$set_perms = array();
+			foreach ($this->in->getArrayValue('dep_perm_overrides.tickets') as $did => $p) {
+				if (!$ticket_deps->getById($did)) continue;
+				if ($p['full']) {
+					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+				} else if ($p['assign']) {
+					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+				}
+			}
+			foreach ($this->in->getArrayValue('dep_perm_overrides.chat') as $did => $p) {
+				if (!$chat_deps->getById($did)) continue;
+				if ($p['full']) {
+					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+				}
+			}
+
+			$this->db->executeUpdate("DELETE FROM department_permissions WHERE person_id = ?", array($agent->id));
+			if ($set_perms) {
+				$this->db->batchInsert('department_permissions', $set_perms, true);
+			}
+		}
 
 		#-------------------------
 		# Send welcome email

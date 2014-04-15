@@ -588,6 +588,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Departments\ChatDepartments
+	 */
+	public function getChatDepartments()
+	{
+		return $this->getSystemService('chat_departments');
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Tickets\TicketCategories
 	 */
 	public function getTicketCategories()

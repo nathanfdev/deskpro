@@ -90,12 +90,12 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
 				if ($p['usergroup_id']) {
 					if ($ug->getAgentGroup($p['usergroup_id'])) {
-						$perms[$p['department_id']]['agentgroups'][] = array('id' => $p['usergroup_id'], 'name' => $p['name']);
+						$perms[$p['department_id']]['agentgroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
 					} else {
-						$perms[$p['department_id']]['usergroups'][] = array('id' => $p['usergroup_id'], 'name' => $p['name']);
+						$perms[$p['department_id']]['usergroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
 					}
 				} else {
-					$perms[$p['department_id']]['users'][] = array('id' => $p['person_id'], 'name' => $p['name']);
+					$perms[$p['department_id']]['users'][] = array('id' => (int)$p['person_id'], 'name' => $p['name']);
 				}
 			}
 		}

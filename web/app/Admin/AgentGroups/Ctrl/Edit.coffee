@@ -11,11 +11,15 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			if @groupId
 				promise = @Api.sendDataGet({
 					group: "/agent_groups/#{@groupId}",
-					agents: "/agents"
+					agents: "/agents",
+					ticketDeps: "/ticket_deps?with_perms=1",
+					chatDeps: "/chat_deps?with_perms=1"
 				})
 			else
 				promise = @Api.sendDataGet({
-					agents: "/agents"
+					agents: "/agents",
+					ticketDeps: "/ticket_deps?with_perms=1",
+					chatDeps: "/chat_deps?with_perms=1"
 				})
 
 			promise.then( (res) =>
@@ -31,6 +35,39 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				@agents.map((x) -> if x.id in memberIds then x.value = true)
 
 				@perm_form = @group.perms
+
+				#--------------------
+				# Departments
+				#--------------------
+
+				@ticketDeps = res.data.ticketDeps.departments
+				@chatDeps   = res.data.chatDeps.departments
+
+				@deps_perms = {
+					tickets: {},
+					chat: {}
+				}
+
+				if @groupId
+					for dep in @ticketDeps
+						assign = false
+						full = false
+
+						if dep.permissions?.agentgroups
+							u = dep.permissions.agentgroups.filter((x) => x.id == @groupId)[0]
+							if u
+								if u.name == 'full' then full = true else assign = true
+
+						@deps_perms.tickets[dep.id] = { assign: assign, full: full }
+
+					for dep in @chatDeps
+						full = false
+						if dep.permissions?.agentgroups
+							u = dep.permissions.agentgroups.filter((x) => x.id == @groupId)[0]
+							if u
+								full = true
+
+						@deps_perms.chat[dep.id] = { full: full }
 			)
 			return promise
 
@@ -40,7 +77,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					title: @group.title,
 					perms: @perm_form,
 					person_ids: []
-				}
+				},
+				dep_perms: @deps_perms
 			}
 
 			for a in @agents

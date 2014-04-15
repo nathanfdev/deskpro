@@ -187,6 +187,36 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		}
 
 		#------------------------------
+		# Save department perms
+		#------------------------------
+
+		if ($this->in->checkIsset('dep_perms')) {
+			$ticket_deps = $this->container->getTicketDepartments();
+			$chat_deps   = $this->container->getChatDepartments();
+
+			$set_perms = array();
+			foreach ($this->in->getArrayValue('dep_perms.tickets') as $did => $p) {
+				if (!$ticket_deps->getById($did)) continue;
+				if ($p['full']) {
+					$set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+				} else if ($p['assign']) {
+					$set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+				}
+			}
+			foreach ($this->in->getArrayValue('dep_perms.chat') as $did => $p) {
+				if (!$chat_deps->getById($did)) continue;
+				if ($p['full']) {
+					$set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+				}
+			}
+
+			$this->db->executeUpdate("DELETE FROM department_permissions WHERE usergroup_id = ?", array($group->id));
+			if ($set_perms) {
+				$this->db->batchInsert('department_permissions', $set_perms, true);
+			}
+		}
+
+		#------------------------------
 		# Clear permission cache
 		#------------------------------
 
