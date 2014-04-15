@@ -84,30 +84,30 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 	 */
 	private function hasNewMessageOfType($type)
 	{
-		if (!$this->hasChangedField('messages')) {
+		if (!$this->hasChangedField('message')) {
 			return false;
 		}
 
-		foreach (array_reverse($this->getChangesForField('messages')) as $change) {
-			/** @var \Application\DeskPRO\ORM\StateChange\ChangeCollection $change */
-			foreach ($change->getNew() as $message) {
-				switch ($type) {
-					case 'agent_reply':
-						if (!$message->is_agent_note && $message->person->is_agent) {
-							return true;
-						}
-						break;
-					case 'agent_note':
-						if ($message->is_agent_note) {
-							return true;
-						}
-						break;
-					case 'user_reply':
-						if (!$message->is_agent_note && !$message->person->is_agent) {
-							return true;
-						}
-						break;
-				}
+		foreach (array_reverse($this->getChangesForField('message')) as $change) {
+			$message = $change->getNew();
+			if (!$message) continue;
+
+			switch ($type) {
+				case 'agent_reply':
+					if (!$message->is_agent_note && $message->person->is_agent) {
+						return true;
+					}
+					break;
+				case 'agent_note':
+					if ($message->is_agent_note) {
+						return true;
+					}
+					break;
+				case 'user_reply':
+					if (!$message->is_agent_note && !$message->person->is_agent) {
+						return true;
+					}
+					break;
 			}
 		}
 
@@ -123,36 +123,36 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 	 */
 	private function getNewMessagesOfType($type = 'any')
 	{
-		if (!$this->hasChangedField('messages')) {
+		if (!$this->hasChangedField('message')) {
 			return array();
 		}
 
 		$messages = array();
 
-		foreach (array_reverse($this->getChangesForField('messages')) as $change) {
-			/** @var \Application\DeskPRO\ORM\StateChange\ChangeCollection $change */
-			foreach ($change->getNew() as $message) {
-				switch ($type) {
-					case 'any':
-						$messages[] = $message;
-						break;
+		foreach (array_reverse($this->getChangesForField('message')) as $change) {
+			$message = $change->getNew();
+			if (!$message) continue;
 
-					case 'agent_reply':
-						if (!$message->is_agent_note && $message->person->is_agent) {
-							$messages[] = $message;
-						}
-						break;
-					case 'agent_note':
-						if ($message->is_agent_note) {
-							$messages[] = $message;
-						}
-						break;
-					case 'user_reply':
-						if (!$message->is_agent_note && !$message->person->is_agent) {
-							$messages[] = $message;
-						}
-						break;
-				}
+			switch ($type) {
+				case 'any':
+					$messages[] = $message;
+					break;
+
+				case 'agent_reply':
+					if (!$message->is_agent_note && $message->person->is_agent) {
+						$messages[] = $message;
+					}
+					break;
+				case 'agent_note':
+					if ($message->is_agent_note) {
+						$messages[] = $message;
+					}
+					break;
+				case 'user_reply':
+					if (!$message->is_agent_note && !$message->person->is_agent) {
+						$messages[] = $message;
+					}
+					break;
 			}
 		}
 
@@ -167,7 +167,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 	 */
 	public function hasNewReply()
 	{
-		return $this->hasChangedField('messages');
+		return $this->hasChangedField('message');
 	}
 
 

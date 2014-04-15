@@ -320,11 +320,9 @@ class AgentNotifyListBuilder implements PersonContextInterface
 		} else {
 			if ($event_types['agent_note'] && $sub->email_agent_note) {
 				$types[] = 'email';
-			}
-			if ($event_types['agent_reply'] && $sub->email_agent_activity) {
+			} else if ($event_types['agent_reply'] && $sub->email_agent_activity) {
 				$types[] = 'email';
-			}
-			if ($event_types['user_reply'] && $sub->email_user_activity) {
+			} else if ($event_types['user_reply'] && $sub->email_user_activity) {
 				$types[] = 'email';
 			}
 		}
@@ -333,11 +331,9 @@ class AgentNotifyListBuilder implements PersonContextInterface
 		} else {
 			if ($event_types['agent_note'] && $sub->alert_agent_note) {
 				$types[] = 'alert';
-			}
-			if ($event_types['agent_reply'] && $sub->alert_agent_activity) {
+			} else if ($event_types['agent_reply'] && $sub->alert_agent_activity) {
 				$types[] = 'alert';
-			}
-			if ($event_types['user_reply'] && $sub->alert_user_activity) {
+			} else if ($event_types['user_reply'] && $sub->alert_user_activity) {
 				$types[] = 'alert';
 			}
 		}
@@ -359,7 +355,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 				|| ($filter->sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->alert_leave)
 				|| ($filter->sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->alert_leave)
 			) {
-				$types[] = 'email';
+				$types[] = 'alert';
 			}
 		}
 

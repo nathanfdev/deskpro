@@ -1288,7 +1288,8 @@ class Ticket extends DomainObject
 			}
 		}
 
-		$this->_onPropertyChanged('messages', null, $this->messages);
+		$this->_onPropertyChanged('messages', null, $this->messages, true);
+		$this->getStateChangeRecorder()->record('message', null, $message);
 	}
 
 
@@ -3507,6 +3508,7 @@ class Ticket extends DomainObject
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketAttachment',
 			'cascade'              => array('remove', 'persist', 'merge', ),
 			'mappedBy'             => 'ticket',
+			'fetch'                => 'EXTRA_LAZY'
 		));
 		$metadata->mapOneToMany(array(
 			'fieldName'            => 'access_codes',
@@ -3520,6 +3522,7 @@ class Ticket extends DomainObject
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketMessage',
 			'cascade'              => array('remove', 'persist', 'merge'),
 			'mappedBy'             => 'ticket',
+			'fetch'                => 'EXTRA_LAZY',
 			'orderBy'              => array( 'date_created' => 'ASC'),
 		));
 		$metadata->mapOneToMany(array(

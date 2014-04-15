@@ -133,7 +133,7 @@ class FilterChangeDetector
 		}
 
 		$is_new_messages = false;
-		if (isset($changed_fields['ticket.messages'])) {
+		if (isset($changed_fields['ticket.message'])) {
 			$is_new_messages = true;
 		}
 

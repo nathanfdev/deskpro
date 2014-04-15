@@ -61,7 +61,7 @@ class RecalculateSlas implements TicketSaveActionInterface
 				$recalculate_slas = true;
 			}
 
-			if ($state->hasChangedField('messages')) {
+			if ($state->hasChangedField('message')) {
 				$recalculate_slas = true;
 			}
 

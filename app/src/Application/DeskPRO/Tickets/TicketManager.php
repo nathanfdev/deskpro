@@ -202,6 +202,7 @@ class TicketManager
 		$context->getLogger()->debug(sprintf("EventType: %s", $context->getEventType()));
 		$context->getLogger()->debug(sprintf("EventMethod: %s", $context->getEventMethod()));
 		$context->getLogger()->debug(sprintf("EventPerformer: %s", $context->getEventPerformer()));
+		$context->getLogger()->debug(sprintf("StateChanges: %s", implode(', ', $ticket->getStateChangeRecorder()->getChangedFields())));
 
 		if ($context->getPersonContext()) {
 			$context->getLogger()->debug(sprintf(
