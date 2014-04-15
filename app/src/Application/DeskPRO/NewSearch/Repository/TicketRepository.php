@@ -96,7 +96,7 @@ class TicketRepository extends Repository
             array('term' => array('agent' => $this->person->getId())),
             array('term' => array('agent_team' => $teams)),
             array('term' => array('participants' => $this->person->getId())),
-            array('term' => array('department' => array_unique($departments)))
+            array('term' => array('department' => array_unique(array_values($departments))))
         );
 
         return $filters;
