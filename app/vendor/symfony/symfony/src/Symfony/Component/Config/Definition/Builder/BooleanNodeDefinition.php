@@ -21,7 +21,7 @@ use Symfony\Component\Config\Definition\BooleanNode;
 class BooleanNodeDefinition extends ScalarNodeDefinition
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct($name, NodeParentInterface $parent = null)
     {
@@ -33,7 +33,7 @@ class BooleanNodeDefinition extends ScalarNodeDefinition
     /**
      * Instantiate a Node
      *
-     * @return BooleanNode The node
+     * @return boolNode    The node
      */
     protected function instantiateNode()
     {

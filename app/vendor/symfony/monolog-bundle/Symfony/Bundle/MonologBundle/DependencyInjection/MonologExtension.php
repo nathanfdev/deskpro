@@ -156,7 +156,22 @@ class MonologExtension extends Extension
         case 'gelf':
             if (isset($handler['publisher']['id'])) {
                 $publisherId = $handler['publisher']['id'];
-            } else {
+            } elseif (class_exists('Gelf\Transport\UdpTransport')) {
+                $transport = new Definition("Gelf\Transport\UdpTransport", array(
+                    $handler['publisher']['hostname'],
+                    $handler['publisher']['port'],
+                    $handler['publisher']['chunk_size'],
+                ));
+                $transportId = uniqid('monolog.gelf.transport.');
+                $transport->setPublic(false);
+                $container->setDefinition($transportId, $transport);
+
+                $publisher = new Definition("%monolog.gelfphp.publisher.class%", array());
+                $publisher->addMethodCall('addTransport', array(new Reference($transportId)));
+                $publisherId = uniqid('monolog.gelf.publisher.');
+                $publisher->setPublic(false);
+                $container->setDefinition($publisherId, $publisher);
+            } elseif (class_exists('Gelf\MessagePublisher')) {
                 $publisher = new Definition("%monolog.gelf.publisher.class%", array(
                     $handler['publisher']['hostname'],
                     $handler['publisher']['port'],
@@ -166,6 +181,8 @@ class MonologExtension extends Extension
                 $publisherId = uniqid('monolog.gelf.publisher.');
                 $publisher->setPublic(false);
                 $container->setDefinition($publisherId, $publisher);
+            } else {
+                throw new \RuntimeException('The gelf handler requires the graylog2/gelf-php package to be installed');
             }
 
             $definition->setArguments(array(
@@ -283,6 +300,16 @@ class MonologExtension extends Extension
             ));
             break;
 
+        case 'syslogudp':
+            $definition->setArguments(array(
+                $handler['host'],
+                $handler['port'],
+                $handler['facility'],
+                $handler['level'],
+                $handler['bubble'],
+            ));
+            break;
+
         case 'swift_mailer':
             $oldHandler = false;
             // fallback for older symfony versions that don't have the new SwiftMailerHandler in the bridge
@@ -300,12 +327,19 @@ class MonologExtension extends Extension
                 }
             } else {
                 $message = new Definition('Swift_Message');
-                $message->setFactoryService('mailer');
                 $message->setFactoryMethod('createMessage');
                 $message->setPublic(false);
                 $message->addMethodCall('setFrom', array($handler['from_email']));
                 $message->addMethodCall('setTo', array($handler['to_email']));
                 $message->addMethodCall('setSubject', array($handler['subject']));
+
+                if(isset($handler['mailer'])){
+                    $mailer = $handler['mailer'];
+                } else {
+                    $mailer = 'mailer';
+                }
+                $message->setFactoryService($mailer);
+
 
                 if (isset($handler['content_type'])) {
                     $message->addMethodCall('setContentType', array($handler['content_type']));
@@ -324,6 +358,9 @@ class MonologExtension extends Extension
             if (!$oldHandler) {
                 $this->swiftMailerHandlers[] = $handlerId;
                 $definition->addTag('kernel.event_listener', array('event' => 'kernel.terminate', 'method' => 'onKernelTerminate'));
+                if (method_exists($newHandlerClass, 'onCliTerminate')) {
+                    $definition->addTag('kernel.event_listener', array('event' => 'console.terminate', 'method' => 'onCliTerminate'));
+                }
             }
             break;
 
@@ -425,6 +462,15 @@ class MonologExtension extends Extension
             if (!empty($handler['tags'])) {
                 $definition->addMethodCall('setTag', array(implode(',', $handler['tags'])));
             }
+            break;
+
+        case 'logentries':
+            $definition->setArguments(array(
+                $handler['token'],
+                $handler['use_ssl'],
+                $handler['level'],
+                $handler['bubble'],
+            ));
             break;
 
         // Handlers using the constructor of AbstractHandler without adding their own arguments

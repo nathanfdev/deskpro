@@ -34,7 +34,7 @@ interface SessionHandlerInterface
      *
      * @throws \RuntimeException If something goes wrong starting the session.
      *
-     * @return boolean
+     * @return bool
      */
     public function open($savePath, $sessionName);
 
@@ -43,7 +43,7 @@ interface SessionHandlerInterface
      *
      * @see http://php.net/sessionhandlerinterface.close
      *
-     * @return boolean
+     * @return bool
      */
     public function close();
 
@@ -68,7 +68,7 @@ interface SessionHandlerInterface
      * @param string $sessionId Session ID.
      * @param string $data      Session serialized data to save.
      *
-     * @return boolean
+     * @return bool
      */
     public function write($sessionId, $data);
 
@@ -81,7 +81,7 @@ interface SessionHandlerInterface
      *
      * @throws \RuntimeException On fatal error.
      *
-     * @return boolean
+     * @return bool
      */
     public function destroy($sessionId);
 
@@ -90,11 +90,11 @@ interface SessionHandlerInterface
      *
      * @see http://php.net/sessionhandlerinterface.gc
      *
-     * @param integer $lifetime Max lifetime in seconds to keep sessions stored.
+     * @param int     $lifetime Max lifetime in seconds to keep sessions stored.
      *
      * @throws \RuntimeException On fatal error.
      *
-     * @return boolean
+     * @return bool
      */
     public function gc($lifetime);
 }

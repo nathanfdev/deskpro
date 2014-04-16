@@ -113,9 +113,9 @@ EOT
                 $className = $class->name;
                 $class->name = $bundle->getNamespace().'\\Entity\\'.$className;
                 if ('annotation' === $type) {
-                    $path = $destPath.'/'.$className.'.php';
+                    $path = $destPath.'/'.str_replace('\\', '.', $className).'.php';
                 } else {
-                    $path = $destPath.'/'.$className.'.orm.'.$type;
+                    $path = $destPath.'/'.str_replace('\\', '.', $className).'.orm.'.$type;
                 }
                 $output->writeln(sprintf('  > writing <comment>%s</comment>', $path));
                 $code = $exporter->exportClassMetadata($class);
@@ -124,9 +124,11 @@ EOT
                 }
                 file_put_contents($path, $code);
             }
+            return 0;
         } else {
             $output->writeln('Database does not have any mapping information.', 'ERROR');
             $output->writeln('', 'ERROR');
+            return 1;
         }
     }
 }
