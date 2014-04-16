@@ -75,20 +75,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	public function __construct(ContainerInterface $container)
 	{
 		$this->setContainer($container);
-
 		$this->request           = $this->get('request');
 		$this->response          = $this->get('response');
 		$this->event_dispatcher  = $this->get('event_dispatcher');
-
-		$self=$this;
-		$this->event_dispatcher->addListener('DeskPRO_onControllerPreAction', function($ev) use ($self) {
-			$self->request_type = $ev->get('request_type') ?: HttpKernelInterface::MASTER_REQUEST;
-			$self->DeskPRO_onControllerPreAction($ev);
-		});
-		$this->event_dispatcher->addListener('DeskPRO_onControllerPostAction', function($ev) use ($self) {
-			$self->DeskPRO_onControllerPostAction($ev);
-		});
-
 		$this->init();
 	}
 
