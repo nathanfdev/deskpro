@@ -76,7 +76,7 @@ class Pop3Config implements AccountConfigInterface
 		return array(
 			'host'        => $this->host,
 			'port'        => $this->port,
-			'user'        => $this->port,
+			'user'        => $this->user,
 			'password'    => $this->password,
 			'secure_mode' => $this->secure_mode
 		);

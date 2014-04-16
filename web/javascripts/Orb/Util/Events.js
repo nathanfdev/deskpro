@@ -50,13 +50,13 @@ Orb.Util.Events = {
 		}
 
 		if (tags) {
-			Array.each(tags, function(tag) {
-				if (!this.__events_tagged[tag]) {
-					this.__events_tagged[tag] = [];
+			for (var i = 0; i < tags.length; i++) {
+				if (!this.__events_tagged[tags[i]]) {
+					this.__events_tagged[tags[i]] = [];
 				}
 
-				this.__events_tagged[tag].push([type, fn, context]);
-			}, this);
+				this.__events_tagged[tags[i]].push([type, fn, context]);
+			}
 		}
 
 		return this;
@@ -70,6 +70,8 @@ Orb.Util.Events = {
 	},
 
 	fireEvent: function(type, args, delay){
+		var defaultContext, fn_info;
+
 		this.__initEventsObj();
 
 		type = this.normalizeEventName(type);
@@ -77,16 +79,25 @@ Orb.Util.Events = {
 			return this;
 		}
 
-		var defaultContext = this.__events_default_context || this;
+		defaultContext = this.__events_default_context || this;
 
 		args = Array.from(args);
-		Object.each(this.__events[type], function(fn_info){
+		for (var i = 0; i < this.__events[type].length; i++) {
+			fn_info = this.__events[type][i];
 			if (delay) {
-				fn_info[0].delay(delay, fn_info[1] || defaultContext, args);
+				try {
+					fn_info[0].delay(delay, fn_info[1] || defaultContext, args);
+				} catch (e) {
+					console.error("Error: %o %s", e, e.stack || '');
+				}
 			} else {
-				fn_info[0].apply(fn_info[1] || defaultContext, args);
+				try {
+					fn_info[0].apply(fn_info[1] || defaultContext, args);
+				} catch (e) {
+					console.error("Error: %o %s", e, e.stack || '');
+				}
 			}
-		});
+		}
 
 		return this;
 	},

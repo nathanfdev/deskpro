@@ -66,14 +66,20 @@
 					<tr>
 						<th>Secure</th>
 						<td>
-							<label>
+							<label style="display: inline-block">
 								<input type="checkbox" ng-true-value="ssl" ng-model="form.out_smtp_account.secure" /> Enable secure network connection (SSL)
 							</label>
+							<div style="display: inline-block;" ng-show="form.out_smtp_account.secure">
+								<select ui-select2 ng-model="form.out_smtp_account.secure_mode" style="width: 80px;">
+									<option value="ssl">SSL</option>
+									<option value="tls">TLS</option>
+								</select>
+							</div>
 						</td>
 					</tr>
 					<tr>
 						<th>Username</th>
-						<td><input type="text" class="form-control" name="title" ng-model="form.out_smtp_account.username" style="width: 50%;" /></td>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_smtp_account.user" style="width: 50%;" /></td>
 					</tr>
 					<tr>
 						<th>Password</th>

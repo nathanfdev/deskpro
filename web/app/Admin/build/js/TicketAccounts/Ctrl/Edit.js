@@ -146,8 +146,7 @@
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.loadOutgoingAccountTest = function() {
         var form_data;
-        this.test_email.from = this.form_model.form.email_address;
-        form_data = this.form_model.getFormData().email_transport;
+        form_data = this.form_model.getFormData();
         form_data.test_email = this.test_email;
         return this.Api.sendPostJson('/email_accounts/test-outgoing-account', form_data);
       };
@@ -203,13 +202,14 @@
        */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.testOutgoingModal = function() {
-        var inst;
+        var inst, me;
+        me = this;
         return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
           resolve: {
             test_email: (function(_this) {
               return function() {
-                _this.test_email.from = _this.form_model.form.email_address;
+                _this.test_email.from = _this.form_model.form.address;
                 return _this.test_email;
               };
             })(this)
@@ -224,13 +224,15 @@
                 $scope.showLog = function() {
                   return $scope.showing_log = true;
                 };
-                console.log(test_email);
                 $scope.test_email = test_email;
                 testNow = function() {
                   $scope.testing_started = true;
                   $scope.showing_log = false;
                   $scope.is_testing = true;
-                  return _this.loadOutgoingAccountTest().success(function(result) {
+                  if (!test_email.from) {
+                    test_email.from = me.form_model.form.address;
+                  }
+                  return me.loadOutgoingAccountTest().success(function(result) {
                     $scope.is_testing = false;
                     $scope.is_success = result.is_success;
                     $scope.log = result.log;

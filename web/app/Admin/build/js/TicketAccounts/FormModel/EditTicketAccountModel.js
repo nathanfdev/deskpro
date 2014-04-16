@@ -12,6 +12,11 @@
         this.form.in_gmail_account = {};
         this.form.in_pop3_account = {};
         this.form.in_imap_account = {};
+        this.form.outgoing_type = 'mail';
+        this.form.out_gmail_account = {};
+        this.form.out_smtp_account = {};
+        this.form.in_pop3_account.secure_mode = "ssl";
+        this.form.out_smtp_account.secure_mode = "ssl";
         if (this.account.other_addresses && this.account.other_addresses.length) {
           this.form.with_email_aliases = true;
           this.form.other_addresses = this.account.other_addresses.join(', ');
@@ -55,17 +60,17 @@
             from_name: 'helpdesk_name'
           };
         }
-        this.form.outgoing_type = 'mail';
-        this.form.out_gmail_account = {};
-        this.form.out_smtp_account = {};
         if (this.account.incoming_account_type) {
           this.form.incoming_type = this.account.incoming_account_type;
           if (this.form.incoming_type === 'pop3') {
             this.form.in_pop3_account.host = this.account.incoming_account.host;
             this.form.in_pop3_account.port = this.account.incoming_account.port;
-            this.form.in_pop3_account.secure = this.account.incoming_account.secure;
-            this.form.in_pop3_account.username = this.account.incoming_account.username;
+            this.form.in_pop3_account.secure_mode = this.account.incoming_account.secure_mode;
+            this.form.in_pop3_account.user = this.account.incoming_account.user;
             this.form.in_pop3_account.password = this.account.incoming_account.password;
+            if (this.form.in_pop3_account.secure_mode && this.form.in_pop3_account.secure_mode !== '') {
+              this.form.in_pop3_account.secure = true;
+            }
           } else if (this.form.incoming_type === 'gmail') {
             this.form.in_gmail_account.password = this.account.incoming_account.password;
           }
@@ -75,9 +80,12 @@
           if (this.form.outgoing_type === 'smtp') {
             this.form.out_smtp_account.host = this.account.outgoing_account.host;
             this.form.out_smtp_account.port = this.account.outgoing_account.port;
-            this.form.out_smtp_account.secure = this.account.outgoing_account.secure;
-            this.form.out_smtp_account.username = this.account.outgoing_account.username;
+            this.form.out_smtp_account.secure_mode = this.account.outgoing_account.secure_mode;
+            this.form.out_smtp_account.user = this.account.outgoing_account.user;
             this.form.out_smtp_account.password = this.account.outgoing_account.password;
+            if (this.form.out_smtp_account.secure_mode && this.form.out_smtp_account.secure_mode !== '') {
+              this.form.out_smtp_account.secure = true;
+            }
           } else if (this.form.outgoing_type === 'gmail') {
             this.form.out_gmail_account.password = this.account.outgoing_account.password;
           }
@@ -92,6 +100,20 @@
         }
         if (form.outgoing_type === 'gmail') {
           form.out_gmail_account.user = form.address;
+        }
+        if (form.incoming_type === 'pop3') {
+          if (form.in_pop3_account.secure) {
+            form.in_pop3_account.secure_mode = form.in_pop3_account.secure_mode || 'ssl';
+          } else {
+            form.in_pop3_account.secure_mode = null;
+          }
+        }
+        if (form.outgoing_type === 'smtp') {
+          if (form.out_smtp_account.secure) {
+            form.out_smtp_account.secure_mode = form.out_smtp_account.secure_mode || 'ssl';
+          } else {
+            form.out_smtp_account.secure_mode = null;
+          }
         }
         trigger_actions = [];
         department_id = parseInt(((_ref = this.form.trigger_actions.SetDepartment) != null ? (_ref1 = _ref.options) != null ? _ref1.department_id : void 0 : void 0) || 0);

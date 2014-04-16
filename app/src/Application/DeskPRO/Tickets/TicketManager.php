@@ -255,6 +255,7 @@ class TicketManager
 			'date_created' => date('Y-m-d H:i:s'),
 			'data' => serialize(array(
 				'ticket_id'      => $ticket->getId(),
+				'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
 				'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
 			))
 		));

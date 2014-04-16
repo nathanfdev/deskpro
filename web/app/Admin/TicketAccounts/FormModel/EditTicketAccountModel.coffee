@@ -11,6 +11,13 @@ define [
 			@form.in_pop3_account  = {}
 			@form.in_imap_account  = {}
 
+			@form.outgoing_type     = 'mail'
+			@form.out_gmail_account = {}
+			@form.out_smtp_account  = {}
+
+			@form.in_pop3_account.secure_mode = "ssl"
+			@form.out_smtp_account.secure_mode = "ssl"
+
 			if @account.other_addresses and @account.other_addresses.length
 				@form.with_email_aliases = true
 				@form.other_addresses = @account.other_addresses.join(', ')
@@ -55,10 +62,6 @@ define [
 					from_name: 'helpdesk_name'
 				}
 
-			@form.outgoing_type     = 'mail'
-			@form.out_gmail_account = {}
-			@form.out_smtp_account  = {}
-
 			#--------------------
 			# Init in account
 			#--------------------
@@ -67,11 +70,14 @@ define [
 				@form.incoming_type = @account.incoming_account_type
 
 				if @form.incoming_type == 'pop3'
-					@form.in_pop3_account.host     = @account.incoming_account.host
-					@form.in_pop3_account.port     = @account.incoming_account.port
-					@form.in_pop3_account.secure   = @account.incoming_account.secure
-					@form.in_pop3_account.username = @account.incoming_account.username
-					@form.in_pop3_account.password = @account.incoming_account.password
+					@form.in_pop3_account.host        = @account.incoming_account.host
+					@form.in_pop3_account.port        = @account.incoming_account.port
+					@form.in_pop3_account.secure_mode = @account.incoming_account.secure_mode
+					@form.in_pop3_account.user        = @account.incoming_account.user
+					@form.in_pop3_account.password    = @account.incoming_account.password
+					if @form.in_pop3_account.secure_mode and @form.in_pop3_account.secure_mode != ''
+						@form.in_pop3_account.secure = true
+
 				else if @form.incoming_type == 'gmail'
 					@form.in_gmail_account.password = @account.incoming_account.password
 
@@ -83,11 +89,14 @@ define [
 				@form.outgoing_type = @account.outgoing_account_type
 
 				if @form.outgoing_type == 'smtp'
-					@form.out_smtp_account.host     = @account.outgoing_account.host
-					@form.out_smtp_account.port     = @account.outgoing_account.port
-					@form.out_smtp_account.secure   = @account.outgoing_account.secure
-					@form.out_smtp_account.username = @account.outgoing_account.username
-					@form.out_smtp_account.password = @account.outgoing_account.password
+					@form.out_smtp_account.host        = @account.outgoing_account.host
+					@form.out_smtp_account.port        = @account.outgoing_account.port
+					@form.out_smtp_account.secure_mode = @account.outgoing_account.secure_mode
+					@form.out_smtp_account.user        = @account.outgoing_account.user
+					@form.out_smtp_account.password    = @account.outgoing_account.password
+					if @form.out_smtp_account.secure_mode and @form.out_smtp_account.secure_mode != ''
+						@form.out_smtp_account.secure = true
+
 				else if @form.outgoing_type == 'gmail'
 					@form.out_gmail_account.password = @account.outgoing_account.password
 
@@ -99,6 +108,18 @@ define [
 				form.in_gmail_account.user = form.address
 			if form.outgoing_type == 'gmail'
 				form.out_gmail_account.user = form.address
+
+			if form.incoming_type == 'pop3'
+				if form.in_pop3_account.secure
+					form.in_pop3_account.secure_mode = form.in_pop3_account.secure_mode || 'ssl'
+				else
+					form.in_pop3_account.secure_mode = null
+			if form.outgoing_type == 'smtp'
+				if form.out_smtp_account.secure
+					form.out_smtp_account.secure_mode = form.out_smtp_account.secure_mode || 'ssl'
+				else
+					form.out_smtp_account.secure_mode = null
+
 
 			trigger_actions = []
 			department_id = parseInt(@form.trigger_actions.SetDepartment?.options?.department_id || 0)
