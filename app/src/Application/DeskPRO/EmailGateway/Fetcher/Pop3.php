@@ -94,37 +94,44 @@ class Pop3 extends AbstractFetcher
 	{
 		$options = array();
 
-		if ($this->account->incoming_account->getType() == 'pop3') {
-			/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3_config */
-			$pop3_config = $this->account->incoming_account;
+		switch ($this->account->incoming_account->getType()) {
+			case 'pop3':
+				/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3_config */
+				$pop3_config = $this->account->incoming_account;
 
-			$options['host']     = $pop3_config->host;
-			$options['port']     = $pop3_config->port;
-			$options['user']     = $pop3_config->user;
-			$options['password'] = $pop3_config->password;
+				$options['host']     = $pop3_config->host;
+				$options['port']     = $pop3_config->port;
+				$options['user']     = $pop3_config->user;
+				$options['password'] = $pop3_config->password;
 
-			$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+				$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
-			if ($pop3_config->secure_mode == 'ssl') {
+				if ($pop3_config->secure_mode == 'ssl') {
+					$options['ssl'] = 'SSL';
+					$this->logger->log('SSL Enabled', 'debug');
+				} elseif ($pop3_config->secure_mode == 'tls') {
+					$options['ssl'] = 'TLS';
+					$this->logger->log('TLS Enabled', 'debug');
+				}
+				break;
+
+			case 'gmail':
+				/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
+				$gmail_config = $this->account->incoming_account;
+
+				$options['host']     = 'pop.gmail.com';
+				$options['port']     = 995;
+				$options['user']     = $gmail_config->user;
+				$options['password'] = $gmail_config->password;
+
+				$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+
 				$options['ssl'] = 'SSL';
 				$this->logger->log('SSL Enabled', 'debug');
-			} elseif ($pop3_config->secure_mode == 'tls') {
-				$options['ssl'] = 'TLS';
-				$this->logger->log('TLS Enabled', 'debug');
-			}
-		} else {
-			/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-			$gmail_config = $this->account->incoming_account;
+				break;
 
-			$options['host']     = 'pop.gmail.com';
-			$options['port']     = 995;
-			$options['user']     = $gmail_config->user;
-			$options['password'] = $gmail_config->password;
-
-			$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
-
-			$options['ssl'] = 'SSL';
-			$this->logger->log('SSL Enabled', 'debug');
+			default:
+				throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
 		}
 
 		$options['logger'] = $this->logger;

@@ -33,35 +33,66 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\EmailGateway\Storage;
 
 /**
  * Fetches mail from a imap server
  */
 class Imap extends AbstractFetcher
 {
-	protected $read_count = 0;
+	/**
+	 * Just marks messages as read once they are processed.
+	 */
+	const MODE_READ = 'read';
 
 	/**
-	 * @var array
+	 * Deletes messages once they are processed.
 	 */
-	protected $message_list = null;
+	const MODE_DELETE = 'delete';
 
 	/**
-	 * @var array
+	 * Archive messages (moves to a folder) once they are processed.
 	 */
-	protected $message_list_ids = array();
+	const MODE_ARCHIVE = 'archive';
 
 	/**
-	 * @var array
+	 * @var int
 	 */
-	protected $message_files = array();
+	private $mode = self::MODE_READ;
 
-	public function init()
-	{
-		$this->memory_protection_size = 3670016;
-	}
+	/**
+	 * The IMAP Storage
+	 *
+	 * @var \Application\DeskPRO\EmailGateway\Storage\Imap
+	 */
+	private $storage;
+
+	/**
+	 * Messages retrieved in the current fetch
+	 *
+	 * @var Array An array of \Fetch\Message
+	 */
+	private $messages;
+
+	/**
+	 * Mailbox name to move messages after processing
+	 * @var String Mailbox name
+	 */
+	private $archive_mailbox;
+
+	/**
+	 * Max number of email IDs to fetch in one go
+	 * @var int
+	 */
+	private $fetch_limit = 10;
+
+	/**
+	 * Next Message index to read
+	 *
+	 * @var int
+	 */
+	private $next_id = 0;
+
 
 	/**
 	 * Initiates the connection
@@ -71,115 +102,127 @@ class Imap extends AbstractFetcher
 	protected function _initConnection()
 	{
 		$options = array();
-		$options['host']     = isset($this->account['connection_options']['host'])     ? $this->account['connection_options']['host']     : 'localhost';
-		$options['port']     = isset($this->account['connection_options']['port'])     ? $this->account['connection_options']['port']     : '110';
-		$options['user']     = isset($this->account['connection_options']['username']) ? $this->account['connection_options']['username'] : '';
-		$options['password'] = isset($this->account['connection_options']['password']) ? $this->account['connection_options']['password'] : '';
+
+		switch ($this->account->incoming_account->getType()) {
+			case 'imap':
+				/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $imap_config */
+				$imap_config = $this->account->incoming_account;
+
+				$options['host']     = $imap_config->host;
+				$options['port']     = $imap_config->port;
+				$options['user']     = $imap_config->user;
+				$options['password'] = $imap_config->password;
+				$options['mode']     = $imap_config->mode;
+
+				if ($imap_config->secure_mode) {
+					$options['secure'] = $imap_config->secure_mode;
+				}
+
+				if ($imap_config->mode == self::MODE_ARCHIVE) {
+					$options['archive_mailbox'] = $imap_config->archive_mailbox;
+				}
+
+				break;
+
+			case 'gmail':
+				/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
+				$gmail_config = $this->account->incoming_account;
+
+				$options['host']     = 'imap.gmail.com';
+				$options['port']     = 993;
+				$options['user']     = $gmail_config->user;
+				$options['password'] = $gmail_config->password;
+				$options['mode']     = self::MODE_DELETE; // delete in gmail just means archive
+				$options['secure']   = 'ssl';
+
+			default:
+				throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
+		}
+
+		$this->mode = $options['mode'];
+		$this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
 
 		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
-		if (isset($this->account['connection_options']['secure']) AND $this->account['connection_options']['secure']) {
-			$options['ssl'] = strtoupper($this->account['connection_options']['secure']); // 'ssl' or 'tls'
-			$this->logger->log('SSL Enabled', 'debug');
-		}
-
 		$options['logger'] = $this->logger;
 
-		$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap($options);
-		return $storage;
-	}
+		$this->storage = new Storage\Imap($options);
 
-
-	/**
-	 * Closes the connection
-	 */
-	public function close()
-	{
-		if ($this->storage) {
-			$this->storage->close();
-			$this->storage = null;
+		if ($this->archive_mailbox === $this->storage->getMailbox()) {
+			throw new \Exception("The current mailbox is reserved for processed emails, it can not be used as the primary mailbox");
 		}
+
+		if ($this->mode === self::MODE_ARCHIVE) {
+			$this->storage->ensureMailboxExists($this->archive_mailbox);
+		}
+
+		if ($this->mode == self::MODE_READ) {
+			$this->messages = $this->storage->searchUnseen();
+		} else {
+			$this->messages = $this->storage->searchIds($this->fetch_limit);
+		}
+
+		return $this->storage;
 	}
 
 
 	/**
+	 * Gets the message storage
+	 *
 	 * @return \Application\DeskPRO\EmailGateway\Storage\Imap
 	 */
-	public function getStorage($reconnect = false)
+	public function getStorage()
 	{
-		return parent::getStorage($reconnect);
+		return $this->storage;
 	}
 
 
 	/**
-	 * Get a list of message IDs
-	 */
-	protected function _initMessageList($reload = false)
-	{
-		if (!$reload && $this->message_list !== null) {
-			return;
-		}
-
-		$this->message_list = array();
-
-		$message_ids = $this->getStorage()->getUnseenMessageUids();
-		if ($message_ids) {
-			return;
-		}
-
-		$message_sizes = $this->getStorage()->getMessageSizesByUids($message_ids);
-		foreach ($message_sizes as $uid => $size) {
-			$this->message_list[] = array('num' => $uid, 'size' => $size, 'uid' => null);
-		}
-
-		$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
-	}
-
-	/**
-	 * Reads the next message in the inbox
+	 * Gets the next message
+	 * Iterates over the fetched IDs and retrieves the next message in list
 	 *
+	 * @return \Fetch\Message The next Message
+	 */
+	public function getNextMessage()
+	{
+		return $this->storage->getMessageByUid($this->messages[$this->next_id]);
+	}
+
+
+	/**
+	 * {@inheritdoc}
 	 * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
 	 */
-	protected function _readNext()
+	public function _readNext()
 	{
-		$this->getStorage();
-		$this->_initMessageList();
-
-		$this->read_count++;
-		$this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
-
-		$next = array_shift($this->message_list);
-		if (!$next) {
-			return null;
-		}
-
-		$message_size = $next['size'];
-		$message_num  = $next['num'];
-		$message_id   = $next['uid'];
-
-		$start_time = microtime(true);
-
-		$this->logger->log("Fetching message #$message_num", 'debug');
+		$message = $this->getNextMessage();
 
 		$raw_message = new RawMessage();
-		$raw_message->id   = $message_num;
-		$raw_message->uid  = $message_id;
-		$raw_message->size = $message_size;
+		$raw_message->id   = $message->getId();
+		$raw_message->uid  = $message->getId();
+		$raw_message->size = $message->getOverview()->size;
 
 		if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
-			$raw_message->content = $this->getStorage()->getMessageHeadersByUid($message_num);
+			// If we are here, it means that message is larger than the max size
+			// So, we won't store the whole message, only the headers.
+			$raw_message->content = $this->storage->getRawHeaders($message);
 		} else {
-			$raw_message->content = $this->getStorage()->getRawMessageByUid($message_num);
+			// Otherwise store the whole message
+			$raw_message->content = $this->storage->getRawMessage($message->getUid());
 		}
+
 		$headers = null;
 
-		$this->logger->log(sprintf("Message size: %s bytes", $message_size), 'debug');
+		$this->logger->log(sprintf("Message size: %s bytes", $raw_message->size), 'debug');
 
 		if ($raw_message->uid) {
 			$this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
 		}
 
 		$EOL = "\n";
+
+		// Reads and formats the Message header
+		// To be compatible with the RawMessage
 		if (strpos($raw_message->content, $EOL . $EOL)) {
 			list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
 		} else if ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
@@ -192,51 +235,28 @@ class Imap extends AbstractFetcher
 
 		$raw_message->headers = $headers;
 
-		if (!$raw_message->size) {
-			$raw_message->size = strlen($raw_message->content);
-		}
-
-		if ($this->max_size && $raw_message->size > $this->max_size) {
-			$raw_message->too_big = true;
-			$this->logger->log("Setting too_big flag", 'debug');
-		}
-
-		$this->logger->log(sprintf("Got message %d %s. Took %0.2f seconds.", $message_num, $message_id, microtime(true) - $start_time), 'debug');
+		$this->next_id++;
 
 		return $raw_message;
 	}
 
-	/**
-	 * Deletes the message from the server.
-	 *
-	 * @param  $id
-	 */
-	protected function _doneRead($id)
-	{
-		$this->logger->log("Marking message as read: $id", 'debug');
-		try {
-			$storage->markReadByUids(array($id));
-		} catch (\Exception $e) {
-			$this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
-			throw $e;
-		}
-	}
-
 
 	/**
-	 * Tests the connection and returns the number of messages on success
+	 * Processes the message after reading it.
+	 * Moves it to the DP_Mailbox folder marking it "read"
 	 *
-	 * @return bool
-	 * @throws \Exception
+	 * @param int $id ID of the message
 	 */
-	public function test()
+	public function _doneRead($id)
 	{
-		try {
-			$x = $this->getStorage()->setFlags();
-		} catch (\Exception $e) {
-			throw $e;
+		$message = $this->storage->getMessage($id);
+
+		if ($this->mode === self::MODE_PRESERVE) {
+			return $message->moveToMailBox($this->archive_mailbox);
 		}
 
-		return $x;
+		if ($this->mode === self::MODE_AGGRESIVE) {
+			return $message->delete();
+		}
 	}
 }
