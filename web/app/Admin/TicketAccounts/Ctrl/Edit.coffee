@@ -123,9 +123,7 @@ define [
     	# @return {promise}
 		###
 		loadOutgoingAccountTest: ->
-			@test_email.from = @form_model.form.email_address
-
-			form_data = @form_model.getFormData().email_transport
+			form_data = @form_model.getFormData()
 			form_data.test_email = @test_email
 
 			return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data)
@@ -172,11 +170,12 @@ define [
     	# Show the test account modal
 		###
 		testOutgoingModal: ->
+			me = @
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
 				resolve: {
 					test_email: =>
-						@test_email.from = @form_model.form.email_address
+						@test_email.from = @form_model.form.address
 						return @test_email
 				},
 				controller: ['$scope', '$modalInstance', 'test_email', ($scope, $modalInstance, test_email) =>
@@ -186,14 +185,17 @@ define [
 					$scope.showLog = =>
 						$scope.showing_log = true
 
-					console.log(test_email)
 					$scope.test_email = test_email
 
 					testNow = =>
 						$scope.testing_started = true
 						$scope.showing_log = false
 						$scope.is_testing = true
-						@loadOutgoingAccountTest().success( (result) =>
+
+						if not test_email.from
+							test_email.from = me.form_model.form.address
+
+						me.loadOutgoingAccountTest().success( (result) =>
 							$scope.is_testing    = false
 							$scope.is_success    = result.is_success
 							$scope.log           = result.log

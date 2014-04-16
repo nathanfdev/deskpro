@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
+use Orb\Util\Strings;
 
 class OutgoingAccountTester
 {
@@ -87,15 +88,18 @@ class OutgoingAccountTester
 			->setTo($to_address);
 
 		try {
-			if ($this->account_config instanceof SmtpAccount) {
+			if ($this->account_config instanceof SmtpConfig) {
 				$this->_testSmtp($this->account_config);
-			} else if ($this->account_config instanceof GmailAccount) {
+			} else if ($this->account_config instanceof GmailConfig) {
 				$this->_testGmail($this->account_config);
-			} else if ($this->account_config instanceof PhpMailAccount) {
+			} else if ($this->account_config instanceof PhpMailConfig) {
 				$this->_testMail($this->account_config);
+			} else {
+				$this->is_success = false;
+				$this->swift_arraylogger->add("Unknown account type: " . get_class($this->account_config));
 			}
 		} catch (\Exception $e) {
-			$this->swift_arraylogger->add("[error] " . $e->getMessage());
+			$this->swift_arraylogger->add("[error] ({$e->getCode()}) Failed");
 		}
 
 		return $this->is_success;
@@ -150,14 +154,14 @@ class OutgoingAccountTester
 
 		$this->swift_arraylogger->add("[options] host: {$account_config->host}");
 		$this->swift_arraylogger->add("[options] port: {$account_config->port}");
-		$this->swift_arraylogger->add("[options] secure: {$account_config->secure}");
+		$this->swift_arraylogger->add("[options] secure: {$account_config->secure_mode}");
 		$this->swift_arraylogger->add("[options] username: {$account_config->user}");
-		$this->swift_arraylogger->add("[options] password: {$account_config->password}");
+		$this->swift_arraylogger->add("[options] password: xxxxxxxx");
 
 		$transport = \Swift_SmtpTransport::newInstance(
 			$account_config->host,
 			$account_config->port,
-			$account_config->secure
+			$account_config->secure_mode
 		);
 		if ($account_config->user) {
 			$transport->setUsername($account_config->user);
@@ -177,14 +181,17 @@ class OutgoingAccountTester
 		$account_config = $this->account_config;
 
 		$this->swift_arraylogger->add("Testing GmailAccount");
-		$smtp = new SmtpAccount();
-		$smtp->setOptions(array(
-			'username' => $account_config->user,
-			'password' => $account_config->password,
-			'host'     => 'smtp.gmail.com',
-			'port'     => 465,
-			'secure'   => 'ssl'
-		));
+		$smtp = new SmtpConfig();
+		$data = array(
+			'username'    => $account_config->user,
+			'password'    => $account_config->password,
+			'host'        => 'smtp.gmail.com',
+			'port'        => 465,
+			'secure_mode' => 'ssl'
+		);
+		foreach ($data as $k => $v) {
+			$smtp->$k = $v;
+		}
 		$this->_testSmtp($smtp);
 	}
 
@@ -206,6 +213,6 @@ class OutgoingAccountTester
 	 */
 	public function getLog()
 	{
-		return $this->swift_arraylogger->dump();
+		return Strings::standardEol($this->swift_arraylogger->dump());
 	}
 }

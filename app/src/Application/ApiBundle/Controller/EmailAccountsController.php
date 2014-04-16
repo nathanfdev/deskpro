@@ -40,6 +40,7 @@ use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\OutgoingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 

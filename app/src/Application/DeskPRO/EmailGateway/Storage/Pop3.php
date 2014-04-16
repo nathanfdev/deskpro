@@ -106,7 +106,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 			}
 		} catch (Exception\RuntimeException $e) {
 			if ($logger) {
-				$logger->logError("[error:protocol] " . $e->getMessage());
+				$logger->logError("[error:protocol] ({$e->getCode()}) " . $e->getMessage() . " <" . get_class($e) . ">");
 			}
 			$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
 			throw $new_e;
