@@ -3803,4 +3803,63 @@ class TicketController extends AbstractController
 
 		return $ticket;
 	}
+	
+	public function linkExistingAction($ticket_id, $linked_ticket_id)
+	{
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		try	{
+			$linkedTicket = $this->getTicketOr404($linked_ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $linked_ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		if ($this->in->getBool('isParent')) {
+			$ticket->parent_ticket = $linkedTicket;
+		} else {
+			$linkedTicket->parent_ticket = $ticket;
+		}
+		
+		$this->em->persist($ticket);
+		$this->em->persist($linkedTicket);
+		
+		$this->em->flush();
+		
+		return $this->createJsonResponse(array('success' => 1));
+		
+	}
+	
+	public function linkExistingOverlayAction($ticket_id)
+	{
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		return $this->render('AgentBundle:Ticket:link.html.twig');
+	}
+
 }

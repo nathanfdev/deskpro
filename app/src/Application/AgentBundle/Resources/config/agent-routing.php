@@ -1020,6 +1020,18 @@ $collection->create('agent_ticket_spam', array(
 	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
+$collection->create('agent_ticket_link_existing_overlay', array(
+	'path' => '/tickets/{ticket_id}/link-overlay',
+	'controller' => 'AgentBundle:Ticket:linkExistingOverlay',
+	'requirements' => array('ticket_id' => '\\d+'),
+));
+
+$collection->create('agent_ticket_link_existing', array(
+	'path' => '/tickets/{ticket_id}/link/{linked_ticket_id}',
+	'controller' => 'AgentBundle:Ticket:linkExisting',
+	'methods'     => array('POST'),
+));
+
 $collection->create('agent_twitter_new', array(
 	'path'        => '/twitter/new',
 	'controller'  => 'AgentBundle:Twitter:newTweet',
