@@ -108,7 +108,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
 					list (, $auth) = explode('-', $_COOKIE['dpsid-agent']);
 
-					if ($agent_session && $agent_session['auth'] == $auth) {
+					if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
 						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
 						if ($person && $person->is_agent) {
 							$person_id = $person->id;

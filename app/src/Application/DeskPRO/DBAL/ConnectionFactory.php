@@ -143,12 +143,6 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 			}
 		}
 
-		$evm = $conn->getEventManager();
-
-		if ($this->container && $this->container->has('event_dispatcher')) {
-			$evm->addEventSubscriber(new SymfonyEventConnector($this->container->get('event_dispatcher')));
-		}
-
 		$conn->getDatabasePlatform()->registerDoctrineTypeMapping('BLOB', 'dpblob');
 
 		if ($dp_global_key) {

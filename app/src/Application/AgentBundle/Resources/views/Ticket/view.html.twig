@@ -142,7 +142,7 @@ pageMeta.lang = {{ {
 	</div>
 	<div class="row author last">
 		<div class="dp-btn-group dp-dropdown">
-			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover preload user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 				<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 					{{ ticket.person.getNameWithTitle() }}
 					<span class="email" id="{{ baseId }}_user_email_text">({{ ticket.person_email.email|default(ticket.person_email_address) }})</span>
@@ -192,7 +192,7 @@ pageMeta.lang = {{ {
 			<ul class="cc-row-list" id="{{ baseId }}_cc_row_list">
 				{% for part in user_parts %}
 					{% if loop.index0 < 2 %}
-						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms, preload: true } %}
+						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 					{% else %}
 						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 					{% endif %}
