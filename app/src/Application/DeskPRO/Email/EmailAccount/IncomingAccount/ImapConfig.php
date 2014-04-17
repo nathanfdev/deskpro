@@ -74,6 +74,12 @@ class ImapConfig implements AccountConfigInterface
 	public $mode = 'read';
 
 	/**
+	 * The mailbox to read from. Default blank means inbox.
+	 * @var string
+	 */
+	public $read_mailbox = null;
+
+	/**
 	 * If using the 'archive' method, this is the mailbox name.
 	 * @var string
 	 */
@@ -92,6 +98,7 @@ class ImapConfig implements AccountConfigInterface
 			'password'        => $this->password,
 			'secure_mode'     => $this->secure_mode,
 			'mode'            => $this->mode,
+			'read_mailbox'    => $this->read_mailbox,
 			'archive_mailbox' => $this->archive_mailbox
 		);
 	}

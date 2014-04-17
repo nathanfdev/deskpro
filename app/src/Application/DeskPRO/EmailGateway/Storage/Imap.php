@@ -45,7 +45,7 @@ class Imap extends Server
 	{
 		if (!isset($options['host']) ||
 			!isset($options['port']) ||
-			!isset($options['username']) ||
+			!isset($options['user']) ||
 			!isset($options['password'])) {
 			throw new \Exception('Insufficient Parameters');
 		}
@@ -70,55 +70,66 @@ class Imap extends Server
 	/**
 	 * @return array an array of IDs
 	 */
-	public function searchUnseen()
+	public function getAllUnseenMessageUids()
 	{
-		return imap_search($this->getImapStream(),'UNSEEN', SE_UID);
+		$result = imap_search($this->getImapStream(), 'UNSEEN UNDELETED', SE_UID);
+
+		if ($result === false) {
+			return array();
+		}
+
+		return $result;
 	}
 
 
 	/**
 	 * Searches the server for matching emails and retrieves only the IDs
 	 *
-	 * @param int $limit
 	 * @return array an array of matching IDs
 	 */
-	public function searchIds($limit)
+	public function getAllMessageUids()
 	{
-		$numMessages = $this->numMessages();
+		$result = imap_search($this->getImapStream(), 'ALL UNDELETED', SE_UID);
 
-		if (isset($limit) && is_numeric($limit) && $limit < $numMessages)
-			$numMessages = $limit;
-
-		if ($numMessages < 1)
+		if ($result === false) {
 			return array();
-
-		$stream = $this->getImapStream();
-
-		$messages = array();
-
-		for ($i = 1; $i <= $numMessages; $i++) {
-			$messages[] = imap_uid($stream, $i);
 		}
 
-		return $messages;
+		return $result;
 	}
 
 
 	/**
 	 * Gets a raw RFC2822 compatible message
 	 *
-	 * @param String $messageId Unique message id
-	 * @return String Raw message
+	 * @param int $uid Unique message id
+	 * @return string Raw message
 	 */
-	public function getRawMessage($messageId)
+	public function getRawMessage($uid)
 	{
-		$rawBody = imap_body($this->getImapStream(), $messageId, FT_UID);
+		$raw_body = imap_fetchbody($this->getImapStream(), $uid, '', FT_UID);
 
-		if($rawBody === false){
+		if($raw_body === false){
 			throw new \Exception(sprintf('Failed to retrieve raw body for message'));
 		}
 
-		return $rawBody;
+		return $raw_body;
+	}
+
+
+	/**
+	 * @param int $uid
+	 * @return null|int
+	 */
+	public function getMessageSize($uid)
+	{
+		$results = imap_fetch_overview($this->imapStream, $uid, FT_UID);
+		if (!$results) {
+			return null;
+		}
+
+		$message_overview = array_shift($results);
+		return isset($message_overview->size) ? $message_overview->size : null;
 	}
 
 
@@ -140,11 +151,50 @@ class Imap extends Server
 
 
 	/**
-	 * @param \Fetch\Message $message
+	 * @param int $uid
+	 * @param string $new_mailbox
+	 */
+	public function moveMessageMailbox($uid, $new_mailbox)
+	{
+		imap_mail_move($this->imapStream, "$uid", "$new_mailbox", CP_UID);
+		imap_expunge($this->imapStream);
+	}
+
+
+	/**
+	 * @param int $uid
+	 */
+	public function deleteMessage($uid)
+	{
+		imap_delete($this->imapStream, $uid, FT_UID);
+		imap_expunge($this->imapStream);
+	}
+
+
+	/**
+	 * @param int $uid
 	 * @return string
 	 */
-	public function getRawHeaders(\Fetch\Message $message)
+	public function getRawHeaders($uid)
 	{
-		return imap_fetchheader($this->imapStream, $message->getUid(), FT_UID);
+		return imap_fetchheader($this->imapStream, $uid, FT_UID);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function clearCaches()
+	{
+		return imap_gc($this->imapStream, IMAP_GC_ELT|IMAP_GC_ENV|IMAP_GC_TEXTS);
+	}
+
+
+	/**
+	 * Close the connection
+	 */
+	public function close()
+	{
+		$this->clearCaches();
 	}
 }

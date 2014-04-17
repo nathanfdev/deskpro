@@ -72,7 +72,7 @@ class FetcherStorageFactory
 
 
 	/**
-	 * @param Pop3Config $config
+	 * @param GmailConfig $config
 	 * @return Pop3Storage
 	 */
 	public function createGmailFetcherStorage(GmailConfig $config)

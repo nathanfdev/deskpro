@@ -73,6 +73,11 @@ class EditEmailAccount
 	public $in_pop3_account;
 
 	/**
+	 * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig
+	 */
+	public $in_imap_account;
+
+	/**
 	 * @var string
 	 */
 	public $outgoing_type;
@@ -189,6 +194,10 @@ class EditEmailAccount
 		switch ($this->incoming_type) {
 			case 'pop3':
 				return $this->in_pop3_account;
+				break;
+
+			case 'imap':
+				return $this->in_imap_account;
 				break;
 
 			case 'gmail':
