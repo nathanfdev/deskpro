@@ -89,4 +89,60 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 	{
 		return $this->assertGreaterThan(0, $subject);
 	}
+
+	protected function _getExpectedTicket()
+	{
+		return require 'Tickets' . DIRECTORY_SEPARATOR . 'Data' . DIRECTORY_SEPARATOR . 'ExpectedTicket.php';
+	}
+
+	protected function getDateTimeFields($entity)
+	{
+		$datetimeFields = array(
+			'ticket' => array(
+				'date_created',
+				'date_first_agent_reply',
+				'date_last_agent_reply',
+				'date_user_waiting',
+				'date_status'
+			),
+			'person' => array(
+				'date_created'
+			),
+			'person_email' => array(
+				'date_created'
+			)
+		);
+
+		return isset($datetimeFields[$entity]) ? $datetimeFields[$entity] : null;
+	}
+
+	protected function getTimestampFields($entity)
+	{
+		$timestampFields = array(
+			'ticket' => array(
+				'date_created_ts',
+				'date_created_ts_ms',
+				'date_created_ts',
+				'date_created_ts_ms',
+				'date_first_agent_reply_ts',
+				'date_first_agent_reply_ts_ms',
+				'date_last_agent_reply_ts',
+				'date_last_agent_reply_ts_ms',
+				'date_user_waiting_ts',
+				'date_user_waiting_ts_ms',
+				'date_status_ts',
+				'date_status_ts_ms',
+			),
+			'person' => array(
+				'date_created_ts',
+				'date_created_ts_ms'
+			),
+			'person_email' => array(
+				'date_created_ts',
+				'date_created_ts_ms'
+			)
+		);
+
+		return isset($timestampFields[$entity]) ? $timestampFields[$entity] : null;
+	}
 }
