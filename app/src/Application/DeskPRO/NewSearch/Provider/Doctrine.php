@@ -6,7 +6,15 @@ use FOS\ElasticaBundle\Doctrine\ORM\Provider;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 
 /**
- * Doctrine Provider
+ * DeskPRO Doctrine Provider
+ *
+ * Extends the Doctrine provider to provide a helper method for counting
+ * and enables limiting the population process with the help of a new
+ * option "limit".
+ *
+ * Also adds better garbage collection procedure.
+ *
+ * @package DeskPRO
  */
 class Doctrine extends Provider
 {
@@ -17,15 +25,26 @@ class Doctrine extends Provider
     {
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects = $this->countObjects($queryBuilder);
+
         $offset = isset($options['offset']) ? intval($options['offset']) : 0;
+        $limit = isset($options['limit']) ? intval($options['limit']) : -1;
         $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
+
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
 
-        for (; $offset < $nbObjects; $offset += $batchSize) {
+        if ($limit == -1) {
+            $cutoff = $nbObjects;
+        } else {
+            $cutoff = $limit;
+        }
+
+        for (; $offset < $cutoff; $offset += $batchSize) {
+
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
             }
+
             $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
 
             if (!$ignoreErrors) {
@@ -54,7 +73,7 @@ class Doctrine extends Provider
                 $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
                 $this->managerRegistry->getManagerForClass($this->objectClass)->clearRepositoryCache();
 
-                $objects = array();
+                $objects = null;
                 $stepCount = null;
                 $stepNbObjects = null;
                 $percentComplete = null;
@@ -67,5 +86,10 @@ class Doctrine extends Provider
             usleep($sleep);
 
         }
+    }
+
+    public function getCounts()
+    {
+        return $this->countObjects($this->createQueryBuilder());
     }
 } 

@@ -2,8 +2,7 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,11 +10,17 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
-use FOS\ElasticaBundle\Resetter;
-use FOS\ElasticaBundle\Provider\ProviderInterface;
+
+use Application\DeskPRO\NewSearch\Provider\Doctrine as DoctrineProvider;
 
 /**
  * Populate Elasticsearch Command
+ *
+ * The primary command for populating Elasticsearch with
+ * data from the DB. Uses the dp:elastica:index command
+ * to achieve the actual result.
+ *
+ * @package DeskPRO
  */
 class PopulateElasticsearchCommand extends ContainerAwareCommand
 {
@@ -30,11 +35,6 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     private $providerRegistry;
 
     /**
-     * @var Resetter
-     */
-    private $resetter;
-
-    /**
      * @see Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
@@ -46,7 +46,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
+            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)', 100)
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->setDescription('Populates search indexes from providers')
         ;
@@ -59,7 +59,6 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     {
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
-        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
     }
 
     /**
@@ -67,99 +66,65 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index         = $input->getOption('index');
-        $type          = $input->getOption('type');
-        $reset         = !$input->getOption('no-reset');
-        $options       = $input->getOptions();
+        $indexes = array_keys($this->indexManager->getAllIndexes());
 
-        $options['ignore-errors'] = $input->hasOption('ignore-errors');
+        foreach ($indexes as $index) {
 
-        if ($input->isInteractive() && $reset && $input->getOption('offset')) {
-            /** @var DialogHelper $dialog */
-            $dialog = $this->getHelperSet()->get('dialog');
-            if (!$dialog->askConfirmation($output, '<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>', true)) {
-                return;
+            /** @var $providers DoctrineProvider[] */
+            $providers = $this->providerRegistry->getIndexProviders($index);
+
+            foreach ($providers as $type => $provider) {
+
+                $total = $provider->getCounts();
+                $offset = $input->getOption('offset');
+                $batchSize = $input->getOption('batch-size');
+
+                for (; $offset < $total; $offset += $batchSize) {
+                    $arguments = $this->getArguments($input, $index, $type, $offset, ($offset + $batchSize), $batchSize);
+                    $this->runCommand($arguments);
+                }
+
             }
+
         }
+    }
 
-        if (null === $index && null !== $type) {
-            throw new \InvalidArgumentException('Cannot specify type option without an index.');
-        }
+    private function runCommand($arguments)
+    {
+        $command = 'php cmd.php dp:elastica:index ' . implode(' ', $arguments);
+        $process = new Process($command);
 
-        $em = $this->getContainer()->get('doctrine')->getManager();
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
-
-        if (null !== $index) {
-            if (null !== $type) {
-                $this->populateIndexType($output, $index, $type, $reset, $options);
+        $process->run(function ($type, $buffer) {
+            if (Process::ERR === $type) {
+                echo 'ERR > '.$buffer;
             } else {
-                $this->populateIndex($output, $index, $reset, $options);
+                echo 'OUT > '.$buffer;
             }
-        } else {
-            $indexes = array_keys($this->indexManager->getAllIndexes());
-
-            foreach ($indexes as $index) {
-                $this->populateIndex($output, $index, $reset, $options);
-            }
-        }
+        });
     }
 
-    /**
-     * Recreates an index, populates its types, and refreshes the index.
-     *
-     * @param OutputInterface $output
-     * @param string          $index
-     * @param boolean         $reset
-     * @param array           $options
-     */
-    private function populateIndex(OutputInterface $output, $index, $reset, $options)
+    private function getArguments($input, $index, $type, $offset, $limit, $batchSize)
     {
-        if ($reset) {
-            $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
-            $this->resetter->resetIndex($index);
+        $arguments = array();
+
+        $arguments[] = '--index="' . $index . '"';
+        $arguments[] = '--type="' . $type . '"';
+        $arguments[] = '--offset="' . $offset . '"';
+        $arguments[] = '--limit="' . $limit . '"';
+        $arguments[] = '--batch-size="' . $batchSize . '"';
+
+        if ($input->hasOption('no-reset')) {
+            $arguments[] = '--no-reset="' . $input->getOption('no-reset') . '"';
         }
 
-        /** @var $providers ProviderInterface[] */
-        $providers = $this->providerRegistry->getIndexProviders($index);
-
-        foreach ($providers as $type => $provider) {
-
-            $loggerClosure = function($message) use ($output, $index, $type) {
-                $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
-            };
-
-            $provider->populate($loggerClosure, $options);
+        if ($input->hasOption('sleep')) {
+            $arguments[] = '--sleep="' . $input->getOption('sleep') . '"';
         }
 
-        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
-        $this->resetter->postPopulate($index);
-        $this->indexManager->getIndex($index)->refresh();
-    }
-
-    /**
-     * Deletes/remaps an index type, populates it, and refreshes the index.
-     *
-     * @param OutputInterface $output
-     * @param string          $index
-     * @param string          $type
-     * @param boolean         $reset
-     * @param array           $options
-     */
-    private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)
-    {
-        if ($reset) {
-            $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
-            $this->resetter->resetIndexType($index, $type);
+        if ($input->hasOption('ignore-errors')) {
+            $arguments[] = '--ignore-errors="' . $input->getOption('ignore-errors') . '"';
         }
 
-        $loggerClosure = function($message) use ($output, $index, $type) {
-            $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
-        };
-
-        $provider = $this->providerRegistry->getProvider($index, $type);
-        $provider->populate($loggerClosure, $options);
-
-        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
-        $this->indexManager->getIndex($index)->refresh();
+        return $arguments;
     }
 } 
