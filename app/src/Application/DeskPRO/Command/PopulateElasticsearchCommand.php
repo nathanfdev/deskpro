@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
+use FOS\ElasticaBundle\Resetter;
 use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
 
@@ -35,6 +36,11 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     private $providerRegistry;
 
     /**
+     * @var Resetter
+     */
+    private $resetter;
+
+    /**
      * @see Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
@@ -43,7 +49,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             ->setName('dp:elastica:populate')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to repopulate')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
-            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
+            ->addOption('reset', null, InputOption::VALUE_NONE, 'Reset index before populating')
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)', 100)
@@ -59,6 +65,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     {
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
+        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
     }
 
     /**
@@ -74,6 +81,11 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             $providers = $this->providerRegistry->getIndexProviders($index);
 
             foreach ($providers as $type => $provider) {
+
+                if ($input->getOption('reset')) {
+                    $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
+                    $this->resetter->resetIndexType($index, $type);
+                }
 
                 $total = $provider->getCounts();
                 $offset = $input->getOption('offset');
@@ -112,10 +124,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $arguments[] = '--offset="' . $offset . '"';
         $arguments[] = '--limit="' . $limit . '"';
         $arguments[] = '--batch-size="' . $batchSize . '"';
-
-        if ($input->hasOption('no-reset')) {
-            $arguments[] = '--no-reset="' . $input->getOption('no-reset') . '"';
-        }
+        $arguments[] = '--no-reset ';
 
         if ($input->hasOption('sleep')) {
             $arguments[] = '--sleep="' . $input->getOption('sleep') . '"';
