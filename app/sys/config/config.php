@@ -206,6 +206,17 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\TicketToElasticaTransformer');
 $container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $definition);
 
+// fos_elastica.provider.prototype.orm
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Provider\\Doctrine');
+$definition->setArguments(array(
+    '',
+    '',
+    array(),
+    new Reference('doctrine')
+));
+$definition->setAbstract(true);
+$container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
 
 ############################################################################
 # Validators and Constraints
