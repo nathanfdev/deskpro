@@ -192,6 +192,16 @@ class ApiSampleDb extends AbstractDbSet
 		$this->getDb()->insert('person2usergroups', array('person_id' => $agent->id, 'usergroup_id' => $agent_group->id));
 
 		#------------------------------
+		# A few ticket categories
+		#------------------------------
+
+		$this->getDb()->exec("
+			INSERT INTO `ticket_categories` (`id`, `parent_id`, `title`,`display_order`)
+			VALUES
+				(1, NULL, 'Test Category', 0)
+		");
+
+		#------------------------------
 		# A few departments
 		#------------------------------
 
