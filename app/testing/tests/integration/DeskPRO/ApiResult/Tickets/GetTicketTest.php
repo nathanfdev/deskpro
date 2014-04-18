@@ -70,7 +70,7 @@ class GetTicketTest extends AbstractApiResultTest
 		$this->assertEquals($retrievedTicketArray, $expectedTicketArray);
 	}
 
-	public function testFindByCriteria()
+	public function testFindBySubject()
 	{
 		$testSubject = 'Test';
 
@@ -89,5 +89,26 @@ class GetTicketTest extends AbstractApiResultTest
 		$retrievedTicketArray = $data['tickets'][1];
 
 		$this->assertEquals($retrievedTicketArray['subject'], $testSubject);
+	}
+
+	public function testFindByDepartment()
+	{
+		$testDepartmentId = 1;
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addDepartment($testDepartmentId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$this->assertArrayHasKey('tickets', $result->getData());
+
+		$data = $result->getData();
+
+		$retrievedTicketArray = $data['tickets'][1];
+
+		$this->assertEquals($retrievedTicketArray['department']['id'], $testDepartmentId);
 	}
 }
