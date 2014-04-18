@@ -159,6 +159,10 @@ class GetTicketTest extends AbstractApiResultTest
 		$matchingTickets = $data['tickets'];
 
 		$this->assertGreaterThanOrEqual(1, count($matchingTickets));
+
+		$ticketBuilder->setId($testTicketId)->assignToAgent(0);
+
+		$this->getApi()->tickets->save($ticketBuilder);
 	}
 
 	public function testFindByCategory()
@@ -204,5 +208,26 @@ class GetTicketTest extends AbstractApiResultTest
 		$ticketBuilder->setId($testTicketId)->setCategory(0);
 
 		$this->getApi()->tickets->save($ticketBuilder);
+	}
+
+	public function testFindByOrganization()
+	{
+		$testOrganizationId = 1;
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addOrganization($testOrganizationId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertEquals(0, count($matchingTickets));
 	}
 }
