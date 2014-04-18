@@ -111,4 +111,51 @@ class GetTicketTest extends AbstractApiResultTest
 
 		$this->assertEquals($retrievedTicketArray['department']['id'], $testDepartmentId);
 	}
+
+	public function testFindByAgent()
+	{
+		$testAgentId = 1;
+
+		$testTicketId = 1;
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addAgent($testAgentId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertEquals(0, count($matchingTickets));
+
+		$ticketBuilder = $this->getApi()->tickets->createBuilder();
+
+		$this->assertInstanceOf('DeskPRO\Builder\Ticket', $ticketBuilder);
+
+		$ticketBuilder->setId($testTicketId)->assignToAgent($testAgentId);
+
+		$this->getApi()->tickets->save($ticketBuilder);
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addAgent($testAgentId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertGreaterThanOrEqual(1, count($matchingTickets));
+	}
 }
