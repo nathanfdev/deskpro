@@ -66,6 +66,26 @@ class ApiSampleDb extends AbstractDbSet
 
 		$this->getEm()->persist($agent);
 		$this->getEm()->persist($email);
+
+		$anotherAgent = new Person();
+		$anotherAgent->first_name = 'Another';
+		$anotherAgent->last_name = 'Agent';
+		$anotherEmail = $anotherAgent->setEmail('anotheruser@example.com', true);
+		$agent->setPassword('pass');
+		$anotherAgent->is_user = true;
+		$anotherAgent->is_confirmed = true;
+		$anotherAgent->is_agent_confirmed = true;
+		$anotherAgent->is_agent = true;
+		$anotherAgent->can_agent = false;
+		$anotherAgent->can_admin = false;
+		$anotherAgent->can_billing = false;
+		$anotherAgent->can_reports = false;
+
+		$this->getEm()->persist($agent);
+		$this->getEm()->persist($email);
+		$this->getEm()->persist($anotherAgent);
+		$this->getEm()->persist($anotherEmail);
+
 		$this->getEm()->flush();
 
 		$this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
@@ -79,6 +99,13 @@ class ApiSampleDb extends AbstractDbSet
 		$api_key->code = str_repeat('X', 25);
 		$this->getEm()->persist($api_key);
 		$this->getEm()->flush();
+
+		$api_key = new ApiKey();
+		$api_key->person = $anotherAgent;
+		$api_key->code = str_repeat('Y', 25);
+		$this->getEm()->persist($api_key);
+		$this->getEm()->flush();
+
 
 		$everyone_ug = new Usergroup();
 		$everyone_ug['title'] = 'Everyone';
@@ -99,6 +126,13 @@ class ApiSampleDb extends AbstractDbSet
 		$agent_group['note'] = '';
 		$agent_group['is_agent_group'] = true;
 		$this->getEm()->persist($agent_group);
+		$this->getEm()->flush();
+
+		$limitedAgentGroup = new Usergroup();
+		$limitedAgentGroup['title'] = 'No Permissions';
+		$limitedAgentGroup['note'] = '';
+		$limitedAgentGroup['is_agent_group'] = true;
+		$this->getEm()->persist($limitedAgentGroup);
 		$this->getEm()->flush();
 
 		// Permissions
@@ -190,6 +224,95 @@ class ApiSampleDb extends AbstractDbSet
 		");
 
 		$this->getDb()->insert('person2usergroups', array('person_id' => $agent->id, 'usergroup_id' => $agent_group->id));
+
+		$limitedGId = $limitedAgentGroup->getId();
+		$this->getEm()->getConnection()->executeUpdate("
+			INSERT INTO `permissions` (`usergroup_id`, `person_id`, `value`, `name`)
+			VALUES
+				($limitedGId, NULL, '0', 'agent_tickets.use'),
+				($limitedGId, NULL, '0', 'agent_tickets.create'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_closed'),
+				($limitedGId, NULL, '0', 'agent_tickets.reply_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_department_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_fields_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_agent_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_team_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_self_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_cc_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_merge_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_labels_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_notes_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_hold_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_user_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_agent_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_resolved_own'),
+				($limitedGId, NULL, '0', 'agent_tickets.reply_to_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_department_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_fields_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_agent_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_team_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_self_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_cc_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_merge_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_labels_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_notes_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_hold_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_user_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_agent_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_resolved_followed'),
+				($limitedGId, NULL, '0', 'agent_tickets.view_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.reply_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_department_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_fields_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_agent_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_team_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_self_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_merge_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_labels_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_notes_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_hold_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_user_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_agent_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_resolved_unassigned'),
+				($limitedGId, NULL, '0', 'agent_tickets.view_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.reply_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_department_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_fields_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_agent_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_team_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_assign_self_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_merge_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_labels_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_notes_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_hold_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_user_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_awaiting_agent_others'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_resolved_others'),
+				($limitedGId, NULL, '0', 'agent_people.use'),
+				($limitedGId, NULL, '0', 'agent_people.create'),
+				($limitedGId, NULL, '0', 'agent_people.edit'),
+				($limitedGId, NULL, '0', 'agent_people.validate'),
+				($limitedGId, NULL, '0', 'agent_people.manage_emails'),
+				($limitedGId, NULL, '0', 'agent_people.reset_password'),
+				($limitedGId, NULL, '0', 'agent_people.notes'),
+				($limitedGId, NULL, '0', 'agent_people.disable'),
+				($limitedGId, NULL, '0', 'agent_org.create'),
+				($limitedGId, NULL, '0', 'agent_org.edit'),
+				($limitedGId, NULL, '0', 'agent_chat.use'),
+				($limitedGId, NULL, '0', 'agent_chat.view_unassigned'),
+				($limitedGId, NULL, '0', 'agent_chat.view_others'),
+				($limitedGId, NULL, '0', 'agent_publish.create'),
+				($limitedGId, NULL, '0', 'agent_publish.edit'),
+				($limitedGId, NULL, '0', 'agent_publish.validate'),
+				($limitedGId, NULL, '0', 'agent_general.signature'),
+				($limitedGId, NULL, '0', 'agent_general.signature_rte')
+		");
+
+		$this->getDb()->insert('person2usergroups', array('person_id' => $anotherAgent->id, 'usergroup_id' => $limitedAgentGroup->id));
 
 		#------------------------------
 		# A few ticket categories
