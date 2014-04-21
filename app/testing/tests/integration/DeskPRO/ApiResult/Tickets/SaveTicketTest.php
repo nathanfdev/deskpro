@@ -66,4 +66,50 @@ class SaveTicketTest extends AbstractApiResultTest
 		
 		$this->getApi()->tickets->delete($newTicketId);
 	}
+	
+	public function testCanEditTicket()
+	{
+		$testTicketId = 1;
+		
+		$result = $this->getApi()->tickets->findById($testTicketId);
+
+		$this->assertInstanceOf('DeskPRO\Api\Result', $result);
+
+		$this->assertArrayHasKey('ticket', $result->getData());
+
+		$data = $result->getData();
+
+		$retrievedTicketArray = $data['ticket'];
+		
+		$oldSubject = $retrievedTicketArray['subject'];
+		
+		$newSubject = 'Updated ticket subject';
+		
+		$ticketBuilder = $this->getApi()->tickets->createBuilder();
+		
+		$ticketBuilder->setId($testTicketId)->setSubject($newSubject);
+		
+		$result = $this->getApi()->tickets->save($ticketBuilder);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$result = $this->getApi()->tickets->findById($testTicketId);
+
+		$this->assertInstanceOf('DeskPRO\Api\Result', $result);
+
+		$this->assertArrayHasKey('ticket', $result->getData());
+
+		$data = $result->getData();
+
+		$retrievedTicketArray = $data['ticket'];
+		
+		$this->assertEquals($retrievedTicketArray['subject'], $newSubject);
+		
+		$ticketBuilder = $this->getApi()->tickets->createBuilder();
+		
+		$ticketBuilder->setId($testTicketId)->setSubject($oldSubject);
+		
+		$this->getApi()->tickets->save($ticketBuilder);
+		
+	}
 }
