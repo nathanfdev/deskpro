@@ -7,7 +7,9 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 	 * @var \DeskPRO\Api
 	 */
 	private $api;
-
+	
+	/** @var \DeskPRO\Api */
+	private $limitedAccessApi;
 
 	public function runBefore()
 	{
@@ -25,6 +27,15 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 		}
 
 		return $this->api;
+	}
+	
+	public function getApiWithLimitedAccess()
+	{
+		if (!$this->limitedAccessApi) {
+			$this->limitedAccessApi = new \DeskPRO\Api('http://localhost:8888', '2:' . str_repeat('Y', 25));
+		}
+		
+		return $this->limitedAccessApi;
 	}
 
 	protected function _getIgnoreKeys($entity)
