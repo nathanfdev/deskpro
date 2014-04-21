@@ -142,6 +142,9 @@ class ApiSampleDb extends AbstractDbSet
 			VALUES
 				($ugid, NULL, '1', 'agent_tickets.use'),
 				($ugid, NULL, '1', 'agent_tickets.create'),
+				($ugid, NULL, '1', 'agent_tickets.delete_own'),
+				($ugid, NULL, '1', 'agent_tickets.delete_unassigned'),
+				($ugid, NULL, '1', 'agent_tickets.delete_followed'),
 				($ugid, NULL, '1', 'agent_tickets.modify_set_closed'),
 				($ugid, NULL, '1', 'agent_tickets.reply_own'),
 				($ugid, NULL, '1', 'agent_tickets.modify_own'),
