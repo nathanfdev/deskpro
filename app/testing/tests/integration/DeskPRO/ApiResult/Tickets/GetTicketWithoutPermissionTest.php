@@ -9,7 +9,7 @@ require_once __DIR__ . '/../AbstractApiResultTest.php';
 class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 {
 
-	public function testFindById()
+	public function testFindByIdWithoutPermission()
 	{
 		$expectedTicketArray = $this->_getExpectedTicket();
 
@@ -20,7 +20,7 @@ class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 		$this->assertEquals('404', $result->getResponseCode());
 	}
 
-	public function testFindBySubject()
+	public function testFindBySubjectWithoutPermission()
 	{
 		$testSubject = 'Test';
 
@@ -41,7 +41,7 @@ class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 		$this->assertEquals(count($data['tickets']), 0);
 	}
 
-	public function testFindByDepartment()
+	public function testFindByDepartmentWithoutPermission()
 	{
 		$testDepartmentId = 1;
 
@@ -62,7 +62,7 @@ class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 		$this->assertEquals(count($data['tickets']), 0);
 	}
 
-	public function testFindByAgent()
+	public function testFindByAgentWithoutPermission()
 	{
 		$testAgentId = 1;
 
@@ -85,7 +85,7 @@ class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 		$this->assertEquals(count($data['tickets']), 0);
 	}
 
-	public function testFindByCategory()
+	public function testFindByCategoryWithoutPermission()
 	{
 		$testCategoryId = 1;
 
@@ -108,7 +108,7 @@ class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 		$this->assertEquals(count($data['tickets']), 0);
 	}
 
-	public function testFindByOrganization()
+	public function testFindByOrganizationWithoutPermission()
 	{
 		$testOrganizationId = 1;
 
