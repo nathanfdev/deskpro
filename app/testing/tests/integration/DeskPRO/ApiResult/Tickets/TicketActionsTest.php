@@ -114,6 +114,19 @@ class TicketActionsTest extends AbstractApiResultTest
 		$this->assertMessagesAreEqual($this->_getExpectedTicketMessage(), $data['message']);
 	}
 	
+	public function testCanGetTicketSlas()
+	{
+		$testTicketId = 1;
+		
+		$result = $this->getApi()->tickets->getTicketSlas($testTicketId);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$data = $result->getData();
+		
+		$this->assertArrayHasKey('ticket_slas', $data);
+	}
+	
 	protected function _getExpectedTicketMessage()
 	{
 		return require 'Data' . DIRECTORY_SEPARATOR . 'ExpectedTicketMessage.php';
