@@ -45,4 +45,21 @@ class GetPersonTest extends AbstractApiResultTest
 		
 		return $this->assertEquals($retrievedPersonArray, $retrievedPersonArray);
 	}
+	
+	public function testCanFindByAgentGroup()
+	{
+		$allPermissionGroup = 3;
+		
+		$criteria = $this->getApi()->people->createCriteria();
+		
+		$criteria->addAgentTeam($allPermissionGroup);
+		
+		$result = $this->getApi()->people->find($criteria);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$data = $result->getData();
+		
+		$this->assertArrayHasKey('people', $data);
+	}
 }
