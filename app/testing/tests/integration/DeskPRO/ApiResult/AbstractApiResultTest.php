@@ -86,7 +86,9 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 				'total_to_first_reply',
 				'total_to_first_reply_work',
 				'total_to_resolution',
-				'total_to_resolution_work'
+				'total_to_resolution_work',
+				'total_user_waiting',
+				'waiting_times',
 			)
 		);
 
