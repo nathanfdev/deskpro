@@ -49,7 +49,7 @@ class TicketActionsTest extends AbstractApiResultTest
 		
 		$this->assertArrayHasKey('messages', $data);
 		
-		$this->assertGreaterThanOrEqual(1, $data['messages']);
+		$this->assertGreaterThanOrEqual(1, count($data['messages']));
 		
 		$retrievedTicketMessageArray = $data['messages'][0];
 		
@@ -84,6 +84,45 @@ class TicketActionsTest extends AbstractApiResultTest
 		}
 		
 		$this->assertEquals($retrievedTicketMessageArray, $expectedTicketMessage);
+	}
+	
+	public function testCanCreateMessage()
+	{
+		$testTicketId = 1;
+		
+		$testTicketMessageText = md5(time());
+		
+		$result = $this->getApi()->tickets->getMessages($testTicketId);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$data = $result->getData();
+		
+		$this->assertArrayHasKey('messages', $data);
+		
+		$oldNoOfMessages = count($data['messages']);
+		
+		$result = $this->getApi()->tickets->createMessage($testTicketId, $testTicketMessageText);
+		
+		$this->assertEquals('201', $result->getResponseCode());
+		
+		$data = $result->getData();
+		
+		$newTicketMessageId = $data['message_id'];
+		
+		$result = $this->getApi()->tickets->getMessages($testTicketId);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$data = $result->getData();
+		
+		$this->assertArrayHasKey('messages', $data);
+		
+		$newNoOfMessages = count($data['messages']);
+		
+		$this->assertEquals($oldNoOfMessages + 1, $newNoOfMessages);
+		
+		$this->assertEquals($testTicketMessageText, $data['messages'][$oldNoOfMessages]['message']);
 	}
 	
 	protected function _getExpectedTicketMessage()
