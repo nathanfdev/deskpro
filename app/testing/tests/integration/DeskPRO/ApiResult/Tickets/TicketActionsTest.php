@@ -55,35 +55,7 @@ class TicketActionsTest extends AbstractApiResultTest
 		
 		$expectedTicketMessage = $this->_getExpectedTicketMessage();
 		
-		foreach ($this->getDateTimeFields('ticket_message') as $field) {
-			$this->assertIsValidDateTime($retrievedTicketMessageArray[$field]);
-		}
-
-		foreach ($this->getDateTimeFields('person') as $field) {
-			$this->assertIsValidDateTime($retrievedTicketMessageArray['person'][$field]);
-		}
-
-		foreach ($this->getTimestampFields('ticket_message') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketMessageArray[$field]);
-		}
-
-		foreach ($this->getTimestampFields('person') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field]);
-		}
-
-		foreach($this->_getIgnoreKeys('person') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
-			unset($retrievedTicketMessageArray['person'][$key]);
-			unset($expectedTicketMessage['person'][$key]);
-		}
-
-		foreach ($this->_getIgnoreKeys('ticket_message') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketMessageArray);
-			unset($retrievedTicketMessageArray[$key]);
-			unset($expectedTicketMessage[$key]);
-		}
-		
-		$this->assertEquals($retrievedTicketMessageArray, $expectedTicketMessage);
+		$this->assertMessagesAreEqual($retrievedTicketMessageArray, $expectedTicketMessage);
 	}
 	
 	public function testCanCreateMessage()
@@ -125,8 +97,58 @@ class TicketActionsTest extends AbstractApiResultTest
 		$this->assertEquals($testTicketMessageText, $data['messages'][$oldNoOfMessages]['message']);
 	}
 	
+	public function testCanGetMessage()
+	{
+		$testTicketId = 1;
+		
+		$testTicketMessageId = 1;
+		
+		$result = $this->getApi()->tickets->getMessage($testTicketId, $testTicketMessageId);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$data = $result->getData();
+		
+		$this->assertArrayHasKey('message', $data);
+		
+		$this->assertMessagesAreEqual($this->_getExpectedTicketMessage(), $data['message']);
+	}
+	
 	protected function _getExpectedTicketMessage()
 	{
 		return require 'Data' . DIRECTORY_SEPARATOR . 'ExpectedTicketMessage.php';
+	}
+	
+	protected function assertMessagesAreEqual($retrievedTicketMessageArray, $expectedTicketMessage)
+	{
+		foreach ($this->getDateTimeFields('ticket_message') as $field) {
+			$this->assertIsValidDateTime($retrievedTicketMessageArray[$field]);
+		}
+
+		foreach ($this->getDateTimeFields('person') as $field) {
+			$this->assertIsValidDateTime($retrievedTicketMessageArray['person'][$field]);
+		}
+
+		foreach ($this->getTimestampFields('ticket_message') as $field) {
+			$this->assertIsValidTimestamp($retrievedTicketMessageArray[$field]);
+		}
+
+		foreach ($this->getTimestampFields('person') as $field) {
+			$this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field]);
+		}
+
+		foreach($this->_getIgnoreKeys('person') as $key) {
+			$this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
+			unset($retrievedTicketMessageArray['person'][$key]);
+			unset($expectedTicketMessage['person'][$key]);
+		}
+
+		foreach ($this->_getIgnoreKeys('ticket_message') as $key) {
+			$this->assertArrayHasKey($key, $retrievedTicketMessageArray);
+			unset($retrievedTicketMessageArray[$key]);
+			unset($expectedTicketMessage[$key]);
+		}
+		
+		return $this->assertEquals($retrievedTicketMessageArray, $expectedTicketMessage);
 	}
 }
