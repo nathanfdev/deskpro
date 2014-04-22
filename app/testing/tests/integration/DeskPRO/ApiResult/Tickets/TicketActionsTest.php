@@ -28,6 +28,8 @@ class TicketActionsTest extends AbstractApiResultTest
 		
 		$this->assertNotEmpty($data['ticket']['agent']);
 		
+		$this->assertEquals(1, $data['ticket']['agent']['id']);
+		
 		$builder = $this->getApi()->tickets->createBuilder();
 		
 		$builder->setId($testTicketId)->assignToAgent(0);
