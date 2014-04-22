@@ -89,6 +89,11 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 				'total_to_resolution_work',
 				'total_user_waiting',
 				'waiting_times',
+			),
+			'ticket_message' => array(
+				'date_created',
+				'date_created_ts',
+				'date_created_ts_ms',
 			)
 		);
 
@@ -127,6 +132,9 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 			),
 			'person_email' => array(
 				'date_created'
+			),
+			'ticket_message' => array(
+				'date_created',
 			)
 		);
 
@@ -157,6 +165,10 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 			'person_email' => array(
 				'date_created_ts',
 				'date_created_ts_ms'
+			),
+			'ticket_message' => array(
+				'date_created_ts',
+				'date_created_ts_ms',
 			)
 		);
 
