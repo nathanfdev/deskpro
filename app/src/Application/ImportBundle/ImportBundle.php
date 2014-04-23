@@ -57,6 +57,7 @@ class ImportBundle extends Bundle
 		$commands = array(
 			'Application\\ImportBundle\\Command\\CheckCommand',
 			'Application\\ImportBundle\\Command\\ResetCommand',
+			'Application\\ImportBundle\\Command\\RunCommand',
 		);
 
 		foreach ($commands as $cmd) {
