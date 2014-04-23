@@ -114,7 +114,7 @@ class PersonValueImporter extends AbstractValueImporter
 		$record['secret_string']      = Strings::random(40);
 
 		// Admin/agent flag
-		if ($pval->is_admin) {
+		if ($pval->is_agent) {
 			$record['is_agent'] = 1;
 			if ($pval->is_admin) {
 				$record['is_admin'] = 1;
