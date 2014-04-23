@@ -61,7 +61,7 @@ pageMeta.lang = {{ {
 	'search': phrase('agent.general.search'),
 }|json_encode|raw }};
 </script>
-{% if app.getsetting('core.apps_jira') %}
+{% if app.getsetting('core.apps_jira.enabled') %}
 	{% include 'AgentBundle:Jira:widget.html.twig' %}
 {% endif %}
 <div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">

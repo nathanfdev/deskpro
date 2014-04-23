@@ -11,6 +11,10 @@ class JiraController extends AbstractController
 {
 	public function exportAction($ticket_id)
 	{
+		if (!$this->settings->get('core.apps_jira.enabled')) {
+			throw $this->createNotFoundException();
+		}
+
 		$service = $this->_getService();
 		
 		$em = $this->__get('em');
@@ -95,6 +99,10 @@ class JiraController extends AbstractController
 	
 	public function lookupAction()
 	{
+		if (!$this->settings->get('core.apps_jira.enabled')) {
+			throw $this->createNotFoundException();
+		}
+
 		//$param		= $this->request->get('param');
 		$projectKey	= $this->request->get('projectkey');
 		
@@ -245,6 +253,10 @@ class JiraController extends AbstractController
 	
 	public function getAssociatedIssuesAction($ticket_id = null)
 	{
+		if (!$this->settings->get('core.apps_jira.enabled')) {
+			throw $this->createNotFoundException();
+		}
+
 		$service = $this->_getService();
 		
 		try	{
@@ -279,6 +291,10 @@ class JiraController extends AbstractController
 	
 	public function getCommentsAction($issue_id = null)
 	{
+		if (!$this->settings->get('core.apps_jira.enabled')) {
+			throw $this->createNotFoundException();
+		}
+
 		$service	= $this->_getService();
 		
 		$issue		= $service->findIssue($issue_id);
@@ -333,6 +349,10 @@ class JiraController extends AbstractController
 	
 	public function postCommentAction($issue_id = null)
 	{
+		if (!$this->settings->get('core.apps_jira.enabled')) {
+			throw $this->createNotFoundException();
+		}
+
 		$service = $this->_getService();
 		
 		$repository = $this->__get('em')->getRepository('Application\DeskPRO\Entity\JiraIssue');

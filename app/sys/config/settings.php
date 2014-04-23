@@ -325,36 +325,6 @@
 	'core.apps_downloads' => 1,
 
 	/**
-	 * Enable Jira
-	 */
-	'core.apps_jira' => 1,
-
-	/**
-	 * JIRA Base URL
-	 */
-	'core.apps_jira.baseUrl'	=> 'http://192.168.0.192:8080/',
-
-	/**
-	 * JIRA username
-	 */
-	'core.apps_jira.username'	=> 'admin',
-
-	/**
-	 * JIRA Password
-	 */
-	'core.apps_jira.password'	=> 'admin',
-
-	/**
-	 * Default Project
-	 */
-	'core.apps_jira.defaultProject' => 'DJI',
-
-	/**
-	 * Default tags to add to exported issues
-	 */
-	'core.apps_jira.defaultTags'	=> 'Helpdesk, DeskPRO',
-
-	/**
 	 * Max email size to read from gateways
 	 */
 	'core.gateway_max_email' => 0,
