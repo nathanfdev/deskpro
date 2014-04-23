@@ -163,6 +163,7 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
 		}
 
 		$value = $this->normalizeMatchField($value);
-		return isset($this->records[$value]) ? $this->records[$value] : null;
+		
+		return array_search($value, $this->records);
 	}
 }
