@@ -79,7 +79,15 @@ class ArrayParserUtils
 					return is_array($v) ? $v : array($v);
 					break;
 				case 'date':
-					return self::parseDateValue($v);
+					try {
+						if (Numbers::isInteger($v)) {
+							return new \DateTime("@$v");
+						} else {
+							return \DateTime::createFromFormat('Y-m-d H:i:s', $v);
+						}
+					} catch (\Exception $e) {
+						return null;
+					}
 					break;
 				default:
 					// type[] -- string[] means array of strings, etc
