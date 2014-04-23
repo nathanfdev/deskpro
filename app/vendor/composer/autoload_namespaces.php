@@ -15,6 +15,7 @@ return array(
     'Symfony\\Bundle\\SwiftmailerBundle' => array($vendorDir . '/symfony/swiftmailer-bundle'),
     'Symfony\\Bundle\\MonologBundle' => array($vendorDir . '/symfony/monolog-bundle'),
     'Symfony\\' => array($vendorDir . '/symfony/symfony/src'),
+	'Swagger' => array($vendorDir . '/zircote/swagger-php/library'),
     'Satooshi\\Component' => array($vendorDir . '/satooshi/php-coveralls/src'),
     'Satooshi\\Bundle' => array($vendorDir . '/satooshi/php-coveralls/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),

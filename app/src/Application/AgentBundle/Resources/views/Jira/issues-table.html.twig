@@ -1,21 +1,5 @@
-<script src="http://momentjs.com/downloads/moment.min.js"></script>
-<style>
-	th {
-		background: none repeat scroll 0 0 #CCCCCC !important;
-		border-left: 1px solid #BBBBBB;
-		padding: 5px 10px !important;
-		text-align: justify;
-	}
-	tr {
-		border-bottom: 1px solid #CCCCCC !important;
-	}
-	.icon-comment, .icon-remove {
-		cursor: pointer;
-	}
-</style>
-<div id="issue-count" style="display:none;">{{ issues | length }}</div>
-<div style="padding:15px;">
-	<table width="100%" cellspacing="0" cellpadding="5" border="0">
+<div style="padding:15px; max-height: 130px; overflow: auto;">
+	<table id="jira-issue-table" width="100%" cellspacing="0" cellpadding="5" border="0">
 		<thead>
 			<tr>
 				<th>#</th>
@@ -28,7 +12,7 @@
 		</thead>
 		<tbody>
 			{% for issue in issues %}
-				<tr>
+				<tr data-issue_id="{{ issue.id }}">
 					<td>{{ loop.index }}.</td>
 					<td><a target="_blank" href="{{ jirabaseurl }}browse/{{ issue.key }}">{{ issue.key }}</a></td>
 					<td>{{ issue.status }}</td>
@@ -39,30 +23,11 @@
 							{{ issue.assignee }}
 						{% endif %}
 					</td>
-					<td class="issue-table-modified">{{ issue.updated }}</td>
-					<td><i class="issue-comment icon-comment" data-issue_id="{{ issue.id }}"></i> | <i class="icon-remove"></i></td>
+					<td class="issue-table-modified momentjs">{{ issue.updated }}</td>
+					<td><i class="icon-comment"></i> | <i class="icon-remove"></i>
+					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 </div>
-<script>
-	$(".issue-comment").click(function(){
-		var issue_id = $(this).data('issue_id');
-		
-		var overlay = new DeskPRO.UI.Overlay({
-			destroyOnClose: true,
-			contentMethod: 'ajax',
-			contentAjax: { url: BASE_URL + 'agent/jira/comment/' + issue_id }
-		});
-
-		overlay.open();
-	});
-	$(".issue-table-modified").each(function(index, td){
-		var row = $(td);
-		
-		var day = moment(row.text());
-		
-		row.text(day.fromNow());
-	})
-</script>

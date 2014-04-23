@@ -637,7 +637,7 @@ class KernelErrorHandler
 			$url = DP_REQUEST_URL;
 		} elseif (defined('DP_INTERFACE')) {
 			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
-			if (class_exists('Application\\DeskPRO\\App')) {
+			if (class_exists('Application\\DeskPRO\\App') && App::$container) {
 				try {
 					$url = App::getRequest()->getUri();
 				} catch (\Exception $e) {}

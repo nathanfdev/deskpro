@@ -3,7 +3,7 @@ namespace DpUnitTests\DeskPRO\Departments\Entity;
 
 use Application\DeskPRO\Entity\Department;
 
-class FeedbackStatusCategoryEntityTest extends \DpUnitTestCase
+class DepartmentEntityTest extends \DpUnitTestCase
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Department

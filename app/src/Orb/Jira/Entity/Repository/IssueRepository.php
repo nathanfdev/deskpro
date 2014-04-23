@@ -69,9 +69,9 @@ class IssueRepository extends Repository
 				'id' => $issue->getType()->getId()
 			),
 			'priority' => array(
-				'id' => $issue->getPrriority()->getId()
+				'id' => $issue->getPriority()->getId()
 			),
-			'labels' => $client->getLabels()
+			'labels' => $issue->getLabels()
 		);
 		
 		return $client->putJson($this->getEndpoint() . '/' . $issue->getId(), array(

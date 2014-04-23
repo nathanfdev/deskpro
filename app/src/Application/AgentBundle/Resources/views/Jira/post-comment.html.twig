@@ -24,28 +24,3 @@
 		</div>
 	</div>
 </form>
-<script>
-	$(document).off('submit', 'form.post-comment').on('submit', 'form.post-comment', function(event){
-		$(this).find("button").prop("disabled", true);
-		
-		var form	= $(this).closest('form');
-		
-		var url		= form.data('target');
-		
-		var formData = form.serialize();
-		
-		var jQxhr = $.post(url, formData, "json").done(function(data) {
-			DeskPRO_Window.showAlert("Comment posted successfully");
-			
-			form.find("a.close").click();
-		}).fail(function(xhr) {
-			var response = jQuery.parseJSON(xhr.responseText);
-			
-			DeskPRO_Window._showAjaxError(response.message);
-		}).always(function(){
-			$(this).find("button").prop("disabled", false);
-		});
-		
-		return false;
-	});
-</script>
