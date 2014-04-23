@@ -137,6 +137,7 @@ class PersonValueImporter extends AbstractValueImporter
 			foreach ($pval->usergroups as $ug) {
 				$v = $this->getMappers()->findIdFromMappedValue('usergroup', $ug);
 				if ($v) {
+					$this->getLogger()->notice(sprintf("[%s] Found existing usergroup %s", $log_id, $ug));
 					$add_ugs[] = $ug;
 				} else {
 					$this->getLogger()->notice(sprintf("[%s] Could not map usergroup value: %s (skipping)", $log_id, $ug));
