@@ -417,6 +417,8 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'delete');
 
+		$this->container->getTicketManager()->markAsManaged($ticket);
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {

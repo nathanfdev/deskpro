@@ -13,7 +13,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 
 	public function runBefore()
 	{
-		$this->helper->enableDatabaseSet('ApiSampleDb');
+		$this->helper->enableDestructiveDatabaseSet('ApiSampleDb');
 	}
 
 
@@ -27,6 +27,15 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 		}
 
 		return $this->api;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->helper->getSymfonyContainer()->getDb();
 	}
 	
 	public function getApiWithLimitedAccess()

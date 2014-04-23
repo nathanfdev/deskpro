@@ -13,7 +13,7 @@ class SavePersonTest extends AbstractApiResultTest
 		$builder = $this->getApi()->people->createPersonEditor();
 		
 		$builder->setName('Test Person')
-			->setEmail('testperson3@test.com')
+			->setEmail('testperson3' . uniqid() . '@test.com')
 			->setPassword('password');
 		
 		$result = $this->getApi()->people->save($builder);
@@ -25,8 +25,8 @@ class SavePersonTest extends AbstractApiResultTest
 		$this->assertArrayHasKey('id', $data);
 		
 		$newPersonId = $data['id'];
-		
-		$this->getApi()->people->deleteById($newPersonId);
+
+		$this->getDb()->delete('people', array('id' => $newPersonId));
 	}
 	
 	public function testCanEditPerson()

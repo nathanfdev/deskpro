@@ -36,7 +36,7 @@ class TicketActionsTest extends AbstractApiResultTest
 		
 		$this->getApi()->tickets->save($builder);
 	}
-	
+
 	public function testCanGetMessages()
 	{
 		$testTicketId = 1;

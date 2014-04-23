@@ -43,11 +43,11 @@ class SaveTicketTest extends AbstractApiResultTest
 		$this->assertEquals('201', $result->getResponseCode());
 		
 		$data = $result->getData();
-		
+
 		$this->assertArrayHasKey('ticket_id', $data);
 		
 		$newTicketId = $data['ticket_id'];
-		
+
 		$criteria = $this->getApi()->tickets->createCriteria();
 
 		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
@@ -61,12 +61,12 @@ class SaveTicketTest extends AbstractApiResultTest
 		$data = $result->getData();
 		
 		$this->assertArrayHasKey('tickets', $data);
-		
+
 		$this->assertEquals(count($data['tickets']), 1);
 		
 		$this->getApi()->tickets->delete($newTicketId);
 	}
-	
+
 	public function testCanEditTicket()
 	{
 		$testTicketId = 1;
