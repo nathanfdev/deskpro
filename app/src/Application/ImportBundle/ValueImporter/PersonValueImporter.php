@@ -1,0 +1,269 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * @package Importer
+ */
+
+namespace Application\ImportBundle\ValueImporter;
+
+use Application\ImportBundle\Exception\BadDataException;
+use Application\ImportBundle\Value\PersonValue;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Validator\StringEmail;
+
+class PersonValueImporter extends AbstractValueImporter
+{
+	/**
+	 * @param mixed $pval
+	 * @throws \Application\ImportBundle\Exception\BadDataException
+	 */
+	public function importValue($pval)
+	{
+		if (!($pval instanceof PersonValue)) {
+			throw new \InvalidArgumentException("This importer can only import PersonValue");
+		}
+
+		#------------------------------
+		# Validate emails
+		#------------------------------
+
+		if ($pval->emails) {
+			$pval->emails = array_filter($pval->emails, function($eml) {
+				return StringEmail::isValueValid($eml);
+			});
+		}
+
+		if (!$pval->emails) {
+			throw new BadDataException("PersonValue must have at least one valid email");
+		}
+
+		$log_id = "Person :: " . implode(' ', $pval->emails) . "";
+
+		#------------------------------
+		# Normalise name
+		#------------------------------
+
+		if ($pval->name) {
+			$name = preg_replace('# {2,}#', ' ', $pval->name);
+			$parts = Strings::rexplode(' ', $name, 2);
+			if (!$pval->first_name) {
+				$pval->first_name = $name[0];
+			}
+			if (!$pval->last_name) {
+				$pval->last_name = $name[1];
+			}
+		}
+		if (!$pval->name && ($pval->first_name || $pval->last_name)) {
+			$pval->name = trim(($pval->first_name ?: '') . ($pval->last_name ?: ''));
+		}
+
+		#------------------------------
+		# Find existing user
+		#------------------------------
+
+		$exist_emails = $this->getExistingUserMap($pval->emails);
+
+		if ($exist_emails) {
+			$exist_id = Arrays::getFirstItem($exist_emails);
+			$this->getLogger()->notice(sprintf("[%s] Found existing user %d", $log_id, $exist_id));
+		}
+
+		#------------------------------
+		# Create data array
+		#------------------------------
+
+		$add_labels = $pval->labels;
+
+		$record = array();
+		$record['name']               = $pval->name ?: '';
+		$record['first_name']         = $pval->first_name ?: '';
+		$record['last_name']          = $pval->last_name ?: '';
+		$record['date_created']       = $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+		$record['timezone']           = $pval->timezone ?: 'UTC';
+		$record['is_user']            = 1;
+		$record['is_contact']         = 1;
+		$record['is_confirmed']       = 1;
+		$record['is_agent_confirmed'] = 1;
+		$record['secret_string']      = Strings::random(40);
+		$record['secret_string']      = Strings::random(40);
+
+		// Admin/agent flag
+		if ($pval->is_admin) {
+			$record['is_agent'] = 1;
+			if ($pval->is_admin) {
+				$record['is_admin'] = 1;
+			}
+		}
+
+		// Lang
+		if ($pval->language) {
+			$v = $this->getMappers()->findIdFromMappedValue('language', $pval->language);
+			if ($v) {
+				$record['language_id'] = $v;
+			} else {
+				$this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $pval->language));
+			}
+		}
+
+		// Usergroups
+		$add_ugs = array();
+		if ($pval->usergroups) {
+			foreach ($pval->usergroups as $ug) {
+				$v = $this->getMappers()->findIdFromMappedValue('usergroup', $ug);
+				if ($v) {
+					$add_ugs[] = $ug;
+				} else {
+					$this->getLogger()->notice(sprintf("[%s] Could not map usergroup value: %s (skipping)", $log_id, $ug));
+				}
+			}
+		}
+
+		// Org
+		if ($pval->organization) {
+			$v = $this->getMappers()->findIdFromMappedValue('organization', $pval->organization);
+			if ($v) {
+				$record['organization_id'] = $v;
+			} else {
+				$this->getLogger()->notice(sprintf("[%s] New organization %s", $log_id, $pval->organization));
+				if ($this->isTestMode()) {
+					$record['organization_id'] = -1;
+				} else {
+					$this->getDb()->insert('organizations', array(
+						'name'         => $pval->organization,
+						'date_created' => date('Y-m-d H:i:s')
+					));
+					$record['organization_id'] = $this->getDb()->lastInsertId();
+				}
+
+				$this->getMappers()->learnMapping('organization', $record['organization_id']);
+			}
+
+			if ($pval->organization_position) {
+				$record['organization_position'] = $pval->organization_position;
+			}
+		}
+
+		// Password
+		if ($pval->password && $pval->password_scheme == 'plain') {
+			$record['password_scheme'] = 'bcrypt';
+
+			$hasher = new \PasswordHash(11, false);
+			$record['password'] = $hasher->HashPassword($pval->password);
+		}
+
+		// Additional emails
+		$add_emails_str = array_diff($pval->emails, array_values($exist_emails));
+		if ($add_emails_str) {
+			$this->getLogger()->info(sprintf("[%s] New emails: %s", $log_id, implode($add_emails_str)));
+		}
+
+		#------------------------------
+		# Save data
+		#------------------------------
+
+		if (!$this->isTestMode()) {
+			$update_rec = array();
+
+			if ($exist_id) {
+				$is_new = false;
+				$this->getDb()->update('people', $record, array('id' => $exist_id));
+				$this->getLogger()->info(sprintf("[%s] Updated %d"), $log_id, $log_id);
+			} else {
+				$this->getDb()->insert('people', $record);
+				$exist_id = $this->getDb()->lastInsertId();
+				$is_new = true;
+
+				$this->getLogger()->info(sprintf("[%s] Created %d"), $log_id, $log_id);
+			}
+
+			if ($add_emails_str) {
+				$first_email_id = null;
+				foreach ($add_emails_str as $eml) {
+					list (, $eml_domain) = explode('@', $eml, 2);
+					$this->getDb()->insert('people_emails', array(
+						'person_id'      => $exist_id,
+						'email'          => $eml,
+						'email_domain'   => $eml_domain,
+						'is_validated'   => true,
+						'date_created'   => date('Y-m-d H:i:s'),
+						'date_validated' => date('Y-m-d H:i:s'),
+					));
+					if ($is_new && !$first_email_id) {
+						$first_email_id = $this->getDb()->lastInsertId();
+					}
+				}
+
+				if ($is_new && $first_email_id) {
+					$update_rec['primary_email_id'] = $first_email_id;
+				}
+			}
+
+			if ($add_ugs) {
+				$batch = array_map(function($ug) use ($exist_id) {
+					return array(
+						'person_id'    => $exist_id,
+						'usergroup_id' => $ug
+					);
+				}, $add_ugs);
+
+				$this->getDb()->batchInsert('person2usergroups', $batch, true);
+			}
+
+			if ($add_labels) {
+				$batch = array_map(function($l) use ($exist_id) {
+					return array(
+						'person_id' => $exist_id,
+						'label'     => $l
+					);
+				}, $add_labels);
+
+				$this->getDb()->batchInsert('labels_people', $batch, true);
+			}
+		}
+	}
+
+
+	/**
+	 * @param array $emails
+	 * @return array
+	 */
+	private function getExistingUserMap(array $emails)
+	{
+		$qs = implode(',', array_fill(0, count($emails), '?'));
+		$ret = $this->getDb()->fetchAll("SELECT email, person_id FROM people_emails WHERE email IN ($qs)", $emails);
+
+		$map = array();
+		foreach ($ret as $r) {
+			$map[$r['email']] = $r['person_id'];
+		}
+
+		return $map;
+	}
+}
+
