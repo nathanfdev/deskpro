@@ -121,6 +121,12 @@ pageMeta.baseId = '{{ baseId }}';
 			>
 				{{ phrase('agent.people.delete_user') }}
 			</li>
+			<li
+				data-action="upload-vcard"
+				class="upload-vcard-trigger address"
+			>
+				{{ phrase('agent.people.upload_vcard') }}
+			</li>
 		{% endif %}
 	</ul>
 
@@ -151,7 +157,8 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div style="display: none">
 	<div id="{{ baseId }}_delete_confirm">
-		{{ phrase('agent.people.person_delete_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted') }}</strong>
+		{{ phrase('agent.people.person_delete_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted') }}</strong><br/>
+                {{ phrase('agent.general.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
 		{% if person_object_counts.tickets or person_object_counts.chats %}
 			<br/><br/>{{ phrase('agent.people.other_user_content_being_deleted') }}<br/>
 			{% if person_object_counts.tickets %}&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}<br/>{% endif %}
@@ -160,7 +167,8 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<div id="{{ baseId }}_ban_confirm">
-		{{ phrase('agent.people.person_ban_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted_banned') }}</strong>
+		{{ phrase('agent.people.person_ban_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted_banned') }}</strong><br/>
+                {{ phrase('agent.general.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
 		{% if person_object_counts.tickets or person_object_counts.chats %}
 			<br/><br/>{{ phrase('agent.people.other_user_content_being_deleted') }}<br/>
 			{% if person_object_counts.tickets %}&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}<br/>{% endif %}

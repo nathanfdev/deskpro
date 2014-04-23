@@ -68,6 +68,12 @@ $collection->create('agent_get_server_time', array(
 	'controller'  => 'AgentBundle:Misc:getServerTime',
 ));
 
+$collection->create('agent_parse_vcard', array(
+	'path'         => '/misc/parse-vcard/{blob_id}',
+	'controller'   => 'AgentBundle:Misc:parseVCard',
+	'requirements' => array('blob_id' => '\\d+'),
+));
+
 $collection->create('agent_ajax_save_prefs', array(
 	'path'        => '/misc/ajax-save-prefs',
 	'controller'  => 'AgentBundle:Misc:ajaxSavePrefs',
@@ -1325,6 +1331,27 @@ $collection->create('agent_task_ajaxsave_comment', array(
 $collection->create('agent_task_ajaxsave', array(
 	'path'        => '/tasks/{task_id}/ajax-save',
 	'controller'  => 'AgentBundle:Task:ajaxSave',
+));
+
+$collection->create('agent_task_ics_all_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/all.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'all'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$' )
+));
+
+$collection->create('agent_task_ics_assigned_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/assigned.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'assigned'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
+));
+
+$collection->create('agent_task_ics_delegated_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/delegated.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'delegated'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
 ));
 
 $collection->create('agent_dealearch_getsectiondata', array(

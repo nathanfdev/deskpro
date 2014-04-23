@@ -172,6 +172,7 @@ class MainController extends AbstractController
 			'ticket_options'      => $ticket_options,
 			'agents'              => $agents,
 			'agent_teams'         => $agent_teams,
+                        'allPeople'           => $allPeople,
 			'phone_country_info'  => $phone_country_info,
 			'open_chats'          => $open_chats,
 			'people_options'      => $people_options,

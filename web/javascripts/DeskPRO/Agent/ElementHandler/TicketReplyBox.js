@@ -613,7 +613,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				} else {
 					self.page.insertTextInReply(result);
 				}
-
+                                
+                                $("#" + self.page.meta.baseId + "_is_snippet").val(1);
+                                $("#" + self.page.meta.baseId + "_snippet_id").val(snippetId);
+                                
 				self.snippetsViewer.close();
 			}
 		});

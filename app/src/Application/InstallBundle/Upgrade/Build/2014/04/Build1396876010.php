@@ -81,5 +81,19 @@ class Build1396876010 extends AbstractBuild
 		$db->exec("ALTER TABLE email_sources ADD log_blob_id INT DEFAULT NULL");
 		$db->exec("ALTER TABLE email_sources ADD CONSTRAINT FK_6F9D0D3DD5F3B632 FOREIGN KEY (log_blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
 		$db->exec("CREATE INDEX IDX_6F9D0D3DD5F3B632 ON email_sources (log_blob_id)");
+
+		$this->out("Add organizations_deleted table");
+		$db->exec("CREATE TABLE organizations_deleted (organization_id INT NOT NULL, by_person_id INT DEFAULT NULL, date_created DATETIME NOT NULL, reason LONGTEXT NOT NULL, INDEX IDX_14AE1C5BB5BE2AA2 (by_person_id), PRIMARY KEY(organization_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$db->exec("ALTER TABLE organizations_deleted ADD CONSTRAINT FK_14AE1C5BB5BE2AA2 FOREIGN KEY (by_person_id) REFERENCES people (id) ON DELETE SET NULL");
+
+		$this->out("Add persons_deleted table");
+		$db->exec("CREATE TABLE persons_deleted (person_id INT NOT NULL, by_person_id INT DEFAULT NULL, date_created DATETIME NOT NULL, reason LONGTEXT NOT NULL, INDEX IDX_6FF07BCEB5BE2AA2 (by_person_id), PRIMARY KEY(person_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$db->exec("ALTER TABLE persons_deleted ADD CONSTRAINT FK_6FF07BCEB5BE2AA2 FOREIGN KEY (by_person_id) REFERENCES people (id) ON DELETE SET NULL");
+
+		$this->out("Add text_snippet_logs table");
+		$db->exec("CREATE TABLE text_snippet_logs (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, ticket_id INT DEFAULT NULL, snippet_id INT DEFAULT NULL, time INT NOT NULL, INDEX IDX_8B657EAB217BBB47 (person_id), INDEX IDX_8B657EAB700047D2 (ticket_id), INDEX IDX_8B657EAB6E34B975 (snippet_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$db->exec("ALTER TABLE text_snippet_logs ADD CONSTRAINT FK_8B657EAB217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL");
+		$db->exec("ALTER TABLE text_snippet_logs ADD CONSTRAINT FK_8B657EAB700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE SET NULL");
+		$db->exec("ALTER TABLE text_snippet_logs ADD CONSTRAINT FK_8B657EAB6E34B975 FOREIGN KEY (snippet_id) REFERENCES text_snippets (id) ON DELETE SET NULL");
 	}
 }
