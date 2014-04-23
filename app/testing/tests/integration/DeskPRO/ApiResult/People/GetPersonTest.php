@@ -109,4 +109,35 @@ class GetPersonTest extends AbstractApiResultTest
 		$this->assertTrue($data['people'][$keys[0]]['is_agent']);
 		$this->assertTrue($data['people'][$keys[0]]['is_agent_confirmed']);
 	}
+	
+	public function testCanFindByUserGroup()
+	{
+		$testUserGroup = 4;
+		
+		$criteria = $this->getApi()->people->createCriteria();
+		
+		$criteria->addUserGroup($testUserGroup);
+		
+		$result = $this->getApi()->people->find($criteria);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$data = $result->getData();
+		
+		$this->assertArrayHasKey('people', $data);
+		
+		$this->assertNotEmpty($data['people']);
+		
+		$keys = array_keys($data['people']);
+		
+		$person = $data['people'][$keys[0]];
+		
+		$this->assertArrayHasKey('usergroups', $person);
+		
+		$this->assertNotEmpty($person['usergroups']);
+		
+		$keys = array_keys($person['usergroups']);
+		
+		$this->assertEquals($testUserGroup, $person['usergroups'][$keys[0]]['id']);
+	}
 }
