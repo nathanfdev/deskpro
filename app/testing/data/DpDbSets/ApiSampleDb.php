@@ -214,6 +214,7 @@ class ApiSampleDb extends AbstractDbSet
 				($ugid, NULL, '1', 'agent_people.reset_password'),
 				($ugid, NULL, '1', 'agent_people.notes'),
 				($ugid, NULL, '1', 'agent_people.disable'),
+				($ugid, NULL, '1', 'agent_people.delete'),
 				($ugid, NULL, '1', 'agent_org.create'),
 				($ugid, NULL, '1', 'agent_org.edit'),
 				($ugid, NULL, '1', 'agent_chat.use'),
