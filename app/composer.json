@@ -28,7 +28,8 @@
 		"codeception/codeception": "~1.8",
 		"erusev/parsedown": "dev-master",
 		"deskpro/deskpro-api-php": "dev-master",
-		"tedivm/fetch": "dev-master"
+		"tedivm/fetch": "dev-master",
+		"zircote/swagger-php": "dev-master"
 	},
 	"scripts": {
 		"post-update-cmd":  ["find vendor -name .git -type d -exec rm -rf {} \\;", "bin/clean-vendors.sh"],

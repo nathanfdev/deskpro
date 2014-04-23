@@ -325,3 +325,8 @@ cd $DIR_VENDOR/zendframework/zendframework
 echo "Cleaning $(pwd)"
 rm -rf tests/
 rm -rf CHANGELOG.md composer.json CONTRIBUTING.md INSTALL.md README.md README-GIT.md
+
+cd $DIR_VENDOR/zircote/swagger-php
+echo "Cleaning $(pwd)"
+rm -rf Examples/ tests/
+rm -rf .travis.yml CHANGELOG.md composer.json package.xml phpunit.xml.dist readme.md swagger.phar VERSION

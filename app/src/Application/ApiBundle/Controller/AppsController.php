@@ -25,13 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage ApiBundle
- */
-
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
@@ -46,7 +39,6 @@ use DeskPRO\Kernel\KernelErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 
 class AppsController extends AbstractController
