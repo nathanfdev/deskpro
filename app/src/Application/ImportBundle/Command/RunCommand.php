@@ -26,52 +26,67 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * @package Importer
+ */
 
-namespace Application\ImportBundle;
+namespace Application\ImportBundle\Command;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Application\ImportBundle\ImporterCommandStatusCallback;
+use Application\ImportBundle\ImporterFactory;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class ImportBundle extends Bundle
+class RunCommand extends ContainerAwareCommand
 {
-	public function __construct()
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function configure()
 	{
-		$this->name = 'Import';
+		$this->setName('dp:import:run');
+		$this->setHelp("Executes the importer.");
+		$this->addOption('data-path', null, InputOption::VALUE_REQUIRED, 'The path to the data directory containing your JSON files');
+		$this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
 	}
 
-	public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-    }
 
 	/**
-     * @param Application $application An Application instance
-     */
-    public function registerCommands(Application $application)
-    {
-		$commands = array(
-			'Application\\ImportBundle\\Command\\CheckCommand',
-			'Application\\ImportBundle\\Command\\ResetCommand',
-			'Application\\ImportBundle\\Command\\RunCommand',
-		);
-
-		foreach ($commands as $cmd) {
-			$application->add(new $cmd);
-		}
-    }
-
-	public function getNamespace()
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	public function getContainer()
 	{
-		return __NAMESPACE__;
+		return parent::getContainer();
 	}
 
-	public function getPath()
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		return __DIR__;
+		$factory = new ImporterFactory($this->getContainer(), $input);
+
+		try {
+			$config       = $factory->createImporterConfig();
+			$config->mode = 'live';
+		} catch (\InvalidArgumentException $e) {
+			$output->writeln("<error>Config Error</error>");
+			$output->writeln("Message: " . $e->getMessage());
+			$output->writeln("");
+			$output->writeln("Run this command with --help to see options. You can also define configuration in your config.php file under the 'import' section.");
+			$output->writeln("");
+			return 1;
+		}
+
+		$config->log_path = null;
+
+		$importer = $factory->createImporter($config);
+		$importer->setStatusCallback(new ImporterCommandStatusCallback($this, $output));
+		$importer->processImports();
+
+		echo "\n";
+		return 0;
 	}
 }

@@ -1,0 +1,18 @@
+{
+	"oid": 1,
+	"date_created": "2014-04-23",
+	"first_name": "John",
+	"last_name": "Doe",
+	"name": "John Doe",
+	"override_display_name": "",
+	"is_agent": false,
+	"is_admin": false,
+	"emails": ["john@example.com"],
+	"labels": ["label1", "label2"],
+	"timezone": "Europe/London",
+	"usergroups": ["Example Group"],
+	"language": "English",
+	"organization": "DeskPRO",
+	"organization_position": "Sales",
+	"password": "mypassword"
+}

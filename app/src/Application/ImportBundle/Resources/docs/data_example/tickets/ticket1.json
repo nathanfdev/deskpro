@@ -1,0 +1,35 @@
+{
+	"oid": 1,
+	"ref": "myref",
+	"language": "English",
+	"department": "Support",
+	"category": "Features",
+	"priority": "Normal",
+	"workflow": "Internal",
+	"product": "DeskPRO",
+	"person": "john@example.com",
+	"agent": "agent@example.com",
+	"agent_team": "Team",
+	"organization": "DeskPRO",
+	"labels": ["label1"],
+	"status": "awaiting_agent",
+	"is_hold": false,
+	"urgency": 1,
+	"date_created": "2014-04-23",
+	"subject": "Example Ticket",
+	"participants": ["jane@example.com"],
+	"messages": [
+		{
+			"oid": 1,
+			"person": "john@example.com",
+			"date_created": "2014-04-23",
+			"message_text": "This is a message"
+		},
+		{
+			"oid": 2,
+			"person": "agent@example.com",
+			"date_created": "2014-04-23",
+			"message_text": "This is a message"
+		}
+	]
+}
