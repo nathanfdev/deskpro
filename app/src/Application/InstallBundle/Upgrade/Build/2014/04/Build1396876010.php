@@ -48,8 +48,13 @@ class Build1396876010 extends AbstractBuild
 		$db->exec("CREATE TABLE log_request_stats (id INT AUTO_INCREMENT NOT NULL, date_created DATETIME NOT NULL, request_id VARCHAR(100) NOT NULL, user_agent VARCHAR(255) NOT NULL, user_ip VARCHAR(255) NOT NULL, page_id VARCHAR(255) NOT NULL, page_url VARCHAR(1000) NOT NULL, response_type VARCHAR(100) NOT NULL, response_code INT NOT NULL, response_size INT NOT NULL, query_count INT NOT NULL, time_php NUMERIC(8, 4) NOT NULL, time_db NUMERIC(8, 4) NOT NULL, time_end NUMERIC(8, 4) NOT NULL, time_userend NUMERIC(8, 4) NOT NULL, INDEX date_created_idx (date_created, request_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 
 		$this->out("Create jira_issues table");
+		$db->exec("DROP TABLE IF EXISTS jira_issues");
+		$db->exec("DROP TABLE IF EXISTS jira_issue_comments");
 		$db->exec("CREATE TABLE jira_issues (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, issue_id INT NOT NULL, created INT NOT NULL, INDEX IDX_88385CE2700047D2 (ticket_id), INDEX issue_id_idx (issue_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$db->exec("CREATE TABLE jira_issue_comments (id INT AUTO_INCREMENT NOT NULL, issue_id INT DEFAULT NULL, message_id INT DEFAULT NULL, jira_comment_id INT NOT NULL, INDEX IDX_776438D15E7AA58C (issue_id), UNIQUE INDEX UNIQ_776438D1537A1329 (message_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$db->exec("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE SET NULL");
+		$db->exec("ALTER TABLE jira_issue_comments ADD CONSTRAINT FK_776438D15E7AA58C FOREIGN KEY (issue_id) REFERENCES jira_issues (id) ON DELETE SET NULL");
+		$db->exec("ALTER TABLE jira_issue_comments ADD CONSTRAINT FK_776438D1537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
 
 		$this->out("Remove field client_messages.handler_class");
 		$db->exec("ALTER TABLE client_messages DROP handler_class");

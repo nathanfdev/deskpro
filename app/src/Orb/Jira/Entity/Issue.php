@@ -126,6 +126,10 @@ class Issue extends Entity
 			$this->setAssignee($params['fields']['assignee']['displayName']);
 		}
 		
+		if (isset($params['fields']['labels'])) {
+			$this->setLabels($params['fields']['labels']);
+		}
+		
 		return $this;
 	}
 	

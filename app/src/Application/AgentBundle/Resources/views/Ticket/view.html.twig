@@ -60,6 +60,11 @@ pageMeta.lang = {{ {
 	'filter_results': phrase('agent.tickets.filter_results'),
 	'search': phrase('agent.general.search'),
 }|json_encode|raw }};
+
+{% if app.getsetting('core.apps_jira.enabled') %}
+	pageMeta.jiraEnabled = true;
+	pageMeta.jiraDefaultProject = "{{ app.getSetting('core.apps_jira.defaultProject') }}";
+{% endif %}
 </script>
 {% if app.getsetting('core.apps_jira.enabled') %}
 	{% include 'AgentBundle:Jira:widget.html.twig' %}
@@ -344,6 +349,9 @@ pageMeta.lang = {{ {
 				{% if app.getSetting('core_tickets.enable_billing') %}
 					<li data-tab-for="#{{ baseId }}_billing_wrap">{{ phrase('agent.tickets.billing') }}</li>
 				{% endif %}
+				{% if app.getsetting('core.apps_jira.enabled') %}
+					<li data-tab-for="#{{ baseId }}_jira_wrap">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
+				{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -471,6 +479,11 @@ pageMeta.lang = {{ {
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
 			</article>
 		{% endif %}
+		{% if app.getSetting('core.apps_jira.enabled') %}
+			<article id="{{baseId}}_jira_wrap">
+				<div style="width: 100%; text-align: center;"><img src="/web/images/spinners/loading-big-circle.gif"/><br/>Please wait while we fetch the latest JIRA activities on this ticket.</div>
+			</article>
+		{% endif %}
 		{{ dp_app_loc(baseId, 'properties.tab') }}
 	</section>
 </div>
@@ -514,6 +527,12 @@ pageMeta.lang = {{ {
 			{{ phrase('agent.general.actions') }}
 			<span class="dp-caret"></span>
 		</li>
+		{% if app.getsetting('core.apps_jira.enabled') %}
+			<li id="{{ baseId }}_export_jira_trigger">
+				<i class="icon-share"></i>
+				{{ phrase('agent.jira.export_jira') }}
+			</li>
+		{% endif %}
 	</ul>
 </nav>
 

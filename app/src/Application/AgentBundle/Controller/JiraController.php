@@ -9,28 +9,17 @@ namespace Application\AgentBundle\Controller;
  */
 class JiraController extends AbstractController
 {
-	public function exportAction($ticket_id)
+	public function preAction($action, $arguments = null)
 	{
 		if (!$this->settings->get('core.apps_jira.enabled')) {
 			throw $this->createNotFoundException();
 		}
+		return parent::preAction($action, $arguments);
+	}
 
-		$service = $this->_getService();
-		
-		$em = $this->__get('em');
-		
-		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
-				
-		$meta = $service->getCreateMeta(); 
-		
-		$projects = array();
-		
-		foreach ($meta[$meta['expand']] as $projectParams) {
-			$projects[] = \Orb\Jira\Entity\Project::fromArray($projectParams);
-		}
-		
-		//$ticket_id = (int) $ticket_id;
-		
+
+	public function exportAction($ticket_id)
+	{
 		try	{
 			$ticket = $this->getTicketOr404($ticket_id);
 		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
@@ -45,6 +34,20 @@ class JiraController extends AbstractController
 		
 		if ('POST' === $this->request->getMethod()) {
 			return $this->_processPost($ticket);
+		}
+		
+		$service = $this->_getService();
+		
+		$em = $this->em;
+		
+		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+				
+		$meta = $service->getCreateMeta(); 
+		
+		$projects = array();
+		
+		foreach ($meta[$meta['expand']] as $projectParams) {
+			$projects[] = \Orb\Jira\Entity\Project::fromArray($projectParams);
 		}
 		
 		$description = array();
@@ -92,17 +95,13 @@ class JiraController extends AbstractController
 			'username'	=> $username,
 			'password'	=> $password,
 			'debug'		=> true
-		));
+		), $this->em);
 		
 		return $service;
 	}
 	
 	public function lookupAction()
 	{
-		if (!$this->settings->get('core.apps_jira.enabled')) {
-			throw $this->createNotFoundException();
-		}
-
 		//$param		= $this->request->get('param');
 		$projectKey	= $this->request->get('projectkey');
 		
@@ -160,8 +159,24 @@ class JiraController extends AbstractController
 		$postParams = $this->request->request->all();
 			
 		$newIssue = new \Orb\Jira\Entity\Issue();
+		
+		/** 
+		 * Process smart tags
+		 * 
+		 * @agent: The current agent</li>
+		 * @department: The department in which the ticket is raised.</li>
+		 * @ticket: The current ticket</li>
+		 * @customer: The customer</li>
+		 * 
+		 */
+		
+		$description = $postParams['description'];
+		
+		foreach ($this->_getSmartTags() as $tag) {
+			$description = str_replace($tag, $this->_processTag($tag, $ticket), $description);
+		}
 
-		$newIssue->setDescription($postParams['description'])
+		$newIssue->setDescription($description)
 				->setType($service->findIssueType($postParams['issuetype']))
 				->setTitle($postParams['title'])
 				->setProject($service->findProject($postParams['project']))
@@ -183,7 +198,7 @@ class JiraController extends AbstractController
 
 			$jiraIssue->issue = $newIssue->getId();
 
-			$em = $this->__get('em');
+			$em = $this->em;
 			
 			$em->persist($jiraIssue);
 			
@@ -251,14 +266,76 @@ class JiraController extends AbstractController
 		return $ticket;
 	}
 	
+	/**
+	 * Gets the JIRA issues associated with the given ticket
+	 * @param type $ticket_id The DeskPRO ticket id
+	 * @return type
+	 */
 	public function getAssociatedIssuesAction($ticket_id = null)
 	{
-		if (!$this->settings->get('core.apps_jira.enabled')) {
-			throw $this->createNotFoundException();
-		}
-
 		$service = $this->_getService();
 		
+		$ticket	 = $this->_getTicketById($ticket_id);
+		
+		$repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$jiraIssues = $repository->findBy(
+			array('ticket' => $ticket
+		));
+		
+		if (!count($jiraIssues)) {
+			return $this->createJsonResponse(array(
+				'message'	=> 'No Associated issues found'
+			), 400);
+		}
+		
+		$transformedIssues = array();
+		
+		foreach ($jiraIssues as $issue) {
+			$transformedIssues[] = $service->findIssue($issue->issue);
+		}
+		
+		return $this->render('AgentBundle:Jira:issues-table.html.twig', array(
+			'ticket'		=> $ticket,
+			'jirabaseurl'	=> \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
+			'issues'		=> $transformedIssues
+		));
+	}
+	
+	/**
+	 * Fetches all the comments on all associated JIRA issues
+	 */
+	public function fetchAllCommentAction()
+	{
+		//Fetch all the exported JIRA Issues
+		$jiraIssueRepository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$jiraIssues = $jiraIssueRepository->findAll();
+		
+		foreach ($jiraIssues as $jiraIssue) {
+			$issue_id = $jiraIssue->issue;
+
+			$this->_fetchCommentsByIssueId($issue_id);
+		}
+	}
+	
+	/**
+	 * Fetches comments on given JIRA issue
+	 * 
+	 * @param type $issue_id JIRA issue ID
+	 */
+	private function _fetchCommentsByIssueId($issue_id)
+	{
+		$service = $this->_getService();
+		
+		$service->_fetchCommentsByIssueId($issue_id);
+	}
+	
+	/**
+	 * Gets JIRA comments on the given Ticket
+	 */
+	public function getCommentsAction($ticket_id = null)
+	{
 		try	{
 			$ticket = $this->getTicketOr404($ticket_id);
 		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
@@ -271,91 +348,33 @@ class JiraController extends AbstractController
 			}
 		}
 		
-		$repository = $this->__get('em')->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		// Fetch all the JIRA issues associated with this Ticket
+		$jiraIssueRepository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 		
-		$jiraIssues = $repository->findBy(
+		$jiraIssues = $jiraIssueRepository->findBy(
 			array('ticket' => $ticket
 		));
 		
-		$transformedIssues = array();
-		
-		foreach ($jiraIssues as $issue) {
-			$transformedIssues[] = $service->findIssue($issue->issue);
-		}
-		
-		return $this->render('AgentBundle:Jira:issues-table.html.twig', array(
-			'jirabaseurl'	=> \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
-			'issues'		=> $transformedIssues
-		));
-	}
-	
-	public function getCommentsAction($issue_id = null)
-	{
-		if (!$this->settings->get('core.apps_jira.enabled')) {
-			throw $this->createNotFoundException();
-		}
-
-		$service	= $this->_getService();
-		
-		$issue		= $service->findIssue($issue_id);
-		
-		$jiraRepository	= $service->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
-		
-		$comments = $jiraRepository->getComments($issue);
-		
-		$jiraIssueRepository = $this->__get('em')->getRepository('Application\DeskPRO\Entity\JiraIssue');
-		
-		$success = 0;
-		
-		$jiraIssues = $jiraIssueRepository->findBy(
-			array('issue' => $issue_id
-		));
-		
 		foreach ($jiraIssues as $jiraIssue) {
-			$ticket = $jiraIssue->ticket;
-			
-			foreach ($comments as $comment) {
-				$ticketNote						= new \Application\DeskPRO\Entity\TicketMessage();
-				
-				$ticketNote['ticket']			= $ticket;
-				
-				$ticketNote['message']			= $this->person;
-				
-				$ticketNote['ip_address']		= dp_get_user_ip_address();
-				
-				$ticketNote['creation_system']	= 'app.jira';
-				
-				$ticketNote['person']			= $this->person;
-				
-				$ticketNote->message			= $comment['body'] . '<br/><br/>' . 
-						' by <a target="_blank" href="' . $service->getBaseUrl() . 'secure/ViewProfile.jspa?name=' . $comment['author']['name'] . '">' . $comment['author']['displayName'] . '</a><br/>' . 
-						' in <a target="_blank" href="' . $service->getBaseUrl() . 'browse/' . $issue->getKey() . '">' . $issue->getKey() . '</a><br/>' . 
-						' - JIRA';
-				
-				$ticketNote['is_agent_note']	= true;
-				
-				$ticketNote['date_created']		= new \DateTime($comment['updated']);
-				
-				$ticket->addMessage($ticketNote);
-				
-				$this->__get('em')->persist($ticket);
-			}
+			$this->_fetchCommentsByIssueId($jiraIssue->issue);
 		}
 		
-		$this->__get('em')->flush();
-		
-		var_dump($comments); die;
+		return new \Symfony\Component\HttpFoundation\Response();
 	}
 	
+	/**
+	 * Posts a comment on JIRA
+	 * 
+	 * @param int $issue_id Issue ID to post comment to
+	 * @return type
+	 * @throws \Exception if the comment is empty
+	 * @throws type  
+	 */
 	public function postCommentAction($issue_id = null)
 	{
-		if (!$this->settings->get('core.apps_jira.enabled')) {
-			throw $this->createNotFoundException();
-		}
-
 		$service = $this->_getService();
 		
-		$repository = $this->__get('em')->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		$repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 		
 		$success = 0;
 		
@@ -381,6 +400,8 @@ class JiraController extends AbstractController
 				$response = $repository->postComment($issue, $comment);
 				
 				if ($response) {
+					$service->fetchAllComment();
+					
 					$success = 1;
 				}
 				return $this->createJsonResponse(array(
@@ -394,5 +415,137 @@ class JiraController extends AbstractController
 		}
 		
 		throw $this->createNotFoundException('Invalid Issue ID');
+	}
+	
+	/**
+	 * Unlinks a Jira Issue
+	 * 
+	 * @param int $ticket_id The corresponding ticket id
+	 * @param string $issue_id The corresponding jira issue id
+	 */
+	public function unlinkAction($ticket_id, $issue_id)
+	{
+		$ticket = $this->_getTicketById($ticket_id);
+		
+		$repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$jiraIssue = $repository->findOneBy(array(
+			'ticket'	=> $ticket,
+			'issue'		=> $issue_id
+		));
+		
+		if (!$jiraIssue) {
+			throw $this->createNotFoundException('We couldn\'t find any associated JIRA issues with ticket ID: ' . $ticket_id);
+		}
+		
+		if ('POST' === $this->request->getMethod()) {
+			$service = $this->_getService();
+			
+			$jiraServiceRepository = $service->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+			
+			if ($jiraServiceRepository && $jiraServiceRepository instanceof \Orb\Jira\Repository) {
+				$comment = $this->request->request->get('comment');
+				
+				$issue		= $service->findIssue($issue_id);
+
+				if (!empty($comment)) {
+					$jiraServiceRepository->postComment($issue, $comment);
+				}
+				
+				$jiraServiceRepository->postComment($issue, 'Issue unlinked from DeskPRO by ' . $this->person->name);
+				
+				$issue->addLabel('Unlinked');
+				
+				$service->persist($issue);
+				
+				$this->em->remove($jiraIssue);
+				
+				$this->em->flush();
+				
+				return $this->createJsonResponse(array(
+					'message'	=> 'Issue unlinked successfully!',
+					'issue_id'	=> $issue_id
+				));
+			} else {
+				return $this->createJsonResponse(array(
+					'message'	=> 'There was a problem in processing your request, please try again'
+				), 500);
+			}
+		}
+		
+		return $this->render('AgentBundle:Jira:unlink.html.twig', array(
+			'ticket'	=> $ticket,
+			'issue_id'	=> $issue_id
+		));
+	}
+	
+	protected function _getTicketById($ticket_id)
+	{
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		return $ticket;
+	}
+	
+	protected function _getAssociatedIssues($ticket_id)
+	{
+		$service = $this->_getService();
+		
+		$ticket	 = $this->_getTicketById($ticket_id);
+		
+		$repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		return $repository->findBy(
+			array('ticket' => $ticket
+		));
+	}
+	
+	protected function _getSmartTags()
+	{
+		return array(
+			'@agent',
+			'@customer',
+			'@department',
+			'@ticket'
+		);
+	}
+	
+	protected function _processTag($tag, \Application\DeskPRO\Entity\Ticket $ticket)
+	{
+		$validTags = $this->_getSmartTags();
+		
+		if (!in_array($tag, $validTags)) {
+			return (String) $tag;
+		}
+		
+		/**
+		 * @agent: The current agent</li>
+		 * @department: The department in which the ticket is raised.</li>
+		 * @ticket: The current ticket</li>
+		 * @customer: The customer</li>
+		 */
+		
+		switch($tag) {
+			case '@agent':
+				return $this->person->name . '(' . $this->person->primary_email->email . ')';
+				
+			case '@department':
+				return $ticket->department->title;
+			
+			case '@customer':
+				return $ticket->person->name . '(' . $ticket->person->primary_email->email . ')';
+				
+			case '@ticket':
+				return $ticket->subject . '(' . $ticket->ref . ')';
+		}
 	}
 }

@@ -775,6 +775,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
+		
+		if (this.meta.jiraEnabled) {
+			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
+				ticketId: self.meta.ticket_id,
+				baseId: self.meta.baseId,
+				defaultProject: self.meta.jiraDefaultProject,
+			});
+		}
 	},
 
 	setTicketReplyBox: function(rb) {

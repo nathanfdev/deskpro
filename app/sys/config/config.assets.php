@@ -412,7 +412,7 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
-		'javascripts/DeskPRO/Agent/Jira/Jira.js',
+		'javascripts/DeskPRO/Agent/Jira/Widget.js',
 	)
 );
 
