@@ -28,4 +28,41 @@ class SavePersonTest extends AbstractApiResultTest
 		
 		$this->getApi()->people->deleteById($newPersonId);
 	}
+	
+	public function testCanEditPerson()
+	{
+		$testPersonId = 1;
+		
+		$testName = 'Test Person';
+		
+		$result = $this->getApi()->people->findById($testPersonId);
+		
+		$data = $result->getData();
+		
+		$oldName = $data['person']['name'];
+		
+		$builder = $this->getApi()->people->createPersonEditor();
+		
+		$builder->setId($testPersonId)
+			->setName($testName);
+		
+		$result = $this->getApi()->people->save($builder);
+		
+		$this->assertEquals('200', $result->getResponseCode());
+		
+		$result = $this->getApi()->people->findById($testPersonId);
+		
+		$data = $result->getData();
+		
+		$newName = $data['person']['name'];
+		
+		$this->assertEquals($testName, $newName);
+		
+		$builder = $this->getApi()->people->createPersonEditor();
+		
+		$builder->setId($testPersonId)
+			->setName($oldName);
+		
+		$result = $this->getApi()->people->save($builder);
+	}
 }
