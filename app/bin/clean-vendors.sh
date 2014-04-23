@@ -3,6 +3,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
 DIR_VENDOR=$DIR/vendor
 
+find $DIR_VENDOR -name .git -type d -exec rm -rf {} \\;
+
 cd $DIR_VENDOR/aws/aws-sdk-php
 echo "Cleaning $(pwd)"
 rm -rf build/ docs/ tests
@@ -80,7 +82,7 @@ rm -rf .gitignore composer.json composer.lock phpunit.xml.dist README.markdown
 cd $DIR_VENDOR/doctrine/inflector
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .travis.yml composer.json phpunit.xml.dist README.md
+rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/doctrine/lexer
 echo "Cleaning $(pwd)"
@@ -96,9 +98,14 @@ echo "Cleaning $(pwd)"
 rm -rf docs/ tests/
 rm -rf .coveralls.yml .gitattributes .gitignore .gitmodules .travis.yml build.properties build.properties.dev build.xml CONTRIBUTING.md composer.json phpunit.xml.dist README.markdown run-all.sh UPGRADE.md
 
+cd $DIR_VENDOR/eluceo/ical
+echo "Cleaning $(pwd)"
+rm -rf examples/ tests/
+rm -rf .gitignore .scrutinizer.yml .travis.yml composer.json README.md
+
 cd $DIR_VENDOR/erusev/parsedown
 echo "Cleaning $(pwd)"
-rm -rf docs/
+rm -rf docs/ tests/
 rm -rf .travis.yml composer.json CONTRIBUTING.md phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/fabpot/goutte
@@ -226,7 +233,7 @@ rm -rf .gitattributes .gitignore composer.json README.markdown
 cd $DIR_VENDOR/swiftmailer/swiftmailer
 echo "Cleaning $(pwd)"
 rm -rf doc/ notes/ test-suite/ tests/
-rm -rf .gitattributes .gitignore .travis.yml build.xml CHANGES composer.json create_pear_package.php package.xml.tpl README VERSION
+rm -rf .gitattributes .gitignore .travis.yml build.xml CHANGES composer.json create_pear_package.php package.xml.tpl README README.git VERSION
 
 cd $DIR_VENDOR/symfony/icu/Symfony/Component/Icu
 echo "Cleaning $(pwd)"
@@ -309,7 +316,7 @@ rm -rf */.gitignore */CHANGELOG.md */composer.json */composer.lock */phpunit.xml
 
 cd $DIR_VENDOR/tedivm/fetch
 rm -rf tests/
-rm -rf .coveralls.yml .gitignore .travis.yml composer.json phpunit.xml.dist README.md
+rm -rf .coveralls.yml .gitignore .travis.yml composer.json CONTRIBUTING.md phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/twig/twig
 echo "Cleaning $(pwd)"

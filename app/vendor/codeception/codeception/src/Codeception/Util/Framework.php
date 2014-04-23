@@ -89,11 +89,16 @@ abstract class Framework extends \Codeception\Module implements FrameworkInterfa
 
         if (!$nodes->count()) throw new ElementNotFound($link, 'Link or Button by name or CSS or XPath');
         foreach ($nodes as $node) {
-            if ($node->nodeName == 'a') {
+            $tag = $node->nodeName;
+            $type = $node->getAttribute('type');
+            if ($tag == 'a') {
                 $this->crawler = $this->client->click($nodes->first()->link());
                 $this->debugResponse();
                 return;
-            } elseif($node->nodeName == 'input' && ($node->getAttribute('type') == 'submit' || $node->getAttribute('type') == 'image')) {
+            } elseif(
+                ($tag == 'input' && in_array($type, array('submit', 'image'))) ||
+                ($tag == 'button' && $type == 'submit'))
+            {
                 $this->submitFormWithButton($nodes->first());
                 $this->debugResponse();
                 return;
@@ -396,8 +401,6 @@ abstract class Framework extends \Codeception\Module implements FrameworkInterfa
     {
         $this->debugSection('Response', $this->getResponseStatusCode());
         $this->debugSection('Page', $this->client->getHistory()->current()->getUri());
-        $this->debugSection('Cookies', json_encode($this->client->getInternalRequest()->getCookies()));
-        $this->debugSection('Headers', json_encode($this->client->getInternalResponse()->getHeaders()));
     }
 
     protected function getResponseStatusCode()
