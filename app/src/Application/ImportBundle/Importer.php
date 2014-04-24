@@ -40,8 +40,10 @@ use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
 use Application\ImportBundle\RecordMapper\PersonRecordMapper;
 use Application\ImportBundle\ArrayParser\PersonArrayParser;
+use Application\ImportBundle\ArrayParser\TicketArrayParser;
 use Application\ImportBundle\ValueImporter\AbstractValueImporter;
 use Application\ImportBundle\ValueImporter\PersonValueImporter;
+use Application\ImportBundle\ValueImporter\TicketValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Application\DeskPRO\DBAL\Connection;
 use Monolog\Handler\StreamHandler;
@@ -152,6 +154,13 @@ class Importer
 			$this->logger,
 			$this->mappers
 		));
+		
+		$this->processDirectory('tickets', new TicketValueImporter(
+			$this->config->mode,
+			$this->db,
+			$this->logger,
+			$this->mappers
+		));
 	}
 
 
@@ -198,6 +207,10 @@ class Importer
 				switch (Util::getBaseClassname($value_importer)) {
 					case 'PersonValueImporter':
 						$parser = new PersonArrayParser();
+						$value = $parser->parseArray($data);
+						break;
+					case 'TicketValueImporter':
+						$parser = new TicketArrayParser();
 						$value = $parser->parseArray($data);
 						break;
 				}
