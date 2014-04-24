@@ -75,6 +75,7 @@ class ImporterCommandStatusCallback extends ImporterStatusCallback
 		}
 
 		$this->current_progress = new ProgressBar($this->output);
+		$this->current_progress->start();
 		$this->current_progress->setMessage("Running step: " . Util::getBaseClassname($value_importer));
 	}
 
