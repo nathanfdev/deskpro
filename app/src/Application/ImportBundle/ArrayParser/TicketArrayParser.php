@@ -67,7 +67,7 @@ class TicketArrayParser implements ArrayParserInterface
 			'date_created'  => 'date',
 			'date_resolved' => 'date',
 			'date_closed'   => 'date',
-			'subject'       => 'date',
+			'subject'       => 'string',
 			'participants'  => 'array',
 		), $data, $value);
 
