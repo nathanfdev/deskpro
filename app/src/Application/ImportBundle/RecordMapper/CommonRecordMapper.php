@@ -95,7 +95,7 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
 		$raw_records = $this->getDbRecords();
 		$id_to_title = array();
 		foreach ($raw_records as $rec) {
-			$id_to_title[$rec['id']] = $rec['title'];
+			$id_to_title[$rec['id']] = $rec[$this->match_field];
 		}
 
 		foreach ($raw_records as $rec) {
