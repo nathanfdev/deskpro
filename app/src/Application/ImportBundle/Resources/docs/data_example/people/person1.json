@@ -24,7 +24,10 @@
 	"organization": "DeskPRO",
 	"organization_position": "Sales",
 	"organization_manager": false,
-	"emails": ["admin@example.com"],
+	"emails": ["firstemail@example.com", "anotheremail@domain.com"],
 	"usergroups": ["All Permissions"],
-	"labels": ["label1", "label2"]
+	"labels": ["label1", "label2"],
+	"language": "English",
+	"password": "password",
+	"password_scheme": "plain"
 }
