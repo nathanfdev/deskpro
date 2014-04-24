@@ -139,7 +139,7 @@ class PersonValueImporter extends AbstractValueImporter
 				$v = $this->getMappers()->findIdFromMappedValue('usergroup', $ug);
 				if ($v) {
 					$this->getLogger()->notice(sprintf("[%s] Found existing usergroup %s", $log_id, $ug));
-					$add_ugs[] = $ug;
+					$add_ugs[] = $v;
 				} else {
 					$this->getLogger()->notice(sprintf("[%s] Could not map usergroup value: %s (skipping)", $log_id, $ug));
 				}
@@ -195,13 +195,13 @@ class PersonValueImporter extends AbstractValueImporter
 			if ($exist_id) {
 				$is_new = false;
 				$this->getDb()->update('people', $record, array('id' => $exist_id));
-				$this->getLogger()->info(sprintf("[%s] Updated %d"), $log_id, $log_id);
+				$this->getLogger()->info(sprintf("[%s] Updated %d", $log_id, $exist_id));
 			} else {
 				$this->getDb()->insert('people', $record);
 				$exist_id = $this->getDb()->lastInsertId();
 				$is_new = true;
 
-				$this->getLogger()->info(sprintf("[%s] Created %d"), $log_id, $log_id);
+				$this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $exist_id));
 			}
 
 			if ($add_emails_str) {
