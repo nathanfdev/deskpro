@@ -179,7 +179,7 @@ class PersonValueImporter extends AbstractValueImporter
 		}
 
 		// Additional emails
-		$add_emails_str = array_diff($pval->emails, array_values($exist_emails));
+		$add_emails_str = array_diff($pval->emails, array_keys($exist_emails));
 		if ($add_emails_str) {
 			$this->getLogger()->info(sprintf("[%s] New emails: %s", $log_id, implode($add_emails_str)));
 		}
