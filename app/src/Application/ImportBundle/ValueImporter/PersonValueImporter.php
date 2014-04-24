@@ -125,6 +125,7 @@ class PersonValueImporter extends AbstractValueImporter
 		if ($pval->language) {
 			$v = $this->getMappers()->findIdFromMappedValue('language', $pval->language);
 			if ($v) {
+				$this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $pval->language));
 				$record['language_id'] = $v;
 			} else {
 				$this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $pval->language));
@@ -181,9 +182,9 @@ class PersonValueImporter extends AbstractValueImporter
 		// Additional emails
 		$add_emails_str = array_diff($pval->emails, array_keys($exist_emails));
 		if ($add_emails_str) {
-			$this->getLogger()->info(sprintf("[%s] New emails: %s", $log_id, implode($add_emails_str)));
+			$this->getLogger()->info(sprintf("[%s] New emails: %s", $log_id, implode(', ', $add_emails_str)));
 		}
-
+		
 		#------------------------------
 		# Save data
 		#------------------------------
