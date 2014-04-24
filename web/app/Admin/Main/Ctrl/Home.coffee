@@ -18,6 +18,7 @@ define [
 		initialLoad: ->
 			promise = @Api.sendDataGet({
 				agents:      '/agents',
+				lastLogin:   '/me/last-login',
 				cronStatus:  '/server/cron-status',
 				errorStatus: '/server/error-status',
 				apcStatus:   '/server/apc-status',
@@ -32,6 +33,10 @@ define [
 				@apc_status     = result.data.apcStatus
 				@version_info   = result.data.versionInfo
 				@quick_stats    = result.data.quickStats
+				@last_login     = result.data.lastLogin.last_login
+
+				if @last_login
+					@last_login.date_created_d = new Date(@last_login.date_created_ts * 1000)
 
 				problem_triggers = [
 					@cron_status.is_problem,

@@ -38,6 +38,10 @@ i.icon-dp-chat:before {
   content: "\f075";
 }
 
+i.icon-dp-rss:before {
+  content: "\f09e";
+}
+
 .icon-flag-blue:before {
   content: "\f024";
 }
@@ -8503,19 +8507,13 @@ div.dp-appalt-section > section header h3 {
   text-align: center;
 }
 
-.dp-dashboard {
-  padding: 0 15px;
-}
-
-.dp-dashboard .row {
-  margin-top: 15px;
-}
-
-.dp-dashboard .row .col-xs-6 + .col-xs-6 {
-  padding-left: 0;
+.dp-dashboard > table {
+  border-collapse: separate;
+  border-spacing: 15px;
 }
 
 .dp-dashboard .dp-item {
+  vertical-align: top;
   background: #fff;
   border: 1px solid #d0d9e6;
   border-radius: 3px;
