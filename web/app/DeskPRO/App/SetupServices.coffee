@@ -1,11 +1,13 @@
 define [
 	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Strings',
 	'DeskPRO/Main/Service/AppState',
 	'DeskPRO/Main/Service/DpApi',
 	'DeskPRO/Main/Service/Growl',
 	'DeskPRO/Main/Service/InhelpState',
 ], (
 	Util,
+	Strings,
 	DeskPRO_Main_Service_AppState,
 	DeskPRO_Main_Service_DpApi,
 	DeskPRO_Main_Service_Growl,
@@ -35,6 +37,11 @@ define [
 		Module.filter('escape_url', [ ->
 			return (text) ->
 				return encodeURIComponent(text)
+		])
+
+		Module.filter('murmurhash', [ ->
+			return (text) ->
+				return Strings.murmurhash3(text)
 		])
 
 		Module.filter('filesize_display', [ ->

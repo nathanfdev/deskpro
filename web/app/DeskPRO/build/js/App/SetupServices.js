@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['DeskPRO/Util/Util', 'DeskPRO/Main/Service/AppState', 'DeskPRO/Main/Service/DpApi', 'DeskPRO/Main/Service/Growl', 'DeskPRO/Main/Service/InhelpState'], function(Util, DeskPRO_Main_Service_AppState, DeskPRO_Main_Service_DpApi, DeskPRO_Main_Service_Growl, DeskPRO_Main_Service_InhelpState) {
+  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Strings', 'DeskPRO/Main/Service/AppState', 'DeskPRO/Main/Service/DpApi', 'DeskPRO/Main/Service/Growl', 'DeskPRO/Main/Service/InhelpState'], function(Util, Strings, DeskPRO_Main_Service_AppState, DeskPRO_Main_Service_DpApi, DeskPRO_Main_Service_Growl, DeskPRO_Main_Service_InhelpState) {
     return function(Module) {
       Module.service('AppState', [
         '$rootScope', '$state', function($rootScope, $state) {
@@ -27,6 +27,13 @@
         function() {
           return function(text) {
             return encodeURIComponent(text);
+          };
+        }
+      ]);
+      Module.filter('murmurhash', [
+        function() {
+          return function(text) {
+            return Strings.murmurhash3(text);
           };
         }
       ]);
