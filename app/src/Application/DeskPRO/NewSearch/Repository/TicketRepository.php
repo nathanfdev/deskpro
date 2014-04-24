@@ -101,10 +101,15 @@ class TicketRepository extends Repository
 
         $filters = array(
             array('term' => array('agent' => $this->person->getId())),
-            array('term' => array('agent_team' => $this->person->getHelper('Agent')->getTeamIds())),
             array('term' => array('participants' => $this->person->getId())),
             array('term' => array('department' => $departmentIds))
         );
+
+        $teamIds = $this->person->getHelper('Agent')->getTeamIds();
+
+        if (!empty($teamIds)) {
+            $filters[] = array('term' => array('agent_team' => $teamIds));
+        }
 
         return $filters;
     }

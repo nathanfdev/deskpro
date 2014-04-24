@@ -189,5 +189,23 @@ class IntegrationGuy extends \Codeception\AbstractGuy
         }
         return new Maybe();
     }
+
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     *
+     * @see Codeception\Module::indexElasticsearch()
+     * @return \Codeception\Maybe
+     */
+    public function indexElasticsearch() {
+        $this->scenario->addStep(new \Codeception\Step\Action('indexElasticsearch', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
 }
 

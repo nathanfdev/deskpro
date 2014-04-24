@@ -27,7 +27,8 @@
 		"codeception/codeception": "*",
 		"erusev/parsedown": "dev-master",
 		"deskpro/deskpro-api-php": "dev-master",
-        "friendsofsymfony/elastica-bundle": "3.0.*@dev"
+        "friendsofsymfony/elastica-bundle": "3.0.*@dev",
+        "fzaninotto/faker": "1.4.*@dev"
 	},
 	"scripts": {
 		"pre-update-cmd":   ["test -d vendor && rm -rf vendor/ || true", "mkdir vendor"],
