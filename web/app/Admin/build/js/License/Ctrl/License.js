@@ -21,7 +21,15 @@
         this.license = null;
         this.ma_token = null;
         this.ma_login_url = null;
-        return this.lic_set_callback = null;
+        this.lic_set_callback = null;
+        return this.$scope.$watch('lic_code', (function(_this) {
+          return function(lic_code) {
+            lic_code = lic_code || '';
+            lic_code = lic_code.replace(/\s/g, '');
+            lic_code = lic_code.match(/(.{1,50})/g).join("\n");
+            return _this.$scope.lic_code = lic_code;
+          };
+        })(this));
       };
 
       Admin_License_Ctrl_License.prototype.reloadLicData = function() {
@@ -35,7 +43,7 @@
             _this.ma_token = res.data.lic_info.ma_token;
             _this.ma_login_url = res.data.lic_info.ma_login_url;
             _this.lic_set_callback = res.data.lic_info.lic_set_callback;
-            return _this.lic_code = _this.license.licenseCode;
+            return _this.$scope.lic_code = _this.license.licenseCode;
           };
         })(this));
         return data_promise;
@@ -56,7 +64,7 @@
       Admin_License_Ctrl_License.prototype.saveLicenseCode = function() {
         var postData;
         postData = {
-          license_code: this.lic_code
+          license_code: this.$scope.lic_code
         };
         this.$scope.lic_error_code = false;
         this.$scope.show_lic_error = false;
