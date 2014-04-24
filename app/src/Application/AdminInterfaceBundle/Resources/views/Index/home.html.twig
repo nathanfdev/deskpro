@@ -8,7 +8,7 @@
 				<ul class="dp-icon-list with-icons x22">
 					<li class="media" ng-repeat="agent in Home.online_agents">
 						<i class="icon-img" bg-img="agent.picture_url_22"></i>
-						<span class="title">{{ ng_var('agent.display_name') }}</span>
+						<a href="{{ ng_href('agents.agents.edit', '{id:agent.id}') }}"><span class="title">{{ ng_var('agent.display_name') }}</span></a>
 					</li>
 				</ul>
 			</article>
@@ -20,7 +20,7 @@
 				<ul class="dp-icon-list with-icons x22">
 					<li class="media" ng-repeat="agent in Home.offline_agents">
 						<i class="icon-img" bg-img="agent.picture_url_22"></i>
-						<span class="title">{{ ng_var('agent.display_name') }}</span>
+						<a href="{{ ng_href('agents.agents.edit', '{id:agent.id}') }}"><span class="title">{{ ng_var('agent.display_name') }}</span></a>
 					</li>
 				</ul>
 			</article>
@@ -61,10 +61,17 @@
 {% endblock %}
 {% block fillpage_content %}
 
+	<div ng-if="Home.last_login" class="alert alert-info" style="border-radius: 0;">
+		Welcome back, {{ app.user.display_name }}.
+		You last logged in <span title="{{ ng_var('Home.last_login.date_created') }}" am-time-ago="Home.last_login.date_created_d"></span>
+		from {{ ng_var('Home.last_login.ip_address') }}<span ng-if="Home.last_login.hostname != Home.last_login.ip_address"> ({{ ng_var('Home.last_login.hostname') }})</span>.
+		<a href="{{ ng_href('agents.login_log') }}">View login logs &rarr;</a>
+	</div>
+
 	<div class="dp-interface-buttons">
 		<ul>
 			<li>
-				<article><a href="#/back_to_agent">
+				<article><a href="/{{ path('user')|trim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
 					<div class="title-wrap"><h3>Agent Interface</h3></div>
 					<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
 					<strong>
@@ -73,7 +80,8 @@
 				</a></article>
 			</li>
 			<li>
-				<article><a href="/{{ path('user')|trim('/') }}reports">
+				<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|trim('/') }}reports/" dp-click-href="#/go_to_reports">
+
 					<div class="title-wrap"><h3>Reports Interface</h3></div>
 					<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
 					<strong>
@@ -82,7 +90,7 @@
 				</a></article>
 			</li>
 			<li>
-				<article><a href="{{ ng_href('license') }}">
+				<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
 					<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
 					<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
 					<strong>
@@ -95,9 +103,10 @@
 
 
 	<div class="dp-dashboard">
-		<div class="row">
-			<div class="col-xs-6">
-				<div class="dp-item" style="min-height: 284px;" ng-class="{'with-error': Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0 }">
+		<table cellspacing="15" width="100%">
+			<tr>
+				{# DESKRPO UPDATES #}
+				<td width="50%" class="dp-item" ng-class="{'with-error': Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0 }">
 					<header>
 						<h3>DeskPRO Updates</h3>
 					</header>
@@ -135,13 +144,12 @@
 							</ul>
 						</div>
 					</article>
-				</div>
-			</div>
+				</td>
 
-			<div class="col-xs-6">
-				<div class="dp-item" style="min-height: 284px;">
+				{# HELP #}
+				<td class="dp-item">
 					<header>
-						<h3>Need help?</h3>
+						<h3>Need Help?</h3>
 					</header>
 					<article>
 						<div class="dp-mpadded">
@@ -149,24 +157,23 @@
 								<input type="text" class="form-control" ng-model="submit_ticket.subject" required placeholder="Enter a subject for your message" />
 							</div>
 							<div class="form-group">
-								<textarea class="form-control" style="height: 100px;" ng-model="submit_ticket.message" placeholder="Enter your question here" ng-change="submit_ticket_message_error = false"></textarea>
+								<textarea class="form-control" style="height: 80px;" ng-model="submit_ticket.message" placeholder="Enter your question here" ng-change="submit_ticket_message_error = false"></textarea>
 								<span ng-show="submit_ticket_message_error" class="text-danger">Please enter a message</span>
-							</div>
-							<div class="form-group">
-								<div ng-show="submit_ticket_defaultemail" ng-init="submit_ticket_defaultemail = true">
-									We will reply to <strong>{{ app.user.primary_email_address }}</strong>.
-									<a href="#" ng-click="submit_ticket_defaultemail = false">Change?</a>
-								</div>
-								<div class="input-group" ng-hide="submit_ticket_defaultemail">
-									<span class="input-group-addon">Reply To:</span>
-									<input type="email" class="form-control" ng-model="submit_ticket.email" ng-init="submit_ticket.email = '{{ app.user.primary_email_address }}'" required />
-								</div>
 							</div>
 						</div>
 						<div class="dp-mpadded">
 							<div ng-hide="support_sent">
 								<div dp-hide-spinning="sending_support_request">
 									<button class="btn btn-default" ng-click="$event.preventDefault(); Home.sendSupportRequest();"><i class="fa fa-envelope-o"></i> Send Message</button>
+									&nbsp;&nbsp;&nbsp;
+									<div style="display: inline-block" ng-show="submit_ticket_defaultemail" ng-init="submit_ticket_defaultemail = true">
+										We will reply to <strong>{{ app.user.primary_email_address }}</strong>.
+										<a href="#" ng-click="submit_ticket_defaultemail = false">Change?</a>
+									</div>
+									<div style="display: inline-block" ng-hide="submit_ticket_defaultemail">
+										Reply To:
+										<input type="email" class="form-control" style="padding: 2px 4px; margin: 0; height: auto; width: 175px; display: inline-block;" ng-model="submit_ticket.email" ng-init="submit_ticket.email = '{{ app.user.primary_email_address }}'" required />
+									</div>
 								</div>
 								<div dp-show-spinning="sending_support_request">
 									<i class="spinner-flat"></i>
@@ -178,13 +185,11 @@
 							</p>
 						</div>
 					</article>
-				</div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-xs-6">
-				<div class="dp-item" style="min-height: 284px;">
+				</td>
+			</tr>
+			<tr>
+				{# STATS #}
+				<td width="50%" class="dp-item">
 					<header>
 						<h3>Quick Stats</h3>
 					</header>
@@ -204,14 +209,13 @@
 							</li>
 						</ul>
 						<div class="dp-mpadded">
-							<a class="btn btn-default" href="{{ path('user') }}/reports">View more reports <i class="fa fa-long-arrow-right"></i></a>
+							<a class="btn btn-default" href="/{{ path('user')|trim('/') }}reports/" dp-click-href="#/go_to_reports">View more reports <i class="fa fa-long-arrow-right"></i></a>
 						</div>
 					</article>
-				</div>
-			</div>
+				</td>
 
-			<div class="col-xs-6">
-				<div class="dp-item" style="min-height: 284px;" ng-class="{'with-error':Home.cron_status.is_problem}">
+				{# STATUS #}
+				<td class="dp-item" ng-class="{'with-error':Home.cron_status.is_problem}">
 					<header>
 						<h3>Status</h3>
 					</header>
@@ -257,8 +261,8 @@
 							</div>
 						</div>
 					</article>
-				</div>
-			</div>
-		</div>
+				</td>
+			</tr>
+		</table>
 	</div>
 {% endblock %}

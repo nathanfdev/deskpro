@@ -25,6 +25,7 @@
         var promise;
         promise = this.Api.sendDataGet({
           agents: '/agents',
+          lastLogin: '/me/last-login',
           cronStatus: '/server/cron-status',
           errorStatus: '/server/error-status',
           apcStatus: '/server/apc-status',
@@ -41,6 +42,10 @@
             _this.apc_status = result.data.apcStatus;
             _this.version_info = result.data.versionInfo;
             _this.quick_stats = result.data.quickStats;
+            _this.last_login = result.data.lastLogin.last_login;
+            if (_this.last_login) {
+              _this.last_login.date_created_d = new Date(_this.last_login.date_created_ts * 1000);
+            }
             problem_triggers = [_this.cron_status.is_problem, _this.error_status.error_count > 0, _this.error_status.gateway_error_count > 0, _this.error_status.sendmail_error_count > 0, _this.apc_status.is_problem];
             _this.is_server_problem = problem_triggers.filter(function(x) {
               return !!x;

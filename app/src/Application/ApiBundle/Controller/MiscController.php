@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\LoginLogs\LoginLogs;
 
 class MiscController extends AbstractController
 {
@@ -343,5 +344,23 @@ class MiscController extends AbstractController
 			'reset_stamp' => $this->rate_info['reset_stamp'],
 			'reset_date' => gmdate('r', $this->rate_info['reset_stamp'])
 		));
+	}
+
+	public function getLastLoginAction()
+	{
+		if (!$this->person || !$this->person->id) {
+			throw $this->createNotFoundException();
+		}
+
+		$login_logs = new LoginLogs($this->em, $this->container->getAgentData());
+		$login_logs->setPage(1);
+		$login_logs->setPerPage(2);
+		$login_logs->setFilter($this->person);
+		$records = $login_logs->getAll();
+
+		array_shift($records); // will be the current login
+		$log = array_shift($records); // will be the last login
+
+		return $this->createJsonResponse(array("last_login" => $log));
 	}
 }

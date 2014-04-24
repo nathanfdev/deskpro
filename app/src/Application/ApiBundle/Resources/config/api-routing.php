@@ -43,6 +43,12 @@ $collection->create('api_deskpro_info', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_me_lastlogin', array(
+	'path'        => '/me/last-login',
+	'controller'  => 'ApiBundle:Misc:getLastLogin',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_token_exchange', array(
 	'path'        => '/token-exchange',
 	'controller'  => 'ApiBundle:Misc:tokenExchange',
@@ -3795,8 +3801,10 @@ $collection->create('api_user_rules_apply', array(
 ########################################################################################################################
 
 $collection->create('api_login_logs', array(
-	'path'         => '/login_logs',
+	'path'         => '/login_logs/{agent_id}',
 	'controller'   => 'ApiBundle:LoginLogs:list',
+	'requirements' => array('agent_id' => '\\d+'),
+	'defaults'     => array('agent_id' => '0'),
 	'methods'      => array('GET'),
 ));
 

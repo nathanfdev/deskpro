@@ -38,6 +38,10 @@ i.icon-dp-chat:before {
   content: "\f075";
 }
 
+i.icon-dp-rss:before {
+  content: "\f09e";
+}
+
 .icon-flag-blue:before {
   content: "\f024";
 }
@@ -7928,7 +7932,6 @@ div.info-message.well {
   position: absolute;
   bottom: 0;
   width: 55px;
-  overflow: hidden;
 }
 
 .dp-appstrip .app-icon-home {
@@ -7988,7 +7991,7 @@ div.info-message.well {
 }
 
 .dp-appstrip .app-icon-admin-ifce {
-  background-image: url('../../../../images/app-icons/1x/Admin-Interface.png');
+  background-image: url('../../../../images/app-icons/1x/Admin.png');
 }
 
 .dp-appstrip .app-icon-agent-ifce {
@@ -8099,7 +8102,7 @@ div.info-message.well {
 
 .dp-appstrip .state-on .app-icon-admin-ifce,
 .dp-appstrip .section-on .app-icon-admin-ifce {
-  background-image: url('../../../../images/app-icons/1x_active/Admin-Interface.png');
+  background-image: url('../../../../images/app-icons/1x_active/Admin.png');
 }
 
 .dp-appstrip .state-on .app-icon-agent-ifce,
@@ -8151,6 +8154,7 @@ div.info-message.well {
   .dp-appstrip i.app-icon {
     background-size: 32px 32px;
   }
+  .dp-appstrip .section-on i.app-icon,
   .dp-appstrip .state-on i.app-icon {
     background-size: 40px 40px;
   }
@@ -8197,7 +8201,7 @@ div.info-message.well {
     background-image: url('../../../../images/app-icons/2x/Server.png');
   }
   .dp-appstrip .app-icon-admin-ifce {
-    background-image: url('../../../../images/app-icons/2x/Admin-Interface.png');
+    background-image: url('../../../../images/app-icons/2x/Admin.png');
   }
   .dp-appstrip .app-icon-agent-ifce {
     background-image: url('../../../../images/app-icons/2x/Agent-Interface.png');
@@ -8284,7 +8288,7 @@ div.info-message.well {
   }
   .dp-appstrip .state-on .app-icon-admin-ifce,
   .dp-appstrip .section-on .app-icon-admin-ifce {
-    background-image: url('../../../../images/app-icons/2x_active/Admin-Interface.png');
+    background-image: url('../../../../images/app-icons/2x_active/Admin.png');
   }
   .dp-appstrip .state-on .app-icon-agent-ifce,
   .dp-appstrip .section-on .app-icon-agent-ifce {
@@ -8327,6 +8331,75 @@ div.info-message.well {
 @media all and (max-height: 800px) {
   .dp-appstrip ul.btm {
     display: none;
+  }
+}
+
+.agent-interface-hover .app-icon.app-icon-admin-ifce,
+.reports-interface-hover .app-icon.app-icon-admin-ifce,
+.lic-interface-hover .app-icon.app-icon-admin-ifce {
+  background-image: url('../../../../images/app-icons/1x/Admin.png');
+}
+
+.agent-interface-hover ul.btm .section-on,
+.reports-interface-hover ul.btm .section-on,
+.lic-interface-hover ul.btm .section-on {
+  background-color: transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
+
+.agent-interface-hover .app-icon.app-icon-agent-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/Agent-Interface.png');
+}
+
+.agent-interface-hover .agent-ifce-btn {
+  background: #000;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 0 19px 12px rgba(255, 255, 255, 0.3);
+}
+
+.reports-interface-hover .app-icon.app-icon-reports-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/Reports.png');
+}
+
+.reports-interface-hover .reports-ifce-btn {
+  background: #000;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 0 19px 12px rgba(255, 255, 255, 0.3);
+}
+
+.lic-interface-hover .app-icon.app-icon-billing-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/Leads.png');
+}
+
+.lic-interface-hover .lic-ifce-btn {
+  background: #000;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 0 19px 12px rgba(255, 255, 255, 0.3);
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .agent-interface-hover .app-icon.app-icon-admin-ifce,
+  .reports-interface-hover .app-icon.app-icon-admin-ifce,
+  .lic-interface-hover .app-icon.app-icon-admin-ifce {
+    background-image: url('../../../../images/app-icons/2x/Admin.png');
+    background-size: 32px 32px !important;
+  }
+  .agent-interface-hover .app-icon.app-icon-agent-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/Agent-Interface.png');
+    background-size: 40px 40px;
+  }
+  .reports-interface-hover .app-icon.app-icon-reports-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/Reports.png');
+    background-size: 40px 40px;
+  }
+  .lic-interface-hover .app-icon.app-icon-billing-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/Leads.png');
+    background-size: 40px 40px;
   }
 }
 
@@ -8503,19 +8576,13 @@ div.dp-appalt-section > section header h3 {
   text-align: center;
 }
 
-.dp-dashboard {
-  padding: 0 15px;
-}
-
-.dp-dashboard .row {
-  margin-top: 15px;
-}
-
-.dp-dashboard .row .col-xs-6 + .col-xs-6 {
-  padding-left: 0;
+.dp-dashboard > table {
+  border-collapse: separate;
+  border-spacing: 15px;
 }
 
 .dp-dashboard .dp-item {
+  vertical-align: top;
   background: #fff;
   border: 1px solid #d0d9e6;
   border-radius: 3px;
