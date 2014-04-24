@@ -360,7 +360,6 @@ div.info-message {
 		position: absolute;
 		bottom: 0;
 		width: @appNavWidth;
-		overflow: hidden;
 	}
 
 	.app-icon-home                  { background-image: url('@{img_path}/app-icons/1x/Dashboard.png'); }
@@ -377,7 +376,7 @@ div.info-message {
 	.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x/Apps.png'); }
 	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
 	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
-	.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x/Admin-Interface.png'); }
+	.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
 	.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x/Agent-Interface.png'); }
 	.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x/Reports.png'); }
 	.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/1x/Leads.png'); }
@@ -403,7 +402,7 @@ div.info-message {
 		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x_active/Apps.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
-		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Admin-Interface.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Admin.png'); }
 		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Agent-Interface.png'); }
 		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x_active/Reports.png'); }
 		.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/1x_active/Leads.png'); }
@@ -425,7 +424,7 @@ div.info-message {
 		i.app-icon {
 			background-size: 32px 32px;
 		}
-		.state-on i.app-icon {
+		.section-on i.app-icon, 	.state-on i.app-icon {
 			background-size: 40px 40px;
 		}
 
@@ -443,7 +442,7 @@ div.info-message {
 		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x/Apps.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
-		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x/Admin-Interface.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x/Admin.png'); }
 		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x/Agent-Interface.png'); }
 		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x/Reports.png'); }
 		.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/2x/Leads.png'); }
@@ -469,7 +468,7 @@ div.info-message {
 			.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x_active/Apps.png'); }
 			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
 			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
-			.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Admin-Interface.png'); }
+			.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Admin.png'); }
 			.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Agent-Interface.png'); }
 			.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x_active/Reports.png'); }
 			.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/2x_active/Leads.png'); }
@@ -485,6 +484,89 @@ div.info-message {
 
 @media all and (max-height: 800px) {
 	.dp-appstrip ul.btm { display: none; }
+}
+
+.agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
+	.app-icon.app-icon-admin-ifce { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
+
+	ul.btm .section-on {
+		background-color: transparent;
+		border-top-color: transparent;
+		border-bottom-color: transparent;
+		box-shadow: none;
+	}
+}
+
+.agent-interface-hover {
+	.app-icon.app-icon-agent-ifce {
+		background-image: url('@{img_path}/app-icons/1x_active/Agent-Interface.png');
+	}
+	.agent-ifce-btn {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		background: #000;
+		box-shadow: 0 0 19px 12px rgba(255,255,255,0.3);
+	}
+}
+
+.reports-interface-hover {
+	.app-icon.app-icon-reports-ifce {
+		background-image: url('@{img_path}/app-icons/1x_active/Reports.png');
+	}
+	.reports-ifce-btn {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		background: #000;
+		box-shadow: 0 0 19px 12px rgba(255,255,255,0.3);
+	}
+}
+
+.lic-interface-hover {
+	.app-icon.app-icon-billing-ifce {
+		background-image: url('@{img_path}/app-icons/1x_active/Leads.png');
+	}
+	.lic-ifce-btn {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		background: #000;
+		box-shadow: 0 0 19px 12px rgba(255,255,255,0.3);
+	}
+}
+
+@media
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (   min--moz-device-pixel-ratio: 2),
+only screen and (     -o-min-device-pixel-ratio: 2/1),
+only screen and (        min-device-pixel-ratio: 2),
+only screen and (                min-resolution: 192dpi),
+only screen and (                min-resolution: 2dppx) {
+	.agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
+		.app-icon.app-icon-admin-ifce {
+			background-image: url('@{img_path}/app-icons/2x/Admin.png');
+			background-size: 32px 32px !important;
+		}
+	}
+
+	.agent-interface-hover {
+		.app-icon.app-icon-agent-ifce {
+			background-image: url('@{img_path}/app-icons/2x_active/Agent-Interface.png');
+			background-size: 40px 40px;
+		}
+	}
+
+	.reports-interface-hover {
+		.app-icon.app-icon-reports-ifce {
+			background-image: url('@{img_path}/app-icons/2x_active/Reports.png');
+			background-size: 40px 40px;
+		}
+	}
+
+	.lic-interface-hover {
+		.app-icon.app-icon-billing-ifce {
+			background-image: url('@{img_path}/app-icons/2x_active/Leads.png');
+			background-size: 40px 40px;
+		}
+	}
 }
 
 //######################################################################################################################

@@ -71,7 +71,7 @@
 	<div class="dp-interface-buttons">
 		<ul>
 			<li>
-				<article><a href="/{{ path('user')|trim('/') }}agent/" dp-click-href="#/go_to_agent">
+				<article><a href="/{{ path('user')|trim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
 					<div class="title-wrap"><h3>Agent Interface</h3></div>
 					<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
 					<strong>
@@ -80,7 +80,8 @@
 				</a></article>
 			</li>
 			<li>
-				<article><a href="/{{ path('user')|trim('/') }}reports/" dp-click-href="#/go_to_reports">
+				<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|trim('/') }}reports/" dp-click-href="#/go_to_reports">
+
 					<div class="title-wrap"><h3>Reports Interface</h3></div>
 					<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
 					<strong>
@@ -89,7 +90,7 @@
 				</a></article>
 			</li>
 			<li>
-				<article><a href="{{ ng_href('license') }}">
+				<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
 					<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
 					<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
 					<strong>
