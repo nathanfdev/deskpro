@@ -104,7 +104,8 @@ class Importer
 		$this->mappers['ticket_priority']   = new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
 		$this->mappers['product']           = new CommonRecordMapper($this->db, 'products', 'title');
 		$this->mappers['usergroup']         = new CommonRecordMapper($this->db, 'usergroups', 'title');
-		$this->mappers['organization']      = new CommonRecordMapper($this->db, 'organizations', 'title');
+		$this->mappers['organization']      = new CommonRecordMapper($this->db, 'organizations', 'name');
+		$this->mappers['language']	    = new CommonRecordMapper($this->db, 'languages', 'title');
 
 		if (!$logger) {
 			$logger = new Logger('importer');
