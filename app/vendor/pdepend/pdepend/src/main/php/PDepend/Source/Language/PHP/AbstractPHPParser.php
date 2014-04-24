@@ -2761,6 +2761,10 @@ abstract class AbstractPHPParser
                     $expressions[] = $expr;
                     break;
 
+                case Tokens::T_YIELD:
+                    $expressions[] = $this->parseYield();
+                    break;
+
                 default:
                     throw new UnexpectedTokenException(
                         $this->consumeToken($tokenType),
@@ -5568,6 +5572,9 @@ abstract class AbstractPHPParser
                 $this->builder->restoreClass($class);
                 $this->compilationUnit->addChild($class);
                 return $class;
+
+            case Tokens::T_YIELD:
+                return $this->parseYield();
         }
 
         $this->tokenStack->push();
@@ -6530,6 +6537,37 @@ abstract class AbstractPHPParser
     }
 
     /**
+     * This method parses a yield-statement node.
+     *
+     * @return \PDepend\Source\AST\ASTYieldStatmenet
+     */
+    private function parseYield()
+    {
+        $this->tokenStack->push();
+
+        $token = $this->consumeToken(Tokens::T_YIELD);
+        $this->consumeComments();
+
+        $yield = $this->builder->buildAstYieldStatement($token->image);
+
+        $yield->addChild($this->parseOptionalExpression());
+
+        if ($this->tokenizer->peek() === Tokens::T_DOUBLE_ARROW) {
+            $this->consumeToken(Tokens::T_DOUBLE_ARROW);
+
+            $yield->addChild($this->parseOptionalExpression());
+        }
+
+        $this->consumeComments();
+        if (Tokens::T_PARENTHESIS_CLOSE === $this->tokenizer->peek()) {
+            return $this->setNodePositionsAndReturn($yield);
+        }
+
+        $this->parseStatementTermination();
+        return $this->setNodePositionsAndReturn($yield);
+    }
+
+    /**
      * Extracts documented <b>throws</b> and <b>return</b> types and sets them
      * to the given <b>$callable</b> instance.
      *
@@ -6578,6 +6616,7 @@ abstract class AbstractPHPParser
         } elseif ($token->type == $tokenType) {
             return $this->tokenStack->add($token);
         }
+
         throw new UnexpectedTokenException(
             $token,
             $this->tokenizer->getSourceFile()

@@ -54,8 +54,8 @@ class PersonController extends AbstractController
 	public function viewAction($person_id, $with_warn_for_email = false)
 	{
 		$person = $this->getPersonOr404($person_id);
-
-		if (!$person['first_name'] && !$person['last_name'] && $person['name']) {
+                
+                if (!$person['first_name'] && !$person['last_name'] && $person['name']) {
 			$parts = explode(' ', $person['name'], 2);
 			$parts = Arrays::removeFalsey($parts);
 
@@ -676,6 +676,18 @@ class PersonController extends AbstractController
 					}
 				}
 				break;
+                        case 'upload-vcard':
+                                $blobId = $this->in->getUint('blob_id');
+                                
+                                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+
+                                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+                                
+                                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+                                
+                                $vCardReader->applyToPerson($content, $person);
+                                
+                                break;
 
 			default:
 				return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
@@ -778,6 +790,15 @@ class PersonController extends AbstractController
 		$person = $this->getPersonOr404($person_id);
 
 		return $this->render('AgentBundle:Person:change-person-picture.html.twig', array(
+			'person' => $person
+		));
+	}
+        
+	public function uploadVcardOverlayAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		return $this->render('AgentBundle:Person:upload-vcard-overlay.html.twig', array(
 			'person' => $person
 		));
 	}
@@ -1182,7 +1203,16 @@ class PersonController extends AbstractController
 		if (!$this->session->getEntity()->checkSecurityToken('delete_person', $security_token)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
+                
+                $personDeleted = new Entity\PersonDeleted();
+                
+                $personDeleted['person_id'] = $person_id;
+                $personDeleted['by_person'] = $this->getPerson();
+                $personDeleted['reason']    = $this->in->getString('reason');
+                
+                $this->em->persist($personDeleted);
+                $this->em->flush();
+                
 		if ($this->in->getBool('ban')) {
 			foreach ($person->emails as $email) {
 				$email_addy = strtolower($email->email);
@@ -1278,12 +1308,41 @@ class PersonController extends AbstractController
 		}
 
 		$newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
+                
+                $isVCard = $this->in->getBoolean('isVCard');
+            
+                if ($isVCard) {
+                    $blobId = $this->in->getBoolean('blobId');
+
+                    if (!$blobId) {
+                        throw new \Exception("Invalid Blob ID");
+                    }
+
+                    $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+
+                    $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+
+                    $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+
+                    $fields = $vCardReader->parseVCard($content);
+
+                    if (!isset($fields['emails']) || !count($fields['emails'])) {
+                        return $this->createJsonResponse(array(
+				'success' => false,
+				'error_messages' => array('No valid email was found in the vCard'),
+			));
+                    }
+                    
+                    $new_email = $fields['emails'][0];
+                } else {
+                    $new_email = $this->in->getString('newperson.email');
+                }
 
 		$account_manager = App::$container->getEmailAccountManager();
 
 		// Check for dupe email address
-		$new_email = $this->in->getString('newperson.email');
 		if (!$new_email || !\Orb\Validator\StringEmail::isValueValid($new_email)) {
+                    var_dump($fields); die;
 			return $this->createJsonResponse(array(
 				'success' => false,
 				'error_messages' => array('Please enter a valid email address'),
@@ -1302,6 +1361,27 @@ class PersonController extends AbstractController
 				));
 			}
 		}
+                
+                if ($isVCard) {
+                    $newperson->save();
+
+                    $person = $newperson->getPerson();
+                    
+                    $vCardReader->applyToPerson($content, $person);
+
+                    $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+
+                    // Notify about new person
+                    foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
+                            $this->em->persist($cm);
+                    }
+                    $this->em->flush();
+
+                    return $this->createJsonResponse(array(
+                            'success' => true,
+                            'person_id' => $person['id']
+                    ));
+                }
 
 		$formType = new \Application\AgentBundle\Form\Type\NewPerson();
 		$form = $this->get('form.factory')->create($formType, $newperson);

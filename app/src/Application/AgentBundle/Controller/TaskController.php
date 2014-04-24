@@ -614,4 +614,59 @@ class TaskController extends AbstractController
 
 		return $task;
 	}
+        
+        public function iCalAction($id, $authcode, $filter)
+        {
+            $person = Person::getRepository()->find($id);
+            
+            if (!$person) {
+                throw $this->createNotFoundException("Invalid authcode");
+            }
+            
+            $generatedAuthCode = sha1($person->secret_string . $person->password);
+            
+            if ($generatedAuthCode !== $authcode) {
+                throw $this->createNotFoundException("Invalid authcode");
+            }
+            
+            switch ($filter) {
+                case 'all':
+                    $tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person);
+                    break;
+                
+                case 'assigned':
+                    $tasks = $this->em->getRepository('DeskPRO:Task')->filterTasksForPerson($person);
+                    break;
+                
+                case 'delegated':
+                    $tasks = $this->em->getRepository('DeskPRO:Task')->filterDelegatedTasksForPerson($person);
+                    break;
+
+                default:
+                    break;
+            }
+            
+            $vCalendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
+            
+            foreach ($tasks as $task) {
+                $vEvent = new \Eluceo\iCal\Component\Event();
+            
+                $vEvent
+                    ->setDtStart($task->date_due)
+                    ->setDtEnd($task->date_due)
+                    ->setNoTime(true)
+                    //->setTitle($task->title)
+                    ->setSummary($task->title)
+                ;
+
+                $vCalendar->addEvent($vEvent);
+            }
+            
+            $response = new \Symfony\Component\HttpFoundation\Response($vCalendar->render());
+            
+            $response->headers->set('Content-Type', 'text/calendar; charset=utf-8');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filter . '.ics"');
+            
+            return $response;
+        }
 }

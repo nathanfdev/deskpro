@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e489cd1e1775b32980d4e1cf3557a841",
+    "hash": "d46c60b9a7f1f03a859e9a449c37d8cc",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -298,12 +298,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "a02f50ee09f067c2c0c08d4cadb3946ad8dc2d9d"
+                "reference": "06fe5c19f83cd8ed33f47cab131e402154436471"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/a02f50ee09f067c2c0c08d4cadb3946ad8dc2d9d",
-                "reference": "a02f50ee09f067c2c0c08d4cadb3946ad8dc2d9d",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/06fe5c19f83cd8ed33f47cab131e402154436471",
+                "reference": "06fe5c19f83cd8ed33f47cab131e402154436471",
                 "shasum": ""
             },
             "require": {
@@ -357,7 +357,7 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2014-04-14 19:35:44"
+            "time": "2014-04-22 03:47:50"
         },
         {
             "name": "deskpro/deskpro-api-php",
@@ -365,12 +365,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/DeskPRO/deskpro-api-php.git",
-                "reference": "f37ec4c86222de6022d60a1b5aa7d93c22679c64"
+                "reference": "b567bf78d71d1a5601b9d4623febdf1297a244a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/f37ec4c86222de6022d60a1b5aa7d93c22679c64",
-                "reference": "f37ec4c86222de6022d60a1b5aa7d93c22679c64",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/b567bf78d71d1a5601b9d4623febdf1297a244a5",
+                "reference": "b567bf78d71d1a5601b9d4623febdf1297a244a5",
                 "shasum": ""
             },
             "require-dev": {
@@ -395,7 +395,7 @@
             ],
             "description": "Library for using the DeskPRO API with PHP",
             "homepage": "http://support.deskpro.com/",
-            "time": "2014-04-03 09:06:19"
+            "time": "2014-04-23 09:27:29"
         },
         {
             "name": "doctrine/annotations",
@@ -403,12 +403,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "ce2b5dae7b996bd231a9f178750aec536aba7e14"
+                "reference": "510afadeb61247418c57da011701fa22f428a7a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/ce2b5dae7b996bd231a9f178750aec536aba7e14",
-                "reference": "ce2b5dae7b996bd231a9f178750aec536aba7e14",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/510afadeb61247418c57da011701fa22f428a7a0",
+                "reference": "510afadeb61247418c57da011701fa22f428a7a0",
                 "shasum": ""
             },
             "require": {
@@ -416,7 +416,8 @@
                 "php": ">=5.3.2"
             },
             "require-dev": {
-                "doctrine/cache": "1.*"
+                "doctrine/cache": "1.*",
+                "phpunit/phpunit": "4.*"
             },
             "type": "library",
             "extra": {
@@ -456,7 +457,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -467,7 +468,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2014-04-16 13:36:10"
+            "time": "2014-04-22 11:44:09"
         },
         {
             "name": "doctrine/cache",
@@ -529,9 +530,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -596,9 +597,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -672,9 +673,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1043,16 +1044,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/inflector.git",
-                "reference": "a81c334f2764b09e2f13a55cfd8fe3233946f728"
+                "reference": "64de2fe36d578c5d5f3807ac7984547bbba5f7c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/a81c334f2764b09e2f13a55cfd8fe3233946f728",
-                "reference": "a81c334f2764b09e2f13a55cfd8fe3233946f728",
+                "url": "https://api.github.com/repos/doctrine/inflector/zipball/64de2fe36d578c5d5f3807ac7984547bbba5f7c5",
+                "reference": "64de2fe36d578c5d5f3807ac7984547bbba5f7c5",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
             },
             "type": "library",
             "extra": {
@@ -1090,9 +1094,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1104,7 +1108,7 @@
                 "singularize",
                 "string"
             ],
-            "time": "2013-12-21 19:19:50"
+            "time": "2014-04-23 12:36:11"
         },
         {
             "name": "doctrine/lexer",
@@ -1149,9 +1153,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1229,12 +1233,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "9d36e855c009c6b1bca450dff1c1211196b02df7"
+                "reference": "63c5758070dd39a9a4dcf6e97025f712850d7e7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/9d36e855c009c6b1bca450dff1c1211196b02df7",
-                "reference": "9d36e855c009c6b1bca450dff1c1211196b02df7",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/63c5758070dd39a9a4dcf6e97025f712850d7e7f",
+                "reference": "63c5758070dd39a9a4dcf6e97025f712850d7e7f",
                 "shasum": ""
             },
             "require": {
@@ -1297,7 +1301,60 @@
                 "database",
                 "orm"
             ],
-            "time": "2014-03-23 15:38:05"
+            "time": "2014-04-21 05:07:57"
+        },
+        {
+            "name": "eluceo/ical",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eluceo/iCal.git",
+                "reference": "f26cae020c008e986c72dab3f216a41ad9b34b83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eluceo/iCal/zipball/f26cae020c008e986c72dab3f216a41ad9b34b83",
+                "reference": "f26cae020c008e986c72dab3f216a41ad9b34b83",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Eluceo\\iCal": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maciej Łebkowski",
+                    "email": "m.lebkowski@gmail.com",
+                    "role": "Contributor"
+                },
+                {
+                    "name": "Markus Poerschke",
+                    "email": "markus@eluceo.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The eluceo/iCal package offers a abstraction layer for creating iCalendars. You can easily create iCal files by using PHP object instead of typing your *.ics file by hand. The output will follow RFC 2445 as best as possible.",
+            "homepage": "https://github.com/eluceo/iCal",
+            "keywords": [
+                "calendar",
+                "iCalendar",
+                "ical",
+                "ics",
+                "php calendar"
+            ],
+            "time": "2014-03-02 17:33:33"
         },
         {
             "name": "erusev/parsedown",
@@ -1305,12 +1362,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "c10bde01746867e2afbc715a6149f4e682f0263b"
+                "reference": "60819541858f9da6fcb77e8bd09693635553d3ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/c10bde01746867e2afbc715a6149f4e682f0263b",
-                "reference": "c10bde01746867e2afbc715a6149f4e682f0263b",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/60819541858f9da6fcb77e8bd09693635553d3ef",
+                "reference": "60819541858f9da6fcb77e8bd09693635553d3ef",
                 "shasum": ""
             },
             "type": "library",
@@ -1336,7 +1393,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-03-24 21:08:52"
+            "time": "2014-04-17 21:19:22"
         },
         {
             "name": "fabpot/goutte",
@@ -1671,7 +1728,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
@@ -1690,12 +1747,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jdorn/sql-formatter.git",
-                "reference": "826d01c59bb972df6769f693a8b7d6ff13347557"
+                "reference": "ffd2441bc082ab5aaf07be5676bfb1eadaeef77d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jdorn/sql-formatter/zipball/826d01c59bb972df6769f693a8b7d6ff13347557",
-                "reference": "826d01c59bb972df6769f693a8b7d6ff13347557",
+                "url": "https://api.github.com/repos/jdorn/sql-formatter/zipball/ffd2441bc082ab5aaf07be5676bfb1eadaeef77d",
+                "reference": "ffd2441bc082ab5aaf07be5676bfb1eadaeef77d",
                 "shasum": ""
             },
             "require": {
@@ -1732,7 +1789,7 @@
                 "highlight",
                 "sql"
             ],
-            "time": "2014-03-15 14:22:01"
+            "time": "2014-04-17 01:55:36"
         },
         {
             "name": "kriswallsmith/assetic",
@@ -1841,12 +1898,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "4eff32b268a0db52b9abe36725cb775658ad3f1f"
+                "reference": "1cd0f9516d3c39126b31bf50bcbf873dc65f29bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/4eff32b268a0db52b9abe36725cb775658ad3f1f",
-                "reference": "4eff32b268a0db52b9abe36725cb775658ad3f1f",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/1cd0f9516d3c39126b31bf50bcbf873dc65f29bf",
+                "reference": "1cd0f9516d3c39126b31bf50bcbf873dc65f29bf",
                 "shasum": ""
             },
             "require": {
@@ -1855,8 +1912,8 @@
             },
             "require-dev": {
                 "hamcrest/hamcrest-php": "~1.1",
-                "phpunit/phpunit": "4.0.*",
-                "satooshi/php-coveralls": "dev-master"
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.7@dev"
             },
             "type": "library",
             "extra": {
@@ -1899,7 +1956,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2014-04-09 22:16:37"
+            "time": "2014-04-21 19:33:11"
         },
         {
             "name": "monolog/monolog",
@@ -1907,12 +1964,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "03000a7fcd4072bd7e1f99c8ce4328621c5773b9"
+                "reference": "7567cecfa5f60e9a311e96d8becec2e232748155"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/03000a7fcd4072bd7e1f99c8ce4328621c5773b9",
-                "reference": "03000a7fcd4072bd7e1f99c8ce4328621c5773b9",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/7567cecfa5f60e9a311e96d8becec2e232748155",
+                "reference": "7567cecfa5f60e9a311e96d8becec2e232748155",
                 "shasum": ""
             },
             "require": {
@@ -1940,7 +1997,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8.x-dev"
+                    "dev-master": "1.9.x-dev"
                 }
             },
             "autoload": {
@@ -1967,7 +2024,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2014-04-10 15:52:42"
+            "time": "2014-04-23 13:56:51"
         },
         {
             "name": "pda/pheanstalk",
@@ -2017,12 +2074,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pdepend/pdepend.git",
-                "reference": "a7166dfd097a7010e36d16e0a5ee6d51afe9bea2"
+                "reference": "337b3810c05bd7c49c7baf23a0df36c04329d3ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/a7166dfd097a7010e36d16e0a5ee6d51afe9bea2",
-                "reference": "a7166dfd097a7010e36d16e0a5ee6d51afe9bea2",
+                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/337b3810c05bd7c49c7baf23a0df36c04329d3ed",
+                "reference": "337b3810c05bd7c49c7baf23a0df36c04329d3ed",
                 "shasum": ""
             },
             "require": {
@@ -2031,7 +2088,7 @@
                 "symfony/filesystem": "@stable"
             },
             "require-dev": {
-                "phpunit/phpunit": "@stable",
+                "phpunit/phpunit": "3.*@stable",
                 "squizlabs/php_codesniffer": "@stable"
             },
             "bin": [
@@ -2053,7 +2110,7 @@
                 "BSD-3-Clause"
             ],
             "description": "Official version of pdepend to be handled with Composer",
-            "time": "2014-03-19 22:21:06"
+            "time": "2014-04-23 11:09:44"
         },
         {
             "name": "pear/math_biginteger",
@@ -2380,12 +2437,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "248d6ce95e6ca7f0e3135252c0b984bbe1f52f19"
+                "reference": "44fb02bda4425d0b3fcdac36e4a2223d414c8530"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/248d6ce95e6ca7f0e3135252c0b984bbe1f52f19",
-                "reference": "248d6ce95e6ca7f0e3135252c0b984bbe1f52f19",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/44fb02bda4425d0b3fcdac36e4a2223d414c8530",
+                "reference": "44fb02bda4425d0b3fcdac36e4a2223d414c8530",
                 "shasum": ""
             },
             "require": {
@@ -2446,7 +2503,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-28 11:04:36"
+            "time": "2014-04-23 06:00:49"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -2695,12 +2752,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "d5d580ca7ced89955ce7200f41fb0f97b8f74c60"
+                "reference": "19a15a44b21d13f6c19beefc8e4b6c849558ec50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/d5d580ca7ced89955ce7200f41fb0f97b8f74c60",
-                "reference": "d5d580ca7ced89955ce7200f41fb0f97b8f74c60",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/19a15a44b21d13f6c19beefc8e4b6c849558ec50",
+                "reference": "19a15a44b21d13f6c19beefc8e4b6c849558ec50",
                 "shasum": ""
             },
             "require": {
@@ -2712,7 +2769,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.1-dev"
+                    "dev-master": "5.2-dev"
                 }
             },
             "autoload": {
@@ -2741,7 +2798,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2014-04-13 13:06:08"
+            "time": "2014-04-22 07:28:24"
         },
         {
             "name": "symfony/icu",
@@ -2915,12 +2972,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "f72eb34fc430229a7edca2f90949e1cf99dde673"
+                "reference": "aa5d62d8bc7f85948190bfd7125be5a40c42b5fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/f72eb34fc430229a7edca2f90949e1cf99dde673",
-                "reference": "f72eb34fc430229a7edca2f90949e1cf99dde673",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/aa5d62d8bc7f85948190bfd7125be5a40c42b5fe",
+                "reference": "aa5d62d8bc7f85948190bfd7125be5a40c42b5fe",
                 "shasum": ""
             },
             "require": {
@@ -3023,7 +3080,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-04-16 10:36:34"
+            "time": "2014-04-23 15:17:21"
         },
         {
             "name": "tedivm/fetch",
@@ -3031,12 +3088,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tedivm/Fetch.git",
-                "reference": "33451f1e7180280652008b0ce921fa362f1980cd"
+                "reference": "70b982b319d240b090aecd7ca3a5e029227d374e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tedivm/Fetch/zipball/33451f1e7180280652008b0ce921fa362f1980cd",
-                "reference": "33451f1e7180280652008b0ce921fa362f1980cd",
+                "url": "https://api.github.com/repos/tedivm/Fetch/zipball/70b982b319d240b090aecd7ca3a5e029227d374e",
+                "reference": "70b982b319d240b090aecd7ca3a5e029227d374e",
                 "shasum": ""
             },
             "require": {
@@ -3071,7 +3128,7 @@
                 "imap",
                 "pop3"
             ],
-            "time": "2014-04-16 08:33:50"
+            "time": "2014-04-20 07:32:28"
         },
         {
             "name": "twig/twig",
@@ -3282,6 +3339,62 @@
                 "zf2"
             ],
             "time": "2013-03-13 22:11:24"
+        },
+        {
+            "name": "zircote/swagger-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zircote/swagger-php.git",
+                "reference": "8b61563c31d678df6953dc41770d0faac7452f69"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/8b61563c31d678df6953dc41770d0faac7452f69",
+                "reference": "8b61563c31d678df6953dc41770d0faac7452f69",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/annotations": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/finder": "*",
+                "symfony/process": "*"
+            },
+            "bin": [
+                "bin/swagger"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Swagger": "library"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "Robert Allen",
+                    "email": "zircote@gmail.com",
+                    "homepage": "http://www.zircote.com"
+                },
+                {
+                    "name": "Bob Fanger",
+                    "email": "bfanger@gmail.com",
+                    "homepage": "http://bfanger.nl"
+                }
+            ],
+            "description": "Swagger-PHP library implementing the swagger.wordnik.com specification to describe web services, operations/actions and models enabling a uniform means of producing, consuming, and visualizing RESTful web services.",
+            "homepage": "https://github.com/zircote/swagger-php/",
+            "keywords": [
+                "api",
+                "json",
+                "service discovery"
+            ],
+            "time": "2014-03-26 07:30:50"
         }
     ],
     "packages-dev": [
@@ -3299,7 +3412,9 @@
         "zendframework/zend-queue": 20,
         "erusev/parsedown": 20,
         "deskpro/deskpro-api-php": 20,
-        "tedivm/fetch": 20
+        "tedivm/fetch": 20,
+        "zircote/swagger-php": 20,
+        "eluceo/ical": 20
     },
     "platform": [
 
