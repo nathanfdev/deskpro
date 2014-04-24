@@ -7,7 +7,7 @@
 	"priority": "Normal",
 	"workflow": "Internal",
 	"product": "DeskPRO",
-	"person": "john@example.com",
+	"person": "firstemail@example.com",
 	"agent": "agent@example.com",
 	"agent_team": "Team",
 	"organization": "DeskPRO",
@@ -21,15 +21,15 @@
 	"messages": [
 		{
 			"oid": 1,
-			"person": "john@example.com",
+			"person": "firstemail@example.com",
 			"date_created": "2014-04-23",
 			"message_text": "This is a message"
 		},
 		{
 			"oid": 2,
-			"person": "agent@example.com",
+			"person": "firstemail@example.com",
 			"date_created": "2014-04-23",
-			"message_text": "This is a message"
+			"message_text": "This is another message"
 		}
 	]
 }
