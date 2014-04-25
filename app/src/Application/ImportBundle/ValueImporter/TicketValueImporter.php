@@ -45,7 +45,7 @@ class TicketValueImporter extends AbstractValueImporter
 	 */
 	public function importValue($tval)
 	{
-		//var_dump($tval); die;
+		//var_dump($tval->organization); die;
 		if (!($tval instanceof TicketValue)) {
 			throw new \InvalidArgumentException("This importer can only import TicketValue");
 		}
@@ -78,6 +78,18 @@ class TicketValueImporter extends AbstractValueImporter
 		}
 		
 		$record['subject'] = $tval->subject;
+		
+		#------------------------------
+		# Agent
+		#------------------------------
+		if ($tval->agent && StringEmail::isValueValid($tval->agent)) {
+			$personId = $this->getMappers()->findIdFromMappedValue('person', $tval->agent);
+			
+			if ($personId) {
+				$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
+				$record['agent_id'] = $personId;
+			}
+		}
 		
 		#------------------------------
 		# Departments
@@ -145,6 +157,40 @@ class TicketValueImporter extends AbstractValueImporter
 			}
 		}
 		
+		//Status
+		if ($tval->status && 
+			$this->getMappers()->getMapper ('ticket_status')->isValidStatus($tval->status)) {
+			$this->getLogger()->notice(sprintf("[%s] Found existing ticket status %s", $log_id, $tval->status));
+			$record['status'] = $tval->status;
+		}
+		
+		//Date fields
+		$record['date_created']		= $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+		$record['date_closed']		= $tval->date_closed ? $tval->date_closed->format('Y-m-d H:i:s') : null;
+		$record['date_resolved']	= $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
+		
+		// Org
+		if ($tval->organization) {
+			$organizationId = $this->getMappers()->findIdFromMappedValue('organization', $tval->organization);
+			if ($organizationId) {
+				$this->getLogger()->notice(sprintf("[%s] Found existing organization \"%s\"", $log_id, $tval->organization));
+				$record['organization_id'] = $organizationId;
+			} else {
+				$this->getLogger()->notice(sprintf("[%s] New organization %s", $log_id, $tval->organization));
+				if ($this->isTestMode()) {
+					$record['organization_id'] = -1;
+				} else {
+					$this->getDb()->insert('organizations', array(
+						'name'         => $tval->organization,
+						'date_created' => date('Y-m-d H:i:s')
+					));
+					$record['organization_id'] = $this->getDb()->lastInsertId();
+				}
+
+				$this->getMappers()->learnMapping('organization', $record['organization_id']);
+			}
+		}
+		
 		#------------------------------
 		# Save data
 		#------------------------------
@@ -208,6 +254,19 @@ class TicketValueImporter extends AbstractValueImporter
 			}
 		}
 		
+		#------------------------------
+		# Labels
+		#------------------------------
+		if ($ticketId && $tval->labels) {
+			$batch = array_map(function($l) use ($ticketId) {
+				return array(
+					'ticket_id' => $ticketId,
+					'label'     => $l
+				);
+			}, $tval->labels);
+
+			$this->getDb()->batchInsert('labels_tickets', $batch, true);
+		}
 	}
 }
 
