@@ -90,3 +90,27 @@
 		</article>
 	</section>
 {% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Triggers are automatic processes that perform actions when the right criteria are met.</h1>
+		<p ng-if="TicketTriggersList.eventType == 'newreply'">Triggers in this section run when a <strong>new reply</strong> arrives from a user, if their criteria are met.</p>
+		<p ng-if="TicketTriggersList.eventType == 'newticket'">Triggers in this section run when a <strong>new ticket</strong> is created, if their criteria are met.</p>
+		<p ng-if="TicketTriggersList.eventType == 'update'">Triggers in this section run when a ticket is <strong>updated</strong>, if their criteria are met.</p>
+	</header>
+
+	<article>
+		<section>
+			<p>You can use the <strong>Event</strong> section to have the trigger run selectively; for example, to run only in response to actions by users, rather than agents.</p>
+			<p>Criteria can be used to check properties of the:</p>
+			<ul>
+				<li>email</li>
+				<li>ticket</li>
+				<li>attachments</li>
+				<li>user</li>
+				<li>user's organization</li>
+				<li>the current time</li>
+			</ul>
+			<p>Actions can be used to notify agents and users, or change the state of a ticket, or even trigger an API call to a web-based service.</p>
+		</section>
+	</article>
+{% endblock %}

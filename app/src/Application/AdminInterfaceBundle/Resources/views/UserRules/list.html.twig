@@ -31,7 +31,21 @@
 		</article>
 	</section>
 {% endblock %}
-
 {% block listpane_help %}
-	{% include 'AdminInterfaceBundle:UserRules:help-page.html.twig' %}
+	<header>
+		<h1>User rules automatically add users to usergroups based on their email address.</h1>
+		<p>Define an <strong>email address pattern</strong> and select which usergroup to which the users who match it should be added.</p>
+	</header>
+	<article>
+		<section>
+			<p>You can add multiple patterns, starting a new one on each line. If a new user email address matches any of the patterns, the rule will add it to the selected usergroup.</p>
+			<p>You can use * as a wildcard.</p>
+			<ul>
+				<li><code>*@example.com</code> matches all email addresses ending with <code>@example.com</code>.</li>
+				<li><code>sales@*</code> matches all email addresses beginning with <code>sales@</code>.</li>
+				<li><code>sales@*.co.uk</code> matches all email address beginning with <code>sales@</code> and ending with <code>.co.uk</code></li>
+				<li><code>*@example.*</code> matches <code>it@example.org</code> and <code>sales@example.co.uk</code> etc.</li>
+			</ul>
+		</section>
+	</article>
 {% endblock %}

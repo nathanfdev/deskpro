@@ -97,5 +97,26 @@
 {{ ng_tpl('AdminInterfaceBundle:Apps:new-app-modal.html.twig') }}
 {% endblock %}
 {% block listpane_help %}
-	{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}
+	<header>
+		<h1>You can extend DeskPRO with apps to add new functionality and integration with other services.</h1>
+		<p>Click any app to install and configure it. You can also create your own widgets (basic apps based on HTML and Javascript) or full apps.</p>
+	</header>
+
+	<article>
+		<section>
+			<p>The authentication apps allow agents or users to log in using credentials from other services, rather than a DeskPRO account.</p>
+			<p>Most apps that operate with third-party services require you to set up an account with the service first. Some apps also require you to provide an <strong>API token</strong> or some other authentication code: consult the support pages for the third-party service to find out how to get it.</p>
+			<p>Widgets enable you to add simple HTML and Javascript to predefined places in the agent interface. They are easier to develop, but less powerful than full apps.</p>
+		</section>
+
+
+		<section>
+			<h2><span>Related Knowledgebase Articles</span></h2>
+			<ul>
+				<li><a href="https://support.deskpro.com/kb/articles/88"  target="_blank">API Basics</a></li>
+				<li><a href="https://support.deskpro.com/kb/articles/97" target="_blank">DeskPRO PHP API Wrapper</a></li>
+				<li><a href="https://support.deskpro.com/kb/articles/84" target="_blank">Creating Widgets</a></li>
+			</ul>
+		</section>
+	</article>
 {% endblock %}

@@ -23,5 +23,15 @@
 	</section>
 {% endblock %}
 {% block listpane_help %}
-	{% include 'AdminInterfaceBundle:UserGroups:help-page.html.twig' %}
+	<header>
+		<h1>Usergroup membership determines what permissions users have.</h1>
+		<p>Agents can assign users to the usergroups you define here. Each usergroup grants a different level of permissions for the user to interact with the helpdesk.</p>
+	</header>
+	<article>
+		<section>
+			<p>Click on the name of a usergroup to edit its permissions.</p>
+			<p>The <strong>Everyone</strong> usergroup controls what can be done by users who aren't logged in. All the permissions you grant to <strong>Everyone</strong> will  be available to every other usergroup.</p>
+			<p>The <strong>Registered</strong> usergroup controls what all registered users can do. All other groups (apart from <strong>Everyone</strong>) will have the permissions you grant to <strong>Registered</strong>.</p>
+		</section>
+	</article>
 {% endblock %}
