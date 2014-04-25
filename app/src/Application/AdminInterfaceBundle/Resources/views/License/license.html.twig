@@ -17,7 +17,7 @@
 							</label>
 						</div>
 						<div class="col-lg-10">
-							<div class="inner-group">
+							<div class="inner-group form-control-static">
 								{{ ng_var('Ctrl.license.licenseId') }}
 							</div>
 						</div>
@@ -30,7 +30,7 @@
 							</label>
 						</div>
 						<div class="col-lg-10">
-							<div class="inner-group">
+							<div class="inner-group form-control-static">
 								{{ ng_var('Ctrl.license.org') }}
 							</div>
 						</div>
@@ -43,7 +43,7 @@
 							</label>
 						</div>
 						<div class="col-lg-10">
-							<div class="inner-group">
+							<div class="inner-group form-control-static">
 								<div ng-if="!Ctrl.license.isExpired">
 									Your demo period expires in {{ ng_var('Ctrl.license.expireDays') }} days.
 									<div style="padding-top: 3px;">
@@ -67,7 +67,7 @@
 							</label>
 						</div>
 						<div class="col-lg-10">
-							<div class="inner-group">
+							<div class="inner-group form-control-static">
 								You can use unlimited agents during the demo period.
 							</div>
 						</div>
@@ -80,7 +80,7 @@
 							</label>
 						</div>
 						<div class="col-lg-10">
-							<div class="inner-group">
+							<div class="inner-group form-control-static">
 								<div ng-if="!Ctrl.license.isExpired">
 									<div ng-if="Ctrl.license.expireDays && Ctrl.license.expireDays < 30">
 										Your license expires in {{ ng_var('Ctrl.license.expireDays') }} days on {{ ng_var('Ctrl.license.expireDate') }}.
@@ -111,7 +111,7 @@
 							</label>
 						</div>
 						<div class="col-lg-10">
-							<div class="inner-group">
+							<div class="inner-group form-control-static">
 								<div ng-if="!Ctrl.license.maxAgents || Ctrl.license.maxAgents >= 100">
 									Unlimited
 								</div>
@@ -130,9 +130,9 @@
 						</div>
 						<div class="col-lg-10">
 							<div class="inner-group">
-								<textarea class="form-control" style="width: 40%; height: 160px; font-family: Monaco, Consolas, monospace; font-size: 11px;" ng-model="Ctrl.lic_code"></textarea>
+								<textarea class="form-control" style="width: 400px; height: 160px; font-family: Monaco, Consolas, monospace; font-size: 11px;" ng-model="lic_code"></textarea>
 								<br/>
-								<div dp-hide-spinning="saving" ng-show="Ctrl.lic_code != Ctrl.license.licenseCode" style="padding-top: 3px;">
+								<div dp-hide-spinning="saving" ng-show="lic_code != Ctrl.license.licenseCode" style="padding-top: 3px;">
 									<button class="btn btn-primary" ng-click="$event.preventDefault(); Ctrl.saveLicenseCode()"><i class="fa fa-save"></i> Update License Code</button>
 								</div>
 								<div dp-show-spinning="saving" style="padding: 5px;">
