@@ -45,7 +45,6 @@ class TicketValueImporter extends AbstractValueImporter
 	 */
 	public function importValue($tval)
 	{
-		//var_dump($tval->organization); die;
 		if (!($tval instanceof TicketValue)) {
 			throw new \InvalidArgumentException("This importer can only import TicketValue");
 		}
@@ -66,7 +65,7 @@ class TicketValueImporter extends AbstractValueImporter
 				$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
 				$record['person_id'] = $personId;
 			} else {
-				$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
+				//$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
 				return false;
 			}
 		} else {
@@ -109,6 +108,8 @@ class TicketValueImporter extends AbstractValueImporter
 					));
 				
 				$record['department_id'] = $this->getDb()->lastInsertId();
+				
+				$this->getMappers()->learnMapping('department', array('id' => $record['department_id'], 'title' => $tval->department));
 			}
 		}
 		
@@ -137,6 +138,8 @@ class TicketValueImporter extends AbstractValueImporter
 					));
 				
 				$record['category_id'] = $this->getDb()->lastInsertId();
+				
+				$this->getMappers()->learnMapping('ticket_category', array('id' => $record['category_id'], 'title' => $tval->category));
 			}
 		}
 		
@@ -154,19 +157,22 @@ class TicketValueImporter extends AbstractValueImporter
 					));
 				
 				$record['priority_id'] = $this->getDb()->lastInsertId();
+				
+				$this->getMappers()->learnMapping('ticket_priority', array('id' => $record['priority_id'], 'title' => $tval->priority));
 			}
 		}
 		
 		//Ref
 		if (!$tval->ref) {
-			$record['ref'] = md5(time());
+			$record['ref'] = md5(uniqid(null, true));
 		} else {
 			$query = 'SELECT id FROM tickets WHERE ref = ?';
-			
+		
 			$duplicateRef = $this->getDb()->fetchColumn($query, array($tval->ref));
 			
 			if ($duplicateRef) {
-				$record['ref'] = md5(time());
+				$record['ref'] = md5(uniqid(null, true));
+				//var_dump($duplicateRef); die;
 			} else {
 				$record['ref'] = $tval->ref;
 			}
@@ -202,7 +208,7 @@ class TicketValueImporter extends AbstractValueImporter
 					$record['organization_id'] = $this->getDb()->lastInsertId();
 				}
 
-				$this->getMappers()->learnMapping('organization', $record['organization_id']);
+				$this->getMappers()->learnMapping('organization', array('id' => $record['organization_id'], 'name' => $tval->organization));
 			}
 		}
 		
@@ -237,7 +243,7 @@ class TicketValueImporter extends AbstractValueImporter
 						$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $participant));
 						$this->getDb()->insert('tickets_participants', $batch);
 					} else {
-						$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $participant));
+						//$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $participant));
 					}
 				}
 			}
@@ -256,7 +262,7 @@ class TicketValueImporter extends AbstractValueImporter
 					$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
 					$record['person_id'] = $messagePersonId;
 				} else {
-					$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
+					//$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
 					continue;
 				}
 				
