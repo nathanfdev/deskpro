@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "d46c60b9a7f1f03a859e9a449c37d8cc",
+    "hash": "91a0b043efe106e46ea97ae16daa8928",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -294,25 +294,25 @@
         },
         {
             "name": "codeception/codeception",
-            "version": "1.8.x-dev",
+            "version": "1.8.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "06fe5c19f83cd8ed33f47cab131e402154436471"
+                "reference": "5c019b18a9fecf617951ea618d5a6ec48d037adc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/06fe5c19f83cd8ed33f47cab131e402154436471",
-                "reference": "06fe5c19f83cd8ed33f47cab131e402154436471",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/5c019b18a9fecf617951ea618d5a6ec48d037adc",
+                "reference": "5c019b18a9fecf617951ea618d5a6ec48d037adc",
                 "shasum": ""
             },
             "require": {
                 "behat/mink": "1.5.*",
                 "behat/mink-goutte-driver": "1.0.*",
                 "behat/mink-selenium2-driver": "1.1.*",
-                "facebook/webdriver": "0.3",
+                "facebook/webdriver": "< 0.3",
                 "monolog/monolog": "*",
-                "php": ">=5.3.19",
+                "php": ">=5.3.3",
                 "phpunit/phpunit": "3.7.*",
                 "symfony/console": "~2.3",
                 "symfony/event-dispatcher": "~2.3",
@@ -326,7 +326,7 @@
                 "videlalvaro/php-amqplib": "*"
             },
             "suggest": {
-                "codeception/phpbuiltinserver": "Extension to start and stop PHP built-in web server for your tests"
+                "codeception/phpbuiltinserver": "Extension to starts and stops PHP builtin web server for your tests"
             },
             "bin": [
                 "codecept"
@@ -357,7 +357,7 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2014-04-22 03:47:50"
+            "time": "2013-11-15 16:40:18"
         },
         {
             "name": "deskpro/deskpro-api-php",
@@ -403,12 +403,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "510afadeb61247418c57da011701fa22f428a7a0"
+                "reference": "373c0d08bf1f326ff40bc237046aa10638bf28f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/510afadeb61247418c57da011701fa22f428a7a0",
-                "reference": "510afadeb61247418c57da011701fa22f428a7a0",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/373c0d08bf1f326ff40bc237046aa10638bf28f6",
+                "reference": "373c0d08bf1f326ff40bc237046aa10638bf28f6",
                 "shasum": ""
             },
             "require": {
@@ -457,7 +457,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -468,7 +468,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2014-04-22 11:44:09"
+            "time": "2014-04-24 04:07:43"
         },
         {
             "name": "doctrine/cache",
@@ -901,12 +901,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineCacheBundle.git",
-                "reference": "49a9d2d9a35863201e5e608d1194db28946c4552"
+                "reference": "61bfb4329161a9d23e400f97fb9639e1c8e6b2cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/49a9d2d9a35863201e5e608d1194db28946c4552",
-                "reference": "49a9d2d9a35863201e5e608d1194db28946c4552",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/61bfb4329161a9d23e400f97fb9639e1c8e6b2cf",
+                "reference": "61bfb4329161a9d23e400f97fb9639e1c8e6b2cf",
                 "shasum": ""
             },
             "require": {
@@ -976,7 +976,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2014-03-04 19:18:55"
+            "time": "2014-04-24 21:16:42"
         },
         {
             "name": "doctrine/doctrine-fixtures-bundle",
@@ -1362,12 +1362,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "60819541858f9da6fcb77e8bd09693635553d3ef"
+                "reference": "504991a04e9b795f303020e327aeb7b945d2910e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/60819541858f9da6fcb77e8bd09693635553d3ef",
-                "reference": "60819541858f9da6fcb77e8bd09693635553d3ef",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/504991a04e9b795f303020e327aeb7b945d2910e",
+                "reference": "504991a04e9b795f303020e327aeb7b945d2910e",
                 "shasum": ""
             },
             "type": "library",
@@ -1393,7 +1393,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-04-17 21:19:22"
+            "time": "2014-04-24 21:06:06"
         },
         {
             "name": "fabpot/goutte",
@@ -1501,21 +1501,20 @@
         },
         {
             "name": "facebook/webdriver",
-            "version": "v0.3",
+            "version": "v0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/php-webdriver.git",
-                "reference": "1b0facc33133f0ff990df8cebe7f2e19b2603da3"
+                "reference": "bcefbd697846c807d191e79309e42b4eac2ea5a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/1b0facc33133f0ff990df8cebe7f2e19b2603da3",
-                "reference": "1b0facc33133f0ff990df8cebe7f2e19b2603da3",
+                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/bcefbd697846c807d191e79309e42b4eac2ea5a9",
+                "reference": "bcefbd697846c807d191e79309e42b4eac2ea5a9",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.19",
-                "phpunit/phpunit": "3.7.*"
+                "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
@@ -1529,13 +1528,140 @@
             ],
             "description": "A php client for WebDriver",
             "homepage": "https://github.com/facebook/php-webdriver",
-            "keywords": [
-                "facebook",
-                "php",
-                "selenium",
-                "webdriver"
+            "time": "2013-09-10 16:04:57"
+        },
+        {
+            "name": "friendsofsymfony/elastica-bundle",
+            "version": "dev-master",
+            "target-dir": "FOS/ElasticaBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
+                "reference": "90abc44968f9ef2ab36c869d9b5cdda184fabd03"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/90abc44968f9ef2ab36c869d9b5cdda184fabd03",
+                "reference": "90abc44968f9ef2ab36c869d9b5cdda184fabd03",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "psr/log": "~1.0",
+                "ruflin/elastica": ">=0.90.2.0, <1.1-dev",
+                "symfony/console": "~2.1",
+                "symfony/form": "~2.1",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/property-access": "~2.2"
+            },
+            "require-dev": {
+                "doctrine/mongodb-odm": "1.0.*@dev",
+                "doctrine/orm": ">=2.2,<2.5-dev",
+                "knplabs/knp-components": "1.2.*",
+                "pagerfanta/pagerfanta": "1.0.*@dev",
+                "propel/propel1": "1.6.*",
+                "symfony/expression-language": "2.4.*@dev"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "1.0.*@dev",
+                "doctrine/orm": ">=2.2,<2.5-dev",
+                "knplabs/knp-components": "1.2.*",
+                "pagerfanta/pagerfanta": "1.0.*@dev",
+                "propel/propel1": "1.6.*",
+                "symfony/expression-language": "2.4.*@dev"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "FOS\\ElasticaBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
             ],
-            "time": "2013-11-26 23:16:02"
+            "authors": [
+                {
+                    "name": "Thibault Duplessis",
+                    "email": "thibault.duplessis@gmail.com",
+                    "homepage": "http://ornicar.github.com"
+                },
+                {
+                    "name": "Jeremy Mikola",
+                    "email": "jmikola@gmail.com",
+                    "homepage": "http://jmikola.net"
+                },
+                {
+                    "name": "Richard Miller",
+                    "email": "richard.miller@limethinking.co.uk"
+                }
+            ],
+            "description": "Elasticsearch PHP integration for your Symfony2 project using Elastica",
+            "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
+            "keywords": [
+                "doctrine2",
+                "elastica",
+                "elasticsearch",
+                "mongodb",
+                "propel",
+                "search"
+            ],
+            "time": "2014-04-20 06:01:38"
+        },
+        {
+            "name": "fzaninotto/faker",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzaninotto/Faker.git",
+                "reference": "3bab1d19cf195ff9ee8732a5503c5d57774ec7d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/3bab1d19cf195ff9ee8732a5503c5d57774ec7d4",
+                "reference": "3bab1d19cf195ff9ee8732a5503c5d57774ec7d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "~1.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Faker": "src/",
+                    "Faker\\PHPUnit": "test/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "time": "2014-04-24 10:36:04"
         },
         {
             "name": "guzzle/guzzle",
@@ -1863,47 +1989,17 @@
             "time": "2013-09-03 12:44:05"
         },
         {
-            "name": "leth/ip-address",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/leth/PHP-IPAddress.git",
-                "reference": "a53f22c18e26da90d7f6ffefed2118df977a60d1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/leth/PHP-IPAddress/zipball/a53f22c18e26da90d7f6ffefed2118df977a60d1",
-                "reference": "a53f22c18e26da90d7f6ffefed2118df977a60d1",
-                "shasum": ""
-            },
-            "require": {
-                "pear/math_biginteger": "dev-tags/RELEASE_1_0_2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Leth\\IPAddress": "classes/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0"
-            ],
-            "description": "IPv4 and IPv6 address and subnet classes with awesome utility functions.",
-            "time": "2014-04-03 21:52:55"
-        },
-        {
             "name": "mockery/mockery",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "1cd0f9516d3c39126b31bf50bcbf873dc65f29bf"
+                "reference": "09cad223615eac9e229837c9d44792f393529328"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/1cd0f9516d3c39126b31bf50bcbf873dc65f29bf",
-                "reference": "1cd0f9516d3c39126b31bf50bcbf873dc65f29bf",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/09cad223615eac9e229837c9d44792f393529328",
+                "reference": "09cad223615eac9e229837c9d44792f393529328",
                 "shasum": ""
             },
             "require": {
@@ -1956,7 +2052,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2014-04-21 19:33:11"
+            "time": "2014-04-25 09:53:30"
         },
         {
             "name": "monolog/monolog",
@@ -1964,12 +2060,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "7567cecfa5f60e9a311e96d8becec2e232748155"
+                "reference": "65026b610f8c19e61d7242f600530677b0466aac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/7567cecfa5f60e9a311e96d8becec2e232748155",
-                "reference": "7567cecfa5f60e9a311e96d8becec2e232748155",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/65026b610f8c19e61d7242f600530677b0466aac",
+                "reference": "65026b610f8c19e61d7242f600530677b0466aac",
                 "shasum": ""
             },
             "require": {
@@ -2024,7 +2120,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2014-04-23 13:56:51"
+            "time": "2014-04-24 13:29:03"
         },
         {
             "name": "pda/pheanstalk",
@@ -2074,12 +2170,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pdepend/pdepend.git",
-                "reference": "337b3810c05bd7c49c7baf23a0df36c04329d3ed"
+                "reference": "06f230d429d6740482de0ca06598f46e45448736"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/337b3810c05bd7c49c7baf23a0df36c04329d3ed",
-                "reference": "337b3810c05bd7c49c7baf23a0df36c04329d3ed",
+                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/06f230d429d6740482de0ca06598f46e45448736",
+                "reference": "06f230d429d6740482de0ca06598f46e45448736",
                 "shasum": ""
             },
             "require": {
@@ -2110,52 +2206,7 @@
                 "BSD-3-Clause"
             ],
             "description": "Official version of pdepend to be handled with Composer",
-            "time": "2014-04-23 11:09:44"
-        },
-        {
-            "name": "pear/math_biginteger",
-            "version": "dev-tags/RELEASE_1_0_2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Math_BigInteger.git",
-                "reference": "98529194f2c2d0334fff105ec4eba4e9cbe6cd29"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Math_BigInteger/zipball/98529194f2c2d0334fff105ec4eba4e9cbe6cd29",
-                "reference": "98529194f2c2d0334fff105ec4eba4e9cbe6cd29",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcre": "*",
-                "php": ">=4.2.0"
-            },
-            "suggest": {
-                "ext-bcmath": "Allows using the BCMath extension internally for computation. Faster than native implementation.",
-                "ext-gmp": "Allows using the GNU Multiple Precision extension internally for computation. If you are doing a lot of computation this is the recommended extension."
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1+"
-            ],
-            "authors": [
-                {
-                    "name": "Jim Wigginton",
-                    "email": "terrafrost@php.net",
-                    "role": "Lead Developer"
-                }
-            ],
-            "description": "Pure-PHP arbitrary precission integer arithmetic library. If GMP or BCMath are available they are used.",
-            "homepage": "https://github.com/pear/Math_BigInteger",
-            "keywords": [
-                "arbitrary",
-                "bcmath",
-                "gmp",
-                "integer",
-                "precision"
-            ],
-            "time": "2014-02-12 03:11:21"
+            "time": "2014-04-23 20:25:37"
         },
         {
             "name": "phpmd/phpmd",
@@ -2437,12 +2488,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "44fb02bda4425d0b3fcdac36e4a2223d414c8530"
+                "reference": "ce2099fad55c1374c192d7587ee5cb4ee63c8740"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/44fb02bda4425d0b3fcdac36e4a2223d414c8530",
-                "reference": "44fb02bda4425d0b3fcdac36e4a2223d414c8530",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ce2099fad55c1374c192d7587ee5cb4ee63c8740",
+                "reference": "ce2099fad55c1374c192d7587ee5cb4ee63c8740",
                 "shasum": ""
             },
             "require": {
@@ -2503,7 +2554,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-04-23 06:00:49"
+            "time": "2014-04-24 08:24:57"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -2599,6 +2650,58 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "ruflin/elastica",
+            "version": "v1.0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ruflin/Elastica.git",
+                "reference": "81f339d9a813e3ba9eca6a9f06bb03f50639a1d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/81f339d9a813e3ba9eca6a9f06bb03f50639a1d1",
+                "reference": "81f339d9a813e3ba9eca6a9f06bb03f50639a1d1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "munkie/elasticsearch-thrift-php": "1.4.*",
+                "psr/log": "~1.0",
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "suggest": {
+                "monolog/monolog": "Logging request",
+                "munkie/elasticsearch-thrift-php": "Allow using thrift transport",
+                "psr/log": "for logging"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Elastica": "lib/",
+                    "Elastica\\Test": "test/lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Ruflin",
+                    "homepage": "http://ruflin.com/"
+                }
+            ],
+            "description": "Elasticsearch Client",
+            "homepage": "http://elastica.io/",
+            "keywords": [
+                "client",
+                "search"
+            ],
+            "time": "2014-03-25 19:34:57"
         },
         {
             "name": "satooshi/php-coveralls",
@@ -2802,20 +2905,21 @@
         },
         {
             "name": "symfony/icu",
-            "version": "1.0.x-dev",
+            "version": "1.2.x-dev",
             "target-dir": "Symfony/Component/Icu",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Icu.git",
-                "reference": "fdba214b1e087c149843bde976263c53ac10c975"
+                "reference": "98e197da54df1f966dd5e8a4992135703569c987"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Icu/zipball/fdba214b1e087c149843bde976263c53ac10c975",
-                "reference": "fdba214b1e087c149843bde976263c53ac10c975",
+                "url": "https://api.github.com/repos/symfony/Icu/zipball/98e197da54df1f966dd5e8a4992135703569c987",
+                "reference": "98e197da54df1f966dd5e8a4992135703569c987",
                 "shasum": ""
             },
             "require": {
+                "lib-icu": ">=4.4",
                 "php": ">=5.3.3",
                 "symfony/intl": "~2.3"
             },
@@ -2845,7 +2949,7 @@
                 "icu",
                 "intl"
             ],
-            "time": "2013-10-04 09:12:07"
+            "time": "2013-10-04 10:06:38"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -2972,12 +3076,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "aa5d62d8bc7f85948190bfd7125be5a40c42b5fe"
+                "reference": "9d0de5b57b7435bf6bad4d0e2b6d844370e62fc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/aa5d62d8bc7f85948190bfd7125be5a40c42b5fe",
-                "reference": "aa5d62d8bc7f85948190bfd7125be5a40c42b5fe",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/9d0de5b57b7435bf6bad4d0e2b6d844370e62fc2",
+                "reference": "9d0de5b57b7435bf6bad4d0e2b6d844370e62fc2",
                 "shasum": ""
             },
             "require": {
@@ -3080,7 +3184,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-04-23 15:17:21"
+            "time": "2014-04-25 12:08:25"
         },
         {
             "name": "tedivm/fetch",
@@ -3136,12 +3240,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "af6910e1a73eca5ed0adaaa26adfb6c3f92e7eb7"
+                "reference": "28256f5eda6174c8f9ffd32ec7313da12cb07805"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/af6910e1a73eca5ed0adaaa26adfb6c3f92e7eb7",
-                "reference": "af6910e1a73eca5ed0adaaa26adfb6c3f92e7eb7",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/28256f5eda6174c8f9ffd32ec7313da12cb07805",
+                "reference": "28256f5eda6174c8f9ffd32ec7313da12cb07805",
                 "shasum": ""
             },
             "require": {
@@ -3185,7 +3289,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-04-15 20:49:49"
+            "time": "2014-04-23 20:31:20"
         },
         {
             "name": "zendframework/zend-queue",
@@ -3408,10 +3512,11 @@
         "doctrine/migrations": 20,
         "doctrine/doctrine-fixtures-bundle": 20,
         "mockery/mockery": 20,
-        "leth/ip-address": 20,
         "zendframework/zend-queue": 20,
         "erusev/parsedown": 20,
         "deskpro/deskpro-api-php": 20,
+        "friendsofsymfony/elastica-bundle": 20,
+        "fzaninotto/faker": 20,
         "tedivm/fetch": 20,
         "zircote/swagger-php": 20,
         "eluceo/ical": 20

@@ -28,7 +28,7 @@
 		"erusev/parsedown": "dev-master",
 		"deskpro/deskpro-api-php": "dev-master",
                 "friendsofsymfony/elastica-bundle": "3.0.*@dev",
-                "fzaninotto/faker": "1.4.*@dev"
+                "fzaninotto/faker": "1.4.*@dev",
 		"tedivm/fetch": "dev-master",
 		"zircote/swagger-php": "dev-master",
 		"eluceo/ical": "dev-master"

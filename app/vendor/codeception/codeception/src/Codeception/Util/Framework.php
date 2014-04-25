@@ -89,16 +89,11 @@ abstract class Framework extends \Codeception\Module implements FrameworkInterfa
 
         if (!$nodes->count()) throw new ElementNotFound($link, 'Link or Button by name or CSS or XPath');
         foreach ($nodes as $node) {
-            $tag = $node->nodeName;
-            $type = $node->getAttribute('type');
-            if ($tag == 'a') {
+            if ($node->nodeName == 'a') {
                 $this->crawler = $this->client->click($nodes->first()->link());
                 $this->debugResponse();
                 return;
-            } elseif(
-                ($tag == 'input' && in_array($type, array('submit', 'image'))) ||
-                ($tag == 'button' && $type == 'submit'))
-            {
+            } elseif($node->nodeName == 'input' && $node->getAttribute('type') == 'submit') {
                 $this->submitFormWithButton($nodes->first());
                 $this->debugResponse();
                 return;
@@ -319,8 +314,7 @@ abstract class Framework extends \Codeception\Module implements FrameworkInterfa
             if ($label->attr('for')) $input = $this->crawler->filter('#' . $label->attr('for'));
         }
 
-        if (!isset($input)) $input = $this->match(sprintf('.//*[self::input | self::textarea | self::select][@name = "%s"]', $field));
-        if (!count($input)) $input = $this->match($field);
+        if (!isset($input)) $input = $this->match($field);
         if (!count($input)) throw new ElementNotFound($field, 'Form field by Label or CSS');
         return $input->first();
 
