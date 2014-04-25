@@ -184,6 +184,9 @@ class TicketValueImporter extends AbstractValueImporter
 			}
 		}
 		
+		#------------------------------
+		# Ticket Messages
+		#------------------------------
 		if ($ticketId && $tval->messages) {
 			foreach ($tval->messages as $message) {
 				$record = array();
@@ -195,7 +198,7 @@ class TicketValueImporter extends AbstractValueImporter
 					$record['person_id'] = $messagePersonId;
 				} else {
 					$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
-					continue;;
+					continue;
 				}
 				
 				$record['ticket_id'] = $ticketId;

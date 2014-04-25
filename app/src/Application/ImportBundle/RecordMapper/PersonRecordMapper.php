@@ -78,7 +78,7 @@ class PersonRecordMapper implements RecordMapperInterface
 		}
 
 		// Save up to 5000 cache records
-		while (count($this->cache[$value]) > 5000) array_shift($this->cache[$value]);
+		while (isset($this->cache[$value]) && count($this->cache[$value]) > 5000) array_shift($this->cache[$value]);
 
 		return $pid;
 	}
