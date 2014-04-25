@@ -82,11 +82,11 @@ class TicketValueImporter extends AbstractValueImporter
 		#------------------------------
 		# Agent
 		#------------------------------
-		if ($tval->agent && StringEmail::isValueValid($tval->agent)) {
+		if ($tval->agent && $this->getMappers()->getMapper('person')->checkIsAgent($tval->agent)) {
 			$personId = $this->getMappers()->findIdFromMappedValue('person', $tval->agent);
 			
 			if ($personId) {
-				$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
+				$this->getLogger()->info(sprintf("[%s] Found existing agent %s", $log_id, $tval->person));
 				$record['agent_id'] = $personId;
 			}
 		}
