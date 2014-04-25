@@ -95,7 +95,7 @@ class TicketValueImporter extends AbstractValueImporter
 		# Departments
 		#------------------------------
 		if ($tval->department) {
-			$departmentId = $this->getMappers()->findIdFromMappedValue('person', $tval->department);
+			$departmentId = $this->getMappers()->findIdFromMappedValue('department', $tval->department);
 			
 			if ($departmentId) {
 				$this->getLogger()->info(sprintf("[%s] Found existing department %s", $log_id, $tval->department));

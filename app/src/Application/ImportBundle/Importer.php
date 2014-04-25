@@ -106,6 +106,7 @@ class Importer
 		$this->mappers['ticket_workflow']   = new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
 		$this->mappers['ticket_priority']   = new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
 		$this->mappers['ticket_status']     = new TicketStatusRecordMapper();
+		$this->mappers['department']        = new CommonRecordMapper($this->db, 'departments', 'title');
 		$this->mappers['product']           = new CommonRecordMapper($this->db, 'products', 'title');
 		$this->mappers['usergroup']         = new CommonRecordMapper($this->db, 'usergroups', 'title');
 		$this->mappers['organization']      = new CommonRecordMapper($this->db, 'organizations', 'name');
