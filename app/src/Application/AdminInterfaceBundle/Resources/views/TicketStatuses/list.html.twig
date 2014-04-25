@@ -6,16 +6,16 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li>
+				<li dp-state-mark="tickets.statuses.awaiting_agent">
 					<a href="{{ ng_href('tickets.statuses.awaiting_agent') }}">{{ phrase('agent.tickets.status_awaiting_agent') }}</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.statuses.awaiting_user">
 					<a href="{{ ng_href('tickets.statuses.awaiting_user') }}">{{ phrase('agent.tickets.status_awaiting_user') }}</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.statuses.resolved">
 					<a href="{{ ng_href('tickets.statuses.resolved') }}">{{ phrase('agent.tickets.status_resolved') }}</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.statuses.closed">
 					<a href="{{ ng_href('tickets.statuses.closed') }}">{{ phrase('agent.tickets.status_closed') }}</a>
 				</li>
 			</ul>
@@ -28,13 +28,13 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li>
+				<li dp-state-mark="tickets.statuses.hidden_validating">
 					<a href="{{ ng_href('tickets.statuses.hidden_validating') }}">{{ phrase('agent.tickets.status_hidden_validating') }}</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.statuses.hiddel_deleted">
 					<a href="{{ ng_href('tickets.statuses.hidden_deleted') }}">{{ phrase('agent.tickets.status_hidden_deleted') }}</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.statuses.hidden_spam">
 					<a href="{{ ng_href('tickets.statuses.hidden_spam') }}">{{ phrase('agent.tickets.status_hidden_spam') }}</a>
 				</li>
 			</ul>

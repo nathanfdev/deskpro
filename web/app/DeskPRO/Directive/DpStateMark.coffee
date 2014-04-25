@@ -27,6 +27,12 @@ define [
     #
     # And the match will be done against <route_name>.<id>.<type>
     #
+    # If the params ends with a '!', such as:
+    #
+    #     dp-state-mark="category_title!:my.example.type.123"
+    #
+    # ... then the value is hashed with Strings.murmurhash3.
+    #
     # Example View
     # ------------
     # <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
@@ -37,13 +43,22 @@ define [
 			link: (scope, element, attrs) ->
 				myStateId   = attrs.dpStateMark
 				currentStateVars = null
+				hashParams = {}
 
+				# Parse out comma-separated list of route params
 				m = myStateId.match(/^(.*?):(.*?)$/)
 				if m
 					myStateId = m[2]
-					currentStateVars = m[1].split(',')
+					currentStateVars = []
+					for p in m[1].split(',')
+						if p.substr(-1) == '!'
+							p = p.substr(0, p.length-1)
+							hashParams[p] = true
+						currentStateVars.push(p)
 
-				myStateIdReBase = Strings.escapeRegex(myStateId)
+				myStateIdRe = Strings.escapeRegex(myStateId)
+				myStateIdRe1 = new RegExp(myStateIdRe + '\\.') # prefix "abc.zyx."
+				myStateIdRe2 = new RegExp(myStateIdRe + '$')   # full   "abc.xyz.1"
 
 				# This sets the active state immediately on click
 				# which makes the UI feel faster
@@ -54,43 +69,27 @@ define [
 				)
 
 				updateMarker = ->
-					myStateIdRe = myStateIdReBase
 					currentStateId = $state.current.name
 
 					isOn = false
-					if true
-						if currentStateVars
-							for v in currentStateVars
-								if $state.params[v]?
-									currentStateId += '.' + $state.params[v]
+
+					if currentStateVars
+						for v in currentStateVars
+							if $state.params[v]?
+								if hashParams[v]
+									currentStateId += '.' + Strings.murmurhash3($state.params[v])
 								else
-									currentStateId += '.0'
-						else
-							if $state.params.type
-								currentStateId += '.' + $state.params.type
-							if $state.params.id
-								currentStateId += '.' + $state.params.id
+									currentStateId += '.' + $state.params[v]
+							else
+								currentStateId += '.0'
+					else
+						if $state.params.type
+							currentStateId += '.' + $state.params.type
+						if $state.params.id
+							currentStateId += '.' + $state.params.id
 
-						myStateIdRe += '(\\.|$)'
-
-						if currentStateId.match(myStateIdRe)
-
-							###
-							# This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
-							# In this case both the elements will be highlighted
-							#
-							# If you will need to understand what is done uncomment following lines of code:
-							#
-							# console.log currentStateId, myStateIdRe
-							# console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
-							# console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
-							###
-
-							firstStateOccurrence = currentStateId.split('.')[0]
-							firstRegExpOccurrence = myStateIdRe.toString().split('.')[0]
-							occurrenceFound = firstRegExpOccurrence.indexOf(firstStateOccurrence)
-
-							if occurrenceFound > -1 then isOn = true
+					if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
+						isOn = true
 
 					if isOn
 						element.addClass('state-on active')

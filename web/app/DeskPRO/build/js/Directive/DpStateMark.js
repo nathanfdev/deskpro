@@ -26,6 +26,12 @@
         *
         * And the match will be done against <route_name>.<id>.<type>
         *
+        * If the params ends with a '!', such as:
+        *
+        *     dp-state-mark="category_title!:my.example.type.123"
+        *
+        * ... then the value is hashed with Strings.murmurhash3.
+        *
         * Example View
         * ------------
         * <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
@@ -36,63 +42,59 @@
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
-            var currentStateVars, m, myStateId, myStateIdReBase, updateMarker;
+            var currentStateVars, hashParams, m, myStateId, myStateIdRe, myStateIdRe1, myStateIdRe2, p, updateMarker, _i, _len, _ref;
             myStateId = attrs.dpStateMark;
             currentStateVars = null;
+            hashParams = {};
             m = myStateId.match(/^(.*?):(.*?)$/);
             if (m) {
               myStateId = m[2];
-              currentStateVars = m[1].split(',');
+              currentStateVars = [];
+              _ref = m[1].split(',');
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                p = _ref[_i];
+                if (p.substr(-1) === '!') {
+                  p = p.substr(0, p.length - 1);
+                  hashParams[p] = true;
+                }
+                currentStateVars.push(p);
+              }
             }
-            myStateIdReBase = Strings.escapeRegex(myStateId);
+            myStateIdRe = Strings.escapeRegex(myStateId);
+            myStateIdRe1 = new RegExp(myStateIdRe + '\\.');
+            myStateIdRe2 = new RegExp(myStateIdRe + '$');
             element.on('click', function() {
               element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active');
               element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
               return element.addClass('state-on active');
             });
             updateMarker = function() {
-              var currentStateId, firstRegExpOccurrence, firstStateOccurrence, isOn, myStateIdRe, occurrenceFound, v, _i, _len;
-              myStateIdRe = myStateIdReBase;
+              var currentStateId, isOn, v, _j, _len1;
               currentStateId = $state.current.name;
               isOn = false;
-              if (true) {
-                if (currentStateVars) {
-                  for (_i = 0, _len = currentStateVars.length; _i < _len; _i++) {
-                    v = currentStateVars[_i];
-                    if ($state.params[v] != null) {
-                      currentStateId += '.' + $state.params[v];
+              if (currentStateVars) {
+                for (_j = 0, _len1 = currentStateVars.length; _j < _len1; _j++) {
+                  v = currentStateVars[_j];
+                  if ($state.params[v] != null) {
+                    if (hashParams[v]) {
+                      currentStateId += '.' + Strings.murmurhash3($state.params[v]);
                     } else {
-                      currentStateId += '.0';
+                      currentStateId += '.' + $state.params[v];
                     }
-                  }
-                } else {
-                  if ($state.params.type) {
-                    currentStateId += '.' + $state.params.type;
-                  }
-                  if ($state.params.id) {
-                    currentStateId += '.' + $state.params.id;
+                  } else {
+                    currentStateId += '.0';
                   }
                 }
-                myStateIdRe += '(\\.|$)';
-                if (currentStateId.match(myStateIdRe)) {
-
-                  /*
-                  							 * This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
-                  							 * In this case both the elements will be highlighted
-                  							 *
-                  							 * If you will need to understand what is done uncomment following lines of code:
-                  							 *
-                  							 * console.log currentStateId, myStateIdRe
-                  							 * console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
-                  							 * console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
-                   */
-                  firstStateOccurrence = currentStateId.split('.')[0];
-                  firstRegExpOccurrence = myStateIdRe.toString().split('.')[0];
-                  occurrenceFound = firstRegExpOccurrence.indexOf(firstStateOccurrence);
-                  if (occurrenceFound > -1) {
-                    isOn = true;
-                  }
+              } else {
+                if ($state.params.type) {
+                  currentStateId += '.' + $state.params.type;
                 }
+                if ($state.params.id) {
+                  currentStateId += '.' + $state.params.id;
+                }
+              }
+              if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
+                isOn = true;
               }
               if (isOn) {
                 element.addClass('state-on active');

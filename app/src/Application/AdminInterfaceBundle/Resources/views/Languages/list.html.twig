@@ -20,8 +20,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="pack in ListCtrl.installedPacks">
-					<a href="{{ ng_href('setup.languages.edit', '{id: pack.id}') }}" dp-state-mark="setup.languages.edit.{{ ng_var('pack.id') }}">
+				<li ng-repeat="pack in ListCtrl.installedPacks" dp-state-mark="setup.languages.edit.{{ ng_var('pack.id') }}">
+					<a href="{{ ng_href('setup.languages.edit', '{id: pack.id}') }}">
 						<h4>
 							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; text-align: baseline;" />
 							<span class="title-text">
@@ -40,8 +40,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="pack in ListCtrl.availablePacks">
-					<a href="{{ ng_href('setup.languages.install', "{id: 'install-' + pack.id}") }}" dp-state-mark="setup.languages.install.install-{{ ng_var('pack.id') }}">
+				<li ng-repeat="pack in ListCtrl.availablePacks" dp-state-mark="setup.languages.install.install-{{ ng_var('pack.id') }}">
+					<a href="{{ ng_href('setup.languages.install', "{id: 'install-' + pack.id}") }}">
 						<h4>
 							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; text-align: baseline;" />
 							<span class="title-text">

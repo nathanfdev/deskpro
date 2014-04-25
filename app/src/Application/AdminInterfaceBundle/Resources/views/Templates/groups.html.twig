@@ -6,7 +6,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="group in ListCtrl.groups">
+				<li ng-repeat="group in ListCtrl.groups" dp-state-mark="groupName!:portal.templates.list.{{ ng_var('group.id|murmurhash') }}">
 					<a href="{{ ng_href('portal.templates.list', '{groupName: group.id}') }}">
 						<h4>
 							<i class="fa fa-folder"></i>
