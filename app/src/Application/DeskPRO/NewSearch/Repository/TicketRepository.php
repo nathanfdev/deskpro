@@ -2,7 +2,13 @@
 
 namespace Application\DeskPRO\NewSearch\Repository;
 
+use Elastica\Query\QueryString;
 use FOS\ElasticaBundle\Repository;
+
+use Application\DeskPRO\NewSearch\Filter\AssignmentFilter;
+use Application\DeskPRO\NewSearch\Filter\AgentTeamFilter;
+use Application\DeskPRO\NewSearch\Filter\DepartmentFilter;
+use Application\DeskPRO\NewSearch\Filter\ParticipationFilter;
 
 /**
  * Ticket Repository
@@ -44,12 +50,8 @@ class TicketRepository extends Repository
         $query = array(
             'query' => array(
                 'filtered' => array(
-                    'query' => $this->getMatch($q),
-                    'filter' => array(
-                        'or' => array(
-                            'filters' => $this->getFilters(),
-                        )
-                    ),
+                    'query'  => $this->getQueryString($q),
+                    'filter' => $this->getFilters(),
                 )
             )
         );
@@ -58,28 +60,17 @@ class TicketRepository extends Repository
     }
 
     /**
-     * Constructs the matching query
-     *
-     * In the case of a number being entered in quick search box, the search manager
-     * will send the query in "_id:10" format (to be consistent with common repository
-     * method calling). We thus need to check for this and handle accordingly.
+     * Constructs the query string
      *
      * @param $q
      * @return array
      */
-    private function getMatch($q)
+    private function getQueryString($q)
     {
-        if (substr($q, 0, 4) === '_id:') {
-            $match = array(
-                'match' => array('_id' => substr($q, 4))
-            );
-        } else {
-            $match = array(
-                'match' => array('_all' => $q)
-            );
-        }
+        $queryString = new QueryString($q);
+        $queryString->setDefaultOperator('AND');
 
-        return $match;
+        return $queryString->toArray();
     }
 
     /**
@@ -89,43 +80,26 @@ class TicketRepository extends Repository
      */
     private function getFilters()
     {
-        $filters = array();
+        $filters = array(
+            new AssignmentFilter($this->person),
+            new AgentTeamFilter($this->person),
+            new ParticipationFilter($this->person),
+            new DepartmentFilter($this->person)
+        );
 
-        // Ticket assignment
-        if ($this->person->hasPerm('agent_tickets.view_others')) {
-            $filters[] = array('range' => array('agent' => array('gte' => 0)));
-        } else {
-            if ($this->person->hasPerm('agent_tickets.view_unassigned')) {
-                $filters[] = array('term' => array('agent' => array(0, $this->person->getId())));
-            } else {
-                $filters[] = array('term' => array('agent' => $this->person->getId()));
+        $filterTree = array();
+
+        foreach ($filters as $filter) {
+            if ($result = $filter->getFilter()) {
+                $filterTree[] = $result;
             }
         }
 
-        // Agent teams
-        $teamIds = $this->person->getHelper('Agent')->getTeamIds();
-
-        if (!empty($teamIds)) {
-            $filters[] = array('term' => array('agent_team' => $teamIds));
-        }
-
-        // Participants
-        $filters[] = array('term' => array('participants' => $this->person->getId()));
-
-        // Departments
-        $departmentIds = array();
-        $departments   = $this->person->getHelper('AgentPermissions')->getAllowedDepartments();
-
-        foreach ($departments as $department) {
-            $departmentId = (int) $department;
-            if (!in_array($departmentId, $departmentIds)) {
-                $departmentIds[] = $departmentId;
-            }
-        }
-
-        $filters[] = array('term' => array('department' => $departmentIds));
-
-        return $filters;
+        return array(
+            'or' => array(
+                'filters' => $filterTree
+            )
+        );
     }
 
     /**
