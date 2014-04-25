@@ -63,7 +63,7 @@ class PersonValueImporter extends AbstractValueImporter
 			throw new BadDataException("PersonValue must have at least one valid email");
 		}
 
-		$log_id = "Person :: " . implode(' ', $pval->emails) . "";
+		$log_id = "Person :: " . Arrays::getFirstItem($pval->emails) . "";
 
 		#------------------------------
 		# Normalise name

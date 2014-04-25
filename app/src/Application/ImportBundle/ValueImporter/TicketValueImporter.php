@@ -214,8 +214,6 @@ class TicketValueImporter extends AbstractValueImporter
 			$this->getDb()->insert('tickets', $record);
 			
 			$ticketId = $this->getDb()->lastInsertId();
-			
-			$is_new = true;
 
 			$this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $ticketId));
 		}
