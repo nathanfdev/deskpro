@@ -38,6 +38,7 @@ use Application\ImportBundle\Exception\MultipleMappingException;
 use Application\ImportBundle\RecordMapper\CommonRecordMapper;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
+use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;
 use Application\ImportBundle\RecordMapper\PersonRecordMapper;
 use Application\ImportBundle\ArrayParser\PersonArrayParser;
 use Application\ImportBundle\ArrayParser\TicketArrayParser;
@@ -104,6 +105,7 @@ class Importer
 		$this->mappers['ticket_category']   = new CommonRecordMapper($this->db, 'ticket_categories', 'title');
 		$this->mappers['ticket_workflow']   = new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
 		$this->mappers['ticket_priority']   = new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
+		$this->mappers['ticket_status']     = new TicketStatusRecordMapper();
 		$this->mappers['product']           = new CommonRecordMapper($this->db, 'products', 'title');
 		$this->mappers['usergroup']         = new CommonRecordMapper($this->db, 'usergroups', 'title');
 		$this->mappers['organization']      = new CommonRecordMapper($this->db, 'organizations', 'name');
