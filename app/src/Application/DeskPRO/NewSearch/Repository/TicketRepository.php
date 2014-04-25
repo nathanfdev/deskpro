@@ -89,6 +89,30 @@ class TicketRepository extends Repository
      */
     private function getFilters()
     {
+        $filters = array();
+
+        // Ticket assignment
+        if ($this->person->hasPerm('agent_tickets.view_others')) {
+            $filters[] = array('range' => array('agent' => array('gte' => 0)));
+        } else {
+            if ($this->person->hasPerm('agent_tickets.view_unassigned')) {
+                $filters[] = array('term' => array('agent' => array(0, $this->person->getId())));
+            } else {
+                $filters[] = array('term' => array('agent' => $this->person->getId()));
+            }
+        }
+
+        // Agent teams
+        $teamIds = $this->person->getHelper('Agent')->getTeamIds();
+
+        if (!empty($teamIds)) {
+            $filters[] = array('term' => array('agent_team' => $teamIds));
+        }
+
+        // Participants
+        $filters[] = array('term' => array('participants' => $this->person->getId()));
+
+        // Departments
         $departmentIds = array();
         $departments   = $this->person->getHelper('AgentPermissions')->getAllowedDepartments();
 
@@ -99,17 +123,7 @@ class TicketRepository extends Repository
             }
         }
 
-        $filters = array(
-            array('term' => array('agent' => $this->person->getId())),
-            array('term' => array('participants' => $this->person->getId())),
-            array('term' => array('department' => $departmentIds))
-        );
-
-        $teamIds = $this->person->getHelper('Agent')->getTeamIds();
-
-        if (!empty($teamIds)) {
-            $filters[] = array('term' => array('agent_team' => $teamIds));
-        }
+        $filters[] = array('term' => array('department' => $departmentIds));
 
         return $filters;
     }
