@@ -19,59 +19,82 @@
         *
         * If a is three-levels deep (e.g., nav > list > edit) then the 'id' param is appended and used as the last segment.
         *
+        * You can prefix the string with a comma-separated list of target route paramters. For example, if a route
+        * takes 'id' and 'type', you can specify the match param like:
+        *
+        *     dp-state-mark="id,type:my.example.type.123"
+        *
+        * And the match will be done against <route_name>.<id>.<type>
+        *
+        * If the params ends with a '!', such as:
+        *
+        *     dp-state-mark="category_title!:my.example.type.123"
+        *
+        * ... then the value is hashed with Strings.murmurhash3.
+        *
         * Example View
         * ------------
         * <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
      */
     var DeskPRO_Directive_DpStateMark;
     DeskPRO_Directive_DpStateMark = [
-      '$rootScope', '$state', function($rootScope, $state) {
+      '$state', function($state) {
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
-            var myStateData, myStateId, myStateIdRe, updateMarker;
+            var currentStateVars, hashParams, m, myStateId, myStateIdRe, myStateIdRe1, myStateIdRe2, p, updateMarker, _i, _len, _ref;
             myStateId = attrs.dpStateMark;
-            myStateIdRe = new RegExp(Strings.escapeRegex(myStateId));
-            myStateData = attrs.dpStateMark ? scope.$eval(attrs.dpStateMark) : null;
+            currentStateVars = null;
+            hashParams = {};
+            m = myStateId.match(/^(.*?):(.*?)$/);
+            if (m) {
+              myStateId = m[2];
+              currentStateVars = [];
+              _ref = m[1].split(',');
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                p = _ref[_i];
+                if (p.substr(-1) === '!') {
+                  p = p.substr(0, p.length - 1);
+                  hashParams[p] = true;
+                }
+                currentStateVars.push(p);
+              }
+            }
+            myStateIdRe = Strings.escapeRegex(myStateId);
+            myStateIdRe1 = new RegExp(myStateIdRe + '\\.');
+            myStateIdRe2 = new RegExp(myStateIdRe + '$');
             element.on('click', function() {
               element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active');
               element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
               return element.addClass('state-on active');
             });
             updateMarker = function() {
-              var currentStateId, firstRegExpOccurrence, firstStateOccurrence, isOn, occurrenceFound;
+              var currentStateId, isOn, v, _j, _len1;
               currentStateId = $state.current.name;
               isOn = false;
-              if (myStateData) {
-                if (currentStateId.match(myStateIdRe) && Util.equals(myStateData, $state.params)) {
-                  isOn = true;
+              if (currentStateVars) {
+                for (_j = 0, _len1 = currentStateVars.length; _j < _len1; _j++) {
+                  v = currentStateVars[_j];
+                  if ($state.params[v] != null) {
+                    if (hashParams[v]) {
+                      currentStateId += '.' + Strings.murmurhash3($state.params[v]);
+                    } else {
+                      currentStateId += '.' + $state.params[v];
+                    }
+                  } else {
+                    currentStateId += '.0';
+                  }
                 }
               } else {
-                if ($state.params.id) {
-                  currentStateId += '.' + $state.params.id;
-                }
                 if ($state.params.type) {
                   currentStateId += '.' + $state.params.type;
                 }
-                if (currentStateId.match(myStateIdRe)) {
-
-                  /*
-                   						 * This is workaround for situations when we have both routes like 'chat.setup' and 'setup'
-                   						 * In this case both the elements will be highlighted
-                   						 *
-                   						 * If you will need to understand what is done uncomment following lines of code:
-                   						 *
-                   						 * console.log currentStateId, myStateIdRe
-                   						 * console.log currentStateId.split('.')[0], myStateIdRe.toString().split('.')[0]
-                   						 * console.log myStateIdRe.toString().split('.')[0].indexOf(currentStateId.split('.')[0])
-                   */
-                  firstStateOccurrence = currentStateId.split('.')[0];
-                  firstRegExpOccurrence = myStateIdRe.toString().split('.')[0];
-                  occurrenceFound = firstRegExpOccurrence.indexOf(firstStateOccurrence);
-                  if (occurrenceFound > -1) {
-                    isOn = true;
-                  }
+                if ($state.params.id) {
+                  currentStateId += '.' + $state.params.id;
                 }
+              }
+              if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
+                isOn = true;
               }
               if (isOn) {
                 element.addClass('state-on active');
@@ -82,7 +105,7 @@
                 return element.removeClass('state-on active');
               }
             };
-            $rootScope.$on('$stateChangeSuccess', function() {
+            scope.$on('$stateChangeSuccess', function() {
               return updateMarker();
             });
             return updateMarker();

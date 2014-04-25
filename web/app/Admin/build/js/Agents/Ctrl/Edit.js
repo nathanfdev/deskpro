@@ -34,20 +34,26 @@
             teams: "/agent_teams",
             groups: "/agent_groups",
             groupPerms: "/agent_groups/all/permissions",
-            notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables"
+            notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables",
+            ticketDeps: "/ticket_deps?with_perms=1",
+            chatDeps: "/chat_deps?with_perms=1"
           });
         } else {
           promise = this.Api.sendDataGet({
             teams: "/agent_teams",
             groups: "/agent_groups",
             groupPerms: "/agent_groups/all/permissions",
-            notif_prefs_table: "/agents/0/notify-prefs/get-tables"
+            notif_prefs_table: "/agents/0/notify-prefs/get-tables",
+            ticketDeps: "/ticket_deps?with_perms=1",
+            chatDeps: "/chat_deps?with_perms=1"
           });
         }
         promise.then((function(_this) {
           return function(result) {
+            var assign, dep, full, u, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
             if (_this.agentId) {
               _this.agent = result.data.agent.agent;
+              _this.perm_form = result.data.agent.perms;
             } else {
               _this.agent = {
                 id: 0,
@@ -56,10 +62,13 @@
                 teams: [],
                 usergroups: []
               };
+              _this.perm_form = null;
             }
             _this.teams = result.data.teams.agent_teams;
             _this.groups = result.data.groups.groups;
             _this.groupPerms = result.data.groupPerms.groups;
+            _this.ticketDeps = result.data.ticketDeps.departments;
+            _this.chatDeps = result.data.chatDeps.departments;
             _this.agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
             _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
             _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams);
@@ -67,8 +76,51 @@
             _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
               return _this.updateEffectiveUgPerms();
             }, true);
-            _this.perm_form = _this.agent.perms;
-            return _this.updateHasPermOverridesStatus();
+            _this.updateHasPermOverridesStatus();
+            _this.deps_perms = {
+              tickets: {},
+              chat: {}
+            };
+            _ref = _this.ticketDeps;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              dep = _ref[_i];
+              assign = false;
+              full = false;
+              if ((_ref1 = dep.permissions) != null ? _ref1.users : void 0) {
+                u = dep.permissions.users.filter(function(x) {
+                  return x.id === DP_PERSON_ID;
+                })[0];
+                if (u) {
+                  if (u.name === 'full') {
+                    full = true;
+                  } else {
+                    assign = true;
+                  }
+                }
+              }
+              _this.deps_perms.tickets[dep.id] = {
+                assign: assign,
+                full: full
+              };
+            }
+            _ref2 = _this.chatDeps;
+            _results = [];
+            for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+              dep = _ref2[_j];
+              full = false;
+              if ((_ref3 = dep.permissions) != null ? _ref3.users : void 0) {
+                u = dep.permissions.users.filter(function(x) {
+                  return x.id === DP_PERSON_ID;
+                })[0];
+                if (u) {
+                  full = true;
+                }
+              }
+              _results.push(_this.deps_perms.chat[dep.id] = {
+                full: full
+              });
+            }
+            return _results;
           };
         })(this));
         return promise;
@@ -80,7 +132,7 @@
        */
 
       Admin_Agents_Ctrl_Edit.prototype.updateEffectiveUgPerms = function() {
-        var group, groupIds, info, perms, pname, pval, type, _i, _j, _len, _len1, _ref, _ref1, _ref2, _results;
+        var assign, dep, full, group, groupIds, info, p, perms, pname, pval, type, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _results;
         this.ugEffectivePerms = {
           ticket: {},
           people: {},
@@ -88,6 +140,10 @@
           chat: {},
           publish: {},
           general: {}
+        };
+        this.ugEffectiveDepPerms = {
+          tickets: {},
+          chat: {}
         };
         if (!this.form.agent_groups) {
           return;
@@ -100,18 +156,60 @@
             groupIds.push(group.id);
           }
         }
-        _ref1 = this.groupPerms;
-        _results = [];
+        _ref1 = this.ticketDeps;
         for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          info = _ref1[_j];
-          if (_ref2 = info.group.id, __indexOf.call(groupIds, _ref2) >= 0) {
+          dep = _ref1[_j];
+          assign = false;
+          full = false;
+          if ((_ref2 = dep.permissions) != null ? _ref2.agentgroups : void 0) {
+            perms = dep.permissions.agentgroups.filter(function(x) {
+              var _ref3;
+              return _ref3 = x.id, __indexOf.call(groupIds, _ref3) >= 0;
+            });
+            for (_k = 0, _len2 = perms.length; _k < _len2; _k++) {
+              p = perms[_k];
+              if (p.name === 'full') {
+                full = true;
+              } else {
+                assign = true;
+              }
+            }
+          }
+          this.ugEffectiveDepPerms.tickets[dep.id] = {
+            assign: assign,
+            full: full
+          };
+        }
+        _ref3 = this.chatDeps;
+        for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+          dep = _ref3[_l];
+          full = false;
+          if ((_ref4 = dep.permissions) != null ? _ref4.agentgroups : void 0) {
+            perms = dep.permissions.agentgroups.filter(function(x) {
+              var _ref5;
+              return _ref5 = x.id, __indexOf.call(groupIds, _ref5) >= 0;
+            });
+            for (_m = 0, _len4 = perms.length; _m < _len4; _m++) {
+              p = perms[_m];
+              full = true;
+            }
+          }
+          this.ugEffectiveDepPerms.chat[dep.id] = {
+            full: full
+          };
+        }
+        _ref5 = this.groupPerms;
+        _results = [];
+        for (_n = 0, _len5 = _ref5.length; _n < _len5; _n++) {
+          info = _ref5[_n];
+          if (_ref6 = info.group.id, __indexOf.call(groupIds, _ref6) >= 0) {
             _results.push((function() {
-              var _ref3, _results1;
-              _ref3 = info.perms;
+              var _ref7, _results1;
+              _ref7 = info.perms;
               _results1 = [];
-              for (type in _ref3) {
-                if (!__hasProp.call(_ref3, type)) continue;
-                perms = _ref3[type];
+              for (type in _ref7) {
+                if (!__hasProp.call(_ref7, type)) continue;
+                perms = _ref7[type];
                 _results1.push((function() {
                   var _results2;
                   _results2 = [];
@@ -462,7 +560,8 @@
           agent: this.agentFormModel.getFormData(),
           filter_subs: this.agentNotifPrefsModel.getFilterSubs(),
           other_subs: this.agentNotifPrefsModel.getOtherSubs(),
-          perm_overrides: this.perm_form
+          perm_overrides: this.perm_form,
+          dep_perm_overrides: this.deps_perms
         };
         return formData;
       };

@@ -91,6 +91,10 @@ class IncomingAccountTester
 				$this->_testPop3();
 				break;
 
+			case 'imap':
+				$this->_testImap();
+				break;
+
 			case 'gmail':
 				$this->_testGmail();
 				break;
@@ -153,7 +157,46 @@ class IncomingAccountTester
 
 			$this->is_success = true;
 		} catch (\Exception $e) {
-			$this->logger->logError(sprintf("Error:", $e->getMessage()));
+			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+			$this->is_success = false;
+		}
+	}
+
+
+	private function _testImap()
+	{
+		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $account_config */
+		$account_config = $this->account_config;
+
+		$this->logger->logInfo('Testing ImapAccount');
+
+		try {
+			$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
+				'host'     => $account_config->host,
+				'user'     => $account_config->user,
+				'password' => $account_config->password,
+				'port'     => $account_config->port,
+				'ssl'      => $account_config->secure_mode,
+				'logger'   => $this->logger
+			));
+			if ($account_config->read_mailbox) {
+				$storage->ensureMailboxExists($account_config->read_mailbox);
+				$storage->setMailBox($account_config->read_mailbox);
+			}
+
+			if ($account_config->mode == 'read') {
+				$ids = $storage->getAllUnseenMessageUids();
+			} else {
+				$ids = $storage->getAllMessageUids();
+			}
+
+			$this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+			$this->message_count = count($ids);
+
+			$this->is_success = true;
+		} catch (\Exception $e) {
+			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
 			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
 			$this->is_success = false;
 		}
@@ -185,7 +228,8 @@ class IncomingAccountTester
 			$this->is_success = true;
 		} catch (\Exception $e) {
 			$this->exception = $e;
-			$this->logger->logError("[error] " . $e->getMessage());
+			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
 			$this->is_success = false;
 		}
 	}

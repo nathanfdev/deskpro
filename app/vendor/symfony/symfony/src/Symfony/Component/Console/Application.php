@@ -13,6 +13,7 @@ namespace Symfony\Component\Console;
 
 use Symfony\Component\Console\Descriptor\TextDescriptor;
 use Symfony\Component\Console\Descriptor\XmlDescriptor;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -67,6 +68,7 @@ class Application
     private $helperSet;
     private $dispatcher;
     private $terminalDimensions;
+    private $defaultCommand;
 
     /**
      * Constructor.
@@ -80,6 +82,7 @@ class Application
     {
         $this->name = $name;
         $this->version = $version;
+        $this->defaultCommand = 'list';
         $this->helperSet = $this->getDefaultHelperSet();
         $this->definition = $this->getDefaultInputDefinition();
 
@@ -99,7 +102,7 @@ class Application
      * @param InputInterface  $input  An Input instance
      * @param OutputInterface $output An Output instance
      *
-     * @return integer 0 if everything went fine, or an error code
+     * @return int     0 if everything went fine, or an error code
      *
      * @throws \Exception When doRun returns Exception
      *
@@ -145,9 +148,8 @@ class Application
             if ($exitCode > 255) {
                 $exitCode = 255;
             }
-            // @codeCoverageIgnoreStart
+
             exit($exitCode);
-            // @codeCoverageIgnoreEnd
         }
 
         return $exitCode;
@@ -159,7 +161,7 @@ class Application
      * @param InputInterface  $input  An Input instance
      * @param OutputInterface $output An Output instance
      *
-     * @return integer 0 if everything went fine, or an error code
+     * @return int     0 if everything went fine, or an error code
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
@@ -180,8 +182,8 @@ class Application
         }
 
         if (!$name) {
-            $name = 'list';
-            $input = new ArrayInput(array('command' => 'list'));
+            $name = $this->defaultCommand;
+            $input = new ArrayInput(array('command' => $this->defaultCommand));
         }
 
         // the command name MUST be the first element of the input
@@ -270,25 +272,25 @@ class Application
     /**
      * Sets whether to catch exceptions or not during commands execution.
      *
-     * @param Boolean $boolean Whether to catch exceptions or not during commands execution
+     * @param bool    $boolean Whether to catch exceptions or not during commands execution
      *
      * @api
      */
     public function setCatchExceptions($boolean)
     {
-        $this->catchExceptions = (Boolean) $boolean;
+        $this->catchExceptions = (bool) $boolean;
     }
 
     /**
      * Sets whether to automatically exit after a command execution or not.
      *
-     * @param Boolean $boolean Whether to automatically exit after a command execution or not
+     * @param bool    $boolean Whether to automatically exit after a command execution or not
      *
      * @api
      */
     public function setAutoExit($boolean)
     {
-        $this->autoExit = (Boolean) $boolean;
+        $this->autoExit = (bool) $boolean;
     }
 
     /**
@@ -453,7 +455,7 @@ class Application
      *
      * @param string $name The command name or alias
      *
-     * @return Boolean true if the command exists, false otherwise
+     * @return bool    true if the command exists, false otherwise
      *
      * @api
      */
@@ -633,7 +635,7 @@ class Application
      * Returns a text representation of the Application.
      *
      * @param string  $namespace An optional namespace name
-     * @param boolean $raw       Whether to return raw command list
+     * @param bool    $raw       Whether to return raw command list
      *
      * @return string A string representing the Application
      *
@@ -652,7 +654,7 @@ class Application
      * Returns an XML representation of the Application.
      *
      * @param string  $namespace An optional namespace name
-     * @param Boolean $asDom     Whether to return a DOM or an XML string
+     * @param bool    $asDom     Whether to return a DOM or an XML string
      *
      * @return string|\DOMDocument An XML string representing the Application
      *
@@ -820,8 +822,8 @@ class Application
      *
      * Can be useful to force terminal dimensions for functional tests.
      *
-     * @param integer $width  The width
-     * @param integer $height The height
+     * @param int     $width  The width
+     * @param int     $height The height
      *
      * @return Application The current application
      */
@@ -878,7 +880,7 @@ class Application
      * @param InputInterface  $input   An Input instance
      * @param OutputInterface $output  An Output instance
      *
-     * @return integer 0 if everything went fine, or an error code
+     * @return int     0 if everything went fine, or an error code
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
@@ -967,6 +969,7 @@ class Application
             new DialogHelper(),
             new ProgressHelper(),
             new TableHelper(),
+            new QuestionHelper(),
         ));
     }
 
@@ -1097,5 +1100,15 @@ class Application
         asort($alternatives);
 
         return array_keys($alternatives);
+    }
+
+    /**
+     * Sets the default Command name.
+     *
+     * @param string $commandName The Command name
+     */
+    public function setDefaultCommand($commandName)
+    {
+        $this->defaultCommand = $commandName;
     }
 }

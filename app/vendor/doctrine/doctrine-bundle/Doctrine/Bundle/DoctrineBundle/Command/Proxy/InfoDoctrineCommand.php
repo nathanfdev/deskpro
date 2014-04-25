@@ -14,7 +14,6 @@
 
 namespace Doctrine\Bundle\DoctrineBundle\Command\Proxy;
 
-use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\Tools\Console\Command\InfoCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,21 +33,7 @@ class InfoDoctrineCommand extends InfoCommand
     {
         $this
             ->setName('doctrine:mapping:info')
-            ->addOption('em', null, InputOption::VALUE_OPTIONAL, 'The entity manager to use for this command')
-            ->setDescription('Shows basic information about all mapped entities')
-            ->setHelp(<<<EOT
-The <info>doctrine:mapping:info</info> shows basic information about which
-entities exist and possibly if their mapping information contains errors or
-not.
-
-<info>php app/console doctrine:mapping:info</info>
-
-If you are using multiple entity managers you can pick your choice with the
-<info>--em</info> option:
-
-<info>php app/console doctrine:mapping:info --em=default</info>
-EOT
-        );
+            ->addOption('em', null, InputOption::VALUE_OPTIONAL, 'The entity manager to use for this command');
     }
 
     /**
@@ -58,6 +43,6 @@ EOT
     {
         DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $input->getOption('em'));
 
-        parent::execute($input, $output);
+        return parent::execute($input, $output);
     }
 }

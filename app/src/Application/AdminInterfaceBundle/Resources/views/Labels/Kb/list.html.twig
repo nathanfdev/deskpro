@@ -13,7 +13,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="portal.kb_labels.edit.LABEL">
+				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="label!:portal.kb_labels.edit.{{ ng_var('label.label|murmurhash') }}">
 					<a href="{{ ng_href('portal.kb_labels.edit', '{label: label.label}') }}">
 						<div class="pull-right">
 							<span class="badge" ng-show="!delete_mode" tooltip="The number of articles with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>

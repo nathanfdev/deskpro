@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\AgentPermissions;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use Doctrine\ORM\EntityManager;
 
@@ -49,6 +50,7 @@ class GroupDbPersister
 	 */
 	private $db;
 
+
 	/**
 	 * @param EntityManager $em
 	 */
@@ -57,6 +59,7 @@ class GroupDbPersister
 		$this->em        = $em;
 		$this->db        = $em->getConnection();
 	}
+
 
 	/**
 	 * @param Usergroup $group
@@ -93,6 +96,56 @@ class GroupDbPersister
 		try {
 			if ($del_perms) {
 				$this->db->deleteIn('permissions', $del_perms, 'name', false, "usergroup_id = {$group->id}");
+			}
+			if ($ins) {
+				$this->db->batchInsert('permissions', $ins, true);
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @param Person $person
+	 * @param AgentPermissions $perms
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function saveOverridePerms(Person $person, AgentPermissions $perms)
+	{
+		$current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE person_id = ?", array($person->id));
+
+		$set_perms = array();
+		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+			$obj = $perms->$coll_name;
+			foreach ($obj->getNames() as $prop) {
+				if ($obj->$prop) {
+					$set_perms[] = $real_name . '.' . $prop;
+				}
+			}
+		}
+
+		$del_perms = array_diff($current_perms, $set_perms);
+		$new_perms = array_diff($set_perms, $current_perms);
+
+		$ins = array();
+		if ($new_perms) {
+			foreach ($new_perms as $p) {
+				$ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1);
+			}
+
+		}
+
+		$this->db->beginTransaction();
+		try {
+			if ($del_perms) {
+				$this->db->deleteIn('permissions', $del_perms, 'name', false, "person_id = {$person->id}");
 			}
 			if ($ins) {
 				$this->db->batchInsert('permissions', $ins, true);

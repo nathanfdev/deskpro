@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Debug\Exception\HandledErrorException;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 
 /**
  * HttpKernel notifies events to convert a Request object to a Response one.
@@ -70,6 +72,9 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
 
                 throw $e;
             }
+            if ($e instanceof HandledErrorException) {
+                $e->cleanOutput();
+            }
 
             return $this->handleException($e, $request, $type);
         }
@@ -86,12 +91,27 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
     }
 
     /**
+     * @internal
+     */
+    public function handleFatalErrorException(FatalErrorException $exception)
+    {
+        $request = $this->requestStack->getMasterRequest();
+        $response = $this->handleException($exception, $request, self::MASTER_REQUEST);
+
+        $response->sendHeaders();
+        $response->sendContent();
+
+        $this->terminate($request, $response);
+        $exception->cleanOutput();
+    }
+
+    /**
      * Handles a request to convert it to a response.
      *
      * Exceptions are not caught.
      *
      * @param Request $request A Request instance
-     * @param integer $type    The type of the request (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
+     * @param int     $type    The type of the request (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
      *
      * @return Response A Response instance
      *
@@ -153,7 +173,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      *
      * @param Response $response A Response instance
      * @param Request  $request  An error message in case the response is not a Response object
-     * @param integer  $type     The type of the request (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
+     * @param int      $type     The type of the request (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
      *
      * @return Response The filtered Response instance
      *
@@ -191,7 +211,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
      *
      * @param \Exception $e       An \Exception instance
      * @param Request    $request A Request instance
-     * @param integer    $type    The type of the request
+     * @param int        $type    The type of the request
      *
      * @return Response A Response instance
      *

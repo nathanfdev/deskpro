@@ -326,10 +326,11 @@ class TicketLogGenerator
 
 				break;
 
-			case 'messages':
+			case 'message':
 				$log_set = array();
 
-				foreach ($added as $m) {
+				if ($new) {
+					$m = $new;
 					$log_data = array();
 					$log_data['action_type']      = 'message_created';
 					$log_data['id_after']         = $m->id;
@@ -342,7 +343,8 @@ class TicketLogGenerator
 					$log_set[] = $log_data;
 				}
 
-				foreach ($removed as $m) {
+				if ($old) {
+					$m = $old;
 					$log_data = array();
 					$log_data['action_type']      = 'message_removed';
 					$log_data['id_before']        = $m->id;

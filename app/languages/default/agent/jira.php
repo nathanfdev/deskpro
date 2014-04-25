@@ -4,6 +4,7 @@ return array(
 	'agent.jira.error'				=> 'Error occured',
 	'agent.jira.export_jira'		=> 'Export to JIRA',
 	'agent.jira.post_comment'		=> 'Add a comment',
+	'agent.jira.unlink'				=> 'Unlink JIRA issue',
 	
 	// Form labels
 	'agent.jira.labels.title'		=> 'Issue Title',
@@ -17,6 +18,7 @@ return array(
 	'agent.jira.labels.reset'		=> 'Reset to defaults',
 	'agent.jira.labels.export'		=> 'Export',
 	'agent.jira.labels.comment'		=> 'Comment',
+	'agent.jira.labels.unlink'		=> 'Unlink',
 	
 	'agent.jira.labels.smarttags'	=> 'You can also use the following "smart tags" to add DeskPRO relevant information to this issue.',
 	
@@ -33,4 +35,6 @@ return array(
 	'agent.jira.assignedto'			=> 'Assigned To',
 	'agent.jira.lastactivity'		=> 'Last Activity',
 	'agent.jira.actions'			=> 'Actions',
+	
+	'agent.jira.optional'			=> 'optional'
 );

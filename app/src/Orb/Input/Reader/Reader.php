@@ -103,6 +103,19 @@ class Reader
 
 
 	/**
+	 * Resets all sources
+	 */
+	public function resetSources()
+	{
+		foreach ($this->sources as $s) {
+			if ($s instanceof Source\ResetSourceInterface) {
+				$s->resetSource();
+			}
+		}
+	}
+
+
+	/**
 	 * @param $source_name
 	 * @return array
 	 */

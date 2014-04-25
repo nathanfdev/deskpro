@@ -107,7 +107,7 @@ class Crawler extends \SplObjectStorage
 
         // DOM only for HTML/XML content
         if (!preg_match('/(x|ht)ml/i', $type, $xmlMatches)) {
-            return null;
+            return;
         }
 
         $charset = null;
@@ -294,7 +294,7 @@ class Crawler extends \SplObjectStorage
     /**
      * Returns a node given its position in the node list.
      *
-     * @param integer $position The position
+     * @param int     $position The position
      *
      * @return Crawler A new instance of the Crawler with the selected node, or an empty Crawler if it does not exist.
      *
@@ -632,9 +632,7 @@ class Crawler extends \SplObjectStorage
     public function filter($selector)
     {
         if (!class_exists('Symfony\\Component\\CssSelector\\CssSelector')) {
-            // @codeCoverageIgnoreStart
             throw new \RuntimeException('Unable to filter with a CSS selector as the Symfony CssSelector is not installed (you can use filterXPath instead).');
-            // @codeCoverageIgnoreEnd
         }
 
         return $this->filterXPath(CssSelector::toXPath($selector));
@@ -808,7 +806,7 @@ class Crawler extends \SplObjectStorage
     }
 
     /**
-     * @param integer $position
+     * @param int     $position
      *
      * @return \DOMElement|null
      */
@@ -818,11 +816,7 @@ class Crawler extends \SplObjectStorage
             if ($i == $position) {
                 return $node;
             }
-        // @codeCoverageIgnoreStart
         }
-
-        return null;
-        // @codeCoverageIgnoreEnd
     }
 
     /**

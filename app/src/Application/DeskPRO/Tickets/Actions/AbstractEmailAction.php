@@ -126,7 +126,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 		$state = $ticket->getStateChangeRecorder();
 		if ($state->isNewTicket()) {
 			$type = 'newticket';
-		} else if ($state->hasChangedField('messages')) {
+		} else if ($state->hasChangedField('message')) {
 			$type = 'newreply';
 		} else {
 			$type = 'updated';

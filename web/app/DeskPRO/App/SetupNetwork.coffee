@@ -32,8 +32,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 							else
 								config.url += '&'
 
-							timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
-							config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
+							#timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
+							#config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
 
 					config.url = config.url.replace(/^DP_URL\//g, window.DP_BASE_URL.replace(/\/+$/, '')+'/')
 

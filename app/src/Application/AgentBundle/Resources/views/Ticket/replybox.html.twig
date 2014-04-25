@@ -23,6 +23,8 @@
 >
 
 <input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />
+<input type="hidden" id="{{baseId}}_is_snippet" name="options[is_snippet]" value="0" />
+<input type="hidden" id="{{baseId}}_snippet_id" name="options[snippet_id]" value="0" />
 
 <input type="hidden" id="{{replyBaseId}}_exist_agent_id" value="{{ ticket.agent.id|default(0) }}" />
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />

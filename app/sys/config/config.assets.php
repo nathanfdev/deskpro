@@ -227,9 +227,11 @@ $CONFIG['agent_pages'] = array(
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadVcard.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/DeleteControl.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/StickyWords.js',
@@ -411,7 +413,7 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
-		'javascripts/DeskPRO/Agent/Jira/Jira.js',
+		'javascripts/DeskPRO/Agent/Jira/Widget.js',
 	)
 );
 

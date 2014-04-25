@@ -360,7 +360,6 @@ div.info-message {
 		position: absolute;
 		bottom: 0;
 		width: @appNavWidth;
-		overflow: hidden;
 	}
 
 	.app-icon-home                  { background-image: url('@{img_path}/app-icons/1x/Dashboard.png'); }
@@ -377,7 +376,7 @@ div.info-message {
 	.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x/Apps.png'); }
 	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
 	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
-	.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x/Admin-Interface.png'); }
+	.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
 	.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x/Agent-Interface.png'); }
 	.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x/Reports.png'); }
 	.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/1x/Leads.png'); }
@@ -403,7 +402,7 @@ div.info-message {
 		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x_active/Apps.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
-		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Admin-Interface.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Admin.png'); }
 		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Agent-Interface.png'); }
 		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x_active/Reports.png'); }
 		.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/1x_active/Leads.png'); }
@@ -425,7 +424,7 @@ div.info-message {
 		i.app-icon {
 			background-size: 32px 32px;
 		}
-		.state-on i.app-icon {
+		.section-on i.app-icon, 	.state-on i.app-icon {
 			background-size: 40px 40px;
 		}
 
@@ -443,7 +442,7 @@ div.info-message {
 		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x/Apps.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
 		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
-		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x/Admin-Interface.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x/Admin.png'); }
 		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x/Agent-Interface.png'); }
 		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x/Reports.png'); }
 		.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/2x/Leads.png'); }
@@ -469,7 +468,7 @@ div.info-message {
 			.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x_active/Apps.png'); }
 			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
 			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
-			.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Admin-Interface.png'); }
+			.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Admin.png'); }
 			.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Agent-Interface.png'); }
 			.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x_active/Reports.png'); }
 			.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/2x_active/Leads.png'); }
@@ -479,6 +478,93 @@ div.info-message {
 			.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/2x_active/Agent-Activity-Alt.png'); }
 			.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/2x_active/Agent-Logs-Alt-2.png'); }
 			.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x_active/Ticket-Feedback.png'); }
+		}
+	}
+}
+
+@media all and (max-height: 800px) {
+	.dp-appstrip ul.btm { display: none; }
+}
+
+.agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
+	.app-icon.app-icon-admin-ifce { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
+
+	ul.btm .section-on {
+		background-color: transparent;
+		border-top-color: transparent;
+		border-bottom-color: transparent;
+		box-shadow: none;
+	}
+}
+
+.agent-interface-hover {
+	.app-icon.app-icon-agent-ifce {
+		background-image: url('@{img_path}/app-icons/1x_active/Agent-Interface.png');
+	}
+	.agent-ifce-btn {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		background: #000;
+		box-shadow: 0 0 19px 12px rgba(255,255,255,0.3);
+	}
+}
+
+.reports-interface-hover {
+	.app-icon.app-icon-reports-ifce {
+		background-image: url('@{img_path}/app-icons/1x_active/Reports.png');
+	}
+	.reports-ifce-btn {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		background: #000;
+		box-shadow: 0 0 19px 12px rgba(255,255,255,0.3);
+	}
+}
+
+.lic-interface-hover {
+	.app-icon.app-icon-billing-ifce {
+		background-image: url('@{img_path}/app-icons/1x_active/Leads.png');
+	}
+	.lic-ifce-btn {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		background: #000;
+		box-shadow: 0 0 19px 12px rgba(255,255,255,0.3);
+	}
+}
+
+@media
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (   min--moz-device-pixel-ratio: 2),
+only screen and (     -o-min-device-pixel-ratio: 2/1),
+only screen and (        min-device-pixel-ratio: 2),
+only screen and (                min-resolution: 192dpi),
+only screen and (                min-resolution: 2dppx) {
+	.agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
+		.app-icon.app-icon-admin-ifce {
+			background-image: url('@{img_path}/app-icons/2x/Admin.png');
+			background-size: 32px 32px !important;
+		}
+	}
+
+	.agent-interface-hover {
+		.app-icon.app-icon-agent-ifce {
+			background-image: url('@{img_path}/app-icons/2x_active/Agent-Interface.png');
+			background-size: 40px 40px;
+		}
+	}
+
+	.reports-interface-hover {
+		.app-icon.app-icon-reports-ifce {
+			background-image: url('@{img_path}/app-icons/2x_active/Reports.png');
+			background-size: 40px 40px;
+		}
+	}
+
+	.lic-interface-hover {
+		.app-icon.app-icon-billing-ifce {
+			background-image: url('@{img_path}/app-icons/2x_active/Leads.png');
+			background-size: 40px 40px;
 		}
 	}
 }
@@ -679,19 +765,17 @@ div.dp-appalt-section {
 //######################################################################################################################
 
 .dp-dashboard {
-	padding: 0 15px;
 
-	.row {
-		margin-top: 15px;
-		.col-xs-6 + .col-xs-6 {
-			padding-left: 0;
-		}
+	> table {
+		border-spacing: 15px;
+		border-collapse: separate;
 	}
 
 	.dp-item {
 		background: #fff;
 		border: 1px solid #d0d9e6;
 		border-radius: 3px;
+		vertical-align: top;
 
 		> header {
 			margin: 6px;
@@ -848,6 +932,16 @@ div.dp-appalt-section {
 
 	> footer .dp-content {
 		max-width: @maxEditPaneWidth;
+	}
+}
+
+.dp-layout-list-editpane .dp-paneblock.nomaxw {
+	> header, > article, > nav.dp-blocktabs {
+		max-width: none;
+	}
+
+	> footer .dp-content {
+		max-width: none;
 	}
 }
 
@@ -1091,6 +1185,7 @@ section.dp-help-content-wrapper {
 }
 
 .dp-help-content {
+	background: #fff9e5;
 	> header {
 		background: #fcf8e3;
 		color: #8a6d3b;
@@ -1107,7 +1202,7 @@ section.dp-help-content-wrapper {
 			}
 		}
 		h1 {
-			font-size: 120%;
+			font-size: 18px;
 			padding: 10px 10px 10px 0;
 			margin: 0 0 0 50px;
 		}
@@ -1120,25 +1215,55 @@ section.dp-help-content-wrapper {
 	> article {
 		display: none;
 
-		article {
-			margin-bottom: 15px;
-			padding: 0 15px;
+		section {
+			background: #fff;
+			border: 1px solid #d6d1c0;
+			border-radius: 3px;
+			margin: 10px;
 
-			h1 { font-size: 24px; }
-			h2 { font-size: 20px; }
-			h3 { font-size: 16px; }
+			h2 {
+				font-size: 16px;
+				margin: 10px 0 14px 10px;
+
+				span {
+					border-bottom: 2px solid #c7c7c7;
+				}
+			}
+
 			p {
-				margin: 14px 0;
+				margin: 14px;
+				line-height: 130%;
+			}
+
+			ul li {
+				line-height: 130%;
 			}
 
 			dl {
-				margin: 0;
+				margin: 14px;
+
+				em {
+					font-style: normal;
+					font-size: 12px;
+					display: inline-block;
+					width: 25px;
+					background: #efefef;
+					border-radius: 4px;
+					text-align: center;
+					margin-right: 3px;
+				}
+
 				dt {
 					margin-top: 10px;
+					margin-bottom: 3px;
+					font-weight: normal;
 
 					&:first-child {
 						margin-top: 0;
 					}
+				}
+				dd {
+
 				}
 			}
 		}
@@ -1174,6 +1299,19 @@ section.dp-help-content-wrapper.open {
 	bottom: 0;
 	top: 0;
 	//background: rgba(255, 255, 255, 0.3);
+}
+
+.qmark-icon {
+	opacity: 0.5;
+	cursor: help;
+	font-size: 15px;
+	vertical-align: text-bottom;
+	position: relative;
+	top: 1px;
+
+	&:hover {
+		opacity: 1;
+	}
 }
 
 //######################################################################################################################
@@ -1787,7 +1925,13 @@ section.dp-help-content-wrapper.open {
 	background-color: transparent;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
+	vertical-align: text-bottom;
 	.rounded(3px);
+
+	&.agent-icon-16x {
+		width: 16px;
+		height: 16px;
+	}
 
 	&.agent-icon-22x {
 		width: 22px;
@@ -3338,6 +3482,25 @@ li.dp-layout-editor-layout-field {
 	display: inline-block;
 
 	input.time_num {
+		width: 100px;
+		line-height: 100%;
+		margin: 0;
+		height: 26px;
+	}
+
+	.select2-container {
+		margin: 0;
+	}
+}
+
+//######################################################################################################################
+//# dp-filesize-unit
+//######################################################################################################################
+
+.dp-filesize-unit {
+	display: inline-block;
+
+	input.size_num {
 		width: 100px;
 		line-height: 100%;
 		margin: 0;

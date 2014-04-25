@@ -622,6 +622,28 @@ class Arrays
 	}
 
 
+	/**
+	 * Remove all values from an array that are an empty array. This differs
+	 * from removeFalsey() in that only empty arrays are removed.
+	 *
+	 * @param    array    $array   The array to search in
+	 * @return   array
+	 */
+	public static function removeNull($array)
+	{
+		if (!is_array($array)) {
+			$array = (array)$array;
+		}
+
+		foreach (array_keys($array) as $k) {
+			if ($array[$k] === null) {
+				unset($array[$k]);
+			}
+		}
+
+		return $array;
+	}
+
 
 	/**
 	 * Take an array of arrays and then use data from the sub-arrays as keys in the

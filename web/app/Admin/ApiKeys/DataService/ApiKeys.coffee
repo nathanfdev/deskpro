@@ -80,7 +80,7 @@ define [
 
 					data = {}
 
-					data.api_key = {user: {}}
+					data.api_key = {person: {}}
 					data.all_agents = result.data.agents
 
 					data.form = @getFormMapper().getFormFromModel(data)

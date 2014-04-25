@@ -324,14 +324,15 @@ class DpKernel extends AbstractKernel
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-            new \FOS\ElasticaBundle\FOSElasticaBundle(),
+                        new \FOS\ElasticaBundle\FOSElasticaBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
 			new \Application\AgentBundle\AgentBundle(),
 			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
 			new \Application\UserBundle\UserBundle(),
-			new \Application\ApiBundle\ApiBundle()
+			new \Application\ApiBundle\ApiBundle(),
+			new \Application\ImportBundle\ImportBundle(),
 		);
 
 		if (defined('DPC_IS_CLOUD')) {

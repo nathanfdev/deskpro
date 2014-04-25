@@ -29,227 +29,172 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage EmailGateway
  */
 
 namespace Application\DeskPRO\EmailGateway\Storage;
 
-use Application\DeskPRO\EmailGateway\Protocol\Imap as ImapProtocol;
-use Orb\Util\Arrays;
-use Zend\Mail\Protocol\Exception;
+use Fetch\Server;
 
-class Imap extends \Zend\Mail\Storage\Imap
+class Imap extends Server
 {
-	const ERR_CONNECT = 1;
-	const ERR_LOGIN = 2;
-
 	/**
-	 * @var \Application\DeskPRO\EmailGateway\Protocol\Imap
+	 * @param array $options
 	 */
-	protected $protocol;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function __construct($params)
-    {
-        if (is_array($params)) {
-            $params = (object) $params;
-        }
-
-        $this->has['flags'] = true;
-
-        if ($params instanceof \Zend\Mail\Protocol\Imap) {
-            $this->protocol = $params;
-            try {
-                $this->selectFolder('INBOX');
-            } catch (Exception\ExceptionInterface $e) {
-                throw new Exception\RuntimeException('cannot select INBOX, is this a valid transport?', 0, $e);
-            }
-            return;
-        }
-
-        if (!isset($params->user)) {
-            throw new Exception\InvalidArgumentException('need at least user in params');
-        }
-
-        $host     = isset($params->host)     ? $params->host     : 'localhost';
-        $password = isset($params->password) ? $params->password : '';
-        $port     = isset($params->port)     ? $params->port     : null;
-        $ssl      = isset($params->ssl)      ? $params->ssl      : false;
-		$logger   = isset($params->logger)   ? $params->logger   : null;
-
-		$this->protocol = new ImapProtocol();
-
-		if ($logger) {
-			$this->protocol->setLogger($logger);
-
-			$logger->logDebug(Arrays::implodeTemplate(array(
-				'host'     => $host,
-				'user'     => $params->user,
-				'password' => 'xxxxxx',
-				'port'     => $port,
-				'ssl'      => $ssl
-			), "[options] {KEY}: {VAL}\n"));
-		}
-
-		try {
-			$this->protocol->connect($host, $port, $ssl);
-			if ($logger) {
-				$logger->logDebug("[protocol] connect okay");
-			}
-		} catch (Exception\RuntimeException $e) {
-			if ($logger) {
-				$logger->logError("[error:protocol] " . $e->getMessage());
-			}
-			$new_e = new Exception\RuntimeException('There was an error connecting to the server: ' . $e->getMessage(), self::ERR_CONNECT, $e);
-			throw $new_e;
-		}
-
-		try {
-			if (!$this->protocol->login($params->user, $password)) {
-				$logger->logError("[error:protocol] login failed");
-				$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN);
-				throw $new_e;
-			}
-			if ($logger) {
-				$logger->logDebug("[protocol] login okay");
-			}
-		} catch (Exception\RuntimeException $e) {
-			if ($logger) {
-				$logger->logError("[error:protocol] " . $e->getMessage());
-			}
-			$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
-			throw $new_e;
-		}
-
-        $this->selectFolder(isset($params->folder) ? $params->folder : 'INBOX');
-    }
-
-
-	/**
-	 * @return ImapProtocol
-	 */
-	public function getProtocol()
+	public function __construct($options = array())
 	{
-		return $this->protocol;
+		if (!isset($options['host']) ||
+			!isset($options['port']) ||
+			!isset($options['user']) ||
+			!isset($options['password'])) {
+			throw new \Exception('Insufficient Parameters');
+		}
+
+		parent::__construct($options['host'], $options['port']);
+
+		if (isset($options['secure'])) {
+			switch (strtoupper($options['secure'])) {
+				case 'SSL':
+					$this->setFlag('ssl');
+					break;
+				case 'TLS':
+					$this->setFlag('tls');
+					break;
+			}
+		}
+
+		$this->setAuthentication($options['user'], $options['password']);
 	}
 
 
 	/**
-     * Count all unseen messages in mailbox
-     *
-     * @throws Exception\RuntimeException
-     * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-     * @return int number of messages
-     */
-    public function countUnseenMessages()
-    {
-        if (!$this->currentFolder) {
-            throw new Exception\RuntimeException('No selected folder to count');
-        }
-
-        $params = array('UNSEEN');
-        return count($this->protocol->search($params));
-    }
-
-
-	/**
-	 * Return array of unseen message UIDs.
-	 *
-	 * @return array|mixed
+	 * @return array an array of IDs
 	 */
-	public function getUnseenMessageUids()
+	public function getAllUnseenMessageUids()
 	{
-		$response = $this->protocol->requestAndResponse('UID SEARCH UNSEEN UNDELETED');
-        if (!$response) {
-            return $response;
-        }
+		$result = imap_search($this->getImapStream(), 'UNSEEN UNDELETED', SE_UID);
 
-        foreach ($response as $ids) {
-            if ($ids[0] == 'SEARCH') {
-                array_shift($ids);
-                return $ids;
-            }
-        }
-        return array();
-	}
-
-
-	/**
-	 * @param array $uids
-	 * @return array
-	 */
-	public function getMessageSizesByUids(array $uids)
-	{
-		$data = $this->protocol->fetchByUid(array('UID', 'RFC822.SIZE'), $uids);
-
-		$map = array();
-		foreach ($data as $r) {
-			$map[$r['UID']] = $r['RFC822.SIZE'];
+		if ($result === false) {
+			return array();
 		}
 
-		return $map;
+		return $result;
 	}
 
 
 	/**
-	 * Gets email message in Message wrapper
+	 * Searches the server for matching emails and retrieves only the IDs
 	 *
-	 * @param mixed $uid
-	 * @return \Zend\Mail\Storage\Message
+	 * @return array an array of matching IDs
 	 */
-	public function getMessageByUid($uid)
-    {
-        $data = $this->protocol->fetchByUid(array('FLAGS', 'RFC822'), $uid);
+	public function getAllMessageUids()
+	{
+		$result = imap_search($this->getImapStream(), 'ALL UNDELETED', SE_UID);
 
-        $flags = array();
-        foreach ($data['FLAGS'] as $flag) {
-            $flags[] = isset(static::$knownFlags[$flag]) ? static::$knownFlags[$flag] : $flag;
-        }
+		if ($result === false) {
+			return array();
+		}
 
-        return new $this->messageClass(array(
-			'handler' => $this,
-			'id'      => $uid,
-			'flags'   => $flags,
-			'raw'     => $data['RFC822']
-		));
-    }
+		return $result;
+	}
 
 
 	/**
-	 * Gets raw email message
+	 * Gets a raw RFC2822 compatible message
 	 *
-	 * @param mixed $uid
+	 * @param int $uid Unique message id
+	 * @return string Raw message
+	 */
+	public function getRawMessage($uid)
+	{
+		$raw_body = imap_fetchbody($this->getImapStream(), $uid, '', FT_UID);
+
+		if($raw_body === false){
+			throw new \Exception(sprintf('Failed to retrieve raw body for message'));
+		}
+
+		return $raw_body;
+	}
+
+
+	/**
+	 * @param int $uid
+	 * @return null|int
+	 */
+	public function getMessageSize($uid)
+	{
+		$results = imap_fetch_overview($this->imapStream, $uid, FT_UID);
+		if (!$results) {
+			return null;
+		}
+
+		$message_overview = array_shift($results);
+		return isset($message_overview->size) ? $message_overview->size : null;
+	}
+
+
+	/**
+	 * Creates a mailbox if it doesnt exist
+	 *
+	 * @param string $mailbox
+	 * @return bool True if it was created, false otherwise
+	 */
+	public function ensureMailboxExists($mailbox)
+	{
+		if (!$this->hasMailBox($mailbox)) {
+			$this->createMailBox($mailbox);
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @param int $uid
+	 * @param string $new_mailbox
+	 */
+	public function moveMessageMailbox($uid, $new_mailbox)
+	{
+		imap_mail_move($this->imapStream, "$uid", "$new_mailbox", CP_UID);
+		imap_expunge($this->imapStream);
+	}
+
+
+	/**
+	 * @param int $uid
+	 */
+	public function deleteMessage($uid)
+	{
+		imap_delete($this->imapStream, $uid, FT_UID);
+		imap_expunge($this->imapStream);
+	}
+
+
+	/**
+	 * @param int $uid
 	 * @return string
 	 */
-	public function getRawMessageByUid($uid)
+	public function getRawHeaders($uid)
 	{
-		$data = $this->protocol->fetchByUid(array('RFC822'), $uid);
-		return $data;
+		return imap_fetchheader($this->imapStream, $uid, FT_UID);
 	}
 
 
 	/**
-	 * Return just the headers of the message
-	 *
-	 * @param $uid
-	 * @return string
+	 * @return bool
 	 */
-	public function getMessageHeadersByUid($uid)
+	public function clearCaches()
 	{
-		$data = $this->protocol->fetchByUid(array('RFC822.HEADER'), $uid);
-		return $data;
+		return imap_gc($this->imapStream, IMAP_GC_ELT|IMAP_GC_ENV|IMAP_GC_TEXTS);
 	}
 
 
 	/**
-	 * Mark messages as 'seen'
-	 *
-	 * @param array $uids
+	 * Close the connection
 	 */
-	public function markReadByUids(array $uids)
+	public function close()
 	{
-		return $this->protocol->storeById(array('\Seen'), $uids);
+		$this->clearCaches();
 	}
 }

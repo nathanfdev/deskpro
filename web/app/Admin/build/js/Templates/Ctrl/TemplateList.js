@@ -44,7 +44,7 @@
       Admin_Templates_Ctrl_TemplateList.prototype.openEditor = function(tpl) {
         var modalInstance;
         modalInstance = this.$modal.open({
-          templateUrl: 'Templates/modal-template-editor.html',
+          templateUrl: this.getTemplatePath('Templates/modal-template-editor.html'),
           controller: 'Admin_Templates_Ctrl_TemplateEditor',
           resolve: {
             templateName: function() {

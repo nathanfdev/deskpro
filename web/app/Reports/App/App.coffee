@@ -30,4 +30,13 @@ define [
 	SetupRouting(ReportsModule)
 	SetupTemplates(ReportsModule)
 
+	if window.parent?.DP_FRAME_OVERLAYS?.reports
+		window.parent.DP_FRAME_OVERLAYS.reports.callLoaded()
+
+		ReportsModule.run(['$rootScope', ($rootScope) ->
+			$rootScope.$on('$stateChangeSuccess', ->
+				window.parent.DP_FRAME_OVERLAYS.reports.setHash(window.location.hash)
+			)
+		])
+
 	return ReportsModule

@@ -67,14 +67,7 @@ class TemplateCustom extends Template
 
 		$this->entity = $entity;
 
-		// A varient of some template
-		if ($this->entity->variant_of) {
-			$this->template_file = new TemplateFile($this->entity->variant_of);
-
-		// Otherwise, this is just overriding the default
-		} else {
-			$this->template_file = new TemplateFile($this->entity->name);
-		}
+		$this->template_file = new TemplateFile($this->entity->name);
 
 		if (!$this->template_file->exists()) {
 			throw new \InvalidArgumentException("Base template does not exist: {$this->template_file->getName()}");

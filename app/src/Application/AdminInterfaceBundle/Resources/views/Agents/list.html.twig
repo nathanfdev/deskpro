@@ -9,10 +9,11 @@
 				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents.edit.{{ ng_var('agent.id') }}">
 					<a href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}">
 						<div style="float:right">
-							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to admin interface" ng-show="agent.can_admin"><i class="fa fa-asterisk"></i></span>
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to admin interface" ng-show="agent.can_admin"><i class="fa fa-wrench"></i></span>
 							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to reports interface" ng-show="agent.can_reports"><i class="fa fa-bar-chart-o"></i></span>
 						</div>
 						<h4>
+							<span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
 							<span class="title-text">{{ ng_var('agent.display_name') }}</span>
 							<span style="display: inline-block; color: #00d800; margin-left: 5px;" tooltip-placement="right" tooltip="Agent is online" ng-show="agent.is_online_now && !agent.is_available_chat"><i class="fa fa-circle"></i></span>
 							<span style="display: inline-block; color: #00d800; margin-left: 5px;" tooltip-placement="right" tooltip="Agent is online and signed in to chat" ng-show="agent.is_available_chat"><i class="fa fa-comment"></i></span>

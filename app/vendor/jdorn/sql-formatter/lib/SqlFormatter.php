@@ -9,7 +9,7 @@
  * @copyright  2013 Jeremy Dorn
  * @license    http://opensource.org/licenses/MIT
  * @link       http://github.com/jdorn/sql-formatter
- * @version    1.2.17
+ * @version    1.2.18
  */
 class SqlFormatter
 {
@@ -39,8 +39,8 @@ class SqlFormatter
         'CHARSET', 'CHECK', 'CHECKSUM', 'COLLATE', 'COLLATION', 'COLUMN', 'COLUMNS', 'COMMENT', 'COMMIT', 'COMMITTED', 'COMPRESSED', 'CONCURRENT',
         'CONSTRAINT', 'CONTAINS', 'CONVERT', 'CREATE', 'CROSS', 'CURRENT_TIMESTAMP', 'DATABASE', 'DATABASES', 'DAY', 'DAY_HOUR', 'DAY_MINUTE',
         'DAY_SECOND', 'DEFAULT', 'DEFINER', 'DELAYED', 'DELETE', 'DESC', 'DESCRIBE', 'DETERMINISTIC', 'DISTINCT', 'DISTINCTROW', 'DIV',
-        'DO', 'DUMPFILE', 'DUPLICATE', 'DYNAMIC', 'ELSE', 'ENCLOSED', 'END', 'ENGINE', 'ENGINE_TYPE', 'ENGINES', 'ESCAPE', 'ESCAPED', 'EVENTS', 'EXECUTE',
-        'EXISTS', 'EXPLAIN', 'EXTENDED', 'FAST', 'FIELDS', 'FILE', 'FIRST', 'FIXED', 'FLUSH', 'FOR', 'FORCE', 'FOREIGN', 'FULL', 'FULLTEXT',
+        'DO', 'DUMPFILE', 'DUPLICATE', 'DYNAMIC', 'ELSE', 'ENCLOSED', 'END', 'ENGINE', 'ENGINE_TYPE', 'ENGINES', 'ESCAPE', 'ESCAPED', 'EVENTS', 'EXEC', 
+        'EXECUTE', 'EXISTS', 'EXPLAIN', 'EXTENDED', 'FAST', 'FIELDS', 'FILE', 'FIRST', 'FIXED', 'FLUSH', 'FOR', 'FORCE', 'FOREIGN', 'FULL', 'FULLTEXT',
         'FUNCTION', 'GLOBAL', 'GRANT', 'GRANTS', 'GROUP_CONCAT', 'HEAP', 'HIGH_PRIORITY', 'HOSTS', 'HOUR', 'HOUR_MINUTE',
         'HOUR_SECOND', 'IDENTIFIED', 'IF', 'IFNULL', 'IGNORE', 'IN', 'INDEX', 'INDEXES', 'INFILE', 'INSERT', 'INSERT_ID', 'INSERT_METHOD', 'INTERVAL',
         'INTO', 'INVOKER', 'IS', 'ISOLATION', 'KEY', 'KEYS', 'KILL', 'LAST_INSERT_ID', 'LEADING', 'LEVEL', 'LIKE', 'LINEAR',
@@ -235,9 +235,9 @@ class SqlFormatter
         }
 
         // Quoted String
-        if ($string[0]==='"' || $string[0]==='\'' || $string[0]==='`') {
+        if ($string[0]==='"' || $string[0]==='\'' || $string[0]==='`' || $string[0]==='[') {
             $return = array(
-                self::TOKEN_TYPE => ($string[0]==='`'? self::TOKEN_TYPE_BACKTICK_QUOTE : self::TOKEN_TYPE_QUOTE),
+                self::TOKEN_TYPE => (($string[0]==='`' || $string[0]==='[')? self::TOKEN_TYPE_BACKTICK_QUOTE : self::TOKEN_TYPE_QUOTE),
                 self::TOKEN_VALUE => self::getQuotedString($string)
             );
 
@@ -335,9 +335,10 @@ class SqlFormatter
         
         // This checks for the following patterns:
         // 1. backtick quoted string using `` to escape
-        // 2. double quoted string using "" or \" to escape
-        // 3. single quoted string using '' or \' to escape
-        if ( preg_match('/^(((`[^`]*($|`))+)|(("[^"\\\\]*(?:\\\\.[^"\\\\]*)*("|$))+)|((\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*(\'|$))+))/s', $string, $matches)) {
+        // 2. square bracket quoted string (SQL Server) using ]] to escape
+        // 3. double quoted string using "" or \" to escape
+        // 4. single quoted string using '' or \' to escape
+        if ( preg_match('/^(((`[^`]*($|`))+)|((\[[^\]]*($|\]))(\][^\]]*($|\]))*)|(("[^"\\\\]*(?:\\\\.[^"\\\\]*)*("|$))+)|((\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*(\'|$))+))/s', $string, $matches)) {
             $ret = $matches[1];
         }
         
@@ -864,7 +865,11 @@ class SqlFormatter
         if (self::is_cli()) {
             $token = $token[self::TOKEN_VALUE];
         } else {
-            $token = htmlentities($token[self::TOKEN_VALUE],ENT_COMPAT,'UTF-8');
+            if (defined('ENT_IGNORE')) {
+              $token = htmlentities($token[self::TOKEN_VALUE],ENT_COMPAT | ENT_IGNORE ,'UTF-8');
+            } else {
+              $token = htmlentities($token[self::TOKEN_VALUE],ENT_COMPAT,'UTF-8');
+            }
         }
 
         if ($type===self::TOKEN_TYPE_BOUNDARY) {

@@ -59,7 +59,6 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 					value: enabled
 				})
 
-
 		getFormData: ->
 			formData = {}
 			formData.name = @form.name

@@ -188,6 +188,7 @@ abstract class AbstractReader
 	{
 		$to = $this->getToAddresses();
 		$cc = $this->getCcAddresses();
+		$orig_to = null;
 
 		if ($orig_to_email = $this->getOriginalTo()) {
 			$eml = new EmailAddress();

@@ -106,14 +106,28 @@ define(function() {
 	});
 
 	//##################################################################################################################
-	// Back to agent
+	// Interface Nav
 	//##################################################################################################################
 
 	routes.push({
-		id: 'back_to_agent',
-		url: '/back_to_agent',
-		templateName: 'Index/back-to-agent.html',
+		id: 'go_to_agent',
+		url: '/go_to_agent',
+		templateName: 'Index/blank.html',
 		controller: 'Admin_Main_Ctrl_BackToAgent'
+	});
+
+	routes.push({
+		id: 'go_to_reports',
+		url: '/go_to_reports',
+		templateName: 'Index/blank.html',
+		controller: 'Admin_Main_Ctrl_GoToReports'
+	});
+
+	routes.push({
+		id: 'go_to_user',
+		url: '/go_to_user',
+		templateName: 'Index/blank.html',
+		controller: 'Admin_Main_Ctrl_GoToUser'
 	});
 
 	//##################################################################################################################

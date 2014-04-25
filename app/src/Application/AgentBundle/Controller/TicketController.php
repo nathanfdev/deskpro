@@ -1178,6 +1178,21 @@ class TicketController extends AbstractController
 		}
 
 		$message->convertEmbeddedImagesToInlineAttach();
+                
+                if ($this->in->getBool('options.is_snippet')) {
+                    $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
+                    
+                    if ($snippet) {
+                        $snippetLog = new Entity\TextSnippetLog();
+                    
+                        $snippetLog['ticket']   = $ticket;
+                        $snippetLog['person']   = $this->getPerson();
+                        $snippetLog['snippet']  = $snippet;
+                        
+                        $this->em->persist($snippetLog);
+                        $this->em->flush();
+                    }
+		}
 
 		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
 			return $this->createJsonResponse(array(
@@ -1211,7 +1226,7 @@ class TicketController extends AbstractController
 
 			$message->primary_translation = $message_translated;
 		}
-
+                
 		#------------------------------
 		# Handle CC'ing/parts
 		#------------------------------
@@ -3282,6 +3297,12 @@ class TicketController extends AbstractController
 
 				$newticket->save();
 				$ticket = $newticket->getTicket();
+                                
+                                $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+                                $ticket->getLabelManager()->setLabelsArray($labels);
+                                
+                                $this->em->persist($ticket);
 
 				if ($this->in->getUint('parent_ticket_id')) {
 					$parent_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('parent_ticket_id'));
@@ -3803,4 +3824,63 @@ class TicketController extends AbstractController
 
 		return $ticket;
 	}
+	
+	public function linkExistingAction($ticket_id, $linked_ticket_id)
+	{
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		try	{
+			$linkedTicket = $this->getTicketOr404($linked_ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $linked_ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		if ($this->in->getBool('isParent')) {
+			$ticket->parent_ticket = $linkedTicket;
+		} else {
+			$linkedTicket->parent_ticket = $ticket;
+		}
+		
+		$this->em->persist($ticket);
+		$this->em->persist($linkedTicket);
+		
+		$this->em->flush();
+		
+		return $this->createJsonResponse(array('success' => 1));
+		
+	}
+	
+	public function linkExistingOverlayAction($ticket_id)
+	{
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		return $this->render('AgentBundle:Ticket:link.html.twig');
+	}
+
 }

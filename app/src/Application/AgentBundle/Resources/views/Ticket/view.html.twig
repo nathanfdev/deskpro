@@ -60,8 +60,13 @@ pageMeta.lang = {{ {
 	'filter_results': phrase('agent.tickets.filter_results'),
 	'search': phrase('agent.general.search'),
 }|json_encode|raw }};
+
+{% if app.getsetting('core.apps_jira.enabled') %}
+	pageMeta.jiraEnabled = true;
+	pageMeta.jiraDefaultProject = "{{ app.getSetting('core.apps_jira.defaultProject') }}";
+{% endif %}
 </script>
-{% if app.getsetting('core.apps_jira') %}
+{% if app.getsetting('core.apps_jira.enabled') %}
 	{% include 'AgentBundle:Jira:widget.html.twig' %}
 {% endif %}
 <div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
@@ -142,7 +147,7 @@ pageMeta.lang = {{ {
 	</div>
 	<div class="row author last">
 		<div class="dp-btn-group dp-dropdown">
-			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover preload user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 				<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 					{{ ticket.person.getNameWithTitle() }}
 					<span class="email" id="{{ baseId }}_user_email_text">({{ ticket.person_email.email|default(ticket.person_email_address) }})</span>
@@ -192,7 +197,7 @@ pageMeta.lang = {{ {
 			<ul class="cc-row-list" id="{{ baseId }}_cc_row_list">
 				{% for part in user_parts %}
 					{% if loop.index0 < 2 %}
-						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms, preload: true } %}
+						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 					{% else %}
 						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 					{% endif %}
@@ -344,6 +349,9 @@ pageMeta.lang = {{ {
 				{% if app.getSetting('core_tickets.enable_billing') %}
 					<li data-tab-for="#{{ baseId }}_billing_wrap">{{ phrase('agent.tickets.billing') }}</li>
 				{% endif %}
+				{% if app.getsetting('core.apps_jira.enabled') %}
+					<li data-tab-for="#{{ baseId }}_jira_wrap">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
+				{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -471,6 +479,11 @@ pageMeta.lang = {{ {
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
 			</article>
 		{% endif %}
+		{% if app.getSetting('core.apps_jira.enabled') %}
+			<article id="{{baseId}}_jira_wrap">
+				<div style="width: 100%; text-align: center;"><img src="/web/images/spinners/loading-big-circle.gif"/><br/>Please wait while we fetch the latest JIRA activities on this ticket.</div>
+			</article>
+		{% endif %}
 		{{ dp_app_loc(baseId, 'properties.tab') }}
 	</section>
 </div>
@@ -514,6 +527,12 @@ pageMeta.lang = {{ {
 			{{ phrase('agent.general.actions') }}
 			<span class="dp-caret"></span>
 		</li>
+		{% if app.getsetting('core.apps_jira.enabled') %}
+			<li id="{{ baseId }}_export_jira_trigger">
+				<i class="icon-share"></i>
+				{{ phrase('agent.jira.export_jira') }}
+			</li>
+		{% endif %}
 	</ul>
 </nav>
 
@@ -538,7 +557,10 @@ pageMeta.lang = {{ {
 	<li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold" data-action="set-hold">{{ phrase('agent.tickets.hold_btn') }}</li>
 	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">{{ phrase('agent.tickets.unhold_btn') }}</li>
 	{% if ticket_perms.modify_merge %}<li data-action="split">{{ phrase('agent.tickets.split_messages_into_ticket') }}</li>{% endif %}
-	{% if app.user.hasPerm('agent_tickets.create') %}<li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
+	{% if app.user.hasPerm('agent_tickets.create') %}
+		<li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>
+		<li data-action="link_existing_ticket">Link Existing Ticket</li>
+	{% endif %}
 	<li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'view_print': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.print') }}</a></li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>

@@ -27,19 +27,24 @@ define [
 					teams: "/agent_teams",
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
-					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables"
+					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
+					ticketDeps: "/ticket_deps?with_perms=1"
+					chatDeps: "/chat_deps?with_perms=1"
 				})
 			else
 				promise = @Api.sendDataGet({
 					teams: "/agent_teams",
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
-					notif_prefs_table: "/agents/0/notify-prefs/get-tables"
+					notif_prefs_table: "/agents/0/notify-prefs/get-tables",
+					ticketDeps: "/ticket_deps?with_perms=1",
+					chatDeps: "/chat_deps?with_perms=1"
 				})
 
 			promise.then( (result) =>
 				if @agentId
 					@agent = result.data.agent.agent
+					@perm_form = result.data.agent.perms
 				else
 					@agent = {
 						id: 0,
@@ -48,10 +53,14 @@ define [
 						teams: [],
 						usergroups: []
 					}
+					@perm_form = null
 
 				@teams  = result.data.teams.agent_teams
 				@groups = result.data.groups.groups
 				@groupPerms = result.data.groupPerms.groups
+
+				@ticketDeps = result.data.ticketDeps.departments
+				@chatDeps   = result.data.chatDeps.departments
 
 				@agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)
 				@notif_prefs = @agentNotifPrefsModel.prefsTable
@@ -63,8 +72,36 @@ define [
 					@updateEffectiveUgPerms()
 				, true)
 
-				@perm_form = @agent.perms
 				@updateHasPermOverridesStatus()
+
+				#--------------------
+				# Departments
+				#--------------------
+
+				@deps_perms = {
+					tickets: {},
+					chat: {}
+				}
+
+				for dep in @ticketDeps
+					assign = false
+					full = false
+
+					if dep.permissions?.users
+						u = dep.permissions.users.filter((x) -> x.id == DP_PERSON_ID)[0]
+						if u
+							if u.name == 'full' then full = true else assign = true
+
+					@deps_perms.tickets[dep.id] = { assign: assign, full: full }
+
+				for dep in @chatDeps
+					full = false
+					if dep.permissions?.users
+						u = dep.permissions.users.filter((x) -> x.id == DP_PERSON_ID)[0]
+						if u
+							full = true
+
+					@deps_perms.chat[dep.id] = { full: full }
 			)
 			return promise
 
@@ -82,12 +119,38 @@ define [
 				general: {}
 			}
 
+			@ugEffectiveDepPerms = {
+				tickets: {},
+				chat: {}
+			}
+
 			if not @form.agent_groups then return
 
 			groupIds = []
 			for group in @form.agent_groups
 				if group.value
 					groupIds.push(group.id)
+
+			for dep in @ticketDeps
+				assign = false
+				full = false
+
+				if dep.permissions?.agentgroups
+					perms = dep.permissions.agentgroups.filter((x) -> x.id in groupIds)
+					for p in perms
+						if p.name == 'full' then full = true else assign = true
+
+				@ugEffectiveDepPerms.tickets[dep.id] = { assign: assign, full: full }
+
+			for dep in @chatDeps
+				full = false
+
+				if dep.permissions?.agentgroups
+					perms = dep.permissions.agentgroups.filter((x) -> x.id in groupIds)
+					for p in perms
+						full = true
+
+				@ugEffectiveDepPerms.chat[dep.id] = { full: full }
 
 			for info in @groupPerms
 				if info.group.id in groupIds
@@ -335,10 +398,11 @@ define [
 		###
 		getFormData: ->
 			formData = {
-				agent:           @agentFormModel.getFormData(),
-				filter_subs:     @agentNotifPrefsModel.getFilterSubs(),
-				other_subs:      @agentNotifPrefsModel.getOtherSubs(),
-				perm_overrides:  @perm_form
+				agent:              @agentFormModel.getFormData(),
+				filter_subs:        @agentNotifPrefsModel.getFilterSubs(),
+				other_subs:         @agentNotifPrefsModel.getOtherSubs(),
+				perm_overrides:     @perm_form
+				dep_perm_overrides: @deps_perms
 			}
 
 			return formData

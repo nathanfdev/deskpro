@@ -17,7 +17,7 @@
           };
           return {
             request: function(config) {
-              var next, timeEnc, _ref, _ref1, _ref2;
+              var next, _ref, _ref1, _ref2;
               addRunningCount();
               if (window.DP_SESSION_ID && (((_ref = config.headers) != null ? _ref['X-DeskPRO-Session-ID'] : void 0) == null)) {
                 config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID;
@@ -34,8 +34,6 @@
                   } else {
                     config.url += '&';
                   }
-                  timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_');
-                  config.url += "__dp_reqtime=" + next.requestId + "_t" + timeEnc;
                 }
               }
               config.url = config.url.replace(/^DP_URL\//g, window.DP_BASE_URL.replace(/\/+$/, '') + '/');

@@ -115,7 +115,7 @@
                       break;
                     }
                   }
-                  if (unit) {
+                  if (!unit) {
                     unit = 'minutes';
                   }
                   if (modelValue) {

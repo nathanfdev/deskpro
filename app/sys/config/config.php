@@ -255,7 +255,7 @@ $container->loadFromExtension('framework', array(
 		'engines' => array('twig', 'php', 'jsonphp'),
 		'assets_base_urls' => 'CONFIG_HTTP'
 	),
-	'validation' => array('enabled' => true),
+	'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata')),
 	'session' => array(),
 	'form' => array('enabled' => true),
 	'router' => array(

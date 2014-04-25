@@ -6,25 +6,25 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li>
+				<li dp-state-mark="tickets.fields.categories">
 					<a href="{{ ng_href('tickets.fields.categories') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.category" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('category')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.categories') }}</span></h4>
 					</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.fields.priorities">
 					<a href="{{ ng_href('tickets.fields.priorities') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.priority" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('priority')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.priorities') }}</span></h4>
 					</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.fields.workflows">
 					<a href="{{ ng_href('tickets.fields.workflows') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.workflow" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('workflow')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.workflows') }}</span></h4>
 					</a>
 				</li>
-				<li>
+				<li dp-state-mark="tickets.fields.products">
 					<a href="{{ ng_href('tickets.fields.products') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.product" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('product')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.products') }}</span></h4>
@@ -44,7 +44,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.ticket_fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
+				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
 					<a href="{{ ng_href('tickets.fields.edit', '{id: field.id}') }}">
 						<button dp-toggle-switch ng-model="field.is_enabled" ng-change="TicketFieldsList.updateCustomFieldEnabledState(field)"></button>
 						<div class="pull-right">

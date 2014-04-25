@@ -8,228 +8,10 @@ require_once __DIR__ . '/../AbstractApiResultTest.php';
 
 class GetTicketTest extends AbstractApiResultTest
 {
-
-	public function testGetTicket()
+	public function testFindById()
 	{
-		$expectedTicketArray = array(
-			'id' => 1,
-			'ref' => 'AHSZBLPHJF-201492535',
-			'auth' => 'A2DBANYHQAACM8W',
-			'sent_to_address' => '',
-			'email_account_address' => '',
-			'creation_system' => 'web.person',
-			'creation_system_option' => '',
-			'ticket_hash' => '561b59a759d44542e3cfd3484d44dd3d7693043a',
-			'status' => 'awaiting_agent',
-			'hidden_status' => NULL,
-			'validating' => NULL,
-			'is_hold' => false,
-			'urgency' => 1,
-			'count_agent_replies' => 1,
-			'count_user_replies' => 0,
-			'feedback_rating' => NULL,
-			'date_feedback_rating' => NULL,
-			'date_feedback_rating_ts' => 0,
-			'date_feedback_rating_ts_ms' => 0,
-			'date_created' => '2014-04-03 11:51:13',
-			'date_created_ts' => 1396525873,
-			'date_created_ts_ms' => 1396525873000,
-			'date_resolved' => NULL,
-			'date_resolved_ts' => 0,
-			'date_resolved_ts_ms' => 0,
-			'date_closed' => NULL,
-			'date_closed_ts' => 0,
-			'date_closed_ts_ms' => 0,
-			'date_first_agent_assign' => NULL,
-			'date_first_agent_assign_ts' => 0,
-			'date_first_agent_assign_ts_ms' => 0,
-			'date_first_agent_reply' => '2014-04-03 11:51:13',
-			'date_first_agent_reply_ts' => 1396525873,
-			'date_first_agent_reply_ts_ms' => 1396525873000,
-			'date_last_agent_reply' => '2014-04-03 11:51:13',
-			'date_last_agent_reply_ts' => 1396525873,
-			'date_last_agent_reply_ts_ms' => 1396525873000,
-			'date_last_user_reply' => NULL,
-			'date_last_user_reply_ts' => 0,
-			'date_last_user_reply_ts_ms' => 0,
-			'date_agent_waiting' => NULL,
-			'date_agent_waiting_ts' => 0,
-			'date_agent_waiting_ts_ms' => 0,
-			'date_user_waiting' => '2014-04-03 11:51:13',
-			'date_user_waiting_ts' => 1396525873,
-			'date_user_waiting_ts_ms' => 1396525873000,
-			'date_status' => '2014-04-03 11:51:13',
-			'date_status_ts' => 1396525873,
-			'date_status_ts_ms' => 1396525873000,
-			'total_user_waiting' => 0,
-			'total_to_first_reply' => 0,
-			'date_locked' => NULL,
-			'date_locked_ts' => 0,
-			'date_locked_ts_ms' => 0,
-			'has_attachments' => false,
-			'subject' => 'Test',
-			'original_subject' => 'Test',
-			'properties' => NULL,
-			'worst_sla_status' => NULL,
-			'waiting_times' =>
-			array(
-			),
-			'parent_ticket' => NULL,
-			'language' => NULL,
-			'department' =>
-			array(
-				'id' => 1,
-				'title' => 'Support',
-				'user_title' => '',
-				'is_tickets_enabled' => true,
-				'is_chat_enabled' => false,
-				'display_order' => 0,
-				'title_full' => 'Support',
-				'parent_id' => NULL,
-				'parent_ids' =>
-				array(
-				),
-				'title_parts' =>
-				array(
-					0 => 'Support',
-				),
-				'user_title_parts' =>
-				array(
-					0 => 'Support',
-				),
-				'has_children' => false,
-			),
-			'category' => NULL,
-			'priority' => NULL,
-			'workflow' => NULL,
-			'product' => NULL,
-			'person' =>
-			array(
-				'id' => 1,
-				'gravatar_url' => 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?&d=mm',
-				'disable_picture' => false,
-				'is_contact' => true,
-				'is_user' => true,
-				'is_agent' => true,
-				'was_agent' => false,
-				'can_agent' => true,
-				'can_admin' => true,
-				'can_billing' => true,
-				'can_reports' => true,
-				'is_vacation_mode' => false,
-				'disable_autoresponses' => false,
-				'disable_autoresponses_log' => '',
-				'is_confirmed' => true,
-				'is_agent_confirmed' => true,
-				'is_deleted' => false,
-				'is_disabled' => false,
-				'importance' => 0,
-				'creation_system' => 'web.person',
-				'name' => 'Admin Admin',
-				'first_name' => 'Admin',
-				'last_name' => 'Admin',
-				'title_prefix' => '',
-				'override_display_name' => '',
-				'summary' => '',
-				'organization_position' => '',
-				'organization_manager' => false,
-				'timezone' => 'UTC',
-				'date_created' => '2014-04-03 11:51:12',
-				'date_created_ts' => 1396525872,
-				'date_created_ts_ms' => 1396525872000,
-				'date_last_login' => NULL,
-				'date_last_login_ts' => 0,
-				'date_last_login_ts_ms' => 0,
-				'date_picture_check' => NULL,
-				'date_picture_check_ts' => 0,
-				'date_picture_check_ts_ms' => 0,
-				'organization' => NULL,
-				'emails' =>
-				array(
-					0 =>
-					array(
-						'id' => 1,
-						'email' => 'admin@example.com',
-					),
-				),
-				'custom_data' =>
-				array(
-				),
-				'contact_data' =>
-				array(
-				),
-				'usergroups' =>
-				array(
-					0 =>
-					array(
-						'id' => 3,
-						'title' => 'All Permissions',
-						'note' => '',
-						'is_agent_group' => true,
-						'sys_name' => NULL,
-						'is_enabled' => true,
-					),
-				),
-				'labels' =>
-				array(
-				),
-				'display_name' => 'Admin Admin',
-				'primary_email' =>
-				array(
-					'id' => 1,
-					'email' => 'admin@example.com',
-				),
-				'usergroup_ids' =>
-				array(
-				),
-				'agentgroup_ids' =>
-				array(
-					0 => 3,
-				),
-				'picture_url' => 'http://localhost:8888/file.php/avatar/80/default.jpg?size-fit=1',
-				'picture_url_80' => 'http://localhost:8888/file.php/avatar/80/default.jpg?size-fit=1',
-				'picture_url_64' => 'http://localhost:8888/file.php/avatar/64/default.jpg?size-fit=1',
-				'picture_url_50' => 'http://localhost:8888/file.php/avatar/50/default.jpg?size-fit=1',
-				'picture_url_45' => 'http://localhost:8888/file.php/avatar/45/default.jpg?size-fit=1',
-				'picture_url_32' => 'http://localhost:8888/file.php/avatar/32/default.jpg?size-fit=1',
-				'picture_url_22' => 'http://localhost:8888/file.php/avatar/22/default.jpg?size-fit=1',
-				'picture_url_16' => 'http://localhost:8888/file.php/avatar/16/default.jpg?size-fit=1',
-			),
-			'person_email' =>
-			array(
-				'id' => 1,
-				'email' => 'admin@example.com',
-				'email_domain' => 'example.com',
-				'is_own_validated' => false,
-				'is_validated' => true,
-				'comment' => '',
-				'date_created' => '2014-04-03 11:51:13',
-				'date_created_ts' => 1396525872,
-				'date_created_ts_ms' => 1396525872000,
-				'date_validated' => '2014-04-03 11:51:13',
-				'date_validated_ts' => 1396525872,
-				'date_validated_ts_ms' => 1396525872000,
-			),
-			'person_email_validating' => NULL,
-			'agent' => NULL,
-			'agent_team' => NULL,
-			'organization' => NULL,
-			'custom_data' =>
-			array(
-			),
-			'participants' =>
-			array(
-			),
-			'charges' =>
-			array(
-			),
-			'ticket_slas' =>
-			array(
-			),
-			'labels' =>
-			array(
-			)
-		);
+		$expectedTicketArray = $this->_getExpectedTicket();
+
 		$ticketId = 1;
 
 		$result = $this->getApi()->tickets->findById($ticketId);
@@ -242,44 +24,43 @@ class GetTicketTest extends AbstractApiResultTest
 
 		$retrievedTicketArray = $data['ticket'];
 
-		// Some values keep updating with time, so we need to check/unset them
-		$timeKeys = array(
-			'ref',
-			'auth',
-			'access_code',
-			'access_code_email_body_token',
-			'access_code_email_header_token',
-			'date_created',
-			'date_created_ts',
-			'date_created_ts_ms',
-			'date_first_agent_reply',
-			'date_first_agent_reply_ts',
-			'date_first_agent_reply_ts_ms',
-			'date_last_agent_reply',
-			'date_last_agent_reply_ts',
-			'date_last_agent_reply_ts_ms',
-			'date_user_waiting',
-			'date_user_waiting_ts',
-			'date_user_waiting_ts_ms',
-			'date_status',
-			'date_status_ts',
-			'date_status_ts_ms',
-			'person',
-			'person_email',
-			//'date_created',
-			//'date_created_ts',
-			//'date_created_ts_ms',
-			//'date_created_ts_ms',
-			'total_user_waiting_real',
-			'total_user_waiting_work',
-			'current_user_waiting',
-			'current_user_waiting_work',
-			'total_to_first_reply_work',
-			'total_to_resolution',
-			'total_to_resolution_work'
-		);
+		foreach ($this->getDateTimeFields('ticket') as $field) {
+			$this->assertIsValidDateTime($retrievedTicketArray[$field]);
+		}
 
-		foreach ($timeKeys as $key) {
+		foreach ($this->getDateTimeFields('person') as $field) {
+			$this->assertIsValidDateTime($retrievedTicketArray['person'][$field]);
+		}
+
+		foreach ($this->getDateTimeFields('person_email') as $field) {
+			$this->assertIsValidDateTime($retrievedTicketArray['person_email'][$field]);
+		}
+
+		foreach ($this->getTimestampFields('ticket') as $field) {
+			$this->assertIsValidTimestamp($retrievedTicketArray[$field]);
+		}
+
+		foreach ($this->getTimestampFields('person') as $field) {
+			$this->assertIsValidTimestamp($retrievedTicketArray['person'][$field]);
+		}
+
+		foreach ($this->getTimestampFields('person_email') as $field) {
+			$this->assertIsValidTimestamp($retrievedTicketArray['person_email'][$field]);
+		}
+
+		foreach($this->_getIgnoreKeys('person') as $key) {
+			$this->assertArrayHasKey($key, $retrievedTicketArray['person']);
+			unset($retrievedTicketArray['person'][$key]);
+			unset($expectedTicketArray['person'][$key]);
+		}
+
+		foreach($this->_getIgnoreKeys('person_email') as $key) {
+			$this->assertArrayHasKey($key, $retrievedTicketArray['person_email']);
+			unset($retrievedTicketArray['person_email'][$key]);
+			unset($expectedTicketArray['person_email'][$key]);
+		}
+
+		foreach ($this->_getIgnoreKeys('ticket') as $key) {
 			$this->assertArrayHasKey($key, $retrievedTicketArray);
 			unset($retrievedTicketArray[$key]);
 			unset($expectedTicketArray[$key]);
@@ -288,4 +69,166 @@ class GetTicketTest extends AbstractApiResultTest
 		$this->assertEquals($retrievedTicketArray, $expectedTicketArray);
 	}
 
+	public function testFindBySubject()
+	{
+		$testSubject = 'Test';
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addSubject($testSubject);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$this->assertArrayHasKey('tickets', $result->getData());
+
+		$data = $result->getData();
+
+		$retrievedTicketArray = $data['tickets'][1];
+
+		$this->assertEquals($retrievedTicketArray['subject'], $testSubject);
+	}
+
+	/* TODO Fatal error: Call to undefined method DeskPRO\Criteria\Ticket::addDepartment() in /deskpro/www/app/testing/tests/integration/DeskPRO/ApiResult/Tickets/GetTicketTest.php on line 101
+	public function testFindByDepartment()
+	{
+		$testDepartmentId = 1;
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addDepartment($testDepartmentId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$this->assertArrayHasKey('tickets', $result->getData());
+
+		$data = $result->getData();
+
+		$retrievedTicketArray = $data['tickets'][1];
+
+		$this->assertEquals($retrievedTicketArray['department']['id'], $testDepartmentId);
+	}
+	*/
+
+	public function testFindByAgent()
+	{
+		$testAgentId = 1;
+
+		$testTicketId = 1;
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addAgent($testAgentId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertEquals(0, count($matchingTickets));
+
+		$ticketBuilder = $this->getApi()->tickets->createBuilder();
+
+		$this->assertInstanceOf('DeskPRO\Builder\Ticket', $ticketBuilder);
+
+		$ticketBuilder->setId($testTicketId)->assignToAgent($testAgentId);
+
+		$result = $this->getApi()->tickets->save($ticketBuilder);
+
+		$this->assertFalse(!$result->getData());
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addAgent($testAgentId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertGreaterThanOrEqual(1, count($matchingTickets));
+
+		$ticketBuilder->setId($testTicketId)->assignToAgent(0);
+
+		$this->getApi()->tickets->save($ticketBuilder);
+	}
+
+	public function testFindByCategory()
+	{
+		$testCategoryId = 1;
+
+		$testTicketId = 1;
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addCategory($testCategoryId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertEquals(0, count($matchingTickets));
+
+		$ticketBuilder = $this->getApi()->tickets->createBuilder();
+
+		$ticketBuilder->setId($testTicketId)->setCategory($testCategoryId);
+
+		$result = $this->getApi()->tickets->save($ticketBuilder);
+
+		$this->assertFalse(!$result->getData());
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertEquals(1, count($matchingTickets));
+
+		$ticketBuilder->setId($testTicketId)->setCategory(0);
+
+		$this->getApi()->tickets->save($ticketBuilder);
+	}
+
+	public function testFindByOrganization()
+	{
+		$testOrganizationId = 1;
+
+		$criteria = $this->getApi()->tickets->createCriteria();
+
+		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+		$criteria->addOrganization($testOrganizationId);
+
+		$result = $this->getApi()->tickets->find($criteria);
+
+		$data = $result->getData();
+
+		$this->assertArrayHasKey('tickets', $data);
+
+		$matchingTickets = $data['tickets'];
+
+		$this->assertEquals(0, count($matchingTickets));
+	}
 }

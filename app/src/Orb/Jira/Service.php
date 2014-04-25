@@ -36,13 +36,15 @@ class Service
 	 * @var bool Debug Mode
 	 */
 	protected $_debug	= false;
+	
+	protected $_em;
 
 	/**
 	 * The default constructor
 	 * 
 	 * @param type $params
 	 */
-	public function __construct($baseUrl, $params = array())
+	public function __construct($baseUrl, $params = array(), $em = null)
 	{
 		if (!isset($params['username']) || !isset($params['password'])) {
 			throw new \Exception("You must supply your JIRA credentials to connect to JIRA");
@@ -59,6 +61,8 @@ class Service
 		if (isset($params['debug']) && $params['debug']) {
 			$this->_debug = true;
 		}
+		
+		$this->_em = $em;
 	}
 	
 	/**
@@ -429,5 +433,118 @@ class Service
 		$request = $this->_client->get('rest/api/latest/priority?project=' . $projectKey);
 		
 		return $this->_send($request);
+	}
+	
+	/**
+	 * Fetches all the comments on all associated JIRA issues
+	 */
+	public function fetchAllComment()
+	{
+		//Fetch all the exported JIRA Issues
+		$jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$jiraIssues = $jiraIssueRepository->findAll();
+		
+		foreach ($jiraIssues as $jiraIssue) {
+			$issue_id = $jiraIssue->issue;
+			
+			$this->_fetchCommentsByIssueId($issue_id);
+		}
+	}
+	
+	/**
+	 * Fetches comments on given JIRA issue
+	 * 
+	 * @param type $issue_id JIRA issue ID
+	 */
+	private function _fetchCommentsByIssueId($issue_id)
+	{
+		$jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+		
+		$jiraIssues = $jiraIssueRepository->findBy(
+			array('issue' => $issue_id
+		));
+		
+		if (!$jiraIssues) {
+			return false;
+		}
+		
+		//Reaching this point means there are DeskPRO tickets associated to this issue_id 
+		$issue		= $this->findIssue($issue_id);
+		
+		$jiraRepository	= $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+		
+		$comments = $jiraRepository->getComments($issue);
+		
+		foreach ($jiraIssues as $jiraIssue) {
+			$ticket = $jiraIssue->ticket;
+			
+			$savedComments = $jiraIssue->comments;
+			
+			//var_dump($savedComments); die;
+			
+			foreach ($comments as $comment) {
+				foreach ($savedComments as $savedComment) {
+					if ($savedComment->jiraId === (int) $comment['id']) {
+						continue 2;
+					}
+				}
+				
+				$ticketNote						= new \Application\DeskPRO\Entity\TicketMessage();
+				
+				$ticketNote['ticket']			= $ticket;
+				
+				$ticketNote['ip_address']		= '10.20.30.40';
+				
+				$ticketNote['creation_system']	= 'app.jira';
+				
+				$jiraUserEmail					= $comment['author']['emailAddress'];
+				
+				/**
+				 * Comment author mapping
+				 * We're trying to find a matching user in DeskPRO
+				 * If none found we set it to current user 
+				 */				
+				$matchedEmail = $this->_em->getRepository('Application\DeskPRO\Entity\PersonEmail')->findOneBy(array(
+					'email'	=> $jiraUserEmail
+				));
+				
+				if ($matchedEmail) {
+					$commentAuthor = $matchedEmail->person;
+				} else {
+					$personRepository = $this->_em->getRepository('Application\DeskPRO\Entity\Person');
+					
+					$commentAuthor = $personRepository->find(1);
+				}
+				
+				$ticketNote['person']			= $commentAuthor;
+				
+				$ticketNote->message			= $comment['body'] . '<br/><br/>' . 
+						' by <a target="_blank" href="' . $this->getBaseUrl() . 'secure/ViewProfile.jspa?name=' . $comment['author']['name'] . '">' . $comment['author']['displayName'] . '</a><br/>' . 
+						' in <a target="_blank" href="' . $this->getBaseUrl() . 'browse/' . $issue->getKey() . '">' . $issue->getKey() . '</a><br/>' . 
+						' - JIRA';
+				
+				$ticketNote['is_agent_note']	= true;
+				
+				$ticketNote['date_created']		= new \DateTime($comment['updated']);
+				
+				$ticket->addMessage($ticketNote);
+				
+				// Set status to "Awaiting agent"
+				$ticket->setStatus(\Application\DeskPRO\Entity\Ticket::STATUS_AWAITING_AGENT);
+				
+				$jiraIssueComment = new \Application\DeskPRO\Entity\JiraIssueComment();
+				
+				$jiraIssueComment->jiraId			= $comment['id'];
+				$jiraIssueComment->ticketMessage	= $ticketNote;
+				
+				$jiraIssue->addComment($jiraIssueComment);
+				
+				$this->_em->persist($ticket);
+				$this->_em->persist($jiraIssue);
+			}
+		}
+		
+		$this->_em->flush();
 	}
 }

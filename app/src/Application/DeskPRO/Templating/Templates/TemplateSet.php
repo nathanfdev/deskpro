@@ -70,38 +70,6 @@ class TemplateSet
 
 
 	/**
-	 * Create a new email variant with a random ID.
-	 *
-	 * @param string $name
-	 * @return TemplateCustom
-	 */
-	public function createRandomEmailVariant($name)
-	{
-		$parts = explode(':', $name);
-		array_pop($parts);
-
-		$id = time() . '-' . Strings::random(10, Strings::CHARS_KEY);
-		$set_name = implode(':', $parts) . ':custom_' . $id . '.html.twig';
-
-		$entity = new TemplateEntity();
-		$entity->style = $this->style;
-		$entity->variant_of = $name;
-		$entity->name = $set_name;
-
-		$template = TemplateCustom::createFromEntity($entity);
-
-		$template->getTemplateCode()->setCode($template->getOriginalTemplateCode()->getCode());
-
-		$entity->setTemplate(
-			$template->getTemplateCode()->getCode(),
-			$this->compileTemplate($template)
-		);
-
-		return $template;
-	}
-
-
-	/**
 	 * @param string $name
 	 * @return TemplateCustom|TemplateFile
 	 */
@@ -165,10 +133,6 @@ class TemplateSet
 			$this->compileTemplate($template)
 		);
 		$entity->date_updated = new \DateTime();
-
-		if ($template->getOriginalName() && $template->getOriginalName() != $template->getName()) {
-			$entity->variant_of = $template->getOriginalName();
-		}
 
 		$this->em->persist($entity);
 		$this->em->flush();

@@ -131,7 +131,7 @@ define ->
 									unit = unitName
 									break
 
-							if unit
+							if not unit
 								unit = 'minutes'
 
 							if modelValue

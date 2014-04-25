@@ -39,7 +39,7 @@ use Orb\Util\Web;
 /**
  * A reader source that fetches data from a superglobal array.
  */
-class Superglobal implements SourceInterface
+class Superglobal implements SourceInterface, ResetSourceInterface
 {
 	/**
 	 * The superglobal name
@@ -61,12 +61,22 @@ class Superglobal implements SourceInterface
 	/**
 	 * Create the source.
 	 *
-	 * @param  $sg_name  The name of the superglobal: _POST, _GET etc.
+	 * @param string $sg_name  The name of the superglobal: _POST, _GET etc.
+	 * @param array  $options
 	 */
 	public function __construct($sg_name, array $options = null)
 	{
 		$this->superglobal = $sg_name;
 		$this->options = new OptionsArray($options ?: array());
+	}
+
+
+	/**
+	 * @return void
+	 */
+	public function resetSource()
+	{
+		$this->array = null;
 	}
 
 

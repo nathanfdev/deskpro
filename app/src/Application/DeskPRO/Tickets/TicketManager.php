@@ -46,6 +46,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 
 class TicketManager
 {
@@ -90,20 +91,20 @@ class TicketManager
 		$this->db = $container->getDb();
 		$this->blob_storage = $container->getBlobStorage();
 
-		$this->save_actions      = new \SplPriorityQueue();
-		$this->post_save_actions = new \SplPriorityQueue();
+		$this->save_actions      = array();
+		$this->post_save_actions = array();
 
-		$this->save_actions->insert(new TicketSaveActions\VerifyCreationSystem(), 10);
-		$this->save_actions->insert(new TicketSaveActions\VerifyDepartment($container->getTicketDepartments()), 20);
-		$this->save_actions->insert(new TicketSaveActions\VerifyRef($container->getRefGenerator()), 30);
-		$this->save_actions->insert(new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization')), 40);
+		$this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
+		$this->save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
+		$this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
+		$this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
 
-		$this->post_save_actions->insert(new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container)), 50);
-		$this->post_save_actions->insert(new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm()), 60);
-		$this->post_save_actions->insert(new TicketSaveActions\RecalculateSlas(), 70);
-		$this->post_save_actions->insert(new TicketSaveActions\SaveTicketLogs($container->getEm()), 10);
-		$this->post_save_actions->insert(new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector()), 20);
-		$this->post_save_actions->insert(new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb()), 30);
+		$this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
+		$this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm());
+		$this->post_save_actions[] = new TicketSaveActions\RecalculateSlas();
+		$this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
+		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector());
+		$this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
 	}
 
 
@@ -202,6 +203,7 @@ class TicketManager
 		$context->getLogger()->debug(sprintf("EventType: %s", $context->getEventType()));
 		$context->getLogger()->debug(sprintf("EventMethod: %s", $context->getEventMethod()));
 		$context->getLogger()->debug(sprintf("EventPerformer: %s", $context->getEventPerformer()));
+		$context->getLogger()->debug(sprintf("StateChanges: %s", implode(', ', $ticket->getStateChangeRecorder()->getChangedFields())));
 
 		if ($context->getPersonContext()) {
 			$context->getLogger()->debug(sprintf(
@@ -221,6 +223,7 @@ class TicketManager
 		#----------------------------------------
 
 		foreach ($this->save_actions as $action) {
+			$context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", Util::getBaseClassname($action)));
 			$action->processTicket($ticket, $context);
 		}
 
@@ -231,6 +234,7 @@ class TicketManager
 		$this->em->flush();
 
 		foreach ($this->post_save_actions as $action) {
+			$context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
 			$action->processTicket($ticket, $context);
 		}
 
@@ -243,20 +247,21 @@ class TicketManager
 			));
 			$agent_alert_action->setContainer($this->container);
 			$agent_alert_action->applyAction($ticket, $context);
-
-			$this->db->insert('client_messages', array(
-				'channel' => 'agent.ticket-updated',
-				'auth' => Strings::random(15, Strings::CHARS_KEY),
-				'date_created' => date('Y-m-d H:i:s'),
-				'data' => serialize(array(
-					'ticket_id'      => $ticket->getId(),
-					'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
-				))
-			));
-
-			$search_updater = new TicketSearchUpdater($this->db, $ticket);
-			$search_updater->update();
 		}
+
+		$this->db->insert('client_messages', array(
+			'channel' => 'agent.ticket-updated',
+			'auth' => Strings::random(15, Strings::CHARS_KEY),
+			'date_created' => date('Y-m-d H:i:s'),
+			'data' => serialize(array(
+				'ticket_id'      => $ticket->getId(),
+				'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
+				'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
+			))
+		));
+
+		$search_updater = new TicketSearchUpdater($this->db, $ticket);
+		$search_updater->update();
 
 		$this->em->flush();
 
@@ -345,6 +350,7 @@ class TicketManager
 		$context->setEventMethod($event_method, $event_method_options);
 		return $context;
 	}
+
 
 	/**
 	 * @return Logger

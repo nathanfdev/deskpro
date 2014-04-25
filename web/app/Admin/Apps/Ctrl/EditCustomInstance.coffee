@@ -135,4 +135,39 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 				@stopSpinner('saving_settings')
 			)
 
+		###
+		# SHow delete modal
+		###
+		startDelete: ->
+			doDelete = =>
+				@Api.sendDelete('/apps/instances/' + @app.id).success( =>
+
+					# If we are viewing with the parent list, we need to remove this
+					# app from the list
+					if @$scope.$parent?.ListCtrl?
+						@$scope.$parent?.ListCtrl.removeAppInstance(@app.id)
+
+					# close this view
+					@$state.go('apps.apps')
+				)
+
+			@$modal.open({
+				templateUrl: @getTemplatePath('Apps/instance-delete-modal.html'),
+				controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
+					$scope.app = app
+					$scope.dismiss = ->
+						$modalInstance.close();
+
+					$scope.confirm = ->
+						$scope.is_loading = true
+						doDelete().then(->
+							$modalInstance.close();
+						)
+				],
+				resolve: {
+					app: =>
+						return @app
+				}
+			});
+
 	Admin_Apps_Ctrl_EditCustomInstance.EXPORT_CTRL()

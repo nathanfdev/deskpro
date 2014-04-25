@@ -18,11 +18,11 @@
         form.note = model.api_key.note;
         form.code = model.api_key.code;
         form.keyString = model.api_key.keyString;
-        if (model.api_key.user) {
+        if (model.api_key.person) {
           form.isSuperUser = false;
-          form.user = {};
-          form.user.id = model.api_key.user.id;
-          form.user.name = model.api_key.user.name;
+          form.person = {};
+          form.person.id = model.api_key.person.id;
+          form.person.name = model.api_key.person.name;
         }
         form.agents = model.all_agents;
         return form;
@@ -50,7 +50,7 @@
         postData.id = formModel.id;
         postData.note = formModel.note;
         if (!formModel.isSuperUser) {
-          postData.person = formModel.user.id;
+          postData.person = formModel.person.id;
         }
         return postData;
       };

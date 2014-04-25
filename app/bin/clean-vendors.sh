@@ -3,6 +3,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
 DIR_VENDOR=$DIR/vendor
 
+find $DIR_VENDOR -name .git -type d -exec rm -rf {} \\;
+
 cd $DIR_VENDOR/aws/aws-sdk-php
 echo "Cleaning $(pwd)"
 rm -rf build/ docs/ tests
@@ -56,16 +58,16 @@ rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
 cd $DIR_VENDOR/doctrine/common
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .gitmodules .travis.yml build.properties build.xml composer.json composer.lock phpunit.xml.dist UPGRADE_TO_2_1 UPGRADE_TO_2_2
+rm -rf .gitignore .gitmodules .travis.yml build.properties build.xml composer.json composer.lock phpunit.xml.dist README.md UPGRADE_TO_2_1 UPGRADE_TO_2_2
 
 cd $DIR_VENDOR/doctrine/data-fixtures
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore composer.json phpunit.xml.dist README.md UPGRADE
+rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md UPGRADE
 
 cd $DIR_VENDOR/doctrine/dbal
 echo "Cleaning $(pwd)"
-rm -rf tests/
+rm -rf tests/ docs/
 rm -rf composer.json README.md UPGRADE
 
 cd $DIR_VENDOR/doctrine/doctrine-bundle/Doctrine/Bundle/DoctrineBundle
@@ -80,7 +82,7 @@ rm -rf .gitignore composer.json composer.lock phpunit.xml.dist README.markdown
 cd $DIR_VENDOR/doctrine/inflector
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf composer.json phpunit.xml.dist README.md
+rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/doctrine/lexer
 echo "Cleaning $(pwd)"
@@ -93,12 +95,17 @@ rm -rf .gitignore .travis.yml build.properties.dev build.xml composer.json phpun
 
 cd $DIR_VENDOR/doctrine/orm
 echo "Cleaning $(pwd)"
-rm -rf docs/
-rm -rf .coveralls.yml composer.json README.markdown UPGRADE.md
+rm -rf docs/ tests/
+rm -rf .coveralls.yml .gitattributes .gitignore .gitmodules .travis.yml build.properties build.properties.dev build.xml CONTRIBUTING.md composer.json phpunit.xml.dist README.markdown run-all.sh UPGRADE.md
+
+cd $DIR_VENDOR/eluceo/ical
+echo "Cleaning $(pwd)"
+rm -rf examples/ tests/
+rm -rf .gitignore .scrutinizer.yml .travis.yml composer.json README.md
 
 cd $DIR_VENDOR/erusev/parsedown
 echo "Cleaning $(pwd)"
-rm -rf docs/
+rm -rf docs/ tests/
 rm -rf .travis.yml composer.json CONTRIBUTING.md phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/fabpot/goutte
@@ -138,7 +145,8 @@ rm -rf .gitignore .travis.yml composer.json composer.lock phpunit.xml.dist READM
 
 cd $DIR_VENDOR/kriswallsmith/assetic
 echo "Cleaning $(pwd)"
-rm -rf CHANGELOG-1.0.md CHANGELOG-1.1.md composer.json Gemfile package.json README.md
+rm -rf tests/ docs/
+rm -rf .gitattributes .gitignore .travis.yml CHANGELOG-1.0.md CHANGELOG-1.1.md composer.json Gemfile package.json phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/mockery/mockery
 echo "Cleaning $(pwd)"
@@ -220,7 +228,7 @@ rm -rf .gitattributes .gitignore composer.json README.markdown
 cd $DIR_VENDOR/swiftmailer/swiftmailer
 echo "Cleaning $(pwd)"
 rm -rf doc/ notes/ test-suite/ tests/
-rm -rf .gitattributes .gitignore .travis.yml build.xml CHANGES composer.json create_pear_package.php package.xml.tpl README VERSION
+rm -rf .gitattributes .gitignore .travis.yml build.xml CHANGES composer.json create_pear_package.php package.xml.tpl README README.git VERSION
 
 cd $DIR_VENDOR/symfony/icu/Symfony/Component/Icu
 echo "Cleaning $(pwd)"
@@ -301,6 +309,10 @@ echo "Cleaning $(pwd)"
 rm -rf */Tests
 rm -rf */.gitignore */CHANGELOG.md */composer.json */composer.lock */phpunit.xml.dist */README.md
 
+cd $DIR_VENDOR/tedivm/fetch
+rm -rf tests/
+rm -rf .coveralls.yml .gitignore .travis.yml composer.json CONTRIBUTING.md phpunit.xml.dist README.md
+
 cd $DIR_VENDOR/twig/twig
 echo "Cleaning $(pwd)"
 rm -rf doc/ test/
@@ -325,3 +337,8 @@ cd $DIR_VENDOR/ruflin/elastica
 echo "Cleaning $(pwd)"
 rm -rf test/
 rm -rf .coveralls.yml .gitignore .travis.yml build.xml changes.txt composer.json LICENSE.txt phpdoc.xml.dist README.markdown Vagrantfile
+
+cd $DIR_VENDOR/zircote/swagger-php
+echo "Cleaning $(pwd)"
+rm -rf Examples/ tests/
+rm -rf .travis.yml CHANGELOG.md composer.json package.xml phpunit.xml.dist readme.md swagger.phar VERSION

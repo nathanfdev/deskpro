@@ -25,16 +25,20 @@
         if (this.groupId) {
           promise = this.Api.sendDataGet({
             group: "/agent_groups/" + this.groupId,
-            agents: "/agents"
+            agents: "/agents",
+            ticketDeps: "/ticket_deps?with_perms=1",
+            chatDeps: "/chat_deps?with_perms=1"
           });
         } else {
           promise = this.Api.sendDataGet({
-            agents: "/agents"
+            agents: "/agents",
+            ticketDeps: "/ticket_deps?with_perms=1",
+            chatDeps: "/chat_deps?with_perms=1"
           });
         }
         promise.then((function(_this) {
           return function(res) {
-            var memberIds;
+            var assign, dep, full, memberIds, u, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
             _this.agents = res.data.agents.agents;
             if (_this.groupId) {
               _this.group = res.data.group.group;
@@ -54,7 +58,55 @@
                 return x.value = true;
               }
             });
-            return _this.perm_form = _this.group.perms;
+            _this.perm_form = _this.group.perms;
+            _this.ticketDeps = res.data.ticketDeps.departments;
+            _this.chatDeps = res.data.chatDeps.departments;
+            _this.deps_perms = {
+              tickets: {},
+              chat: {}
+            };
+            if (_this.groupId) {
+              _ref = _this.ticketDeps;
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                dep = _ref[_i];
+                assign = false;
+                full = false;
+                if ((_ref1 = dep.permissions) != null ? _ref1.agentgroups : void 0) {
+                  u = dep.permissions.agentgroups.filter(function(x) {
+                    return x.id === _this.groupId;
+                  })[0];
+                  if (u) {
+                    if (u.name === 'full') {
+                      full = true;
+                    } else {
+                      assign = true;
+                    }
+                  }
+                }
+                _this.deps_perms.tickets[dep.id] = {
+                  assign: assign,
+                  full: full
+                };
+              }
+              _ref2 = _this.chatDeps;
+              _results = [];
+              for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+                dep = _ref2[_j];
+                full = false;
+                if ((_ref3 = dep.permissions) != null ? _ref3.agentgroups : void 0) {
+                  u = dep.permissions.agentgroups.filter(function(x) {
+                    return x.id === _this.groupId;
+                  })[0];
+                  if (u) {
+                    full = true;
+                  }
+                }
+                _results.push(_this.deps_perms.chat[dep.id] = {
+                  full: full
+                });
+              }
+              return _results;
+            }
           };
         })(this));
         return promise;
@@ -67,7 +119,8 @@
             title: this.group.title,
             perms: this.perm_form,
             person_ids: []
-          }
+          },
+          dep_perms: this.deps_perms
         };
         _ref = this.agents;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {

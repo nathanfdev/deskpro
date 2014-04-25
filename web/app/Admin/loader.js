@@ -135,6 +135,8 @@ requirejs([
 	'Admin/Main/Ctrl/MainPage',
 	'Admin/Main/Ctrl/Home',
 	'Admin/Main/Ctrl/BackToAgent',
+	'Admin/Main/Ctrl/GoToReports',
+	'Admin/Main/Ctrl/GoToUser',
 	'Admin/Main/Ctrl/Nav',
 	'Admin/CustomFields/Tickets/Ctrl/Edit',
 	'Admin/CustomFields/Chat/Ctrl/Edit',

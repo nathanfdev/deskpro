@@ -74,7 +74,7 @@ class RecalculateTicketStats implements TicketSaveActionInterface
 
 		$state = $ticket->getStateChangeRecorder();
 
-		if ($state->isNewTicket() || $state->hasChangedField('messages')) {
+		if ($state->isNewTicket() || $state->hasChangedField('message')) {
 			$agent_ids_in = implode(',', $this->agent_ids);
 
 			$ticket->count_agent_replies = $this->db->fetchColumn("

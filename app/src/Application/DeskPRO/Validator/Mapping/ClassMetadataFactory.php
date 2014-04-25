@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Validator\Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
-use Symfony\Component\Validator\Mapping\ClassMetadataFactory as BaseClassMetadataFactory;
+use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 
 /**
  * This custom factory is the same as the default, except we intercept constraints and prefix the default
@@ -48,7 +48,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadataFactory as BaseClassMetadat
  *
  * Templates/API will use code names. But the readable English error messages are good as well (for example, makes API more human-friendly).
  */
-class ClassMetadataFactory extends BaseClassMetadataFactory
+class ClassMetadataFactory extends LazyLoadingMetadataFactory
 {
 	/**
 	 * Array of classnames we've done

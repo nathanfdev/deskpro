@@ -61,6 +61,13 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 			// Cut out everything before the /api/ which will could be the base-path
 			$load_data_id = preg_replace('#^(.*?)\/api\/#', '/api/', $load_data_id);
 
+			// Cut off the query string
+			$req_data = array();
+			if (($q_pos = strpos($load_data_id, '?')) !== false) {
+				list ($load_data_id, $qs) = explode('?', $load_data_id, 2);
+				parse_str($qs, $req_data);
+			}
+
 			try {
 				$route_info = $this->container->getRouter()->match($load_data_id);
 			} catch (\Exception $e) {
@@ -81,8 +88,24 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 
 			$load_data = null;
 			if ($ctrl_name) {
+				if ($req_data) {
+					foreach ($req_data as $rk => $rv) {
+						$_REQUEST[$rk] = $rv;
+						$_GET[$rk] = $rv;
+					}
+					$this->in->resetSources();
+				}
+
 				$load_data = $this->forward($ctrl_name, $path_vars)->getContent();
 				$load_data = @json_decode($load_data);
+
+				if ($req_data) {
+					foreach ($req_data as $rk => $rv) {
+						unset($_REQUEST[$rk]);
+						unset($_GET[$rk]);
+					}
+					$this->in->resetSources();
+				}
 			}
 
 			if ($load_data) {

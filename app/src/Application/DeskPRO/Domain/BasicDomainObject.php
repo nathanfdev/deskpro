@@ -540,11 +540,12 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	/**
 	 * Notify a prop has changed.
 	 *
-	 * @param string $propName
-	 * @param mixed $oldValue
-	 * @param mixed $newValue
+	 * @param string $prop
+	 * @param mixed $old
+	 * @param mixed $new
+	 * @param bool $skip_state  Do not run through state change recorder (performance opt)
 	 */
-	protected function _onPropertyChanged($prop, $old, $new)
+	protected function _onPropertyChanged($prop, $old, $new, $skip_state = false)
 	{
 		$this->getStateChangeRecorder()->touchField($prop);
 
@@ -554,11 +555,15 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
             }
         }
 
-		if ($prop[0] != '_' && property_exists($this, $prop)) {
-			if ($this->$prop instanceof Collection) {
-				$this->getStateChangeRecorder()->recordCollection($prop, $new);
-			} else {
-				$this->getStateChangeRecorder()->record($prop, $old, $new);
+		if (!$skip_state) {
+			if ($prop[0] != '_' && property_exists($this, $prop)) {
+				if ($this->$prop instanceof Collection && $new instanceof Collection) {
+					$this->getStateChangeRecorder()
+						->recordCollection($prop, $new);
+				} else {
+					$this->getStateChangeRecorder()
+						->record($prop, $old, $new);
+				}
 			}
 		}
     }

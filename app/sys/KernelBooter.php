@@ -794,6 +794,15 @@ class KernelBooter
 	{
 		static::ensureCli();
 
+		echo "The version of DeskPRO you have downloaded does not handle importing.";
+
+		echo "\n\nRefer to the DeskPRO knowledgebase for a link to the correct version:\n";
+		echo "http://support.deskpro.com/kb/articles/116-upgrading-to-deskpro-v4";
+
+		echo "\n\nYou should download the DeskPRO version mentioned in the above article\n";
+		echo "and then try running this command again.\n";
+		exit(1);
+
 		$app = static::getCliApp('import', $env, $debug);
 
 		$argv = $_SERVER['argv'];

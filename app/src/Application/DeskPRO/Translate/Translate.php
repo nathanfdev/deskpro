@@ -155,7 +155,7 @@ class Translate implements PersonContextInterface
 	 */
 	public function setSession(Session $session = null)
 	{
-		if (!$session) {
+		if (!$session || !$session->isStarted()) {
 			return;
 		}
 

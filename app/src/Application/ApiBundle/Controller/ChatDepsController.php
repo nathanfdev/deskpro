@@ -67,14 +67,54 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 		$chat_deps   = $this->container->getSystemService('chat_departments');
 		$flat_array  = $chat_deps->getFlatArray();
 
+		$with_perms = $this->in->getBool('with_perms');
+		if ($with_perms) {
+			$perms = array();
+
+			/** @var \Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService $ug */
+			$ug = $this->container->getDataService('Usergroup');
+
+			$all_perms = $this->db->fetchAll("
+				SELECT department_id, usergroup_id, person_id, name
+				FROM department_permissions
+				WHERE app = 'chat'
+			");
+
+			foreach ($all_perms as $p) {
+				if (!isset($perms[$p['department_id']])) {
+					$perms[$p['department_id']] = array('agentgroups' => array(), 'usergroups' => array(), 'users' => array());
+				}
+
+				if ($p['usergroup_id']) {
+					if ($ug->getAgentGroup($p['usergroup_id'])) {
+						$perms[$p['department_id']]['agentgroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+					} else {
+						$perms[$p['department_id']]['usergroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+					}
+				} else {
+					$perms[$p['department_id']]['users'][] = array('id' => (int)$p['person_id'], 'name' => $p['name']);
+				}
+			}
+		}
+
 		$deps = array();
 
 		foreach ($flat_array as $row) {
+			$r = $row['object']->toApiData(true, false);
+			$r['depth'] = $row['depth'];
 
-			$deps[] = $row['object'];
+			if ($with_perms) {
+				if (isset($perms[$r['id']])) {
+					$r['permissions'] = $perms[$r['id']];
+				} else {
+					$r['permissions'] = array();
+				}
+			}
+
+			$deps[] = $r;
 		}
 
-		$data['departments'] = $this->getApiData($deps, false);
+		$data['departments'] = $deps;
 
 		return $this->createApiResponse($data);
 	}

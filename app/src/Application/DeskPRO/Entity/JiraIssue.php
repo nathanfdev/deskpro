@@ -22,7 +22,7 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 	
 	/**
-	 * The associate DeskPRO ticket
+	 * The associated DeskPRO ticket
 	 * 
 	 * @var \Application\DeskPRO\Entity\Ticket Associated ticket
 	 */
@@ -42,11 +42,31 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $created;
 	
+	/**
+	 * When was it last synced with JIRA?
+	 * @var type 
+	 */
+	protected $lastSynced;
+	
+	/**
+	 * Issues Comments
+	 * @var 
+	 */
+	protected $comments;
+
 	public function __construct()
 	{
 		$this->created = time();
 	}
 	
+	public function addComment(JiraIssueComment $comment)
+	{
+		$this->comments->add($comment);
+		
+		$comment->issue	= $this;
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -74,5 +94,6 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 		
 		//$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'comments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\JiraIssueComment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'issue'));
 	}
 }

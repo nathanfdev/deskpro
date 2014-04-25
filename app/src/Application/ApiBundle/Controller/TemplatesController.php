@@ -126,29 +126,6 @@ class TemplatesController extends AbstractController implements ProtectedControl
 	}
 
 	####################################################################################################################
-	# create-variant
-	####################################################################################################################
-
-	public function createRandomVariantAction($name)
-	{
-		$set = $this->getTemplateSet();
-
-		$template = $set->createRandomEmailVariant($name);
-		$entity = $template->getEntity();
-
-		$this->em->persist($entity);
-		$this->em->flush();
-
-		$data = $set->exportTemplateToArray(
-			$template,
-			$this->container->getTranslator(),
-			!$this->container->getLanguageData()->isMultiLang()
-		);
-
-		return $this->createApiResponse($data);
-	}
-
-	####################################################################################################################
 	# set-template
 	####################################################################################################################
 

@@ -1,0 +1,72 @@
+<div class="panel panel-innertable">
+
+	<nav class="dp-tabletabs">
+		<ul>
+			<li class="active" dp-tab-btn="main.deps.tickets"><a href="#">Tickets</a></li>
+			<li dp-tab-btn="main.deps.chat"><a href="#">Chat</a></li>
+		</ul>
+	</nav>
+
+	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.deps.tickets">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Department</th>
+					<th width="120" class="text-center">Assign</th>
+					<th width="120" class="text-center">Full</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="dep in EditCtrl.ticketDeps">
+					<td>
+						&nbsp;
+						<span ng-if="dep.depth > 0">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						{{ ng_var('dep.title') }}
+					</td>
+					<td class="text-center">
+						<input
+							dp-slider-switch
+							ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
+							is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full"
+						/>
+					</td>
+					<td class="text-center">
+						<input
+							dp-slider-switch
+							ng-model="EditCtrl.deps_perms.tickets[dep.id].full"
+							is-on="EditCtrl.deps_perms.tickets[dep.id].full"
+							locked-tip="This permission is locked because the permission is granted through an enabled agent group"
+						/>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.deps.chat">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Department</th>
+					<th width="120" class="text-center">Use</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="dep in EditCtrl.chatDeps">
+					<td>
+						&nbsp;
+						<span ng-if="dep.depth > 0">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						{{ ng_var('dep.title') }}
+					</td>
+					<td class="text-center">
+						<input
+							dp-slider-switch
+							ng-model="EditCtrl.deps_perms.chat[dep.id].full"
+							is-on="EditCtrl.deps_perms.chat[dep.id].full"
+						/>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

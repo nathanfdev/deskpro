@@ -68,6 +68,12 @@ $collection->create('agent_get_server_time', array(
 	'controller'  => 'AgentBundle:Misc:getServerTime',
 ));
 
+$collection->create('agent_parse_vcard', array(
+	'path'         => '/misc/parse-vcard/{blob_id}',
+	'controller'   => 'AgentBundle:Misc:parseVCard',
+	'requirements' => array('blob_id' => '\\d+'),
+));
+
 $collection->create('agent_ajax_save_prefs', array(
 	'path'        => '/misc/ajax-save-prefs',
 	'controller'  => 'AgentBundle:Misc:ajaxSavePrefs',
@@ -1020,6 +1026,18 @@ $collection->create('agent_ticket_spam', array(
 	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
+$collection->create('agent_ticket_link_existing_overlay', array(
+	'path' => '/tickets/{ticket_id}/link-overlay',
+	'controller' => 'AgentBundle:Ticket:linkExistingOverlay',
+	'requirements' => array('ticket_id' => '\\d+'),
+));
+
+$collection->create('agent_ticket_link_existing', array(
+	'path' => '/tickets/{ticket_id}/link/{linked_ticket_id}',
+	'controller' => 'AgentBundle:Ticket:linkExisting',
+	'methods'     => array('POST'),
+));
+
 $collection->create('agent_twitter_new', array(
 	'path'        => '/twitter/new',
 	'controller'  => 'AgentBundle:Twitter:newTweet',
@@ -1313,6 +1331,27 @@ $collection->create('agent_task_ajaxsave_comment', array(
 $collection->create('agent_task_ajaxsave', array(
 	'path'        => '/tasks/{task_id}/ajax-save',
 	'controller'  => 'AgentBundle:Task:ajaxSave',
+));
+
+$collection->create('agent_task_ics_all_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/all.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'all'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$' )
+));
+
+$collection->create('agent_task_ics_assigned_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/assigned.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'assigned'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
+));
+
+$collection->create('agent_task_ics_delegated_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/delegated.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'delegated'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
 ));
 
 $collection->create('agent_dealearch_getsectiondata', array(
@@ -2158,6 +2197,13 @@ $collection->create('agent_apps_run', array(
 	'requirements'  => array('app_id' => '\\d+'),
 ));
 
+$collection->create('jira_widget', array(
+	'path'          => '/jira/widget/{ticket_id}',
+	'controller'    => 'AgentBundle:Jira:widget',
+	'defaults'		=> array('ticket_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+'),
+));
+
 $collection->create('jira_export', array(
 	'path'          => '/jira/export/{ticket_id}',
 	'controller'    => 'AgentBundle:Jira:export',
@@ -2165,26 +2211,38 @@ $collection->create('jira_export', array(
 	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
+$collection->create('jira_unlink', array(
+	'path'          => '/jira/unlink/{ticket_id}/{issue_id}',
+	'controller'    => 'AgentBundle:Jira:unlink',
+	'defaults'		=> array('ticket_id' => '-1', 'issue_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+', 'issue_id' => '\\d+'),
+));
+
 $collection->create('jira_lookup', array(
 	'path'          => '/jira/lookup',
 	'controller'    => 'AgentBundle:Jira:lookup',
 ));
 
-$collection->create('associated_issues', array(
-	'path'          => '/jira/issues/{ticket_id}',
+$collection->create('jira_associated_issues', array(
+	'path'          => '/jira/issue/{ticket_id}',
 	'controller'    => 'AgentBundle:Jira:getAssociatedIssues',
 	'defaults'		=> array('ticket_id' => '-1'),
 	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->create('comments', array(
-	'path'          => '/jira/{issue_id}/comments',
+$collection->create('jira_fetchcomments', array(
+	'path'          => '/jira/issue/{ticket_id}/fetchcomments',
 	'controller'    => 'AgentBundle:Jira:getComments',
-	'defaults'		=> array('issue_id' => '-1'),
-	'requirements'  => array('issue_id' => '\\d+'),
+	'defaults'		=> array('ticket_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->create('post_comment', array(
+$collection->create('jira_fetchallcomments', array(
+	'path'          => '/jira/fetchcomments',
+	'controller'    => 'AgentBundle:Jira:fetchAllComment',
+));
+
+$collection->create('jira_post_comment', array(
 	'path'          => '/jira/{issue_id}/comment',
 	'controller'    => 'AgentBundle:Jira:postComment',
 	'defaults'		=> array('issue_id' => '-1'),

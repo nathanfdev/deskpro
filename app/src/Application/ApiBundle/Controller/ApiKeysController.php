@@ -38,6 +38,14 @@ use Application\DeskPRO\ApiKeys\ApiKeyEdit;
 use Application\DeskPRO\ApiKeys\Form\Type\ApiKeyType;
 use Application\DeskPRO\Exception\ValidationException;
 
+/**
+* @SWG\Resource(
+* 	resourcePath="/api_keys",
+* 	description="Operations about API Keys",
+* 	basePath="/api/api_keys"
+* )
+*/
+
 class ApiKeysController extends AbstractController implements ProtectedControllerInterface
 {
 	/**
@@ -49,9 +57,20 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 	}
 
 
-	####################################################################################################################
+	###################################################################################################################
 	# list
 	####################################################################################################################
+
+	/**
+	 * @SWG\Api(
+	 * 	path="/api_keys",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Get list of all existing API Keys",
+	 * 		notes="Returns array of all existing API Keys"
+	 * 	)
+	 * )
+	 */
 
 	public function listAction()
 	{
@@ -71,6 +90,25 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 	###################################################################################################################
 	# get
 	####################################################################################################################
+
+	/**
+	 * @SWG\Api(
+	 * 	path="/api_keys/{id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Find API Key By ID",
+	 * 		notes="Returns API Key based on ID",
+	 * 		@SWG\Parameter(
+	 * 			name="id",
+	 * 			description="ID of API Key that needs to be fetched",
+	 * 			required=true,
+	 * 			type="integer",
+	 * 			paramType="path"
+	 * 		),
+	 * 		@SWG\ResponseMessage(code=404, message="API Key not found")
+	 * 	)
+	 * )
+	 */
 
 	public function getAction($id)
 	{

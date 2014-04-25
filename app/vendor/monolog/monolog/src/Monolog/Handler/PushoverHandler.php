@@ -43,6 +43,17 @@ class PushoverHandler extends SocketHandler
     );
 
     /**
+     * Sounds the api supports by default
+     * @see https://pushover.net/api#sounds
+     * @var array
+     */
+    private $sounds = array(
+        'pushover', 'bike', 'bugle', 'cashregister', 'classical', 'cosmic', 'falling', 'gamelan', 'incoming',
+        'intermission', 'magic', 'mechanical', 'pianobar', 'siren', 'spacealarm', 'tugboat', 'alien', 'climb',
+        'persistent', 'echo', 'updown', 'none',
+    );
+
+    /**
      * @param string       $token             Pushover api token
      * @param string|array $users             Pushover user id or array of ids the message will be sent to
      * @param string       $title             Title sent to the Pushover API
@@ -101,6 +112,12 @@ class PushoverHandler extends SocketHandler
             $dataArray['priority'] = 1;
         }
         
+        if (isset($record['context']['sound']) && in_array($record['context']['sound'], $this->sounds)) {
+            $dataArray['sound'] = $record['context']['sound'];
+        } elseif (isset($record['extra']['sound']) && in_array($record['extra']['sound'], $this->sounds)) {
+            $dataArray['sound'] = $record['extra']['sound'];
+        }
+
         if (isset($record['context']['sound']) && in_array($record['context']['sound'], $this->sounds)) {
             $dataArray['sound'] = $record['context']['sound'];
         } elseif (isset($record['extra']['sound']) && in_array($record['extra']['sound'], $this->sounds)) {

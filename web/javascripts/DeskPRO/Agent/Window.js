@@ -528,6 +528,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadAdmin = loadAdmin[1];
 		}
 
+		var loadReports = false;
+		if (loadReports = window.location.hash.match(/#reports:(.*?)$/)) {
+			loadReports = loadReports[1];
+		}
+
 		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
@@ -571,7 +576,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('body').addClass('dp-is-retina');
 		}
 
-		if (!loadAdmin) {
+		if (!loadAdmin && !loadReports) {
 			$('#dp_loading').remove();
 			$('#page_loading').remove();
 			$('#loading_css').remove();
@@ -948,9 +953,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		if (loadAdmin) {
+			this.disableHashPath(function() {});
 			if ($('#admin_interface_trigger').data('handler')) {
 				console.log("Loading admin: " + loadAdmin);
-				$('#admin_interface_trigger').data('handler').open(loadAdmin, function() {
+				$('#admin_interface_trigger').data('handler').open(loadAdmin, function () {
+					$('#dp_loading').remove();
+					$('#page_loading').remove();
+					$('#loading_css').remove();
+				});
+			}
+		} else if (loadReports) {
+			this.disableHashPath(function() {});
+			if ($('#reports_interface_trigger').data('handler')) {
+				console.log("Loading reports: " + loadReports);
+				$('#reports_interface_trigger').data('handler').open(loadReports, function () {
 					$('#dp_loading').remove();
 					$('#page_loading').remove();
 					$('#loading_css').remove();

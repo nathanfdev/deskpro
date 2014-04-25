@@ -40,20 +40,24 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * News revisions
  *
+ * @SWG\Model(id="NewsRevision")
  */
 class NewsRevision extends RevisionAbstract
 {
 	/**
+	 * @SWG\Property(name="news",type="News")
 	 */
 	protected $news;
 
 	/**
 	 * @var string
+	 * @SWG\Property(name="title",type="string")
 	 */
 	protected $title = '';
 
 	/**
 	 * @var string
+	 * @SWG\Property(name="content",type="string")
 	 */
 	protected $content = '';
 

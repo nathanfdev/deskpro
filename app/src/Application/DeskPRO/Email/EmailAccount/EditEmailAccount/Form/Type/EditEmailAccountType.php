@@ -46,11 +46,12 @@ class EditEmailAccountType extends AbstractType
 		$builder->add('other_addresses', 'text',  array('required' => false));
 
 		$builder->add('incoming_type', 'choice', array(
-			'choices'  => array('gmail' => 'gmail', 'pop3' => 'pop3'),
+			'choices'  => array('gmail' => 'gmail', 'pop3' => 'pop3', 'imap' => 'imap'),
 			'required' => true
 		));
 		$builder->add('in_gmail_account', new IncomingAccount\GmailAccountType());
 		$builder->add('in_pop3_account',  new IncomingAccount\Pop3AccountType());
+		$builder->add('in_imap_account',  new IncomingAccount\ImapAccountType());
 
 		$builder->add('outgoing_type', 'choice', array(
 			'choices'  => array('gmail' => 'gmail', 'smtp' => 'smtp'),

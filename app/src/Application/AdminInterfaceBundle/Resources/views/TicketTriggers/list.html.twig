@@ -47,7 +47,7 @@
 				{{ phrase('adm.ticket_triggers.no_triggers') }}
 			</p>
 			<ul class="dp-item-list" ui-sortable="TicketTriggersList.sortedListOptions" ng-if="TicketTriggersList.triggers.length">
-				<li class="with-drag-handle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
+				<li class="with-drag-handle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
 					<a href="{{ ng_href('tickets.triggers.edit', '{type: TicketTriggersList.eventType, id: trigger.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper" ng-hide="delete_mode">

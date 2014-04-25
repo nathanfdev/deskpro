@@ -8,6 +8,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		this.frameUrl  = this.el.data('frame-url') || this.el.attr('href');
 		this.frameId   = this.el.data('frame-id');
 		this.closeKey  = this.el.data('close-key') || 'back_to_agent';
+		this.frameTitle = this.el.data('win-title') || false;
 
 		this.frameWrap = null;
 		this.frame = null;
@@ -33,7 +34,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 	},
 
 	open: function(with_hash, callback) {
-		var self = this, hash;
+		var self = this, hash, frameId = this.frameId;
 
 		if (window['DP_FRAME_OVERLAYS']) {
 			for (var k in window['DP_FRAME_OVERLAYS']) {
@@ -68,6 +69,11 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		this.frameWrap.show();
 		this.frame.attr('src', url);
 
+		if (this.frameTitle) {
+			this.originalTitle = document.title;
+			document.title = this.frameTitle;
+		}
+
 		DeskPRO_Window.disableHashPath(function(hash) {
 			if (hash.indexOf(self.frameId + ':') !== 0) {
 				return;
@@ -75,7 +81,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 			var frame = self.frame.get(0);
 			var iWin = frame.contentWindow;
-			var localHash = hash.substr(6);
+			var localHash = hash.substr(frameId.length+1);
 
 			if (localHash == '/' + self.closeKey) {
 				self.close();
@@ -103,6 +109,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 			hash = '';
 		}
 
+		hash = hash.replace(/^#/, '')
 		hash = this.frameId + ':' + hash;
 		window.location.hash = '#' + hash;
 	},
@@ -114,6 +121,10 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 			this.frameWrap = null;
 			delete window['DP_FRAME_OVERLAY_' + this.frameId];
 			delete window['DP_FRAME_OVERLAYS'][this.frameId];
+		}
+
+		if (this.frameTitle) {
+			document.title = this.originalTitle;
 		}
 
 		window.location.hash = '';

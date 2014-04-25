@@ -75,7 +75,7 @@ abstract class Descriptor implements DescriptorInterface
      * Writes content to output.
      *
      * @param string  $content
-     * @param boolean $decorated
+     * @param bool    $decorated
      */
     protected function write($content, $decorated = false)
     {
@@ -86,7 +86,7 @@ abstract class Descriptor implements DescriptorInterface
      * Writes content to output.
      *
      * @param TableHelper $table
-     * @param boolean     $decorated
+     * @param bool        $decorated
      */
     protected function renderTable(TableHelper $table, $decorated = false)
     {
@@ -180,6 +180,14 @@ abstract class Descriptor implements DescriptorInterface
     abstract protected function describeContainerAlias(Alias $alias, array $options = array());
 
     /**
+     * Describes a container parameter.
+     *
+     * @param string $parameter
+     * @param array  $options
+     */
+    abstract protected function describeContainerParameter($parameter, array $options = array());
+
+    /**
      * Formats a value as string.
      *
      * @param mixed $value
@@ -248,7 +256,7 @@ abstract class Descriptor implements DescriptorInterface
 
     /**
      * @param ContainerBuilder $builder
-     * @param boolean          $showPrivate
+     * @param bool             $showPrivate
      *
      * @return array
      */

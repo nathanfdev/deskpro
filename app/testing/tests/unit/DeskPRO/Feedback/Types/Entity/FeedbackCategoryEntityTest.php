@@ -43,8 +43,8 @@ class FeedbackCategoryEntityTest extends \DpUnitTestCase
 
 	public function testUsergroupsForFeedbackCategoryEntity()
 	{
-		$usergroup1 = $this->getMock('\Acme\DemoBundle\Entity\Usergroup');
-		$usergroup2 = $this->getMock('\Acme\DemoBundle\Entity\Usergroup');
+		$usergroup1 = $this->getMock('\Application\DeskPRO\Entity\Usergroup');
+		$usergroup2 = $this->getMock('\Application\DeskPRO\Entity\Usergroup');
 
 		$this->entity->addUsergroup($usergroup1);
 		$this->entity->addUsergroup($usergroup2);

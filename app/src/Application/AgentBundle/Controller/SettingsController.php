@@ -268,9 +268,15 @@ class SettingsController extends AbstractController
 
 		$my_subs = $prefs->getFilterSubs();
 
+		$sys_ids = array();
+		foreach ($sys_filters as $f) {
+			$sys_ids[$f->sys_name] = $f->id;
+		}
+
 		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
 			'all_filters'      => $all_filters,
 			'sys_filters'      => $sys_filters,
+			'sys_ids'          => $sys_ids,
 			'sys_filters_hold' => $sys_filters_hold,
 			'custom_filters'   => $custom_filters,
 			'my_subs'          => $my_subs,
