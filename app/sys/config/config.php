@@ -384,7 +384,8 @@ $container->loadFromExtension('fos_elastica', array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Article',
                         'provider' => array(),
-                        'finder'   => array()
+                        'finder'   => array(),
+                        'repository' => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository'
                     )
                 ),
                 'download' => array(
@@ -396,7 +397,8 @@ $container->loadFromExtension('fos_elastica', array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Download',
                         'provider' => array(),
-                        'finder'   => array()
+                        'finder'   => array(),
+                        'repository' => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository'
                     )
                 ),
                 'feedback' => array(
@@ -408,7 +410,8 @@ $container->loadFromExtension('fos_elastica', array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Feedback',
                         'provider' => array(),
-                        'finder'   => array()
+                        'finder'   => array(),
+                        'repository' => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository'
                     )
                 ),
                 'news'     => array(
@@ -420,7 +423,8 @@ $container->loadFromExtension('fos_elastica', array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\News',
                         'provider' => array(),
-                        'finder'   => array()
+                        'finder'   => array(),
+                        'repository' => 'Application\DeskPRO\NewSearch\Repository\NewsRepository'
                     )
                 ),
                 'person'   => array(
@@ -436,7 +440,8 @@ $container->loadFromExtension('fos_elastica', array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Person',
                         'provider' => array(),
-                        'finder'   => array()
+                        'finder'   => array(),
+                        'repository' => 'Application\DeskPRO\NewSearch\Repository\PersonRepository'
                     )
                 ),
                 'organization'   => array(
@@ -449,7 +454,8 @@ $container->loadFromExtension('fos_elastica', array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Organization',
                         'provider' => array(),
-                        'finder'   => array()
+                        'finder'   => array(),
+                        'repository' => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
                     )
                 )
             )

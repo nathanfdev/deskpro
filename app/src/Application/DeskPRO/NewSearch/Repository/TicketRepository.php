@@ -2,9 +2,7 @@
 
 namespace Application\DeskPRO\NewSearch\Repository;
 
-use Elastica\Query\QueryString;
-use FOS\ElasticaBundle\Repository;
-
+use Application\DeskPRO\NewSearch\Filter\FilterInterface;
 use Application\DeskPRO\NewSearch\Filter\AssignmentFilter;
 use Application\DeskPRO\NewSearch\Filter\AgentTeamFilter;
 use Application\DeskPRO\NewSearch\Filter\DepartmentFilter;
@@ -13,7 +11,7 @@ use Application\DeskPRO\NewSearch\Filter\ParticipationFilter;
 /**
  * Ticket Repository
  */
-class TicketRepository extends Repository
+class TicketRepository extends AbstractRepository
 {
     /**
      * The currently logged in person.
@@ -23,54 +21,23 @@ class TicketRepository extends Repository
     protected $person;
 
     /**
-     * Find
+     * Fields to be highlighted
      *
-     * Prepares an updated query object and passes back to parent function
-     * for actual execution.
-     *
-     * @param $query
-     * @param null $limit
-     * @param array $options
-     *
-     * @return array
+     * @var array
      */
-    public function find($query, $limit = null, $options = array())
-    {
-        return parent::find($this->getQuery($query), $limit, $options);
-    }
+    protected $highlightFields = array(
+        'subject'  => array('fragment_size' => 100),
+        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1)
+    );
 
     /**
-     * Constructs the raw query
+     * Sets the person context
      *
-     * @param $q
-     * @return array
+     * @param $person
      */
-    private function getQuery($q)
+    public function setPersonContext($person)
     {
-        $query = array(
-            'query' => array(
-                'filtered' => array(
-                    'query'  => $this->getQueryString($q),
-                    'filter' => $this->getFilters(),
-                )
-            )
-        );
-
-        return $query;
-    }
-
-    /**
-     * Constructs the query string
-     *
-     * @param $q
-     * @return array
-     */
-    private function getQueryString($q)
-    {
-        $queryString = new QueryString($q);
-        $queryString->setDefaultOperator('AND');
-
-        return $queryString->toArray();
+        $this->person = $person;
     }
 
     /**
@@ -78,7 +45,7 @@ class TicketRepository extends Repository
      *
      * @return array
      */
-    private function getFilters()
+    protected function getFilters()
     {
         $filters = array(
             new AssignmentFilter($this->person),
@@ -89,6 +56,7 @@ class TicketRepository extends Repository
 
         $filterTree = array();
 
+        /** @var FilterInterface $filter */
         foreach ($filters as $filter) {
             if ($result = $filter->getFilter()) {
                 $filterTree[] = $result;
@@ -100,15 +68,5 @@ class TicketRepository extends Repository
                 'filters' => $filterTree
             )
         );
-    }
-
-    /**
-     * Sets the person context
-     *
-     * @param $person
-     */
-    public function setPersonContext($person)
-    {
-        $this->person = $person;
     }
 } 

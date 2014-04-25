@@ -37,13 +37,14 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
  * News
  */
-class News extends ContentAbstract
+class News extends ContentAbstract implements HighlightableModelInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\NewsCategory
@@ -58,6 +59,13 @@ class News extends ContentAbstract
 	/**
 	 */
 	protected $labels;
+
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
 	public function getContentHtml()
 	{
@@ -141,9 +149,6 @@ class News extends ContentAbstract
 		$cache->invalidateRegex('/_news(-|_view_' . intval($this->getId()) . '-|_\d+)/');
 	}
 
-
-
-
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
@@ -156,6 +161,37 @@ class News extends ContentAbstract
 
 		return $data;
 	}
+
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
 
 	############################################################################
 	# Doctrine Metadata
