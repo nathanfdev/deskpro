@@ -157,6 +157,21 @@ class TicketValueImporter extends AbstractValueImporter
 			}
 		}
 		
+		//Ref
+		if (!$tval->ref) {
+			$record['ref'] = md5(time());
+		} else {
+			$query = 'SELECT id FROM tickets WHERE ref = ?';
+			
+			$duplicateRef = $this->getDb()->fetchColumn($query, array($tval->ref));
+			
+			if ($duplicateRef) {
+				$record['ref'] = md5(time());
+			} else {
+				$record['ref'] = $tval->ref;
+			}
+		}
+		
 		//Status
 		if ($tval->status && 
 			$this->getMappers()->getMapper ('ticket_status')->isValidStatus($tval->status)) {
