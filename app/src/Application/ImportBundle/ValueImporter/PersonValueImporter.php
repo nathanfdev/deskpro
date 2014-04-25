@@ -86,14 +86,14 @@ class PersonValueImporter extends AbstractValueImporter
 		#------------------------------
 		# Find existing user
 		#------------------------------
-
+		
 		$exist_emails = $this->getExistingUserMap($pval->emails);
-
+		
 		if ($exist_emails) {
-			$exist_id = Arrays::getFirstItem($exist_emails);
+			$existing_person_id = Arrays::getFirstItem($exist_emails);
 			$this->getLogger()->notice(sprintf("[%s] Found existing user %d", $log_id, $exist_id));
 		}
-
+		
 		#------------------------------
 		# Create data array
 		#------------------------------
@@ -192,7 +192,8 @@ class PersonValueImporter extends AbstractValueImporter
 		if (!$this->isTestMode()) {
 			$update_rec = array();
 
-			if ($exist_id) {
+			if (isset($existing_person_id)) {
+				$exist_id = $this->getMappers()->findIdFromMappedValue('person', $existing_person_id);
 				$is_new = false;
 				$this->getDb()->update('people', $record, array('id' => $exist_id));
 				$this->getLogger()->info(sprintf("[%s] Updated %d", $log_id, $exist_id));
@@ -204,7 +205,7 @@ class PersonValueImporter extends AbstractValueImporter
 				$this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $exist_id));
 			}
 
-			if ($add_emails_str) {
+			if ($exist_id && $add_emails_str) {
 				$first_email_id = null;
 				foreach ($add_emails_str as $eml) {
 					list (, $eml_domain) = explode('@', $eml, 2);
@@ -226,7 +227,7 @@ class PersonValueImporter extends AbstractValueImporter
 				}
 			}
 
-			if ($add_ugs) {
+			if ($exist_id && $add_ugs) {
 				$batch = array_map(function($ug) use ($exist_id) {
 					return array(
 						'person_id'    => $exist_id,
@@ -237,7 +238,7 @@ class PersonValueImporter extends AbstractValueImporter
 				$this->getDb()->batchInsert('person2usergroups', $batch, true);
 			}
 
-			if ($add_labels) {
+			if ($exist_id && $add_labels) {
 				$batch = array_map(function($l) use ($exist_id) {
 					return array(
 						'person_id' => $exist_id,
