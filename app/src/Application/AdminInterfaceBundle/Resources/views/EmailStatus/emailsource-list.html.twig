@@ -86,6 +86,14 @@
 			</div>
 
 			<table class="table">
+				<colgroup>
+					<col width="1%" />
+					<col width="1%" />
+					<col width="28%" />
+					<col width="28%" />
+					<col width="100%" />
+					<col width="1%" />
+				</colgroup>
 				<thead>
 					<tr>
 						<th>ID</th>
@@ -99,10 +107,10 @@
 				<tbody>
 					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error'}">
 						<td class="alt dp-id-col"><a href="#"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
-						<td><span am-time-ago="result.date_created"></span></td>
-						<td>{{ ng_var('result.header_from') }}</td>
-						<td>{{ ng_var('result.header_to') }}</td>
-						<td>{{ ng_var('result.header_subject') }}</td>
+						<td style="white-space: nowrap" nowrap><span am-time-ago="result.date_created"></span></td>
+						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
 						<td>{{ ng_var('result.status') }}</td>
 					</tr>
 				</tbody>

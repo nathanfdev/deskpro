@@ -92,25 +92,33 @@
 			</div>
 
 			<table class="table">
+				<colgroup>
+					<col width="1%" />
+					<col width="1%" />
+					<col width="28%" />
+					<col width="28%" />
+					<col width="100%" />
+					<col width="1%" />
+				</colgroup>
 				<thead>
-				<tr>
-					<th>ID</th>
-					<th>Date</th>
-					<th>From</th>
-					<th>To</th>
-					<th>Subject</th>
-					<th>Status</th>
-				</tr>
+					<tr>
+						<th>ID</th>
+						<td style="white-space: nowrap" nowrap>Date</th>
+						<th>From</th>
+						<th>To</th>
+						<th>Subject</th>
+						<th>Status</th>
+					</tr>
 				</thead>
 				<tbody>
-				<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error'}">
-					<td class="alt dp-id-col"><a href="#"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
-					<td><span am-time-ago="result.date_created"></span></td>
-					<td>{{ ng_var('result.from_address') }}</td>
-					<td>{{ ng_var('result.to_address') }}</td>
-					<td>{{ ng_var('result.subject') }}</td>
-					<td>{{ ng_var('result.status') }}</td>
-				</tr>
+					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error'}">
+						<td class="alt dp-id-col"><a href="#"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
+						<td><span am-time-ago="result.date_created"></span></td>
+						<td class="overflow-ellipsis">{{ ng_var('result.from_address') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.to_address') }}</td>
+						<td>{{ ng_var('result.subject') }}</td>
+						<td>{{ ng_var('result.status') }}</td>
+					</tr>
 				</tbody>
 			</table>
 

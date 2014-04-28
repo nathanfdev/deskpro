@@ -12351,6 +12351,20 @@ table.agent-perms-table .toggle-wrap {
   background: transparent;
 }
 
+div.overflow-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.overflow-ellipsis {
+  max-width: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /**
 * Set an inner black shadow
 */
