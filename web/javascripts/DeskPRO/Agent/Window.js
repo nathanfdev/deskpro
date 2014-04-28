@@ -2778,7 +2778,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			menuElement: '#create_content_menu'
 		});
 
-		var autostart = true;
+		var autostart = false;
 		if (DeskPRO_Window.DEBUG.disableSectionHandlers) {
 			autostart = false;
 		}
