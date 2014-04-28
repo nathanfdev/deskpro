@@ -44,20 +44,10 @@ define [
 				'Index/modal-alert.html',
 				'Index/modal-confirm-leavetab.html',
 				'Languages/modal-translate-phrase.html',
-				'TicketDeps/code-phpapi.html',
-				'TicketDeps/code-link.html',
-				'TicketDeps/code-win.html',
-				'TicketDeps/code-embed.html',
 				'Index/blank.html',
+				'Index/home.html',
 				'Common/work-hours-directive.html',
-				'TicketDeps/layout-editor.html',
-				'TicketDeps/layout-editor-field.html',
-				'ChatSetup/embed-code.html'
 			]
-
-			for own _, route of AdminRouting
-				if route.templateName
-					templates.push(route.templateName)
 
 			for t in templates
 				dpTemplateManager.load(t)

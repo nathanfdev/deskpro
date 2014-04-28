@@ -45,5 +45,29 @@
 	</section>
 {% endblock %}
 {% block listpane_help %}
-	{% include 'AdminInterfaceBundle:UserGroups:help-page.html.twig' %}
+	<header>
+		<h1>Agents use the helpdesk to provide assistance to users.</h1>
+		<p>
+			Agent <strong>permissions</strong> control what each agent is allowed to do.
+			Click on each agent to edit their permissions and other details.</p>
+		</p>
+	</header>
+	<article>
+		<section>
+			<p><strong>Zones</strong> control which agents can access this admin interface or the reports interface.</p>
+			<p>Use the <strong>Departments</strong> tab to control access to tickets in each department:</p>
+			<ul>
+				<li><strong>Full</strong> means the agent can view and work on tickets in that department</li>
+				<li><strong>Assign</strong> means the agent can assign tickets to the department, but nothing more (they can't view them afterwards)</li>
+			</ul>
+			<p>You can separately set <strong>chat</strong> access for each department.</p>
+			<p>Instead of deciding individual permissions for every agent, it's quicker to define permission groups and then assign agents to a permission group.</p>
+		</section>
+		<section>
+			<h2><span>Related Knowledgebase Articles</span></h2>
+			<ul>
+				<li><a href="https://support.deskpro.com/kb/articles/94" target="_blank">What is an Agent?</a></li>
+			</ul>
+		</section>
+	</article>
 {% endblock %}

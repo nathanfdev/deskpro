@@ -47,3 +47,15 @@
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 	<div dp-register-message="no_delete_last">{{ phrase('adm.feedback_statuses.no_delete_last') }}</div>
 {% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Each feedback items has a status which tracks what your company is doing with it.</h1>
+		<p>Customize the statuses here. Click to edit, or drag to change the order in which they are displayed to users and agents.</p>
+	</header>
+	<article>
+		<section>
+			<p>Active statuses mean your company is considering or implementing the feedback. Active statuses are visible to users on the web portal.</p>
+			<p>Closed statuses mean you are not going to act on the feedback further: either because you've rejected it, or because you've already implemented it. Feedback items with closed statuses are not displayed on the portal.</p>
+		</section>
+	</article>
+{% endblock %}

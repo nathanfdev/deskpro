@@ -77,5 +77,14 @@
 
 {% endblock %}
 {% block listpane_help %}
-	{% include 'AdminInterfaceBundle:TicketFilters:help-page.html.twig' %}
+	<header>
+		<h1>Ticket filters enable agents to view a list of all the tickets which meet a set of conditions.</h1>
+		<p>To supplement the built-in filters like <strong>My Tickets</strong>, you can define your own custom filters. Filters make it easy for agents to track specific groups of tickets without repeated searching.</p>
+	</header>
+	<article>
+		<section>
+			<p>Each filter has its own individual set of conditions and will only show tickets that match them all.</p>
+			<p>Filters can be visible to a specific agent, to a specific team, or to everyone. Agents can create their own filters; these are visible only to the agent who made them.</p>
+		</section>
+	</article>
 {% endblock %}

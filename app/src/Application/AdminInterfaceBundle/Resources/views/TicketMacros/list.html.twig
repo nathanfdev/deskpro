@@ -57,3 +57,18 @@
 	</section>
 	{{ ng_tpl('AdminInterfaceBundle:TicketMacros:delete-modal.html.twig') }}
 {% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Macros are pre-defined sequences of actions.</h1>
+		<p>An agent can apply a macro to a ticket with a couple of clicks. Using macros to perform commonly-repeated sequences of actions helps agents work more efficiently.</p>
+	</header>
+	<article>
+		<section>
+			<p>When a macro runs, the actions it contains are applied to the ticket it is run on (or to the user associated with that ticket).</p>
+			<p>Agents can run macros from the content pane using the <strong>Macros</strong> button or the <strong>Send Reply</strong> control. They can also apply a macro as a mass action from the list pane.</p>
+			<p>Macros can be shared (available to everyone), or limited to a specific agent.</p>
+			<p>Agents can create macros in the Preferences area of the agent interface. They choose whether or not their macros are shared.</p>
+			<p>Note that if an agent tries to run a shared macro but lacks the permissions to run all its actions, the macro will not run.</p>
+		</section>
+	</article>
+{% endblock %}
