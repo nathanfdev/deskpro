@@ -51,6 +51,25 @@ class TriggerData extends AbstractDefaultData
 {
 	public function runInstall()
 	{
+		$this->installTriggerRecords();
+	}
+
+	public function runReset()
+	{
+		$this->getDb()->executeUpdate("DELETE FROM ticket_triggers WHERE sys_name IS NOT NULL");
+		$this->runInstall();
+	}
+
+	public function runSync()
+	{
+		$exist_names = $this->getDb()->fetchAllCol("SELECT sys_name FROM ticket_triggers WHERE sys_name IS NOT NULL");
+		$this->installTriggerRecords($exist_names);
+	}
+
+	private function installTriggerRecords(array $ignore = array())
+	{
+		$ignore =  array_fill_keys($ignore, true);
+
 		#-----
 		# Send agent notifications
 		#-----
@@ -73,7 +92,7 @@ class TriggerData extends AbstractDefaultData
 				'from_name' => 'performer',
 			)));
 
-			$this->getEm()->persist($trigger);
+			if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 		}
 
 		#-----
@@ -84,7 +103,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->event_trigger = 'newticket';
 		$trigger->run_order = 1000;
 		$trigger->by_agent_mode = array('api', 'email', 'form', 'portal', 'widget');
-		$trigger->is_enabled = false;
+		$trigger->is_enabled = true;
 		$trigger->sys_name = 'default_newticket_byagent';
 		$trigger->title = "Send user new ticket by agent";
 		$trigger->actions->addAction(new SendUserEmail(array(
@@ -93,7 +112,7 @@ class TriggerData extends AbstractDefaultData
 			'from_name'   => 'performer',
 		)));
 
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		#-----
 		# newticket: Send user auto-reply
@@ -112,7 +131,7 @@ class TriggerData extends AbstractDefaultData
 			'from_name' => 'helpdesk_name',
 		)));
 
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		#-----
 		# newreply: Send user auto-reply
@@ -131,7 +150,7 @@ class TriggerData extends AbstractDefaultData
 			'from_name' => 'helpdesk_name',
 		)));
 
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		#-----
 		# newreply: Send user new reply from agent
@@ -150,7 +169,7 @@ class TriggerData extends AbstractDefaultData
 			'from_name' => 'performer',
 		)));
 
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		#-----
 		# newreply: when agent replies via email, assign them if they havent set
@@ -172,7 +191,7 @@ class TriggerData extends AbstractDefaultData
 
 		$trigger->actions->addAction(new SetAgent(array('agent_id' => -1)));
 
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		#-----
 		# newticket: set require validation
@@ -182,8 +201,8 @@ class TriggerData extends AbstractDefaultData
 		$trigger->event_trigger = 'newticket';
 		$trigger->run_order     = -1000;
 		$trigger->by_user_mode  = array('email', 'form', 'portal', 'widget');
-		$trigger->is_enabled    = true;
-		$trigger->is_hidden     = true;
+		$trigger->is_enabled    = false;
+		$trigger->is_hidden     = false;
 		$trigger->sys_name      = 'default_newticket_requirevalid';
 		$trigger->title         = 'Enable email validation';
 
@@ -193,7 +212,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger->terms->addTerm($set);
 
 		$trigger->actions->addAction(new SetRequireValidation(array('require_validation' => true)));
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		#-----
 		# newticket: check validation
@@ -221,7 +240,7 @@ class TriggerData extends AbstractDefaultData
 		)));
 		$trigger->actions->addAction(new ModStopTriggers());
 
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		#-----
 		# newticket: check agent validation
@@ -244,19 +263,8 @@ class TriggerData extends AbstractDefaultData
 		$trigger->actions->addAction(new SetStatus(array('status' => 'hidden.validating')));
 		$trigger->actions->addAction(new ModStopTriggers());
 
-		$this->getEm()->persist($trigger);
+		if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
 
 		$this->getEm()->flush();
-	}
-
-	public function runReset()
-	{
-		$this->getDb()->executeUpdate("DELETE FROM ticket_triggers WHERE sys_name IS NOT NULL");
-		$this->runInstall();
-	}
-
-	public function runSync()
-	{
-		$this->runInstall();
 	}
 }

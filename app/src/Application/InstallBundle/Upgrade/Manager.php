@@ -208,7 +208,7 @@ class Manager
 		if ($this->logger) {
 			$data_proc->setLogger($this->logger);
 		}
-		$data_proc->runUpgrade();
+		$data_proc->runSync();
 
 		#------------------------------
 		# Apps
