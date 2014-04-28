@@ -58,10 +58,10 @@
 		</section>
 	</form>
 	<div dp-register-message="saved_dep">{{ phrase('adm.departments.saved_dep_x_success', {title: 'ng_var(EditCtrl.form.title)'}) }}</div>
-	{{ ng_tpl('AdminInterface:TicketDeps:code-phpapi.html.twig') }}
-	{{ ng_tpl('AdminInterface:TicketDeps:code-link.html.twig') }}
-	{{ ng_tpl('AdminInterface:TicketDeps:code-win.html.twig') }}
-	{{ ng_tpl('AdminInterface:TicketDeps:code-embed.html.twig') }}
-	{{ ng_tpl('AdminInterface:TicketDeps:layout-editor.html') }}
-	{{ ng_tpl('AdminInterface:TicketDeps:layout-editor-field.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-phpapi.html.twig', 'TicketDeps/code-phpapi.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-link.html.twig', 'TicketDeps/code-link.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-win.html.twig', 'TicketDeps/code-win.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-embed.html.twig', 'TicketDeps/code-embed.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:layout-editor.html.twig', 'TicketDeps/layout-editor.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:layout-editor-field.html.twig', 'TicketDeps/layout-editor-field.html') }}
 {% endblock %}

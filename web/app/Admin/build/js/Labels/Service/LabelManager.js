@@ -63,7 +63,6 @@
             idx = null;
             for (k = _i = 0, _len = labels.length; _i < _len; k = ++_i) {
               l = labels[k];
-              console.log(l);
               if (l.label === label) {
                 idx = k;
                 break;
