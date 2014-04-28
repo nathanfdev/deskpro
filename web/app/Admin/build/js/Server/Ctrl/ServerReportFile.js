@@ -28,11 +28,6 @@
         return this.server_file_check_done = false;
       };
 
-
-      /*
-       	 *
-       */
-
       Admin_ServerReportFile_Ctrl_ServerReportFile.prototype.initialLoad = function() {
         var data_promise;
         data_promise = this.Api.sendGet('/server_file_check').then((function(_this) {
@@ -50,7 +45,7 @@
 
 
       /*
-       	 * Starting the process of integrity file check
+      		 * Starting the process of integrity file check
        */
 
       Admin_ServerReportFile_Ctrl_ServerReportFile.prototype.startCheck = function() {
@@ -112,7 +107,7 @@
 
 
       /*
-       	 * After we've donw with file integrity checking we coudl redirect user to actual report file
+      		 * After we've donw with file integrity checking we coudl redirect user to actual report file
        */
 
       Admin_ServerReportFile_Ctrl_ServerReportFile.prototype.redirectToReportFile = function() {
@@ -120,7 +115,7 @@
           file_check_results: this.file_check_results
         }).then((function(_this) {
           return function(res) {
-            return _this.$window.location.href = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN;
+            return _this.$window.location.href = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN;
           };
         })(this));
       };
