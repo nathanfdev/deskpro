@@ -159,26 +159,26 @@ class Importer
 
 	public function processImports()
 	{
-//		$this->processDirectory('people', new PersonValueImporter(
-//			$this->config->mode,
-//			$this->db,
-//			$this->logger,
-//			$this->mappers
-//		));
-//		
-//		$this->processDirectory('tickets', new TicketValueImporter(
-//			$this->config->mode,
-//			$this->db,
-//			$this->logger,
-//			$this->mappers
-//		));
-//		
-//		$this->processDirectory('articles', new KbValueImporter(
-//			$this->config->mode,
-//			$this->db,
-//			$this->logger,
-//			$this->mappers
-//		));
+		$this->processDirectory('people', new PersonValueImporter(
+			$this->config->mode,
+			$this->db,
+			$this->logger,
+			$this->mappers
+		));
+		
+		$this->processDirectory('tickets', new TicketValueImporter(
+			$this->config->mode,
+			$this->db,
+			$this->logger,
+			$this->mappers
+		));
+		
+		$this->processDirectory('articles', new KbValueImporter(
+			$this->config->mode,
+			$this->db,
+			$this->logger,
+			$this->mappers
+		));
 		
 		$this->processDirectory('news', new NewsValueImporter(
 			$this->config->mode,
