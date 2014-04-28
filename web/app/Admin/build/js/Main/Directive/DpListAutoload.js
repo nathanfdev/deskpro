@@ -34,7 +34,7 @@
             pri = 0;
             select = null;
             if (attrs.autoloadPriority) {
-              pri = parseInt(attrs.autoloadPriority);
+              pri = parseInt(scope.$eval(attrs.autoloadPriority));
             }
             if (attrs.dpListAutoload && attrs.dpListAutoload.length) {
               select = attrs.dpListAutoload;
@@ -44,7 +44,7 @@
             }
             return scope._autoload_links.push({
               element: element,
-              select: select,
+              select: select || 'a',
               pri: pri
             });
           }

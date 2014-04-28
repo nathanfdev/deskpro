@@ -93,6 +93,7 @@
                   currentStateId += '.' + $state.params.id;
                 }
               }
+              console.log("%s = %s", currentStateId, myStateIdRe);
               if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
                 isOn = true;
               }

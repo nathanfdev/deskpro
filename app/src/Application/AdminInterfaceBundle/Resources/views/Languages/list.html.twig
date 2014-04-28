@@ -21,9 +21,12 @@
 		<article>
 			<ul class="dp-item-list">
 				<li ng-repeat="pack in ListCtrl.installedPacks" dp-state-mark="setup.languages.edit.{{ ng_var('pack.id') }}">
-					<a href="{{ ng_href('setup.languages.edit', '{id: pack.id}') }}">
+					<a href="{{ ng_href('setup.languages.edit', '{id: pack.id}') }}" dp-list-autoload autoload-priority="{{ ng_var('ListCtrl.default_lang_id == pack.installed_language_id ? -1 : 1') }}">
+						<span class="label label-primary" style="float:right; margin-left: 3px;" ng-show="pack.has_user">user</span>
+						<span class="label label-primary" style="float:right; margin-left: 3px;" ng-show="pack.has_agent">agent</span>
+						<span class="label label-primary" style="float:right; margin-left: 3px;" ng-show="pack.has_admin">admin</span>
 						<h4>
-							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; text-align: baseline;" />
+							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; vertical-align: baseline;" />
 							<span class="title-text">
 								{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})
 							</span>
@@ -42,8 +45,11 @@
 			<ul class="dp-item-list">
 				<li ng-repeat="pack in ListCtrl.availablePacks" dp-state-mark="setup.languages.install.install-{{ ng_var('pack.id') }}">
 					<a href="{{ ng_href('setup.languages.install', "{id: 'install-' + pack.id}") }}">
+						<span class="label label-primary" style="float:right; margin-left: 3px;" ng-show="pack.has_user">user</span>
+						<span class="label label-primary" style="float:right; margin-left: 3px;" ng-show="pack.has_agent">agent</span>
+						<span class="label label-primary" style="float:right; margin-left: 3px;" ng-show="pack.has_admin">admin</span>
 						<h4>
-							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; text-align: baseline;" />
+							<img ng-src="{{ ng_var('pack.flag_image') }}" alt="Icon" style="margin-right: 3px; vertical-align: baseline;" />
 							<span class="title-text">
 								{{ ng_var('pack.show_title') }} ({{ ng_var('pack.title') }})
 							</span>
@@ -52,6 +58,13 @@
 				</li>
 			</ul>
 		</article>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('setup.languages.newlang') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>New Language</h3>
+		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">

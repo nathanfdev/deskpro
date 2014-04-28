@@ -13,8 +13,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li>
-					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'custom'}") }}" dp-state-mark="setup.phrases.viewgroup.custom">
+				<li dp-state-mark="id,groupId:setup.phrases.viewgroup.{{ ng_var("'phrases-' + ListCtrl.pack.id") }}.custom">
+					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'custom'}") }}">
 						<h4>
 							<span class="title-text">
 								All Custom Phrases
@@ -22,8 +22,8 @@
 						</h4>
 					</a>
 				</li>
-				<li ng-repeat="group in ListCtrl.phraseGroups.object">
-					<a href="{{ ng_href('setup.phrases.viewresgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'res-' + group.id}") }}" dp-state-mark="setup.phrases.viewgroup.{{ ng_var('group.id') }}">
+				<li ng-repeat="group in ListCtrl.phraseGroups.object" dp-state-mark="id,groupId:setup.phrases.viewresgroup.{{ ng_var("'phrases-' + ListCtrl.pack.id") }}.{{ ng_var("'res-' + group.id") }}">
+					<a href="{{ ng_href('setup.phrases.viewresgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'res-' + group.id}") }}">
 						<h4>
 							<span class="title-text">
 								{{ ng_var('group.title') }}
@@ -41,8 +41,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="group in ListCtrl.phraseGroups.user">
-					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: group.id}") }}" dp-state-mark="setup.phrases.viewgroup.{{ ng_var('group.id') }}">
+				<li ng-repeat="group in ListCtrl.phraseGroups.user" dp-state-mark="id,groupId:setup.phrases.viewgroup.{{ ng_var("'phrases-' + ListCtrl.pack.id") }}.{{ ng_var("group.id") }}">
+					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: group.id}") }}">
 						<h4>
 							<span class="title-text">
 								{{ ng_var('group.title') }}

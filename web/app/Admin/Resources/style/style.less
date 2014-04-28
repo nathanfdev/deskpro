@@ -4006,8 +4006,8 @@ table.phrases-table {
 		}
 	}
 
-	td.phrase-default, td.phrase-translation {
-		width: 50%;
+	td.phrase-default, td.phrase-translation, td.phrase-set {
+		width: 33%;
 		textarea {
 			margin: 0;
 			padding: 3px;
@@ -4027,14 +4027,23 @@ table.phrases-table {
 
 	tr:hover td.phrase-default textarea,
 	tr:hover td.phrase-translation textarea,
+	tr:hover td.phrase-set textarea,
 	td.phrase-default textarea:focus,
-	td.phrase-translation textarea:focus {
+	td.phrase-translation textarea:focus,
+	td.phrase-set textarea:focus {
 		border: 1px solid #888;
 		color: #444;
 		outline: none;
 		overflow: auto;
 		resize: both;
 		background: #fff;
+	}
+
+	tr:hover td.phrase-default textarea,
+	tr:hover td.phrase-translation textarea,
+	td.phrase-default textarea:focus,
+	td.phrase-translation textarea:focus {
+		border-style: dashed;
 	}
 }
 

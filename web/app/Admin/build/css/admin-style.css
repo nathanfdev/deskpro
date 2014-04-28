@@ -11990,12 +11990,14 @@ table.phrases-table td.phrase-id span {
 }
 
 table.phrases-table td.phrase-default,
-table.phrases-table td.phrase-translation {
-  width: 50%;
+table.phrases-table td.phrase-translation,
+table.phrases-table td.phrase-set {
+  width: 33%;
 }
 
 table.phrases-table td.phrase-default textarea,
-table.phrases-table td.phrase-translation textarea {
+table.phrases-table td.phrase-translation textarea,
+table.phrases-table td.phrase-set textarea {
   width: 100%;
   height: 55px;
   padding: 3px;
@@ -12012,14 +12014,23 @@ table.phrases-table td.phrase-translation textarea {
 
 table.phrases-table tr:hover td.phrase-default textarea,
 table.phrases-table tr:hover td.phrase-translation textarea,
+table.phrases-table tr:hover td.phrase-set textarea,
 table.phrases-table td.phrase-default textarea:focus,
-table.phrases-table td.phrase-translation textarea:focus {
+table.phrases-table td.phrase-translation textarea:focus,
+table.phrases-table td.phrase-set textarea:focus {
   overflow: auto;
   color: #444;
   background: #fff;
   border: 1px solid #888;
   outline: none;
   resize: both;
+}
+
+table.phrases-table tr:hover td.phrase-default textarea,
+table.phrases-table tr:hover td.phrase-translation textarea,
+table.phrases-table td.phrase-default textarea:focus,
+table.phrases-table td.phrase-translation textarea:focus {
+  border-style: dashed;
 }
 
 table.phrases-restable td.phrase-title > span {

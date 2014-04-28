@@ -165,6 +165,13 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'setup.languages.newlang',
+		url: '/languages/new-lang',
+		templateName: 'Languages/new-lang.html',
+		controller: 'Admin_Main_Ctrl_Bare'
+	});
+
+	routes.push({
 		id: 'setup.languages.settings',
 		url: '/settings',
 		templateName: 'Languages/settings.html',

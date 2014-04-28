@@ -88,6 +88,8 @@ define [
 						if $state.params.id
 							currentStateId += '.' + $state.params.id
 
+					console.log("%s = %s", currentStateId, myStateIdRe)
+
 					if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
 						isOn = true
 
