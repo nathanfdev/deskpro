@@ -101,44 +101,11 @@ class TemplateLocator extends BaseTemplateLocator
 
 	protected function logUsedTemplate($key, $path)
 	{
-		if (!isset($GLOBALS['DP_CONFIG']['debug']['enable_log_tpl_use']) || !$GLOBALS['DP_CONFIG']['debug']['enable_log_tpl_use']) {
-			if (defined('DEBUG_BACKTRACE_IGNORE_ARGS')) {
-				$back = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
-			} else {
-				$back = debug_backtrace();
-			}
-			$guess_origin = 'unknown';
-
-			foreach ($back as $b) {
-				if (!isset($b['file']) || !isset($b['line'])) {
-					continue;
-				}
-
-				if (
-					strpos($b['file'], '/Templating/') === false
-					&& strpos($b['file'], '/TwigBundle/') === false
-					&& strpos($b['file'], '/Twig/Loader') === false
-					&& strpos($b['file'], '/DeskPRO/Twig') === false
-					&& strpos($b['file'], '/lib/Twig/') === false
-					&& strpos($b['file'], '/symfony/src/') === false
-				) {
-					$guess_origin = $b['file'] . ' line ' . $b['line'];
-					break;
-				}
-			}
-
-			$this->loaded_list[] = array(
-				'key'    => $key,
-				'path'   => $path,
-				'origin' => $guess_origin
-			);
-		} else {
-			$this->loaded_list[] = array(
-				'key'    => $key,
-				'path'   => $path,
-				'origin' => null
-			);
-		}
+		$this->loaded_list[] = array(
+			'key'    => $key,
+			'path'   => $path,
+			'origin' => null
+		);
 	}
 
 	public function getLoadedTemplates()
