@@ -43,10 +43,12 @@ use Application\ImportBundle\RecordMapper\PersonRecordMapper;
 use Application\ImportBundle\ArrayParser\PersonArrayParser;
 use Application\ImportBundle\ArrayParser\TicketArrayParser;
 use Application\ImportBundle\ArrayParser\KbArrayParser;
+use Application\ImportBundle\ArrayParser\NewsArrayParser;
 use Application\ImportBundle\ValueImporter\AbstractValueImporter;
 use Application\ImportBundle\ValueImporter\PersonValueImporter;
 use Application\ImportBundle\ValueImporter\TicketValueImporter;
 use Application\ImportBundle\ValueImporter\KbValueImporter;
+use Application\ImportBundle\ValueImporter\NewsValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Application\DeskPRO\DBAL\Connection;
 use Monolog\Handler\StreamHandler;
@@ -102,19 +104,21 @@ class Importer
 		$this->config = $config;
 
 		$this->mappers = new RecordMapperRegistry();
-		$this->mappers['person']            = new PersonRecordMapper($this->db);
-		$this->mappers['ticket_department'] = new TicketDepartmentRecordMapper($this->db);
-		$this->mappers['ticket_category']   = new CommonRecordMapper($this->db, 'ticket_categories', 'title');
-		$this->mappers['ticket_workflow']   = new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
-		$this->mappers['ticket_priority']   = new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
-		$this->mappers['ticket_status']     = new TicketStatusRecordMapper();
-		$this->mappers['department']        = new CommonRecordMapper($this->db, 'departments', 'title');
-		$this->mappers['product']           = new CommonRecordMapper($this->db, 'products', 'title');
-		$this->mappers['usergroup']         = new CommonRecordMapper($this->db, 'usergroups', 'title');
-		$this->mappers['organization']      = new CommonRecordMapper($this->db, 'organizations', 'name');
-		$this->mappers['language']	    = new CommonRecordMapper($this->db, 'languages', 'title');
-		$this->mappers['article_category']  = new CommonRecordMapper($this->db, 'article_categories', 'title');
-		$this->mappers['article']	    = new CommonRecordMapper($this->db, 'articles', 'title');
+		$this->mappers['person']		= new PersonRecordMapper($this->db);
+		$this->mappers['ticket_department']	= new TicketDepartmentRecordMapper($this->db);
+		$this->mappers['ticket_category']	= new CommonRecordMapper($this->db, 'ticket_categories', 'title');
+		$this->mappers['ticket_workflow']	= new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
+		$this->mappers['ticket_priority']	= new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
+		$this->mappers['ticket_status']		= new TicketStatusRecordMapper();
+		$this->mappers['department']		= new CommonRecordMapper($this->db, 'departments', 'title');
+		$this->mappers['product']		= new CommonRecordMapper($this->db, 'products', 'title');
+		$this->mappers['usergroup']		= new CommonRecordMapper($this->db, 'usergroups', 'title');
+		$this->mappers['organization']		= new CommonRecordMapper($this->db, 'organizations', 'name');
+		$this->mappers['language']		= new CommonRecordMapper($this->db, 'languages', 'title');
+		$this->mappers['article_category']	= new CommonRecordMapper($this->db, 'article_categories', 'title');
+		$this->mappers['article']		= new CommonRecordMapper($this->db, 'articles', 'title');
+		$this->mappers['news_category']		= new CommonRecordMapper($this->db, 'news_categories', 'title');
+		$this->mappers['news']			= new CommonRecordMapper($this->db, 'news', 'title');
 
 		if (!$logger) {
 			$logger = new Logger('importer');
@@ -155,21 +159,28 @@ class Importer
 
 	public function processImports()
 	{
-		$this->processDirectory('people', new PersonValueImporter(
-			$this->config->mode,
-			$this->db,
-			$this->logger,
-			$this->mappers
-		));
+//		$this->processDirectory('people', new PersonValueImporter(
+//			$this->config->mode,
+//			$this->db,
+//			$this->logger,
+//			$this->mappers
+//		));
+//		
+//		$this->processDirectory('tickets', new TicketValueImporter(
+//			$this->config->mode,
+//			$this->db,
+//			$this->logger,
+//			$this->mappers
+//		));
+//		
+//		$this->processDirectory('articles', new KbValueImporter(
+//			$this->config->mode,
+//			$this->db,
+//			$this->logger,
+//			$this->mappers
+//		));
 		
-		$this->processDirectory('tickets', new TicketValueImporter(
-			$this->config->mode,
-			$this->db,
-			$this->logger,
-			$this->mappers
-		));
-		
-		$this->processDirectory('articles', new KbValueImporter(
+		$this->processDirectory('news', new NewsValueImporter(
 			$this->config->mode,
 			$this->db,
 			$this->logger,
@@ -229,6 +240,10 @@ class Importer
 						break;
 					case 'KbValueImporter':
 						$parser = new KbArrayParser();
+						$value = $parser->parseArray($data);
+						break;
+					case 'NewsValueImporter':
+						$parser = new NewsArrayParser();
 						$value = $parser->parseArray($data);
 						break;
 				}
