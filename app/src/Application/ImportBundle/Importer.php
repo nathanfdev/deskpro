@@ -42,9 +42,11 @@ use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;
 use Application\ImportBundle\RecordMapper\PersonRecordMapper;
 use Application\ImportBundle\ArrayParser\PersonArrayParser;
 use Application\ImportBundle\ArrayParser\TicketArrayParser;
+use Application\ImportBundle\ArrayParser\KbArrayParser;
 use Application\ImportBundle\ValueImporter\AbstractValueImporter;
 use Application\ImportBundle\ValueImporter\PersonValueImporter;
 use Application\ImportBundle\ValueImporter\TicketValueImporter;
+use Application\ImportBundle\ValueImporter\KbValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Application\DeskPRO\DBAL\Connection;
 use Monolog\Handler\StreamHandler;
@@ -111,6 +113,8 @@ class Importer
 		$this->mappers['usergroup']         = new CommonRecordMapper($this->db, 'usergroups', 'title');
 		$this->mappers['organization']      = new CommonRecordMapper($this->db, 'organizations', 'name');
 		$this->mappers['language']	    = new CommonRecordMapper($this->db, 'languages', 'title');
+		$this->mappers['article_category']  = new CommonRecordMapper($this->db, 'article_categories', 'title');
+		$this->mappers['article']	    = new CommonRecordMapper($this->db, 'articles', 'title');
 
 		if (!$logger) {
 			$logger = new Logger('importer');
@@ -159,6 +163,13 @@ class Importer
 		));
 		
 		$this->processDirectory('tickets', new TicketValueImporter(
+			$this->config->mode,
+			$this->db,
+			$this->logger,
+			$this->mappers
+		));
+		
+		$this->processDirectory('articles', new KbValueImporter(
 			$this->config->mode,
 			$this->db,
 			$this->logger,
@@ -214,6 +225,10 @@ class Importer
 						break;
 					case 'TicketValueImporter':
 						$parser = new TicketArrayParser();
+						$value = $parser->parseArray($data);
+						break;
+					case 'KbValueImporter':
+						$parser = new KbArrayParser();
 						$value = $parser->parseArray($data);
 						break;
 				}
