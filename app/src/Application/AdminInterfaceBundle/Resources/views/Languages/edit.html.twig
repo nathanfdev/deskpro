@@ -158,7 +158,10 @@
 					</div>
 
 					<div class="dp-delete-control">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.startUninstall();">
+						<button ng-if="isDefaultLang()" type="button" class="btn btn-danger" tooltip="You cannot uninstall the default language." style="opacity: 0.7;" ng-click="$event.preventDefault(); EditCtrl.startUninstall();">
+							Uninstall Language
+						</button>
+						<button ng-if="!isDefaultLang()" type="button" class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.startUninstall();">
 							Uninstall Language
 						</button>
 					</div>

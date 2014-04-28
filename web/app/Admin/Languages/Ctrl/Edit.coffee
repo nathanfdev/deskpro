@@ -16,6 +16,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				escapeMarkup: (m) -> return m
 			}
 
+			@$scope.isDefaultLang = =>
+				return @lang && @lang.id && @lang.id == parseInt(@$scope.$parent.ListCtrl.default_lang_id)
+
 		initialLoad: ->
 			promise = @Api.sendGet("/langs/#{@id}").then( (result) =>
 				if not result.data.language

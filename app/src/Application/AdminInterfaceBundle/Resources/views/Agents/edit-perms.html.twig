@@ -19,8 +19,8 @@
 
 			{% if opts.showToggler %}
 				<span class="toggle-wrap" ng-click="{{ row_id }}_toggler = !{{ row_id }}_toggler">
-					<i ng-show="!{{ row_id }}_toggler" class="fa fa-caret-down"></i>
-					<i ng-show="{{ row_id }}_toggler" class="fa fa-caret-up"></i>
+					<span ng-show="!{{ row_id }}_toggler">expand <i class="fa fa-caret-down"></i></span>
+					<span ng-show="{{ row_id }}_toggler">collapse <i class="fa fa-caret-up"></i></span>
 				</span>
 			{% endif %}
 		</td>

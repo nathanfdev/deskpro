@@ -23,7 +23,7 @@
 								<h3>Type</h3>
 							</div>
 							<div class="col-lg-10">
-								<select ng-model="EditCtrl.form.sla_type" style="min-width: 200px;" ui-select2>
+								<select ng-model="EditCtrl.form.sla_type" style="min-width: 200px;" ui-select2="{dropdownAutoWidth:true}">
 									<option value="first_response">Time until first response</option>
 									<option value="resolution">Time until ticket resolution</option>
 									<option value="waiting_time">Use waiting time until ticket resolution</option>
@@ -35,7 +35,7 @@
 								<h3>Hours</h3>
 							</div>
 							<div class="col-lg-10">
-								<select ng-model="EditCtrl.form.active_time" ui-select2 style="width: 200px;">
+								<select ng-model="EditCtrl.form.active_time" ui-select2="{dropdownAutoWidth:true}" style="width: 200px;">
 									<option value="all">24x7</option>
 									<option value="default">Use default working hours</option>
 									<option value="custom">Use custom working hours</option>

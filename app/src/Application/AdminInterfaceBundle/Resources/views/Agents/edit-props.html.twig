@@ -59,6 +59,7 @@
 						<label>
 							<input type="checkbox" ng-model="team.value" />
 							<span>{{ ng_var('team.name') }}</span>
+							<a class="inline-edit-link" href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}"><i class="fa fa-pencil"></i><em>edit team</em></a>
 						</label>
 					</li>
 				</ul>
@@ -74,6 +75,7 @@
 						<label>
 							<input type="checkbox" ng-model="group.value" />
 							<span>{{ ng_var('group.title') }}</span>
+							<a class="inline-edit-link" href="{{ ng_href('agents.groups.edit', '{id: group.id}') }}"><i class="fa fa-pencil"></i><em>edit group</em></a>
 						</label>
 					</li>
 				</ul>

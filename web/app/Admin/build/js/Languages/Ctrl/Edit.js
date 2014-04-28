@@ -24,13 +24,18 @@
           }
           return "<img src='" + DP_ASSET_URL + "/images/flags/" + flag.id.toLowerCase() + "' style='margin-right: 2px;' />" + flag.text;
         };
-        return this.$scope.select2Flag = {
+        this.$scope.select2Flag = {
           formatResult: format,
           formatSelection: format,
           escapeMarkup: function(m) {
             return m;
           }
         };
+        return this.$scope.isDefaultLang = (function(_this) {
+          return function() {
+            return _this.lang && _this.lang.id && _this.lang.id === parseInt(_this.$scope.$parent.ListCtrl.default_lang_id);
+          };
+        })(this);
       };
 
       Admin_Languages_Ctrl_Edit.prototype.initialLoad = function() {

@@ -8860,6 +8860,18 @@ nav.dp-blocktabs menu button span i {
   vertical-align: middle;
 }
 
+@media all and (max-width: 1575px) {
+  nav.dp-blocktabs > ul li a {
+    font-size: 120%;
+  }
+}
+
+@media all and (max-width: 1515px) {
+  nav.dp-blocktabs > ul li a i {
+    display: none;
+  }
+}
+
 nav.dp-tabletabs ul {
   padding: 0 0 0 1px;
   margin: 0 16px;
@@ -9886,7 +9898,8 @@ ul.checkbox-list > li label {
 }
 
 ul.checkbox-list > li label input {
-  margin-right: 2px;
+  margin: 0 2px 0 0;
+  vertical-align: baseline;
 }
 
 .alert ul.checkbox-list {
@@ -12106,10 +12119,16 @@ table.agent-perms-table tr.nested span.title {
 
 table.agent-perms-table .toggle-wrap {
   margin-left: 4px;
-  font-size: 18px;
-  color: #555;
-  vertical-align: middle;
+  font-size: 11px;
+  color: #888;
   cursor: pointer;
+}
+
+table.agent-perms-table .toggle-wrap i {
+  position: relative;
+  top: 1px;
+  font-size: 11px;
+  vertical-align: baseline;
 }
 
 #upgrader {
@@ -12363,6 +12382,35 @@ td.overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+input.invisible-copytext {
+  padding: 3px;
+  border: 1px solid transparent;
+}
+
+.inline-edit-link {
+  margin-left: 1px;
+  font-size: 90%;
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.inline-edit-link em {
+  margin-left: 3px;
+  font-style: normal;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.inline-edit-link:hover {
+  color: #777;
+  text-decoration: none;
+}
+
+.inline-edit-link:hover em {
+  visibility: visible;
 }
 
 /**
