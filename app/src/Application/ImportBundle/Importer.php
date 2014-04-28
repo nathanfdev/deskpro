@@ -44,11 +44,13 @@ use Application\ImportBundle\ArrayParser\PersonArrayParser;
 use Application\ImportBundle\ArrayParser\TicketArrayParser;
 use Application\ImportBundle\ArrayParser\KbArrayParser;
 use Application\ImportBundle\ArrayParser\NewsArrayParser;
+use Application\ImportBundle\ArrayParser\FeedbackArrayParser;
 use Application\ImportBundle\ValueImporter\AbstractValueImporter;
 use Application\ImportBundle\ValueImporter\PersonValueImporter;
 use Application\ImportBundle\ValueImporter\TicketValueImporter;
 use Application\ImportBundle\ValueImporter\KbValueImporter;
 use Application\ImportBundle\ValueImporter\NewsValueImporter;
+use Application\ImportBundle\ValueImporter\FeedbackValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Application\DeskPRO\DBAL\Connection;
 use Monolog\Handler\StreamHandler;
@@ -119,6 +121,8 @@ class Importer
 		$this->mappers['article']		= new CommonRecordMapper($this->db, 'articles', 'title');
 		$this->mappers['news_category']		= new CommonRecordMapper($this->db, 'news_categories', 'title');
 		$this->mappers['news']			= new CommonRecordMapper($this->db, 'news', 'title');
+		$this->mappers['feedback_category']	= new CommonRecordMapper($this->db, 'feedback_categories', 'title');
+		$this->mappers['feedback']		= new CommonRecordMapper($this->db, 'feedback', 'title');
 
 		if (!$logger) {
 			$logger = new Logger('importer');
@@ -186,6 +190,13 @@ class Importer
 			$this->logger,
 			$this->mappers
 		));
+		
+		$this->processDirectory('feedback', new FeedbackValueImporter(
+			$this->config->mode,
+			$this->db,
+			$this->logger,
+			$this->mappers
+		));
 	}
 
 
@@ -244,6 +255,10 @@ class Importer
 						break;
 					case 'NewsValueImporter':
 						$parser = new NewsArrayParser();
+						$value = $parser->parseArray($data);
+						break;
+					case 'FeedbackValueImporter':
+						$parser = new FeedbackArrayParser();
 						$value = $parser->parseArray($data);
 						break;
 				}

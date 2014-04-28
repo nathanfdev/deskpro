@@ -1,0 +1,12 @@
+{
+	"oid": 1,
+	"person": "admin@example.com",
+	"language": "English",
+	"title": "Example Bug Report",
+	"content": "This is an example Bug Report. Feel free to edit or delete it from the agent interface.",
+	"total_rating": "4",
+	"num_comments": "5",
+	"num_ratings": "6",
+	"category": "Bug Report",
+	"labels": ["label1", "label2"]
+}
