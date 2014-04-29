@@ -728,6 +728,26 @@
 	'user.kb_subscriptions' => true,
 
 	####################################################################################################################
+	# password policy
+	####################################################################################################################
+
+	'user.password_policy.min_length' => 5,
+	'user.password_policy.max_age' => 0,
+	'user.password_policy.forbid_reuse' => false,
+	'user.password_policy.require_num_uppercase' => 0,
+	'user.password_policy.require_num_lowercase' => 0,
+	'user.password_policy.require_num_number' => 0,
+	'user.password_policy.require_num_symbol' => 0,
+
+	'agent.password_policy.min_length' => 5,
+	'agent.password_policy.max_age' => 0,
+	'agent.password_policy.forbid_reuse' => false,
+	'agent.password_policy.require_num_uppercase' => 0,
+	'agent.password_policy.require_num_lowercase' => 0,
+	'agent.password_policy.require_num_number' => 0,
+	'agent.password_policy.require_num_symbol' => 0,
+
+	####################################################################################################################
 	# user_style
 	####################################################################################################################
 

@@ -2342,6 +2342,18 @@ $collection->create('api_reg_settings_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_pass_settings', array(
+	'path'        => '/password_settings',
+	'controller'  => 'ApiBundle:Settings:passwordSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_pass_settings_save', array(
+	'path'        => '/password_settings',
+	'controller'  => 'ApiBundle:Settings:savePasswordSettings',
+	'methods'     => array('POST'),
+));
+
 
 ########################################################################################################################
 # Portal Settings

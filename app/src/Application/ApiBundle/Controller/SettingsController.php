@@ -38,6 +38,7 @@ use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\EmailSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
+use Application\DeskPRO\Settings\PasswordSettings;
 use Application\DeskPRO\Settings\PortalSettings;
 use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
@@ -380,6 +381,32 @@ class SettingsController extends AbstractController implements ProtectedControll
 		$reg_settings = new RegistrationSettings($this->settings, $this->em);
 		$reg_settings->setArray($this->in->getArrayValue('registration_settings'));
 		$reg_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
+
+	####################################################################################################################
+	# password-settings
+	####################################################################################################################
+
+	public function passwordSettingsAction()
+	{
+		$password_settings = new PasswordSettings($this->settings);
+
+		return $this->createApiResponse(array(
+			'password_settings' => $password_settings->toArray()
+		));
+	}
+
+	####################################################################################################################
+	# save-password-settings
+	####################################################################################################################
+
+	public function savePasswordSettingsAction()
+	{
+		$password_settings = new PasswordSettings($this->settings);
+		$password_settings->setArray($this->in->getArrayValue('password_settings'));
+		$password_settings->saveSettings();
 
 		return $this->createSuccessResponse();
 	}

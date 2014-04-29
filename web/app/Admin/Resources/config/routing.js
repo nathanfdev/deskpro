@@ -827,6 +827,16 @@ define(function() {
 	});
 
 	//###
+	//# Password Settings
+	//###
+	routes.push({
+		id: 'crm.password_settings',
+		url: '/password_settings',
+		templateName: 'UserReg/password-settings.html',
+		controller: 'Admin_Settings_Ctrl_PasswordSettings'
+	});
+
+	//###
 	//# User Sources
 	//###
 	routes.push({

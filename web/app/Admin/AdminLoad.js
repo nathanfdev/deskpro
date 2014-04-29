@@ -151,6 +151,7 @@ define([
 	'Admin/Settings/Ctrl/GeneralSettings',
 	'Admin/Settings/Ctrl/PortalSettings',
 	'Admin/Settings/Ctrl/RegSettings',
+	'Admin/Settings/Ctrl/PasswordSettings',
 	'Admin/Settings/Ctrl/ServerSettings',
 	'Admin/UserGroups/Ctrl/List',
 	'Admin/UserGroups/Ctrl/Edit',
