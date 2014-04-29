@@ -7,12 +7,8 @@
 	<div class="list-pane-content">
 		{% block pane_content_outscroll %}{% endblock %}
 
-		<div class="layout-content with-scrollbar">
-		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-		<div class="scroll-viewport"><div class="scroll-content">
-			{% block pane_content %}{% endblock %}
-		</div>
-		</div>
+		<div class="layout-content">
+			<div class="dp-page-content">{% block pane_content %}{% endblock %}</div>
 		</div>
 	</div>
 </div>

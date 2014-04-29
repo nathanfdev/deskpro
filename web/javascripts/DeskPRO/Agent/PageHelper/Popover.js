@@ -284,16 +284,21 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		var hasFooter = !!($('> section > footer', this.popoverOuter).length);
 		var scrollContentHeight = false;
 
-		$('.scroll-content', this.popoverOuter).each(function() {
-			var $this = $(this);
-			var height = $this.height();
-			if ($this.data('extra-height')) {
-				height += parseInt($this.data('extra-height'), 10);
-			}
-			if (scrollContentHeight === false || height > scrollContentHeight) {
-				scrollContentHeight = height;
-			}
-		})
+		var hels = this.popoverOuter.find('.scroll-content');
+		if (hels[0]) {
+			hels.each(function() {
+				var $this = $(this);
+				var height = $this.height();
+				if ($this.data('extra-height')) {
+					height += parseInt($this.data('extra-height'), 10);
+				}
+				if (scrollContentHeight === false || height > scrollContentHeight) {
+					scrollContentHeight = height;
+				}
+			})
+		} else {
+			scrollContentHeight = this.popoverOuter.find('.dp-page-content').first().outerHeight() + 25;
+		}
 
 		if (scrollContentHeight !== false) {
 			contentH = scrollContentHeight;
@@ -301,7 +306,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				contentH += 36;
 			}
 			if (hasFooter) {
-				contentH += 45;
+				contentH += 48;
 			}
 
 			contentH += 31;

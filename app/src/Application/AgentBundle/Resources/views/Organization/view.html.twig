@@ -21,9 +21,8 @@ pageMeta.perms = {
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {# Page Containers #}
-<div class="profile org-profile profile layout-content with-scrollbar {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+<div class="profile org-profile profile layout-content {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">
+	<div class="dp-page-content">
 {# /Page Containers #}
 
 <header class="page-header">
@@ -96,6 +95,6 @@ pageMeta.baseId = '{{ baseId }}';
 {% include 'AgentBundle:Organization:contact-overlay.html.twig' %}
 
 {# Page Containers #}
-</div></div>
+</div>
 </div>
 {# /Page Containers #}

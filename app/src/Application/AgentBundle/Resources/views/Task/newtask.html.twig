@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTask';
 pageMeta.title = '{{ phrase('agent.general.new_task') }}';
@@ -8,7 +7,8 @@ pageMeta.noMoveToTab = false;
 pageMeta.baseId = '{{ baseId }}';
 pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat }}';
 </script>
-{{ agentui.scroll_containers('page-task-new') }}
+<div class="layout-content page-task-new">
+<div class="dp-page-content">
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
@@ -142,4 +142,5 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 	</div>
 </footer>
 
-{{ agentui.scroll_containers_end() }}
+</div>
+</div>
