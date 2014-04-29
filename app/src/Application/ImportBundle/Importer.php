@@ -46,12 +46,14 @@ use Application\ImportBundle\ArrayParser\TicketArrayParser;
 use Application\ImportBundle\ArrayParser\KbArrayParser;
 use Application\ImportBundle\ArrayParser\NewsArrayParser;
 use Application\ImportBundle\ArrayParser\FeedbackArrayParser;
+use Application\ImportBundle\ArrayParser\DownloadArrayParser;
 use Application\ImportBundle\ValueImporter\AbstractValueImporter;
 use Application\ImportBundle\ValueImporter\PersonValueImporter;
 use Application\ImportBundle\ValueImporter\TicketValueImporter;
 use Application\ImportBundle\ValueImporter\KbValueImporter;
 use Application\ImportBundle\ValueImporter\NewsValueImporter;
 use Application\ImportBundle\ValueImporter\FeedbackValueImporter;
+use Application\ImportBundle\ValueImporter\DownloadValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Application\DeskPRO\DBAL\Connection;
 use Monolog\Handler\StreamHandler;
@@ -131,6 +133,8 @@ class Importer
 		$this->mappers['news']			= new CommonRecordMapper($this->db, 'news', 'title');
 		$this->mappers['feedback_category']	= new CommonRecordMapper($this->db, 'feedback_categories', 'title');
 		$this->mappers['feedback']		= new CommonRecordMapper($this->db, 'feedback', 'title');
+		$this->mappers['download_category']	= new CommonRecordMapper($this->db, 'download_categories', 'title');
+		$this->mappers['download']		= new CommonRecordMapper($this->db, 'download', 'title');
 
 		if (!$logger) {
 			$logger = new Logger('importer');
@@ -205,6 +209,13 @@ class Importer
 			$this->logger,
 			$this->mappers
 		));
+		
+		$this->processDirectory('downloads', new DownloadValueImporter(
+			$this->config->mode,
+			$this->container,
+			$this->logger,
+			$this->mappers
+		));
 	}
 
 
@@ -267,6 +278,10 @@ class Importer
 						break;
 					case 'FeedbackValueImporter':
 						$parser = new FeedbackArrayParser();
+						$value = $parser->parseArray($data);
+						break;
+					case 'DownloadValueImporter':
+						$parser = new DownloadArrayParser();
 						$value = $parser->parseArray($data);
 						break;
 				}
