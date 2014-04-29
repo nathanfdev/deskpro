@@ -31,6 +31,7 @@
 
 namespace Application\ImportBundle\ValueImporter;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\DeskPRO\DBAL\Connection;
 use Psr\Log\LoggerInterface;
@@ -59,7 +60,11 @@ abstract class AbstractValueImporter
 	 * @var \Psr\Log\LoggerInterface
 	 */
 	private $logger;
-
+	
+	/**
+	 * @var DeskPROContainer $container
+	 */
+	private $container;
 
 	/**
 	 * @param string               $mode;
@@ -67,12 +72,21 @@ abstract class AbstractValueImporter
 	 * @param LoggerInterface      $logger
 	 * @param RecordMapperRegistry $mappers
 	 */
-	public function __construct($mode, Connection $db, LoggerInterface $logger, RecordMapperRegistry $mappers)
+	public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers)
 	{
 		$this->mode    = $mode;
-		$this->db      = $db;
+		$this->container = $container;
+		$this->db      = $container->getDb();
 		$this->logger  = $logger;
 		$this->mappers = $mappers;
+	}
+	
+	/**
+	 * @return DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return $this->container;
 	}
 
 

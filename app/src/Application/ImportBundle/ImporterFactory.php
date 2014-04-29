@@ -106,7 +106,7 @@ class ImporterFactory
 	public function createImporter(ImporterConfig $config, LoggerInterface $logger = null)
 	{
 		return new Importer(
-			$this->container->getDb(),
+			$this->container,
 			$config,
 			$logger
 		);

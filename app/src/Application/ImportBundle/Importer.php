@@ -31,6 +31,7 @@
 
 namespace Application\ImportBundle;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
 use Application\ImportBundle\Exception\MissingMappingExceptionException;
@@ -92,6 +93,11 @@ class Importer
 	 * @var ImporterStatusCallback
 	 */
 	private $status_callback;
+	
+	/**
+	 * @var DeskproContainer
+	 */
+	private $container;
 
 
 	/**
@@ -99,9 +105,11 @@ class Importer
 	 * @param ImporterConfig  $config
 	 * @param LoggerInterface $logger
 	 */
-	public function __construct(Connection $db, ImporterConfig $config, LoggerInterface $logger = null)
+	public function __construct(DeskproContainer $container, ImporterConfig $config, LoggerInterface $logger = null)
 	{
-		$this->db = $db;
+		$this->container = $container;
+		
+		$this->db = $container->getDb();
 
 		$this->config = $config;
 
