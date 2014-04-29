@@ -14,6 +14,8 @@
 
       FieldFormMapper.prototype.getFormFromModel = function(fieldModel) {
         var day, form, formTypeOpts, _i, _len, _ref;
+        fieldModel = fieldModel || {};
+        fieldModel.options = fieldModel.options || {};
         form = {
           title: '',
           description: '',

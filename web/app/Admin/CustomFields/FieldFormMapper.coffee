@@ -7,6 +7,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 		# @return {Object}
 		###
 		getFormFromModel: (fieldModel) ->
+
+			fieldModel = fieldModel || {}
+			fieldModel.options = fieldModel.options || {}
+
 			# Default structure
 			form = {
 				title: '',
