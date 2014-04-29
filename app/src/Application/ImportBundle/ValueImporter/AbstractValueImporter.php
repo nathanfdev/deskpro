@@ -97,6 +97,15 @@ abstract class AbstractValueImporter
 	{
 		return $this->mode == self::MODE_TEST;
 	}
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getMode()
+	{
+		return $this->mode;
+	}
 
 
 	/**
