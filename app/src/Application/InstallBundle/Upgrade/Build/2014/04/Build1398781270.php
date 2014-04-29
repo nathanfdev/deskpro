@@ -29,37 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category People
+ * @subpackage
  */
 
-namespace Application\DeskPRO\People;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Person;
-
-interface PasswordSchemeInterface
+class Build1398781270 extends AbstractBuild
 {
-	/**
-	 * @param string $plain_password
-	 * @param string $hashed_password
-	 *
-	 * @return string
-	 */
-	public function checkInput($plain_password, $hashed_password);
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param string $plain_password
-	 *
-	 * @return string
-	 */
-	public function hashPassword(Person $person, $plain_password);
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param string $hashed_password
-	 * @param string $plain_password
-	 *
-	 * @return boolean
-	 */
-	public function checkPassword(Person $person, $hashed_password, $plain_password);
+	public function run()
+	{
+		$this->out("Add support for password history (used with password policies)");
+		$this->execMutateSql("CREATE TABLE password_history (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, password VARCHAR(255) NOT NULL, password_scheme VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F352144217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE password_history ADD CONSTRAINT FK_F352144217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE people ADD date_password_set DATETIME DEFAULT NULL");
+	}
 }

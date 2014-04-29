@@ -72,9 +72,11 @@ class AgentProfileValidator extends AbstractValidator
 		}
 
 		if ($this->profile->password) {
-			$validator = new \Orb\Validator\StringLength(array('min' => 5));
-			if (!$validator->isValid($this->profile->password)) {
-				$this->addError('password.short');
+			/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+			$password_validator = App::$container->getSystemService('password_policy_validator');
+
+			if (!$password_validator->checkPassword($this->profile->password, $this->profile->getPerson())) {
+				$this->addError('password.invalid');
 			} elseif ($this->profile->password != $this->profile->password2) {
 				$this->addError('password.mismatch');
 			}

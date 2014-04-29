@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
@@ -362,8 +363,24 @@ class AgentsController extends AbstractController implements ProtectedController
 		}
 
 		$password = $this->in->getString('set_password');
+		if ($password) {
+			/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+			$password_validator = $this->container->getSystemService('password_policy_validator');
+			$error = '';
+			if (!$password_validator->checkPassword($password, $agent, $error)) {
+				return $this->createApiErrorInfoResponse('invalid_password', 'Password does not adhere to agent password policy.', array('error_code' => $error));
+			}
+		}
 		if (!$password) {
 			$password = Strings::randomPronounceable(20);
+		}
+
+		if ($agent->password && $agent->password_scheme == 'bcrypt') {
+			$history = new PasswordHistory();
+			$history->person = $agent;
+			$history->password_scheme = $agent->password_scheme;
+			$history->password = $agent->password;
+			$this->em->persist($history);
 		}
 
 		$agent->setPassword($password);

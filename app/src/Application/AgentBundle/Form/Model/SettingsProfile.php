@@ -35,6 +35,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 
 class SettingsProfile
@@ -148,6 +149,14 @@ class SettingsProfile
 
 		if ($this->password) {
 			$person->setPassword($this->password);
+
+			if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
+				$history = new PasswordHistory();
+				$history->person = $this->person;
+				$history->password_scheme = $this->person->password_scheme;
+				$history->password = $this->person->password;
+				$this->em->persist($history);
+			}
 		}
 
 		if ($this->language_id) {

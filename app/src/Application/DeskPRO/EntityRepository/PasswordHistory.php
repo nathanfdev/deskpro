@@ -29,37 +29,35 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category People
+ * @category Entities
  */
 
-namespace Application\DeskPRO\People;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 
-interface PasswordSchemeInterface
+class PasswordHistory extends AbstractEntityRepository
 {
-	/**
-	 * @param string $plain_password
-	 * @param string $hashed_password
-	 *
-	 * @return string
-	 */
-	public function checkInput($plain_password, $hashed_password);
+	public function isUsedPassword(PersonEntity $person, $password)
+	{
+		$recs = $this->_em->getConnection()->fetchAll("
+			SELECT password, password_scheme
+			FROM password_scheme
+			WHERE person_id = ?
+		", array($person->id));
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param string $plain_password
-	 *
-	 * @return string
-	 */
-	public function hashPassword(Person $person, $plain_password);
+		if (!$recs) {
+			return false;
+		}
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param string $hashed_password
-	 * @param string $plain_password
-	 *
-	 * @return boolean
-	 */
-	public function checkPassword(Person $person, $hashed_password, $plain_password);
+		foreach ($recs as $rec) {
+			$scheme = App::getSystemObject('password_scheme', array('scheme' => $rec['password_scheme'] ?: 'deskpro4original'));
+			if ($scheme->checkInput($password, $rec['password'])) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

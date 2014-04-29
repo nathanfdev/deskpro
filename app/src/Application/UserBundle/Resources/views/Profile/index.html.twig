@@ -9,6 +9,12 @@
 {% block page_title %}{{ phrase('user.profile.your_profile') }}{% endblock %}
 {% block content %}
 
+{% if password_expired %}
+	<div class="dp-alert dp-alert-error">
+		{{ phrase('user.profile.register_password_expired') }}
+	</div>
+{% endif %}
+
 <form accept="{{ path('user_profile') }}" method="POST" enctype="multipart/form-data">
 	{{ form_token() }}
 
@@ -246,9 +252,9 @@
 				{{ phrase('user.profile.current_password_incorrect') }}
 			</div>
 		{% endif %}
-		{% if app.session.hasFlash('invalid_password_length') %}
+		{% if app.session.hasFlash('invalid_password') %}
 			<div class="dp-alert dp-alert-error">
-				{{ phrase('user.profile.invalid_password_length') }}
+				{{ phrase('user.profile.register_password_invalid') }}
 			</div>
 		{% endif %}
 
@@ -270,6 +276,14 @@
 						<label>{{ phrase('user.profile.new_password') }}</label>
 					</div>
 					<div class="dp-controls dp-fill">
+						<div style="font-size: 11px;">
+							{% if app.getSetting('user.password_policy.forbid_reuse') %}{{ phrase('user.profile.register_password_unused') }}, {% endif %}
+							{% if app.getSetting('user.password_policy.require_num_uppercase') %}{{ phrase('user.profile.register_password_min_uc', {count: app.getSetting('user.password_policy.require_num_uppercase')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.require_num_lowercase') %}{{ phrase('user.profile.register_password_min_lc', {count: app.getSetting('user.password_policy.require_num_lowercase')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.require_num_number') %}{{ phrase('user.profile.register_password_min_num', {count: app.getSetting('user.password_policy.require_num_number')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.require_num_symbol') %}{{ phrase('user.profile.register_password_min_sym', {count: app.getSetting('user.password_policy.require_num_symbol')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.min_length') %}{{ phrase('user.profile.register_password_min_length', {count: app.getSetting('user.password_policy.min_length')}) }}{% endif %}
+						</div>
 						<input type="password" autocomplete="off" name="password" value="" />
 					</div>
 				</div>

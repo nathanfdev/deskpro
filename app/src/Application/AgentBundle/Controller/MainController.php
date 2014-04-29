@@ -156,8 +156,12 @@ class MainController extends AbstractController
 		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
 		$chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
 
+		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+		$password_validator = App::$container->getSystemService('password_policy_validator');
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
+			'password_expired'    => $password_validator->isPasswordExpired($this->person),
 			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names'         => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
 			'online_agent_ids'    => $online_agent_ids,
