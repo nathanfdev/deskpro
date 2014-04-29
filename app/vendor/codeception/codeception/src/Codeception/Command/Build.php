@@ -74,7 +74,7 @@ EOF;
         foreach ($suites as $suite) {
             $settings = $this->getSuiteConfig($suite, $input->getOption('config'));
             $namespace = rtrim($settings['namespace'],'\\');
-            $modules = \Codeception\Configuration::modules($settings, false);
+            $modules = \Codeception\Configuration::modules($settings);
 
             $code = array();
             $methodCounter = 0;

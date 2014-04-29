@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -108,7 +109,7 @@ use Orb\Util\Util;
  * @property TicketCharge[] $charges
  * @property TicketSla[] $ticket_slas
  */
-class Ticket extends DomainObject
+class Ticket extends DomainObject implements HighlightableModelInterface
 {
 	const TAC_AUTHCODE_LEN = 15;
 
@@ -487,6 +488,13 @@ class Ticket extends DomainObject
 	 */
 	protected $_work_hours_set = null;
 
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
+
 	/**
 	 * If the tikcet was created from an email just now, then this is the reader
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
@@ -499,7 +507,7 @@ class Ticket extends DomainObject
 	 */
 	public $email_reader_action;
 
-	/**
+    /**
 	 * @internal
 	 */
 	public $__dp_is_processing_ticket = false;
@@ -3008,6 +3016,36 @@ class Ticket extends DomainObject
 		return $this->__dp_ticket_change_tracker;
 	}
 
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
 
 	############################################################################
 	# Doctrine Metadata

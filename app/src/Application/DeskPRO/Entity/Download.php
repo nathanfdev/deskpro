@@ -37,13 +37,14 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 /**
  * A download/file available from the protal
  */
-class Download extends ContentAbstract
+class Download extends ContentAbstract implements HighlightableModelInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketCategory
@@ -90,6 +91,13 @@ class Download extends ContentAbstract
 	 * @var \Application\DeskPRO\Labels\LabelManager
 	 */
 	protected $_label_manager = null;
+
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
 	/**
 	 * @param Blob $blob
@@ -313,6 +321,37 @@ class Download extends ContentAbstract
 
 		return $data;
 	}
+
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
 
 	############################################################################
 	# Doctrine Metadata

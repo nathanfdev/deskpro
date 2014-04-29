@@ -54,7 +54,7 @@ use Codeception\Util\Connector\PhalconMemorySession;
  *
  *
  */
-class Phalcon1 extends \Codeception\Util\Framework implements \Codeception\Util\ActiveRecordInterface
+class Phalcon1 extends \Codeception\Util\Framework
 {
     protected $config = array(
         'bootstrap' => 'app/config/bootstrap.php',
@@ -207,10 +207,7 @@ class Phalcon1 extends \Codeception\Util\Framework implements \Codeception\Util\
             $this->fail("Record $model was not saved. Messages: ".implode(', ', $record->getMessages()));
         }
         $this->debugSection($model, json_encode($record));
-        
-        $reflectedProperty =   new \ReflectionProperty(get_class($record), 'id');
-        $reflectedProperty->setAccessible(true);
-        return $reflectedProperty->getValue($record);
+        return $record->id;
     }
 
     /**
@@ -255,7 +252,7 @@ class Phalcon1 extends \Codeception\Util\Framework implements \Codeception\Util\
      * Retrieves record from database
      *
      * ``` php
-     * $category = $I->grabRecord('Phosphorum\Models\Categories', array('name' => 'Testing'));
+     * $category = $I->grabFromDatabase('Phosphorum\Models\Categories', array('name' => 'Testing'));
      * ```
      *
      * @param $model

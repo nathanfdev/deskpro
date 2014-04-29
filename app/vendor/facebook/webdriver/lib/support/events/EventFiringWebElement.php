@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
+class EventFiringWebElement implements WebDriverElement {
 
   /**
    * @var WebDriverElement
@@ -221,18 +221,6 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
   }
 
   /**
-   * @return WebDriverCoordinates
-   */
-  public function getCoordinates() {
-    try {
-      return $this->element->getCoordinates();
-    } catch (WebDriverException $exception) {
-      $this->dispatchOnException($exception);
-    }
-  }
-
-
-  /**
    * @return WebDriverDimension
    * @throws WebDriverException
    */
@@ -329,21 +317,6 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
     }
   }
 
-
-  /**
-   * Test if two element IDs refer to the same DOM element.
-   *
-   * @param WebDriverElement $other
-   * @return boolean
-   */
-  public function equals(WebDriverElement $other) {
-    try {
-      return $this->element->equals($other);
-    } catch (WebDriverException $exception) {
-      $this->dispatchOnException($exception);
-    }
-  }
-
   private function dispatchOnException($exception) {
     $this->dispatch(
       'onException',
@@ -352,6 +325,4 @@ class EventFiringWebElement implements WebDriverElement, WebDriverLocatable {
     );
     throw $exception;
   }
-
-
 }

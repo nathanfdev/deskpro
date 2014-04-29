@@ -23,7 +23,7 @@ namespace Codeception\Module;
  * Supported but not tested.
  *
  * * MSSQL
- * * Oracle
+ * * Orcale
  *
  * Connection is done by database Drivers, which are stored in Codeception\Util\Driver namespace.
  * Check out drivers if you get problems loading dumps and cleaning databases.
@@ -72,7 +72,6 @@ namespace Codeception\Module;
 use Codeception\Util\Driver\Db as Driver;
 use Codeception\Exception\Module as ModuleException;
 use Codeception\Exception\ModuleConfig as ModuleConfigException;
-use Codeception\Configuration as Configuration;
 
 class Db extends \Codeception\Module implements \Codeception\Util\DbInterface
 {
@@ -107,14 +106,14 @@ class Db extends \Codeception\Module implements \Codeception\Util\DbInterface
     {
         if ($this->config['dump'] && ($this->config['cleanup'] or ($this->config['populate']))) {
 
-            if (!file_exists(Configuration::projectDir() . $this->config['dump'])) {
+            if (!file_exists(getcwd() . DIRECTORY_SEPARATOR . $this->config['dump'])) {
                 throw new ModuleConfigException(
                     __CLASS__,
                     "\nFile with dump doesn't exist.
                     Please, check path for sql file: " . $this->config['dump']
                 );
             }
-            $sql = file_get_contents(Configuration::projectDir() . $this->config['dump']);
+            $sql = file_get_contents(getcwd() . DIRECTORY_SEPARATOR . $this->config['dump']);
             $sql = preg_replace('%/\*(?!!\d+)(?:(?!\*/).)*\*/%s', "", $sql);
             $this->sql = explode("\n", $sql);
         }
@@ -140,6 +139,8 @@ class Db extends \Codeception\Module implements \Codeception\Util\DbInterface
         if ($this->config['cleanup'] && !$this->populated) {
             $this->cleanup();
             $this->loadDump();
+        } else {
+            $this->removeInserted();
         }
         parent::_before($test);
     }
@@ -147,7 +148,6 @@ class Db extends \Codeception\Module implements \Codeception\Util\DbInterface
     public function _after(\Codeception\TestCase $test)
     {
         $this->populated = false;
-        $this->removeInserted();
         parent::_after($test);
     }
 

@@ -6,7 +6,6 @@ use Zend\Console\Console;
 use Zend\EventManager\StaticEventManager;
 use Zend\Mvc\Application;
 use Zend\View\Helper\Placeholder;
-use Zend\Version\Version;
 
 /**
  * This module allows you to run tests inside Zend Framework 2.
@@ -83,11 +82,7 @@ class ZF2 extends \Codeception\Util\Framework implements \Codeception\Util\Frame
 
         // reset singleton
         StaticEventManager::resetInstance();
-        
-        // Reset singleton placeholder if version < 2.2.0, no longer required in 2.2.0+
-        if (Version::compareVersion('2.2.0') >= 0) {
-            Placeholder\Registry::unsetRegistry();
-        }
+        Placeholder\Registry::unsetRegistry();
 
         $this->queries = 0;
         $this->time = 0;

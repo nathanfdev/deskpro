@@ -13,7 +13,6 @@
 		"mockery/mockery": "dev-master",
 		"monolog/monolog": ">=1.0.0",
 		"pda/pheanstalk": "2.1.*",
-		"leth/ip-address": "dev-master",
 		"symfony/symfony": "~2.3",
 		"symfony/monolog-bundle": "*",
 		"doctrine/doctrine-bundle": "*",
@@ -28,6 +27,8 @@
 		"codeception/codeception": "~1.8",
 		"erusev/parsedown": "dev-master",
 		"deskpro/deskpro-api-php": "dev-master",
+                "friendsofsymfony/elastica-bundle": "3.0.*@dev",
+                "fzaninotto/faker": "1.4.*@dev",
 		"tedivm/fetch": "dev-master",
 		"zircote/swagger-php": "dev-master",
 		"eluceo/ical": "dev-master"
