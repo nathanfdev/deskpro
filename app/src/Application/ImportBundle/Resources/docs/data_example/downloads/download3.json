@@ -1,0 +1,17 @@
+{
+	"oid": 2,
+	"person": "admin@example.com",
+	"language": "English",
+	"title": "Install Manual",
+	"content": "How to install it on your system",
+	"attachment": {
+		"blob_url": "http://www.json-generator.com/j/bVvgADfIVu?indent=4",
+		"file_name": "news2.json",
+		"content_type": "application/json"
+	},
+	"total_rating": "4",
+	"num_comments": "5",
+	"num_ratings": "6",
+	"category": "Manuals",
+	"labels": ["label1", "label2"]
+}

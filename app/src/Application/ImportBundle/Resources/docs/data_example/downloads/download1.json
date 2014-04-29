@@ -1,0 +1,17 @@
+{
+	"oid": 1,
+	"person": "admin@example.com",
+	"language": "English",
+	"title": "Install Manual",
+	"content": "How to install it on your system",
+	"attachment": {
+		"blob_data": "VGhpcyBpcyBhIHNhbXBsZSBkb3dubG9hZC4=",
+		"file_name": "install_manual.txt",
+		"content_type": "text/plain"
+	},
+	"total_rating": "4",
+	"num_comments": "5",
+	"num_ratings": "6",
+	"category": "Manuals",
+	"labels": ["label1", "label2"]
+}
