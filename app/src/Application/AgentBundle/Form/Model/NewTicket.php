@@ -84,6 +84,11 @@ class NewTicket
 	protected $_ticket;
 
 	/**
+	 * @var \Application\DeskPRO\Tickets\TicketManager
+	 */
+	protected $_ticket_manager;
+
+	/**
 	 * @var callable
 	 */
 	protected $_pre_save_callback;
@@ -105,6 +110,9 @@ class NewTicket
 	{
 		$this->_em = $em;
 		$this->_person_context = $person_context;
+
+		// TODO
+		$this->_ticket_manager = App::$container->getTicketManager();
 
 		$this->person = new NewTicketPerson();
 	}
@@ -274,12 +282,15 @@ class NewTicket
 
 		// Ticket props
 		$ticket = new Ticket();
+		$this->_ticket_manager->markAsManaged($ticket);
+
+		$ticket_context = $this->_ticket_manager->createAgentExecutorContext($this->_person_context, 'newticket', 'web');
+
 		$ticket['creation_system'] = Ticket::CREATED_WEB_AGENT_PORTAL;
 		$ticket['language'] = $person->getRealLanguage();
 
 		if ($this->suppress_user_notify) {
-			//TODO
-			//$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+			$ticket_context->getVars()->set('mute_user_emails', true);
 		}
 
 		$this->_email = $person->findEmailAddress($this->person->email_address);
@@ -389,9 +400,10 @@ class NewTicket
 			}
 		}
 
-		$this->_em->flush();
+		$this->_em->persist($ticket);
 		$this->_em->persist($message);
-		$this->_em->flush();
+
+		$this->_ticket_manager->saveTicket($ticket, $ticket_context);
 
 		$this->_ticket = $ticket;
 

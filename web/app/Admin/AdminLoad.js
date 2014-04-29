@@ -176,6 +176,10 @@ define([
 ], function(jQuery, angular) {
 	return {
 		start: function() {
+			var loadingEl = document.getElementById('dp_loading');
+			loadingEl.parentNode.removeChild(loadingEl);
+			loadingEl = null;
+
 			window.DP_UID_COUNTER = 0;
 			window.dp_get_uid = function () {
 				return window.DP_UID_COUNTER++;

@@ -5,7 +5,7 @@
 			<h3>Agent Teams</h3>
 		</header>
 		<article>
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" dp-list-autoload>
 				<li ng-repeat="team in ListCtrl.teams" dp-state-mark="agents.teams.edit.{{ ng_var('team.id') }}">
 					<a href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}">
 						<h4>

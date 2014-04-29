@@ -215,7 +215,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 		$item = array(
 			'id'      => $id,
 			'summary' => \Orb\Util\Strings::extractRegexMatch('#^(Error|Exception): (.*?)$#m', $log_lines, 2),
-			'date'    => \Orb\Util\Strings::extractRegexMatch('#^Date: (.*?)$#m', $log_lines, 1),
+			'date'    => \Orb\Util\Strings::extractRegexMatch('#^Date: (.*?)(\(.*?\))?$#m', $log_lines, 1),
 			'type'    => \Orb\Util\Strings::extractRegexMatch('#^Type: (.*?)$#m', $log_lines, 1),
 			'build'   => \Orb\Util\Strings::extractRegexMatch('#^Build: (.*?)$#m', $log_lines, 1),
 			'log'     => $this->store_raw ? $log_lines : null,

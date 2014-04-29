@@ -244,7 +244,7 @@
 
       DeskPRO_Ctrl_Base.prototype.runNextAutoload = function() {
         var al, link, _i, _len, _ref, _results;
-        if (!this.$scope._autoload_links) {
+        if (!this.$scope._autoload_links || !this.$scope._autoload_links.length) {
           return;
         }
         this.$scope._autoload_links.sort(function(a, b) {
@@ -267,7 +267,7 @@
           if (!al.element.closest('body')[0]) {
             continue;
           }
-          if (al.select) {
+          if (al.select && !al.element.is(al.select)) {
             link = al.element.find(al.select).first();
           } else {
             link = al.element;

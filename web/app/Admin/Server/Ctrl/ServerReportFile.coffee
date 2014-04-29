@@ -1,12 +1,10 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_ServerReportFile_Ctrl_ServerReportFile extends Admin_Ctrl_Base
-
 		@CTRL_ID   = 'Admin_ServerReportFile_Ctrl_ServerReportFile'
 		@CTRL_AS   = 'Ctrl'
 		@DEPS      = ['$window']
 
 		init: ->
-
 			@server_file_check = null
 
 			@total_checks = 0
@@ -19,19 +17,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@file_check_results = ''
 			@server_file_check_done = false
 
-		###
- 	#
-		###
-
 		initialLoad: ->
-
 			data_promise = @Api.sendGet('/server_file_check').then( (res) =>
-
 				@server_file_check = res.data.server_file_check
 				@total_checks = @server_file_check.count
 
 				# the case when we have '/app/sys/Resources/distro-checksums.php' deleted
-
 				if @total_checks == 1
 					@current_check = -1
 					@doNextRequest()
@@ -40,30 +31,24 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			return @$q.all([data_promise])
 
 		###
- 	# Starting the process of integrity file check
+		# Starting the process of integrity file check
 		###
-
 		startCheck: ->
-
 			@current_check = 0
 			@current_percentage = 0
 			@check_started = true
 			@check_in_progress = true
 			@file_check_results = ''
-
 			@doNextRequest()
 
 		###
 		# Execute AJAX request to next batch of files
 		###
-
 		doNextRequest: ->
 			@current_check++
 
 			if @current_check < @total_checks
-
 				@Api.sendGet('/server_file_check/' + @current_check).then((res) =>
-
 					data = res.data.server_file_check
 
 					if data.okay
@@ -85,24 +70,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 					@doNextRequest()
 				)
-
 			else
-
 				@check_in_progress = false
 				@current_percentage = 100
 				@server_file_check_done = true
-
 				@redirectToReportFile()
 
 		###
- 	# After we've donw with file integrity checking we coudl redirect user to actual report file
+		# After we've donw with file integrity checking we coudl redirect user to actual report file
 		###
-
 		redirectToReportFile: ->
-
 			@Api.sendPost('/server_report_file/file_check_results', {file_check_results: @file_check_results}).then( (res) =>
-
-				@$window.location.href = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN
+				@$window.location.href = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
 			)
 
 	Admin_ServerReportFile_Ctrl_ServerReportFile.EXPORT_CTRL()

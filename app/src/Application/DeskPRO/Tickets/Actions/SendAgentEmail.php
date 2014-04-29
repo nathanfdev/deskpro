@@ -226,6 +226,11 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	 */
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
+			$context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
+			return true;
+		}
+
 		if ($context->getVars()->get('mute_agent_emails')) {
 			$context->getLogger()->debug("[SendAgentEmail] mute_agent_emails = true");
 			return true;

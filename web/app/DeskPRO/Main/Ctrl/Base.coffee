@@ -183,7 +183,7 @@ define ['angular'], (angular) ->
     	# Loads the next section
     	###
 		runNextAutoload: ->
-			if not @$scope._autoload_links
+			if not @$scope._autoload_links or not @$scope._autoload_links.length
 				return
 
 			@$scope._autoload_links.sort( (a, b) ->
@@ -202,7 +202,7 @@ define ['angular'], (angular) ->
 				if not al.element.closest('body')[0]
 					continue
 
-				if al.select
+				if al.select and not al.element.is(al.select)
 					link = al.element.find(al.select).first()
 				else
 					link = al.element

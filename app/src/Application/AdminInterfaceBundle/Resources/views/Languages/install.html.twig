@@ -12,9 +12,21 @@
 							This language pack has translations for the following areas:
 						</p>
 						<ul>
-							<li>The user portal</li>
-							<li>User emails and notifications</li>
+							<li>The user portal and user emails</li>
+							<li ng-if="EditCtrl.pack.has_agent">The agent interface and agent email notifications</li>
+							<li ng-if="EditCtrl.pack.has_admin">The admin interface and the reporting interface</li>
 						</ul>
+
+						<div ng-if="!EditCtrl.pack.has_agent || !EditCtrl.pack.has_admin">
+							<p>The following areas are <strong>not</strong> translated in this language pack:</p>
+							<ul>
+								<li ng-if="!EditCtrl.pack.has_agent">The agent interface and agent email notifications</li>
+								<li ng-if="!EditCtrl.pack.has_admin">The admin interface and the reporting interface</li>
+							</ul>
+							<p>
+								Visit the <a href="https://languages.deskpro.com/" target="_blank">DeskPRO translation system</a> to help translate this language.
+							</p>
+						</div>
 
 						<br/>
 						<div dp-show-spinning="saving">

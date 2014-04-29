@@ -129,6 +129,11 @@ class SendUserEmail extends AbstractEmailAction
 	 */
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
+			$context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
+			return true;
+		}
+
 		if ($context->getVars()->get('mute_user_emails')) {
 			$context->getLogger()->debug("[SendUserEmail] mute_user_emails = true");
 			return true;

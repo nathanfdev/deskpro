@@ -4,20 +4,81 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
-	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
 
-	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/bower_components/select2/select2.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/bower_components/blueimp-file-upload/css/jquery.fileupload.css') }}">
-	<link rel="stylesheet" href="{{ asset('app/bower_components/angular-slider/angular-slider.min.css') }}">
-	<link rel="stylesheet" href="{{ asset('app/bower_components/angular-grid/ng-grid.min.css') }}">
-	<link rel="stylesheet" href="{{ asset('app/bower_components/animate.css/animate.min.css') }}">
-	<link rel="stylesheet" href="{{ asset('app/Admin/build/css/admin-style.css') }}"/>
+	<style type="text/css">
+		body {
+			overflow: hidden;
+			background: #fff !important;
+		}
+		#agent_chats_wrapper, #agent_chat_panel {
+			display: none;
+		}
 
-	<!-- legacy: portal editor -->
-	<link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
+		#dp_loading {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1000000000;
+
+			background: #91ada1 url('{{ asset('images') }}/login/background.jpg') repeat center top fixed;
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+			text-align: center;
+		}
+
+		#dp_loading .msg-outer {
+			width: 250px;
+
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin-top: -120px;
+			margin-left: -125px;
+		}
+
+		#dp_loading .msg {
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			background: #ffffff;
+
+			box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+			-moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+			-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+
+			padding:  25px;
+			text-align: center;
+		}
+
+		#dp_loading h1 {
+			font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
+			font-size: 15px;
+			text-align: left;
+			color: #000;
+
+			display: inline-block;
+			text-align: center;
+
+			background: url({{ asset('images/spinners/logo-loading.gif') }}) no-repeat 50% 0;
+
+			margin: 0;
+			padding: 0;
+			padding-top: 108px;
+		}
+
+		{# Agent links that are us dont appear clickable #}
+		.agent-link[data-agent-id="{{ app.user.id }}"]:hover, .agent-link[data-agent-id="0"]:hover {
+			text-decoration: none;
+			cursor: text;
+		}
+	</style>
 </head>
 <body>
+<div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
 
 {% if app.isDebug() %}
 	<dp-devbar></dp-devbar>
@@ -99,6 +160,18 @@
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+
+<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
+<link rel="stylesheet" href="{{ asset('app/bower_components/select2/select2.css') }}"/>
+<link rel="stylesheet" href="{{ asset('app/bower_components/blueimp-file-upload/css/jquery.fileupload.css') }}">
+<link rel="stylesheet" href="{{ asset('app/bower_components/angular-slider/angular-slider.min.css') }}">
+<link rel="stylesheet" href="{{ asset('app/bower_components/angular-grid/ng-grid.min.css') }}">
+<link rel="stylesheet" href="{{ asset('app/bower_components/animate.css/animate.min.css') }}">
+<link rel="stylesheet" href="{{ asset('app/Admin/build/css/admin-style.css') }}"/>
+
+<!-- legacy: portal editor -->
+<link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';
 window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';

@@ -186,44 +186,6 @@ class DefaultDataProcessor
 
 
 	/**
-	 * Run the upgrade process: Installs classes that are not installed, sysns those that are installed.
-	 *
-	 * @param string $specific_class Only run this specific data class
-	 */
-	public function runUpgrade($specific_class = null)
-	{
-		foreach ($this->getDataClasses() as $classname) {
-			if ($specific_class) {
-				if (strtolower($classname) != $specific_class && strtolower(Util::getBaseClassname($classname)) != $specific_class) {
-					continue;
-				}
-			}
-
-			if (!$this->isInstalled($classname)) {
-				$this->logger->info("Running install via upgrade on " . Util::getBaseClassname($classname));
-				$start_time = microtime(true);
-
-				$obj = new $classname($this->container, $this->logger);
-				$obj->runInstallViaUpgrade();
-
-				$this->data_info['installed'][] = $classname;
-				$this->flushDataInfo();
-
-				$this->logger->info(sprintf("... done in %.4fs", microtime(true)-$start_time));
-			} else {
-				$this->logger->info("Running sync  on " . Util::getBaseClassname($classname));
-				$start_time = microtime(true);
-
-				$obj = new $classname($this->container, $this->logger);
-				$obj->runSync();
-
-				$this->logger->info(sprintf("... done in %.4fs", microtime(true)-$start_time));
-			}
-		}
-	}
-
-
-	/**
 	 * Installs new data classes that havent been marked as installed yet.
 	 *
 	 * @param string $specific_class Only run this specific data class
@@ -258,7 +220,7 @@ class DefaultDataProcessor
 
 
 	/**
-	 * Installs new data classes that havent been marked as installed yet, or runs reset if it has.
+	 * Installs new data classes that havent been marked as installed yet, or runs sync if it has.
 	 *
 	 * @param string $specific_class Only run this specific data class
 	 */

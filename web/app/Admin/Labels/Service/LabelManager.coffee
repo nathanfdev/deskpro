@@ -40,7 +40,6 @@ define ['toastr'], (toastr) ->
 			@loadLabels(api_endpoint).then( (labels) =>
 				idx = null
 				for l, k in labels
-					console.log(l)
 					if l.label == label
 						idx = k
 						break

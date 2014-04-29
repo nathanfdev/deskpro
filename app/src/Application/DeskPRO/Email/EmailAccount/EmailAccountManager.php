@@ -306,6 +306,18 @@ class EmailAccountManager
 		return null;
 	}
 
+
+	/**
+	 * Count how many outgoing email accounts are defined
+	 *
+	 * @return int
+	 */
+	public function countOutgoingAccounts()
+	{
+		return count($this->getAllActiveAccounts('with_transport'));
+	}
+
+
 	####################################################################################################################
 	# Working with Transports
 	####################################################################################################################

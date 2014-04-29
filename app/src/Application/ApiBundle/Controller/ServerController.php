@@ -38,7 +38,9 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
 use Application\DeskPRO\Server\ApcStatus;
 use Application\DeskPRO\Server\CronStatus;
+use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
+use Application\DeskPRO\ServerReportFile\ServerReportFile;
 
 class ServerController extends AbstractController implements ProtectedControllerInterface
 {
@@ -418,11 +420,7 @@ class ServerController extends AbstractController implements ProtectedController
 
 	public function listFileCheckAction()
 	{
-		/**
-		 * @var \Application\DeskPRO\ServerFileCheck\ServerFileCheck $server_file_check
-		 */
-
-		$server_file_check = $this->container->getSystemService('server_file_check');
+		$server_file_check = new ServerFileCheck($this->em);
 
 		return $this->createApiResponse(
 			array(
@@ -437,11 +435,7 @@ class ServerController extends AbstractController implements ProtectedController
 
 	public function getFileCheckAction($id)
 	{
-		/**
-		 * @var \Application\DeskPRO\ServerFileCheck\ServerFileCheck $server_file_check
-		 */
-
-		$server_file_check = $this->container->getSystemService('server_file_check');
+		$server_file_check = new ServerFileCheck($this->em);
 
 		return $this->createApiResponse(
 			array(
@@ -456,12 +450,7 @@ class ServerController extends AbstractController implements ProtectedController
 
 	public function getReportFileAction()
 	{
-		/**
-		 * @var \Application\DeskPRO\ServerReportFile\ServerReportFile $server_report_file
-		 */
-
-		$server_report_file = $this->container->getSystemService('server_report_file');
-
+		$server_report_file = new ServerReportFile($this->em);
 		$server_report_file->createArchive();
 		$server_report_file->outputArchive();
 	}
@@ -472,11 +461,7 @@ class ServerController extends AbstractController implements ProtectedController
 
 	public function saveFileCheckResultsAction()
 	{
-		/**
-		 * @var \Application\DeskPRO\ServerReportFile\ServerReportFile $server_report_file
-		 */
-
-		$server_report_file = $this->container->getSystemService('server_report_file');
+		$server_report_file = new ServerReportFile($this->em);
 		$file_check_results = $this->in->getValue('file_check_results', 'post');
 
 		if (!empty($file_check_results)) {

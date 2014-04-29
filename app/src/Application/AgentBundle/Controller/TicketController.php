@@ -1036,6 +1036,9 @@ class TicketController extends AbstractController
 			$ticket = $this->getTicketOr404($ticket_id, 'reply');
 		}
 
+		$ticket_context = $this->container->getTicketManager()->createAgentExecutorContext($this->person, 'newreply', 'web');
+		$this->container->getTicketManager()->markAsManaged($ticket);
+
 		$action_type = $this->in->getString('options.action');
 		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
 		if ($macro_id) {
@@ -1150,7 +1153,7 @@ class TicketController extends AbstractController
 			}
 
 			if ($notify_email) {
-				$ticket->getTicketLogger()->recordExtra('mention_agents', $notify_email);
+				$ticket_context->getVars()->set('mention_agents', $notify_email);
 			}
 		}
 
@@ -1204,7 +1207,7 @@ class TicketController extends AbstractController
 			$ticket->addMessage($message);
 
 			if (!$this->in->getBool('options.notify_user')) {
-				$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+				$ticket_context->getVars()->set('mute_user_emails', true);
 			}
 		}
 
@@ -1284,11 +1287,6 @@ class TicketController extends AbstractController
 			}
 		}
 
-		if ($new_user_ids) {
-			$tracker = $ticket->getTicketLogger();
-			$tracker->recordExtra('enabled_cc', $new_user_ids);
-		}
-
 		if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
 			$collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
 		}
@@ -1343,8 +1341,7 @@ class TicketController extends AbstractController
 				}
 			}
 
-			$this->em->persist($ticket);
-			$this->em->flush();
+			$this->container->getTicketManager()->saveTicket($ticket, $ticket_context);
 
 			$this->em->getRepository('DeskPRO:Draft')->deleteDraft('ticket', $ticket->id);
 			$this->db->commit();
@@ -1458,8 +1455,7 @@ class TicketController extends AbstractController
 				// Need to undo setting status!
 				$close_tab = false;
 				$ticket->status = 'awaiting_agent';
-				$this->em->persist($ticket);
-				$this->em->flush();
+				$this->container->getTicketManager()->saveTicket($ticket, $ticket_context);
 			}
 		}
 
@@ -3298,11 +3294,11 @@ class TicketController extends AbstractController
 				$newticket->save();
 				$ticket = $newticket->getTicket();
                                 
-                                $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
-                                $ticket->getLabelManager()->setLabelsArray($labels);
-                                
-                                $this->em->persist($ticket);
+				$ticket->getLabelManager()->setLabelsArray($labels);
+
+				$this->em->persist($ticket);
 
 				if ($this->in->getUint('parent_ticket_id')) {
 					$parent_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('parent_ticket_id'));
