@@ -86,12 +86,18 @@ class ClientFactory
 	{
 		$config = new OptionsArray($config);
 
-		return new Client(array(
+		$client = new Client(array(
 			'host'      => $config->get('host', 'localhost'),
 			'port'      => $config->get('port', 9200),
 			'path'      => $config->get('path', null),
 			'transport' => $config->get('transport', null),
-			'log'       => true
+			'log'       => $config->get('log', null)
 		));
+
+		if ($config->get('logger')) {
+			$client->setLogger($config->get('logger'));
+		}
+
+		return $client;
 	}
 }

@@ -731,8 +731,18 @@
 	# search
 	####################################################################################################################
 
+	// Determines if the elastic stuff is available for use
+	'elastica.allow_elastic' => false,
+
+	// Use elastic search?
+	'elastica.enabled' => false,
+
+	// This is true when elastic was just enabled and the admin needs to exec
+	// the cmd to reset the index to initialize it
+	'elastica.requires_reset' => false,
+
 	'elastica.clients.default.host' => 'localhost',
-	'elastica.clients.default.host' => 9200,
+	'elastica.clients.default.port' => 9200,
 
 	####################################################################################################################
 	# password policy

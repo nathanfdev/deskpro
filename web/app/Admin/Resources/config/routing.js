@@ -227,6 +227,16 @@ define(function() {
 		controller: 'Admin_Main_Ctrl_BareList'
 	});
 
+	//###
+	//# Elastic Search
+	//###
+	routes.push({
+		id: 'setup.elastic_search',
+		url: '/settings_elastic_search',
+		templateName: 'ElasticSearch/setup.html',
+		controller: 'Admin_Settings_Ctrl_ElasticSearch'
+	});
+
 	//##################################################################################################################
 	// Agents
 	//##################################################################################################################

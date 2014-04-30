@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\App;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,6 +76,8 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     {
         $indexes = array_keys($this->indexManager->getAllIndexes());
 
+		$this->getContainer()->getDb()->delete('settings', array('name' => 'elastica.requires_reset'));
+
         foreach ($indexes as $index) {
 
             /** @var $providers DoctrineProvider[] */
@@ -93,7 +96,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
 
                 for (; $offset < $total; $offset += $batchSize) {
                     $arguments = $this->getArguments($input, $index, $type, $offset, ($offset + $batchSize), $batchSize);
-                    $this->runCommand($arguments);
+                    $this->runCommand($arguments, $output);
                 }
 
             }
@@ -101,16 +104,16 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         }
     }
 
-    private function runCommand($arguments)
+    private function runCommand($arguments, OutputInterface $output)
     {
         $command = 'php cmd.php dp:elastica:index ' . implode(' ', $arguments);
         $process = new Process($command);
 
-        $process->run(function ($type, $buffer) {
+        $process->run(function ($type, $buffer) use ($output) {
             if (Process::ERR === $type) {
-                echo 'ERR > '.$buffer;
+				$output->write("<error>$buffer</error>");
             } else {
-                echo 'OUT > '.$buffer;
+				$output->write($buffer);
             }
         });
     }

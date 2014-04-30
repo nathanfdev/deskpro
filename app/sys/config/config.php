@@ -322,9 +322,7 @@ $container->loadFromExtension('fos_elastica', array(
     ),
 
     'indexes' => array(
-
         'deskpro' => array(
-
             'settings' => array(
                 'analysis' => array(
                     'filter' => array(
@@ -457,7 +455,6 @@ $container->loadFromExtension('fos_elastica', array(
             )
         )
     )
-
 ));
 
 ############################################################################
