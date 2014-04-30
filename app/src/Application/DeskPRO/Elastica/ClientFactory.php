@@ -25,51 +25,73 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\Elastica;
+
+use Application\DeskPRO\Exception\MissingConfigurationException;
+use Application\DeskPRO\Settings\Settings;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
+
 /**
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\DependencyInjection;
-
-use Application\DeskPRO\App;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-
-class SearchExtension extends Extension
+class ClientFactory
 {
-	public function load(array $config, ContainerBuilder $container)
-    {
-		$definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
-		$definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\SearchAdapter');
-		$definition->setFactoryMethod('getSearchAdapter');
-		$container->setDefinition('deskpro.search_adapter', $definition);
+	/**
+	 * @var \Application\DeskPRO\Settings\Settings
+	 */
+	private $settings;
 
-		// Doctrine listener to support search engine
-		$definition = new Definition('Application\\DeskPRO\\Search\\EntityWatcher\\EntityWatcher', array(new Reference('service_container')));
-		$definition->addTag('doctrine.event_subscriber');
-		$container->setDefinition('deskpro.search.entity_listener', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', array(new Reference('deskpro.core.settings')));
-		$container->setDefinition('deskpro.elastica.client_factory', $definition);
-	}
-
-	public function getXsdValidationBasePath()
+	/**
+	 * @param Settings $settings
+	 */
+	public function __construct(Settings $settings)
 	{
-		return null;
+		$this->settings = $settings;
 	}
 
-	public function getNamespace()
+
+	/**
+	 * @param string $id
+	 * @return Client
+	 */
+	public function createClientById($id)
 	{
-		return null;
+		$config = array(
+			'host'      => $this->settings->get("elastica.clients.$id.host"),
+			'port'      => $this->settings->get("elastica.clients.$id.port"),
+			'path'      => $this->settings->get("elastica.clients.$id.path") ?: null,
+			'transport' => $this->settings->get("elastica.clients.$id.transport") ?: null
+		);
+
+		if (!$config['host'] || !$config['port']) {
+			throw new MissingConfigurationException;
+		}
+
+		$config = Arrays::removeFalsey($config);
+
+		return $this->createClientByConfig($config);
 	}
 
-	public function getAlias()
-    {
-        return 'deskpro_search';
-    }
+
+	/**
+	 * @param array $config
+	 * @return Client
+	 */
+	public function createClientByConfig(array $config)
+	{
+		$config = new OptionsArray($config);
+
+		return new Client(array(
+			'host'      => $config->get('host', 'localhost'),
+			'port'      => $config->get('port', 9200),
+			'path'      => $config->get('path', null),
+			'transport' => $config->get('transport', null),
+			'log'       => true
+		));
+	}
 }

@@ -324,7 +324,7 @@ class DpKernel extends AbstractKernel
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-                        new \FOS\ElasticaBundle\FOSElasticaBundle(),
+			new \FOS\ElasticaBundle\FOSElasticaBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),

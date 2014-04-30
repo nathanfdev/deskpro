@@ -318,7 +318,7 @@ $container->loadFromExtension('swiftmailer', array(
 $container->loadFromExtension('fos_elastica', array(
 
     'clients' => array(
-        'default' => array('host' => 'localhost', 'port' => 9200, 'logger' => true)
+        'default' => array('host' => 'localhost', 'port' => 9200)
     ),
 
     'indexes' => array(

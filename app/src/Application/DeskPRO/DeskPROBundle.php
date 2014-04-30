@@ -33,6 +33,9 @@
 
 namespace Application\DeskPRO;
 
+use Application\DeskPRO\DependencyInjection\CoreExtension;
+use Application\DeskPRO\DependencyInjection\ElasticaClientPass;
+use Application\DeskPRO\DependencyInjection\SearchExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -48,8 +51,9 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         // register the extension(s) found in DependencyInjection/ directory
         parent::build($container);
 
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SearchExtension());
+        $container->registerExtension(new CoreExtension());
+        $container->registerExtension(new SearchExtension());
+		$container->addCompilerPass(new ElasticaClientPass());
     }
 
 	/**
