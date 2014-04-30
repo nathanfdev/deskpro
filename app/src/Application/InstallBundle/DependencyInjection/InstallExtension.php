@@ -43,9 +43,6 @@ class InstallExtension extends Extension
 {
 	public function load(array $config, ContainerBuilder $container)
     {
-		$definition = new Definition('Application\\DeskPRO\\ConfigServiceLoader');
-		$container->setDefinition('deskpro.config_service_loader', $definition);
-
 		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
 			DP_ROOT . '/sys/config/settings.php',
 			new Reference('database_connection')

@@ -52,9 +52,6 @@ class CoreExtension extends Extension
 		$definition->addArgument(new Reference('event_dispatcher'));
 		$container->setDefinition('deskpro.sys_events_loader', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\ConfigServiceLoader');
-		$container->setDefinition('deskpro.config_service_loader', $definition);
-
 		$definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
 		$container->setDefinition('response', $definition);
 
