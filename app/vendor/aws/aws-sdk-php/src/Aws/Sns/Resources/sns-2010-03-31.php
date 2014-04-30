@@ -21,7 +21,7 @@ return array (
     'serviceAbbreviation' => 'Amazon SNS',
     'serviceType' => 'query',
     'resultWrapped' => true,
-    'signatureVersion' => 'v2',
+    'signatureVersion' => 'v4',
     'namespace' => 'Sns',
     'regions' => array(
         'us-east-1' => array(
@@ -64,6 +64,11 @@ return array (
             'https' => true,
             'hostname' => 'sns.sa-east-1.amazonaws.com',
         ),
+        'cn-north-1' => array(
+            'http' => true,
+            'https' => true,
+            'hostname' => 'sns.cn-north-1.amazonaws.com.cn',
+        ),
         'us-gov-west-1' => array(
             'http' => true,
             'https' => true,
@@ -77,7 +82,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'EmptyOutput',
             'responseType' => 'model',
-            'summary' => 'The AddPermission action adds a statement to a topic\'s access control policy, granting access for the specified AWS accounts to the specified actions.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -91,19 +95,16 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the topic whose access control policy you wish to modify.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'Label' => array(
                     'required' => true,
-                    'description' => 'A unique identifier for the new policy statement.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'AWSAccountId' => array(
                     'required' => true,
-                    'description' => 'The AWS account IDs of the users (principals) who will be given access to the specified actions. The users must have AWS accounts, but do not need to be signed up for this service.',
                     'type' => 'array',
                     'location' => 'aws.query',
                     'sentAs' => 'AWSAccountId.member',
@@ -114,7 +115,6 @@ return array (
                 ),
                 'ActionName' => array(
                     'required' => true,
-                    'description' => 'The action you want to allow for the specified principal(s).',
                     'type' => 'array',
                     'location' => 'aws.query',
                     'sentAs' => 'ActionName.member',
@@ -149,7 +149,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'ConfirmSubscriptionResponse',
             'responseType' => 'model',
-            'summary' => 'The ConfirmSubscription action verifies an endpoint owner\'s intent to receive messages by validating the token sent to the endpoint by an earlier Subscribe action. If the token is valid, the action creates a new subscription and returns its Amazon Resource Name (ARN). This call requires an AWS signature only when the AuthenticateOnUnsubscribe flag is set to "true".',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -163,18 +162,15 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the topic for which you wish to confirm a subscription.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'Token' => array(
                     'required' => true,
-                    'description' => 'Short-lived token sent to an endpoint during the Subscribe action.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'AuthenticateOnUnsubscribe' => array(
-                    'description' => 'Indicates that you want to disallow unauthenticated unsubscribes of the subscription. If value of this parameter is "true" and the request has an AWS signature then only the topic owner and the subscription owner will be permitted to unsubscribe the endpoint. The unsubscribe action will require AWS authentication.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -202,13 +198,129 @@ return array (
                 ),
             ),
         ),
+        'CreatePlatformApplication' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'CreatePlatformApplicationResponse',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'CreatePlatformApplication',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'Name' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'Platform' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'Attributes' => array(
+                    'required' => true,
+                    'type' => 'object',
+                    'location' => 'aws.query',
+                    'sentAs' => 'Attributes.entry',
+                    'additionalProperties' => array(
+                        'type' => 'string',
+                        'data' => array(
+                            'shape_name' => 'String',
+                        ),
+                    ),
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+            ),
+        ),
+        'CreatePlatformEndpoint' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'CreateEndpointResponse',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'CreatePlatformEndpoint',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'PlatformApplicationArn' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'Token' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'CustomUserData' => array(
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'Attributes' => array(
+                    'type' => 'object',
+                    'location' => 'aws.query',
+                    'sentAs' => 'Attributes.entry',
+                    'additionalProperties' => array(
+                        'type' => 'string',
+                        'data' => array(
+                            'shape_name' => 'String',
+                        ),
+                    ),
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the requested resource does not exist.',
+                    'class' => 'NotFoundException',
+                ),
+            ),
+        ),
         'CreateTopic' => array(
             'httpMethod' => 'POST',
             'uri' => '/',
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'CreateTopicResponse',
             'responseType' => 'model',
-            'summary' => 'The CreateTopic action creates a topic to which notifications can be published. Users can create at most 25 topics. This action is idempotent, so if the requester already owns a topic with the specified name, that topic\'s ARN will be returned without creating a new topic.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -222,7 +334,6 @@ return array (
                 ),
                 'Name' => array(
                     'required' => true,
-                    'description' => 'The name of the topic you want to create.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -246,13 +357,88 @@ return array (
                 ),
             ),
         ),
+        'DeleteEndpoint' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'EmptyOutput',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'DeleteEndpoint',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'EndpointArn' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+            ),
+        ),
+        'DeletePlatformApplication' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'EmptyOutput',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'DeletePlatformApplication',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'PlatformApplicationArn' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+            ),
+        ),
         'DeleteTopic' => array(
             'httpMethod' => 'POST',
             'uri' => '/',
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'EmptyOutput',
             'responseType' => 'model',
-            'summary' => 'The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might prevent some messages previously sent to the topic from being delivered to subscribers. This action is idempotent, so deleting a topic that does not exist will not result in an error.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -266,7 +452,90 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the topic you want to delete.',
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the requested resource does not exist.',
+                    'class' => 'NotFoundException',
+                ),
+            ),
+        ),
+        'GetEndpointAttributes' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'GetEndpointAttributesResponse',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'GetEndpointAttributes',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'EndpointArn' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the requested resource does not exist.',
+                    'class' => 'NotFoundException',
+                ),
+            ),
+        ),
+        'GetPlatformApplicationAttributes' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'GetPlatformApplicationAttributesResponse',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'GetPlatformApplicationAttributes',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'PlatformApplicationArn' => array(
+                    'required' => true,
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -296,7 +565,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'GetSubscriptionAttributesResponse',
             'responseType' => 'model',
-            'summary' => 'The GetSubscriptionAttribtues action returns all of the properties of a subscription.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -310,7 +578,6 @@ return array (
                 ),
                 'SubscriptionArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the subscription whose properties you want to get.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -340,7 +607,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'GetTopicAttributesResponse',
             'responseType' => 'model',
-            'summary' => 'The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic properties returned might differ based on the authorization of the user.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -354,7 +620,6 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the topic whose properties you want to get.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -378,13 +643,95 @@ return array (
                 ),
             ),
         ),
+        'ListEndpointsByPlatformApplication' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'ListEndpointsByPlatformApplicationResponse',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'ListEndpointsByPlatformApplication',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'PlatformApplicationArn' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'NextToken' => array(
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the requested resource does not exist.',
+                    'class' => 'NotFoundException',
+                ),
+            ),
+        ),
+        'ListPlatformApplications' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'ListPlatformApplicationsResponse',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'ListPlatformApplications',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'NextToken' => array(
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+            ),
+        ),
         'ListSubscriptions' => array(
             'httpMethod' => 'POST',
             'uri' => '/',
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'ListSubscriptionsResponse',
             'responseType' => 'model',
-            'summary' => 'The ListSubscriptions action returns a list of the requester\'s subscriptions. Each call returns a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new ListSubscriptions call to get further results.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -397,7 +744,6 @@ return array (
                     'default' => '2010-03-31',
                 ),
                 'NextToken' => array(
-                    'description' => 'Token returned by the previous ListSubscriptions request.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -423,7 +769,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'ListSubscriptionsByTopicResponse',
             'responseType' => 'model',
-            'summary' => 'The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new ListSubscriptionsByTopic call to get further results.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -437,12 +782,10 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the topic for which you wish to find subscriptions.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'NextToken' => array(
-                    'description' => 'Token returned by the previous ListSubscriptionsByTopic request.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -472,7 +815,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'ListTopicsResponse',
             'responseType' => 'model',
-            'summary' => 'The ListTopics action returns a list of the requester\'s topics. Each call returns a limited list of topics, up to 100. If there are more topics, a NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get further results.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -485,7 +827,6 @@ return array (
                     'default' => '2010-03-31',
                 ),
                 'NextToken' => array(
-                    'description' => 'Token returned by the previous ListTopics request.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -511,7 +852,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'PublishResponse',
             'responseType' => 'model',
-            'summary' => 'The Publish action sends a message to all of a topic\'s subscribed endpoints. When a messageId is returned, the message has been saved and Amazon SNS will attempt to deliver it to the topic\'s subscribers shortly. The format of the outgoing message to each subscribed endpoint depends on the notification protocol selected.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -524,24 +864,23 @@ return array (
                     'default' => '2010-03-31',
                 ),
                 'TopicArn' => array(
-                    'required' => true,
-                    'description' => 'The topic you want to publish to.',
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'TargetArn' => array(
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'Message' => array(
                     'required' => true,
-                    'description' => 'The message you want to send to the topic.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'Subject' => array(
-                    'description' => 'Optional parameter to be used as the "Subject" line of when the message is delivered to e-mail endpoints. This field will also be included, if present, in the standard JSON messages delivered to other endpoints.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'MessageStructure' => array(
-                    'description' => 'Optional parameter. It will have one valid value: "json". If this option, Message is present and set to "json", the value of Message must: be a syntactically valid JSON object. It must contain at least a top level JSON key of "default" with a value that is a string. For any other top level key that matches one of our transport protocols (e.g. "http"), then the corresponding value (if it is a string) will be used for the message published for that protocol',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -560,6 +899,14 @@ return array (
                     'class' => 'NotFoundException',
                 ),
                 array(
+                    'reason' => 'Exception error indicating endpoint disabled.',
+                    'class' => 'EndpointDisabledException',
+                ),
+                array(
+                    'reason' => 'Exception error indicating platform application disabled.',
+                    'class' => 'PlatformApplicationDisabledException',
+                ),
+                array(
                     'reason' => 'Indicates that the user has been denied access to the requested resource.',
                     'class' => 'AuthorizationErrorException',
                 ),
@@ -571,7 +918,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'EmptyOutput',
             'responseType' => 'model',
-            'summary' => 'The RemovePermission action removes a statement from a topic\'s access control policy.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -585,15 +931,121 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the topic whose access control policy you wish to modify.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'Label' => array(
                     'required' => true,
-                    'description' => 'The unique label of the statement you want to remove.',
                     'type' => 'string',
                     'location' => 'aws.query',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the requested resource does not exist.',
+                    'class' => 'NotFoundException',
+                ),
+            ),
+        ),
+        'SetEndpointAttributes' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'EmptyOutput',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'SetEndpointAttributes',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'EndpointArn' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'Attributes' => array(
+                    'required' => true,
+                    'type' => 'object',
+                    'location' => 'aws.query',
+                    'sentAs' => 'Attributes.entry',
+                    'additionalProperties' => array(
+                        'type' => 'string',
+                        'data' => array(
+                            'shape_name' => 'String',
+                        ),
+                    ),
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'Indicates that a request parameter does not comply with the associated constraints.',
+                    'class' => 'InvalidParameterException',
+                ),
+                array(
+                    'reason' => 'Indicates an internal service error.',
+                    'class' => 'InternalErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the user has been denied access to the requested resource.',
+                    'class' => 'AuthorizationErrorException',
+                ),
+                array(
+                    'reason' => 'Indicates that the requested resource does not exist.',
+                    'class' => 'NotFoundException',
+                ),
+            ),
+        ),
+        'SetPlatformApplicationAttributes' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\QueryCommand',
+            'responseClass' => 'EmptyOutput',
+            'responseType' => 'model',
+            'parameters' => array(
+                'Action' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => 'SetPlatformApplicationAttributes',
+                ),
+                'Version' => array(
+                    'static' => true,
+                    'location' => 'aws.query',
+                    'default' => '2010-03-31',
+                ),
+                'PlatformApplicationArn' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'Attributes' => array(
+                    'required' => true,
+                    'type' => 'object',
+                    'location' => 'aws.query',
+                    'sentAs' => 'Attributes.entry',
+                    'additionalProperties' => array(
+                        'type' => 'string',
+                        'data' => array(
+                            'shape_name' => 'String',
+                        ),
+                    ),
                 ),
             ),
             'errorResponses' => array(
@@ -621,7 +1073,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'EmptyOutput',
             'responseType' => 'model',
-            'summary' => 'The SetSubscriptionAttributes action allows a subscription owner to set an attribute of the topic to a new value.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -635,19 +1086,15 @@ return array (
                 ),
                 'SubscriptionArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the subscription to modify.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'AttributeName' => array(
                     'required' => true,
-                    'description' => 'The name of the attribute you want to set. Only a subset of the subscriptions attributes are mutable.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'AttributeValue' => array(
-                    'required' => true,
-                    'description' => 'The new value for the attribute.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -677,7 +1124,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'EmptyOutput',
             'responseType' => 'model',
-            'summary' => 'The SetTopicAttributes action allows a topic owner to set an attribute of the topic to a new value.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -691,19 +1137,15 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the topic to modify.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'AttributeName' => array(
                     'required' => true,
-                    'description' => 'The name of the attribute you want to set. Only a subset of the topic\'s attributes are mutable.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'AttributeValue' => array(
-                    'required' => true,
-                    'description' => 'The new value for the attribute.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -733,7 +1175,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'SubscribeResponse',
             'responseType' => 'model',
-            'summary' => 'The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation message. To actually create a subscription, the endpoint owner must call the ConfirmSubscription action with the token from the confirmation message. Confirmation tokens are valid for three days.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -747,19 +1188,15 @@ return array (
                 ),
                 'TopicArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of topic you want to subscribe to.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'Protocol' => array(
                     'required' => true,
-                    'description' => 'The protocol you want to use. Supported protocols include:',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
                 'Endpoint' => array(
-                    'required' => true,
-                    'description' => 'The endpoint that you want to receive notifications. Endpoints vary by protocol:',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -793,7 +1230,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'EmptyOutput',
             'responseType' => 'model',
-            'summary' => 'The Unsubscribe action deletes a subscription. If the subscription requires authentication for deletion, only the owner of the subscription or the its topic\'s owner can unsubscribe, and an AWS signature is required. If the Unsubscribe call does not require authentication and the requester is not the subscription owner, a final cancellation message is delivered to the endpoint, so that the endpoint owner can easily resubscribe to the topic if the Unsubscribe request was unintended.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -807,7 +1243,6 @@ return array (
                 ),
                 'SubscriptionArn' => array(
                     'required' => true,
-                    'description' => 'The ARN of the subscription to be deleted.',
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
@@ -842,7 +1277,26 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'SubscriptionArn' => array(
-                    'description' => 'The ARN of the created subscription.',
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+            ),
+        ),
+        'CreatePlatformApplicationResponse' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'PlatformApplicationArn' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+            ),
+        ),
+        'CreateEndpointResponse' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'EndpointArn' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -853,9 +1307,80 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'TopicArn' => array(
-                    'description' => 'The Amazon Resource Name (ARN) assigned to the created topic.',
                     'type' => 'string',
                     'location' => 'xml',
+                ),
+            ),
+        ),
+        'GetEndpointAttributesResponse' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'Attributes' => array(
+                    'type' => 'array',
+                    'location' => 'xml',
+                    'filters' => array(
+                        array(
+                            'method' => 'Aws\\Common\\Command\\XmlResponseLocationVisitor::xmlMap',
+                            'args' => array(
+                                '@value',
+                                'entry',
+                                'key',
+                                'value',
+                            ),
+                        ),
+                    ),
+                    'items' => array(
+                        'name' => 'entry',
+                        'type' => 'object',
+                        'sentAs' => 'entry',
+                        'additionalProperties' => true,
+                        'properties' => array(
+                            'key' => array(
+                                'type' => 'string',
+                            ),
+                            'value' => array(
+                                'type' => 'string',
+                            ),
+                        ),
+                    ),
+                    'additionalProperties' => false,
+                ),
+            ),
+        ),
+        'GetPlatformApplicationAttributesResponse' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'Attributes' => array(
+                    'type' => 'array',
+                    'location' => 'xml',
+                    'filters' => array(
+                        array(
+                            'method' => 'Aws\\Common\\Command\\XmlResponseLocationVisitor::xmlMap',
+                            'args' => array(
+                                '@value',
+                                'entry',
+                                'key',
+                                'value',
+                            ),
+                        ),
+                    ),
+                    'items' => array(
+                        'name' => 'entry',
+                        'type' => 'object',
+                        'sentAs' => 'entry',
+                        'additionalProperties' => true,
+                        'properties' => array(
+                            'key' => array(
+                                'type' => 'string',
+                            ),
+                            'value' => array(
+                                'type' => 'string',
+                            ),
+                        ),
+                    ),
+                    'additionalProperties' => false,
                 ),
             ),
         ),
@@ -864,13 +1389,8 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'Attributes' => array(
-                    'description' => 'A map of the subscription\'s attributes. Attributes in this map include the following:',
                     'type' => 'array',
                     'location' => 'xml',
-                    'data' => array(
-                        'xmlMap' => array(
-                        ),
-                    ),
                     'filters' => array(
                         array(
                             'method' => 'Aws\\Common\\Command\\XmlResponseLocationVisitor::xmlMap',
@@ -882,7 +1402,6 @@ return array (
                             ),
                         ),
                     ),
-                    'additionalProperties' => false,
                     'items' => array(
                         'name' => 'entry',
                         'type' => 'object',
@@ -897,6 +1416,7 @@ return array (
                             ),
                         ),
                     ),
+                    'additionalProperties' => false,
                 ),
             ),
         ),
@@ -905,13 +1425,8 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'Attributes' => array(
-                    'description' => 'A map of the topic\'s attributes. Attributes in this map include the following:',
                     'type' => 'array',
                     'location' => 'xml',
-                    'data' => array(
-                        'xmlMap' => array(
-                        ),
-                    ),
                     'filters' => array(
                         array(
                             'method' => 'Aws\\Common\\Command\\XmlResponseLocationVisitor::xmlMap',
@@ -923,7 +1438,6 @@ return array (
                             ),
                         ),
                     ),
-                    'additionalProperties' => false,
                     'items' => array(
                         'name' => 'entry',
                         'type' => 'object',
@@ -938,6 +1452,113 @@ return array (
                             ),
                         ),
                     ),
+                    'additionalProperties' => false,
+                ),
+            ),
+        ),
+        'ListEndpointsByPlatformApplicationResponse' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'Endpoints' => array(
+                    'type' => 'array',
+                    'location' => 'xml',
+                    'items' => array(
+                        'name' => 'Endpoint',
+                        'type' => 'object',
+                        'sentAs' => 'member',
+                        'properties' => array(
+                            'EndpointArn' => array(
+                                'type' => 'string',
+                            ),
+                            'Attributes' => array(
+                                'type' => 'array',
+                                'filters' => array(
+                                    array(
+                                        'method' => 'Aws\\Common\\Command\\XmlResponseLocationVisitor::xmlMap',
+                                        'args' => array(
+                                            '@value',
+                                            'entry',
+                                            'key',
+                                            'value',
+                                        ),
+                                    ),
+                                ),
+                                'items' => array(
+                                    'name' => 'entry',
+                                    'type' => 'object',
+                                    'sentAs' => 'entry',
+                                    'additionalProperties' => true,
+                                    'properties' => array(
+                                        'key' => array(
+                                            'type' => 'string',
+                                        ),
+                                        'value' => array(
+                                            'type' => 'string',
+                                        ),
+                                    ),
+                                ),
+                                'additionalProperties' => false,
+                            ),
+                        ),
+                    ),
+                ),
+                'NextToken' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+            ),
+        ),
+        'ListPlatformApplicationsResponse' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'PlatformApplications' => array(
+                    'type' => 'array',
+                    'location' => 'xml',
+                    'items' => array(
+                        'name' => 'PlatformApplication',
+                        'type' => 'object',
+                        'sentAs' => 'member',
+                        'properties' => array(
+                            'PlatformApplicationArn' => array(
+                                'type' => 'string',
+                            ),
+                            'Attributes' => array(
+                                'type' => 'array',
+                                'filters' => array(
+                                    array(
+                                        'method' => 'Aws\\Common\\Command\\XmlResponseLocationVisitor::xmlMap',
+                                        'args' => array(
+                                            '@value',
+                                            'entry',
+                                            'key',
+                                            'value',
+                                        ),
+                                    ),
+                                ),
+                                'items' => array(
+                                    'name' => 'entry',
+                                    'type' => 'object',
+                                    'sentAs' => 'entry',
+                                    'additionalProperties' => true,
+                                    'properties' => array(
+                                        'key' => array(
+                                            'type' => 'string',
+                                        ),
+                                        'value' => array(
+                                            'type' => 'string',
+                                        ),
+                                    ),
+                                ),
+                                'additionalProperties' => false,
+                            ),
+                        ),
+                    ),
+                ),
+                'NextToken' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
                 ),
             ),
         ),
@@ -946,40 +1567,32 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'Subscriptions' => array(
-                    'description' => 'A list of subscriptions.',
                     'type' => 'array',
                     'location' => 'xml',
                     'items' => array(
                         'name' => 'Subscription',
-                        'description' => 'A wrapper type for the attributes of an SNS subscription.',
                         'type' => 'object',
                         'sentAs' => 'member',
                         'properties' => array(
                             'SubscriptionArn' => array(
-                                'description' => 'The subscription\'s ARN.',
                                 'type' => 'string',
                             ),
                             'Owner' => array(
-                                'description' => 'The subscription\'s owner.',
                                 'type' => 'string',
                             ),
                             'Protocol' => array(
-                                'description' => 'The subscription\'s protocol.',
                                 'type' => 'string',
                             ),
                             'Endpoint' => array(
-                                'description' => 'The subscription\'s endpoint (format depends on the protocol).',
                                 'type' => 'string',
                             ),
                             'TopicArn' => array(
-                                'description' => 'The ARN of the subscription\'s topic.',
                                 'type' => 'string',
                             ),
                         ),
                     ),
                 ),
                 'NextToken' => array(
-                    'description' => 'Token to pass along to the next ListSubscriptions request. This element is returned if there are more subscriptions to retrieve.',
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -990,40 +1603,32 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'Subscriptions' => array(
-                    'description' => 'A list of subscriptions.',
                     'type' => 'array',
                     'location' => 'xml',
                     'items' => array(
                         'name' => 'Subscription',
-                        'description' => 'A wrapper type for the attributes of an SNS subscription.',
                         'type' => 'object',
                         'sentAs' => 'member',
                         'properties' => array(
                             'SubscriptionArn' => array(
-                                'description' => 'The subscription\'s ARN.',
                                 'type' => 'string',
                             ),
                             'Owner' => array(
-                                'description' => 'The subscription\'s owner.',
                                 'type' => 'string',
                             ),
                             'Protocol' => array(
-                                'description' => 'The subscription\'s protocol.',
                                 'type' => 'string',
                             ),
                             'Endpoint' => array(
-                                'description' => 'The subscription\'s endpoint (format depends on the protocol).',
                                 'type' => 'string',
                             ),
                             'TopicArn' => array(
-                                'description' => 'The ARN of the subscription\'s topic.',
                                 'type' => 'string',
                             ),
                         ),
                     ),
                 ),
                 'NextToken' => array(
-                    'description' => 'Token to pass along to the next ListSubscriptionsByTopic request. This element is returned if there are more subscriptions to retrieve.',
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -1034,24 +1639,20 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'Topics' => array(
-                    'description' => 'A list of topic ARNs.',
                     'type' => 'array',
                     'location' => 'xml',
                     'items' => array(
                         'name' => 'Topic',
-                        'description' => 'A wrapper type for the topic\'s Amazon Resource Name (ARN). To retrieve a topic\'s attributes, use GetTopicAttributes.',
                         'type' => 'object',
                         'sentAs' => 'member',
                         'properties' => array(
                             'TopicArn' => array(
-                                'description' => 'The topic\'s ARN.',
                                 'type' => 'string',
                             ),
                         ),
                     ),
                 ),
                 'NextToken' => array(
-                    'description' => 'Token to pass along to the next ListTopics request. This element is returned if there are additional topics to retrieve.',
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -1062,7 +1663,6 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'MessageId' => array(
-                    'description' => 'Unique identifier assigned to the published message.',
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -1073,7 +1673,6 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'SubscriptionArn' => array(
-                    'description' => 'The ARN of the subscription, if the service was able to create a subscription immediately (without requiring endpoint owner confirmation).',
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -1081,22 +1680,30 @@ return array (
         ),
     ),
     'iterators' => array(
-        'operations' => array(
-            'ListSubscriptions' => array(
-                'token_param' => 'NextToken',
-                'token_key' => 'NextToken',
-                'result_key' => 'Subscriptions',
-            ),
-            'ListSubscriptionsByTopic' => array(
-                'token_param' => 'NextToken',
-                'token_key' => 'NextToken',
-                'result_key' => 'Subscriptions',
-            ),
-            'ListTopics' => array(
-                'token_param' => 'NextToken',
-                'token_key' => 'NextToken',
-                'result_key' => 'Topics/*/TopicArn',
-            ),
+        'ListEndpointsByPlatformApplication' => array(
+            'input_token' => 'NextToken',
+            'output_token' => 'NextToken',
+            'result_key' => 'Endpoints',
+        ),
+        'ListPlatformApplications' => array(
+            'input_token' => 'NextToken',
+            'output_token' => 'NextToken',
+            'result_key' => 'PlatformApplications',
+        ),
+        'ListSubscriptions' => array(
+            'input_token' => 'NextToken',
+            'output_token' => 'NextToken',
+            'result_key' => 'Subscriptions',
+        ),
+        'ListSubscriptionsByTopic' => array(
+            'input_token' => 'NextToken',
+            'output_token' => 'NextToken',
+            'result_key' => 'Subscriptions',
+        ),
+        'ListTopics' => array(
+            'input_token' => 'NextToken',
+            'output_token' => 'NextToken',
+            'result_key' => 'Topics/*/TopicArn',
         ),
     ),
 );

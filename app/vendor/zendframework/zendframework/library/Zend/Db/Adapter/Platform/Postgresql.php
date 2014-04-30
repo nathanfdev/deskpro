@@ -3,22 +3,17 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Db
  */
 
 namespace Zend\Db\Adapter\Platform;
 
-use Zend\Db\Adapter\Driver\Pgsql;
+use Zend\Db\Adapter\Driver\DriverInterface;
 use Zend\Db\Adapter\Driver\Pdo;
+use Zend\Db\Adapter\Driver\Pgsql;
 use Zend\Db\Adapter\Exception;
 
-/**
- * @category   Zend
- * @package    Zend_Db
- * @subpackage Adapter
- */
 class Postgresql implements PlatformInterface
 {
     /** @var resource|\PDO */
@@ -40,12 +35,7 @@ class Postgresql implements PlatformInterface
     {
         if ($driver instanceof Pgsql\Pgsql
             || ($driver instanceof Pdo\Pdo && $driver->getDatabasePlatformName() == 'Postgresql')
-        ) {
-            $this->resource = $driver->getConnection()->getResource();
-            return $this;
-        }
-
-        if ((is_resource($driver) && (in_array(get_resource_type($driver), array('pgsql link', 'pgsql link persistent'))))
+            || (is_resource($driver) && (in_array(get_resource_type($driver), array('pgsql link', 'pgsql link persistent'))))
             || ($driver instanceof \PDO && $driver->getAttribute(\PDO::ATTR_DRIVER_NAME) == 'pgsql')
         ) {
             $this->resource = $driver;
@@ -119,6 +109,9 @@ class Postgresql implements PlatformInterface
      */
     public function quoteValue($value)
     {
+        if ($this->resource instanceof DriverInterface) {
+            $this->resource = $this->resource->getConnection()->getResource();
+        }
         if (is_resource($this->resource)) {
             return '\'' . pg_escape_string($this->resource, $value) . '\'';
         }
@@ -142,6 +135,9 @@ class Postgresql implements PlatformInterface
      */
     public function quoteTrustedValue($value)
     {
+        if ($this->resource instanceof DriverInterface) {
+            $this->resource = $this->resource->getConnection()->getResource();
+        }
         if (is_resource($this->resource)) {
             return '\'' . pg_escape_string($this->resource, $value) . '\'';
         }
@@ -190,8 +186,12 @@ class Postgresql implements PlatformInterface
     public function quoteIdentifierInFragment($identifier, array $safeWords = array())
     {
         $parts = preg_split('#([\.\s\W])#', $identifier, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        if ($safeWords) {
+            $safeWords = array_flip($safeWords);
+            $safeWords = array_change_key_case($safeWords, CASE_LOWER);
+        }
         foreach ($parts as $i => $part) {
-            if ($safeWords && in_array($part, $safeWords)) {
+            if ($safeWords && isset($safeWords[strtolower($part)])) {
                 continue;
             }
             switch ($part) {

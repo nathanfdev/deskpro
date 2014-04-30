@@ -49,7 +49,7 @@ class Parsedown
         $markup = trim($markup, "\n");
 
         # clean up
-        $this->references = array();
+        $this->definitions = array();
 
         return $markup;
     }
@@ -97,7 +97,6 @@ class Parsedown
         '~' => array('FencedCode'),
     );
 
-    # Draft
     protected $definitionMarkers = array(
         '[' => array('Reference'),
     );
@@ -112,30 +111,21 @@ class Parsedown
 
         foreach ($lines as $line)
         {
+            if (chop($line) === '')
+            {
+                if (isset($CurrentBlock))
+                {
+                    $CurrentBlock['interrupted'] = true;
+                }
+
+                continue;
+            }
+
             $indent = 0;
 
-            while (true)
+            while (isset($line[$indent]) and $line[$indent] === ' ')
             {
-                if (isset($line[$indent]))
-                {
-                    if ($line[$indent] === ' ')
-                    {
-                        $indent ++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                else # blank line
-                {
-                    if (isset($CurrentBlock))
-                    {
-                        $CurrentBlock['interrupted'] = true;
-                    }
-
-                    continue 2;
-                }
+                $indent ++;
             }
 
             $text = $indent > 0 ? substr($line, $indent) : $line;
@@ -169,9 +159,28 @@ class Parsedown
 
             # ~
 
-            $blockTypes = $this->unmarkedBlockTypes;
-
             $marker = $text[0];
+
+            # Definitions
+
+            if (isset($this->definitionMarkers[$marker]))
+            {
+                foreach ($this->definitionMarkers[$marker] as $definitionType)
+                {
+                    $Definition = $this->{'identify'.$definitionType}($Line, $CurrentBlock);
+
+                    if (isset($Definition))
+                    {
+                        $this->definitions[$definitionType][$Definition['id']] = $Definition['data'];
+
+                        continue 2;
+                    }
+                }
+            }
+
+            # ~
+
+            $blockTypes = $this->unmarkedBlockTypes;
 
             if (isset($this->blockMarkers[$marker]))
             {
@@ -196,7 +205,7 @@ class Parsedown
 
                     if ( ! isset($Block['identified'])) # »
                     {
-                        $elements []= $CurrentBlock['element'];
+                        $Elements []= $CurrentBlock['element'];
 
                         $Block['identified'] = true;
                     }
@@ -222,7 +231,7 @@ class Parsedown
             }
             else
             {
-                $elements []= $CurrentBlock['element'];
+                $Elements []= $CurrentBlock['element'];
 
                 $CurrentBlock = array(
                     'type' => 'Paragraph',
@@ -245,13 +254,13 @@ class Parsedown
 
         # ~
 
-        $elements []= $CurrentBlock['element'];
+        $Elements []= $CurrentBlock['element'];
 
-        unset($elements[0]);
+        unset($Elements[0]);
 
         # ~
 
-        $markup = $this->elements($elements);
+        $markup = $this->elements($Elements);
 
         # ~
 
@@ -310,22 +319,19 @@ class Parsedown
     {
         if (preg_match('/^\[(.+?)\]:[ ]*<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*$/', $Line['text'], $matches))
         {
-            $label = strtolower($matches[1]);
-
-            $this->references[$label] = array(
-                'url' => $matches[2],
+            $Definition = array(
+                'id' => strtolower($matches[1]),
+                'data' => array(
+                    'url' => $matches[2],
+                ),
             );
 
             if (isset($matches[3]))
             {
-                $this->references[$label]['title'] = $matches[3];
+                $Definition['data']['title'] = $matches[3];
             }
 
-            $Block = array(
-                'element' => null,
-            );
-
-            return $Block;
+            return $Definition;
         }
     }
 
@@ -531,7 +537,7 @@ class Parsedown
 
         if ( ! isset($Block['interrupted']))
         {
-            $text = preg_replace('/^[ ]{0,2}/', '', $Line['body']);
+            $text = preg_replace('/^[ ]{0,4}/', '', $Line['body']);
 
             $Block['li']['text'] []= $text;
 
@@ -901,36 +907,38 @@ class Parsedown
 
                 $Span = $this->$handler($markedExcerpt, $text);
 
-                if (isset($Span))
+                if ( ! isset($Span))
                 {
-                    # The identified span can be ahead of the marker.
-
-                    if (isset($Span['position']) and $Span['position'] > $markerPosition)
-                    {
-                        continue;
-                    }
-
-                    # Spans that start at the position of their marker don't have to set a position.
-
-                    if ( ! isset($Span['position']))
-                    {
-                        $Span['position'] = $markerPosition;
-                    }
-
-                    $unmarkedText = substr($text, 0, $Span['position']);
-
-                    $markup .= $this->readPlainText($unmarkedText);
-
-                    $markup .= isset($Span['element']) ? $this->element($Span['element']) : $Span['markup'];
-
-                    $text = substr($text, $Span['position'] + $Span['extent']);
-
-                    $remainder = $text;
-
-                    $markerPosition = 0;
-
-                    continue 2;
+                    continue;
                 }
+
+                # The identified span can be ahead of the marker.
+
+                if (isset($Span['position']) and $Span['position'] > $markerPosition)
+                {
+                    continue;
+                }
+
+                # Spans that start at the position of their marker don't have to set a position.
+
+                if ( ! isset($Span['position']))
+                {
+                    $Span['position'] = $markerPosition;
+                }
+
+                $plainText = substr($text, 0, $Span['position']);
+
+                $markup .= $this->readPlainText($plainText);
+
+                $markup .= isset($Span['element']) ? $this->element($Span['element']) : $Span['markup'];
+
+                $text = substr($text, $Span['position'] + $Span['extent']);
+
+                $remainder = $text;
+
+                $markerPosition = 0;
+
+                continue 2;
             }
 
             $remainder = substr($markedExcerpt, 1);
@@ -1104,9 +1112,9 @@ class Parsedown
             {
                 $Link['label'] = strtolower($matches[1]);
 
-                if (isset($this->references[$Link['label']]))
+                if (isset($this->definitions['Reference'][$Link['label']]))
                 {
-                    $Link += $this->references[$Link['label']];
+                    $Link += $this->definitions['Reference'][$Link['label']];
 
                     $extent += strlen($matches[0]);
                 }
@@ -1115,9 +1123,9 @@ class Parsedown
                     return;
                 }
             }
-            elseif ($this->references and isset($this->references[$Link['label']]))
+            elseif (isset($this->definitions['Reference'][$Link['label']]))
             {
-                $Link += $this->references[$Link['label']];
+                $Link += $this->definitions['Reference'][$Link['label']];
 
                 if (preg_match('/^[ ]*\[\]/', $substring, $matches))
                 {
@@ -1285,7 +1293,7 @@ class Parsedown
     # Fields
     #
 
-    protected $references = array(); # » Definitions['reference']
+    protected $definitions;
 
     #
     # Read-only

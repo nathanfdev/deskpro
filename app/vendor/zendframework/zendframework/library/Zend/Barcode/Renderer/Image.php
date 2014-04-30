@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Barcode
  */
 
 namespace Zend\Barcode\Renderer;
@@ -15,9 +14,6 @@ use Zend\Stdlib\ErrorHandler;
 
 /**
  * Class for rendering the barcode as image
- *
- * @category   Zend
- * @package    Zend_Barcode
  */
 class Image extends AbstractRenderer
 {
@@ -26,8 +22,8 @@ class Image extends AbstractRenderer
      * @var array
      */
     protected $allowedImageType = array('png',
-                                        'jpeg',
-                                        'gif'  );
+        'jpeg',
+        'gif'  );
 
     /**
      * Image format
@@ -43,25 +39,25 @@ class Image extends AbstractRenderer
 
     /**
      * Resource for the font and bars color of the image
-     * @var integer
+     * @var int
      */
     protected $imageForeColor = null;
 
     /**
      * Resource for the background color of the image
-     * @var integer
+     * @var int
      */
     protected $imageBackgroundColor = null;
 
     /**
      * Height of the rendered image wanted by user
-     * @var integer
+     * @var int
      */
     protected $userHeight = 0;
 
     /**
      * Width of the rendered image wanted by user
-     * @var integer
+     * @var int
      */
     protected $userWidth = 0;
 
@@ -83,7 +79,7 @@ class Image extends AbstractRenderer
     /**
      * Set height of the result image
      *
-     * @param null|integer $value
+     * @param null|int $value
      * @throws Exception\OutOfRangeException
      * @return Image
      */
@@ -198,22 +194,7 @@ class Image extends AbstractRenderer
         $barcodeWidth  = $this->barcode->getWidth(true);
         $barcodeHeight = $this->barcode->getHeight(true);
 
-        if ($this->resource !== null) {
-            $foreColor       = $this->barcode->getForeColor();
-            $backgroundColor = $this->barcode->getBackgroundColor();
-            $this->imageBackgroundColor = imagecolorallocate(
-                $this->resource,
-                ($backgroundColor & 0xFF0000) >> 16,
-                ($backgroundColor & 0x00FF00) >> 8,
-                $backgroundColor & 0x0000FF
-            );
-            $this->imageForeColor = imagecolorallocate(
-                $this->resource,
-                ($foreColor & 0xFF0000) >> 16,
-                ($foreColor & 0x00FF00) >> 8,
-                $foreColor & 0x0000FF
-            );
-        } else {
+        if (null === $this->resource) {
             $width = $barcodeWidth;
             $height = $barcodeHeight;
             if ($this->userWidth && $this->barcode->getType() != 'error') {
@@ -223,32 +204,44 @@ class Image extends AbstractRenderer
                 $height = $this->userHeight;
             }
 
-            $foreColor       = $this->barcode->getForeColor();
-            $backgroundColor = $this->barcode->getBackgroundColor();
             $this->resource = imagecreatetruecolor($width, $height);
 
-            $this->imageBackgroundColor = imagecolorallocate(
-                $this->resource,
-                ($backgroundColor & 0xFF0000) >> 16,
-                ($backgroundColor & 0x00FF00) >> 8,
-                $backgroundColor & 0x0000FF
-            );
-            $this->imageForeColor = imagecolorallocate(
-                $this->resource,
-                ($foreColor & 0xFF0000) >> 16,
-                ($foreColor & 0x00FF00) >> 8,
-                $foreColor & 0x0000FF
-            );
             $white = imagecolorallocate($this->resource, 255, 255, 255);
             imagefilledrectangle($this->resource, 0, 0, $width - 1, $height - 1, $white);
         }
+
+        $foreColor = $this->barcode->getForeColor();
+        $this->imageForeColor = imagecolorallocate(
+            $this->resource,
+            ($foreColor & 0xFF0000) >> 16,
+            ($foreColor & 0x00FF00) >> 8,
+            $foreColor & 0x0000FF
+        );
+
+        $backgroundColor = $this->barcode->getBackgroundColor();
+        $this->imageBackgroundColor = imagecolorallocate(
+            $this->resource,
+            ($backgroundColor & 0xFF0000) >> 16,
+            ($backgroundColor & 0x00FF00) >> 8,
+            $backgroundColor & 0x0000FF
+        );
+
+        // JPEG does not support transparency, if transparentBackground is true and
+        // image type is JPEG, ignore transparency
+        if($this->getImageType() != "jpeg" && $this->transparentBackground) {
+            imagecolortransparent($this->resource, $this->imageBackgroundColor);
+        }
+
         $this->adjustPosition(imagesy($this->resource), imagesx($this->resource));
-        imagefilledrectangle($this->resource,
-                             $this->leftOffset,
-                             $this->topOffset,
-                             $this->leftOffset + $barcodeWidth - 1,
-                             $this->topOffset + $barcodeHeight - 1,
-                             $this->imageBackgroundColor);
+
+        imagefilledrectangle(
+            $this->resource,
+            $this->leftOffset,
+            $this->topOffset,
+            $this->leftOffset + $barcodeWidth - 1,
+            $this->topOffset + $barcodeHeight - 1,
+            $this->imageBackgroundColor
+        );
     }
 
     /**
@@ -328,24 +321,24 @@ class Image extends AbstractRenderer
      * Draw a polygon in the image resource
      *
      * @param array $points
-     * @param integer $color
+     * @param int $color
      * @param  bool $filled
      */
     protected function drawPolygon($points, $color, $filled = true)
     {
         $newPoints = array($points[0][0] + $this->leftOffset,
-                           $points[0][1] + $this->topOffset,
-                           $points[1][0] + $this->leftOffset,
-                           $points[1][1] + $this->topOffset,
-                           $points[2][0] + $this->leftOffset,
-                           $points[2][1] + $this->topOffset,
-                           $points[3][0] + $this->leftOffset,
-                           $points[3][1] + $this->topOffset,   );
+            $points[0][1] + $this->topOffset,
+            $points[1][0] + $this->leftOffset,
+            $points[1][1] + $this->topOffset,
+            $points[2][0] + $this->leftOffset,
+            $points[2][1] + $this->topOffset,
+            $points[3][0] + $this->leftOffset,
+            $points[3][1] + $this->topOffset,   );
 
         $allocatedColor = imagecolorallocate($this->resource,
-                                             ($color & 0xFF0000) >> 16,
-                                             ($color & 0x00FF00) >> 8,
-                                              $color & 0x0000FF         );
+            ($color & 0xFF0000) >> 16,
+            ($color & 0x00FF00) >> 8,
+            $color & 0x0000FF         );
 
         if ($filled) {
             imagefilledpolygon($this->resource, $newPoints, 4, $allocatedColor);
@@ -361,7 +354,7 @@ class Image extends AbstractRenderer
      * @param float $size
      * @param array $position
      * @param string $font
-     * @param integer $color
+     * @param int $color
      * @param string $alignment
      * @param float $orientation
      * @throws Exception\RuntimeException
@@ -369,9 +362,9 @@ class Image extends AbstractRenderer
     protected function drawText($text, $size, $position, $font, $color, $alignment = 'center', $orientation = 0)
     {
         $allocatedColor = imagecolorallocate($this->resource,
-                                             ($color & 0xFF0000) >> 16,
-                                             ($color & 0x00FF00) >> 8,
-                                              $color & 0x0000FF         );
+            ($color & 0xFF0000) >> 16,
+            ($color & 0x00FF00) >> 8,
+            $color & 0x0000FF         );
 
         if ($font == null) {
             $font = 3;
@@ -426,13 +419,13 @@ class Image extends AbstractRenderer
                     break;
             }
             imagettftext($this->resource,
-                         $size,
-                         $orientation,
-                         $position[0] - ($width * cos(pi() * $orientation / 180)),
-                         $position[1] + ($width * sin(pi() * $orientation / 180)),
-                         $allocatedColor,
-                         $font,
-                         $text);
+                $size,
+                $orientation,
+                $position[0] - ($width * cos(pi() * $orientation / 180)),
+                $position[1] + ($width * sin(pi() * $orientation / 180)),
+                $allocatedColor,
+                $font,
+                $text);
         }
     }
 }

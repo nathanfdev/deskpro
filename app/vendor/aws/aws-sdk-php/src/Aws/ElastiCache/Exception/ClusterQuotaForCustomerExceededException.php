@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * Exception that occurs when a ClusterQuotaForCustomerExceededException error is encountered
+ * The request cannot be processed because it would exceed the allowed number of cache clusters per customer.
  */
 class ClusterQuotaForCustomerExceededException extends ElastiCacheException {}

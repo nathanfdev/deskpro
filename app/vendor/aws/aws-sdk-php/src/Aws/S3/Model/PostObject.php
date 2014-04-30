@@ -16,7 +16,6 @@
 
 namespace Aws\S3\Model;
 
-use Aws\Common\Exception\InvalidArgumentException;
 use Aws\Common\Enum\DateFormat;
 use Aws\S3\S3Client;
 use Guzzle\Common\Collection;
@@ -108,23 +107,27 @@ class PostObject extends Collection
         // Format ttd option
         $ttd = $options['ttd'];
         $ttd = is_numeric($ttd) ? (int) $ttd : strtotime($ttd);
-        $options->remove('ttd');
+        unset($options['ttd']);
 
         // Save policy if passed in
-        $rawPolicy = $options->get('policy');
-        $options->remove('policy');
+        $rawPolicy = $options['policy'];
+        unset($options['policy']);
 
         // Setup policy document
         $policy = array(
             'expiration' => gmdate(DateFormat::ISO8601_S3, $ttd),
-            'conditions' => array(
-                array('bucket' => $this->bucket),
-            )
+            'conditions' => array(array('bucket' => $this->bucket))
         );
 
         // Configure the endpoint/action
         $url = Url::factory($this->client->getBaseUrl());
-        $url->setHost($this->bucket . '.' . $url->getHost());
+        if ($url->getScheme() === 'https' && strpos($this->bucket, '.') !== false) {
+            // Use path-style URLs
+            $url->setPath($this->bucket);
+        } else {
+            // Use virtual-style URLs
+            $url->setHost($this->bucket . '.' . $url->getHost());
+        }
 
         // Setup basic form
         $this->formAttributes = array(

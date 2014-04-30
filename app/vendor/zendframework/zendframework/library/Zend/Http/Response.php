@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
  */
 
 namespace Zend\Http;
@@ -16,8 +15,6 @@ use Zend\Stdlib\ResponseInterface;
 /**
  * HTTP Response
  *
- * @category  Zend
- * @package   Zend_Http
  * @link      http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6
  */
 class Response extends AbstractMessage implements ResponseInterface
@@ -167,7 +164,7 @@ class Response extends AbstractMessage implements ResponseInterface
      * Populate object from string
      *
      * @param  string $string
-     * @return Response
+     * @return self
      * @throws Exception\InvalidArgumentException
      */
     public static function fromString($string)
@@ -236,13 +233,13 @@ class Response extends AbstractMessage implements ResponseInterface
     /**
      * Set HTTP status code and (optionally) message
      *
-     * @param  integer $code
+     * @param  int $code
      * @throws Exception\InvalidArgumentException
-     * @return Response
+     * @return self
      */
     public function setStatusCode($code)
     {
-        $const = get_called_class() . '::STATUS_CODE_' . $code;
+        $const = get_class($this) . '::STATUS_CODE_' . $code;
         if (!is_numeric($code) || !defined($const)) {
             $code = is_scalar($code) ? $code : gettype($code);
             throw new Exception\InvalidArgumentException(sprintf(
@@ -265,8 +262,30 @@ class Response extends AbstractMessage implements ResponseInterface
     }
 
     /**
+     * Set custom HTTP status code
+     *
+     * @param  int $code
+     * @throws Exception\InvalidArgumentException
+     * @return self
+     */
+    public function setCustomStatusCode($code)
+    {
+        if (!is_numeric($code)) {
+            $code = is_scalar($code) ? $code : gettype($code);
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Invalid status code provided: "%s"',
+                $code
+            ));
+        }
+
+        $this->statusCode = (int) $code;
+        return $this;
+
+    }
+
+    /**
      * @param string $reasonPhrase
-     * @return Response
+     * @return self
      */
     public function setReasonPhrase($reasonPhrase)
     {
@@ -281,7 +300,7 @@ class Response extends AbstractMessage implements ResponseInterface
      */
     public function getReasonPhrase()
     {
-        if ($this->reasonPhrase == null) {
+        if (null == $this->reasonPhrase and isset($this->recommendedReasonPhrases[$this->statusCode])) {
             return $this->recommendedReasonPhrases[$this->statusCode];
         }
         return $this->reasonPhrase;
@@ -511,7 +530,7 @@ class Response extends AbstractMessage implements ResponseInterface
          * Some servers (IIS ?) send a broken deflate response, without the
          * RFC-required zlib header.
          *
-         * We try to detect the zlib header, and if it does not exsit we
+         * We try to detect the zlib header, and if it does not exist we
          * teat the body is plain DEFLATE content.
          *
          * This method was adapted from PEAR HTTP_Request2 by (c) Alexey Borzov

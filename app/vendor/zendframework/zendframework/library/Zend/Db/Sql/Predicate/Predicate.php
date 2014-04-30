@@ -3,12 +3,13 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Db
  */
 
 namespace Zend\Db\Sql\Predicate;
+
+use Zend\Db\Sql\Exception\RuntimeException;
 
 /**
  * @property Predicate $and
@@ -17,9 +18,6 @@ namespace Zend\Db\Sql\Predicate;
  * @property Predicate $OR
  * @property Predicate $NEST
  * @property Predicate $UNNEST
- * @category   Zend
- * @package    Zend_Db
- * @subpackage Sql
  */
 class Predicate extends PredicateSet
 {
@@ -55,12 +53,12 @@ class Predicate extends PredicateSet
      * Indicate end of nested predicate
      *
      * @return Predicate
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function unnest()
     {
         if ($this->unnest == null) {
-            throw new \RuntimeException('Not nested');
+            throw new RuntimeException('Not nested');
         }
         $unnset       = $this->unnest;
         $this->unnest = null;
@@ -218,20 +216,66 @@ class Predicate extends PredicateSet
 
         return $this;
     }
+    /**
+     * Create "notLike" predicate
+     *
+     * Utilizes In predicate
+     *
+     * @param  string $identifier
+     * @param  string $notLike
+     * @return Predicate
+     */
+    public function notLike($identifier, $notLike)
+    {
+        $this->addPredicate(
+            new NotLike($identifier, $notLike),
+            ($this->nextPredicateCombineOperator) ? : $this->defaultCombination
+        );
+        $this->nextPredicateCombineOperator = null;
+        return $this;
+    }
+
+    /**
+     * Create an expression, with parameter placeholders
+     *
+     * @param $expression
+     * @param $parameters
+     * @return $this
+     */
+    public function expression($expression, $parameters)
+    {
+        $this->addPredicate(
+            new Expression($expression, $parameters),
+            ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
+        );
+        $this->nextPredicateCombineOperator = null;
+
+        return $this;
+    }
 
     /**
      * Create "Literal" predicate
      *
-     * Utilizes Like predicate
+     * Literal predicate, for parameters, use expression()
      *
      * @param  string $literal
-     * @param  int|float|bool|string|array $parameter
      * @return Predicate
      */
-    public function literal($literal, $parameter)
+    public function literal($literal)
     {
+        // process deprecated parameters from previous literal($literal, $parameters = null) signature
+        if (func_num_args() >= 2) {
+            $parameters = func_get_arg(1);
+            $predicate = new Expression($literal, $parameters);
+        }
+
+        // normal workflow for "Literals" here
+        if (!isset($predicate)) {
+            $predicate = new Literal($literal);
+        }
+
         $this->addPredicate(
-            new Expression($literal, $parameter),
+            $predicate,
             ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
         );
         $this->nextPredicateCombineOperator = null;
@@ -278,18 +322,38 @@ class Predicate extends PredicateSet
     }
 
     /**
-     * Create "in" predicate
+     * Create "IN" predicate
      *
      * Utilizes In predicate
      *
      * @param  string $identifier
-     * @param  array|Select $valueSet
+     * @param  array|\Zend\Db\Sql\Select $valueSet
      * @return Predicate
      */
     public function in($identifier, $valueSet = null)
     {
         $this->addPredicate(
             new In($identifier, $valueSet),
+            ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
+        );
+        $this->nextPredicateCombineOperator = null;
+
+        return $this;
+    }
+
+    /**
+     * Create "NOT IN" predicate
+     *
+     * Utilizes NotIn predicate
+     *
+     * @param  string $identifier
+     * @param  array|\Zend\Db\Sql\Select $valueSet
+     * @return Predicate
+     */
+    public function notIn($identifier, $valueSet = null)
+    {
+        $this->addPredicate(
+            new NotIn($identifier, $valueSet),
             ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
         );
         $this->nextPredicateCombineOperator = null;

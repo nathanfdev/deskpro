@@ -3,28 +3,20 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Db
  */
 
 namespace Zend\Db\ResultSet;
 
 use ArrayIterator;
-use ArrayObject;
 use Countable;
 use Iterator;
 use IteratorAggregate;
 use Zend\Db\Adapter\Driver\ResultInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Db
- * @subpackage ResultSet
- */
 abstract class AbstractResultSet implements Iterator, ResultSetInterface
 {
-
     /**
      * if -1, datasource is already buffered
      * if -2, implicitly disabling buffering in ResultSet
@@ -50,7 +42,10 @@ abstract class AbstractResultSet implements Iterator, ResultSetInterface
      */
     protected $fieldCount = null;
 
-    protected $position = null;
+    /**
+     * @var int
+     */
+    protected $position = 0;
 
     /**
      * Set the data source for the result set
@@ -61,12 +56,20 @@ abstract class AbstractResultSet implements Iterator, ResultSetInterface
      */
     public function initialize($dataSource)
     {
+        // reset buffering
+        if (is_array($this->buffer)) {
+            $this->buffer = array();
+        }
+
         if ($dataSource instanceof ResultInterface) {
             $this->count = $dataSource->count();
             $this->fieldCount = $dataSource->getFieldCount();
             $this->dataSource = $dataSource;
             if ($dataSource->isBuffered()) {
                 $this->buffer = -1;
+            }
+            if (is_array($this->buffer)) {
+                $this->dataSource->rewind();
             }
             return $this;
         }
@@ -100,7 +103,11 @@ abstract class AbstractResultSet implements Iterator, ResultSetInterface
             throw new Exception\RuntimeException('Buffering must be enabled before iteration is started');
         } elseif ($this->buffer === null) {
             $this->buffer = array();
+            if ($this->dataSource instanceof ResultInterface) {
+                $this->dataSource->rewind();
+            }
         }
+        return $this;
     }
 
     public function isBuffered()
@@ -213,7 +220,6 @@ abstract class AbstractResultSet implements Iterator, ResultSetInterface
             $key = key($this->dataSource);
             return ($key !== null);
         }
-
     }
 
     /**
@@ -261,7 +267,7 @@ abstract class AbstractResultSet implements Iterator, ResultSetInterface
                 $return[] = $row;
             } elseif (method_exists($row, 'toArray')) {
                 $return[] = $row->toArray();
-            } elseif ($row instanceof ArrayObject) {
+            } elseif (method_exists($row, 'getArrayCopy')) {
                 $return[] = $row->getArrayCopy();
             } else {
                 throw new Exception\RuntimeException(

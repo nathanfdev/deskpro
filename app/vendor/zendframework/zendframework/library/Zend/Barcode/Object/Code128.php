@@ -3,18 +3,14 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Barcode
  */
 
 namespace Zend\Barcode\Object;
 
 /**
  * Class for generate Code128 barcode
- *
- * @category   Zend
- * @package    Zend_Barcode
  */
 class Code128 extends AbstractObject
 {
@@ -119,7 +115,7 @@ class Code128 extends AbstractObject
 
     /**
      * Width of the barcode (in pixels)
-     * @return integer
+     * @return int
      */
     protected function calculateBarcodeWidth()
     {
@@ -210,13 +206,11 @@ class Code128 extends AbstractObject
         }
 
         $currentCharset = null;
-        $sum = 0;
-        $fak = 0;
         $result = array();
 
-        for ($pos = 0; $pos < strlen($string); $pos++) {
+        $strlen = strlen($string);
+        for ($pos = 0; $pos < $strlen; $pos++) {
             $char = $string[$pos];
-            $code = null;
 
             if (static::_isDigit($string, $pos, 4) && $currentCharset != 'C'
              || static::_isDigit($string, $pos, 2) && $currentCharset == 'C') {
@@ -253,7 +247,7 @@ class Code128 extends AbstractObject
                 if ($pos == 0) {
                     $code = array_search("START A", $this->charSets['A']);
                 } else {
-                    $code =array_search("Code A", $this->charSets[$currentCharset]);
+                    $code = array_search("Code A", $this->charSets[$currentCharset]);
                 }
                 $result[] = $code;
                 $currentCharset = 'A';

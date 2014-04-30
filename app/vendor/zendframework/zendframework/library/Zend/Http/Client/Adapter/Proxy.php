@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
  */
 
 namespace Zend\Http\Client\Adapter;
@@ -16,17 +15,13 @@ use Zend\Http\Response;
 use Zend\Stdlib\ErrorHandler;
 
 /**
- * HTTP Proxy-supporting Zend_Http_Client adapter class, based on the default
+ * HTTP Proxy-supporting Zend\Http\Client adapter class, based on the default
  * socket based adapter.
  *
  * Should be used if proxy HTTP access is required. If no proxy is set, will
- * fall back to Zend_Http_Client_Adapter_Socket behavior. Just like the
+ * fall back to Zend\Http\Client\Adapter\Socket behavior. Just like the
  * default Socket adapter, this adapter does not require any special extensions
  * installed.
- *
- * @category   Zend
- * @package    Zend_Http
- * @subpackage Client_Adapter
  */
 class Proxy extends Socket
 {
@@ -122,7 +117,9 @@ class Proxy extends Socket
     public function write($method, $uri, $httpVer = '1.1', $headers = array(), $body = '')
     {
         // If no proxy is set, fall back to default Socket adapter
-        if (! $this->config['proxy_host']) return parent::write($method, $uri, $httpVer, $headers, $body);
+        if (! $this->config['proxy_host']) {
+            return parent::write($method, $uri, $httpVer, $headers, $body);
+        }
 
         // Make sure we're properly connected
         if (! $this->socket) {
@@ -197,7 +194,7 @@ class Proxy extends Socket
      * Preform handshaking with HTTPS proxy using CONNECT method
      *
      * @param string  $host
-     * @param integer $port
+     * @param int $port
      * @param string  $httpVer
      * @param array   $headers
      * @throws AdapterException\RuntimeException

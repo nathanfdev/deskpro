@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
  */
 
 namespace Zend\Http;
@@ -14,9 +13,6 @@ use Zend\Loader\PluginClassLoader;
 
 /**
  * Plugin Class Loader implementation for HTTP headers
- *
- * @category   Zend
- * @package    Zend_Http
  */
 class HeaderLoader extends PluginClassLoader
 {
@@ -42,6 +38,7 @@ class HeaderLoader extends PluginClassLoader
         'contentlocation'    => 'Zend\Http\Header\ContentLocation',
         'contentmd5'         => 'Zend\Http\Header\ContentMD5',
         'contentrange'       => 'Zend\Http\Header\ContentRange',
+        'contenttransferencoding' => 'Zend\Http\Header\ContentTransferEncoding',
         'contenttype'        => 'Zend\Http\Header\ContentType',
         'cookie'             => 'Zend\Http\Header\Cookie',
         'date'               => 'Zend\Http\Header\Date',
@@ -59,6 +56,7 @@ class HeaderLoader extends PluginClassLoader
         'lastmodified'       => 'Zend\Http\Header\LastModified',
         'location'           => 'Zend\Http\Header\Location',
         'maxforwards'        => 'Zend\Http\Header\MaxForwards',
+        'origin'             => 'Zend\Http\Header\Origin',
         'pragma'             => 'Zend\Http\Header\Pragma',
         'proxyauthenticate'  => 'Zend\Http\Header\ProxyAuthenticate',
         'proxyauthorization' => 'Zend\Http\Header\ProxyAuthorization',

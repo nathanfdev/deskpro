@@ -28,7 +28,6 @@ use Doctrine\Common\Util\ClassUtils;
  * Allow data fixture references and identities to be persisted when cached data fixtures
  * are pre-loaded, for example, by LiipFunctionalTestBundle\Test\WebTestCase loadFixtures().
  *
- * @author Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author Anthon Pang <anthonp@nationalfibre.net>
  */
 class ProxyReferenceRepository extends ReferenceRepository
@@ -60,13 +59,12 @@ class ProxyReferenceRepository extends ReferenceRepository
      */
     public function serialize()
     {
-        $unitOfWork       = $this->getManager()->getUnitOfWork();
         $simpleReferences = array();
 
         foreach ($this->getReferences() as $name => $reference) {
             $className = $this->getRealClass(get_class($reference));
 
-            $simpleReferences[$name] = array($className, $this->getIdentifier($reference, $unitOfWork));
+            $simpleReferences[$name] = array($className, $reference->getId());
         }
 
         $serializedData = json_encode(array(
@@ -92,7 +90,7 @@ class ProxyReferenceRepository extends ReferenceRepository
                 $name,
                 $this->getManager()->getReference(
                     $proxyReference[0], // entity class name
-                    $proxyReference[1]  // identifiers
+                    $proxyReference[1]  // id
                 )
             );
         }

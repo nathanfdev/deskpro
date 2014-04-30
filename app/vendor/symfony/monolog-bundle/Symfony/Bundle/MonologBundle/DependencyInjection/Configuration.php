@@ -92,14 +92,6 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  *   - [level]: level name or int value, defaults to DEBUG
  *   - [bubble]: bool, defaults to true
  *
- * - syslogudp:
- *   - host: syslogd host name
- *   - [port]: defaults to 514
- *   - [facility]: defaults to LOG_USER
- *   - [logopts]: defaults to LOG_PID
- *   - [level]: level name or int value, defaults to DEBUG
- *   - [bubble]: bool, defaults to true
- *
  * - swift_mailer:
  *   - from_email: optional if email_prototype is given
  *   - to_email: optional if email_prototype is given
@@ -182,12 +174,6 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  *   - [bubble]: bool, defaults to true
  *   - [tags]: tag names
  *
- * - logentries:
- *   - token: logentries api token
- *   - [use_ssl]: whether or not SSL encryption should be used, defaults to true
- *   - [level]: level name or int value, defaults to DEBUG
- *   - [bubble]: bool, defaults to true
- *
  * @author Jordi Boggiano <j.boggiano@seld.be>
  * @author Christophe Coevoet <stof@notk.org>
  */
@@ -252,8 +238,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('room')->end() // hipchat
                             ->scalarNode('notify')->defaultFalse()->end() // hipchat
                             ->scalarNode('nickname')->defaultValue('Monolog')->end() // hipchat
-                            ->scalarNode('token')->end() // pushover & hipchat & loggly & logentries
-                            ->booleanNode('use_ssl')->defaultTrue()->end() // logentries
+                            ->scalarNode('token')->end() // pushover & hipchat & loggly
                             ->variableNode('user') // pushover
                                 ->validate()
                                     ->ifTrue(function($v) {
@@ -263,8 +248,6 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                             ->scalarNode('title')->defaultNull()->end() // pushover
-                            ->scalarNode('host')->end() // syslogudp
-                            ->scalarNode('port')->defaultValue(514)->end() // syslogudp
                             ->arrayNode('publisher')
                                 ->canBeUnset()
                                 ->beforeNormalization()
@@ -493,10 +476,6 @@ class Configuration implements ConfigurationInterface
                             ->thenInvalid('The id has to be specified to use a service as handler')
                         ->end()
                         ->validate()
-                            ->ifTrue(function($v) { return 'syslogudp' === $v['type'] && !isset($v['host']); })
-                            ->thenInvalid('The host has to be specified to use a syslogudp as handler')
-                        ->end()
-                        ->validate()
                             ->ifTrue(function($v) { return 'gelf' === $v['type'] && !isset($v['publisher']); })
                             ->thenInvalid('The publisher has to be specified to use a GelfHandler')
                         ->end()
@@ -543,10 +522,6 @@ class Configuration implements ConfigurationInterface
                                 return $v;
                             })
                         ->end()
-                        ->validate()
-                            ->ifTrue(function($v) { return 'logentries' === $v['type'] && empty($v['token']); })
-                            ->thenInvalid('The token has to be specified to use a LogEntriesHandler')
-                        ->end()
                     ->end()
                     ->validate()
                         ->ifTrue(function($v) { return isset($v['debug']); })
@@ -559,6 +534,7 @@ class Configuration implements ConfigurationInterface
                             'level' => 'ERROR',
                             'bubble' => 'false',
                             'formatter' => 'my_formatter',
+                            'processors' => array('some_callable')
                             ),
                         'main' => array(
                             'type' => 'fingers_crossed',
@@ -568,7 +544,7 @@ class Configuration implements ConfigurationInterface
                             ),
                         'custom' => array(
                             'type' => 'service',
-                            'id' => 'my_handler',
+                            'id' => 'my_handler'
                             )
                         ))
                 ->end()

@@ -31,7 +31,7 @@ abstract class DoctrineCommandHelper
      * @param Application $application
      * @param string      $emName
      */
-    public static function setApplicationEntityManager(Application $application, $emName)
+    static public function setApplicationEntityManager(Application $application, $emName)
     {
         /** @var $em \Doctrine\ORM\EntityManager */
         $em = $application->getKernel()->getContainer()->get('doctrine')->getManager($emName);
@@ -46,7 +46,7 @@ abstract class DoctrineCommandHelper
      * @param Application $application
      * @param string      $connName
      */
-    public static function setApplicationConnection(Application $application, $connName)
+    static public function setApplicationConnection(Application $application, $connName)
     {
         $connection = $application->getKernel()->getContainer()->get('doctrine')->getConnection($connName);
         $helperSet = $application->getHelperSet();

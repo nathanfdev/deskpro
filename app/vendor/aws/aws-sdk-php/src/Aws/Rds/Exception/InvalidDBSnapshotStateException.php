@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * Exception that occurs when a InvalidDBSnapshotStateException error is encountered
+ * The state of the DB snapshot does not allow deletion.
  */
 class InvalidDBSnapshotStateException extends RdsException {}

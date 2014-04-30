@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Validator
  */
 
 namespace Zend\Validator;
@@ -15,27 +14,27 @@ use DateTime;
 use DateTimeZone;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
-use Zend\Validator\Exception;
 
-/**
- * @category   Zend
- * @package    Zend_Validator
- */
 class DateStep extends Date
 {
-    const NOT_STEP     = 'dateStepNotStep';
+    const NOT_STEP       = 'dateStepNotStep';
+
+    const FORMAT_DEFAULT = DateTime::ISO8601;
 
     /**
      * @var array
      */
     protected $messageTemplates = array(
-        self::NOT_STEP     => "The input is not a valid step"
+        self::INVALID      => "Invalid type given. String, integer, array or DateTime expected",
+        self::INVALID_DATE => "The input does not appear to be a valid date",
+        self::FALSEFORMAT  => "The input does not fit the date format '%format%'",
+        self::NOT_STEP     => "The input is not a valid step",
     );
 
     /**
      * Optional base date value
      *
-     * @var string|integer|\DateTime
+     * @var string|int|\DateTime
      */
     protected $baseValue = '1970-01-01T00:00:00Z';
 
@@ -46,13 +45,6 @@ class DateStep extends Date
      * @var DateInterval
      */
     protected $step;
-
-    /**
-     * Format to use for parsing date strings
-     *
-     * @var string
-     */
-    protected $format = DateTime::ISO8601;
 
     /**
      * Optional timezone to be used when the baseValue
@@ -87,21 +79,11 @@ class DateStep extends Date
             $options = $temp;
         }
 
-        if (isset($options['baseValue'])) {
-            $this->setBaseValue($options['baseValue']);
+        if (!isset($options['step'])) {
+            $options['step'] = new DateInterval('P1D');
         }
-        if (isset($options['step'])) {
-            $this->setStep($options['step']);
-        } else {
-            $this->setStep(new DateInterval('P1D'));
-        }
-        if (array_key_exists('format', $options)) {
-            $this->setFormat($options['format']);
-        }
-        if (isset($options['timezone'])) {
-            $this->setTimezone($options['timezone']);
-        } else {
-            $this->setTimezone(new DateTimeZone(date_default_timezone_get()));
+        if (!isset($options['timezone'])) {
+            $options['timezone'] = new DateTimeZone(date_default_timezone_get());
         }
 
         parent::__construct($options);
@@ -110,7 +92,7 @@ class DateStep extends Date
     /**
      * Sets the base value from which the step should be computed
      *
-     * @param  string|integer|\DateTime $baseValue
+     * @param  string|int|\DateTime $baseValue
      * @return DateStep
      */
     public function setBaseValue($baseValue)
@@ -122,7 +104,7 @@ class DateStep extends Date
     /**
      * Returns the base value from which the step should be computed
      *
-     * @return string|integer|\DateTime
+     * @return string|int|\DateTime
      */
     public function getBaseValue()
     {
@@ -174,60 +156,51 @@ class DateStep extends Date
     }
 
     /**
-     * Converts an int or string to a DateTime object
+     * Supports formats with ISO week (W) definitions
      *
-     * @param  string|integer|\DateTime $param
-     * @return \DateTime
-     * @throws Exception\InvalidArgumentException
+     * @see Date::convertString()
      */
-    protected function convertToDateTime($param)
+    protected function convertString($value, $addErrors = true)
     {
-        $dateObj = $param;
-        if (is_int($param)) {
-            // Convert from timestamp
-            $dateObj = date_create("@$param");
-        } elseif (is_string($param)) {
-            // Custom week format support
-            if (strpos($this->getFormat(), 'Y-\WW') === 0
-                && preg_match('/^([0-9]{4})\-W([0-9]{2})/', $param, $matches)
-            ) {
-                $dateObj = new DateTime();
-                $dateObj->setISODate($matches[1], $matches[2]);
-            } else {
-                $dateObj = DateTime::createFromFormat(
-                    $this->getFormat(), $param, $this->getTimezone()
-                );
-            }
-        }
-        if (!($dateObj instanceof DateTime)) {
-            throw new Exception\InvalidArgumentException('Invalid date param given');
+        // Custom week format support
+        if (strpos($this->format, 'Y-\WW') === 0
+            && preg_match('/^([0-9]{4})\-W([0-9]{2})/', $value, $matches)
+        ) {
+            $date = new DateTime;
+            $date->setISODate($matches[1], $matches[2]);
+        } else {
+            $date = DateTime::createFromFormat($this->format, $value, $this->timezone);
         }
 
-        return $dateObj;
+        // Invalid dates can show up as warnings (ie. "2007-02-99")
+        // and still return a DateTime object.
+        $errors = DateTime::getLastErrors();
+        if ($errors['warning_count'] > 0) {
+            if ($addErrors) {
+                $this->error(self::FALSEFORMAT);
+            }
+            return false;
+        }
+
+        return $date;
     }
 
     /**
      * Returns true if a date is within a valid step
      *
-     * @param  string|integer|\DateTime $value
+     * @param  string|int|\DateTime $value
      * @return bool
      * @throws Exception\InvalidArgumentException
      */
     public function isValid($value)
     {
-        parent::isValid($value);
-
-        $this->setValue($value);
-
-        $baseDate = $this->convertToDateTime($this->getBaseValue());
-        $step     = $this->getStep();
-
-        // Parse the date
-        try {
-            $valueDate = $this->convertToDateTime($value);
-        } catch (Exception\InvalidArgumentException $ex) {
+        if (!parent::isValid($value)) {
             return false;
         }
+
+        $valueDate = $this->convertToDateTime($value, false); // avoid duplicate errors
+        $baseDate  = $this->convertToDateTime($this->baseValue, false);
+        $step      = $this->getStep();
 
         // Same date?
         if ($valueDate == $baseDate) {

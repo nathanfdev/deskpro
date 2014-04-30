@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Filter
  */
 
 namespace Zend\Filter\Encrypt;
@@ -21,9 +20,6 @@ use Zend\Crypt\Symmetric\Exception as SymmetricException;
 
 /**
  * Encryption adapter for Zend\Crypt\BlockCipher
- *
- * @category   Zend
- * @package    Zend_Filter
  */
 class BlockCipher implements EncryptionAlgorithmInterface
 {
@@ -60,7 +56,7 @@ class BlockCipher implements EncryptionAlgorithmInterface
     /**
      * Class constructor
      *
-     * @param  string|array|\Traversable $options Encryption Options
+     * @param  string|array|Traversable $options Encryption Options
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
@@ -102,7 +98,7 @@ class BlockCipher implements EncryptionAlgorithmInterface
      * Sets new encryption options
      *
      * @param  string|array $options Encryption options
-     * @return BlockCipher
+     * @return self
      * @throws Exception\InvalidArgumentException
      */
     public function setEncryption($options)
@@ -166,7 +162,7 @@ class BlockCipher implements EncryptionAlgorithmInterface
      * Set the inizialization vector
      *
      * @param  string $vector
-     * @return BlockCipher
+     * @return self
      * @throws Exception\InvalidArgumentException
      */
     public function setVector($vector)
@@ -184,7 +180,7 @@ class BlockCipher implements EncryptionAlgorithmInterface
      * Set the encryption key
      *
      * @param  string $key
-     * @return BlockCipher
+     * @return self
      * @throws Exception\InvalidArgumentException
      */
     public function setKey($key)
@@ -219,10 +215,10 @@ class BlockCipher implements EncryptionAlgorithmInterface
     }
 
     /**
-     * Sets a internal compression for values to encrypt
+     * Sets an internal compression for values to encrypt
      *
      * @param  string|array $compression
-     * @return BlockCipher
+     * @return self
      */
     public function setCompression($compression)
     {
@@ -254,8 +250,6 @@ class BlockCipher implements EncryptionAlgorithmInterface
         try {
             $encrypted = $this->blockCipher->encrypt($value);
         } catch (CryptException\InvalidArgumentException $e) {
-            throw new Exception\InvalidArgumentException($e->getMessage());
-        } catch (SymmetricException\InvalidArgumentException $e) {
             throw new Exception\InvalidArgumentException($e->getMessage());
         }
         return $encrypted;

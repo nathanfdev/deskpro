@@ -10,19 +10,22 @@ use Guzzle\Common\Exception\RuntimeException;
  */
 abstract class AbstractConfigLoader implements ConfigLoaderInterface
 {
-    /**
-     * @var array Array of aliases for actual filenames
-     */
+    /** @var array Array of aliases for actual filenames */
     protected $aliases = array();
 
-    /**
-     * @var array Hash of previously loaded filenames
-     */
+    /** @var array Hash of previously loaded filenames */
     protected $loadedFiles = array();
 
-    /**
-     * {@inheritdoc}
-     */
+    /** @var array JSON error code mappings */
+    protected static $jsonErrors = array(
+        JSON_ERROR_NONE => 'JSON_ERROR_NONE - No errors',
+        JSON_ERROR_DEPTH => 'JSON_ERROR_DEPTH - Maximum stack depth exceeded',
+        JSON_ERROR_STATE_MISMATCH => 'JSON_ERROR_STATE_MISMATCH - Underflow or the modes mismatch',
+        JSON_ERROR_CTRL_CHAR => 'JSON_ERROR_CTRL_CHAR - Unexpected control character found',
+        JSON_ERROR_SYNTAX => 'JSON_ERROR_SYNTAX - Syntax error, malformed JSON',
+        JSON_ERROR_UTF8 => 'JSON_ERROR_UTF8 - Malformed UTF-8 characters, possibly incorrectly encoded'
+    );
+
     public function load($config, array $options = array())
     {
         // Reset the array of loaded files because this is a new config
@@ -108,7 +111,8 @@ abstract class AbstractConfigLoader implements ConfigLoaderInterface
                 $config = json_decode($json, true);
                 // Throw an exception if there was an error loading the file
                 if ($error = json_last_error()) {
-                    throw new RuntimeException("Error loading JSON data from {$filename}: {$error}");
+                    $message = isset(self::$jsonErrors[$error]) ? self::$jsonErrors[$error] : 'Unknown error';
+                    throw new RuntimeException("Error loading JSON data from {$filename}: ({$error}) - {$message}");
                 }
                 break;
             case 'php':

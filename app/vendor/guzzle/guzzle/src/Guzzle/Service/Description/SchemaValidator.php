@@ -9,24 +9,16 @@ use Guzzle\Common\ToArrayInterface;
  */
 class SchemaValidator implements ValidatorInterface
 {
-    /**
-     * @var self Cache instance of the object
-     */
+    /** @var self Cache instance of the object */
     protected static $instance;
 
-    /**
-     * @var bool Whether or not integers are converted to strings when an integer is received for a string input
-     */
+    /** @var bool Whether or not integers are converted to strings when an integer is received for a string input */
     protected $castIntegerToStringType;
 
-    /**
-     * @var array Errors encountered while validating
-     */
+    /** @var array Errors encountered while validating */
     protected $errors;
 
     /**
-     * Get a cached instance
-     *
      * @return self
      * @codeCoverageIgnore
      */
@@ -48,9 +40,6 @@ class SchemaValidator implements ValidatorInterface
         $this->castIntegerToStringType = $castIntegerToStringType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validate(Parameter $param, &$value)
     {
         $this->errors = array();
@@ -147,7 +136,7 @@ class SchemaValidator implements ValidatorInterface
                             $current = null;
                             $this->recursiveProcess($property, $current, $path, $depth + 1);
                             // Only set the value if it was populated with something
-                            if ($current) {
+                            if (null !== $current) {
                                 $value[$name] = $current;
                             }
                         }
@@ -168,8 +157,9 @@ class SchemaValidator implements ValidatorInterface
                             }
                         } else {
                             // if additionalProperties is set to false and there are additionalProperties in the values, then fail
-                            $keys = array_keys($value);
-                            $this->errors[] = sprintf('%s[%s] is not an allowed property', $path, reset($keys));
+                            foreach ($diff as $prop) {
+                                $this->errors[] = sprintf('%s[%s] is not an allowed property', $path, $prop);
+                            }
                         }
                     }
                 }

@@ -3,23 +3,16 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Mvc
  */
 
 namespace Zend\Mvc\Service;
 
 use Zend\Mvc\Controller\ControllerManager;
-use Zend\Mvc\Service\DiStrictAbstractServiceFactory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Mvc
- * @subpackage Service
- */
 class ControllerLoaderFactory implements FactoryInterface
 {
     /**
@@ -47,13 +40,7 @@ class ControllerLoaderFactory implements FactoryInterface
         $config = $serviceLocator->get('Config');
 
         if (isset($config['di']) && isset($config['di']['allowed_controllers']) && $serviceLocator->has('Di')) {
-            $diAbstractFactory = new DiStrictAbstractServiceFactory(
-                $serviceLocator->get('Di'),
-                DiStrictAbstractServiceFactory::USE_SL_BEFORE_DI
-            );
-            $diAbstractFactory->setAllowedServiceNames($config['di']['allowed_controllers']);
-
-            $controllerLoader->addAbstractFactory($diAbstractFactory);
+            $controllerLoader->addAbstractFactory($serviceLocator->get('DiStrictAbstractServiceFactory'));
         }
 
         return $controllerLoader;

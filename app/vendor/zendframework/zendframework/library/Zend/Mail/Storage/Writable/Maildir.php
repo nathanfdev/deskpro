@@ -3,24 +3,19 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Mail
  */
 
 namespace Zend\Mail\Storage\Writable;
 
+use RecursiveIteratorIterator;
 use Zend\Mail\Exception as MailException;
 use Zend\Mail\Storage;
 use Zend\Mail\Storage\Exception as StorageException;
 use Zend\Mail\Storage\Folder;
 use Zend\Stdlib\ErrorHandler;
 
-/**
- * @category   Zend
- * @package    Zend_Mail
- * @subpackage Storage
- */
 class Maildir extends Folder\Maildir implements WritableInterface
 {
     // TODO: init maildir (+ constructor option create if not found)
@@ -431,7 +426,7 @@ class Maildir extends Folder\Maildir implements WritableInterface
     /**
      * append a new message to mail storage
      *
-     * @param   string|stream                              $message message as string or stream resource
+     * @param   string|resource                            $message message as string or stream resource
      * @param   null|string|\Zend\Mail\Storage\Folder      $folder  folder for new message, else current folder is taken
      * @param   null|array                                 $flags   set flags for new message, else a default set is used
      * @param   bool                                       $recent  handle this mail as if recent flag has been set,
@@ -760,7 +755,7 @@ class Maildir extends Folder\Maildir implements WritableInterface
             }
         }
 
-        $folders = new \RecursiveIteratorIterator($this->getFolders(), \RecursiveIteratorIterator::SELF_FIRST);
+        $folders = new RecursiveIteratorIterator($this->getFolders(), RecursiveIteratorIterator::SELF_FIRST);
         foreach ($folders as $folder) {
             $subdir = $folder->getGlobalName();
             if ($subdir == 'INBOX') {

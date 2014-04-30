@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Form
  */
 
 namespace Zend\Form\Element;
@@ -19,11 +18,6 @@ use Zend\Validator\DateStep as DateStepValidator;
 use Zend\Validator\GreaterThan as GreaterThanValidator;
 use Zend\Validator\LessThan as LessThanValidator;
 
-/**
- * @category   Zend
- * @package    Zend_Form
- * @subpackage Element
- */
 class DateTime extends Element implements InputProviderInterface
 {
     const DATETIME_FORMAT = 'Y-m-d\TH:iP';
@@ -38,9 +32,7 @@ class DateTime extends Element implements InputProviderInterface
     );
 
     /**
-     *
-     * Opera and mobile browsers support datetime input, and display a datepicker control
-     * But the submitted value does not include seconds.
+     * A valid format string accepted by date()
      *
      * @var string
      */

@@ -15,13 +15,16 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
     protected $groups = array();
     protected $queued = array();
     protected $maxHandles;
+    protected $selectTimeout;
 
     /**
-     * @param int $maxHandles The maximum number of idle CurlMulti handles to allow to remain open
+     * @param int   $maxHandles The maximum number of idle CurlMulti handles to allow to remain open
+     * @param float $selectTimeout timeout for curl_multi_select
      */
-    public function __construct($maxHandles = 3)
+    public function __construct($maxHandles = 3, $selectTimeout = 1.0)
     {
         $this->maxHandles = $maxHandles;
+        $this->selectTimeout = $selectTimeout;
         // You can get some weird "Too many open files" errors when sending a large amount of requests in parallel.
         // These two statements autoload classes before a system runs out of file descriptors so that you can get back
         // valuable error messages if you run out.
@@ -29,9 +32,6 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
         class_exists('Guzzle\Http\Exception\CurlException');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function add(RequestInterface $request)
     {
         $this->queued[] = $request;
@@ -39,9 +39,6 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function all()
     {
         $requests = $this->queued;
@@ -52,9 +49,6 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
         return $requests;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove(RequestInterface $request)
     {
         foreach ($this->queued as $i => $r) {
@@ -73,9 +67,6 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reset($hard = false)
     {
         $this->queued = array();
@@ -90,9 +81,6 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function send()
     {
         if ($this->queued) {
@@ -102,15 +90,21 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
             while ($request = array_shift($this->queued)) {
                 $group->add($request);
             }
-            $group->send();
-            array_pop($this->groups);
-            $this->cleanupHandles();
+            try {
+                $group->send();
+                array_pop($this->groups);
+                $this->cleanupHandles();
+            } catch (\Exception $e) {
+                // Remove the group and cleanup if an exception was encountered and no more requests in group
+                if (!$group->count()) {
+                    array_pop($this->groups);
+                    $this->cleanupHandles();
+                }
+                throw $e;
+            }
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function count()
     {
         return count($this->all());
@@ -131,7 +125,7 @@ class CurlMultiProxy extends AbstractHasDispatcher implements CurlMultiInterface
         }
 
         // All are claimed, so create one
-        $handle = new CurlMulti();
+        $handle = new CurlMulti($this->selectTimeout);
         $handle->setEventDispatcher($this->getEventDispatcher());
         $this->handles[] = $handle;
 

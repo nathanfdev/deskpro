@@ -16,29 +16,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class MockPlugin extends AbstractHasDispatcher implements EventSubscriberInterface, \Countable
 {
-    /**
-     * @var array Array of mock responses / exceptions
-     */
+    /** @var array Array of mock responses / exceptions */
     protected $queue = array();
 
-    /**
-     * @var bool Whether or not to remove the plugin when the queue is empty
-     */
+    /** @var bool Whether or not to remove the plugin when the queue is empty */
     protected $temporary = false;
 
-    /**
-     * @var array Array of requests that were mocked
-     */
+    /** @var array Array of requests that were mocked */
     protected $received = array();
 
-    /**
-     * @var bool Whether or not to consume an entity body when a mock response is served
-     */
+    /** @var bool Whether or not to consume an entity body when a mock response is served */
     protected $readBodies;
 
     /**
-     * Constructor
-     *
      * @param array $items      Array of responses or exceptions to queue
      * @param bool  $temporary  Set to TRUE to remove the plugin when the queue is empty
      * @param bool  $readBodies Set to TRUE to consume the entity body when a mock is served
@@ -58,17 +48,12 @@ class MockPlugin extends AbstractHasDispatcher implements EventSubscriberInterfa
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
-        return array('client.create_request' => 'onRequestCreate');
+        // Use a number lower than the CachePlugin
+        return array('request.before_send' => array('onRequestBeforeSend', -999));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getAllEvents()
     {
         return array('mock.request');
@@ -194,35 +179,26 @@ class MockPlugin extends AbstractHasDispatcher implements EventSubscriberInterfa
      */
     public function dequeue(RequestInterface $request)
     {
-        $this->dispatch('mock.request', array(
-            'plugin'  => $this,
-            'request' => $request
-        ));
+        $this->dispatch('mock.request', array('plugin' => $this, 'request' => $request));
 
         $item = array_shift($this->queue);
         if ($item instanceof Response) {
             if ($this->readBodies && $request instanceof EntityEnclosingRequestInterface) {
-                $request->getEventDispatcher()->addListener('request.sent', function (Event $event) {
+                $request->getEventDispatcher()->addListener('request.sent', $f = function (Event $event) use (&$f) {
                     while ($data = $event['request']->getBody()->read(8096));
+                    // Remove the listener after one-time use
+                    $event['request']->getEventDispatcher()->removeListener('request.sent', $f);
                 });
             }
-            $request->setResponse($item, true);
+            $request->setResponse($item);
         } elseif ($item instanceof CurlException) {
-            $request->getEventDispatcher()->addListener(
-                'request.before_send',
-                function (Event $event) use ($request, $item) {
-                    // Emulates exceptions encountered while transferring requests
-                    $item->setRequest($request);
-                    $request->setState(RequestInterface::STATE_ERROR);
-                    $request->dispatch('request.exception', array('request' => $request, 'exception' => $item));
-                    // Only throw if the exception wasn't handled
-                    if ($request->getState() == RequestInterface::STATE_ERROR) {
-                        throw $item;
-                    }
-                },
-                // Use a number lower than the CachePlugin
-                -999
-            );
+            // Emulates exceptions encountered while transferring requests
+            $item->setRequest($request);
+            $state = $request->setState(RequestInterface::STATE_ERROR, array('exception' => $item));
+            // Only throw if the exception wasn't handled
+            if ($state == RequestInterface::STATE_ERROR) {
+                throw $item;
+            }
         }
 
         return $this;
@@ -247,20 +223,23 @@ class MockPlugin extends AbstractHasDispatcher implements EventSubscriberInterfa
     }
 
     /**
-     * Called when a request completes
+     * Called when a request is about to be sent
      *
      * @param Event $event
+     * @throws \OutOfBoundsException When queue is empty
      */
-    public function onRequestCreate(Event $event)
+    public function onRequestBeforeSend(Event $event)
     {
-        if (!empty($this->queue)) {
-            $request = $event['request'];
-            $this->dequeue($request);
-            $this->received[] = $request;
-            // Detach the filter from the client so it's a one-time use
-            if ($this->temporary && empty($this->queue) && $request->getClient()) {
-                $request->getClient()->getEventDispatcher()->removeSubscriber($this);
-            }
+        if (!$this->queue) {
+            throw new \OutOfBoundsException('Mock queue is empty');
         }
+
+        $request = $event['request'];
+        $this->received[] = $request;
+        // Detach the filter from the client so it's a one-time use
+        if ($this->temporary && count($this->queue) == 1 && $request->getClient()) {
+            $request->getClient()->getEventDispatcher()->removeSubscriber($this);
+        }
+        $this->dequeue($request);
     }
 }

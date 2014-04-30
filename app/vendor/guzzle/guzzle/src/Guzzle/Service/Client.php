@@ -5,6 +5,7 @@ namespace Guzzle\Service;
 use Guzzle\Common\Collection;
 use Guzzle\Common\Exception\InvalidArgumentException;
 use Guzzle\Common\Exception\BadMethodCallException;
+use Guzzle\Common\Version;
 use Guzzle\Inflection\InflectorInterface;
 use Guzzle\Inflection\Inflector;
 use Guzzle\Http\Client as HttpClient;
@@ -25,29 +26,16 @@ class Client extends HttpClient implements ClientInterface
 {
     const COMMAND_PARAMS = 'command.params';
 
-    /**
-     * @var ServiceDescriptionInterface Description of the service and possible commands
-     */
+    /** @var ServiceDescriptionInterface Description of the service and possible commands */
     protected $serviceDescription;
 
-    /**
-     * @var bool Whether or not magic methods are enabled
-     */
-    protected $enableMagicMethods = true;
-
-    /**
-     * @var CommandFactoryInterface
-     */
+    /** @var CommandFactoryInterface */
     protected $commandFactory;
 
-    /**
-     * @var ResourceIteratorFactoryInterface
-     */
+    /** @var ResourceIteratorFactoryInterface */
     protected $resourceIteratorFactory;
 
-    /**
-     * @var InflectorInterface Inflector associated with the service/client
-     */
+    /** @var InflectorInterface Inflector associated with the service/client */
     protected $inflector;
 
     /**
@@ -62,9 +50,6 @@ class Client extends HttpClient implements ClientInterface
         return new static(isset($config['base_url']) ? $config['base_url'] : null, $config);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getAllEvents()
     {
         return array_merge(HttpClient::getAllEvents(), array(
@@ -72,74 +57,48 @@ class Client extends HttpClient implements ClientInterface
             'command.before_prepare',
             'command.after_prepare',
             'command.before_send',
-            'command.after_send'
+            'command.after_send',
+            'command.parse_response'
         ));
     }
 
     /**
-     * Magic method used to retrieve a command. Magic methods must be enabled on the client to use this functionality.
+     * Magic method used to retrieve a command
      *
      * @param string $method Name of the command object to instantiate
      * @param array  $args   Arguments to pass to the command
      *
      * @return mixed Returns the result of the command
-     * @throws BadMethodCallException when a command is not found or magic methods are disabled
+     * @throws BadMethodCallException when a command is not found
      */
-    public function __call($method, $args = null)
+    public function __call($method, $args)
     {
-        if (!$this->enableMagicMethods) {
-            throw new BadMethodCallException("Missing method {$method}. This client has not enabled magic methods.");
-        }
-
         return $this->getCommand($method, isset($args[0]) ? $args[0] : array())->getResult();
     }
 
-    /**
-     * Specify whether or not magic methods are enabled (disabled by default)
-     *
-     * @param bool $isEnabled Set to true to enable magic methods or false to disable them
-     *
-     * @return self
-     */
-    public function enableMagicMethods($isEnabled)
-    {
-        $this->enableMagicMethods = $isEnabled;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getCommand($name, array $args = array())
     {
+        // Add global client options to the command
+        if ($options = $this->getConfig(self::COMMAND_PARAMS)) {
+            $args += $options;
+        }
+
         if (!($command = $this->getCommandFactory()->factory($name, $args))) {
             throw new InvalidArgumentException("Command was not found matching {$name}");
         }
 
         $command->setClient($this);
-
-        // Add global client options to the command
-        if ($command instanceof Collection) {
-            if ($options = $this->getConfig(self::COMMAND_PARAMS)) {
-                foreach ($options as $key => $value) {
-                    if (!$command->hasKey($key)) {
-                        $command->set($key, $value);
-                    }
-                }
-            }
-        }
-
-        $this->dispatch('client.command.create', array(
-            'client'  => $this,
-            'command' => $command
-        ));
+        $this->dispatch('client.command.create', array('client' => $this, 'command' => $command));
 
         return $command;
     }
 
     /**
-     * {@inheritdoc}
+     * Set the command factory used to create commands by name
+     *
+     * @param CommandFactoryInterface $factory Command factory
+     *
+     * @return self
      */
     public function setCommandFactory(CommandFactoryInterface $factory)
     {
@@ -149,7 +108,11 @@ class Client extends HttpClient implements ClientInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set the resource iterator factory associated with the client
+     *
+     * @param ResourceIteratorFactoryInterface $factory Resource iterator factory
+     *
+     * @return self
      */
     public function setResourceIteratorFactory(ResourceIteratorFactoryInterface $factory)
     {
@@ -158,9 +121,6 @@ class Client extends HttpClient implements ClientInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIterator($command, array $commandOptions = null, array $iteratorOptions = array())
     {
         if (!($command instanceof CommandInterface)) {
@@ -170,46 +130,112 @@ class Client extends HttpClient implements ClientInterface
         return $this->getResourceIteratorFactory()->build($command, $iteratorOptions);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function execute($command)
     {
         if ($command instanceof CommandInterface) {
-            $command = array($command);
-            $singleCommand = true;
-        } elseif (is_array($command)) {
-            $singleCommand = false;
+            $this->send($this->prepareCommand($command));
+            $this->dispatch('command.after_send', array('command' => $command));
+            return $command->getResult();
+        } elseif (is_array($command) || $command instanceof \Traversable) {
+            return $this->executeMultiple($command);
         } else {
             throw new InvalidArgumentException('Command must be a command or array of commands');
         }
+    }
 
-        $failureException = null;
+    public function setDescription(ServiceDescriptionInterface $service)
+    {
+        $this->serviceDescription = $service;
+
+        if ($this->getCommandFactory() && $this->getCommandFactory() instanceof CompositeFactory) {
+            $this->commandFactory->add(new Command\Factory\ServiceDescriptionFactory($service));
+        }
+
+        // If a baseUrl was set on the description, then update the client
+        if ($baseUrl = $service->getBaseUrl()) {
+            $this->setBaseUrl($baseUrl);
+        }
+
+        return $this;
+    }
+
+    public function getDescription()
+    {
+        return $this->serviceDescription;
+    }
+
+    /**
+     * Set the inflector used with the client
+     *
+     * @param InflectorInterface $inflector Inflection object
+     *
+     * @return self
+     */
+    public function setInflector(InflectorInterface $inflector)
+    {
+        $this->inflector = $inflector;
+
+        return $this;
+    }
+
+    /**
+     * Get the inflector used with the client
+     *
+     * @return self
+     */
+    public function getInflector()
+    {
+        if (!$this->inflector) {
+            $this->inflector = Inflector::getDefault();
+        }
+
+        return $this->inflector;
+    }
+
+    /**
+     * Prepare a command for sending and get the RequestInterface object created by the command
+     *
+     * @param CommandInterface $command Command to prepare
+     *
+     * @return RequestInterface
+     */
+    protected function prepareCommand(CommandInterface $command)
+    {
+        // Set the client and prepare the command
+        $request = $command->setClient($this)->prepare();
+        // Set the state to new if the command was previously executed
+        $request->setState(RequestInterface::STATE_NEW);
+        $this->dispatch('command.before_send', array('command' => $command));
+
+        return $request;
+    }
+
+    /**
+     * Execute multiple commands in parallel
+     *
+     * @param array|Traversable $commands Array of CommandInterface objects to execute
+     *
+     * @return array Returns an array of the executed commands
+     * @throws Exception\CommandTransferException
+     */
+    protected function executeMultiple($commands)
+    {
         $requests = array();
         $commandRequests = new \SplObjectStorage();
 
-        foreach ($command as $c) {
-            $c->setClient($this);
-            // Set the state to new if the command was previously executed
-            $request = $c->prepare()->setState(RequestInterface::STATE_NEW);
-            $commandRequests[$request] = $c;
+        foreach ($commands as $command) {
+            $request = $this->prepareCommand($command);
+            $commandRequests[$request] = $command;
             $requests[] = $request;
-            $this->dispatch('command.before_send', array('command' => $c));
         }
 
         try {
             $this->send($requests);
-            foreach ($command as $c) {
-                $this->dispatch('command.after_send', array('command' => $c));
+            foreach ($commands as $command) {
+                $this->dispatch('command.after_send', array('command' => $command));
             }
-            return $singleCommand ? end($command)->getResult() : $command;
+            return $commands;
         } catch (MultiTransferException $failureException) {
-
-            if ($singleCommand) {
-                // If only sending a single request, then don't use a CommandTransferException
-                throw $failureException->getFirst();
-            }
-
             // Throw a CommandTransferException using the successful and failed commands
             $e = CommandTransferException::fromMultiTransferException($failureException);
 
@@ -231,54 +257,6 @@ class Client extends HttpClient implements ClientInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDescription(ServiceDescriptionInterface $service)
-    {
-        $this->serviceDescription = $service;
-
-        // If a baseUrl was set on the description, then update the client
-        if ($baseUrl = $service->getBaseUrl()) {
-            $this->setBaseUrl($baseUrl);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDescription()
-    {
-        return $this->serviceDescription;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setInflector(InflectorInterface $inflector)
-    {
-        $this->inflector = $inflector;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getInflector()
-    {
-        if (!$this->inflector) {
-            $this->inflector = Inflector::getDefault();
-        }
-
-        return $this->inflector;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getResourceIteratorFactory()
     {
         if (!$this->resourceIteratorFactory) {
@@ -306,5 +284,14 @@ class Client extends HttpClient implements ClientInterface
         }
 
         return $this->commandFactory;
+    }
+
+    /**
+     * @deprecated
+     * @codeCoverageIgnore
+     */
+    public function enableMagicMethods($isEnabled)
+    {
+        Version::warn(__METHOD__ . ' is deprecated');
     }
 }

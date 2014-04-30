@@ -3,76 +3,65 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Code
  */
 
 namespace Zend\Code\Generator\DocBlock\Tag;
 
-use Zend\Code\Generator\DocBlock\Tag;
-use Zend\Code\Reflection\DocBlock\Tag\TagInterface as ReflectionDocBlockTag;
+use Zend\Code\Generator\DocBlock\TagManager;
+use Zend\Code\Reflection\DocBlock\Tag\TagInterface as ReflectionTagInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Code_Generator
- */
-class ReturnTag extends Tag
+class ReturnTag extends AbstractTypeableTag implements TagInterface
 {
-
     /**
-     * @var string
-     */
-    protected $datatype = null;
-
-    /**
-     * fromReflection()
-     *
-     * @param ReflectionDocBlockTag $reflectionTagReturn
+     * @param ReflectionTagInterface $reflectionTag
      * @return ReturnTag
+     * @deprecated Deprecated in 2.3. Use TagManager::createTagFromReflection() instead
      */
-    public static function fromReflection(ReflectionDocBlockTag $reflectionTagReturn)
+    public static function fromReflection(ReflectionTagInterface $reflectionTag)
     {
-        $returnTag = new static();
-
-        $returnTag->setName('return');
-        $returnTag->setDatatype($reflectionTagReturn->getType()); // @todo rename
-        $returnTag->setDescription($reflectionTagReturn->getDescription());
-
-        return $returnTag;
+        $tagManager = new TagManager();
+        $tagManager->initializeDefaultTags();
+        return $tagManager->createTagFromReflection($reflectionTag);
     }
 
     /**
-     * setDatatype()
-     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'return';
+    }
+
+    /**
      * @param string $datatype
      * @return ReturnTag
+     * @deprecated Deprecated in 2.3. Use setTypes() instead
      */
     public function setDatatype($datatype)
     {
-        $this->datatype = $datatype;
-        return $this;
+        return $this->setTypes($datatype);
     }
 
     /**
-     * getDatatype()
-     *
      * @return string
+     * @deprecated Deprecated in 2.3. Use getTypes() or getTypesAsString() instead
      */
     public function getDatatype()
     {
-        return $this->datatype;
+        return $this->getTypesAsString();
     }
 
-
     /**
-     * generate()
-     *
      * @return string
      */
     public function generate()
     {
-        $output = '@return ' . $this->datatype . ' ' . $this->description;
+        $output = '@return '
+        . $this->getTypesAsString()
+        . ((!empty($this->description)) ? ' ' . $this->description : '');
+
         return $output;
     }
 }

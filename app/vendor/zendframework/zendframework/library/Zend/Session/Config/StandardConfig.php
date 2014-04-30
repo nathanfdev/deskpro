@@ -3,24 +3,18 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Session
  */
 
 namespace Zend\Session\Config;
 
-use Zend\Session\Config\ConfigInterface;
+use Traversable;
 use Zend\Session\Exception;
 use Zend\Validator\Hostname as HostnameValidator;
-use Traversable;
 
 /**
  * Standard session configuration
- *
- * @category   Zend
- * @package    Zend_Session
- * @subpackage Configuration
  */
 class StandardConfig implements ConfigInterface
 {
@@ -302,7 +296,7 @@ class StandardConfig implements ConfigInterface
             throw new Exception\InvalidArgumentException('Invalid gc_probability; must be numeric');
         }
         $gcProbability = (int) $gcProbability;
-        if (1 > $gcProbability || 100 < $gcProbability) {
+        if (0 > $gcProbability || 100 < $gcProbability) {
             throw new Exception\InvalidArgumentException('Invalid gc_probability; must be a percentage');
         }
         $this->setOption('gc_probability', $gcProbability);
@@ -808,7 +802,7 @@ class StandardConfig implements ConfigInterface
             throw new Exception\BadMethodCallException(sprintf(
                 'Method "%s" does not exist in %s',
                 $method,
-                get_called_class()
+                get_class($this)
             ));
         }
     }

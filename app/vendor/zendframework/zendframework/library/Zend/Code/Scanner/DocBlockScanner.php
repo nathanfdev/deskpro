@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Code
  */
 
 namespace Zend\Code\Scanner;
@@ -46,19 +45,17 @@ class DocBlockScanner implements ScannerInterface
     protected $longDescription = '';
 
     /**
-     * @var array[]
+     * @var array
      */
     protected $tags = array();
 
     /**
-     * @var Annotation[]
+     * @var array
      */
     protected $annotations = array();
 
     /**
-     * Constructor
-     *
-     * @param string               $docComment
+     * @param  string $docComment
      * @param null|NameInformation $nameInformation
      */
     public function __construct($docComment, NameInformation $nameInformation = null)
@@ -68,45 +65,46 @@ class DocBlockScanner implements ScannerInterface
     }
 
     /**
-     * Get short description
-     *
      * @return string
      */
     public function getShortDescription()
     {
         $this->scan();
+
         return $this->shortDescription;
     }
 
     /**
-     * Get long description
-     *
      * @return string
      */
     public function getLongDescription()
     {
         $this->scan();
+
         return $this->longDescription;
     }
 
     /**
-     * @return array[]
+     * @return array
      */
     public function getTags()
     {
         $this->scan();
+
         return $this->tags;
     }
 
+    /**
+     * @return array
+     */
     public function getAnnotations()
     {
         $this->scan();
+
         return $this->annotations;
     }
 
     /**
-     * Scan
-     *
      * @return void
      */
     protected function scan()
@@ -125,7 +123,6 @@ class DocBlockScanner implements ScannerInterface
         $token = current($tokens);
 
         switch ($token[0]) {
-
             case 'DOCBLOCK_NEWLINE':
                 if ($this->shortDescription != '' && $tagIndex === null) {
                     $mode = 2;
@@ -168,14 +165,12 @@ class DocBlockScanner implements ScannerInterface
 
         SCANNER_END:
 
-        $this->shortDescription = rtrim($this->shortDescription);
-        $this->longDescription  = rtrim($this->longDescription);
+        $this->shortDescription = trim($this->shortDescription);
+        $this->longDescription  = trim($this->longDescription);
         $this->isScanned        = true;
     }
 
     /**
-     * Tokenize
-     *
      * @return array
      */
     protected function tokenize()
@@ -197,17 +192,19 @@ class DocBlockScanner implements ScannerInterface
             $streamIndex      = ($streamIndex === null) ? 0 : $streamIndex + $positionsForward;
             if (!isset($stream[$streamIndex])) {
                 $currentChar = false;
+
                 return false;
             }
             $currentChar = $stream[$streamIndex];
             $matches     = array();
-            $currentLine = (preg_match('#(.*)\n#', $stream, $matches, null,
+            $currentLine = (preg_match('#(.*?)\r?\n#', $stream, $matches, null,
                                        $streamIndex) === 1) ? $matches[1] : substr($stream, $streamIndex);
             if ($currentChar === ' ') {
                 $currentWord = (preg_match('#( +)#', $currentLine, $matches) === 1) ? $matches[1] : $currentLine;
             } else {
                 $currentWord = (($matches = strpos($currentLine, ' ')) !== false) ? substr($currentLine, 0, $matches) : $currentLine;
             }
+
             return $currentChar;
         };
         $MACRO_STREAM_ADVANCE_WORD       = function () use (&$currentWord, &$MACRO_STREAM_ADVANCE_CHAR) {

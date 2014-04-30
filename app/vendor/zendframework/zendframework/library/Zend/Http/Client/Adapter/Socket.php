@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
  */
 
 namespace Zend\Http\Client\Adapter;
@@ -20,10 +19,6 @@ use Zend\Stdlib\ErrorHandler;
 /**
  * A sockets based (stream\socket\client) adapter class for Zend\Http\Client. Can be used
  * on almost every PHP environment, and does not require any special extensions.
- *
- * @category   Zend
- * @package    Zend_Http
- * @subpackage Client_Adapter
  */
 class Socket implements HttpAdapter, StreamInterface
 {
@@ -33,10 +28,10 @@ class Socket implements HttpAdapter, StreamInterface
      * @var array
      */
     protected static $sslCryptoTypes = array(
-            'ssl'   => STREAM_CRYPTO_METHOD_SSLv23_CLIENT,
-            'sslv2' => STREAM_CRYPTO_METHOD_SSLv2_CLIENT,
-            'sslv3' => STREAM_CRYPTO_METHOD_SSLv3_CLIENT,
-            'tls'   => STREAM_CRYPTO_METHOD_TLS_CLIENT
+        'ssl'   => STREAM_CRYPTO_METHOD_SSLv23_CLIENT,
+        'sslv2' => STREAM_CRYPTO_METHOD_SSLv2_CLIENT,
+        'sslv3' => STREAM_CRYPTO_METHOD_SSLv3_CLIENT,
+        'tls'   => STREAM_CRYPTO_METHOD_TLS_CLIENT,
     );
 
     /**
@@ -71,9 +66,10 @@ class Socket implements HttpAdapter, StreamInterface
         'sslcert'               => null,
         'sslpassphrase'         => null,
         'sslverifypeer'         => true,
+        'sslcafile'             => null,
         'sslcapath'             => null,
         'sslallowselfsigned'    => false,
-        'sslusecontext'         => false
+        'sslusecontext'         => false,
     );
 
     /**
@@ -111,7 +107,7 @@ class Socket implements HttpAdapter, StreamInterface
         }
         if (!is_array($options)) {
             throw new AdapterException\InvalidArgumentException(
-                'Array or Zend_Config object expected, got ' . gettype($options)
+                'Array or Zend\Config object expected, got ' . gettype($options)
             );
         }
 
@@ -210,6 +206,12 @@ class Socket implements HttpAdapter, StreamInterface
                     }
                 }
 
+                if ($this->config['sslcafile']) {
+                    if (!stream_context_set_option($context, 'ssl', 'cafile', $this->config['sslcafile'])) {
+                        throw new AdapterException\RuntimeException('Unable to set sslcafile option');
+                    }
+                }
+
                 if ($this->config['sslcapath']) {
                     if (!stream_context_set_option($context, 'ssl', 'capath', $this->config['sslcapath'])) {
                         throw new AdapterException\RuntimeException('Unable to set sslcapath option');
@@ -292,7 +294,11 @@ class Socket implements HttpAdapter, StreamInterface
 
                     if ((! $errorString) && $this->config['sslverifypeer']) {
                         // There's good chance our error is due to sslcapath not being properly set
-                        if (! ($this->config['sslcapath'] && is_dir($this->config['sslcapath']))) {
+                        if (! ($this->config['sslcafile'] || $this->config['sslcapath'])) {
+                            $errorString = 'make sure the "sslcafile" or "sslcapath" option are properly set for the environment.';
+                        } elseif ($this->config['sslcafile'] && !is_file($this->config['sslcafile'])) {
+                            $errorString = 'make sure the "sslcafile" option points to a valid SSL certificate file';
+                        } elseif ($this->config['sslcapath'] && !is_dir($this->config['sslcapath'])) {
                             $errorString = 'make sure the "sslcapath" option points to a valid SSL certificate directory';
                         }
                     }
@@ -406,7 +412,9 @@ class Socket implements HttpAdapter, StreamInterface
         $statusCode = $responseObj->getStatusCode();
 
         // Handle 100 and 101 responses internally by restarting the read again
-        if ($statusCode == 100 || $statusCode == 101) return $this->read();
+        if ($statusCode == 100 || $statusCode == 101) {
+            return $this->read();
+        }
 
         // Check headers to see what kind of connection / transfer encoding we have
         $headers = $responseObj->getHeaders();
@@ -488,7 +496,7 @@ class Socket implements HttpAdapter, StreamInterface
             }
 
             // We automatically decode chunked-messages when writing to a stream
-            // this means we have to disallow the Zend_Http_Response to do it again
+            // this means we have to disallow the Zend\Http\Response to do it again
             if ($this->outStream) {
                 $response = str_ireplace("Transfer-Encoding: chunked\r\n", '', $response);
             }
@@ -503,7 +511,6 @@ class Socket implements HttpAdapter, StreamInterface
             $contentLength = $contentLength->getFieldValue();
 
             $currentPos = ftell($this->socket);
-            $chunk = '';
 
             for ($readTo = $currentPos + $contentLength;
                  $readTo > $currentPos;

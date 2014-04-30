@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Validator
  */
 
 namespace Zend\Validator\File;
@@ -16,8 +15,6 @@ use Zend\Validator\Exception;
 /**
  * Validator for counting all given files
  *
- * @category  Zend
- * @package   Zend_Validator
  */
 class Count extends AbstractValidator
 {
@@ -48,7 +45,7 @@ class Count extends AbstractValidator
     /**
      * Actual filecount
      *
-     * @var integer
+     * @var int
      */
     protected $count;
 
@@ -74,12 +71,12 @@ class Count extends AbstractValidator
      * Min limits the file count, when used with max=null it is the maximum file count
      * It also accepts an array with the keys 'min' and 'max'
      *
-     * If $options is a integer, it will be used as maximum file count
+     * If $options is an integer, it will be used as maximum file count
      * As Array is accepts the following keys:
      * 'min': Minimum filecount
      * 'max': Maximum filecount
      *
-     * @param  integer|array|\Traversable $options Options for the adapter
+     * @param  int|array|\Traversable $options Options for the adapter
      */
     public function __construct($options = null)
     {
@@ -98,7 +95,7 @@ class Count extends AbstractValidator
     /**
      * Returns the minimum file count
      *
-     * @return integer
+     * @return int
      */
     public function getMin()
     {
@@ -108,7 +105,7 @@ class Count extends AbstractValidator
     /**
      * Sets the minimum file count
      *
-     * @param  integer|array $min The minimum file count
+     * @param  int|array $min The minimum file count
      * @return Count Provides a fluent interface
      * @throws Exception\InvalidArgumentException When min is greater than max
      */
@@ -122,7 +119,7 @@ class Count extends AbstractValidator
             throw new Exception\InvalidArgumentException('Invalid options to validator provided');
         }
 
-        $min = (integer) $min;
+        $min = (int) $min;
         if (($this->getMax() !== null) && ($min > $this->getMax())) {
             throw new Exception\InvalidArgumentException("The minimum must be less than or equal to the maximum file count, but $min >"
                                             . " {$this->getMax()}");
@@ -135,7 +132,7 @@ class Count extends AbstractValidator
     /**
      * Returns the maximum file count
      *
-     * @return integer
+     * @return int
      */
     public function getMax()
     {
@@ -145,7 +142,7 @@ class Count extends AbstractValidator
     /**
      * Sets the maximum file count
      *
-     * @param  integer|array $max The maximum file count
+     * @param  int|array $max The maximum file count
      * @return Count Provides a fluent interface
      * @throws Exception\InvalidArgumentException When max is smaller than min
      */
@@ -159,7 +156,7 @@ class Count extends AbstractValidator
             throw new Exception\InvalidArgumentException('Invalid options to validator provided');
         }
 
-        $max = (integer) $max;
+        $max = (int) $max;
         if (($this->getMin() !== null) && ($max < $this->getMin())) {
             throw new Exception\InvalidArgumentException("The maximum must be greater than or equal to the minimum file count, but "
                                             . "$max < {$this->getMin()}");
@@ -195,7 +192,7 @@ class Count extends AbstractValidator
     /**
      * Returns true if and only if the file count of all checked files is at least min and
      * not bigger than max (when max is not null). Attention: When checking with set min you
-     * must give all files with the first call, otherwise you will get an false.
+     * must give all files with the first call, otherwise you will get a false.
      *
      * @param  string|array $value Filenames to check for count
      * @param  array        $file  File data from \Zend\File\Transfer\Transfer

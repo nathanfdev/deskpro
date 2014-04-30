@@ -32,8 +32,6 @@
         <xsd:attribute name="name" type="xsd:string" use="required" />
         <xsd:attribute name="ident" type="xsd:string" />
         <xsd:attribute name="facility" type="xsd:string" />
-        <xsd:attribute name="host" type="xsd:string" />
-        <xsd:attribute name="port" type="xsd:integer" />
         <xsd:attribute name="action-level" type="level" />
         <xsd:attribute name="buffer-size" type="xsd:integer" />
         <xsd:attribute name="max-files" type="xsd:integer" />
@@ -41,10 +39,7 @@
         <xsd:attribute name="from-email" type="xsd:string" />
         <xsd:attribute name="to-email" type="xsd:string" />
         <xsd:attribute name="subject" type="xsd:string" />
-        <xsd:attribute name="notify" type="xsd:boolean" />
-        <xsd:attribute name="room" type="xsd:string" />
-        <xsd:attribute name="nickname" type="xsd:string" />
-        <xsd:attribute name="use-ssl" type="xsd:boolean" />
+        <xsd:attribute name="formatter" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:simpleType name="level">

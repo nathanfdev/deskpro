@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Storage\Adapter;
@@ -26,12 +25,8 @@ use Zend\Cache\Storage\OptimizableInterface;
 use Zend\Cache\Storage\TaggableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Stdlib\ErrorHandler;
+use ArrayObject;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Storage
- */
 class Filesystem extends AbstractAdapter implements
     AvailableSpaceCapableInterface,
     ClearByNamespaceInterface,
@@ -110,7 +105,7 @@ class Filesystem extends AbstractAdapter implements
         $dir   = $this->getOptions()->getCacheDir();
         $clearFolder = null;
         $clearFolder = function ($dir) use (& $clearFolder, $flags) {
-            $it = new GlobIterator($dir . \DIRECTORY_SEPARATOR . '*', $flags);
+            $it = new GlobIterator($dir . DIRECTORY_SEPARATOR . '*', $flags);
             foreach ($it as $pathname) {
                 if ($it->isDir()) {
                     $clearFolder($pathname);
@@ -137,16 +132,19 @@ class Filesystem extends AbstractAdapter implements
      * Remove expired items
      *
      * @return bool
+     *
+     * @triggers clearExpired.exception(ExceptionEvent)
      */
     public function clearExpired()
     {
-        $options = $this->getOptions();
-        $prefix  = $options->getNamespace() . $options->getNamespaceSeparator();
+        $options   = $this->getOptions();
+        $namespace = $options->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . $options->getNamespaceSeparator();
 
         $flags = GlobIterator::SKIP_DOTS | GlobIterator::CURRENT_AS_FILEINFO;
         $path  = $options->getCacheDir()
-            . str_repeat(\DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
-            . \DIRECTORY_SEPARATOR . $prefix . '*.dat';
+            . str_repeat(DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
+            . DIRECTORY_SEPARATOR . $prefix . '*.dat';
         $glob = new GlobIterator($path, $flags);
         $time = time();
         $ttl  = $options->getTtl();
@@ -166,7 +164,13 @@ class Filesystem extends AbstractAdapter implements
         }
         $error = ErrorHandler::stop();
         if ($error) {
-            throw new Exception\RuntimeException("Failed to clear expired items", 0, $error);
+            $result = false;
+            return $this->triggerException(
+                __FUNCTION__,
+                new ArrayObject(),
+                $result,
+                new Exception\RuntimeException('Failed to clear expired items', 0, $error)
+            );
         }
 
         return true;
@@ -183,13 +187,18 @@ class Filesystem extends AbstractAdapter implements
      */
     public function clearByNamespace($namespace)
     {
-        $options  = $this->getOptions();
-        $nsPrefix = $namespace . $options->getNamespaceSeparator();
+        $namespace = (string) $namespace;
+        if ($namespace === '') {
+            throw new Exception\InvalidArgumentException('No namespace given');
+        }
+
+        $options = $this->getOptions();
+        $prefix  = $namespace . $options->getNamespaceSeparator();
 
         $flags = GlobIterator::SKIP_DOTS | GlobIterator::CURRENT_AS_PATHNAME;
         $path = $options->getCacheDir()
-        . str_repeat(\DIRECTORY_SEPARATOR . $nsPrefix . '*', $options->getDirLevel())
-        . \DIRECTORY_SEPARATOR . $nsPrefix . '*';
+            . str_repeat(DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
+            . DIRECTORY_SEPARATOR . $prefix . '*.*';
         $glob = new GlobIterator($path, $flags);
 
         ErrorHandler::start();
@@ -198,7 +207,7 @@ class Filesystem extends AbstractAdapter implements
         }
         $error = ErrorHandler::stop();
         if ($error) {
-            throw new Exception\RuntimeException("Failed to remove file '{$pathname}'", 0, $error);
+            throw new Exception\RuntimeException("Failed to remove files of '{$path}'", 0, $error);
         }
 
         return true;
@@ -215,13 +224,19 @@ class Filesystem extends AbstractAdapter implements
      */
     public function clearByPrefix($prefix)
     {
-        $options  = $this->getOptions();
-        $nsPrefix = $options->getNamespace() . $options->getNamespaceSeparator();
+        $prefix = (string) $prefix;
+        if ($prefix === '') {
+            throw new Exception\InvalidArgumentException('No prefix given');
+        }
+
+        $options   = $this->getOptions();
+        $namespace = $options->getNamespace();
+        $nsPrefix  = ($namespace === '') ? '' : $namespace . $options->getNamespaceSeparator();
 
         $flags = GlobIterator::SKIP_DOTS | GlobIterator::CURRENT_AS_PATHNAME;
         $path = $options->getCacheDir()
-            . str_repeat(\DIRECTORY_SEPARATOR . $nsPrefix . '*', $options->getDirLevel())
-            . \DIRECTORY_SEPARATOR . $nsPrefix . $prefix . '*';
+            . str_repeat(DIRECTORY_SEPARATOR . $nsPrefix . '*', $options->getDirLevel())
+            . DIRECTORY_SEPARATOR . $nsPrefix . $prefix . '*.*';
         $glob = new GlobIterator($path, $flags);
 
         ErrorHandler::start();
@@ -230,7 +245,7 @@ class Filesystem extends AbstractAdapter implements
         }
         $error = ErrorHandler::stop();
         if ($error) {
-            throw new Exception\RuntimeException("Failed to remove file '{$pathname}'", 0, $error);
+            throw new Exception\RuntimeException("Failed to remove files of '{$path}'", 0, $error);
         }
 
         return true;
@@ -302,14 +317,15 @@ class Filesystem extends AbstractAdapter implements
             return true;
         }
 
-        $tagCount = count($tags);
-        $options  = $this->getOptions();
-        $prefix   = $options->getNamespace() . $options->getNamespaceSeparator();
+        $tagCount  = count($tags);
+        $options   = $this->getOptions();
+        $namespace = $options->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . $options->getNamespaceSeparator();
 
         $flags = GlobIterator::SKIP_DOTS | GlobIterator::CURRENT_AS_PATHNAME;
         $path  = $options->getCacheDir()
-            . str_repeat(\DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
-            . \DIRECTORY_SEPARATOR . $prefix . '*.tag';
+            . str_repeat(DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
+            . DIRECTORY_SEPARATOR . $prefix . '*.tag';
         $glob = new GlobIterator($path, $flags);
 
         foreach ($glob as $pathname) {
@@ -344,11 +360,12 @@ class Filesystem extends AbstractAdapter implements
      */
     public function getIterator()
     {
-        $options = $this->getOptions();
-        $prefix  = $options->getNamespace() . $options->getNamespaceSeparator();
-        $path    = $options->getCacheDir()
-            . str_repeat(\DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
-            . \DIRECTORY_SEPARATOR . $prefix . '*.dat';
+        $options   = $this->getOptions();
+        $namespace = $options->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . $options->getNamespaceSeparator();
+        $path      = $options->getCacheDir()
+            . str_repeat(DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
+            . DIRECTORY_SEPARATOR . $prefix . '*.dat';
         return new FilesystemIterator($this, $path, $prefix);
     }
 
@@ -362,13 +379,13 @@ class Filesystem extends AbstractAdapter implements
      */
     public function optimize()
     {
-        $baseOptions = $this->getOptions();
-        if ($baseOptions->getDirLevel()) {
+        $options = $this->getOptions();
+        if ($options->getDirLevel()) {
+            $namespace = $options->getNamespace();
+            $prefix    = ($namespace === '') ? '' : $namespace . $options->getNamespaceSeparator();
+
             // removes only empty directories
-            $this->rmDir(
-                $baseOptions->getCacheDir(),
-                $baseOptions->getNamespace() . $baseOptions->getNamespaceSeparator()
-            );
+            $this->rmDir($options->getCacheDir(), $prefix);
         }
         return true;
     }
@@ -405,7 +422,7 @@ class Filesystem extends AbstractAdapter implements
                     $events->detach($handle);
                 }
             };
-            $handle = $events->attach('option', $callback);
+            $events->attach('option', $callback);
         }
 
         return $this->totalSpace;
@@ -528,7 +545,6 @@ class Filesystem extends AbstractAdapter implements
      */
     protected function internalGetItems(array & $normalizedKeys)
     {
-        $options = $this->getOptions();
         $keys    = $normalizedKeys; // Don't change argument passed by reference
         $result  = array();
         while ($keys) {
@@ -1211,8 +1227,8 @@ class Filesystem extends AbstractAdapter implements
     protected function rmDir($dir, $prefix)
     {
         $glob = glob(
-            $dir . \DIRECTORY_SEPARATOR . $prefix  . '*',
-            \GLOB_ONLYDIR | \GLOB_NOESCAPE | \GLOB_NOSORT
+            $dir . DIRECTORY_SEPARATOR . $prefix  . '*',
+            GLOB_ONLYDIR | GLOB_NOESCAPE | GLOB_NOSORT
         );
         if (!$glob) {
             // On some systems glob returns false even on empty result
@@ -1243,10 +1259,11 @@ class Filesystem extends AbstractAdapter implements
      */
     protected function getFileSpec($normalizedKey)
     {
-        $options = $this->getOptions();
-        $prefix  = $options->getNamespace() . $options->getNamespaceSeparator();
-        $path    = $options->getCacheDir() . \DIRECTORY_SEPARATOR;
-        $level   = $options->getDirLevel();
+        $options   = $this->getOptions();
+        $namespace = $options->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . $options->getNamespaceSeparator();
+        $path      = $options->getCacheDir() . DIRECTORY_SEPARATOR;
+        $level     = $options->getDirLevel();
 
         $fileSpecId = $path . $prefix . $normalizedKey . '/' . $level;
         if ($this->lastFileSpecId !== $fileSpecId) {
@@ -1254,7 +1271,7 @@ class Filesystem extends AbstractAdapter implements
                 // create up to 256 directories per directory level
                 $hash = md5($normalizedKey);
                 for ($i = 0, $max = ($level * 2); $i < $max; $i+= 2) {
-                    $path .= $prefix . $hash[$i] . $hash[$i+1] . \DIRECTORY_SEPARATOR;
+                    $path .= $prefix . $hash[$i] . $hash[$i+1] . DIRECTORY_SEPARATOR;
                 }
             }
 
@@ -1324,14 +1341,14 @@ class Filesystem extends AbstractAdapter implements
             }
 
             if ($nonBlocking) {
-                $lock = flock($fp, \LOCK_SH | \LOCK_NB, $wouldblock);
+                $lock = flock($fp, LOCK_SH | LOCK_NB, $wouldblock);
                 if ($wouldblock) {
                     fclose($fp);
                     ErrorHandler::stop();
                     return;
                 }
             } else {
-                $lock = flock($fp, \LOCK_SH);
+                $lock = flock($fp, LOCK_SH);
             }
 
             if (!$lock) {
@@ -1344,7 +1361,7 @@ class Filesystem extends AbstractAdapter implements
 
             $res = stream_get_contents($fp);
             if ($res === false) {
-                flock($fp, \LOCK_UN);
+                flock($fp, LOCK_UN);
                 fclose($fp);
                 $err = ErrorHandler::stop();
                 throw new Exception\RuntimeException(
@@ -1352,7 +1369,7 @@ class Filesystem extends AbstractAdapter implements
                 );
             }
 
-            flock($fp, \LOCK_UN);
+            flock($fp, LOCK_UN);
             fclose($fp);
 
         // if file locking disabled -> file_get_contents can be used
@@ -1447,7 +1464,7 @@ class Filesystem extends AbstractAdapter implements
 
             // make all missing path parts
             foreach ($parts as $part) {
-                $path.= \DIRECTORY_SEPARATOR . $part;
+                $path.= DIRECTORY_SEPARATOR . $part;
 
                 // create a single directory, set and reset umask immediately
                 $umask = ($umask !== false) ? umask($umask) : false;
@@ -1458,7 +1475,7 @@ class Filesystem extends AbstractAdapter implements
 
                 if (!$res) {
                     $oct = ($perm === false) ? '777' : decoct($perm);
-                    $err = ErrorHandler::stop();
+                    ErrorHandler::stop();
                     throw new Exception\RuntimeException(
                         "mkdir('{$path}', 0{$oct}, false) failed"
                     );
@@ -1466,7 +1483,7 @@ class Filesystem extends AbstractAdapter implements
 
                 if ($perm !== false && !chmod($path, $perm)) {
                     $oct = decoct($perm);
-                    $err = ErrorHandler::stop();
+                    ErrorHandler::stop();
                     throw new Exception\RuntimeException(
                         "chmod('{$path}', 0{$oct}) failed"
                     );
@@ -1527,7 +1544,7 @@ class Filesystem extends AbstractAdapter implements
                 throw new Exception\RuntimeException("chmod('{$file}', 0{$oct}) failed", 0, $err);
             }
 
-            if (!flock($fp, \LOCK_EX | \LOCK_NB, $wouldblock)) {
+            if (!flock($fp, LOCK_EX | LOCK_NB, $wouldblock)) {
                 fclose($fp);
                 $err = ErrorHandler::stop();
                 if ($wouldblock) {
@@ -1538,27 +1555,27 @@ class Filesystem extends AbstractAdapter implements
             }
 
             if (fwrite($fp, $data) === false) {
-                flock($fp, \LOCK_UN);
+                flock($fp, LOCK_UN);
                 fclose($fp);
                 $err = ErrorHandler::stop();
                 throw new Exception\RuntimeException("Error writing file '{$file}'", 0, $err);
             }
 
             if (!ftruncate($fp, strlen($data))) {
-                flock($fp, \LOCK_UN);
+                flock($fp, LOCK_UN);
                 fclose($fp);
                 $err = ErrorHandler::stop();
                 throw new Exception\RuntimeException("Error truncating file '{$file}'", 0, $err);
             }
 
-            flock($fp, \LOCK_UN);
+            flock($fp, LOCK_UN);
             fclose($fp);
 
         // else -> file_put_contents can be used
         } else {
             $flags = 0;
             if ($locking) {
-                $flags = $flags | \LOCK_EX;
+                $flags = $flags | LOCK_EX;
             }
 
             $umask = ($umask !== false) ? umask($umask) : false;
@@ -1591,7 +1608,7 @@ class Filesystem extends AbstractAdapter implements
      *
      * @param string $file
      * @return void
-     * @throw RuntimeException
+     * @throws Exception\RuntimeException
      */
     protected function unlink($file)
     {

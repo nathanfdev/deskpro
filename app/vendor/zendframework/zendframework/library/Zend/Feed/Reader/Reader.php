@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Feed
  */
 
 namespace Zend\Feed\Reader;
@@ -13,12 +12,10 @@ namespace Zend\Feed\Reader;
 use DOMDocument;
 use DOMXPath;
 use Zend\Cache\Storage\StorageInterface as CacheStorage;
-use Zend\Http;
+use Zend\Http as ZendHttp;
 use Zend\Stdlib\ErrorHandler;
 
 /**
-* @category Zend
-* @package Zend_Feed_Reader
 */
 class Reader
 {
@@ -60,7 +57,7 @@ class Reader
     /**
      * HTTP client object to use for retrieving feeds
      *
-     * @var \Zend\Http\Client
+     * @var ZendHttp\Client
      */
     protected static $httpClient = null;
 
@@ -120,24 +117,24 @@ class Reader
      *
      * Sets the HTTP client object to use for retrieving the feeds.
      *
-     * @param  \Zend\Http\Client $httpClient
+     * @param  ZendHttp\Client $httpClient
      * @return void
      */
-    public static function setHttpClient(Http\Client $httpClient)
+    public static function setHttpClient(ZendHttp\Client $httpClient)
     {
         static::$httpClient = $httpClient;
     }
 
 
     /**
-     * Gets the HTTP client object. If none is set, a new \Zend\Http\Client will be used.
+     * Gets the HTTP client object. If none is set, a new ZendHttp\Client will be used.
      *
-     * @return \Zend\Http\Client
+     * @return ZendHttp\Client
      */
     public static function getHttpClient()
     {
-        if (!static::$httpClient instanceof Http\Client) {
-            static::$httpClient = new Http\Client();
+        if (!static::$httpClient instanceof ZendHttp\Client) {
+            static::$httpClient = new ZendHttp\Client();
         }
 
         return static::$httpClient;
@@ -195,10 +192,9 @@ class Reader
     {
         $cache       = self::getCache();
         $feed        = null;
-        $responseXml = '';
         $client      = self::getHttpClient();
         $client->resetParameters();
-        $headers = new Http\Headers();
+        $headers = new ZendHttp\Headers();
         $client->setHeaders($headers);
         $client->setUri($uri);
         $cacheId = 'Zend_Feed_Reader_' . md5($uri);
@@ -260,6 +256,39 @@ class Reader
     }
 
     /**
+     * Import a feed from a remote URI
+     *
+     * Performs similarly to import(), except it uses the HTTP client passed to
+     * the method, and does not take into account cached data.
+     *
+     * Primary purpose is to make it possible to use the Reader with alternate
+     * HTTP client implementations.
+     *
+     * @param  string $uri
+     * @param  Http\ClientInterface $client
+     * @return self
+     * @throws Exception\RuntimeException if response is not an Http\ResponseInterface
+     */
+    public static function importRemoteFeed($uri, Http\ClientInterface $client)
+    {
+        $response = $client->get($uri);
+        if (!$response instanceof Http\ResponseInterface) {
+            throw new Exception\RuntimeException(sprintf(
+                'Did not receive a %s\Http\ResponseInterface from the provided HTTP client; received "%s"',
+                __NAMESPACE__,
+                (is_object($response) ? get_class($response) : gettype($response))
+            ));
+        }
+
+        if ((int) $response->getStatusCode() !== 200) {
+            throw new Exception\RuntimeException('Feed failed to load, got response code ' . $response->getStatusCode());
+        }
+        $reader = static::importString($response->getBody());
+        $reader->setOriginalSourceUri($uri);
+        return $reader;
+    }
+
+    /**
      * Import a feed from a string
      *
      * @param  string $string
@@ -269,6 +298,11 @@ class Reader
      */
     public static function importString($string)
     {
+        $trimmed = trim($string);
+        if (!is_string($string) || empty($trimmed)) {
+            throw new Exception\InvalidArgumentException('Only non empty strings are allowed as input');
+        }
+
         $libxmlErrflag = libxml_use_internal_errors(true);
         $oldValue = libxml_disable_entity_loader(true);
         $dom = new DOMDocument;
@@ -497,9 +531,9 @@ class Reader
     /**
      * Set plugin manager for use with Extensions
      *
-     * @param ExtensionManager $extensionManager
+     * @param ExtensionManagerInterface $extensionManager
      */
-    public static function setExtensionManager(ExtensionManager $extensionManager)
+    public static function setExtensionManager(ExtensionManagerInterface $extensionManager)
     {
         static::$extensionManager = $extensionManager;
     }
@@ -507,7 +541,7 @@ class Reader
     /**
      * Get plugin manager for use with Extensions
      *
-     * @return ExtensionManager
+     * @return ExtensionManagerInterface
      */
     public static function getExtensionManager()
     {

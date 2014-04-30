@@ -148,7 +148,6 @@ class PHPUnit_Framework_MockObject_Generator
      * @param  boolean $cloneArguments
      * @return object
      * @throws InvalidArgumentException
-     * @throws PHPUnit_Framework_Exception
      * @since  Method available since Release 1.0.0
      */
     public static function getMock($originalClassName, $methods = array(), array $arguments = array(), $mockClassName = '', $callOriginalConstructor = TRUE, $callOriginalClone = TRUE, $callAutoload = TRUE, $cloneArguments = TRUE)
@@ -267,7 +266,6 @@ class PHPUnit_Framework_MockObject_Generator
      * @return object
      * @since  Method available since Release 1.0.0
      * @throws InvalidArgumentException
-     * @throws PHPUnit_Framework_Exception
      */
     public static function getMockForAbstractClass($originalClassName, array $arguments = array(), $mockClassName = '', $callOriginalConstructor = TRUE, $callOriginalClone = TRUE, $callAutoload = TRUE, $mockedMethods = array(), $cloneArguments = TRUE)
     {
@@ -326,7 +324,6 @@ class PHPUnit_Framework_MockObject_Generator
      * @return object
      * @since  Method available since Release 1.1.0
      * @throws InvalidArgumentException
-     * @throws PHPUnit_Framework_Exception
      */
     public static function getObjectForTrait($traitName, array $arguments = array(), $traitClassName = '', $callOriginalConstructor = TRUE, $callOriginalClone = TRUE, $callAutoload = TRUE)
     {
@@ -415,8 +412,7 @@ class PHPUnit_Framework_MockObject_Generator
      * @param  string $originalClassName
      * @param  array  $methods
      * @param  array  $options
-     * @return string
-     * @throws PHPUnit_Framework_Exception
+     * @return array
      */
     public static function generateClassFromWsdl($wsdlFile, $originalClassName, array $methods = array(), array $options = array())
     {
@@ -512,7 +508,6 @@ class PHPUnit_Framework_MockObject_Generator
      * @param  boolean    $callAutoload
      * @param  boolean    $cloneArguments
      * @return array
-     * @throws PHPUnit_Framework_Exception
      */
     protected static function generateMock($originalClassName, $methods, $mockClassName, $callOriginalClone, $callAutoload, $cloneArguments = TRUE)
     {

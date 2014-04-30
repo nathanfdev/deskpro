@@ -3,21 +3,16 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Db
  */
 
 namespace Zend\Db\Adapter\Driver\Sqlsrv;
 
+use Iterator;
 use Zend\Db\Adapter\Driver\ResultInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Db
- * @subpackage Adapter
- */
-class Result implements \Iterator, ResultInterface
+class Result implements Iterator, ResultInterface
 {
 
     /**
@@ -38,7 +33,7 @@ class Result implements \Iterator, ResultInterface
 
     /**
      *
-     * @var integer
+     * @var int
      */
     protected $position = -1;
 
@@ -166,7 +161,7 @@ class Result implements \Iterator, ResultInterface
     /**
      * Count
      *
-     * @return integer
+     * @return int
      */
     public function count()
     {
@@ -197,7 +192,7 @@ class Result implements \Iterator, ResultInterface
     /**
      * Get affected rows
      *
-     * @return integer
+     * @return int
      */
     public function getAffectedRows()
     {

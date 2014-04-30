@@ -63,14 +63,11 @@ abstract class AbstractFixture implements SharedFixtureInterface
     /**
      * Set the reference entry identified by $name
      * and referenced to managed $object. If $name
-     * already is set, it throws a 
-     * BadMethodCallException exception
+     * already is set, it overrides it
      * 
      * @param string $name
      * @param object $object - managed object
      * @see Doctrine\Common\DataFixtures\ReferenceRepository::addReference
-     * @throws BadMethodCallException - if repository already has
-     *      a reference by $name
      * @return void
      */
     public function addReference($name, $object)

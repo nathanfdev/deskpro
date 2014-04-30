@@ -52,9 +52,6 @@ final class DocLexer extends AbstractLexer
     const T_NULL                = 111;
     const T_COLON               = 112;
 
-    /**
-     * @var array
-     */
     protected $noCase = array(
         '@'  => self::T_AT,
         ','  => self::T_COMMA,
@@ -67,9 +64,6 @@ final class DocLexer extends AbstractLexer
         '\\' => self::T_NAMESPACE_SEPARATOR
     );
 
-    /**
-     * @var array
-     */
     protected $withCase = array(
         'true'  => self::T_TRUE,
         'false' => self::T_FALSE,
@@ -82,7 +76,7 @@ final class DocLexer extends AbstractLexer
     protected function getCatchablePatterns()
     {
         return array(
-            '[a-z_\\\][a-z0-9_\:\\\]*[a-z_][a-z0-9_]*',
+            '[a-z_\\\][a-z0-9_\:\\\]*[a-z]{1}',
             '(?:[+-]?[0-9]+(?:[\.][0-9]+)*)(?:[eE][+-]?[0-9]+)?',
             '"(?:[^"]|"")*"',
         );
@@ -98,6 +92,10 @@ final class DocLexer extends AbstractLexer
 
     /**
      * {@inheritdoc}
+     *
+     * @param string $value
+     *
+     * @return int
      */
     protected function getType(&$value)
     {

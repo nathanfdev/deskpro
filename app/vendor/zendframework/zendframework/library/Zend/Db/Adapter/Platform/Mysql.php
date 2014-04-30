@@ -3,22 +3,17 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Db
  */
 
 namespace Zend\Db\Adapter\Platform;
 
+use Zend\Db\Adapter\Driver\DriverInterface;
 use Zend\Db\Adapter\Driver\Mysqli;
 use Zend\Db\Adapter\Driver\Pdo;
 use Zend\Db\Adapter\Exception;
 
-/**
- * @category   Zend
- * @package    Zend_Db
- * @subpackage Adapter
- */
 class Mysql implements PlatformInterface
 {
     /** @var \mysqli|\PDO */
@@ -38,17 +33,10 @@ class Mysql implements PlatformInterface
      */
     public function setDriver($driver)
     {
-        // handle Zend_Db drivers
+        // handle Zend\Db drivers
         if ($driver instanceof Mysqli\Mysqli
             || ($driver instanceof Pdo\Pdo && $driver->getDatabasePlatformName() == 'Mysql')
-        ) {
-            /** @var $driver \Zend\Db\Adapter\Driver\DriverInterface */
-            $this->resource = $driver->getConnection()->getResource();
-            return $this;
-        }
-
-        // handle
-        if ($driver instanceof \mysqli
+            || ($driver instanceof \mysqli)
             || ($driver instanceof \PDO && $driver->getAttribute(\PDO::ATTR_DRIVER_NAME) == 'mysql')
         ) {
             $this->resource = $driver;
@@ -122,6 +110,9 @@ class Mysql implements PlatformInterface
      */
     public function quoteValue($value)
     {
+        if ($this->resource instanceof DriverInterface) {
+            $this->resource = $this->resource->getConnection()->getResource();
+        }
         if ($this->resource instanceof \mysqli) {
             return '\'' . $this->resource->real_escape_string($value) . '\'';
         }
@@ -145,6 +136,9 @@ class Mysql implements PlatformInterface
      */
     public function quoteTrustedValue($value)
     {
+        if ($this->resource instanceof DriverInterface) {
+            $this->resource = $this->resource->getConnection()->getResource();
+        }
         if ($this->resource instanceof \mysqli) {
             return '\'' . $this->resource->real_escape_string($value) . '\'';
         }
@@ -192,9 +186,14 @@ class Mysql implements PlatformInterface
      */
     public function quoteIdentifierInFragment($identifier, array $safeWords = array())
     {
-        $parts = preg_split('#([\.\s\W])#', $identifier, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        // regex taken from @link http://dev.mysql.com/doc/refman/5.0/en/identifiers.html
+        $parts = preg_split('#([^0-9,a-z,A-Z$_])#', $identifier, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        if ($safeWords) {
+            $safeWords = array_flip($safeWords);
+            $safeWords = array_change_key_case($safeWords, CASE_LOWER);
+        }
         foreach ($parts as $i => $part) {
-            if ($safeWords && in_array($part, $safeWords)) {
+            if ($safeWords && isset($safeWords[strtolower($part)])) {
                 continue;
             }
             switch ($part) {

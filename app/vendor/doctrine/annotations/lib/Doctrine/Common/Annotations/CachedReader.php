@@ -52,24 +52,27 @@ final class CachedReader implements Reader
     /**
      * @var array
      */
-    private $loadedAnnotations = array();
+    private $loadedAnnotations;
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param Reader $reader
-     * @param Cache  $cache
-     * @param bool   $debug
+     * @param Cache $cache
+     * @param bool $debug
      */
     public function __construct(Reader $reader, Cache $cache, $debug = false)
     {
         $this->delegate = $reader;
         $this->cache = $cache;
-        $this->debug = (boolean) $debug;
+        $this->debug = (Boolean) $debug;
     }
 
     /**
-     * {@inheritDoc}
+     * Get annotations for class
+     *
+     * @param \ReflectionClass $class
+     * @return array
      */
     public function getClassAnnotations(\ReflectionClass $class)
     {
@@ -88,7 +91,11 @@ final class CachedReader implements Reader
     }
 
     /**
-     * {@inheritDoc}
+     * Get selected annotation for class
+     *
+     * @param \ReflectionClass $class
+     * @param string $annotationName
+     * @return null
      */
     public function getClassAnnotation(\ReflectionClass $class, $annotationName)
     {
@@ -102,7 +109,10 @@ final class CachedReader implements Reader
     }
 
     /**
-     * {@inheritDoc}
+     * Get annotations for property
+     *
+     * @param \ReflectionProperty $property
+     * @return array
      */
     public function getPropertyAnnotations(\ReflectionProperty $property)
     {
@@ -122,7 +132,11 @@ final class CachedReader implements Reader
     }
 
     /**
-     * {@inheritDoc}
+     * Get selected annotation for property
+     *
+     * @param \ReflectionProperty $property
+     * @param string $annotationName
+     * @return null
      */
     public function getPropertyAnnotation(\ReflectionProperty $property, $annotationName)
     {
@@ -136,7 +150,10 @@ final class CachedReader implements Reader
     }
 
     /**
-     * {@inheritDoc}
+     * Get method annotations
+     *
+     * @param \ReflectionMethod $method
+     * @return array
      */
     public function getMethodAnnotations(\ReflectionMethod $method)
     {
@@ -156,7 +173,11 @@ final class CachedReader implements Reader
     }
 
     /**
-     * {@inheritDoc}
+     * Get selected method annotation
+     *
+     * @param \ReflectionMethod $method
+     * @param string $annotationName
+     * @return null
      */
     public function getMethodAnnotation(\ReflectionMethod $method, $annotationName)
     {
@@ -170,9 +191,7 @@ final class CachedReader implements Reader
     }
 
     /**
-     * Clears loaded annotations.
-     *
-     * @return void
+     * Clear loaded annotations
      */
     public function clearLoadedAnnotations()
     {
@@ -184,8 +203,7 @@ final class CachedReader implements Reader
      *
      * @param string           $rawCacheKey The cache key.
      * @param \ReflectionClass $class       The related class.
-     *
-     * @return mixed The cached value or false when the value is not in cache.
+     * @return mixed|boolean The cached value or false when the value is not in cache.
      */
     private function fetchFromCache($rawCacheKey, \ReflectionClass $class)
     {
@@ -200,12 +218,10 @@ final class CachedReader implements Reader
     }
 
     /**
-     * Saves a value to the cache.
+     * Saves a value to the cache
      *
      * @param string $rawCacheKey The cache key.
      * @param mixed  $value       The value.
-     *
-     * @return void
      */
     private function saveToCache($rawCacheKey, $value)
     {
@@ -217,12 +233,11 @@ final class CachedReader implements Reader
     }
 
     /**
-     * Checks if the cache is fresh.
+     * Check if cache is fresh
      *
-     * @param string           $cacheKey
+     * @param string $cacheKey
      * @param \ReflectionClass $class
-     *
-     * @return boolean
+     * @return bool
      */
     private function isCacheFresh($cacheKey, \ReflectionClass $class)
     {

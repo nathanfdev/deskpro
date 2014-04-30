@@ -3,18 +3,14 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Crypt
  */
 
 namespace Zend\Crypt;
 
 /**
  * PHP implementation of the RFC 2104 Hash based Message Authentication Code
- *
- * @category   Zend
- * @package    Zend_Crypt
  */
 class Hmac
 {
@@ -42,6 +38,7 @@ class Hmac
      */
     public static function compute($key, $hash, $data, $output = self::OUTPUT_STRING)
     {
+
         if (empty($key)) {
             throw new Exception\InvalidArgumentException('Provided key is null or empty');
         }
@@ -60,7 +57,7 @@ class Hmac
      *
      * @param  string  $hash
      * @param  bool $output
-     * @return integer
+     * @return int
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {
