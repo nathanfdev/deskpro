@@ -351,7 +351,7 @@ class MainController extends AbstractController
             ));
         }
 
-        if ($this->container->getSetting('search.enable_elastic_search')) {
+        if ($this->container->getSetting('elastica.enabled')) {
             return $this->searchInElasticsearch($q);
         } else {
             return $this->searchInDB($q);
