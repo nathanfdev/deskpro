@@ -188,7 +188,9 @@ class Importer
 			$this->config->mode,
 			$this->container,
 			$this->logger,
-			$this->mappers
+			$this->mappers, function($container){
+				$container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+			}
 		));
 		
 		$this->processDirectory('articles', new KbValueImporter(
@@ -226,7 +228,7 @@ class Importer
 	 * @param AbstractValueImporter $value_importer
 	 * @throws \Exception
 	 */
-	private function processDirectory($dir, AbstractValueImporter $value_importer)
+	private function processDirectory($dir, AbstractValueImporter $value_importer, \callable $callback = null)
 	{
 		if ($this->status_callback) $this->status_callback->preStep($this, $value_importer, $dir);
 		$step_start = microtime(true);
@@ -309,7 +311,11 @@ class Importer
 			}
 		}
 
-		if ($this->status_callback) $this->status_callback->postStep($this, $value_importer, $dir, $count, microtime(true) - $step_start);
+		if ($this->status_callback) {
+			$this->status_callback->postStep($this, $value_importer, $dir, $count, microtime(true) - $step_start);
+		} elseif (is_callable($callback)) {
+			call_user_fun($callback, $this->container);
+		}
 	}
 
 
