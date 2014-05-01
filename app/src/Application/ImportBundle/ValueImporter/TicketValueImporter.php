@@ -273,8 +273,9 @@ class TicketValueImporter extends AbstractValueImporter
 					continue;
 				}
 				
-				$record['ticket_id'] = $ticket_id;
-				$record['message'] = $message->message_text;
+				$record['ticket_id']		= $ticket_id;
+				$record['message']		= $message->message_text;
+				$record['date_created']		= $message->date_created ?  $message->date_created->format('Y-m-d H:i:s') : ($tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'));
 				
 				$this->getDb()->insert('tickets_messages', $record);
 			}
