@@ -54,7 +54,7 @@ class TicketActionsTest extends AbstractApiResultTest
 		$retrievedTicketMessageArray = $data['messages'][0];
 		
 		$expectedTicketMessage = $this->_getExpectedTicketMessage();
-		
+
 		$this->assertMessagesAreEqual($retrievedTicketMessageArray, $expectedTicketMessage);
 	}
 	
@@ -139,6 +139,7 @@ class TicketActionsTest extends AbstractApiResultTest
 		}
 
 		foreach ($this->getDateTimeFields('person') as $field) {
+			if (preg_match('#^date_password_set#', $field)) continue; // is not included on messages
 			$this->assertIsValidDateTime($retrievedTicketMessageArray['person'][$field]);
 		}
 
@@ -147,11 +148,13 @@ class TicketActionsTest extends AbstractApiResultTest
 		}
 
 		foreach ($this->getTimestampFields('person') as $field) {
+			if (preg_match('#^date_password_set#', $field)) continue; // is not included on messages
 			$this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field]);
 		}
 
 		foreach($this->_getIgnoreKeys('person') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
+			if (preg_match('#^date_password_set#', $field)) {} // is not included on messages
+			else $this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
 			unset($retrievedTicketMessageArray['person'][$key]);
 			unset($expectedTicketMessage['person'][$key]);
 		}

@@ -54,7 +54,10 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 			'person' => array(
 				'date_created',
 				'date_created_ts',
-				'date_created_ts_ms'
+				'date_created_ts_ms',
+				'date_password_set',
+				'date_password_set_ts',
+				'date_password_set_ts_ms'
 			),
 			'person_email' => array(
 				'date_created',
@@ -111,8 +114,12 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 		}
 	}
 
-	public function assertIsValidDateTime($subject)
+	public function assertIsValidDateTime($subject, $allow_null = true)
 	{
+		if ($allow_null && $subject === null) {
+			return true;
+		}
+
 		return $this->assertFalse(!strtotime($subject));
 	}
 
@@ -134,10 +141,11 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 				'date_first_agent_reply',
 				'date_last_agent_reply',
 				'date_user_waiting',
-				'date_status'
+				'date_status',
 			),
 			'person' => array(
-				'date_created'
+				'date_created',
+				'date_password_set'
 			),
 			'person_email' => array(
 				'date_created'
@@ -169,7 +177,9 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 			),
 			'person' => array(
 				'date_created_ts',
-				'date_created_ts_ms'
+				'date_created_ts_ms',
+				'date_password_set_ts',
+				'date_password_set_ts_ms'
 			),
 			'person_email' => array(
 				'date_created_ts',

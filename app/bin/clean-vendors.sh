@@ -1,7 +1,13 @@
 #!/bin/bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
-DIR_VENDOR=$DIR/vendor
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
+DIR_VENDOR=$DIR_ROOT/app/vendor
+DIR_WEB_VENDOR=$DIR_ROOT/web/vendor
+DIR_WEB_BOWER=$DIR_ROOT/web/app/bower_components
+
+########################################################################################################################
+# PHP Vendors
+########################################################################################################################
 
 cd $DIR_VENDOR
 find . -name .git -type d -exec rm -rf {} \;
@@ -351,3 +357,90 @@ cd $DIR_VENDOR/zircote/swagger-php
 echo "Cleaning $(pwd)"
 rm -rf Examples/ tests/
 rm -rf .travis.yml CHANGELOG.md composer.json package.xml phpunit.xml.dist readme.md swagger.phar VERSION
+
+########################################################################################################################
+# JS Vendors
+########################################################################################################################
+
+cd $DIR_WEB_BOWER
+find . -name bower.json -type f -exec rm -rf {} \;
+find . -name package.json -type f -exec rm -rf {} \;
+find . -name README.md -type f -exec rm -rf {} \;
+
+cd $DIR_WEB_BOWER/ace-builds
+rm -rf demo/ kitchen-sink/ src/ src-min/ src-noconflict/ textarea/
+rm -rf ChangeLog.txt editor.html kitchen-sink-req.html kitchen-sink.html scrollable-page.html
+
+cd $DIR_WEB_BOWER/angular
+rm -rf angular-csp.css angular.min.js.gzip README.md
+
+cd $DIR_WEB_BOWER/angular-grid
+rm -rf config/ lib/ plugins/ scripts/ src/ test/ workbench/
+rm -rf CHANGELOG.md conf.js GruntFile.js
+
+cd $DIR_WEB_BOWER/angular-moment
+rm -rf CHANGELOG.md Gruntfile.js karma.conf.js tests.js
+
+cd $DIR_WEB_BOWER/angular-slider
+rm -rf src/
+rm -rf build.sh
+
+cd $DIR_WEB_BOWER/angular-ui-router
+rm -rf config/ lib/ release/doc sample/ src/ test/
+rm -rf Gruntfile.js
+
+cd $DIR_WEB_BOWER/angular-ui-select2
+rm -rf docs/ test/
+rm -rf CONTRIBUTING.md Gruntfile.js
+
+cd $DIR_WEB_BOWER/angular-ui-sortable
+rm -rf component.json
+
+cd $DIR_WEB_BOWER/animate.css
+rm -rf source/
+rm -rf Gruntfile.js
+
+cd $DIR_WEB_BOWER/bootstrap
+rm -rf _includes/ _layouts/ dist/ docs-assets/ examples/ js/tests
+rm -rf _config.yml about.html browserstack.json CNAME components.html composer.json CONTRIBUTING.md css.html customize.html DOCS-LICENSE getting-started.html Gruntfile.js index.html javascript.html
+
+cd $DIR_WEB_BOWER/font-awesome
+rm -rf scss/ src/
+rm -rf _config.yml component.json composer.json CONTRIBUTING.md	Gemfile Gemfile.lock
+
+cd $DIR_WEB_BOWER/jquery
+rm -rf component.json composer.json jquery-migrate.js jquery-migrate.min.js
+
+cd $DIR_WEB_BOWER/jquery-ui
+rm -rf ui/*.js ui/i18n/
+rm -rf AUTHORS.txt composer.json MANIFEST
+
+mv ui/minified/jquery-ui.min.js /tmp/jquery-ui.min.js
+mv ui/minified/i18n/jquery-ui-i18n.min.js /tmp/jquery-ui-i18n.min.js
+rm -rf ui/minified/*.js
+rm -rf ui/minified/i18n/*.js
+mv /tmp/jquery-ui-i18n.min.js ui/minified/i18n/jquery-ui-i18n.min.js
+mv /tmp/jquery-ui.min.js ui/minified/jquery-ui.min.js
+
+cd $DIR_WEB_BOWER/jquery-ui/themes
+rm -rf black-tie/ blitzer/ cupertino/ dark-hive/ dot-luv/ eggplant/ excite-bike/ flick/ hot-sneaks/ humanity/ le-frog/ mint-choc/ overcast/ pepper-grinder/ redmond/ smoothness/ south-street/ start/ sunny/ swanky-purse/ trontastic/ ui-darkness/ vader/
+
+cd $DIR_WEB_BOWER/moment
+rm -rf readme.md
+
+cd $DIR_WEB_BOWER/momentjs
+rm -rf readme.md
+
+cd $DIR_WEB_BOWER/requirejs
+rm -rf dist/ docs/ tests/
+rm -rf index.html package.json tasks.txt testBaseUrl.js updatesubs.sh
+
+cd $DIR_WEB_BOWER/stacktrace
+rm -rf gradle/ test
+rm -rf build.gradle componen.json CONTRIBUTING.md gradlew gradlew.bat jshint.json stacktrace-bookmarklet.js
+
+cd $DIR_WEB_BOWER/underscore
+rm -rf docs/ test/
+rm -rf CNAME CONTRIBUTING.md favicon.ico index.html Rakefile
+
+

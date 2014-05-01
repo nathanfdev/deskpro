@@ -1,5 +1,4 @@
 define([
-	'jquery',
 	'angular',
 	'angularAnimate',
 	'angularSanitize',
@@ -175,7 +174,7 @@ define([
 	'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
 	'Admin/NewsSettings/Ctrl/NewsSettings',
 	'Admin/FeedbackSettings/Ctrl/FeedbackSettings'
-], function(jQuery, angular) {
+], function(angular) {
 	return {
 		start: function() {
 			var loadingEl = document.getElementById('dp_loading');

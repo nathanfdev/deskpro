@@ -321,6 +321,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return defined('DPC_IS_CLOUD');
 	}
 
+	public function getBuildTime()
+	{
+		return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
+	}
+
 	public function isAppInstalled($name)
 	{
 		return App::getContainer()->getAppManager()->isPackageInstalled($name);
