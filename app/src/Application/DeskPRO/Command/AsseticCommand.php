@@ -92,11 +92,17 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
 		foreach ($bundles as $name) {
 			echo "[PROCESSING] $name ... ";
-			if ($reload) {
-				echo 'reload ';
-				$assetic_manager->writeBuildFile($name);
-			} else {
-				$assetic_manager->writeBuildFileIfStale($name);
+			try {
+				if ($reload) {
+					echo 'reload ';
+					$assetic_manager->writeBuildFile($name);
+				} else {
+					$assetic_manager->writeBuildFileIfStale($name);
+				}
+			} catch (\Exception $e) {
+				$msg = substr($e->getMessage(), 0, 550) . "\n... (truncated)";
+				$output->writeln("<error>Exception: $msg");
+				return 1;
 			}
 			echo " Done\n";
 		}

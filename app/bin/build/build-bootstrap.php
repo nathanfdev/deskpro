@@ -65,7 +65,6 @@ $files = array(
 	'Application\\DeskPRO\\DBAL\\Connection',
 	'Application\\DeskPRO\\DBAL\\ConnectionFactory',
 	'Application\\DeskPRO\\DBAL\\DoctrineEvent',
-	'Application\\DeskPRO\\DBAL\\SymfonyEventConnector',
 	'Application\\DeskPRO\\Domain\\BasicDomainObject',
 	'Application\\DeskPRO\\Domain\\ChangeTracker',
 	'Application\\DeskPRO\\Domain\\DomainObject',
