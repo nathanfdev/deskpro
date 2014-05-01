@@ -114,8 +114,12 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 		}
 	}
 
-	public function assertIsValidDateTime($subject)
+	public function assertIsValidDateTime($subject, $allow_null = true)
 	{
+		if ($allow_null && $subject === null) {
+			return true;
+		}
+
 		return $this->assertFalse(!strtotime($subject));
 	}
 
