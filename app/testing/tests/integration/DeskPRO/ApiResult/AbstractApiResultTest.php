@@ -177,7 +177,9 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 			),
 			'person' => array(
 				'date_created_ts',
-				'date_created_ts_ms'
+				'date_created_ts_ms',
+				'date_password_set_ts',
+				'date_password_set_ts_ms'
 			),
 			'person_email' => array(
 				'date_created_ts',
