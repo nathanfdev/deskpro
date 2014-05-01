@@ -35,6 +35,9 @@
 	"custom_fields": [
 		{
 			"Text Custom Field": "Custom field value"
+		},
+		{
+			"Choice Custom Field":	"option2"
 		}
 	]
 }

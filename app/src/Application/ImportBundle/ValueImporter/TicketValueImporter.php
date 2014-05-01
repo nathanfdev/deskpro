@@ -42,7 +42,8 @@ class TicketValueImporter extends AbstractValueImporter
 	protected $custom_fields_array = array();
 	
 	protected $supported_custom_field_types = array(
-		'Application\DeskPRO\CustomFields\Handler\Text'
+		'Application\DeskPRO\CustomFields\Handler\Text',
+		'Application\DeskPRO\CustomFields\Handler\Choice'
 	);
 
 
@@ -58,7 +59,7 @@ class TicketValueImporter extends AbstractValueImporter
 		
 		$log_id = "Ticket :: " . $tval->oid . " ";
 		
-		$ticketId = null;
+		$ticket_id = null;
 		
 		$record = array();
 		
@@ -225,16 +226,16 @@ class TicketValueImporter extends AbstractValueImporter
 		if (!$this->isTestMode()) {
 			$this->getDb()->insert('tickets', $record);
 			
-			$ticketId = $this->getDb()->lastInsertId();
+			$ticket_id = $this->getDb()->lastInsertId();
 
-			$this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $ticketId));
+			$this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $ticket_id));
 		}
 		
 		
 		#------------------------------
 		# Participants
 		#------------------------------
-		if ($ticketId && $tval->participants) {
+		if ($ticket_id && $tval->participants) {
 			$tval->participants = array_filter($tval->participants, function($email) {
 				return StringEmail::isValueValid($email);
 			});
@@ -245,7 +246,7 @@ class TicketValueImporter extends AbstractValueImporter
 					$participantId = $this->getMappers()->findIdFromMappedValue('person', $participant);
 					
 					if ($participantId) {
-						$batch = array('ticket_id' => $ticketId, 'person_id' => $participantId);
+						$batch = array('ticket_id' => $ticket_id, 'person_id' => $participantId);
 						$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $participant));
 						$this->getDb()->insert('tickets_participants', $batch);
 					} else {
@@ -258,7 +259,7 @@ class TicketValueImporter extends AbstractValueImporter
 		#------------------------------
 		# Ticket Messages
 		#------------------------------
-		if ($ticketId && $tval->messages) {
+		if ($ticket_id && $tval->messages) {
 			foreach ($tval->messages as $message) {
 				$record = array();
 				
@@ -272,7 +273,7 @@ class TicketValueImporter extends AbstractValueImporter
 					continue;
 				}
 				
-				$record['ticket_id'] = $ticketId;
+				$record['ticket_id'] = $ticket_id;
 				$record['message'] = $message->message_text;
 				
 				$this->getDb()->insert('tickets_messages', $record);
@@ -282,10 +283,10 @@ class TicketValueImporter extends AbstractValueImporter
 		#------------------------------
 		# Labels
 		#------------------------------
-		if ($ticketId && $tval->labels) {
-			$batch = array_map(function($l) use ($ticketId) {
+		if ($ticket_id && $tval->labels) {
+			$batch = array_map(function($l) use ($ticket_id) {
 				return array(
-					'ticket_id' => $ticketId,
+					'ticket_id' => $ticket_id,
 					'label'     => $l
 				);
 			}, $tval->labels);
@@ -296,29 +297,59 @@ class TicketValueImporter extends AbstractValueImporter
 		#------------------------------
 		# Custom Fields
 		#------------------------------
-		if ($ticketId && $tval->custom_fields) {
+		if ($ticket_id && $tval->custom_fields) {
 			foreach ($tval->custom_fields as $custom_field) {
-				$field_key = array_keys($custom_field);
-				
-				$field_key = $field_key[0];
-				
-				$existing_custom_field = $this->customFieldExists($field_key);
-				
-				if ($existing_custom_field && $this->isCustomFieldTypeSupported($existing_custom_field['handler_class'])) {
-					$custom_field_value = $custom_field[$field_key];
-					
-					$record = array(
-						'ticket_id'	=> $ticketId,
-						'field_id'	=> $existing_custom_field['id'],
-						'input'		=> $custom_field_value
-					);
-					
-					$this->getDb()->insert('custom_data_ticket', $record);
-				}
+				$this->processCustomField($custom_field, $ticket_id);
 			}
 		}
 	}
 	
+	private function processCustomField($data, $ticket_id)
+	{
+		$record		= array();
+		
+		$field_key	= array_keys($data);
+				
+		$field_key	= $field_key[0];
+
+		$existing_custom_field = $this->customFieldExists($field_key);
+		
+		if ($existing_custom_field && $this->isCustomFieldTypeSupported($existing_custom_field['handler_class'])) {
+			switch ($existing_custom_field['handler_class']) {
+				case 'Application\DeskPRO\CustomFields\Handler\Text':
+					$custom_field_value = $data[$field_key];
+
+					$record = array(
+						'ticket_id'	=> $ticket_id,
+						'field_id'	=> $existing_custom_field['id'],
+						'input'		=> $custom_field_value
+					);
+					break;
+			
+				case 'Application\DeskPRO\CustomFields\Handler\Choice':
+					$custom_field_value = $data[$field_key];
+					// This is the choice value, now lets grab the choice id
+					$custom_field_value_id = $this->customFieldExists($custom_field_value);
+					
+					if (!$custom_field_value_id) {
+						$this->getLogger()->warning(sprintf("[%s] Unknown option %s for custom field %s (skipping)", $log_id, $custom_field_value, $field_key));
+						break;
+					}
+
+					$record = array(
+						'ticket_id'	=> $ticket_id,
+						'field_id'	=> $existing_custom_field['id'],
+						'value'		=> $custom_field_value_id['id']
+					);
+					break;
+			}
+			if (!empty($record)) {
+				$this->getDb()->insert('custom_data_ticket', $record);
+			}
+		}
+	}
+
+
 	private function customFieldExists($title)
 	{
 		$query = 'SELECT id, handler_class FROM custom_def_ticket WHERE title = ? AND is_enabled = 1';
