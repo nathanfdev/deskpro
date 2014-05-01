@@ -41,6 +41,7 @@ use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
 use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;
 use Application\ImportBundle\RecordMapper\PersonRecordMapper;
+use Application\ImportBundle\RecordMapper\CustomDefTicketRecordMapper;
 use Application\ImportBundle\ArrayParser\PersonArrayParser;
 use Application\ImportBundle\ArrayParser\TicketArrayParser;
 use Application\ImportBundle\ArrayParser\KbArrayParser;

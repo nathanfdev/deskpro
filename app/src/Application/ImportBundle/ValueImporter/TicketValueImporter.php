@@ -43,7 +43,10 @@ class TicketValueImporter extends AbstractValueImporter
 	
 	protected $supported_custom_field_types = array(
 		'Application\DeskPRO\CustomFields\Handler\Text',
-		'Application\DeskPRO\CustomFields\Handler\Choice'
+		'Application\DeskPRO\CustomFields\Handler\Choice',
+		'Application\DeskPRO\CustomFields\Handler\Textarea',
+		'Application\DeskPRO\CustomFields\Handler\Toggle',
+		'Application\DeskPRO\CustomFields\Handler\Date'
 	);
 
 
@@ -313,24 +316,48 @@ class TicketValueImporter extends AbstractValueImporter
 				
 		$field_key	= $field_key[0];
 
-		$existing_custom_field = $this->customFieldExists($field_key);
+		$existing_custom_field_id = $this->getMappers()->findIdFromMappedValue('custom_def_ticket', $field_key);
 		
-		if ($existing_custom_field && $this->isCustomFieldTypeSupported($existing_custom_field['handler_class'])) {
-			switch ($existing_custom_field['handler_class']) {
+		if ($existing_custom_field_id 
+			&& $this->isCustomFieldTypeSupported($this->getMappers()->getMapper('custom_def_ticket')->fetchHandlerClass($field_key))) {
+			$hander_class = $this->getMappers()->getMapper('custom_def_ticket')->fetchHandlerClass($field_key);
+			switch ($hander_class) {
 				case 'Application\DeskPRO\CustomFields\Handler\Text':
+				case 'Application\DeskPRO\CustomFields\Handler\Textarea':
 					$custom_field_value = $data[$field_key];
 
 					$record = array(
 						'ticket_id'	=> $ticket_id,
-						'field_id'	=> $existing_custom_field['id'],
+						'field_id'	=> $existing_custom_field_id,
+						'root_field_id'	=> $existing_custom_field_id,
 						'input'		=> $custom_field_value
+					);
+					break;
+				case 'Application\DeskPRO\CustomFields\Handler\Toggle':
+					$custom_field_value = $data[$field_key];
+
+					$record = array(
+						'ticket_id'	=> $ticket_id,
+						'field_id'	=> $existing_custom_field_id,
+						'root_field_id'	=> $existing_custom_field_id,
+						'value'		=> $custom_field_value ? 1 : 0
+					);
+					break;
+				case 'Application\DeskPRO\CustomFields\Handler\Date':
+					$custom_field_value = $data[$field_key];
+
+					$record = array(
+						'ticket_id'	=> $ticket_id,
+						'field_id'	=> $existing_custom_field_id,
+						'root_field_id'	=> $existing_custom_field_id,
+						'value'		=> $custom_field_value ? strtotime($custom_field_value) : 0
 					);
 					break;
 			
 				case 'Application\DeskPRO\CustomFields\Handler\Choice':
 					$custom_field_value = $data[$field_key];
 					// This is the choice value, now lets grab the choice id
-					$custom_field_value_id = $this->customFieldExists($custom_field_value);
+					$custom_field_value_id = $this->getMappers()->findIdFromMappedValue('custom_def_ticket', $custom_field_value);
 					
 					if (!$custom_field_value_id) {
 						$this->getLogger()->warning(sprintf("[%s] Unknown option %s for custom field %s (skipping)", $log_id, $custom_field_value, $field_key));
@@ -339,8 +366,9 @@ class TicketValueImporter extends AbstractValueImporter
 
 					$record = array(
 						'ticket_id'	=> $ticket_id,
-						'field_id'	=> $existing_custom_field['id'],
-						'value'		=> $custom_field_value_id['id']
+						'field_id'	=> $custom_field_value_id,
+						'value'		=> 1,
+						'root_field_id'	=> $existing_custom_field_id
 					);
 					break;
 			}
@@ -348,20 +376,6 @@ class TicketValueImporter extends AbstractValueImporter
 				$this->getDb()->insert('custom_data_ticket', $record);
 			}
 		}
-	}
-
-
-	private function customFieldExists($title)
-	{
-		$query = 'SELECT id, handler_class FROM custom_def_ticket WHERE title = ? AND is_enabled = 1';
-		
-		$result = $this->getDb()->fetchAll($query, array($title));
-		
-		if (count($result)) {
-			return $result[0];
-		}
-		
-		return $result;
 	}
 	
 	private function isCustomFieldTypeSupported($field_type)

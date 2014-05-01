@@ -35,26 +35,8 @@ use Doctrine\DBAL\Connection;
 
 class CustomDefTicketRecordMapper extends CommonRecordMapper
 {
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
-	private $db;
-
-	/**
-	 * @var array
-	 */
-	private $cache = array();
-
-
-	/**
-	 * @param Connection $db
-	 */
-	public function __construct(Connection $db)
-	{
-		$this->db = $db;
-	}
-
-
+	protected $cache;
+	
 	/**
 	 * Returns person ID given a title.
 	 *
@@ -64,7 +46,7 @@ class CustomDefTicketRecordMapper extends CommonRecordMapper
 	public function findIdFromValue($title)
 	{
 		$dataArray = $this->fetch($title);
-		
+				
 		return isset($dataArray['id']) ? $dataArray['id'] : null;
 	}
 	
@@ -83,7 +65,7 @@ class CustomDefTicketRecordMapper extends CommonRecordMapper
 	
 	protected function fetch($title)
 	{
-		$query = 'SELECT id, handler_class FROM custom_def_ticketWHERE title = ?';
+		$query = 'SELECT id, handler_class FROM custom_def_ticket WHERE title = ?';
 
 		if (!isset($this->cache[$title])) {
 			$result = $this->db->fetchAll($query, array($title));
