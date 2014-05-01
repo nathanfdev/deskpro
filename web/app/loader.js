@@ -16,7 +16,7 @@ requirejs.config({
 		"angularSlider":                   "app/bower_components/angular-slider/angular-slider.min",
 		"angularGrid":                     "app/bower_components/angular-grid/build/ng-grid.min",
 		"jquery":                          "app/bower_components/jquery/jquery.min",
-		"jqueryUi":                        "app/bower_components/jquery-ui/ui/jquery-ui",
+		"jqueryUi":                        "app/bower_components/jquery-ui/ui/minified/jquery-ui.min",
 		"jquery.ui.widget":                "app/bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget",
 		"jquery.fileupload":               "app/bower_components/blueimp-file-upload/js/jquery.fileupload",
 		"jquery.fileupload-process":       "app/bower_components/blueimp-file-upload/js/jquery.fileupload-process",

@@ -15,7 +15,7 @@
 		"angularSlider":                   "bower_components/angular-slider/angular-slider.min",
 		"angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
 		"jquery":                          "bower_components/jquery/jquery.min",
-		"jqueryUi":                        "bower_components/jquery-ui/ui/jquery-ui",
+		"jqueryUi":                        "bower_components/jquery-ui/ui/minified/jquery-ui.min",
 		"jquery.ui.widget":                "bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget",
 		"jquery.fileupload":               "bower_components/blueimp-file-upload/js/jquery.fileupload",
 		"jquery.fileupload-process":       "bower_components/blueimp-file-upload/js/jquery.fileupload-process",
