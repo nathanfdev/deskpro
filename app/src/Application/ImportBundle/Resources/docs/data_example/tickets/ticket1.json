@@ -7,8 +7,8 @@
 	"priority": "Normal",
 	"workflow": "Internal",
 	"product": "DeskPRO",
-	"person": "firstemail@example.com",
-	"agent": "agent@example.com",
+	"person": "abhinav.kumar@deskpro.com",
+	"agent": "agentuser@example.com",
 	"agent_team": "Team",
 	"organization": "DeskPRO",
 	"labels": ["label1"],
@@ -17,19 +17,24 @@
 	"urgency": 1,
 	"date_created": "2014-04-23",
 	"subject": "Example Ticket",
-	"participants": ["jane@example.com"],
+	"participants": ["seventemail@example.com"],
 	"messages": [
 		{
 			"oid": 1,
-			"person": "firstemail@example.com",
+			"person": "abhinav.kumar@deskpro.com",
 			"date_created": "2014-04-23",
 			"message_text": "This is a message"
 		},
 		{
 			"oid": 2,
-			"person": "firstemail@example.com",
+			"person": "abhinav.kumar@deskpro.com",
 			"date_created": "2014-04-23",
 			"message_text": "This is another message"
+		}
+	],
+	"custom_fields": [
+		{
+			"Text Custom Field": "Custom field value"
 		}
 	]
 }

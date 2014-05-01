@@ -177,35 +177,35 @@ class Importer
 	{
 		$this->processDirectory('people', new PersonValueImporter(
 			$this->config->mode,
-			$this->db,
+			$this->container,
 			$this->logger,
 			$this->mappers
 		));
 		
 		$this->processDirectory('tickets', new TicketValueImporter(
 			$this->config->mode,
-			$this->db,
+			$this->container,
 			$this->logger,
 			$this->mappers
 		));
 		
 		$this->processDirectory('articles', new KbValueImporter(
 			$this->config->mode,
-			$this->db,
+			$this->container,
 			$this->logger,
 			$this->mappers
 		));
 		
 		$this->processDirectory('news', new NewsValueImporter(
 			$this->config->mode,
-			$this->db,
+			$this->container,
 			$this->logger,
 			$this->mappers
 		));
 		
 		$this->processDirectory('feedback', new FeedbackValueImporter(
 			$this->config->mode,
-			$this->db,
+			$this->container,
 			$this->logger,
 			$this->mappers
 		));

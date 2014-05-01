@@ -69,6 +69,7 @@ class TicketArrayParser implements ArrayParserInterface
 			'date_closed'   => 'date',
 			'subject'       => 'string',
 			'participants'  => 'array',
+			'custom_fields' => 'array'
 		), $data, $value);
 
 		if (!empty($data['messages'])) {
