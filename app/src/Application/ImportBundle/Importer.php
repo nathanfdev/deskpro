@@ -135,6 +135,8 @@ class Importer
 		$this->mappers['feedback']		= new CommonRecordMapper($this->db, 'feedback', 'title');
 		$this->mappers['download_category']	= new CommonRecordMapper($this->db, 'download_categories', 'title');
 		$this->mappers['download']		= new CommonRecordMapper($this->db, 'download', 'title');
+		$this->mappers['custom_def_ticket']	= new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title');
+		$this->mappers['custom_def_people']	= new CommonRecordMapper($this->db, 'custom_def_people', 'title');
 
 		if (!$logger) {
 			$logger = new Logger('importer');
