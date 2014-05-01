@@ -269,6 +269,7 @@ echo "\n";
 
 #####################################################################
 
+/*
 $time = microtime(true);
 echo "build-checkphrases ... ";
 
@@ -287,9 +288,11 @@ if ($quick) {
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
 echo "\n";
+*/
 
 #####################################################################
 
+/*
 $time = microtime(true);
 echo "build-checkphrases-vars ... ";
 
@@ -308,6 +311,7 @@ if ($quick) {
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
 echo "\n";
+*/
 
 #####################################################################
 
