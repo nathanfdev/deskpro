@@ -134,10 +134,11 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 				'date_first_agent_reply',
 				'date_last_agent_reply',
 				'date_user_waiting',
-				'date_status'
+				'date_status',
 			),
 			'person' => array(
-				'date_created'
+				'date_created',
+				'date_password_set'
 			),
 			'person_email' => array(
 				'date_created'
