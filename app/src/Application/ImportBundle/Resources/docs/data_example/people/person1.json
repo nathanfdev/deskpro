@@ -28,5 +28,10 @@
 	"labels": ["label1", "label2"],
 	"language": "English",
 	"password": "password",
-	"password_scheme": "plain"
+	"password_scheme": "plain",
+	"custom_fields": [
+		{
+			"Text Custom Field": "Custom field value"
+		}
+	]
 }

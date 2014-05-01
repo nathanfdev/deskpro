@@ -39,6 +39,12 @@ use Orb\Validator\StringEmail;
 
 class PersonValueImporter extends AbstractValueImporter
 {
+	protected $custom_fields_array = array();
+	
+	protected $supported_custom_field_types = array(
+		'Application\DeskPRO\CustomFields\Handler\Text'
+	);
+	
 	/**
 	 * @param mixed $pval
 	 * @throws \Application\ImportBundle\Exception\BadDataException
@@ -248,6 +254,31 @@ class PersonValueImporter extends AbstractValueImporter
 
 				$this->getDb()->batchInsert('labels_people', $batch, true);
 			}
+			
+			#------------------------------
+			# Custom Fields
+			#------------------------------
+			if ($exist_id && $pval->custom_fields) {
+				foreach ($pval->custom_fields as $custom_field) {
+					$field_key = array_keys($custom_field);
+
+					$field_key = $field_key[0];
+
+					$existing_custom_field = $this->customFieldExists($field_key);
+
+					if ($existing_custom_field && $this->isCustomFieldTypeSupported($existing_custom_field['handler_class'])) {
+						$custom_field_value = $custom_field[$field_key];
+
+						$record = array(
+							'person_id'	=> $exist_id,
+							'field_id'	=> $existing_custom_field['id'],
+							'input'		=> $custom_field_value
+						);
+
+						$this->getDb()->insert('custom_data_person', $record);
+					}
+				}
+			}
 		}
 	}
 
@@ -267,6 +298,24 @@ class PersonValueImporter extends AbstractValueImporter
 		}
 
 		return $map;
+	}
+	
+	private function customFieldExists($title)
+	{
+		$query = 'SELECT id, handler_class FROM custom_def_people WHERE title = ? AND is_enabled = 1';
+		
+		$result = $this->getDb()->fetchAll($query, array($title));
+		
+		if (count($result)) {
+			return $result[0];
+		}
+		
+		return $result;
+	}
+	
+	private function isCustomFieldTypeSupported($field_type)
+	{
+		return in_array($field_type, $this->supported_custom_field_types);
 	}
 }
 

@@ -62,7 +62,8 @@ class PersonArrayParser implements ArrayParserInterface
 			'labels'                => 'array',
 			'date_created'          => 'date',
 			'usergroups'            => 'array',
-			'emails'                => 'string[]'
+			'emails'                => 'string[]',
+			'custom_fields'		=> 'array'
 		), $data, $value);
 
 		if (!$value->organization) {
