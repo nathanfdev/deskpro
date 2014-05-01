@@ -51,9 +51,13 @@ class SettingsController extends AbstractController
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
+		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+		$password_validator = App::$container->getSystemService('password_policy_validator');
+
         return $this->render('AgentBundle:Settings:profile.html.twig', array(
 			'form' => $form->createView(),
-			'edit_profile' => $edit_profile
+			'edit_profile' => $edit_profile,
+			'password_expired' => $password_validator->isPasswordExpired($this->person)
 		));
     }
 

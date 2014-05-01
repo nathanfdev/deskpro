@@ -69,9 +69,8 @@ pageMeta.lang = {{ {
 {% if app.getsetting('core.apps_jira.enabled') %}
 	{% include 'AgentBundle:Jira:widget.html.twig' %}
 {% endif %}
-<div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+<div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
+<div class="dp-page-content">
 
 {% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
@@ -954,5 +953,4 @@ pageMeta.lang = {{ {
 	</div>
 </div>
 
-</div></div> {# /scroll #}
-</div>{# /layout #}
+</div></div>{# /layout #}

@@ -169,6 +169,7 @@ class Message
      */
     public static $charset = 'UTF-8//TRANSLIT';
 
+
     /**
      * This constructor takes in the uid for the message and the Imap class representing the mailbox the
      * message should be opened from. This constructor should generally not be called directly, but rather retrieved
@@ -198,7 +199,6 @@ class Message
         /* First load the message overview information */
 
         if(!is_object($messageOverview = $this->getOverview()))
-
             return false;
 
         $this->subject = $messageOverview->subject;
@@ -422,6 +422,7 @@ class Message
      *
      * @param \stdClass $structure
      * @param string    $partIdentifier
+     * @todoa process attachments.
      */
     protected function processStructure($structure, $partIdentifier = null)
     {
@@ -648,11 +649,9 @@ class Message
 
         if ($enable === true) {
             $this->status[$flag] = true;
-
             return imap_setflag_full($this->imapStream, $this->uid, $imapifiedFlag, ST_UID);
         } else {
             unset($this->status[$flag]);
-
             return imap_clearflag_full($this->imapStream, $this->uid, $imapifiedFlag, ST_UID);
         }
     }

@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Navigation
  */
 
 namespace Zend\Navigation;
@@ -17,12 +16,9 @@ use Traversable;
 use Zend\Stdlib\ErrorHandler;
 
 /**
- * Zend_Navigation_Container
+ * Zend\Navigation\Container
  *
  * AbstractContainer class for Zend\Navigation\Page classes.
- *
- * @category  Zend
- * @package   Zend_Navigation
  */
 abstract class AbstractContainer implements Countable, RecursiveIterator
 {
@@ -97,7 +93,7 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
      * calling {@link Page\AbstractPage::setParent()}.
      *
      * @param  Page\AbstractPage|array|Traversable $page  page to add
-     * @return AbstractContainer fluent interface, returns self
+     * @return self fluent interface, returns self
      * @throws Exception\InvalidArgumentException if page is invalid
      */
     public function addPage($page)
@@ -140,7 +136,7 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
      * Adds several pages at once
      *
      * @param  array|Traversable|AbstractContainer $pages pages to add
-     * @return AbstractContainer fluent interface, returns self
+     * @return self fluent interface, returns self
      * @throws Exception\InvalidArgumentException if $pages is not array,
      *                                            Traversable or AbstractContainer
      */
@@ -163,6 +159,9 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
         }
 
         foreach ($pages as $page) {
+            if (null === $page) {
+                continue;
+            }
             $this->addPage($page);
         }
 
@@ -173,7 +172,7 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
      * Sets pages this container should have, removing existing pages
      *
      * @param  array $pages pages to set
-     * @return AbstractContainer fluent interface, returns self
+     * @return self fluent interface, returns self
      */
     public function setPages(array $pages)
     {
@@ -194,11 +193,12 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
     /**
      * Removes the given page from the container
      *
-     * @param  Page\AbstractPage|int $page page to remove, either a page
-     *                                     instance or a specific page order
+     * @param  Page\AbstractPage|int $page      page to remove, either a page
+     *                                          instance or a specific page order
+     * @param  bool                  $recursive [optional] whether to remove recursively
      * @return bool whether the removal was successful
      */
-    public function removePage($page)
+    public function removePage($page, $recursive = false)
     {
         if ($page instanceof Page\AbstractPage) {
             $hash = $page->hashCode();
@@ -218,13 +218,23 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
             return true;
         }
 
+        if ($recursive) {
+            /** @var \Zend\Navigation\Page\AbstractPage $childPage */
+            foreach ($this->pages as $childPage) {
+                if ($childPage->hasPage($page, true)) {
+                    $childPage->removePage($page, true);
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
     /**
      * Removes all pages in container
      *
-     * @return AbstractContainer fluent interface, returns self
+     * @return self fluent interface, returns self
      */
     public function removePages()
     {
@@ -259,10 +269,20 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
     /**
      * Returns true if container contains any pages
      *
+     * @param  bool $onlyVisible whether to check only visible pages
      * @return bool  whether container has any pages
      */
-    public function hasPages()
+    public function hasPages($onlyVisible = false)
     {
+        if ($onlyVisible) {
+            foreach ($this->pages as $page) {
+                if ($page->isVisible()) {
+                    return true;
+                }
+            }
+            // no visible pages found
+            return false;
+        }
         return count($this->index) > 0;
     }
 
@@ -354,7 +374,7 @@ abstract class AbstractContainer implements Countable, RecursiveIterator
         if (!$result) {
             throw new Exception\BadMethodCallException(sprintf(
                 'Bad method call: Unknown method %s::%s',
-                get_called_class(),
+                get_class($this),
                 $method
             ), 0, $error);
         }

@@ -21,6 +21,7 @@ use Aws\Common\Credentials\Credentials;
 use Aws\Common\Credentials\CredentialsInterface;
 use Aws\Common\Enum\ClientOptions as Options;
 use Aws\Common\Exception\InvalidArgumentException;
+use Aws\Common\Exception\TransferException;
 use Aws\Common\Signature\EndpointSignatureInterface;
 use Aws\Common\Signature\SignatureInterface;
 use Aws\Common\Signature\SignatureListener;
@@ -29,6 +30,7 @@ use Aws\Common\Waiter\CompositeWaiterFactory;
 use Aws\Common\Waiter\WaiterFactoryInterface;
 use Aws\Common\Waiter\WaiterConfigFactory;
 use Guzzle\Common\Collection;
+use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\Client;
 use Guzzle\Service\Description\ServiceDescriptionInterface;
 
@@ -89,16 +91,16 @@ abstract class AbstractClient extends Client implements AwsClientInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $args = null)
+    public function __call($method, $args)
     {
-        if (substr($method, 0, 9) == 'waitUntil') {
-            // Allow magic method calls for waiters (e.g. $client->waitUntil<WaiterName>($resource, $options))
-            array_unshift($args, substr($method, 9));
-
-            return call_user_func_array(array($this, 'waitUntil'), $args);
+        if (substr($method, 0, 3) === 'get' && substr($method, -8) === 'Iterator') {
+            // Allow magic method calls for iterators (e.g. $client->get<CommandName>Iterator($params))
+            $commandOptions = isset($args[0]) ? $args[0] : null;
+            $iteratorOptions = isset($args[1]) ? $args[1] : array();
+            return $this->getIterator(substr($method, 3, -8), $commandOptions, $iteratorOptions);
+        } elseif (substr($method, 0, 9) == 'waitUntil') {
+            // Allow magic method calls for waiters (e.g. $client->waitUntil<WaiterName>($params))
+            return $this->waitUntil(substr($method, 9), isset($args[0]) ? $args[0]: array());
         } else {
             return parent::__call(ucfirst($method), $args);
         }
@@ -256,7 +258,8 @@ abstract class AbstractClient extends Client implements AwsClientInterface
                 new WaiterClassFactory(substr($clientClass, 0, strrpos($clientClass, '\\')) . '\\Waiter')
             ));
             if ($this->getDescription()) {
-                $this->waiterFactory->addFactory(new WaiterConfigFactory($this->getDescription()->getData('waiters')));
+                $waiterConfig = $this->getDescription()->getData('waiters') ?: array();
+                $this->waiterFactory->addFactory(new WaiterConfigFactory($waiterConfig));
             }
         }
 
@@ -269,5 +272,23 @@ abstract class AbstractClient extends Client implements AwsClientInterface
     public function getApiVersion()
     {
         return $this->serviceDescription->getApiVersion();
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws \Aws\Common\Exception\TransferException
+     */
+    public function send($requests)
+    {
+        try {
+            return parent::send($requests);
+        } catch (CurlException $e) {
+            $wrapped = new TransferException($e->getMessage(), null, $e);
+            $wrapped->setCurlHandle($e->getCurlHandle())
+                ->setCurlInfo($e->getCurlInfo())
+                ->setError($e->getError(), $e->getErrorNo())
+                ->setRequest($e->getRequest());
+            throw $wrapped;
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Aws\DynamoDb;
 
 use Aws\Common\Client\AbstractClient;
 use Aws\Common\Client\ClientBuilder;
+use Aws\Common\Client\ExpiredCredentialsChecker;
 use Aws\Common\Client\ThrottlingErrorChecker;
 use Aws\Common\Enum\ClientOptions as Options;
 use Aws\Common\Exception\Parser\JsonQueryExceptionParser;
@@ -25,12 +26,13 @@ use Aws\DynamoDb\Model\Attribute;
 use Aws\DynamoDb\Session\SessionHandler;
 use Guzzle\Common\Collection;
 use Guzzle\Plugin\Backoff\BackoffPlugin;
-use Guzzle\Plugin\Backoff\HttpBackoffStrategy;
-use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
-use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
 use Guzzle\Plugin\Backoff\CallbackBackoffStrategy;
-use Guzzle\Service\Resource\Model;
+use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
+use Guzzle\Plugin\Backoff\HttpBackoffStrategy;
+use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
 use Guzzle\Service\Command\AbstractCommand as Cmd;
+use Guzzle\Service\Resource\Model;
+use Guzzle\Service\Resource\ResourceIteratorInterface;
 
 /**
  * Client to interact with Amazon DynamoDB
@@ -48,81 +50,34 @@ use Guzzle\Service\Command\AbstractCommand as Cmd;
  * @method Model scan(array $args = array()) {@command DynamoDb Scan}
  * @method Model updateItem(array $args = array()) {@command DynamoDb UpdateItem}
  * @method Model updateTable(array $args = array()) {@command DynamoDb UpdateTable}
- * @method waitUntilTableExists(array $input) Wait until a table exists and can be accessed The input array uses the parameters of the DescribeTable operation and waiter specific settings
- * @method waitUntilTableNotExists(array $input) Wait until a table is deleted The input array uses the parameters of the DescribeTable operation and waiter specific settings
+ * @method waitUntilTableExists(array $input) The input array uses the parameters of the DescribeTable operation and waiter specific settings
+ * @method waitUntilTableNotExists(array $input) The input array uses the parameters of the DescribeTable operation and waiter specific settings
+ * @method ResourceIteratorInterface getBatchGetItemIterator(array $args = array()) The input array uses the parameters of the BatchGetItem operation
+ * @method ResourceIteratorInterface getListTablesIterator(array $args = array()) The input array uses the parameters of the ListTables operation
+ * @method ResourceIteratorInterface getQueryIterator(array $args = array()) The input array uses the parameters of the Query operation
+ * @method ResourceIteratorInterface getScanIterator(array $args = array()) The input array uses the parameters of the Scan operation
  *
- * @link http://docs.aws.amazon.com/aws-sdk-php-2/guide/latest/service-dynamodb.html User guide
- * @link http://docs.aws.amazon.com/aws-sdk-php-2/latest/class-Aws.DynamoDb.DynamoDbClient.html API docs
+ * @link http://docs.aws.amazon.com/aws-sdk-php/guide/latest/service-dynamodb.html User guide
+ * @link http://docs.aws.amazon.com/aws-sdk-php/latest/class-Aws.DynamoDb.DynamoDbClient.html API docs
  */
 class DynamoDbClient extends AbstractClient
 {
     const LATEST_API_VERSION = '2012-08-10';
 
     /**
-     * Factory method to create a new Amazon DynamoDB client using an array of configuration options:
-     *
-     * Credential options (`key`, `secret`, and optional `token` OR `credentials` is required)
-     *
-     * - key: AWS Access Key ID
-     * - secret: AWS secret access key
-     * - credentials: You can optionally provide a custom `Aws\Common\Credentials\CredentialsInterface` object
-     * - token: Custom AWS security token to use with request authentication
-     * - token.ttd: UNIX timestamp for when the custom credentials expire
-     * - credentials.cache: Used to cache credentials when using providers that require HTTP requests. Set the true
-     *   to use the default APC cache or provide a `Guzzle\Cache\CacheAdapterInterface` object.
-     * - credentials.cache.key: Optional custom cache key to use with the credentials
-     * - credentials.client: Pass this option to specify a custom `Guzzle\Http\ClientInterface` to use if your
-     *   credentials require a HTTP request (e.g. RefreshableInstanceProfileCredentials)
-     *
-     * Region and Endpoint options (a `region` and optional `scheme` OR a `base_url` is required)
-     *
-     * - region: Region name (e.g. 'us-east-1', 'us-west-1', 'us-west-2', 'eu-west-1', etc...)
-     * - scheme: URI Scheme of the base URL (e.g. 'https', 'http').
-     * - base_url: Instead of using a `region` and `scheme`, you can specify a custom base URL for the client
-     *
-     * Generic client options
-     *
-     * - ssl.certificate_authority: Set to true to use the bundled CA cert (default), system to use the certificate
-     *   bundled with your system, or pass the full path to an SSL certificate bundle. This option should be used when
-     *   you encounter curl error code 60.
-     * - curl.options: Array of cURL options to apply to every request.
-     *   See http://www.php.net/manual/en/function.curl-setopt.php for a list of available options
-     * - signature: You can optionally provide a custom signature implementation used to sign requests
-     * - signature.service: Set to explicitly override the service name used in signatures
-     * - signature.region:  Set to explicitly override the region name used in signatures
-     * - client.backoff.logger: `Guzzle\Log\LogAdapterInterface` object used to log backoff retries. Use
-     *   'debug' to emit PHP warnings when a retry is issued.
-     * - client.backoff.logger.template: Optional template to use for exponential backoff log messages. See
-     *   `Guzzle\Plugin\Backoff\BackoffLogger` for formatting information.
+     * Factory method to create a new Amazon DynamoDB client using an array of configuration options.
      *
      * @param array|Collection $config Client configuration data
      *
      * @return self
+     * @link http://docs.aws.amazon.com/aws-sdk-php/guide/latest/configuration.html#client-configuration-options
      */
     public static function factory($config = array())
     {
         // Configure the custom exponential backoff plugin for DynamoDB throttling
         $exceptionParser = new JsonQueryExceptionParser();
         if (!isset($config[Options::BACKOFF])) {
-            $config[Options::BACKOFF] = new BackoffPlugin(
-                // Retry requests (even if successful) if the CRC32 header is does not match the CRC32 of the response
-                new Crc32ErrorChecker(
-                    // Retry failed requests up to 11 times instead of the normal 3
-                    new TruncatedBackoffStrategy(11,
-                        // Retry failed requests with 400-level responses due to throttling
-                        new ThrottlingErrorChecker($exceptionParser,
-                            // Retry failed requests with 500-level responses
-                            new HttpBackoffStrategy(null,
-                                // Retry failed requests due to transient network or cURL problems
-                                new CurlBackoffStrategy(null,
-                                     // Use the custom retry delay method instead of default exponential backoff
-                                     new CallbackBackoffStrategy(__CLASS__ . '::calculateRetryDelay', false)
-                                )
-                            )
-                        )
-                    )
-                )
-            );
+            $config[Options::BACKOFF] = self::createBackoffPlugin($exceptionParser);
         }
 
         // Construct the DynamoDB client with the client builder
@@ -137,25 +92,39 @@ class DynamoDbClient extends AbstractClient
                 self::COMMAND_PARAMS => array(Cmd::RESPONSE_PROCESSING => Cmd::TYPE_NO_TRANSLATION)
             ))
             ->setExceptionParser($exceptionParser)
-            ->setIteratorsConfig(array(
-                'result_key'  => 'Items',
-                'token_param' => 'ExclusiveStartKey',
-                'token_key'   => 'LastEvaluatedKey',
-                'operations'  => array(
-                    'BatchGetItem' => array(
-                        'token_param' => 'RequestItems',
-                        'token_key'   => 'UnprocessedKeys',
-                    ),
-                    'ListTables' => array(
-                        'result_key'  => 'TableNames',
-                        'token_param' => 'ExclusiveStartTableName',
-                        'token_key'   => 'LastEvaluatedTableName',
-                    ),
-                    'Query',
-                    'Scan',
-                )
-            ))
             ->build();
+    }
+
+    /**
+     * Create an Amazon DynamoDB specific backoff plugin
+     *
+     * @param JsonQueryExceptionParser $exceptionParser
+     *
+     * @return BackoffPlugin
+     */
+    private static function createBackoffPlugin(JsonQueryExceptionParser $exceptionParser)
+    {
+        return new BackoffPlugin(
+            // Retry requests (even if successful) if the CRC32 header is does not match the CRC32 of the response
+            new Crc32ErrorChecker(
+                // Retry failed requests up to 11 times instead of the normal 3
+                new TruncatedBackoffStrategy(11,
+                    // Retry failed requests with 400-level responses due to throttling
+                    new ThrottlingErrorChecker($exceptionParser,
+                        // Retry failed requests with 500-level responses
+                        new HttpBackoffStrategy(null,
+                            // Retry failed requests due to transient network or cURL problems
+                            new CurlBackoffStrategy(null,
+                                new ExpiredCredentialsChecker($exceptionParser,
+                                     // Use the custom retry delay method instead of default exponential backoff
+                                     new CallbackBackoffStrategy(__CLASS__ . '::calculateRetryDelay', false)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 
     /**

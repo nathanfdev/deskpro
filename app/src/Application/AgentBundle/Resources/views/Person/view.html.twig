@@ -26,9 +26,8 @@ pageMeta.baseId = '{{ baseId }}';
 {% if person.is_agent %}pageMeta.isAgent = true;{% endif %}
 </script>
 {# Page Containers #}
-<div class="profile layout-content with-scrollbar {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+<div class="profile layout-content {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
+	<div class="dp-page-content">
 {# /Page Containers #}
 
 {% if (not person.is_confirmed or not person.is_agent_confirmed) or (person.is_confirmed and person.is_agent_confirmed and has_email_validating) %}
@@ -178,7 +177,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 {# Page Containers #}
-</div>
 {% if with_warn_for_email %}
 <div class="full-tab-warn">
 	<div class="message">

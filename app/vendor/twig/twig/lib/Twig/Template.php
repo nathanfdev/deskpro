@@ -105,9 +105,9 @@ abstract class Twig_Template implements Twig_TemplateInterface
         $name = (string) $name;
 
         if (isset($this->traits[$name])) {
-            $this->traits[$name][0]->displayBlock($name, $context, $blocks, false);
+            $this->traits[$name][0]->displayBlock($name, $context, $blocks);
         } elseif (false !== $parent = $this->getParent($context)) {
-            $parent->displayBlock($name, $context, $blocks, false);
+            $parent->displayBlock($name, $context, $blocks);
         } else {
             throw new Twig_Error_Runtime(sprintf('The template has no parent and no traits defining the "%s" block', $name), -1, $this->getTemplateName());
         }
@@ -119,18 +119,18 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * This method is for internal use only and should never be called
      * directly.
      *
-     * @param string  $name      The block name to display
-     * @param array   $context   The context
-     * @param array   $blocks    The current set of blocks
-     * @param Boolean $useBlocks Whether to use the current set of blocks
+     * @param string $name    The block name to display
+     * @param array  $context The context
+     * @param array  $blocks  The current set of blocks
      */
-    public function displayBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    public function displayBlock($name, array $context, array $blocks = array())
     {
         $name = (string) $name;
 
-        if ($useBlocks && isset($blocks[$name])) {
+        if (isset($blocks[$name])) {
             $template = $blocks[$name][0];
             $block = $blocks[$name][1];
+            unset($blocks[$name]);
         } elseif (isset($this->blocks[$name])) {
             $template = $this->blocks[$name][0];
             $block = $this->blocks[$name][1];
@@ -148,7 +148,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
                 throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $template->getTemplateName(), $e);
             }
         } elseif (false !== $parent = $this->getParent($context)) {
-            $parent->displayBlock($name, $context, array_merge($this->blocks, $blocks), false);
+            $parent->displayBlock($name, $context, array_merge($this->blocks, $blocks));
         }
     }
 
@@ -178,17 +178,16 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * This method is for internal use only and should never be called
      * directly.
      *
-     * @param string  $name      The block name to render
-     * @param array   $context   The context
-     * @param array   $blocks    The current set of blocks
-     * @param Boolean $useBlocks Whether to use the current set of blocks
+     * @param string $name    The block name to render
+     * @param array  $context The context
+     * @param array  $blocks  The current set of blocks
      *
      * @return string The rendered block
      */
-    public function renderBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    public function renderBlock($name, array $context, array $blocks = array())
     {
         ob_start();
-        $this->displayBlock($name, $context, $blocks, $useBlocks);
+        $this->displayBlock($name, $context, $blocks);
 
         return ob_get_clean();
     }

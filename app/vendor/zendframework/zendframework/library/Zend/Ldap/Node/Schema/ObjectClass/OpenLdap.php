@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Ldap
  */
 
 namespace Zend\Ldap\Node\Schema\ObjectClass;
@@ -15,10 +14,6 @@ use Zend\Ldap\Node\Schema;
 /**
  * Zend\Ldap\Node\Schema\ObjectClass\OpenLdap provides access to the objectClass
  * schema information on an OpenLDAP server.
- *
- * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
  */
 class OpenLdap extends Schema\AbstractItem implements ObjectClassInterface
 {
@@ -118,7 +113,7 @@ class OpenLdap extends Schema\AbstractItem implements ObjectClassInterface
     /**
      * Gets the objectClass type
      *
-     * @return integer
+     * @return int
      */
     public function getType()
     {

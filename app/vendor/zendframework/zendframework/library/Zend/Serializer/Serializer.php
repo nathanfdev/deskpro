@@ -3,27 +3,22 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Serializer
  */
 
 namespace Zend\Serializer;
 
 use Zend\Serializer\Adapter\AdapterInterface as Adapter;
 
-/**
- * @category   Zend
- * @package    Zend_Serializer
- */
-class Serializer
+abstract class Serializer
 {
     /**
      * Plugin manager for loading adapters
      *
      * @var null|AdapterPluginManager
      */
-    private static $adapters = null;
+    protected static $adapters;
 
     /**
      * The default adapter.

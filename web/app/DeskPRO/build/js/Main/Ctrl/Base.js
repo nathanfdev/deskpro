@@ -17,13 +17,13 @@
        * all other types of objects (services and directives etc) which are registered through the App
        * loader.
      */
-    var DeskPRO_Ctrl_Base;
-    return DeskPRO_Ctrl_Base = (function() {
-      DeskPRO_Ctrl_Base.CTRL_AS = null;
+    var DeskPRO_Main_Ctrl_Base;
+    return DeskPRO_Main_Ctrl_Base = (function() {
+      DeskPRO_Main_Ctrl_Base.CTRL_AS = null;
 
-      DeskPRO_Ctrl_Base.CTRL_ID = 'DeskPRO_Main_Ctrl_Base';
+      DeskPRO_Main_Ctrl_Base.CTRL_ID = 'DeskPRO_Main_Ctrl_Base';
 
-      DeskPRO_Ctrl_Base.DEPS = [];
+      DeskPRO_Main_Ctrl_Base.DEPS = [];
 
 
       /**
@@ -31,7 +31,7 @@
         	* so it can be used.
        */
 
-      DeskPRO_Ctrl_Base.EXPORT_CTRL = function() {
+      DeskPRO_Main_Ctrl_Base.EXPORT_CTRL = function() {
         var ctrl_def;
         if (this.DEPS.indexOf('AppState') === -1) {
           this.DEPS.unshift('AppState');
@@ -83,7 +83,7 @@
       		* The constructor will assign all passed-in dependencies to class vars
        */
 
-      function DeskPRO_Ctrl_Base() {
+      function DeskPRO_Main_Ctrl_Base() {
         var arg, arg_name, args, i, me, ret, _i, _j, _len, _len1;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         this.ctrl_is_loading = true;
@@ -242,7 +242,7 @@
         	 * Loads the next section
        */
 
-      DeskPRO_Ctrl_Base.prototype.runNextAutoload = function() {
+      DeskPRO_Main_Ctrl_Base.prototype.runNextAutoload = function() {
         var al, link, _i, _len, _ref, _results;
         if (!this.$scope._autoload_links || !this.$scope._autoload_links.length) {
           return;
@@ -289,7 +289,7 @@
         	* @param {String} id
        */
 
-      DeskPRO_Ctrl_Base.prototype.pingElement = function(id) {
+      DeskPRO_Main_Ctrl_Base.prototype.pingElement = function(id) {
         return this.$scope.dp_ctrl_elemnt_ping[id] = (new Date()).getTime();
       };
 
@@ -305,7 +305,7 @@
         	 * @return {promise} A promise that resolves once the spinner stops
        */
 
-      DeskPRO_Ctrl_Base.prototype.startSpinner = function(id, minTime) {
+      DeskPRO_Main_Ctrl_Base.prototype.startSpinner = function(id, minTime) {
         var deferred, desc;
         if (minTime == null) {
           minTime = 1050;
@@ -362,7 +362,7 @@
       		 * @return {promise} A promise that resolves once the spinner stops
        */
 
-      DeskPRO_Ctrl_Base.prototype.stopSpinner = function(id, force) {
+      DeskPRO_Main_Ctrl_Base.prototype.stopSpinner = function(id, force) {
         var d, _ref;
         if (force == null) {
           force = false;
@@ -389,7 +389,7 @@
       		* @return {Boolean}
        */
 
-      DeskPRO_Ctrl_Base.prototype.isDirtyState = function() {
+      DeskPRO_Main_Ctrl_Base.prototype.isDirtyState = function() {
         return false;
       };
 
@@ -402,7 +402,7 @@
         	* @param {Boolean} turn_off True (default) to turn off. Pass false to turn it back on
        */
 
-      DeskPRO_Ctrl_Base.prototype.skipDirtyState = function(turn_off) {
+      DeskPRO_Main_Ctrl_Base.prototype.skipDirtyState = function(turn_off) {
         if (turn_off == null) {
           turn_off = true;
         }
@@ -414,14 +414,14 @@
       		* Controllers can implement this init() method to add custom init functionality.
        */
 
-      DeskPRO_Ctrl_Base.prototype.init = function() {};
+      DeskPRO_Main_Ctrl_Base.prototype.init = function() {};
 
 
       /**
       		* Controllers can implement this initialLoad() method to load the data needed for a view
        */
 
-      DeskPRO_Ctrl_Base.prototype.initialLoad = function() {};
+      DeskPRO_Main_Ctrl_Base.prototype.initialLoad = function() {};
 
 
       /*
@@ -430,7 +430,7 @@
         	 * @return {Boolean}
        */
 
-      DeskPRO_Ctrl_Base.prototype.hasLoaded = function() {
+      DeskPRO_Main_Ctrl_Base.prototype.hasLoaded = function() {
         return this._has_loaded;
       };
 
@@ -440,7 +440,7 @@
         	* a validation error that we want to show in the form.
        */
 
-      DeskPRO_Ctrl_Base.prototype.applyErrorResponseToView = function(result) {
+      DeskPRO_Main_Ctrl_Base.prototype.applyErrorResponseToView = function(result) {
         var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
         if ((result != null ? result.data : void 0) && (result != null ? result.config : void 0)) {
           result = result.data;
@@ -514,7 +514,7 @@
         	 * @return {String}
        */
 
-      DeskPRO_Ctrl_Base.prototype.getRegisteredMessage = function(id) {
+      DeskPRO_Main_Ctrl_Base.prototype.getRegisteredMessage = function(id) {
         var content, _ref;
         content = ((_ref = this.$scope) != null ? _ref._element_messages[id] : void 0) || '';
         if (_.isFunction(content)) {
@@ -528,7 +528,7 @@
       		* Calls $apply on scope only if digest isn't already being processed
        */
 
-      DeskPRO_Ctrl_Base.prototype.ngApply = function(fn) {
+      DeskPRO_Main_Ctrl_Base.prototype.ngApply = function(fn) {
         var e;
         if (!this.$scope.$$phase && !this.$scope.$root.$$phase) {
           try {
@@ -555,7 +555,7 @@
       		* @param {Admin_Main_Model_Base} obj
        */
 
-      DeskPRO_Ctrl_Base.prototype._configureAutoReleaseObject = function(obj) {
+      DeskPRO_Main_Ctrl_Base.prototype._configureAutoReleaseObject = function(obj) {
         if (this._autoReleaseObjects == null) {
           this._autoReleaseObjects = [];
           this.$scope.$on('$destroy', (function(_this) {
@@ -582,7 +582,7 @@
       		* @param {Admin_Main_Model_Base} obj
        */
 
-      DeskPRO_Ctrl_Base.prototype.addManagedListener = function(object, event_name, fn) {
+      DeskPRO_Main_Ctrl_Base.prototype.addManagedListener = function(object, event_name, fn) {
         this._managed_listeners.push({
           object: object,
           event_name: event_name,
@@ -598,7 +598,7 @@
       		* @return {String}
        */
 
-      DeskPRO_Ctrl_Base.prototype.getTemplatePath = function(path) {
+      DeskPRO_Main_Ctrl_Base.prototype.getTemplatePath = function(path) {
         throw new Error('getTemplatePath() method of DeskPRO base controller should be redefined in children class');
       };
 
@@ -607,7 +607,7 @@
       		* Show an alert
        */
 
-      DeskPRO_Ctrl_Base.prototype._showStateConfirmLeave = function() {
+      DeskPRO_Main_Ctrl_Base.prototype._showStateConfirmLeave = function() {
         var inst, parentCtrl;
         parentCtrl = this;
         inst = this.$modal.open({
@@ -637,7 +637,7 @@
       		* @return {Object}
        */
 
-      DeskPRO_Ctrl_Base.prototype.showAlert = function(message, title) {
+      DeskPRO_Main_Ctrl_Base.prototype.showAlert = function(message, title) {
         var inst;
         if (title == null) {
           title = 'Alert';
@@ -672,7 +672,7 @@
       		 * @return {Object}
        */
 
-      DeskPRO_Ctrl_Base.prototype.showConfirm = function(message, title) {
+      DeskPRO_Main_Ctrl_Base.prototype.showConfirm = function(message, title) {
         var inst;
         if (title == null) {
           title = 'Confirm';
@@ -701,7 +701,7 @@
         return inst;
       };
 
-      DeskPRO_Ctrl_Base.prototype.getWaitEntityPromiseView = function(id) {
+      DeskPRO_Main_Ctrl_Base.prototype.getWaitEntityPromiseView = function(id) {
         return (function(_this) {
           return function() {
             return _this.getWaitEntityPromise(id);
@@ -709,7 +709,7 @@
         })(this);
       };
 
-      DeskPRO_Ctrl_Base.prototype.getWaitEntityPromise = function(id) {
+      DeskPRO_Main_Ctrl_Base.prototype.getWaitEntityPromise = function(id) {
         var promise;
         if (!id) {
           id = 'default';
@@ -725,7 +725,7 @@
         return promise;
       };
 
-      DeskPRO_Ctrl_Base.prototype.resolveWaitEntityPromise = function(id) {
+      DeskPRO_Main_Ctrl_Base.prototype.resolveWaitEntityPromise = function(id) {
         if (!id) {
           id = 'default';
         }
@@ -749,7 +749,7 @@
         	 * @param {String} spinner_name The spinner to manage automatically
        */
 
-      DeskPRO_Ctrl_Base.prototype.sendFormSaveApiCall = function(method, url, data, spinner_name) {
+      DeskPRO_Main_Ctrl_Base.prototype.sendFormSaveApiCall = function(method, url, data, spinner_name) {
         var promise;
         if (spinner_name == null) {
           spinner_name = 'form_saving';
@@ -788,7 +788,7 @@
         return promise;
       };
 
-      return DeskPRO_Ctrl_Base;
+      return DeskPRO_Main_Ctrl_Base;
 
     })();
   });

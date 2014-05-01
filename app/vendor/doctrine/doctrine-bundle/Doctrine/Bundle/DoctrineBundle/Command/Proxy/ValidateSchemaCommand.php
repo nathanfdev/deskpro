@@ -37,7 +37,20 @@ class ValidateSchemaCommand extends DoctrineValidateSchemaCommand
 
         $this
             ->setName('doctrine:schema:validate')
-            ->addOption('em', null, InputOption::VALUE_OPTIONAL, 'The entity manager to use for this command');
+            ->setDescription('Validates the doctrine mapping files')
+            ->addOption('em', null, InputOption::VALUE_OPTIONAL, 'The entity manager to use for this command')
+            ->setHelp(<<<EOT
+The <info>doctrine:schema:validate</info> checks the current mappings
+for valid forward and reverse mappings.
+
+<info>php app/console doctrine:schema:validate</info>
+
+You can also optionally specify the <comment>--em</comment> option to specify
+which entity manager use for the validation.
+
+<info>php app/console doctrine:schema:validate --em=default</info>
+EOT
+        );
     }
 
     /**

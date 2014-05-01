@@ -186,6 +186,33 @@ class ContainerMock
 		return $this;
 	}
 
+    public function withElasticaRepositoryManager($obj = null)
+    {
+        if ($obj === null) {
+
+            $obj = m::mock('FOS\\ElasticaBundle\\Doctrine\\RepositoryManager');
+
+            $commonRepository = m::mock('FOS\\ElasticaBundle\\Repository');
+            $commonRepository->shouldReceive('find')->withAnyArgs()->andReturn(array());
+
+            $obj->shouldReceive('getRepository')->with('DeskPRO:Article')->andReturn($commonRepository);
+            $obj->shouldReceive('getRepository')->with('DeskPRO:Download')->andReturn($commonRepository);
+            $obj->shouldReceive('getRepository')->with('DeskPRO:Feedback')->andReturn($commonRepository);
+            $obj->shouldReceive('getRepository')->with('DeskPRO:News')->andReturn($commonRepository);
+            $obj->shouldReceive('getRepository')->with('DeskPRO:Person')->andReturn($commonRepository);
+            $obj->shouldReceive('getRepository')->with('DeskPRO:Organization')->andReturn($commonRepository);
+
+            $ticketRepository = m::mock('Application\\DeskPRO\\NewSearch\\Repository\\TicketRepository');
+            $ticketRepository->shouldReceive('find')->withAnyArgs()->andReturn(array());
+            $ticketRepository->shouldReceive('setPersonContext')->withAnyArgs();
+
+            $obj->shouldReceive('getRepository')->with('DeskPRO:Ticket')->andReturn($ticketRepository);
+        }
+
+        $this->mock->shouldReceive('get')->with('fos_elastica.manager')->andReturn($obj);
+        return $this;
+    }
+
 	/**
 	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */

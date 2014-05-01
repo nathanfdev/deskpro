@@ -3,19 +3,15 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Console
  */
 
 namespace Zend\Console;
 
 /**
- * An static, utility class for interacting with Console environment.
+ * A static, utility class for interacting with Console environment.
  * Declared abstract to prevent from instantiating.
- *
- * @category   Zend
- * @package    Zend_Console
  */
 abstract class Console
 {
@@ -34,7 +30,7 @@ abstract class Console
     /**
      * Create and return Adapter\AdapterInterface instance.
      *
-     * @param  null|string  $forceAdapter Optional adapter class name. Ccan be absolute namespace or class name
+     * @param  null|string  $forceAdapter Optional adapter class name. Can be absolute namespace or class name
      *                                    relative to Zend\Console\Adapter\. If not provided, a best matching
      *                                    adapter will be automatically selected.
      * @param  null|string  $forceCharset optional charset name can be absolute namespace or class name relative to
@@ -106,6 +102,14 @@ abstract class Console
     }
 
     /**
+     * Reset the console instance
+     */
+    public static function resetInstance()
+    {
+        static::$instance = null;
+    }
+
+    /**
      * Check if currently running under MS Windows
      *
      * @see http://stackoverflow.com/questions/738823/possible-values-for-php-os
@@ -114,8 +118,8 @@ abstract class Console
     public static function isWindows()
     {
         return
-            ( defined('PHP_OS') && ( substr_compare(PHP_OS,'win',0,3,true) === 0) ) ||
-            (getenv('OS') != false && substr_compare(getenv('OS'),'windows',0,7,true))
+            (defined('PHP_OS') && (substr_compare(PHP_OS, 'win', 0, 3, true) === 0)) ||
+            (getenv('OS') != false && substr_compare(getenv('OS'), 'windows', 0, 7, true))
         ;
     }
 
@@ -139,10 +143,10 @@ abstract class Console
      */
     public static function isConsole()
     {
-        if (null !== static::$isConsole && is_bool(static::$isConsole)) {
-            return static::$isConsole;
+        if (null === static::$isConsole) {
+            static::$isConsole = (PHP_SAPI == 'cli');
         }
-        return PHP_SAPI == 'cli';
+        return static::$isConsole;
     }
 
     /**
@@ -152,6 +156,9 @@ abstract class Console
      */
     public static function overrideIsConsole($flag)
     {
+        if (null != $flag) {
+            $flag = (bool) $flag;
+        }
         static::$isConsole = $flag;
     }
 

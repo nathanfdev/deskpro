@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Filter
  */
 
 namespace Zend\Filter;
@@ -13,10 +12,6 @@ namespace Zend\Filter;
 use Traversable;
 use Zend\Stdlib\ErrorHandler;
 
-/**
- * @category   Zend
- * @package    Zend_Filter
- */
 class RealPath extends AbstractFilter
 {
     /**
@@ -48,7 +43,7 @@ class RealPath extends AbstractFilter
      * FALSE when not existing paths can be given
      *
      * @param  bool $flag Path must exist
-     * @return RealPath
+     * @return self
      */
     public function setExists($flag = true)
     {
@@ -71,12 +66,18 @@ class RealPath extends AbstractFilter
      *
      * Returns realpath($value)
      *
+     * If the value provided is non-scalar, the value will remain unfiltered
+     *
      * @param  string $value
-     * @return string
+     * @return string|mixed
      */
     public function filter($value)
     {
+        if(!is_string($value)){
+            return $value;
+        }
         $path = (string) $value;
+
         if ($this->options['exists']) {
             return realpath($path);
         }

@@ -154,6 +154,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
 		}
 
+		if ($this->person && $this->person->id && !($this instanceof ProfileController)) {
+			/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+			$password_validator = App::$container->getSystemService('password_policy_validator');
+			if ($password_validator->isPasswordExpired($this->person)) {
+				return $this->redirectRoute('user_profile');
+			}
+		}
+
 		if (
 			!($this instanceof LoginController || $this instanceof MainController || $this instanceof ProfileController || $this instanceof PortalController)
 			AND !($this instanceof TicketsController && preg_match('#^feedback#', $action))

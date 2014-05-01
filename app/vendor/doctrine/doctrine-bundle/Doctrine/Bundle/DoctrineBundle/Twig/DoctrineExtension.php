@@ -14,6 +14,8 @@
 
 namespace Doctrine\Bundle\DoctrineBundle\Twig;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * This class contains the needed functions in order to do the query highlighting
  *
@@ -37,16 +39,16 @@ class DoctrineExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('doctrine_minify_query', array($this, 'minifyQuery')),
-            new \Twig_SimpleFilter('doctrine_pretty_query', 'SqlFormatter::format'),
-            new \Twig_SimpleFilter('doctrine_replace_query_parameters', array($this, 'replaceQueryParameters')),
+            'doctrine_minify_query' => new \Twig_Filter_Method($this, 'minifyQuery'),
+            'doctrine_pretty_query' => new \Twig_Filter_Function('SqlFormatter::format'),
+            'doctrine_replace_query_parameters' => new \Twig_Filter_Method($this, 'replaceQueryParameters'),
         );
     }
 
     /**
      * Get the possible combinations of elements from the given array
      *
-     * @param array   $elements
+     * @param array $elements
      * @param integer $combinationsLevel
      *
      * @return array
@@ -125,6 +127,7 @@ class DoctrineExtension extends \Twig_Extension
                 $value .= ' [...]';
             }
 
+
             $result .= ' ' . $combination[$key] . ' ' . $value;
         }
 
@@ -134,8 +137,8 @@ class DoctrineExtension extends \Twig_Extension
     /**
      * Attempt to compose the best scenario minified query so that a user could find it without expanding it
      *
-     * @param string  $query
-     * @param array   $keywords
+     * @param string $query
+     * @param array $keywords
      * @param integer $required
      *
      * @return string
@@ -246,16 +249,16 @@ class DoctrineExtension extends \Twig_Extension
      *
      * @return string
      */
-    public static function escapeFunction($parameter)
+    static public function escapeFunction($parameter)
     {
         $result = $parameter;
 
         switch (true) {
-            case is_string($result):
+            case is_string($result) :
                 $result = "'" . addslashes($result) . "'";
                 break;
 
-            case is_array($result):
+            case is_array($result) :
                 foreach ($result as &$value) {
                     $value = static::escapeFunction($value);
                 }
@@ -263,44 +266,35 @@ class DoctrineExtension extends \Twig_Extension
                 $result = implode(', ', $result);
                 break;
 
-            case is_object($result):
+            case is_object($result) :
                 $result = addslashes((string) $result);
-                break;
-
-            case null === $result:
-                $result = 'NULL';
-                break;
-
-            case is_bool($result):
-                $result = $result ? '1': '0';
                 break;
         }
 
         return $result;
     }
-    
+
     /**
      * Return a query with the parameters replaced
      *
      * @param string $query
-     * @param array  $parameters
-     * @param bool   $highlight
+     * @param array $parameters
      *
      * @return string
      */
-    public function replaceQueryParameters($query, $parameters, $highlight = true)
+    public function replaceQueryParameters($query, $parameters)
     {
         $i = 0;
 
         $result = preg_replace_callback(
-            '/\?|((?<!:):[a-z0-9_]+)/i',
+            '/\?|(:[a-z0-9_]+)/i',
             function ($matches) use ($parameters, &$i) {
                 $key = substr($matches[0], 1);
-                if (!array_key_exists($i, $parameters) && !array_key_exists($key, $parameters)) {
+                if (!isset($parameters[$i]) && !isset($parameters[$key])) {
                     return $matches[0];
                 }
 
-                $value = array_key_exists($i, $parameters) ? $parameters[$i] : $parameters[$key];
+                $value = isset($parameters[$i]) ? $parameters[$i] : $parameters[$key];
                 $result = DoctrineExtension::escapeFunction($value);
                 $i++;
 
@@ -309,10 +303,8 @@ class DoctrineExtension extends \Twig_Extension
             $query
         );
 
-        if ($highlight) {
-            $result = \SqlFormatter::highlight($result);
-            $result = str_replace(array("<pre ", "</pre>"), array("<span ", "</span>"), $result);
-        }
+        $result = \SqlFormatter::highlight($result);
+        $result = str_replace(array("<pre ", "</pre>"), array("<span ", "</span>"), $result);
 
         return $result;
     }

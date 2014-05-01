@@ -9,7 +9,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<li class="name_short">{{ phrase('agent.general.error_your_name') }}</li>
 			<li class="email_invalid">{{ phrase('agent.general.error_email_address') }}</li>
 			<li class="email_in_use">{{ phrase('agent.general.error_email_dupe_agent') }}</li>
-			<li class="password_short">{{ phrase('agent.general.error_password_short', {len: 5}) }}</li>
+			<li class="password_invalid">Invalid password</li>
 			<li class="password_mismatch">{{ phrase('agent.general.error_password_mismatch') }}</li>
 		</ul>
 	</div>
@@ -48,6 +48,30 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				</ul>
 			</div>
 		</div>
+
+		{% if app.user.getPasswordHash() %}
+			{% if password_expired %}
+				<div style="padding: 10px; margin: 10px; background-color: #ffe3e4; border: 2px solid #f0544d;">
+					Your password has expired. Please enter a new password.
+				</div>
+			{% endif %}
+			<div class="dp-form-row">
+				<div class="dp-form-label"><label>{{ phrase('agent.general.change_password') }}</label></div>
+				<div class="dp-form-input double-password" style="height: 55px;">
+					<div style="font-size: 11px; line-height: 100%;">
+						{% if app.getSetting('agent.password_policy.forbid_reuse') %}{{ phrase('user.profile.register_password_unused') }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_uppercase') %}{{ phrase('user.profile.register_password_min_uc', {count: app.getSetting('agent.password_policy.require_num_uppercase')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_lowercase') %}{{ phrase('user.profile.register_password_min_lc', {count: app.getSetting('agent.password_policy.require_num_lowercase')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_number') %}{{ phrase('user.profile.register_password_min_num', {count: app.getSetting('agent.password_policy.require_num_number')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_symbol') %}{{ phrase('user.profile.register_password_min_sym', {count: app.getSetting('agent.password_policy.require_num_symbol')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.min_length') %}{{ phrase('user.profile.register_password_min_length', {count: app.getSetting('agent.password_policy.min_length')}) }}{% endif %}
+					</div>
+					{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.general.new_password'), 'class': 'password1' }}) }}
+					{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.general.repeat_password'), 'class': 'password2' }}) }}
+					<em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
+				</div>
+			</div>
+		{% endif %}
 
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.timezone') }}</label></div>
@@ -118,17 +142,6 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				</div>
 			</div>
 		</div>
-
-		{% if app.user.getPasswordHash() %}
-			<div class="dp-form-row">
-				<div class="dp-form-label"><label>{{ phrase('agent.general.change_password') }}</label></div>
-				<div class="dp-form-input double-password">
-					{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.general.new_password'), 'class': 'password1' }}) }}
-					{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.general.repeat_password'), 'class': 'password2' }}) }}
-					<em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
-				</div>
-			</div>
-		{% endif %}
 
 		<div class="dp-form-row" >
 			<div class="dp-form-label"><label>{{ phrase('agent.general.tickets') }}</label></div>

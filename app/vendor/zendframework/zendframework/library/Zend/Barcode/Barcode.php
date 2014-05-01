@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Barcode
  */
 
 namespace Zend\Barcode;
@@ -15,11 +14,8 @@ use Zend\Stdlib\ArrayUtils;
 
 /**
  * Class for generate Barcode
- *
- * @category   Zend
- * @package    Zend_Barcode
  */
-class Barcode
+abstract class Barcode
 {
     /**
      * Default barcode TTF font name
@@ -75,7 +71,7 @@ class Barcode
     }
 
     /**
-     * Factory for Zend_Barcode classes.
+     * Factory for Zend\Barcode classes.
      *
      * First argument may be a string containing the base of the adapter class
      * name, e.g. 'int25' corresponds to class Object\Int25.  This
@@ -132,7 +128,7 @@ class Barcode
             $renderer = static::makeRenderer($renderer, $rendererConfig);
         } catch (Exception\ExceptionInterface $e) {
             if ($automaticRenderError && !($e instanceof Exception\RendererCreationException)) {
-                $barcode  = static::makeBarcode('error', array( 'text' => $e->getMessage() ));
+                $barcode  = static::makeBarcode('error', array('text' => $e->getMessage()));
                 $renderer = static::makeRenderer($renderer, array());
             } else {
                 throw $e;
@@ -186,7 +182,7 @@ class Barcode
         }
 
         /*
-         * Verify that an barcode name has been specified.
+         * Verify that a barcode name has been specified.
          */
         if (!is_string($barcode) || empty($barcode)) {
             throw new Exception\InvalidArgumentException(
@@ -238,7 +234,7 @@ class Barcode
         }
 
         /*
-         * Verify that an barcode name has been specified.
+         * Verify that a barcode name has been specified.
          */
         if (!is_string($renderer) || empty($renderer)) {
             throw new Exception\RendererCreationException(

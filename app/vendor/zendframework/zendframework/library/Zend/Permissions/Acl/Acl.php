@@ -3,19 +3,13 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Permissions
  */
 
 namespace Zend\Permissions\Acl;
 
-/**
- * @category   Zend
- * @package    Zend_Permissions
- * @subpackage Acl
- */
-class Acl
+class Acl implements AclInterface
 {
     /**
      * Rule type: allow
@@ -99,7 +93,7 @@ class Acl
      * will have the least priority, and the last parent added will have the
      * highest priority.
      *
-     * @param  Role\RoleInterface              $role
+     * @param  Role\RoleInterface|string       $role
      * @param  Role\RoleInterface|string|array $parents
      * @throws Exception\InvalidArgumentException
      * @return Acl Provides a fluent interface
@@ -562,6 +556,10 @@ class Acl
         if (!is_array($resources)) {
             if (null === $resources && count($this->resources) > 0) {
                 $resources = array_keys($this->resources);
+                // Passing a null resource; make sure "global" permission is also set!
+                if (!in_array(null, $resources)) {
+                    array_unshift($resources, null);
+                }
             } else {
                 $resources = array($resources);
             }
@@ -675,7 +673,7 @@ class Acl
         $id = $resource->getResourceId();
 
         $children = $this->resources[$id]['children'];
-        foreach($children as $child) {
+        foreach ($children as $child) {
             $child_return = $this->getChildResources($child);
             $child_return[$child->getResourceId()] = $child;
 

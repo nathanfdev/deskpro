@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Mail
  */
 
 namespace Zend\Mail;
@@ -20,10 +19,6 @@ use Zend\Loader\PluginClassLocator;
  * Basic mail headers collection functionality
  *
  * Handles aggregation of headers
- *
- * @category   Zend
- * @package    Zend_Mail
- * @subpackage Header
  */
 class Headers implements Countable, Iterator
 {
@@ -75,7 +70,7 @@ class Headers implements Countable, Iterator
         // iterate the header lines, some might be continuations
         foreach (explode($EOL, $string) as $line) {
             // check if a header name is present
-            if (preg_match('/^(?P<name>[^()><@,;:\"\\/\[\]?=}{ \t]+):.*$/', $line, $matches)) {
+            if (preg_match('/^(?P<name>[\x21-\x39\x3B-\x7E]+):.*$/', $line, $matches)) {
                 if ($currentLine) {
                     // a header name was present, then store the current complete line
                     $headers->addHeaderLine($currentLine);
@@ -242,18 +237,26 @@ class Headers implements Countable, Iterator
     /**
      * Remove a Header from the container
      *
-     * @param  string $fieldName
+     * @param  string|Header\HeaderInterface field name or specific header instance to remove
      * @return bool
      */
-    public function removeHeader($fieldName)
+    public function removeHeader($instanceOrFieldName)
     {
-        $key = $this->normalizeFieldName($fieldName);
-        $index = array_search($key, $this->headersKeys, true);
-        if ($index !== false) {
-            unset($this->headersKeys[$index]);
-            unset($this->headers[$index]);
+        if ($instanceOrFieldName instanceof Header\HeaderInterface) {
+            $indexes = array_keys($this->headers, $instanceOrFieldName, true);
+        } else {
+            $key = $this->normalizeFieldName($instanceOrFieldName);
+            $indexes = array_keys($this->headersKeys, $key, true);
+        }
+
+        if (!empty($indexes)) {
+            foreach ($indexes as $index) {
+                unset ($this->headersKeys[$index]);
+                unset ($this->headers[$index]);
+            }
             return true;
         }
+
         return false;
     }
 
@@ -391,7 +394,7 @@ class Headers implements Countable, Iterator
     public function toString()
     {
         $headers = '';
-        foreach ($this->headers as $header) {
+        foreach ($this as $header) {
             if ($str = $header->toString()) {
                 $headers .= $str . self::EOL;
             }

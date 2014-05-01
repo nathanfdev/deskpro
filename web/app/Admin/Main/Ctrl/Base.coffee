@@ -1,9 +1,9 @@
 define [
 	'DeskPRO/Main/Ctrl/Base'
 ], (
-	DeskPROBaseCtrl
+	DeskPRO_Main_Ctrl_Base
 ) ->
-	class Admin_Ctrl_Base extends DeskPROBaseCtrl
+	class Admin_Ctrl_Base extends DeskPRO_Main_Ctrl_Base
 		@CTRL_AS   = null
 		@CTRL_ID   = 'Admin_Main_Ctrl_Base'
 		@DEPS      = []

@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewArticle';
 
@@ -8,8 +7,9 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{% set dropzonehtml %}<div class="drop-file-zone"><h1>{{ phrase('agent.publish.drop_file_to_add') }}</h1></div>{% endset %}
-{{ agentui.scroll_containers('page-new-article page-new-content', dropzonehtml) }}
+<div class="layout-content page-new-article page-new-content">
+<div class="drop-file-zone"><h1>{{ phrase('agent.publish.drop_file_to_add') }}</h1></div>
+<div class="dp-page-content">
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
@@ -149,4 +149,5 @@ pageMeta.baseId = '{{ baseId }}';
 </form>
 
 </div>
-{{ agentui.scroll_containers_end() }}
+</div>
+</div>

@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Feed
  */
 
 namespace Zend\Feed\PubSubHubbub;
@@ -14,10 +13,6 @@ use Zend\Escaper\Escaper;
 use Zend\Feed\Reader;
 use Zend\Http;
 
-/**
- * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
- */
 class PubSubHubbub
 {
     /**
@@ -48,7 +43,7 @@ class PubSubHubbub
     /**
      * Simple utility function which imports any feed URL and
      * determines the existence of Hub Server endpoints. This works
-     * best if directly given an instance of Zend_Feed_Reader_Atom|Rss
+     * best if directly given an instance of Zend\Feed\Reader\Atom|Rss
      * to leverage off.
      *
      * @param  \Zend\Feed\Reader\Feed\AbstractFeed|string $source
@@ -70,7 +65,7 @@ class PubSubHubbub
     }
 
     /**
-     * Allows the external environment to make Zend_Oauth use a specific
+     * Allows the external environment to make ZendOAuth use a specific
      * Client instance.
      *
      * @param  Http\Client $httpClient
@@ -100,7 +95,7 @@ class PubSubHubbub
 
     /**
      * Simple mechanism to delete the entire singleton HTTP Client instance
-     * which forces an new instantiation for subsequent requests.
+     * which forces a new instantiation for subsequent requests.
      *
      * @return void
      */

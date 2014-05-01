@@ -72,7 +72,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'CancelJobOutput',
             'responseType' => 'model',
-            'summary' => 'This operation cancels a specified job. Only the job owner can cancel it. The operation fails if the job has already started or is complete.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -119,7 +118,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'CreateJobOutput',
             'responseType' => 'model',
-            'summary' => 'This operation initiates the process of scheduling an upload or download of your data. You include in the request a manifest that describes the data transfer specifics. The response to the request includes a job ID, which you can use in other operations, a signature that you use to identify your storage device, and the address where you should ship your storage device.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -135,10 +133,6 @@ return array (
                     'required' => true,
                     'type' => 'string',
                     'location' => 'aws.query',
-                    'enum' => array(
-                        'Import',
-                        'Export',
-                    ),
                 ),
                 'Manifest' => array(
                     'required' => true,
@@ -221,7 +215,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'GetStatusOutput',
             'responseType' => 'model',
-            'summary' => 'This operation returns information about a job, including where the job is in the processing pipeline, the status of the results, and the signature value associated with the job. You can only return information about jobs you own.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -264,7 +257,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'ListJobsOutput',
             'responseType' => 'model',
-            'summary' => 'This operation returns the jobs associated with the requester. AWS Import/Export lists the jobs in reverse chronological order based on the date of creation. For example if Job Test1 was created 2009Dec30 and Test2 was created 2010Feb05, the ListJobs operation would return Test2 followed by Test1.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -302,7 +294,6 @@ return array (
             'class' => 'Aws\\Common\\Command\\QueryCommand',
             'responseClass' => 'UpdateJobOutput',
             'responseType' => 'model',
-            'summary' => 'You use this operation to change the parameters specified in the original manifest file by supplying a new manifest file. The manifest file attached to this request replaces the original manifest file. You can only use the operation after a CreateJob request but before the data transfer starts and you can only use it on jobs you own.',
             'parameters' => array(
                 'Action' => array(
                     'static' => true,
@@ -328,10 +319,6 @@ return array (
                     'required' => true,
                     'type' => 'string',
                     'location' => 'aws.query',
-                    'enum' => array(
-                        'Import',
-                        'Export',
-                    ),
                 ),
                 'ValidateOnly' => array(
                     'required' => true,
@@ -528,7 +515,6 @@ return array (
                     'location' => 'xml',
                     'items' => array(
                         'name' => 'Job',
-                        'description' => 'Representation of a job returned by the ListJobs operation.',
                         'type' => 'object',
                         'sentAs' => 'member',
                         'properties' => array(
@@ -569,13 +555,12 @@ return array (
         ),
     ),
     'iterators' => array(
-        'operations' => array(
-            'ListJobs' => array(
-                'token_param' => 'Marker',
-                'more_key' => 'IsTruncated',
-                'limit_key' => 'MaxJobs',
-                'result_key' => 'Jobs',
-            ),
+        'ListJobs' => array(
+            'input_token' => 'Marker',
+            'output_token' => 'Jobs/#/JobId',
+            'more_results' => 'IsTruncated',
+            'limit_key' => 'MaxJobs',
+            'result_key' => 'Jobs',
         ),
     ),
 );

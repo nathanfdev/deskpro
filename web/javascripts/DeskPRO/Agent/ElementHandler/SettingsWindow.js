@@ -163,7 +163,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 
 			this._cleanupTimer = window.setTimeout(this._cleanupOld.bind(this), 180000); // three minutes
 
-			if (this.reloadInterface) {
+			if (this.reloadInterface || DP_PERSON_PASSWORD_EXPIRED) {
 				DeskPRO_Window.util.reloadInterface();
 			}
 		}

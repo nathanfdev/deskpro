@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * Exception that occurs when a CacheSecurityGroupNotFoundException error is encountered
+ * The requested cache security group name does not refer to an existing cache security group.
  */
 class CacheSecurityGroupNotFoundException extends ElastiCacheException {}

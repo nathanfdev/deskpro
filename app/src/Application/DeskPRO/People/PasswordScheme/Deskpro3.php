@@ -39,6 +39,11 @@ use Application\DeskPRO\People\PasswordSchemeInterface;
 
 class Deskpro3 implements PasswordSchemeInterface
 {
+	public function checkInput($plain_password, $hashed_password)
+	{
+		return false; // unsupported
+	}
+
 	public function hashPassword(Person $person, $plain_password)
 	{
 		if ($person->password_scheme == 'deskpro3_tech') {

@@ -3,18 +3,17 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Di
  */
 
 namespace Zend\Di\Definition;
 
+use Zend\Di\Definition\Builder\InjectionMethod;
+use Zend\Di\Di;
+
 /**
  * Class definitions for a single class
- *
- * @category   Zend
- * @package    Zend_Di
  */
 class ClassDefinition implements DefinitionInterface, PartialMarker
 {
@@ -75,15 +74,22 @@ class ClassDefinition implements DefinitionInterface, PartialMarker
 
     /**
      * @param  string    $method
-     * @param  bool|null $isRequired
+     * @param  mixed|bool|null $isRequired
      * @return self
      */
     public function addMethod($method, $isRequired = null)
     {
-        if ($isRequired === null) {
-            $isRequired = ($method === '__construct') ? true : false;
+       if ($isRequired === null) {
+            if ($method === '__construct') {
+                $methodRequirementType = Di::METHOD_IS_CONSTRUCTOR;
+            } else {
+                $methodRequirementType = Di::METHOD_IS_OPTIONAL;
+            }
+        } else {
+            $methodRequirementType = InjectionMethod::detectMethodRequirement($isRequired);
         }
-        $this->methods[$method] = (bool) $isRequired;
+
+        $this->methods[$method] = $methodRequirementType;
 
         return $this;
     }
@@ -97,7 +103,11 @@ class ClassDefinition implements DefinitionInterface, PartialMarker
     public function addMethodParameter($method, $parameterName, array $parameterInfo)
     {
         if (!array_key_exists($method, $this->methods)) {
-            $this->methods[$method] = ($method === '__construct') ? true : false;
+            if ($method === '__construct') {
+                $this->methods[$method] = Di::METHOD_IS_CONSTRUCTOR;
+            } else {
+                $this->methods[$method] = Di::METHOD_IS_OPTIONAL;
+            }
         }
 
         if (!array_key_exists($method, $this->methodParameters)) {

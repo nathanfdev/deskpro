@@ -15,6 +15,7 @@
  */
 
 return array(
+    'class' => 'Aws\Common\Aws',
     'services' => array(
 
         'default_settings' => array(
@@ -39,10 +40,30 @@ return array(
             'class'   => 'Aws\CloudFront\CloudFrontClient'
         ),
 
+        'cloudfront_20120505' => array(
+            'extends' => 'cloudfront',
+            'params' => array(
+                'version' => '2012-05-05'
+            )
+        ),
+
         'cloudsearch' => array(
             'alias'   => 'CloudSearch',
             'extends' => 'default_settings',
             'class'   => 'Aws\CloudSearch\CloudSearchClient'
+        ),
+
+        'cloudsearch_20110201' => array(
+            'extends' => 'cloudsearch',
+            'params' => array(
+                'version' => '2011-02-01'
+            )
+        ),
+
+        'cloudtrail' => array(
+            'alias'   => 'CloudTrail',
+            'extends' => 'default_settings',
+            'class'   => 'Aws\CloudTrail\CloudTrailClient'
         ),
 
         'cloudwatch' => array(
@@ -116,6 +137,12 @@ return array(
             'alias'   => 'Glacier',
             'extends' => 'default_settings',
             'class'   => 'Aws\Glacier\GlacierClient'
+        ),
+
+        'kinesis' => array(
+            'alias'   => 'Kinesis',
+            'extends' => 'default_settings',
+            'class'   => 'Aws\Kinesis\KinesisClient'
         ),
 
         'iam' => array(

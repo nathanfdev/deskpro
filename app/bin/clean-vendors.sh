@@ -3,140 +3,147 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
 DIR_VENDOR=$DIR/vendor
 
-find $DIR_VENDOR -name .git -type d -exec rm -rf {} \\;
+cd $DIR_VENDOR
+find . -name .git -type d -exec rm -rf {} \;
+find . -name .travis.yml -type f -exec rm -rf {} \;
+find . -name phpunit.xml.dist -type f -exec rm -rf {} \;
+find . -name composer.json -type f -exec rm -rf {} \;
+find . -name composer.lock -type f -exec rm -rf {} \;
+find . -name .gitignore -type f -exec rm -rf {} \;
+find . -name .gitmodules -type f -exec rm -rf {} \;
+find . -name .gitattributes -type f -exec rm -rf {} \;
+find . -name build.xml -type f -exec rm -rf {} \;
+find . -name CHANGELOG -type f -exec rm -rf {} \;
+find . -name CHANGELOG.md -type f -exec rm -rf {} \;
+find . -name README -type f -exec rm -rf {} \;
+find . -name README.md -type f -exec rm -rf {} \;
+find . -name README.markdown -type f -exec rm -rf {} \;
+find . -name CONTRIBUTING.md -type f -exec rm -rf {} \;
+find . -name build.properties -type f -exec rm -rf {} \;
+find . -name build.properties.dev -type f -exec rm -rf {} \;
+find . -name .coveralls.yml -type f -exec rm -rf {} \;
+find . -name package.xml -type f -exec rm -rf {} \;
+find . -name .scrutinizer.yml -type f -exec rm -rf {} \;
+find . -name phpdoc.dist.xml -type f -exec rm -rf {} \;
 
 cd $DIR_VENDOR/aws/aws-sdk-php
 echo "Cleaning $(pwd)"
 rm -rf build/ docs/ tests
-rm -rf .gitignore build.xml CHANGELOG.md composer.json CONTRIBUTING.md NOTICE.md phpunit.functional.xml.dist phpunit.xml.dist README.md test_services.json.dist UPGRADING.md
+rm -rf NOTICE.md phpunit.functional.xml.dist test_services.json.dist UPGRADING.md
 
 cd $DIR_VENDOR/behat/mink
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml CHANGES.md composer.json CONTRIBUTING.md phpdoc.ini.dist phpunit.xml.dist README.md
+rm -rf CHANGES.md phpdoc.ini.dist
 
 cd $DIR_VENDOR/behat/mink-browserkit-driver
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README
 
 cd $DIR_VENDOR/behat/mink-goutte-driver
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README
 
 cd $DIR_VENDOR/behat/mink-selenium2-driver
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README
 
 cd $DIR_VENDOR/codeception/codeception
 echo "Cleaning $(pwd)"
 rm -rf docs/ package/ tests/
-rm -rf .gitignore .travis.yml composer.json composer.lock readme.md
+rm -rf readme.md
 
 cd $DIR_VENDOR/codeception/codeception
 echo "Cleaning $(pwd)"
 rm -rf docs/ package/ tests/
-rm -rf .gitignore .travis.yml composer.json composer.lock readme.md
+rm -rf readme.md
 
 cd $DIR_VENDOR/doctrine/annotations
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/doctrine/cache
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .coveralls.yml .gitignore .travis.yml build.properties build.xml composer.json phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/doctrine/collections
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/doctrine/common
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .gitmodules .travis.yml build.properties build.xml composer.json composer.lock phpunit.xml.dist README.md UPGRADE_TO_2_1 UPGRADE_TO_2_2
+rm -rf UPGRADE_TO_2_1 UPGRADE_TO_2_2
 
 cd $DIR_VENDOR/doctrine/data-fixtures
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md UPGRADE
+rm -rf UPGRADE
 
 cd $DIR_VENDOR/doctrine/dbal
 echo "Cleaning $(pwd)"
 rm -rf tests/ docs/
-rm -rf composer.json README.md UPGRADE
+rm -rf UPGRADE
 
 cd $DIR_VENDOR/doctrine/doctrine-bundle/Doctrine/Bundle/DoctrineBundle
 echo "Cleaning $(pwd)"
 rm -rf Tests
-rm -rf .gitignore .travis.yml Changelog.md composer.json phpunit.xml.dist README.md
+rm -rf Changelog.md
 
 cd $DIR_VENDOR/doctrine/doctrine-fixtures-bundle/Doctrine/Bundle/FixturesBundle
 echo "Cleaning $(pwd)"
-rm -rf .gitignore composer.json composer.lock phpunit.xml.dist README.markdown
+rm -rf README.markdown
 
 cd $DIR_VENDOR/doctrine/inflector
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
-
-cd $DIR_VENDOR/doctrine/lexer
-echo "Cleaning $(pwd)"
-rm -rf composer.json
 
 cd $DIR_VENDOR/doctrine/migrations
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore .travis.yml build.properties.dev build.xml composer.json phpunit.xml.dist README.markdown
 
 cd $DIR_VENDOR/doctrine/orm
 echo "Cleaning $(pwd)"
 rm -rf docs/ tests/
-rm -rf .coveralls.yml .gitattributes .gitignore .gitmodules .travis.yml build.properties build.properties.dev build.xml CONTRIBUTING.md composer.json phpunit.xml.dist README.markdown run-all.sh UPGRADE.md
+rm -rf README.markdown run-all.sh UPGRADE.md
 
 cd $DIR_VENDOR/eluceo/ical
 echo "Cleaning $(pwd)"
 rm -rf examples/ tests/
-rm -rf .gitignore .scrutinizer.yml .travis.yml composer.json README.md
 
 cd $DIR_VENDOR/erusev/parsedown
 echo "Cleaning $(pwd)"
-rm -rf docs/ tests/
-rm -rf .travis.yml composer.json CONTRIBUTING.md phpunit.xml.dist README.md
+rm -rf docs/ tests/ test/
 
 cd $DIR_VENDOR/fabpot/goutte
 echo "Cleaning $(pwd)"
 rm -rf Goutte/Tests
-rm -rf .gitignore .travis.yml box.json CHANGELOG composer.json phpunit.xml.dist README.rst
+rm -rf box.json README.rst
 
 cd $DIR_VENDOR/facebook/php-sdk
 echo "Cleaning $(pwd)"
 rm -rf examples/ tests/
-rm -rf .gitignore .travis.yml changelog.md composer.json readme.md
+rm -rf changelog.md readme.md
 
 cd $DIR_VENDOR/facebook/webdriver
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .gitignore composer.json example.php README.md
+rm -rf example.php
 
 cd $DIR_VENDOR/guzzle/guzzle
 echo "Cleaning $(pwd)"
-rm -rf tests/ phing/
-rm -rf .gitignore .travis.yml build.xml CHANGELOG.md composer.json phar-stub.php phpunit.xml.dist README.md UPGRADING.md
+rm -rf tests/ phing/ docs/
+rm -rf phar-stub.php UPGRADING.md
 
 cd $DIR_VENDOR/imagine/imagine
 echo "Cleaning $(pwd)"
 rm -rf docs/ tests/
-rm -rf .gitignore .travis.yml CHANGELOG.md composer.json phpunit.xml.dist Rakefile README.md
+rm -rf Rakefile
 
 cd $DIR_VENDOR/instaclick/php-webdriver
 echo "Cleaning $(pwd)"
 rm -rf doc/ test/
-rm -rf .gitignore composer.json phpdoc.dist.xml phpunit.xml.dist README.rst
+rm -rf README.rst
 
 cd $DIR_VENDOR/jdorn/sql-formatter
 echo "Cleaning $(pwd)"
@@ -151,22 +158,19 @@ rm -rf .gitattributes .gitignore .travis.yml CHANGELOG-1.0.md CHANGELOG-1.1.md c
 cd $DIR_VENDOR/leth/ip-address
 echo "Cleaning $(pwd)"
 rm -rf tests/
-rm -rf .travis.yml composer.json LICENSE.txt phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/mockery/mockery
 echo "Cleaning $(pwd)"
 rm -rf docs/ examples/ tests/
-rm -rf .coveralls.yml .gitignore .scrutinizer.yml .travis.yml CHANGELOG.md composer.json CONTRIBUTING.md package.xml phpunit.xml.dist README.md
 
 cd $DIR_VENDOR/monolog/monolog
 echo "Cleaning $(pwd)"
 rm -rf doc/ tests/
-rm -rf CHANGELOG.mdown composer.json phpunit.xml.dist README.mdown
+rm -rf CHANGELOG.mdown README.mdown
 
 cd $DIR_VENDOR/pda/pheanstalk
 echo "Cleaning $(pwd)"
 rm -rf scripts/
-rm -rf .gitattributes .gitignore composer.json README.md
 
 cd $DIR_VENDOR/pdepend/pdepend
 echo "Cleaning $(pwd)"
@@ -332,6 +336,16 @@ cd $DIR_VENDOR/zendframework/zendframework
 echo "Cleaning $(pwd)"
 rm -rf tests/
 rm -rf CHANGELOG.md composer.json CONTRIBUTING.md INSTALL.md README.md README-GIT.md
+
+cd $DIR_VENDOR/friendsofsymfony/elastica-bundle/FOS/ElasticaBundle
+echo "Cleaning $(pwd)"
+rm -rf */Tests
+rm -rf .travis.yml CHANGELOG-2.0.md CHANGELOG-2.1.md CHANGELOG-3.0.md composer.json LICENSE.txt phpunit.xml.dist README.md UPGRADE-3.0.md
+
+cd $DIR_VENDOR/ruflin/elastica
+echo "Cleaning $(pwd)"
+rm -rf test/
+rm -rf .coveralls.yml .gitignore .travis.yml build.xml changes.txt composer.json LICENSE.txt phpdoc.xml.dist README.markdown Vagrantfile
 
 cd $DIR_VENDOR/zircote/swagger-php
 echo "Cleaning $(pwd)"

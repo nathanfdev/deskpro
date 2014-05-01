@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Form
  */
 
 namespace Zend\Form\Element;
@@ -16,16 +15,10 @@ use Zend\Form\ElementInterface;
 use Zend\Form\Exception;
 use Zend\Form\Fieldset;
 use Zend\Form\FieldsetInterface;
-use Zend\Form\FieldsetPrepareAwareInterface;
-use Zend\Form\Form;
+use Zend\Form\FormInterface;
 use Zend\Stdlib\ArrayUtils;
 
-/**
- * @category   Zend
- * @package    Zend_Form
- * @subpackage Element
- */
-class Collection extends Fieldset implements FieldsetPrepareAwareInterface
+class Collection extends Fieldset
 {
     /**
      * Default template placeholder
@@ -75,11 +68,32 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     protected $templatePlaceholder = self::DEFAULT_TEMPLATE_PLACEHOLDER;
 
     /**
+     * Whether or not to create new objects during modify
+     *
+     * @var bool
+     */
+    protected $createNewObjects = false;
+
+    /**
      * Element used as a template
      *
      * @var ElementInterface|FieldsetInterface
      */
     protected $templateElement;
+
+    /**
+     * The index of the last child element or fieldset
+     *
+     * @var int
+     */
+    protected $lastChildIndex = -1;
+
+    /**
+     * Should child elements must be created on self::prepareElement()?
+     *
+     * @var bool
+     */
+    protected $shouldCreateChildrenOnPrepareElement = true;
 
     /**
      * Accepted options for Collection:
@@ -90,7 +104,7 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
      * - should_create_template: if set to true, a template is generated (inside a <span>)
      * - template_placeholder: placeholder used in the data template
      *
-     * @param array|\Traversable $options
+     * @param array|Traversable $options
      * @return Collection
      */
     public function setOptions($options)
@@ -121,6 +135,10 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
             $this->setTemplatePlaceholder($options['template_placeholder']);
         }
 
+        if (isset($options['create_new_objects'])) {
+            $this->setCreateNewObjects($options['create_new_objects']);
+        }
+
         return $this;
     }
 
@@ -139,7 +157,7 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
      * Set the object used by the hydrator
      * In this case the "object" is a collection of objects
      *
-     * @param  array|\Traversable $object
+     * @param  array|Traversable $object
      * @return Fieldset|FieldsetInterface
      * @throws Exception\InvalidArgumentException
      */
@@ -162,7 +180,7 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     /**
      * Populate values
      *
-     * @param array|\Traversable $data
+     * @param array|Traversable $data
      * @throws \Zend\Form\Exception\InvalidArgumentException
      * @throws \Zend\Form\Exception\DomainException
      * @return void
@@ -182,62 +200,50 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
             return;
         }
 
-        if (count($data) < $this->getCount()) {
+        if (!$this->allowRemove && count($data) < $this->count) {
+            throw new Exception\DomainException(sprintf(
+                'There are fewer elements than specified in the collection (%s). Either set the allow_remove option '
+                . 'to true, or re-submit the form.',
+                get_class($this)
+            ));
+        }
+
+        // Check to see if elements have been replaced or removed
+        foreach ($this->byName as $name => $elementOrFieldset) {
+            if (isset($data[$name])) {
+                continue;
+            }
+
             if (!$this->allowRemove) {
                 throw new Exception\DomainException(sprintf(
-                    'There are fewer elements than specified in the collection (%s). Either set the allow_remove option ' .
-                    'to true, or re-submit the form.',
+                    'Elements have been removed from the collection (%s) but the allow_remove option is not true.',
                     get_class($this)
-                    )
-                );
+                ));
             }
 
-            // If there are less data and that allowRemove is true, we remove elements that are not presents
-            $this->setCount(count($data));
-            foreach ($this->byName as $name => $elementOrFieldset) {
-                if (isset($data[$name])) {
-                    continue;
-                }
+            $this->remove($name);
+        }
 
-                $this->remove($name);
+        foreach ($data as $key => $value) {
+            if ($this->has($key)) {
+                $elementOrFieldset = $this->get($key);
+            } else {
+                $elementOrFieldset = $this->addNewTargetElementInstance($key);
+
+                if ($key > $this->lastChildIndex) {
+                    $this->lastChildIndex = $key;
+                }
+            }
+
+            if ($elementOrFieldset instanceof FieldsetInterface) {
+                $elementOrFieldset->populateValues($value);
+            } else {
+                $elementOrFieldset->setAttribute('value', $value);
             }
         }
 
-        if ($this->targetElement instanceof FieldsetInterface) {
-            foreach ($this->byName as $name => $fieldset) {
-                if (isset($data[$name])) {
-                    $fieldset->populateValues($data[$name]);
-                    unset($data[$name]);
-                }
-            }
-        } else {
-            foreach ($this->byName as $name => $element) {
-                $element->setAttribute('value', $data[$name]);
-                unset($data[$name]);
-            }
-        }
-
-        // If there are still data, this means that elements or fieldsets were dynamically added. If allowed by the user, add them
-        if (!empty($data) && $this->allowAdd) {
-            foreach ($data as $key => $value) {
-                $elementOrFieldset = $this->createNewTargetElementInstance();
-                $elementOrFieldset->setName($key);
-
-                if ($elementOrFieldset instanceof FieldsetInterface) {
-                    $elementOrFieldset->populateValues($value);
-                } else {
-                    $elementOrFieldset->setAttribute('value', $value);
-                }
-
-                $this->add($elementOrFieldset);
-            }
-        } elseif (!empty($data) && !$this->allowAdd) {
-            throw new Exception\DomainException(sprintf(
-                'There are more elements than specified in the collection (%s). Either set the allow_add option ' .
-                'to true, or re-submit the form.',
-                get_class($this)
-                )
-            );
+        if (!$this->createNewObjects()) {
+            $this->replaceTemplateObjects();
         }
     }
 
@@ -424,6 +430,24 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     }
 
     /**
+     * @param bool $createNewObjects
+     * @return Collection
+     */
+    public function setCreateNewObjects($createNewObjects)
+    {
+        $this->createNewObjects = (bool) $createNewObjects;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function createNewObjects()
+    {
+        return $this->createNewObjects;
+    }
+
+    /**
      * Get a template element used for rendering purposes only
      *
      * @return null|ElementInterface|FieldsetInterface
@@ -440,11 +464,19 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     /**
      * Prepare the collection by adding a dummy template element if the user want one
      *
-     * @param Form $form
+     * @param  FormInterface $form
      * @return mixed|void
      */
-    public function prepareElement(Form $form)
+    public function prepareElement(FormInterface $form)
     {
+        if (true === $this->shouldCreateChildrenOnPrepareElement) {
+            if ($this->targetElement !== null && $this->count > 0) {
+                while ($this->count > $this->lastChildIndex + 1) {
+                    $this->addNewTargetElementInstance(++$this->lastChildIndex);
+                }
+            }
+        }
+
         // Create a template that will also be prepared
         if ($this->shouldCreateTemplate) {
             $templateElement = $this->getTemplateElement();
@@ -461,11 +493,16 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
 
     /**
      * @return array
+     * @throws \Zend\Form\Exception\InvalidArgumentException
+     * @throws \Zend\Stdlib\Exception\InvalidArgumentException
+     * @throws \Zend\Form\Exception\DomainException
+     * @throws \Zend\Form\Exception\InvalidElementException
      */
     public function extract()
     {
+
         if ($this->object instanceof Traversable) {
-            $this->object = ArrayUtils::iteratorToArray($this->object);
+            $this->object = ArrayUtils::iteratorToArray($this->object, false);
         }
 
         if (!is_array($this->object)) {
@@ -478,33 +515,19 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
             if ($this->hydrator) {
                 $values[$key] = $this->hydrator->extract($value);
             } elseif ($value instanceof $this->targetElement->object) {
-                $originalObject = $this->targetElement->object;
-
-                $this->targetElement->object = $value;
-                $values[$key] = $this->targetElement->extract();
-
-                $this->targetElement->object = $originalObject;
+                // @see https://github.com/zendframework/zf2/pull/2848
+                $targetElement = clone $this->targetElement;
+                $targetElement->object = $value;
+                $values[$key] = $targetElement->extract();
+                if (!$this->createNewObjects() && $this->has($key)) {
+                    $fieldset = $this->get($key);
+                    if ($fieldset instanceof Fieldset && $fieldset->allowObjectBinding($value)) {
+                        $fieldset->setObject($value);
+                    }
+                }
             }
         }
-
         return $values;
-    }
-
-    /**
-     * If both count and targetElement are set, add them to the fieldset
-     *
-     * @return void
-     */
-    public function prepareFieldset()
-    {
-        if ($this->targetElement !== null) {
-            for ($i = 0; $i != $this->count; ++$i) {
-                $elementOrFieldset = $this->createNewTargetElementInstance();
-                $elementOrFieldset->setName($i);
-
-                $this->add($elementOrFieldset);
-            }
-        }
     }
 
     /**
@@ -515,6 +538,32 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     protected function createNewTargetElementInstance()
     {
         return clone $this->targetElement;
+    }
+
+    /**
+     * Add a new instance of the target element
+     *
+     * @return ElementInterface
+     * @throws Exception\DomainException
+     */
+    protected function addNewTargetElementInstance($name)
+    {
+        $this->shouldCreateChildrenOnPrepareElement = false;
+
+        $elementOrFieldset = $this->createNewTargetElementInstance();
+        $elementOrFieldset->setName($name);
+
+        $this->add($elementOrFieldset);
+
+        if (!$this->allowAdd && $this->count() > $this->count) {
+            throw new Exception\DomainException(sprintf(
+                'There are more elements than specified in the collection (%s). Either set the allow_add option ' .
+                'to true, or re-submit the form.',
+                get_class($this)
+            ));
+        }
+
+        return $elementOrFieldset;
     }
 
     /**
@@ -536,5 +585,27 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
         $elementOrFieldset->setName($this->templatePlaceholder);
 
         return $elementOrFieldset;
+    }
+
+    /**
+     * Replaces the default template object of a sub element with the corresponding
+     * real entity so that all properties are preserved.
+     *
+     * @return void
+     */
+    protected function replaceTemplateObjects()
+    {
+        $fieldsets = $this->getFieldsets();
+
+        if (!count($fieldsets) || !$this->object) {
+            return;
+        }
+
+        foreach ($fieldsets as $fieldset) {
+            $i = $fieldset->getName();
+            if (isset($this->object[$i])) {
+                $fieldset->setObject($this->object[$i]);
+            }
+        }
     }
 }

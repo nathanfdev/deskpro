@@ -3,20 +3,15 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Log
  */
 
 namespace Zend\Log\Filter;
 
+use Traversable;
 use Zend\Log\Exception;
 
-/**
- * @category   Zend
- * @package    Zend_Log
- * @subpackage Filter
- */
 class SuppressFilter implements FilterInterface
 {
     /**
@@ -40,7 +35,7 @@ class SuppressFilter implements FilterInterface
         }
         if (!is_bool($suppress)) {
             throw new Exception\InvalidArgumentException(sprintf(
-                    'Suppress must be an boolean; received "%s"', gettype($suppress)
+                    'Suppress must be a boolean; received "%s"', gettype($suppress)
             ));
         }
 

@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * Exception that occurs when a CacheSecurityGroupAlreadyExistsException error is encountered
+ * A cache security group with the specified name already exists.
  */
 class CacheSecurityGroupAlreadyExistsException extends ElastiCacheException {}

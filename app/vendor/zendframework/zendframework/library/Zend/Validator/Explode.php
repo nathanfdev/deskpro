@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Validator
  */
 
 namespace Zend\Validator;
@@ -13,19 +12,17 @@ namespace Zend\Validator;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
 
-/**
- * @category   Zend
- * @package    Zend_Validator
- */
-class Explode extends AbstractValidator
+class Explode extends AbstractValidator implements ValidatorPluginManagerAwareInterface
 {
     const INVALID = 'explodeInvalid';
+
+    protected $pluginManager;
 
     /**
      * @var array
      */
     protected $messageTemplates = array(
-        self::INVALID => "Invalid type given.",
+        self::INVALID => "Invalid type given",
     );
 
     /**
@@ -71,13 +68,55 @@ class Explode extends AbstractValidator
     }
 
     /**
+     * Set validator plugin manager
+     *
+     * @param ValidatorPluginManager $pluginManager
+     */
+    public function setValidatorPluginManager(ValidatorPluginManager $pluginManager)
+    {
+        $this->pluginManager = $pluginManager;
+    }
+
+    /**
+     * Get validator plugin manager
+     *
+     * @return ValidatorPluginManager
+     */
+    public function getValidatorPluginManager()
+    {
+        if (!$this->pluginManager) {
+            $this->setValidatorPluginManager(new ValidatorPluginManager());
+        }
+
+        return $this->pluginManager;
+    }
+
+    /**
      * Sets the Validator for validating each value
      *
-     * @param ValidatorInterface $validator
+     * @param ValidatorInterface|array $validator
+     * @throws Exception\RuntimeException
      * @return Explode
      */
-    public function setValidator(ValidatorInterface $validator)
+    public function setValidator($validator)
     {
+        if (is_array($validator)) {
+            if (!isset($validator['name'])) {
+                throw new Exception\RuntimeException(
+                    'Invalid validator specification provided; does not include "name" key'
+                );
+            }
+            $name = $validator['name'];
+            $options = isset($validator['options']) ? $validator['options'] : array();
+            $validator = $this->getValidatorPluginManager()->get($name, $options);
+        }
+
+        if (!$validator instanceof ValidatorInterface) {
+            throw new Exception\RuntimeException(
+                'Invalid validator given'
+            );
+        }
+
         $this->validator = $validator;
         return $this;
     }

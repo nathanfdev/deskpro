@@ -12,7 +12,7 @@ define ['angular'], (angular) ->
     * all other types of objects (services and directives etc) which are registered through the App
     * loader.
 	###
-	class DeskPRO_Ctrl_Base
+	class DeskPRO_Main_Ctrl_Base
 		@CTRL_AS   = null
 		@CTRL_ID   = 'DeskPRO_Main_Ctrl_Base'
 		@DEPS      = []

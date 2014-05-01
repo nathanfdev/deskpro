@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_File
  */
 
 namespace Zend\File\Transfer\Adapter;
@@ -15,7 +14,7 @@ use Zend\File\Transfer;
 use Zend\File\Transfer\Exception;
 use Zend\Filter;
 use Zend\Filter\Exception as FilterException;
-use Zend\I18n\Translator\Translator;
+use Zend\I18n\Translator\TranslatorInterface as Translator;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\Stdlib\ErrorHandler;
 use Zend\Validator;
@@ -30,8 +29,6 @@ use Zend\Validator;
  * and filter chains instead.
  *
  * @todo      Rewrite
- * @category  Zend
- * @package   Zend_File_Transfer
  */
 abstract class AbstractAdapter implements TranslatorAwareInterface
 {
@@ -278,7 +275,7 @@ abstract class AbstractAdapter implements TranslatorAwareInterface
      * Adds a new validator for this class
      *
      * @param  string|Validator\ValidatorInterface $validator           Type of validator to add
-     * @param  bool                    $breakChainOnFailure If the validation chain should stop an failure
+     * @param  bool                    $breakChainOnFailure If the validation chain should stop a failure
      * @param  string|array               $options             Options to set for the validator
      * @param  string|array               $files               Files to limit this validator to
      * @return AbstractAdapter
@@ -1227,16 +1224,15 @@ abstract class AbstractAdapter implements TranslatorAwareInterface
         }
 
         if (class_exists('finfo', false)) {
-            $const = defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME;
             if (!empty($value['options']['magicFile'])) {
                 ErrorHandler::start();
-                $mime = finfo_open($const, $value['options']['magicFile']);
+                $mime = finfo_open(FILEINFO_MIME_TYPE, $value['options']['magicFile']);
                 ErrorHandler::stop();
             }
 
             if (empty($mime)) {
                 ErrorHandler::start();
-                $mime = finfo_open($const);
+                $mime = finfo_open(FILEINFO_MIME_TYPE);
                 ErrorHandler::stop();
             }
 
@@ -1262,7 +1258,7 @@ abstract class AbstractAdapter implements TranslatorAwareInterface
     /**
      * Returns the formatted size
      *
-     * @param  integer $size
+     * @param  int $size
      * @return string
      */
     protected static function toByteString($size)

@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Log
  */
 
 namespace Zend\Log;
@@ -13,14 +12,12 @@ namespace Zend\Log;
 use DateTime;
 use ErrorException;
 use Traversable;
+use Zend\ServiceManager\AbstractPluginManager;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\SplPriorityQueue;
 
 /**
  * Logging messages with a stack of backends
- *
- * @category   Zend
- * @package    Zend_Log
  */
 class Logger implements LoggerInterface
 {
@@ -38,11 +35,11 @@ class Logger implements LoggerInterface
     const DEBUG  = 7;
 
     /**
-     * Map of PHP error constants to log priorities
+     * Map native PHP errors to priority
      *
      * @var array
      */
-    protected static $errorPriorityMap = array(
+    public static $errorPriorityMap = array(
         E_NOTICE            => self::NOTICE,
         E_USER_NOTICE       => self::NOTICE,
         E_WARNING           => self::WARN,
@@ -56,6 +53,27 @@ class Logger implements LoggerInterface
         E_DEPRECATED        => self::DEBUG,
         E_USER_DEPRECATED   => self::DEBUG,
     );
+
+    /**
+     * Registered error handler
+     *
+     * @var bool
+     */
+    protected static $registeredErrorHandler = false;
+
+    /**
+     * Registered shutdown error handler
+     *
+     * @var bool
+     */
+    protected static $registeredFatalErrorShutdownFunction = false;
+
+    /**
+     * Registered exception handler
+     *
+     * @var bool
+     */
+    protected static $registeredExceptionHandler = false;
 
     /**
      * List of priority code => priority (short) name
@@ -81,6 +99,13 @@ class Logger implements LoggerInterface
     protected $writers;
 
     /**
+     * Processors
+     *
+     * @var SplPriorityQueue
+     */
+    protected $processors;
+
+    /**
      * Writer plugins
      *
      * @var WriterPluginManager
@@ -88,28 +113,92 @@ class Logger implements LoggerInterface
     protected $writerPlugins;
 
     /**
-     * Registered error handler
+     * Processor plugins
      *
-     * @var bool
+     * @var ProcessorPluginManager
      */
-    protected static $registeredErrorHandler = false;
-
-    /**
-     * Registered exception handler
-     *
-     * @var bool
-     */
-    protected static $registeredExceptionHandler = false;
+    protected $processorPlugins;
 
     /**
      * Constructor
      *
-     * @todo support configuration (writers, dateTimeFormat, and writer plugin manager)
+     * Set options for a logger. Accepted options are:
+     * - writers: array of writers to add to this logger
+     * - exceptionhandler: if true register this logger as exceptionhandler
+     * - errorhandler: if true register this logger as errorhandler
+     *
+     * @param  array|Traversable $options
      * @return Logger
+     * @throws Exception\InvalidArgumentException
      */
-    public function __construct()
+    public function __construct($options = null)
     {
-        $this->writers = new SplPriorityQueue();
+        $this->writers    = new SplPriorityQueue();
+        $this->processors = new SplPriorityQueue();
+
+        if ($options instanceof Traversable) {
+            $options = ArrayUtils::iteratorToArray($options);
+        }
+
+        if (!$options) {
+            return;
+        }
+
+        if (!is_array($options)) {
+            throw new Exception\InvalidArgumentException('Options must be an array or an object implementing \Traversable ');
+        }
+
+        // Inject writer plugin manager, if available
+        if (isset($options['writer_plugin_manager'])
+            && $options['writer_plugin_manager'] instanceof AbstractPluginManager
+        ) {
+            $this->setWriterPluginManager($options['writer_plugin_manager']);
+        }
+
+        // Inject processor plugin manager, if available
+        if (isset($options['processor_plugin_manager'])
+            && $options['processor_plugin_manager'] instanceof AbstractPluginManager
+        ) {
+            $this->setProcessorPluginManager($options['processor_plugin_manager']);
+        }
+
+        if (isset($options['writers']) && is_array($options['writers'])) {
+            foreach ($options['writers'] as $writer) {
+                if (!isset($writer['name'])) {
+                    throw new Exception\InvalidArgumentException('Options must contain a name for the writer');
+                }
+
+                $priority      = (isset($writer['priority'])) ? $writer['priority'] : null;
+                $writerOptions = (isset($writer['options'])) ? $writer['options'] : null;
+
+                $this->addWriter($writer['name'], $priority, $writerOptions);
+            }
+        }
+
+        if (isset($options['processors']) && is_array($options['processors'])) {
+            foreach ($options['processors'] as $processor) {
+                if (!isset($processor['name'])) {
+                    throw new Exception\InvalidArgumentException('Options must contain a name for the processor');
+                }
+
+                $priority         = (isset($processor['priority'])) ? $processor['priority'] : null;
+                $processorOptions = (isset($processor['options']))  ? $processor['options']  : null;
+
+                $this->addProcessor($processor['name'], $priority, $processorOptions);
+            }
+        }
+
+        if (isset($options['exceptionhandler']) && $options['exceptionhandler'] === true) {
+            static::registerExceptionHandler($this);
+        }
+
+        if (isset($options['errorhandler']) && $options['errorhandler'] === true) {
+            static::registerErrorHandler($this);
+        }
+
+        if (isset($options['fatal_error_shutdownfunction']) && $options['fatal_error_shutdownfunction'] === true) {
+            static::registerFatalErrorShutdownFunction($this);
+        }
     }
 
     /**
@@ -190,7 +279,8 @@ class Logger implements LoggerInterface
             $writer = $this->writerPlugin($writer, $options);
         } elseif (!$writer instanceof Writer\WriterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Writer must implement Zend\Log\Writer; received "%s"',
+                'Writer must implement %s\Writer\WriterInterface; received "%s"',
+                __NAMESPACE__,
                 is_object($writer) ? get_class($writer) : gettype($writer)
             ));
         }
@@ -225,6 +315,89 @@ class Logger implements LoggerInterface
         }
         $this->writers = $writers;
         return $this;
+    }
+
+    /**
+     * Get processor plugin manager
+     *
+     * @return ProcessorPluginManager
+     */
+    public function getProcessorPluginManager()
+    {
+        if (null === $this->processorPlugins) {
+            $this->setProcessorPluginManager(new ProcessorPluginManager());
+        }
+        return $this->processorPlugins;
+    }
+
+    /**
+     * Set processor plugin manager
+     *
+     * @param  string|ProcessorPluginManager $plugins
+     * @return Logger
+     * @throws Exception\InvalidArgumentException
+     */
+    public function setProcessorPluginManager($plugins)
+    {
+        if (is_string($plugins)) {
+            $plugins = new $plugins;
+        }
+        if (!$plugins instanceof ProcessorPluginManager) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                    'processor plugin manager must extend %s\ProcessorPluginManager; received %s',
+                    __NAMESPACE__,
+                    is_object($plugins) ? get_class($plugins) : gettype($plugins)
+            ));
+        }
+
+        $this->processorPlugins = $plugins;
+        return $this;
+    }
+
+    /**
+     * Get processor instance
+     *
+     * @param string $name
+     * @param array|null $options
+     * @return Processor\ProcessorInterface
+     */
+    public function processorPlugin($name, array $options = null)
+    {
+        return $this->getProcessorPluginManager()->get($name, $options);
+    }
+
+    /**
+     * Add a processor to a logger
+     *
+     * @param  string|Processor\ProcessorInterface $processor
+     * @param  int $priority
+     * @param  array|null $options
+     * @return Logger
+     * @throws Exception\InvalidArgumentException
+     */
+    public function addProcessor($processor, $priority = 1, array $options = null)
+    {
+        if (is_string($processor)) {
+            $processor = $this->processorPlugin($processor, $options);
+        } elseif (!$processor instanceof Processor\ProcessorInterface) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                    'Processor must implement Zend\Log\ProcessorInterface; received "%s"',
+                    is_object($processor) ? get_class($processor) : gettype($processor)
+            ));
+        }
+        $this->processors->insert($processor, $priority);
+
+        return $this;
+    }
+
+    /**
+     * Get processors
+     *
+     * @return SplPriorityQueue
+     */
+    public function getProcessors()
+    {
+        return $this->processors;
     }
 
     /**
@@ -271,14 +444,20 @@ class Logger implements LoggerInterface
             $message = var_export($message, true);
         }
 
+        $event = array(
+            'timestamp'    => $timestamp,
+            'priority'     => (int) $priority,
+            'priorityName' => $this->priorities[$priority],
+            'message'      => (string) $message,
+            'extra'        => $extra
+        );
+
+        foreach ($this->processors->toArray() as $processor) {
+            $event = $processor->process($event);
+        }
+
         foreach ($this->writers->toArray() as $writer) {
-            $writer->write(array(
-                'timestamp'    => $timestamp,
-                'priority'     => (int) $priority,
-                'priorityName' => $this->priorities[$priority],
-                'message'      => (string) $message,
-                'extra'        => $extra
-            ));
+            $writer->write($event);
         }
 
         return $this;
@@ -367,45 +546,42 @@ class Logger implements LoggerInterface
     /**
      * Register logging system as an error handler to log PHP errors
      *
-     * @link http://www.php.net/manual/en/function.set-error-handler.php
+     * @link http://www.php.net/manual/function.set-error-handler.php
      * @param  Logger $logger
-     * @return bool
+     * @param  bool   $continueNativeHandler
+     * @return mixed  Returns result of set_error_handler
      * @throws Exception\InvalidArgumentException if logger is null
      */
-    public static function registerErrorHandler(Logger $logger)
+    public static function registerErrorHandler(Logger $logger, $continueNativeHandler = false)
     {
         // Only register once per instance
         if (static::$registeredErrorHandler) {
             return false;
         }
 
-        if ($logger === null) {
-            throw new Exception\InvalidArgumentException('Invalid Logger specified');
-        }
+        $errorPriorityMap = static::$errorPriorityMap;
 
-        $errorHandlerMap = static::$errorPriorityMap;
+        $previous = set_error_handler(function ($level, $message, $file, $line) use ($logger, $errorPriorityMap, $continueNativeHandler) {
+            $iniLevel = error_reporting();
 
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext)
-            use ($errorHandlerMap, $logger)
-        {
-            $errorLevel = error_reporting();
-
-            if ($errorLevel & $errno) {
-                if (isset($errorHandlerMap[$errno])) {
-                    $priority = $errorHandlerMap[$errno];
+            if ($iniLevel & $level) {
+                if (isset($errorPriorityMap[$level])) {
+                    $priority = $errorPriorityMap[$level];
                 } else {
                     $priority = Logger::INFO;
                 }
-                $logger->log($priority, $errstr, array(
-                    'errno' => $errno,
-                    'file' => $errfile,
-                    'line' => $errline,
-                    'context' => $errcontext
+                $logger->log($priority, $message, array(
+                    'errno'   => $level,
+                    'file'    => $file,
+                    'line'    => $line,
                 ));
             }
+
+            return !$continueNativeHandler;
         });
+
         static::$registeredErrorHandler = true;
-        return true;
+        return $previous;
     }
 
     /**
@@ -417,6 +593,41 @@ class Logger implements LoggerInterface
         restore_error_handler();
         static::$registeredErrorHandler = false;
     }
+
+
+    /**
+     * Register a shutdown handler to log fatal errors
+     *
+     * @link http://www.php.net/manual/function.register-shutdown-function.php
+     * @param  Logger $logger
+     * @return bool
+     */
+    public static function registerFatalErrorShutdownFunction(Logger $logger)
+    {
+        // Only register once per instance
+        if (static::$registeredFatalErrorShutdownFunction) {
+            return false;
+        }
+
+        $errorPriorityMap = static::$errorPriorityMap;
+
+        register_shutdown_function(function () use ($logger, $errorPriorityMap) {
+            $error = error_get_last();
+            if (null !== $error && $error['type'] === E_ERROR) {
+                $logger->log($errorPriorityMap[E_ERROR],
+                    $error['message'],
+                    array(
+                        'file' => $error['file'],
+                        'line' => $error['line']
+                    )
+                );
+            }
+        });
+
+        static::$registeredFatalErrorShutdownFunction = true;
+        return true;
+    }
+
 
     /**
      * Register logging system as an exception handler to log PHP exceptions

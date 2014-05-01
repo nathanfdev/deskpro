@@ -3,20 +3,18 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Ldap
  */
 
 namespace Zend\Ldap;
 
+use ArrayAccess;
+
 /**
  * Zend\Ldap\Dn provides an API for DN manipulation
- *
- * @category   Zend
- * @package    Zend_Ldap
  */
-class Dn implements \ArrayAccess
+class Dn implements ArrayAccess
 {
     const ATTR_CASEFOLD_NONE  = 'none';
     const ATTR_CASEFOLD_UPPER = 'upper';
@@ -459,7 +457,7 @@ class Dn implements \ArrayAccess
      *
      * Escapes the given VALUES according to RFC 2253 so that they can be safely used in LDAP DNs.
      * The characters ",", "+", """, "\", "<", ">", ";", "#", " = " with a special meaning in RFC 2252
-     * are preceeded by ba backslash. Control characters with an ASCII code < 32 are represented as \hexpair.
+     * are preceded by ba backslash. Control characters with an ASCII code < 32 are represented as \hexpair.
      * Finally all leading and trailing spaces are converted to sequences of \20.
      * @see    Net_LDAP2_Util::escape_dn_value() from Benedikt Hallinger <beni@php.net>
      * @link   http://pear.php.net/package/Net_LDAP2

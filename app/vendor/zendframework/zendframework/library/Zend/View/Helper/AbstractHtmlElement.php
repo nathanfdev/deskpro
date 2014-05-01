@@ -3,22 +3,18 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_View
  */
 
 namespace Zend\View\Helper;
 
-/**
- * @category   Zend
- * @package    Zend_View
- * @subpackage Helper
- */
 abstract class AbstractHtmlElement extends AbstractHelper
 {
     /**
      * EOL character
+     *
+     * @deprecated just use PHP_EOL
      */
     const EOL = PHP_EOL;
 
@@ -54,8 +50,7 @@ abstract class AbstractHtmlElement extends AbstractHelper
      */
     protected function isXhtml()
     {
-        $doctype = $this->view->plugin('doctype');
-        return $doctype->isXhtml();
+        return $this->getView()->plugin('doctype')->isXhtml();
     }
 
     /**
@@ -70,8 +65,10 @@ abstract class AbstractHtmlElement extends AbstractHelper
      */
     protected function htmlAttribs($attribs)
     {
-        $xhtml   = '';
-        $escaper = $this->view->plugin('escapehtml');
+        $xhtml          = '';
+        $escaper        = $this->getView()->plugin('escapehtml');
+        $escapeHtmlAttr = $this->getView()->plugin('escapehtmlattr');
+
         foreach ((array) $attribs as $key => $val) {
             $key = $escaper($key);
 
@@ -81,17 +78,13 @@ abstract class AbstractHtmlElement extends AbstractHelper
                     // non-scalar data should be cast to JSON first
                     $val = \Zend\Json\Json::encode($val);
                 }
-                // Escape single quotes inside event attribute values.
-                // This will create html, where the attribute value has
-                // single quotes around it, and escaped single quotes or
-                // non-escaped double quotes inside of it
-                $val = str_replace('\'', '&#39;', $val);
             } else {
                 if (is_array($val)) {
                     $val = implode(' ', $val);
                 }
-                $val = $escaper($val);
             }
+
+            $val = $escapeHtmlAttr($val);
 
             if ('id' == $key) {
                 $val = $this->normalizeId($val);
@@ -102,8 +95,8 @@ abstract class AbstractHtmlElement extends AbstractHelper
             } else {
                 $xhtml .= " $key=\"$val\"";
             }
-
         }
+
         return $xhtml;
     }
 
@@ -123,6 +116,7 @@ abstract class AbstractHtmlElement extends AbstractHelper
             $value = str_replace('][', '-', $value);
             $value = str_replace('[', '-', $value);
         }
+
         return $value;
     }
 }

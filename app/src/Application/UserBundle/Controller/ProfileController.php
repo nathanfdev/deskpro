@@ -35,6 +35,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 use Application\UserBundle\Form\ProfileType;
 
@@ -148,6 +149,9 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 		$enable_twitter = App::getConfig('enable_twitter') && \Application\DeskPRO\Service\Twitter::getUserConsumerKey();
 
+		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+		$password_validator = App::$container->getSystemService('password_policy_validator');
+
 		return $this->render('UserBundle:Profile:index.html.twig', array(
 			'form'               => $form->createView(),
 			'validating_emails'  => $validating_emails,
@@ -158,7 +162,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'is_org_manager'     => $is_org_manager,
 			'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add')),
 			'new_blob_key'       => $new_blob_key,
-			'enable_twitter'     => $enable_twitter
+			'enable_twitter'     => $enable_twitter,
+			'password_expired'   => $password_validator->isPasswordExpired($this->person)
 		));
 	}
 
@@ -171,17 +176,28 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$password = $this->in->getString('password');
 		$password2 = $this->in->getString('password2');
 
+		if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
+			$history = new PasswordHistory();
+			$history->person = $this->person;
+			$history->password_scheme = $this->person->password_scheme;
+			$history->password = $this->person->password;
+		}
+
+		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+		$password_validator = App::$container->getSystemService('password_policy_validator');
+
 		if (!$this->person->checkPassword($this->in->getString('current_password'))) {
 			$this->session->setFlash('invalid_current_password', 1);
 		} else if ($password != $password2) {
 			$this->session->setFlash('invalid_repeat_password', 1);
-		} elseif (\Orb\Util\Strings::utf8_strlen($password) < 4) {
-			$this->session->setFlash('invalid_password_length', 1);
+		} elseif ($password_validator->checkPassword($password, $this->person)) {
+			$this->session->setFlash('invalid_password', 1);
 		} else {
 			$this->person->setPassword($password);
 			$person = $this->person;
-			$this->em->transactional(function ($em) use ($person) {
+			$this->em->transactional(function ($em) use ($person, $history) {
 				$em->persist($person);
+				$em->persist($history);
 			});
 
 			// Reset user session

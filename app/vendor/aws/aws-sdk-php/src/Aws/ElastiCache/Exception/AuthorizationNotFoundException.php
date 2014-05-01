@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * Exception that occurs when a AuthorizationNotFoundException error is encountered
+ * The specified Amazon EC2 security group is not authorized for the specified cache security group.
  */
 class AuthorizationNotFoundException extends ElastiCacheException {}

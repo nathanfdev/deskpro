@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Memory
  */
 
 namespace Zend\Memory\Container;
@@ -21,9 +20,6 @@ namespace Zend\Memory\Container;
  * out of scope or unset operation.
  *
  * Class also provides Zend\Memory\Container interface and works as proxy for such cases.
- *
- * @category   Zend
- * @package    Zend_Memory
  */
 class AccessController implements ContainerInterface
 {

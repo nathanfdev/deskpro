@@ -34,5 +34,5 @@ interface OrderedFixtureInterface
      * 
      * @return integer
      */  
-    public function getOrder();
+    function getOrder();
 }

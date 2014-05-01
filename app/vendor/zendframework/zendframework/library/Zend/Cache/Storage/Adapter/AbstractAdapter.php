@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Storage\Adapter;
@@ -25,11 +24,6 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventsCapableInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Storage
- */
 abstract class AbstractAdapter implements StorageInterface, EventsCapableInterface
 {
     /**
@@ -194,13 +188,13 @@ abstract class AbstractAdapter implements StorageInterface, EventsCapableInterfa
     public function getEventManager()
     {
         if ($this->events === null) {
-            $this->events = new EventManager(array(__CLASS__, get_called_class()));
+            $this->events = new EventManager(array(__CLASS__, get_class($this)));
         }
         return $this->events;
     }
 
     /**
-     * Trigger an pre event and return the event response collection
+     * Trigger a pre event and return the event response collection
      *
      * @param  string $eventName
      * @param  ArrayObject $args
@@ -1543,7 +1537,7 @@ abstract class AbstractAdapter implements StorageInterface, EventsCapableInterfa
             );
         } elseif (($p = $this->getOptions()->getKeyPattern()) && !preg_match($p, $key)) {
             throw new Exception\InvalidArgumentException(
-                "The key '{$key}' doesn't match agains pattern '{$p}'"
+                "The key '{$key}' doesn't match against pattern '{$p}'"
             );
         }
     }

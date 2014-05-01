@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Validator
  */
 
 namespace Zend\Validator\Sitemap;
@@ -16,10 +15,6 @@ use Zend\Validator\AbstractValidator;
  * Validates whether a given value is valid as a sitemap <priority> value
  *
  * @link       http://www.sitemaps.org/protocol.php Sitemaps XML format
- *
- * @category   Zend
- * @package    Zend_Validator
- * @subpackage Sitemap
  */
 class Priority extends AbstractValidator
 {

@@ -3,22 +3,17 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
  */
 
 namespace Zend\Http\Client\Adapter;
 
 /**
- * An interface description for Zend_Http_Client_Adapter classes.
+ * An interface description for Zend\Http\Client\Adapter classes.
  *
- * These classes are used as connectors for Zend_Http_Client, performing the
+ * These classes are used as connectors for Zend\Http\Client, performing the
  * tasks of connecting, writing, reading and closing connection to the server.
- *
- * @category   Zend
- * @package    Zend_Http
- * @subpackage Client_Adapter
  */
 interface AdapterInterface
 {

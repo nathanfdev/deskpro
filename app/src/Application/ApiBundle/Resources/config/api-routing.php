@@ -2342,6 +2342,18 @@ $collection->create('api_reg_settings_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_pass_settings', array(
+	'path'        => '/password_settings',
+	'controller'  => 'ApiBundle:Settings:passwordSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_pass_settings_save', array(
+	'path'        => '/password_settings',
+	'controller'  => 'ApiBundle:Settings:savePasswordSettings',
+	'methods'     => array('POST'),
+));
+
 
 ########################################################################################################################
 # Portal Settings
@@ -2379,6 +2391,28 @@ $collection->create('api_all_settings_raw', array(
 $collection->create('api_all_settings_raw_save', array(
 	'path'        => '/all_settings_raw',
 	'controller'  => 'ApiBundle:Settings:saveAllSettingsRaw',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# Elastic Search
+########################################################################################################################
+
+$collection->create('api_elastic_settings', array(
+	'path'        => '/elastic-search/settings',
+	'controller'  => 'ApiBundle:ElasticSearch:getSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_elastic_settings_save', array(
+	'path'        => '/elastic-search/settings',
+	'controller'  => 'ApiBundle:ElasticSearch:saveSettings',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_elastic_settings_test', array(
+	'path'        => '/elastic-search/settings/test',
+	'controller'  => 'ApiBundle:ElasticSearch:testSettings',
 	'methods'     => array('POST'),
 ));
 

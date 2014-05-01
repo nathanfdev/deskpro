@@ -43,6 +43,12 @@ class Bcrypt implements PasswordSchemeInterface
 {
 	const ITERATIONS = 11;
 
+	public function checkInput($plain_password, $hashed_password)
+	{
+		$hasher = new \PasswordHash(self::ITERATIONS, false);
+		return $hasher->CheckPassword($plain_password, $hashed_password);
+	}
+
 	public function hashPassword(Person $person, $plain_password)
 	{
 		$hasher = new \PasswordHash(self::ITERATIONS, false);

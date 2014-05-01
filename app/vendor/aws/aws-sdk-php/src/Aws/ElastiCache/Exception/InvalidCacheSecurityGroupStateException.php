@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * Exception that occurs when a InvalidCacheSecurityGroupStateException error is encountered
+ * The current state of the cache security group does not allow deletion.
  */
 class InvalidCacheSecurityGroupStateException extends ElastiCacheException {}

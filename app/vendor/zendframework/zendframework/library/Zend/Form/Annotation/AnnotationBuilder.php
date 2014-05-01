@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Form
  */
 
 namespace Zend\Form\Annotation;
@@ -28,10 +27,6 @@ use Zend\Stdlib\ArrayUtils;
 /**
  * Parses a class' properties for annotations in order to create a form and
  * input filter definition.
- *
- * @category   Zend
- * @package    Zend_Form
- * @subpackage Annotation
  */
 class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareInterface
 {
@@ -323,7 +318,16 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
             $events->trigger(__FUNCTION__, $this, $event);
         }
 
-        $filterSpec[$name] = $event->getParam('inputSpec');
+        // Since "type" is a reserved name in the filter specification,
+        // we need to add the specification without the name as the key.
+        // In all other cases, though, the name is fine.
+        if ($event->getParam('inputSpec')->count() > 1) {
+            if ($name === 'type') {
+                $filterSpec[] = $event->getParam('inputSpec');
+            } else {
+                $filterSpec[$name] = $event->getParam('inputSpec');
+            }
+        }
 
         $elementSpec = $event->getParam('elementSpec');
         $type        = (isset($elementSpec['spec']['type']))
@@ -393,7 +397,7 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
         if (is_subclass_of($className, $type)) {
             return true;
         }
-        if (version_compare(PHP_VERSION, '5.3.7', '>=')) {
+        if (PHP_VERSION_ID >= 50307) {
             return false;
         }
         if (!interface_exists($type)) {

@@ -3,20 +3,14 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Json
  */
 
 namespace Zend\Json\Server;
 
 use Zend\Json\Json;
 
-/**
- * @category   Zend
- * @package    Zend_Json
- * @subpackage Server
- */
 class Response
 {
     /**
@@ -85,10 +79,16 @@ class Response
      *
      * @param  string $json
      * @return void
+     * @throws Exception\RuntimeException
      */
     public function loadJson($json)
     {
         $options = Json::decode($json, Json::TYPE_ARRAY);
+
+        if (!is_array($options)) {
+            throw new Exception\RuntimeException('json is not a valid response; array expected');
+        }
+
         $this->setOptions($options);
     }
 
@@ -118,10 +118,10 @@ class Response
     /**
      * Set result error
      *
-     * @param  Error $error
+     * @param  mixed $error
      * @return Response
      */
-    public function setError(Error $error)
+    public function setError(Error $error = null)
     {
         $this->error = $error;
         return $this;

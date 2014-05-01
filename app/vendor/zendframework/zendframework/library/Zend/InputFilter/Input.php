@@ -3,27 +3,27 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_InputFilter
  */
 
 namespace Zend\InputFilter;
 
 use Zend\Filter\FilterChain;
-use Zend\Validator\ValidatorChain;
 use Zend\Validator\NotEmpty;
+use Zend\Validator\ValidatorChain;
 
-/**
- * @category   Zend
- * @package    Zend_InputFilter
- */
-class Input implements InputInterface
+class Input implements InputInterface, EmptyContextInterface
 {
     /**
      * @var bool
      */
     protected $allowEmpty = false;
+
+    /**
+     * @var bool
+     */
+    protected $continueIfEmpty = false;
 
     /**
      * @var bool
@@ -70,6 +70,11 @@ class Input implements InputInterface
      */
     protected $fallbackValue;
 
+    /**
+     * @var bool
+     */
+    protected $hasFallback = false;
+
     public function __construct($name = null)
     {
         $this->name = $name;
@@ -92,6 +97,16 @@ class Input implements InputInterface
     public function setBreakOnFailure($breakOnFailure)
     {
         $this->breakOnFailure = (bool) $breakOnFailure;
+        return $this;
+    }
+
+    /**
+     * @param bool $continueIfEmpty
+     * @return \Zend\InputFilter\Input
+     */
+    public function setContinueIfEmpty($continueIfEmpty)
+    {
+        $this->continueIfEmpty = (bool) $continueIfEmpty;
         return $this;
     }
 
@@ -132,6 +147,7 @@ class Input implements InputInterface
     public function setRequired($required)
     {
         $this->required = (bool) $required;
+        $this->setAllowEmpty(!$required);
         return $this;
     }
 
@@ -162,6 +178,7 @@ class Input implements InputInterface
     public function setFallbackValue($value)
     {
         $this->fallbackValue = $value;
+        $this->hasFallback = true;
         return $this;
     }
 
@@ -179,6 +196,14 @@ class Input implements InputInterface
     public function breakOnFailure()
     {
         return $this->breakOnFailure;
+    }
+
+    /**
+     * @return bool
+     */
+    public function continueIfEmpty()
+    {
+        return $this->continueIfEmpty;
     }
 
     /**
@@ -253,6 +278,20 @@ class Input implements InputInterface
     }
 
     /**
+     * @return bool
+     */
+    public function hasFallback()
+    {
+        return $this->hasFallback;
+    }
+
+    public function clearFallbackValue()
+    {
+        $this->hasFallback = false;
+        $this->fallbackValue = null;
+    }
+
+    /**
      * @param  InputInterface $input
      * @return Input
      */
@@ -260,6 +299,7 @@ class Input implements InputInterface
     {
         $this->setAllowEmpty($input->allowEmpty());
         $this->setBreakOnFailure($input->breakOnFailure());
+        $this->setContinueIfEmpty($input->continueIfEmpty());
         $this->setErrorMessage($input->getErrorMessage());
         $this->setName($input->getName());
         $this->setRequired($input->isRequired());
@@ -279,12 +319,17 @@ class Input implements InputInterface
      */
     public function isValid($context = null)
     {
-        $this->injectNotEmptyValidator();
+        // Empty value needs further validation if continueIfEmpty is set
+        // so don't inject NotEmpty validator which would always
+        // mark that as false
+        if (!$this->continueIfEmpty()) {
+            $this->injectNotEmptyValidator();
+        }
         $validator = $this->getValidatorChain();
         $value     = $this->getValue();
         $result    = $validator->isValid($value, $context);
-        if (!$result && $fallbackValue = $this->getFallbackValue()) {
-            $this->setValue($fallbackValue);
+        if (!$result && $this->hasFallback()) {
+            $this->setValue($this->getFallbackValue());
             $result = true;
         }
 
@@ -300,7 +345,7 @@ class Input implements InputInterface
             return (array) $this->errorMessage;
         }
 
-        if ($this->getFallbackValue()) {
+        if ($this->hasFallback()) {
             return array();
         }
 
@@ -308,6 +353,9 @@ class Input implements InputInterface
         return $validator->getMessages();
     }
 
+    /**
+     * @return void
+     */
     protected function injectNotEmptyValidator()
     {
         if ((!$this->isRequired() && $this->allowEmpty()) || $this->notEmptyValidator) {
@@ -315,13 +363,13 @@ class Input implements InputInterface
         }
         $chain = $this->getValidatorChain();
 
-        // Check if NotEmpty validator is already first in chain
+        // Check if NotEmpty validator is already in chain
         $validators = $chain->getValidators();
-        if (isset($validators[0]['instance'])
-            && $validators[0]['instance'] instanceof NotEmpty
-        ) {
-            $this->notEmptyValidator = true;
-            return;
+        foreach ($validators as $validator) {
+            if ($validator['instance'] instanceof NotEmpty) {
+                $this->notEmptyValidator = true;
+                return;
+            }
         }
 
         $chain->prependByName('NotEmpty', array(), true);

@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_View
  */
 
 namespace Zend\View\Model;
@@ -18,12 +17,7 @@ use Zend\View\Exception;
 use Zend\View\Model;
 use Zend\View\Variables as ViewVariables;
 
-/**
- * @category   Zend
- * @package    Zend_View
- * @subpackage Model
- */
-class ViewModel implements ModelInterface
+class ViewModel implements ModelInterface, ClearableModelInterface, RetrievableChildrenInterface
 {
     /**
      * What variable a parent model should capture this model to
@@ -176,7 +170,7 @@ class ViewModel implements ModelInterface
     /**
      * Set renderer options/hints en masse
      *
-     * @param array|\Traversable $options
+     * @param array|Traversable $options
      * @throws \Zend\View\Exception\InvalidArgumentException
      * @return ViewModel
      */
@@ -208,6 +202,17 @@ class ViewModel implements ModelInterface
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Clear any existing renderer options/hints
+     *
+     * @return ViewModel
+     */
+    public function clearOptions()
+    {
+        $this->options = array();
+        return $this;
     }
 
     /**
@@ -287,6 +292,19 @@ class ViewModel implements ModelInterface
     }
 
     /**
+     * Clear all variables
+     *
+     * Resets the internal variable container to an empty container.
+     *
+     * @return ViewModel
+     */
+    public function clearVariables()
+    {
+        $this->variables = new ViewVariables();
+        return $this;
+    }
+
+    /**
      * Set the template to be used by this model
      *
      * @param  string $template
@@ -349,6 +367,41 @@ class ViewModel implements ModelInterface
     public function hasChildren()
     {
         return (0 < count($this->children));
+    }
+
+    /**
+     * Clears out all child models
+     *
+     * @return ViewModel
+     */
+    public function clearChildren()
+    {
+        $this->children = array();
+        return $this;
+    }
+
+    /**
+     * Returns an array of Viewmodels with captureTo value $capture
+     *
+     * @param string $capture
+     * @param bool $recursive search recursive through children, default true
+     * @return array
+     */
+    public function getChildrenByCaptureTo($capture, $recursive = true)
+    {
+        $children = array();
+
+        foreach ($this->children as $child) {
+            if ($recursive === true) {
+                $children += $child->getChildrenByCaptureTo($capture);
+            }
+
+            if ($child->captureTo() === $capture) {
+                $children[] = $child;
+            }
+        }
+
+        return $children;
     }
 
     /**

@@ -3,13 +3,13 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Code
  */
 
 namespace Zend\Code\Scanner;
 
+use Zend\Code\Annotation;
 use Zend\Code\Exception;
 use Zend\Code\NameInformation;
 
@@ -71,12 +71,12 @@ class ClassScanner implements ScannerInterface
     protected $shortParentClass = null;
 
     /**
-     * @var string[]
+     * @var array
      */
     protected $interfaces = array();
 
     /**
-     * @var string[]
+     * @var array
      */
     protected $shortInterfaces = array();
 
@@ -91,15 +91,13 @@ class ClassScanner implements ScannerInterface
     protected $nameInformation = null;
 
     /**
-     * @var array[]
+     * @var array
      */
     protected $infos = array();
 
     /**
-     * Constructor
-     *
-     * @param array                $classTokens
-     * @param NameInformation|null $nameInformation
+     * @param  array $classTokens
+     * @param  NameInformation|null $nameInformation
      * @return ClassScanner
      */
     public function __construct(array $classTokens, NameInformation $nameInformation = null)
@@ -111,26 +109,32 @@ class ClassScanner implements ScannerInterface
     /**
      * Get annotations
      *
-     * @return array
+     * @param  Annotation\AnnotationManager $annotationManager
+     * @return Annotation\AnnotationCollection
      */
-    public function getAnnotations()
+    public function getAnnotations(Annotation\AnnotationManager $annotationManager)
     {
-        return array();
+        if (($docComment = $this->getDocComment()) == '') {
+            return false;
+        }
+
+        return new AnnotationScanner($annotationManager, $docComment, $this->nameInformation);
     }
 
     /**
-     * Get doc comment
+     * Return documentation comment
      *
      * @return null|string
      */
     public function getDocComment()
     {
         $this->scan();
+
         return $this->docComment;
     }
 
     /**
-     * Get doc block
+     * Return documentation block
      *
      * @return false|DocBlockScanner
      */
@@ -139,11 +143,12 @@ class ClassScanner implements ScannerInterface
         if (!$docComment = $this->getDocComment()) {
             return false;
         }
+
         return new DocBlockScanner($docComment);
     }
 
     /**
-     * Get name
+     * Return a name of class
      *
      * @return null|string
      */
@@ -154,7 +159,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Get short name
+     * Return short name of class
      *
      * @return null|string
      */
@@ -165,7 +170,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Get line start
+     * Return number of first line
      *
      * @return int|null
      */
@@ -176,7 +181,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Get line end
+     * Return number of last line
      *
      * @return int|null
      */
@@ -187,7 +192,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Check for final
+     * Verify if class is final
      *
      * @return bool
      */
@@ -198,7 +203,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Check for instantiable
+     * Verify if class is instantiable
      *
      * @return bool
      */
@@ -209,7 +214,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Check for abstract
+     * Verify if class is an abstract class
      *
      * @return bool
      */
@@ -220,7 +225,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Check for interface
+     * Verify if class is an interface
      *
      * @return bool
      */
@@ -231,7 +236,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Has parent class
+     * Verify if class has parent
      *
      * @return bool
      */
@@ -242,7 +247,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Get parent class
+     * Return a name of parent class
      *
      * @return null|string
      */
@@ -253,9 +258,9 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Get interfaces
+     * Return a list of interface names
      *
-     * @return string[]
+     * @return array
      */
     public function getInterfaces()
     {
@@ -264,27 +269,116 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Get constants
+     * Return a list of constant names
      *
      * @return array
      */
-    public function getConstants()
+    public function getConstantNames()
     {
         $this->scan();
 
         $return = array();
-
         foreach ($this->infos as $info) {
             if ($info['type'] != 'constant') {
                 continue;
             }
+
             $return[] = $info['name'];
         }
+
         return $return;
     }
 
     /**
-     * Get property names
+     * Return a list of constants
+     *
+     * @param  bool $namesOnly Set false to return instances of ConstantScanner
+     * @return array|ConstantScanner[]
+     */
+    public function getConstants($namesOnly = true)
+    {
+        if (true === $namesOnly) {
+            trigger_error('Use method getConstantNames() instead', E_USER_DEPRECATED);
+            return $this->getConstantNames();
+        }
+
+        $this->scan();
+
+        $return = array();
+        foreach ($this->infos as $info) {
+            if ($info['type'] != 'constant') {
+                continue;
+            }
+
+            $return[] = $this->getConstant($info['name']);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Return a single constant by given name or index of info
+     *
+     * @param  string|int $constantNameOrInfoIndex
+     * @throws Exception\InvalidArgumentException
+     * @return bool|ConstantScanner
+     */
+    public function getConstant($constantNameOrInfoIndex)
+    {
+        $this->scan();
+
+        if (is_int($constantNameOrInfoIndex)) {
+            $info = $this->infos[$constantNameOrInfoIndex];
+            if ($info['type'] != 'constant') {
+                throw new Exception\InvalidArgumentException('Index of info offset is not about a constant');
+            }
+        } elseif (is_string($constantNameOrInfoIndex)) {
+            $constantFound = false;
+            foreach ($this->infos as $info) {
+                if ($info['type'] === 'constant' && $info['name'] === $constantNameOrInfoIndex) {
+                    $constantFound = true;
+                    break;
+                }
+            }
+            if (!$constantFound) {
+                return false;
+            }
+        } else {
+            throw new Exception\InvalidArgumentException('Invalid constant name of info index type.  Must be of type int or string');
+        }
+        if (!isset($info)) {
+            return false;
+        }
+        $p = new ConstantScanner(
+            array_slice($this->tokens, $info['tokenStart'], $info['tokenEnd'] - $info['tokenStart'] + 1),
+            $this->nameInformation
+        );
+        $p->setClass($this->name);
+        $p->setScannerClass($this);
+        return $p;
+    }
+
+    /**
+     * Verify if class has constant
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function hasConstant($name)
+    {
+        $this->scan();
+
+        foreach ($this->infos as $info) {
+            if ($info['type'] === 'constant' && $info['name'] === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return a list of property names
      *
      * @return array
      */
@@ -293,7 +387,6 @@ class ClassScanner implements ScannerInterface
         $this->scan();
 
         $return = array();
-
         foreach ($this->infos as $info) {
             if ($info['type'] != 'property') {
                 continue;
@@ -301,20 +394,20 @@ class ClassScanner implements ScannerInterface
 
             $return[] = $info['name'];
         }
+
         return $return;
     }
 
     /**
-     * Get properties
+     * Return a list of properties
      *
-     * @return array
+     * @return PropertyScanner
      */
     public function getProperties()
     {
         $this->scan();
 
         $return = array();
-
         foreach ($this->infos as $info) {
             if ($info['type'] != 'property') {
                 continue;
@@ -322,11 +415,73 @@ class ClassScanner implements ScannerInterface
 
             $return[] = $this->getProperty($info['name']);
         }
+
         return $return;
     }
 
     /**
-     * Get method names
+     * Return a single property by given name or index of info
+     *
+     * @param  string|int $propertyNameOrInfoIndex
+     * @throws Exception\InvalidArgumentException
+     * @return bool|PropertyScanner
+     */
+    public function getProperty($propertyNameOrInfoIndex)
+    {
+        $this->scan();
+
+        if (is_int($propertyNameOrInfoIndex)) {
+            $info = $this->infos[$propertyNameOrInfoIndex];
+            if ($info['type'] != 'property') {
+                throw new Exception\InvalidArgumentException('Index of info offset is not about a property');
+            }
+        } elseif (is_string($propertyNameOrInfoIndex)) {
+            $propertyFound = false;
+            foreach ($this->infos as $info) {
+                if ($info['type'] === 'property' && $info['name'] === $propertyNameOrInfoIndex) {
+                    $propertyFound = true;
+                    break;
+                }
+            }
+            if (!$propertyFound) {
+                return false;
+            }
+        } else {
+            throw new Exception\InvalidArgumentException('Invalid property name of info index type.  Must be of type int or string');
+        }
+        if (!isset($info)) {
+            return false;
+        }
+        $p = new PropertyScanner(
+            array_slice($this->tokens, $info['tokenStart'], $info['tokenEnd'] - $info['tokenStart'] + 1),
+            $this->nameInformation
+        );
+        $p->setClass($this->name);
+        $p->setScannerClass($this);
+        return $p;
+    }
+
+    /**
+     * Verify if class has property
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function hasProperty($name)
+    {
+        $this->scan();
+
+        foreach ($this->infos as $info) {
+            if ($info['type'] === 'property' && $info['name'] === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return a list of method names
      *
      * @return array
      */
@@ -335,7 +490,6 @@ class ClassScanner implements ScannerInterface
         $this->scan();
 
         $return = array();
-
         foreach ($this->infos as $info) {
             if ($info['type'] != 'method') {
                 continue;
@@ -348,7 +502,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Get methods
+     * Return a list of methods
      *
      * @return MethodScanner[]
      */
@@ -357,7 +511,6 @@ class ClassScanner implements ScannerInterface
         $this->scan();
 
         $return = array();
-
         foreach ($this->infos as $info) {
             if ($info['type'] != 'method') {
                 continue;
@@ -365,13 +518,14 @@ class ClassScanner implements ScannerInterface
 
             $return[] = $this->getMethod($info['name']);
         }
+
         return $return;
     }
 
     /**
-     * Get method
+     * Return a single method by given name or index of info
      *
-     * @param string|int $methodNameOrInfoIndex
+     * @param  string|int $methodNameOrInfoIndex
      * @throws Exception\InvalidArgumentException
      * @return MethodScanner
      */
@@ -406,13 +560,14 @@ class ClassScanner implements ScannerInterface
         );
         $m->setClass($this->name);
         $m->setScannerClass($this);
+
         return $m;
     }
 
     /**
-     * Has method
+     * Verify if class has method by given name
      *
-     * @param string $name
+     * @param  string $name
      * @return bool
      */
     public function hasMethod($name)
@@ -424,12 +579,10 @@ class ClassScanner implements ScannerInterface
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * Export
-     */
     public static function export()
     {
         // @todo
@@ -441,7 +594,7 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * Scan
+     * Scan tokens
      *
      * @return void
      * @throws Exception\RuntimeException
@@ -482,27 +635,30 @@ class ClassScanner implements ScannerInterface
                 $tokenContent = false;
                 $tokenType    = false;
                 $tokenLine    = false;
+
                 return false;
             }
             $token = $tokens[$tokenIndex];
+
             if (is_string($token)) {
                 $tokenType    = null;
                 $tokenContent = $token;
                 $tokenLine    = $tokenLine + substr_count($lastTokenArray[1],
-                                                          "\n"); // adjust token line by last known newline count
+                    "\n"); // adjust token line by last known newline count
             } else {
                 $lastTokenArray = $token;
                 list($tokenType, $tokenContent, $tokenLine) = $token;
             }
+
             return $tokenIndex;
         };
         $MACRO_INFO_ADVANCE  = function () use (&$infoIndex, &$infos, &$tokenIndex, &$tokenLine) {
             $infos[$infoIndex]['tokenEnd'] = $tokenIndex;
             $infos[$infoIndex]['lineEnd']  = $tokenLine;
             $infoIndex++;
+
             return $infoIndex;
         };
-
 
         /**
          * START FINITE STATE MACHINE FOR SCANNING TOKENS
@@ -635,7 +791,7 @@ class ClassScanner implements ScannerInterface
                         goto SCANNER_CLASS_BODY_CONST_END;
                     }
 
-                    if ($tokenType === T_STRING) {
+                    if ($tokenType === T_STRING && null === $infos[$infoIndex]['name']) {
                         $infos[$infoIndex]['name'] = $tokenContent;
                     }
 
@@ -696,7 +852,13 @@ class ClassScanner implements ScannerInterface
                         }
                     }
 
+
                     switch ($tokenType) {
+
+                        case T_CONST:
+                            $memberContext             = 'constant';
+                            $infos[$infoIndex]['type'] = 'constant';
+                            goto SCANNER_CLASS_BODY_CONST_CONTINUE;
 
                         case T_VARIABLE:
                             if ($memberContext === null) {
@@ -712,7 +874,7 @@ class ClassScanner implements ScannerInterface
                             goto SCANNER_CLASS_BODY_MEMBER_CONTINUE;
 
                         case T_STRING:
-                            if ($memberContext === 'method' && $infos[$infoIndex]['name'] === null) {
+                            if ($memberContext === 'method' && null === $infos[$infoIndex]['name']) {
                                 $infos[$infoIndex]['name'] = $tokenContent;
                             }
                             goto SCANNER_CLASS_BODY_MEMBER_CONTINUE;
@@ -785,6 +947,7 @@ class ClassScanner implements ScannerInterface
         }
 
         $this->isScanned = true;
+
         return;
     }
 }

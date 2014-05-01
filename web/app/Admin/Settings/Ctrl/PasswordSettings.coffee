@@ -1,0 +1,71 @@
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
+	class Admin_Settings_Ctrl_PasswordSettings extends Admin_Ctrl_Base
+		@CTRL_ID   = 'Admin_Settings_Ctrl_PasswordSettings'
+		@CTRL_AS   = 'Settings'
+
+		init: ->
+			@$scope.password_settings = {}
+
+		initialLoad: ->
+			data_promise = @Api.sendDataGet({
+				'settings': '/password_settings'
+			}).then( (res) =>
+				@$scope.agent = res.data.settings.password_settings.agent
+				@$scope.user  = res.data.settings.password_settings.user
+
+				@$scope.agent.standard_policy = @$scope.agent.min_length == 5 and
+					!@$scope.agent.max_age and
+					!@$scope.agent.forbid_reuse and
+					!@$scope.agent.require_num_uppercase and
+					!@$scope.agent.require_num_lowercase and
+					!@$scope.agent.require_num_number and
+					!@$scope.agent.require_num_symbol
+
+				@$scope.user.standard_policy = @$scope.user.min_length == 5 and
+					!@$scope.user.max_age and
+					!@$scope.user.forbid_reuse and
+					!@$scope.user.require_num_uppercase and
+					!@$scope.user.require_num_lowercase and
+					!@$scope.user.require_num_number and
+					!@$scope.user.require_num_symbol
+			)
+
+			return data_promise
+
+		saveSettings: ->
+			@startSpinner('saving')
+
+			settings = {
+				agent: Util.clone(@$scope.agent, true),
+				user: Util.clone(@$scope.user, true)
+			}
+
+			if settings.agent.standard_policy
+				settings.agent.min_length = 5
+				settings.agent.max_age = 0
+				settings.agent.forbid_reuse = false
+				settings.agent.require_num_uppercase = 0
+				settings.agent.require_num_lowercase = 0
+				settings.agent.require_num_number = 0
+				settings.agent.require_num_symbol = 0
+			if settings.user.standard_policy
+				settings.user.min_length = 5
+				settings.user.max_age = 0
+				settings.user.forbid_reuse = false
+				settings.user.require_num_uppercase = 0
+				settings.user.require_num_lowercase = 0
+				settings.user.require_num_number = 0
+				settings.user.require_num_symbol = 0
+
+			delete settings.agent.standard_policy
+			delete settings.user.standard_policy
+
+			@Api.sendPostJson('/password_settings', {password_settings: settings}).success( =>
+				@stopSpinner('saving').then(=>
+					@Growl.success(@getRegisteredMessage('saved_settings'))
+				)
+			).error( (info, code) =>
+				@stopSpinner('saving', true)
+			)
+
+	Admin_Settings_Ctrl_PasswordSettings.EXPORT_CTRL()

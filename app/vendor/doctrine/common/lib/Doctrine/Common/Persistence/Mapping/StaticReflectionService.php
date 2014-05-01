@@ -78,6 +78,6 @@ class StaticReflectionService implements ReflectionService
      */
     public function hasPublicMethod($class, $method)
     {
-        return true;
+        return method_exists($class, $method) && is_callable(array($class, $method));
     }
 }

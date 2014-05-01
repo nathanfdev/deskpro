@@ -227,6 +227,16 @@ define(function() {
 		controller: 'Admin_Main_Ctrl_BareList'
 	});
 
+	//###
+	//# Elastic Search
+	//###
+	routes.push({
+		id: 'setup.elastic_search',
+		url: '/settings_elastic_search',
+		templateName: 'ElasticSearch/setup.html',
+		controller: 'Admin_Settings_Ctrl_ElasticSearch'
+	});
+
 	//##################################################################################################################
 	// Agents
 	//##################################################################################################################
@@ -824,6 +834,16 @@ define(function() {
 		url: '/registration',
 		templateName: 'UserReg/settings.html',
 		controller: 'Admin_Settings_Ctrl_RegSettings'
+	});
+
+	//###
+	//# Password Settings
+	//###
+	routes.push({
+		id: 'crm.password_settings',
+		url: '/password_settings',
+		templateName: 'UserReg/password-settings.html',
+		controller: 'Admin_Settings_Ctrl_PasswordSettings'
 	});
 
 	//###

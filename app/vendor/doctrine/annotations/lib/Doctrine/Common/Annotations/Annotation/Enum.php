@@ -48,7 +48,7 @@ final class Enum
     public $literal;
 
     /**
-     * Annotation constructor.
+     * Annotation construct
      *
      * @param array $values
      *
@@ -81,4 +81,5 @@ final class Enum
         $this->value    = $values['value'];
         $this->literal  = $values['literal'];
     }
+
 }

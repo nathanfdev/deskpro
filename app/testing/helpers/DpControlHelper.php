@@ -131,4 +131,23 @@ class DpControlHelper extends \Codeception\Module
 	{
 		$this->debugSection($title, $message);
 	}
+
+    public function indexElasticsearch()
+    {
+        $indexManager = $this->getSymfonyContainer()->get('fos_elastica.index_manager');
+        $providerRegistry = $this->getSymfonyContainer()->get('fos_elastica.provider_registry');
+        $resetter = $this->getSymfonyContainer()->get('fos_elastica.resetter');
+
+        $index = 'deskpro';
+
+        $resetter->resetIndex($index);
+        $providers = $providerRegistry->getIndexProviders($index);
+
+        foreach ($providers as $type => $provider) {
+            $provider->populate(null, array());
+        }
+
+        $resetter->postPopulate($index);
+        $indexManager->getIndex($index)->refresh();
+    }
 }

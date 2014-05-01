@@ -35,9 +35,11 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -95,9 +97,10 @@ use Orb\Util\Util;
  * @property PersonUsersourceAssoc[] $usersource_assoc
  * @property \DateTime $date_created
  * @property \DateTime $date_last_login
+ * @property \DateTime $date_password_set
  * @property \DateTime $date_picture_check
  */
-class Person extends \Application\DeskPRO\Domain\DomainObject
+class Person extends DomainObject implements HighlightableModelInterface
 {
 	const CREATED_WEB_PERSON = 'web.person';
 	const CREATED_WEB_AGENT = 'web.agent';
@@ -413,6 +416,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_last_login = null;
 
 	/**
+	 * @var \DateTime
+	 */
+	protected $date_password_set = null;
+
+	/**
 	 * The last time the users gravatar (or other 3rd party image) was checked.
 	 *
 	 * @var \DateTime
@@ -460,6 +468,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public $email_validating;
 
 	protected $_updated_org = false;
+
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
@@ -948,6 +963,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_set_plain_password = $plain_password;
 
 		$this->setModelField('password', $pass);
+		$this->setModelField('date_password_set', new \DateTime());
 
 		if ($this->id) {
 			$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
@@ -2387,6 +2403,37 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $data;
 	}
 
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -2443,6 +2490,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'salt', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'salt', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_last_login', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_login', ));
+		$metadata->mapField(array( 'fieldName' => 'date_password_set', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_password_set', ));
 		$metadata->mapField(array( 'fieldName' => 'date_picture_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_picture_check', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

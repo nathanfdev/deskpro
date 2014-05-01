@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * Exception that occurs when a InvalidDBSecurityGroupStateException error is encountered
+ * The state of the DB security group does not allow deletion.
  */
 class InvalidDBSecurityGroupStateException extends RdsException {}

@@ -728,6 +728,43 @@
 	'user.kb_subscriptions' => true,
 
 	####################################################################################################################
+	# search
+	####################################################################################################################
+
+	// Determines if the elastic stuff is available for use
+	'elastica.allow_elastic' => false,
+
+	// Use elastic search?
+	'elastica.enabled' => false,
+
+	// This is true when elastic was just enabled and the admin needs to exec
+	// the cmd to reset the index to initialize it
+	'elastica.requires_reset' => false,
+
+	'elastica.clients.default.host' => 'localhost',
+	'elastica.clients.default.port' => 9200,
+
+	####################################################################################################################
+	# password policy
+	####################################################################################################################
+
+	'user.password_policy.min_length' => 5,
+	'user.password_policy.max_age' => 0,
+	'user.password_policy.forbid_reuse' => false,
+	'user.password_policy.require_num_uppercase' => 0,
+	'user.password_policy.require_num_lowercase' => 0,
+	'user.password_policy.require_num_number' => 0,
+	'user.password_policy.require_num_symbol' => 0,
+
+	'agent.password_policy.min_length' => 5,
+	'agent.password_policy.max_age' => 0,
+	'agent.password_policy.forbid_reuse' => false,
+	'agent.password_policy.require_num_uppercase' => 0,
+	'agent.password_policy.require_num_lowercase' => 0,
+	'agent.password_policy.require_num_number' => 0,
+	'agent.password_policy.require_num_symbol' => 0,
+
+	####################################################################################################################
 	# user_style
 	####################################################################################################################
 

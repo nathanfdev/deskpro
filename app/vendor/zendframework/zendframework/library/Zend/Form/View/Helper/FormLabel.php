@@ -3,21 +3,16 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Form
  */
 
 namespace Zend\Form\View\Helper;
 
 use Zend\Form\ElementInterface;
 use Zend\Form\Exception;
+use Zend\Form\LabelAwareInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Form
- * @subpackage View
- */
 class FormLabel extends AbstractHelper
 {
     const APPEND  = 'append';
@@ -32,6 +27,67 @@ class FormLabel extends AbstractHelper
         'for'  => true,
         'form' => true,
     );
+
+    /**
+     * Generate a form label, optionally with content
+     *
+     * Always generates a "for" statement, as we cannot assume the form input
+     * will be provided in the $labelContent.
+     *
+     * @param  ElementInterface $element
+     * @param  null|string      $labelContent
+     * @param  string           $position
+     * @throws Exception\DomainException
+     * @return string|FormLabel
+     */
+    public function __invoke(ElementInterface $element = null, $labelContent = null, $position = null)
+    {
+        if (!$element) {
+            return $this;
+        }
+
+        $openTag = $this->openTag($element);
+        $label   = '';
+        if ($labelContent === null || $position !== null) {
+            $label = $element->getLabel();
+            if (empty($label)) {
+                throw new Exception\DomainException(sprintf(
+                    '%s expects either label content as the second argument, ' .
+                        'or that the element provided has a label attribute; neither found',
+                    __METHOD__
+                ));
+            }
+
+            if (null !== ($translator = $this->getTranslator())) {
+                $label = $translator->translate(
+                    $label, $this->getTranslatorTextDomain()
+                );
+            }
+
+            if (! $element instanceof LabelAwareInterface || ! $element->getLabelOption('disable_html_escape')) {
+                $escapeHtmlHelper = $this->getEscapeHtmlHelper();
+                $label = $escapeHtmlHelper($label);
+            }
+        }
+
+        if ($label && $labelContent) {
+            switch ($position) {
+                case self::APPEND:
+                    $labelContent .= $label;
+                    break;
+                case self::PREPEND:
+                default:
+                    $labelContent = $label . $labelContent;
+                    break;
+            }
+        }
+
+        if ($label && null === $labelContent) {
+            $labelContent = $label;
+        }
+
+        return $openTag . $labelContent . $this->closeTag();
+    }
 
     /**
      * Generate an opening label tag
@@ -68,7 +124,11 @@ class FormLabel extends AbstractHelper
             ));
         }
 
-        $labelAttributes = $attributesOrElement->getLabelAttributes();
+        $labelAttributes = array();
+        if ($attributesOrElement instanceof LabelAwareInterface) {
+            $labelAttributes = $attributesOrElement->getLabelAttributes();
+        }
+
         $attributes = array('for' => $id);
 
         if (!empty($labelAttributes)) {
@@ -87,61 +147,5 @@ class FormLabel extends AbstractHelper
     public function closeTag()
     {
         return '</label>';
-    }
-
-    /**
-     * Generate a form label, optionally with content
-     *
-     * Always generates a "for" statement, as we cannot assume the form input
-     * will be provided in the $labelContent.
-     *
-     * @param  ElementInterface $element
-     * @param  null|string $labelContent
-     * @param  string $position
-     * @throws Exception\DomainException
-     * @return string|FormLabel
-     */
-    public function __invoke(ElementInterface $element = null, $labelContent = null, $position = null)
-    {
-        if (!$element) {
-            return $this;
-        }
-
-        $openTag = $this->openTag($element);
-        $label   = '';
-        if ($labelContent === null || $position !== null) {
-            $label = $element->getLabel();
-            if (empty($label)) {
-                throw new Exception\DomainException(sprintf(
-                    '%s expects either label content as the second argument, ' .
-                    'or that the element provided has a label attribute; neither found',
-                    __METHOD__
-                ));
-            }
-
-            if (null !== ($translator = $this->getTranslator())) {
-                $label = $translator->translate(
-                    $label, $this->getTranslatorTextDomain()
-                );
-            }
-        }
-
-        if ($label && $labelContent) {
-            switch ($position) {
-                case self::APPEND:
-                    $labelContent .= $label;
-                    break;
-                case self::PREPEND:
-                default:
-                    $labelContent = $label . $labelContent;
-                    break;
-            }
-        }
-
-        if ($label && null === $labelContent) {
-            $labelContent = $label;
-        }
-
-        return $openTag . $labelContent . $this->closeTag();
     }
 }

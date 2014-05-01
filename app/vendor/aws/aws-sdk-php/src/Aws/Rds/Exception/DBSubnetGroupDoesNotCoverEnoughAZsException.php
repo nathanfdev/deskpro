@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * Exception that occurs when a DBSubnetGroupDoesNotCoverEnoughAZsException error is encountered
+ * Subnets in the DB subnet group should cover at least 2 Availability Zones unless there is only 1 availablility zone.
  */
 class DBSubnetGroupDoesNotCoverEnoughAZsException extends RdsException {}

@@ -208,10 +208,17 @@
 						<div class="dp-control-label">
 							<label>{{ phrase('user.profile.password') }} *</label>
 						</div>
+						<div class="dp-help-inline" style="font-size:11px;">
+							{% if app.getSetting('user.password_policy.require_num_uppercase') %}{{ phrase('user.profile.register_password_min_uc', {count: app.getSetting('user.password_policy.require_num_uppercase')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.require_num_lowercase') %}{{ phrase('user.profile.register_password_min_lc', {count: app.getSetting('user.password_policy.require_num_lowercase')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.require_num_number') %}{{ phrase('user.profile.register_password_min_num', {count: app.getSetting('user.password_policy.require_num_number')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.require_num_symbol') %}{{ phrase('user.profile.register_password_min_sym', {count: app.getSetting('user.password_policy.require_num_symbol')}) }}, {% endif %}
+							{% if app.getSetting('user.password_policy.min_length') %}{{ phrase('user.profile.register_password_min_length', {count: app.getSetting('user.password_policy.min_length')}) }}{% endif %}
+						</div>
 						<div class="dp-controls dp-fill">
 							{{ form_widget(form.password) }}
 						</div>
-						{% if errors['password.short'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.profile.register_password_min_length') }}</div>{% endif %}
+						{% if errors['password.invalid'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.profile.register_password_invalid') }}</div>{% endif %}
 						{% if errors['password.mismatch'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.profile.register_password_mismatch') }}</div>{% endif %}
 					</div>
 

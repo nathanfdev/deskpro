@@ -3,20 +3,15 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Permissions
  */
 
 namespace Zend\Permissions\Acl\Role;
 
+use Traversable;
 use Zend\Permissions\Acl\Exception;
 
-/**
- * @category   Zend
- * @package    Zend_Permissions
- * @subpackage Acl
- */
 class Registry
 {
     /**
@@ -40,8 +35,8 @@ class Registry
      * will have the least priority, and the last parent added will have the
      * highest priority.
      *
-     * @param  RoleInterface              $role
-     * @param  RoleInterface|string|array $parents
+     * @param  RoleInterface                           $role
+     * @param  RoleInterface|string|array|Traversable $parents
      * @throws Exception\InvalidArgumentException
      * @return Registry Provides a fluent interface
      */
@@ -59,7 +54,7 @@ class Registry
         $roleParents = array();
 
         if (null !== $parents) {
-            if (!is_array($parents)) {
+            if (!is_array($parents) && !$parents instanceof Traversable) {
                 $parents = array($parents);
             }
             foreach ($parents as $parent) {

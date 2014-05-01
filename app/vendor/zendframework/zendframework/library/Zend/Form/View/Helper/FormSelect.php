@@ -3,22 +3,18 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Form
  */
 
 namespace Zend\Form\View\Helper;
 
+use Zend\Form\Element\Hidden;
 use Zend\Form\ElementInterface;
 use Zend\Form\Element\Select as SelectElement;
 use Zend\Form\Exception;
+use Zend\Stdlib\ArrayUtils;
 
-/**
- * @category   Zend
- * @package    Zend_Form
- * @subpackage View
- */
 class FormSelect extends AbstractHelper
 {
     /**
@@ -30,6 +26,11 @@ class FormSelect extends AbstractHelper
      */
     protected $validTagAttributes;
 
+    /**
+     * Attributes valid for select
+     *
+     * @var array
+     */
     protected $validSelectAttributes = array(
         'name'      => true,
         'autofocus' => true,
@@ -40,6 +41,11 @@ class FormSelect extends AbstractHelper
         'size'      => true
     );
 
+    /**
+     * Attributes valid for options
+     *
+     * @var array
+     */
     protected $validOptionAttributes = array(
         'disabled' => true,
         'selected' => true,
@@ -47,10 +53,41 @@ class FormSelect extends AbstractHelper
         'value'    => true,
     );
 
+    /**
+     * Attributes valid for option groups
+     *
+     * @var array
+     */
     protected $validOptgroupAttributes = array(
         'disabled' => true,
         'label'    => true,
     );
+
+    protected $translatableAttributes = array(
+        'label' => true,
+    );
+
+    /**
+     * @var FromHidden|null
+     */
+    protected $formHiddenHelper;
+
+    /**
+     * Invoke helper as functor
+     *
+     * Proxies to {@link render()}.
+     *
+     * @param  ElementInterface|null $element
+     * @return string|FormSelect
+     */
+    public function __invoke(ElementInterface $element = null)
+    {
+        if (!$element) {
+            return $this;
+        }
+
+        return $this->render($element);
+    }
 
     /**
      * Render a form <select> element from the provided $element
@@ -92,11 +129,22 @@ class FormSelect extends AbstractHelper
         }
         $this->validTagAttributes = $this->validSelectAttributes;
 
-        return sprintf(
+        $rendered = sprintf(
             '<select %s>%s</select>',
             $this->createAttributesString($attributes),
             $this->renderOptions($options, $value)
         );
+
+        // Render hidden element
+        $useHiddenElement = method_exists($element, 'useHiddenElement')
+            && method_exists($element, 'getUnselectedValue')
+            && $element->useHiddenElement();
+
+        if ($useHiddenElement) {
+            $rendered = $this->renderHiddenElement($element) . $rendered;
+        }
+
+        return $rendered;
     }
 
     /**
@@ -154,7 +202,7 @@ class FormSelect extends AbstractHelper
                 $disabled = $optionSpec['disabled'];
             }
 
-            if (in_array($value, $selectedOptions)) {
+            if (ArrayUtils::inArray($value, $selectedOptions)) {
                 $selected = true;
             }
 
@@ -165,6 +213,11 @@ class FormSelect extends AbstractHelper
             }
 
             $attributes = compact('value', 'selected', 'disabled');
+
+            if (isset($optionSpec['attributes']) && is_array($optionSpec['attributes'])) {
+                $attributes = array_merge($attributes, $optionSpec['attributes']);
+            }
+
             $this->validTagAttributes = $this->validOptionAttributes;
             $optionStrings[] = sprintf(
                 $template,
@@ -211,23 +264,6 @@ class FormSelect extends AbstractHelper
     }
 
     /**
-     * Invoke helper as functor
-     *
-     * Proxies to {@link render()}.
-     *
-     * @param  ElementInterface|null $element
-     * @return string|FormSelect
-     */
-    public function __invoke(ElementInterface $element = null)
-    {
-        if (!$element) {
-            return $this;
-        }
-
-        return $this->render($element);
-    }
-
-    /**
      * Ensure that the value is set appropriately
      *
      * If the element's value attribute is an array, but there is no multiple
@@ -258,5 +294,31 @@ class FormSelect extends AbstractHelper
         }
 
         return $value;
+    }
+
+    protected function renderHiddenElement(ElementInterface $element)
+    {
+        $hiddenElement = new Hidden($element->getName());
+        $hiddenElement->setValue($element->getUnselectedValue());
+
+        return $this->getFormHiddenHelper()->__invoke($hiddenElement);
+    }
+
+    /**
+     * @return FormHidden
+     */
+    protected function getFormHiddenHelper()
+    {
+        if (!$this->formHiddenHelper) {
+            if (method_exists($this->view, 'plugin')) {
+                $this->formHiddenHelper = $this->view->plugin('formhidden');
+            }
+
+            if (!$this->formHiddenHelper instanceof FormHidden) {
+                $this->formHiddenHelper = new FormHidden();
+            }
+        }
+
+        return $this->formHiddenHelper;
     }
 }

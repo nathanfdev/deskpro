@@ -24,10 +24,11 @@ if (!defined('PHP_COVERALLS_COMPOSER_INSTALL')) {
     );
 }
 
-use Satooshi\Bundle\CoverallsBundle\Console\Application;
-use Satooshi\Bundle\CoverallsV1Bundle\Version;
+define('PHP_COVERALLS_VERSION', '0.6.1');
+
+use Contrib\Bundle\CoverallsBundle\Console\Application;
 
 $rootDir = realpath(dirname(PHP_COVERALLS_COMPOSER_INSTALL) . '/..');
 
-$app = new Application($rootDir, 'PHP client library for Coveralls API', Version::VERSION);
+$app = new Application($rootDir, 'PHP client library for Coveralls API', PHP_COVERALLS_VERSION);
 $app->run();

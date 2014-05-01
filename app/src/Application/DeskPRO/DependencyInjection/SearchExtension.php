@@ -53,6 +53,9 @@ class SearchExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\Search\\EntityWatcher\\EntityWatcher', array(new Reference('service_container')));
 		$definition->addTag('doctrine.event_subscriber');
 		$container->setDefinition('deskpro.search.entity_listener', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', array(new Reference('deskpro.core.settings')));
+		$container->setDefinition('deskpro.elastica.client_factory', $definition);
 	}
 
 	public function getXsdValidationBasePath()

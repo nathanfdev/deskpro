@@ -46,7 +46,6 @@ abstract class DoctrineCommand extends ContainerAwareCommand
      * Get a doctrine entity manager by symfony name.
      *
      * @param string $name
-     *
      * @return \Doctrine\ORM\EntityManager
      */
     protected function getEntityManager($name)
@@ -58,7 +57,6 @@ abstract class DoctrineCommand extends ContainerAwareCommand
      * Get a doctrine dbal connection by symfony name.
      *
      * @param string $name
-     *
      * @return \Doctrine\DBAL\Connection
      */
     protected function getDoctrineConnection($name)

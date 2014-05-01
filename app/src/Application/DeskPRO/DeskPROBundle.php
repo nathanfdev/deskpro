@@ -33,6 +33,9 @@
 
 namespace Application\DeskPRO;
 
+use Application\DeskPRO\DependencyInjection\CoreExtension;
+use Application\DeskPRO\DependencyInjection\ElasticaClientPass;
+use Application\DeskPRO\DependencyInjection\SearchExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -48,8 +51,9 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         // register the extension(s) found in DependencyInjection/ directory
         parent::build($container);
 
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SearchExtension());
+        $container->registerExtension(new CoreExtension());
+        $container->registerExtension(new SearchExtension());
+		$container->addCompilerPass(new ElasticaClientPass());
     }
 
 	/**
@@ -79,12 +83,14 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
 			'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
 			'Application\\DeskPRO\\Command\\InstallCommand',
+			'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
 			'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
 			'Application\\DeskPRO\\Command\\LanguageToPOCommand',
 			'Application\\DeskPRO\\Command\\LicenseInfoCommand',
 			'Application\\DeskPRO\\Command\\LoginTokenCommand',
 			'Application\\DeskPRO\\Command\\MoveBlobsCommand',
 			'Application\\DeskPRO\\Command\\PhraseCheckCommand',
+			'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
 			'Application\\DeskPRO\\Command\\ProcessEmailCommand',
 			'Application\\DeskPRO\\Command\\RecountRatingsCommand',
 			'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',

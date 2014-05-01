@@ -952,48 +952,60 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
-		if (loadAdmin) {
-			this.disableHashPath(function() {});
-			if ($('#admin_interface_trigger').data('handler')) {
-				console.log("Loading admin: " + loadAdmin);
-				$('#admin_interface_trigger').data('handler').open(loadAdmin, function () {
-					$('#dp_loading').remove();
-					$('#page_loading').remove();
-					$('#loading_css').remove();
-				});
-			}
-		} else if (loadReports) {
-			this.disableHashPath(function() {});
-			if ($('#reports_interface_trigger').data('handler')) {
-				console.log("Loading reports: " + loadReports);
-				$('#reports_interface_trigger').data('handler').open(loadReports, function () {
-					$('#dp_loading').remove();
-					$('#page_loading').remove();
-					$('#loading_css').remove();
-				});
-			}
+		if (DP_PERSON_PASSWORD_EXPIRED) {
+			var settingsInterval = setInterval(function() {
+				if (window.SETTINGS_WINDOW) {
+					clearInterval(settingsInterval);
+					settingsInterval = false;
+					$('#settingswin').trigger('dp_open');
+				}
+			}, 250);
 		} else {
-			if (loadNewTicket) {
-				DeskPRO_Window.newTicketLoader.open(function(page) {
-					var data = {
-						person_id: loadNewTicket
-					};
-					page.setNewByPerson(data);
+			if (loadAdmin) {
+				this.disableHashPath(function () {
 				});
-			}
+				if ($('#admin_interface_trigger').data('handler')) {
+					console.log("Loading admin: " + loadAdmin);
+					$('#admin_interface_trigger').data('handler').open(loadAdmin, function () {
+						$('#dp_loading').remove();
+						$('#page_loading').remove();
+						$('#loading_css').remove();
+					});
+				}
+			} else if (loadReports) {
+				this.disableHashPath(function () {
+				});
+				if ($('#reports_interface_trigger').data('handler')) {
+					console.log("Loading reports: " + loadReports);
+					$('#reports_interface_trigger').data('handler').open(loadReports, function () {
+						$('#dp_loading').remove();
+						$('#page_loading').remove();
+						$('#loading_css').remove();
+					});
+				}
+			} else {
+				if (loadNewTicket) {
+					DeskPRO_Window.newTicketLoader.open(function (page) {
+						var data = {
+							person_id: loadNewTicket
+						};
+						page.setNewByPerson(data);
+					});
+				}
 
-			if (loadSearchTerm) {
-				$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
-			}
+				if (loadSearchTerm) {
+					$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
+				}
 
-			if (loadVis) {
-				this.layout.enableHashUpdate = false;
-				this.setPaneVisNum(loadVis);
-				this.layout.enableHashUpdate = true;
-			}
+				if (loadVis) {
+					this.layout.enableHashUpdate = false;
+					this.setPaneVisNum(loadVis);
+					this.layout.enableHashUpdate = true;
+				}
 
-			this.cancelHashLoad = 0;
-			this.loadHashPath(startHash);
+				this.cancelHashLoad = 0;
+				this.loadHashPath(startHash);
+			}
 		}
 
 		if (window.AppPlatform) {
