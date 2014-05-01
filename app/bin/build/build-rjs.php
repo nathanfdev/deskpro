@@ -23,12 +23,14 @@ $output_realtime = function($type, $buffer) {
 };
 
 $build_js = array(
-	array('build' => 'admin-rjs.js'),
+	array('out' => 'Admin/build/js/build.js', 'name' => 'AdminLoad'),
+	array('out' => 'AdminUpgrade/build/js/build.js', 'name' => 'AdminUpgradeLoad'),
+	array('out' => 'Reports/build/js/build.js', 'name' => 'ReportsLoad'),
 );
 
 foreach ($build_js as $info) {
 
-	$cmd = "r.js -o {$info['build']}";
+	$cmd = "r.js -o rjs-config.js out={$info['out']} name={$info['name']}";
 	echo "-> $cmd\n";
 
 	$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT.'/app');

@@ -186,13 +186,15 @@ window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
 window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
 window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
 window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 
 {% if inhelp_states %}
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
 {% endif %}
 </script>
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
-<script	type="text/javascript" data-main="{{ asset('app/Admin/loader.js') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
+<script type="text/javascript">window.DP_INTERFACE_LOADER = 'AdminLoad';</script>
+<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
 <script type="text/javascript">{{ rjs_apps_config|raw }}</script>
 </body>
 </html>
