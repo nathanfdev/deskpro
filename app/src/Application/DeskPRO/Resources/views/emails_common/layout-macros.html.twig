@@ -40,10 +40,12 @@
 ##}
 {% macro show_all_messages(context) %}
 	{% for message in context.messages %}
-		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-			message: message,
-			ticketdisplay: context.ticketdisplay
-		} %}
+		{% if not context.message_limit or loop.index0 < context.message_limit %}
+			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+				message: message,
+				ticketdisplay: context.ticketdisplay
+			} %}
+		{% endif %}
 	{% endfor %}
 {% endmacro %}
 
@@ -52,10 +54,12 @@
 ##}
 {% macro show_rest_message(context) %}
 	{% for message in context.messages|slice(1) %}
-		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-			message: message,
-			ticketdisplay: context.ticketdisplay
-		} %}
+		{% if not context.message_limit or loop.index0 < context.message_limit %}
+			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+				message: message,
+				ticketdisplay: context.ticketdisplay
+			} %}
+		{% endif %}
 	{% endfor %}
 {% endmacro %}
 
@@ -66,12 +70,14 @@
 		{% set messages = context.messages %}
 	{% endif %}
 	{% for message in messages %}
-		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-			message: message,
-			ticketdisplay: context.ticketdisplay,
-			show_author_email: true,
-			is_to_agent: true
-		} %}
+		{% if not context.message_limit or loop.index0 < context.message_limit %}
+			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+				message: message,
+				ticketdisplay: context.ticketdisplay,
+				show_author_email: true,
+				is_to_agent: true
+			} %}
+		{% endif %}
 	{% endfor %}
 {% endmacro %}
 

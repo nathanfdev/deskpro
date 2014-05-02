@@ -242,16 +242,29 @@ class Message extends \Orb\Mail\Message
 			$body = $this->replaceEmbeds($body);
 			$this->setBody($body, 'text/html');
 
-			try {
+			// This is a slow process and can crash on complex documents so
+			// prevent running on really long messages
+			if (strlen($body) < 512000) {
 				try {
-					$plaintext = Html2Text::convertHtml($body);
-				} catch (\Exception $e) {
-					$plaintext = null;
-				}
-				if ($body) {
+					try {
+						$plaintext = Html2Text::convertHtml($body);
+					} catch (\Exception $e) {
+						$plaintext = null;
+					}
+					if ($plaintext) {
+						$this->addPart($plaintext, 'text/plain');
+					}
+				} catch (\Exception $e) {}
+
+			// fallback on just simple strip tags
+			} else {
+				$plaintext = str_replace("\n", '', $body);
+				$plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
+				$plaintext = strip_tags($plaintext);
+				if ($plaintext) {
 					$this->addPart($plaintext, 'text/plain');
 				}
-			} catch (\Exception $e) {}
+			}
 		}
 
 		// These need to be unset so the message can be properly serialized

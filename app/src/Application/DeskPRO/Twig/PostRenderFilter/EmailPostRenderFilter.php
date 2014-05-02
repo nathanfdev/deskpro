@@ -54,6 +54,14 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 			$code = trim($parts[1]);
 		}
 
+		// Dont run emog on messages, only on the email template
+		// This takes out email messages and replaces them with tokens until we're done
+		$save_blocks = array();
+		$code = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function($m) use (&$save_blocks) {
+			$rand = uniqid('DPBLOCK', true);
+			$save_blocks[$rand] = $m[0];
+		}, $code);
+
 		$css = implode("\n", $m[1]);
 		foreach ($m[0] as $find) {
 			$code = str_replace($find, '', $code);
@@ -63,6 +71,10 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 		$emog = new \Emogrifier($code, $css);
 		$code = $emog->emogrify();
 		$code = Strings::postDomDocument($code);
+
+		foreach ($save_blocks as $id => $block) {
+			$code = str_replace($id, $block, $code);
+		}
 
 		if (!$code) {
 			return $orig_code;
