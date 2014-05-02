@@ -189,6 +189,7 @@ class TemplatingExtension extends \Twig_Extension
 			'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
 			'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
 			'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
+			'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
 
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -1547,7 +1548,14 @@ class TemplatingExtension extends \Twig_Extension
 			$save_name = preg_replace('#\.twig$#', '', $save_name);
 		}
 
-		$html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
+		if (strpos($rendered, '<script') !== false) {
+			// If it has inner script tags we should be using our special dp-ng-template tag and encode the tpl as json
+			$json = \Application\DeskPRO\Util::jsonEncode(array('template' => $rendered));
+			$html = '<script type="text/dp-ng-template" id="'.$save_name.'">' . $json . '</script>';
+		} else {
+			$html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
+		}
+
 		return $html;
 	}
 
@@ -1568,6 +1576,11 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$loc_id = preg_replace('#[^a-zA-Z0-9_]#', '_', $loc_name);
 		return '<div id="'.$base_id.'_'.$loc_id.'" class="dp-app-context-container as-default-hidden" data-location-name="'.$loc_name.'"></div>';
+	}
+
+	public function jsonEncodeInHtml($data)
+	{
+		return \Application\DeskPRO\Util::jsonEncode($data);
 	}
 }
 

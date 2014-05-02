@@ -1,0 +1,21 @@
+<section>
+	<header>
+		<h1>Welcome to DeskPRO</h1>
+	</header>
+	<article ng-show="!card_loaded" class="loading-container">
+		<i class="spinner-editor"></i>
+	</article>
+	<article ng-show="card_loaded">
+		<p>
+			XXX
+		</p>
+	</article>
+	<footer ng-show="card_loaded">
+		<div ng-show="!is_loading">
+			<button class="btn btn-primary" ng-click="Card.saveAndContinue();">Save and continue <i class="fa fa-arrow-circle-right"></i></button>
+		</div>
+		<div ng-show="is_loading">
+			<i class="spinner-flat"></i>
+		</div>
+	</footer>
+</section>

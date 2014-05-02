@@ -35,7 +35,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiToken;
 
-class UpgradeController extends AbstractController
+class StartController extends AbstractController
 {
 	####################################################################################################################
 	# index
@@ -51,10 +51,9 @@ class UpgradeController extends AbstractController
 		$this->em->persist($token);
 		$this->em->flush();
 
-		return $this->render('AdminInterfaceBundle:Upgrade:layout.html.twig', array(
-			'api_token'     => $token,
-			'session'       => $this->session->getEntity(),
-			'is_wincache'   => extension_loaded('wincache'),
+		return $this->render('AdminInterfaceBundle:Start:layout.html.twig', array(
+			'api_token' => $token,
+			'session'   => $this->session->getEntity(),
 			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
 		));
 	}

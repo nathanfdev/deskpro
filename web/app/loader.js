@@ -38,15 +38,18 @@ requirejs.config({
 		"select2":                         "app/bower_components/select2/select2.min",
 		"toastr":                          "app/bower_components/toastr/toastr",
 		"ColorPicker":                     "vendor/colorpicker/js/colorpicker.min",
+		"jstz":                            "vendor/detect_timezone",
 
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/Admin/build/js/build" : "app/Admin/AdminLoad"),
 		"AdminUpgradeLoad":                (DP_USE_RJS_BUILD ? "app/AdminUpgrade/build/js/build" : "app/AdminUpgrade/AdminUpgradeLoad"),
+		"AdminStartLoad":                  (DP_USE_RJS_BUILD ? "app/AdminStart/build/js/build" : "app/AdminStart/AdminStartLoad"),
 		"ReportsLoad":                     (DP_USE_RJS_BUILD ? "app/Reports/build/js/build" : "app/Reports/ReportsLoad"),
 
 		"DeskPRO":                         "app/DeskPRO/build/js",
 		"Admin":                           "app/Admin/build/js",
 		"AdminRouting":                    "app/Admin/Resources/config/routing",
 		"AdminUpgrade":                    "app/AdminUpgrade/build/js",
+		"AdminStart":                      "app/AdminStart/build/js",
 		"Reports":                         "app/Reports/build/js",
 		"ReportsRouting":                  "app/Reports/Resources/config/routing"
 	},
@@ -71,6 +74,7 @@ requirejs.config({
 		"select2":                         ["jquery"],
 		"toastr":                          ["jquery"],
 		"ColorPicker":                     ["jquery"],
+		"jstz":                            { "exports": "jstz" },
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"}
 	},

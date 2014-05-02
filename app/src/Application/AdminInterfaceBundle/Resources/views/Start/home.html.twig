@@ -1,0 +1,65 @@
+<section>
+	<header>
+		<h1>Welcome to DeskPRO</h1>
+	</header>
+	<article>
+		<form name="form" novalidate>
+			<section class="card-section">
+				<p>
+					DeskPRO has been installed successfully. But before you can start using your helpdesk you need to initialize a few options first.
+				</p>
+			</section>
+				<section class="card-section">
+				<h3>Your helpdesk</h3>
+				<p>
+					Enter the main URL to the helpdesk here and give your helpdesk a name. The name will be used as link text when
+					a link to the helpdesk is displayed to users (for examlpe, in email footers).
+				</p>
+				<div class="form">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group" ng-class="{'has-warning': has_submit && form.deskpro_url.$error.required}">
+									<label for="form_hd_url">Helpdesk URL</label>
+									<input type="text" id="form_hd_url" name="deskpro_url" ng-model="opt.deskpro_url" class="form-control" placeholder="URL to this helpdesk" required />
+									<p class="help-block" ng-show="has_submit && form.deskpro_url.$error.required">Please enter your helpdesk URL.</p>
+								</div>
+							</div>
+
+							<div class="col-sm-6">
+								<div class="form-group" ng-class="{'has-warning': has_submit && form.deskpro_name.$error.required}">
+									<label for="form_hd_name">Helpdesk Name</label>
+									<input type="text" id="form_hd_name" name="deskpro_name" ng-model="opt.deskpro_name" class="form-control" placeholder="The name of the helpdesk" required />
+									<p class="help-block" ng-show="has_submit && form.deskpro_name.$error.required">Please enter your helpdesk name.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section class="card-section">
+				<div class="form-group" ng-class="{'has-warning': has_submit && form.license.$error.required}">
+					<h3>Your License</h3>
+					<p>
+						You can get your license key from your <a href="https://www.deskpro.com/members/" target="_blank">DeskPRO Members Area</a>.
+						Don't have a license? <button type="button" class="btn btn-info" style="height: auto; padding: 4px 8px 3px 11px;" ng-click="Card.showRequestDemo()">Get a demo license now <i class="fa fa-ticket"></i></button>
+					</p>
+					<textarea ng-model="opt.license" name="license" class="form-control" style="height: 100px;" placeholder="Paste your license code here" required></textarea>
+					<p class="help-block" ng-show="has_submit && form.license.$error.required">Please enter your license code.</p>
+					<p class="text-danger" ng-show="lic_error">
+						The license code you entered is invalid. Make sure you copy and paste the code exactly as you got it.
+						(Error code: <code>{{ ng_var('lic_error') }}</code>)
+					</p>
+				</div>
+			</section>
+		</form>
+	</article>
+	<footer>
+		<div ng-show="!is_loading">
+			<button class="btn btn-primary" ng-click="Card.saveAndContinue(!form.$invalid)" ng-disabled="has_submit && form.$invalid">Save and continue &nbsp; <i class="fa fa-caret-right"></i></button>
+		</div>
+		<div ng-show="is_loading">
+			<i class="spinner-flat"></i>
+		</div>
+	</footer>
+</section>
