@@ -241,6 +241,7 @@ abstract class AbstractKernel extends BaseKernel
 			&& !preg_match('#^/reports/load-view#', $path);
 
 		if ($is_page_load
+			&& (!isset($GLOBALS['DP_USING_TESTING_CONFIG']) || !$GLOBALS['DP_USING_TESTING_CONFIG'])
 			&& !preg_match('#^/admin/start#', $path)
 			&& !preg_match('#^/admin/login#', $path)
 			&& !preg_match('#^/agent/login#', $path)
