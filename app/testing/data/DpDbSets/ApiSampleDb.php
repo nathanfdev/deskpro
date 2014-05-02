@@ -110,14 +110,14 @@ class ApiSampleDb extends AbstractDbSet
 		$everyone_ug = new Usergroup();
 		$everyone_ug['title'] = 'Everyone';
 		$everyone_ug['note'] = '';
-		$everyone_ug['sys_name'] = Usergroup::EVERYONE_NAME;
+		$everyone_ug['sys_name'] = 'everyone';
 		$this->getEm()->persist($everyone_ug);
 		$this->getEm()->flush();
 
 		$g = new Usergroup();
 		$g['title'] = 'Registered';
 		$g['note'] = '';
-		$g['sys_name'] = Usergroup::REG_NAME;
+		$g['sys_name'] = 'registered';
 		$this->getEm()->persist($g);
 		$this->getEm()->flush();
 
