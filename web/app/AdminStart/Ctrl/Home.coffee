@@ -29,8 +29,8 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
 
 			@$scope.is_loading = true
 			@Api.sendPostJson('/start-settings', {
-				deskpro_url:  @$scope.deskpro_url,
-				deskpro_name: @$scope.deskpro_name,
+				deskpro_url:  @$scope.opt.deskpro_url,
+				deskpro_name: @$scope.opt.deskpro_name,
 				timezone:     @$scope.opt.timezone,
 				license_code: @$scope.opt.license
 			}).success( (data) =>

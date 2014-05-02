@@ -43,8 +43,8 @@
         }
         this.$scope.is_loading = true;
         return this.Api.sendPostJson('/start-settings', {
-          deskpro_url: this.$scope.deskpro_url,
-          deskpro_name: this.$scope.deskpro_name,
+          deskpro_url: this.$scope.opt.deskpro_url,
+          deskpro_name: this.$scope.opt.deskpro_name,
           timezone: this.$scope.opt.timezone,
           license_code: this.$scope.opt.license
         }).success((function(_this) {
