@@ -97,7 +97,7 @@ class PersonValueImporter extends AbstractValueImporter
 		
 		if ($exist_emails) {
 			$existing_person_id = Arrays::getFirstItem($exist_emails);
-			$this->getLogger()->notice(sprintf("[%s] Found existing user %d", $log_id, $exist_id));
+			$this->getLogger()->notice(sprintf("[%s] Found existing user %d", $log_id, $existing_person_id));
 		}
 		
 		#------------------------------
@@ -258,25 +258,17 @@ class PersonValueImporter extends AbstractValueImporter
 			#------------------------------
 			# Custom Fields
 			#------------------------------
-			if ($exist_id && $pval->custom_fields) {
-				foreach ($pval->custom_fields as $custom_field) {
-					$field_key = array_keys($custom_field);
+			if ($exist_id && !empty($pval->custom_def)) {
+				$custom_field_importer = new CustomDefPersonValueImporter(
+					$this->getMode(),
+					$this->getContainer(),
+					$this->getLogger(),
+					$this->getMappers(),
+					$exist_id
+				);
 
-					$field_key = $field_key[0];
-
-					$existing_custom_field = $this->customFieldExists($field_key);
-
-					if ($existing_custom_field && $this->isCustomFieldTypeSupported($existing_custom_field['handler_class'])) {
-						$custom_field_value = $custom_field[$field_key];
-
-						$record = array(
-							'person_id'	=> $exist_id,
-							'field_id'	=> $existing_custom_field['id'],
-							'input'		=> $custom_field_value
-						);
-
-						$this->getDb()->insert('custom_data_person', $record);
-					}
+				foreach ($pval->custom_def as $custom_value) {
+					$custom_field_importer->importValue($custom_value);
 				}
 			}
 		}

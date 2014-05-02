@@ -39,17 +39,6 @@ use Orb\Validator\StringEmail;
 
 class TicketValueImporter extends AbstractValueImporter
 {
-	protected $custom_fields_array = array();
-	
-	protected $supported_custom_field_types = array(
-		'Application\DeskPRO\CustomFields\Handler\Text',
-		'Application\DeskPRO\CustomFields\Handler\Choice',
-		'Application\DeskPRO\CustomFields\Handler\Textarea',
-		'Application\DeskPRO\CustomFields\Handler\Toggle',
-		'Application\DeskPRO\CustomFields\Handler\Date'
-	);
-
-
 	/**
 	 * @param mixed $tval
 	 * @throws \Application\ImportBundle\Exception\BadDataException
@@ -301,85 +290,18 @@ class TicketValueImporter extends AbstractValueImporter
 		#------------------------------
 		# Custom Fields
 		#------------------------------
-		if ($ticket_id && $tval->custom_fields) {
-			foreach ($tval->custom_fields as $custom_field) {
-				$this->processCustomField($custom_field, $ticket_id);
-			}
-		}
-	}
-	
-	private function processCustomField($data, $ticket_id)
-	{
-		$record		= array();
-		
-		$field_key	= array_keys($data);
-				
-		$field_key	= $field_key[0];
-
-		$existing_custom_field_id = $this->getMappers()->findIdFromMappedValue('custom_def_ticket', $field_key);
-		
-		if ($existing_custom_field_id 
-			&& $this->isCustomFieldTypeSupported($this->getMappers()->getMapper('custom_def_ticket')->fetchHandlerClass($field_key))) {
-			$hander_class = $this->getMappers()->getMapper('custom_def_ticket')->fetchHandlerClass($field_key);
-			switch ($hander_class) {
-				case 'Application\DeskPRO\CustomFields\Handler\Text':
-				case 'Application\DeskPRO\CustomFields\Handler\Textarea':
-					$custom_field_value = $data[$field_key];
-
-					$record = array(
-						'ticket_id'	=> $ticket_id,
-						'field_id'	=> $existing_custom_field_id,
-						'root_field_id'	=> $existing_custom_field_id,
-						'input'		=> $custom_field_value
-					);
-					break;
-				case 'Application\DeskPRO\CustomFields\Handler\Toggle':
-					$custom_field_value = $data[$field_key];
-
-					$record = array(
-						'ticket_id'	=> $ticket_id,
-						'field_id'	=> $existing_custom_field_id,
-						'root_field_id'	=> $existing_custom_field_id,
-						'value'		=> $custom_field_value ? 1 : 0
-					);
-					break;
-				case 'Application\DeskPRO\CustomFields\Handler\Date':
-					$custom_field_value = $data[$field_key];
-
-					$record = array(
-						'ticket_id'	=> $ticket_id,
-						'field_id'	=> $existing_custom_field_id,
-						'root_field_id'	=> $existing_custom_field_id,
-						'value'		=> $custom_field_value ? strtotime($custom_field_value) : 0
-					);
-					break;
+		if ($ticket_id && !empty($tval->custom_def)) {
+			$custom_field_importer = new CustomDefTicketValueImporter(
+				$this->getMode(),
+				$this->getContainer(),
+				$this->getLogger(),
+				$this->getMappers(),
+				$ticket_id
+			);
 			
-				case 'Application\DeskPRO\CustomFields\Handler\Choice':
-					$custom_field_value = $data[$field_key];
-					// This is the choice value, now lets grab the choice id
-					$custom_field_value_id = $this->getMappers()->findIdFromMappedValue('custom_def_ticket', $custom_field_value);
-					
-					if (!$custom_field_value_id) {
-						$this->getLogger()->warning(sprintf("[%s] Unknown option %s for custom field %s (skipping)", $log_id, $custom_field_value, $field_key));
-						break;
-					}
-
-					$record = array(
-						'ticket_id'	=> $ticket_id,
-						'field_id'	=> $custom_field_value_id,
-						'value'		=> 1,
-						'root_field_id'	=> $existing_custom_field_id
-					);
-					break;
-			}
-			if (!empty($record)) {
-				$this->getDb()->insert('custom_data_ticket', $record);
+			foreach ($tval->custom_def as $custom_value) {
+				$custom_field_importer->importValue($custom_value);
 			}
 		}
-	}
-	
-	private function isCustomFieldTypeSupported($field_type)
-	{
-		return in_array($field_type, $this->supported_custom_field_types);
 	}
 }

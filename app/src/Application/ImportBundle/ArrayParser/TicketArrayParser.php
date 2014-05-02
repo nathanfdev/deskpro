@@ -34,6 +34,7 @@ namespace Application\ImportBundle\ArrayParser;
 use Application\ImportBundle\Value\AttachmentValue;
 use Application\ImportBundle\Value\TicketMessageValue;
 use Application\ImportBundle\Value\TicketValue;
+use Application\ImportBundle\Value\CustomDefValue;
 
 class TicketArrayParser implements ArrayParserInterface
 {
@@ -87,9 +88,9 @@ class TicketArrayParser implements ArrayParserInterface
 				), $message_data, $message_value);
 
 				if (!empty($message_data['attachments'])) {
-					foreach ($message_data['attachments'] as $attach_data) {
-						$attach_data = ArrayParserUtils::cleanArray($attach_data);
-						$attach_value = new AttachmentValue();
+					foreach ($message_data['attachments'] as $custom_field_data) {
+						$custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
+						$custom_def_value = new AttachmentValue();
 
 						ArrayParserUtils::copyValueMapping(array(
 							'oid'         => 'raw',
@@ -99,16 +100,36 @@ class TicketArrayParser implements ArrayParserInterface
 							'filename'     => 'string',
 							'content_type' => 'string',
 							'is_inline'    => 'bool'
-						), $attach_data, $attach_value);
+						), $custom_field_data, $custom_def_value);
 
-						$message_value->attachments[] = $attach_value;
+						$message_value->attachments[] = $custom_def_value;
 					}
 				}
-
+				
 				$value->messages[] = $message_value;
 			}
 		}
+		
+		if (!empty($data['custom_fields'])) {
+			$index = 1;
+			
+			foreach ($data['custom_fields'] as $custom_field_data) {
+				$custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
+				
+				$custom_def_value = new CustomDefValue();
+				
+				$keys = array_keys($custom_field_data);
+				
+				$custom_def_value->oid = $index++;
 
+				$custom_def_value->key = $keys[0];
+				
+				$custom_def_value->value = $custom_field_data[$keys[0]];
+				
+				$value->custom_def[] = $custom_def_value;
+			}
+		}
+		
 		return $value;
 	}
 }

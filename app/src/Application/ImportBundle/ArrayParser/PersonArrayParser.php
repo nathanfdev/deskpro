@@ -85,6 +85,26 @@ class PersonArrayParser implements ArrayParserInterface
 		if (!empty($data['email'])) {
 			array_unshift($value->emails, $data['email']);
 		}
+		
+		if (!empty($data['custom_fields'])) {
+			$index = 1;
+			
+			foreach ($data['custom_fields'] as $custom_field_data) {
+				$custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
+				
+				$custom_def_value = new CustomDefValue();
+				
+				$keys = array_keys($custom_field_data);
+				
+				$custom_def_value->oid = $index++;
+
+				$custom_def_value->key = $keys[0];
+				
+				$custom_def_value->value = $custom_field_data[$keys[0]];
+				
+				$value->custom_def[] = $custom_def_value;
+			}
+		}
 
 		return $value;
 	}
