@@ -96,9 +96,9 @@ $container->setDefinition('session.storage', $definition);
 // deskpro.mail_logger
 $definition = new Definition();
 $definition->setClass('Orb\\Log\\Logger');
-$definition->setFactoryService(new Reference('service_container'));
-$definition->setFactoryMethod('getSystemService');
-$definition->setArguments(array('mail_logger'));
+$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailLoggerService');
+$definition->setFactoryMethod('create');
+$definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('deskpro.mail_logger', $definition);
 
 // swiftmailer.mailer
