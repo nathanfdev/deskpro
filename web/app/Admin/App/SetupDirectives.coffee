@@ -8,6 +8,8 @@ define [
 	'DeskPRO/Directive/DpTabBody',
 	'DeskPRO/Directive/DpTabBtn',
 	'DeskPRO/Directive/DpHideSpinning',
+	'DeskPRO/Directive/DpJsonData',
+	'DeskPRO/Directive/DpNgTemplate',
 	'DeskPRO/Directive/DpShowSpinning',
 	'DeskPRO/Directive/DpSubmitForm',
 	'DeskPRO/Directive/DpErrorClass',
@@ -43,6 +45,8 @@ define [
 	DeskPRO_Directive_DpTabBody,
 	DeskPRO_Directive_DpTabBtn,
 	DeskPRO_Directive_DpHideSpinning,
+	DeskPRO_Directive_DpJsonData,
+	DeskPRO_Directive_DpNgTemplate,
 	DeskPRO_Directive_DpShowSpinning,
 	DeskPRO_Directive_DpSubmitForm,
 	DeskPRO_Directive_DpErrorClass,
@@ -79,6 +83,8 @@ define [
 		Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody)
 		Module.directive('dpTabBtn',                       DeskPRO_Directive_DpTabBtn)
 		Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
+		Module.directive('script',                         DeskPRO_Directive_DpJsonData)
+		Module.directive('script',                         DeskPRO_Directive_DpNgTemplate)
 		Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
 		Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
 		Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)

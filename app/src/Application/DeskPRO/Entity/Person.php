@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -568,6 +569,33 @@ class Person extends DomainObject implements HighlightableModelInterface
 	public function hasPerm($name)
 	{
 		return $this->getPermissionsManager()->hasPerm($name);
+	}
+
+
+	/**
+	 * Try to guess an org name based on profile info.
+	 *
+	 * @return string
+	 */
+	public function guessOrganizationName()
+	{
+		if ($this->organization) {
+			return $this->organization->name;
+		}
+
+		foreach ($this->emails as $email) {
+			if (FreeEmailProviders::isFreeEmailDomain($email->email_domain)) {
+				continue;
+			}
+
+			$name = $email->email_domain;
+			if ($pos = strpos($name, '.')) {
+				$name = substr($name, 0, $pos);
+			}
+			return ucfirst($name);
+		}
+
+		return null;
 	}
 
 	public function getOrganizationId()

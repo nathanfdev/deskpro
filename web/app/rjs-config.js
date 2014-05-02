@@ -40,12 +40,14 @@
 
 		"AdminLoad":                       "Admin/AdminLoad",
 		"AdminUpgradeLoad":                "AdminUpgrade/AdminUpgradeLoad",
+		"AdminStartLoad":                  "AdminStart/AdminStartLoad",
 		"ReportsLoad":                     "Reports/ReportsLoad",
 
 		"DeskPRO":                         "DeskPRO/build/js",
 		"Admin":                           "Admin/build/js",
 		"AdminRouting":                    "Admin/Resources/config/routing",
 		"AdminUpgrade":                    "AdminUpgrade/build/js",
+		"AdminStart":                      "AdminStart/build/js",
 		"Reports":                         "Reports/build/js",
 		"ReportsRouting":                  "Reports/Resources/config/routing"
 	},

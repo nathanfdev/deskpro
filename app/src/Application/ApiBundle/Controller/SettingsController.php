@@ -43,6 +43,7 @@ use Application\DeskPRO\Settings\PortalSettings;
 use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
 use Application\DeskPRO\Settings\TicketSettings;
+use DeskPRO\Kernel\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
 
@@ -409,5 +410,33 @@ class SettingsController extends AbstractController implements ProtectedControll
 		$password_settings->saveSettings();
 
 		return $this->createSuccessResponse();
+	}
+
+	############################################################################
+	# save-start-settings
+	############################################################################
+
+	public function setStartSettingsAction()
+	{
+		$this->settings->setSetting('core.deskpro_url', $this->in->getString('deskpro_url'));
+		$this->settings->setSetting('core.deskpro_name', $this->in->getString('deskpro_name'));
+
+		try {
+			$tz = $this->in->getString('timezone');
+			new \DateTimeZone($tz);
+		} catch (\Exception $e) {
+			$tz = 'UTC';
+		}
+		$this->settings->setSetting('core.default_timezone', $tz);
+
+		$license_code = $this->in->getString('license_code');
+		$lic = License::create($license_code, $this->settings->get('core.install_key'));
+		if ($lic->isLicenseCodeError()) {
+			return $this->createApiErrorResponse($lic->getLicenseCodeError(), 'Invalid license (bad code)');
+		}
+
+		$this->settings->setSetting('core.license', $license_code);
+
+		return $this->createApiSuccessResponse();
 	}
 }
