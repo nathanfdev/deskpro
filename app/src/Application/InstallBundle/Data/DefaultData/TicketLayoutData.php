@@ -58,11 +58,15 @@ class TicketLayoutData extends AbstractDefaultData
 
 	public function runReset()
 	{
-
+		$this->getDb()->executeUpdate("DELETE FROM ticket_triggers WHERE sys_name IS NOT NULL");
+		$this->runInstall();
 	}
 
 	public function runSync()
 	{
-
+		$exists = $this->getDb()->fetchAllCol("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+		if (!$exists) {
+			$this->runInstall();
+		}
 	}
 }
