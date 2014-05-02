@@ -485,6 +485,7 @@ class ServerController extends AbstractController implements ProtectedController
 			'last_run'            => $status->getLastRunDate() ? $status->getLastRunDate()->format('Y-m-d H:i:s') : null,
 			'secs_since_last_run' => $status->getSecsSinceLastRun(),
 			'is_problem'          => $status->guessIsProblem(),
+			'cron_boot_errors'    => $status->getCronBootErrors()
 		));
 	}
 

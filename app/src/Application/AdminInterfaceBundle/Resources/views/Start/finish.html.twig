@@ -2,20 +2,25 @@
 	<header>
 		<h1>Welcome to DeskPRO</h1>
 	</header>
-	<article ng-show="!card_loaded" class="loading-container">
-		<i class="spinner-editor"></i>
+	<article>
+		<section>
+			<h3>Finished!</h3>
+			<p>
+				You have finished the initial setup. You are ready to start using DeskPRO.
+			</p>
+		</section>
+		<section>
+			<h3>Getting Support</h3>
+			<p>
+				Contact us if you need help configuring your new helpdesk or if you have any questions.
+			</p>
+			<p>
+				<a class="btn btn-default" href="https://support.deskpro.com/" target="_blank"><i class="fa fa-globe"></i> Visit our helpdesk (support.deskpro.com)</a>
+				<a class="btn btn-default" href="mailto:support@deskpro.com"><i class="fa fa-envelope"></i> Email us (support@deskpro.com)</a>
+			</p>
+		</section>
 	</article>
-	<article ng-show="card_loaded">
-		<p>
-			XXX
-		</p>
-	</article>
-	<footer ng-show="card_loaded">
-		<div ng-show="!is_loading">
-			<button class="btn btn-primary" ng-click="Card.saveAndContinue();">Save and continue <i class="fa fa-arrow-circle-right"></i></button>
-		</div>
-		<div ng-show="is_loading">
-			<i class="spinner-flat"></i>
-		</div>
+	<footer>
+		<a href="{{ path('admin') }}" class="btn btn-primary" ng-click="Card.goAdmin($event, this)">Continue to the Admin Interface &nbsp; <i class="fa fa-arrow-circle-right"></i></a>
 	</footer>
 </section>

@@ -439,4 +439,14 @@ class SettingsController extends AbstractController implements ProtectedControll
 
 		return $this->createApiSuccessResponse();
 	}
+
+	############################################################################
+	# set-done-initial
+	############################################################################
+
+	public function setDoneInitialAction()
+	{
+		$this->settings->setSetting('core.setup_initial', 1);
+		return $this->createApiSuccessResponse();
+	}
 }

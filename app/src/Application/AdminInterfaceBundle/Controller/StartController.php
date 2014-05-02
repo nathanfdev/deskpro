@@ -51,10 +51,15 @@ class StartController extends AbstractController
 		$this->em->persist($token);
 		$this->em->flush();
 
+		$php_path = $this->container->getPhpBinaryPath();
+		$php_path_set = dp_get_config('php_path');
+
 		return $this->render('AdminInterfaceBundle:Start:layout.html.twig', array(
-			'api_token' => $token,
-			'session'   => $this->session->getEntity(),
-			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
+			'api_token'              => $token,
+			'session'                => $this->session->getEntity(),
+			'initial_request_token'  => $this->session->generateSecurityToken('request_token', 600),
+			'php_path'               => $php_path,
+			'php_path_set'           => $php_path_set,
 		));
 	}
 }

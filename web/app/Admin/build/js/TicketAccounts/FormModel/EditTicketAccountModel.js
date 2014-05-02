@@ -8,7 +8,7 @@
         this.form = {};
         this.form.account_type = this.account.account_type || 'tickets';
         this.form.address = this.account.address;
-        this.form.incoming_type = 'imap';
+        this.form.incoming_type = 'pop3';
         this.form.in_gmail_account = {};
         this.form.in_pop3_account = {};
         this.form.in_imap_account = {};

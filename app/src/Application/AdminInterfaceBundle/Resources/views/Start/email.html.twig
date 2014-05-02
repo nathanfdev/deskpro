@@ -2,15 +2,51 @@
 	<header>
 		<h1>Welcome to DeskPRO</h1>
 	</header>
-	<article ng-show="!card_loaded" class="loading-container">
-		<i class="spinner-editor"></i>
+	<article>
+		<form role="form" name="form_props" novalidate>
+			<section class="card-section">
+				<p>
+					You need to configure an email account for use with DeskPRO. You have two choices:
+				</p>
+				<p>
+					<strong>Ticket Email Account:</strong> A ticket account is used for both incoming and outgoing email.
+					Incoming email is converted into tickets and replies. The account is also used to send outgoing email like email notifications and other helpdesk
+					emails like welcome emails.
+				</p>
+				<p>
+					Good examples of ticket account addresses are <code>contact@example.com</code> or more specific addresses such as <code>sales@example.com</code>.
+				</p>
+				<p>
+					<strong>Outgoing Email Account:</strong> Alternatively, you can configure just an outgoing-only email account.
+					An outgoing email account is only used to send emails from the helpdesk. But since there is no incoming account,
+					it means any replies to emails made to this address will not be read. For example, if a user were to reply to
+					an email from the helpdesk, that email would not be processed.
+				</p>
+				<p>
+					An outgoing account is not typically used unless you want to force all helpdesk interactions through the web portal.
+					A good example of an outgoing email account would be <code>noreply@example.com</code>.
+				</p>
+			</section>
+			<section class="card-section">
+				<h3>Account</h3>
+				<select ng-model="form.account_type">
+					<option value="tickets">Ticket Email Account</option>
+					<option value="outgoing">Outgoing Email Account</option>
+				</select>
+				<div style="margin-top: 9px;">
+					Email Address:
+					<input type="text" class="form-control" name="title" ng-model="form.address" style="width: 50%;" required />
+				</div>
+			</section>
+			<section class="card-section" ng-if="form.account_type != 'outgoing'">
+				{% include 'AdminInterfaceBundle:Start:email-edit-in.html.twig' %}
+			</section>
+			<section class="card-section" ng-if="form.incoming_type != 'gmail'">
+				{% include 'AdminInterfaceBundle:Start:email-edit-out.html.twig' %}
+			</section>
+		</form>
 	</article>
-	<article ng-show="card_loaded">
-		<p>
-			XXX
-		</p>
-	</article>
-	<footer ng-show="card_loaded">
+	<footer>
 		<div ng-show="!is_loading">
 			<button class="btn btn-primary" ng-click="Card.saveAndContinue();">Save and continue <i class="fa fa-arrow-circle-right"></i></button>
 		</div>

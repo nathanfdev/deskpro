@@ -6,7 +6,7 @@ define [
 			@form = {}
 			@form.account_type     = @account.account_type || 'tickets';
 			@form.address          = @account.address
-			@form.incoming_type    = 'imap'
+			@form.incoming_type    = 'pop3'
 			@form.in_gmail_account = {}
 			@form.in_pop3_account  = {}
 			@form.in_imap_account  = {}

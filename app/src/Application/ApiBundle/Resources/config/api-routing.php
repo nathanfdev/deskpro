@@ -2272,6 +2272,12 @@ $collection->create('api_startsettings_set', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_startsettings_setinitial', array(
+	'path'        => '/start-settings/set-initial',
+	'controller'  => 'ApiBundle:Settings:setDoneInitial',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Settings
 ########################################################################################################################

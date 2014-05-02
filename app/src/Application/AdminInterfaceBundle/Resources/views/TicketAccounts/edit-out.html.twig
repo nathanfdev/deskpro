@@ -105,7 +105,8 @@
 					<tr>
 						<th width="100">Email Address</th>
 						<td>
-							{{ ng_var('form.email_address') }}
+							<span ng-show="form.address">{{ ng_var('form.address') }}</span>
+							<span ng-hide="form.address">Enter your email address above</span>
 						</td>
 					</tr>
 					<tr>

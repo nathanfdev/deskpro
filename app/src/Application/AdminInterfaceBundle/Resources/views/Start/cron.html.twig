@@ -2,19 +2,138 @@
 	<header>
 		<h1>Welcome to DeskPRO</h1>
 	</header>
-	<article ng-show="!card_loaded" class="loading-container">
-		<i class="spinner-editor"></i>
-	</article>
-	<article ng-show="card_loaded">
-		<p>
-			XXX
-		</p>
-	</article>
-	<footer ng-show="card_loaded">
-		<div ng-show="!is_loading">
-			<button class="btn btn-primary" ng-click="Card.saveAndContinue();">Save and continue <i class="fa fa-arrow-circle-right"></i></button>
+	<article style="position: relative;">
+		<section>
+			<p>
+				{{ phrase('admin.settings.cron_explain') }}
+			</p>
+		</section>
+		{% if not get_instance_ability('is_windows') %}
+			<section>
+				<p>
+					{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
+				</p>
+				<pre>* * * * * exampleuser {{ php_path|default('/path/to/php') }} -q {{ constant('DP_WEB_ROOT') }}/cron.php</pre>
+				<div class="alert alert-info">
+					<p>{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</p>
+				</div>
+				{% if not php_path and not php_path_set %}
+					<div class="alert alert-danger">
+						<p>{{ phrase('admin.settings.could_not_find_php_use_real') }}</p>
+					</div>
+				</span>{% elseif php_path and not php_path_set %}
+					<div class="alert alert-warning">
+						The above path to PHP was auto-detected but may be incorrect. If you have configured the task but this step does not get marked as completed,
+						it means the PHP path is incorrect and you will need to change it. If you are having trouble, you should attempt to run the command manually
+						from the command-line so you can see any possible errors. If you require assistance, email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
+					</div>
+				{% endif %}
+				<p>
+					<a href="{{ get_service_url('dp.kb.install.cron') }}" target="_blank">{{ phrase('admin.settings.cron_detailed_instructions') }} <i class="fa fa-globe"></i></a>
+				</p>
+			</section>
+		{% endif %}
+		<section ng-show="error_type == 'timeout'">
+			<div class="alert alert-warning">
+				<p>
+					The task has not run for over a minute. This suggests there might be a problem.
+				</p>
+				<p>
+					You should try executing the task command manually from the command line. By executing the task manually,
+					you can confirm that the paths are correct and you might be able to see error output.
+				</p>
+				<p>
+					When you're ready to cotninue, click the button below to try again.
+				</p>
+			</div>
+		</section>
+		<section ng-show="error_type == 'boot'">
+			<div class="alert alert-warning">
+				<p>
+					Your scheduled task appears to be running, but we have detected problems with the server that is causing
+					errors. You need to fix these errors before the required tasks will be run properly.
+				</p>
+				<ul>
+					<li ng-repeat="code in boot_errors.error_codes" ng-switch="code">
+						<span ng-switch-when="php_version">
+							The PHP version used to execute the scheduled task is outdated. Your web server and your command-line
+							versions of PHP are different. You need to upgrade your command-line version of PHP to at least 5.3.2.
+						</span>
+						<span ng-switch-when="pdo_ext">
+							PHP does not have the <a href="http://php.net/manual/en/pdo.installation.php">pdo and pdo_mysql</a> extension enabled.
+							You will need to activate these extensions in php.ini.
+						</span>
+						<span ng-switch-when="pdo_ext_mysql">
+							PHP does not have the <a href="http://php.net/manual/en/pdo.installation.php">pdo and pdo_mysql</a> extension enabled.
+							You will need to activate these extensions in php.ini.
+						</span>
+						<span ng-switch-when="iconv_ext">
+							PHP does not have the <a href="http://php.net/manual/en/iconv.installation.php">iconv</a> or
+							<a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a> extensions enabled.
+							You will need to activate one of these extensions in php.ini.
+						</span>
+						<span ng-switch-when="json_ext">
+							PHP does not have the <a href="http://php.net/manual/en/json.installation.php">json extension</a> enabled.
+							You will need to activate this extension in php.ini.
+						</span>
+						<span ng-switch-when="libxml_ext">
+							PHP does not have the <a href="http://php.net/manual/en/book.libxml.php">libxml extension</a> enabled.
+							You will need to rebuild PHP with libxml enabled.
+						</span>
+						<span ng-switch-when="libxml_version">
+							Your version of PHP was built against a very old version of libxml (libxml is used by the <a href="http://php.net/manual/en/book.libxml.php">libxml extension</a>).
+							Older versions of libxml contain bugs that can lead to problems parsing HTML email. You need to update the version of <a href="http://xmlsoft.org/">libxml</a> on your server, and then re-build PHP.
+						</span>
+						<span ng-switch-when="ctype_ext">
+							PHP does not have the <a href="http://php.net/manual/en/ctype.installation.php">ctype extension</a> enabled.
+							You will need to activate this extension in php.ini.
+						</span>
+						<span ng-switch-when="tokenizer_ext">
+							PHP does not have the <a href="http://php.net/manual/en/tokenizer.installation.php">tokenizer extension</a> enabled.
+							You will need to activate this extension in php.ini.
+						</span>
+						<span ng-switch-when="memory_limit">
+							PHP's <a href="http://php.net/manual/en/ini.core.php#ini.memory-limit">memory limit</a> is set too low.
+							Edit your php.ini and set memory_limit to at least 128M.
+						</span>
+						<span ng-switch-when="php_functions">
+							PHP is disabling functions with the <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disable_functions</a> directive.
+							Edit your php.ini and remove the line setting disable_functions.
+						</span>
+						<span ng-switch-when="data_write">
+							The data directory is not writable by the user that executes the scheduled task.
+							Ensure that the user who runs the task is able to write to your data directory at {{ data_dir }}
+						</span>
+						<span ng-switch-when="db_connect">
+							The scheduled task was unable to connect to the MySQL database.
+						</span>
+						<span ng-switch-default>
+							An unknown error occurred that prevented scheduled tasks from running. Here is the error log file from data/logs/error.log:
+							<textarea style="font-size: 11px; font-family: Consolas, Monaco, monospace; width: 90%; height: 150px">{{ code }}: {{ error_log }}</textarea>
+							<br/>You should contact <a href="mailto:support@deskpro.com">support@deskpro.com</a> for assistance in resolving this error.
+						</span>
+					</li>
+				</ul>
+			</div>
+		</section>
+		<div style="position:absolute; bottom: 4px; right: 4px; font-size: 10px;">
+			<a href="#/email" style="color: #ccc;" onclick="return confirm('Are you sure you want to skip this? Without configuring scheduled tasks, important functionality will not work, including email.')">Skip this skip</a>
 		</div>
-		<div ng-show="is_loading">
+	</article>
+	<footer>
+		<div ng-show="!is_waiting">
+			<button class="btn btn-primary" ng-click="Card.startWaiting()">
+				{% if not get_instance_ability('is_windows') %}
+					Done Configuring Cron Task
+				{% else %}
+					Done Configuring Scheduled Task
+				{% endif %}
+				&nbsp;
+				<i class="fa fa-caret-right"></i>
+			</button>
+		</div>
+		<div ng-show="is_waiting">
+			Please wait while we confirm that the task is running...<br/>
 			<i class="spinner-flat"></i>
 		</div>
 	</footer>

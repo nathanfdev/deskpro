@@ -13,7 +13,25 @@
 
       AdminStart_Ctrl_Finish.CTRL_ID = 'AdminStart_Ctrl_Finish';
 
-      AdminStart_Ctrl_Finish.prototype.init = function() {};
+      AdminStart_Ctrl_Finish.prototype.init = function() {
+        this.done_set = true;
+        this.set_prom = this.Api.sendPost('/start-settings/set-initial').success((function(_this) {
+          return function() {
+            return _this.done_set = true;
+          };
+        })(this));
+      };
+
+      AdminStart_Ctrl_Finish.prototype.goAdmin = function(ev, el) {
+        if (!this.done_set) {
+          ev.preventDefault();
+          return this.set_prom.success((function(_this) {
+            return function() {
+              return el.click();
+            };
+          })(this));
+        }
+      };
 
       return AdminStart_Ctrl_Finish;
 
