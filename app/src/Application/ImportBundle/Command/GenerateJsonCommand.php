@@ -26,53 +26,60 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * @package Importer
+ */
 
-namespace Application\ImportBundle;
+namespace Application\ImportBundle\Command;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class ImportBundle extends Bundle
+class GenerateJsonCommand extends ContainerAwareCommand
 {
-	public function __construct()
+	protected $generators_map = array(
+		'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket'
+	);
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function configure()
 	{
-		$this->name = 'Import';
+		$this->setName('dp:import:generate-json');
+		$this->setHelp("This goes through a dry-run of the import process. You will only see output if there are errors. Use -v to see verbose output.");
+		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
 	}
 
-	public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-    }
 
 	/**
-     * @param Application $application An Application instance
-     */
-    public function registerCommands(Application $application)
-    {
-		$commands = array(
-			'Application\\ImportBundle\\Command\\CheckCommand',
-			'Application\\ImportBundle\\Command\\ResetCommand',
-			'Application\\ImportBundle\\Command\\RunCommand',
-			'Application\\ImportBundle\\Command\\GenerateJsonCommand',
-		);
-
-		foreach ($commands as $cmd) {
-			$application->add(new $cmd);
-		}
-    }
-
-	public function getNamespace()
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	public function getContainer()
 	{
-		return __NAMESPACE__;
+		return parent::getContainer();
 	}
 
-	public function getPath()
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		return __DIR__;
+		$script = $input->getArgument('script');
+		
+		$script = strtolower($script);
+		
+		if (!isset($this->generators_map[$script])) {
+			throw new \Exception("Invalid generator :" . $script);
+		}
+		
+		$generator_class = $this->generators_map[$script];
+		
+		$config = dp_get_config('osticket_import');
+		
+		$generator = new $generator_class($config);
+		
+		$generator->generateJson();
 	}
 }
