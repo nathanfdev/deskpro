@@ -127,8 +127,16 @@
           value: 'CheckSubject'
         });
         options.push({
-          title: 'Message',
-          value: 'CheckMessage'
+          title: 'Agent Message',
+          value: 'CheckAgentMessage'
+        });
+        options.push({
+          title: 'Agent Note',
+          value: 'CheckAgentNote'
+        });
+        options.push({
+          title: 'User Message',
+          value: 'CheckUserMessage'
         });
         set_options.push({
           title: 'Ticket Criteria',
@@ -530,13 +538,35 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckMessage = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgentMessage = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgentNote = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'message';
+        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserMessage = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'message';
+        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };

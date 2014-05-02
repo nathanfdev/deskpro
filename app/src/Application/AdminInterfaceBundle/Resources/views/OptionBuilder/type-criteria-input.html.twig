@@ -6,6 +6,8 @@
 			ng-model="model.op"
 			style="min-width: 50px;"
 		>
+			<option ng-if="operators.indexOf('isset') !== -1" value="isset">exists</option>
+			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
 			<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
 			<option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
 			<option ng-if="operators.indexOf('contains') !== -1" value="contains">contains</option>
@@ -20,6 +22,6 @@
 			<option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
 			<option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
 		</select>
-		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed'" />
+		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset'" />
 	</div>
 </dp-optionbuilder-row>
