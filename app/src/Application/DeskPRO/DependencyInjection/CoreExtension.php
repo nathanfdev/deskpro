@@ -81,10 +81,29 @@ class CoreExtension extends Extension
 		));
 		$container->setDefinition('deskpro.person_activity_logger', $definition);
 
+		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
     }
+
+	protected function loadPeople(ContainerBuilder $container)
+	{
+		$definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
+		$definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
+		$definition->setFactoryMethod('createFromEntityManager');
+		$container->setDefinition('deskpro.people.groups_repos_factory', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\People\\AgentGroups');
+		$definition->setFactoryService('deskpro.people.groups_repos_factory');
+		$definition->setFactoryMethod('createAgentGroups');
+		$container->setDefinition('deskpro.people.agent_groups', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\People\\UserGroups');
+		$definition->setFactoryService('deskpro.people.groups_repos_factory');
+		$definition->setFactoryMethod('createUserGroups');
+		$container->setDefinition('deskpro.people.user_groups', $definition);
+	}
 
 	/**
 	 * Sets up the translater

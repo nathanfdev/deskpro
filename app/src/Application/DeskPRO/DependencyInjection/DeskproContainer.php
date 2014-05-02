@@ -125,6 +125,9 @@ class DeskproContainer extends Container
 	 */
 	public function getSystemService($id)
 	{
+		if ($this->has("deskpro.$id")) {
+			return $this->get("deskpro.$id");
+		}
 		if (isset($this->system_services[$id])) {
 			return $this->system_services[$id];
 		}
@@ -638,6 +641,24 @@ class DeskproContainer extends Container
 	public function getProducts()
 	{
 		return $this->getSystemService('products');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\People\AgentGroups
+	 */
+	public function getAgentGroups()
+	{
+		return $this->get('deskpro.people.agent_groups');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\People\UserGroups
+	 */
+	public function getUserGroups()
+	{
+		return $this->get('deskpro.people.user_groups');
 	}
 
 

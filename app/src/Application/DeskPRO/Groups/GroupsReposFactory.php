@@ -29,101 +29,71 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
  */
 
-namespace Application\DeskPRO\People\PermissionLoader;
+namespace Application\DeskPRO\Groups;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Usergroup as UsergroupRepository;
+use Application\DeskPRO\People\AgentGroups;
+use Application\DeskPRO\People\UserGroups;
+use Doctrine\ORM\EntityManager;
 
-/**
- * A permission loader knows how to load permissions for a thing.
- */
-abstract class AbstractLoader implements \Serializable
+class GroupsReposFactory
 {
 	/**
-	 * @var int[]
+	 * @var UsergroupRepository
 	 */
-	protected $usergroup_ids;
+	private $repos;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Usergroup[]
 	 */
-	protected $person;
+	private $groups;
+
 
 	/**
-	 * @var int
+	 * @param EntityManager $em
+	 * @param string        $entity_name
+	 * @return GroupsReposFactory
 	 */
-	protected $person_id = 0;
-
-	public function setPersonContext(Person $person)
+	public static function createFromEntityManager(EntityManager $em, $entity_name = 'DeskPRO:Usergroup')
 	{
-		$this->person = $person;
-		$this->person_id = $person->id;
-	}
-
-	/**
-	 * @param int[] $usergroup_ids
-	 * @param \Application\DeskPRO\Entity\Person $person Optional person to fetch overrides for
-	 */
-	public function __construct(array $usergroup_ids, Person $person = null)
-	{
-		$this->usergroup_ids = $usergroup_ids;
-		if (App::$container->getUserGroups()->getEveryoneGroup()->is_enabled) {
-			$this->usergroup_ids[] = 1;
-		} else {
-			$this->usergroup_ids[] = 0;
-		}
-		$this->usergroup_ids = array_unique($this->usergroup_ids);
-		sort($this->usergroup_ids, \SORT_NUMERIC);
-
-		$this->person = $person;
-
-		$this->init();
-	}
-
-	protected function init() {}
-
-
-	/**
-	 * Get the usergroup IDs represented by the loaded permissions
-	 *
-	 * @return array
-	 */
-	public function getUsergroupIds()
-	{
-		return $this->usergroup_ids;
+		return new self($em->getRepository($entity_name));
 	}
 
 
 	/**
-	 * Get an array of data we'll serialize
-	 *
-	 * @return array
+	 * @param UsergroupRepository $repos
 	 */
-	abstract protected function serializeData();
-
-	public function serialize()
+	public function __construct(UsergroupRepository $repos)
 	{
-		$data = $this->serializeData();
-		$data['usergroup_ids'] = $this->usergroup_ids;
-
-		return serialize($data);
+		$this->repos = $repos;
 	}
 
-	/**
-	 * Initialize this object with an array of saved data
-	 *
-	 * @param array $data
-	 */
-	abstract protected function unserializeData(array $data);
 
-	public function unserialize($data)
+	private function preloadGroups()
 	{
-		$data = unserialize($data);
+		if ($this->groups !== null) return;
+		$this->groups = $this->repos->findAll();
+	}
 
-		$this->usergroup_ids = $data['usergroup_ids'];
-		$this->unserializeData($data);
+
+	/**
+	 * @return AgentGroups
+	 */
+	public function createAgentGroups()
+	{
+		$this->preloadGroups();
+		return new AgentGroups(array_filter($this->groups, function($g) { return $g->is_agent_group;}));
+	}
+
+
+	/**
+	 * @return UserGroups
+	 */
+	public function createUserGroups()
+	{
+		$this->preloadGroups();
+		return new UserGroups(array_filter($this->groups, function($g) { return !$g->is_agent_group;}));
 	}
 }

@@ -55,11 +55,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  */
 class Usergroup extends DomainObject
 {
-	const EVERYONE_NAME = 'everyone';
-	const EVERYONE_ID   = 1;
-	const REG_NAME      = 'registered';
-	const REG_ID        = 2;
-
 	/**
 	 * The unique ID.
 	 *

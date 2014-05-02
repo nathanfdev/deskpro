@@ -37,8 +37,10 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\People\UserPermissions\GroupDbPersister;
+use Application\DeskPRO\People\UserPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\UserPermissions\UserPermissions;
 use Application\DeskPRO\Usergroups\Form\Type\UsergroupType;
 use Application\DeskPRO\Usergroups\UsergroupEdit;
@@ -87,15 +89,17 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
 	public function getAction($id)
 	{
-		$usergroups = $this->container->getSystemService('user_groups');
-		$usergroup  = $usergroups->getById($id);
+		$usergroups = $this->container->getUserGroups();
+		$usergroup  = $usergroups->getGroup($id);
 
 		if (!$usergroup || $usergroup->is_agent_group) {
 			throw $this->createNotFoundException();
 		}
 
+		$perms = new GroupsDbLoader(array($usergroup), $this->em);
+
 		$data = $usergroup->toApiData();
-		$data['perms'] = $usergroups->getPermissions($usergroup);
+		$data['perms'] = $perms->getGroupPermissions($usergroup->id);
 
 		return $this->createApiResponse(array('group' => $data));
 	}
@@ -107,8 +111,8 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
 	public function deleteAction($id)
 	{
-		$usergroups = $this->container->getSystemService('user_groups');
-		$usergroup  = $usergroups->getById($id);
+		$usergroups = $this->container->getUserGroups();
+		$usergroup  = $usergroups->getGroup($id);
 
 		if (!$usergroup || $usergroup->is_agent_group) {
 			throw $this->createNotFoundException();
@@ -133,19 +137,19 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
 	public function saveAction($id)
 	{
-		$usergroups = $this->container->getSystemService('usergroups');
+		$usergroups = $this->container->getUserGroups();
 
 		#------------------------------
 		# Get group
 		#------------------------------
 
 		if ($id) {
-			$usergroup = $usergroups->getById($id);
+			$usergroup = $usergroups->getGroup($id);
 			if (!$usergroup) {
 				throw $this->createNotFoundException();
 			}
 		} else {
-			$usergroup = $usergroups->createNew();
+			$usergroup = new Usergroup();
 		}
 
 		#------------------------------

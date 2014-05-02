@@ -1492,7 +1492,7 @@ class KbController extends AbstractController
 		if ($this->in->checkIsset('usergroup_id')) {
 			$usergroup_ids = $this->in->getCleanValueArray('usergroup_id', 'uint');
 		} else {
-			$usergroup_ids = array(1);
+			$usergroup_ids = array($this->container->getUserGroups()->getEveryoneGroup()->getId());
 		}
 
 		$this->db->beginTransaction();
