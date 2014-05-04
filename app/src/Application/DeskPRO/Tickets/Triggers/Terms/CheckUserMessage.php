@@ -52,7 +52,7 @@ class CheckUserMessage extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('message');
+		$options->addValidNames('message');
 		return $options;
 	}
 

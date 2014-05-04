@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\Actions\SetAgent;
 use Application\DeskPRO\Tickets\Actions\SetRequireValidation;
 use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgent;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgentMessage;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserIsNew;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidEmail;
@@ -163,6 +164,12 @@ class TriggerData extends AbstractDefaultData
 		$trigger->is_enabled = true;
 		$trigger->sys_name = 'default_newreply_fromagent';
 		$trigger->title = "Send user new reply from agent";
+
+		$set = new TriggerTermComposite();
+		$set->add(new CheckAgentMessage('isset'));
+		$set->setOperator('AND');
+		$trigger->terms->addTerm($set);
+
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
 			'do_cc_users' => true,
