@@ -260,7 +260,8 @@ class TicketController extends AbstractController
 			$agentId = 0;
 		}
 
-		$ticket = new Ticket();
+		$ticket_manager = $this->container->getTicketManager();
+		$ticket = $ticket_manager->createTicket();
 
 		if ($id = $this->in->getUint('department_id')) {
 			$ticket->setDepartmentId($id);
@@ -424,6 +425,14 @@ class TicketController extends AbstractController
 			}
 
 			$this->em->flush();
+
+			if ($this->in->getBool('message_as_agent')) {
+				$context = $ticket_manager->createAgentExecutorContext($this->person, 'newticket', 'api');
+			} else {
+				$context = $ticket_manager->createAgentExecutorContext($ticket->person, 'newticket', 'api');
+			}
+
+			$ticket_manager->saveTicket($ticket, $context);
 
 			$this->db->commit();
 		} catch (\Exception $e) {
