@@ -1,0 +1,22 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Reprocess Email</h4>
+{% endblock %}
+{% block modal_body %}
+	<p>
+		Are you sure you want to reprocess this email?
+	</p>
+	<p>
+		Reprocessing the email will make DeskPRO process the email in the same way it was processed before.
+		Typically you only need to do this if you have changed something in the system that might change
+		the way the email was processed the first time.
+	</p>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-primary" ng-click="doReprocess()"><i class="fa fa-trash-o"></i> Reprocess Email</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

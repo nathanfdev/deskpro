@@ -343,11 +343,24 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'blob',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'dpApi'        => true,
+			'dpApiDeep'    => true,
+			'joinColumns'  => array(array(
+				'name'                 => 'blob_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			)),
+		));
 		$metadata->mapManyToOne(array( 'fieldName' => 'email_account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'log_blob',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'dpApi'        => true,
+			'dpApiDeep'    => true,
 			'joinColumns'  => array(array(
 				'name'                 => 'log_blob_id',
 				'referencedColumnName' => 'id',

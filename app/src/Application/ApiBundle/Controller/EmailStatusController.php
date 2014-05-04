@@ -39,6 +39,7 @@ use Application\DeskPRO\Email\EmailSource\Finder as EmailSourceFinder;
 use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilter;
 use Application\DeskPRO\Email\SendmailQueue\Finder as SendmailQueueFinder;
 use Application\DeskPRO\Email\SendmailQueue\FinderFilter as SendmailQueueFinderFilter;
+use Application\DeskPRO\EmailGateway\Runner;
 
 class EmailStatusController extends AbstractController implements ProtectedControllerInterface
 {
@@ -168,6 +169,88 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 			'num_pages'      => $info['num_pages'],
 			'count'          => $info['count'],
 			'sendmail_queue' => $this->getApiData($results)
+		));
+	}
+
+	####################################################################################################################
+	# get-source-info
+	####################################################################################################################
+
+	public function getSourceInfoAction($id)
+	{
+		$source = $this->em->find('DeskPRO:EmailSource', $id);
+		if (!$source) {
+			throw $this->createNotFoundException();
+		}
+
+		$info = array();
+
+		$info['source'] = $this->getApiData($source);
+		$info['source_log'] = null;
+
+		if ($source->log_blob) {
+			try {
+				$info['source_log'] = $this->container->getBlobStorage()->copyBlobRecordToString($source->log_blob);
+			} catch (\Exception $e) {
+				$info['source_log'] = "Failed to read log file ({$e->getMessage()})";
+			}
+		}
+
+		if ($this->in->getBool('with_raw')) {
+			$info['source_raw'] = $this->container->getBlobStorage()->copyBlobRecordToString($source->blob);
+		}
+
+		return $this->createApiResponse($info);
+	}
+
+	####################################################################################################################
+	# delete-email-source
+	####################################################################################################################
+
+	public function deleteEmailSourceAction($id)
+	{
+		$source = $this->em->find('DeskPRO:EmailSource', $id);
+		if (!$source) {
+			throw $this->createNotFoundException();
+		}
+
+		if ($source->blob) {
+			try {
+				$this->container->getBlobStorage()->deleteBlobRecord($source->blob);
+			} catch (\Exception $e) {}
+		}
+
+		if ($source->log_blob) {
+			try {
+				$this->container->getBlobStorage()->deleteBlobRecord($source->log_blob);
+			} catch (\Exception $e) {}
+		}
+
+		$this->em->remove($source);
+		$this->em->flush();
+
+		return $this->createApiDeleteResponse();
+	}
+
+	####################################################################################################################
+	# reprocess-email
+	####################################################################################################################
+
+	public function reprocessEmailSourceAction($id)
+	{
+		$source = $this->em->find('DeskPRO:EmailSource', $id);
+		if (!$source) {
+			throw $this->createNotFoundException();
+		}
+
+		$source['status'] = 'inserted';
+		$source['error_code'] = null;
+
+		$runner = new Runner();
+		$runner->executeSource($source);
+
+		return $this->createApiResponse(array(
+			'status' => $source->status
 		));
 	}
 }

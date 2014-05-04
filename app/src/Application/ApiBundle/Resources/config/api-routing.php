@@ -2874,10 +2874,38 @@ $collection->create('api_emailstatus_sourcelist', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_emailstatus_source_get', array(
+	'path'         => '/email_status/sources/{id}',
+	'controller'   => 'ApiBundle:EmailStatus:getSourceInfo',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_emailstatus_source_reprocess', array(
+	'path'         => '/email_status/sources/{id}/reprocess',
+	'controller'   => 'ApiBundle:EmailStatus:reprocessEmailSource',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_emailstatus_source_delete', array(
+	'path'         => '/email_status/sources/{id}',
+	'controller'   => 'ApiBundle:EmailStatus:deleteEmailSource',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('DELETE'),
+));
+
 $collection->create('api_emailstatus_sendmaillist', array(
 	'path'        => '/email_status/sendmail',
 	'controller'  => 'ApiBundle:EmailStatus:listSendmail',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_emailstatus_sendmail_get', array(
+	'path'         => '/email_status/sendmail/{id}',
+	'controller'   => 'ApiBundle:EmailStatus:getSendmailInfo',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('GET'),
 ));
 
 ########################################################################################################################

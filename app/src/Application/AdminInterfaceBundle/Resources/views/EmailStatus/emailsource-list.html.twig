@@ -106,7 +106,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error'}">
-						<td class="alt dp-id-col"><a href="#"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
+						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.emailsourcesview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
 						<td style="white-space: nowrap" nowrap><span am-time-ago="result.date_created"></span></td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>

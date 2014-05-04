@@ -47,6 +47,8 @@ define([
 	'Admin/AgentTeams/Ctrl/List',
 	'Admin/EmailStatus/Ctrl/SendmailList',
 	'Admin/EmailStatus/Ctrl/SourceList',
+	'Admin/EmailStatus/Ctrl/ViewSend',
+	'Admin/EmailStatus/Ctrl/ViewSource',
 	'Admin/Main/Ctrl/Bare',
 	'Admin/Main/Ctrl/BareList',
 	'Admin/Main/Ctrl/MainPage',
