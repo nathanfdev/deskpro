@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['angular', 'DeskPRO/Util/Util'], function(angular, Util) {
+  define(['DeskPRO/Util/Util'], function(Util) {
     var DpApi;
     return DpApi = (function() {
       function DpApi($http, api_url, api_token) {
@@ -32,7 +32,7 @@
           } else {
             url += '&';
           }
-          if (angular.isArray(params)) {
+          if (Util.isArray(params)) {
             for (_i = 0, _len = params.length; _i < _len; _i++) {
               itm = params[_i];
               k = encodeURIComponent(itm.name);
@@ -42,8 +42,8 @@
           } else {
             url += this._formatUrlObject(params);
           }
-          url = url.replace(/&$/, '');
         }
+        url = url.replace(/&$/, '');
         return url;
       };
 
@@ -55,6 +55,7 @@
         url = '';
         _results = [];
         for (k in obj) {
+          if (!__hasProp.call(obj, k)) continue;
           v = obj[k];
           if (v === null) {
             continue;
@@ -189,7 +190,7 @@
         url = this.formatUrl(endpoint, params);
         data_str = '';
         if (post_data) {
-          if (angular.isArray(post_data)) {
+          if (Util.isArray(post_data)) {
             for (_i = 0, _len = post_data.length; _i < _len; _i++) {
               itm = post_data[_i];
               k = encodeURIComponent(itm.name);
@@ -270,7 +271,7 @@
         url = this.formatUrl(endpoint, params);
         data_str = '';
         if (post_data) {
-          if (angular.isArray(params)) {
+          if (Util.isArray(params)) {
             for (_i = 0, _len = params.length; _i < _len; _i++) {
               itm = params[_i];
               k = encodeURIComponent(itm.name);

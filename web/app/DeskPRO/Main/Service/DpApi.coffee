@@ -1,4 +1,4 @@
-define ['angular', 'DeskPRO/Util/Util'], (angular, Util) ->
+define ['DeskPRO/Util/Util'], (Util) ->
 	class DpApi
 		constructor: ($http, api_url, api_token) ->
 			@$http     = $http
@@ -22,7 +22,7 @@ define ['angular', 'DeskPRO/Util/Util'], (angular, Util) ->
 				else
 					url += '&'
 
-				if angular.isArray(params)
+				if Util.isArray(params)
 					for itm in params
 						k = encodeURIComponent(itm.name)
 						v = encodeURIComponent(itm.value)
@@ -30,13 +30,13 @@ define ['angular', 'DeskPRO/Util/Util'], (angular, Util) ->
 				else
 					url += @_formatUrlObject(params)
 
-				url = url.replace(/&$/, '')
+			url = url.replace(/&$/, '')
 
 			return url
 
 		_formatUrlObject: (obj, baseName = false) ->
 			url = ''
-			for k, v of obj
+			for own k, v of obj
 				if v == null then continue
 				if baseName
 					k = baseName + '[' + encodeURIComponent(k) + ']'
@@ -125,7 +125,7 @@ define ['angular', 'DeskPRO/Util/Util'], (angular, Util) ->
 
 			data_str = ''
 			if post_data
-				if angular.isArray(post_data)
+				if Util.isArray(post_data)
 					for itm in post_data
 						k = encodeURIComponent(itm.name)
 						v = encodeURIComponent(itm.value)
@@ -181,7 +181,7 @@ define ['angular', 'DeskPRO/Util/Util'], (angular, Util) ->
 
 			data_str = ''
 			if post_data
-				if angular.isArray(params)
+				if Util.isArray(params)
 					for itm in params
 						k = encodeURIComponent(itm.name)
 						v = encodeURIComponent(itm.value)
