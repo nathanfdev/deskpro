@@ -103,7 +103,7 @@ class TriggerData extends AbstractDefaultData
 		$trigger = new TicketTrigger();
 		$trigger->event_trigger = 'newticket';
 		$trigger->run_order = 1000;
-		$trigger->by_agent_mode = array('api', 'email', 'form', 'portal', 'widget');
+		$trigger->by_agent_mode = array('api', 'email', 'web');
 		$trigger->is_enabled = true;
 		$trigger->sys_name = 'default_newticket_byagent';
 		$trigger->title = "Send user new ticket by agent";

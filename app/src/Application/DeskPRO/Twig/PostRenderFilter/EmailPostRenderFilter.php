@@ -60,6 +60,7 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 		$code = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function($m) use (&$save_blocks) {
 			$rand = uniqid('DPBLOCK', true);
 			$save_blocks[$rand] = $m[0];
+			return $rand;
 		}, $code);
 
 		$css = implode("\n", $m[1]);
