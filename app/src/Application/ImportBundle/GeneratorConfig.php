@@ -29,49 +29,35 @@
  * @package Importer
  */
 
-namespace Application\ImportBundle\Command;
+namespace Application\ImportBundle;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Application\ImportBundle\Generator\GeneratorInterface;
-
-class GenerateJsonCommand extends ContainerAwareCommand
+class GeneratorConfig
 {
 	/**
-	 * {@inheritDoc}
+	 * @var string
 	 */
-	protected function configure()
-	{
-		$this->setName('dp:import:generate-json');
-		$this->setHelp("This goes through a dry-run of the import process. You will only see output if there are errors. Use -v to see verbose output.");
-		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
-	}
-
+	public $script;
+	
+	/**
+	 * @var string
+	 */
+	public $output_path;
 
 	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 * @var string
 	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
-
+	public $log_path;
 
 	/**
-	 * {@inheritDoc}
+	 * 'test' or 'live'
+	 * @var string
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
-		
-		$generator_config = $factory->createGeneratorConfig();
-		
-		$generator = $factory->createGenerator($generator_config);
-		
-		$generator->generateJson();
-	}
+	public $mode = 'test';
+
+	/**
+	 * Mark files as done when they are finished importing?
+	 *
+	 * @var bool
+	 */
+	public $mark_done = true;
 }

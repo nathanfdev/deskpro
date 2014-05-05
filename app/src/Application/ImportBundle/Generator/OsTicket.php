@@ -33,6 +33,8 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\GeneratorConfig;
+
 /**
  * Description of OsTicket
  *
@@ -44,16 +46,20 @@ class OsTicket implements GeneratorInterface
 	
 	protected $output_path;
 
-	public function __construct($config)
+	public function __construct(GeneratorConfig $config)
 	{
-		$db_host = $config['db_host'];
-		$db_name = $config['db_name'];
-		$db_username = $config['db_username'];
-		$db_password = $config['db_password'];
+		$os_config = dp_get_config('osticket_import');
 		
-		if (!is_dir($config['output-path'])) {
-			throw new \Exception('Invalid output-path ' . $config['output-path']);
+		$db_host = $os_config['db_host'];
+		$db_name = $os_config['db_name'];
+		$db_username = $os_config['db_username'];
+		$db_password = $os_config['db_password'];
+		
+		if (!is_dir($config->output_path)) {
+			throw new \Exception('Invalid output-path ' . $config->output_path);
 		}
+		
+		$this->output_path = $config->output_path;
 
 		try {
 			$this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
@@ -214,7 +220,7 @@ class OsTicket implements GeneratorInterface
 	
 	public function exportTickets()
 	{
-		$file_path = $this->output_path . '/tickets/';
+		$ticketPath = $this->output_path . '/tickets/';
 
 		$index = 1;
 
