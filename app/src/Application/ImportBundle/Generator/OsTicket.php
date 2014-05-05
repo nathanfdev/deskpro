@@ -38,16 +38,22 @@ namespace Application\ImportBundle\Generator;
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  */
-class OsTicket
+class OsTicket implements GeneratorInterface
 {
 	protected $db;
 	
+	protected $output_path;
+
 	public function __construct($config)
 	{
 		$db_host = $config['db_host'];
 		$db_name = $config['db_name'];
 		$db_username = $config['db_username'];
 		$db_password = $config['db_password'];
+		
+		if (!is_dir($config['output-path'])) {
+			throw new \Exception('Invalid output-path ' . $config['output-path']);
+		}
 
 		try {
 			$this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
@@ -161,7 +167,7 @@ class OsTicket
 	
 	public function exportPeople()
 	{
-		$file_path = '/deskpro/www/app/src/Application/ImportBundle/Resources/docs/data_example/people/';
+		$file_path = $this->output_path . '/people/';
 
 		$index = 1;
 
@@ -208,7 +214,7 @@ class OsTicket
 	
 	public function exportTickets()
 	{
-		$ticketPath = '/deskpro/www/app/src/Application/ImportBundle/Resources/docs/data_example/tickets/';
+		$file_path = $this->output_path . '/tickets/';
 
 		$index = 1;
 

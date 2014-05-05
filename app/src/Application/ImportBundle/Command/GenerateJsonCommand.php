@@ -35,6 +35,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
 
 class GenerateJsonCommand extends ContainerAwareCommand
 {
@@ -49,6 +50,7 @@ class GenerateJsonCommand extends ContainerAwareCommand
 		$this->setName('dp:import:generate-json');
 		$this->setHelp("This goes through a dry-run of the import process. You will only see output if there are errors. Use -v to see verbose output.");
 		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
+		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
 	}
 
 
@@ -78,7 +80,17 @@ class GenerateJsonCommand extends ContainerAwareCommand
 		
 		$config = dp_get_config('osticket_import');
 		
+		$config['output_path'] = $input->getOption('output-path');
+		
 		$generator = new $generator_class($config);
+		
+		if (!$generator instanceof GeneratorInterface) {
+			throw new \Exception($generator_class . ' is not a valid generator');
+		}
+		
+		if (!method_exists($generator,'generateJson')) {
+			throw new \Exception($generator_class . ' does not have a "generateJson" method');
+		}
 		
 		$generator->generateJson();
 	}
