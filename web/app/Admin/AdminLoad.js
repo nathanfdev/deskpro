@@ -37,6 +37,7 @@ define([
 	'Admin/Apps/Ctrl/PackageInstall',
 	'Admin/Apps/Ctrl/Resync',
 	'Admin/Agents/Ctrl/Edit',
+	'Admin/Agents/Ctrl/EditProfile',
 	'Admin/Agents/Ctrl/DeletedList',
 	'Admin/Agents/Ctrl/DeletedRestore',
 	'Admin/Agents/Ctrl/List',

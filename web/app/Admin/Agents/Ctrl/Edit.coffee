@@ -370,7 +370,6 @@ define [
     	# Shows the copy settings modal
     	###
 		showDelete: ->
-
 			deleteAgent = (settings) =>
 				if settings.method == 'user'
 					target = "/agents/#{@agentId}/delete/to-user"
@@ -399,7 +398,23 @@ define [
 						$scope.is_loading = true
 						deleteAgent(options).then(-> $modalInstance.dismiss())
 				]
-			});
+			})
+
+		###
+    	# Shows the copy settings modal
+    	###
+		showEditProfile: ->
+			form = {}
+			@$modal.open({
+				templateUrl: @getTemplatePath('Agents/edit-profile-modal.html'),
+				controller: 'Admin_Agents_Ctrl_EditProfile',
+				resolve: {
+					agent: =>
+						return @agent
+					form: =>
+						return form
+				}
+			})
 
 
 		###

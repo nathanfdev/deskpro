@@ -1,0 +1,43 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Edit Profile</h4>
+{% endblock %}
+{% block modal_body %}
+	<form class="dp-form">
+		<div class="form-group">
+			<h3>Timezone</h3>
+			<select ng-model="form.timezone"></select>
+		</div>
+		<div class="form-group">
+			<h3>Picture</h3>
+			<label style="margin-right: 5px;"><input type="radio" ng-model="Edit.form.picture_set" value="default" /> Default picture</label>
+			<label style="margin-right: 5px;" ng-if="Edit.agent.picture_blob"><input type="radio" ng-model="Edit.form.picture_set" value="current" /> Current picture</label>
+			<label><input type="radio" ng-model="Edit.form.picture_set" value="upload" /> Upload new picture</label>
+
+			<div ng-show="Edit.form.picture_set == 'default'">
+				<img ng-src="{{ ng_var('Edit.agent.default_picture_url_50') }}" />
+			</div>
+			<div ng-show="Edit.form.picture_set == 'current'">
+				<img ng-src="{{ ng_var('Edit.agent.picture_url_50') }}" />
+			</div>
+			<div ng-show="Edit.form.picture_set == 'upload'">
+				Upload form here
+			</div>
+		</div>
+		<div class="form-group">
+			<h3>HTML Signature</h3>
+			<textarea ng-model="Edit.form.signature" class="form-control" style="height: 100px;"></textarea>
+			<span class="help-block">
+				This HTML signature will be appended to the reply box automatically when an agent writes replies in the agent interface.
+			</span>
+		</div>
+	</form>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-primary" ng-click="doSave()">Save</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

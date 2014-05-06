@@ -1861,7 +1861,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 *
 	 * @return null|string
 	 */
-	public function getPictureUrl($size = 80, $secure = null)
+	public function getPictureUrl($size = 80, $secure = null, $default = false)
 	{
 		// Null means detect
 		if ($secure === null AND App::isWebRequest()) {
@@ -1872,7 +1872,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		}
 
 		$url = false;
-		if ($this->hasPicture()) {
+		if ($this->hasPicture() && !$default) {
 			if ($this->picture_blob && $this->picture_blob->isImage()) {
 				$url = App::get('router')->generate('serve_blob_sizefit', array(
 					'blob_auth_id' => $this->picture_blob->getAuthId(),
@@ -2423,6 +2423,15 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$data['picture_url_32'] = $this->getPictureUrl(32);
 		$data['picture_url_22'] = $this->getPictureUrl(22);
 		$data['picture_url_16'] = $this->getPictureUrl(16);
+
+		$data['default_picture_url']    = $this->getPictureUrl(80, null, true);
+		$data['default_picture_url_80'] = $this->getPictureUrl(80, null, true);
+		$data['default_picture_url_64'] = $this->getPictureUrl(64, null, true);
+		$data['default_picture_url_50'] = $this->getPictureUrl(50, null, true);
+		$data['default_picture_url_45'] = $this->getPictureUrl(45, null, true);
+		$data['default_picture_url_32'] = $this->getPictureUrl(32, null, true);
+		$data['default_picture_url_22'] = $this->getPictureUrl(22, null, true);
+		$data['default_picture_url_16'] = $this->getPictureUrl(16, null, true);
 
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('person_fields_manager');

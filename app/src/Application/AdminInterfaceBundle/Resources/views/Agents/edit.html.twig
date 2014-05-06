@@ -8,6 +8,8 @@
 					<ul class="dropdown-menu pull-right">
 						<li><a ng-click="EditCtrl.showCopySettings()"><i class="fa fa-copy"></i> Copy settings from another agent</a></li>
 						<li ng-if="EditCtrl.agent.id" class="divider"></li>
+						<li><a ng-click="EditCtrl.showEditProfile()"><i class="fa fa-user"></i> Edit profile</a></li>
+						<li ng-if="EditCtrl.agent.id" class="divider"></li>
 						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showResetPassword()"><i class="fa fa-asterisk"></i> Reset password</a></li>
 						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this agent</a></li>
 					</ul>
@@ -70,5 +72,6 @@
 	{{ ng_tpl('AdminInterfaceBundle:Agents:reset-password-modal.html.twig') }}
 	{{ ng_tpl('AdminInterfaceBundle:Agents:copy-settings-modal.html.twig') }}
 	{{ ng_tpl('AdminInterfaceBundle:Agents:delete-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:edit-profile-modal.html.twig') }}
 	{{ ng_tpl('AdminInterfaceBundle:Agents:login-as-modal.html.twig') }}
 {% endblock %}

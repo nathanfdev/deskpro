@@ -565,6 +565,32 @@
 
 
       /*
+        	 * Shows the copy settings modal
+       */
+
+      Admin_Agents_Ctrl_Edit.prototype.showEditProfile = function() {
+        var form;
+        form = {};
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('Agents/edit-profile-modal.html'),
+          controller: 'Admin_Agents_Ctrl_EditProfile',
+          resolve: {
+            agent: (function(_this) {
+              return function() {
+                return _this.agent;
+              };
+            })(this),
+            form: (function(_this) {
+              return function() {
+                return form;
+              };
+            })(this)
+          }
+        });
+      };
+
+
+      /*
         	 * Returns an object hash of the complete form data
        */
 
