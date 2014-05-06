@@ -146,7 +146,7 @@ class TicketValueImporter extends AbstractValueImporter
 		// Priority
 		if ($tval->priority) {
 			$priorityId = $this->getMappers()->findIdFromMappedValue('ticket_priority', $tval->priority);
-			if ($categoryId) {
+			if ($priorityId) {
 				$this->getLogger()->notice(sprintf("[%s] Found existing ticket priority %s", $log_id, $tval->priority));
 				$record['priority_id'] = $priorityId;
 			} else {

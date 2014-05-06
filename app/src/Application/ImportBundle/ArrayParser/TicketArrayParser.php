@@ -88,9 +88,9 @@ class TicketArrayParser implements ArrayParserInterface
 				), $message_data, $message_value);
 
 				if (!empty($message_data['attachments'])) {
-					foreach ($message_data['attachments'] as $custom_field_data) {
-						$custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
-						$custom_def_value = new AttachmentValue();
+					foreach ($message_data['attachments'] as $attachment_data) {
+						$attachment_data = ArrayParserUtils::cleanArray($attachment_data);
+						$attachment = new AttachmentValue();
 
 						ArrayParserUtils::copyValueMapping(array(
 							'oid'         => 'raw',
@@ -100,9 +100,8 @@ class TicketArrayParser implements ArrayParserInterface
 							'filename'     => 'string',
 							'content_type' => 'string',
 							'is_inline'    => 'bool'
-						), $custom_field_data, $custom_def_value);
-
-						$message_value->attachments[] = $custom_def_value;
+						), $attachment_data, $attachment);
+						$message_value->attachments[] = $attachment;
 					}
 				}
 				
