@@ -590,6 +590,7 @@
         if (!this.$scope.form_props.$valid) {
           return;
         }
+        this.email_dupe_error = false;
         this.startSpinner('saving');
         postData = this.getFormData();
         if (this.agentId) {
@@ -616,6 +617,10 @@
           };
         })(this), (function(_this) {
           return function(res) {
+            var _ref;
+            if ((res != null ? (_ref = res.data) != null ? _ref.error_code : void 0 : void 0) === 'dupe_email') {
+              _this.email_dupe_error = res.data.error_info.existing;
+            }
             _this.stopSpinner('saving', true);
             return _this.applyErrorResponseToView(res);
           };

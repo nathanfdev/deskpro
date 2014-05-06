@@ -197,7 +197,7 @@ class AgentsController extends AbstractController implements ProtectedController
 						'emails' => array()
 					);
 				}
-				$find_existing[$exist->id]['emails'] = $email_addr;
+				$find_existing[$exist->id]['emails'][] = $email_addr;
 			}
 		}
 
@@ -213,9 +213,9 @@ class AgentsController extends AbstractController implements ProtectedController
 				$error_info = array('existing' => array());
 				foreach ($find_existing as $info) {
 					$error_info['existing'][] = array(
-						'person_id'   => $info['person']>id,
+						'person_id'   => $info['person']->id,
 						'person_name' => $info['person']->display_name,
-						'emails'      => $info['emails']
+						'email'       => implode(', ', $info['emails'])
 					);
 				}
 				return $this->createApiErrorInfoResponse('dupe_email', 'One or more email addresses are already in use by other users', $error_info);

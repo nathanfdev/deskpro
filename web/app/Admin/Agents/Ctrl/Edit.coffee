@@ -424,6 +424,7 @@ define [
 			if not @$scope.form_props.$valid
 				return
 
+			@email_dupe_error = false
 			@startSpinner('saving')
 
 			postData = @getFormData()
@@ -444,6 +445,9 @@ define [
 
 				@stopSpinner('saving')
 			, (res) =>
+				if res?.data?.error_code == 'dupe_email'
+					@email_dupe_error = res.data.error_info.existing
+
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(res)
 			)

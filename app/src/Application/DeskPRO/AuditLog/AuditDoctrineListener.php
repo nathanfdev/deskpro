@@ -181,7 +181,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 			$save_table  = $save_obj->getTableName();
 
 			if (isset($this->defs[$save_table]['do_log_check'])) {
-				$fn = $this->defs[$table]['do_log_check'];
+				$fn = $this->defs[$save_table]['do_log_check'];
 				if (!$fn($save_obj, AuditLog::DELETE)) {
 					return;
 				}

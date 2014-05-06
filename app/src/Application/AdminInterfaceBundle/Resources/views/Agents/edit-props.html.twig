@@ -25,6 +25,9 @@
 				<h3>Email Addresses</h3>
 			</div>
 			<div class="col-lg-9">
+				<div ng-show="EditCtrl.email_dupe_error" class="alert alert-danger">
+					<div ng-repeat="dupe in EditCtrl.email_dupe_error">&bull; The email address "{{ ng_var('dupe.email') }}" is already (by {{ ng_var('dupe.person_name') }})</div>
+				</div>
 				<input type="text" class="form-control" name="email" ng-model="EditCtrl.form.emails_list" ng-list style="width: 80%;" required dp-server-validation="agent.emails_count,agent.emails.0.email,agent.emails.1.email,agent.emails.2.email,agent.emails.3.email,agent.emails.4.email" />
 				<span class="help-block">
 					Separate multipl email addresses with a comma.
