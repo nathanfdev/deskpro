@@ -128,6 +128,7 @@ class Imap extends AbstractFetcher
 				$options['password'] = $gmail_config->password;
 				$options['mode']     = self::MODE_DELETE; // delete in gmail just means archive
 				$options['secure']   = 'ssl';
+				break;
 
 			default:
 				throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
