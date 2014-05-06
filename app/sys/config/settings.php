@@ -199,6 +199,11 @@
 	'core.sessions_lifetime' => 3600,
 
 	/**
+	 * Require an actual pageload to keep a session alive (e.g., automatic pings dont keep sessions alive)
+	 */
+	'core.session_keepalive_require_page' => false,
+
+	/**
 	 * How long, in seconds, are email sources kept for before being cleaned up
 	 */
 	'core.email_source_storetime' => 5184000, // 60 days

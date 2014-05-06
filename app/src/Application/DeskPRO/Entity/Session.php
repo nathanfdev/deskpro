@@ -136,6 +136,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_last;
 
 	/**
+	 * @var \DateTime
+	 */
+	protected $date_last_page;
+
+	/**
 	 * @var bool
 	 */
 	protected $_is_new = false;
@@ -145,6 +150,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
 		$this->setModelField('date_created', new \DateTime());
 		$this->setModelField('date_last', new \DateTime());
+		$this->setModelField('date_last_page', new \DateTime());
 		$this->_is_new = true;
 	}
 
@@ -314,6 +320,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_chat_available', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_available', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last', ));
+		$metadata->mapField(array( 'fieldName' => 'date_last_page', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last_page', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

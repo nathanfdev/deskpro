@@ -172,7 +172,14 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 		// Sessions are deleted on cron, but we'll also enforce it here
 		$cutoff = time() - App::getSetting('core.sessions_lifetime');
 
-		if (!$session OR $session['date_last']->getTimestamp() < $cutoff) {
+		$is_valid = ($session AND $session['date_last']->getTimestamp() > $cutoff);
+		if ($is_valid && App::getSetting('core.session_keepalive_require_page') && $session['date_last_page']) {
+			if ($session['date_last_page']->getTimestamp() < $cutoff) {
+				$is_valid = false;
+			}
+		}
+
+		if (!$is_valid) {
 			$session = new \Application\DeskPRO\Entity\Session();
 
 			if (\Orb\Util\Web::isBotUseragent()) {
@@ -320,6 +327,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 		$sess_rec = array();
 		$sess_rec['data'] = $data;
 		$sess_rec['date_last'] = isset($_SESSION['_sf2_attributes']['dplast']) ? date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplast']) : date('Y-m-d H:i:s', time());
+
+		if (isset($_SESSION['_sf2_attributes']['dplastpage'])) {
+			$sess_rec['date_last_page'] = date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplastpage']);
+		}
+
 		$sess_rec['is_person'] = 0;
 		$sess_rec['person_id'] = null;
 		$sess_rec['visitor_id'] = (isset($_SESSION['_sf2_attributes']['dpvid']) ? $_SESSION['_sf2_attributes']['dpvid'] : null);

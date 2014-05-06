@@ -100,11 +100,19 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
 				$sid = Entity\Session::getIdFromCode($_COOKIE['dpsid-agent']);
 				if ($sid) {
-					$agent_session = App::getDb()->fetchAssoc("
-						SELECT person_id, auth
-						FROM sessions
-						WHERE id = ? AND date_last > ?
-					", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+					if (App::getSetting('core.session_keepalive_require_page')) {
+						$agent_session = App::getDb()->fetchAssoc("
+							SELECT person_id, auth
+							FROM sessions
+							WHERE id = ? AND date_last > ? AND date_last_page > ?
+						", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'), time() - App::getSetting('core.sessions_lifetime'))));
+					} else {
+						$agent_session = App::getDb()->fetchAssoc("
+							SELECT person_id, auth
+							FROM sessions
+							WHERE id = ? AND date_last > ?
+						", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+					}
 
 					list (, $auth) = explode('-', $_COOKIE['dpsid-agent']);
 
@@ -450,6 +458,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         }
 
 		$this->set('dplast', time());
+		$this->set('dplastpage', time());
+
 		if (defined('DP_INTERFACE')) {
 			$this->set('dp_interface', DP_INTERFACE);
 		}
