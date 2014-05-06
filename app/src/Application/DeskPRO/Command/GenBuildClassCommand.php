@@ -122,7 +122,7 @@ CODE;
 		$path_dir = DP_ROOT . "/src/Application/InstallBundle/Upgrade/Build/" . date('Y/m', $time);
 
 		if (!is_dir($path_dir)) {
-			mkdir($path_dir, 0644, true);
+			mkdir($path_dir, 0744, true);
 		}
 
 		$path = "$path_dir/Build$time.php";
