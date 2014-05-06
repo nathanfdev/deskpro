@@ -270,6 +270,28 @@ class TicketValueImporter extends AbstractValueImporter
 				$record['date_created']		= $message->date_created ?  $message->date_created->format('Y-m-d H:i:s') : ($tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'));
 				
 				$this->getDb()->insert('tickets_messages', $record);
+				
+				$message_id = $this->getDb()->lastInsertId();
+				
+				foreach($message->attachments as $attachment) {
+					$attachment_value_importer = new AttachmentValueImporter(
+						$this->getMode(),
+						$this->getContainer(),
+						$this->getLogger(),
+						$this->getMappers()
+					);
+
+					$blob = $attachment_value_importer->importValue($attachment);
+					
+					$ticket_attachment_record = array(
+						'ticket_id'	=> $ticket_id,
+						'person_id'	=> $messagePersonId,
+						'blob_id'	=> $blob['id'],
+						'message_id'	=> $message_id
+					);
+					
+					$this->getDb()->insert('tickets_attachments', $ticket_attachment_record);
+				}
 			}
 		}
 		

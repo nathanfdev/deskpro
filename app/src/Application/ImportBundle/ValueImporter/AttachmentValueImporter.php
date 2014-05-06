@@ -77,7 +77,7 @@ class AttachmentValueImporter extends AbstractValueImporter
 			
 		$blobStarage = $this->getContainer()->getBlobStorage();
 
-		$blob = $blobStarage->createBlobRecordFromString($blob_data, $aval->file_name, $aval->content_type);
+		$blob = $blobStarage->createBlobRecordFromString($blob_data, $aval->filename, $aval->content_type);
 		
 		return $blob;
 	}
