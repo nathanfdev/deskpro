@@ -41,6 +41,8 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 class CheckExportCommand extends ContainerAwareCommand
 {
+	protected $progress_bar;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -67,9 +69,14 @@ class CheckExportCommand extends ContainerAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$this->progress_bar = $this->getHelperSet()->get('progress');
+		
 		$factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
 		
 		$generator_config = $factory->createGeneratorConfig();
+		
+		$generator_config->progress_bar	= $this->progress_bar;
+		$generator_config->output	= $output;
 		
 		$output->setVerbosity(3);
 		

@@ -75,9 +75,41 @@ class OsTicket implements GeneratorInterface
 		
 		$this->batch_size = 10;
 		
-		$this->logger = $logger;
+		//$this->logger = $logger;
 
 		$this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
+	}
+	
+	public function getTicketCount()
+	{
+		$query = 'SELECT count(ticket_id) FROM ost_ticket';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute();
+		
+		return $stmt->fetchColumn();
+	}
+	
+	public function getPeopleCount()
+	{
+		$query = 'SELECT count(staff_id) FROM ost_staff';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute();
+		
+		$staff_count = $stmt->fetchColumn();
+		
+		$query = 'SELECT count(id) FROM ost_user';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute();
+		
+		$user_count = $stmt->fetchColumn();
+		
+		return $staff_count + $user_count;
 	}
 	
 	public function findAllTickets($offset)
@@ -257,7 +289,7 @@ class OsTicket implements GeneratorInterface
 					file_put_contents($file_path . $file_name, json_encode($transformedArray));
 				}
 
-				$this->logger->info(sprintf('%s exported successfully!', $file_name));
+				//$this->logger->info(sprintf('%s exported successfully!', $file_name));
 
 				$index++;
 				
@@ -284,7 +316,9 @@ class OsTicket implements GeneratorInterface
 				file_put_contents($file_path . $file_name, json_encode($transformedArray));
 			}
 			
-			$this->logger->info(sprintf('%s exported successfully!', $file_name));
+			$this->config->progress_bar->advance();
+			
+			//$this->logger->info(sprintf('%s exported successfully!', $file_name));
 			
 			$index++;
 		}
@@ -358,7 +392,9 @@ class OsTicket implements GeneratorInterface
 				
 				$offset++;
 
-				$this->logger->info(sprintf('%s exported successfully!', $file_name));
+				//$this->logger->info(sprintf('%s exported successfully!', $file_name));
+				
+				$this->config->progress_bar->advance();
 			}
 			
 			$ticket_batch = $this->findAllTickets($offset);
@@ -367,11 +403,15 @@ class OsTicket implements GeneratorInterface
 	
 	public function generateJson()
 	{
+		$steps = $this->getPeopleCount() + $this->getTicketCount();
+		
+		$this->config->progress_bar->start($this->config->output, $steps);
+		
 		try {
 			$this->exportPeople();
 			$this->exportTickets();
 		} catch (\Exception $ex) {
-			$this->logger->warning($ex->getMessage());
+			//$this->logger->warning($ex->getMessage());
 		}
 	}
 }
