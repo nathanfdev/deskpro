@@ -31,46 +31,37 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type;
+namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\IncomingAccount;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class EditEmailAccountType extends AbstractType
+class ExchangeAccountType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('address',         'email', array('required' => true));
-		$builder->add('account_type',    'text',  array('required' => true));
-		$builder->add('other_addresses', 'text',  array('required' => false));
-
-		$builder->add('incoming_type', 'choice', array(
-			'choices'  => array('gmail' => 'gmail', 'pop3' => 'pop3', 'imap' => 'imap', 'exchange' => 'exchange'),
-			'required' => true
+		$builder->add('host',        'text',     array('required' => true));
+		$builder->add('port',        'text',     array('required' => true));
+		$builder->add('user',        'text',     array('required' => false));
+		$builder->add('password',    'password', array('required' => false));
+		$builder->add('mode', 'choice',   array(
+			'required'      => true,
+			'choices'       => array('read' => 'read', 'delete' => 'delete', 'archive' => 'archive'),
 		));
-		$builder->add('in_gmail_account',    new IncomingAccount\GmailAccountType());
-		$builder->add('in_pop3_account',     new IncomingAccount\Pop3AccountType());
-		$builder->add('in_imap_account',     new IncomingAccount\ImapAccountType());
-		$builder->add('in_exchange_account', new IncomingAccount\ExchangeAccountType());
-
-		$builder->add('outgoing_type', 'choice', array(
-			'choices'  => array('gmail' => 'gmail', 'smtp' => 'smtp'),
-			'required' => true
-		));
-		$builder->add('out_gmail_account', new OutgoingAccount\GmailAccountType());
-		$builder->add('out_smtp_account',  new OutgoingAccount\SmtpAccountType());
+		$builder->add('read_mailbox',    'text', array('required' => false));
+		$builder->add('archive_mailbox', 'text', array('required' => false));
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\EditEmailAccount\\EditEmailAccount',
+			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\ExchangeConfig',
 		));
 	}
 
 	public function getName()
 	{
-		return 'email_account';
+		return 'in_exchange_account';
 	}
 }

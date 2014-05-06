@@ -35,7 +35,7 @@ $loader->registerPrefixes(array(
     'mPDF_'       => DP_ROOT.'/vendor-src/mpdf/lib',
     'File_'       => DP_ROOT.'/vendor-src/pear/lib',
     'PEAR_'       => DP_ROOT.'/vendor-src/pear/lib',
-	'EWSType_'    => DP_ROOT.'/vendor-src/php-ews/EWSType',
+	'EWSType_'    => DP_ROOT.'/vendor-src/php-ews',
 ));
 
 $loader->registerClassNames(array(

@@ -95,6 +95,10 @@ class IncomingAccountTester
 				$this->_testImap();
 				break;
 
+			case 'exchange':
+				$this->_testExchange();
+				break;
+
 			case 'gmail':
 				$this->_testGmail();
 				break;
@@ -190,6 +194,49 @@ class IncomingAccountTester
 			} else {
 				$ids = $storage->getAllMessageUids();
 			}
+
+			$this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+			$this->message_count = count($ids);
+
+			$this->is_success = true;
+		} catch (\Exception $e) {
+			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+			$this->is_success = false;
+		}
+	}
+
+
+	private function _testExchange()
+	{
+		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $account_config */
+		$account_config = $this->account_config;
+
+		$this->logger->logInfo('Testing ExchangeAccount');
+
+		try {
+			$storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange(array(
+				'host'     => $account_config->host,
+				'user'     => $account_config->user,
+				'password' => $account_config->password,
+				'port'     => $account_config->port,
+				'logger'   => $this->logger
+			));
+			if ($account_config->read_mailbox) {
+				$storage->ensureFolderExists($account_config->read_mailbox);
+			}
+
+			$unread_only = false;
+			$folder = null;
+
+			if ($account_config->mode == 'read') {
+				$unread_only = true;
+			}
+			if ($account_config->read_mailbox) {
+				$folder = $account_config->read_mailbox;
+			}
+
+			$ids = $storage->searchIds(100, $unread_only, $folder);
 
 			$this->logger->logInfo("Read IDs: " . implode(', ', $ids));
 			$this->message_count = count($ids);

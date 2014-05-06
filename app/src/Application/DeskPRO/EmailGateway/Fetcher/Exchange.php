@@ -33,36 +33,34 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
+use Application\DeskPRO\EmailGateway\Storage;
+
 /**
- * Fetches mail from a imap server
+ * Fetches mail from an exchange server
  */
 class Exchange extends AbstractFetcher
 {
 	/**
-	 * The defualt mode
-	 *
-	 * It makes the message "READ" after processing it
+	 * Just marks messages as read once they are processed.
 	 */
-	const MODE_DEFAULT		= 1;
+	const MODE_READ = 'read';
 
 	/**
-	 * The aggresive mode
-	 *
-	 * Processes the message and then immediately deletes it
+	 * Deletes messages once they are processed.
 	 */
-	const MODE_AGGRESIVE	= 2;
+	const MODE_DELETE = 'delete';
 
 	/**
-	 * The preserving mode
-	 *
-	 * It preserves all the messages, after processinga message moves it to a
-	 * specified folder
+	 * Archive messages (moves to a folder) once they are processed.
 	 */
-	const MODE_PRESERVE		= 3;
+	const MODE_ARCHIVE = 'archive';
 
 	/**
-	 * The IMAP Storage
-	 *
+	 * @var int
+	 */
+	private $mode = self::MODE_READ;
+
+	/**
 	 * @var \Application\DeskPRO\EmailGateway\Storage\Exchange
 	 */
 	protected $storage;
@@ -78,31 +76,27 @@ class Exchange extends AbstractFetcher
 	 * Mailbox name to move messages after processing
 	 * @var String Mailbox name
 	 */
-	protected $dpMailboxName;
+	private $archive_mailbox;
+
+	/**
+	 * Mailbox name to read messages from
+	 * @var String Mailbox name
+	 */
+	private $read_mailbox;
 
 	/**
 	 * Max number of email IDs to fetch in one go
 	 * @var int
 	 */
-	protected $fetchLimit = 10;
+	protected $fetch_limit = 100;
 
 	/**
 	 * Next Message index to read
 	 *
 	 * @var int
 	 */
-	protected $nextId = 0;
+	protected $next_index = 0;
 
-	protected $mode = self::MODE_DEFAULT;
-
-	/**
-	 * Init function
-	 * Sets the memory protection size
-	 */
-	public function init()
-	{
-		$this->memory_protection_size = 3670016;
-	}
 
 	/**
 	 * Initiates the connection
@@ -111,90 +105,90 @@ class Exchange extends AbstractFetcher
 	 */
 	protected function _initConnection()
 	{
-		/**
-		 * As the system is not ready yet,
-		 * let's just hard code them
-		 */
-		$server		 = 'connect.emailsrvr.com';
-		$username	 = 'abhinav@deskpro.tv';
-		$password	 = 'P@ssw0rd';
-		$mode		 = self::MODE_PRESERVE;
-		$dpProcessed = 'DP_Processed';
+		$options = array();
 
-		//		$options['host']     = isset($this->gateway['connection_options']['host'])     ? $this->gateway['connection_options']['host']     : 'localhost';
-		//		$options['port']     = isset($this->gateway['connection_options']['port'])     ? $this->gateway['connection_options']['port']     : '110';
-		//		$options['user']     = isset($this->gateway['connection_options']['username']) ? $this->gateway['connection_options']['username'] : '';
-		//		$options['password'] = isset($this->gateway['connection_options']['password']) ? $this->gateway['connection_options']['password'] : '';
+		switch ($this->account->incoming_account->getType()) {
+			case 'exchange':
+				/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $exchange_config */
+				$exchange_config = $this->account->incoming_account;
 
-		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+				$options['host']         = $exchange_config->host;
+				$options['port']         = $exchange_config->port;
+				$options['user']         = $exchange_config->user;
+				$options['password']     = $exchange_config->password;
+				$options['mode']         = $exchange_config->mode;
+				$options['read_mailbox'] = $exchange_config->read_mailbox;
 
-		//		if (isset($this->gateway['connection_options']['secure']) AND $this->gateway['connection_options']['secure']) {
-		//			$options['ssl'] = strtoupper($this->gateway['connection_options']['secure']); // 'ssl' or 'tls'
-		//			$this->logger->log('SSL Enabled', 'debug');
-		//		}
+				if ($exchange_config->mode == self::MODE_ARCHIVE) {
+					$options['archive_mailbox'] = $exchange_config->archive_mailbox;
+				}
 
-		$options['logger'] = $this->logger;
+				break;
 
-		$this->mode = $mode;
-
-		$this->storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange($server, $username, $password, $this->mode, $dpProcessed);
-
-		if (self::MODE_PRESERVE === $this->mode) {
-			if ($this->dpMailboxName === $this->storage->getMailbox()) {
-				throw new \Exception("The current mailbox is reserved for processed emails, it can not be used as the primary mailbox");
-			}
-
-			$this->createDPMailbox();
+			default:
+				throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
 		}
 
-		$this->fetch();
+		$this->mode = $options['mode'];
+		$this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
+		$this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
+
+		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+		$options['logger'] = $this->logger;
+
+		$this->storage = new Storage\Exchange($options);
+
+		if ($this->mode == self::MODE_ARCHIVE) {
+			$this->storage->ensureFolderExists($this->archive_mailbox);
+		}
+
+		if ($this->read_mailbox) {
+			$this->storage->ensureFolderExists($this->read_mailbox);
+		}
+
+		$unread_only = false;
+		$folder = null;
+
+		if ($this->mode == self::MODE_READ) {
+			$unread_only = true;
+		}
+		if ($this->read_mailbox) {
+			$folder = $this->read_mailbox;
+		}
+
+		$this->messages = $this->storage->searchIds($this->fetch_limit, $unread_only, $folder);
+		if (!$this->messages) {
+			$this->messages = array();
+		}
+
+		$this->logger->log("Read %d messages", count($this->messages));
 
 		return $this->storage;
 	}
 
-	/**
-	 * Checks and creates a mailbox on the server for processed emails
-	 */
-	public function createDPMailbox()
-	{
-		if (!$this->storage->findFolder($this->dpMailboxName)) {
-			$this->storage->createFolder($this->dpMailboxName);
-		}
-	}
-
-	/**
-	 * Fetches the Message IDs for next run
-	 * reads from the main mailbox (INBOX)
-	 *
-	 * @return \Application\DeskPRO\EmailGateway\Fetcher\Imap2
-	 */
-	public function fetch()
-	{
-		$this->messages = $this->storage->searchIds($this->fetchLimit);
-
-		return $this;
-	}
 
 	/**
 	 * Gets the message storage
 	 *
-	 * @return \Application\DeskPRO\EmailGateway\Storage\Imap2
+	 * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
 	 */
 	public function getStorage()
 	{
 		return $this->storage;
 	}
 
+
 	/**
 	 * Gets the next message
 	 * Iterates over the fetched IDs and retrieves the next message in list
 	 *
-	 * @return \Fetch\Message The next Message
+	 * @return object
 	 */
 	public function getNextMessage()
 	{
-		return $this->storage->getEmailParts($this->messages[$this->nextId]);
+		return $this->storage->getEmailParts($this->messages[$this->next_index]);
 	}
+
 
 	/**
 	 * {@inheritdoc}
@@ -202,20 +196,23 @@ class Exchange extends AbstractFetcher
 	 */
 	public function _readNext()
 	{
-		$message = $this->getNextMessage();
+		$message_id = $this->messages[$this->next_index];
+		$this->next_index++;
+
+		$message = $this->storage->getEmailProps($message_id);
 
 		$raw_message = new RawMessage();
-		$raw_message->id   = $message->ItemId->Id;
-		$raw_message->uid  = $message->ItemId->Id;
+		$raw_message->id   = $message_id;
+		$raw_message->uid  = $message_id;
 		$raw_message->size = $message->size;
 
 		if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
 			// If we are here, it means that message is larger than the max size
 			// So, we won't store the whole message, only the headers.
-			$raw_message->content = $this->storage->getRawHeaders($this->messages[$this->nextId]);
+			$raw_message->content = $this->storage->getRawHeaders($message_id);
 		} else {
 			// Otherwise store the whole message
-			$raw_message->content = $this->storage->getEmailParts($this->messages[$this->nextId]);
+			$raw_message->content = $this->storage->getRawMessage($message_id);
 		}
 
 		$headers = null;
@@ -242,8 +239,6 @@ class Exchange extends AbstractFetcher
 
 		$raw_message->headers = $headers;
 
-		$this->nextId++;
-
 		return $raw_message;
 	}
 
@@ -255,18 +250,13 @@ class Exchange extends AbstractFetcher
 	 */
 	public function _doneRead($id)
 	{
-		$message = new \stdClass();
-
-		@$message->ItemId->Id = $id;
-
-		$message = $this->storage->getEmailParts($message);
-
-		if (self::MODE_PRESERVE === $this->mode) {
-			return $this->storage->moveMessage($message, $this->dpMailboxName);
-		}
-
-		if (self::MODE_AGGRESIVE === $this->mode) {
-			return $this->storage->deleteMessage($message);
+		switch ($this->mode) {
+			case self::MODE_DELETE:
+				$this->storage->deleteMessage($id);
+				break;
+			case self::MODE_ARCHIVE:
+				$this->storage->moveMessage($id, $this->archive_mailbox);
+				break;
 		}
 	}
 }

@@ -4,12 +4,13 @@ define [
 	class Admin_TicketAccounts_Form_EditTicketAccountModel
 		constructor: (@account, deps, trigger) ->
 			@form = {}
-			@form.account_type     = @account.account_type || 'tickets';
-			@form.address          = @account.address
-			@form.incoming_type    = 'pop3'
-			@form.in_gmail_account = {}
-			@form.in_pop3_account  = {}
-			@form.in_imap_account  = {}
+			@form.account_type        = @account.account_type || 'tickets';
+			@form.address             = @account.address
+			@form.incoming_type       = 'pop3'
+			@form.in_gmail_account    = {}
+			@form.in_pop3_account     = {}
+			@form.in_imap_account     = {}
+			@form.in_exchange_account = {}
 
 			@form.outgoing_type     = 'mail'
 			@form.out_gmail_account = {}
@@ -19,6 +20,8 @@ define [
 			@form.in_imap_account.secure_mode = "ssl"
 			@form.in_imap_account.mode = "read"
 			@form.in_imap_account.read_mailbox_type = "inbox"
+			@form.in_exchange_account.mode = "read"
+			@form.in_exchange_account.read_mailbox_type = "inbox"
 			@form.out_smtp_account.secure_mode = "ssl"
 
 			if @account.other_addresses and @account.other_addresses.length
@@ -96,6 +99,17 @@ define [
 					if @account.incoming_account.mode == 'archive'
 						@form.in_imap_account.archive_mailbox = @account.incoming_account.archive_mailbox
 
+				if @form.incoming_type == 'exchange'
+					@form.in_exchange_account.host        = @account.incoming_account.host
+					@form.in_exchange_account.user        = @account.incoming_account.user
+					@form.in_exchange_account.password    = @account.incoming_account.password
+					@form.in_exchange_account.mode        = @account.incoming_account.mode || 'read'
+					if @account.incoming_account.read_mailbox and @account.incoming_account.read_mailbox != ''
+						@form.in_exchange_account.read_mailbox = @account.incoming_account.read_mailbox
+						@form.in_exchange_account.read_mailbox_type = 'folder'
+					if @account.incoming_account.mode == 'archive'
+						@form.in_exchange_account.archive_mailbox = @account.incoming_account.archive_mailbox
+
 				else if @form.incoming_type == 'gmail'
 					@form.in_gmail_account.password = @account.incoming_account.password
 
@@ -136,6 +150,16 @@ define [
 						form.in_imap_account.archive_mailbox = ''
 					else
 						form.in_imap_account.archive_mailbox = ''
+
+			if form.incoming_type == 'exchange'
+				if form.in_exchange_account.read_mailbox_type == 'inbox' or form.in_exchange_account.read_mailbox == ''
+					form.in_exchange_account.read_mailbox = null
+				if form.in_exchange_account.mode == 'archive'
+					if not @form.in_exchange_account.archive_mailbox or @form.in_exchange_account.archive_mailbox == ''
+						form.in_exchange_account.mode = 'read'
+						form.in_exchange_account.archive_mailbox = ''
+					else
+						form.in_exchange_account.archive_mailbox = ''
 
 
 			if form.incoming_type == 'pop3'

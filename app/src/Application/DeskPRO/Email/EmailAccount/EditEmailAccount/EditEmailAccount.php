@@ -78,6 +78,11 @@ class EditEmailAccount
 	public $in_imap_account;
 
 	/**
+	 * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig
+	 */
+	public $in_exchange_account;
+
+	/**
 	 * @var string
 	 */
 	public $outgoing_type;
@@ -198,6 +203,10 @@ class EditEmailAccount
 
 			case 'imap':
 				return $this->in_imap_account;
+				break;
+
+			case 'exchange':
+				return $this->in_exchange_account;
 				break;
 
 			case 'gmail':

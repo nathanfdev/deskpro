@@ -12,6 +12,7 @@
         this.form.in_gmail_account = {};
         this.form.in_pop3_account = {};
         this.form.in_imap_account = {};
+        this.form.in_exchange_account = {};
         this.form.outgoing_type = 'mail';
         this.form.out_gmail_account = {};
         this.form.out_smtp_account = {};
@@ -19,6 +20,8 @@
         this.form.in_imap_account.secure_mode = "ssl";
         this.form.in_imap_account.mode = "read";
         this.form.in_imap_account.read_mailbox_type = "inbox";
+        this.form.in_exchange_account.mode = "read";
+        this.form.in_exchange_account.read_mailbox_type = "inbox";
         this.form.out_smtp_account.secure_mode = "ssl";
         if (this.account.other_addresses && this.account.other_addresses.length) {
           this.form.with_email_aliases = true;
@@ -92,6 +95,19 @@
             if (this.account.incoming_account.mode === 'archive') {
               this.form.in_imap_account.archive_mailbox = this.account.incoming_account.archive_mailbox;
             }
+          }
+          if (this.form.incoming_type === 'exchange') {
+            this.form.in_exchange_account.host = this.account.incoming_account.host;
+            this.form.in_exchange_account.user = this.account.incoming_account.user;
+            this.form.in_exchange_account.password = this.account.incoming_account.password;
+            this.form.in_exchange_account.mode = this.account.incoming_account.mode || 'read';
+            if (this.account.incoming_account.read_mailbox && this.account.incoming_account.read_mailbox !== '') {
+              this.form.in_exchange_account.read_mailbox = this.account.incoming_account.read_mailbox;
+              this.form.in_exchange_account.read_mailbox_type = 'folder';
+            }
+            if (this.account.incoming_account.mode === 'archive') {
+              this.form.in_exchange_account.archive_mailbox = this.account.incoming_account.archive_mailbox;
+            }
           } else if (this.form.incoming_type === 'gmail') {
             this.form.in_gmail_account.password = this.account.incoming_account.password;
           }
@@ -132,6 +148,19 @@
               form.in_imap_account.archive_mailbox = '';
             } else {
               form.in_imap_account.archive_mailbox = '';
+            }
+          }
+        }
+        if (form.incoming_type === 'exchange') {
+          if (form.in_exchange_account.read_mailbox_type === 'inbox' || form.in_exchange_account.read_mailbox === '') {
+            form.in_exchange_account.read_mailbox = null;
+          }
+          if (form.in_exchange_account.mode === 'archive') {
+            if (!this.form.in_exchange_account.archive_mailbox || this.form.in_exchange_account.archive_mailbox === '') {
+              form.in_exchange_account.mode = 'read';
+              form.in_exchange_account.archive_mailbox = '';
+            } else {
+              form.in_exchange_account.archive_mailbox = '';
             }
           }
         }

@@ -22,6 +22,7 @@
 				<option value="imap">IMAP</option>
 				<option value="pop3">POP3</option>
 				<option value="gmail">GMail or Google Apps</option>
+				<option value="exchange">MS Exchange</option>
 			</select>
 		</div>
 
@@ -172,6 +173,78 @@
 					<tr>
 						<th>Password</th>
 						<td><input type="password" class="form-control" name="title" ng-model="form.in_gmail_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		{###############}
+		{# MS Exchange #}
+		{###############}
+
+		<div class="ng-hide" ng-show="form.incoming_type == 'exchange'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="100">EWS Host</th>
+						<td>
+							https://<input type="text" class="form-control" name="host" ng-model="form.in_exchange_account.host" style="display: inline-block; width: 50%;" />
+							<br/>
+							<span class="help-block">
+								DeskPRO communicates with Exchange through <a href="http://msdn.microsoft.com/en-us/library/office/dd877045%28v=exchg.140%29.aspx" target="_blank">Exchange Web Services</a>. Make
+								sure EWS is configured and your firewall is not blocking connections.
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<th>Username</th>
+						<td><input type="text" class="form-control" name="username" ng-model="form.in_exchange_account.user" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="text" class="form-control" name="password" ng-model="form.in_exchange_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th style="vertical-align: top; padding-top: 10px;">Folder</th>
+						<td style="padding-bottom: 10px;">
+							<label style="margin-bottom: 10px;"><input type="radio" ng-model="form.in_exchange_account.read_mailbox_type" value="inbox" /> Read messages from the inbox</label>
+							<label style="display: inline-block;"><input type="radio" ng-model="form.in_exchange_account.read_mailbox_type" value="folder" /> Read messages from a specific folder</label>
+							<div ng-hide="form.in_exchange_account.read_mailbox_type != 'folder'" style="margin: 4px 0 0 15px;">
+								Read from folder: <input style="width: 200px;" type="text" class="form-control" name="title" ng-model="form.in_exchange_account.read_mailbox" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th style="vertical-align: top; padding-top: 10px;">Read Mode</th>
+						<td style="padding-bottom: 10px;">
+							<div>
+								<label><input type="radio" ng-model="form.in_exchange_account.mode" value="read" /> Read all unread messages</label>
+								<span class="help-block" ng-show="form.in_exchange_account.mode == 'read'">
+									DeskPRO will read and process all unread messages in the mailbox. After processing, messages are marked as read but stay in the mailbox.
+								</span>
+							</div>
+							<div style="margin: 10px 0;">
+								<label style="display: inline-block"><input type="radio" ng-model="form.in_exchange_account.mode" value="archive" /> Read all messages and then move</label>
+								<div ng-show="form.in_exchange_account.mode == 'archive'" style="margin: 4px 0 0 15px;">
+									Move to folder: <input type="text" class="form-control" ng-model="form.in_exchange_account.archive_mailbox" style="width: 150px;" />
+								</div>
+								<span class="help-block" ng-show="form.in_exchange_account.mode == 'archive'">
+									All messages in the mailbox are read and processed. After DeskPRO has processed a message, it will move it into a different folder.
+								</span>
+							</div>
+							<div>
+								<label><input type="radio" ng-model="form.in_exchange_account.mode" value="delete" /> Read all messages and then delete</label>
+								<span class="help-block" ng-show="form.in_exchange_account.mode == 'delete'">
+									All messages in the mailbox are read and processed. After DeskPRO has processed a message, it will be marked for deletion.
+								</span>
+							</div>
+						</td>
 					</tr>
 					<tr>
 						<th>&nbsp;</th>

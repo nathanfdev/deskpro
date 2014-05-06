@@ -28,18 +28,7 @@ define [
 			)
 
 			if not @accountId
-				@account = {
-					email_address: '',
-					connection_type: '',
-					other_addresses: [],
-					in_pop3_account: {},
-					in_imap_account: {},
-					in_gmial_account: {},
-					linked_transport: {
-						transport_type: '',
-						transport_options: {}
-					}
-				}
+				@account = {}
 				@trigger = {}
 				final_promise = dep_promise
 			else

@@ -647,6 +647,8 @@ class Runner
 				return new Fetcher\Imap($account, 20971520);
 			case 'imap':
 				return new Fetcher\Imap($account, 20971520);
+			case 'exchange':
+				return new Fetcher\Exchange($account, 20971520);
 			default:
 				throw new \InvalidArgumentException("Unknown incoming email account: {$account->incoming_account->getType()}");
 		}

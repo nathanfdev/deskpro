@@ -28,202 +28,244 @@
 /**
  * DeskPRO
  *
- * @package DeskPRO
+ * @package    DeskPRO
  * @subpackage EmailGateway
  */
 
 namespace Application\DeskPRO\EmailGateway\Storage;
 
-use ExchangeWebServices;
-use EWSType_FindItemType;
+use EWSType_BodyTypeResponseType;
+use EWSType_ConstantValueType;
+use EWSType_CreateFolderType;
+use EWSType_DefaultShapeNamesType;
+use EWSType_DeleteItemType;
+use EWSType_DisposalType;
+use EWSType_DistinguishedFolderIdNameType;
+use EWSType_DistinguishedFolderIdType;
+use EWSType_FieldURIOrConstantType;
 use EWSType_FindFolderType;
+use EWSType_FindItemType;
 use EWSType_FolderQueryTraversalType;
 use EWSType_FolderResponseShapeType;
-use EWSType_ItemResponseShapeType;
-use EWSType_ItemQueryTraversalType;
-use EWSType_IndexedPageViewType;
-use EWSType_DefaultShapeNamesType;
-use EWSType_NonEmptyArrayOfBaseFolderIdsType;
-use EWSType_DistinguishedFolderIdType;
-use EWSType_DistinguishedFolderIdNameType;
-use EWSType_NonEmptyArrayOfFieldOrdersType;
-use EWSType_NonEmptyArrayOfBaseItemIdsType;
-use EWSType_CreateFolderType;
 use EWSType_FolderType;
-use EWSType_BodyTypeResponseType;
-use EWSType_PathToUnindexedFieldType;
-use EWSType_FieldURIOrConstantType;
-use EWSType_ConstantValueType;
+use EWSType_GetItemType;
+use EWSType_IndexedPageViewType;
 use EWSType_IsEqualToType;
+use EWSType_ItemIdType;
+use EWSType_ItemQueryTraversalType;
+use EWSType_ItemResponseShapeType;
+use EWSType_MoveItemType;
+use EWSType_NonEmptyArrayOfBaseFolderIdsType;
+use EWSType_NonEmptyArrayOfBaseItemIdsType;
+use EWSType_NonEmptyArrayOfPathsToElementType;
+use EWSType_PathToUnindexedFieldType;
 use EWSType_RestrictionType;
-use EWSType_FieldOrderType;
-use EWSType_FindItemResponseMessageType;
+use ExchangeWebServices;
+use Orb\Util\Arrays;
+use EWSType_UpdateItemType;
+use EWSType_ItemChangeType;
+use EWSType_SetItemFieldType;
+use EWSType_MessageType;
+use EWSType_NonEmptyArrayOfItemChangeDescriptionsType;
 
 class Exchange
 {
-	/**
-	 * The defualt mode
-	 *
-	 * It makes the message "READ" after processing it
-	 */
-	const MODE_DEFAULT		= 1;
-
-	/**
-	 * The aggresive mode
-	 *
-	 * Processes the message and then immediately deletes it
-	 */
-	const MODE_AGGRESIVE	= 2;
-
-	/**
-	 * The preserving mode
-	 *
-	 * It preserves all the messages, after processinga message moves it to a
-	 * specified folder
-	 */
-	const MODE_PRESERVE		= 3;
-
 	protected $service;
 
 	protected $folders;
 
-	protected $mode = self::MODE_DEFAULT;
 
-	protected $dbFolderName;
-
-	public function __construct($server, $username, $password, $mode = self::MODE_DEFAULT, $dpFolderName = null)
+	public function __construct($options = array())
 	{
-		$this->service = new \ExchangeWebServices($server, $username, $password);
-
-		$this->mode = $mode;
-
-		if (self::MODE_PRESERVE === $this->mode) {
-			if (!$dpFolderName) {
-				throw new \Exception("In preservative mode fetching you must provide a folder name");
-			}
-			if (!$this->findFolder($dpFolderName)) {
-				$this->createFolder($dpFolderName);
-			}
-
-			$this->dbFolderName = $dpFolderName;
+		if (!isset($options['host']) ||
+			!isset($options['user']) ||
+			!isset($options['password'])
+		) {
+			throw new \Exception('Insufficient Parameters');
 		}
+
+		$this->service = new \ExchangeWebServices(
+			$options['host'] . (!empty($options['port']) && $options['port'] != 443 ? ":{$options['port']}" : ''),
+			$options['user'],
+			$options['password']
+		);
 	}
 
-	public function searchIds($limit)
-	{
-		$request = new EWSType_FindItemType();
-		$itemProperties = new EWSType_ItemResponseShapeType();
-		$itemProperties->BaseShape = EWSType_DefaultShapeNamesType::ID_ONLY;
-		$itemProperties->BodyType = EWSType_BodyTypeResponseType::BEST;
-		$request->ItemShape = $itemProperties;
 
-		if (self::MODE_DEFAULT === $this->mode) {
-			$fieldType = new EWSType_PathToUnindexedFieldType();
+	/**
+	 * Creates a folder if it doesnt exist
+	 *
+	 * @param string $name
+	 * @return bool True if it was created, false otherwise
+	 */
+	public function ensureFolderExists($name)
+	{
+		if (!$this->findFolder($name)) {
+			$this->createFolder($name);
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @param int $limit
+	 * @param bool $unread_only
+	 * @param null $folder
+	 * @return mixed
+	 */
+	public function searchIds($limit = 10, $unread_only = false, $folder = null)
+	{
+		$request                   = new EWSType_FindItemType();
+		$itemProperties            = new EWSType_ItemResponseShapeType();
+		$itemProperties->BaseShape = EWSType_DefaultShapeNamesType::ID_ONLY;
+		$itemProperties->BodyType  = EWSType_BodyTypeResponseType::BEST;
+		$request->ItemShape        = $itemProperties;
+
+		if ($unread_only) {
+			$fieldType           = new EWSType_PathToUnindexedFieldType();
 			$fieldType->FieldURI = 'message:IsRead';
 
-			$constant = new EWSType_FieldURIOrConstantType();
-			$constant->Constant = new EWSType_ConstantValueType();
+			$constant                  = new EWSType_FieldURIOrConstantType();
+			$constant->Constant        = new EWSType_ConstantValueType();
 			$constant->Constant->Value = "0";
 
-			$IsEqTo = new EWSType_IsEqualToType();
+			$IsEqTo                     = new EWSType_IsEqualToType();
 			$IsEqTo->FieldURIOrConstant = $constant;
-			$IsEqTo->Path = $fieldType;
+			$IsEqTo->Path               = $fieldType;
 
-			$request->Restriction = new EWSType_RestrictionType();
-			$request->Restriction->IsEqualTo = new EWSType_IsEqualToType();
-			$request->Restriction->IsEqualTo->FieldURI = $fieldType;
+			$request->Restriction                                = new EWSType_RestrictionType();
+			$request->Restriction->IsEqualTo                     = new EWSType_IsEqualToType();
+			$request->Restriction->IsEqualTo->FieldURI           = $fieldType;
 			$request->Restriction->IsEqualTo->FieldURIOrConstant = $constant;
 		}
 
-		$request->IndexedPageItemView = new EWSType_IndexedPageViewType();
-		$request->IndexedPageItemView->BasePoint = 'Beginning';
-		$request->IndexedPageItemView->Offset = 0;
+		$request->IndexedPageItemView                     = new EWSType_IndexedPageViewType();
+		$request->IndexedPageItemView->BasePoint          = 'Beginning';
+		$request->IndexedPageItemView->Offset             = 0;
 		$request->IndexedPageItemView->MaxEntriesReturned = $limit; // Number of items to return in total
 
-		$request->ParentFolderIds = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
-		$request->ParentFolderIds->DistinguishedFolderId = new EWSType_DistinguishedFolderIdType();
-		$request->ParentFolderIds->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::INBOX;
+		if (!$folder) {
+			$request->ParentFolderIds                            = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+			$request->ParentFolderIds->DistinguishedFolderId     = new EWSType_DistinguishedFolderIdType();
+			$request->ParentFolderIds->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::INBOX;
+		} else {
+			$folder = $this->findFolder($folder);
+			if ($folder) {
+				$request->ParentFolderIds                            = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+				$request->ParentFolderIds->DistinguishedFolderId     = new EWSType_DistinguishedFolderIdType();
+				$request->ParentFolderIds->DistinguishedFolderId->Id = $folder->FolderId->Id;
+			}
+		}
 
 		$request->Traversal = EWSType_ItemQueryTraversalType::SHALLOW;
 
 		$response = $this->service->FindItem($request);
 
 		if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == 'NoError' &&
-			$response->ResponseMessages->FindItemResponseMessage->ResponseClass == 'Success') {
-
-			return @$response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message;
+			$response->ResponseMessages->FindItemResponseMessage->ResponseClass == 'Success'
+		) {
+			$ids = array();
+			foreach (@$response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message as $m) {
+				$ids[] = $m->ItemId->Id;
+			}
+			$ids = Arrays::removeFalsey($ids);
+			return $ids;
 		}
 
+		return array();
 	}
 
-	public function getRawMessage($message)
+
+	/**
+	 * @param string $message_id
+	 * @return string
+	 */
+	public function getRawMessage($message_id)
 	{
 		$request = new EWSType_GetItemType();
 
-		$request->ItemShape = new EWSType_ItemResponseShapeType();
-		$request->ItemShape->BaseShape = EWSType_DefaultShapeNamesType::ID_ONLY;  // set to ID_ONLY so we can request individual items and lower bytes xferred
+		$request->ItemShape                     = new EWSType_ItemResponseShapeType();
+		$request->ItemShape->BaseShape          = EWSType_DefaultShapeNamesType::ID_ONLY; // set to ID_ONLY so we can request individual items and lower bytes xferred
 		$request->ItemShape->IncludeMimeContent = true;
 
 		// set fields we want to request
-		$subject = new EWSType_PathToUnindexedFieldType();
-		$subject->FieldURI = 'item:Subject';
-		$date = new EWSType_PathToUnindexedFieldType();
-		$date->FieldURI = 'item:DateTimeReceived';
-		$messageId = new EWSType_PathToUnindexedFieldType();
+		$subject             = new EWSType_PathToUnindexedFieldType();
+		$subject->FieldURI   = 'item:Subject';
+		$date                = new EWSType_PathToUnindexedFieldType();
+		$date->FieldURI      = 'item:DateTimeReceived';
+		$messageId           = new EWSType_PathToUnindexedFieldType();
 		$messageId->FieldURI = 'message:InternetMessageId';
-		$isRead = new EWSType_PathToUnindexedFieldType();
-		$isRead->FieldURI = 'message:IsRead';
+		$isRead              = new EWSType_PathToUnindexedFieldType();
+		$isRead->FieldURI    = 'message:IsRead';
 
-		$request->ItemShape->AdditionalProperties = new EWSType_NonEmptyArrayOfPathsToElementType();
+		$request->ItemShape->AdditionalProperties           = new EWSType_NonEmptyArrayOfPathsToElementType();
 		$request->ItemShape->AdditionalProperties->FieldURI = array($subject, $date, $messageId, $isRead);
 
-		$request->ItemIds = new EWSType_NonEmptyArrayOfBaseItemIdsType();
-		$request->ItemIds->ItemId = new EWSType_ItemIdType();
-		$request->ItemIds->ItemId->Id = $message->Id;
+		$request->ItemIds             = new EWSType_NonEmptyArrayOfBaseItemIdsType();
+		$request->ItemIds->ItemId     = new EWSType_ItemIdType();
+		$request->ItemIds->ItemId->Id = $message_id;
 
 		$response = $this->service->GetItem($request);
 
-		if ($response->ResponseMessages->GetItemResponseMessage->ResponseCode == 'NoError' &&
-			$response->ResponseMessages->GetItemResponseMessage->ResponseClass == 'Success') {
-
+		if ($response && $response->ResponseMessages->GetItemResponseMessage->ResponseCode == 'NoError' &&
+			$response->ResponseMessages->GetItemResponseMessage->ResponseClass == 'Success'
+		) {
 			return base64_decode($response->ResponseMessages->GetItemResponseMessage->Items->Message->MimeContent->_);
 		}
+
+		return null;
 	}
 
-	public function getRawHeaders($message)
+
+	/**
+	 * @param string $message_id
+	 * @return string
+	 */
+	public function getRawHeaders($message_id)
 	{
 		$rawHeader = '';
 
-		foreach($this->getEmailParts($message)->InternetMessageHeaders->InternetMessageHeader as $header) {
+		foreach ($this->getEmailParts($message_id)->InternetMessageHeaders->InternetMessageHeader as $header) {
 			$rawHeader .= $header->HeaderName . ':' . $header->_ . PHP_EOL;
 		}
 
 		return $rawHeader;
 	}
 
-	public function createFolder($name)
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	private function createFolder($name)
 	{
-		$request = new EWSType_CreateFolderType();
-		$request->Folders = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
-		$request->Folders->Folder = new EWSType_FolderType();
+		$request                               = new EWSType_CreateFolderType();
+		$request->Folders                      = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+		$request->Folders->Folder              = new EWSType_FolderType();
 		$request->Folders->Folder->DisplayName = $name;
-		$request->Folders->Folder->FolderClass = 'IPF.Note';
-		$request->ParentFolderId = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
-		@$request->ParentFolderId->FolderId->Id = 'AQASAGFiaGluYXZAZGVza3Byby50dgAuAAADPCjZ3ICjxEWl5qAA1fTmKAEAk8LZ7dAm+Eui4eBNqUbngAAAAX36HwAAAA==';
-		//$request->ParentFolderId->DistinguishedFolderId = new EWSType_DistinguishedFolderIdType();
-		//$request->ParentFolderId->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::INBOX;
+		$request->ParentFolderId               = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+		$request->ParentFolderId->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_FOLDER_ROOT;
 
 		$response = $this->service->CreateFolder($request);
 
 		if ($response->ResponseMessages->CreateFolderResponseMessage->ResponseCode == 'NoError' &&
-			$response->ResponseMessages->CreateFolderResponseMessage->ResponseClass == 'Success') {
+			$response->ResponseMessages->CreateFolderResponseMessage->ResponseClass == 'Success'
+		) {
 			return $response->ResponseMessages->CreateFolderResponseMessage->Folders->Folder->FolderId;
 		}
 	}
 
-	public function findFolder($name, $forceReload = false)
+
+	/**
+	 * @param string $name
+	 * @param bool   $force_reload
+	 * @return mixed
+	 */
+	private function findFolder($name, $force_reload = false)
 	{
-		if ($forceReload || !$this->folders) {
+		if ($force_reload || !$this->folders) {
 			$this->folders = $this->getFolderList();
 		}
 
@@ -232,85 +274,144 @@ class Exchange
 				return $folder;
 			}
 		}
+
+		return null;
 	}
 
-	public function getFolderList()
+
+	/**
+	 * @return mixed
+	 */
+	private function getFolderList()
 	{
 		$request = new EWSType_FindFolderType();
 
-		$request->Traversal = EWSType_FolderQueryTraversalType::SHALLOW; // use EWSType_FolderQueryTraversalType::DEEP for subfolders too
-		$request->FolderShape = new EWSType_FolderResponseShapeType();
+		$request->Traversal              = EWSType_FolderQueryTraversalType::SHALLOW; // use EWSType_FolderQueryTraversalType::DEEP for subfolders too
+		$request->FolderShape            = new EWSType_FolderResponseShapeType();
 		$request->FolderShape->BaseShape = EWSType_DefaultShapeNamesType::ALL_PROPERTIES;
 
 		// configure the view
-		$request->IndexedPageFolderView = new EWSType_IndexedPageViewType();
+		$request->IndexedPageFolderView            = new EWSType_IndexedPageViewType();
 		$request->IndexedPageFolderView->BasePoint = 'Beginning';
-		$request->IndexedPageFolderView->Offset = 0;
+		$request->IndexedPageFolderView->Offset    = 0;
 
 		$request->ParentFolderIds = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
 
 		// use a distinguished folder name to find folders inside it
-		$request->ParentFolderIds->DistinguishedFolderId = new EWSType_DistinguishedFolderIdType();
+		$request->ParentFolderIds->DistinguishedFolderId     = new EWSType_DistinguishedFolderIdType();
 		$request->ParentFolderIds->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_FOLDER_ROOT;
-
-		// if you know exact folder id, then use this piece of code instead. For example
-		// $folder_id = 'AAKkADE4N2NkZDRjLWZjY2EtNDNlFy04MjFlLTkzODAyXTMyMGVmOABGAAAAAACO4PBzuy...';
-		// $request->ParentFolderIds->FolderId = new EWSType_FolderIdType();
-		// $request->ParentFolderIds->FolderId->Id = $folder_id;
 
 		// request
 		$response = $this->service->FindFolder($request);
 
-		if ($response->ResponseMessages->FindFolderResponseMessage->ResponseCode == 'NoError' &&
-			$response->ResponseMessages->FindFolderResponseMessage->ResponseClass == 'Success') {
+		if ($response && $response->ResponseMessages->FindFolderResponseMessage->ResponseCode == 'NoError' &&
+			$response->ResponseMessages->FindFolderResponseMessage->ResponseClass == 'Success'
+		) {
 			return $response->ResponseMessages->FindFolderResponseMessage->RootFolder->Folders->Folder;
 		}
 	}
 
-	public function moveMessage($message)
+
+	/**
+	 * @param $message
+	 * @return bool
+	 */
+	public function moveMessage($message_id, $name)
 	{
-		$folder = $this->findFolder($this->dbFolderName);
+		$folder = $this->findFolder($name);
 
 		$request = new EWSType_MoveItemType();
 
 		@$request->ToFolderId->FolderId->Id = $folder->FolderId->Id;
-
 		@$request->ToFolderId->FolderId->ChangeKey = $folder->FolderId->ChangeKey;
-
-		@$request->ItemIds->ItemId->Id = $message->ItemId->Id;
-		@$request->ItemIds->ItemId->ChangeKey = $message->ItemId->ChangeKey;
+		@$request->ItemIds->ItemId->Id = $message_id;
 
 		// Generic execution sample code
 		$response = $this->service->MoveItem($request);
 
-		if ($response->ResponseMessages->MoveItemResponseMessage->ResponseCode == 'NoError' &&
-			$response->ResponseMessages->MoveItemResponseMessage->ResponseClass == 'Success') {
+		if ($response && $response->ResponseMessages->MoveItemResponseMessage->ResponseCode == 'NoError' &&
+			$response->ResponseMessages->MoveItemResponseMessage->ResponseClass == 'Success'
+		) {
 			return $response->ResponseMessages->MoveItemResponseMessage->Items->Message->ItemId;
 		}
+
+		return false;
 	}
 
-	public function deleteMessage($message)
+
+	/**
+	 * @param string $message_id
+	 * @return bool
+	 */
+	public function deleteMessage($message_id)
 	{
-		$request = new EWSType_DeleteItemType();
-		$request->ItemIds = new EWSType_NonEmptyArrayOfBaseItemIdsType();
-		$request->ItemIds->ItemId = new EWSType_ItemIdType();
-		$request->ItemIds->ItemId->Id = $message->ItemId->Id;
+		$request                      = new EWSType_DeleteItemType();
+		$request->ItemIds             = new EWSType_NonEmptyArrayOfBaseItemIdsType();
+		$request->ItemIds->ItemId     = new EWSType_ItemIdType();
+		$request->ItemIds->ItemId->Id = $message_id;
 
 		$request->DeleteType = new EWSType_DisposalType();
 		$request->DeleteType = EWSType_DisposalType::MOVE_TO_DELETED_ITEMS;
 
 		$response = $this->service->DeleteItem($request);
 
-		if ($response->ResponseMessages->DeleteItemResponseMessage->ResponseCode == 'NoError' &&
-			$response->ResponseMessages->DeleteItemResponseMessage->ResponseClass == 'Success') {
+		if ($response && $response->ResponseMessages->DeleteItemResponseMessage->ResponseCode == 'NoError' &&
+			$response->ResponseMessages->DeleteItemResponseMessage->ResponseClass == 'Success'
+		) {
 			return true;
 		}
+
+		return false;
 	}
 
-	public function getEmailParts($message)
-	{
-		$message_id = $message->ItemId->Id;
 
+	/**
+	 * @param $message_id
+	 * @return bool
+	 */
+	public function markRead($message_id)
+	{
+		$request = new EWSType_UpdateItemType();
+		$request->ConflictResolution = 'AlwaysOverwrite';
+		$request->MessageDisposition = 'SaveOnly';
+		$request->ItemChanges = array();
+
+		$change = new EWSType_ItemChangeType();
+		$change->ItemId = new EWSType_ItemIdType();
+		$change->ItemId->Id = $message_id;
+
+		$field = new EWSType_SetItemFieldType();
+		$field->FieldURI = new EWSType_PathToUnindexedFieldType();
+		$field->FieldURI->FieldURI = "message:IsRead";
+		$field->Message = new EWSType_MessageType();
+		$field->Message->IsRead = true;
+
+		$change->Updates = new EWSType_NonEmptyArrayOfItemChangeDescriptionsType();
+		$change->Updates->SetItemField = array();
+		$change->Updates->SetItemField[] = $field;
+
+		$request->ItemChanges[] = $change;
+
+		$response = $this->service->UpdateItem($request);
+
+		if ($response && $response->ResponseMessages->DeleteItemResponseMessage->ResponseCode == 'NoError' &&
+			$response->ResponseMessages->DeleteItemResponseMessage->ResponseClass == 'Success'
+		) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Gets email properties
+	 *
+	 * @param string $message_id
+	 * @return mixed
+	 */
+	public function getEmailProps($message_id)
+	{
 		// Build the request for the parts.
 		$request = new EWSType_GetItemType();
 		$request->ItemShape = new EWSType_ItemResponseShapeType();

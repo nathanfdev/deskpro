@@ -35,55 +35,101 @@
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
-use Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface;
-use Application\DeskPRO\EmailGateway\FetcherStorage\Pop3Storage;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
-//TODO this is not actually used in the Runner
-class FetcherStorageFactory
+class ExchangeConfig implements AccountConfigInterface
 {
 	/**
-	 * @param AccountConfigInterface $config
-	 * @return FetcherStorageInterface
-	 * @throws \InvalidArgumentException
+	 * @var string
 	 */
-	public function createFetcherStorage(AccountConfigInterface $config)
+	public $host;
+
+	/**
+	 * 443 by default (because its over https)
+	 *
+	 * @var int
+	 */
+	public $port = false;
+
+	/**
+	 * @var string
+	 */
+	public $user;
+
+	/**
+	 * @var string
+	 */
+	public $password;
+
+	/**
+	 * 'read', 'delete', 'archive'
+	 * @var string
+	 */
+	public $mode = 'read';
+
+	/**
+	 * The mailbox to read from. Default blank means inbox.
+	 * @var string
+	 */
+	public $read_mailbox = null;
+
+	/**
+	 * If using the 'archive' method, this is the mailbox name.
+	 * @var string
+	 */
+	public $archive_mailbox = null;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function serializeJsonArray()
 	{
-		switch ($config->getType()) {
-			case 'pop3':  return $this->createPop3Fetcher($config);
-			case 'gmail': return $this->createGmailFetcherStorage($config);
-			default:
-				throw new \InvalidArgumentException("Unknown incoming account type: {$config->getType()}");
+		return array(
+			'host'            => $this->host,
+			'port'            => $this->port,
+			'user'            => $this->user,
+			'password'        => $this->password,
+			'mode'            => $this->mode,
+			'read_mailbox'    => $this->read_mailbox,
+			'archive_mailbox' => $this->archive_mailbox
+		);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public static function unserializeJsonArray(array $data)
+	{
+		$obj = new self();
+		foreach ($data as $k => $v) {
+			$obj->$k = $v;
 		}
-	}
 
-	/**
-	 * @param Pop3Config $config
-	 * @return Pop3Storage
-	 */
-	public function createPop3FetcherStorage(Pop3Config $config)
-	{
-		return new Pop3Storage(
-			$config->host,
-			$config->port,
-			$config->user,
-			$config->password,
-			$config->secure_mode
-		);
+		return $obj;
 	}
 
 
 	/**
-	 * @param GmailConfig $config
-	 * @return Pop3Storage
+	 * {@inheritDoc}
 	 */
-	public function createGmailFetcherStorage(GmailConfig $config)
+	public function getType()
 	{
-		return new Pop3Storage(
-			'pop.gmail.com',
-			995,
-			$config->user,
-			$config->password,
-			'ssl'
-		);
+		return 'exchange';
+	}
+
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('host', new Constraints\NotBlank());
+		$metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
+		$metadata->addPropertyConstraint('mode', new Constraints\Choice(array(
+			'choices' => array('read', 'delete', 'archive')
+		)));
 	}
 }
