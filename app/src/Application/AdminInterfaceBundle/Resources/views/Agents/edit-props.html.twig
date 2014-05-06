@@ -22,10 +22,19 @@
 		</div>
 		<div class="form-group">
 			<div class="col-lg-3">
-				<h3>Email Address</h3>
+				<h3>Email Addresses</h3>
 			</div>
 			<div class="col-lg-9">
-				<input type="text" class="form-control" name="email" ng-model="EditCtrl.form.email" style="width: 50%;" required dp-server-validation="agent.emails_count,agent.emails.0.email" />
+				<input type="text" class="form-control" name="email" ng-model="EditCtrl.form.emails_list" ng-list style="width: 80%;" required dp-server-validation="agent.emails_count,agent.emails.0.email,agent.emails.1.email,agent.emails.2.email,agent.emails.3.email,agent.emails.4.email" />
+				<span class="help-block">
+					Separate multipl email addresses with a comma.
+				</span>
+
+				<div ng-show="EditCtrl.form.emails_list.length > 1" style="margin-top: 3px;">
+					Primary: <select ng-model="EditCtrl.form.email_primary">
+						<option ng-repeat="email in EditCtrl.form.emails_list" ng-value="email">{{ ng_var('email') }}</option>
+					</select>
+				</div>
 			</div>
 		</div>
 		<div class="form-group">

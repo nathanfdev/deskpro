@@ -16,8 +16,17 @@ define [
 
 		init: ->
 			@agentId = parseInt(@$stateParams.id)
-			@form = {}
+			@form = {email_primary: '', emails_list: []}
 			@hasPermOverrides = false
+
+			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
+				if not @form.email_primary or @form.email_primary == '' or emails_list.indexOf(@form.email_primary) == -1
+					if emails_list.length
+						@form.email_primary = emails_list[0]
+					else
+						@form.email_primary = ''
+			)
+
 			return
 
 		initialLoad: ->

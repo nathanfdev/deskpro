@@ -16,12 +16,21 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 				@form.enable_display_name = false
 				@form.override_name = ''
 
-			@form.email = agent.primary_email?.email
-
 			@form.zones = {
 				admin: agent.can_admin,
 				reports: agent.can_reports
 			}
+
+			#--------------------
+			# Emails
+			#--------------------
+
+			@form.emails_list = []
+			@form.email_primary = agent.primary_email?.email || ''
+
+			if agent and agent.emails and agent.emails.length
+				for email in agent.emails
+					@form.emails_list.push(email.email)
 
 			#--------------------
 			# Teams
@@ -68,7 +77,15 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			else
 				formData.override_name = ''
 
-			formData.email = @form.email
+			formData.emails = @form.emails_list
+			primary_email = @form.email_primary
+
+			# the primary email goes first
+			formData.emails.sort( (a, b) ->
+				if a == primary_email then return -1
+				if b == primary_email then return 1
+				return 0
+			)
 
 			formData.zones = []
 			if @form.zones.admin   then formData.zones.push('admin')
