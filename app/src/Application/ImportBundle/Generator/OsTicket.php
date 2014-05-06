@@ -45,8 +45,18 @@ class OsTicket implements GeneratorInterface
 	protected $db;
 	
 	protected $output_path;
+	
+	protected $ticket_offset;
+	
+	protected $batch_size;
+	
+	/** @var Psr\Log\LoggerInterface */
+	protected $logger;
+	
+	/** @var GeneratorConfig */
+	protected $config;
 
-	public function __construct(GeneratorConfig $config)
+	public function __construct(GeneratorConfig $config, $logger)
 	{
 		$os_config = dp_get_config('osticket_import');
 		
@@ -59,14 +69,15 @@ class OsTicket implements GeneratorInterface
 			throw new \Exception('Invalid output-path ' . $config->output_path);
 		}
 		
+		$this->config = $config;
+		
 		$this->output_path = $config->output_path;
+		
+		$this->batch_size = 10;
+		
+		$this->logger = $logger;
 
-		try {
-			$this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
-		} catch (\PDOException $e) {
-			echo $e->getMessage();
-			exit;
-		}
+		$this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
 	}
 	
 	public function findAllTickets()
@@ -80,22 +91,30 @@ class OsTicket implements GeneratorInterface
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	
-	public function findAllStaff()
+	public function findAllStaff($offset = 0)
 	{
-		$query = 'SELECT * FROM ost_staff';
+		$query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
 		
 		$stmt   = $this->db->prepare($query);
+		
+		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
+		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
 		
 		$result = $stmt->execute();
 		
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	
-	public function findAllUser()
+	public function findAllUser($offset = 0)
 	{
-		$query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id';
+		$query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id'
+		. ' LIMIT :limit'
+		. ' OFFSET :offset';
 		
 		$stmt   = $this->db->prepare($query);
+		
+		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
+		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
 		
 		$result = $stmt->execute();
 		
@@ -173,31 +192,43 @@ class OsTicket implements GeneratorInterface
 	
 	public function exportPeople()
 	{
-		$file_path = $this->output_path . '/people/';
+		$file_path = $this->output_path . 'people/';
 
 		$index = 1;
-
-		foreach ($this->findAllStaff() as $person) {
-			$transformedArray = array();
-			
-			$transformedArray['oid']		= $index;
-			$transformedArray['is_agent']		= true;
-			$transformedArray['first_name']		= $person['firstname'];
-			$transformedArray['last_name']		= $person['lastname'];
-			$transformedArray['timezone']		= $this->findTimezoneFromId($person['timezone_id']);
-			$transformedArray['date_created']	= $person['created'];
-			$transformedArray['emails']		= array($person['email']);
-
-			$file_name = 'person' . $index . '.json';
-
-			file_put_contents($file_path . $file_name, json_encode($transformedArray));
-
-			echo $file_name, ' exported successfully!', PHP_EOL;
-			
-			$index++;
-		}
 		
-		unset($person);
+		$offset = 0;
+		
+		$person_batch = $this->findAllStaff($offset);
+		
+		while($person_batch) {
+			foreach ($person_batch as $person) {
+				$transformedArray = array();
+
+				$transformedArray['oid']		= $index;
+				$transformedArray['is_agent']		= true;
+				$transformedArray['first_name']		= $person['firstname'];
+				$transformedArray['last_name']		= $person['lastname'];
+				$transformedArray['timezone']		= $this->findTimezoneFromId($person['timezone_id']);
+				$transformedArray['date_created']	= $person['created'];
+				$transformedArray['emails']		= array($person['email']);
+
+				$file_name = 'person' . $index . '.json';
+
+				if ($this->config->mode === 'live') {
+					file_put_contents($file_path . $file_name, json_encode($transformedArray));
+				}
+
+				$this->logger->info(sprintf('%s exported successfully!', $file_name));
+
+				$index++;
+				
+				$offset++;
+			}
+
+			unset($person);
+			
+			$person_batch = $this->findAllStaff($offset);
+		}
 		
 		foreach ($this->findAllUser() as $person) {
 			$transformedArray = array();
@@ -210,9 +241,11 @@ class OsTicket implements GeneratorInterface
 
 			$file_name = 'person' . $index . '.json';
 
-			file_put_contents($file_path . $file_name, json_encode($transformedArray));
-
-			echo $file_name, ' exported successfully!', PHP_EOL;
+			if ($this->config->mode === 'live') {
+				file_put_contents($file_path . $file_name, json_encode($transformedArray));
+			}
+			
+			$this->logger->info(sprintf('%s exported successfully!', $file_name));
 			
 			$index++;
 		}
@@ -223,48 +256,64 @@ class OsTicket implements GeneratorInterface
 		$ticketPath = $this->output_path . '/tickets/';
 
 		$index = 1;
+		
+		$offset = 0;
+		
+		$ticket_batch = $this->findAllTickets($offset);
+		
+		while ($ticket_batch) {
+			foreach ($ticket_batch as $ticket) {
+				//print_r($ticket);
 
-		foreach ($this->findAllTickets() as $ticket) {
-			//print_r($ticket);
+				$transformedArray = array();
 
-			$transformedArray = array();
+				$transformedArray['ref']		= $ticket['number'];
+				$transformedArray['department']		= $this->findDepartmentFromId($ticket['dept_id']);
+				$transformedArray['person']		= $this->findUserEmailFromId($ticket['user_id']);
+				$transformedArray['agent']		= $this->findUserEmailFromId($ticket['staff_id']) ?: null;
+				$transformedArray['agent_team']		= $this->findUserEmailFromId($ticket['team_id']) ?: null;
+				$transformedArray['status']		= $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent';
+				$transformedArray['date_created']	= $ticket['created'];
+				$transformedArray['subject']		= $ticket['subject'];
+				$transformedArray['priority']		= $ticket['priority'];
 
-			$transformedArray['ref']		= $ticket['number'];
-			$transformedArray['department']		= $this->findDepartmentFromId($ticket['dept_id']);
-			$transformedArray['person']		= $this->findUserEmailFromId($ticket['user_id']);
-			$transformedArray['agent']		= $this->findUserEmailFromId($ticket['staff_id']) ?: null;
-			$transformedArray['agent_team']		= $this->findUserEmailFromId($ticket['team_id']) ?: null;
-			$transformedArray['status']		= $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent';
-			$transformedArray['date_created']	= $ticket['created'];
-			$transformedArray['subject']		= $ticket['subject'];
-			$transformedArray['priority']		= $ticket['priority'];
+				foreach ($this->findMessageThreadFromId($ticket['ticket_id']) as $message_thread) {
+					if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
+						$person_email = $this->findStaffEmailFromId($message_thread['staff_id']);
 
-			foreach ($this->findMessageThreadFromId($ticket['ticket_id']) as $message_thread) {
-				if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
-					$person_email = $this->findStaffEmailFromId($message_thread['staff_id']);
+					} elseif ($message_thread['thread_type'] === 'M' && $message_thread['user_id']) {
+						$person_email = $this->findUserEmailFromId($message_thread['user_id']);
+					}
 
-				} elseif ($message_thread['thread_type'] === 'M' && $message_thread['user_id']) {
-					$person_email = $this->findUserEmailFromId($message_thread['user_id']);
+					$transformedArray['messages'][] = array(
+						'person'	=> $person_email,
+						'date_created'	=> $message_thread['created'],
+						'message_text'	=> $message_thread['body']
+					);
 				}
 
-				$transformedArray['messages'][] = array(
-					'person'	=> $person_email,
-					'date_created'	=> $message_thread['created'],
-					'message_text'	=> $message_thread['body']
-				);
+				$file_name = 'ticket' . $index++ . '.json';
+
+				if ($this->config->mode === 'live') {
+					file_put_contents($ticketPath . $file_name, json_encode($transformedArray));
+				}
+				
+				$offset++;
+
+				$this->logger->info(sprintf('%s exported successfully!', $file_name));
 			}
-
-			$file_name = 'ticket' . $index++ . '.json';
-
-			file_put_contents($ticketPath . $file_name, json_encode($transformedArray));
-
-			echo $file_name, ' exported successfully!' . PHP_EOL;
+			
+			$ticket_batch = $this->findAllTickets($offset);
 		}
 	}
 	
 	public function generateJson()
 	{
-		$this->exportPeople();
-		$this->exportTickets();
+		try {
+			$this->exportPeople();
+			$this->exportTickets();
+		} catch (\Exception $ex) {
+			$this->logger->warning($ex->getMessage());
+		}
 	}
 }
