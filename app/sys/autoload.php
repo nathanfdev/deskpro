@@ -35,6 +35,7 @@ $loader->registerPrefixes(array(
     'mPDF_'       => DP_ROOT.'/vendor-src/mpdf/lib',
     'File_'       => DP_ROOT.'/vendor-src/pear/lib',
     'PEAR_'       => DP_ROOT.'/vendor-src/pear/lib',
+	'EWSType_'    => DP_ROOT.'/vendor-src/php-ews/EWSType',
 ));
 
 $loader->registerClassNames(array(
@@ -66,7 +67,13 @@ $loader->registerClassNames(array(
 
 	'phpthumb_ico'                    => DP_ROOT.'/vendor-src/phpthumb/phpthumb.ico.php',
 	'PasswordHash'                    => DP_ROOT.'/vendor-src/phpass/PasswordHash.php',
-    ''
+
+	'EWS_Exception'                   => DP_ROOT.'/vendor-src/php-ews/EWS_Exception.php',
+	'EWSAutodiscover'                 => DP_ROOT.'/vendor-src/php-ews/EWSAutodiscover.php',
+	'EWSType'                         => DP_ROOT.'/vendor-src/php-ews/EWSType.php',
+	'ExchangeWebServices'             => DP_ROOT.'/vendor-src/php-ews/ExchangeWebServices.php',
+	'NTLMSoapClient'                  => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient.php',
+	'NTLMSoapClient_Exchange'         => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient/Exchange.php',
 ));
 
 spl_autoload_register(function($classname) {
