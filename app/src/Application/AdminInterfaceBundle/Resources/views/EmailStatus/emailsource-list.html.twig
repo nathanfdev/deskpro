@@ -7,13 +7,6 @@
 		</a>
 	</section>
 
-	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts.settings') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
-			<h3>Email Settings</h3>
-		</a>
-	</section>
-
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<h3>Incoming Email</h3>
@@ -128,12 +121,5 @@
 				<button class="btn" ng-show="ListCtrl.page < ListCtrl.num_pages" ng-click="ListCtrl.page = ListCtrl.page + 1; ListCtrl.changePage()">Next &gt;</button>
 			</div>
 		</article>
-	</section>
-
-	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
-			<h3>Outgoing Email Log</h3>
-		</a>
 	</section>
 {% endblock %}

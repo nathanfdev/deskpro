@@ -2901,6 +2901,20 @@ $collection->create('api_emailstatus_sendmaillist', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_emailstatus_sendmail_delete', array(
+	'path'         => '/email_status/sendmail/{id}',
+	'controller'   => 'ApiBundle:EmailStatus:deleteSendmail',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('DELETE'),
+));
+
+$collection->create('api_emailstatus_sendmail_resend', array(
+	'path'         => '/email_status/sendmail/{id}/resend',
+	'controller'   => 'ApiBundle:EmailStatus:resendSendmail',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
+));
+
 $collection->create('api_emailstatus_sendmail_get', array(
 	'path'         => '/email_status/sendmail/{id}',
 	'controller'   => 'ApiBundle:EmailStatus:getSendmailInfo',

@@ -816,6 +816,15 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tickets.ticket_accounts.gosendmailview',
+		url: '/go-outgoing-email/{id:[0-9]+}',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('tickets.ticket_accounts.emailsourcesview', $stateParams);
+		}]
+	});
+
+	routes.push({
 		id: 'tickets.ticket_accounts.sendmailqueueview',
 		url: '/outgoing-email/{id:[0-9]+}',
 		templateName: 'EmailStatus/sendmail-view.html',

@@ -41,7 +41,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
 		loadResults: ->
 			promise = @Api.sendGet('/email_status/sendmail', {filter: @filter}).success( (data) =>
-				@results     = data.email_sources
+				@results     = data.sendmail_queue
 				@filter.page = data.page
 				@page        = data.page
 				@num_pages   = data.num_pages

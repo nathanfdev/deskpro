@@ -175,11 +175,23 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 
 		// Its an object, we can unserialise and get the value
 		} else {
+
+			// Possible the cache dir doesnt exist yet...
+			$tmpdir = dp_get_tmp_dir() . '/swiftmailer-cache';
+			if (!is_dir(dp_get_tmp_dir() . '/swiftmailer-cache')) {
+				if (!@mkdir($tmpdir, 0777, true)) {
+					$tmpdir = sys_get_temp_dir() . '/dp-swiftmailer-cache';
+					if (!is_dir($tmpdir)) {
+						@mkdir($tmpdir, 0777, true);
+					}
+				}
+			}
+
 			$message = @unserialize($raw_source);
 			$raw_source = '';
 
 			if ($message) {
-				$raw_source = (string)$message;
+				$raw_source = @((string)$message);
 				$message = null;
 			}
 		}
@@ -212,6 +224,7 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailSource';
 		$metadata->setPrimaryTable(array(
 			'name' => 'sendmail_queue',
 			'indexes' => array(

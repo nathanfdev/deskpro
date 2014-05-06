@@ -124,7 +124,7 @@ class FinderFilter
 	 */
 	public function addStatus($status)
 	{
-		if (in_array($status, $this->getValidStatuses())) {
+		if (!in_array($status, $this->getValidStatuses())) {
 			throw new \InvalidArgumentException("Invalid status: $status");
 		}
 

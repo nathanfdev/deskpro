@@ -164,11 +164,16 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 		$info    = $finder->getPageInfo();
 		$results = $finder->getResults();
 
+		$data = array();
+		foreach ($results as $r) {
+			$data[] = $r->toApiData(true, true);
+		}
+
 		return $this->createApiResponse(array(
 			'page'           => $filter->getPage(),
 			'num_pages'      => $info['num_pages'],
 			'count'          => $info['count'],
-			'sendmail_queue' => $this->getApiData($results)
+			'sendmail_queue' => $data
 		));
 	}
 
@@ -196,7 +201,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 			}
 		}
 
-		if ($this->in->getBool('with_raw')) {
+		if ($this->in->getBool('with_raw') && $source->blob) {
 			$info['source_raw'] = $this->container->getBlobStorage()->copyBlobRecordToString($source->blob);
 		}
 
@@ -251,6 +256,76 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
 		return $this->createApiResponse(array(
 			'status' => $source->status
+		));
+	}
+
+	####################################################################################################################
+	# get-sendmail-info
+	####################################################################################################################
+
+	public function getSendmailInfoAction($id)
+	{
+		$sendmail = $this->em->find('DeskPRO:SendmailQueue', $id);
+		if (!$sendmail) {
+			throw $this->createNotFoundException();
+		}
+
+		$info = array();
+
+		$info['sendmail'] = $this->getApiData($sendmail);
+		unset($info['sendmail']['log']);
+
+		$info['sendmail_log'] = $sendmail->log;
+
+		if ($this->in->getBool('with_raw') && $sendmail->blob) {
+			$info['sendmail_raw'] = $sendmail->getMessageAsString();
+		}
+
+		return $this->createApiResponse($info);
+	}
+
+	####################################################################################################################
+	# delete-sendmail-source
+	####################################################################################################################
+
+	public function deleteSendmailAction($id)
+	{
+		$sendmail = $this->em->find('DeskPRO:SendmailQueue', $id);
+		if (!$sendmail) {
+			throw $this->createNotFoundException();
+		}
+
+		if ($sendmail->blob) {
+			try {
+				$this->container->getBlobStorage()->deleteBlobRecord($sendmail->blob);
+			} catch (\Exception $e) {}
+		}
+
+		$this->em->remove($sendmail);
+		$this->em->flush();
+
+		return $this->createApiDeleteResponse();
+	}
+
+	####################################################################################################################
+	# resed-sendmail
+	####################################################################################################################
+
+	public function resendSendmailAction($id)
+	{
+		$sendmail = $this->em->find('DeskPRO:SendmailQueue', $id);
+		if (!$sendmail) {
+			throw $this->createNotFoundException();
+		}
+
+		$sendmail['status'] = 'pending';
+		$sendmail['date_next_attempt'] = new \DateTime();
+
+		$this->em->persist($sendmail);
+		$this->em->flush();
+
+		return $this->createApiResponse(array(
+			'date_next_attempt' => $sendmail->date_next_attempt
 		));
 	}
 }

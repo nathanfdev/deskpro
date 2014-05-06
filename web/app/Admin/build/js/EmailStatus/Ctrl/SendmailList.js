@@ -64,7 +64,7 @@
         }).success((function(_this) {
           return function(data) {
             var i, _i, _ref, _results;
-            _this.results = data.email_sources;
+            _this.results = data.sendmail_queue;
             _this.filter.page = data.page;
             _this.page = data.page;
             _this.num_pages = data.num_pages;
