@@ -80,13 +80,33 @@ class OsTicket implements GeneratorInterface
 		$this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
 	}
 	
-	public function findAllTickets()
+	public function findAllTickets($offset)
 	{
-		$query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id';
+		$query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
+		. ' LIMIT :limit'
+		. ' OFFSET :offset';
 		
 		$stmt   = $this->db->prepare($query);
 		
+		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
+		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
+		
 		$result = $stmt->execute();
+		
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
+	public function findTicketAttachment($ticket_id)
+	{
+		$ticket_id = (int) $ticket_id;
+		
+		$query = 'SELECT f.name, f.type, a.file_id  FROM ost_file f JOIN ost_ticket_attachment a '
+		. ' ON f.id = a.file_id'
+		. ' WHERE ticket_id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($ticket_id));
 		
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
@@ -190,6 +210,25 @@ class OsTicket implements GeneratorInterface
 		return $stmt->fetchColumn();
 	}
 	
+	public function getFileData($file_id)
+	{
+		$data = '';
+		
+		$query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($file_id));
+		
+		$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		
+		foreach ($rows as $chunk) {
+			$data .= $chunk['filedata'];
+		}
+		
+		return $data;
+	}
+	
 	public function exportPeople()
 	{
 		$file_path = $this->output_path . 'people/';
@@ -284,12 +323,29 @@ class OsTicket implements GeneratorInterface
 					} elseif ($message_thread['thread_type'] === 'M' && $message_thread['user_id']) {
 						$person_email = $this->findUserEmailFromId($message_thread['user_id']);
 					}
-
-					$transformedArray['messages'][] = array(
+					
+					$message_array = array(
 						'person'	=> $person_email,
 						'date_created'	=> $message_thread['created'],
 						'message_text'	=> $message_thread['body']
 					);
+					
+					if ($this->findTicketAttachment($ticket['ticket_id'])) {
+						$attachments = $this->findTicketAttachment($ticket['ticket_id']);
+						
+						foreach ($attachments as $attachment) {
+							$file_data = $this->getFileData($attachment['file_id']);
+							
+							$message_array['attachments'][] = array(
+								'oid'		=> $index,
+								'blob_data'	=> base64_encode($file_data),
+								'file_name'	=> $attachment['name'],
+								'content_type'	=> $attachment['type']
+							);
+						}
+					}
+
+					$transformedArray['messages'][] = $message_array;
 				}
 
 				$file_name = 'ticket' . $index++ . '.json';
@@ -297,6 +353,8 @@ class OsTicket implements GeneratorInterface
 				if ($this->config->mode === 'live') {
 					file_put_contents($ticketPath . $file_name, json_encode($transformedArray));
 				}
+				
+				unset($transformedArray);
 				
 				$offset++;
 
