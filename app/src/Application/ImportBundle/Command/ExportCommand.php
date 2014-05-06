@@ -36,17 +36,18 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Application\ImportBundle\Generator\GeneratorInterface;
+use Monolog\Logger;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
-class GenerateJsonCommand extends ContainerAwareCommand
+class ExportCommand extends ContainerAwareCommand
 {
 	/**
 	 * {@inheritDoc}
 	 */
 	protected function configure()
 	{
-		$this->setName('dp:import:generate-json');
-		$this->setHelp("This goes through a dry-run of the import process. You will only see output if there are errors. Use -v to see verbose output.");
+		$this->setName('dp:export:run');
+		$this->setHelp('The actual export process');
 		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
 		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
 	}
@@ -70,7 +71,13 @@ class GenerateJsonCommand extends ContainerAwareCommand
 		
 		$generator_config = $factory->createGeneratorConfig();
 		
-		$generator = $factory->createGenerator($generator_config);
+		$generator_config->mode = 'live';
+		
+		$output->setVerbosity(3);
+		
+		$logger = new Logger('exporter', array(new ConsoleHandler($output)));
+		
+		$generator = $factory->createGenerator($generator_config, $logger);
 		
 		$generator->generateJson();
 	}

@@ -31,25 +31,25 @@
 
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\ImporterFactory;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckCommand extends ContainerAwareCommand
+class CheckExportCommand extends ContainerAwareCommand
 {
 	/**
 	 * {@inheritDoc}
 	 */
 	protected function configure()
 	{
-		$this->setName('dp:import:check');
-		$this->setHelp("This goes through a dry-run of the import process. You will only see output if there are errors. Use -v to see verbose output.");
-		$this->addOption('data-path', null, InputOption::VALUE_REQUIRED, 'The path to the data directory containing your JSON files');
-		$this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
+		$this->setName('dp:export:check');
+		$this->setHelp('Performs a dry run of the export process');
+		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
+		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
 	}
 
 
@@ -67,29 +67,16 @@ class CheckCommand extends ContainerAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$factory = new ImporterFactory($this->getContainer(), $input);
-
-		try {
-			$config       = $factory->createImporterConfig();
-			$config->mode = 'test';
-		} catch (\InvalidArgumentException $e) {
-			$output->writeln("<error>Config Error</error>");
-			$output->writeln("Message: " . $e->getMessage());
-			$output->writeln("");
-			$output->writeln("Run this command with --help to see options. You can also define configuration in your config.php file under the 'import' section.");
-			$output->writeln("");
-			return 1;
-		}
-
-		$config->log_path = null;
-
+		$factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
+		
+		$generator_config = $factory->createGeneratorConfig();
+		
 		$output->setVerbosity(3);
-		$logger = new Logger('importer', array(new ConsoleHandler($output)));
-
-		$importer = $factory->createImporter($config, $logger);
-		$importer->processImports();
-
-		echo "\n";
-		return 0;
+		
+		$logger = new Logger('exporter', array(new ConsoleHandler($output)));
+		
+		$generator = $factory->createGenerator($generator_config, $logger);
+		
+		$generator->generateJson();
 	}
 }
