@@ -116,7 +116,7 @@ class GeneratorFactory
 	{
 		$generator_class = $this->generators_map[$config->script];
 		
-		$generator = new $generator_class($config);
+		$generator = new $generator_class($config, $logger);
 		
 		if (!$generator instanceof GeneratorInterface) {
 			throw new \Exception($generator_class . ' is not a valid generator');

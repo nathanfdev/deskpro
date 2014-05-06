@@ -55,10 +55,11 @@ class ImportBundle extends Bundle
     public function registerCommands(Application $application)
     {
 		$commands = array(
-			'Application\\ImportBundle\\Command\\CheckCommand',
+			'Application\\ImportBundle\\Command\\CheckImportCommand',
+			'Application\\ImportBundle\\Command\\CheckExportCommand',
+			'Application\\ImportBundle\\Command\\ExportCommand',
+			'Application\\ImportBundle\\Command\\ImportCommand',
 			'Application\\ImportBundle\\Command\\ResetCommand',
-			'Application\\ImportBundle\\Command\\RunCommand',
-			'Application\\ImportBundle\\Command\\GenerateJsonCommand',
 		);
 
 		foreach ($commands as $cmd) {
