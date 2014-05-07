@@ -103,10 +103,10 @@ class Csv implements GeneratorInterface
 		
 		$input_file = $this->getFile('people');
 		
-		$index = 1;
+		$index = 0;
 		
-		while (($row = fgetcsv($input_file, 4096)) !== false) {
-			if ($index === 1) {
+		while (($row = fgetcsv($input_file, 4096, ';')) !== false) {
+			if ($index === 0) {
 				$index++;
 				continue;
 			}
@@ -137,15 +137,105 @@ class Csv implements GeneratorInterface
 		
 	}
 	
+	public function exportTickets()
+	{
+		$output_file_path = $this->output_path . 'tickets/';
+		
+		$input_file = $this->getFile('tickets');
+		
+		$index = 0;
+		
+		while (($row = fgetcsv($input_file, 4096, ';')) !== false) {
+			if ($index === 0) {
+				$index++;
+				continue;
+			}
+			
+			$file_name = 'ticket_' . trim($row[0]) . '.json';
+			
+			$transformedArray = array();
+
+			$transformedArray['ref']		= $row[0];
+			$transformedArray['person']		= $row[3];
+			$transformedArray['agent']		= $row[4];
+			$transformedArray['status']		= $row[2];
+			$transformedArray['date_created']	= $row[5];
+			$transformedArray['subject']		= $row[1];
+
+			if ($this->config->mode === 'live') {
+				file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+			}
+			
+			$this->logger->info(sprintf('%s exported successfully!', $file_name));
+			
+			$this->config->progress_bar->advance();
+
+			$index++;
+		}
+		
+	}
+	
+	public function exportTicketMessages()
+	{
+		$output_file_path = $this->output_path . 'tickets/';
+		
+		$input_file = $this->getFile('messages');
+		
+		$index = 0;
+		
+		while (($row = fgetcsv($input_file, 4096, ';')) !== false) {
+			if ($index === 0) {
+				$index++;
+				continue;
+			}
+			
+			$ticket_id = trim($row[0]);
+			
+			$ticket_file_name = 'ticket_' . $ticket_id . '.json';
+			
+			$ticket_file_path = $output_file_path . $ticket_file_name;
+			
+			if (is_writable($ticket_file_path)) {
+				$ticket_array = json_decode(file_get_contents($ticket_file_path), true);
+			
+				$message = array(
+					'person'	=> $row[1],
+					'date_created'	=> $row[3],
+					'message_text'	=> $row[2]
+				);
+				
+				@$ticket_array['messages'][] = $message;
+
+				if ($this->config->mode === 'live') {
+					file_put_contents($ticket_file_path, json_encode($ticket_array));
+				}
+
+				$this->logger->info(sprintf('%s exported successfully!', $ticket_file_path));
+				
+			} else {
+				$this->logger->warning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
+			}
+			
+			$index++;
+			
+			$this->config->progress_bar->advance();
+			
+		}
+		
+	}
+	
 	public function generateJson()
 	{
-		$steps = $this->getRecordCount('people');// + $this->getTicketCount();
+		$steps = $this->getRecordCount('people') + 
+			$this->getRecordCount('tickets') +
+			$this->getRecordCount('messages');
 		
 		$this->config->progress_bar->start($this->config->output, $steps);
 		
 		try {
 			$this->exportPeople();
-			//$this->exportTickets();
+			$this->exportTickets();
+			$this->exportTicketMessages();
 		} catch (\Exception $ex) {
 			$this->logger->warning($ex->getMessage());
 		}
