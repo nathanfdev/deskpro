@@ -69,8 +69,85 @@ class Csv implements GeneratorInterface
 		$this->logger = $logger;
 	}
 	
+	protected function getFileName($data_source)
+	{
+		return $this->input_path . DIRECTORY_SEPARATOR . $data_source . '.csv';
+	}
+
+
+	protected function getFile($data_source)
+	{
+		$data_file = $this->getFileName($data_source);
+		
+		return fopen($data_file, 'rt');
+	}
+	
+	public function getRecordCount($data_source)
+	{
+		$data_file = $this->getFile($data_source);
+		
+		$records = -1;
+		
+		while (($row = fgetcsv($data_file, 4096, ';')) !== false) {
+		    ++$records;
+		}
+		
+		fclose($data_file);
+		
+		return $records;
+	}
+	
+	public function exportPeople()
+	{
+		$output_file_path = $this->output_path . 'people/';
+		
+		$input_file = $this->getFile('people');
+		
+		$index = 1;
+		
+		while (($row = fgetcsv($input_file, 4096)) !== false) {
+			if ($index === 1) {
+				$index++;
+				continue;
+			}
+			
+			$file_name = 'person' . $index . '.json';
+			
+			$names = explode(' ', $row[0]);
+			
+			$transformedArray = array();
+
+			$transformedArray['oid']		= $index;
+			$transformedArray['is_agent']		= $row[2];
+			$transformedArray['first_name']		= $names[0];
+			$transformedArray['last_name']		= isset($names[1]) ? $names[1] : '';
+			$transformedArray['emails']		= array($row[1]);
+
+			if ($this->config->mode === 'live') {
+				file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+			}
+			
+			$this->logger->info(sprintf('%s exported successfully!', $file_name));
+			
+			$this->config->progress_bar->advance();
+
+			$index++;
+			
+		}
+		
+	}
+	
 	public function generateJson()
 	{
-		;
+		$steps = $this->getRecordCount('people');// + $this->getTicketCount();
+		
+		$this->config->progress_bar->start($this->config->output, $steps);
+		
+		try {
+			$this->exportPeople();
+			//$this->exportTickets();
+		} catch (\Exception $ex) {
+			$this->logger->warning($ex->getMessage());
+		}
 	}
 }
