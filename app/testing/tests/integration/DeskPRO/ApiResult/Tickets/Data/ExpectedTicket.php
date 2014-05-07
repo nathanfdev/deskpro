@@ -175,6 +175,14 @@ return array(
 			'picture_url_32' => 'http://localhost:8888/file.php/avatar/32/default.jpg?size-fit=1',
 			'picture_url_22' => 'http://localhost:8888/file.php/avatar/22/default.jpg?size-fit=1',
 			'picture_url_16' => 'http://localhost:8888/file.php/avatar/16/default.jpg?size-fit=1',
+			'default_picture_url' => 'http://localhost:8888/file.php/avatar/80/default.jpg?size-fit=1',
+			'default_picture_url_80' => 'http://localhost:8888/file.php/avatar/80/default.jpg?size-fit=1',
+			'default_picture_url_64' => 'http://localhost:8888/file.php/avatar/64/default.jpg?size-fit=1',
+			'default_picture_url_50' => 'http://localhost:8888/file.php/avatar/50/default.jpg?size-fit=1',
+			'default_picture_url_45' => 'http://localhost:8888/file.php/avatar/45/default.jpg?size-fit=1',
+			'default_picture_url_32' => 'http://localhost:8888/file.php/avatar/32/default.jpg?size-fit=1',
+			'default_picture_url_22' => 'http://localhost:8888/file.php/avatar/22/default.jpg?size-fit=1',
+			'default_picture_url_16' => 'http://localhost:8888/file.php/avatar/16/default.jpg?size-fit=1',
 		),
 	'person_email' =>
 		array(
