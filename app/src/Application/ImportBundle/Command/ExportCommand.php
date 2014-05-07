@@ -52,6 +52,7 @@ class ExportCommand extends ContainerAwareCommand
 		$this->setHelp('The actual export process');
 		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
 		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
+		$this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
 	}
 
 

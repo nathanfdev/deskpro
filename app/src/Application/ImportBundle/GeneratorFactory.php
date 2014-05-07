@@ -50,7 +50,8 @@ class GeneratorFactory
 	private $input;
 	
 	protected $generators_map = array(
-		'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket'
+		'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket',
+		'csv'		=> 'Application\\ImportBundle\\Generator\\Csv',
 	);
 
 
@@ -74,7 +75,6 @@ class GeneratorFactory
 
 		$import_config = new OptionsArray(dp_get_config('import', array()));
 		$config->output_path	= $import_config->get('output_path');
-		$config->input_path	= $import_config->get('input_path');
 		$config->log_path	= $import_config->get('log_path', dp_get_log_dir() . '/export');
 		$config->mode		= $import_config->get('mode', 'test');
 		$config->mark_done	= $import_config->get('mark_done', true);
@@ -86,6 +86,9 @@ class GeneratorFactory
 			
 			if ($this->input->hasOption('output-path')) {
 				$config->output_path = $this->input->getOption('output-path');
+			}
+			if ($this->input->hasOption('input-path')) {
+				$config->input_path = $this->input->getOption('input-path');
 			}
 			if ($this->input->hasOption('log-path')) {
 				$config->log_path = $this->input->getOption('log-path');
