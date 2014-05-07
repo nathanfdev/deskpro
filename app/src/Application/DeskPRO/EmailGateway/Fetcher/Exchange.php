@@ -172,7 +172,7 @@ class Exchange extends AbstractFetcher
 	 *
 	 * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
 	 */
-	public function getStorage()
+	public function getStorage($reconnect = false)
 	{
 		return $this->storage;
 	}
@@ -196,6 +196,10 @@ class Exchange extends AbstractFetcher
 	 */
 	public function _readNext()
 	{
+		if (!$this->storage) {
+			$this->_initConnection();
+		}
+		
 		$message_id = $this->messages[$this->next_index];
 		$this->next_index++;
 
