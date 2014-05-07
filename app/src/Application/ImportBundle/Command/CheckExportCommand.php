@@ -52,6 +52,7 @@ class CheckExportCommand extends ContainerAwareCommand
 		$this->setHelp('Performs a dry run of the export process');
 		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
 		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
+		$this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
 	}
 
 
@@ -69,6 +70,12 @@ class CheckExportCommand extends ContainerAwareCommand
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$logger = new Logger('exporter', array(new ConsoleHandler($output)));
+		
+		if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
+			$logger->err('You must supply an "input-path" argument while using CSV exporter');
+		}
+		
 		$this->progress_bar = $this->getHelperSet()->get('progress');
 		
 		$factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
@@ -79,8 +86,6 @@ class CheckExportCommand extends ContainerAwareCommand
 		$generator_config->output	= $output;
 		
 		$output->setVerbosity(3);
-		
-		$logger = new Logger('exporter', array(new ConsoleHandler($output)));
 		
 		$generator = $factory->createGenerator($generator_config, $logger);
 		

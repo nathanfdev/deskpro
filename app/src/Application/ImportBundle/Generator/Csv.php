@@ -26,69 +26,51 @@
 \**************************************************************************/
 
 /**
- * @package Importer
+* DeskPRO
+*
+* @package DeskPRO
+*/
+
+namespace Application\ImportBundle\Generator;
+
+use Application\ImportBundle\GeneratorConfig;
+
+/**
+ * Description of OsTicket
+ *
+ * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  */
-
-namespace Application\ImportBundle\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Monolog\Logger;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-
-class ExportCommand extends ContainerAwareCommand
+class Csv implements GeneratorInterface
 {
-	protected $progress_bar;
+	protected $input_path;
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function configure()
+	protected $output_path;
+	
+	protected $ticket_offset;
+	
+	protected $batch_size;
+	
+	/** @var Psr\Log\LoggerInterface */
+	protected $logger;
+	
+	/** @var GeneratorConfig */
+	protected $config;
+
+	public function __construct(GeneratorConfig $config, $logger)
 	{
-		$this->setName('dp:export:run');
-		$this->setHelp('The actual export process');
-		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
+		$this->config = $config;
+		
+		$this->input_path = $config->input_path;
+		
+		$this->output_path = $config->output_path;
+		
+		$this->batch_size = 10;
+		
+		$this->logger = $logger;
 	}
-
-
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
+	
+	public function generateJson()
 	{
-		return parent::getContainer();
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$logger = new Logger('exporter', array(new ConsoleHandler($output)));
-		
-		if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
-			$logger->err('You must supply an "input-path" argument while using CSV exporter');
-		}
-		
-		$this->progress_bar = $this->getHelperSet()->get('progress');
-		
-		$factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
-		
-		$generator_config = $factory->createGeneratorConfig();
-		
-		$generator_config->progress_bar	= $this->progress_bar;
-		$generator_config->output	= $output;
-		$generator_config->mode		= 'live';
-		
-		$output->setVerbosity(3);
-		
-		$generator = $factory->createGenerator($generator_config, $logger);
-		
-		$generator->generateJson();
+		;
 	}
 }
