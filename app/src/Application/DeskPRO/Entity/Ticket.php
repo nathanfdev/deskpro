@@ -1548,11 +1548,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$x = new LabelTicket();
 		$x->label = $l;
 
-		if (($idx = $this->labels->indexOf($x->label)) !== false) {
-			$label = $this->labels->get($idx);
-			$this->labels->removeKey($idx);
-			$this->_onPropertyChanged('labels', null, $this->labels);
-			return $label;
+		foreach ($this->labels as $idx => $label) {
+			if ($label->label == $x->label) {
+				$this->labels->remove($idx);
+				$this->_onPropertyChanged('labels', null, $this->labels);
+				return $label;
+			}
 		}
 
 		return null;

@@ -63,7 +63,11 @@ class LabelManager
 
 		foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
 			if ($labelobj['label'] == $label) {
-				$this->entity[$this->labels_property]->remove($k);
+				if ($this->entity instanceof Ticket) {
+					$this->entity->removeLabelByString($label);
+				} else {
+					$this->entity[$this->labels_property]->remove($k);
+				}
 
 				if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
 					$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_removed', $label, null);

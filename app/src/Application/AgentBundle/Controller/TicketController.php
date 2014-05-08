@@ -999,13 +999,15 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_labels');
 
+		$tm = $this->container->getTicketManager();
+		$tm->markAsManaged($ticket);
+
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
-
 		$ticket->getLabelManager()->setLabelsArray($labels);
-
 		$this->em->persist($ticket);
-		$this->em->flush();
-		$ticket->_saveTicketLogs();
+
+		$context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+		$tm->saveTicket($ticket, $context);
 
 		return $this->createJsonResponse(array('success' => 1));
 	}

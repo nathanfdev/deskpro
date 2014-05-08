@@ -144,6 +144,13 @@
 	{{ phrase('agent.general.labels_added') }}: <span class="new-val">{{ log.details.labels|implode(', ') }}</span>
 {% elseif log.action_type == 'labels_removed' %}
 	{{ phrase('agent.general.labels_removed') }}: <span class="new-val">{{ log.details.labels|implode(', ') }}</span>
+{% elseif log.action_type == 'changed_labels' %}
+	{% if log.details.added %}
+		{{ phrase('agent.general.labels_added') }}: <span class="new-val">{{ log.details.added|implode(', ') }}</span>
+	{% endif %}
+	{% if log.details.removed %}
+		{{ phrase('agent.general.labels_removed') }}: <span class="new-val">{{ log.details.removed|implode(', ') }}</span>
+	{% endif %}
 {% elseif log.action_type == 'changed_category' %}
 	<span class="type">{{ phrase('agent.general.category') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_category_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_category_title|default(phrase('agent.general.none'))}}</span>
