@@ -364,6 +364,7 @@ rm -rf .travis.yml CHANGELOG.md composer.json package.xml phpunit.xml.dist readm
 
 cd $DIR_WEB_BOWER
 find . -name bower.json -type f -exec rm -rf {} \;
+find . -name .bower.json -type f -exec rm -rf {} \;
 find . -name package.json -type f -exec rm -rf {} \;
 find . -name README.md -type f -exec rm -rf {} \;
 
