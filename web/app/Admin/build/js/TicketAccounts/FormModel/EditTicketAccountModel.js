@@ -146,8 +146,6 @@
             if (!this.form.in_imap_account.archive_mailbox || this.form.in_imap_account.archive_mailbox === '') {
               form.in_imap_account.mode = 'read';
               form.in_imap_account.archive_mailbox = '';
-            } else {
-              form.in_imap_account.archive_mailbox = '';
             }
           }
         }

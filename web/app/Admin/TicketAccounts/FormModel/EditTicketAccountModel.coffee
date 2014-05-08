@@ -148,8 +148,6 @@ define [
 					if not @form.in_imap_account.archive_mailbox or @form.in_imap_account.archive_mailbox == ''
 						form.in_imap_account.mode = 'read'
 						form.in_imap_account.archive_mailbox = ''
-					else
-						form.in_imap_account.archive_mailbox = ''
 
 			if form.incoming_type == 'exchange'
 				if form.in_exchange_account.read_mailbox_type == 'inbox' or form.in_exchange_account.read_mailbox == ''
