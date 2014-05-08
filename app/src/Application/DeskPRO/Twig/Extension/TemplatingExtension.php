@@ -543,6 +543,17 @@ class TemplatingExtension extends \Twig_Extension
 			case 'country_names':
 				return \Orb\Data\Countries::getCountryNames();
 				break;
+			case 'timezones':
+				$tzs = \DateTimeZone::listIdentifiers();
+				$tzs = array_combine($tzs, $tzs);
+
+				foreach ($tzs as &$tz_name) {
+					$tz_name = str_replace('/', ' ▸ ', $tz_name);
+					$tz_name = str_replace('_', ' ', $tz_name);
+				}
+
+				return $tzs;
+				break;
 			default:
 				return null;
 		}
