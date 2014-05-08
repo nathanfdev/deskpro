@@ -53,6 +53,11 @@ abstract class ProcessAbstract
 	protected $error = null;
 
 	/**
+	 * @var string
+	 */
+	protected $error_type = null;
+
+	/**
 	 * Indexed by blob id
 	 * @var \Application\DeskPRO\Entity\Blob[]
 	 */
@@ -118,10 +123,12 @@ abstract class ProcessAbstract
 
 	/**
 	 * @param string $error
+	 * @param string $error_type
 	 */
-	protected function setError($error)
+	protected function setError($error, $error_type = 'rejected')
 	{
 		$this->error = $error;
+		$this->error_type = $error_type;
 	}
 
 
@@ -131,6 +138,15 @@ abstract class ProcessAbstract
 	public function getError()
 	{
 		return $this->error;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getErrorType()
+	{
+		return $this->error_type;
 	}
 
 

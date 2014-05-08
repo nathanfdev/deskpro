@@ -324,7 +324,7 @@ class Runner
 						$source['status'] = 'complete';
 						$source['error_code'] = null;
 					} else {
-						$source['status'] = 'error';
+						$source['status'] = $proc->getErrorType() == 'rejected' ? 'rejected' : 'error';
 						$source['error_code'] = $proc->getErrorCode();
 						$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
 					}

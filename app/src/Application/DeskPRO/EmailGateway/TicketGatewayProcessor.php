@@ -55,6 +55,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	/**
 	 * @var string
 	 */
+	protected $error_type;
+
+	/**
+	 * @var string
+	 */
 	protected $error;
 
 	/**
@@ -154,6 +159,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($person && $person->is_agent && $is_bounce) {
 			$this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
 			$this->error = 'agent_bounce';
+			$this->error_type = 'rejected';
 			return null;
 		}
 
@@ -164,6 +170,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($person && $person->is_disabled && !$ticket) {
 			$this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
 			$this->error = 'from_disabled_user';
+			$this->error_type = 'rejected';
 			return null;
 		}
 
@@ -229,6 +236,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				App::getMailer()->send($message);
 
 				$this->error = 'obj_closed';
+				$this->error_type = 'rejected';
 				return null;
 			}
 		}
@@ -378,6 +386,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($err = $reply_proc->getError()) {
 			$this->error = $err;
+			$this->error_type = $reply_proc->getErrorType();
 			return null;
 		}
 
@@ -407,6 +416,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if (!$this->container->getSetting('core.reg_enabled')) {
 				$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
 				$this->error = EmailSource::ERR_PERM_INSUFFICIENT;
+				$this->error_type = 'rejected';
 
 				$account_manager = App::$container->getEmailAccountManager();
 				$user_email = $this->reader->getFromAddress()->getEmail();
@@ -429,6 +439,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($person && $person->is_agent && $ticket_email->is_bounce) {
 			$this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
 			$this->error = 'agent_bounce';
+			$this->error_type = 'rejected';
 			return null;
 		}
 
@@ -464,6 +475,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if ($err = $fwd_proc->getError()) {
 				$this->error = $err;
+				$this->error_type = 'rejected';
 				return null;
 			}
 
@@ -480,6 +492,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if ($err = $new_proc->getError()) {
 				$this->error = $err;
+				$this->error_type = $new_proc->getErrorType();
 				return null;
 			}
 
@@ -518,6 +531,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	public function getErrorCode()
 	{
 		return $this->error;
+	}
+
+
+	/**
+	 * 'error' or 'rejected'
+	 * @return string
+	 */
+	public function getErrorType()
+	{
+		return $this->error_type;
 	}
 
 
