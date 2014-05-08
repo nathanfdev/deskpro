@@ -1,9 +1,11 @@
 define [
 	'angular',
-	'DeskPRO/OptionBuilder/Controller'
+	'DeskPRO/OptionBuilder/Controller',
+	'DeskPRO/Util/Arrays'
 ], (
 	angular,
-	DeskPRO_OptionBuilder_Controller
+	DeskPRO_OptionBuilder_Controller,
+	Arrays
 ) ->
 	angular.module('deskpro.option_builder', [])
 		.directive('dpOptionBuilder', [ ->
@@ -53,6 +55,7 @@ define [
 			restrict: 'A',
 			link: (scope, iElement, iAttrs) ->
 
+				rows = []
 				opts = scope.$eval(iAttrs.dpOptionBuilderSet)
 				scope.setCount = 0
 				lastEmpty = null
@@ -63,6 +66,7 @@ define [
 					scope.setCount = 0
 					lastEmpty = null
 					containRow.empty()
+					rows = []
 
 					any = false
 					for own setId, set of withSet
@@ -75,6 +79,11 @@ define [
 				scope.$watch(iAttrs.setsObject, (newVal) ->
 					reset(newVal)
 				)
+
+				recountRows = ->
+					for row, i in rows
+						if row.rowScope.setIndex != i+1
+							row.rowScope.$apply(-> row.rowScope.setIndex = i+1)
 
 				addRow = (useExistSetId) ->
 					tpl = $templateCache.get(opts.template)
@@ -105,8 +114,14 @@ define [
 							if scope.setCount == 1
 								element.addClass('empty')
 					)
+					rowScope.setIndex = rows.length+1
 
 					element = $compile(tpl)(rowScope)
+
+					rows.push({
+						rowScope: rowScope,
+						element: element
+					})
 
 					if scope.setCount >= 1
 						element.addClass('empty')
@@ -114,13 +129,14 @@ define [
 					element.find('.removerow_btn').on('click', (ev) ->
 						ev.preventDefault()
 						rowScope.$destroy()
-						element.slideUp(200, ->
-							element.remove()
-
-							if scope.setCount == 0
-								addRow()
-						)
 						scope.setCount -= 1
+						element.remove()
+
+						Arrays.findAndRemove(rows, (v) -> v.rowScope == rowScope)
+
+						recountRows()
+						if scope.setCount == 0
+							addRow()
 					)
 
 					containRow.append(element)

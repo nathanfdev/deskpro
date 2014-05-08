@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['angular', 'DeskPRO/OptionBuilder/Controller'], function(angular, DeskPRO_OptionBuilder_Controller) {
+  define(['angular', 'DeskPRO/OptionBuilder/Controller', 'DeskPRO/Util/Arrays'], function(angular, DeskPRO_OptionBuilder_Controller, Arrays) {
     return angular.module('deskpro.option_builder', []).directive('dpOptionBuilder', [
       function() {
         return {
@@ -43,7 +43,8 @@
         return {
           restrict: 'A',
           link: function(scope, iElement, iAttrs) {
-            var addRow, containRow, lastEmpty, opts, reset;
+            var addRow, containRow, lastEmpty, opts, recountRows, reset, rows;
+            rows = [];
             opts = scope.$eval(iAttrs.dpOptionBuilderSet);
             scope.setCount = 0;
             lastEmpty = null;
@@ -54,6 +55,7 @@
               scope.setCount = 0;
               lastEmpty = null;
               containRow.empty();
+              rows = [];
               any = false;
               for (setId in withSet) {
                 if (!__hasProp.call(withSet, setId)) continue;
@@ -68,6 +70,21 @@
             scope.$watch(iAttrs.setsObject, function(newVal) {
               return reset(newVal);
             });
+            recountRows = function() {
+              var i, row, _i, _len, _results;
+              _results = [];
+              for (i = _i = 0, _len = rows.length; _i < _len; i = ++_i) {
+                row = rows[i];
+                if (row.rowScope.setIndex !== i + 1) {
+                  _results.push(row.rowScope.$apply(function() {
+                    return row.rowScope.setIndex = i + 1;
+                  }));
+                } else {
+                  _results.push(void 0);
+                }
+              }
+              return _results;
+            };
             addRow = function(useExistSetId) {
               var element, rowScope, setId, setsObject, tpl;
               tpl = $templateCache.get(opts.template);
@@ -98,20 +115,27 @@
                   }
                 }
               });
+              rowScope.setIndex = rows.length + 1;
               element = $compile(tpl)(rowScope);
+              rows.push({
+                rowScope: rowScope,
+                element: element
+              });
               if (scope.setCount >= 1) {
                 element.addClass('empty');
               }
               element.find('.removerow_btn').on('click', function(ev) {
                 ev.preventDefault();
                 rowScope.$destroy();
-                element.slideUp(200, function() {
-                  element.remove();
-                  if (scope.setCount === 0) {
-                    return addRow();
-                  }
+                scope.setCount -= 1;
+                element.remove();
+                Arrays.findAndRemove(rows, function(v) {
+                  return v.rowScope === rowScope;
                 });
-                return scope.setCount -= 1;
+                recountRows();
+                if (scope.setCount === 0) {
+                  return addRow();
+                }
               });
               containRow.append(element);
               scope.setCount += 1;

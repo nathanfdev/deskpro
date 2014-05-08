@@ -232,12 +232,6 @@
                 rowScope[k] = v;
               }
             }
-            if (_this.options.tag_first && !_this.rowsCount) {
-              rowScope.tag = _this.options.tag_first;
-            }
-            if (_this.options.tag_after && _this.rowsCount) {
-              rowScope.tag = _this.options.tag_after;
-            }
             element = _this.$compile(tpl)(rowScope);
             element.find('.remove-row-trigger').on('click', function(ev) {
               ev.preventDefault();

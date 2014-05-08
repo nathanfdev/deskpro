@@ -210,11 +210,6 @@ define ->
 					for own k, v of data
 						rowScope[k] = v
 
-				if @options.tag_first and not @rowsCount
-					rowScope.tag = @options.tag_first
-				if @options.tag_after and @rowsCount
-					rowScope.tag = @options.tag_after
-
 				element = @$compile(tpl)(rowScope)
 				element.find('.remove-row-trigger').on('click', (ev) =>
 					ev.preventDefault()

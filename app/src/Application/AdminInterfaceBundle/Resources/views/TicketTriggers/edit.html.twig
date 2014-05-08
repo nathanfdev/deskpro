@@ -105,11 +105,12 @@
 											<div class="remove-btn-wrap">
 												<span class="removerow_btn"><i class="fa fa-times-circle"></i></span>
 											</div>
-											<em class="dp-ob-row-tag if">or</em>
+											<em class="dp-ob-row-tag if" ng-if="setIndex == 1">when</em>
+											<em class="dp-ob-row-tag if" ng-if="setIndex != 1">or</em>
 											The following conditions are met:
 										</header>
 										<article>
-											<dp-option-builder types-def="criteria_typedef" save-target="criteria_set_row" options="{tag_first: false, tag_after: 'and'}" option-types="option_types">
+											<dp-option-builder types-def="criteria_typedef" save-target="criteria_set_row" option-types="option_types">
 												<add-btn-label>Criteria</add-btn-label>
 											</dp-option-builder>
 										</article>
