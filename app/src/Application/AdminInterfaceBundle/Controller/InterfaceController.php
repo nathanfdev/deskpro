@@ -71,7 +71,7 @@ class InterfaceController extends AbstractController
 
 		$rendered = null;
 		if ($this->tpl->exists($tpl_name)) {
-			$rendered = $this->renderView($tpl_name);
+			$rendered = $this->renderView($tpl_name, $this->getViewParams($tpl_name));
 		}
 
 		if ($load_data) {
@@ -96,7 +96,7 @@ class InterfaceController extends AbstractController
 
 			$rendered = null;
 			if ($this->tpl->exists($tpl_name)) {
-				$rendered = $this->renderView($tpl_name);
+				$rendered = $this->renderView($tpl_name, $this->getViewParams($tpl_name));
 			}
 
 			$views[] = array(
@@ -158,5 +158,17 @@ class InterfaceController extends AbstractController
 		}
 
 		return $tpl_name;
+	}
+
+	private function getViewParams($tpl_name)
+	{
+		switch ($tpl_name) {
+			case 'AdminInterfaceBundle:PortalEditor:frame.html.twig':
+				return array(
+					'default_portal_style' => $this->settings->getDefaultGroup('user_style', false)
+				);
+			default:
+				return array();
+		}
 	}
 }

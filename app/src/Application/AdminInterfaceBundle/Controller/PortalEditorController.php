@@ -34,6 +34,8 @@
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Util as DeskPRO_Util;
+use Orb\Util\Arrays;
 
 class PortalEditorController extends AbstractController
 {
@@ -348,13 +350,12 @@ class PortalEditorController extends AbstractController
 
 	public function updateBlockOrdersAction()
 	{
-		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
-		$result =  $helper->doUpdate('portal_page_display');
+		$res = $this->updateDisplayOrderHelper('portal_page_display');
 
 		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
 		$cache->invalidateAll();
 
-		return $result;
+		return $res;
 	}
 
 	public function blockToggleAction($pid)
@@ -529,5 +530,15 @@ class PortalEditorController extends AbstractController
 			'filename' => $blob['filename'],
 			'filesize_readable' => $blob->getReadableFilesize()
 		)));
+	}
+
+	private function updateDisplayOrderHelper($table)
+	{
+		$ordered_ids = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
+		$ordered_ids = Arrays::removeFalsey($ordered_ids);
+
+		DeskPRO_Util::updateDisplayOrders($ordered_ids, $table);
+
+		return $this->createJsonResponse(array('success' => true, 'new_order' => $ordered_ids));
 	}
 }

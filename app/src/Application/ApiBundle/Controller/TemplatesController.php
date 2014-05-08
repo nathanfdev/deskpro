@@ -175,7 +175,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
 		}
 
 		if (!($template instanceof TemplateCustom)) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$set->deleteTemplate($template);

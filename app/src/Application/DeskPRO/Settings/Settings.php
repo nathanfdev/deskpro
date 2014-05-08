@@ -201,12 +201,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	/**
 	 * Get the default values for an entire group
 	 *
-	 * @param $group
+	 * @param string $group
+	 * @param bool $short  True to strip off the group name, false to include the group name in the key
 	 * @return array
 	 * @throws \Doctrine\DBAL\DBALException
 	 * @throws \Exception
 	 */
-	public function getDefaultGroup($group)
+	public function getDefaultGroup($group, $short = true)
 	{
 		if ($this->settings === null) {
 			$this->_loadSettings();
@@ -218,8 +219,12 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 		$ret = array();
 		foreach ($this->default_settings as $k => $v) {
 			if (substr($k, 0, $len) === $group_dot) {
-				$k_short = substr($k, $len);
-				$ret[$k_short] = $v;
+				if ($short) {
+					$k_short = substr($k, $len);
+					$ret[$k_short] = $v;
+				} else {
+					$ret[$k] = $v;
+				}
 			}
 		}
 

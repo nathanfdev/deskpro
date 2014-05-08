@@ -34,109 +34,63 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Monolog\Logger;
-use Psr\Log\LoggerInterface;
 
-class AbstractDefaultData
+use Application\DeskPRO\Templating\Templates\TemplateSet;
+
+class TemplateData extends AbstractDefaultData
 {
-	/**
-	 * Gets the priority. Lower numbers run first.
-	 * This typically only makes sense for runInstall.
-	 */
-	const PRIORITY = 500;
-
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
-
-	/**
-	 * @var Logger
-	 */
-	private $logger;
-
-	/**
-	 * @param DeskproContainer $container
-	 * @param LoggerInterface $logger
-	 */
-	public function __construct(DeskproContainer $container, LoggerInterface $logger)
-	{
-		$this->container = $container;
-		$this->logger = $logger;
-	}
-
-
-	/**
-	 * @return Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
-
-
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	protected function getEm()
-	{
-		return $this->container->getEm();
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-	protected function getDb()
-	{
-		return $this->container->getDb();
-	}
-
-
-	/**
-	 * @return DeskproContainer
-	 */
-	protected function getContainer()
-	{
-		return $this->container;
-	}
-
-
-	/**
-	 * Called during a fresh install.
-	 */
 	public function runInstall()
 	{
+		$this->getLogger()->debug("Saving default template");
+		$this->getDb()->executeUpdate("DELETE FROM templates WHERE name = 'UserBundle:Portal:welcome-block.html.twig'");
 
+		$set = new TemplateSet(
+			$this->getEm(),
+			$this->getContainer()->get('twig'),
+			$this->getContainer()->getSystemService('style')
+		);
+		$template = $set->getCustomTemplate('UserBundle:Portal:welcome-block.html.twig');
+		$template_code = $template->getTemplateCode();
+		$template_code->setCode($this->getCode());
+		$set->saveTemplate($template);
 	}
 
-
-	/**
-	 * Called automatically during an upgrade when the system doesnt have the class installed.
-	 * Usually the same as runInstall.
-	 */
-	public function runInstallViaUpgrade()
+	public function runReset()
 	{
 		$this->runInstall();
 	}
 
-
-	/**
-	 * Called automatically during upgrades when the package has been installed before.
-	 * This is used to sync the database with any changes (e.g. adding new records or updating them).
-	 */
 	public function runSync()
 	{
-
+		return;
 	}
 
-
-	/**
-	 * Called with the dp:reset-default-data command specifically. Usually the same as runSync.
-	 */
-	public function runReset()
+	private function getCode()
 	{
-		$this->runSync();
+		return <<<'HTML'
+{##
+ # This is the block displayed at the top of the portal home page.
+ ##}
+
+<article class="dp-intro-box">
+	<h2>Welcome</h2>
+	<p>
+		This is your new installation of DeskPRO. Why don't you try
+		<a href="{{ path('user_tickets_new') }}">submitting a new ticket</a> to test out your new helpdesk?
+	</p>
+	<p>
+		Here are some ideas on what to do next:
+	</p>
+	<ul>
+		<li>Change this welcome text from <a href="{{ path('user') }}admin/portal">Admin Interface {{ language_arrow('right') }} Portal</a></li>
+		<li>Integrate with your website using the Javascript widgets from <a href="{{ path('user') }}admin/portal/widgets">Admin Interface {{ language_arrow('right') }} Portal {{ language_arrow('right') }} Website Widgets</a></li>
+		<li>Add some new knowledgebase articles from <a href="{{ path('user') }}agent">Agent Interface {{ language_arrow('right') }} Publish</a></li>
+	</ul>
+	<p>
+		If you are new to DeskPRO, we recommend reading through our <a href="https://support.deskpro.com/kb/articles/127-getting-started">Getting Started Guide</a>.
+		Remember, if you need help you can always contact us through <a href="http://support.deskpro.com/">support.deskpro.com</a>!
+	</p>
+</article>
+HTML;
 	}
 }

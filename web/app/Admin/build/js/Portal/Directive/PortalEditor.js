@@ -105,7 +105,9 @@
     };
     editorAjaxClient = function(options) {
       options.headers = {
-        'X-DeskPRO-API-Token': window.DP_API_TOKEN
+        'X-DeskPRO-API-Token': window.DP_API_TOKEN,
+        'X-DeskPRO-Session-ID': window.DP_SESSION_ID,
+        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN
       };
       return $.ajax(options);
     };
@@ -219,8 +221,8 @@
 					}
 
 					editorAjaxClient({
-						type: 'POST',
-						url: DP_BASE_URL + 'admin/templates/revert-template.json?name=' + template_name
+						type: 'DELETE',
+						url: DP_BASE_URL + 'api/templates/' + template_name
 					});
 
 					break;
@@ -539,9 +541,10 @@
 					el.find('textarea').val('').addClass('loading');
 
 					editorAjaxClient({
-						url: DP_BASE_URL + 'admin/templates/get-template-code?name=' + template_name,
+						url: DP_BASE_URL + 'api/templates/' + template_name,
 						context: this,
-						success: function(val) {
+						success: function(data) {
+							var val = data.template_code.code
 							el.find('textarea').val(val).removeClass('loading');
 						}
 					});
@@ -550,23 +553,25 @@
 
 						el.find('.overlay-footer').addClass('loading');
 
+						var code = el.find('textarea').val().trim();
 						var postData = {
-							name: template_name,
-							code: el.find('textarea').val().trim()
+							template: {
+								code: code
+							}
 						};
 
 						if (name == 'head_include') {
-							if (!postData.code.length) {
+							if (!code.length) {
 								editorAjaxClient({
-									type: 'POST',
-									url: DP_BASE_URL + 'admin/templates/revert-template.json?name=' + template_name,
+									type: 'DELETE',
+									url: DP_BASE_URL + 'api/templates/' + template_name,
 									success: function() {
 										window.location.reload(false);
 									}
 								});
 							} else {
 								editorAjaxClient({
-									url: DP_BASE_URL + 'admin/templates/save-template.json',
+									url: DP_BASE_URL + 'api/templates/' + template_name,
 									context: this,
 									type: 'POST',
 									data: postData,
@@ -578,17 +583,17 @@
 							return;
 						}
 
-						if (!postData.code.length) {
+						if (!code.length) {
 							editorAjaxClient({
-								type: 'POST',
-								url: DP_BASE_URL + 'admin/templates/revert-template.json?name=' + template_name
+								type: 'DELETE',
+								url: DP_BASE_URL + 'api/templates/' + template_name
 							});
 
 							callback('reset');
 							overlay.close();
 						} else {
 							editorAjaxClient({
-								url: DP_BASE_URL + 'admin/templates/save-template.json',
+								url: DP_BASE_URL + 'api/templates/' + template_name,
 								context: this,
 								type: 'POST',
 								data: postData,

@@ -50,29 +50,31 @@ class TemplateFile extends Template
 	 */
 	private $type;
 
+
+	/**
+	 * @param string $name
+	 */
 	public function __construct($name)
 	{
 		parent::__construct($name);
-		$this->initFilePath();
-	}
 
-	private function initFilePath()
-	{
 		$parts = explode(':', $this->getName());
+
 		if (count($parts) != 3) {
 			throw new \InvalidArgumentException("Invalid template name: {$this->getName()}");
 		}
 
 		list ($bundle, $dir, $file) = $parts;
 
-		$path = DP_ROOT . "/src/Application/$bundle/Resources/views";
+		$path = DP_ROOT . "/src/Application/$bundle/Resources/views/";
 		if ($dir) {
-			$path .= "/$dir/";
+			$path .= "$dir/";
 		}
 		$path .= $file;
 
 		$this->file_path = $path;
 	}
+
 
 	/**
 	 * Check if the template file exists

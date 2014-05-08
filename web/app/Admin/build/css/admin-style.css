@@ -11783,7 +11783,7 @@ table.table > tbody > tr > td.dp-id-col {
 
 section#portal_colors {
   position: absolute;
-  z-index: 1000;
+  z-index: 999991;
   width: 400px;
   background-color: #fff;
   border: 1px solid #C2C7CD;
