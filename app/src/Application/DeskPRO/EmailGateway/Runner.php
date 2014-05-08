@@ -644,7 +644,7 @@ class Runner
 			case 'pop3':
 				return new Fetcher\Pop3($account, 20971520);
 			case 'gmail':
-				return new Fetcher\Imap($account, 20971520);
+				return new Fetcher\Pop3($account, 20971520);
 			case 'imap':
 				return new Fetcher\Imap($account, 20971520);
 			case 'exchange':
