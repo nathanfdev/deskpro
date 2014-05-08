@@ -167,10 +167,21 @@ class Exchange
 			$response->ResponseMessages->FindItemResponseMessage->ResponseClass == 'Success'
 		) {
 			$ids = array();
-			foreach (@$response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message as $m) {
-				$ids[] = $m->ItemId->Id;
+			
+			if (!isset($response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message) ||
+			empty($response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message)) {
+				return $ids;
+			}
+			
+			foreach ($response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message as $m) {
+				if (isset($m->Id)) {
+					$ids[] = $m->Id;
+				} elseif(isset ($m->ItemId->Id)) {
+					$ids[] = $m->ItemId->Id;
+				}
 			}
 			$ids = Arrays::removeFalsey($ids);
+			
 			return $ids;
 		}
 
@@ -379,6 +390,7 @@ class Exchange
 		$change = new EWSType_ItemChangeType();
 		$change->ItemId = new EWSType_ItemIdType();
 		$change->ItemId->Id = $message_id;
+		$change->ItemId->ChangeKey = $this->getChangeKey($message_id);
 
 		$field = new EWSType_SetItemFieldType();
 		$field->FieldURI = new EWSType_PathToUnindexedFieldType();
@@ -393,9 +405,9 @@ class Exchange
 		$request->ItemChanges[] = $change;
 
 		$response = $this->service->UpdateItem($request);
-
-		if ($response && $response->ResponseMessages->DeleteItemResponseMessage->ResponseCode == 'NoError' &&
-			$response->ResponseMessages->DeleteItemResponseMessage->ResponseClass == 'Success'
+		
+		if ($response && $response->ResponseMessages->UpdateItemResponseMessage->ResponseCode == 'NoError' &&
+			$response->ResponseMessages->UpdateItemResponseMessage->ResponseClass == 'Success'
 		) {
 			return true;
 		}
@@ -439,5 +451,18 @@ class Exchange
 			$response->ResponseMessages->GetItemResponseMessage->ResponseClass == 'Success') {
 			return $response->ResponseMessages->GetItemResponseMessage->Items->Message;
 		}
+	}
+	
+	protected function getChangeKey($message_id)
+	{
+		$message = $this->getEmailProps($message_id);
+		
+		return @$message->ItemId->ChangeKey;
+	}
+
+
+	public function close()
+	{
+		return true;
 	}
 }

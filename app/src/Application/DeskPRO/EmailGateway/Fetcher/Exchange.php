@@ -200,15 +200,24 @@ class Exchange extends AbstractFetcher
 			$this->_initConnection();
 		}
 		
+		if (!isset($this->messages[$this->next_index])) {
+			return false;
+		}
+		
 		$message_id = $this->messages[$this->next_index];
+		
 		$this->next_index++;
 
 		$message = $this->storage->getEmailProps($message_id);
-
+		
+		if (!$message) {
+			return null;
+		}
+		
 		$raw_message = new RawMessage();
 		$raw_message->id   = $message_id;
 		$raw_message->uid  = $message_id;
-		$raw_message->size = $message->size;
+		$raw_message->size = $message->Size;
 
 		if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
 			// If we are here, it means that message is larger than the max size
