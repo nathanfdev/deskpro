@@ -157,7 +157,7 @@ class Imap extends Server
 	public function moveMessageMailbox($uid, $new_mailbox)
 	{
 		imap_mail_move($this->imapStream, "$uid", "$new_mailbox", CP_UID);
-		imap_expunge($this->imapStream);
+		//imap_expunge($this->imapStream);
 	}
 
 
@@ -167,7 +167,7 @@ class Imap extends Server
 	public function deleteMessage($uid)
 	{
 		imap_delete($this->imapStream, $uid, FT_UID);
-		imap_expunge($this->imapStream);
+		//imap_expunge($this->imapStream);
 	}
 
 
