@@ -13,6 +13,7 @@ define [
 		'ui.ace',
 		'angularMoment',
 		'blueimp.fileupload',
+		'angularFileUpload',
 		'uiSlider',
 		'ngGrid',
 		'deskpro.option_builder',

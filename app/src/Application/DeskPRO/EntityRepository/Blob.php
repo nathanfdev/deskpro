@@ -67,7 +67,7 @@ class Blob extends AbstractEntityRepository
 	{
 		return $this->getEntityManager()->createQuery('
 			SELECT b
-			FROM DeskPRO:Blob
+			FROM DeskPRO:Blob b
 			WHERE b.authcode = ?0
 		')->setParameters(array($auth_code))->getOneOrNullResult();
 	}

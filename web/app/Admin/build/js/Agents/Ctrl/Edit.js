@@ -44,7 +44,7 @@
         var promise;
         if (this.agentId) {
           promise = this.Api.sendDataGet({
-            agent: "/agents/" + this.agentId,
+            agent: "/agents/" + this.agentId + "?extended=1",
             teams: "/agent_teams",
             groups: "/agent_groups",
             groupPerms: "/agent_groups/all/permissions",
@@ -67,6 +67,7 @@
             var assign, dep, full, u, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
             if (_this.agentId) {
               _this.agent = result.data.agent.agent;
+              _this.agent.signature_html = result.data.agent.signature_html;
               _this.perm_form = result.data.agent.perms;
             } else {
               _this.agent = {
@@ -569,8 +570,6 @@
        */
 
       Admin_Agents_Ctrl_Edit.prototype.showEditProfile = function() {
-        var form;
-        form = {};
         return this.$modal.open({
           templateUrl: this.getTemplatePath('Agents/edit-profile-modal.html'),
           controller: 'Admin_Agents_Ctrl_EditProfile',
@@ -580,9 +579,22 @@
                 return _this.agent;
               };
             })(this),
-            form: (function(_this) {
+            saveMethod: (function(_this) {
               return function() {
-                return form;
+                return function(data, from) {
+                  if (from.new_image) {
+                    _this.agent.picture_blob = from.new_image;
+                  } else if (from.form.picture_set === 'default') {
+                    _this.agent.picture_blob = null;
+                  }
+                  _this.agent.timezone = from.form.timeone;
+                  _this.agent.signature_html = from.form.signature_html;
+                  if (_this.agentId) {
+                    return _this.Api.sendPostJson("/agents/" + _this.agentId + "/profile", data);
+                  } else {
+                    return _this.pendingProfileData = data;
+                  }
+                };
               };
             })(this)
           }
@@ -603,6 +615,10 @@
           perm_overrides: this.perm_form,
           dep_perm_overrides: this.deps_perms
         };
+        if (this.pendingProfileData) {
+          formData.profile = this.pendingProfileData;
+          this.pendingProfileData = null;
+        }
         return formData;
       };
 

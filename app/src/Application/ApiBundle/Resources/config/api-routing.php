@@ -847,6 +847,12 @@ $collection->create('api_agents_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_agents_save_profile', array(
+	'path'        => '/agents/{id}/profile',
+	'controller'  => 'ApiBundle:Agents:saveAgentProfile',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_agents_resetpassword', array(
 	'path'        => '/agents/{id}/reset-password',
 	'controller'  => 'ApiBundle:Agents:resetPassword',

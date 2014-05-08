@@ -26,13 +26,12 @@ define [
 					else
 						@form.email_primary = ''
 			)
-
 			return
 
 		initialLoad: ->
 			if @agentId
 				promise = @Api.sendDataGet({
-					agent: "/agents/#{@agentId}",
+					agent: "/agents/#{@agentId}?extended=1",
 					teams: "/agent_teams",
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
@@ -53,6 +52,7 @@ define [
 			promise.then( (result) =>
 				if @agentId
 					@agent = result.data.agent.agent
+					@agent.signature_html = result.data.agent.signature_html
 					@perm_form = result.data.agent.perms
 				else
 					@agent = {
@@ -404,15 +404,26 @@ define [
     	# Shows the copy settings modal
     	###
 		showEditProfile: ->
-			form = {}
 			@$modal.open({
 				templateUrl: @getTemplatePath('Agents/edit-profile-modal.html'),
 				controller: 'Admin_Agents_Ctrl_EditProfile',
 				resolve: {
 					agent: =>
 						return @agent
-					form: =>
-						return form
+					saveMethod: =>
+						return (data, from) =>
+							if from.new_image
+								@agent.picture_blob = from.new_image
+							else if from.form.picture_set == 'default'
+								@agent.picture_blob = null
+
+							@agent.timezone = from.form.timeone
+							@agent.signature_html = from.form.signature_html
+
+							if @agentId
+								return @Api.sendPostJson("/agents/#{@agentId}/profile", data)
+							else
+								@pendingProfileData = data
 				}
 			})
 
@@ -428,6 +439,10 @@ define [
 				perm_overrides:     @perm_form
 				dep_perm_overrides: @deps_perms
 			}
+
+			if @pendingProfileData
+				formData.profile = @pendingProfileData
+				@pendingProfileData = null
 
 			return formData
 

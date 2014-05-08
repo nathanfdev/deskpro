@@ -11,6 +11,7 @@ define([
 	'angularFileUpload',
 	'angularSlider',
 	'angularGrid',
+	'ngFileUpload',
 
 	'moment',
 	'aceEditor',

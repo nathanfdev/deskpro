@@ -128,10 +128,16 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		$perm_loader = new AgentPermsPersonDbLoader($this->person, $this->em);
 
-		return $this->createApiResponse(array(
-			'agent'           => $agent_data,
-			'perms'           => $perm_loader->getEffectivePermissions()->toArray(),
-		));
+		$data = array(
+			'agent' => $agent_data,
+			'perms' => $perm_loader->getEffectivePermissions()->toArray(),
+		);
+
+		if ($this->in->getBool('extended')) {
+			$data['signature_html'] = $agent->getSignatureHtml();
+		}
+
+		return $this->createApiResponse($data);
 	}
 
 
@@ -323,6 +329,28 @@ class AgentsController extends AbstractController implements ProtectedController
 		}
 
 		#-------------------------
+		# Profile
+		#-------------------------
+
+		$data = array();
+		if ($this->in->checkIsset('profile.signature_html')) {
+			$data['signature_html'] = $this->in->getString('profile.signature_html');
+		}
+		if ($this->in->checkIsset('profile.timezone')) {
+			$data['timezone'] = $this->in->getString('profile.timezone');
+		}
+		if ($this->in->checkIsset('profile.unset_picture')) {
+			$data['unset_picture'] = $this->in->getBool('profile.unset_picture');
+		}
+		if ($this->in->checkIsset('profile.set_picture_blob')) {
+			$data['set_picture_blob'] = $this->in->getString('profile.set_picture_blob');
+		}
+		if ($data) {
+			$this->_saveProfileData($agent, $data);
+		}
+
+
+		#-------------------------
 		# Send welcome email
 		#-------------------------
 
@@ -348,6 +376,92 @@ class AgentsController extends AbstractController implements ProtectedController
 		} else {
 			return $this->createSuccessResponse();
 		}
+	}
+
+	####################################################################################################################
+	# save-agent-profile
+	####################################################################################################################
+
+	public function saveAgentProfileAction($id = null)
+	{
+		$agent = $this->container->getAgentData()->get($id);
+
+		if (!$agent) {
+			throw $this->createNotFoundException();
+		}
+
+		$data = array();
+		if ($this->in->checkIsset('signature_html')) {
+			$data['signature_html'] = $this->in->getString('signature_html');
+		}
+		if ($this->in->checkIsset('timezone')) {
+			$data['timezone'] = $this->in->getString('timezone');
+		}
+		if ($this->in->checkIsset('unset_picture')) {
+			$data['unset_picture'] = $this->in->getBool('unset_picture');
+		}
+		if ($this->in->checkIsset('set_picture_blob')) {
+			$data['set_picture_blob'] = $this->in->getString('set_picture_blob');
+		}
+
+		$this->_saveProfileData($agent, $data);
+		return $this->createApiSuccessResponse();
+	}
+
+	private function _saveProfileData(Person $person, array $data)
+	{
+		if (isset($data['signature_html'])) {
+			$signature_html = $data['signature_html'];
+			$signature_html = \Orb\Util\Strings::trimHtml($signature_html);
+
+			$regex          = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
+			$signature_html = preg_replace($regex, '$1', $signature_html);
+
+			$signature_html = str_replace(array('<div', '</div>'), array('<p', '</p>'), $signature_html);
+			$signature_html = preg_replace('/^<p>/', '<p class="dp-signature-start">', trim($signature_html));
+
+			$signature = strip_tags($signature_html);
+
+			$person->setPreference('agent.ticket_signature', $signature);
+			$person->setPreference('agent.ticket_signature_html', $signature_html);
+		}
+
+		if (isset($data['timezone'])) {
+			$person->timezone = $data['timezone'];
+			$this->em->persist($person);
+		}
+
+		if (isset($data['unset_picture']) && $data['unset_picture'] && $person->picture_blob) {
+			$old_blob = $person->picture_blob;
+			$person->picture_blob = null;
+
+			try {
+				$this->container->getBlobStorage()->deleteBlobRecord($old_blob);
+			} catch (\Exception $e) {}
+
+			$this->em->persist($person);
+		}
+
+		if (isset($data['set_picture_blob'])) {
+			if ($person->picture_blob) {
+				$old_blob = $person->picture_blob;
+				$person->picture_blob = null;
+
+				try {
+					$this->container->getBlobStorage()->deleteBlobRecord($old_blob);
+				} catch (\Exception $e) {}
+
+				$this->em->persist($person);
+			}
+
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($data['set_picture_blob']);
+			if ($blob && $blob->isImage()) {
+				$person->picture_blob = $blob;
+				$this->em->persist($person);
+			}
+		}
+
+		$this->em->flush();
 	}
 
 
