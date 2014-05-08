@@ -697,65 +697,62 @@ div.dp-appalt-section {
 //######################################################################################################################
 
 .dp-interface-buttons {
-	ul {
-		margin: 15px 0 0 0;
-		padding: 0;
-		display: block;
-		list-style-type: none;
-		text-align: center;
 
-		> li {
-			padding: 0 20px;
-			display: inline-block;
-			width: 32%;
-			text-align: left;
+	> table {
 
-			article {
-				&:hover {
-					border: 1px solid darken(#d0d9e6, 10%);
-					box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.5);
-					h3 {
-						border-bottom: 2px solid #ccc;
-					}
-				}
-				border: 1px solid #d0d9e6;
-				background: #fff;
-				padding: 8px;
-				cursor: pointer;
+		border-spacing: 15px;
+		border-collapse: separate;
+	}
 
-				.title-wrap {
-					text-align: center;
-				}
+	td {
+		vertical-align: top;
+	}
 
-				a {
-					display: block;
-					cursor: pointer;
-					text-decoration: none;
-					color: #444;
-				}
-
-				h3 {
-					padding: 0;
-					margin: 0;
-					display: inline-block;
-					border-bottom: 2px solid transparent;
-					font-size: 13pt;
-				}
-
-				.img-wrap {
-					text-align: center;
-					padding: 5px;
-				}
-				img {
-					width: 60%;
-				}
-
-				strong {
-					font-weight: normal;
-					display: block;
-					text-align: center;
-				}
+	.dp-item {
+		&:hover {
+			border: 1px solid darken(#d0d9e6, 10%);
+			box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.5);
+			h3 {
+				border-bottom: 2px solid #ccc;
 			}
+		}
+		border: 1px solid #d0d9e6;
+		border-radius: 3px;
+		background: #fff;
+		padding: 8px;
+		cursor: pointer;
+
+		.title-wrap {
+			text-align: center;
+		}
+
+		a {
+			display: block;
+			cursor: pointer;
+			text-decoration: none;
+			color: #444;
+		}
+
+		h3 {
+			padding: 0;
+			margin: 0;
+			display: inline-block;
+			border-bottom: 2px solid transparent;
+			font-size: 13pt;
+		}
+
+		.img-wrap {
+			text-align: center;
+			padding: 5px;
+		}
+		img {
+			width: 60%;
+		}
+
+		strong {
+			font-weight: normal;
+			display: block;
+			text-align: center;
 		}
 	}
 }
@@ -766,6 +763,7 @@ div.dp-appalt-section {
 
 .dp-dashboard {
 
+	margin-top: -15px;
 	> table {
 		border-spacing: 15px;
 		border-collapse: separate;
@@ -1178,7 +1176,6 @@ section.dp-help-content-wrapper {
 		position: relative;
 
 		.dp-arrow-wrap {
-			background: #fcf8e3;
 			position: absolute;
 			bottom: 0;
 			right: 0;

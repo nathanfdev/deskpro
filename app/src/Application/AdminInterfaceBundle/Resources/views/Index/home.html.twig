@@ -61,7 +61,7 @@
 {% endblock %}
 {% block fillpage_content %}
 
-	<div ng-if="Home.last_login" class="alert alert-info" style="border-radius: 0;">
+	<div ng-if="Home.last_login" class="alert alert-info" style="border-radius: 0; margin-bottom: 0;">
 		Welcome back, {{ app.user.display_name }}.
 		You last logged in <span title="{{ ng_var('Home.last_login.date_created') }}" am-time-ago="Home.last_login.date_created_d"></span>
 		from {{ ng_var('Home.last_login.ip_address') }}<span ng-if="Home.last_login.hostname != Home.last_login.ip_address"> ({{ ng_var('Home.last_login.hostname') }})</span>.
@@ -69,36 +69,39 @@
 	</div>
 
 	<div class="dp-interface-buttons">
-		<ul>
-			<li>
-				<article><a href="/{{ path('user')|trim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
-					<div class="title-wrap"><h3>Agent Interface</h3></div>
-					<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
-					<strong>
-						Reply to tickets and manage helpdesk content.
-					</strong>
-				</a></article>
-			</li>
-			<li>
-				<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|trim('/') }}reports/" dp-click-href="#/go_to_reports">
-
-					<div class="title-wrap"><h3>Reports Interface</h3></div>
-					<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
-					<strong>
-						View and create reports.
-					</strong>
-				</a></article>
-			</li>
-			<li>
-				<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
-					<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
-					<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
-					<strong>
-						Manage your DeskPRO license.
-					</strong>
-				</a></article>
-			</li>
-		</ul>
+		<table cellspacing="35" width="100%">
+			<tbody>
+				<tr>
+					<td class="dp-item" width="33%">
+						<article><a href="/{{ path('user')|trim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
+							<div class="title-wrap"><h3>Agent Interface</h3></div>
+							<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
+							<strong>
+								Reply to tickets and manage helpdesk content.
+							</strong>
+						</a></article>
+					</td>
+					<td class="dp-item" width="33%">
+						<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|trim('/') }}reports/" dp-click-href="#/go_to_reports">
+							<div class="title-wrap"><h3>Reports Interface</h3></div>
+							<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
+							<strong>
+								View and create reports.
+							</strong>
+						</a></article>
+					</td>
+					<td class="dp-item" width="33%">
+						<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
+							<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
+							<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
+							<strong>
+								Manage your DeskPRO license.
+							</strong>
+						</a></article>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 

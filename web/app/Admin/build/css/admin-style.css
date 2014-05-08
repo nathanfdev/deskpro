@@ -8511,49 +8511,44 @@ div.dp-appalt-section > section header h3 {
   font-weight: normal;
 }
 
-.dp-interface-buttons ul {
-  display: block;
-  padding: 0;
-  margin: 15px 0 0 0;
-  text-align: center;
-  list-style-type: none;
+.dp-interface-buttons > table {
+  border-collapse: separate;
+  border-spacing: 15px;
 }
 
-.dp-interface-buttons ul > li {
-  display: inline-block;
-  width: 32%;
-  padding: 0 20px;
-  text-align: left;
+.dp-interface-buttons td {
+  vertical-align: top;
 }
 
-.dp-interface-buttons ul > li article {
+.dp-interface-buttons .dp-item {
   padding: 8px;
   cursor: pointer;
   background: #fff;
   border: 1px solid #d0d9e6;
+  border-radius: 3px;
 }
 
-.dp-interface-buttons ul > li article:hover {
+.dp-interface-buttons .dp-item:hover {
   border: 1px solid #afbed4;
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
 }
 
-.dp-interface-buttons ul > li article:hover h3 {
+.dp-interface-buttons .dp-item:hover h3 {
   border-bottom: 2px solid #ccc;
 }
 
-.dp-interface-buttons ul > li article .title-wrap {
+.dp-interface-buttons .dp-item .title-wrap {
   text-align: center;
 }
 
-.dp-interface-buttons ul > li article a {
+.dp-interface-buttons .dp-item a {
   display: block;
   color: #444;
   text-decoration: none;
   cursor: pointer;
 }
 
-.dp-interface-buttons ul > li article h3 {
+.dp-interface-buttons .dp-item h3 {
   display: inline-block;
   padding: 0;
   margin: 0;
@@ -8561,19 +8556,23 @@ div.dp-appalt-section > section header h3 {
   border-bottom: 2px solid transparent;
 }
 
-.dp-interface-buttons ul > li article .img-wrap {
+.dp-interface-buttons .dp-item .img-wrap {
   padding: 5px;
   text-align: center;
 }
 
-.dp-interface-buttons ul > li article img {
+.dp-interface-buttons .dp-item img {
   width: 60%;
 }
 
-.dp-interface-buttons ul > li article strong {
+.dp-interface-buttons .dp-item strong {
   display: block;
   font-weight: normal;
   text-align: center;
+}
+
+.dp-dashboard {
+  margin-top: -15px;
 }
 
 .dp-dashboard > table {
@@ -8992,7 +8991,6 @@ section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap {
   height: 10px;
   text-align: center;
   cursor: pointer;
-  background: #fcf8e3;
 }
 
 section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap em {
