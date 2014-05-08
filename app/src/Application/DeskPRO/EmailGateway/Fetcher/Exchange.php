@@ -261,6 +261,9 @@ class Exchange extends AbstractFetcher
 			case self::MODE_ARCHIVE:
 				$this->storage->moveMessage($id, $this->archive_mailbox);
 				break;
+			case self::MODE_READ:
+				$this->storage->markRead($id);
+				break;
 		}
 	}
 }
