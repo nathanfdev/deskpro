@@ -159,8 +159,6 @@
             if (!this.form.in_exchange_account.archive_mailbox || this.form.in_exchange_account.archive_mailbox === '') {
               form.in_exchange_account.mode = 'read';
               form.in_exchange_account.archive_mailbox = '';
-            } else {
-              form.in_exchange_account.archive_mailbox = '';
             }
           }
         }

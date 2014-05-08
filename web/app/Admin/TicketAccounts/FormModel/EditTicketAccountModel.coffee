@@ -158,8 +158,6 @@ define [
 					if not @form.in_exchange_account.archive_mailbox or @form.in_exchange_account.archive_mailbox == ''
 						form.in_exchange_account.mode = 'read'
 						form.in_exchange_account.archive_mailbox = ''
-					else
-						form.in_exchange_account.archive_mailbox = ''
 
 
 			if form.incoming_type == 'pop3'
