@@ -37,7 +37,7 @@
 		"select2":                         "bower_components/select2/select2.min",
 		"toastr":                          "bower_components/toastr/toastr",
 		"ColorPicker":                     "../vendor/colorpicker/js/colorpicker.min",
-		"jstz":                            "vendor/detect_timezone",
+		"jstz":                            "../vendor/detect_timezone",
 
 		"AdminLoad":                       "Admin/AdminLoad",
 		"AdminUpgradeLoad":                "AdminUpgrade/AdminUpgradeLoad",
