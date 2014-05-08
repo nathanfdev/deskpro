@@ -58,6 +58,10 @@
               ev.preventDefault();
               return toggle();
             });
+            element.find('header').first().on('click', function(ev) {
+              ev.preventDefault();
+              return toggle();
+            });
             return element.on('click', function(ev) {
               ev.preventDefault();
               return open();

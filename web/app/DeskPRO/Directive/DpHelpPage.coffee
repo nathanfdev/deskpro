@@ -27,7 +27,6 @@ define ->
 
 					if not backdrop
 						backdrop = $('<div/>').addClass('dp-help-content-backdrop')
-
 						backdrop.on('click', (ev) ->
 							ev.preventDefault()
 							close()
@@ -56,6 +55,10 @@ define ->
 						close()
 
 				element.find('.dp-arrow-wrap').on('click', (ev) ->
+					ev.preventDefault();
+					toggle()
+				)
+				element.find('header').first().on('click', (ev) ->
 					ev.preventDefault();
 					toggle()
 				)

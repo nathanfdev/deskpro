@@ -8962,7 +8962,7 @@ nav.dp-tabletabs ul li:hover a {
 
 section.dp-help-content-wrapper {
   position: relative;
-  z-index: 1000;
+  z-index: 99999;
   margin: 10px 90px 0 90px;
   overflow: visible;
   text-align: center;
@@ -8992,6 +8992,7 @@ section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap {
   height: 10px;
   text-align: center;
   cursor: pointer;
+  background: #fcf8e3;
 }
 
 section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap em {
