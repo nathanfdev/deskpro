@@ -66,13 +66,51 @@
           };
         }
       ]);
-      return Module.config([
+      Module.config([
         '$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
           $httpProvider.interceptors.push('dpHttpInterceptor');
           return angular.extend(fileUploadProvider.defaults, {
             headers: {
               'X-DeskPRO-API-Token': window.DP_API_TOKEN
             }
+          });
+        }
+      ]);
+      return Module.config([
+        '$provide', function($provide) {
+          return $provide.decorator('$http', function($delegate) {
+            $delegate.formatApiUrl = function(endpoint, params, signed) {
+              var itm, k, url, v, _i, _len;
+              if (signed == null) {
+                signed = true;
+              }
+              endpoint = endpoint.replace(/^\//, '');
+              url = "" + window.DP_BASE_API_URL + "/" + endpoint;
+              if (params) {
+                url += url.indexOf('?') === -1 ? '?' : '&';
+                if (Util.isArray(params)) {
+                  for (_i = 0, _len = params.length; _i < _len; _i++) {
+                    itm = params[_i];
+                    k = encodeURIComponent(itm.name);
+                    v = encodeURIComponent(itm.value);
+                    url += "" + k + "=" + v + "&";
+                  }
+                } else {
+                  url += this._formatUrlObject(params);
+                }
+              }
+              url = url.replace(/&$/, '');
+              if (signed) {
+                url = this.signUrl(url);
+              }
+              return url;
+            };
+            $delegate.signUrl = function(url) {
+              url += url.indexOf('?') === -1 ? '?' : '&';
+              url += 'API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN;
+              return url;
+            };
+            return $delegate;
           });
         }
       ]);

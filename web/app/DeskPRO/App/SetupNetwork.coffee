@@ -70,3 +70,34 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				headers: {'X-DeskPRO-API-Token': window.DP_API_TOKEN}
 			});
 		])
+
+		Module.config(['$provide', ($provide) ->
+			$provide.decorator('$http', ($delegate) ->
+				$delegate.formatApiUrl = (endpoint, params, signed = true) ->
+					endpoint = endpoint.replace(/^\//, '')
+					url = "#{window.DP_BASE_API_URL}/#{endpoint}"
+
+					if params
+						url += if url.indexOf('?') == -1 then '?' else '&'
+						if Util.isArray(params)
+							for itm in params
+								k = encodeURIComponent(itm.name)
+								v = encodeURIComponent(itm.value)
+								url += "#{k}=#{v}&"
+						else
+							url += @_formatUrlObject(params)
+
+					url = url.replace(/&$/, '')
+
+					if signed then url = this.signUrl(url)
+
+					return url
+
+				$delegate.signUrl = (url) ->
+					url += if url.indexOf('?') == -1 then '?' else '&'
+					url += 'API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
+					return url
+
+				return $delegate
+			)
+		])
