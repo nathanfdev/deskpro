@@ -2,9 +2,9 @@
   var __slice = [].slice;
 
   define(function() {
-    var DeskPRO_Util_Arrays;
-    DeskPRO_Util_Arrays = (function() {
-      function DeskPRO_Util_Arrays() {}
+    var Arrays;
+    Arrays = (function() {
+      function Arrays() {}
 
 
       /*
@@ -23,7 +23,7 @@
         	 * @return {Array}
        */
 
-      DeskPRO_Util_Arrays.prototype.analyzeFlatCatStructure = function(cats) {
+      Arrays.prototype.analyzeFlatCatStructure = function(cats) {
         var fnProc, ret;
         ret = [];
         fnProc = function(parent_id, parent_ids, title_segs) {
@@ -76,7 +76,7 @@
         	 * @return {Array}
        */
 
-      DeskPRO_Util_Arrays.prototype.pushUnique = function(array, value) {
+      Arrays.prototype.pushUnique = function(array, value) {
         if (array.indexOf(value) === -1) {
           array.push(value);
         }
@@ -92,7 +92,7 @@
       		 * @return {Array}
        */
 
-      DeskPRO_Util_Arrays.prototype.unshiftUnique = function(array, value) {
+      Arrays.prototype.unshiftUnique = function(array, value) {
         if (array.indexOf(value) === -1) {
           array.push(value);
         }
@@ -108,7 +108,7 @@
       		 * @return {Array}
        */
 
-      DeskPRO_Util_Arrays.prototype.append = function() {
+      Arrays.prototype.append = function() {
         var arr, array, arrays, v, _i, _j, _len, _len1;
         array = arguments[0], arrays = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
         for (_i = 0, _len = arrays.length; _i < _len; _i++) {
@@ -131,7 +131,7 @@
         	 * @param {Integer} index
        */
 
-      DeskPRO_Util_Arrays.prototype.insertAtIndex = function(array, value, index) {
+      Arrays.prototype.insertAtIndex = function(array, value, index) {
         array.splice(index, 0, value);
         return array;
       };
@@ -143,13 +143,43 @@
       		 *
       		 * @param {Array} array
       		 * @param {Integer} idx
+        	 * @param {Integer} limit
       		 * @return {Array}
        */
 
-      DeskPRO_Util_Arrays.prototype.removeValue = function(array, removeVal) {
-        var idx;
+      Arrays.prototype.removeValue = function(array, removeVal, limit) {
+        var count, idx;
+        count = 0;
         while ((idx = array.indexOf(removeVal)) !== -1) {
           array.splice(idx, 1);
+          ++count;
+          if (limit && count >= limit) {
+            return array;
+          }
+        }
+        return array;
+      };
+
+
+      /*
+        	 * Remove all items of an array that match a fn.
+        	 * Modifies the array in-place.
+        	 *
+        	 * @param {Array} array
+        	 * @param {Function} fn
+        	 * @param {Integer} limit
+        	 * @return {Array}
+       */
+
+      Arrays.prototype.findAndRemove = function(array, fn, limit) {
+        var count, idx;
+        count = 0;
+        while ((idx = this.findIndex(array, fn)) !== -1) {
+          array.splice(idx, 1);
+          ++count;
+          if (limit && count >= limit) {
+            return array;
+          }
         }
         return array;
       };
@@ -164,15 +194,55 @@
         	 * @return {Array}
        */
 
-      DeskPRO_Util_Arrays.prototype.removeIndex = function(array, idx) {
+      Arrays.prototype.removeIndex = function(array, idx) {
         array.splice(idx, 1);
         return array;
       };
 
-      return DeskPRO_Util_Arrays;
+
+      /*
+      		 * Find the first value of an array that matches a fn
+        	 *
+        	 * @param {Array} array
+        	 * @param {Function} fn
+        	 * @return {mixed}
+       */
+
+      Arrays.prototype.find = function(array, fn) {
+        var i, v, _i, _len;
+        for (i = _i = 0, _len = array.length; _i < _len; i = ++_i) {
+          v = array[i];
+          if (fn(v, i, array)) {
+            return v;
+          }
+        }
+        return null;
+      };
+
+
+      /*
+      		 * Find the first index of an array item that matches a fn
+        	 *
+        	 * @param {Array} array
+        	 * @param {Function} fn
+        	 * @return {Integer}
+       */
+
+      Arrays.prototype.findIndex = function(array, fn) {
+        var i, v, _i, _len;
+        for (i = _i = 0, _len = array.length; _i < _len; i = ++_i) {
+          v = array[i];
+          if (fn(v, i, array)) {
+            return i;
+          }
+        }
+        return -1;
+      };
+
+      return Arrays;
 
     })();
-    return new DeskPRO_Util_Arrays();
+    return new Arrays();
   });
 
 }).call(this);

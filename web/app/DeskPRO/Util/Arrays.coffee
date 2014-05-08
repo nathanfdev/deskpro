@@ -1,5 +1,5 @@
 define ->
-	class DeskPRO_Util_Arrays
+	class Arrays
 		###
     	# Analyze a flat array of categories that have structure defined like:
     	# - id: the unique ID
@@ -111,11 +111,34 @@ define ->
 		#
 		# @param {Array} array
 		# @param {Integer} idx
+    	# @param {Integer} limit
 		# @return {Array}
 		###
-		removeValue: (array, removeVal) ->
+		removeValue: (array, removeVal, limit) ->
+			count = 0
 			while (idx = array.indexOf(removeVal)) != -1
 				array.splice(idx, 1)
+				++count
+				return array if limit and count >= limit
+
+			return array
+
+
+		###
+    	# Remove all items of an array that match a fn.
+    	# Modifies the array in-place.
+    	#
+    	# @param {Array} array
+    	# @param {Function} fn
+    	# @param {Integer} limit
+    	# @return {Array}
+    	###
+		findAndRemove: (array, fn, limit) ->
+			count = 0
+			while (idx = this.findIndex(array, fn)) != -1
+				array.splice(idx, 1)
+				++count
+				return array if limit and count >= limit
 
 			return array
 
@@ -132,4 +155,32 @@ define ->
 			array.splice(idx, 1)
 			return array
 
-	return new DeskPRO_Util_Arrays()
+
+		###
+		# Find the first value of an array that matches a fn
+    	#
+    	# @param {Array} array
+    	# @param {Function} fn
+    	# @return {mixed}
+		###
+		find: (array, fn) ->
+			for v, i in array
+				if (fn(v, i, array))
+					return v
+			return null
+
+
+		###
+		# Find the first index of an array item that matches a fn
+    	#
+    	# @param {Array} array
+    	# @param {Function} fn
+    	# @return {Integer}
+		###
+		findIndex: (array, fn) ->
+			for v, i in array
+				if (fn(v, i, array))
+					return i
+			return -1
+
+	return new Arrays()
