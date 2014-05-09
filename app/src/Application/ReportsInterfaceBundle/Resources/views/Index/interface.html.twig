@@ -8,7 +8,7 @@
 
 	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('app/bower_components/select2/select2.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/Reports/build/css/reports-style.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/build/Reports/css/reports-style.css') }}"/>
 </head>
 <body>
 
@@ -97,9 +97,9 @@ window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %
 window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
 window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 </script>
+{{ js_error_tracking('reports_interface') }}
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
 <script	type="text/javascript" src="{{ asset('app/Reports/amcharts27.js') }}"></script>
-
 <script type="text/javascript">window.DP_INTERFACE_LOADER = 'ReportsLoad';</script>
 <script	type="text/javascript" data-main="{{ asset('app/loader.js') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
 </body>

@@ -168,7 +168,7 @@
 <link rel="stylesheet" href="{{ asset('app/bower_components/angular-slider/angular-slider.min.css') }}">
 <link rel="stylesheet" href="{{ asset('app/bower_components/angular-grid/ng-grid.min.css') }}">
 <link rel="stylesheet" href="{{ asset('app/bower_components/animate.css/animate.min.css') }}">
-<link rel="stylesheet" href="{{ asset('app/Admin/build/css/admin-style.css') }}"/>
+<link rel="stylesheet" href="{{ asset('app/build/Admin/css/admin-style.css') }}"/>
 
 <!-- legacy: portal editor -->
 <link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
@@ -192,6 +192,7 @@ window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
 {% endif %}
 </script>
+{{ js_error_tracking('admin_interface') }}
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
 <script type="text/javascript">window.DP_INTERFACE_LOADER = 'AdminLoad';</script>
 <script	type="text/javascript" data-main="{{ asset('app/loader.js') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
