@@ -76,6 +76,9 @@
           if (fieldModel.is_agent_field) {
             form.is_agent_field = true;
           }
+          if (fieldModel.is_enabled) {
+            form.is_enabled = true;
+          }
           switch (fieldModel.type_name) {
             case "text":
             case "textarea":
@@ -231,7 +234,8 @@
         postData = {
           title: formModel.title,
           description: formModel.description,
-          is_agent_field: formModel.is_agent_field
+          is_agent_field: formModel.is_agent_field,
+          is_enabled: formModel.is_enabled
         };
         if (fieldType === 'textarea') {
           formTypeOpts = formModel['text'];
@@ -352,7 +356,7 @@
 
       FieldFormMapper.prototype.applyFormToModel = function(fieldModel, formModel) {
         fieldModel.title = formModel.title;
-        fieldModel.is_enabled = true;
+        fieldModel.is_enabled = formModel.is_enabled;
         return fieldModel;
       };
 

@@ -19,6 +19,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@default_id     = res.data.info.default_id
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
+				@enabled        = res.data.info.enabled
 			)
 
 			return data_promise
@@ -28,7 +29,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				priorities:     @pris,
 				default_id:     @default_id,
 				user_required:  @user_required,
-				agent_required: @agent_required
+				agent_required: @agent_required,
+				enabled:        @enabled
 			}
 
 			@startSpinner('saving')

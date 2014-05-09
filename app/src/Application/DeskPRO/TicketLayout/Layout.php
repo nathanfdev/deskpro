@@ -114,6 +114,15 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
 
 	/**
+	 * @param string $id
+	 */
+	public function remove($id)
+	{
+		unset($this->fields[$id]);
+	}
+
+
+	/**
 	 * @return \ArrayIterator
 	 */
 	public function getIterator()

@@ -72,6 +72,18 @@
 					</div>
 					<div class="panel-body" ng-show="EditCtrl.field_type != 0">
 
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Enabled</h3>
+							</div>
+							<div class="col-lg-9">
+								<label><input type="checkbox" ng-model="EditCtrl.form.is_enabled" /> Enable this field</label>
+							</div>
+						</div>
+
+						{% block topdefault_fields_pre %}
+						{% endblock %}
+
 						{% block topdefault_fields %}
 							<div class="form-group">
 								<div class="col-lg-3">

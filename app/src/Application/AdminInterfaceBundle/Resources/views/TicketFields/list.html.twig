@@ -8,25 +8,33 @@
 			<ul class="dp-item-list">
 				<li dp-state-mark="tickets.fields.categories">
 					<a href="{{ ng_href('tickets.fields.categories') }}">
-						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.category" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('category')"></button>
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.category">Disabled</em>
+						</div>
 						<h4><span class="title-text">{{ phrase('agent.general.categories') }}</span></h4>
 					</a>
 				</li>
 				<li dp-state-mark="tickets.fields.priorities">
 					<a href="{{ ng_href('tickets.fields.priorities') }}">
-						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.priority" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('priority')"></button>
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.priority">Disabled</em>
+						</div>
 						<h4><span class="title-text">{{ phrase('agent.general.priorities') }}</span></h4>
 					</a>
 				</li>
 				<li dp-state-mark="tickets.fields.workflows">
 					<a href="{{ ng_href('tickets.fields.workflows') }}">
-						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.workflow" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('workflow')"></button>
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.workflow">Disabled</em>
+						</div>
 						<h4><span class="title-text">{{ phrase('agent.general.workflows') }}</span></h4>
 					</a>
 				</li>
 				<li dp-state-mark="tickets.fields.products">
 					<a href="{{ ng_href('tickets.fields.products') }}">
-						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.product" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('product')"></button>
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.product">Disabled</em>
+						</div>
 						<h4><span class="title-text">{{ phrase('agent.general.products') }}</span></h4>
 					</a>
 				</li>
@@ -46,9 +54,8 @@
 			<ul class="dp-item-list">
 				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
 					<a href="{{ ng_href('tickets.fields.edit', '{id: field.id}') }}">
-						<button dp-toggle-switch ng-model="field.is_enabled" ng-change="TicketFieldsList.updateCustomFieldEnabledState(field)"></button>
 						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketFieldsList.startDelete(field); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+							<em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
 						</div>
 						<h4><span class="title-text">{{ ng_var('field.title') }}</span></h4>
 					</a>

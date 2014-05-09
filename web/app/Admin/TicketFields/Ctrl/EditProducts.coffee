@@ -40,6 +40,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 				@default_id     = res.data.info.default_id
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
+				@enabled        = res.data.info.enabled
 
 				@updateCatParentList()
 			)
@@ -51,7 +52,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 				products:       @products,
 				default_id:     @default_id,
 				user_required:  @user_required,
-				agent_required: @agent_required
+				agent_required: @agent_required,
+				enabled:        @enabled
 			}
 
 			@startSpinner('saving')

@@ -18,21 +18,32 @@
       Admin_CustomFields_Base_Ctrl_Edit.DEPS = [];
 
       Admin_CustomFields_Base_Ctrl_Edit.prototype.init = function() {
+        this.field_id = parseInt(this.$stateParams.id || 0);
         this.field_type = '0';
         this.field_type_chooser = 'text';
         this.fieldDataService = this.getDataService();
       };
 
+      Admin_CustomFields_Base_Ctrl_Edit.prototype.postLoad = function() {};
+
+      Admin_CustomFields_Base_Ctrl_Edit.prototype.initialLoadExtra = function() {};
+
       Admin_CustomFields_Base_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise;
+        var p, promise;
+        p = this.initialLoadExtra();
         promise = this.fieldDataService.loadEditFieldData(this.$stateParams.id || null).then((function(_this) {
           return function(data) {
             _this.field = data.field;
             _this.field_type = data.field_type;
-            return _this.form = data.form;
+            _this.form = data.form;
+            return _this.postLoad();
           };
         })(this));
-        return promise;
+        if (p) {
+          return this.$q.all([promise, p]);
+        } else {
+          return promise;
+        }
       };
 
       Admin_CustomFields_Base_Ctrl_Edit.prototype.getDataService = function() {
@@ -43,8 +54,10 @@
         throw new Error("Not implemented");
       };
 
+      Admin_CustomFields_Base_Ctrl_Edit.prototype.postSave = function() {};
+
       Admin_CustomFields_Base_Ctrl_Edit.prototype.saveForm = function() {
-        var is_new, promise;
+        var is_new, promise, successFn;
         if (!this.$scope.form_props.$valid) {
           return;
         }
@@ -52,7 +65,7 @@
         this.field.type_name = this.field_type;
         promise = this.fieldDataService.saveFormModel(this.field, this.form);
         this.startSpinner('saving');
-        promise.success((function(_this) {
+        successFn = (function(_this) {
           return function() {
             _this.stopSpinner('saving', true).then(function() {
               return _this.Growl.success('Saved');
@@ -60,8 +73,19 @@
             _this.skipDirtyState();
             if (is_new) {
               return _this.$state.go(_this.getBaseRouteName() + ".gocreate");
+            }
+          };
+        })(this);
+        promise.success((function(_this) {
+          return function() {
+            var v;
+            v = _this.postSave();
+            if (v && v.then) {
+              return v.then(function() {
+                return successFn();
+              });
             } else {
-              return _this.$state.go(_this.getBaseRouteName());
+              return successFn();
             }
           };
         })(this));

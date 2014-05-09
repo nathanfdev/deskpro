@@ -60,6 +60,7 @@
             _this.default_id = res.data.info.default_id;
             _this.agent_required = res.data.info.agent_required;
             _this.user_required = res.data.info.user_required;
+            _this.enabled = res.data.info.enabled;
             return _this.updateCatParentList();
           };
         })(this));
@@ -72,7 +73,8 @@
           categories: this.cats,
           default_id: this.default_id,
           user_required: this.user_required,
-          agent_required: this.agent_required
+          agent_required: this.agent_required,
+          enabled: this.enabled
         };
         this.startSpinner('saving');
         return promise = this.Api.sendPostJson('/ticket_cats', postData).success((function(_this) {

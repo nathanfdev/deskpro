@@ -189,4 +189,128 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
 		return $this->createSuccessResponse();
 	}
+
+
+	####################################################################################################################
+	# get-field-status
+	####################################################################################################################
+
+	public function getFieldStatusAction($field_id)
+	{
+		$dm = $this->getContainer()->getTicketDepartments();
+		$lm = $this->getContainer()->getTicketLayoutManager();
+
+		$agent_status = array();
+		$user_status  = array();
+
+		foreach ($lm->getAgentLayouts() as $id => $layout) {
+			$dep = null;
+			if ($id) {
+				$dep = $dm->getById($id);
+				if (!$dep) continue;
+				$dep = $dep->toApiData();
+			}
+			$agent_status[$id] = array(
+				'department' => $dep,
+				'enabled' => $layout->has($field_id)
+			);
+		}
+		foreach ($lm->getUserLayouts() as $id => $layout) {
+			$dep = null;
+			if ($id) {
+				$dep = $dm->getById($id);
+				if (!$dep) continue;
+				$dep = $dep->toApiData();
+			}
+			$user_status[$id] = array(
+				'department' => $dep,
+				'enabled' => $layout->has($field_id)
+			);
+		}
+
+		$sort_fn = function($a, $b) {
+			$ao = $a['department'] ? $a['department']['display_order'] : -1000;
+			$bo = $b['department'] ? $b['department']['display_order'] : -1000;
+
+			if ($ao == $bo) return 0;
+			return $ao < $bo ? -1 : 1;
+		};
+		uasort($agent_status, $sort_fn);
+		uasort($user_status, $sort_fn);
+
+		return $this->createApiResponse(array(
+			'agent_layouts' => $agent_status,
+			'user_layouts'  => $user_status
+		));
+	}
+
+	####################################################################################################################
+	# save-field-status
+	####################################################################################################################
+
+	public function saveFieldStatusAction($field_id)
+	{
+		$enable_user_layouts  = $this->in->getArrayOfUInts('enable_user_layouts');
+		$enable_agent_layouts = $this->in->getArrayOfUInts('enable_agent_layouts');
+
+		$layout_records = $this->em->getRepository('DeskPRO:TicketLayout')->findAll();
+
+		$field_type = $field_id;
+		$field_type_id = null;
+
+		if (preg_match('#^(ticket_field)_(\d+)#$', $field_id, $m)) {
+			$field_type = $m[1];
+			$field_type_id = $m[2];
+		}
+
+		foreach ($layout_records as $layout) {
+			/** @var $layout TicketLayout */
+			$dep_id = $layout->department ? $layout->department->id : 0;
+
+			$has_user  = $layout->user_layout->has($field_id);
+			$has_agent = $layout->agent_layout->has($field_id);
+
+			$want_user  = in_array($dep_id, $enable_user_layouts);
+			$want_agent = in_array($dep_id, $enable_agent_layouts);
+
+			$change = false;
+
+			if ($has_user && !$want_user) {
+				$layout->user_layout->remove($field_id);
+				$change = true;
+			} else if (!$has_user && $want_user) {
+				$field = new LayoutField($field_type, $field_type_id);
+				$field->setOptionsFromArray(array(
+					'on_editticket' => true,
+					'on_viewticket' => true,
+					'on_newticket' => true
+				));
+				$layout->user_layout->add($field);
+				$change = true;
+			}
+
+			if ($has_agent && !$want_agent) {
+				$layout->agent_layout->remove($field_id);
+				$change = true;
+			} else if (!$has_agent && $want_agent) {
+				$field = new LayoutField($field_type, $field_type_id);
+				$field->setOptionsFromArray(array(
+					'on_editticket' => true,
+					'on_viewticket' => true,
+					'on_newticket' => true
+				));
+				$layout->agent_layout->add($field);
+				$change = true;
+			}
+
+			if ($change) {
+				$layout->date_updated = new \DateTime();
+				$this->em->persist($layout);
+			}
+		}
+
+		$this->em->flush();
+
+		return $this->createApiSuccessResponse();
+	}
 }

@@ -45,6 +45,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property bool $is_enabled
  * @property \Application\DeskPRO\TicketLayout\Layout $user_layout
  * @property \Application\DeskPRO\TicketLayout\Layout $agent_layout
+ * @property \DateTime $date_updated
  */
 class TicketLayout extends DomainObject
 {
@@ -73,11 +74,17 @@ class TicketLayout extends DomainObject
 	 */
 	protected $agent_layout;
 
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_updated;
+
 	public function __construct(Department $department = null)
 	{
 		$this->department   = $department;
 		$this->user_layout  = new Layout();
 		$this->agent_layout = new Layout();
+		$this->date_updated = new \DateTime();
 	}
 
 
@@ -145,6 +152,12 @@ class TicketLayout extends DomainObject
 			'columnName' => 'agent_layout',
 			'fieldName'  => 'agent_layout',
 			'type'       => 'dp_json_obj',
+			'nullable'   => false
+		));
+		$metadata->mapField(array(
+			'columnName' => 'date_updated',
+			'fieldName'  => 'date_updated',
+			'type'       => 'datetime',
 			'nullable'   => false
 		));
 

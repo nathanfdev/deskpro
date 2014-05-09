@@ -9,24 +9,40 @@ define [
 		@DEPS    = []
 
 		init: ->
+			@field_id = parseInt(@$stateParams.id || 0)
 			@field_type = '0'
 			@field_type_chooser = 'text'
 			@fieldDataService = @getDataService()
 			return
 
+		postLoad: ->
+			return
+
+		initialLoadExtra: ->
+			return
+
 		initialLoad: ->
+			p = @initialLoadExtra()
 			promise = @fieldDataService.loadEditFieldData(@$stateParams.id || null).then( (data) =>
 				@field      = data.field
 				@field_type = data.field_type
 				@form       = data.form
+				@postLoad()
 			)
-			return promise
+
+			if p
+				return @$q.all([promise, p])
+			else
+				promise
 
 		getDataService: ->
 			throw new Error("Not implemented")
 
 		getBaseRouteName: ->
 			throw new Error("Not implemented")
+
+		postSave: ->
+			return
 
 		saveForm: ->
 
@@ -40,8 +56,7 @@ define [
 
 			@startSpinner('saving')
 
-			promise.success( =>
-
+			successFn = =>
 				@stopSpinner('saving', true).then(=>
 					@Growl.success('Saved')
 				)
@@ -50,12 +65,16 @@ define [
 
 				if is_new
 					@$state.go(@getBaseRouteName() + ".gocreate")
+
+			promise.success( =>
+				v = @postSave()
+				if v and v.then
+					v.then(-> successFn())
 				else
-					@$state.go(@getBaseRouteName())
+					successFn()
 			)
 
 			promise.error((info, code) =>
-
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(info)
 			)

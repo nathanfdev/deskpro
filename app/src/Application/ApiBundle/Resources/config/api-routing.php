@@ -2637,6 +2637,18 @@ $collection->create('api_ticket_layout_stats', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_layout_field_status', array(
+	'path'        => '/ticket_layouts/{field_id}',
+	'controller'  => 'ApiBundle:TicketLayouts:getFieldStatus',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_layout_field_status_save', array(
+	'path'        => '/ticket_layouts/{field_id}',
+	'controller'  => 'ApiBundle:TicketLayouts:saveFieldStatus',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Products
 ########################################################################################################################
@@ -2654,7 +2666,7 @@ $collection->create('api_products_save', array(
 ));
 
 ########################################################################################################################
-# Ticket Categories
+# Ticket Categoriesw
 ########################################################################################################################
 
 $collection->create('api_ticket_cats', array(

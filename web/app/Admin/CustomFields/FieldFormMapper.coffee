@@ -73,6 +73,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
 				if fieldModel.is_agent_field
 					form.is_agent_field = true
+				if fieldModel.is_enabled
+					form.is_enabled = true
 
 				switch fieldModel.type_name
 					when "text", "textarea"
@@ -198,7 +200,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 			postData = {
 				title: formModel.title,
 				description: formModel.description,
-				is_agent_field: formModel.is_agent_field
+				is_agent_field: formModel.is_agent_field,
+				is_enabled: formModel.is_enabled
 			}
 
 			if fieldType == 'textarea'
@@ -307,5 +310,5 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 		###
 		applyFormToModel: (fieldModel, formModel) ->
 			fieldModel.title = formModel.title
-			fieldModel.is_enabled = true
+			fieldModel.is_enabled = formModel.is_enabled
 			return fieldModel

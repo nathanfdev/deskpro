@@ -147,6 +147,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$data = array();
 
+		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+
 		$ticket_cats = $this->container->getSystemService('ticket_categories');
 		$flat_array = $ticket_cats->getFlatArray();
 
@@ -159,6 +162,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 		$data['default_id']     = $ticket_cats->count() ? $ticket_cats->getDefaultCategory()->getId() : 0;
 		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_cat_user_required') ? true : false;
 		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required') ? true : false;
+		$data['enabled']        = $field_manager->isCategoryEnabled();
 
 		return $this->createApiResponse($data);
 	}
@@ -171,6 +175,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	public function saveCategoriesAction()
 	{
 		$structure  = $this->in->getArrayValue('categories');
+
+		$this->settings->setSetting('core.use_ticket_category', $this->in->getBoolInt('enabled'));
 
 		#------------------------------
 		# Save structure
@@ -214,6 +220,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$data = array();
 
+		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+
 		$ticket_prods = $this->container->getSystemService('products');
 		$flat_array = $ticket_prods->getFlatArray();
 
@@ -226,6 +235,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 		$data['default_id']     = $ticket_prods->count() ? $ticket_prods->getDefaultProduct()->getId() : 0;
 		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_prod_user_required') ? true : false;
 		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_prod_agent_required') ? true : false;
+		$data['enabled']        = $field_manager->isProductEnabled();
 
 		return $this->createApiResponse($data);
 	}
@@ -238,6 +248,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	public function saveProductsAction()
 	{
 		$structure  = $this->in->getArrayValue('products');
+
+		$this->settings->setSetting('core.use_product', $this->in->getBoolInt('enabled'));
 
 		#------------------------------
 		# Save structure
@@ -282,12 +294,16 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$data = array();
 
+		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+
 		$ticket_works = $this->container->getSystemService('ticket_workflows');
 
 		$data['workflows']      = $this->getApiData($ticket_works->getAll(), false);
 		$data['default_id']     = $ticket_works->count() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
 		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
 		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
+		$data['enabled']        = $field_manager->isWorkflowEnabled();
 
 		return $this->createApiResponse($data);
 	}
@@ -300,6 +316,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	public function saveWorkflowsAction()
 	{
 		$structure  = $this->in->getArrayValue('workflows');
+
+		$this->settings->setSetting('core.use_product', $this->in->getBoolInt('enabled'));
 
 		#------------------------------
 		# Save structure
@@ -344,12 +362,16 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$data = array();
 
+		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+
 		$ticket_pris = $this->container->getSystemService('ticket_priorities');
 
 		$data['priorities']     = $this->getApiData($ticket_pris->getAll(), false);
 		$data['default_id']     = $ticket_pris->count() ? $ticket_pris->getDefaultPriority()->getId() : 0;
 		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
 		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
+		$data['enabled']        = $field_manager->isPriorityEnabled();
 
 		return $this->createApiResponse($data);
 	}
@@ -362,6 +384,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	public function savePrioritiesAction()
 	{
 		$structure  = $this->in->getArrayValue('priorities');
+
+		$this->settings->setSetting('core.use_ticket_priority', $this->in->getBoolInt('enabled'));
 
 		#------------------------------
 		# Save structure
