@@ -374,12 +374,12 @@
               agent: "/agents/" + settings.agent_id,
               notif_prefs_table: "/agents/" + _this.agentId + "/notify-prefs/get-tables",
               teams: "/agent_teams",
-              groups: "/agentgroups"
+              groups: "/agent_groups"
             }).then(function(result) {
               var agent, agentFormModel, agentNotifPrefsModel, form, gids, group, groups, n, notif_prefs, permName, perms, team, teams, tids, type, value, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
               agent = result.data.agent.agent;
               teams = result.data.teams.agent_teams;
-              groups = result.data.groups.agentgroups;
+              groups = result.data.groups.groups;
               agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
               notif_prefs = agentNotifPrefsModel.prefsTable;
               agentFormModel = new EditAgentModel(agent, groups, teams);
@@ -396,6 +396,7 @@
                   if (team.value) {
                     tids.push(team.id);
                   }
+                  tids.push(team.id);
                 }
                 _ref3 = _this.form.teams;
                 for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {

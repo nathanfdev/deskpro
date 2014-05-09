@@ -259,11 +259,11 @@ define [
 					agent: "/agents/#{settings.agent_id}",
 					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
 					teams: "/agent_teams",
-					groups: "/agentgroups",
+					groups: "/agent_groups",
 				}).then( (result) =>
 					agent  = result.data.agent.agent
 					teams  = result.data.teams.agent_teams
-					groups = result.data.groups.agentgroups
+					groups = result.data.groups.groups
 
 					agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)
 					notif_prefs = agentNotifPrefsModel.prefsTable
@@ -279,6 +279,7 @@ define [
 						tids = []
 						for team in form.teams
 							if team.value then tids.push(team.id)
+							tids.push(team.id)
 						for team in @form.teams
 							team.value = team.id in tids
 
