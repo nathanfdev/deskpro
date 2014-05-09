@@ -99,29 +99,28 @@ class Csv implements GeneratorInterface
 	
 	public function exportPeople()
 	{
+		$index = 1;
+		
 		$output_file_path = $this->output_path . 'people/';
 		
-		$input_file = $this->getFile('people');
-		
-		$index = 0;
-		
-		while (($row = fgetcsv($input_file, 4096, ';')) !== false) {
-			if ($index === 0) {
-				$index++;
+		foreach ($this->getData('people') as $person) {
+			if (!isset($person['name']) || !isset($person['email'])) {
+				$this->logger->warning(sprintf('Invalid person record found (Skipping)'));
+				$this->config->progress_bar->advance();
 				continue;
 			}
 			
 			$file_name = 'person' . $index . '.json';
 			
-			$names = explode(' ', $row[0]);
+			$names = explode(' ', $person['name']);
 			
 			$transformedArray = array();
 
 			$transformedArray['oid']		= $index;
-			$transformedArray['is_agent']		= $row[2];
+			$transformedArray['is_agent']		= isset($person['is_agent']) ? (bool) $person['is_agent'] : FALSE;
 			$transformedArray['first_name']		= $names[0];
 			$transformedArray['last_name']		= isset($names[1]) ? $names[1] : '';
-			$transformedArray['emails']		= array($row[1]);
+			$transformedArray['emails']		= array($person['email']);
 
 			if ($this->config->mode === 'live') {
 				file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
@@ -132,35 +131,33 @@ class Csv implements GeneratorInterface
 			$this->config->progress_bar->advance();
 
 			$index++;
-			
 		}
 		
 	}
 	
 	public function exportTickets()
 	{
+		$index = 1;
+		
 		$output_file_path = $this->output_path . 'tickets/';
 		
-		$input_file = $this->getFile('tickets');
-		
-		$index = 0;
-		
-		while (($row = fgetcsv($input_file, 4096, ';')) !== false) {
-			if ($index === 0) {
-				$index++;
+		foreach ($this->getData('tickets') as $ticket) {
+			if (!isset($ticket['subject']) || !isset($ticket['user'])) {
+				$this->logger->warning(sprintf('Invalid ticket record found (Skipping)'));
+				$this->config->progress_bar->advance();
 				continue;
 			}
 			
-			$file_name = 'ticket_' . trim($row[0]) . '.json';
+			$file_name = 'ticket_' . trim($ticket['id']) . '.json';
 			
 			$transformedArray = array();
 
-			$transformedArray['ref']		= $row[0];
-			$transformedArray['person']		= $row[3];
-			$transformedArray['agent']		= $row[4];
-			$transformedArray['status']		= $row[2];
-			$transformedArray['date_created']	= $row[5];
-			$transformedArray['subject']		= $row[1];
+			$transformedArray['ref']		= $ticket['id'];
+			$transformedArray['person']		= $ticket['user'];
+			$transformedArray['agent']		= isset($ticket['agent']) ? $ticket['agent'] : null;
+			$transformedArray['status']		= isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
+			$transformedArray['date_created']	= isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
+			$transformedArray['subject']		= $ticket['subject'];
 
 			if ($this->config->mode === 'live') {
 				file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
@@ -172,7 +169,6 @@ class Csv implements GeneratorInterface
 
 			$index++;
 		}
-		
 	}
 	
 	public function exportTicketMessages()
@@ -183,13 +179,14 @@ class Csv implements GeneratorInterface
 		
 		$index = 0;
 		
-		while (($row = fgetcsv($input_file, 4096, ';')) !== false) {
-			if ($index === 0) {
-				$index++;
+		foreach ($this->getData('messages') as $ticket_message) {
+			if (!isset($ticket_message['message_text']) || !isset($ticket_message['user'])) {
+				$this->logger->warning(sprintf('Invalid ticket message record found (Skipping)'));
+				$this->config->progress_bar->advance();
 				continue;
 			}
 			
-			$ticket_id = trim($row[0]);
+			$ticket_id = trim($ticket_message['ticket_id']);
 			
 			$ticket_file_name = 'ticket_' . $ticket_id . '.json';
 			
@@ -199,9 +196,9 @@ class Csv implements GeneratorInterface
 				$ticket_array = json_decode(file_get_contents($ticket_file_path), true);
 			
 				$message = array(
-					'person'	=> $row[1],
-					'date_created'	=> $row[3],
-					'message_text'	=> $row[2]
+					'person'	=> $ticket_message['user'],
+					'date_created'	=> isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
+					'message_text'	=> $ticket_message['message_text']
 				);
 				
 				@$ticket_array['messages'][] = $message;
@@ -219,11 +216,35 @@ class Csv implements GeneratorInterface
 			$index++;
 			
 			$this->config->progress_bar->advance();
-			
 		}
-		
 	}
 	
+	public function getData($data_source)
+	{
+		$handle = $this->getFile($data_source);
+
+		$header = NULL;
+		
+		$data = array();
+		
+		if ($handle)
+		{
+			while (($row = fgetcsv($handle, 4096, ';')) !== FALSE)
+			{
+				if(!$header) {
+					$header = array_map('trim',$row);
+				}
+				else {
+					$data[] = array_combine($header, array_map('trim',$row));
+				}
+			}
+			
+			fclose($handle);
+		}
+		return $data;
+	}
+
+
 	public function generateJson()
 	{
 		$steps = $this->getRecordCount('people') + 
