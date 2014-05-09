@@ -42,6 +42,7 @@ use Application\DeskPRO\Settings\PasswordSettings;
 use Application\DeskPRO\Settings\PortalSettings;
 use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
+use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
 use DeskPRO\Kernel\License;
 use Orb\Util\Env;
@@ -115,6 +116,32 @@ class SettingsController extends AbstractController implements ProtectedControll
 		return $this->createSuccessResponse();
 	}
 
+	####################################################################################################################
+	# ticket-settings
+	####################################################################################################################
+
+	public function ticketFwdSettingsAction()
+	{
+		$ticket_fwd_settings = new TicketFwdSettings($this->settings, $this->container->getEmailAccountManager());
+
+		return $this->createApiResponse(array(
+			'ticket_fwd_settings' => $ticket_fwd_settings->toArray(),
+		));
+	}
+
+
+	####################################################################################################################
+	# save-ticket-settings
+	####################################################################################################################
+
+	public function saveTicketFwdSettingsAction()
+	{
+		$ticket_fwd_settings = new TicketFwdSettings($this->settings, $this->container->getEmailAccountManager());
+		$ticket_fwd_settings->setArray($this->in->getArrayValue('ticket_fwd_settings'));
+		$ticket_fwd_settings->saveSettings();
+
+		return $this->createSuccessResponse();
+	}
 
 	####################################################################################################################
 	# server-settings

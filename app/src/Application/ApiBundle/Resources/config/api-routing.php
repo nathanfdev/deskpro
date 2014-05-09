@@ -2501,6 +2501,18 @@ $collection->create('api_ticket_settings_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_ticket_fwd_settings', array(
+	'path'        => '/ticket_settings/fwd',
+	'controller'  => 'ApiBundle:Settings:ticketFwdSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_fwd_settings_save', array(
+	'path'        => '/ticket_settings/fwd',
+	'controller'  => 'ApiBundle:Settings:saveTicketFwdSettings',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Reg Settings
 ########################################################################################################################

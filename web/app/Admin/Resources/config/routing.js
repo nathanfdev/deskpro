@@ -654,6 +654,13 @@ define(function() {
 		controller: 'Admin_TicketSettings_Ctrl_TicketSettings'
 	});
 
+	routes.push({
+		id: 'tickets.fwd_settings',
+		url: '/fwd-settings',
+		templateName: 'TicketSettings/fwd-settings.html',
+		controller: 'Admin_TicketSettings_Ctrl_FwdSettings'
+	});
+
 	//###
 	//# Ticket Departments
 	//###
