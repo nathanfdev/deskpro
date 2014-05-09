@@ -66,7 +66,11 @@ define [
 				if is_new
 					@$state.go(@getBaseRouteName() + ".gocreate")
 
-			promise.success( =>
+			promise.success( (data) =>
+
+				@field = data.field_id
+				@field_id = data.field_id
+
 				v = @postSave()
 				if v and v.then
 					v.then(-> successFn())

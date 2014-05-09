@@ -18,17 +18,12 @@
       Admin_CustomFields_Tickets_Ctrl_Edit.DEPS = [];
 
       Admin_CustomFields_Tickets_Ctrl_Edit.prototype.initialLoadExtra = function() {
-        if (this.field_id) {
-          return this.Api.sendGet('/ticket_layouts/fields/ticket_field_' + this.field_id).success((function(_this) {
-            return function(data) {
-              _this.layout_edited = false;
-              _this.user_layouts = data.user_layouts;
-              return _this.agent_layouts = data.agent_layouts;
-            };
-          })(this));
-        } else {
-          return null;
-        }
+        return this.Api.sendGet('/ticket_layouts/fields/ticket_field_' + (this.field_id || '__undefined__')).success((function(_this) {
+          return function(data) {
+            _this.user_layouts = data.user_layouts;
+            return _this.agent_layouts = data.agent_layouts;
+          };
+        })(this));
       };
 
       Admin_CustomFields_Tickets_Ctrl_Edit.prototype.postSave = function() {

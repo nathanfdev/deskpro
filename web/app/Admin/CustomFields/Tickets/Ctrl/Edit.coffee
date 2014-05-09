@@ -9,14 +9,10 @@ define [
 		@DEPS    = []
 
 		initialLoadExtra: ->
-			if @field_id
-				return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + @field_id).success( (data) =>
-					@layout_edited = false
-					@user_layouts  = data.user_layouts
-					@agent_layouts = data.agent_layouts
-				)
-			else
-				return null
+			return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + (@field_id || '__undefined__')).success( (data) =>
+				@user_layouts  = data.user_layouts
+				@agent_layouts = data.agent_layouts
+			)
 
 		postSave: ->
 			postData = {
