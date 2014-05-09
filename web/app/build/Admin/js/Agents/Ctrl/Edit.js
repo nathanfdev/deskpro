@@ -372,11 +372,11 @@
             var promise;
             promise = _this.Api.sendDataGet({
               agent: "/agents/" + settings.agent_id,
-              notif_prefs_table: "/agents/" + _this.agentId + "/notify-prefs/get-tables",
+              notif_prefs_table: "/agents/" + settings.agent_id + "/notify-prefs/get-tables",
               teams: "/agent_teams",
               groups: "/agent_groups"
             }).then(function(result) {
-              var agent, agentFormModel, agentNotifPrefsModel, form, gids, group, groups, n, notif_prefs, permName, perms, team, teams, tids, type, value, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+              var agent, agentFormModel, agentNotifPrefsModel, c, ckey, form, gids, group, groups, n, notif_prefs, permName, perms, r, rkey, subc, subckey, team, teams, tids, type, val, value, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _len7, _len8, _m, _n, _o, _p, _q, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16, _ref17, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
               agent = result.data.agent.agent;
               teams = result.data.teams.agent_teams;
               groups = result.data.groups.groups;
@@ -439,17 +439,48 @@
                 for (_m = 0, _len4 = _ref10.length; _m < _len4; _m++) {
                   n = _ref10[_m];
                   if ((_this.notif_prefs.subs[n] != null) && (notif_prefs.subs[n] != null)) {
-                    _this.notif_prefs.subs[n] = notif_prefs.subs[n];
+                    _ref11 = _this.notif_prefs.subs[n].rows;
+                    for (rkey = _n = 0, _len5 = _ref11.length; _n < _len5; rkey = ++_n) {
+                      r = _ref11[rkey];
+                      _ref12 = r.cols;
+                      for (ckey = _o = 0, _len6 = _ref12.length; _o < _len6; ckey = ++_o) {
+                        c = _ref12[ckey];
+                        for (subckey = _p = 0, _len7 = c.length; _p < _len7; subckey = ++_p) {
+                          subc = c[subckey];
+                          val = ((_ref13 = notif_prefs.subs[n]) != null ? (_ref14 = _ref13.rows[rkey]) != null ? (_ref15 = _ref14.cols[ckey]) != null ? (_ref16 = _ref15[subckey]) != null ? _ref16.value : void 0 : void 0 : void 0 : void 0) || false;
+                          _this.notif_prefs.subs[n].rows[rkey].cols[ckey][subckey].value = val;
+                        }
+                      }
+                    }
                   }
                 }
               }
               if (settings.other_notifs) {
-                _ref11 = ['chat', 'task', 'twitter', 'feedback', 'publish', 'crm', 'account'];
+                _ref17 = ['chat', 'task', 'twitter', 'feedback', 'publish', 'crm', 'account'];
                 _results = [];
-                for (_n = 0, _len5 = _ref11.length; _n < _len5; _n++) {
-                  n = _ref11[_n];
+                for (_q = 0, _len8 = _ref17.length; _q < _len8; _q++) {
+                  n = _ref17[_q];
                   if ((_this.notif_prefs.subs[n] != null) && (notif_prefs.subs[n] != null)) {
-                    _results.push(_this.notif_prefs.subs[n] = notif_prefs.subs[n]);
+                    _results.push((function() {
+                      var _len9, _r, _ref18, _results1;
+                      _ref18 = this.notif_prefs.subs[n].rows;
+                      _results1 = [];
+                      for (rkey = _r = 0, _len9 = _ref18.length; _r < _len9; rkey = ++_r) {
+                        r = _ref18[rkey];
+                        _results1.push((function() {
+                          var _len10, _ref19, _ref20, _ref21, _ref22, _results2, _s;
+                          _ref19 = r.cols;
+                          _results2 = [];
+                          for (subckey = _s = 0, _len10 = _ref19.length; _s < _len10; subckey = ++_s) {
+                            subc = _ref19[subckey];
+                            val = ((_ref20 = notif_prefs.subs[n]) != null ? (_ref21 = _ref20.rows[rkey]) != null ? (_ref22 = _ref21.cols[subckey]) != null ? _ref22.value : void 0 : void 0 : void 0) || false;
+                            _results2.push(this.notif_prefs.subs[n].rows[rkey].cols[subckey].value = val);
+                          }
+                          return _results2;
+                        }).call(this));
+                      }
+                      return _results1;
+                    }).call(_this));
                   } else {
                     _results.push(void 0);
                   }

@@ -257,7 +257,7 @@ define [
 			copySettings = (settings) =>
 				promise = @Api.sendDataGet({
 					agent: "/agents/#{settings.agent_id}",
-					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
+					notif_prefs_table: "/agents/#{settings.agent_id}/notify-prefs/get-tables",
 					teams: "/agent_teams",
 					groups: "/agent_groups",
 				}).then( (result) =>
@@ -299,12 +299,19 @@ define [
 					if settings.ticket_notifs
 						for n in ['sys_filters_email', 'sys_filters_alert', 'custom_filters_email', 'custom_filters_alert']
 							if @notif_prefs.subs[n]? and notif_prefs.subs[n]?
-								@notif_prefs.subs[n] = notif_prefs.subs[n]
+								for r, rkey in  @notif_prefs.subs[n].rows
+									for c, ckey in r.cols
+										for subc, subckey in c
+											val = notif_prefs.subs[n]?.rows[rkey]?.cols[ckey]?[subckey]?.value || false
+											@notif_prefs.subs[n].rows[rkey].cols[ckey][subckey].value = val
 
 					if settings.other_notifs
 						for n in ['chat', 'task', 'twitter', 'feedback', 'publish', 'crm', 'account']
 							if @notif_prefs.subs[n]? and notif_prefs.subs[n]?
-								@notif_prefs.subs[n] = notif_prefs.subs[n]
+								for r, rkey in  @notif_prefs.subs[n].rows
+									for subc, subckey in r.cols
+										val = notif_prefs.subs[n]?.rows[rkey]?.cols[subckey]?.value || false
+										@notif_prefs.subs[n].rows[rkey].cols[subckey].value = val
 				)
 				return promise
 
