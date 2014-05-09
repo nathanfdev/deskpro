@@ -128,6 +128,7 @@ return array(
 			'date_picture_check' => NULL,
 			'date_picture_check_ts' => 0,
 			'date_picture_check_ts_ms' => 0,
+			'picture_blob' => null,
 			'organization' => NULL,
 			'emails' =>
 				array(
