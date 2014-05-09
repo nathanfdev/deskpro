@@ -287,7 +287,7 @@ class WidgetController extends AbstractController
 		$newfeedback->setPersonContext($this->person);
 		$newfeedback->enableWidgetMode();
 
-		$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
+		$newfeedback->custom_fields = $this->in->getRaw('feedback_custom_fields');
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
 		$form->handleRequest($this->get('request'));
