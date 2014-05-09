@@ -10,7 +10,7 @@ define [
 
 		initialLoadExtra: ->
 			if @field_id
-				return @Api.sendGet('/ticket_layouts/ticket_field_' + @field_id).success( (data) =>
+				return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + @field_id).success( (data) =>
 					@layout_edited = false
 					@user_layouts  = data.user_layouts
 					@agent_layouts = data.agent_layouts
@@ -19,21 +19,19 @@ define [
 				return null
 
 		postSave: ->
-			return null if @layout_edited
-
 			postData = {
 				enable_user_layouts: [],
 				enable_agent_layouts: []
 			}
 
-			for l in @user_layouts
+			for own k,l of @user_layouts
 				if l.enabled
-					postData.enable_agent_layouts.push(if l.department then l.department.id else 0)
-			for l in @agent_layouts
+					postData.enable_user_layouts.push(if l.department then l.department.id else 0)
+			for own k,l of @agent_layouts
 				if l.enabled
 					postData.enable_agent_layouts.push(if l.department then l.department.id else 0)
 
-			return @Api.sendPostJson('/ticket_layouts/{field_id}', postData)
+			return @Api.sendPostJson('/ticket_layouts/fields/ticket_field_' + @field_id, postData)
 
 		getDataService: ->
 			return @DataService.get('TicketFields')

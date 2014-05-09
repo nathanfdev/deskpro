@@ -258,7 +258,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 		$field_type = $field_id;
 		$field_type_id = null;
 
-		if (preg_match('#^(ticket_field)_(\d+)#$', $field_id, $m)) {
+		if (preg_match('#^(ticket_field)_(\d+)$#', $field_id, $m)) {
 			$field_type = $m[1];
 			$field_type_id = $m[2];
 		}
@@ -266,6 +266,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 		foreach ($layout_records as $layout) {
 			/** @var $layout TicketLayout */
 			$dep_id = $layout->department ? $layout->department->id : 0;
+
+			$user_layout  = clone $layout->user_layout;
+			$agent_layout = clone $layout->agent_layout;
 
 			$has_user  = $layout->user_layout->has($field_id);
 			$has_agent = $layout->agent_layout->has($field_id);
@@ -276,7 +279,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 			$change = false;
 
 			if ($has_user && !$want_user) {
-				$layout->user_layout->remove($field_id);
+				$user_layout->remove($field_id);
 				$change = true;
 			} else if (!$has_user && $want_user) {
 				$field = new LayoutField($field_type, $field_type_id);
@@ -285,12 +288,12 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 					'on_viewticket' => true,
 					'on_newticket' => true
 				));
-				$layout->user_layout->add($field);
+				$user_layout->add($field);
 				$change = true;
 			}
 
 			if ($has_agent && !$want_agent) {
-				$layout->agent_layout->remove($field_id);
+				$agent_layout->remove($field_id);
 				$change = true;
 			} else if (!$has_agent && $want_agent) {
 				$field = new LayoutField($field_type, $field_type_id);
@@ -299,11 +302,13 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 					'on_viewticket' => true,
 					'on_newticket' => true
 				));
-				$layout->agent_layout->add($field);
+				$agent_layout->add($field);
 				$change = true;
 			}
 
 			if ($change) {
+				$layout->user_layout  = $user_layout;
+				$layout->agent_layout = $agent_layout;
 				$layout->date_updated = new \DateTime();
 				$this->em->persist($layout);
 			}

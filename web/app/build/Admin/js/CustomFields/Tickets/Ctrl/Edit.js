@@ -19,7 +19,7 @@
 
       Admin_CustomFields_Tickets_Ctrl_Edit.prototype.initialLoadExtra = function() {
         if (this.field_id) {
-          return this.Api.sendGet('/ticket_layouts/ticket_field_' + this.field_id).success((function(_this) {
+          return this.Api.sendGet('/ticket_layouts/fields/ticket_field_' + this.field_id).success((function(_this) {
             return function(data) {
               _this.layout_edited = false;
               _this.user_layouts = data.user_layouts;
@@ -32,29 +32,28 @@
       };
 
       Admin_CustomFields_Tickets_Ctrl_Edit.prototype.postSave = function() {
-        var l, postData, _i, _j, _len, _len1, _ref, _ref1;
-        if (this.layout_edited) {
-          return null;
-        }
+        var k, l, postData, _ref, _ref1;
         postData = {
           enable_user_layouts: [],
           enable_agent_layouts: []
         };
         _ref = this.user_layouts;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          l = _ref[_i];
+        for (k in _ref) {
+          if (!__hasProp.call(_ref, k)) continue;
+          l = _ref[k];
           if (l.enabled) {
-            postData.enable_agent_layouts.push(l.department ? l.department.id : 0);
+            postData.enable_user_layouts.push(l.department ? l.department.id : 0);
           }
         }
         _ref1 = this.agent_layouts;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          l = _ref1[_j];
+        for (k in _ref1) {
+          if (!__hasProp.call(_ref1, k)) continue;
+          l = _ref1[k];
           if (l.enabled) {
             postData.enable_agent_layouts.push(l.department ? l.department.id : 0);
           }
         }
-        return this.Api.sendPostJson('/ticket_layouts/{field_id}', postData);
+        return this.Api.sendPostJson('/ticket_layouts/fields/ticket_field_' + this.field_id, postData);
       };
 
       Admin_CustomFields_Tickets_Ctrl_Edit.prototype.getDataService = function() {

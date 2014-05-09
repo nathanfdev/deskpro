@@ -213,7 +213,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 		foreach ($data['fields'] as $f) {
 			$field = new LayoutField($f['field_type'], $f['field_id']);
 			$field->setOptionsFromArray($f['options']);
-			$this->fields[] = $field;
+			$this->fields[$field->getId()] = $field;
 		}
 	}
 

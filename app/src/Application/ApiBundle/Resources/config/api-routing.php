@@ -2638,13 +2638,13 @@ $collection->create('api_ticket_layout_stats', array(
 ));
 
 $collection->create('api_ticket_layout_field_status', array(
-	'path'        => '/ticket_layouts/{field_id}',
+	'path'        => '/ticket_layouts/fields/{field_id}',
 	'controller'  => 'ApiBundle:TicketLayouts:getFieldStatus',
 	'methods'     => array('GET'),
 ));
 
 $collection->create('api_ticket_layout_field_status_save', array(
-	'path'        => '/ticket_layouts/{field_id}',
+	'path'        => '/ticket_layouts/fields/{field_id}',
 	'controller'  => 'ApiBundle:TicketLayouts:saveFieldStatus',
 	'methods'     => array('POST'),
 ));

@@ -14,7 +14,7 @@
 					<ul class="checkbox-list" style="min-width: 250px">
 						<li ng-repeat="layout in EditCtrl.user_layouts">
 							<label>
-								<input type="checkbox" ng-model="layout.enabled" ng-change="EditCtrl.layout_edited = true" />
+								<input type="checkbox" ng-model="layout.enabled" />
 								<span ng-if="!layout.department">Default Layout</span>
 								<span ng-if="layout.department">{{ ng_var('layout.department.title_full') }}</span>
 							</label>
@@ -26,7 +26,7 @@
 					<ul class="checkbox-list" style="min-width: 250px">
 						<li ng-repeat="layout in EditCtrl.agent_layouts">
 							<label>
-								<input type="checkbox" ng-model="layout.enabled" ng-change="EditCtrl.layout_edited = true" />
+								<input type="checkbox" ng-model="layout.enabled" />
 								<span ng-if="!layout.department">Default Layout</span>
 								<span ng-if="layout.department">{{ ng_var('layout.department.title_full') }}</span>
 							</label>
