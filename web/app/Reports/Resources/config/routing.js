@@ -7,8 +7,8 @@ define(function() {
 	//##################################################################################################################
 
 	routes.push({
-		id: 'back_to_agent',
-		url: '/back_to_agent',
+		id: 'go_to_agent',
+		url: '/go_to_agent',
 		templateName: 'Index/blank.html',
 		controller: 'Reports_Main_Ctrl_BackToAgent'
 	});
