@@ -47,9 +47,6 @@ class ServerSettings
 	public $cookie_path = '/';
 	public $cookie_domain = '';
 
-	public $sessions_lifetime = 3600;
-	public $session_keepalive_require_page = false;
-
 	/**
 	 * @param Settings $settings
 	 */
@@ -77,9 +74,6 @@ class ServerSettings
 		if ($this->cookie_domain === null) {
 			$this->cookie_domain = '';
 		}
-
-		$this->sessions_lifetime = (int)$this->settings->get('core.sessions_lifetime');
-		$this->session_keepalive_require_page = (bool)$this->settings->get('core.session_keepalive_require_page');
 	}
 
 
@@ -93,8 +87,6 @@ class ServerSettings
 			'redirect_correct_url'            => $this->redirect_correct_url,
 			'cookie_path'                     => $this->cookie_path,
 			'cookie_domain'                   => $this->cookie_domain,
-			'sessions_lifetime'               => $this->sessions_lifetime,
-			'session_keepalive_require_page'  => $this->session_keepalive_require_page,
 		);
 		return $export_settings;
 	}
@@ -122,12 +114,5 @@ class ServerSettings
 		$this->settings->setSetting('core.redirect_correct_url', Util::boolInt($this->redirect_correct_url));
 		$this->settings->setSetting('core.cookie_path', $this->cookie_path);
 		$this->settings->setSetting('core.cookie_domain', $this->cookie_domain);
-		$this->settings->setSetting('core.sessions_lifetime', Numbers::bound($this->sessions_lifetime, 300, 86400));
-
-		if ($this->session_keepalive_require_page) {
-			$this->settings->setSetting('core.session_keepalive_require_page', 1);
-		} else {
-			$this->settings->setSetting('core.session_keepalive_require_page', null);
-		}
 	}
 }

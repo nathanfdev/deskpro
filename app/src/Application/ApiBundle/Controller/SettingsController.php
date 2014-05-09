@@ -422,7 +422,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 		$password_settings = new PasswordSettings($this->settings);
 
 		return $this->createApiResponse(array(
-			'password_settings' => $password_settings->toArray()
+			'settings' => $password_settings->toArray()
 		));
 	}
 
@@ -433,7 +433,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 	public function savePasswordSettingsAction()
 	{
 		$password_settings = new PasswordSettings($this->settings);
-		$password_settings->setArray($this->in->getArrayValue('password_settings'));
+		$password_settings->setArray($this->in->getArrayValue('settings'));
 		$password_settings->saveSettings();
 
 		return $this->createSuccessResponse();

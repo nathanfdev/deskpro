@@ -10,8 +10,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 			data_promise = @Api.sendDataGet({
 				'settings': '/password_settings'
 			}).then( (res) =>
-				@$scope.agent = res.data.settings.password_settings.agent
-				@$scope.user  = res.data.settings.password_settings.user
+				@$scope.settings = {
+					sessions_lifetime: res.data.settings.settings.sessions_lifetime,
+					session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page
+				}
+				@$scope.agent = res.data.settings.settings.agent
+				@$scope.user  = res.data.settings.settings.user
 
 				@$scope.agent.standard_policy = @$scope.agent.min_length == 5 and
 					!@$scope.agent.max_age and
@@ -35,10 +39,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 		saveSettings: ->
 			@startSpinner('saving')
 
-			settings = {
-				agent: Util.clone(@$scope.agent, true),
-				user: Util.clone(@$scope.user, true)
-			}
+			settings = @$scope.settings
+			settings.agent = Util.clone(@$scope.agent, true)
+			settings.user  = Util.clone(@$scope.user, true)
 
 			if settings.agent.standard_policy
 				settings.agent.min_length = 5
@@ -60,7 +63,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 			delete settings.agent.standard_policy
 			delete settings.user.standard_policy
 
-			@Api.sendPostJson('/password_settings', {password_settings: settings}).success( =>
+			@Api.sendPostJson('/password_settings', {settings: settings}).success( =>
 				@stopSpinner('saving').then(=>
 					@Growl.success(@getRegisteredMessage('saved_settings'))
 				)

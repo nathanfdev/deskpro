@@ -33,6 +33,8 @@
 
 namespace Application\DeskPRO\Settings;
 
+use Orb\Util\Numbers;
+
 class PasswordSettings
 {
 	/**
@@ -49,6 +51,9 @@ class PasswordSettings
 	 * @var PasswordPolicy
 	 */
 	private $agent_policy;
+
+	public $sessions_lifetime = 3600;
+	public $session_keepalive_require_page = false;
 
 
 	/**
@@ -105,6 +110,9 @@ class PasswordSettings
 
 			$type_obj->verify();
 		}
+
+		$this->sessions_lifetime = (int)$this->settings->get('core.sessions_lifetime');
+		$this->session_keepalive_require_page = (bool)$this->settings->get('core.session_keepalive_require_page');
 	}
 
 
@@ -115,7 +123,9 @@ class PasswordSettings
 	{
 		return array(
 			'user'  => $this->user_policy->toArray(),
-			'agent' => $this->agent_policy->toArray()
+			'agent' => $this->agent_policy->toArray(),
+			'sessions_lifetime'               => $this->sessions_lifetime,
+			'session_keepalive_require_page'  => $this->session_keepalive_require_page,
 		);
 	}
 
@@ -127,6 +137,8 @@ class PasswordSettings
 	{
 		$this->user_policy->fromArray($set_settings['user']);
 		$this->agent_policy->fromArray($set_settings['agent']);
+		$this->sessions_lifetime = $set_settings['sessions_lifetime'];
+		$this->session_keepalive_require_page = $set_settings['session_keepalive_require_page'];
 	}
 
 
@@ -142,6 +154,14 @@ class PasswordSettings
 				if (is_bool($v)) $v = $v ? 1 : 0;
 				$this->settings->setSetting("$type.password_policy.$k", $v);
 			}
+		}
+
+		$this->settings->setSetting('core.sessions_lifetime', Numbers::bound($this->sessions_lifetime, 300, 86400));
+
+		if ($this->session_keepalive_require_page) {
+			$this->settings->setSetting('core.session_keepalive_require_page', 1);
+		} else {
+			$this->settings->setSetting('core.session_keepalive_require_page', null);
 		}
 	}
 }

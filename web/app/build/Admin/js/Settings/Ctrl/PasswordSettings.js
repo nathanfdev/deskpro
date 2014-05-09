@@ -25,8 +25,12 @@
           'settings': '/password_settings'
         }).then((function(_this) {
           return function(res) {
-            _this.$scope.agent = res.data.settings.password_settings.agent;
-            _this.$scope.user = res.data.settings.password_settings.user;
+            _this.$scope.settings = {
+              sessions_lifetime: res.data.settings.settings.sessions_lifetime,
+              session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page
+            };
+            _this.$scope.agent = res.data.settings.settings.agent;
+            _this.$scope.user = res.data.settings.settings.user;
             _this.$scope.agent.standard_policy = _this.$scope.agent.min_length === 5 && !_this.$scope.agent.max_age && !_this.$scope.agent.forbid_reuse && !_this.$scope.agent.require_num_uppercase && !_this.$scope.agent.require_num_lowercase && !_this.$scope.agent.require_num_number && !_this.$scope.agent.require_num_symbol;
             return _this.$scope.user.standard_policy = _this.$scope.user.min_length === 5 && !_this.$scope.user.max_age && !_this.$scope.user.forbid_reuse && !_this.$scope.user.require_num_uppercase && !_this.$scope.user.require_num_lowercase && !_this.$scope.user.require_num_number && !_this.$scope.user.require_num_symbol;
           };
@@ -37,10 +41,9 @@
       Admin_Settings_Ctrl_PasswordSettings.prototype.saveSettings = function() {
         var settings;
         this.startSpinner('saving');
-        settings = {
-          agent: Util.clone(this.$scope.agent, true),
-          user: Util.clone(this.$scope.user, true)
-        };
+        settings = this.$scope.settings;
+        settings.agent = Util.clone(this.$scope.agent, true);
+        settings.user = Util.clone(this.$scope.user, true);
         if (settings.agent.standard_policy) {
           settings.agent.min_length = 5;
           settings.agent.max_age = 0;
@@ -62,7 +65,7 @@
         delete settings.agent.standard_policy;
         delete settings.user.standard_policy;
         return this.Api.sendPostJson('/password_settings', {
-          password_settings: settings
+          settings: settings
         }).success((function(_this) {
           return function() {
             return _this.stopSpinner('saving').then(function() {
