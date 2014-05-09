@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:CustomFields:Common/edit.html.twig' %}
 {% block topdefault_fields_pre %}
-	<div class="form-group">
+	<div class="form-group" ng-show="EditCtrl.form.is_enabled">
 		<div class="col-lg-3">
 			<h3>Layouts</h3>
 		</div>
