@@ -62,12 +62,12 @@ class GroupsDbLoader
 	 * @var array
 	 */
 	public static $prefix_map = array(
-		'tickets'  => 'ticket',
-		'chat'     => 'chat',
-		'feedback' => 'feedback',
-		'articles' => 'article',
-		'download' => 'download',
-		'news'     => 'news',
+		'tickets'   => 'ticket',
+		'chat'      => 'chat',
+		'feedback'  => 'feedback',
+		'articles'  => 'article',
+		'downloads' => 'download',
+		'news'      => 'news',
 	);
 
 
