@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Bare.js",
+  "sourceRoot": "../../../../../Admin/Main/Ctrl/",
+  "sources": [
+    "Bare.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA;AAAA,MAAA;mSAAA;;AAAA,EAAA,MAAA,CAAO,CAAC,sBAAD,CAAP,EAAiC,SAAC,eAAD,GAAA;AAChC,QAAA,oBAAA;AAAA,IAAM;AACL,6CAAA,CAAA;;;;OAAA;;AAAA,MAAA,oBAAC,CAAA,OAAD,GAAa,sBAAb,CAAA;;kCAAA;;OADkC,gBAAnC,CAAA;WAGA,oBAAoB,CAAC,WAArB,CAAA,EAJgC;EAAA,CAAjC,CAAA,CAAA;AAAA"
+}
