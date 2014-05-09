@@ -8,11 +8,9 @@
 		</header>
 
 		<article class="padd">
-
 			MySQL Info |
 			<a ng-href="{{ ng_href('server.mysql_status') }}">MySQL Status</a> |
 			<a ng-href="{{ ng_href('server.mysql_sort_order') }}">Update Sort Order</a>
-
 		</article>
 
 		{##################################################################################################}
@@ -35,27 +33,30 @@
 							Schema Status
 						</td>
 						<td>
-							<textarea ng-if="server_mysql_info.schema_diff" rows="8" cols="100">
-								{{ ng_var('server_mysql_info.schema_diff') }}
-							</textarea>
-							<div ng-if="!server_mysql_info.schema_diff" class="success">
-								OKAY
+							<div ng-show="is_loading_schemadiff">
+								<i class="spinner-flat"></i>
+							</div>
+							<div ng-hide="is_loading_schemadiff">
+								<textarea ng-if="schema_diff" rows="8" cols="100">
+									{{ ng_var('schema_diff') }}
+								</textarea>
+								<div ng-if="!schema_diff" class="success">
+									OKAY
+								</div>
 							</div>
 						</td>
 					</tr>
-					<tr ng-repeat="(name, value) in server_mysql_info.mysql_info">
+					<tr ng-repeat="(name, value) in server_mysql_info">
 						<td class="alt dp-id-col">
 							{{ ng_var('name') }}
 						</td>
 						<td>
 							{{ ng_var('value') }}
 						</td>
-
 					</tr>
 				</tbody>
 			</table>
-		</article>
-
+		</article>\
 	</section>
 
 {% endblock %}

@@ -3341,6 +3341,12 @@ $collection->create('api_server_mysql_info', array(
 	'methods'    => array('GET'),
 ));
 
+$collection->create('api_server_mysql_info_schemadiff', array(
+	'path'       => '/server_mysql_info/schema-diff',
+	'controller' => 'ApiBundle:Server:getMysqlSchemaDiff',
+	'methods'    => array('GET'),
+));
+
 ########################################################################################################################
 # Server Mysql Status
 ########################################################################################################################

@@ -6,14 +6,17 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS      = []
 
 		init: ->
-			@$scope.server_mysql_info = null
+			@$scope.is_loading_schemadiff = true
+
 
 		initialLoad: ->
-			data_promise = @Api.sendGet('/server_mysql_info').then( (res) =>
-
-				@$scope.server_mysql_info = res.data.server_mysql_info
+			@Api.sendGet('/server_mysql_info/schema-diff').then( (res) =>
+				@$scope.schema_diff = res.data.mysql_schema_diff
+				@$scope.is_loading_schemadiff = false
 			)
 
-			return @$q.all([data_promise])
+			return @Api.sendGet('/server_mysql_info').then( (res) =>
+				@$scope.server_mysql_info = res.data.server_mysql_info
+			)
 
 	Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo.EXPORT_CTRL()

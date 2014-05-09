@@ -39,6 +39,7 @@ use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
 use Application\DeskPRO\Server\ApcStatus;
 use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
+use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
 
@@ -103,14 +104,17 @@ class ServerController extends AbstractController implements ProtectedController
 		/**
 		 * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
 		 */
+		$mysql_info = new ServerMysqlInfo($this->db);
+		return $this->createApiResponse(array('server_mysql_info' => $mysql_info->getMysqlInfo()));
+	}
 
-		$server_mysql_info = $this->container->getSystemService('server_mysql_info');
-
-		return $this->createApiResponse(
-			array(
-				 'server_mysql_info' => $server_mysql_info->getMysqlInfo(),
-			)
-		);
+	public function getMysqlSchemaDiffAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
+		 */
+		$mysql_info = new ServerMysqlInfo($this->db);
+		return $this->createApiResponse(array('mysql_schema_diff' => $mysql_info->getSchemaDiff()));
 	}
 
 	####################################################################################################################

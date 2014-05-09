@@ -34,63 +34,45 @@
 namespace Application\DeskPRO\ServerMysqlInfo;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\ORM\Util\Util;
-use Doctrine\ORM\EntityManager;
 
 class ServerMysqlInfo
 {
 	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
+	protected $db;
 
-	protected $em;
-
-	public function __construct(EntityManager $em)
+	/**
+	 * @param Connection $db
+	 */
+	public function __construct(Connection $db)
 	{
-		$this->em = $em;
+		$this->db = $db;
 	}
 
 	/**
 	 * @return array
 	 */
-
 	public function getMysqlInfo()
 	{
-		return $this->_getInfo();
+		return $this->db->fetchAllKeyValue("SHOW VARIABLES", array(), 0, 1);
 	}
 
+
 	/**
-	 * @return array
+	 * @return string|null
 	 */
-
-	protected function _getInfo()
+	public function getSchemaDiff()
 	{
-		try {
-
-			$mysql_info = App::getDb()->fetchAllKeyValue("SHOW VARIABLES", array(), 0, 1);
-
-		} catch(\Exception $e) {
-
-			$mysql_info = null;
-		}
-
-		try {
-
-			$schema_diff = Util::getUpdateSchemaSql();
-
-			if ($schema_diff) {
-
-				$schema_diff = implode(";\n", $schema_diff) . ";";
-			}
-
-		} catch(\Exception $e) {
-
+		$schema_diff = Util::getUpdateSchemaSql();
+		if ($schema_diff) {
+			$schema_diff = implode(";\n", $schema_diff) . ";";
+		} else {
 			$schema_diff = null;
 		}
 
-		return array(
-			'mysql_info'  => $mysql_info,
-			'schema_diff' => $schema_diff,
-		);
+		return $schema_diff;
 	}
 }

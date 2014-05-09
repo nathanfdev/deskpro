@@ -18,17 +18,21 @@
       Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo.DEPS = [];
 
       Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo.prototype.init = function() {
-        return this.$scope.server_mysql_info = null;
+        return this.$scope.is_loading_schemadiff = true;
       };
 
       Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo.prototype.initialLoad = function() {
-        var data_promise;
-        data_promise = this.Api.sendGet('/server_mysql_info').then((function(_this) {
+        this.Api.sendGet('/server_mysql_info/schema-diff').then((function(_this) {
+          return function(res) {
+            _this.$scope.schema_diff = res.data.mysql_schema_diff;
+            return _this.$scope.is_loading_schemadiff = false;
+          };
+        })(this));
+        return this.Api.sendGet('/server_mysql_info').then((function(_this) {
           return function(res) {
             return _this.$scope.server_mysql_info = res.data.server_mysql_info;
           };
         })(this));
-        return this.$q.all([data_promise]);
       };
 
       return Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo;
