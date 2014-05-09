@@ -15,11 +15,11 @@ module.exports = function(grunt) {
 			},
 			admin_style: {
 				src: ['Admin/Resources/style/admin-style.less'],
-				dest: 'Admin/build/css/admin-style.css'
+				dest: 'build/Admin/css/admin-style.css'
 			},
 			reports_style: {
 				src: ['Reports/Resources/style/reports-style.less'],
-				dest: 'Reports/build/css/reports-style.css'
+				dest: 'build/Reports/css/reports-style.css'
 			}
 		},
 
@@ -33,7 +33,7 @@ module.exports = function(grunt) {
 					flatten: false,
 					cwd: 'DeskPRO/',
 					src: ['**/*.coffee'],
-					dest: 'DeskPRO/build/js',
+					dest: 'build/DeskPRO/js',
 					ext: '.js'
 				}]
 			},
@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 					flatten: false,
 					cwd: 'Admin/',
 					src: ['**/*.coffee'],
-					dest: 'Admin/build/js',
+					dest: 'build/Admin/js',
 					ext: '.js'
 				}]
 			},
@@ -53,7 +53,7 @@ module.exports = function(grunt) {
 					flatten: false,
 					cwd: 'AdminUpgrade/',
 					src: ['**/*.coffee'],
-					dest: 'AdminUpgrade/build/js',
+					dest: 'build/AdminUpgrade/js',
 					ext: '.js'
 				}]
 			},
@@ -63,7 +63,7 @@ module.exports = function(grunt) {
 					flatten: false,
 					cwd: 'AdminStart/',
 					src: ['**/*.coffee'],
-					dest: 'AdminStart/build/js',
+					dest: 'build/AdminStart/js',
 					ext: '.js'
 				}]
 			},
@@ -73,7 +73,7 @@ module.exports = function(grunt) {
 					flatten: false,
 					cwd: 'Reports/',
 					src: ['**/*.coffee'],
-					dest: 'Reports/build/js',
+					dest: 'build/Reports/js',
 					ext: '.js'
 				}]
 			}
@@ -146,11 +146,11 @@ module.exports = function(grunt) {
 			return config_files;
 		};
 
-		grunt.config('coffee.common_js.files',        getFilesCfg(changedFiles['coffee.common_js'],          'DeskPRO/build/js'));
-		grunt.config('coffee.admin_js.files',         getFilesCfg(changedFiles['coffee.admin_js'],           'Admin/build/js'));
-		grunt.config('coffee.admin_upgrade_js.files', getFilesCfg(changedFiles['coffee.admin_upgrade_js'],   'AdminUpgrade/build/js'));
-		grunt.config('coffee.admin_start_js.files',   getFilesCfg(changedFiles['coffee.admin_start_js'],     'AdminStart/build/js'));
-		grunt.config('coffee.reports_js.files',       getFilesCfg(changedFiles['coffee.reports_js'],         'Reports/build/js'));
+		grunt.config('coffee.common_js.files',        getFilesCfg(changedFiles['coffee.common_js'],          'build/DeskPRO/js'));
+		grunt.config('coffee.admin_js.files',         getFilesCfg(changedFiles['coffee.admin_js'],           'build/Admin/js'));
+		grunt.config('coffee.admin_upgrade_js.files', getFilesCfg(changedFiles['coffee.admin_upgrade_js'],   'build/AdminUpgrade/js'));
+		grunt.config('coffee.admin_start_js.files',   getFilesCfg(changedFiles['coffee.admin_start_js'],     'build/AdminStart/js'));
+		grunt.config('coffee.reports_js.files',       getFilesCfg(changedFiles['coffee.reports_js'],         'build/Reports/js'));
 
 		changedFiles['coffee.common_js']         = [];
 		changedFiles['coffee.admin_js']          = [];

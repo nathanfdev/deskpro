@@ -9,7 +9,6 @@
 /.tags
 *.komodoproject
 *.sublime*
-*.map
 /running_tests.trigger
 
 # cache and log files
@@ -55,7 +54,7 @@
 /data/emailstore
 
 /web/build
-/web/app/Admin/build/js/build.js
+/web/app/build/*/build.js
 /web/stylesheets/agent
 /web/stylesheets/admin
 /web/stylesheets/report

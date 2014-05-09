@@ -45,12 +45,12 @@
 		"AdminStartLoad":                  "AdminStart/AdminStartLoad",
 		"ReportsLoad":                     "Reports/ReportsLoad",
 
-		"DeskPRO":                         "DeskPRO/build/js",
-		"Admin":                           "Admin/build/js",
+		"DeskPRO":                         "build/DeskPRO/js",
+		"Admin":                           "build/Admin/js",
 		"AdminRouting":                    "Admin/Resources/config/routing",
-		"AdminUpgrade":                    "AdminUpgrade/build/js",
-		"AdminStart":                      "AdminStart/build/js",
-		"Reports":                         "Reports/build/js",
+		"AdminUpgrade":                    "build/AdminUpgrade/js",
+		"AdminStart":                      "build/AdminStart/js",
+		"Reports":                         "build/Reports/js",
 		"ReportsRouting":                  "Reports/Resources/config/routing"
 	},
 	shim: {
@@ -75,12 +75,16 @@
 		"toastr":                          ["jquery"],
 		"ColorPicker":                     ["jquery"],
 		"underscore":                      { "exports": "_" },
-		"stacktrace":                      { "exports": "printStackTrace"}
+		"stacktrace":                      { "exports": "printStackTrace"},
+		"trackjs":                         { "exports": "trackJs"}
 	},
 	"priority": [
 		"angular"
 	],
-	"uglify": {
-		"max_line_length": 500
+	"preserveLicenseComments": false,
+	"generateSourceMaps": true,
+	"optimize": "uglify2",
+	"uglify2": {
+		mangle: false
 	}
 })

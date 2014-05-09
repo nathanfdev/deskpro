@@ -23,10 +23,10 @@ $output_realtime = function($type, $buffer) {
 };
 
 $build_js = array(
-	array('out' => 'Admin/build/js/build.js',        'name' => 'AdminLoad'),
-	array('out' => 'AdminUpgrade/build/js/build.js', 'name' => 'AdminUpgradeLoad'),
-	array('out' => 'AdminStart/build/js/build.js',   'name' => 'AdminStartLoad'),
-	array('out' => 'Reports/build/js/build.js',      'name' => 'ReportsLoad'),
+	array('out' => 'build/Admin/js/build.js',        'name' => 'AdminLoad'),
+	array('out' => 'build/AdminUpgrade/js/build.js', 'name' => 'AdminUpgradeLoad'),
+	array('out' => 'build/AdminStart/js/build.js',   'name' => 'AdminStartLoad'),
+	array('out' => 'build/Reports/js/build.js',      'name' => 'ReportsLoad'),
 );
 
 foreach ($build_js as $info) {

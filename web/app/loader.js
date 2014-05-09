@@ -41,17 +41,17 @@ requirejs.config({
 		"ColorPicker":                     "vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "vendor/detect_timezone",
 
-		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/Admin/build/js/build" : "app/Admin/AdminLoad"),
-		"AdminUpgradeLoad":                (DP_USE_RJS_BUILD ? "app/AdminUpgrade/build/js/build" : "app/AdminUpgrade/AdminUpgradeLoad"),
-		"AdminStartLoad":                  (DP_USE_RJS_BUILD ? "app/AdminStart/build/js/build" : "app/AdminStart/AdminStartLoad"),
-		"ReportsLoad":                     (DP_USE_RJS_BUILD ? "app/Reports/build/js/build" : "app/Reports/ReportsLoad"),
+		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
+		"AdminUpgradeLoad":                (DP_USE_RJS_BUILD ? "app/build/AdminUpgrade/js/build" : "app/AdminUpgrade/AdminUpgradeLoad"),
+		"AdminStartLoad":                  (DP_USE_RJS_BUILD ? "app/build/AdminStart/js/build" : "app/AdminStart/AdminStartLoad"),
+		"ReportsLoad":                     (DP_USE_RJS_BUILD ? "app/build/Reports/js/build" : "app/Reports/ReportsLoad"),
 
-		"DeskPRO":                         "app/DeskPRO/build/js",
-		"Admin":                           "app/Admin/build/js",
+		"DeskPRO":                         "app/build/DeskPRO/js",
+		"Admin":                           "app/build/Admin/js",
 		"AdminRouting":                    "app/Admin/Resources/config/routing",
-		"AdminUpgrade":                    "app/AdminUpgrade/build/js",
-		"AdminStart":                      "app/AdminStart/build/js",
-		"Reports":                         "app/Reports/build/js",
+		"AdminUpgrade":                    "app/build/AdminUpgrade/js",
+		"AdminStart":                      "app/build/AdminStart/js",
+		"Reports":                         "app/build/Reports/js",
 		"ReportsRouting":                  "app/Reports/Resources/config/routing"
 	},
 	"shim": {
@@ -78,7 +78,8 @@ requirejs.config({
 		"ColorPicker":                     ["jquery"],
 		"jstz":                            { "exports": "jstz" },
 		"underscore":                      { "exports": "_" },
-		"stacktrace":                      { "exports": "printStackTrace"}
+		"stacktrace":                      { "exports": "printStackTrace"},
+		"trackjs":                         { "exports": "trackJs"}
 	},
 	"priority": [
 		"jquery",
