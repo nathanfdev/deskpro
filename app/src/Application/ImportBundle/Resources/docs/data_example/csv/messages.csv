@@ -1,4 +1,4 @@
-ticket_id;user;message text;date_created
+ticket_id;user;message_text;date_created
 144;angry.customer@example.com;Any update on my ticket yet?;2013-03-11 17:16:18
 145;angry.customer@example.com;Anything new on this?;2013-03-11 18:16:18
 146;angry.customer@example.com;Anything new on this?;2013-03-11 18:16:18
