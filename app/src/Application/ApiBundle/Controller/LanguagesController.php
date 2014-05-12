@@ -412,6 +412,10 @@ class LanguagesController extends AbstractController implements ProtectedControl
 					$phrase->original_hash = md5(null);
 				}
 
+				if (!$phrase->original_phrase) {
+					$phrase->original_phrase = '';
+					$phrase->original_hash = md5(null);
+				}
 				$phrase->phrase = $phrase_text;
 				$this->em->persist($phrase);
 			}

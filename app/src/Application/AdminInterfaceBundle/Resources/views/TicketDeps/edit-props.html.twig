@@ -11,9 +11,7 @@
 						<span
 							class="translate-button"
 							tooltip="{{ phrase('adm.general.translate') }}"
-							dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.%depid%' }"
-							dp-save-phrase-promise="EditCtrl.getWaitEntityPromiseView()"
-							dp-phrase-id-gen="{ 'depid': EditCtrl.dep.id }"
+							dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + EditCtrl.dep.id }"
 						></span>
 					{% endif %}
 					<span class="help-block">

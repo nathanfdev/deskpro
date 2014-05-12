@@ -25,28 +25,8 @@ define ->
 							phraseId: ->
 								return editorOptions.phraseId || null
 
-							getWaitOnPromise: ->
-								if attrs.dpSavePhrasePromise
-									promise = scope.$eval(attrs.dpSavePhrasePromise)
-									return promise
-								else
-									return null
-
 							editorOptions: ->
 								return editorOptions
-
-							getPhraseIdGen: ->
-								->
-									if attrs.dpPhraseIdGen
-										return (id) ->
-											id_vars = scope.$eval(attrs.dpPhraseIdGen)
-											for own find_k, replace_v of id_vars
-												re = new RegExp('%' + find_k + '%', 'g')
-												id = id.replace(re, replace_v)
-
-											return id
-									else
-										return null
 						}
 					})
 				)

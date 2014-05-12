@@ -13,13 +13,16 @@
 						>
 						<option value="{{ ng_var('lang.id') }}" ng-repeat="lang in TranslateModal.langs">{{ ng_var('lang.title') }}</option>
 					</select>
-				<textarea ng-model="TranslateModal.active_trans" class="form-control full-width" style="height: 120px;"></textarea>
+				<textarea ng-model="TranslateModal.active_trans" class="form-control full-width" style="height: 120px; margin-top: 4px;"></textarea>
 			</div>
 			<div class="modal-body" ng-show="TranslateModal.ctrl_is_loading">
-				<div class="dp-view-loading"><h1>{{ phrase('agent.general.loading') }}</h1></div>
+				<div class="dp-view-loading" style="text-align: center;"><i class="spinner-editor"></i></div>
 			</div>
 			<div class="modal-footer ng-hide" ng-hide="TranslateModal.ctrl_is_loading">
-				<button class="btn btn-success" type="submit"><i class="fa fa-check"></i> {{ phrase('agent.general.save') }}</button>
+				<div ng-hide="is_loading">
+					<button class="btn btn-success" type="submit"><i class="fa fa-check"></i> {{ phrase('agent.general.save') }}</button>
+				</div>
+				<div ng-show="is_loading"><i class="spinner-flat"></i></div>
 			</div>
 		</div>
 	</form>

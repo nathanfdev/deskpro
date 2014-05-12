@@ -1,6 +1,4 @@
 (function() {
-  var __hasProp = {}.hasOwnProperty;
-
   define(function() {
 
     /*
@@ -30,36 +28,8 @@
                   phraseId: function() {
                     return editorOptions.phraseId || null;
                   },
-                  getWaitOnPromise: function() {
-                    var promise;
-                    if (attrs.dpSavePhrasePromise) {
-                      promise = scope.$eval(attrs.dpSavePhrasePromise);
-                      return promise;
-                    } else {
-                      return null;
-                    }
-                  },
                   editorOptions: function() {
                     return editorOptions;
-                  },
-                  getPhraseIdGen: function() {
-                    return function() {
-                      if (attrs.dpPhraseIdGen) {
-                        return function(id) {
-                          var find_k, id_vars, re, replace_v;
-                          id_vars = scope.$eval(attrs.dpPhraseIdGen);
-                          for (find_k in id_vars) {
-                            if (!__hasProp.call(id_vars, find_k)) continue;
-                            replace_v = id_vars[find_k];
-                            re = new RegExp('%' + find_k + '%', 'g');
-                            id = id.replace(re, replace_v);
-                          }
-                          return id;
-                        };
-                      } else {
-                        return null;
-                      }
-                    };
                   }
                 }
               });

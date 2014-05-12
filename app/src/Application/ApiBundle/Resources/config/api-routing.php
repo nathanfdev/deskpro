@@ -4064,24 +4064,33 @@ $collection->create('api_langs_getphrasegroups', array(
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_langs_getphrases', array(
-	'path'         => '/langs/{id}/{group_id}',
-	'controller'   => 'ApiBundle:Languages:getPhrases',
+$collection->create('api_langs_getphrase_all', array(
+	'path'         => '/langs/phrases/{phrase_id}',
+	'controller'   => 'ApiBundle:Languages:getPhrase',
+	'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+'),
+	'defaults'     => array('for_lang' => '-1'),
 	'methods'      => array('GET'),
-	'requirements' => array('id' => '\d+|[a-z]+', 'group_id' => '[a-zA-Z0-9\-_\.]+')
 ));
 
 $collection->create('api_langs_getphrase', array(
-	'path'        => '/langs/phrases/{phrase_id}/{for_lang}',
-	'controller'  => 'ApiBundle:Languages:getPhrase',
-	'defaults'    => array('for_lang' => '-1'),
-	'methods'     => array('GET'),
+	'path'         => '/langs/phrases/{phrase_id}/{for_lang}',
+	'controller'   => 'ApiBundle:Languages:getPhrase',
+	'defaults'     => array('for_lang' => '-1'),
+	'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+', 'for_lang' => '\d+|[a-z]+'),
+	'methods'      => array('GET'),
 ));
 
 $collection->create('api_langs_savephrase', array(
 	'path'        => '/langs/phrases/{phrase_id}',
 	'controller'  => 'ApiBundle:Languages:savePhrase',
 	'methods'     => array('POST'),
+));
+
+$collection->create('api_langs_getphrases', array(
+	'path'         => '/langs/{id}/{group_id}',
+	'controller'   => 'ApiBundle:Languages:getPhrases',
+	'methods'      => array('GET'),
+	'requirements' => array('id' => '\d+|[a-z]+', 'group_id' => '[a-zA-Z0-9\-_\.]+')
 ));
 
 ########################################################################################################################

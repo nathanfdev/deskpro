@@ -2,7 +2,7 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 	class Admin_Languages_Ctrl_TranslateModal extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Languages_Ctrl_TranslateModal'
 		@CTRL_AS   = 'TranslateModal'
-		@DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen', 'editorOptions']
+		@DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'editorOptions']
 
 		init: ->
 			@phrase_map = {}
@@ -18,8 +18,9 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 				if @active_lang
 					@phrase_map[@active_lang] = @active_trans
 
-				@savePhrases()
-				@$modalInstance.close()
+				@savePhrases().then(=>
+					@$modalInstance.close()
+				)
 
 			@$scope.$watch(=>
 				return @active_lang
@@ -42,24 +43,25 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 			)
 
 		initialLoad: ->
-			p = @Api.sendDataGet([
-				'/langs',
-				'/langs/phrases/' + @phraseId
-			]).success( (data) =>
+			p = @Api.sendDataGet({
+				langs: '/langs',
+				lang_phrases: '/langs/phrases/' + @phraseId
+			}).success( (data) =>
+				@ctrl_is_loading = false
 				if @options.exclude_own or @options.exclude_default
 					@langs = []
-					for l in data.api_langs.languages
+					for l in data.langs.languages
 						if @options.exclude_own and DP_PERSON_LANG_ID == l.id
 							continue
-						if @options.exclude_default and l.id == data.api_langs.default_lang_id
+						if @options.exclude_default and l.id == data.langs.default_lang_id
 							continue;
 
 						@langs.push(l)
 				else
-					@langs = data.api_langs.languages
+					@langs = data.langs.languages
 
 				first = null
-				for phrase in data.api_langs_getphrase.lang_phrases
+				for phrase in data.lang_phrases.lang_phrases
 					if not first then first = phrase
 					lang_id = phrase.language.id
 					@phrase_map[lang_id] = phrase.phrase
@@ -75,39 +77,42 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 			return p
 
 		savePhrases: ->
-			promise = @getWaitOnPromise()
-			if not promise
-				@doSavePhrases()
-
-			# It's already queued to save
-			if @hasPendingPromise
-				return
-
-			@hasPendingPromise = true
-			promise.then(=>
-				@doSavePhrases()
-			).finally(=>
-				@hasPendingPromise = false
-			)
-
-		doSavePhrases: ->
 			phrase_map = angular.copy(@phrase_map)
 			phrase_id = @phraseId
 
-			phraseIdGen = @getPhraseIdGen()
-			if phraseIdGen
-				phrase_id = phraseIdGen(phrase_id)
+			api = @Api
+			saveInfo = {
+				phrase_id: phrase_id,
+				phrase_map: phrase_map,
+				saver: (phrase_id, phrase_map) ->
+					postData = {'lang_phrases': []}
 
-			postData = {'lang_phrases': []}
+					for own k, v of phrase_map
+						postData.lang_phrases.push({
+							phrase: v || '',
+							language_id: k
+						})
 
-			for own k, v of phrase_map
-				postData.lang_phrases.push({
-					phrase: v || '',
-					language_id: k
-				})
+					return api.sendPostJson('/langs/phrases/' + phrase_id, postData)
+			}
 
-			promise = @Api.sendPostJson('/langs/phrases/' + phrase_id, postData)
+			saveInfo.save = ->
+				saveInfo.saver(saveInfo.phrase_id, saveInfo.phrase_map)
 
-			return promise
+			if @editorOptions.saveHandler
+				ret = @editorOptions.saveHandler(saveInfo.phrase_id, saveInfo.phrase_map, saveInfo.saver)
+			else
+				ret = saveInfo.save()
+
+			if ret.then
+				p = ret
+				@$scope.is_loading = true
+				ret.then(=> @$scope.is_loading = false)
+			else
+				defer = @$q.defer()
+				defer.resolve()
+				p = defer.promise
+
+			return p
 
 	Admin_Languages_Ctrl_TranslateModal.EXPORT_CTRL()

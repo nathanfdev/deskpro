@@ -15,7 +15,7 @@
 
       Admin_Languages_Ctrl_TranslateModal.CTRL_AS = 'TranslateModal';
 
-      Admin_Languages_Ctrl_TranslateModal.DEPS = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen', 'editorOptions'];
+      Admin_Languages_Ctrl_TranslateModal.DEPS = ['$timeout', '$modalInstance', 'phraseId', 'editorOptions'];
 
       Admin_Languages_Ctrl_TranslateModal.prototype.init = function() {
         this.phrase_map = {};
@@ -33,8 +33,9 @@
             if (_this.active_lang) {
               _this.phrase_map[_this.active_lang] = _this.active_trans;
             }
-            _this.savePhrases();
-            return _this.$modalInstance.close();
+            return _this.savePhrases().then(function() {
+              return _this.$modalInstance.close();
+            });
           };
         })(this);
         this.$scope.$watch((function(_this) {
@@ -70,27 +71,31 @@
 
       Admin_Languages_Ctrl_TranslateModal.prototype.initialLoad = function() {
         var p;
-        p = this.Api.sendDataGet(['/langs', '/langs/phrases/' + this.phraseId]).success((function(_this) {
+        p = this.Api.sendDataGet({
+          langs: '/langs',
+          lang_phrases: '/langs/phrases/' + this.phraseId
+        }).success((function(_this) {
           return function(data) {
             var first, l, lang_id, phrase, _i, _j, _len, _len1, _ref, _ref1;
+            _this.ctrl_is_loading = false;
             if (_this.options.exclude_own || _this.options.exclude_default) {
               _this.langs = [];
-              _ref = data.api_langs.languages;
+              _ref = data.langs.languages;
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 l = _ref[_i];
                 if (_this.options.exclude_own && DP_PERSON_LANG_ID === l.id) {
                   continue;
                 }
-                if (_this.options.exclude_default && l.id === data.api_langs.default_lang_id) {
+                if (_this.options.exclude_default && l.id === data.langs.default_lang_id) {
                   continue;
                 }
                 _this.langs.push(l);
               }
             } else {
-              _this.langs = data.api_langs.languages;
+              _this.langs = data.langs.languages;
             }
             first = null;
-            _ref1 = data.api_langs_getphrase.lang_phrases;
+            _ref1 = data.lang_phrases.lang_phrases;
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
               phrase = _ref1[_j];
               if (!first) {
@@ -112,47 +117,51 @@
       };
 
       Admin_Languages_Ctrl_TranslateModal.prototype.savePhrases = function() {
-        var promise;
-        promise = this.getWaitOnPromise();
-        if (!promise) {
-          this.doSavePhrases();
-        }
-        if (this.hasPendingPromise) {
-          return;
-        }
-        this.hasPendingPromise = true;
-        return promise.then((function(_this) {
-          return function() {
-            return _this.doSavePhrases();
-          };
-        })(this))["finally"]((function(_this) {
-          return function() {
-            return _this.hasPendingPromise = false;
-          };
-        })(this));
-      };
-
-      Admin_Languages_Ctrl_TranslateModal.prototype.doSavePhrases = function() {
-        var k, phraseIdGen, phrase_id, phrase_map, postData, promise, v;
+        var api, defer, p, phrase_id, phrase_map, ret, saveInfo;
         phrase_map = angular.copy(this.phrase_map);
         phrase_id = this.phraseId;
-        phraseIdGen = this.getPhraseIdGen();
-        if (phraseIdGen) {
-          phrase_id = phraseIdGen(phrase_id);
-        }
-        postData = {
-          'lang_phrases': []
+        api = this.Api;
+        saveInfo = {
+          phrase_id: phrase_id,
+          phrase_map: phrase_map,
+          saver: function(phrase_id, phrase_map) {
+            var k, postData, v;
+            postData = {
+              'lang_phrases': []
+            };
+            for (k in phrase_map) {
+              if (!__hasProp.call(phrase_map, k)) continue;
+              v = phrase_map[k];
+              postData.lang_phrases.push({
+                phrase: v || '',
+                language_id: k
+              });
+            }
+            return api.sendPostJson('/langs/phrases/' + phrase_id, postData);
+          }
         };
-        for (k in phrase_map) {
-          if (!__hasProp.call(phrase_map, k)) continue;
-          v = phrase_map[k];
-          postData.lang_phrases.push({
-            phrase: v || '',
-            language_id: k
-          });
+        saveInfo.save = function() {
+          return saveInfo.saver(saveInfo.phrase_id, saveInfo.phrase_map);
+        };
+        if (this.editorOptions.saveHandler) {
+          ret = this.editorOptions.saveHandler(saveInfo.phrase_id, saveInfo.phrase_map, saveInfo.saver);
+        } else {
+          ret = saveInfo.save();
         }
-        promise = this.Api.sendPostJson('/langs/phrases/' + phrase_id, postData);
-        return promise;
+        if (ret.then) {
+          p = ret;
+          this.$scope.is_loading = true;
+          ret.then((function(_this) {
+            return function() {
+              return _this.$scope.is_loading = false;
+            };
+          })(this));
+        } else {
+          defer = this.$q.defer();
+          defer.resolve();
+          p = defer.promise;
+        }
+        return p;
       };
 
       return Admin_Languages_Ctrl_TranslateModal;

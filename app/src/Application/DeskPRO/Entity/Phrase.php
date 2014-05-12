@@ -81,7 +81,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $original_phrase;
+	protected $original_phrase = '';
 
 	/**
 	 * @var string
