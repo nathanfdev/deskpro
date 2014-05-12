@@ -74,6 +74,11 @@ class TicketLog extends AbstractEntityRepository
 			$params['since_id'] = $options['since_id'];
 		}
 
+		if (!empty($options['types'])) {
+			$qb->andWhere('log.action_type IN (:types)');
+			$params['types'] = $options['types'];
+		}
+
 		$query = $qb->getQuery();
 		$raw_ticket_logs = $query->execute($params);
 
@@ -199,28 +204,27 @@ class TicketLog extends AbstractEntityRepository
 
     public function getLogsForAgent(Entity\Person $agent, array $options = array())
     {
-        if(isset($options['date_range'])) {
-            $query = $this->_em->createQuery("
-				SELECT log
-				FROM DeskPRO:TicketLog log INDEX BY log.id
-				WHERE log.person = ?1
-				AND log.date_created BETWEEN ?2 AND ?3
-				ORDER BY log.date_created ASC
-			")
-            ->setParameter(1, $agent)
-            ->setParameter(2, $options['date_range']['start'])
-            ->setParameter(3, $options['date_range']['end'])
-            ;
-        } else {
-            $query = $this->_em->createQuery("
-				SELECT log
-				FROM DeskPRO:TicketLog log INDEX BY log.id
-				WHERE log.person = ?1
-				ORDER BY log.date_created ASC
-			")
-            ->setParameter(1, $agent);
-        }
+		$qb = $qb = $this->getEntityManager()->createQueryBuilder();
+		$qb->select('log')
+			->from('DeskPRO:TicketLog', 'log INDEX BY log.id')
+			->where('log.person = :person')
+			->orderBy('log.date_created', 'ASC');
 
-        return $query->execute();
+		$params = array();
+		$params['person'] = $agent;
+
+		if (!empty($options['types'])) {
+			$qb->andWhere('log.action_type IN (:types)');
+			$params['types'] = $options['types'];
+			dp_log($options['types']);
+		}
+
+		if(!empty($options['date_range'])) {
+			$qb->andWhere('log.date_created BETWEEN :date_start AND :date_end');
+			$params['date_start'] = $options['date_range']['start'];
+			$params['date_end']   = $options['date_range']['end'];
+		}
+
+        return $qb->getQuery()->execute($params);
     }
 }

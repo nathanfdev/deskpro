@@ -38,6 +38,15 @@ use Doctrine\ORM\EntityManager;
 
 class AgentActivity
 {
+	private static $ticket_log_types = array(
+		'changed_agent', 'participant_added', 'participant_removed',
+		'ticket_created', 'ticket_split', 'merged', 'changed_category',
+		'changed_department', 'changed_organization', 'changed_person',
+		'message_created', 'message_removed', 'changed_priority',
+		'changed_workflow', 'changed_urgency', 'changed_product',
+		'changed_status', 'changed_custom_field'
+	);
+
 	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
@@ -247,9 +256,9 @@ class AgentActivity
 	private function getTicketLogForAgent($agent, $date)
 	{
 		$counts_hourly = array();
-		$logs          = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
+		$logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
 			$agent,
-			array('date_range' => $this->createMysqlDateRangeForUser($date))
+			array('date_range' => $this->createMysqlDateRangeForUser($date), 'types' => self::$ticket_log_types)
 		);
 
 		foreach ($logs as $log) {
