@@ -27,14 +27,17 @@
       Admin_TicketFields_Ctrl_EditWorkflows.prototype.initialLoad = function() {
         var data_promise;
         data_promise = this.Api.sendDataGet({
-          'info': '/ticket_works'
+          'info': '/ticket_works',
+          'layouts': '/ticket_layouts/fields/workflow'
         }).then((function(_this) {
           return function(res) {
             _this.works = res.data.info.workflows;
             _this.default_id = res.data.info.default_id;
             _this.agent_required = res.data.info.agent_required;
             _this.user_required = res.data.info.user_required;
-            return _this.enabled = res.data.info.enabled;
+            _this.enabled = res.data.info.enabled;
+            _this.user_layouts = res.data.layouts.user_layouts;
+            return _this.agent_layouts = res.data.layouts.agent_layouts;
           };
         })(this));
         return data_promise;
@@ -52,6 +55,17 @@
         this.startSpinner('saving');
         return promise = this.Api.sendPostJson('/ticket_works', postData).success((function(_this) {
           return function() {
+            var _ref, _ref1, _ref2, _ref3;
+            if ((_ref = _this.$scope.$parent) != null) {
+              if ((_ref1 = _ref.TicketFieldsList) != null) {
+                _ref1.saveLayoutData('workflow', _this.user_layouts, _this.agent_layouts);
+              }
+            }
+            if ((_ref2 = _this.$scope.$parent) != null) {
+              if ((_ref3 = _ref2.TicketFieldsList) != null) {
+                _ref3.setFieldEnabled('workflow', _this.enabled);
+              }
+            }
             _this.settings = angular.copy(_this.$scope.settings);
             return _this.stopSpinner('saving').then(function() {
               return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));

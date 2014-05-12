@@ -13,13 +13,17 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
-				'info': '/ticket_works'
+				'info': '/ticket_works',
+				'layouts': '/ticket_layouts/fields/workflow'
 			}).then( (res) =>
 				@works          = res.data.info.workflows
 				@default_id     = res.data.info.default_id
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
 				@enabled        = res.data.info.enabled
+
+				@user_layouts  = res.data.layouts.user_layouts
+				@agent_layouts = res.data.layouts.agent_layouts
 			)
 
 			return data_promise
@@ -35,6 +39,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
 			@startSpinner('saving')
 			promise = @Api.sendPostJson('/ticket_works', postData).success( =>
+				@$scope.$parent?.TicketFieldsList?.saveLayoutData('workflow', @user_layouts, @agent_layouts)
+				@$scope.$parent?.TicketFieldsList?.setFieldEnabled('workflow', @enabled)
 				@settings = angular.copy(@$scope.settings)
 
 				@stopSpinner('saving').then(=>

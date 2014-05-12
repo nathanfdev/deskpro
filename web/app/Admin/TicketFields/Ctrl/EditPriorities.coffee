@@ -13,13 +13,17 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
-				'info': '/ticket_pris'
+				'info': '/ticket_pris',
+				'layouts': '/ticket_layouts/fields/priority'
 			}).then( (res) =>
 				@pris           = res.data.info.priorities
 				@default_id     = res.data.info.default_id
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
 				@enabled        = res.data.info.enabled
+
+				@user_layouts  = res.data.layouts.user_layouts
+				@agent_layouts = res.data.layouts.agent_layouts
 			)
 
 			return data_promise
@@ -35,6 +39,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@startSpinner('saving')
 			promise = @Api.sendPostJson('/ticket_pris', postData).success( =>
+				@$scope.$parent?.TicketFieldsList?.saveLayoutData('priority', @user_layouts, @agent_layouts)
+				@$scope.$parent?.TicketFieldsList?.setFieldEnabled('priority', @enabled)
 				@settings = angular.copy(@$scope.settings)
 
 				@stopSpinner('saving').then(=>

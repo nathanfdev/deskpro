@@ -34,13 +34,17 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
-				'info': '/ticket_prods'
+				'info': '/ticket_prods',
+				'layouts': '/ticket_layouts/fields/product'
 			}).then( (res) =>
 				@products       = res.data.info.products
 				@default_id     = res.data.info.default_id
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
 				@enabled        = res.data.info.enabled
+
+				@user_layouts  = res.data.layouts.user_layouts
+				@agent_layouts = res.data.layouts.agent_layouts
 
 				@updateCatParentList()
 			)
@@ -58,6 +62,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
 			@startSpinner('saving')
 			promise = @Api.sendPostJson('/ticket_prods', postData).success( =>
+				@$scope.$parent?.TicketFieldsList?.saveLayoutData('product', @user_layouts, @agent_layouts)
+				@$scope.$parent?.TicketFieldsList?.setFieldEnabled('product', @enabled)
 				@settings = angular.copy(@$scope.settings)
 
 				@stopSpinner('saving').then(=>

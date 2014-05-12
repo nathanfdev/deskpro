@@ -35,6 +35,33 @@
         return promise;
       };
 
+      Admin_TicketFields_Ctrl_List.prototype.setFieldEnabled = function(id, is_enabled) {
+        return this.field_enabled[id] = is_enabled;
+      };
+
+      Admin_TicketFields_Ctrl_List.prototype.saveLayoutData = function(id, user_layouts, agent_layouts) {
+        var k, l, postData;
+        postData = {
+          enable_user_layouts: [],
+          enable_agent_layouts: []
+        };
+        for (k in user_layouts) {
+          if (!__hasProp.call(user_layouts, k)) continue;
+          l = user_layouts[k];
+          if (l.enabled) {
+            postData.enable_user_layouts.push(l.department ? l.department.id : 0);
+          }
+        }
+        for (k in agent_layouts) {
+          if (!__hasProp.call(agent_layouts, k)) continue;
+          l = agent_layouts[k];
+          if (l.enabled) {
+            postData.enable_agent_layouts.push(l.department ? l.department.id : 0);
+          }
+        }
+        return this.Api.sendPostJson('/ticket_layouts/fields/' + id, postData);
+      };
+
       return Admin_TicketFields_Ctrl_List;
 
     })(Admin_Ctrl_Base);

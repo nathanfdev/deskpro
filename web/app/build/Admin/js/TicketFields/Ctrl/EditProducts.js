@@ -53,7 +53,8 @@
       Admin_TicketFields_Ctrl_EditProducts.prototype.initialLoad = function() {
         var data_promise;
         data_promise = this.Api.sendDataGet({
-          'info': '/ticket_prods'
+          'info': '/ticket_prods',
+          'layouts': '/ticket_layouts/fields/product'
         }).then((function(_this) {
           return function(res) {
             _this.products = res.data.info.products;
@@ -61,6 +62,8 @@
             _this.agent_required = res.data.info.agent_required;
             _this.user_required = res.data.info.user_required;
             _this.enabled = res.data.info.enabled;
+            _this.user_layouts = res.data.layouts.user_layouts;
+            _this.agent_layouts = res.data.layouts.agent_layouts;
             return _this.updateCatParentList();
           };
         })(this));
@@ -79,6 +82,17 @@
         this.startSpinner('saving');
         return promise = this.Api.sendPostJson('/ticket_prods', postData).success((function(_this) {
           return function() {
+            var _ref, _ref1, _ref2, _ref3;
+            if ((_ref = _this.$scope.$parent) != null) {
+              if ((_ref1 = _ref.TicketFieldsList) != null) {
+                _ref1.saveLayoutData('product', _this.user_layouts, _this.agent_layouts);
+              }
+            }
+            if ((_ref2 = _this.$scope.$parent) != null) {
+              if ((_ref3 = _ref2.TicketFieldsList) != null) {
+                _ref3.setFieldEnabled('product', _this.enabled);
+              }
+            }
             _this.settings = angular.copy(_this.$scope.settings);
             return _this.stopSpinner('saving').then(function() {
               return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
