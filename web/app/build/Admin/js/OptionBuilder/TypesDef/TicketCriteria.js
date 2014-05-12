@@ -39,7 +39,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
-        var options, set_options;
+        var f, fname, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
         if (typesData == null) {
           typesData = null;
         }
@@ -142,6 +142,31 @@
           title: 'Ticket Criteria',
           subOptions: options
         });
+        if (this.options_data.ticket_fields) {
+          options = [];
+          _ref = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            f = _ref[_i];
+            fname = 'TicketField' + f.id;
+            this[fname] = function(options) {
+              if (options == null) {
+                options = {};
+              }
+              options.type = 'TicketField' + f.id;
+              return this.getStandardForFieldDef(f, options);
+            };
+            options.push({
+              title: f.title,
+              value: fname
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Ticket Fields',
+              subOptions: options
+            });
+          }
+        }
         options = [];
         options.push({
           title: 'Has attachment',
@@ -204,6 +229,31 @@
           title: 'User Criteria',
           subOptions: options
         });
+        if (this.options_data.user_fields) {
+          options = [];
+          _ref1 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            f = _ref1[_j];
+            fname = 'UserField' + f.id;
+            this[fname] = function(options) {
+              if (options == null) {
+                options = {};
+              }
+              options.type = 'UserField' + f.id;
+              return this.getStandardForFieldDef(f, options);
+            };
+            options.push({
+              title: f.title,
+              value: fname
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Person Fields',
+              subOptions: options
+            });
+          }
+        }
         options = [];
         options.push({
           title: 'Name',
@@ -225,6 +275,31 @@
           title: 'Organization Criteria',
           subOptions: options
         });
+        if (this.options_data.user_fields) {
+          options = [];
+          _ref2 = this.options_data.user_fields;
+          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+            f = _ref2[_k];
+            fname = 'OrgField' + f.id;
+            this[fname] = function(options) {
+              if (options == null) {
+                options = {};
+              }
+              options.type = 'OrgField' + f.id;
+              return this.getStandardForFieldDef(f, options);
+            };
+            options.push({
+              title: f.title,
+              value: fname
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Organization Fields',
+              subOptions: options
+            });
+          }
+        }
         options = [];
         options.push({
           title: 'Day of week',
@@ -255,11 +330,14 @@
             'ticket_prods': '/ticket_prods',
             'ticket_pris': '/ticket_pris',
             'ticket_works': '/ticket_works',
+            'ticket_fields': '/ticket_fields',
+            'user_fields': '/user_fields',
+            'org_fields': '/org_fields',
             'ticket_accounts': '/email_accounts',
             'usergroups': '/user_groups'
           }).then((function(_this) {
             return function(result) {
-              var data, options_data, _ref;
+              var data, options_data, _ref, _ref1, _ref2, _ref3;
               data = result.data;
               options_data = {};
               options_data['agents'] = data.agents.agents;
@@ -269,6 +347,9 @@
               options_data['ticket_pris'] = data.ticket_pris.priorities;
               options_data['ticket_works'] = data.ticket_works.workflows;
               options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+              options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
+              options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
+              options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
               options_data['email_accounts'] = data.ticket_accounts.email_accounts;
               options_data['usergroups'] = data.usergroups.groups;
               return _this.options_data = options_data;

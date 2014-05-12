@@ -99,7 +99,9 @@ define [
 					@trigger = {}
 
 				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
+			)
 
+			promise2 = @criteraTypeDef.loadDataOptions().then(=>
 				@updateCriteriaOptionTypes()
 
 				@$scope.$watch('form.typeForm', =>
@@ -107,7 +109,7 @@ define [
 				, true)
 			)
 
-			return promise
+			return @$q.all([promise, promise2])
 
 		###
 		# Save the trigger

@@ -72,6 +72,26 @@
 
 
       /*
+        	 * Constructs standard input from a custom field def
+       */
+
+      Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getStandardForFieldDef = function(field, options) {
+        if (options == null) {
+          options = {};
+        }
+        if (!options.prop_name) {
+          options.prop_name = 'value';
+        }
+        if (field.type_name === 'choice') {
+          options.options = field.options;
+          return this.getStandardSelect(options);
+        } else {
+          return this.getStandardInput(options);
+        }
+      };
+
+
+      /*
         	 * Constructs a standard select box type
        */
 
@@ -135,7 +155,13 @@
           },
           getData: function() {
             var defer;
-            if (data_name) {
+            if (options.options) {
+              return {
+                operators: operators,
+                options: options_formatter ? options_formatter(options.options) : options.options,
+                multiselect: true
+              };
+            } else if (data_name) {
               defer = me.$q.defer();
               me.loadDataOptions().then((function(_this) {
                 return function() {

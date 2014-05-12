@@ -159,6 +159,30 @@ define [
 			})
 
 			#------------------------------
+			# Ticket Fields
+			#------------------------------
+
+			if @options_data.ticket_fields
+				options = []
+
+				for f in @options_data.ticket_fields
+					fname = 'TicketField' + f.id
+					@[fname] = (options = {}) ->
+						options.type = 'TicketField' + f.id
+						return @getStandardForFieldDef(f, options)
+
+					options.push({
+						title: f.title,
+						value: fname
+					})
+
+				if options.length
+					set_options.push({
+						title: 'Ticket Fields',
+						subOptions: options
+					})
+
+			#------------------------------
 			# Attachment Criteria
 			#------------------------------
 
@@ -244,6 +268,30 @@ define [
 			})
 
 			#------------------------------
+			# User Fields
+			#------------------------------
+
+			if @options_data.user_fields
+				options = []
+
+				for f in @options_data.user_fields
+					fname = 'UserField' + f.id
+					@[fname] = (options = {}) ->
+						options.type = 'UserField' + f.id
+						return @getStandardForFieldDef(f, options)
+
+					options.push({
+						title: f.title,
+						value: fname
+					})
+
+				if options.length
+					set_options.push({
+						title: 'Person Fields',
+						subOptions: options
+					})
+
+			#------------------------------
 			# Org
 			#------------------------------
 
@@ -273,6 +321,30 @@ define [
 				title: 'Organization Criteria',
 				subOptions: options
 			})
+
+			#------------------------------
+			# Org Fields
+			#------------------------------
+
+			if @options_data.user_fields
+				options = []
+
+				for f in @options_data.user_fields
+					fname = 'OrgField' + f.id
+					@[fname] = (options = {}) ->
+						options.type = 'OrgField' + f.id
+						return @getStandardForFieldDef(f, options)
+
+					options.push({
+						title: f.title,
+						value: fname
+					})
+
+				if options.length
+					set_options.push({
+						title: 'Organization Fields',
+						subOptions: options
+					})
 
 			#------------------------------
 			# Dates
@@ -312,6 +384,9 @@ define [
 					'ticket_prods':    '/ticket_prods',
 					'ticket_pris':     '/ticket_pris',
 					'ticket_works':    '/ticket_works',
+					'ticket_fields':   '/ticket_fields',
+					'user_fields':     '/user_fields',
+					'org_fields':      '/org_fields',
 					'ticket_accounts': '/email_accounts',
 					'usergroups':      '/user_groups',
 				}).then( (result) =>
@@ -324,6 +399,9 @@ define [
 					options_data['ticket_pris']      = data.ticket_pris.priorities
 					options_data['ticket_works']     = data.ticket_works.workflows
 					options_data['ticket_prods']     = data.ticket_prods?.products
+					options_data['ticket_fields']    = data.ticket_fields?.custom_fields
+					options_data['org_fields']       = data.org_fields?.custom_fields
+					options_data['user_fields']      = data.user_fields?.custom_fields
 					options_data['email_accounts']   = data.ticket_accounts.email_accounts
 					options_data['usergroups']       = data.usergroups.groups
 					@options_data = options_data

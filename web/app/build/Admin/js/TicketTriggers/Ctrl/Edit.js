@@ -98,7 +98,7 @@
        */
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.initialLoad = function() {
-        var get, promise;
+        var get, promise, promise2;
         get = {
           customActions: '/ticket_triggers/get-custom-actions'
         };
@@ -113,14 +113,18 @@
             } else {
               _this.trigger = {};
             }
-            _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
+            return _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
+          };
+        })(this));
+        promise2 = this.criteraTypeDef.loadDataOptions().then((function(_this) {
+          return function() {
             _this.updateCriteriaOptionTypes();
             return _this.$scope.$watch('form.typeForm', function() {
               return _this.updateCriteriaOptionTypes();
             }, true);
           };
         })(this));
-        return promise;
+        return this.$q.all([promise, promise2]);
       };
 
 

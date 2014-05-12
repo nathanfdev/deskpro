@@ -45,6 +45,19 @@ define ->
 			return options.operators || ['is', 'not']
 
 		###
+    	# Constructs standard input from a custom field def
+		###
+		getStandardForFieldDef: (field, options = {}) ->
+
+			if not options.prop_name then options.prop_name = 'value'
+
+			if field.type_name == 'choice'
+				options.options = field.options
+				return @getStandardSelect(options)
+			else
+				return @getStandardInput(options)
+
+		###
     	# Constructs a standard select box type
 		###
 		getStandardSelect: (options) ->
@@ -100,7 +113,13 @@ define ->
 							return me.dpTemplateManager.get(me.selectTemplate)
 
 				getData: ->
-					if data_name
+					if options.options
+						return {
+							operators: operators,
+							options: if options_formatter then options_formatter(options.options) else options.options,
+							multiselect: true
+						}
+					else if data_name
 						defer = me.$q.defer()
 						me.loadDataOptions().then(=>
 							defer.resolve({
