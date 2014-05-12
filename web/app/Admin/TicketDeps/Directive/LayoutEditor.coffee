@@ -43,7 +43,7 @@ define [
 					for f in modelValue.user
 						if not f.id
 							if f.field_id
-								f.id = "#{f.field_type}.#{f.field_id}"
+								f.id = "#{f.field_type}_#{f.field_id}"
 							else
 								f.id = f.field_type
 
@@ -58,7 +58,7 @@ define [
 					for f in modelValue.agent
 						if not f.id
 							if f.field_id
-								f.id = "#{f.field_type}.#{f.field_id}"
+								f.id = "#{f.field_type}_#{f.field_id}"
 							else
 								f.id = f.field_type
 
@@ -100,7 +100,7 @@ define [
 					if ui.item?.hasClass('dp-layout-editor-layout-field')
 						fieldType = ui.item.data('field-type')
 						fieldId   = ui.item.data('field-id') || null
-						me.logger.debug("[#{tabType}] Dragged #{fieldType}.#{fieldId || '0'}")
+						me.logger.debug("[#{tabType}] Dragged #{fieldType}_#{fieldId || '0'}")
 						fieldRow = me.createAndAddField(
 							tabType,
 							fieldType,
@@ -111,7 +111,7 @@ define [
 
 						if fieldRow
 							fid = fieldRow.data('field-id')
-							tab.find("[data-field-type=\"#{fid}\"]").hide()
+							tab.find("[data-fid=\"#{fid}\"]").hide()
 			})
 
 
@@ -214,7 +214,7 @@ define [
 				fieldScope.$destroy()
 
 				tab = @els["#{tabType}_tab"].find('.form-elements')
-				tab.find("[data-field-type=\"#{field.id}\"]").show()
+				tab.find("[data-fid=\"#{field.id}\"]").show()
 
 			if field.id in @required_fields[tabType]
 				fieldScope.removeRow = ->
@@ -245,6 +245,19 @@ define [
 				listEl      = worksheetEl.find('ul').first()
 
 				layoutFieldEls = worksheetEl.find('.layout-field');
+
+				draggableEls = @els["#{typeName}_tab"].find('.form-elements')
+				draggableEls.show()
+				draggableEls.find('li').each( ->
+					$el = $(this)
+					field_id = $el.data('field-id') || null
+					if field_id
+						fid = $el.data('field-type') + '_' + field_id
+					else
+						fid = $el.data('field-type')
+
+					$el.data('fid', fid).attr('data-fid', fid)
+				)
 
 				orderMap = {}
 				elementMap = {}
@@ -301,10 +314,8 @@ define [
 						fieldEl = layoutFieldEls.filter('.field-' + field.id)
 						fieldEl.appendTo(listEl)
 
-				draggableEls = @els["#{typeName}_tab"].find('.form-elements')
-				draggableEls.show()
 				for f in form_model
-					draggableEls.find("[data-field-type=\"#{f.id}\"]").hide();
+					draggableEls.find("[data-fid=\"#{f.id}\"]").hide();
 
 	return ['$compile', 'LoggerManager', ($compile, LoggerManager) ->
 		directive = {}

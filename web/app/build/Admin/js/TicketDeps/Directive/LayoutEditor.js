@@ -43,7 +43,7 @@
                 f = _ref1[_j];
                 if (!f.id) {
                   if (f.field_id) {
-                    f.id = "" + f.field_type + "." + f.field_id;
+                    f.id = "" + f.field_type + "_" + f.field_id;
                   } else {
                     f.id = f.field_type;
                   }
@@ -65,7 +65,7 @@
                 f = _ref3[_l];
                 if (!f.id) {
                   if (f.field_id) {
-                    f.id = "" + f.field_type + "." + f.field_id;
+                    f.id = "" + f.field_type + "_" + f.field_id;
                   } else {
                     f.id = f.field_type;
                   }
@@ -116,12 +116,12 @@
             if ((_ref = ui.item) != null ? _ref.hasClass('dp-layout-editor-layout-field') : void 0) {
               fieldType = ui.item.data('field-type');
               fieldId = ui.item.data('field-id') || null;
-              me.logger.debug("[" + tabType + "] Dragged " + fieldType + "." + (fieldId || '0'));
+              me.logger.debug("[" + tabType + "] Dragged " + fieldType + "_" + (fieldId || '0'));
               fieldRow = me.createAndAddField(tabType, fieldType, fieldId, ui.item);
               ui.item.remove();
               if (fieldRow) {
                 fid = fieldRow.data('field-id');
-                return tab.find("[data-field-type=\"" + fid + "\"]").hide();
+                return tab.find("[data-fid=\"" + fid + "\"]").hide();
               }
             }
           }
@@ -245,7 +245,7 @@
             fieldRow.remove();
             fieldScope.$destroy();
             tab = _this.els["" + tabType + "_tab"].find('.form-elements');
-            return tab.find("[data-field-type=\"" + field.id + "\"]").show();
+            return tab.find("[data-fid=\"" + field.id + "\"]").show();
           };
         })(this);
         if (_ref = field.id, __indexOf.call(this.required_fields[tabType], _ref) >= 0) {
@@ -282,6 +282,19 @@
           worksheetEl = this.els[form.worksheetName];
           listEl = worksheetEl.find('ul').first();
           layoutFieldEls = worksheetEl.find('.layout-field');
+          draggableEls = this.els["" + typeName + "_tab"].find('.form-elements');
+          draggableEls.show();
+          draggableEls.find('li').each(function() {
+            var $el, fid, field_id;
+            $el = $(this);
+            field_id = $el.data('field-id') || null;
+            if (field_id) {
+              fid = $el.data('field-type') + '_' + field_id;
+            } else {
+              fid = $el.data('field-type');
+            }
+            return $el.data('fid', fid).attr('data-fid', fid);
+          });
           orderMap = {};
           elementMap = {};
           newFields = [];
@@ -338,14 +351,12 @@
               fieldEl.appendTo(listEl);
             }
           }
-          draggableEls = this.els["" + typeName + "_tab"].find('.form-elements');
-          draggableEls.show();
           _results.push((function() {
             var _len4, _m, _results1;
             _results1 = [];
             for (_m = 0, _len4 = form_model.length; _m < _len4; _m++) {
               f = form_model[_m];
-              _results1.push(draggableEls.find("[data-field-type=\"" + f.id + "\"]").hide());
+              _results1.push(draggableEls.find("[data-fid=\"" + f.id + "\"]").hide());
             }
             return _results1;
           })());
