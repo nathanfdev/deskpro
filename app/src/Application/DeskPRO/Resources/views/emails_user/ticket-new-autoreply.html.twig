@@ -10,7 +10,9 @@
 
 <dp:ticket-messages />
 
-<br /><br />
+{% if app.isPortalEnabled() %}
+	<br /><br />
 
-{{ phrase('user.emails.ticket_access_ticket_online') }}
-<a href="{{ ticket.link }}">{{ ticket.link }}</a>
+	{{ phrase('user.emails.ticket_access_ticket_online') }}
+	<a href="{{ ticket.link }}">{{ ticket.link }}</a>
+{% endif %}

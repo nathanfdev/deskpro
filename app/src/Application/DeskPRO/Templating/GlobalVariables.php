@@ -77,6 +77,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::$container->getRequest();
 	}
 
+	public function isPortalEnabled()
+	{
+		return App::$container->getSetting('user.portal_enabled');
+	}
+
 	public function getSettingGroup($group)
 	{
 		$group_vars = App::get('deskpro.core.settings')->getGroup($group);
