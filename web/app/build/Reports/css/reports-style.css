@@ -7482,6 +7482,10 @@ button.close {
   display: block;
 }
 
+.as-appnav-extrawide .dp-layout-appnav {
+  width: 475px;
+}
+
 .dp-layout-appalt {
   position: absolute;
   top: 0;
@@ -7519,6 +7523,10 @@ button.close {
 
 .with-layout-appnav .dp-layout-appbody {
   left: 165px;
+}
+
+.with-layout-appnav.as-appnav-extrawide .dp-layout-appbody {
+  left: 475px;
 }
 
 .with-layout-appalt .dp-layout-appbody {
@@ -8482,6 +8490,63 @@ nav.dp-appnav ul ul {
 
 nav.dp-appnav ul ul a {
   padding-left: 35px;
+}
+
+.as-altstyle nav.dp-appnav {
+  margin: 10px;
+  border: 1px solid #bcc4d0;
+  border-radius: 2px;
+}
+
+.as-altstyle nav.dp-appnav header {
+  background: #efefef;
+  border-bottom: 1px solid #bcc4d0;
+}
+
+.as-altstyle nav.dp-appnav header .btn {
+  margin: 7px 7px 0 0;
+}
+
+.as-altstyle nav.dp-appnav header h3 {
+  padding: 8px 0 8px 8px;
+  margin: 0;
+  font-size: 15px;
+}
+
+.as-altstyle nav.dp-appnav > ul > li {
+  font-size: 12px;
+  background: #fff;
+  border: none;
+  border-top: 1px dotted #ccc;
+}
+
+.as-altstyle nav.dp-appnav > ul > li > a {
+  padding: 6px 6px 6px 8px;
+  line-height: 130%;
+  border: none;
+}
+
+.as-altstyle nav.dp-appnav > ul > li:first-child {
+  border-top: none;
+}
+
+.as-altstyle nav.dp-appnav .select2-container {
+  vertical-align: text-bottom;
+}
+
+.as-altstyle nav.dp-appnav .select2-container .select2-choice {
+  height: 16px;
+  line-height: 16px;
+}
+
+.as-altstyle nav.dp-appnav .select2-container .select2-choice .select2-arrow {
+  width: 14px;
+}
+
+.as-altstyle nav.dp-appnav .select2-container .select2-choice .select2-arrow b {
+  position: relative;
+  top: -5px;
+  left: -2px;
 }
 
 div.dp-appalt-section {

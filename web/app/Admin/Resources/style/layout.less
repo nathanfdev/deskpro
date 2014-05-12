@@ -52,8 +52,16 @@
 	border-right: 1px solid #b7bac0;
 }
 
+.dp-layout-appnav.as-altstyle {
+	//background: #fff;
+}
+
 .with-layout-appnav .dp-layout-appnav {
 	display: block;
+}
+
+.as-appnav-extrawide .dp-layout-appnav {
+	width: @navWidthExtraWide;
 }
 
 //######################################################################################################################
@@ -104,6 +112,10 @@
 
 .with-layout-appnav .dp-layout-appbody {
 	left: @navWidth;
+}
+
+.with-layout-appnav.as-appnav-extrawide .dp-layout-appbody {
+	left: @navWidthExtraWide;
 }
 
 .with-layout-appalt .dp-layout-appbody {

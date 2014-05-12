@@ -21,22 +21,17 @@ define ->
 			restrict: 'AE',
 			replace: true,
 			template: """
-													<a href="{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}">
-														<h4>
-															<span class="title-text">
-																<span ng-repeat="text in texts">
-																	<span style="vertical-align:middle;" ng-bind-html="text"></span>
-																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:70px;" ng-change="changeLinkParams()">
-																		<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
-																			{{ option.label }}
-																		</option>
-																	</select>
-																</span>
-															</span>
-														</h4>
-													</a>
-
-													"""
+				<a href="{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}">
+					<span ng-repeat="text in texts" style="margin-left: 5px">
+						<span style="vertical-align:middle;" ng-bind-html="text"></span>
+						<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2="{dropdownAutoWidth:true}" style="min-width:70px;" ng-change="changeLinkParams()">
+							<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
+								{{ option.label }}
+							</option>
+						</select>
+					</span>
+				</a>
+			"""
 			link: (scope, element, attrs) ->
 
 				###

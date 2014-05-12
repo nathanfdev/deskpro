@@ -26,7 +26,7 @@
         return {
           restrict: 'AE',
           replace: true,
-          template: "<a href=\"{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}\">\n	<h4>\n		<span class=\"title-text\">\n			<span ng-repeat=\"text in texts\">\n				<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n				<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:70px;\" ng-change=\"changeLinkParams()\">\n					<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n						{{ option.label }}\n					</option>\n				</select>\n			</span>\n		</span>\n	</h4>\n</a>\n",
+          template: "<a href=\"{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}\">\n	<span ng-repeat=\"text in texts\" style=\"margin-left: 5px\">\n		<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n		<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2=\"{dropdownAutoWidth:true}\" style=\"min-width:70px;\" ng-change=\"changeLinkParams()\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</a>",
           link: function(scope, element, attrs) {
 
             /*

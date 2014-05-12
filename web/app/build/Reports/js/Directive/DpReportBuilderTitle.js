@@ -27,7 +27,7 @@
             valueToDecorate: '=',
             reportId: '='
           },
-          template: "<h3 style=\"font-weight:bold;\">\n		<span ng-repeat=\"text in texts\">\n			<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n			<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2 style=\"min-width:100px;\" ng-change=\"changeLinkParams()\">\n				<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n					{{ option.label }}\n				</option>\n			</select>\n		</span>\n</h3>\n",
+          template: "<h3 style=\"font-weight:bold;\">\n	<span ng-repeat=\"text in texts\" class=\"inline-select2\">\n		<span style=\"vertical-align:middle;\" ng-bind-html=\"text\"></span>\n		<select ng-if=\"options[$index]\" ng-model=\"selected[$index]\" ui-select2=\"{dropdownAutoWidth:true}\" style=\"min-width:100px;\" ng-change=\"changeLinkParams()\">\n			<option ng-repeat=\"option in options[$index]\" ng-value=\"option.value\" ng-selected=\"selected[$parent.$index] == option.value\">\n				{{ option.label }}\n			</option>\n		</select>\n	</span>\n</h3>",
           link: function(scope, element, attrs) {
 
             /*

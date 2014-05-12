@@ -22,18 +22,17 @@ define ->
 				reportId: '='
 			},
 			template: """
-														<h3 style="font-weight:bold;">
-																<span ng-repeat="text in texts">
-																	<span style="vertical-align:middle;" ng-bind-html="text"></span>
-																	<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2 style="min-width:100px;" ng-change="changeLinkParams()">
-																		<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
-																			{{ option.label }}
-																		</option>
-																	</select>
-																</span>
-														</h3>
-
-													"""
+				<h3 style="font-weight:bold;">
+					<span ng-repeat="text in texts" class="inline-select2">
+						<span style="vertical-align:middle;" ng-bind-html="text"></span>
+						<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2="{dropdownAutoWidth:true}" style="min-width:100px;" ng-change="changeLinkParams()">
+							<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
+								{{ option.label }}
+							</option>
+						</select>
+					</span>
+				</h3>
+			"""
 			link: (scope, element, attrs) ->
 
 				###
