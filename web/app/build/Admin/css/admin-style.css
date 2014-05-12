@@ -11678,6 +11678,68 @@ table.table > tbody > tr > td.dp-id-col {
   text-wrap: none;
 }
 
+.auditlog-obj {
+  font-family: Monaco, Consolas, monospace;
+  font-size: 11px;
+}
+
+.auditlog-obj .object_type {
+  color: #888;
+}
+
+.auditlog-obj .sep {
+  color: #000;
+}
+
+.auditlog-obj .object_id {
+  color: #284c7a;
+}
+
+.auditlog-update {
+  background: #fff4d1;
+}
+
+.auditlog-update .op {
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.auditlog-create {
+  background: #bffbb9;
+}
+
+.auditlog-create .op {
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.auditlog-delete {
+  background: #fecdbc;
+}
+
+.auditlog-delete .op {
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.auditlog-change {
+  float: left;
+  margin-right: 25px;
+  overflow: hidden;
+  font-family: Monaco, Consolas, monospace;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auditlog-change .field {
+  color: #284c7a;
+}
+
+.auditlog-change .data {
+  color: #888;
+}
+
 .dp-btn-pagination {
   text-align: right;
 }

@@ -37,6 +37,8 @@ define([
 	'Admin/Apps/Ctrl/PackageInfo',
 	'Admin/Apps/Ctrl/PackageInstall',
 	'Admin/Apps/Ctrl/Resync',
+	'Admin/AuditLog/Ctrl/List',
+	'Admin/AuditLog/Ctrl/View',
 	'Admin/Agents/Ctrl/Edit',
 	'Admin/Agents/Ctrl/EditProfile',
 	'Admin/Agents/Ctrl/DeletedList',

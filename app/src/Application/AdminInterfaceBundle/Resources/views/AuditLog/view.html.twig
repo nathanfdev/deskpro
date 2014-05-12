@@ -1,0 +1,52 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('agents.audit_log') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Audit Log</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Audit Log #{{ ng_var('View.log.id') }}</h3>
+		</header>
+		<table class="table">
+			<tbody>
+				<tr>
+					<th width="140">Date</th>
+					<td><span am-time-ago="ViewSource.source.date_created" title="{{ ng_var('View.log.date_created') }}"></span></td>
+				</tr>
+				<tr>
+					<th>Person</th>
+					<td>
+						<span ng-if="log.person.id">
+								{{ ng_var('log.person.display_name') }} &lt;{{ ng_var('log.person.primary_email.email') }}&gt;
+							</span>
+							<span ng-if="!log.person.id">
+								{{ ng_var('log.person_name') }}
+							</span>
+					</td>
+				</tr>
+				<tr>
+					<th>Op</th>
+					<td>
+						{{ ng_var('View.log.op') }}
+					</td>
+				</tr>
+				<tr>
+					<th>Object</th>
+					<td>
+						{{ ng_var('View.log.object_type') }}#{{ ng_var('View.log.object_id') }}
+					</td>
+				</tr>
+				<tr>
+					<th>Raw Data</th>
+					<td>
+						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('View.log.raw_data') }}</textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+{% endblock %}

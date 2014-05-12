@@ -2973,6 +2973,23 @@ $collection->create('api_emailstatus_sendmail_get', array(
 ));
 
 ########################################################################################################################
+# Audit Log
+########################################################################################################################
+
+$collection->create('api_auditlog_list', array(
+	'path'        => '/audit_log',
+	'controller'  => 'ApiBundle:AuditLog:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_auditlog_detail', array(
+	'path'         => '/audit_log/{id}',
+	'controller'   => 'ApiBundle:AuditLog:getDetail',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('GET'),
+));
+
+########################################################################################################################
 # Ticket Triggers
 ########################################################################################################################
 
