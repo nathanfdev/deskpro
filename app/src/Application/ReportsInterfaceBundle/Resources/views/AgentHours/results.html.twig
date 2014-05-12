@@ -145,12 +145,12 @@
 				<tr id="agent_row-{{ agent.id }}" class="agent_row">
 					<td class="left_panel">&nbsp;</td>
 					{% if loop.first %}
-					<td class="chart_container" colspan="24" rowspan="{{ agents|length }}">
-						<div><table>
-							{% for agent in agents %}
-							<tr id="agent_time_row-{{ agent.id }}" class="time_row {% if loop.last %}last{% endif %}">
-								{% for i in range(0, blocks_in_day - 1) %}
-								<td class="time_cell
+						<td class="chart_container" colspan="24" rowspan="{{ agents|length }}">
+							<div><table>
+									{% for agent in agents %}
+										<tr id="agent_time_row-{{ agent.id }}" class="time_row {% if loop.last %}last{% endif %}">
+											{% for i in range(0, blocks_in_day - 1) %}
+												<td class="time_cell
 										{% if times[agent.id][year_start][month_start][day_start][i] is defined %}
 											{% if loop.first or not last_active %}first{% endif %}
 											{% if loop.last or not times[agent.id][year_start][month_start][day_start][i + 1] is defined %}last{% endif %}
@@ -161,11 +161,11 @@
 										{% if ((i + 1) % blocks_in_hour) == 0 %}hour{% endif %}
 									{% endif %}
 									"><div class="bar"></div></td>
-								{% endfor %}
-							</tr>
-							{% endfor %}
-						</table></div>
-					</td>
+											{% endfor %}
+										</tr>
+									{% endfor %}
+								</table></div>
+						</td>
 					{% endif %}
 				</tr>
 			{% endfor %}

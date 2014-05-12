@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Dates;
 
 class AgentHours
 {
@@ -86,7 +87,7 @@ class AgentHours
 
 		$vars                = $this->getVarsForDate($dt, $dt2);
 		$vars['year_start']  = $dt->format('Y');
-		$vars['month_start'] = $dt->format('m');
+		$vars['month_start'] = $dt->format('n');
 		$vars['view_date1']  = $dt;
 		$vars['day_start']   = $dt->format('j');
 
@@ -131,8 +132,7 @@ class AgentHours
 	{
 		$db = App::getDb();
 
-		$start_date = clone $date;
-		$start_date->setTimezone(new \DateTimeZone('UTC'));
+		$start_date = Dates::convertToUtcDateTime($date);
 
 		if ($end_date) {
 			$end_date = clone $end_date;
@@ -198,9 +198,7 @@ class AgentHours
 					$times_hour[$agent_id][$year][$month][$day] = array();
 				}
 
-				$times[$agent_id][$year][$month][$day][intval(
-					($hour * 60) / $block_size + $minute / $block_size
-				)]                                                 = $time;
+				$times[$agent_id][$year][$month][$day][intval(($hour * 60) / $block_size + $minute / $block_size)] = true;
 				$times_hour[$agent_id][$year][$month][$day][$hour] = true;
 			}
 
@@ -208,21 +206,6 @@ class AgentHours
 			$totals[$agent_id] = array('hours' => intval($total_minutes / 60), 'minutes' => $total_minutes % 60);
 		}
 
-		$dates_raw = $db->fetchAll(
-			'SELECT DISTINCT DATE(date_active) AS `date` FROM agent_activity ORDER BY date_active'
-		);
-
-		foreach ($dates_raw as $date_raw) {
-			$new_date = new \DateTime();
-			list($year, $month, $day) = explode('-', $date_raw['date']);
-
-			if ($year != 0) {
-				$new_date->setDate($year, $month, $day);
-				$dates[] = $new_date;
-			}
-		}
-
-		$dates    = array();
 		$min_date = $this->mysqlDateToPhpDate($db->fetchColumn('SELECT MIN(date_active) FROM agent_activity'));
 		$max_date = $this->mysqlDateToPhpDate($db->fetchColumn('SELECT MAX(date_active) FROM agent_activity'));
 
@@ -233,7 +216,6 @@ class AgentHours
 			'times_hour' => $times_hour,
 			'block_size' => $block_size,
 			'totals'     => $totals,
-			'dates'      => $dates,
 			'max_date'   => $max_date,
 			'min_date'   => $min_date,
 		);

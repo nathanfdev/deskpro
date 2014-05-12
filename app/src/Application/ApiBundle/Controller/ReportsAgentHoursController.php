@@ -45,17 +45,11 @@ class ReportsAgentHoursController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\AgentHours $reports_agent_hours
 		 */
-
 		$reports_agent_hours = $this->container->getSystemService('reports_agent_hours');
-		$html_vars              = $reports_agent_hours->getVarsForHtmlView($date1, $date2);
+		$html_vars = $reports_agent_hours->getVarsForHtmlView($date1, $date2);
 
-		return $this->createApiResponse(
-			array(
-				 'html'        => $this->renderView(
-					 'ReportsInterfaceBundle:AgentHours:results.html.twig',
-					 $html_vars
-				 ),
-			)
-		);
+		return $this->createApiResponse(array(
+			'html' => $this->renderView('ReportsInterfaceBundle:AgentHours:results.html.twig', $html_vars),
+		));
 	}
 }
