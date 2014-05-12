@@ -77,14 +77,11 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 		/**
 		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
 		 */
-
 		$api_keys = $this->container->getSystemService('api_keys');
 
-		return $this->createApiResponse(
-			array(
-				 'api_keys' => $api_keys->getAllWithUserAsArray()
-			)
-		);
+		return $this->createApiResponse(array(
+			'api_keys' => $api_keys->getAllWithUserAsArray()
+		));
 	}
 
 	###################################################################################################################
@@ -115,23 +112,19 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 		/**
 		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
 		 */
-
 		$api_keys = $this->container->getSystemService('api_keys');
 		$api_key  = $api_keys->getWithUserById($id);
 
 		if (!$api_key) {
-
 			throw $this->createNotFoundException();
 		}
 
 		$returnedData               = $api_key;
 		$returnedData['all_agents'] = $api_keys->getAllAgents();
 
-		return $this->createApiResponse(
-			array(
-				 'api_key' => $returnedData
-			)
-		);
+		return $this->createApiResponse(array(
+			 'api_key' => $returnedData
+		));
 	}
 
 	####################################################################################################################
@@ -143,19 +136,14 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 		/**
 		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
 		 */
-
 		$api_keys = $this->container->getSystemService('api_keys');
 
 		if ($id) {
-
 			$api_key = $api_keys->getById($id);
-
 			if (!$api_key) {
-
 				throw $this->createNotFoundException();
 			}
 		} else {
-
 			$api_key = $api_keys->createNew();
 		}
 
@@ -167,20 +155,15 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'api_key'), true);
 
 		if ($form->isValid()) {
-
 			$api_key_edit->save($this->em);
-
 		} else {
-
 			throw ValidationException::create($this->getFormValidationErrorsString($form));
 		}
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $api_key->id,
-			)
-		);
+		return $this->createApiResponse(array(
+			 'success' => true,
+			 'id'      => $api_key->id,
+		));
 	}
 
 	####################################################################################################################
@@ -192,28 +175,21 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 		/**
 		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
 		 */
-
 		$api_keys = $this->container->getSystemService('api_keys');
 		$api_key  = $api_keys->getById($id);
 
 		if (!$api_key) {
-
 			throw $this->createNotFoundException();
 		}
 
 		$old_id = $api_key->id;
 
 		$this->db->beginTransaction();
-
 		try {
-
 			$this->em->remove($api_key);
 			$this->em->flush();
-
 			$this->db->commit();
-
 		} catch(\Exception $e) {
-
 			$this->db->rollback();
 			throw $e;
 		}
@@ -231,12 +207,10 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 		/**
 		 * @var \Application\DeskPRO\ApiKeys\ApiKeys $api_keys
 		 */
-
 		$api_keys = $this->container->getSystemService('api_keys');
 		$api_key  = $api_keys->getById($id);
 
 		if (!$api_key) {
-
 			throw $this->createNotFoundException();
 		}
 

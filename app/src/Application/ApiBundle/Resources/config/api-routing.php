@@ -554,6 +554,13 @@ $collection->create('api_people_person_merge', array(
 	'methods'       => array('POST'),
 ));
 
+$collection->create('api_people_person_logintoken', array(
+	'path'          => '/people/{person_id}/login-token',
+	'controller'    => 'ApiBundle:Person:getLoginToken',
+	'requirements'  => array('person_id' => '\\d+'),
+	'methods'       => array('GET'),
+));
+
 $collection->create('api_people_person_picture', array(
 	'path'          => '/people/{person_id}/picture',
 	'controller'    => 'ApiBundle:Person:getPersonPicture',

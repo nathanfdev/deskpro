@@ -38,6 +38,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Orb\Util\Numbers;
+use Orb\Util\Util;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
 * @SWG\Resource(
@@ -2496,6 +2498,41 @@ class PersonController extends AbstractController
 		')->execute();
 
 		return $this->createApiResponse(array('groups' => $this->getApiData($groups)));
+	}
+
+	/**
+	 * @SWG\Api(
+	 * 	path="/people/{person_id}/login-token",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a login token that can be used in a web request to log a user in. Note that the login token is only valid for 5 minutes.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="person_id",
+	 *				description="ID of the person to get a login token for",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Person not found")
+	 * 	)
+	 * )
+	 */
+	public function getLoginTokenAction($person_id)
+	{
+		if (!$this->person->hasPerm('agent_people.login_as')) {
+			throw $this->createAccessDeniedException();
+		}
+
+		$person = $this->_getPersonOr404($person_id);
+		$secret = sha1($person->secret_string . $person->salt);
+		$token = Util::generateStaticSecurityToken($secret, 300);
+
+		return $this->createApiResponse(array(
+			'login_token'      => $token,
+			'direct_login_url' => $this->generateUrl('user_login', array('tok' => $token), UrlGeneratorInterface::ABSOLUTE_URL)
+		));
 	}
 
 	public function isPersonEditable(Person $person)
