@@ -4,40 +4,31 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@CTRL_AS = 'ListCtrl'
 		@DEPS    = []
 
-		###
- 	#
-		###
-
 		init: ->
-			@chat_fields = @DataService.get('UserFields')
+			@fieldDataService = @DataService.get('UserFields')
 			@custom_fields = []
+			@sortedListOptions = {
+				axis: 'y',
+				handle: '.drag-handle',
+				update: (ev, data) =>
+					$list = data.item.closest('ul')
+					displayOrders = []
+
+					$list.find('li').each(->
+						displayOrders.push(parseInt($(this).data('id')))
+					)
+
+					@fieldDataService.saveDisplayOrder(displayOrders)
+					@pingElement('display_orders')
+			}
 			return
 
-		###
- 	#
-		###
-
 		initialLoad: ->
-			promise = @chat_fields.loadList()
+			promise = @fieldDataService.loadList()
 			promise.then( (list) =>
 				@custom_fields = list
 			)
 
 			return promise
-
-		###
- 	#
-		###
-
-		updateCustomFieldEnabledState: (field) ->
-
-			if field.is_enabled
-				val = '1'
-			else
-				val = '0'
-
-			@Api.sendPost('/user_fields/set-enabled/field_' + field.id + '/' + val)
-
-
 
 	Admin_UserFields_Ctrl_List.EXPORT_CTRL()

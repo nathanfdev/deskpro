@@ -35,26 +35,6 @@
         return promise;
       };
 
-      Admin_TicketFields_Ctrl_List.prototype.updateBuiltinFieldEnabledState = function(name) {
-        var val;
-        if (this.field_enabled[name]) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/ticket_fields/set-enabled/' + name + '/' + val);
-      };
-
-      Admin_TicketFields_Ctrl_List.prototype.updateCustomFieldEnabledState = function(field) {
-        var val;
-        if (field.is_enabled) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/ticket_fields/set-enabled/field_' + field.id + '/' + val);
-      };
-
       return Admin_TicketFields_Ctrl_List;
 
     })(Admin_Ctrl_Base);

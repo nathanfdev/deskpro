@@ -2,24 +2,23 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<nav class="dp-controls">
-				<span dp-ping-flash="fields_enabled" class="saved-ping">
-					<i class="fa fa-check-square-o-square"></i>
-					{{ phrase('agent.general.saved') }}
-				</span>
+			<nav>
+				<span dp-ping-flash="display_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
 			</nav>
-
 			<h3 ng-pluralize count="ListCtrl.custom_fields.length || 0"
 				when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions">
 				<li ng-repeat="field in ListCtrl.custom_fields"
+					class="with-drag-handle"
 					dp-state-mark="crm.user_fields.edit.{{ ng_var('field.id') }}"
 					data-id="{{ ng_var('field.id') }}">
 					<a href="{{ ng_href('crm.user_fields.edit', '{id: field.id}') }}">
-						<button dp-toggle-switch ng-model="field.is_enabled"
-								ng-change="ListCtrl.updateCustomFieldEnabledState(field)"></button>
+						<i class="fa fa-bars drag-handle"></i>
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
+						</div>
 						<h4><span class="title-text">{{ ng_var('field.title') }}</span></h4>
 					</a>
 				</li>

@@ -19,21 +19,4 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			return promise
 
-		updateBuiltinFieldEnabledState: (name) ->
-			if @field_enabled[name]
-				val = '1'
-			else
-				val = '0'
-
-			@Api.sendPost('/ticket_fields/set-enabled/' + name + '/' + val)
-
-		updateCustomFieldEnabledState: (field) ->
-			if field.is_enabled
-				val = '1'
-			else
-				val = '0'
-
-			@Api.sendPost('/ticket_fields/set-enabled/field_' + field.id + '/' + val)
-
-
 	Admin_TicketFields_Ctrl_List.EXPORT_CTRL()

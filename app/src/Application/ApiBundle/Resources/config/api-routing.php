@@ -3596,6 +3596,12 @@ $collection->create('api_chat_fields_setenabled', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_chat_fields_update_order', array(
+	'path'        => '/chat_fields/display-order',
+	'controller'  => 'ApiBundle:ChatFields:saveDisplayOrder',
+	'methods'     => array('POST')
+));
+
 ########################################################################################################################
 # Chat Setup
 ########################################################################################################################
@@ -3738,6 +3744,12 @@ $collection->create('api_user_fields_setenabled', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_user_fields_update_order', array(
+	'path'        => '/user_fields/display-order',
+	'controller'  => 'ApiBundle:UserFields:saveDisplayOrder',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # CRM Organization Fields
 ########################################################################################################################
@@ -3779,6 +3791,12 @@ $collection->create('api_org_fields', array(
 $collection->create('api_org_fields_setenabled', array(
 	'path'        => '/org_fields/set-enabled/{field_id}/{is_enabled}',
 	'controller'  => 'ApiBundle:OrgFields:toggleField',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_org_fields_update_order', array(
+	'path'        => '/org_fields/display-order',
+	'controller'  => 'ApiBundle:OrgFields:saveDisplayOrder',
 	'methods'     => array('POST'),
 ));
 

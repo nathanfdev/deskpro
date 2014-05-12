@@ -108,4 +108,23 @@ class CustomDefAbstract extends AbstractEntityRepository
 
 		return $q->execute();
 	}
+
+	/**
+	 * @param array $display_orders
+	 */
+	public function updateDisplayOrders(array $display_orders)
+	{
+		$display_orders = array_values($display_orders);
+
+		$db = $this->_em->getConnection();
+		$db->beginTransaction();
+
+		$x = 0;
+		foreach ($display_orders as $tr_id) {
+			$x += 10;
+			$db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
+		}
+
+		$db->commit();
+	}
 }

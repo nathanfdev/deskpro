@@ -29,6 +29,16 @@ define [
 
 
 		###
+		# Update display orders
+		#
+		# @param {Array} Array of IDs in order
+		# @return {promise}
+		###
+		saveDisplayOrder: (display_orders) ->
+			@Api.sendPostJson('/org_fields/display-order', {display_orders: display_orders})
+
+
+		###
     	# Remove a field
     	#
     	# @param {Integer} id Filter id

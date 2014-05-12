@@ -17,45 +17,36 @@
 
       Admin_UserFields_Ctrl_List.DEPS = [];
 
-
-      /*
-       	 *
-       */
-
       Admin_UserFields_Ctrl_List.prototype.init = function() {
-        this.chat_fields = this.DataService.get('UserFields');
+        this.fieldDataService = this.DataService.get('UserFields');
         this.custom_fields = [];
+        this.sortedListOptions = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: (function(_this) {
+            return function(ev, data) {
+              var $list, displayOrders;
+              $list = data.item.closest('ul');
+              displayOrders = [];
+              $list.find('li').each(function() {
+                return displayOrders.push(parseInt($(this).data('id')));
+              });
+              _this.fieldDataService.saveDisplayOrder(displayOrders);
+              return _this.pingElement('display_orders');
+            };
+          })(this)
+        };
       };
-
-
-      /*
-       	 *
-       */
 
       Admin_UserFields_Ctrl_List.prototype.initialLoad = function() {
         var promise;
-        promise = this.chat_fields.loadList();
+        promise = this.fieldDataService.loadList();
         promise.then((function(_this) {
           return function(list) {
             return _this.custom_fields = list;
           };
         })(this));
         return promise;
-      };
-
-
-      /*
-       	 *
-       */
-
-      Admin_UserFields_Ctrl_List.prototype.updateCustomFieldEnabledState = function(field) {
-        var val;
-        if (field.is_enabled) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/user_fields/set-enabled/field_' + field.id + '/' + val);
       };
 
       return Admin_UserFields_Ctrl_List;

@@ -68,8 +68,9 @@ define [
 
 			promise.success( (data) =>
 
-				@field = data.field_id
-				@field_id = data.field_id
+				if not @field_id
+					@field.id = data.field_id
+					@field_id = data.field_id
 
 				v = @postSave()
 				if v and v.then

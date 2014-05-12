@@ -79,8 +79,10 @@
         promise.success((function(_this) {
           return function(data) {
             var v;
-            _this.field = data.field_id;
-            _this.field_id = data.field_id;
+            if (!_this.field_id) {
+              _this.field.id = data.field_id;
+              _this.field_id = data.field_id;
+            }
             v = _this.postSave();
             if (v && v.then) {
               return v.then(function() {

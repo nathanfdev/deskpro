@@ -150,4 +150,15 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
 
 		return $this->createSuccessResponse();
 	}
+
+	####################################################################################################################
+	# save-display-order
+	####################################################################################################################
+
+	public function saveDisplayOrderAction()
+	{
+		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
+		$this->em->getRepository('DeskPRO:CustomDefChat')->updateDisplayOrders($display_orders);
+		return $this->createSuccessResponse();
+	}
 }
