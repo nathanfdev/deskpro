@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS = []
 
 		init: ->
+			@$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('awaiting_agent')
 			return
 
 	Admin_TicketStatuses_Ctrl_EditAwaitingAgent.EXPORT_CTRL()

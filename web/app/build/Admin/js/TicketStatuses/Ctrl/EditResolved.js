@@ -17,7 +17,14 @@
 
       Admin_TicketStatuses_Ctrl_EditResolved.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditResolved.prototype.init = function() {};
+      Admin_TicketStatuses_Ctrl_EditResolved.prototype.init = function() {
+        this.$scope.getCount = (function(_this) {
+          return function() {
+            var _ref;
+            return (_ref = _this.$scope.$parent.TicketStatusesList) != null ? _ref.getStatusCount('resolved') : void 0;
+          };
+        })(this);
+      };
 
       return Admin_TicketStatuses_Ctrl_EditResolved;
 

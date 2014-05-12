@@ -18,6 +18,12 @@
       Admin_TicketStatuses_Ctrl_EditClosed.DEPS = [];
 
       Admin_TicketStatuses_Ctrl_EditClosed.prototype.init = function() {
+        this.$scope.getCount = (function(_this) {
+          return function() {
+            var _ref;
+            return (_ref = _this.$scope.$parent.TicketStatusesList) != null ? _ref.getStatusCount('closed') : void 0;
+          };
+        })(this);
         this.$scope.settings = {
           enabled: false,
           auto_archive_time: 2419200

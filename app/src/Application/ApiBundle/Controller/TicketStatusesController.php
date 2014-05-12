@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Tickets\TicketPurger;
+use Orb\Util\Arrays;
 
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {
@@ -47,6 +48,33 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
 		return new AdminManagePermission();
 	}
 
+
+	####################################################################################################################
+	# get-status
+	####################################################################################################################
+
+	public function getStatsAction()
+	{
+		$stats = $this->db->fetchAllKeyValue("
+			SELECT status, COUNT(*)
+			FROM tickets
+			GROUP BY status
+		");
+
+		$h_stats = $this->db->fetchAllKeyValue("
+			SELECT hidden_status, COUNT(*)
+			FROM tickets
+			WHERE status = 'hidden' AND hidden_status IS NOT NULL
+			GROUP BY hidden_status
+		");
+		foreach ($h_stats as $s => $c) {
+			$stats['hidden_' . $s] = $c;
+		}
+
+		$stats = Arrays::castToType($stats, 'int', 'string');
+
+		return $this->createApiResponse(array('status_stats' => $stats));
+	}
 
 	####################################################################################################################
 	# get-closed-info

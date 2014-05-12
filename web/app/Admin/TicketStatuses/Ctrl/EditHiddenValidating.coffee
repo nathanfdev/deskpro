@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS = []
 
 		init: ->
+			@$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('hidden_validating')
 			return
 
 	Admin_TicketStatuses_Ctrl_EditHiddenValidating.EXPORT_CTRL()

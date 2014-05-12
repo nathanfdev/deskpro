@@ -1,24 +1,28 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<article>
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<p>
+						For very large helpdesks with millions of tickets, archiving can greatly improve performance of the agent interface and filters.
+					</p>
+					<p>
+						When an old ticket is archived it is moved out of your filters and into the 'Archived' section. You can still view archived tickets and agents with permission can restore archived tickets
+					</p>
+					<p ng-if="settings.enabled || getCount() > 0">
+						You currently have <strong>{{ ng_var('getCount()') }}</strong> archived.
+					</p>
+				</div>
+			</div>
+		</article>
+	</section>
+
 	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveLabel()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
 					<div class="panel-body">
-						<div class="form-group">
-							<div class="col-lg-3">
-								<h3>About</h3>
-							</div>
-							<div class="col-lg-9">
-								<p>
-									For very large helpdesks with millions of tickets, archiving can greatly improve performance of the agent interface and filters.
-								</p>
-								<p>
-									When an old ticket is archived it is moved out of your filters and into the 'Archived' section. You can still view archived tickets and agents with permission can restore archived tickets
-								</p>
-							</div>
-						</div>
-
 						<div class="form-group">
 							<div class="col-lg-3">
 								<h3>Enabled</h3>

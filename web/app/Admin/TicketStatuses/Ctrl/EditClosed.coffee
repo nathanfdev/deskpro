@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS = []
 
 		init: ->
+			@$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('closed')
 			@$scope.settings = {
 				enabled: false,
 				auto_archive_time: 2419200

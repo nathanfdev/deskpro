@@ -82,8 +82,8 @@ class TemplateData extends AbstractDefaultData
 		Here are some ideas on what to do next:
 	</p>
 	<ul>
-		<li>Change this welcome text from <a href="{{ path('user') }}admin/portal">Admin Interface {{ language_arrow('right') }} Portal</a></li>
-		<li>Integrate with your website using the Javascript widgets from <a href="{{ path('user') }}admin/portal/widgets">Admin Interface {{ language_arrow('right') }} Portal {{ language_arrow('right') }} Website Widgets</a></li>
+		<li>Change this welcome text from <a href="{{ path('user') }}admin/#/portal/portal_editor">Admin Interface {{ language_arrow('right') }} Portal</a></li>
+		<li>Integrate with your website using the Javascript widgets from <a href="{{ path('user') }}admin/#/portal/embeds">Admin Interface {{ language_arrow('right') }} Portal {{ language_arrow('right') }} Embed</a></li>
 		<li>Add some new knowledgebase articles from <a href="{{ path('user') }}agent">Agent Interface {{ language_arrow('right') }} Publish</a></li>
 	</ul>
 	<p>

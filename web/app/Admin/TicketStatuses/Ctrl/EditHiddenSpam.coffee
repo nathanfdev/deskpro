@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS = []
 
 		init: ->
+			@$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('hidden_spam')
 			@$scope.settings = {
 				auto_purge_time: 604800
 			}

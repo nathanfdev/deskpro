@@ -2724,6 +2724,12 @@ $collection->create('api_ticket_pris_save', array(
 # Ticket Statuses
 ########################################################################################################################
 
+$collection->create('api_ticket_statuses_stats', array(
+	'path'        => '/ticket_statuses/stats',
+	'controller'  => 'ApiBundle:TicketStatuses:getStats',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_ticket_statuses_closed', array(
 	'path'        => '/ticket_statuses/closed',
 	'controller'  => 'ApiBundle:TicketStatuses:getClosedInfo',

@@ -17,7 +17,22 @@
 
       Admin_TicketStatuses_Ctrl_List.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_List.prototype.init = function() {};
+      Admin_TicketStatuses_Ctrl_List.prototype.init = function() {
+        this.stats = {};
+      };
+
+      Admin_TicketStatuses_Ctrl_List.prototype.initialLoad = function() {
+        return this.Api.sendGet('/ticket_statuses/stats').then((function(_this) {
+          return function(res) {
+            console.log(res);
+            return _this.stats = res.data.status_stats;
+          };
+        })(this));
+      };
+
+      Admin_TicketStatuses_Ctrl_List.prototype.getStatusCount = function(status) {
+        return this.stats[status] || 0;
+      };
 
       return Admin_TicketStatuses_Ctrl_List;
 

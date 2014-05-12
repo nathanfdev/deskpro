@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS = []
 
 		init: ->
+			@$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('resolved')
 			return
 
 	Admin_TicketStatuses_Ctrl_EditResolved.EXPORT_CTRL()

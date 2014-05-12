@@ -18,6 +18,12 @@
       Admin_TicketStatuses_Ctrl_EditHiddenSpam.DEPS = [];
 
       Admin_TicketStatuses_Ctrl_EditHiddenSpam.prototype.init = function() {
+        this.$scope.getCount = (function(_this) {
+          return function() {
+            var _ref;
+            return (_ref = _this.$scope.$parent.TicketStatusesList) != null ? _ref.getStatusCount('hidden_spam') : void 0;
+          };
+        })(this);
         this.$scope.settings = {
           auto_purge_time: 604800
         };

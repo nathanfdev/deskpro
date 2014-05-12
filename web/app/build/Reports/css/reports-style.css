@@ -7576,6 +7576,10 @@ label {
   font-weight: normal;
 }
 
+p:last-of-type {
+  margin-bottom: 0;
+}
+
 .dp-ping-flash {
   display: none;
 }

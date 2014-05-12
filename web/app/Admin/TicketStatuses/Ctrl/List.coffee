@@ -5,6 +5,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS = []
 
 		init: ->
+			@stats = {}
 			return
+
+		initialLoad: ->
+			@Api.sendGet('/ticket_statuses/stats').then( (res) =>
+				console.log(res)
+				@stats = res.data.status_stats
+			)
+
+		getStatusCount: (status) ->
+			return @stats[status] || 0
 
 	Admin_TicketStatuses_Ctrl_List.EXPORT_CTRL()

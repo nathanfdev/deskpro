@@ -18,6 +18,12 @@
       Admin_TicketStatuses_Ctrl_EditHiddenDeleted.DEPS = [];
 
       Admin_TicketStatuses_Ctrl_EditHiddenDeleted.prototype.init = function() {
+        this.$scope.getCount = (function(_this) {
+          return function() {
+            var _ref;
+            return (_ref = _this.$scope.$parent.TicketStatusesList) != null ? _ref.getStatusCount('hidden_deleted') : void 0;
+          };
+        })(this);
         this.$scope.settings = {
           auto_purge_time: 604800
         };
