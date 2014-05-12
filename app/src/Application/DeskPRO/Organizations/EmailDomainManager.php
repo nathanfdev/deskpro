@@ -188,7 +188,7 @@ class EmailDomainManager
 					LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 					SET tickets.organization_id = ?
 					WHERE people.organization_id = ? AND people_emails.email_domain = ?
-				", array($orgdomain->organization->id, $orgdomain->domain));
+				", array(null, $orgdomain->organization->id, $orgdomain->domain));
 
 				$this->db->executeUpdate("
 					UPDATE tickets_search_active
