@@ -82,3 +82,23 @@ define [
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(info)
 			)
+
+		startDelete: ->
+			doDelete = =>
+				@fieldDataService.deleteFieldById(@field_id)
+
+			baseRouteName = @getBaseRouteName()
+			@$modal.open({
+				templateUrl: @getTemplatePath('CustomField/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', '$state', ($scope, $modalInstance, $state) ->
+					$scope.confirm = ->
+						$scope.is_loading =
+						doDelete().then(->
+							$state.go(baseRouteName)
+							$modalInstance.dismiss()
+						)
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+				]
+			});

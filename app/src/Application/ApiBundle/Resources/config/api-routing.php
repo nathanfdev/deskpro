@@ -2835,6 +2835,13 @@ $collection->create('api_ticket_fields_save', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_ticket_fields_delete', array(
+	'path'         => '/ticket_fields/{id}',
+	'controller'   => 'ApiBundle:TicketFields:deleteCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
 $collection->create('api_ticket_fields', array(
 	'path'        => '/ticket_fields',
 	'controller'  => 'ApiBundle:TicketFields:list',
@@ -3563,6 +3570,13 @@ $collection->create('api_chat_fields_create', array(
 	'methods'    => array('PUT'),
 ));
 
+$collection->create('api_chat_fields_delete', array(
+	'path'         => '/chat_fields/{id}',
+	'controller'   => 'ApiBundle:ChatFields:deleteCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
 $collection->create('api_chat_fields_save', array(
 	'path'         => '/chat_fields/{id}',
 	'controller'   => 'ApiBundle:ChatFields:saveCustomField',
@@ -3705,6 +3719,13 @@ $collection->create('api_user_fields_save', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_user_fields_delete', array(
+	'path'         => '/user_fields/{id}',
+	'controller'   => 'ApiBundle:UserFields:deleteCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
 $collection->create('api_user_fields', array(
 	'path'        => '/user_fields',
 	'controller'  => 'ApiBundle:UserFields:list',
@@ -3740,6 +3761,13 @@ $collection->create('api_org_fields_save', array(
 	'controller'   => 'ApiBundle:OrgFields:saveCustomField',
 	'requirements' => array('id' => '\\d+'),
 	'methods'      => array('POST'),
+));
+
+$collection->create('api_org_fields_delete', array(
+	'path'         => '/org_fields/{id}',
+	'controller'   => 'ApiBundle:OrgFields:deleteCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELTE'),
 ));
 
 $collection->create('api_org_fields', array(

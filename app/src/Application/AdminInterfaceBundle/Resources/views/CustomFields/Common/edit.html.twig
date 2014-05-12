@@ -487,6 +487,11 @@
 							<li ng-show="form_props.description.$error.required">{{ phrase('adm.custom_fields.description_error') }}</li>
 						</ul>
 					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.field.id">
+						<button class="btn btn-danger" type="button" ng-click="EditCtrl.startDelete();">Delete</button>
+					</div>
+
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
@@ -499,4 +504,5 @@
 			</footer>
 		</section>
 	</form>
+	{{ ng_tpl('AdminInterfaceBundle:CustomFields:Common/delete-modal.html.twig', 'CustomField/delete-modal.html') }}
 {% endblock %}

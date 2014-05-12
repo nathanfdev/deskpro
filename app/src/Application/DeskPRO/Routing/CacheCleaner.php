@@ -110,9 +110,7 @@ class CacheCleaner
 			DP_ROOT  . '/src/Application/ApiBundle/Resources/config/api-routing.php',
 			DP_ROOT  . '/src/Application/UserBundle/Resources/config/user-routing.php',
 			DP_ROOT  . '/src/Application/InstallBundle/Resources/config/install-routing.php',
-			DP_ROOT  . '/src/Application/DeskPRO/Resources/config/dp-routing.php',
-			DP_ROOT  . '/src/Cloud/AdminBundle/Resources/config/admin-routing.php',
-			DP_ROOT  . '/src/Cloud/BillingBundle/Resources/config/billing-routing.php',
+			DP_ROOT  . '/src/Application/DeskPRO/Resources/config/dp-routing.php'
 		);
 
 		return $this->routing_files;
@@ -126,14 +124,14 @@ class CacheCleaner
 
 		$this->gen_files = array();
 		foreach (array('DpKernel','Install') as $k) {
-			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KerneldevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KernelDevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KernelDevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KernelDevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KernelDevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KernelDevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KernelDevUrlMatcher.php';
 		}
 
 		return $this->gen_files;

@@ -99,6 +99,32 @@
         })(this));
       };
 
+      Admin_CustomFields_Base_Ctrl_Edit.prototype.startDelete = function() {
+        var baseRouteName, doDelete;
+        doDelete = (function(_this) {
+          return function() {
+            return _this.fieldDataService.deleteFieldById(_this.field_id);
+          };
+        })(this);
+        baseRouteName = this.getBaseRouteName();
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('CustomField/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', '$state', function($scope, $modalInstance, $state) {
+              $scope.confirm = function() {
+                return $scope.is_loading = doDelete().then(function() {
+                  $state.go(baseRouteName);
+                  return $modalInstance.dismiss();
+                });
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+      };
+
       return Admin_CustomFields_Base_Ctrl_Edit;
 
     })(Admin_Ctrl_Base);

@@ -128,6 +128,23 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 	}
 
 	####################################################################################################################
+	# delete-custom-field
+	####################################################################################################################
+
+	public function deleteCustomFieldAction($id)
+	{
+		$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
+		if (!$field || $field->parent) {
+			throw $this->createNotFoundException();
+		}
+
+		$this->em->remove($field);
+		$this->em->flush();
+
+		return $this->createApiDeleteResponse();
+	}
+
+	####################################################################################################################
 	# toggleField
 	####################################################################################################################
 

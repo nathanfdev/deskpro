@@ -128,6 +128,23 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
 	}
 
 	####################################################################################################################
+	# delete-custom-field
+	####################################################################################################################
+
+	public function deleteCustomFieldAction($id)
+	{
+		$field = $this->em->find('DeskPRO:CustomDefOrganization', $id);
+		if (!$field || $field->parent) {
+			throw $this->createNotFoundException();
+		}
+
+		$this->em->remove($field);
+		$this->em->flush();
+
+		return $this->createApiDeleteResponse();
+	}
+
+	####################################################################################################################
 	# toggleField
 	####################################################################################################################
 
