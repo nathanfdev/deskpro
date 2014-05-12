@@ -39,7 +39,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, fname, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+        var f, fname, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
         if (typesData == null) {
           typesData = null;
         }
@@ -142,11 +142,11 @@
           title: 'Ticket Criteria',
           subOptions: options
         });
-        if (this.options_data.ticket_fields) {
+        if ((_ref = this.options_data) != null ? _ref.ticket_fields : void 0) {
           options = [];
-          _ref = this.options_data.ticket_fields;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            f = _ref[_i];
+          _ref1 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            f = _ref1[_i];
             fname = 'TicketField' + f.id;
             this[fname] = function(options) {
               if (options == null) {
@@ -229,11 +229,11 @@
           title: 'User Criteria',
           subOptions: options
         });
-        if (this.options_data.user_fields) {
+        if ((_ref2 = this.options_data) != null ? _ref2.user_fields : void 0) {
           options = [];
-          _ref1 = this.options_data.user_fields;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            f = _ref1[_j];
+          _ref3 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
+            f = _ref3[_j];
             fname = 'UserField' + f.id;
             this[fname] = function(options) {
               if (options == null) {
@@ -275,11 +275,11 @@
           title: 'Organization Criteria',
           subOptions: options
         });
-        if (this.options_data.user_fields) {
+        if ((_ref4 = this.options_data) != null ? _ref4.org_fields : void 0) {
           options = [];
-          _ref2 = this.options_data.user_fields;
-          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-            f = _ref2[_k];
+          _ref5 = this.options_data.org_fields;
+          for (_k = 0, _len2 = _ref5.length; _k < _len2; _k++) {
+            f = _ref5[_k];
             fname = 'OrgField' + f.id;
             this[fname] = function(options) {
               if (options == null) {

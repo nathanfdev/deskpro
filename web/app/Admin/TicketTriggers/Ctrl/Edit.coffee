@@ -101,15 +101,16 @@ define [
 				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
 			)
 
-			promise2 = @criteraTypeDef.loadDataOptions().then(=>
+			promise2 = @criteraTypeDef.loadDataOptions()
+			promise3 = @actionsTypeDef.loadDataOptions()
+
+			return @$q.all([promise, promise2, promise3]).then(=>
 				@updateCriteriaOptionTypes()
 
 				@$scope.$watch('form.typeForm', =>
 					@updateCriteriaOptionTypes()
 				, true)
 			)
-
-			return @$q.all([promise, promise2])
 
 		###
 		# Save the trigger

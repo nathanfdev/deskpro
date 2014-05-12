@@ -16,7 +16,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var opt, options, set_options, typeFunc, _i, _len, _ref;
+        var f, fname, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
         if (types == null) {
           types = [];
         }
@@ -162,11 +162,61 @@
           title: 'Trigger Control',
           subOptions: options
         });
+        if ((_ref = this.options_data) != null ? _ref.ticket_fields : void 0) {
+          options = [];
+          _ref1 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            f = _ref1[_i];
+            fname = 'TicketField' + f.id;
+            this[fname] = function(options) {
+              if (options == null) {
+                options = {};
+              }
+              options.type = 'TicketField' + f.id;
+              return this.getStandardForFieldDef(f, options);
+            };
+            options.push({
+              title: f.title,
+              value: fname
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Ticket Fields',
+              subOptions: options
+            });
+          }
+        }
+        if ((_ref2 = this.options_data) != null ? _ref2.user_fields : void 0) {
+          options = [];
+          _ref3 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
+            f = _ref3[_j];
+            fname = 'UserField' + f.id;
+            this[fname] = function(options) {
+              if (options == null) {
+                options = {};
+              }
+              options.type = 'UserField' + f.id;
+              return this.getStandardForFieldDef(f, options);
+            };
+            options.push({
+              title: f.title,
+              value: fname
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Person Fields',
+              subOptions: options
+            });
+          }
+        }
         if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
           options = [];
-          _ref = typesData.dynamicOptions;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            opt = _ref[_i];
+          _ref4 = typesData.dynamicOptions;
+          for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+            opt = _ref4[_k];
             options.push({
               title: opt.action_title,
               value: opt.action_name
@@ -228,12 +278,15 @@
             'ticket_prods': '/ticket_prods',
             'ticket_pris': '/ticket_pris',
             'ticket_works': '/ticket_works',
+            'ticket_fields': '/ticket_fields',
+            'user_fields': '/user_fields',
+            'org_fields': '/org_fields',
             'ticket_slas': '/ticket_slas',
             'email_accounts': '/email_accounts',
             'usergroups': '/user_groups'
           }).then((function(_this) {
             return function(result) {
-              var data, options_data, _ref, _ref1;
+              var data, options_data, _ref, _ref1, _ref2, _ref3, _ref4;
               data = result.data;
               options_data = {};
               options_data['agents'] = data.agents.agents;
@@ -243,7 +296,10 @@
               options_data['ticket_pris'] = data.ticket_pris.priorities;
               options_data['ticket_works'] = data.ticket_works.workflows;
               options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
-              options_data['ticket_slas'] = (_ref1 = data.ticket_slas) != null ? _ref1.slas : void 0;
+              options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
+              options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
+              options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
+              options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
               options_data['email_accounts'] = data.email_accounts.email_accounts;
               options_data['usergroups'] = data.usergroups.groups;
               return _this.options_data = options_data;

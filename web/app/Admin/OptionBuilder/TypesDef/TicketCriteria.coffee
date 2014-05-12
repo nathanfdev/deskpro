@@ -162,7 +162,7 @@ define [
 			# Ticket Fields
 			#------------------------------
 
-			if @options_data.ticket_fields
+			if @options_data?.ticket_fields
 				options = []
 
 				for f in @options_data.ticket_fields
@@ -271,7 +271,7 @@ define [
 			# User Fields
 			#------------------------------
 
-			if @options_data.user_fields
+			if @options_data?.user_fields
 				options = []
 
 				for f in @options_data.user_fields
@@ -326,10 +326,10 @@ define [
 			# Org Fields
 			#------------------------------
 
-			if @options_data.user_fields
+			if @options_data?.org_fields
 				options = []
 
-				for f in @options_data.user_fields
+				for f in @options_data.org_fields
 					fname = 'OrgField' + f.id
 					@[fname] = (options = {}) ->
 						options.type = 'OrgField' + f.id

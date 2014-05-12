@@ -98,7 +98,7 @@
        */
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.initialLoad = function() {
-        var get, promise, promise2;
+        var get, promise, promise2, promise3;
         get = {
           customActions: '/ticket_triggers/get-custom-actions'
         };
@@ -116,7 +116,9 @@
             return _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
           };
         })(this));
-        promise2 = this.criteraTypeDef.loadDataOptions().then((function(_this) {
+        promise2 = this.criteraTypeDef.loadDataOptions();
+        promise3 = this.actionsTypeDef.loadDataOptions();
+        return this.$q.all([promise, promise2, promise3]).then((function(_this) {
           return function() {
             _this.updateCriteriaOptionTypes();
             return _this.$scope.$watch('form.typeForm', function() {
@@ -124,7 +126,6 @@
             }, true);
           };
         })(this));
-        return this.$q.all([promise, promise2]);
       };
 
 
