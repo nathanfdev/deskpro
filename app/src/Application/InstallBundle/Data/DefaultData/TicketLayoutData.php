@@ -42,6 +42,8 @@ class TicketLayoutData extends AbstractDefaultData
 {
 	public function runInstall()
 	{
+		$exists = $this->getDb()->fetchAllCol("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+
 		$ticket_layout = new TicketLayout();
 		$ticket_layout->is_enabled   = true;
 		$ticket_layout->user_layout  = new Layout();
@@ -58,7 +60,7 @@ class TicketLayoutData extends AbstractDefaultData
 
 	public function runReset()
 	{
-		$this->getDb()->executeUpdate("DELETE FROM ticket_triggers WHERE sys_name IS NOT NULL");
+		$exists = $this->getDb()->fetchAllCol("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
 		$this->runInstall();
 	}
 
