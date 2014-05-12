@@ -29,39 +29,85 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\TicketLayout;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
-use Application\DeskPRO\TicketLayout\TicketLayoutManager;
-use Orb\Types\JsonObjectSerializer;
+use Application\DeskPRO\CustomFields\PersonFieldManager;
+use Application\DeskPRO\CustomFields\TicketFieldManager;
 
-class TicketLayoutManagerService
+class LayoutFieldFilter
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var \Application\DeskPRO\CustomFields\TicketFieldManager
+	 */
+	private $ticket_fields;
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\PersonFieldManager
+	 */
+	private $user_fields;
+
+
+	/**
+	 * @param TicketFieldManager $ticket_fields
+	 * @param PersonFieldManager $user_fields
+	 */
+	public function __construct(TicketFieldManager $ticket_fields, PersonFieldManager $user_fields)
 	{
-		$filter = new LayoutFieldFilter(
-			$container->getTicketFieldManager(),
-			$container->getPersonFieldManager()
-		);
+		$this->ticket_fields = $ticket_fields;
+		$this->user_fields = $user_fields;
+	}
 
-		$ticket_layouts = array_map(function($row) use ($filter) {
-			$row['user_layout']  = JsonObjectSerializer::unserialize($row['user_layout']);
-			$row['agent_layout'] = JsonObjectSerializer::unserialize($row['agent_layout']);
 
-			$row['user_layout'] = $filter->filterInvalid($row['user_layout']);
-			$row['agent_layout'] = $filter->filterInvalid($row['agent_layout']);
+	/**
+	 * @param LayoutField $field
+	 * @return bool
+	 */
+	public function isFieldValid(LayoutField $field)
+	{
+		if ($field->getFieldType() == 'ticket_field') {
+			if (!$this->ticket_fields->getFieldFromId($field->getFieldId())) {
+				return false;
+			}
+		} else if ($field->getFieldType() == 'user_field') {
+			if (!$this->user_fields->getFieldFromId($field->getFieldId())) {
+				return false;
+			}
+		}
 
-			return $row;
-		}, $container->getDb()->fetchAll("
-			SELECT department_id, user_layout, agent_layout
-			FROM ticket_layouts
-		"));
+		return true;
+	}
 
-		$x = TicketLayoutManager::createWithLayoutArrays($ticket_layouts);
-		return $x;
+
+	/**
+	 * @param Layout $layout
+	 * @return array
+	 */
+	public function getInvalidIds(Layout $layout)
+	{
+		$invalid = array();
+		foreach ($layout as $f) {
+			if (!$this->isFieldValid($f)) {
+				$invalid[] = $f->getId();
+			}
+		}
+
+		return $invalid;
+	}
+
+
+	/**
+	 * @param Layout $layout
+	 * @return Layout
+	 */
+	public function filterInvalid(Layout $layout)
+	{
+		foreach ($this->getInvalidIds($layout) as $id) {
+			$layout->remove($id);
+		}
+
+		return $layout;
 	}
 }

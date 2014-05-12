@@ -38,6 +38,7 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -77,6 +78,13 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 			$is_default = true;
 			$ticket_layout = new TicketLayout(null);
 		}
+
+		$filter = new LayoutFieldFilter(
+			$this->container->getTicketFieldManager(),
+			$this->container->getPersonFieldManager()
+		);
+		$filter->filterInvalid($ticket_layout->user_layout);
+		$filter->filterInvalid($ticket_layout->agent_layout);
 
 		return $this->createApiResponse(array(
 			'layout'     => array(
