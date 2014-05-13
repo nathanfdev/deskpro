@@ -197,7 +197,7 @@ window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
 {{ js_error_tracking('admin_interface') }}
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
 <script type="text/javascript">window.DP_INTERFACE_LOADER = 'AdminLoad';</script>
-<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
+<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
 <script type="text/javascript">{{ rjs_apps_config|raw }}</script>
 </body>
 </html>

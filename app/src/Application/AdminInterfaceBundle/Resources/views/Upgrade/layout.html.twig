@@ -40,6 +40,6 @@ window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 </script>
 
 <script type="text/javascript">window.DP_INTERFACE_LOADER = 'AdminUpgradeLoad';</script>
-<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
+<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
 </body>
 </html>

@@ -47,4 +47,4 @@
 {% endif %}
 
 <link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}" type="text/css" />
-<script	type="text/javascript" data-main="{{ path('agent_requirejs_loader') }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
+<script	type="text/javascript" data-main="{{ path('agent_requirejs_loader') }}?v={{ app.getBuildTime() }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
