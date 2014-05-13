@@ -155,7 +155,7 @@ class FieldDisplayArray implements \ArrayAccess
 
 					$field_group = $this->field_group;
 					if (!$field_group) {
-						$field_group = App::get('form.factory')->createNamedBuilder('form', 'custom_fields');
+						$field_group = App::get('form.factory')->createNamedBuilder('custom_fields', 'form');
 					}
 
 					$f = $handler->getFormField($this->data['value']);
