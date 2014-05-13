@@ -1,6 +1,6 @@
 <div class="dp-hr">&nbsp;</div>
 {% if site_url %}<a href="{{ site_url }}">{{ site_name|default(site_url) }}</a> &middot; {% endif %}
-{% if app.isPortalEnabled() %}<a href="{{ deskpro_url }}">{{ deskpro_url }}</a>{% end %}
+{% if app.isPortalEnabled() %}<a href="{{ deskpro_url }}">{{ deskpro_url }}</a>{% endif %}
 {% if tplvars.agent_notification_footer %}
 	&middot; <a href="{{ url_full('user') }}agent/#settings.{{ tplvars.agent_notification_footer }}">Manage Your Notification Settings</a>
 {% endif %}
