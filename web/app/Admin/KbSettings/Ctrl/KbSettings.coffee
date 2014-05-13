@@ -4,38 +4,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@CTRL_AS = 'Ctrl'
 		@DEPS    = []
 
-		###
- 	#
-		###
-
-		init: ->
-
-			return
-
-		###
- 	#
-		###
-
 		initialLoad: ->
-
-			data_promise = @Api.sendGet('/enable_settings/app_kb').then( (res) =>
-				@$scope.status = res.data.status
+			@Api.sendGet('/settings/portal/kb').then( (res) =>
+				@$scope.settings = res.data.settings
 			)
 
-			return @$q.all([data_promise])
+		save: ->
+			postData = {
+				settings: @$scope.settings
+			}
 
-		###
-		#
-		###
-
-		toggle: () ->
-
-			if @$scope.status
-				val = '1'
-			else
-				val = '0'
-
-			@Api.sendPost('/enable_settings/app_kb/toggle/' + val)
+			@startSpinner('saving')
+			@Api.sendPostJson('/settings/portal/kb', postData).then( =>
+				@stopSpinner('saving')
+			)
 
 
 	Admin_KbSettings_Ctrl_KbSettings.EXPORT_CTRL()

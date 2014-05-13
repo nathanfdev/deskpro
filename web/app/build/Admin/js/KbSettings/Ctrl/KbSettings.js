@@ -17,41 +17,25 @@
 
       Admin_KbSettings_Ctrl_KbSettings.DEPS = [];
 
-
-      /*
-       	 *
-       */
-
-      Admin_KbSettings_Ctrl_KbSettings.prototype.init = function() {};
-
-
-      /*
-       	 *
-       */
-
       Admin_KbSettings_Ctrl_KbSettings.prototype.initialLoad = function() {
-        var data_promise;
-        data_promise = this.Api.sendGet('/enable_settings/app_kb').then((function(_this) {
+        return this.Api.sendGet('/settings/portal/kb').then((function(_this) {
           return function(res) {
-            return _this.$scope.status = res.data.status;
+            return _this.$scope.settings = res.data.settings;
           };
         })(this));
-        return this.$q.all([data_promise]);
       };
 
-
-      /*
-      		 *
-       */
-
-      Admin_KbSettings_Ctrl_KbSettings.prototype.toggle = function() {
-        var val;
-        if (this.$scope.status) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/enable_settings/app_kb/toggle/' + val);
+      Admin_KbSettings_Ctrl_KbSettings.prototype.save = function() {
+        var postData;
+        postData = {
+          settings: this.$scope.settings
+        };
+        this.startSpinner('saving');
+        return this.Api.sendPostJson('/settings/portal/kb', postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving');
+          };
+        })(this));
       };
 
       return Admin_KbSettings_Ctrl_KbSettings;

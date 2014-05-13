@@ -17,41 +17,25 @@
 
       Admin_DownloadsSettings_Ctrl_DownloadsSettings.DEPS = [];
 
-
-      /*
-       	 *
-       */
-
-      Admin_DownloadsSettings_Ctrl_DownloadsSettings.prototype.init = function() {};
-
-
-      /*
-       	 *
-       */
-
       Admin_DownloadsSettings_Ctrl_DownloadsSettings.prototype.initialLoad = function() {
-        var data_promise;
-        data_promise = this.Api.sendGet('/enable_settings/app_downloads').then((function(_this) {
+        return this.Api.sendGet('/settings/portal/downloads').then((function(_this) {
           return function(res) {
-            return _this.$scope.status = res.data.status;
+            return _this.$scope.settings = res.data.settings;
           };
         })(this));
-        return this.$q.all([data_promise]);
       };
 
-
-      /*
-      		 *
-       */
-
-      Admin_DownloadsSettings_Ctrl_DownloadsSettings.prototype.toggle = function() {
-        var val;
-        if (this.$scope.status) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/enable_settings/app_downloads/toggle/' + val);
+      Admin_DownloadsSettings_Ctrl_DownloadsSettings.prototype.save = function() {
+        var postData;
+        postData = {
+          settings: this.$scope.settings
+        };
+        this.startSpinner('saving');
+        return this.Api.sendPostJson('/settings/portal/downloads', postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving');
+          };
+        })(this));
       };
 
       return Admin_DownloadsSettings_Ctrl_DownloadsSettings;

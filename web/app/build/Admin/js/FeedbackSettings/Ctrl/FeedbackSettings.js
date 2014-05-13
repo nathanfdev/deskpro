@@ -17,41 +17,25 @@
 
       Admin_FeedbackSettings_Ctrl_FeedbackSettings.DEPS = [];
 
-
-      /*
-       	 *
-       */
-
-      Admin_FeedbackSettings_Ctrl_FeedbackSettings.prototype.init = function() {};
-
-
-      /*
-       	 *
-       */
-
       Admin_FeedbackSettings_Ctrl_FeedbackSettings.prototype.initialLoad = function() {
-        var data_promise;
-        data_promise = this.Api.sendGet('/enable_settings/app_feedback').then((function(_this) {
+        return this.Api.sendGet('/settings/portal/feedback').then((function(_this) {
           return function(res) {
-            return _this.$scope.status = res.data.status;
+            return _this.$scope.settings = res.data.settings;
           };
         })(this));
-        return this.$q.all([data_promise]);
       };
 
-
-      /*
-      		 *
-       */
-
-      Admin_FeedbackSettings_Ctrl_FeedbackSettings.prototype.toggle = function() {
-        var val;
-        if (this.$scope.status) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/enable_settings/app_feedback/toggle/' + val);
+      Admin_FeedbackSettings_Ctrl_FeedbackSettings.prototype.save = function() {
+        var postData;
+        postData = {
+          settings: this.$scope.settings
+        };
+        this.startSpinner('saving');
+        return this.Api.sendPostJson('/settings/portal/feedback', postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving');
+          };
+        })(this));
       };
 
       return Admin_FeedbackSettings_Ctrl_FeedbackSettings;

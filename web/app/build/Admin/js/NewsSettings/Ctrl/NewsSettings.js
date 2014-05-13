@@ -17,41 +17,25 @@
 
       Admin_NewsSettings_Ctrl_NewsSettings.DEPS = [];
 
-
-      /*
-       	 *
-       */
-
-      Admin_NewsSettings_Ctrl_NewsSettings.prototype.init = function() {};
-
-
-      /*
-       	 *
-       */
-
       Admin_NewsSettings_Ctrl_NewsSettings.prototype.initialLoad = function() {
-        var data_promise;
-        data_promise = this.Api.sendGet('/enable_settings/app_news').then((function(_this) {
+        return this.Api.sendGet('/settings/portal/news').then((function(_this) {
           return function(res) {
-            return _this.$scope.status = res.data.status;
+            return _this.$scope.settings = res.data.settings;
           };
         })(this));
-        return this.$q.all([data_promise]);
       };
 
-
-      /*
-      		 *
-       */
-
-      Admin_NewsSettings_Ctrl_NewsSettings.prototype.toggle = function() {
-        var val;
-        if (this.$scope.status) {
-          val = '1';
-        } else {
-          val = '0';
-        }
-        return this.Api.sendPost('/enable_settings/app_news/toggle/' + val);
+      Admin_NewsSettings_Ctrl_NewsSettings.prototype.save = function() {
+        var postData;
+        postData = {
+          settings: this.$scope.settings
+        };
+        this.startSpinner('saving');
+        return this.Api.sendPostJson('/settings/portal/news', postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving');
+          };
+        })(this));
       };
 
       return Admin_NewsSettings_Ctrl_NewsSettings;

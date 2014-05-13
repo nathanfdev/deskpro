@@ -2308,6 +2308,22 @@ $collection->create('api_settings_values_set', array(
 ));
 
 ########################################################################################################################
+# Portal App Settings
+########################################################################################################################
+
+$collection->create('api_settings_portalapps', array(
+	'path'        => '/settings/portal/{app}',
+	'controller'  => 'ApiBundle:Settings:portalAppSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_settings_portalapps_save', array(
+	'path'        => '/settings/portal/{app}',
+	'controller'  => 'ApiBundle:Settings:savePortalAppSettings',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Server Settings
 ########################################################################################################################
 
@@ -4156,22 +4172,6 @@ $collection->create('api_templates_email_getinfo', array(
 $collection->create('api_savelog_logjserror', array(
 	'path'        => '/log-js-error',
 	'controller'  => 'ApiBundle:SaveLog:logJsError',
-	'methods'     => array('POST'),
-));
-
-########################################################################################################################
-# Enable / Disable Apps
-########################################################################################################################
-
-$collection->create('api_enable_settings_values_get', array(
-	'path'        => '/enable_settings/app_{app}',
-	'controller'  => 'ApiBundle:EnableSettings:getStatus',
-	'methods'     => array('GET'),
-));
-
-$collection->create('api_enable_settings_values_set', array(
-	'path'        => '/enable_settings/app_{app}/toggle/{is_enabled}',
-	'controller'  => 'ApiBundle:EnableSettings:toggle',
 	'methods'     => array('POST'),
 ));
 

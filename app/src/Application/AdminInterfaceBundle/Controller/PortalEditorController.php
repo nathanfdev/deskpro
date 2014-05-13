@@ -221,7 +221,18 @@ class PortalEditorController extends AbstractController
 					$val = 0;
 				}
 
-				$this->container->getSettingsHandler()->setSetting('user.portal_tab_' . $this->in->getStrSimple('tab'), $val);
+				$app = $this->in->getStrSimple('tab');
+				$this->container->getSettingsHandler()->setSetting('user.portal_tab_' . $app, $val);
+
+				// If the tab is turned on, we need to make sure the app itself is on as well
+				if ($val) {
+					$app_name = $app;
+					if ($app == 'articles') {
+						$app_name = 'kb';
+					}
+
+					$this->container->getSettingsHandler()->setSetting('core.apps_' . $app_name, 1);
+				}
 
 				break;
 

@@ -476,4 +476,94 @@ class SettingsController extends AbstractController implements ProtectedControll
 		$this->settings->setSetting('core.setup_initial', 1);
 		return $this->createApiSuccessResponse();
 	}
+
+	####################################################################################################################
+	# portal-app-settings
+	####################################################################################################################
+
+	public function portalAppSettingsAction($app)
+	{
+		switch ($app) {
+			case 'news':
+				$settings = array(
+					'enabled'     => (bool)$this->settings->get('core.apps_news'),
+					'tab_enabled' => (bool)$this->settings->get('user.portal_tab_news'),
+				);
+				break;
+
+			case 'kb':
+				$settings = array(
+					'enabled'     => (bool)$this->settings->get('core.apps_kb'),
+					'tab_enabled' => (bool)$this->settings->get('user.portal_tab_articles'),
+				);
+				break;
+
+			case 'feedback':
+				$settings = array(
+					'enabled'     => (bool)$this->settings->get('core.apps_feedback'),
+					'tab_enabled' => (bool)$this->settings->get('user.portal_tab_feedback'),
+				);
+				break;
+
+			case 'downloads':
+				$settings = array(
+					'enabled'     => (bool)$this->settings->get('core.apps_downloads'),
+					'tab_enabled' => (bool)$this->settings->get('user.portal_tab_downloads'),
+				);
+				break;
+
+			default:
+				throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(array(
+			'settings' => $settings
+		));
+	}
+
+	####################################################################################################################
+	# save-portal-app-settings
+	####################################################################################################################
+
+	public function savePortalAppSettingsAction($app)
+	{
+		switch ($app) {
+			case 'news':
+				$settings = array(
+					'core.apps_news'       => $this->in->getBoolInt('settings.enabled'),
+					'user.portal_tab_news' => (int)($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled'))
+				);
+				break;
+
+			case 'kb':
+				$settings = array(
+					'core.apps_kb'             => $this->in->getBoolInt('settings.enabled'),
+					'user.portal_tab_articles' => (int)($this->in->getBoolInt('settings.enabled') && $this->in->getBoolInt('settings.tab_enabled'))
+				);
+				break;
+
+			case 'feedback':
+				$settings = array(
+					'core.apps_feedback'       => $this->in->getBoolInt('settings.enabled'),
+					'user.portal_tab_feedback' => (int)($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled'))
+				);
+				break;
+
+			case 'downloads':
+				$settings = array(
+					'core.apps_downloads'       => $this->in->getBoolInt('settings.enabled'),
+					'user.portal_tab_downloads' => (int)($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled'))
+				);
+				break;
+
+			default:
+				throw $this->createNotFoundException();
+		}
+
+		foreach ($settings as $k => $v) {
+			$this->settings->setSetting($k, $v);
+		}
+
+		return $this->createApiSuccessResponse();
+	}
 }
