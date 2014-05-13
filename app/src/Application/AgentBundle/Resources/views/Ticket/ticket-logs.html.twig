@@ -28,7 +28,7 @@
 				>
 					<div class="info">
 						{% if log.sla %}
-							<span class="sla">{{ phrase('agent.general.sla') }} {{ log.sla.title }}{% if log.sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif log.sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}</span>,
+							<span class="sla">{{ phrase('agent.general.sla') }} {{ log.sla.title }}{% if log.sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif log.sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}</span>
 						{% elseif log.trigger_id %}
 							{% if log.details.trigger_is_escalation %}
 								<span class="trigger-id" title="{{ log.details.trigger_title }}">{{ phrase('agent.general.escalation') }} {{ log.trigger_id }}</span>,
@@ -56,7 +56,7 @@
 						>
 							<div class="info">
 								{% if sublog.sla %}
-									<span class="sla">{{ phrase('agent.general.sla') }} {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sublog.sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}</span>,
+									<span class="sla">{{ phrase('agent.general.sla') }} {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sublog.sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}</span>
 								{% elseif sublog.trigger_id %}
 									{% if sublog.details.trigger_is_escalation %}
 										<span class="trigger-id" title="{{ sublog.details.escalation_title }}">{{ phrase('agent.general.escalation') }} {{ sublog.trigger_id }}</span>

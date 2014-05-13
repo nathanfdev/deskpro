@@ -107,7 +107,7 @@ class TicketSla extends DomainObject
 
 	/**
 	 * @param bool $value
-	 * @param null $date
+	 * @param \DateTime|null $date
 	 */
 	public function setIsCompleted($value, \DateTime $date = null)
 	{

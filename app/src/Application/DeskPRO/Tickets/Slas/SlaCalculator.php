@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketSla;
 use Orb\Util\WorkHoursInterface;
 use Orb\Util\TimeUnit;
 use Orb\Util\WorkHoursSetAll;
@@ -230,5 +231,68 @@ class SlaCalculator
 		} else {
 			return $this->work_hours->getWorkTimeBetween($ticket->date_created, $end_ts);
 		}
+	}
+
+
+	/**
+	 * Gets the appropriate Date to compare against warn/fail dates.
+	 *
+	 * @param Ticket $ticket
+	 * @return \DateTime
+	 */
+	public function getTestTime(Ticket $ticket)
+	{
+		$times = array(time());
+
+		if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
+			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
+				// don't auto resolve sla on ticket creation, even if created by an agent
+				$times[] = $ticket->date_first_agent_reply->getTimestamp();
+			}
+		}
+
+		if ($ticket->date_closed) {
+			$times[] = $ticket->date_closed->getTimestamp();
+		}
+
+		if ($ticket->status == 'resolved' && $ticket->date_resolved) {
+			$times[] = $ticket->date_resolved->getTimestamp();
+		}
+
+		return new \DateTime('@' . min($times));
+	}
+
+
+	/**
+	 * @param Ticket    $ticket
+	 * @param TicketSla $ticket_sla
+	 * @return bool
+	 */
+	public function isTicketSlaWarning(Ticket $ticket, TicketSla $ticket_sla)
+	{
+		$time = $this->getTestTime($ticket)->getTimestamp();
+
+		if ($ticket_sla->warn_date && $ticket_sla->warn_date->getTimestamp() < $time) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @param Ticket    $ticket
+	 * @param TicketSla $ticket_sla
+	 * @return bool
+	 */
+	public function isTicketSlaFailed(Ticket $ticket, TicketSla $ticket_sla)
+	{
+		$time = $this->getTestTime($ticket)->getTimestamp();
+
+		if ($ticket_sla->fail_date && $ticket_sla->fail_date->getTimestamp() < $time) {
+			return true;
+		}
+
+		return false;
 	}
 }

@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Slas\SlaProcessor;
+use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
@@ -45,13 +47,21 @@ class RecalculateSlas implements TicketSaveActionInterface
 	 */
 	private $em;
 
+	/**
+	 * @var ActionApplicatorInterface
+	 */
+	private $action_applicator;
+
+
 
 	/**
 	 * @param EntityManager $em
+	 * @param ActionApplicatorInterface $action_applicator
 	 */
-	public function __construct(EntityManager $em)
+	public function __construct(EntityManager $em, ActionApplicatorInterface $action_applicator)
 	{
 		$this->em = $em;
+		$this->action_applicator = $action_applicator;
 	}
 
 
@@ -66,51 +76,7 @@ class RecalculateSlas implements TicketSaveActionInterface
 			return;
 		}
 
-		$state = $ticket->getStateChangeRecorder();
-
-		#------------------------------
-		# Get what we should be doing
-		#------------------------------
-
-		$recalc = false;
-
-		if (($state->isNewTicket() && !$ticket->hidden_status)) {
-			$recalc = true;
-		}
-		if ($state->hasChangedField('status')) {
-			$recalc = true;
-		}
-		if ($state->hasNewReply()) {
-			$recalc = true;
-		}
-
-		if (!$recalc) {
-			$context->getLogger()->info('[RecalculateSlas] No ops');
-			return;
-		}
-
-		#------------------------------
-		# Perform calcs
-		#------------------------------
-
-		foreach ($ticket->ticket_slas as $ticket_sla) {
-			// Dont touch ones that have been specifically set
-			if ($ticket_sla->is_completed_set) {
-				continue;
-			}
-
-			$calc = $ticket_sla->sla->getCalculator();
-			$ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
-			$ticket_sla->fail_date = $calc->calculateFailDate($ticket);
-
-			$completed_date = $calc->calculateCompletedDate($ticket);
-			if ($completed_date) {
-				$ticket_sla->setIsCompleted(true, $completed_date);
-			} else {
-				$ticket_sla->setIsCompleted(false, $completed_date);
-			}
-
-			$this->em->persist($ticket_sla);
-		}
+		$proc = new SlaProcessor($this->em, $this->action_applicator);
+		$proc->calculateSlas($ticket, $context);
 	}
 }

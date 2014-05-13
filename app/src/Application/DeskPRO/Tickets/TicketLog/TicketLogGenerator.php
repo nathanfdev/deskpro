@@ -134,6 +134,11 @@ class TicketLogGenerator
 						$log->escalation_id = $log_metadata['escalation']->id;
 						$log->setDetailItem('escalation_title', $log_metadata['escalation']->title);
 					}
+					if (!empty($log_metadata['sla'])) {
+						$log->sla = $log_metadata['sla'];
+						$log->sla_status = $log_metadata['sla_status'];
+						$log->setDetailItem('sla_title', $log_metadata['sla']->title);
+					}
 				}
 
 				$this->context->getLogger()->info(sprintf("[TicketLogGenerator] %s -> %s", $change->getField(), $log->action_type));

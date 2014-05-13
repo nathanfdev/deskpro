@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\TicketTrigger as TicketTriggerRepository;
-use Application\DeskPRO\ORM\StateChange\ChangeTriggerLog;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -72,6 +71,9 @@ class ExecTriggers implements TicketSaveActionInterface
 	 */
 	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if (isset($GLOBALS['DP_ESCALATION_RUNNING'])) {
+			return;
+		}
 		if ($context->getEventType() == 'noop') {
 			return;
 		}
