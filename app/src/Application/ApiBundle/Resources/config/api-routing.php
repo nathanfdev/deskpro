@@ -3928,7 +3928,7 @@ $collection->create('api_usergroups_non_sys_list', array(
 $collection->create('api_user_groups_get', array(
 	'path'         => '/user_groups/{id}',
 	'controller'   => 'ApiBundle:Usergroups:get',
-	'requirements' => array('id' => '\\d+'),
+	'requirements' => array('id' => '(\\d+|[a-z0-9_\.\-]+)'),
 	'methods'      => array('GET'),
 ));
 
@@ -3949,7 +3949,7 @@ $collection->create('api_user_groups_create', array(
 $collection->create('api_user_groups_save', array(
 	'path'         => '/user_groups/{id}',
 	'controller'   => 'ApiBundle:Usergroups:save',
-	'requirements' => array('id' => '\\d+'),
+	'requirements' => array('id' => '(\\d+|[a-z0-9_\.\-]+)'),
 	'methods'      => array('POST'),
 ));
 

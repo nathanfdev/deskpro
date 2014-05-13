@@ -73,7 +73,8 @@
         var deferred, sendTypes;
         deferred = this.$q.defer();
         sendTypes = {
-          reg_group: '/user_groups/1'
+          everyone_group: '/user_groups/everyone',
+          reg_group: '/user_groups/registered'
         };
         if (id && id !== 1) {
           sendTypes.group = "/user_groups/" + id;
@@ -82,6 +83,7 @@
           return function(result) {
             var data;
             data = {};
+            data.everyone_group = result.data.everyone_group.group;
             data.reg_group = result.data.reg_group.group;
             if (result.data.group) {
               data.group = result.data.group.group;

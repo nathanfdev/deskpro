@@ -2,9 +2,9 @@
 	<input
 		dp-slider-switch
 		ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
-		is-on="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }}"
-		is-locked="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }}"
-		locked-tip="This permission is being granted through the Everyone usergroup"
+		is-on="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }} || EditCtrl.perm_form_everyone.{{ typename }}.{{ permname }}"
+		is-locked="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }} || EditCtrl.perm_form_everyone.{{ typename }}.{{ permname }}"
+		locked-tip-e="EditCtrl.perm_form_everyone.{{ typename }}.{{ permname }}? 'This permission is being granted through the Everyone usergroup' : 'This permission is being granted through the Registered usergroup.'"
 	/>
 {% endmacro %}
 

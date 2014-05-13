@@ -55,7 +55,8 @@ define [
 			deferred = @$q.defer()
 
 			sendTypes = {
-				reg_group: '/user_groups/1'
+				everyone_group: '/user_groups/everyone',
+				reg_group:      '/user_groups/registered'
 			}
 			if (id and id != 1)
 				sendTypes.group = "/user_groups/#{id}"
@@ -63,7 +64,8 @@ define [
 			@Api.sendDataGet(sendTypes).then( (result) =>
 				data = {}
 
-				data.reg_group = result.data.reg_group.group
+				data.everyone_group = result.data.everyone_group.group
+				data.reg_group      = result.data.reg_group.group
 
 				if result.data.group
 					data.group = result.data.group.group

@@ -16,10 +16,15 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@perm_form = @group.perms
 				@perm_form.options = {}
 
-				if @group.id != 1 and data.reg_group.is_enabled
-					@perm_form_reg = data.reg_group.perms
+				if @group.sys_name == 'everyone'
+					@perm_form_everyone = null
+					@perm_form_reg      = null
+				else if @group.sys_name == 'registered'
+					@perm_form_everyone = if data.everyone_group.is_enabled then data.everyone_group.perms else null
+					@perm_form_reg      = null
 				else
-					@perm_form_reg = null
+					@perm_form_everyone = if data.everyone_group.is_enabled then data.everyone_group.perms else null
+					@perm_form_reg      = if data.reg_group.is_enabled     then data.reg_group.perms       else null
 
 				if @perm_form?.ticket?.reopen_resolved_createnew || @perm_form_reg?.ticket?.reopen_resolved_createnew
 					@perm_form.options.reopen_resolved_createnew = 'new_ticket'

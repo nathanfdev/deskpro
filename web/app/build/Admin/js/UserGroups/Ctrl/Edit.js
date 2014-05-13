@@ -32,10 +32,15 @@
             _this.form = data.form;
             _this.perm_form = _this.group.perms;
             _this.perm_form.options = {};
-            if (_this.group.id !== 1 && data.reg_group.is_enabled) {
-              _this.perm_form_reg = data.reg_group.perms;
-            } else {
+            if (_this.group.sys_name === 'everyone') {
+              _this.perm_form_everyone = null;
               _this.perm_form_reg = null;
+            } else if (_this.group.sys_name === 'registered') {
+              _this.perm_form_everyone = data.everyone_group.is_enabled ? data.everyone_group.perms : null;
+              _this.perm_form_reg = null;
+            } else {
+              _this.perm_form_everyone = data.everyone_group.is_enabled ? data.everyone_group.perms : null;
+              _this.perm_form_reg = data.reg_group.is_enabled ? data.reg_group.perms : null;
             }
             if (((_ref = _this.perm_form) != null ? (_ref1 = _ref.ticket) != null ? _ref1.reopen_resolved_createnew : void 0 : void 0) || ((_ref2 = _this.perm_form_reg) != null ? (_ref3 = _ref2.ticket) != null ? _ref3.reopen_resolved_createnew : void 0 : void 0)) {
               return _this.perm_form.options.reopen_resolved_createnew = 'new_ticket';

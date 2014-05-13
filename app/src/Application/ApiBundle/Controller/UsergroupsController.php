@@ -44,6 +44,7 @@ use Application\DeskPRO\People\UserPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\UserPermissions\UserPermissions;
 use Application\DeskPRO\Usergroups\Form\Type\UsergroupType;
 use Application\DeskPRO\Usergroups\UsergroupEdit;
+use Orb\Util\Numbers;
 
 class UsergroupsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -90,7 +91,12 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 	public function getAction($id)
 	{
 		$usergroups = $this->container->getUserGroups();
-		$usergroup  = $usergroups->getGroup($id);
+
+		if (Numbers::isInteger($id)) {
+			$usergroup = $usergroups->getGroup($id);
+		} else {
+			$usergroup = $usergroups->getSysGroup($id);
+		}
 
 		if (!$usergroup || $usergroup->is_agent_group) {
 			throw $this->createNotFoundException();
@@ -144,7 +150,12 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 		#------------------------------
 
 		if ($id) {
-			$usergroup = $usergroups->getGroup($id);
+			if (Numbers::isInteger($id)) {
+				$usergroup = $usergroups->getGroup($id);
+			} else {
+				$usergroup = $usergroups->getSysGroup($id);
+			}
+
 			if (!$usergroup) {
 				throw $this->createNotFoundException();
 			}
