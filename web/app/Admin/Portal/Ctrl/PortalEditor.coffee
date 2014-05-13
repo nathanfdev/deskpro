@@ -44,9 +44,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			portalCtrl = @
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('PortalEditor/change-favicon-modal.html'),
-				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+				controller: ['$scope', '$modalInstance', '$http', ($scope, $modalInstance, $http) =>
 
-					$scope.upload_url = @Api.formatUrl('/blobs') + '?API-TOKEN=' + @Api.api_token
+					$scope.upload_url = $http.formatApiUrl('/blobs')
 					$scope.fileSelected = false
 					$scope.fileTransferStarted = false
 					$scope.favicon_choice = favi_type

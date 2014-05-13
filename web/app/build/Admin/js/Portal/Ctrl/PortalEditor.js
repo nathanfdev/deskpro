@@ -70,9 +70,9 @@
         return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('PortalEditor/change-favicon-modal.html'),
           controller: [
-            '$scope', '$modalInstance', (function(_this) {
-              return function($scope, $modalInstance) {
-                $scope.upload_url = _this.Api.formatUrl('/blobs') + '?API-TOKEN=' + _this.Api.api_token;
+            '$scope', '$modalInstance', '$http', (function(_this) {
+              return function($scope, $modalInstance, $http) {
+                $scope.upload_url = $http.formatApiUrl('/blobs');
                 $scope.fileSelected = false;
                 $scope.fileTransferStarted = false;
                 $scope.favicon_choice = favi_type;
