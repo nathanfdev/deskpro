@@ -5,7 +5,7 @@
 				<h4>NOTICE</h4>
 			</header>
 			<article>
-				{{ version_notice.message }}
+				{{ version_notice.message|raw }}
 				{% if version_notice.link %}
 					<br/><br/>
 					<a href="{{ version_notice.link }}">Read More</a>

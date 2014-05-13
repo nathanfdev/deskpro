@@ -95,7 +95,7 @@ class LicenseService
 
 		if ($data === null) {
 			try {
-				$data = self::fetchServiceResult('build/version-notices.json', array('my_build_num' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0));
+				$data = self::fetchServiceResult('build/version-notices.json', array('my_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0));
 			} catch (\Exception $e) {
 				$data = array();
 			}

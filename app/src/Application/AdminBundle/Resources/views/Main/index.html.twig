@@ -8,9 +8,9 @@
 {% endblock %}
 {% block sidebar_right %}
 
-	<div data-element-handler="DeskPRO.Admin.ElementHandler.DashNotice"></div>
+	<div id="deskpro_dash_notice" data-element-handler="DeskPRO.Admin.ElementHandler.DashNotice" style="display: none;"></div>
 
-	<div class="dp-page-box">
+	<div class="dp-page-box" id="deskpro_dash_version">
 		<div class="resource-item-list">
 			<header>
 				<h4>{{ phrase('admin.general.deskpro_version') }}</h4>
