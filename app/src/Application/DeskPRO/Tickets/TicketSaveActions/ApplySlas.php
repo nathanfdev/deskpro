@@ -70,7 +70,7 @@ class ApplySlas implements TicketSaveActionInterface
 	 */
 	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if ($context->getEventType() == 'noop') {
+		if ($context->getEventType() != 'newticket' || !$this->slas) {
 			return;
 		}
 
@@ -81,12 +81,20 @@ class ApplySlas implements TicketSaveActionInterface
 			$has_slas = array();
 		}
 
-		foreach ($this->slas as $sla) {
-			if (isset($has_slas[$sla->id])) continue;
+		$context->getLogger()->info(sprintf("[ApplySlas] Testing %d SLAs", count($this->slas)));
 
-			if ($sla->apply_terms->isTriggerMatch($ticket, $context)) {
+		foreach ($this->slas as $sla) {
+			if (isset($has_slas[$sla->id])) {
+				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- already exists", $sla->id, $sla->title));
+				continue;
+			}
+
+			if ($sla->apply_type == 'all' || ($sla->apply_type == 'terms' && $sla->apply_terms->isTriggerMatch($ticket, $context))) {
+				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- added", $sla->id, $sla->title));
 				$ticket_sla = $ticket->addSla($sla);
 				$this->em->persist($ticket_sla);
+			} else {
+				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- no match", $sla->id, $sla->title));
 			}
 		}
 	}

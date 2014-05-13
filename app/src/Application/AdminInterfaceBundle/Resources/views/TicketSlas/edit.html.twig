@@ -58,7 +58,7 @@
 						<p>
 							After <dp-time-with-unit ng-model="EditCtrl.form.warn_time" model-type="array"></dp-time-with-unit> the ticket is close to failing and the warning status is applied.
 						</p>
-						<div class="dp-ob-setrow">
+						<div class="dp-ob-setrow" style="margin-top: 5px;">
 							<header>
 								<em class="dp-ob-row-tag then">then</em>
 								The following actions will run:
@@ -82,7 +82,7 @@
 						<p>
 							After <dp-time-with-unit ng-model="EditCtrl.form.fail_time" model-type="array"></dp-time-with-unit> the ticket has failed and the failed status is applied.
 						</p>
-						<div class="dp-ob-setrow">
+						<div class="dp-ob-setrow" style="margin-top: 5px;">
 							<header>
 								<em class="dp-ob-row-tag then">then</em>
 								The following actions will run:
@@ -110,7 +110,7 @@
 								<option value="terms">Apply to new tickets that match certain criteria</option>
 							</select>
 						</p>
-						<div ng-show="EditCtrl.form.apply_type == 'terms'">
+						<div ng-show="EditCtrl.form.apply_type == 'terms'" style="margin-top: 4px;">
 							<div class="panel panel-innertable" style="padding-top: 0; margin-top: 0; margin-left: 0; margin-right: 0;">
 								<div class="dp-ob-set" dp-option-builder-set="{typedef: EditCtrl.criteraTypeDef, template: 'ticket_deps_criteria_setrow', option_types: criteriaOptionTypes }" sets-object="EditCtrl.form.apply_terms">
 									<div class="dp-ob-addition-setrow">

@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Slas;
 
-use DeskPRO\Builder\Ticket;
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Util\WorkHoursInterface;
 use Orb\Util\TimeUnit;
 use Orb\Util\WorkHoursSetAll;
@@ -187,21 +187,48 @@ class SlaCalculator
 			$dates[] = $ticket->date_closed->getTimestamp();
 		}
 
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
+		if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
 			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
 				// don't auto resolve sla on ticket creation, even if created by an agent
 				$dates[] = $ticket->date_first_agent_reply->getTimestamp();
+				$dates[] = $ticket->date_last_agent_reply->getTimestamp();
 			}
 		}
 
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
+		if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
 			$dates[] = $ticket->date_status->getTimestamp();
 		}
 
 		if ($dates) {
-			return min($dates);
+			return new \DateTime('@' . min($dates));
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Calculate SLA countable time (in seconds) that happened in ticket between start and $ate.
+	 *
+	 * @param Ticket    $ticket
+	 * @param \DateTime $date
+	 * @return int
+	 */
+	public function calculateTimeUntil(Ticket $ticket, \DateTime $date)
+	{
+		$end_ts = $date->getTimestamp();
+
+		if ($this->type == self::TYPE_WAITING_TIME) {
+			$time = 0;
+			foreach ($ticket->waiting_times AS $waiting) {
+				if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
+					$time += $this->work_hours->getWorkTimeBetween($waiting['start'], min($end_ts, $waiting['end']));
+				}
+			}
+
+			return $time;
+		} else {
+			return $this->work_hours->getWorkTimeBetween($ticket->date_created, $end_ts);
+		}
 	}
 }

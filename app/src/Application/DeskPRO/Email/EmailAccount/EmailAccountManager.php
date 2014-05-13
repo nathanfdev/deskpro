@@ -164,7 +164,7 @@ class EmailAccountManager
 	 */
 	public function hasAcccount($id)
 	{
-		return $this->getAccount($id) !== null;
+		return $acc = $this->repos->getAccount($id) !== null;
 	}
 
 
@@ -174,6 +174,10 @@ class EmailAccountManager
 	 */
 	public function hasActiveAccount($id)
 	{
+		if (!$this->hasAcccount($id)) {
+			return false;
+		}
+
 		$acc = $this->getAccount($id);
 		return $acc->is_enabled;
 	}

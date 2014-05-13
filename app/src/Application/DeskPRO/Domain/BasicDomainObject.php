@@ -548,6 +548,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	protected function _onPropertyChanged($prop, $old, $new, $skip_state = false)
 	{
 		$this->getStateChangeRecorder()->touchField($prop);
+		$this->propertyChangedCallback($prop, $old, $new);
 
         if (!empty($this->_listeners['property'])) {
             foreach ($this->_listeners['property'] as $listener) {
@@ -567,6 +568,8 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 			}
 		}
     }
+
+	protected function propertyChangedCallback($prop, $old, $new) {}
 
 	public function __getPropValue__($k) { return $this->$k; }
 	public function __setPropValue__($k, $v) { $this->$k = $v; }

@@ -38,7 +38,7 @@ namespace Orb\Util;
  * Utility class to work with a set of work hours/days/holidays
  * to calculate time lengths and thresholds.
  */
-class WorkHoursSet
+class WorkHoursSet implements WorkHoursInterface
 {
 	/**
 	 * When the work day starts. This is stored as the number of seconds after 00:00:00.

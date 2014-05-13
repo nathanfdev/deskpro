@@ -109,7 +109,7 @@ class TicketSla extends DomainObject
 	 * @param bool $value
 	 * @param null $date
 	 */
-	public function setIsCompleted($value, $date = null)
+	public function setIsCompleted($value, \DateTime $date = null)
 	{
 		$value = (bool)$value;
 
@@ -123,10 +123,10 @@ class TicketSla extends DomainObject
 			}
 
 			if ($date === null) {
-				$date = time();
+				$date = new \DateTime();
 			}
 			if ($date) {
-				$this->setModelField('completed_time_taken', $this->sla->calculateSlaTimeUntil($date, $this->ticket));
+				$this->setModelField('completed_time_taken', $this->sla->getCalculator()->calculateTimeUntil($this->ticket, $date));
 			} else {
 				$this->setModelField('completed_time_taken', null);
 			}

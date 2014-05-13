@@ -64,7 +64,7 @@ class TimeUnit
 	 * @param int $value
 	 * @param string $unit
 	 */
-	private function __construct($value, $unit)
+	public function __construct($value, $unit)
 	{
 		$this->value = $value;
 		$this->unit  = $unit;

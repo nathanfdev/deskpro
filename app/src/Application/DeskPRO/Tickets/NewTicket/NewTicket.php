@@ -474,7 +474,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			}
 
 			$ticket_manager = App::$container->getTicketManager();
-			$context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'web');
+			$context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
 
 			$ticket_manager->saveTicket($ticket, $context);
 			App::getOrm()->flush();

@@ -36,10 +36,12 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Tickets\Slas\SlaCalculator;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\TimeUnit;
 use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
 
@@ -181,6 +183,9 @@ class Sla extends DomainObject
 	 */
 	protected $_work_hours_set;
 
+
+	protected $_calc;
+
 	/**
 	 * Creates a new team.
 	 */
@@ -189,6 +194,15 @@ class Sla extends DomainObject
 		$this->apply_terms  = new TriggerTerms();
 		$this->warn_actions = new TriggerActions();
 		$this->fail_actions = new TriggerActions();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function propertyChangedCallback($prop, $old, $new)
+	{
+		$this->_calc = null;
 	}
 
 
@@ -319,6 +333,24 @@ class Sla extends DomainObject
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * @return SlaCalculator
+	 */
+	public function getCalculator()
+	{
+		if ($this->_calc !== null) return $this->_calc;
+
+		$this->_calc = new SlaCalculator(
+			$this->sla_type,
+			$this->getWorkHoursSet(),
+			new TimeUnit($this->warn_time, $this->warn_time_unit),
+			new TimeUnit($this->fail_time, $this->fail_time_unit)
+		);
+
+		return $this->_calc;
 	}
 
 

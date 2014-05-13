@@ -35,10 +35,26 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class RecalculateSlas implements TicketSaveActionInterface
 {
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	private $em;
+
+
+	/**
+	 * @param EntityManager $em
+	 */
+	public function __construct(EntityManager $em)
+	{
+		$this->em = $em;
+	}
+
+
 	/**
 	 * @param Ticket                   $ticket
 	 * @param ExecutorContextInterface $context
@@ -52,30 +68,49 @@ class RecalculateSlas implements TicketSaveActionInterface
 
 		$state = $ticket->getStateChangeRecorder();
 
-		if ($state->isNewTicket() && !$ticket->hidden_status) {
-			$reset_slas = false;
-			$recalculate_slas = false;
+		#------------------------------
+		# Get what we should be doing
+		#------------------------------
 
-			if ($state->hasChangedField('status') || $state->hasChangedField('hidden_status')) {
-				$reset_slas = true;
-				$recalculate_slas = true;
+		$recalc = false;
+
+		if (($state->isNewTicket() && !$ticket->hidden_status)) {
+			$recalc = true;
+		}
+		if ($state->hasChangedField('status')) {
+			$recalc = true;
+		}
+		if ($state->hasNewReply()) {
+			$recalc = true;
+		}
+
+		if (!$recalc) {
+			$context->getLogger()->info('[RecalculateSlas] No ops');
+			return;
+		}
+
+		#------------------------------
+		# Perform calcs
+		#------------------------------
+
+		foreach ($ticket->ticket_slas as $ticket_sla) {
+			// Dont touch ones that have been specifically set
+			if ($ticket_sla->is_completed_set) {
+				continue;
 			}
 
-			if ($state->hasChangedField('message')) {
-				$recalculate_slas = true;
+			$calc = $ticket_sla->sla->getCalculator();
+			$ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
+			$ticket_sla->fail_date = $calc->calculateFailDate($ticket);
+
+			$completed_date = $calc->calculateCompletedDate($ticket);
+			if ($completed_date) {
+				$ticket_sla->setIsCompleted(true, $completed_date);
+			} else {
+				$ticket_sla->setIsCompleted(false, $completed_date);
 			}
 
-			if ($reset_slas || $recalculate_slas) {
-				foreach ($ticket->ticket_slas AS $ticket_sla) {
-					if ($reset_slas && !$ticket_sla->is_completed_set) {
-						$ticket_sla->is_completed = false;
-					}
-					if ($recalculate_slas) {
-						$ticket_sla->calculateSlaDates();
-					}
-					$this->em->persist($ticket_sla);
-				}
-			}
+			$this->em->persist($ticket_sla);
 		}
 	}
 }
