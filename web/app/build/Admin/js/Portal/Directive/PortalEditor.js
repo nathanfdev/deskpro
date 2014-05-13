@@ -216,6 +216,14 @@
 						template_name = 'UserBundle::custom-headinclude.html.twig';
 					} else if (controller.name == 'welcome') {
 						template_name = 'UserBundle:Portal:welcome-block.html.twig';
+					} else if (controller.name == 'articles_header') {
+						template_name = 'UserBundle:Articles:section-header.html.twig';
+					} else if (controller.name == 'news_header') {
+						template_name = 'UserBundle:News:section-header.html.twig';
+					} else if (controller.name == 'downloads_header') {
+						template_name = 'UserBundle:Downloads:section-header.html.twig';
+					} else if (controller.name == 'feedback_header') {
+						template_name = 'UserBundle:Feedback:section-header.html.twig';
 					} else {
 						template_name = 'UserBundle::custom-footer.html.twig';
 					}
