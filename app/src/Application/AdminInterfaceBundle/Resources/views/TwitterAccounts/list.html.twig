@@ -22,7 +22,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="twitter/accounts/new?start=1&back-to-list=1" ng-class="{'active': isStateActive('.create') }" dp-list-autoload autoload-priority="2">
+				<a class="btn btn-default" href="{{ ng_href('twitter.accounts.create') }}" ng-class="{'active': isStateActive('.create') }" dp-list-autoload autoload-priority="2">
 					<i class="fa fa-plus"></i>
 					{{ phrase('adm.twitter_accounts.new_twitter_account') }}
 				</a>

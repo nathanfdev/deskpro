@@ -58,14 +58,11 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 		/**
 		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
 		 */
-
 		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
-		return $this->createApiResponse(
-			array(
-				 'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray()
-			)
-		);
+		return $this->createApiResponse(array(
+			'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray()
+		));
 	}
 
 	###################################################################################################################
@@ -77,23 +74,19 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 		/**
 		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
 		 */
-
 		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
 		$twitter_account  = $twitter_accounts->getWithUserById($id);
 
 		if (!$twitter_account) {
-
 			throw $this->createNotFoundException();
 		}
 
 		$returnedData               = $twitter_account;
 		$returnedData['all_agents'] = $twitter_accounts->getAllAgents();
 
-		return $this->createApiResponse(
-			array(
-				 'twitter_account' => $returnedData
-			)
-		);
+		return $this->createApiResponse(array(
+			'twitter_account' => $returnedData
+		));
 	}
 
 	####################################################################################################################
@@ -105,19 +98,14 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 		/**
 		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
 		 */
-
 		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
 		if ($id) {
-
 			$twitter_account = $twitter_accounts->getById($id);
-
 			if (!$twitter_account) {
-
 				throw $this->createNotFoundException();
 			}
 		} else {
-
 			$twitter_account = $twitter_accounts->createNew();
 		}
 
@@ -129,20 +117,15 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'twitter_account'), true);
 
 		if ($form->isValid()) {
-
 			$twitter_account_edit->save($this->em);
-
 		} else {
-
 			throw ValidationException::create($this->getFormValidationErrorsString($form));
 		}
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $twitter_account->id,
-			)
-		);
+		return $this->createApiResponse(array(
+			'success' => true,
+			'id'      => $twitter_account->id,
+		));
 	}
 
 	####################################################################################################################
@@ -154,12 +137,10 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 		/**
 		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
 		 */
-
 		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
 		$twitter_account  = $twitter_accounts->getById($id);
 
 		if (!$twitter_account) {
-
 			throw $this->createNotFoundException();
 		}
 
@@ -168,14 +149,10 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 		$this->db->beginTransaction();
 
 		try {
-
 			$this->em->remove($twitter_account);
 			$this->em->flush();
-
 			$this->db->commit();
-
 		} catch(\Exception $e) {
-
 			$this->db->rollback();
 			throw $e;
 		}
