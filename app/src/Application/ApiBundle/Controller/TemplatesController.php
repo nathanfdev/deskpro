@@ -142,13 +142,13 @@ class TemplatesController extends AbstractController implements ProtectedControl
 		$template_code = $template->getTemplateCode();
 
 		if ($template->getType() == 'email') {
-			$subject = $this->in->getString('template.subject');
-			$body    = $this->in->getString('template.body');
+			$subject = $this->in->getStringRaw('template.subject');
+			$body    = $this->in->getStringRaw('template.body');
 
 			$template_code->setSubject($subject);
 			$template_code->setBody($body);
 		} else {
-			$code = $this->in->getString('template.code');
+			$code = $this->in->getStringRaw('template.code');
 			$template_code->setCode($code);
 		}
 
