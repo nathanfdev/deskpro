@@ -105,23 +105,19 @@ class CsvUpload
 		$has_email = false;
 
 		foreach ($field_maps AS $map_field) {
-
-			if ($map_field['map'] == 'primary_email') {
-
+			if (!empty($map_field['map']) && $map_field['map'] == 'primary_email') {
 				$has_email = true;
 				break;
 			}
 		}
 
 		if (!$has_email) {
-
 			return array('error' => 'no_email');
 		}
 
 		$blob = App::getOrm()->find('DeskPRO:Blob', $filename);
 
 		if (!$blob) {
-
 			return array('error' => 'no_move');
 		}
 

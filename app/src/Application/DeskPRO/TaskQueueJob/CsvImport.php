@@ -190,7 +190,7 @@ class CsvImport extends AbstractJob
 		$addresses = array();
 
 		foreach ($field_maps AS $column_id => $info) {
-			if (!$info['map']) {
+			if (empty($info['map'])) {
 				continue;
 			}
 

@@ -15,12 +15,12 @@
 
       Admin_ImportCsv_Ctrl_ImportCsv.CTRL_AS = 'Ctrl';
 
-      Admin_ImportCsv_Ctrl_ImportCsv.DEPS = ['Api', 'Growl'];
+      Admin_ImportCsv_Ctrl_ImportCsv.DEPS = ['Api', 'Growl', '$http'];
 
       Admin_ImportCsv_Ctrl_ImportCsv.prototype.init = function() {
         var key, _i, _len, _ref;
         this.$scope.fileUploadOptions = {
-          url: window.DP_BASE_API_URL + '/import_csv_upload'
+          url: this.$http.formatApiUrl('/import_csv_upload')
         };
         this.$scope.fileUploadResults = null;
         this.$scope.fileSelected = false;

@@ -3,11 +3,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		@CTRL_ID   = 'Admin_ImportCsv_Ctrl_ImportCsv'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = ['Api', 'Growl']
+		@DEPS      = ['Api', 'Growl', '$http']
 
 		init: ->
 
-			@$scope.fileUploadOptions = {url: window.DP_BASE_API_URL + '/import_csv_upload'}
+			@$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload') }
 			@$scope.fileUploadResults = null
 			@$scope.fileSelected = false
 			@$scope.processStarted = false
