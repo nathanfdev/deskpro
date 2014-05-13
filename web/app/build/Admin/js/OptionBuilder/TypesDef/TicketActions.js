@@ -366,24 +366,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'workflow_ids';
-        options.dataName = 'ticket_works';
-        options.extraOptions = [
-          {
-            title: 'None',
-            value: 0
-          }
-        ];
-        def = this.getStandardSelect(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetWorkflow = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'workflow_ids';
+        options.propName = 'workflow_id';
         options.dataName = 'ticket_works';
         options.extraOptions = [
           {
@@ -400,7 +383,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'priority_ids';
+        options.propName = 'priority_id';
         options.dataName = 'ticket_pris';
         options.extraOptions = [
           {
@@ -417,7 +400,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'category_ids';
+        options.propName = 'category_id';
         options.dataName = 'ticket_cats';
         options.extraOptions = [
           {
@@ -445,7 +428,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'department_ids';
+        options.propName = 'department_id';
         options.dataName = 'ticket_deps';
         def = this.getStandardSelect(options);
         return def;
@@ -456,7 +439,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'product_ids';
+        options.propName = 'product_id';
         options.dataName = 'ticket_prods';
         options.extraOptions = [
           {

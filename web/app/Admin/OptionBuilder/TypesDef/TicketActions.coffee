@@ -365,16 +365,7 @@ define [
 			return def
 
 		getSetWorkflow: (options = {}) ->
-			options.propName = 'workflow_ids'
-			options.dataName = 'ticket_works'
-			options.extraOptions = [
-				{title: 'None', value: 0}
-			]
-			def = @getStandardSelect(options)
-			return def
-
-		getSetWorkflow: (options = {}) ->
-			options.propName = 'workflow_ids'
+			options.propName = 'workflow_id'
 			options.dataName = 'ticket_works'
 			options.extraOptions = [
 				{title: 'None', value: 0}
@@ -383,7 +374,7 @@ define [
 			return def
 
 		getSetPriority: (options = {}) ->
-			options.propName = 'priority_ids'
+			options.propName = 'priority_id'
 			options.dataName = 'ticket_pris'
 			options.extraOptions = [
 				{title: 'None', value: 0}
@@ -392,7 +383,7 @@ define [
 			return def
 
 		getSetCategory: (options = {}) ->
-			options.propName = 'category_ids'
+			options.propName = 'category_id'
 			options.dataName = 'ticket_cats'
 			options.extraOptions = [
 				{title: 'None', value: 0}
@@ -407,13 +398,13 @@ define [
 			return def
 
 		getSetDepartment: (options = {}) ->
-			options.propName = 'department_ids'
+			options.propName = 'department_id'
 			options.dataName = 'ticket_deps'
 			def = @getStandardSelect(options)
 			return def
 
 		getSetProduct: (options = {}) ->
-			options.propName = 'product_ids'
+			options.propName = 'product_id'
 			options.dataName = 'ticket_prods'
 			options.extraOptions = [
 				{title: 'None', value: 0}
