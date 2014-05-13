@@ -60,8 +60,8 @@ define [
     	# @return {promise}
 		###
 		deleteTriggerById: (triggerId) ->
-			return @Api.sendDelete('/ticket_triggers/' + triggerId)
-
+			@removeListModelById(triggerId)
+			@Api.sendDelete('/ticket_triggers/' + triggerId)
 
 		###
     	# Save order of triggers

@@ -116,6 +116,8 @@ define [
 		# Save the trigger
 		###
 		saveTrigger: ->
+			return if @$scope.form_props.$invalid
+
 			postData = {
 				title:         @$scope.form.title,
 				event_trigger: @triggerType,

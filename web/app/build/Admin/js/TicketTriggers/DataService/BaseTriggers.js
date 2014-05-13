@@ -75,6 +75,7 @@
        */
 
       Admin_TicketTriggers_DataService_BaseTriggers.prototype.deleteTriggerById = function(triggerId) {
+        this.removeListModelById(triggerId);
         return this.Api.sendDelete('/ticket_triggers/' + triggerId);
       };
 

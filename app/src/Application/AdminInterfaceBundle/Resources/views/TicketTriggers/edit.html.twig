@@ -155,11 +155,12 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
+							<li ng-show="form_props.title.$error.required">Please enter a title</li>
 						</ul>
 					</div>
 
 					<div class="dp-delete-control" ng-if="TicketTriggersEdit.trigger.id">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketTriggersList.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">

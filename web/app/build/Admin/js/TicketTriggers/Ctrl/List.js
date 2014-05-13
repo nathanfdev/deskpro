@@ -20,6 +20,7 @@
       Admin_TicketTriggers_Ctrl_List.prototype.init = function() {
         this.dep_triggers = [];
         this.email_triggers = [];
+        this.all_triggers = [];
         this.triggers = [];
         this.eventType = this.$stateParams.type;
         if (this.$stateParams.type === 'newticket') {
@@ -29,7 +30,7 @@
         } else {
           this.dpTriggers = this.DataService.get('TriggersUpdate');
         }
-        return this.sortedListOptions = {
+        this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',
           update: (function(_this) {
@@ -45,6 +46,11 @@
             };
           })(this)
         };
+        return this.$scope.$watch('TicketTriggersList.all_triggers', (function(_this) {
+          return function() {
+            return _this.sortTriggers();
+          };
+        })(this), true);
       };
 
 
@@ -56,24 +62,37 @@
         var promise;
         promise = this.dpTriggers.loadList().then((function(_this) {
           return function(list) {
-            var tr, _i, _len, _ref, _results;
+            window.all_triggers = list;
             _this.all_triggers = list;
-            _ref = _this.all_triggers;
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              tr = _ref[_i];
-              if (tr.department) {
-                _results.push(_this.dep_triggers.push(tr));
-              } else if (tr.email_account) {
-                _results.push(_this.email_triggers.push(tr));
-              } else {
-                _results.push(_this.triggers.push(tr));
-              }
-            }
-            return _results;
+            return _this.sortTriggers();
           };
         })(this));
         return promise;
+      };
+
+
+      /*
+        	 * Sorts triggers into display groups
+       */
+
+      Admin_TicketTriggers_Ctrl_List.prototype.sortTriggers = function() {
+        var tr, _i, _len, _ref, _results;
+        this.dep_triggers = [];
+        this.email_triggers = [];
+        this.triggers = [];
+        _ref = this.all_triggers;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          tr = _ref[_i];
+          if (tr.department) {
+            _results.push(this.dep_triggers.push(tr));
+          } else if (tr.email_account) {
+            _results.push(this.email_triggers.push(tr));
+          } else {
+            _results.push(this.triggers.push(tr));
+          }
+        }
+        return _results;
       };
 
 
@@ -117,9 +136,10 @@
         return inst.result.then((function(_this) {
           return function() {
             return _this.dpTriggers.deleteTriggerById(trigger.id).then(function() {
-              if (_this.$state.current.name === 'tickets.ticket_triggers.edit' && parseInt(_this.$state.params.id) === trigger.id) {
-                return _this.$state.go('tickets.ticket_triggers');
-              }
+              _this.sortTriggers();
+              return _this.$state.go('tickets.triggers', {
+                type: _this.$stateParams.type
+              });
             });
           };
         })(this));

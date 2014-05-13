@@ -135,6 +135,9 @@
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.saveTrigger = function() {
         var act, crit, crit_set, enabled, is_new, mode, postData, promise, set, _, _ref, _ref1, _ref2, _ref3;
+        if (this.$scope.form_props.$invalid) {
+          return;
+        }
         postData = {
           title: this.$scope.form.title,
           event_trigger: this.triggerType,

@@ -11,9 +11,10 @@ define [
 		@DEPS = ['$state', '$stateParams']
 
 		init: ->
-			@dep_triggers = []
+			@dep_triggers   = []
 			@email_triggers = []
-			@triggers = []
+			@all_triggers   = []
+			@triggers       = []
 
 			@eventType = @$stateParams.type
 
@@ -39,23 +40,38 @@ define [
 					@pingElement('run_orders')
 			}
 
+			@$scope.$watch('TicketTriggersList.all_triggers', =>
+				@sortTriggers()
+			, true)
+
 		###
 		# Loads the triggers list
 		###
 		initialLoad: ->
 			promise = @dpTriggers.loadList().then( (list) =>
+				window.all_triggers = list
 				@all_triggers = list
-
-				for tr in @all_triggers
-					if tr.department
-						@dep_triggers.push(tr)
-					else if tr.email_account
-						@email_triggers.push(tr)
-					else
-						@triggers.push(tr)
+				@sortTriggers()
 			)
 
 			return promise
+
+
+		###
+    	# Sorts triggers into display groups
+    	###
+		sortTriggers: ->
+			@dep_triggers   = []
+			@email_triggers = []
+			@triggers       = []
+
+			for tr in @all_triggers
+				if tr.department
+					@dep_triggers.push(tr)
+				else if tr.email_account
+					@email_triggers.push(tr)
+				else
+					@triggers.push(tr)
 
 
 		###
@@ -69,7 +85,6 @@ define [
 		# Show the delete dlg
 		###
 		startTriggerDelete: (trigger_id) ->
-
 			trigger = null
 			for v in @triggers
 				if v.id == trigger_id
@@ -88,10 +103,9 @@ define [
 			});
 
 			inst.result.then( =>
-				@dpTriggers.deleteTriggerById(trigger.id).then( =>
-					# if currently viewing the deleted department, then should need to switch state
-					if @$state.current.name == 'tickets.ticket_triggers.edit' and parseInt(@$state.params.id) == trigger.id
-						@$state.go('tickets.ticket_triggers')
+				@dpTriggers.deleteTriggerById(trigger.id).then(=>
+					@sortTriggers()
+					@$state.go('tickets.triggers', {type: @$stateParams.type})
 				)
 			)
 
