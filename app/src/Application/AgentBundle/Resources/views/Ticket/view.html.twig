@@ -48,7 +48,7 @@ pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}fal
 pageMeta.isClosed = {% if ticket.status == 'closed' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 {# pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %}; #}
-pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
+pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 pageMeta.agents_with_perm = {{ agents_with_perm|json_encode|raw }};
 
 pageMeta.agentMap = {{ agent_map|json_encode|raw }};
@@ -345,8 +345,16 @@ pageMeta.lang = {{ {
 				{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
 					<li data-tab-for="#{{ baseId }}_sla_wrap">{{ phrase('agent.general.slas') }} {{ sla_pips|raw }}</li>
 				{% endif %}
-				{% if app.getSetting('core_tickets.enable_billing') %}
-					<li data-tab-for="#{{ baseId }}_billing_wrap">{{ phrase('agent.tickets.billing') }}</li>
+				{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+					<li data-tab-for="#{{ baseId }}_billing_wrap">
+						{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.enable_timelog') %}
+							{{ phrase('agent.tickets.billing_and_timelog') }}
+						{% elseif app.getSetting('core_tickets.enable_timelog') %}
+							{{ phrase('agent.tickets.billing_timelog') }}
+						{% else %}
+							{{ phrase('agent.tickets.billing') }}
+						{% endif %}
+					</li>
 				{% endif %}
 				{% if app.getsetting('core.apps_jira.enabled') %}
 					<li data-tab-for="#{{ baseId }}_jira_wrap">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
@@ -473,7 +481,7 @@ pageMeta.lang = {{ {
 				{% include 'AgentBundle:Ticket:view-slas.html.twig' %}
 			</article>
 		{% endif %}
-		{% if app.getSetting('core_tickets.enable_billing') %}
+		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
 			<article id="{{baseId}}_billing_wrap">
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
 			</article>
