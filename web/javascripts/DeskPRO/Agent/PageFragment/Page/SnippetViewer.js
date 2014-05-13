@@ -82,7 +82,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				b_string = b.title_use.show || '';
 
 				if (useLocalCompare) {
-					var cmp = a_string.localeCompare(b_string, null, {
+					var cmp = a_string.localeCompare(b_string, 'en', {
 						usage: 'sort',
 						ignorePunctuation: true,
 						caseFirst: false
