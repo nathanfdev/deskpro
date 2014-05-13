@@ -469,7 +469,6 @@ class ServerController extends AbstractController implements ProtectedController
 		$file_check_results = $this->in->getValue('file_check_results', 'post');
 
 		if (!empty($file_check_results)) {
-
 			$server_report_file->saveFileCheckResults($file_check_results);
 		}
 

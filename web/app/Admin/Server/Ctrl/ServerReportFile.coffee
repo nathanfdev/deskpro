@@ -16,6 +16,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@file_check_results = ''
 			@server_file_check_done = false
+			@$scope.with_file_check = true
 
 		initialLoad: ->
 			data_promise = @Api.sendGet('/server_file_check').then( (res) =>
@@ -47,7 +48,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		doNextRequest: ->
 			@current_check++
 
-			if @current_check < @total_checks
+			if @current_check < @total_checks and @$scope.with_file_check and @file_check_results.length < 153600
 				@Api.sendGet('/server_file_check/' + @current_check).then((res) =>
 					data = res.data.server_file_check
 
@@ -71,6 +72,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					@doNextRequest()
 				)
 			else
+				if @file_check_results >= 153600
+					@file_check_results = @file_check_results.substring(0, 153600) + "\n\n(Too many changes detected, results truncated)"
+
 				@check_in_progress = false
 				@current_percentage = 100
 				@server_file_check_done = true
@@ -81,7 +85,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		###
 		redirectToReportFile: ->
 			@Api.sendPost('/server_report_file/file_check_results', {file_check_results: @file_check_results}).then( (res) =>
-				@$window.location.href = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
+				@$scope.download_link = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
 			)
 
 	Admin_ServerReportFile_Ctrl_ServerReportFile.EXPORT_CTRL()

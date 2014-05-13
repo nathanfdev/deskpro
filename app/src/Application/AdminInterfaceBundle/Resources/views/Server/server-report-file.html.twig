@@ -10,10 +10,24 @@
 		{##################################################################################################}
 
 		<article class="padd">
-			<a ng-click="Ctrl.startCheck()" ng-show="!Ctrl.check_in_progress && !Ctrl.server_file_check_done" class="btn btn-success">
-				<i class="fa fa-download"></i>
-				<span>Generate Report File</span>
-			</a>
+			<div ng-show="!Ctrl.check_in_progress && !Ctrl.server_file_check_done">
+				<p>
+					If you are having problems with your helpdesk, a DeskPRO support agent may ask you to generate and submit this Report File.
+				</p>
+				<p>
+					Your Report File includes information about your server like PHP and MySQL configuration, and information about your helpdesk like
+					settings and error logs. This information is useful in diagnosing problems.
+				</p>
+				<p style="margin-top: 15px;">
+					<label><input type="checkbox" ng-model="with_file_check" /> Include results from a File Integrity check as well</label>
+					<div style="margin-top: 1px;">
+						<a ng-click="Ctrl.startCheck()" class="btn btn-success">
+							<i class="fa fa-download"></i>
+							<span>Generate Report File</span>
+						</a>
+					</div>
+				</p>
+			</div>
 
 			<div ng-show="Ctrl.check_started && !Ctrl.server_file_check_done">
 				<section class="dp-paneblock dp-listpane dp-check-file-integrity">
@@ -32,7 +46,17 @@
 			</div>
 
 			<div class="success-message well" ng-show="Ctrl.server_file_check_done">
-				Report File Generating...
+				<div ng-show="download_link">
+					<p>
+						Your report file is ready to download.
+					</p>
+					<p>
+						<a class="btn btn-primary" ng-href="{{ ng_var('download_link') }}" target="_blank">Download Report File</a>
+					</p>
+				</div>
+				<div ng-hide="download_link">
+					Report File Generating... <i class="spinner-flat"></i>
+				</div>
 			</div>
 		</article>
 

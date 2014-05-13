@@ -25,7 +25,8 @@
         this.check_started = false;
         this.check_in_progress = false;
         this.file_check_results = '';
-        return this.server_file_check_done = false;
+        this.server_file_check_done = false;
+        return this.$scope.with_file_check = true;
       };
 
       Admin_ServerReportFile_Ctrl_ServerReportFile.prototype.initialLoad = function() {
@@ -64,7 +65,7 @@
 
       Admin_ServerReportFile_Ctrl_ServerReportFile.prototype.doNextRequest = function() {
         this.current_check++;
-        if (this.current_check < this.total_checks) {
+        if (this.current_check < this.total_checks && this.$scope.with_file_check && this.file_check_results.length < 153600) {
           return this.Api.sendGet('/server_file_check/' + this.current_check).then((function(_this) {
             return function(res) {
               var data, file, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
@@ -98,6 +99,9 @@
             };
           })(this));
         } else {
+          if (this.file_check_results >= 153600) {
+            this.file_check_results = this.file_check_results.substring(0, 153600) + "\n\n(Too many changes detected, results truncated)";
+          }
           this.check_in_progress = false;
           this.current_percentage = 100;
           this.server_file_check_done = true;
@@ -115,7 +119,7 @@
           file_check_results: this.file_check_results
         }).then((function(_this) {
           return function(res) {
-            return _this.$window.location.href = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN;
+            return _this.$scope.download_link = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN;
           };
         })(this));
       };
