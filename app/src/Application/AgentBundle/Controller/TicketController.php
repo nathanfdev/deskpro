@@ -2830,8 +2830,10 @@ class TicketController extends AbstractController
 		$top .= '--- Forwarded Message ---<br/>';
 		$top .= 'From: '. $message->person->getDisplayName() .' &lt;<a href="mailto:'. $message->person->getPrimaryEmailAddress() .'">'. $message->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
 
-		$from = $ticket->getFromAddress();
-		$top .= 'To: '. $from['name'] .' &lt;<a href="mailto:'. $from['email'] .'">'. $from['email'] .'</a>&gt;<br/>';
+		if ($ticket->email_account) {
+			$from = $ticket->email_account;
+			$top .= 'To: &lt;<a href="mailto:' . $from['address'] . '">' . $from['address'] . '</a>&gt;<br/>';
+		}
 		$top .= 'Subject: '. htmlspecialchars($ticket->subject) . '<br/>';
 		$top .= 'Date: '. $date_created .'<br/>';
 		$top .= '</div>';
@@ -2849,38 +2851,26 @@ class TicketController extends AbstractController
 		$email->setBody($message_raw, 'text/html');
 		$email->setSubject($subject);
 
-		$tr = null;
 		$account = null;
 		if ($this->container->getSetting('core_tickets.fwd_use_account')) {
-			$account = $this->container->getEm()->find('DeskPRO:EmailGateway', $this->container->getSetting('core_tickets.fwd_use_account'));
-			if ($account && $account->is_enabled && $account->linked_transport) {
-				$tr = $account->linked_transport->getTransport();
-			}
+			$account = $this->container->getEmailAccountManager()->getAccount($this->container->getSetting('core_tickets.fwd_use_account'));
+			if ($account && $account->is_enabled && $account->outgoing_account) {}
+			else { $account = null; }
 		}
-		if (!$tr) {
-			$tr_rec = $this->container->getEm()->getRepository('DeskPRO:EmailTransport')->getDefaultTransport();
-			if ($tr_rec) {
-				$tr = $tr_rec->getTransport();
-			}
+		if (!$account) {
+			$account = $this->container->getEmailAccountManager()->getPrimaryEmailAccount();
 		}
 
 		if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
 			$from_email = $this->person->getEmailAddress();
 		} else {
-			$from_email = null;
-			if ($account) {
-				if (!($from_email = $account->getAliasEmailAddress())) {
-					$from_email = $account->getPrimaryEmailAddress();
-				}
- 			}
-			if (!$from_email) {
-				$from_email = $this->container->getSetting('core.default_from_email');
-			}
+			$from_email = $account->getUseEmailAddress();
 		}
 
 		$from_name = $this->person->getDisplayName();
 		$email->setFrom($from_email, $from_name);
 
+		$tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
 		if ($tr) {
 			$email->setForceTransport($tr);
 		}
