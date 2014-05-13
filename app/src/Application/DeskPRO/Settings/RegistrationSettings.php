@@ -195,7 +195,7 @@ class RegistrationSettings
 			$this->email_validation_trigger->by_user_mode = $mode;
 		}
 
-		$this->everyone_group->is_agent_group = (bool)$this->everyone_group_enabled;
+		$this->everyone_group->is_enabled = (bool)$this->everyone_group_enabled;
 		$this->em->persist($this->everyone_group);
 
 		if ($this->email_validation_trigger) {
