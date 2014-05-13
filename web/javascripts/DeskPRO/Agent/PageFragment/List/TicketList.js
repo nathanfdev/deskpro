@@ -176,7 +176,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var self = this, $scope = this.$scope, wrapperEl = this.wrapper;
 
 		this.queuedChangeEvents_timeout = null;
-		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
+		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], 'postRun': []};
 
 		this.fieldUtil  = DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil;
 		this.orderBy    = this.meta.orderBy.replace(/^ticket\./, '');
@@ -241,12 +241,16 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				return;
 			}
 
-			currentlyInView = $scope.tickets.filter(function(x) { return x.id === ticketId; }).length === 1;
-			if (currentlyInView) {
-				self.queueChangeEvent('refreshTicketResults', [ticketId]);
-			} else {
-				self.queueChangeEvent('addTicketResults', [ticketId]);
-			}
+			// Need to put this in a post run because currentlyInView needs to know latest state
+			// and a removeTicketResults might be queued
+			self.queueChangeEvent('postRun', function() {
+				currentlyInView = $scope.tickets.filter(function(x) { return x.id === ticketId; }).length === 1;
+				if (currentlyInView) {
+					self.queueChangeEvent('refreshTicketResults', [ticketId]);
+				} else {
+					self.queueChangeEvent('addTicketResults', [ticketId]);
+				}
+			});
 		}, null, [this.OBJ_ID]);
 
 		if (this.meta.groupBy && this.filterId) {
@@ -316,7 +320,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		if (!this.queuedChangeEvents_timeout) {
 			this.queuedChangeEvents_timeout = $timeout(function() {
 				var events = self.queuedChangeEvents;
-				self.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
+				self.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], postRun: []};
 				self.queuedChangeEvents_timeout = null;
 
 				if (events.removeTicketResults.length) {
@@ -328,7 +332,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				if (events.addTicketResults.length) {
 					self.addTicketResults(events.addTicketResults);
 				}
-			}, 600);
+				if (events.postRun.length) {
+					for (var x = 0; x < events.postRun.length; x++) {
+						events.postRun[x]();
+					}
+				}
+			}, 500);
 		}
 	},
 
