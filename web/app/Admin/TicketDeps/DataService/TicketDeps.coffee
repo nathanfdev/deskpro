@@ -118,7 +118,7 @@ define [
 
 				data.form = @getFormMapper().getFormFromModel(
 					data.dep,
-					result.depInfo.trigger || {},
+					result.depInfo?.trigger || {},
 					layouts,
 					data.depPerms,
 					data.agents,
@@ -260,7 +260,7 @@ define [
 				promise = @Api.sendPostJson('/ticket_deps/' + dep.id, postData)
 			else
 				promise = @Api.sendPutJson('/ticket_deps', postData).success( (data) ->
-					dep.id = data.department_id
+					dep.id = data.id
 				)
 
 			promise.success(=>

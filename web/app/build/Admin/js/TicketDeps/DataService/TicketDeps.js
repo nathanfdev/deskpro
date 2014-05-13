@@ -92,7 +92,7 @@
         deferred = this.$q.defer();
         allPromise = this.$q.all([promise, this.loadList()]).then((function(_this) {
           return function(result) {
-            var d, data, idx, layouts, _i, _len, _ref;
+            var d, data, idx, layouts, _i, _len, _ref, _ref1;
             result = result[0].data;
             data = {};
             if (result.depInfo) {
@@ -127,7 +127,7 @@
               custom_layout: result.customLayoutInfo ? result.customLayoutInfo.layout : null,
               use_custom_layout: result.customLayoutInfo && !result.customLayoutInfo.is_default ? true : false
             };
-            data.form = _this.getFormMapper().getFormFromModel(data.dep, result.depInfo.trigger || {}, layouts, data.depPerms, data.agents, data.agentgroups, data.usergroups, data.email_accounts);
+            data.form = _this.getFormMapper().getFormFromModel(data.dep, ((_ref1 = result.depInfo) != null ? _ref1.trigger : void 0) || {}, layouts, data.depPerms, data.agents, data.agentgroups, data.usergroups, data.email_accounts);
             return deferred.resolve(data);
           };
         })(this));
@@ -289,7 +289,7 @@
           promise = this.Api.sendPostJson('/ticket_deps/' + dep.id, postData);
         } else {
           promise = this.Api.sendPutJson('/ticket_deps', postData).success(function(data) {
-            return dep.id = data.department_id;
+            return dep.id = data.id;
           });
         }
         promise.success((function(_this) {
