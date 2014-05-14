@@ -34,16 +34,20 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\Util;
+
 class Build1396876091 extends AbstractBuild
 {
 	public function run()
 	{
+		$this->out("Upgrade ticket filters data type");
 		$db = $this->container->getDb();
 
-		$this->out("Upgrade ticket filters");
-		$this->out("TODO");
-		//TODO
-
-		$db->exec("DELETE FROM ticket_filters");
+		$all_filters = $db->fetchAllKeyValue("SELECT id, terms FROM ticket_filters");
+		foreach ($all_filters as $id => $terms) {
+			$terms = unserialize($terms);
+			$terms = Util::jsonEncode($terms);
+			$db->update('ticket_filters', array('terms' => $terms), array('id' => $id));
+		}
 	}
 }
