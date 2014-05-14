@@ -109,4 +109,6 @@ foreach ($finder as $file) {
 
 ClassCollectionLoader::load($files, dirname($bootstrap_file), basename($bootstrap_file, '.php'), false, false, '.php');
 
-file_put_contents($bootstrap_file, "<?php\n\nnamespace { require_once DP_ROOT.'/sys/autoload.php'; }\n\n".substr(file_get_contents($bootstrap_file), 5));
+$file = file_get_contents($bootstrap_file);
+$file = str_replace('htmlspecialchars(', '@htmlspecialchars(', $file);
+file_put_contents($bootstrap_file, "<?php\n\nnamespace { require_once DP_ROOT.'/sys/autoload.php'; }\n\n".substr($file, 5));

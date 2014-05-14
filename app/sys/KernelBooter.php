@@ -104,7 +104,7 @@ class KernelBooter
 
 		$has_loaded = true;
 
-		if ($debug || defined('DP_BUILDING') || !file_exists(DP_ROOT . '/sys/bootstrap.php') || !file_exists((DP_ROOT . '/sys/compiled.php'))) {
+		if ($debug || defined('DP_BUILDING') || !file_exists(DP_ROOT . '/sys/bootstrap.php')) {
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
 		} else {
 			require(DP_ROOT . '/sys/bootstrap.php');
