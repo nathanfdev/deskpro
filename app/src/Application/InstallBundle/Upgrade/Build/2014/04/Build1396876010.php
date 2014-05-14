@@ -98,5 +98,8 @@ class Build1396876010 extends AbstractBuild
 
 		$this->out("Add sessions.date_last_page");
 		$this->execMutateSql("ALTER TABLE sessions ADD date_last_page DATETIME NOT NULL");
+
+		$this->out("Change data type of usersources.options");
+		$this->execMutateSql("ALTER TABLE usersources CHANGE options options LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
 	}
 }

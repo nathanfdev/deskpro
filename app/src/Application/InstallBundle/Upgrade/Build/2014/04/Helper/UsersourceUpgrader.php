@@ -120,6 +120,9 @@ class UsersourceUpgrader
 			case 'magento':
 				$this->upgradeMagento();
 				break;
+			default:
+				$this->updateUsersource($this->type, $this->options, null);
+				break;
 		}
 	}
 
@@ -150,12 +153,12 @@ class UsersourceUpgrader
 	 * @param array $adapter_settings
 	 * @param AppInstance $app
 	 */
-	private function updateUsersource($adapter_class, $adapter_settings, AppInstance $app)
+	private function updateUsersource($adapter_class, $adapter_settings, AppInstance $app = null)
 	{
 		$this->container->getDb()->update('usersources', array(
 			'source_type' => $adapter_class,
 			'options'     => json_encode($adapter_settings),
-			'app_id'      => $app->id
+			'app_id'      => $app ? $app->id : null
 		), array('id' => $this->info['id']));
 	}
 
