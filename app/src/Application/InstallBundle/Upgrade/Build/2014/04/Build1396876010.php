@@ -66,7 +66,7 @@ class Build1396876010 extends AbstractBuild
 		$db->exec("CREATE TABLE ticket_actions_def (id INT AUTO_INCREMENT NOT NULL, app_id INT DEFAULT NULL, action_name VARCHAR(50) NOT NULL, def_class VARCHAR(255) DEFAULT NULL, settings LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', INDEX IDX_5FEF87EF7987212D (app_id), UNIQUE INDEX action_name_idx (action_name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 
 		$this->out("Add new ticket_layouts table");
-		$db->exec("CREATE TABLE ticket_layouts (id INT AUTO_INCREMENT NOT NULL, department_id INT DEFAULT NULL, is_enabled TINYINT(1) NOT NULL, user_layout LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)', agent_layout LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)', INDEX IDX_59FC2F66AE80F5DF (department_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$db->exec("CREATE TABLE ticket_layouts (id INT AUTO_INCREMENT NOT NULL, department_id INT DEFAULT NULL, is_enabled TINYINT(1) NOT NULL, user_layout LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', agent_layout LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', date_updated DATETIME NOT NULL, INDEX IDX_59FC2F66AE80F5DF (department_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$db->exec("ALTER TABLE ticket_layouts ADD CONSTRAINT FK_59FC2F66AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE");
 
 		$this->out("Remove old ticket_page_display table");
@@ -95,5 +95,8 @@ class Build1396876010 extends AbstractBuild
 		$db->exec("ALTER TABLE text_snippet_logs ADD CONSTRAINT FK_8B657EAB217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL");
 		$db->exec("ALTER TABLE text_snippet_logs ADD CONSTRAINT FK_8B657EAB700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE SET NULL");
 		$db->exec("ALTER TABLE text_snippet_logs ADD CONSTRAINT FK_8B657EAB6E34B975 FOREIGN KEY (snippet_id) REFERENCES text_snippets (id) ON DELETE SET NULL");
+
+		$this->out("Add sessions.date_last_page");
+		$this->execMutateSql("ALTER TABLE sessions ADD date_last_page DATETIME NOT NULL");
 	}
 }
