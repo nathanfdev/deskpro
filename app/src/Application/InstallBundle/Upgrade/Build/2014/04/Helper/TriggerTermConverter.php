@@ -102,7 +102,7 @@ class TriggerTermConverter
 
 	private function upgradeTerm_api_key($type, $op, OptionsArray $options)
 	{
-		//TODO
+		return new Terms\CheckApiKey($op, array('api_key_id' => $options->get('api_key', 0)));
 	}
 
 	private function upgradeTerm_category($type, $op, OptionsArray $options)
@@ -113,12 +113,12 @@ class TriggerTermConverter
 
 	private function upgradeTerm_creation_system($type, $op, OptionsArray $options)
 	{
-		//TODO
+		return new Terms\CheckCreationSystem($op, array('creation_system' => $options->get('creation_system')));
 	}
 
 	private function upgradeTerm_creation_system_option($type, $op, OptionsArray $options)
 	{
-		//TODO
+		return new Terms\CheckCreationSystemOption($op, array('creation_system_option' => $options->get('website_url')));
 	}
 
 	private function upgradeTerm_current_day($type, $op, OptionsArray $options)
@@ -199,17 +199,23 @@ class TriggerTermConverter
 
 	private function upgradeTerm_is_via_email($type, $op, OptionsArray $options)
 	{
-		//TODO
+		// Not a criteria anymore
+		// instead: mode=email
+		return null;
 	}
 
 	private function upgradeTerm_is_via_email_reply($type, $op, OptionsArray $options)
 	{
-		//TODO
+		// Not a criteria anymore
+		// instead: event_trigger=reply, mode=email
+		return null;
 	}
 
 	private function upgradeTerm_is_via_interface($type, $op, OptionsArray $options)
 	{
-		//TODO
+		// Not a criteria anymore
+		// instead: mode=web,form,portal,widget
+		return null;
 	}
 
 	private function upgradeTerm_label($type, $op, OptionsArray $options)

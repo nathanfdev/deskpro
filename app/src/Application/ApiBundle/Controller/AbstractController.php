@@ -159,6 +159,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			return $response;
 		}
 
+		if ($this->apikey) {
+			$this->container->getTicketManager()->setAutoContextVar('api_key', $this->apikey);
+		}
+
 		if ($this->api_token && $this->api_token->date_expires && $this->api_token->date_expires->getTimestamp() < time()) {
 			return $this->createApiErrorResponse('token_expired', 'Your API token has expired. Please login again.', 403);
 		}

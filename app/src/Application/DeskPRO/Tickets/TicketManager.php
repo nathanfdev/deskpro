@@ -80,6 +80,11 @@ class TicketManager
 	 */
 	private $blob_storage;
 
+	/**
+	 * @var array
+	 */
+	private $auto_vars;
+
 
 	/**
 	 * @param DeskproContainer $container
@@ -106,6 +111,59 @@ class TicketManager
 		$this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
 		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector());
 		$this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
+	}
+
+
+	/**
+	 * Clears auto context vars
+	 */
+	public function clearAutoContextVars()
+	{
+		$this->auto_vars = array();
+	}
+
+
+	/**
+	 * Adds an array of vars to auto context vars
+	 *
+	 * @param array $vars
+	 */
+	public function addAutoContextVars(array $vars)
+	{
+		$this->auto_vars = array_merge($this->auto_vars, $vars);
+	}
+
+
+	/**
+	 * Gets array of currently set context vars
+	 *
+	 * @return array
+	 */
+	public function getAutoContextVars()
+	{
+		return $this->auto_vars;
+	}
+
+
+	/**
+	 * Set an auto context var
+	 *
+	 * @param string $k
+	 * @param mixed d$v
+	 */
+	public function setAutoContextVar($k, $v)
+	{
+		$this->auto_vars[$k] = $v;
+	}
+
+
+	/**
+	 * Unset an auto context var
+	 * @param string $k
+	 */
+	public function unsetAutoContextVar($k)
+	{
+		unset($this->auto_vars[$k]);
 	}
 
 
@@ -306,6 +364,7 @@ class TicketManager
 	public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->createNewLogger());
+		$context->getVars()->setArray($this->auto_vars);
 
 		if ($agent) {
 			$context->setPersonContext($agent);
@@ -328,6 +387,7 @@ class TicketManager
 	public function createUserExecutorContext(Person $user = null, $event_type, $event_method, array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->createNewLogger());
+		$context->getVars()->setArray($this->auto_vars);
 
 		if ($user) {
 			$context->setPersonContext($user);
@@ -349,6 +409,7 @@ class TicketManager
 	public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
 	{
 		$context = new ExecutorContext($this->createNewLogger());
+		$context->getVars()->setArray($this->auto_vars);
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method, $event_method_options);
 		return $context;
