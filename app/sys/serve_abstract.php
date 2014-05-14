@@ -228,12 +228,13 @@ abstract class LoaderAbstract
 		global $DP_CONFIG;
 
 		$port = '';
-		if (isset($DP_CONFIG['db']['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG['db']['host'], $m)) {
-			$DP_CONFIG['db']['host'] = $m[1];
+		$dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
+		if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+			$dbhost = $m[1];
 			$port = ";port={$m[2]};";
 		}
 
-		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$dbhost}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		$this->pdo->exec("SET sql_mode=''");
 		$this->pdo->exec("SET NAMES 'UTF8'");
@@ -260,12 +261,13 @@ abstract class LoaderAbstract
 		}
 
 		$port = '';
-		if (isset($DP_CONFIG[$key]['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG[$key]['host'], $m)) {
-			$DP_CONFIG[$key]['host'] = $m[1];
+		$dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
+		if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+			$dbhost = $m[1];
 			$port = ";port={$m[2]};";
 		}
 
-		$this->pdo_read = new \PDO("mysql:dbname={$DP_CONFIG[$key]['dbname']};host={$DP_CONFIG[$key]['host']}$port", $DP_CONFIG[$key]['user'], $DP_CONFIG[$key]['password']);
+		$this->pdo_read = new \PDO("mysql:dbname={$DP_CONFIG[$key]['dbname']};host={$dbhost}$port", $DP_CONFIG[$key]['user'], $DP_CONFIG[$key]['password']);
 		$this->pdo_read->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		$this->pdo_read->exec("SET sql_mode=''");
 		$this->pdo_read->exec("SET NAMES 'UTF8'");

@@ -1541,7 +1541,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$has_eml_attach = false;
 			foreach ($this->reader->getAttachments() as $attach) {
-				if ($attach->mime_type == 'message/rfc822' && $attach->file_name == 'email.eml') {
+				if ($attach->mime_type == 'message/rfc822') {
 					$has_eml_attach = $attach;
 					break;
 				}

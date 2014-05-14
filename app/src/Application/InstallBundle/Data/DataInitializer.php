@@ -319,7 +319,7 @@ class DataInitializer
 
 		App::getOrm()->persist($ticket);
 
-		$agent_name = $for_agent->getDisplayName();
+		$agent_name = htmlspecialchars($for_agent->getDisplayName(), ENT_QUOTES, 'UTF-8');
 
 		$message = new TicketMessage();
 		$message->person  = $user;

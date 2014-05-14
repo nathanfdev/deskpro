@@ -112,6 +112,20 @@ class SendUserEmailAction extends AbstractAction
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 		$vars['tracking_object'] = $ticket;
 
+		// Smart-limit the history to make sure its not huge
+		$vars['message_limit'] = 0;
+		$count = 0;
+		$x = 0;
+		foreach ($vars['messages'] as $m) {
+			$count += strlen($m->message);
+			$x++;
+
+			if ($count >= 358400) {
+				$vars['message_limit'] = $x;
+				break;
+			}
+		}
+
 		$field_manager = App::getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 		$vars['custom_fields'] = $custom_fields;

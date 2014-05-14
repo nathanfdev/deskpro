@@ -71,8 +71,9 @@ class StringEmail extends AbstractValidator implements StaticValidator
 		// Match the part before the @
 		$regex_name = '#^[a-z0-9!\\#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!\\#$%&\'*+/=?^_`{|}~-]+)*$#i';
 
-		// Match a regular domain name after the @
-		$regex_domain = '#^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2,6})$#i';
+		// Match the hostname after the @
+		// Inspired by http://cpansearch.perl.org/src/ABIGAIL/Regexp-Common-2013031301/lib/Regexp/Common/URI/RFC2396.pm
+		$regex_domain = '#^(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9])[.])*(?:[a-zA-Z][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z]))$#i';
 
 		// Match a IP address after the @
 		$regex_ip = '#^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$#i';

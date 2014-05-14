@@ -1225,6 +1225,16 @@ class Strings
 	 */
 	public static function trimHtml($string)
 	{
+		
+		// Dont attempt to run on very large strings
+		// the regex can be slow
+		if (strlen($string) > 716800) {
+			return $string;
+		}
+
+		// Counter used to make sure theres not an infinite loop
+		$x = 0;
+
 		// Handle HTML whitespace
 		do {
 			$old_string = $string;
@@ -1244,7 +1254,7 @@ class Strings
 
 			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
 			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
-		} while ($string != $old_string);
+		} while ($string != $old_string && $x++ < 1000);
 
 		return $string;
 	}

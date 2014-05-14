@@ -7,8 +7,10 @@ DeskPRO.Admin.ElementHandler.DashVersion = new Orb.Class({
 		$.ajax({
 			url: BASE_URL + 'admin/dashboard/load-version-info.html',
 			dataType: 'html',
+			cache: false,
 			success: function(html) {
 				$('#version_info_expanded').html(html);
+				window.dpHasVersionInfo = true
 			}
 		});
 	}
