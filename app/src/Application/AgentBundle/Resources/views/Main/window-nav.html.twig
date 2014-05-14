@@ -59,14 +59,7 @@
 
 			{% if app.user.can_reports %}
 				<li class="no-click-switch is-nav-btn">
-					<a id="reports_interface_trigger"
-						title="{{ phrase('agent.chrome.nav_reports') }}"
-						target="_blank"
-						href="{{ app.request.getBaseUrl() }}/reports/"
-						data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
-						data-frame-id="reports"
-						data-win-title="DeskPRO Reports Interface"
-					>
+					<a title="{{ phrase('agent.chrome.nav_reports') }}" href="{{ app.request.getBaseUrl() }}/reports/">
 						<i class="app-icon app-icon-reports-ifce"></i>
 					</a>
 				</li>
@@ -74,42 +67,20 @@
 
 			{% if app.user.can_admin %}
 				<li class="no-click-switch is-nav-btn">
-					<a
-					   title="Go to the Billing Interface"
-					   target="_blank"
-					   href="{{ app.request.getBaseUrl() }}/admin/#/license"
-					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
-					   data-frame-id="admin_lic"
-					   data-win-title="DeskPRO Billing Interface"
-					>
+					<a title="Go to the Billing Interface" href="{{ app.request.getBaseUrl() }}/admin/#/license">
 						<i class="app-icon app-icon-billing-ifce"></i>
 					</a>
 				</li>
 
 				<li id="settings_section" class="no-click-switch is-nav-btn">
-					<a id="admin_interface_trigger"
-					   title="{{ phrase('agent.chrome.nav_admin_settings') }}"
-					   target="_blank"
-					   href="{{ app.request.getBaseUrl() }}/admin/"
-					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
-					   data-frame-id="admin"
-					   data-win-title="DeskPRO Admin Interface"
-					>
+					<a title="{{ phrase('agent.chrome.nav_admin_settings') }}" href="{{ app.request.getBaseUrl() }}/admin/">
 						<i class="app-icon app-icon-admin-ifce"></i>
 					</a>
 				</li>
 			{% endif %}
 
 			<li id="users_section" class="no-click-switch is-nav-btn">
-				<a id="admin_interface_trigger"
-				   title="Go to User Interface"
-				   target="_blank"
-				   href="{{ path('user') }}"
-				   data-frame-url="{{ path('agent_user_interface_frame') }}"
-				   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrameSimple"
-				   data-frame-id="user"
-				   data-win-title="DeskPRO User Interface"
-				>
+				<a title="Go to User Interface" href="{{ path('user') }}">
 					<i class="app-icon app-icon-user-ifce"></i>
 				</a>
 			</li>

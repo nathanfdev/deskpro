@@ -138,10 +138,10 @@
 
 		<ul class="btm">
 			<li tooltip="{{ phrase('adm.general.back_to_agent') }}" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
-				<a href="/{{ path('user')|trim('/') }}agent/" dp-click-href="#/go_to_agent"><i class="app-icon app-icon-agent-ifce"></i></a>
+				<a href="/{{ path('user')|trim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
 			</li>
 			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
-				<a href="/{{ path('user')|trim('/') }}reports/" dp-click-href="#/go_to_reports"><i class="app-icon app-icon-reports-ifce"></i></a>
+				<a href="/{{ path('user')|trim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
 			</li>
 			<li ng-class="{'section-on': isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to the Billing Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
 				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
