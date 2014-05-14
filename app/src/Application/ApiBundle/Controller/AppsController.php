@@ -88,6 +88,10 @@ class AppsController extends AbstractController
 			});
 		}
 
+		// Re-index in case we filtered by tag
+		$apps = array_values($apps);
+		$packages = array_values($packages);
+
 		return $this->createApiResponse(array('packages' => $packages, 'apps' => $apps));
 	}
 
