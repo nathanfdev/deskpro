@@ -1586,7 +1586,7 @@ class Upgrade
 			return $this->latest_version;
 		}
 
-		$this->latest_version = $this->callService('check-latest-version.json');
+		$this->latest_version = $this->callService('check-latest-version.json', array('my_build' => DP_BUILD_TIME));
 
 		return $this->latest_version;
 	}
