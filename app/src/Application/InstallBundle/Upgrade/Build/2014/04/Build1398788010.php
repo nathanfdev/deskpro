@@ -29,63 +29,28 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace deskpro_us_google;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\NativeAppsSync;
+use Application\DeskPRO\App\Package\PackageInstaller;
 
-class InstallerHandler implements InstallerHandlerInterface
+class Build1398788010 extends AbstractBuild
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
+	public function run()
 	{
-		$context->getDb()->insert('usersources', array(
-			'app_id'            => $context->getApp()->id,
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array()),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
-			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Google',
-		));
-	}
+		$this->out("Sync apps");
 
+		$app_syncer = new NativeAppsSync(
+			$this->container,
+			$this->container->getAppManager(),
+			new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
+			null
+		);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$context->getDb()->update('usersources', array(
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array()),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
-			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Google',
-		), array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		// Nothing
+		$app_syncer->runUpdates();
+		$app_syncer->runSync();
 	}
 }

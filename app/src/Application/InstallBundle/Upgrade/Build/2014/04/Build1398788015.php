@@ -34,15 +34,22 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1396876071 extends AbstractBuild
+use Application\InstallBundle\Upgrade\Build\Helper201404\UsersourceUpgrader;
+
+class Build1398788015 extends AbstractBuild
 {
 	public function run()
 	{
-		$db = $this->container->getDb();
+		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/04/Helper/UsersourceUpgrader.php';
 
+		$db = $this->container->getDb();
 		$this->out("Upgrade usersources");
-		$this->out("TODO");
-		$db->exec("DELETE FROM usersources");
-		//TODO
+
+		$usersources = $db->fetchAll("SELECT * FROM usersources");
+		foreach ($usersources as $us) {
+			$this->out("Upgrading {$us['id']} -- {$us['source_type']}");
+			$up = new UsersourceUpgrader($this->container, $us);
+			$up->upgrade();
+		}
 	}
 }

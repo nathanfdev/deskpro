@@ -66,10 +66,11 @@ class AppOptionsMapper
 				$connection_options['user']     = $settings->get('db_username');
 				$connection_options['password'] = $settings->get('db_password');
 				$connection_options['dbname']   = $settings->get('db_name');
+				$connection_options['host']     = $settings->get('db_host');
 				$connection_options['port']     = $settings->get('db_port');
 
 				if ($settings->get('db_port_type') == 'socket') {
-					unset($connection_options['port']);
+					unset($connection_options['port'], $connection_options['host']);
 					$connection_options['socket'] = $settings->get('db_socket');
 				}
 				break;
@@ -78,6 +79,7 @@ class AppOptionsMapper
 				$connection_options['user']     = $settings->get('db_username');
 				$connection_options['password'] = $settings->get('db_password');
 				$connection_options['dbname']   = $settings->get('db_name');
+				$connection_options['host']     = $settings->get('db_host');
 				$connection_options['port']     = $settings->get('db_port');
 				break;
 			case 'pdo_sqlite':
@@ -85,6 +87,7 @@ class AppOptionsMapper
 				$connection_options['user']     = $settings->get('db_username');
 				$connection_options['password'] = $settings->get('db_password');
 				$connection_options['path']     = $settings->get('path');
+				$connection_options['host']     = $settings->get('db_host');
 				$connection_options['port']     = $settings->get('db_port');
 				break;
 			case 'sqlsrv':
@@ -92,6 +95,7 @@ class AppOptionsMapper
 				$connection_options['user']     = $settings->get('db_username');
 				$connection_options['password'] = $settings->get('db_password');
 				$connection_options['dbname']   = $settings->get('db_name');
+				$connection_options['host']     = $settings->get('db_host');
 				$connection_options['port']     = $settings->get('db_port');
 				break;
 			case 'oci8':
@@ -99,6 +103,7 @@ class AppOptionsMapper
 				$connection_options['user']     = $settings->get('db_username');
 				$connection_options['password'] = $settings->get('db_password');
 				$connection_options['dbname']   = $settings->get('db_name');
+				$connection_options['host']     = $settings->get('db_host');
 				$connection_options['port']     = $settings->get('db_port');
 
 				if ($settings->get('db_service_name')) {

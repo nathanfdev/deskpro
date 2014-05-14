@@ -57,6 +57,7 @@ class Build1398788000 extends AbstractBuild
 		$old_layouts = array();
 
 		$data = $db->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_ticket_page_display'");
+		$data = $data ? unserialize($data) : array();
 		foreach ($data as $r) {
 			if (!isset($old_layouts[$r['department_id']])) {
 				$old_layouts[$r['department_id']] = array();
