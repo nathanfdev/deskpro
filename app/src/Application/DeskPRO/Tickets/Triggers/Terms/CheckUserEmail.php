@@ -41,7 +41,7 @@ use Orb\Util\CheckedOptionsArray;
 /**
  * Checks for a user email match
  *
- * @option int[] email
+ * @option string|string[] email
  */
 class CheckUserEmail extends AbstractTriggerTerm
 {

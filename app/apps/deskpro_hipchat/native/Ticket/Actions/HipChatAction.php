@@ -57,7 +57,7 @@ class HipChatAction extends AbstractAction implements ActionInterface
 		try {
 			$api = new \HipChatApi($app->getSetting('api_token'));
 			$api->message_room(
-				$this->room,
+				$this->getActionOption('room'),
 				'DeskPRO',
 				$message,
 				$app->getSetting('notify')

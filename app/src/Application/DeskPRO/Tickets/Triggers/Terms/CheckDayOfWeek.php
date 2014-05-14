@@ -45,6 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int[] days   The days to test for
  * @option string tz    The timezone to test in
+ * @option string var   The value date to test (defaults to now). Also available: 'date_created'
  * @option \DateTime test_date  When specified, this date is used instead of now
  */
 class CheckDayOfWeek extends AbstractTriggerTerm
@@ -56,7 +57,10 @@ class CheckDayOfWeek extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('days', 'tz');
-		$options->addValidNames('test_date');
+		$options->addValidNames('var', 'test_date');
+		$options->addCallbackCheckedOption('var', function($v) {
+			return ($v == 'now' || $v == 'date_created' || $v === null);
+		});
 		return $options;
 	}
 
@@ -79,7 +83,18 @@ class CheckDayOfWeek extends AbstractTriggerTerm
 		if ($options->has('test_date')) {
 			$now = $options->get('test_date');
 		} else {
-			$now = new \DateTime('now', $tz);
+			$var = $options->get('var', 'now');
+			switch ($var) {
+				case 'now':
+					$now = new \DateTime('now', $tz);
+					break;
+				case 'date_created':
+					$now = $ticket->date_created ?: new \DateTime('now');
+					$now->setTimezone($tz);
+					break;
+				default:
+					throw new \InvalidArgumentException("Unknown var type: $var");
+			}
 		}
 
 		$days = $options->get('days');
