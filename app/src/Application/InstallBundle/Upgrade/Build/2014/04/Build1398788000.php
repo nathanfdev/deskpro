@@ -34,14 +34,16 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
-use Application\DeskPRO\TicketLayout;
+use Application\InstallBundle\Upgrade\Build\Helper201404\LayoutGenerator;
+use Application\InstallBundle\Upgrade\Build\Helper201404\LayoutUpgrader;
 
 class Build1398788000 extends AbstractBuild
 {
 	public function run()
 	{
+		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/04/Helper/LayoutGenerator.php';
+		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/04/Helper/LayoutUpgrader.php';
+
 		$this->out("Upgrade ticket layouts");
 
 		$em = $this->container->getEm();
@@ -74,7 +76,7 @@ class Build1398788000 extends AbstractBuild
 
 		if (!isset($old_layouts[0])) {
 			$this->out("No default layout exists, generating one");
-			$gen = new Build1396876120_LayoutGenerator($this->container);
+			$gen = new LayoutGenerator($this->container);
 			$layout = $gen->getTicketLayout();
 			$layout->department = null;
 			$em->persist($layout);
@@ -92,7 +94,7 @@ class Build1398788000 extends AbstractBuild
 
 			$this->out("Upgrading layout for dep $dep_id ...");
 
-			$up = new Build1396876120_LayoutUpgrader($form_new, $form_view, $form_edit);
+			$up = new LayoutUpgrader($form_new, $form_view, $form_edit);
 			$layout = $up->getTicketLayout();
 
 			if ($dep_id) {
@@ -103,312 +105,5 @@ class Build1398788000 extends AbstractBuild
 		}
 
 		$em->flush();
-	}
-}
-
-class Build1396876120_LayoutUpgrader
-{
-	/**
-	 * @var array
-	 */
-	private $form_new;
-
-	/**
-	 * @var array
-	 */
-	private $form_view;
-
-	/**
-	 * @var array
-	 */
-	private $form_edit;
-
-
-	/**
-	 * @param array $form_new
-	 * @param array $form_view
-	 * @param array $form_edit
-	 */
-	public function __construct(array $form_new, array $form_view, array $form_edit)
-	{
-		$this->form_new  = $form_new;
-		$this->form_view = $form_view;
-		$this->form_edit = $form_edit;
-	}
-
-
-	/**
-	 * @return TicketLayoutEntity
-	 */
-	public function getTicketLayout()
-	{
-		$ticket_layout = new TicketLayoutEntity();
-		$ticket_layout->is_enabled = true;
-		$ticket_layout->user_layout = $this->getUserLayout();
-		$ticket_layout->agent_layout = $this->getAgentLayout();
-		return $ticket_layout;
-	}
-
-
-	/**
-	 * @return TicketLayout\Layout
-	 */
-	private function getUserLayout()
-	{
-		$layout = new TicketLayout\Layout();
-
-		foreach ($this->form_new as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
-				continue;
-			}
-
-			$field = $this->convertField($old_field);
-			$field->enableOnNew();
-			$layout->add($field);
-		}
-		foreach ($this->form_view as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
-				continue;
-			}
-
-			$field = $this->convertField($old_field);
-			if ($layout->has($field->getId())) {
-				$field = $layout->get($field->getId());
-			} else {
-				$layout->add($field);
-			}
-
-			$field->enableOnView();
-		}
-		foreach ($this->form_edit as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
-				continue;
-			}
-
-			$field = $this->convertField($old_field);
-			if ($layout->has($field->getId())) {
-				$field = $layout->get($field->getId());
-			} else {
-				$layout->add($field);
-			}
-
-			$field->enableOnEdit();
-		}
-
-		return $layout;
-	}
-
-
-	/**
-	 * @return TicketLayout\Layout
-	 */
-	private function getAgentLayout()
-	{
-		$layout = new TicketLayout\Layout();
-
-		foreach ($this->form_new as $old_field) {
-			$field = $this->convertField($old_field);
-			$field->enableOnNew();
-			$layout->add($field);
-		}
-		foreach ($this->form_view as $old_field) {
-			$field = $this->convertField($old_field);
-			if ($layout->has($field->getId())) {
-				$field = $layout->get($field->getId());
-			} else {
-				$layout->add($field);
-			}
-
-			$field->enableOnView();
-		}
-		foreach ($this->form_edit as $old_field) {
-			$field = $this->convertField($old_field);
-			if ($layout->has($field->getId())) {
-				$field = $layout->get($field->getId());
-			} else {
-				$layout->add($field);
-			}
-
-			$field->enableOnEdit();
-		}
-
-		return $layout;
-	}
-
-
-	/**
-	 * @param array $info
-	 * @return TicketLayout\LayoutField
-	 */
-	private function convertField(array $info)
-	{
-		$field = $this->getFieldFromLegacyField($info);
-		$crit = $this->getCriteriaFromLegacyField($info);
-		if ($crit) {
-			$field->setCriteria($crit);
-		}
-
-		// Default to all off
-		$field->disableOnNew();
-		$field->disableOnView();
-		$field->disableOnEdit();
-
-		return $field;
-	}
-
-
-	/**
-	 * @param array $info
-	 * @return TicketLayout\LayoutField
-	 */
-	private function getFieldFromLegacyField(array $info)
-	{
-		switch ($info['field_type']) {
-			case 'person_name':
-				return new TicketLayout\LayoutField('user_name');
-			case 'ticket_subject':
-				return new TicketLayout\LayoutField('subject');
-			case 'message':
-				return new TicketLayout\LayoutField('message');
-			case 'attachments':
-				return new TicketLayout\LayoutField('attach');
-			case 'ticket_cc_emails':
-				return new TicketLayout\LayoutField('cc');
-			case 'captcha':
-				return new TicketLayout\LayoutField('captcha');
-			case 'ticket_department':
-				return new TicketLayout\LayoutField('department');
-			case 'ticket_category':
-				return new TicketLayout\LayoutField('category');
-			case 'ticket_priority':
-				return new TicketLayout\LayoutField('priority');
-			case 'ticket_workflow':
-				return new TicketLayout\LayoutField('workflow');
-			case 'ticket_product':
-				return new TicketLayout\LayoutField('product');
-			case 'ticket_field':
-				return new TicketLayout\LayoutField('ticket_field', $info['field_id']);
-			default:
-				throw new \InvalidArgumentException("Unknown field type {$info['field_type']}");
-		}
-	}
-
-
-	/**
-	 * @param array $info
-	 * @return TicketLayout\LayoutFieldCriteria|null
-	 */
-	private function getCriteriaFromLegacyField(array $info)
-	{
-		if (empty($info['rules'])) {
-			return null;
-		}
-
-		$crit = new TicketLayout\LayoutFieldCriteria();
-
-		if ($info['rule_match_type'] == 'all') {
-			$crit->setMode(TicketLayout\LayoutFieldCriteria::CRIT_ALL);
-		} else {
-			$crit->setMode(TicketLayout\LayoutFieldCriteria::CRIT_ALL);
-		}
-
-		foreach ($info['rules'] as $rule) {
-			$term = $this->getCriteriaTermFromLegacyTerm($rule);
-			if ($term) {
-				$crit->addTerm($term);
-			}
-		}
-
-		if (!$crit->count()) {
-			return null;
-		}
-		return $crit;
-	}
-
-
-	/**
-	 * @param array $rule
-	 * @return TicketLayout\Terms\AbstractTicketLayoutTerm|null
-	 */
-	private function getCriteriaTermFromLegacyTerm(array $rule)
-	{
-		switch ($rule['type']) {
-			case 'category':
-				if (empty($rule['options']['category'])) return null;
-				$ids = is_array($rule['options']['category']) ? $rule['options']['category'] : array($rule['options']['category']);
-				return new TicketLayout\Terms\CheckCategory($rule['op'], array('category_ids' => $ids));
-			case 'priority':
-				if (empty($rule['options']['priority'])) return null;
-				$ids = is_array($rule['options']['priority']) ? $rule['options']['priority'] : array($rule['options']['priority']);
-				return new TicketLayout\Terms\CheckPriority($rule['op'], array('priority_ids' => $ids));
-			case 'workflow':
-				if (empty($rule['options']['workflow'])) return null;
-				$ids = is_array($rule['options']['workflow']) ? $rule['options']['workflow'] : array($rule['options']['workflow']);
-				return new TicketLayout\Terms\CheckWorkflow($rule['op'], array('workflow_ids' => $ids));
-			case 'product':
-				if (empty($rule['options']['product'])) return null;
-				$ids = is_array($rule['options']['product']) ? $rule['options']['product'] : array($rule['options']['product']);
-				return new TicketLayout\Terms\CheckProduct($rule['op'], array('product_ids' => $ids));
-			default:
-				return null;
-		}
-	}
-}
-
-class Build1396876120_LayoutGenerator
-{
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
-
-
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function __construct(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
-
-	/**
-	 * @return TicketLayoutEntity
-	 */
-	public function getTicketLayout()
-	{
-		$ticket_layout = new TicketLayoutEntity();
-		$ticket_layout->is_enabled = true;
-		$ticket_layout->user_layout = $this->getLayout();
-		$ticket_layout->agent_layout = $this->getLayout();
-		return $ticket_layout;
-	}
-
-	private function getLayout()
-	{
-		$layout = new TicketLayout\Layout();
-		$layout->add(new TicketLayout\LayoutField('user_name'));
-		$layout->add(new TicketLayout\LayoutField('user_email'));
-		$layout->add(new TicketLayout\LayoutField('department'));
-
-		if ($this->container->getSetting('core.use_ticket_category')) {
-			$layout->add(new TicketLayout\LayoutField('category'));
-		}
-		if ($this->container->getSetting('core.use_ticket_priority')) {
-			$layout->add(new TicketLayout\LayoutField('priority'));
-		}
-		if ($this->container->getSetting('core.use_ticket_workflow')) {
-			$layout->add(new TicketLayout\LayoutField('workflow'));
-		}
-		if ($this->container->getSetting('core.use_product')) {
-			$layout->add(new TicketLayout\LayoutField('product'));
-		}
-
-		foreach ($this->container->getTicketFieldManager()->getFields() as $f) {
-			$layout->add(new TicketLayout\LayoutField('ticket_field', $f->id));
-		}
-
-		$layout->add(new TicketLayout\LayoutField('subject'));
-		$layout->add(new TicketLayout\LayoutField('message'));
-		$layout->add(new TicketLayout\LayoutField('attach'));
 	}
 }
