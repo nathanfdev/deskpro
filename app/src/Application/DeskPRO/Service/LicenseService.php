@@ -45,7 +45,7 @@ class LicenseService
 		static $latest = null;
 
 		if ($latest === null) {
-			$latest = self::fetchServiceResult('check-latest-version.json');
+			$latest = self::fetchServiceResult('check-latest-version.json', array('my_build' => DP_BUILD_TIME));
 		}
 
 		return $latest;
