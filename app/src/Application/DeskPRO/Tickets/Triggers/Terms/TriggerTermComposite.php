@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
-class TriggerTermComposite implements TriggerTermInterface
+class TriggerTermComposite implements TriggerTermInterface, \Countable
 {
 	const OP_AND = 'AND';
 	const OP_OR  = 'OR';
@@ -140,5 +140,14 @@ class TriggerTermComposite implements TriggerTermInterface
 
 			return false;
 		}
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->terms);
 	}
 }

@@ -54,6 +54,20 @@ class Build1396876082 extends AbstractBuild
 		$gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC", array(), 'email_gateway_id');
 		$transports    = $db->fetchAllKeyed("SELECT * FROM email_transports");
 
+		// Save gateway address mapping needed when importing triggers
+		$map = array();
+		foreach ($gateway_addrs as $gateway_id => $addrs) {
+			foreach ($addrs as $a) {
+				$map[$a['id']] = $gateway_id;
+			}
+		}
+		$db->executeUpdate("DELETE FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
+		$db->insert('install_data', array(
+			'build' => 1396876000,
+			'name'  => "upgrade_mapping_gateway_address_map",
+			'data'  => serialize($map)
+		));
+
 		$new_accounts = array();
 		foreach ($gateways as $gateway) {
 			if ($gateway['gateway_type'] != 'tickets') {

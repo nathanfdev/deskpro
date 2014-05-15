@@ -42,28 +42,7 @@ class Build1396876100 extends AbstractBuild
 
 		$this->out("Recreate ticket_triggers table");
 		$db->exec("DROP TABLE IF EXISTS ticket_triggers");
-		$db->exec("
-			CREATE TABLE `ticket_triggers` (
-			`id` int(11) NOT NULL AUTO_INCREMENT,
-			`department_id` int(11) DEFAULT NULL,
-			`email_account_id` int(11) DEFAULT NULL,
-			`title` varchar(255) NOT NULL,
-			`event_trigger` varchar(50) NOT NULL,
-			`by_agent_mode` longtext COMMENT '(DC2Type:simple_array)',
-			`by_user_mode` longtext COMMENT '(DC2Type:simple_array)',
-			`is_enabled` tinyint(1) NOT NULL,
-			`terms` longtext NOT NULL COMMENT '(DC2Type:dp_json_obj)',
-			`actions` longtext NOT NULL COMMENT '(DC2Type:dp_json_obj)',
-			`run_order` int(11) NOT NULL,
-			`is_hidden` tinyint(1) NOT NULL,
-			`is_editable` tinyint(1) NOT NULL,
-			`sys_name` varchar(150) DEFAULT NULL,
-			PRIMARY KEY (`id`),
-			KEY `IDX_8BA775CCAE80F5DF` (`department_id`),
-			KEY `IDX_8BA775CC37D8AD65` (`email_account_id`),
-			CONSTRAINT `FK_8BA775CC37D8AD65` FOREIGN KEY (`email_account_id`) REFERENCES `email_accounts` (`id`) ON DELETE CASCADE,
-			CONSTRAINT `FK_8BA775CCAE80F5DF` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE CASCADE
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-		");
+		$db->exec("CREATE TABLE ticket_triggers (id INT AUTO_INCREMENT NOT NULL, department_id INT DEFAULT NULL, email_account_id INT DEFAULT NULL, title VARCHAR(255) NOT NULL, event_trigger VARCHAR(50) NOT NULL, by_agent_mode LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:simple_array)\', by_user_mode LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:simple_array)\', is_enabled TINYINT(1) NOT NULL, is_hidden TINYINT(1) NOT NULL, is_editable TINYINT(1) NOT NULL, sys_name VARCHAR(150) DEFAULT NULL, terms LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', actions LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', run_order INT NOT NULL, INDEX IDX_8BA775CCAE80F5DF (department_id), INDEX IDX_8BA775CC37D8AD65 (email_account_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$db->exec("ALTER TABLE ticket_triggers ADD CONSTRAINT FK_8BA775CCAE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE, ADD CONSTRAINT FK_8BA775CC37D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
 	}
 }

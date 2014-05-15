@@ -59,8 +59,6 @@ class TicketTrigger extends DomainObject
 	const EVENT_TYPE_NEWTICKET                  = 'newticket';
 	const EVENT_TYPE_NEWREPLY                   = 'newreply';
 	const EVENT_TYPE_UPDATE                     = 'update';
-	const EVENT_TYPE_SLA_WARNING                = 'sla.warning';
-	const EVENT_TYPE_SLA_FAIL                   = 'sla.fail';
 
 	const MODE_WEB    = 'web';
 	const MODE_PORTAL = 'portal';

@@ -52,7 +52,7 @@ use Orb\Types\JsonObjectSerializable;
  * *save* the term to the db if it also implements the standard ActionDefinitionInterface which defines
  * a standard interface for getting a term name and options (so we can recreate a term object again).
  */
-class TriggerActions implements \Serializable, ActionInterface, DeskproContainerAwareInterface, JsonObjectSerializable
+class TriggerActions implements \Serializable, ActionInterface, DeskproContainerAwareInterface, JsonObjectSerializable, \Countable
 {
 	/**
 	 * @var ActionComposite
@@ -136,6 +136,15 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
 		}
 
 		$this->actions->applyAction($ticket, $context);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->actions);
 	}
 
 

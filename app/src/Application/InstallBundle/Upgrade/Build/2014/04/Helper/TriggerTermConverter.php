@@ -41,24 +41,22 @@ use Orb\Util\Strings;
 class TriggerTermConverter
 {
 	/**
-	 * The old event trigger name
-	 * @var string
+	 * @var array
 	 */
-	private $event_trigger;
+	private $mappings;
 
-	public function __construct($event_trigger)
+	public function __construct(array $mappings = array())
 	{
-		$this->event_trigger = $event_trigger;
+		$this->mappings = $mappings;
 	}
 
-	public function getTriggerTerm($info)
+	public function getTriggerTerm($event_trigger, $info)
 	{
 		$t = $info['type'];
 		$t = preg_replace('#\[\d+\]$#', '', $t); // something[123] to just something
 
 		$func = "upgradeTerm_{$t}";
-		return $func($info['type'], $info['op'], new OptionsArray($info['options']));
-
+		return $func($info['type'], $info['op'], new OptionsArray($info['options']), $event_trigger);
 	}
 
 
@@ -195,8 +193,8 @@ class TriggerTermConverter
 
 	private function upgradeTerm_gateway_account($type, $op, OptionsArray $options)
 	{
-		//TODO mapping of ids
-		return new Terms\CheckEmailAccount($op, array('email_account_ids' => $ids));
+		// new email accounts use old gateway account ids, so can use same option
+		return new Terms\CheckEmailAccount($op, array('email_account_ids' => array($options->get('gateway_account', 0))));
 	}
 
 	private function upgradeTerm_is_via_email($type, $op, OptionsArray $options)
@@ -227,11 +225,11 @@ class TriggerTermConverter
 		return new Terms\CheckLabel($op, array('labels' => $labels));
 	}
 
-	private function upgradeTerm_message($type, $op, OptionsArray $options)
+	private function upgradeTerm_message($type, $op, OptionsArray $options, $event_trigger)
 	{
 		$message = $options->get('message', 'NO MESSAGE');
 
-		if (strpos($this->event_trigger, 'agent') !== false) {
+		if (strpos($event_trigger, 'agent') !== false) {
 			return new Terms\CheckAgentMessage($op, array('message' => $message));
 		} else {
 			return new Terms\CheckUserMessage($op, array('message' => $message));

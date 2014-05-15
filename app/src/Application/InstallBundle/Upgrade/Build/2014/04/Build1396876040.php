@@ -34,6 +34,9 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\Entity\Sla;
+use Orb\Types\JsonObjectSerializer;
+
 class Build1396876040 extends AbstractBuild
 {
 	public function run()
@@ -53,5 +56,13 @@ class Build1396876040 extends AbstractBuild
 		$db->exec("DROP INDEX IDX_ACE9984A13CC0145 ON slas");
 		$db->exec("DROP INDEX IDX_ACE9984AED1A7B28 ON slas");
 		$db->exec("ALTER TABLE slas ADD apply_terms LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)', ADD warn_time INT NOT NULL, ADD warn_time_unit VARCHAR(50) NOT NULL, ADD warn_actions LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)', ADD fail_time INT NOT NULL, ADD fail_time_unit VARCHAR(50) NOT NULL, ADD fail_actions LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)', DROP apply_priority_id, DROP fail_trigger_id, DROP warning_trigger_id, DROP apply_trigger_id, CHANGE work_days work_days LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', CHANGE work_holidays work_holidays LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
+
+		// Apply default datat to new fields
+		$sla = new Sla();
+		$db->executeUpdate("UPDATE slas SET apply_terms = ?, warn_actions = ?, fail_actions = ?", array(
+			JsonObjectSerializer::serialize($sla->apply_terms),
+			JsonObjectSerializer::serialize($sla->warn_actions),
+			JsonObjectSerializer::serialize($sla->fail_actions),
+		));
 	}
 }

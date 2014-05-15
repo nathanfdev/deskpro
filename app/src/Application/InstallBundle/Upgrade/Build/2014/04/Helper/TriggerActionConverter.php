@@ -41,14 +41,13 @@ use Orb\Util\Strings;
 class TriggerActionConverter
 {
 	/**
-	 * The old event trigger name
-	 * @var string
+	 * @var array
 	 */
-	private $event_trigger;
+	private $mappings;
 
-	public function __construct($event_trigger)
+	public function __construct(array $mappings = array())
 	{
-		$this->event_trigger = $event_trigger;
+		$this->mappings = $mappings;
 	}
 
 	public function getTriggerAction($info)
@@ -293,7 +292,13 @@ class TriggerActionConverter
 
 	private function upgradeAction_set_gateway_address($type, OptionsArray $options)
 	{
-		//TODO
+		$address_id = $options->get('gateway_address_id', 0);
+		if (!isset($this->mappings['gateway_address_to_email_account'][$address_id])) {
+			return null;
+		}
+
+		$id = $this->mappings['gateway_address_to_email_account'][$address_id];
+		return new Actions\SetEmailAccount(array('email_account_id'=> $id));
 	}
 
 	private function upgradeAction_set_initial_from_name($type, OptionsArray $options)

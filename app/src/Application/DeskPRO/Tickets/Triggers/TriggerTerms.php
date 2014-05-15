@@ -50,7 +50,7 @@ use Orb\Types\JsonObjectSerializable;
  * *save* the term to the db if it also implements the standard CriteriaTermInterface which defines
  * a standard interface for getting a term name and options (so we can recreate a term object again).
  */
-class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSerializable
+class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSerializable, \Countable
 {
 	/**
 	 * @var TriggerTermComposite
@@ -123,6 +123,15 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		return $this->criteria->isTriggerMatch($ticket, $context);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->criteria);
 	}
 
 

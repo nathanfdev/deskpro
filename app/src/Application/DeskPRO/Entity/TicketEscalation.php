@@ -46,6 +46,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string $event_trigger
  * @property int $event_trigger_time
  * @property array $terms
+ * @property array $terms_any
  * @property \Application\DeskPRO\Tickets\Triggers\TriggerActions $actions
  * @property \DateTime $date_created
  * @property \DateTime $date_last_run

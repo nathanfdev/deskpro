@@ -39,7 +39,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
-class ActionComposite implements ActionInterface, DeskproContainerAwareInterface
+class ActionComposite implements ActionInterface, DeskproContainerAwareInterface, \Countable
 {
 	/**
 	 * @var ActionInterface[]
@@ -131,5 +131,14 @@ class ActionComposite implements ActionInterface, DeskproContainerAwareInterface
 
 			$a->applyAction($ticket, $context);
 		}
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->actions);
 	}
 }
