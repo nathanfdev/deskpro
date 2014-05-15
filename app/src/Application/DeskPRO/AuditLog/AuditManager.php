@@ -56,9 +56,18 @@ class AuditManager
 	 */
 	protected $default_performer = null;
 
+	/**
+	 * @var bool
+	 */
+	protected $disabled = false;
+
 	public function __construct()
 	{
 		$this->writers = new CompositeCaller();
+
+		if (isset($GLOBALS['DP_IS_IN_CLI'])) {
+			$this->disabled = true;
+		}
 	}
 
 
@@ -90,6 +99,8 @@ class AuditManager
 	 */
 	public function recordChange($object, $field_id, $old_val, $new_val)
 	{
+		if ($this->disabled) return null;
+
 		$name = AuditLog::getObjectNameFromVar($object);
 
 		if (isset($this->pending_logs[$name])) {
@@ -117,6 +128,8 @@ class AuditManager
 	 */
 	public function recordCreated($object)
 	{
+		if ($this->disabled) return null;
+
 		$name = AuditLog::getObjectNameFromVar($object);
 		$audit_log = new AuditLog(AuditLog::CREATE, $object);
 		$this->pending_logs[$name] = $audit_log;
@@ -134,6 +147,8 @@ class AuditManager
 	 */
 	public function recordDelete($object)
 	{
+		if ($this->disabled) return null;
+
 		$name = AuditLog::getObjectNameFromVar($object);
 		$audit_log = new AuditLog(AuditLog::DELETE, $object);
 		$this->pending_logs[$name] = $audit_log;
@@ -153,6 +168,8 @@ class AuditManager
 	 */
 	public function flushLogs()
 	{
+		if ($this->disabled) return;
+
 		$ret = $this->writers->callMethod('writeLogs', array($this->pending_logs), null, true);
 
 		foreach ($ret as $r) {

@@ -52,23 +52,36 @@ class Build1398788020 extends AbstractBuild
 
 		$tids = $db->fetchAllCol("SELECT id FROM templates");
 		$failed = array();
+		$failed_data = array();
+
+		$replacements = array(
+			'DeskPRO:emails_user:new-reply-agent.html.twig' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
+			'DeskPRO:emails_user:new-reply-user.html.twig'  => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+			'DeskPRO:emails_user:new-ticket.html.twig'      => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+		);
 
 		foreach ($tids as $id) {
 			$info = $db->fetchAssoc("SELECT name, template_code FROM templates WHERE id = ?", array($id));
 			$this->out("Re-compiling {$info['name']}");
 
 			try {
+
+				$code = $info['template_code'];
+				$code = str_replace(array_keys($replacements), array_values($replacements), $code);
+
 				$template      = $set->getCustomTemplate($info['name']);
 				$template_code = $template->getTemplateCode();
-				$template_code->setCode($info['template_code']);
+				$template_code->setCode($code);
 				$set->saveTemplate($template);
 			} catch (\Exception $e) {
 				$this->out("... Failed: {$e->getMessage()}");
 				$failed[] = $id;
+				$failed_data[] = $info;
 			}
 		}
 
 		if ($failed) {
+			$this->saveUpgradeData('201404', 'bad-templates', $failed_data);
 			$db->executeUpdate("DELETE FROM templates WHERE id IN (" . implode(',', $failed) . ")");
 		}
 	}

@@ -68,10 +68,6 @@ class TemplateCustom extends Template
 		$this->entity = $entity;
 
 		$this->template_file = new TemplateFile($this->entity->name);
-
-		if (!$this->template_file->exists()) {
-			throw new \InvalidArgumentException("Base template does not exist: {$this->template_file->getName()}");
-		}
 	}
 
 
