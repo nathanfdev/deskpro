@@ -328,12 +328,20 @@ class TriggerTermConverter
 
 	private function upgradeTerm_sla($type, $op, OptionsArray $options)
 	{
-		//TODO
+		return new Terms\CheckSla($op, array('sla_ids' => $this->getSingleArrayValue($options, 'sla_id')));
 	}
 
 	private function upgradeTerm_sla_status($type, $op, OptionsArray $options)
 	{
-		//TODO
+		$status = $options->get('sla_status', 'warning');
+		if ($status == 'warn') {
+			$status = 'warning'; //the real status id
+		}
+
+		return new Terms\CheckSlaStatus($op, array(
+			'sla_ids'    => $this->getSingleArrayValue($options, 'sla_id'),
+			'sla_status' => $status
+		));
 	}
 
 	private function upgradeTerm_status($type, $op, OptionsArray $options)
@@ -367,7 +375,7 @@ class TriggerTermConverter
 
 	private function upgradeTerm_user_performer_email($type, $op, OptionsArray $options)
 	{
-		//TODO
+		return new Terms\CheckPerformerEmail($op, array('email' => $options->get('user_email')));
 	}
 
 	private function upgradeTerm_workflow($type, $op, OptionsArray $options)
