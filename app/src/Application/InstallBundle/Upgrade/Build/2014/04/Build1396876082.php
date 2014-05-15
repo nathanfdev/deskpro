@@ -166,6 +166,12 @@ class Build1396876082 extends AbstractBuild
 				$account->incoming_account = $gmail_config;
 				break;
 
+			// directory was the type used by cloud accounts
+			case 'directory':
+				$null_config = new IncomingAccount\NullConfig();
+				$account->incoming_account = $null_config;
+				break;
+
 			default:
 				throw new \InvalidArgumentException("Unknown account type: {$gateway['connection_type']}");
 		}
