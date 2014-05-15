@@ -34,21 +34,17 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
-use Zend\Validator\EmailAddress;
 
 /**
- * Adds and removed CC'ed users to the ticket, creating users as necessary.
+ * Set the language.
  *
- * @option string[] add_emails       Array of email addresses of users to add
- * @option string[] remove_emails    Array of email addresses of users to remove
- * @option bool     add_org_managers True to add all org managers
+ * @option int language_id
  */
-class SetCcs extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
+class SetLanguage extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -56,7 +52,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addValidNames('add_emails', 'remove_emails', 'add_org_managers');
+		$options->addRequiredNames('language_id');
 		return $options;
 	}
 
@@ -66,59 +62,41 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		#------------------------------
-		# Add org managers
-		#------------------------------
+		$set_lang_id = $this->getActionOption('language_id');
 
-		if ($this->getActionOption('add_org_managers') && $ticket->organization) {
-			$managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
-			foreach ($managers AS $manager) {
-				if (!$ticket->hasParticipantPerson($manager)) {
-					$ticket->addParticipantPerson($manager);
-				}
+		if ($set_lang_id) {
+			$lang = $this->getContainer()->getLanguageData()->get($set_lang_id);
+			if (!$lang) {
+				return; //invalid
+			}
+		} else {
+			$lang = null;
+		}
+
+		$ticket->category = $lang;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$set_lang_id    = $this->getActionOption('language_id');
+		$ticket_lang_id = $ticket->language ? $ticket->language->id : 0;
+
+		if ($ticket_lang_id == $set_lang_id) {
+			return true;
+		}
+
+		if ($set_lang_id) {
+			$lang = $this->getContainer()->getLanguageData()->get($set_lang_id);
+			if (!$lang) {
+				return true; //invalid
 			}
 		}
 
-		#------------------------------
-		# Add people
-		#------------------------------
-
-		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
-		foreach ($this->getActionOption('add_emails') as $email) {
-			if ($ticket->hasParticipantEmailAddress($email)) {
-				continue;
-			}
-
-			$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($person) {
-				$ticket->addParticipantPerson($person);
-			} else {
-				if ($reg_closed) {
-					continue;
-				}
-				$person_processor = new PersonFromEmailProcessor();
-
-				$eml = new EmailAddress();
-				$eml->email = $email;
-				$person = $person_processor->createPerson($eml, true);
-
-				if ($person) {
-					$ticket->addParticipantPerson($person);
-				}
-			}
-		}
-
-		#------------------------------
-		# Remove people
-		#------------------------------
-
-		foreach ($this->getActionOption('remove_emails') as $email) {
-			foreach ($ticket->participants as $k => $p) {
-				if ($p->person->findEmailAddress($email)) {
-					$ticket->removeParticipantPerson($p->person);
-				}
-			}
-		}
+		return false;
 	}
 
 
@@ -127,11 +105,11 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 	 */
 	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
-			return array('cc');
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return array('fields');
 		}
 
-		return array();
+		return null;
 	}
 
 

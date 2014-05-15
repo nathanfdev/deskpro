@@ -133,7 +133,6 @@ class TicketEmailBuilder
 		return $this;
 	}
 
-
 	/**
 	 * @param PersonFieldManager $field_manager
 	 * @return TicketEmailBuilder
@@ -144,7 +143,6 @@ class TicketEmailBuilder
 		return $this;
 	}
 
-
 	/**
 	 * @param TicketLayoutManager $ticket_layout_manager
 	 * @return TicketEmailBuilder
@@ -154,7 +152,6 @@ class TicketEmailBuilder
 		$this->options->set('ticket_layout_manager', $ticket_layout_manager);
 		return $this;
 	}
-
 
 	/**
 	 * @param Ticket $ticket
@@ -173,6 +170,17 @@ class TicketEmailBuilder
 	public function setToPerson(Person $person)
 	{
 		$this->options->set('to_person', $person);
+		return $this;
+	}
+
+	/**
+	 * @param Person[] $people
+	 * @return $this
+	 */
+	public function setToPeople(array $people)
+	{
+		throw new \RuntimeException();
+		$this->options->set('to_people', $people);
 		return $this;
 	}
 

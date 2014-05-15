@@ -40,12 +40,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Sets the status on SLAs
+ * Set hold status of a ticket
  *
- * @pption string sla_status   The status to set
- * @option int[] sla_ids       SLAs to set the status on
+ * @option bool is_hold
  */
-class SetSlaStatuses extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
+class SetHold extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -53,7 +52,7 @@ class SetSlaStatuses extends AbstractContainerAwareAction implements ActionInter
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('sla_status', 'sla_ids');
+		$options->addRequiredNames('is_hold');
 		return $options;
 	}
 
@@ -63,19 +62,17 @@ class SetSlaStatuses extends AbstractContainerAwareAction implements ActionInter
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$em = $this->getContainer()->getEm();
-		$ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
+		$ticket->is_hold = (bool)$this->getActionOption('is_hold');
+	}
 
-		foreach ($this->getActionOption('sla_ids') as $sla_id) {
-			$sla = $ticket_slas->getById($sla_id);
-			if (!$sla || !$ticket->hasSla($sla)) {
-				continue;
-			}
 
-			$ticket_sla = $ticket->getSlaById($sla->id);
-			$ticket_sla->setSlaStatus($this->sla_status, false);
-			$em->persist($ticket_sla);
-		}
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$v = (bool)$this->getActionOption('is_hold');
+		return $ticket->is_hold == $v;
 	}
 
 
@@ -84,10 +81,6 @@ class SetSlaStatuses extends AbstractContainerAwareAction implements ActionInter
 	 */
 	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
-			return array('slas');
-		}
-
 		return null;
 	}
 

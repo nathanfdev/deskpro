@@ -34,21 +34,20 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
-use Zend\Validator\EmailAddress;
 
 /**
- * Adds and removed CC'ed users to the ticket, creating users as necessary.
+ * Completes or uncompletes an SLA.
  *
- * @option string[] add_emails       Array of email addresses of users to add
- * @option string[] remove_emails    Array of email addresses of users to remove
- * @option bool     add_org_managers True to add all org managers
+ * @option int[] sla_ids       SLAs to set complete on
+ * @option bool  sla_status    'auto', 'nochange', 'ok', 'warning', 'fail'
+ *                             auto: recalc now, nochange: do nothing, ok: set to ok, warning: set to warning, fail: set to failed
  */
-class SetCcs extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
+class SetSlaComplete extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -56,7 +55,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addValidNames('add_emails', 'remove_emails', 'add_org_managers');
+		$options->addRequiredNames('sla_status', 'sla_ids');
 		return $options;
 	}
 
@@ -66,58 +65,49 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		#------------------------------
-		# Add org managers
-		#------------------------------
+		$sla_ids = $this->getActionOption('sla_ids');
+		$sla_ids = array_combine($sla_ids, $sla_ids);
 
-		if ($this->getActionOption('add_org_managers') && $ticket->organization) {
-			$managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
-			foreach ($managers AS $manager) {
-				if (!$ticket->hasParticipantPerson($manager)) {
-					$ticket->addParticipantPerson($manager);
-				}
-			}
-		}
+		$set_status = $this->getActionOption('sla_status');
 
-		#------------------------------
-		# Add people
-		#------------------------------
-
-		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
-		foreach ($this->getActionOption('add_emails') as $email) {
-			if ($ticket->hasParticipantEmailAddress($email)) {
+		foreach ($ticket->ticket_slas as $ticket_sla) {
+			if (!isset($sla_ids[-1]) && !isset($sla_ids[$ticket_sla->sla->id])) {
 				continue;
 			}
 
-			$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($person) {
-				$ticket->addParticipantPerson($person);
-			} else {
-				if ($reg_closed) {
-					continue;
-				}
-				$person_processor = new PersonFromEmailProcessor();
+			$calc = $ticket_sla->sla->getCalculator();
 
-				$eml = new EmailAddress();
-				$eml->email = $email;
-				$person = $person_processor->createPerson($eml, true);
-
-				if ($person) {
-					$ticket->addParticipantPerson($person);
-				}
+			switch ($set_status) {
+				case 'auto':
+					$ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
+					$ticket_sla->fail_date = $calc->calculateFailDate($ticket);
+					if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
+						if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
+							$ticket_sla->sla_status = TicketSla::STATUS_FAIL;
+						}
+					} else if ($ticket_sla->sla_status == 'ok') {
+						if ($calc->isTicketSlaWarning($ticket, $ticket_sla)) {
+							$ticket_sla->sla_status = TicketSla::STATUS_WARNING;
+						}
+					} else {
+						$ticket_sla->sla_status = TicketSla::STATUS_OK;
+					}
+					break;
+				case 'ok':
+					$ticket_sla->sla_status = TicketSla::STATUS_OK;
+					break;
+				case 'warning':
+					$ticket_sla->sla_status = TicketSla::STATUS_WARNING;
+					break;
+				case 'fail':
+					$ticket_sla->sla_status = TicketSla::STATUS_FAIL;
+					break;
 			}
-		}
 
-		#------------------------------
-		# Remove people
-		#------------------------------
-
-		foreach ($this->getActionOption('remove_emails') as $email) {
-			foreach ($ticket->participants as $k => $p) {
-				if ($p->person->findEmailAddress($email)) {
-					$ticket->removeParticipantPerson($p->person);
-				}
-			}
+			$completed_date = $calc->calculateCompletedDate($ticket);
+			$ticket_sla->setIsCompleted(true, $completed_date);
+			$this->getContainer()->getEm()->persist($ticket_sla);
+			$this->getContainer()->getEm()->flush($ticket_sla);
 		}
 	}
 
@@ -127,11 +117,11 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 	 */
 	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
-			return array('cc');
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
+			return array('slas');
 		}
 
-		return array();
+		return null;
 	}
 
 

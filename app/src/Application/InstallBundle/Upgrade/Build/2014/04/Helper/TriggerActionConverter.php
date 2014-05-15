@@ -61,7 +61,8 @@ class TriggerActionConverter
 
 	private function upgradeAction_add_agent_notify($type, OptionsArray $options)
 	{
-		// not converted
+		// no translation
+		return null;
 	}
 
 	private function upgradeAction_add_cc($type, OptionsArray $options)
@@ -81,7 +82,7 @@ class TriggerActionConverter
 
 	private function upgradeAction_add_org_managers($type, OptionsArray $options)
 	{
-		//TODO
+		return new Actions\SetCcs(array('add_org_managers' => true));
 	}
 
 	private function upgradeAction_add_participants($type, OptionsArray $options)
@@ -91,7 +92,7 @@ class TriggerActionConverter
 
 	private function upgradeAction_add_sla($type, OptionsArray $options)
 	{
-		//TODO
+		return new Actions\SetSlas(array('add_sla_ids' => array($options->get('sla_id', 0))));
 	}
 
 	private function upgradeAction_agent($type, OptionsArray $options)
@@ -139,12 +140,20 @@ class TriggerActionConverter
 
 	private function upgradeAction_enable_new_ticket_confirmation($type, OptionsArray $options)
 	{
-		//email todo
+		return new Actions\SendUserEmail(array(
+			'template' => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+			'do_cc_users' => true,
+			'from_name' => 'helpdesk_name',
+		));
 	}
 
 	private function upgradeAction_enable_user_notification_new_reply_user($type, OptionsArray $options)
 	{
-		//email todo
+		return new Actions\SendUserEmail(array(
+			'template' => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+			'do_cc_users' => true,
+			'from_name' => 'helpdesk_name',
+		));
 	}
 
 	private function upgradeAction_flag($type, OptionsArray $options)
@@ -164,12 +173,12 @@ class TriggerActionConverter
 
 	private function upgradeAction_hold($type, OptionsArray $options)
 	{
-		//TODO
+		return new Actions\SetHold(array('is_hold' => (bool)$options->get('is_hold')));
 	}
 
 	private function upgradeAction_language($type, OptionsArray $options)
 	{
-		//TODO
+		return new Actions\SetLanguage(array('language_id' => $options->get('language', 0)));
 	}
 
 	private function upgradeAction_priority($type, OptionsArray $options)
@@ -184,7 +193,8 @@ class TriggerActionConverter
 
 	private function upgradeAction_recalculate_sla_status($type, OptionsArray $options)
 	{
-		//TODO
+		// no translation (not required)
+		return null;
 	}
 
 	private function upgradeAction_remove_labels($type, OptionsArray $options)
@@ -196,7 +206,7 @@ class TriggerActionConverter
 
 	private function upgradeAction_remove_sla($type, OptionsArray $options)
 	{
-		//TODO
+		return new Actions\SetSlas(array('remove_sla_ids' => array($options->get('sla_id', 0))));
 	}
 
 	private function upgradeAction_reply($type, OptionsArray $options)
@@ -211,28 +221,37 @@ class TriggerActionConverter
 
 	private function upgradeAction_send_agent_email($type, OptionsArray $options)
 	{
-		// no translation
-		return null;
+		return new Actions\SendAgentEmail(array(
+			'agent_ids' => $options->get('agents', array()),
+			'template' => $options->get('template_name')
+		));
 	}
 
 	private function upgradeAction_send_autoclose_warn_email($type, OptionsArray $options)
 	{
-		//todo email
+		return new Actions\SendUserEmail(array(
+			'template' => 'DeskPRO:emails_user:ticket-autoclose-warn.html.twig',
+		));
 	}
 
 	private function upgradeAction_send_feedback_email($type, OptionsArray $options)
 	{
-		//todo email
+		return new Actions\SendUserEmail(array(
+			'template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
+		));
 	}
 
 	private function upgradeAction_send_org_managers_email($type, OptionsArray $options)
 	{
-		//todo
+		// no translation (requires full email template)
+		return null;
 	}
 
 	private function upgradeAction_send_user_email($type, OptionsArray $options)
 	{
-		//todo email
+		return new Actions\SendUserEmail(array(
+			'template' => $options->get('template_name')
+		));
 	}
 
 	private function upgradeAction_set_agent_email_template_newticket($type, OptionsArray $options)
@@ -284,12 +303,22 @@ class TriggerActionConverter
 
 	private function upgradeAction_set_sla_complete($type, OptionsArray $options)
 	{
-		//TODO
+		if ($options->get('sla_complete')) {
+			return new Actions\SetSlaComplete(array(
+				'sla_ids' => array($options->get('sla_id')),
+				'sla_status' => 'nochange'
+			));
+		} else {
+			return new Actions\SetSlaReset(array('sla_ids' => array($options->get('sla_id'))));
+		}
 	}
 
 	private function upgradeAction_set_sla_status($type, OptionsArray $options)
 	{
-		//TODO
+		return new Actions\SetSlaComplete(array(
+			'sla_ids' => array($options->get('sla_id')),
+			'sla_status' => $options->get('sla_status')
+		));
 	}
 
 	private function upgradeAction_set_user_email_template_newreply_agent($type, OptionsArray $options)
