@@ -107,13 +107,13 @@ class Build1398788030 extends AbstractBuild
 			$new_trigger = $this->processTrigger($trigger);
 			if ($new_trigger) {
 				$this->container->getEm()->persist($new_trigger);
+				$this->container->getEm()->flush();
 				$this->out("-- Saved");
 			} else {
 				$this->out("-- Skipped");
 			}
 		}
 
-		$this->container->getEm()->flush();
 	}
 
 
@@ -181,6 +181,18 @@ class Build1398788030 extends AbstractBuild
 				$trigger->event_trigger = 'newticket';
 				$trigger->by_user_mode = array('portal', 'widget', 'form');
 				break;
+			case 'new.web.user.portal':
+				$trigger->event_trigger = 'newticket';
+				$trigger->by_user_mode = array('portal');
+				break;
+			case 'new.web.user.embed':
+				$trigger->event_trigger = 'newticket';
+				$trigger->by_user_mode = array('form');
+				break;
+			case 'new.web.user.widget':
+				$trigger->event_trigger = 'newticket';
+				$trigger->by_user_mode = array('widget');
+				break;
 			case 'new.email.agent':
 				$trigger->event_trigger = 'newticket';
 				$trigger->by_agent_mode = array('email');
@@ -207,6 +219,8 @@ class Build1398788030 extends AbstractBuild
 				$trigger->by_agent_mode = array('api');
 				$trigger->by_user_mode  = array('api');
 				break;
+			default:
+				throw new \InvalidArgumentException("Unknown event trigger: {$old_trigger['event_trigger']}");
 		}
 
 		#------------------------------

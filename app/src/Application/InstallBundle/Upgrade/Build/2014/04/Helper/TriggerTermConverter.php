@@ -56,7 +56,7 @@ class TriggerTermConverter
 		$t = preg_replace('#\[\d+\]$#', '', $t); // something[123] to just something
 
 		$func = "upgradeTerm_{$t}";
-		return $func($info['type'], $info['op'], new OptionsArray($info['options']), $event_trigger);
+		return $this->$func($info['type'], $info['op'], new OptionsArray($info['options']), $event_trigger);
 	}
 
 
@@ -298,7 +298,7 @@ class TriggerTermConverter
 
 		$value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
 
-		return new Terms\CheckUserField(array(
+		return new Terms\CheckUserField($op, array(
 			'field_id' => $field_id,
 			'value'    => $value
 		));
@@ -369,7 +369,7 @@ class TriggerTermConverter
 
 		$value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
 
-		return new Terms\CheckTicketField(array(
+		return new Terms\CheckTicketField($op, array(
 			'field_id' => $field_id,
 			'value'    => $value
 		));
