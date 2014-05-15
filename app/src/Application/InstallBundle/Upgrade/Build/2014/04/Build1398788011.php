@@ -53,7 +53,8 @@ class Build1398788011 extends AbstractBuild
 		}
 
 		$this->out("Convert settings into new apps");
-		$manager = $this->container->getAppManager();
+		$manager  = $this->container->getAppManager();
+		$em       = $this->container->getEm();
 
 		#-------------------------
 		# Google Analytics
@@ -66,8 +67,8 @@ class Build1398788011 extends AbstractBuild
 			$app->package = $package;
 			$app->title = $package->title;
 			$app->setSettings(array('ga_property_id' => $ga));
-			$this->em->persist($app);
-			$this->em->flush();
+			$em->persist($app);
+			$em->flush();
 		}
 
 		#-------------------------
@@ -81,8 +82,8 @@ class Build1398788011 extends AbstractBuild
 			$app->package = $package;
 			$app->title = $package->title;
 			$app->setSettings(array());
-			$this->em->persist($app);
-			$this->em->flush();
+			$em->persist($app);
+			$em->flush();
 		}
 
 		#-------------------------
@@ -107,8 +108,8 @@ class Build1398788011 extends AbstractBuild
 			$app->package = $package;
 			$app->title = $package->title;
 			$app->setSettings($settings);
-			$this->em->persist($app);
-			$this->em->flush();
+			$em->persist($app);
+			$em->flush();
 		}
 
 		#-------------------------
@@ -125,8 +126,8 @@ class Build1398788011 extends AbstractBuild
 				'client_id'     => $this->container->getSetting('MicrosoftTranslator.client_id'),
 				'client_secret' => $this->container->getSetting('MicrosoftTranslator.client_secret'),
 			));
-			$this->em->persist($app);
-			$this->em->flush();
+			$em->persist($app);
+			$em->flush();
 		}
 
 		#-------------------------
@@ -146,8 +147,8 @@ class Build1398788011 extends AbstractBuild
 				'widget_ticket'      => true,
 				'widget_profile'     => true,
 			));
-			$this->em->persist($app);
-			$this->em->flush();
+			$em->persist($app);
+			$em->flush();
 		}
 
 		#-------------------------
@@ -166,8 +167,8 @@ class Build1398788011 extends AbstractBuild
 				'show_share_gplus'    => (bool)$this->container->getSetting('core.show_share_gplus'),
 				'show_share_linkedin' => (bool)$this->container->getSetting('core.show_share_linkedin'),
 			));
-			$this->em->persist($app);
-			$this->em->flush();
+			$em->persist($app);
+			$em->flush();
 		}
 	}
 }
