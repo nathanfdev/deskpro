@@ -40,12 +40,7 @@ class Build1398788011 extends AbstractBuild
 {
 	public function run()
 	{
-		$plugins = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_plugins'");
-		if ($plugins) {
-			$plugins = json_decode($plugins, true);
-		} else {
-			$plugins = array();
-		}
+		$plugins = $this->getUpgradeData('201404', 'plugins') ?: array();
 
 		$enabled_plugins = array();
 		foreach ($plugins as $p) {

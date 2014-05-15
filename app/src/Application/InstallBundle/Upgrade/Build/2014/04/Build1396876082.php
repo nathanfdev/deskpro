@@ -61,12 +61,7 @@ class Build1396876082 extends AbstractBuild
 				$map[$a['id']] = $gateway_id;
 			}
 		}
-		$db->executeUpdate("DELETE FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
-		$db->insert('install_data', array(
-			'build' => 1396876000,
-			'name'  => "upgrade_mapping_gateway_address_map",
-			'data'  => serialize($map)
-		));
+		$this->saveUpgradeData('201404', 'gateway_address_map', $map);
 
 		$new_accounts = array();
 		foreach ($gateways as $gateway) {

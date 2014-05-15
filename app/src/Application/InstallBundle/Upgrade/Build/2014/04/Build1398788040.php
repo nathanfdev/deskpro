@@ -61,12 +61,7 @@ class Build1398788040 extends AbstractBuild
 		# Init helpers
 		#------------------------------
 
-		$gateway_addr_map = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
-		if ($gateway_addr_map) {
-			$gateway_addr_map = json_decode($gateway_addr_map, true);
-		} else {
-			$gateway_addr_map = array();
-		}
+		$gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
 
 		$mappings = array(
 			'gateway_address_to_email_account' => $gateway_addr_map
@@ -78,12 +73,7 @@ class Build1398788040 extends AbstractBuild
 		# Process old escalations
 		#------------------------------
 
-		$old_escalations = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_ticket_triggers'");
-		if ($old_escalations) {
-			$old_escalations = json_decode($old_escalations, true);
-		} else {
-			$old_escalations = array();
-		}
+		$old_escalations = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
 
 		foreach ($old_escalations as $esc) {
 			// We only care about escalations

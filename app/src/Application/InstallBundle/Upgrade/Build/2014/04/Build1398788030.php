@@ -88,13 +88,7 @@ class Build1398788030 extends AbstractBuild
 		# Init helpers
 		#------------------------------
 
-		$gateway_addr_map = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
-		if ($gateway_addr_map) {
-			$gateway_addr_map = json_decode($gateway_addr_map, true);
-		} else {
-			$gateway_addr_map = array();
-		}
-
+		$gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
 		$mappings = array(
 			'gateway_address_to_email_account' => $gateway_addr_map
 		);
@@ -106,12 +100,7 @@ class Build1398788030 extends AbstractBuild
 		# Process old triggers
 		#------------------------------
 
-		$old_triggers = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_ticket_triggers'");
-		if ($old_triggers) {
-			$old_triggers = json_decode($old_triggers, true);
-		} else {
-			$old_triggers = array();
-		}
+		$old_triggers = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
 
 		foreach ($old_triggers as $trigger) {
 			$this->out("Processing #{$trigger['id']} {$trigger['sys_name']} {$trigger['title']} ...");

@@ -63,12 +63,7 @@ class Build1398788050 extends AbstractBuild
 		# Init helpers
 		#------------------------------
 
-		$gateway_addr_map = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
-		if ($gateway_addr_map) {
-			$gateway_addr_map = json_decode($gateway_addr_map, true);
-		} else {
-			$gateway_addr_map = array();
-		}
+		$gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
 
 		$mappings = array(
 			'gateway_address_to_email_account' => $gateway_addr_map
@@ -80,21 +75,21 @@ class Build1398788050 extends AbstractBuild
 		# Load old data
 		#------------------------------
 
-		$slas = $this->loadTableData('slas');
+		$slas = $this->getUpgradeData('201404', 'slas') ?: array();
 
 		$old_triggers = array();
-		foreach ($this->loadTableData('ticket_triggers') as $rec) {
+		foreach (($this->getUpgradeData('201404', 'ticket_triggers') ?: array()) as $rec) {
 			$old_triggers[$rec['id']] = $rec;
 		}
 
 		$sla_people = array();
-		foreach ($this->loadTableData('sla_people') as $rec) {
+		foreach (($this->getUpgradeData('201404', 'sla_people') ?: array()) as $rec) {
 			if (!isset($sla_people[$rec['sla_id']])) $sla_people[$rec['sla_id']] = array();
 			$sla_people[$rec['sla_id']][] = $rec['person_id'];
 		}
 
 		$sla_orgs = array();
-		foreach ($this->loadTableData('sla_organizations') as $rec) {
+		foreach (($this->getUpgradeData('201404', 'sla_organizations') ?: array()) as $rec) {
 			if (!isset($sla_orgs[$rec['sla_id']])) $sla_orgs[$rec['sla_id']] = array();
 			$sla_orgs[$rec['sla_id']][] = $rec['organization_id'];
 		}
@@ -127,23 +122,6 @@ class Build1398788050 extends AbstractBuild
 		}
 
 		$this->container->getEm()->flush();
-	}
-
-
-	/**
-	 * @param string $name
-	 * @return array
-	 */
-	private function loadTableData($name)
-	{
-		$data = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_{$name}'");
-		if ($data) {
-			$data = json_decode($data, true);
-		} else {
-			$data = array();
-		}
-
-		return $data;
 	}
 
 

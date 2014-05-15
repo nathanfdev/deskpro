@@ -39,19 +39,13 @@ class Build1396876000 extends AbstractBuild
 	public function run()
 	{
 		$db = $this->container->getDb();
+		$me = $this;
 		$this->out("Saving table data for future steps");
 
-		$fn_save_table = function($table) use ($db) {
+		$fn_save_table = function($table) use ($db, $me) {
 			$recs = $db->fetchAll("SELECT * FROM $table");
 			if (!$recs) $recs = array();
-			$recs = json_encode($recs);
-
-			$db->executeUpdate("DELETE FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_{$table}'");
-			$db->insert('install_data', array(
-				'build' => 1396876000,
-				'name'  => "upgrade_data_{$table}",
-				'data'  => $recs
-			));
+			$me->saveUpgradeData('201404', $table, $recs);
 		};
 
 		$fn_save_table('web_hooks');
