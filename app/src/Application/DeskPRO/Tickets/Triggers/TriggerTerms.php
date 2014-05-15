@@ -57,10 +57,16 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
 	 */
 	private $criteria;
 
+	/**
+	 * @var TermFactory
+	 */
+	private $term_factory;
+
 	public function __construct()
 	{
 		$this->criteria = new TriggerTermComposite();
 		$this->criteria->setOperator(TriggerTermComposite::OP_OR);
+		$this->term_factory = new TermFactory();
 	}
 
 
@@ -105,13 +111,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
 	 */
 	private function getTermFromArray(array $term_info)
 	{
-		$class_name = "Application\\DeskPRO\\Tickets\\Triggers\\Terms\\{$term_info['type']}";
-		if (!class_exists($class_name)) {
-			throw new \InvalidArgumentException("Unknown term {$term_info['type']} (could not locate class: $class_name)");
-		}
-
-		$term = new $class_name($term_info['op'], $term_info['options']);
-		return $term;
+		return $this->term_factory->createFromArray($term_info);
 	}
 
 

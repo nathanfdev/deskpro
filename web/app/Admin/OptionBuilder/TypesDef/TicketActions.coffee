@@ -218,14 +218,9 @@ define [
 				options = []
 
 				for f in @options_data.ticket_fields
-					fname = 'TicketField' + f.id
-					@[fname] = (options = {}) ->
-						options.type = 'TicketField' + f.id
-						return @getStandardForFieldDef(f, options)
-
 					options.push({
 						title: f.title,
-						value: fname
+						value: @initFieldGetter('SetTicketField', f)
 					})
 
 				if options.length
@@ -242,14 +237,9 @@ define [
 				options = []
 
 				for f in @options_data.user_fields
-					fname = 'UserField' + f.id
-					@[fname] = (options = {}) ->
-						options.type = 'UserField' + f.id
-						return @getStandardForFieldDef(f, options)
-
 					options.push({
 						title: f.title,
-						value: fname
+						value: @initFieldGetter('SetUserField', f)
 					})
 
 				if options.length
@@ -333,6 +323,14 @@ define [
 					options_data['email_accounts']   = data.email_accounts.email_accounts
 					options_data['usergroups']       = data.usergroups.groups
 					@options_data = options_data
+
+					if @options_data?.ticket_fields
+						for f in @options_data.ticket_fields
+							@initFieldGetter('SetTicketField', f)
+					if @options_data?.user_fields
+						for f in @options_data.user_fields
+							@initFieldGetter('SetUserField', f)
+
 				)
 
 			return @loadDataPromise

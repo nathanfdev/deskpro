@@ -60,6 +60,11 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
 	private $actions;
 
 	/**
+	 * @var ActionFactory
+	 */
+	private $action_factory;
+
+	/**
 	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
 	private $container;
@@ -67,6 +72,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
 	public function __construct()
 	{
 		$this->actions = new ActionComposite();
+		$this->action_factory = new ActionFactory();
 	}
 
 
@@ -90,16 +96,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
 	 */
 	public function addActionFromArray(array $action_info)
 	{
-		if (isset($action_info['type_class'])) {
-			$class_name = $action_info['type_class'];
-		} else {
-			$class_name = "Application\\DeskPRO\\Tickets\\Actions\\{$action_info['type']}";
-		}
-		if (!class_exists($class_name)) {
-			throw new \InvalidArgumentException("Unknown action {$action_info['type']} (could not locate class: $class_name)");
-		}
-
-		$action = new $class_name($action_info['options']);
+		$action = $this->action_factory->createFromArray($action_info);
 		$this->addAction($action);
 	}
 

@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Upgrade\Build\Helper201404;
 use Application\DeskPRO\Tickets\Actions;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
+use Orb\Util\Strings;
 
 class TriggerActionConverter
 {
@@ -350,7 +351,15 @@ class TriggerActionConverter
 
 	private function upgradeAction_ticket_field($type, OptionsArray $options)
 	{
-		//TODO now
+		$field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
+		if (!$field_id) return null;
+
+		$value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
+
+		return new Actions\SetTicketField(array(
+			'field_id' => $field_id,
+			'value'    => $value
+		));
 	}
 
 	private function upgradeAction_urgency($type, OptionsArray $options)

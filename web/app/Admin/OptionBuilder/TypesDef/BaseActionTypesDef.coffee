@@ -183,3 +183,34 @@ define ->
 							return value
 					}
 			}
+
+
+		###
+    	# Constructs standard input from a custom field def
+		###
+		getStandardForFieldDef: (field, options = {}) ->
+			if not options.propName then options.propName = 'value'
+
+			if field.type_name == 'choice'
+				options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
+				return @getStandardSelect(options)
+			else
+				return @getStandardInput(options)
+
+
+		###
+    	# Sets the getter for a custom field
+    	#
+    	# @param {String} base_name The base name of the field type (e.g., TicketField, UserField etc)
+    	# @param {Object} f         The field
+    	# @retrn {String} The name of the field that was set
+    	###
+		initFieldGetter: (base_name, f) ->
+			fname = base_name + f.id
+
+			if not this['get'+fname]
+				this['get'+fname] = (options = {}) =>
+					options.type = base_name + f.id
+					return @getStandardForFieldDef(f, options)
+
+			return fname

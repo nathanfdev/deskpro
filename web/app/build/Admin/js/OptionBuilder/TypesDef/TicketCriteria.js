@@ -39,7 +39,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, fname, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+        var f, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
         if (typesData == null) {
           typesData = null;
         }
@@ -147,17 +147,9 @@
           _ref1 = this.options_data.ticket_fields;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             f = _ref1[_i];
-            fname = 'TicketField' + f.id;
-            this[fname] = function(options) {
-              if (options == null) {
-                options = {};
-              }
-              options.type = 'TicketField' + f.id;
-              return this.getStandardForFieldDef(f, options);
-            };
             options.push({
               title: f.title,
-              value: fname
+              value: this.initFieldGetter('CheckTicketField', f)
             });
           }
           if (options.length) {
@@ -234,17 +226,9 @@
           _ref3 = this.options_data.user_fields;
           for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
             f = _ref3[_j];
-            fname = 'UserField' + f.id;
-            this[fname] = function(options) {
-              if (options == null) {
-                options = {};
-              }
-              options.type = 'UserField' + f.id;
-              return this.getStandardForFieldDef(f, options);
-            };
             options.push({
               title: f.title,
-              value: fname
+              value: this.initFieldGetter('CheckUserField', f)
             });
           }
           if (options.length) {
@@ -280,17 +264,9 @@
           _ref5 = this.options_data.org_fields;
           for (_k = 0, _len2 = _ref5.length; _k < _len2; _k++) {
             f = _ref5[_k];
-            fname = 'OrgField' + f.id;
-            this[fname] = function(options) {
-              if (options == null) {
-                options = {};
-              }
-              options.type = 'OrgField' + f.id;
-              return this.getStandardForFieldDef(f, options);
-            };
             options.push({
               title: f.title,
-              value: fname
+              value: this.initFieldGetter('OrgField', f)
             });
           }
           if (options.length) {
@@ -337,7 +313,7 @@
             'usergroups': '/user_groups'
           }).then((function(_this) {
             return function(result) {
-              var data, options_data, _ref, _ref1, _ref2, _ref3;
+              var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
               data = result.data;
               options_data = {};
               options_data['agents'] = data.agents.agents;
@@ -352,7 +328,30 @@
               options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
               options_data['email_accounts'] = data.ticket_accounts.email_accounts;
               options_data['usergroups'] = data.usergroups.groups;
-              return _this.options_data = options_data;
+              _this.options_data = options_data;
+              if ((_ref4 = _this.options_data) != null ? _ref4.ticket_fields : void 0) {
+                _ref5 = _this.options_data.ticket_fields;
+                for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
+                  f = _ref5[_i];
+                  _this.initFieldGetter('CheckTicketField', f);
+                }
+              }
+              if ((_ref6 = _this.options_data) != null ? _ref6.user_fields : void 0) {
+                _ref7 = _this.options_data.user_fields;
+                for (_j = 0, _len1 = _ref7.length; _j < _len1; _j++) {
+                  f = _ref7[_j];
+                  _this.initFieldGetter('CheckUserField', f);
+                }
+              }
+              if ((_ref8 = _this.options_data) != null ? _ref8.org_fields : void 0) {
+                _ref9 = _this.options_data.org_fields;
+                _results = [];
+                for (_k = 0, _len2 = _ref9.length; _k < _len2; _k++) {
+                  f = _ref9[_k];
+                  _results.push(_this.initFieldGetter('CheckOrgField', f));
+                }
+                return _results;
+              }
             };
           })(this));
         }

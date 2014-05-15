@@ -79,15 +79,49 @@
         if (options == null) {
           options = {};
         }
-        if (!options.prop_name) {
-          options.prop_name = 'value';
+        if (!options.propName) {
+          options.propName = 'value';
         }
         if (field.type_name === 'choice') {
-          options.options = field.options;
+          options.options = field.choices.map(function(o) {
+            return {
+              title: o.title,
+              value: o.id
+            };
+          });
           return this.getStandardSelect(options);
         } else {
+          if (!options.operators) {
+            options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+          }
           return this.getStandardInput(options);
         }
+      };
+
+
+      /*
+        	 * Sets the getter for a custom field
+        	 *
+        	 * @param {String} base_name The base name of the field type (e.g., TicketField, UserField etc)
+        	 * @param {Object} f         The field
+        	 * @retrn {String} The name of the field that was set
+       */
+
+      Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.initFieldGetter = function(base_name, f) {
+        var fname;
+        fname = base_name + f.id;
+        if (!this['get' + fname]) {
+          this['get' + fname] = (function(_this) {
+            return function(options) {
+              if (options == null) {
+                options = {};
+              }
+              options.type = base_name + f.id;
+              return _this.getStandardForFieldDef(f, options);
+            };
+          })(this);
+        }
+        return fname;
       };
 
 

@@ -81,8 +81,24 @@
             return _this.element.find('.add_btn').find('label').text(addBtnText);
           };
         })(this));
+        this.els.optionList = this.element.find('.dp-ob-options');
+        this.els.noOptionsMessage = this.els.optionList.find('.dp-ob-no-options');
+        this.els.loadingOptionMessage = this.els.optionList.find('.dp-ob-loading-options');
+        if (this.typesDef.loadDataOptions != null) {
+          this.typesDef.loadDataOptions().then((function(_this) {
+            return function() {
+              _this.hasLoaded = true;
+              return _this.initControl();
+            };
+          })(this));
+        } else {
+          this.hasLoaded = true;
+          this.initControl();
+        }
+      }
+
+      DeskPRO_OptionBuilder_Controller.prototype.initControl = function() {
         this.els.select = this.element.find('.select2-wrap').find('select').first();
-        this.updateOptionTypes();
         this.els.select.select2({
           dropdownCssClass: 'dp-ob-select2'
         });
@@ -94,23 +110,24 @@
             return _this.els.select.select2('val', '0');
           };
         })(this));
-        this.els.optionList = this.element.find('.dp-ob-options');
-        this.els.noOptionsMessage = this.els.optionList.find('.dp-ob-no-options');
-        this.els.loadingOptionMessage = this.els.optionList.find('.dp-ob-loading-options');
+        this.updateOptionTypes();
         this.$scope.$watchCollection('optionTypes', (function(_this) {
           return function() {
             return _this.updateOptionTypes();
           };
         })(this));
-        this.$scope.$watch('saveTarget', (function(_this) {
+        return this.$scope.$watch('saveTarget', (function(_this) {
           return function() {
             return _this.reset();
           };
         })(this));
-      }
+      };
 
       DeskPRO_OptionBuilder_Controller.prototype.reset = function() {
         var id, row, rowId, term, _ref, _ref1, _results;
+        if (!this.hasLoaded) {
+          return;
+        }
         this.rowsCount = 0;
         _ref = this.rows;
         for (id in _ref) {
@@ -176,6 +193,9 @@
 
       DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId) {
         var dataFormatter, dataPromise, def, retData, retTpl, tplPromise;
+        if (!this.hasLoaded) {
+          return;
+        }
         def = this.typesDef.getDef(type);
         tplPromise = def.getTemplate();
         dataPromise = def.getData();

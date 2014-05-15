@@ -16,7 +16,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, fname, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
+        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
         if (types == null) {
           types = [];
         }
@@ -167,17 +167,9 @@
           _ref1 = this.options_data.ticket_fields;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             f = _ref1[_i];
-            fname = 'TicketField' + f.id;
-            this[fname] = function(options) {
-              if (options == null) {
-                options = {};
-              }
-              options.type = 'TicketField' + f.id;
-              return this.getStandardForFieldDef(f, options);
-            };
             options.push({
               title: f.title,
-              value: fname
+              value: this.initFieldGetter('SetTicketField', f)
             });
           }
           if (options.length) {
@@ -192,17 +184,9 @@
           _ref3 = this.options_data.user_fields;
           for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
             f = _ref3[_j];
-            fname = 'UserField' + f.id;
-            this[fname] = function(options) {
-              if (options == null) {
-                options = {};
-              }
-              options.type = 'UserField' + f.id;
-              return this.getStandardForFieldDef(f, options);
-            };
             options.push({
               title: f.title,
-              value: fname
+              value: this.initFieldGetter('SetUserField', f)
             });
           }
           if (options.length) {
@@ -286,7 +270,7 @@
             'usergroups': '/user_groups'
           }).then((function(_this) {
             return function(result) {
-              var data, options_data, _ref, _ref1, _ref2, _ref3, _ref4;
+              var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _results;
               data = result.data;
               options_data = {};
               options_data['agents'] = data.agents.agents;
@@ -302,7 +286,23 @@
               options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
               options_data['email_accounts'] = data.email_accounts.email_accounts;
               options_data['usergroups'] = data.usergroups.groups;
-              return _this.options_data = options_data;
+              _this.options_data = options_data;
+              if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
+                _ref6 = _this.options_data.ticket_fields;
+                for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
+                  f = _ref6[_i];
+                  _this.initFieldGetter('SetTicketField', f);
+                }
+              }
+              if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
+                _ref8 = _this.options_data.user_fields;
+                _results = [];
+                for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
+                  f = _ref8[_j];
+                  _results.push(_this.initFieldGetter('SetUserField', f));
+                }
+                return _results;
+              }
             };
           })(this));
         }

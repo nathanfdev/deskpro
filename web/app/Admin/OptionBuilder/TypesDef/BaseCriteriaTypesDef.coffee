@@ -48,14 +48,31 @@ define ->
     	# Constructs standard input from a custom field def
 		###
 		getStandardForFieldDef: (field, options = {}) ->
-
-			if not options.prop_name then options.prop_name = 'value'
+			if not options.propName then options.propName = 'value'
 
 			if field.type_name == 'choice'
-				options.options = field.options
+				options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
 				return @getStandardSelect(options)
 			else
+				if not options.operators then options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 				return @getStandardInput(options)
+
+		###
+    	# Sets the getter for a custom field
+    	#
+    	# @param {String} base_name The base name of the field type (e.g., TicketField, UserField etc)
+    	# @param {Object} f         The field
+    	# @retrn {String} The name of the field that was set
+    	###
+		initFieldGetter: (base_name, f) ->
+			fname = base_name + f.id
+
+			if not this['get'+fname]
+				this['get'+fname] = (options = {}) =>
+					options.type = base_name + f.id
+					return @getStandardForFieldDef(f, options)
+
+			return fname
 
 		###
     	# Constructs a standard select box type

@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Upgrade\Build\Helper201404;
 use Application\DeskPRO\Tickets\Triggers\Terms;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
+use Orb\Util\Strings;
 
 class TriggerTermConverter
 {
@@ -153,7 +154,8 @@ class TriggerTermConverter
 
 	private function upgradeTerm_email_account_bcc($type, $op, OptionsArray $options)
 	{
-		//TODO
+		// no translation
+		return null;
 	}
 
 	private function upgradeTerm_email_body($type, $op, OptionsArray $options)
@@ -293,7 +295,15 @@ class TriggerTermConverter
 
 	private function upgradeTerm_person_field($type, $op, OptionsArray $options)
 	{
-		//TODONOW
+		$field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
+		if (!$field_id) return null;
+
+		$value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
+
+		return new Terms\CheckUserField(array(
+			'field_id' => $field_id,
+			'value'    => $value
+		));
 	}
 
 	private function upgradeTerm_person_label($type, $op, OptionsArray $options)
@@ -356,7 +366,15 @@ class TriggerTermConverter
 
 	private function upgradeTerm_ticket_field($type, $op, OptionsArray $options)
 	{
-		//TODO NOW
+		$field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
+		if (!$field_id) return null;
+
+		$value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
+
+		return new Terms\CheckTicketField(array(
+			'field_id' => $field_id,
+			'value'    => $value
+		));
 	}
 
 	private function upgradeTerm_time_created($type, $op, OptionsArray $options)

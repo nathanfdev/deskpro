@@ -77,9 +77,28 @@ define ->
 				@element.find('.add_btn').find('label').text(addBtnText);
 			)
 
+			# The list to append options to
+			@els.optionList = @element.find('.dp-ob-options')
+
+			# The no options message
+			@els.noOptionsMessage = @els.optionList.find('.dp-ob-no-options')
+
+			# The loading message
+			@els.loadingOptionMessage = @els.optionList.find('.dp-ob-loading-options')
+
+			if @typesDef.loadDataOptions?
+				@typesDef.loadDataOptions().then(=>
+					@hasLoaded = true
+					@initControl()
+				)
+			else
+				@hasLoaded = true
+				@initControl()
+
+
+		initControl: ->
 			# Select box
 			@els.select = @element.find('.select2-wrap').find('select').first()
-			@updateOptionTypes()
 			@els.select.select2({
 				dropdownCssClass: 'dp-ob-select2'
 			})
@@ -89,14 +108,7 @@ define ->
 				@els.select.select2('val', '0')
 			)
 
-			# The list to append options to
-			@els.optionList = @element.find('.dp-ob-options')
-
-			# The no options message
-			@els.noOptionsMessage = @els.optionList.find('.dp-ob-no-options')
-
-			# The loading message
-			@els.loadingOptionMessage = @els.optionList.find('.dp-ob-loading-options')
+			@updateOptionTypes()
 
 			@$scope.$watchCollection('optionTypes', =>
 				@updateOptionTypes()
@@ -111,6 +123,7 @@ define ->
 			)
 
 		reset: ->
+			if not @hasLoaded then return
 			@rowsCount = 0
 
 			for id, row of @rows
@@ -149,6 +162,7 @@ define ->
     	# @param {Object} value
 		###
 		addRow: (type, value, existId) ->
+			if not @hasLoaded then return
 			def = @typesDef.getDef(type)
 
 			tplPromise    = def.getTemplate()
