@@ -56,7 +56,7 @@ class TriggerActionConverter
 		$t = preg_replace('#\[\d+\]$#', '', $t); // something[123] to just something
 
 		$func = "upgradeAction_{$t}";
-		return $func($info['type'], new OptionsArray($info['options']));
+		return $this->$func($info['type'], new OptionsArray($info['options']));
 	}
 
 	private function upgradeAction_add_agent_notify($type, OptionsArray $options)

@@ -91,9 +91,13 @@ class TicketLayout extends DomainObject
 	/**
 	 * @throws \RuntimeException
 	 */
-	public function setDepartment()
+	public function setDepartment(Department $dep = null)
 	{
-		throw new \RuntimeException("Operation not supported");
+		if ($this->id){
+			throw new \RuntimeException("You cannot change the department once it has been set.");
+		} else {
+			$this->department = $dep;
+		}
 	}
 
 

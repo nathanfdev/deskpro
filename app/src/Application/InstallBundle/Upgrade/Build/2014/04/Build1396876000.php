@@ -66,6 +66,7 @@ class Build1396876000 extends AbstractBuild
 		$fn_save_table('sla_organizations');
 		$fn_save_table('departments');
 		$fn_save_table('widgets');
+		$fn_save_table('plugins');
 		$fn_save_table('usersources');
 	}
 }

@@ -42,7 +42,7 @@ class Build1398788011 extends AbstractBuild
 	{
 		$plugins = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_plugins'");
 		if ($plugins) {
-			$plugins = unserialize($plugins);
+			$plugins = json_decode($plugins, true);
 		} else {
 			$plugins = array();
 		}
@@ -52,7 +52,7 @@ class Build1398788011 extends AbstractBuild
 			$enabled_plugins[$p['id']] = $p['id'];
 		}
 
-		$this->out("Upgrade apps");
+		$this->out("Convert settings into new apps");
 		$manager = $this->container->getAppManager();
 
 		#-------------------------
@@ -60,6 +60,7 @@ class Build1398788011 extends AbstractBuild
 		#-------------------------
 
 		if ($ga = $this->container->getSetting('core.ga_property_id')) {
+			$this->out("Installing Google Analytics");
 			$package = $manager->getPackage('deskpro_googleanalytics');
 			$app = new AppInstance();
 			$app->package = $package;
@@ -74,6 +75,7 @@ class Build1398788011 extends AbstractBuild
 		#-------------------------
 
 		if ($this->container->getSetting('core.use_gravatar')) {
+			$this->out("Installing Gravatar");
 			$package = $manager->getPackage('deskpro_gravatar');
 			$app = new AppInstance();
 			$app->package = $package;
@@ -88,6 +90,8 @@ class Build1398788011 extends AbstractBuild
 		#-------------------------
 
 		if ($this->container->getSetting('Magento.api_key') && isset($enabled_plugins['Magento'])) {
+			$this->out("Installing Magento");
+
 			$settings = array(
 				'url'      => $this->container->getSetting('Magento.url'),
 				'api_user' => $this->container->getSetting('Magento.api_user'),
@@ -112,6 +116,7 @@ class Build1398788011 extends AbstractBuild
 		#-------------------------
 
 		if ($this->container->getSetting('MicrosoftTranslator.client_id') && isset($enabled_plugins['MicrosoftTranslator'])) {
+			$this->out("Installing MS Translator");
 			$package = $manager->getPackage('deskpro_ms_translator');
 			$app = new AppInstance();
 			$app->package = $package;
@@ -129,6 +134,7 @@ class Build1398788011 extends AbstractBuild
 		#-------------------------
 
 		if ($this->container->getSetting('Salesforce.api_user') && isset($enabled_plugins['Salesforce'])) {
+			$this->out("Installing SalesForce");
 			$package = $manager->getPackage('deskpro_salesforce');
 			$app = new AppInstance();
 			$app->package = $package;
@@ -149,6 +155,7 @@ class Build1398788011 extends AbstractBuild
 		#-------------------------
 
 		if ($this->container->getSetting('core.show_share_widget')) {
+			$this->out("Installing ShareWidget");
 			$package = $manager->getPackage('deskpro_sharewidget');
 			$app = new AppInstance();
 			$app->package = $package;

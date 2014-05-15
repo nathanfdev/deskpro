@@ -54,6 +54,7 @@ class Build1398788040 extends AbstractBuild
 		$this->out("Upgrading escalations");
 
 		$db = $this->container->getDb();
+		$db->exec("DROP TABLE IF EXISTS ticket_trigger_logs");
 		$db->executeUpdate('DELETE FROM ticket_escalations');
 
 		#------------------------------
@@ -62,7 +63,7 @@ class Build1398788040 extends AbstractBuild
 
 		$gateway_addr_map = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
 		if ($gateway_addr_map) {
-			$gateway_addr_map = unserialize($gateway_addr_map);
+			$gateway_addr_map = json_decode($gateway_addr_map, true);
 		} else {
 			$gateway_addr_map = array();
 		}
@@ -79,12 +80,17 @@ class Build1398788040 extends AbstractBuild
 
 		$old_escalations = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_ticket_triggers'");
 		if ($old_escalations) {
-			$old_escalations = unserialize($old_escalations);
+			$old_escalations = json_decode($old_escalations, true);
 		} else {
 			$old_escalations = array();
 		}
 
 		foreach ($old_escalations as $esc) {
+			// We only care about escalations
+			if (strpos($esc['event_trigger'], 'time') === false) {
+				continue;
+			}
+
 			$this->out("Processing #{$esc['id']} ...");
 			$new_esc = $this->processTrigger($esc);
 			if ($new_esc) {
@@ -105,11 +111,6 @@ class Build1398788040 extends AbstractBuild
 	 */
 	private function processTrigger(array $old_esc)
 	{
-		// We only care about escalations
-		if (strpos($old_esc['event_trigger'], 'time') === false) {
-			return null;
-		}
-
 		// Default triggers just turn on depending on the status of the old default triggers
 		if ($old_esc['sys_name']) {
 			return null;
@@ -121,6 +122,7 @@ class Build1398788040 extends AbstractBuild
 		$old_esc['actions']   = @unserialize($old_esc['actions']) ?: array();
 
 		if (!$old_esc['event_trigger_options'] || empty($old_esc['event_trigger_options']['time'])) {
+			$this->out("-- No or bad time option");
 			return null;
 		}
 
@@ -128,18 +130,28 @@ class Build1398788040 extends AbstractBuild
 		# Update actions
 		#------------------------------
 
+		$is_incomplete = false;
+
 		$actions_set = new TriggerActions();
 
 		foreach ($old_esc['actions'] as $act) {
 			$new_act = $this->action_converter->getTriggerAction($act);
 			if ($new_act) {
-				$actions_set->addAction($new_act);
+				if (is_array($new_act)) {
+					foreach ($new_act as $a) {
+						$actions_set->addAction($a);
+					}
+				} else {
+					$actions_set->addAction($new_act);
+				}
 			} else {
+				$this->out("-- Skipped action {$act['type']}");
 				$is_incomplete = true;
 			}
 		}
 
 		if (!count($actions_set)) {
+			$this->out("-- Skipping no action escalation");
 			return null;
 		}
 
@@ -149,7 +161,7 @@ class Build1398788040 extends AbstractBuild
 
 		$esc = new TicketEscalation();
 		$esc->event_trigger = $old_esc['event_trigger'];
-		$esc->event_trigger_time = $this->getTimeSeconds($old_esc['event_trigger_options']);
+		$esc->event_trigger_time = $this->getTimeSeconds($old_esc['event_trigger_options']['time']);
 		$esc->date_created  = new \DateTime();
 		$esc->date_last_run = new \DateTime();
 

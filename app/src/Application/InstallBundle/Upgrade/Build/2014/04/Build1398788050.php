@@ -55,10 +55,9 @@ class Build1398788050 extends AbstractBuild
 	{
 		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/04/Helper/TriggerActionConverter.php';
 
-		$this->out("Upgrading escalations");
+		$this->out("Upgrading SLAs");
 
 		$db = $this->container->getDb();
-		$db->executeUpdate('DELETE FROM ticket_escalations');
 
 		#------------------------------
 		# Init helpers
@@ -66,7 +65,7 @@ class Build1398788050 extends AbstractBuild
 
 		$gateway_addr_map = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
 		if ($gateway_addr_map) {
-			$gateway_addr_map = unserialize($gateway_addr_map);
+			$gateway_addr_map = json_decode($gateway_addr_map, true);
 		} else {
 			$gateway_addr_map = array();
 		}
@@ -137,9 +136,9 @@ class Build1398788050 extends AbstractBuild
 	 */
 	private function loadTableData($name)
 	{
-		$data = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_{$name}'");
+		$data = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_{$name}'");
 		if ($data) {
-			$data = unserialize($data);
+			$data = json_decode($data, true);
 		} else {
 			$data = array();
 		}
@@ -217,8 +216,8 @@ class Build1398788050 extends AbstractBuild
 				break;
 
 			case 'criteria':
-				if ($sla['@apply_trigger']) {
-					$sets = $this->convertTriggerTerms($sla['@apply_trigger'], $is_incomplete);
+				if ($old_sla['@apply_trigger']) {
+					$sets = $this->convertTriggerTerms($old_sla['@apply_trigger'], $is_incomplete);
 					if ($sets and count($sets)) {
 						$sla->apply_terms = $sets;
 					}
@@ -233,8 +232,8 @@ class Build1398788050 extends AbstractBuild
 		# Sort out warn and failure times
 		#------------------------------
 
-		if (!empty($sla['@warn_trigger']['event_trigger_options'])) {
-			list ($time, $unit) = explode(' ', $sla['@warn_trigger']['event_trigger_options']['time']);
+		if (!empty($old_sla['@warn_trigger']['event_trigger_options'])) {
+			list ($time, $unit) = explode(' ', $old_sla['@warn_trigger']['event_trigger_options']['time']);
 			$sla->warn_time = $time ?: 1;
 			$sla->warn_time_unit = $unit ?: 'hours';
 		} else {
@@ -242,9 +241,8 @@ class Build1398788050 extends AbstractBuild
 			$sla->warn_time_unit = 'hours';
 		}
 
-		if (!empty($sla['@fail_trigger']['event_trigger_options'])) {
-			$sla['@fail_trigger']['event_trigger_options'] = unserialize($sla['@fail_trigger']['event_trigger_options']);
-			list ($time, $unit) = explode(' ', $sla['@fail_trigger']['event_trigger_options']['time']);
+		if (!empty($old_sla['@fail_trigger']['event_trigger_options'])) {
+			list ($time, $unit) = explode(' ', $old_sla['@fail_trigger']['event_trigger_options']['time']);
 			$sla->fail_time = $time ?: 1;
 			$sla->fail_time_unit = $unit ?: 'hours';
 		} else {
@@ -256,8 +254,8 @@ class Build1398788050 extends AbstractBuild
 		# Sort out warn and fail actions
 		#------------------------------
 
-		if (!empty($sla['@warn_trigger']['actions'])) {
-			$actions = $this->convertTriggerTerms($sla['@warn_trigger'], $is_incomplete);
+		if (!empty($old_sla['@warn_trigger']['actions'])) {
+			$actions = $this->convertTriggerActions($old_sla['@warn_trigger'], $is_incomplete);
 			if ($actions) {
 				$sla->warn_actions = $actions;
 			} else {
@@ -267,8 +265,8 @@ class Build1398788050 extends AbstractBuild
 			$sla->warn_actions = new TriggerActions();
 		}
 
-		if (!empty($sla['@fail_trigger']['actions'])) {
-			$actions = $this->convertTriggerTerms($sla['@fail_trigger'], $is_incomplete);
+		if (!empty($old_sla['@fail_trigger']['actions'])) {
+			$actions = $this->convertTriggerActions($old_sla['@fail_trigger'], $is_incomplete);
 			if ($actions) {
 				$sla->fail_actions = $actions;
 			} else {
@@ -302,13 +300,21 @@ class Build1398788050 extends AbstractBuild
 		foreach ($old_trigger['actions'] as $act) {
 			$new_act = $this->action_converter->getTriggerAction($act);
 			if ($new_act) {
-				$actions_set->addAction($new_act);
+				if (is_array($new_act)) {
+					foreach ($new_act as $a) {
+						$actions_set->addAction($a);
+					}
+				} else {
+					$actions_set->addAction($new_act);
+				}
 			} else {
+				$this->out("-- Skipping action {$act['type']}");
 				$is_incomplete = true;
 			}
 		}
 
 		if (!count($actions_set)) {
+			$this->out("-- empty action set");
 			return null;
 		}
 
@@ -345,6 +351,7 @@ class Build1398788050 extends AbstractBuild
 				if ($new_term) {
 					$terms_all->add($new_term);
 				} else {
+					$this->out("-- Skipping all term {$term['type']}");
 					$is_incomplete = true;
 				}
 			}
@@ -366,6 +373,7 @@ class Build1398788050 extends AbstractBuild
 
 					$term_sets->addTerm($set);
 				} else {
+					$this->out("-- Skipping any term {$term['type']}");
 					$is_incomplete = true;
 				}
 			}

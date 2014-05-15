@@ -57,12 +57,12 @@ class Build1398788000 extends AbstractBuild
 		$old_layouts = array();
 
 		$data = $db->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_ticket_page_display'");
-		$data = $data ? unserialize($data) : array();
+		$data = $data ? json_decode($data, true) : array();
 		foreach ($data as $r) {
 			if (!isset($old_layouts[$r['department_id']])) {
-				$old_layouts[$r['department_id']] = array();
+				$old_layouts[$r['department_id'] ?: 0] = array();
 			}
-			$old_layouts[$r['department_id']][$r['zone']] = unserialize($r['data']);
+			$old_layouts[$r['department_id'] ?: 0][$r['zone']] = unserialize($r['data']);
 		}
 
 		$dep_ids = array_keys($old_layouts);
@@ -81,6 +81,7 @@ class Build1398788000 extends AbstractBuild
 			$layout = $gen->getTicketLayout();
 			$layout->department = null;
 			$em->persist($layout);
+			$em->flush();
 		}
 
 		foreach ($old_layouts as $dep_id => $old) {
@@ -103,8 +104,7 @@ class Build1398788000 extends AbstractBuild
 			}
 
 			$em->persist($layout);
+			$em->flush();
 		}
-
-		$em->flush();
 	}
 }

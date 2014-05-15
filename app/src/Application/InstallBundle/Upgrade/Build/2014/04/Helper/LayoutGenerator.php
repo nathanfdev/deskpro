@@ -93,5 +93,7 @@ class LayoutGenerator
 		$layout->add(new TicketLayout\LayoutField('subject'));
 		$layout->add(new TicketLayout\LayoutField('message'));
 		$layout->add(new TicketLayout\LayoutField('attach'));
+
+		return $layout;
 	}
 }

@@ -90,7 +90,7 @@ class Build1398788030 extends AbstractBuild
 
 		$gateway_addr_map = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_mapping_gateway_address_map'");
 		if ($gateway_addr_map) {
-			$gateway_addr_map = unserialize($gateway_addr_map);
+			$gateway_addr_map = json_decode($gateway_addr_map, true);
 		} else {
 			$gateway_addr_map = array();
 		}
@@ -108,13 +108,13 @@ class Build1398788030 extends AbstractBuild
 
 		$old_triggers = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1396876000 AND name = 'upgrade_data_ticket_triggers'");
 		if ($old_triggers) {
-			$old_triggers = unserialize($old_triggers);
+			$old_triggers = json_decode($old_triggers, true);
 		} else {
 			$old_triggers = array();
 		}
 
 		foreach ($old_triggers as $trigger) {
-			$this->out("Processing #{$trigger['id']} ...");
+			$this->out("Processing #{$trigger['id']} {$trigger['sys_name']} {$trigger['title']} ...");
 			$new_trigger = $this->processTrigger($trigger);
 			if ($new_trigger) {
 				$this->container->getEm()->persist($new_trigger);
@@ -239,7 +239,6 @@ class Build1398788030 extends AbstractBuild
 		 */
 
 		$term_sets = new TriggerTerms();
-		$term_sets->setOperator(TriggerTermComposite::OP_OR);
 
 		$terms_all = new TriggerTermComposite();
 		if (!empty($old_trigger['terms_any'])) {
@@ -248,6 +247,7 @@ class Build1398788030 extends AbstractBuild
 				if ($new_term) {
 					$terms_all->add($new_term);
 				} else {
+					$this->out("-- Skipping all term {$term['type']}");
 					$is_incomplete = true;
 				}
 			}
@@ -269,6 +269,7 @@ class Build1398788030 extends AbstractBuild
 
 					$term_sets->addTerm($set);
 				} else {
+					$this->out("-- Skipping any term {$term['type']}");
 					$is_incomplete = true;
 				}
 			}
@@ -288,13 +289,21 @@ class Build1398788030 extends AbstractBuild
 		foreach ($old_trigger['actions'] as $act) {
 			$new_act = $this->action_converter->getTriggerAction($act);
 			if ($new_act) {
-				$actions_set->addAction($new_act);
+				if (is_array($new_act)) {
+					foreach ($new_act as $a) {
+						$actions_set->addAction($a);
+					}
+				} else {
+					$actions_set->addAction($new_act);
+				}
 			} else {
+				$this->out("-- Skipping action {$act['type']}");
 				$is_incomplete = true;
 			}
 		}
 
 		if (!count($actions_set)) {
+			$this->out("-- Skipping no-action trigger");
 			return null;
 		}
 

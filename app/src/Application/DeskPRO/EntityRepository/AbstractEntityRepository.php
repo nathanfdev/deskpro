@@ -73,7 +73,9 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 		if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
 			$this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
-			return $this->getIdentityHelper()->findByIds($ids, $keep_order);
+			$recs = $this->getIdentityHelper()->findByIds($ids, $keep_order);
+			$recs = Arrays::keyFromData($recs, 'id');
+			return $recs;
 		} else {
 			$q_res = $this->getEntityManager()->createQuery("
 				SELECT o
