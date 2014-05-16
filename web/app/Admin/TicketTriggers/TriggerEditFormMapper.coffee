@@ -48,6 +48,12 @@ define ->
 					}
 				}
 
+			form.flags = {}
+			if model?.event_flags?.indexOf('run_newreply') != -1
+				form.flags.run_newreply = true
+			else
+				form.flags.run_newreply = false
+
 			form.terms_set = {}
 			form.actions = {}
 

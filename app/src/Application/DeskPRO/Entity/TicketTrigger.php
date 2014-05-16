@@ -48,6 +48,7 @@ use Orb\Util\Arrays;
  * @property string $title
  * @property bool $is_enabled
  * @property string $event_trigger
+ * @property array $event_flags
  * @property array $by_agent_mode
  * @property array $by_user_mode
  * @property \Application\DeskPRO\Tickets\Triggers\TriggerTerms $terms
@@ -56,9 +57,15 @@ use Orb\Util\Arrays;
  */
 class TicketTrigger extends DomainObject
 {
-	const EVENT_TYPE_NEWTICKET                  = 'newticket';
-	const EVENT_TYPE_NEWREPLY                   = 'newreply';
-	const EVENT_TYPE_UPDATE                     = 'update';
+	const EVENT_TYPE_NEWTICKET = 'newticket';
+	const EVENT_TYPE_NEWREPLY  = 'newreply';
+	const EVENT_TYPE_UPDATE    = 'update';
+
+	/**
+	 * Flag used on 'update' triggers which specifies if they
+	 * should run on newreplies as well (when there were non-reply changes such as status etc).
+	 */
+	const EVENT_FLAG_RUN_NEWREPLY = 'run_newreply';
 
 	const MODE_WEB    = 'web';
 	const MODE_PORTAL = 'portal';
@@ -111,6 +118,11 @@ class TicketTrigger extends DomainObject
 	 * @var string
 	 */
 	protected $event_trigger;
+
+	/**
+	 * @var string
+	 */
+	protected $event_flags = array();
 
 	/**
 	 * @var array
@@ -194,6 +206,42 @@ class TicketTrigger extends DomainObject
 
 
 	/**
+	 * @param string $flag
+	 * @return bool
+	 */
+	public function hasEventFlag($flag)
+	{
+		return in_array($flag, $this->event_flags);
+	}
+
+
+	/**
+	 * @param string $flag
+	 */
+	public function addEventFlag($flag)
+	{
+		if (!in_array($flag, $this->event_flags)) {
+			$flags = $this->event_flags;
+			$flags[] = $flag;
+			$this->setModelField('event_flags', $flags);
+		}
+	}
+
+
+	/**
+	 * @param string $flag
+	 */
+	public function removeEventFlag($flag)
+	{
+		if (($k = array_search($flag, $this->event_flags, true)) !== false) {
+			$flags = $this->event_flags;
+			unset($flags[$k]);
+			$this->setModelField('event_flags', $flags);
+		}
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -244,6 +292,12 @@ class TicketTrigger extends DomainObject
 			'type'       => 'string',
 			'length'     => 50,
 			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'event_flags',
+			'fieldName'  => 'event_flags',
+			'type'       => 'simple_array',
+			'nullable'   => true,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'by_agent_mode',

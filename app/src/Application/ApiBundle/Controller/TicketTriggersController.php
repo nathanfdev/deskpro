@@ -105,6 +105,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		$trigger->title         = $this->in->getString('title');
 		$trigger->event_trigger = $this->in->getString('event_trigger');
 
+		if ($trigger->event_trigger == TicketTrigger::EVENT_TYPE_UPDATE) {
+			if ($this->in->getBool('flags.run_newreply')) {
+				$trigger->addEventFlag(TicketTrigger::EVENT_FLAG_RUN_NEWREPLY);
+			} else {
+				$trigger->removeEventFlag(TicketTrigger::EVENT_FLAG_RUN_NEWREPLY);
+			}
+		}
+
 		$trigger->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
 		$trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
 

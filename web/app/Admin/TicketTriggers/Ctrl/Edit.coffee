@@ -121,6 +121,7 @@ define [
 			postData = {
 				title:         @$scope.form.title,
 				event_trigger: @triggerType,
+				flags:         @$scope.form.flags,
 				by_user_mode:  [],
 				by_agent_mode: [],
 				criteria_sets: [],

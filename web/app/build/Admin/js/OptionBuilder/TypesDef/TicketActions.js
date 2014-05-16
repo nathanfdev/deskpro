@@ -666,9 +666,9 @@
                   model = {};
                 }
                 value = {};
-                value.type = 'flag';
+                value.type = 'SetFlag';
                 value.options = {};
-                value.options.color = model.value;
+                value.options.color = model.value || 'red';
                 return value;
               }
             };

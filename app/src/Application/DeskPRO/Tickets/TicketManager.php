@@ -83,7 +83,7 @@ class TicketManager
 	/**
 	 * @var array
 	 */
-	private $auto_vars;
+	private $auto_vars = array();
 
 
 	/**

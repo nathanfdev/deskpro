@@ -5,7 +5,7 @@
       function Admin_TicketTriggers_TriggerEditFormMapper() {}
 
       Admin_TicketTriggers_TriggerEditFormMapper.prototype.getFormFromModel = function(model) {
-        var action, form, rowId, setId, term, termSet, x, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+        var action, form, rowId, setId, term, termSet, x, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
         form = {};
         form.title = model.title || '';
         if (model.id) {
@@ -59,29 +59,35 @@
             }
           };
         }
+        form.flags = {};
+        if ((model != null ? (_ref2 = model.event_flags) != null ? _ref2.indexOf('run_newreply') : void 0 : void 0) !== -1) {
+          form.flags.run_newreply = true;
+        } else {
+          form.flags.run_newreply = false;
+        }
         form.terms_set = {};
         form.actions = {};
-        if ((_ref2 = model.terms) != null ? (_ref3 = _ref2.terms) != null ? _ref3.length : void 0 : void 0) {
-          _ref4 = model.terms.terms;
-          for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
-            termSet = _ref4[_k];
+        if ((_ref3 = model.terms) != null ? (_ref4 = _ref3.terms) != null ? _ref4.length : void 0 : void 0) {
+          _ref5 = model.terms.terms;
+          for (_k = 0, _len2 = _ref5.length; _k < _len2; _k++) {
+            termSet = _ref5[_k];
             if (!termSet.set_terms || !termSet.set_terms.length) {
               continue;
             }
             setId = _.uniqueId('termset');
             form.terms_set[setId] = {};
-            _ref5 = termSet.set_terms;
-            for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
-              term = _ref5[_l];
+            _ref6 = termSet.set_terms;
+            for (_l = 0, _len3 = _ref6.length; _l < _len3; _l++) {
+              term = _ref6[_l];
               rowId = _.uniqueId('term');
               form.terms_set[setId][rowId] = term;
             }
           }
         }
-        if ((_ref6 = model.actions) != null ? (_ref7 = _ref6.actions) != null ? _ref7.length : void 0 : void 0) {
-          _ref8 = model.actions.actions;
-          for (_m = 0, _len4 = _ref8.length; _m < _len4; _m++) {
-            action = _ref8[_m];
+        if ((_ref7 = model.actions) != null ? (_ref8 = _ref7.actions) != null ? _ref8.length : void 0 : void 0) {
+          _ref9 = model.actions.actions;
+          for (_m = 0, _len4 = _ref9.length; _m < _len4; _m++) {
+            action = _ref9[_m];
             rowId = _.uniqueId('action');
             form.actions[rowId] = action;
           }

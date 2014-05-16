@@ -141,6 +141,7 @@
         postData = {
           title: this.$scope.form.title,
           event_trigger: this.triggerType,
+          flags: this.$scope.form.flags,
           by_user_mode: [],
           by_agent_mode: [],
           criteria_sets: [],

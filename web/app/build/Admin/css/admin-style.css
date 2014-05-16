@@ -8776,6 +8776,11 @@ div.dp-appalt-section > section header h3 {
   border-top: 1px dotted #aaa;
 }
 
+.dp-paneblock > footer:first-child,
+.dp-paneblock footer.dp-panelblock-footer:first-child {
+  border-top: none;
+}
+
 .dp-paneblock > footer .dp-delete-control,
 .dp-paneblock footer.dp-panelblock-footer .dp-delete-control {
   float: right;

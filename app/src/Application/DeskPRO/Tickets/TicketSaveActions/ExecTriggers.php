@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\EntityRepository\TicketTrigger as TicketTriggerRepository;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -78,57 +79,130 @@ class ExecTriggers implements TicketSaveActionInterface
 			return;
 		}
 
-		$state = $ticket->getStateChangeRecorder();
+		#------------------------------
+		# For newreply we need to check if
+		# there were other non-reply actions
+		# for the second trigger loop
+		#------------------------------
+
+		$has_nonreply_actions = false;
+		if ($context->getEventType() == 'newreply') {
+			$exclude_types = array(
+				'message' => true,
+				'messages' => true,
+				'waiting_times' => true,
+				'total_user_waiting' => true,
+				'total_to_first_reply' => true,
+				'locked_by_agent' => true,
+				'count_agent_replies' => true,
+				'count_user_replies' => true
+			);
+			foreach ($ticket->getStateChangeRecorder()->getChangedFields() as $f) {
+				if (!isset($exclude_types[$f]) && strpos($f, 'date_') === false) {
+					$context->getLogger()->info(sprintf("[ExecTriggers] Found non-reply update to activate update#run_newreply triggers: %s", $f));
+					$has_nonreply_actions = true;
+					break;
+				}
+			}
+		}
+
+		#------------------------------
+		# Run through triggers
+		#------------------------------
 
 		$triggers = $this->trigger_repos->getTriggersForEventType($context->getEventType());
 
 		$trigger_ids = array_map(function($t) { return $t->id; }, is_array($triggers) ? $triggers : $triggers->toArray());
 		$context->getLogger()->info(sprintf("[ExecTriggers] Triggers for event %s: %s", $context->getEventType(), implode(', ', $trigger_ids)));
 
-		/** @var \Application\DeskPRO\Entity\TicketTrigger[] $triggers */
+		$has_stop_signal = false;
+
 		foreach ($triggers as $trigger) {
 			if ($context->getVars()->has('stop_triggers')) {
 				$context->getLogger()->info("[Triggers] Got stop signal");
+				$has_stop_signal = true;
 				break;
 			}
 
-			$mode_var = null;
-			switch ($context->getEventPerformer()) {
-				case 'agent':
-					$mode_var = $trigger->by_agent_mode;
+			$this->runTrigger($trigger, $ticket, $context);
+		}
+
+		#------------------------------
+		# More triggers
+		# - If the event is newreply, then we need a second loop
+		# to run through update triggers that have the run_newreply option enabled
+		# (if we have other prop changes)
+		#------------------------------
+
+		if ($context->getEventType() == 'newreply' && $has_nonreply_actions && !$has_stop_signal) {
+			$context->getLogger()->info("[Triggers] Running through update triggers that have run_newreply event flag");
+			$alt_triggers = $this->trigger_repos->getTriggersForEventType('update');
+			$alt_triggers = is_array($alt_triggers) ? $alt_triggers : $alt_triggers->toArray();
+
+			$alt_triggers = array_filter($alt_triggers, function($t) { return $t->hasEventFlag(TicketTrigger::EVENT_FLAG_RUN_NEWREPLY); });
+			$alt_trigger_ids = array_map(function($t) { return $t->id; }, $alt_triggers);
+
+			$context->getLogger()->info(sprintf("[ExecTriggers] Triggers for event update#run_newreply: %s", 'update', implode(', ', $alt_trigger_ids)));
+
+			foreach ($alt_triggers as $trigger) {
+				if ($context->getVars()->has('stop_triggers')) {
+					$context->getLogger()->info("[Triggers] Got stop signal");
 					break;
-				case 'user':
-					$mode_var = $trigger->by_user_mode;
-					break;
-			}
-			if ($mode_var) {
-				$is_method_match = in_array($context->getEventMethod(), $mode_var);
-			} else {
-				$is_method_match = false;
-			}
-			if (!$is_method_match) {
-				$context->getLogger()->info(sprintf("[ExecTriggers] Skip trigger #%s due to method mismatch: %s != (%s) %s", $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: array('NONE'))));
-				continue;
-			}
-
-			$ts = microtime(true);
-
-			$match = $trigger->terms->isTriggerMatch($ticket, $context);
-
-			if ($match) {
-				$state->setCurrentChangeMetadata(array('trigger' => $trigger));
-				$context->getLogger()->info(sprintf("[ExecTriggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
-
-				try {
-					$this->action_applicator->apply($trigger->actions, $ticket, $context);
-				} catch (\Exception $e) {
-					$context->getLogger()->error(sprintf("[ExecTriggers] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
-					KernelErrorHandler::logException($e);
 				}
 
-				$context->getLogger()->info(sprintf("[ExecTriggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
-				$state->clearCurrentChangeMetaData();
+				$this->runTrigger($trigger, $ticket, $context);
 			}
+		}
+	}
+
+
+	/**
+	 * @param TicketTrigger            $trigger
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 */
+	private function runTrigger(TicketTrigger $trigger, Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$state = $ticket->getStateChangeRecorder();
+
+
+
+		$mode_var = null;
+		switch ($context->getEventPerformer()) {
+			case 'agent':
+				$mode_var = $trigger->by_agent_mode;
+				break;
+			case 'user':
+				$mode_var = $trigger->by_user_mode;
+				break;
+		}
+		if ($mode_var) {
+			$is_method_match = in_array($context->getEventMethod(), $mode_var);
+		} else {
+			$is_method_match = false;
+		}
+		if (!$is_method_match) {
+			$context->getLogger()->info(sprintf("[ExecTriggers] Skip trigger #%s due to method mismatch: %s != (%s) %s", $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: array('NONE'))));
+			return;
+		}
+
+		$ts = microtime(true);
+
+		$match = $trigger->terms->isTriggerMatch($ticket, $context);
+
+		if ($match) {
+			$state->setCurrentChangeMetadata(array('trigger' => $trigger));
+			$context->getLogger()->info(sprintf("[ExecTriggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
+
+			try {
+				$this->action_applicator->apply($trigger->actions, $ticket, $context);
+			} catch (\Exception $e) {
+				$context->getLogger()->error(sprintf("[ExecTriggers] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
+				KernelErrorHandler::logException($e);
+			}
+
+			$context->getLogger()->info(sprintf("[ExecTriggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
+			$state->clearCurrentChangeMetaData();
 		}
 	}
 }
