@@ -75,8 +75,22 @@ class TriggerActionConverter
 
 	private function upgradeAction_add_labels($type, OptionsArray $options)
 	{
-		$labels = explode(',', $options->get('label', ''));
+		if ($options->get('label')) {
+			$labels = explode(',', $options->get('label', ''));
+		} else {
+			$labels = $options->get('labels', array());
+			if (!is_array($labels)) {
+				$labels = array($labels);
+			}
+		}
+
 		$labels = Arrays::func($labels, 'trim');
+		$labels = Arrays::removeEmptyString($labels);
+
+		if (!$labels) {
+			return null;
+		}
+
 		return new Actions\SetLabels(array('add_labels' => $labels));
 	}
 
@@ -199,8 +213,22 @@ class TriggerActionConverter
 
 	private function upgradeAction_remove_labels($type, OptionsArray $options)
 	{
-		$labels = explode(',', $options->get('label', ''));
+		if ($options->get('label')) {
+			$labels = explode(',', $options->get('label', ''));
+		} else {
+			$labels = $options->get('labels', array());
+			if (!is_array($labels)) {
+				$labels = array($labels);
+			}
+		}
+
 		$labels = Arrays::func($labels, 'trim');
+		$labels = Arrays::removeEmptyString($labels);
+
+		if (!$labels) {
+			return null;
+		}
+
 		return new Actions\SetLabels(array('remove_labels' => $labels));
 	}
 

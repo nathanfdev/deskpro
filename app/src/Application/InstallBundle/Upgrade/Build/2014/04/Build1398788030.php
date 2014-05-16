@@ -244,8 +244,8 @@ class Build1398788030 extends AbstractBuild
 		$term_sets = new TriggerTerms();
 
 		$terms_all = new TriggerTermComposite();
-		if (!empty($old_trigger['terms_any'])) {
-			foreach ($old_trigger['terms_any'] as $term) {
+		if (!empty($old_trigger['terms'])) {
+			foreach ($old_trigger['terms'] as $term) {
 				$new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
 				if ($new_term) {
 					$terms_all->add($new_term);

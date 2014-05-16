@@ -1,5 +1,5 @@
 (function() {
-  define(function() {
+  define(['DeskPRO/Util/Util'], function(Util) {
     var Admin_OptionBuilder_TypesDef_BaseActionTypesDef;
     return Admin_OptionBuilder_TypesDef_BaseActionTypesDef = (function() {
       function Admin_OptionBuilder_TypesDef_BaseActionTypesDef($q, Api, dpTemplateManager) {
@@ -118,6 +118,12 @@
           },
           getData: function() {
             var defer;
+            if (options.options) {
+              return {
+                options: options_formatter ? options_formatter(options.options) : options.options,
+                multiselect: is_multi
+              };
+            }
             if (data_name) {
               defer = me.$q.defer();
               me.loadDataOptions().then((function(_this) {
@@ -219,29 +225,39 @@
             return me.dpTemplateManager.get(me.inputTemplate);
           },
           getData: function() {
-            return {};
+            return {
+              options: options
+            };
           },
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
-                var _ref;
+                var val, _ref;
                 if (value == null) {
                   value = {};
                 }
+                val = ((_ref = value.options) != null ? _ref[prop_name] : void 0) || '';
+                if (Util.isArray(val)) {
+                  val = val.join(',');
+                }
                 return {
-                  value: ((_ref = value.options) != null ? _ref[prop_name] : void 0) || '',
+                  value: val,
                   op: value.op || _.first(data.operators)
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var val, value;
                 if (model == null) {
                   model = {};
+                }
+                val = model.value || '';
+                if (options.tags) {
+                  val = val.split(',');
                 }
                 value = {};
                 value.type = type;
                 value.options = {};
-                value.options[prop_name] = model.value;
+                value.options[prop_name] = val;
                 return value;
               }
             };
@@ -265,7 +281,7 @@
           options.options = field.choices.map(function(o) {
             return {
               title: o.title,
-              value: o.id
+              value: o.id + ""
             };
           });
           return this.getStandardSelect(options);

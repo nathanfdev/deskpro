@@ -1,4 +1,4 @@
-define ->
+define ['DeskPRO/Util/Util'], (Util) ->
 	class Admin_OptionBuilder_TypesDef_BaseActionTypesDef
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data   = null
@@ -90,6 +90,11 @@ define ->
 					return me.dpTemplateManager.get(options.template || me.selectTemplate)
 
 				getData: ->
+					if options.options
+						return {
+							options: if options_formatter then options_formatter(options.options) else options.options,
+							multiselect: is_multi
+						}
 					if data_name
 						defer = me.$q.defer()
 						me.loadDataOptions().then(=>
@@ -165,21 +170,28 @@ define ->
 
 				getData: ->
 					return {
-
+						options: options
 					}
 
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
+							val = value.options?[prop_name] || ''
+							if Util.isArray(val) then val = val.join(',')
 							return {
-								value: value.options?[prop_name] || '',
+								value: val
 								op: value.op || _.first(data.operators)
 							}
 						getValue: (model = {}, data) ->
+
+							val = model.value || ''
+							if options.tags
+								val = val.split(',')
+
 							value = {}
 							value.type = type
 							value.options = {}
-							value.options[prop_name] = model.value
+							value.options[prop_name] = val
 							return value
 					}
 			}
@@ -192,7 +204,7 @@ define ->
 			if not options.propName then options.propName = 'value'
 
 			if field.type_name == 'choice'
-				options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
+				options.options = field.choices.map( (o) -> {title: o.title, value: o.id + ""})
 				return @getStandardSelect(options)
 			else
 				return @getStandardInput(options)

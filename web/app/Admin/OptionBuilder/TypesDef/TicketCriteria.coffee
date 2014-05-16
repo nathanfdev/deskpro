@@ -139,6 +139,11 @@ define [
 			})
 
 			options.push({
+				title: 'Labels',
+				value: 'CheckLabel'
+			})
+
+			options.push({
 				title: 'Agent Message',
 				value: 'CheckAgentMessage'
 			})
@@ -542,6 +547,14 @@ define [
 		getCheckEmailHeader: (options = {}) ->
 			options.propName = 'email_header_match'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			def = @getStandardInput(options)
+			return def
+
+		getCheckLabel: (options = {}) ->
+			options.propName = 'labels'
+			options.type_title = 'Labels'
+			options.tags = true
+			options.operators = ['contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 

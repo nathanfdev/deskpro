@@ -1,4 +1,4 @@
-define ->
+define ['DeskPRO/Util/Util'], (Util) ->
 	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data   = null
@@ -218,22 +218,30 @@ define ->
 
 				getData: ->
 					return {
-						operators: operators
+						operators: operators,
+						options: options
 					}
 
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
+							val = value.options?[prop_name] || ''
+							if Util.isArray(val) then val = val.join(',')
 							return {
-								value: value.options?[prop_name] || '',
+								value: val,
 								op: value.op || _.first(data.operators)
 							}
 						getValue: (model = {}, data) ->
+
+							val = model.value || ''
+							if options.tags
+								val = val.split(',')
+
 							value = {}
 							value.type = type
 							value.op = model.op
 							value.options = {}
-							value.options[prop_name] = model.value
+							value.options[prop_name] = val
 							return value
 						}
 			}

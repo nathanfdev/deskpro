@@ -88,7 +88,7 @@
         });
         options.push({
           title: 'Set CC\'d Users',
-          value: 'SetCcUsers'
+          value: 'SetCcs'
         });
         set_options.push({
           title: 'Ticket Properties',
@@ -334,7 +334,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'agent_ids';
+        options.propName = 'add_agent_ids';
         options.dataName = 'agents';
         options.isMulti = true;
         def = this.getStandardSelect(options);
@@ -410,6 +410,49 @@
         ];
         def = this.getStandardSelect(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetLabels = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-set-labels.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                console.log(options);
+                return {
+                  add_labels: (options.add_labels || []).join(', '),
+                  remove_labels: (options.remove_labels || []).join(', ')
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetLabels';
+                value.options = {};
+                value.options.add_labels = (model.add_labels || '').split(',');
+                value.options.remove_labels = (model.remove_labels || '').split(',');
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetStatus = function(options) {
@@ -503,10 +546,11 @@
                 if (value == null) {
                   value = {};
                 }
+                options = (value != null ? value.options : void 0) || {};
                 return {
-                  value: value.urgency,
-                  op: value.op || 'add',
-                  only_if_lower: !!value.only_if_lower
+                  value: options.urgency,
+                  op: options.op || 'add',
+                  only_if_lower: !!options.only_if_lower
                 };
               },
               getValue: function(model, data) {
@@ -520,6 +564,50 @@
                 value.options.urgency = model.value;
                 value.options.op = model.op;
                 value.options.only_if_lower = !!model.only_if_lower;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetCcs = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-set-ccs.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  add_emails: (options.add_emails || []).join(', '),
+                  remove_emails: (options.remove_emails || []).join(', '),
+                  add_org_managers: options.add_org_managers || false
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetCcs';
+                value.options = {};
+                value.options.add_emails = (model.add_emails || '').split(',');
+                value.options.remove_emails = (model.remove_emails || '').split(',');
+                value.options.add_org_managers = model.add_org_managers || false;
                 return value;
               }
             };

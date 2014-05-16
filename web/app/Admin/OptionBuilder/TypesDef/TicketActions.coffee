@@ -98,7 +98,7 @@ define [
 
 			options.push({
 				title: 'Set CC\'d Users',
-				value: 'SetCcUsers'
+				value: 'SetCcs'
 			})
 
 			set_options.push({
@@ -346,7 +346,7 @@ define [
 			return def
 
 		getSetAgentFollowers: (options = {}) ->
-			options.propName = 'agent_ids'
+			options.propName = 'add_agent_ids'
 			options.dataName = 'agents'
 			options.isMulti = true
 			def = @getStandardSelect(options)
@@ -388,6 +388,30 @@ define [
 			]
 			def = @getStandardSelect(options)
 			return def
+
+		getSetLabels: (options = {}) ->
+			me = @
+			return {
+			getTemplate: -> return me.dpTemplateManager.get('OptionBuilder/type-actions-set-labels.html')
+			getData: -> return {}
+			getDataFormatter: ->
+				return {
+					getViewValue: (value = {}, data) ->
+						options = value?.options || {}
+						console.log(options)
+						return {
+							add_labels:       (options.add_labels || []).join(', '),
+							remove_labels:    (options.remove_labels || []).join(', '),
+						}
+					getValue: (model = {}, data) ->
+						value = {}
+						value.type = 'SetLabels'
+						value.options = {}
+						value.options.add_labels = (model.add_labels || '').split(',')
+						value.options.remove_labels = (model.remove_labels || '').split(',')
+						return value
+				}
+			}
 
 		getSetStatus: (options = {}) ->
 			options.propName = 'status'
@@ -435,21 +459,16 @@ define [
 		getSetUrgency: (options = {}) ->
 			me = @
 			return {
-				getTemplate: ->
-					return me.dpTemplateManager.get('OptionBuilder/type-actions-urgency.html')
-
-				getData: ->
-					return {
-
-					}
-
+				getTemplate: -> return me.dpTemplateManager.get('OptionBuilder/type-actions-urgency.html')
+				getData: -> return {}
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
 							return {
-								value: value.urgency,
-								op: value.op || 'add',
-								only_if_lower: !!value.only_if_lower
+								value: options.urgency,
+								op: options.op || 'add',
+								only_if_lower: !!options.only_if_lower
 							}
 						getValue: (model = {}, data) ->
 							value = {}
@@ -460,6 +479,31 @@ define [
 							value.options.only_if_lower = !!model.only_if_lower
 							return value
 						}
+			}
+
+		getSetCcs: (options = {}) ->
+			me = @
+			return {
+				getTemplate: -> return me.dpTemplateManager.get('OptionBuilder/type-actions-set-ccs.html')
+				getData: -> return {}
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+							return {
+								add_emails:       (options.add_emails || []).join(', '),
+								remove_emails:    (options.remove_emails || []).join(', '),
+								add_org_managers: options.add_org_managers || false
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'SetCcs'
+							value.options = {}
+							value.options.add_emails = (model.add_emails || '').split(',')
+							value.options.remove_emails = (model.remove_emails || '').split(',')
+							value.options.add_org_managers = model.add_org_managers || false
+							return value
+					}
 			}
 
 		getSetFlag: (options = {}) ->

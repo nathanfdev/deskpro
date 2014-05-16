@@ -127,6 +127,10 @@
           value: 'CheckSubject'
         });
         options.push({
+          title: 'Labels',
+          value: 'CheckLabel'
+        });
+        options.push({
           title: 'Agent Message',
           value: 'CheckAgentMessage'
         });
@@ -603,6 +607,19 @@
         }
         options.propName = 'email_header_match';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckLabel = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'labels';
+        options.type_title = 'Labels';
+        options.tags = true;
+        options.operators = ['contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };

@@ -1,5 +1,5 @@
 (function() {
-  define(function() {
+  define(['DeskPRO/Util/Util'], function(Util) {
     var Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef;
     return Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef = (function() {
       function Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef($q, Api, dpTemplateManager) {
@@ -304,31 +304,40 @@
           },
           getData: function() {
             return {
-              operators: operators
+              operators: operators,
+              options: options
             };
           },
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
-                var _ref;
+                var val, _ref;
                 if (value == null) {
                   value = {};
                 }
+                val = ((_ref = value.options) != null ? _ref[prop_name] : void 0) || '';
+                if (Util.isArray(val)) {
+                  val = val.join(',');
+                }
                 return {
-                  value: ((_ref = value.options) != null ? _ref[prop_name] : void 0) || '',
+                  value: val,
                   op: value.op || _.first(data.operators)
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var val, value;
                 if (model == null) {
                   model = {};
+                }
+                val = model.value || '';
+                if (options.tags) {
+                  val = val.split(',');
                 }
                 value = {};
                 value.type = type;
                 value.op = model.op;
                 value.options = {};
-                value.options[prop_name] = model.value;
+                value.options[prop_name] = val;
                 return value;
               }
             };

@@ -10871,6 +10871,10 @@ button.toast-close-button {
   float: left;
 }
 
+.dp-ob-set .without-tag em.dp-ob-row-tag {
+  display: none;
+}
+
 .dp-ob-set em.dp-ob-row-tag {
   display: block;
   width: 70px;

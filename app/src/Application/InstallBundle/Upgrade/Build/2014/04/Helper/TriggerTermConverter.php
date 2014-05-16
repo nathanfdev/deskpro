@@ -220,8 +220,25 @@ class TriggerTermConverter
 
 	private function upgradeTerm_label($type, $op, OptionsArray $options)
 	{
-		$labels = explode(',', $options->get('label', ''));
+		if ($options->get('label')) {
+			$labels = explode(',', $options->get('label', ''));
+		} else {
+			$labels = $options->get('labels', array());
+			if (!is_array($labels)) {
+				$labels = array($labels);
+			}
+		}
+
 		$labels = Arrays::func($labels, 'trim');
+		$labels = Arrays::removeEmptyString($labels);
+
+		if (!$labels) {
+			return null;
+		}
+
+		if ($op == 'is') $op = 'contains';
+		else if ($op == 'not') $op = 'not_contains';
+
 		return new Terms\CheckLabel($op, array('labels' => $labels));
 	}
 
