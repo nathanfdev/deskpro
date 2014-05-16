@@ -507,7 +507,7 @@ class AppsController extends AbstractController
 				if (!$value) continue;
 				if ($name == 'blank') {
 					$with_blanks[] = array('type' => $type, 'class_name' => "{$type_name}_{$type_name}Context");
-					$js_files[] = "$type_name/{$type_name}Context";
+					$js_files[] = array('type' => $type, 'file' => "$type_name/{$type_name}Context");
 					$require_files[] = $package->name . "/js/$type_name/{$type_name}Context";
 					$require_names[] = "{$type_name}_{$type_name}Context";
 				} else if (strpos($name, '.tab.title') !== false) {
@@ -515,7 +515,7 @@ class AppsController extends AbstractController
 				} else {
 					$js_name = ucfirst(Strings::underscoreToCamelCase(str_replace('.', '_', $name)));
 					$locations[]     = array('type' => $type, 'location' => $name, 'js_class' => $type_name.'_' . $js_name.'Controller', 'html_file' => "$type_name/" . $js_name . '.html');
-					$js_files[]      = "$type_name/" . $js_name . 'Controller';
+					$js_files[]      = array('type' => $type, 'file' => "$type_name/" . $js_name . 'Controller');
 					$html_files[]    = "$type_name/" . $js_name;
 					$require_files[] = $package->name . "/js/$type_name/{$js_name}Controller";
 					$require_names[] = str_replace(" ", "_", $type_name . '_' . $js_name.'Controller');
@@ -527,11 +527,24 @@ class AppsController extends AbstractController
 		# Create JS files
 		#------------------------------
 
-		foreach ($js_files as $file) {
+		foreach ($js_files as $info) {
+			$file = $info['file'];
+			$type = $info['type'];
 			if (preg_match('#Context$#', $file)) {
 				$js = "define(function() {\n\treturn {\n\t\tinit: function() {\n\t\t\t// TODO\n\t\t}\n\t};\n\n});";
 			} else {
-				$js = "define(function() {\n\treturn function() {\n\t\t// TODO\n\t};\n\n});";
+				$injects = array('$scope');
+				if ($type == 'ticket') {
+					$injects[] = '$ticket';
+				} else if ($type == 'user') {
+					$injects[] = '$user';
+				} else if ($type == 'org') {
+					$injects[] = '$org';
+				}
+				$injects[] = '$el';
+				$injects[] = '$app';
+				$injects = implode(', ', $injects);
+				$js = "define(function() {\n\treturn function($injects) {\n\t\t// TODO\n\t};\n\n});";
 			}
 
 			$blob = $blob_storage->createBlobRecordFromString(

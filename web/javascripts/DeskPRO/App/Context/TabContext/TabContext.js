@@ -284,10 +284,12 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 						}
 					}
 
-					tplCtrl = $controller(ctrl, ctrlLocals);
-
 					element = angular.element('<div class="dp-app-context"></div>');
 					element.attr('id', ctrlLocals.containerElementId)
+
+					ctrlLocals.$el = $(element)
+
+					tplCtrl = $controller(ctrl, ctrlLocals);
 
 					if (ctrlLocals.hiddenByDefault) {
 						element.hide();
