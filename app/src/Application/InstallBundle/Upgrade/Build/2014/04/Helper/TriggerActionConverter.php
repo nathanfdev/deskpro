@@ -34,6 +34,7 @@
 namespace Application\InstallBundle\Upgrade\Build\Helper201404;
 
 use Application\DeskPRO\Tickets\Actions;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
@@ -56,6 +57,13 @@ class TriggerActionConverter
 		$t = preg_replace('#\[\d+\]$#', '', $t); // something[123] to just something
 
 		$func = "upgradeAction_{$t}";
+
+		if (!method_exists($this, $func)) {
+			$e = new \Exception("Unknown trigger action: " . $info['type']);
+			KernelErrorHandler::logException($e);
+			return null;
+		}
+
 		return $this->$func($info['type'], new OptionsArray($info['options']));
 	}
 
