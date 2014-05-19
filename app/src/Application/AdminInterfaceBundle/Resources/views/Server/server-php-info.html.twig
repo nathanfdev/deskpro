@@ -94,7 +94,7 @@
 							Approximately {{ ng_var('server_php_info.web_php.effective_max_upload | filesize_display') }}
 							<div style="font-size: 11px;">
 								Web-uploaded files are limited by a number of settings.
-								<a ng-href="#">Read more about configuring this limit</a>.
+								<a href="{{ ng_href('server.file_uploads') }}">Read more about configuring file upload limits</a>.
 							</div>
 						</td>
 						<td>
