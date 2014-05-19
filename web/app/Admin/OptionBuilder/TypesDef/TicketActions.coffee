@@ -164,6 +164,11 @@ define [
 			})
 
 			options.push({
+				title: 'Set Hold',
+				value: 'SetHold'
+			})
+
+			options.push({
 				title: 'Call Web Hook',
 				value: 'WebHook'
 			})
@@ -390,6 +395,15 @@ define [
 		getSetLanguage: (options = {}) ->
 			options.propName = 'language_id'
 			options.dataName = 'langs'
+			def = @getStandardSelect(options)
+			return def
+
+		getSetHold: (options = {}) ->
+			options.propName = 'is_hold'
+			options.options = [
+				{title: "Put ticket on hold", value: "1"},
+				{title: "Take ticket off hold", value: "0"}
+			]
 			def = @getStandardSelect(options)
 			return def
 

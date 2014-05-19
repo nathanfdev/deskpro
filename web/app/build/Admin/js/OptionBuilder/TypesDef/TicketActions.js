@@ -133,6 +133,10 @@
           value: 'SetRequireValidation'
         });
         options.push({
+          title: 'Set Hold',
+          value: 'SetHold'
+        });
+        options.push({
           title: 'Call Web Hook',
           value: 'WebHook'
         });
@@ -402,6 +406,25 @@
         }
         options.propName = 'language_id';
         options.dataName = 'langs';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetHold = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'is_hold';
+        options.options = [
+          {
+            title: "Put ticket on hold",
+            value: "1"
+          }, {
+            title: "Take ticket off hold",
+            value: "0"
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
