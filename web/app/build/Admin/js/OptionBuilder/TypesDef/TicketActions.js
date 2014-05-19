@@ -67,6 +67,10 @@
           value: 'SetWorkflow'
         });
         options.push({
+          title: 'Set Language',
+          value: 'SetLanguage'
+        });
+        options.push({
           title: 'Set Urgency',
           value: 'SetUrgency'
         });
@@ -277,10 +281,11 @@
               'org_fields': '/org_fields',
               'ticket_slas': '/ticket_slas',
               'email_accounts': '/email_accounts',
-              'usergroups': '/user_groups'
+              'usergroups': '/user_groups',
+              'langs': '/langs'
             }).then((function(_this) {
               return function(result) {
-                var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _results;
+                var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
                 data = result.data;
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
@@ -296,19 +301,20 @@
                 options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
                 options_data['email_accounts'] = data.email_accounts.email_accounts;
                 options_data['usergroups'] = data.usergroups.groups;
+                options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 _this.options_data = options_data;
-                if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
-                  _ref6 = _this.options_data.ticket_fields;
-                  for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
-                    f = _ref6[_i];
+                if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
+                  _ref7 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref7.length; _i < _len; _i++) {
+                    f = _ref7[_i];
                     _this.initFieldGetter('SetTicketField', f);
                   }
                 }
-                if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
-                  _ref8 = _this.options_data.user_fields;
+                if ((_ref8 = _this.options_data) != null ? _ref8.user_fields : void 0) {
+                  _ref9 = _this.options_data.user_fields;
                   _results = [];
-                  for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
-                    f = _ref8[_j];
+                  for (_j = 0, _len1 = _ref9.length; _j < _len1; _j++) {
+                    f = _ref9[_j];
                     _results.push(_this.initFieldGetter('SetUserField', f));
                   }
                   return _results;
@@ -385,6 +391,17 @@
             value: 0
           }
         ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetLanguage = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'language_id';
+        options.dataName = 'langs';
         def = this.getStandardSelect(options);
         return def;
       };

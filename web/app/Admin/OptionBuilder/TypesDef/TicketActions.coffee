@@ -72,6 +72,11 @@ define [
 			})
 
 			options.push({
+				title: 'Set Language',
+				value: 'SetLanguage'
+			})
+
+			options.push({
 				title: 'Set Urgency',
 				value: 'SetUrgency'
 			})
@@ -316,6 +321,7 @@ define [
 						'ticket_slas':     '/ticket_slas',
 						'email_accounts':  '/email_accounts',
 						'usergroups':      '/user_groups',
+						'langs':           '/langs'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -332,6 +338,7 @@ define [
 						options_data['ticket_slas']      = data.ticket_slas?.slas
 						options_data['email_accounts']   = data.email_accounts.email_accounts
 						options_data['usergroups']       = data.usergroups.groups
+						options_data['langs']            = data.langs?.languages
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -377,6 +384,12 @@ define [
 			options.extraOptions = [
 				{title: 'None', value: 0}
 			]
+			def = @getStandardSelect(options)
+			return def
+
+		getSetLanguage: (options = {}) ->
+			options.propName = 'language_id'
+			options.dataName = 'langs'
 			def = @getStandardSelect(options)
 			return def
 
