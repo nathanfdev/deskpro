@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\AuditLog;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\AuditLog\AuditWriter\AuditDbWriter;
 use Application\DeskPRO\AuditLog\AuditWriter\AuditFileWriter;
 
@@ -53,6 +54,10 @@ class AuditManagerFactory
 			});
 		}
 
+		if (!(defined('DP_INTERFACE') && DP_INTERFACE == 'api')) {
+			$audit_manager->disable();
+		}
+
 		return $audit_manager;
 	}
 
@@ -65,6 +70,17 @@ class AuditManagerFactory
 	{
 		$audit_defs     = require(DP_ROOT.'/sys/config/auditlog-defs.php');
 		$audit_listener = new AuditDoctrineListener($audit_manager, $audit_defs);
+
+		if (!(defined('DP_INTERFACE') && DP_INTERFACE == 'api')) {
+			$audit_listener->disable();
+		} else {
+			$audit_listener->setFilterFn(function() {
+				if (!App::getCurrentPerson() || !App::getCurrentPerson()->is_agent) {
+					return false;
+				}
+				return true;
+			});
+		}
 
 		return $audit_listener;
 	}

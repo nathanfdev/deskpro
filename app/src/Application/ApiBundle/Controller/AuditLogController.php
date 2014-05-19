@@ -57,7 +57,7 @@ class AuditLogController extends AbstractController implements ProtectedControll
 	{
 		$per_page  = 50;
 		$total     = $this->db->count('auditlog');
-		$num_pages = ceil($total / $per_page);
+		$num_pages = $total ? ceil($total / $per_page) : 1;
 		$page      = Numbers::bound($this->in->getUint('page'), 1, $num_pages);
 
 		$limit_start = ($page-1)*$per_page;

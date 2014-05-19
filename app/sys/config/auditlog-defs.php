@@ -116,30 +116,8 @@
 	'slas' => array(
 		'fields' => array('warning_trigger', 'fail_trigger', 'apply_priority', 'apply_trigger', 'title', 'sla_type', 'active_time', 'work_start', 'work_end', 'work_days', 'work_timezone', 'work_holidays', 'apply_type'),
 	),
-	'sla_organizations' => array(
-		'fields' => array('organization'),
-		'save_as_change' => array(
-			'object_field_id' => 'sla',
-			'as_field_id'     => 'organization',
-			'render_value'    => function($obj, $op) {
-				$op_word = $op == 'create' ? 'ADD: ' : 'REMOVE: ';
-				return "$op_word organizations@{$obj->organization->id} -- {$obj->organization->name}";
-			}
-		)
-	),
-	'sla_people' => array(
-		'fields' => array('person'),
-		'save_as_change' => array(
-			'object_field_id' => 'sla',
-			'as_field_id'     => 'people',
-			'render_value'    => function($obj, $op) {
-				$op_word = $op == 'create' ? 'ADD: ' : 'REMOVE: ';
-				return "$op_word people@{$obj->person->id} -- {$obj->person->getDisplayContact()}";
-			}
-		)
-	),
 	'templates' => array(
-		'fields' => array('name', 'variant_of', 'template_code'),
+		'fields' => array('name', 'template_code'),
 	),
 	'ticket_categories' => array(
 		'fields' => array('title', 'parent', 'display_order')

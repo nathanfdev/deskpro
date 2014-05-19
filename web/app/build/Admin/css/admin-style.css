@@ -11734,19 +11734,26 @@ table.table > tbody > tr > td.dp-id-col {
 .auditlog-change {
   float: left;
   margin-right: 25px;
-  overflow: hidden;
   font-family: Monaco, Consolas, monospace;
   font-size: 10px;
+}
+
+.auditlog-change .field {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  color: #284c7a;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.auditlog-change .field {
-  color: #284c7a;
-}
-
 .auditlog-change .data {
+  display: inline-block;
+  max-width: 400px;
+  overflow: hidden;
   color: #888;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dp-btn-pagination {

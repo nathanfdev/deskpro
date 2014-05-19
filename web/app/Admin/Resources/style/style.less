@@ -3715,14 +3715,21 @@ table.table {
 	font-size: 10px;
 	float: left;
 	margin-right: 25px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	.field {
+		display: inline-block;
+		max-width: 200px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
 		color: #284c7a;
 	}
 	.data {
+		display: inline-block;
 		color: #888;
+		max-width: 400px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
 	}
 }
 

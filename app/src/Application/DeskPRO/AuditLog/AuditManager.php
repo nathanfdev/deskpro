@@ -64,10 +64,33 @@ class AuditManager
 	public function __construct()
 	{
 		$this->writers = new CompositeCaller();
+	}
 
-		if (isset($GLOBALS['DP_IS_IN_CLI'])) {
-			$this->disabled = true;
-		}
+
+	/**
+	 * Disable the audit manager
+	 */
+	public function disable()
+	{
+		$this->disabled = true;
+	}
+
+
+	/**
+	 * Enable the audit manager
+	 */
+	public function enable()
+	{
+		$this->disabled = false;
+	}
+
+
+	/**
+	 * Check if the audit manager is enabled
+	 */
+	public function isEnabled()
+	{
+		return !$this->disabled;
 	}
 
 
@@ -96,6 +119,7 @@ class AuditManager
 	 * @param string $field_id
 	 * @param mixed  $old_val
 	 * @param mixed  $new_val
+	 * @return AuditLog
 	 */
 	public function recordChange($object, $field_id, $old_val, $new_val)
 	{
@@ -125,6 +149,7 @@ class AuditManager
 
 	/**
 	 * @param mixed  $object
+	 * @return AuditLog
 	 */
 	public function recordCreated($object)
 	{
@@ -144,6 +169,7 @@ class AuditManager
 
 	/**
 	 * @param mixed  $object
+	 * @return AuditLog
 	 */
 	public function recordDelete($object)
 	{

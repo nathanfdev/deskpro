@@ -13,23 +13,18 @@
 				<thead>
 					<tr>
 						<th width="10">ID</th>
-						<th>Who</th>
-						<th>Change Data</th>
 						<th>Object</th>
+						<th>Change Data</th>
+						<th>Who</th>
 						<th width="80">Date</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="log in List.logs">
 						<td nowrap class="alt dp-id-col"><a href="{{ ng_href('agents.audit_log.view', '{id: log.id}') }}"><em class="dp-id">{{ ng_var('log.id') }}</a></td>
-						<td>
-							<span ng-if="log.person.id">
-								{{ ng_var('log.person.display_name') }}
-								<div style="font-size: 10px;">&lt;{{ ng_var('log.person.primary_email.email') }}&gt;</div>
-							</span>
-							<span ng-if="!log.person.id">
-								{{ ng_var('log.person_name') }}
-							</span>
+						<td nowrap ng-class="'auditlog-' + log.op">
+							<div class="op">{{ ng_var('log.op') }}</div>
+							<span class="auditlog-obj"><span class="object_type">{{ ng_var('log.object_type') }}</span><span class="sep">#</span><span class="object_id">{{ ng_var('log.object_id') }}</span></span>
 						</td>
 						<td>
 							<div ng-if="log.change_data">
@@ -39,9 +34,14 @@
 								</div>
 							</div>
 						</td>
-						<td nowrap ng-class="'auditlog-' + log.op">
-							<div class="op">{{ ng_var('log.op') }}</div>
-							<span class="auditlog-obj"><span class="object_type">{{ ng_var('log.object_type') }}</span><span class="sep">#</span><span class="object_id">{{ ng_var('log.object_id') }}</span></span>
+						<td>
+							<span ng-if="log.person.id">
+								{{ ng_var('log.person.display_name') }}
+								<div style="font-size: 10px;">&lt;{{ ng_var('log.person.primary_email.email') }}&gt;</div>
+							</span>
+							<span ng-if="!log.person.id">
+								{{ ng_var('log.person_name') }}
+							</span>
 						</td>
 						<td nowrap>{{ ng_var('log.date_created') }}</td>
 					</tr>

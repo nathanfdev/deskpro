@@ -32,6 +32,7 @@
  */
 
 namespace Application\DeskPRO\AuditLog;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AuditLog;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -55,15 +56,62 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 	 */
 	protected $new_entities = array();
 
+	/**
+	 * @var bool
+	 */
+	protected $disabled = false;
+
+	/**
+	 * @var callback
+	 */
+	protected $filter_fn;
+
 
 	/**
 	 * @param AuditManager $audit_manager
 	 * @param array        $defs
+	 * @param callback     $filter_fn
 	 */
-	public function __construct(AuditManager $audit_manager, array $defs)
+	public function __construct(AuditManager $audit_manager, array $defs, $filter_fn = null)
 	{
 		$this->audit_manager = $audit_manager;
 		$this->defs = $defs;
+		$this->filter_fn = $filter_fn;
+	}
+
+	/**
+	 * Disable the audit manager
+	 */
+	public function disable()
+	{
+		$this->disabled = true;
+	}
+
+
+	/**
+	 * Enable the audit manager
+	 */
+	public function enable()
+	{
+		$this->disabled = false;
+	}
+
+
+	/**
+	 * Check if the audit manager is enabled
+	 */
+	public function isEnabled()
+	{
+		return !$this->disabled;
+	}
+
+
+	/**
+	 * @param callable $filter_fn
+	 */
+	public function setFilterFn($filter_fn)
+	{
+		$this->filter_fn = $filter_fn;
 	}
 
 
@@ -72,6 +120,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 	 */
 	public function preUpdate(PreUpdateEventArgs $eventArgs)
 	{
+		if ($this->disabled) return;
+
 		$entity = $eventArgs->getEntity();
 		if (!($entity instanceof DomainObject)) {
 			// Not a valid entity
@@ -84,9 +134,13 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 			return;
 		}
 
+		if ($this->filter_fn) {
+			if (!call_user_func($this->filter_fn, 'preUpdate', $table, $eventArgs)) return;
+		}
+
 		foreach ($eventArgs->getEntityChangeSet() as $change_field => $change_data) {
 
-			if (!isset($this->defs[$table]['fields'])) {
+			if (!isset($this->defs[$table]['fields']) || !in_array($change_field, $this->defs[$table]['fields'])) {
 				continue;
 			}
 
@@ -136,6 +190,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 	 */
 	public function preRemove(LifecycleEventArgs $eventArgs)
 	{
+		if ($this->disabled) return;
+
 		$entity = $eventArgs->getEntity();
 		if (!($entity instanceof DomainObject)) {
 			// Not a valid entity
@@ -146,6 +202,10 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 		if (!isset($this->defs[$table])) {
 			// Not a tracked object
 			return;
+		}
+
+		if ($this->filter_fn) {
+			if (!call_user_func($this->filter_fn, 'preRemove', $table, $eventArgs)) return;
 		}
 
 		if (isset($this->defs[$table]['do_log_check'])) {
@@ -204,6 +264,8 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 	 */
 	public function postPersist(LifecycleEventArgs $eventArgs)
 	{
+		if ($this->disabled) return;
+
 		$entity = $eventArgs->getEntity();
 		if (!($entity instanceof DomainObject)) {
 			// Not a valid entity
@@ -214,6 +276,10 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 		if (!isset($this->defs[$table])) {
 			// Not a tracked object
 			return;
+		}
+
+		if ($this->filter_fn) {
+			if (!call_user_func($this->filter_fn, 'postPersist', $table, $eventArgs)) return;
 		}
 
 		if (isset($this->defs[$table]['do_log_check'])) {
