@@ -216,7 +216,6 @@ class TicketLog extends AbstractEntityRepository
 		if (!empty($options['types'])) {
 			$qb->andWhere('log.action_type IN (:types)');
 			$params['types'] = $options['types'];
-			dp_log($options['types']);
 		}
 
 		if(!empty($options['date_range'])) {
