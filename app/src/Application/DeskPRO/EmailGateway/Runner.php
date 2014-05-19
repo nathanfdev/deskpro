@@ -370,7 +370,7 @@ class Runner
 					$source['source_info'] = $errinfo;
 				}
 			} else {
-				$source['status'] = 'error';
+				$source['status'] = $pre_processor->getErrorType() ?: 'error';
 				$source['error_code'] = $pre_processor->getErrorCode();
 
 				$source_info = $pre_processor->getSourceInfo();

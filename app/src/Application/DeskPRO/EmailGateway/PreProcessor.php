@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\EmailSource;
 class PreProcessor extends AbstractGatewayProcessor
 {
 	protected $error = null;
+	protected $error_type = 'rejected';
 	protected $source_info = null;
 
 	public function run()
@@ -126,6 +127,15 @@ class PreProcessor extends AbstractGatewayProcessor
 	public function isValid()
 	{
 		return $this->error === null;
+	}
+
+	/**
+	 * 'error' or 'rejected'
+	 * @return string
+	 */
+	public function getErrorType()
+	{
+		return $this->error_type;
 	}
 
 	public function getErrorCode()
