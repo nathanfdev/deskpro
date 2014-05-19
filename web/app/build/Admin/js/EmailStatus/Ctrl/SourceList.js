@@ -26,7 +26,18 @@
         this.num_pages = 0;
         this.page_nums = [1];
         this.filter_date_mode = "none";
-        return this.page = 1;
+        this.page = 1;
+        return this.$scope.$watch('ListCtrl.page', (function(_this) {
+          return function(newVal, oldVal) {
+            if (parseInt(newVal) === parseInt(oldVal)) {
+              return;
+            }
+            if (isNaN(parseInt(newVal))) {
+              return;
+            }
+            return _this.changePage();
+          };
+        })(this));
       };
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.initialLoad = function() {
@@ -59,11 +70,14 @@
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.loadResults = function() {
         var promise;
+        this.startSpinner('loading_page');
+        this.results = [];
         promise = this.Api.sendGet('/email_status/sources', {
           filter: this.filter
         }).success((function(_this) {
           return function(data) {
             var i, _i, _ref, _results;
+            _this.stopSpinner('loading_page', true);
             _this.results = data.email_sources;
             _this.filter.page = data.page;
             _this.page = data.page;
@@ -78,6 +92,14 @@
           };
         })(this));
         return promise;
+      };
+
+      Admin_EmailStatus_Ctrl_SourceList.prototype.goPrevPage = function() {
+        return this.page--;
+      };
+
+      Admin_EmailStatus_Ctrl_SourceList.prototype.goNextPage = function() {
+        return this.page++;
       };
 
       return Admin_EmailStatus_Ctrl_SourceList;

@@ -15,6 +15,15 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 			@filter_date_mode = "none"
 			@page = 1
 
+			@$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
+				if parseInt(newVal) == parseInt(oldVal)
+					return
+				if isNaN(parseInt(newVal))
+					return
+
+				@changePage()
+			)
+
 		initialLoad: ->
 			return @loadResults()
 
@@ -40,7 +49,10 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 			@loadResults()
 
 		loadResults: ->
+			@startSpinner('loading_page')
+			@results = []
 			promise = @Api.sendGet('/email_status/sendmail', {filter: @filter}).success( (data) =>
+				@stopSpinner('loading_page', true)
 				@results     = data.sendmail_queue
 				@filter.page = data.page
 				@page        = data.page
@@ -53,5 +65,11 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 			)
 
 			return promise
+
+		goPrevPage: ->
+			@page--
+
+		goNextPage: ->
+			@page++
 
 	Admin_EmailStatus_Ctrl_SendmailList.EXPORT_CTRL()
