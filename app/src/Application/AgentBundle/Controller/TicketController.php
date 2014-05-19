@@ -2300,6 +2300,8 @@ class TicketController extends AbstractController
 	public function addSlaAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_slas');
+		$tm = $this->container->getTicketManager();
+		$tm->markAsManaged($ticket);
 
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($this->in->getUint('sla_id'));
 		if (!$sla || $sla->apply_type != 'manual') {
@@ -2311,10 +2313,12 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_sla = $ticket->addSla($sla);
-		$ticket_sla->calculateSlaDates(false);
 		if ($ticket_sla && !$ticket_sla->id) {
 			$this->em->persist($ticket_sla);
 			$this->em->flush();
+
+			$context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+			$tm->saveTicket($ticket, $context);
 
 			$data = array(
 				'inserted' => true,

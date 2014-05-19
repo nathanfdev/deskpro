@@ -79,7 +79,7 @@ class SlaProcessor
 		if (($state->isNewTicket() && !$ticket->hidden_status)) {
 			$recalc = true;
 		}
-		if ($state->hasChangedField('status')) {
+		if ($state->hasChangedField('status') || $state->hasChangedField('ticket_slas')) {
 			$recalc = true;
 		}
 		if ($state->hasNewReply()) {
