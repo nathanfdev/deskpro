@@ -873,14 +873,6 @@ define(function() {
 		target: "appbody@tickets"
 	});
 
-	routes.push({
-		id: 'tickets.ticket_accounts.settings',
-		url: '/settings',
-		templateName: 'Settings/email-settings.html',
-		controller: 'Admin_Settings_Ctrl_EmailSettings',
-		target: "appbody@tickets"
-	});
-
 	//##################################################################################################################
 	// CRM
 	//##################################################################################################################

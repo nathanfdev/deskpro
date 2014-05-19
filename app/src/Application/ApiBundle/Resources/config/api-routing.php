@@ -2356,22 +2356,6 @@ $collection->create('api_general_settings_save', array(
 ));
 
 ########################################################################################################################
-# Email Settings
-########################################################################################################################
-
-$collection->create('api_email_settings', array(
-	'path'        => '/email_settings',
-	'controller'  => 'ApiBundle:Settings:emailSettings',
-	'methods'     => array('GET'),
-));
-
-$collection->create('api_email_settings_save', array(
-	'path'        => '/email_settings',
-	'controller'  => 'ApiBundle:Settings:saveEmailSettings',
-	'methods'     => array('POST'),
-));
-
-########################################################################################################################
 # Registration Settings
 ########################################################################################################################
 

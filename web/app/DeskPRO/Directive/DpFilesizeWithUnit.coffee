@@ -101,7 +101,10 @@ define ->
 
 				ngModel.$formatters.push( (modelValue) ->
 					unit = false
-					num  = ''
+					num  = 0
+
+					if modelType == null or modelType == "" or not modelType or isNaN(modelType)
+						modelType = 0
 
 					switch modelType
 						when "object"
@@ -116,6 +119,8 @@ define ->
 								num = modelValue[0]
 						else
 							modelValue = parseInt(modelValue || 0)
+							if isNaN(modelValue)
+								modelValue = 0
 
 							for unitName in multiplierTypes
 								if unitName == 'b' then continue

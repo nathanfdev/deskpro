@@ -60,6 +60,9 @@ class TicketSettings
 	public $ref_custom_pattern             = '';
 	public $ref_custom_pattern_digits      = 0;
 
+	public $add_agent_ccs                  = false;
+	public $gateway_max_email              = 0;
+
 	public $agent_defaults = array(
 		'newticket_status'      => 'awaiting_user',
 		'newticket_agent'       => 'assign',
@@ -130,6 +133,9 @@ class TicketSettings
 		$this->agent_defaults['reply_reassign_auto_change_status']    = (bool)$this->settings->get('core_tickets.reassign_auto_change_status');
 		$this->agent_defaults['reply_resolve_auto_close_tab']         = (bool)$this->settings->get('core_tickets.resolve_auto_close_tab');
 		$this->agent_defaults['view_reverse_order']                   = (bool)$this->settings->get('core_tickets.default_ticket_reverse_order');
+
+		$this->add_agent_ccs     = (bool)$this->settings->get('core_tickets.add_agent_ccs');
+		$this->gateway_max_email = (int)$this->settings->get('core.gateway_max_email');
 	}
 
 
@@ -155,7 +161,9 @@ class TicketSettings
 			'ref_custom_enabled',
 			'ref_custom_pattern',
 			'ref_custom_pattern_digits',
-			'agent_defaults'
+			'agent_defaults',
+			'add_agent_ccs',
+			'gateway_max_email',
 		) as $s) {
 			$export_settings[$s] = $this->$s;
 		}
@@ -230,5 +238,8 @@ class TicketSettings
 		$this->settings->setSetting('core_tickets.reassign_auto_change_status',   $this->agent_defaults['reply_reassign_auto_change_status']);
 		$this->settings->setSetting('core_tickets.resolve_auto_close_tab',        $this->agent_defaults['reply_resolve_auto_close_tab']);
 		$this->settings->setSetting('core_tickets.default_ticket_reverse_order',  $this->agent_defaults['view_reverse_order']);
+
+		$this->settings->setSetting('core_tickets.add_agent_ccs', $this->add_agent_ccs);
+		$this->settings->setSetting('core.gateway_max_email', $this->gateway_max_email ?: null);
 	}
 }

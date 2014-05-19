@@ -26,12 +26,50 @@
 						<div class="col-lg-12">
 							<div class="inner-group">
 								<label>
-									<input type="checkbox" ng-model="settings.kbsuggest_web_enbaled" />
+									<input type="checkbox" ng-model="settings.kbsuggest_web_enabled" />
 									<h4>Show article suggestions on the new ticket form</h4>
 								</label>
 								<span class="help-block">
 									When enabled, the system will search your knowledgebase for articles that match
 									the ticket the user is submitting.
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Email Settings</span>
+						</h3>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-12">
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.add_agent_ccs" />
+									<h4>Process agents that are in the CC line of incoming emails</h4>
+								</label>
+								<span class="help-block">
+									When enabled, any agent email addresses that are in the CC line of incoming emails will be added
+									as followers on tickets. This means, for example, an end-user could add an agent to their ticket
+									by CC'ing them.
+								</span>
+							</div>
+							<div class="inner-group">
+								<label>
+									<h4>Maximum email size</h4>
+								</label>
+								<br/>
+								<dp-filesize-with-unit ng-model="settings.gateway_max_email" />
+								<span class="help-block">
+									Enter the max size for an email before it is rejected. This refers to the total size of a raw
+									email source. A raw email is roughly 35% larger than the sum of all attachments and text content.
 								</span>
 							</div>
 						</div>

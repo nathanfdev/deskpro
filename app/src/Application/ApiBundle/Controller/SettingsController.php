@@ -36,7 +36,6 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
-use Application\DeskPRO\Settings\EmailSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
 use Application\DeskPRO\Settings\PasswordSettings;
 use Application\DeskPRO\Settings\PortalSettings;
@@ -194,34 +193,6 @@ class SettingsController extends AbstractController implements ProtectedControll
 		$general_settings = new GeneralSettings($this->settings);
 		$general_settings->setArray($this->in->getArrayValue('general_settings'));
 		$general_settings->saveSettings();
-
-		return $this->createSuccessResponse();
-	}
-
-
-	####################################################################################################################
-	# email-settings
-	####################################################################################################################
-
-	public function emailSettingsAction()
-	{
-		$email_settings = new EmailSettings($this->settings);
-
-		return $this->createApiResponse(array(
-			'email_settings' => $email_settings->toArray(),
-		));
-	}
-
-
-	####################################################################################################################
-	# save-email-settings
-	####################################################################################################################
-
-	public function saveEmailSettingsAction()
-	{
-		$email_settings = new EmailSettings($this->settings);
-		$email_settings->setArray($this->in->getArrayValue('email_settings'));
-		$email_settings->saveSettings();
 
 		return $this->createSuccessResponse();
 	}

@@ -83,7 +83,10 @@
             ngModel.$formatters.push(function(modelValue) {
               var num, unit, unitName, _i, _j, _len, _len1;
               unit = false;
-              num = '';
+              num = 0;
+              if (modelType === null || modelType === "" || !modelType || isNaN(modelType)) {
+                modelType = 0;
+              }
               switch (modelType) {
                 case "object":
                   if ((modelValue != null ? modelValue[objModelKeys[0]] : void 0) != null) {
@@ -103,6 +106,9 @@
                   break;
                 default:
                   modelValue = parseInt(modelValue || 0);
+                  if (isNaN(modelValue)) {
+                    modelValue = 0;
+                  }
                   for (_i = 0, _len = multiplierTypes.length; _i < _len; _i++) {
                     unitName = multiplierTypes[_i];
                     if (unitName === 'b') {

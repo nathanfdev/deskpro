@@ -51,6 +51,7 @@ class TicketFwdSettings
 
 	public $use_account;
 	public $use_agent_address;
+	public $process_agent_fwd;
 
 
 	/**
@@ -73,6 +74,7 @@ class TicketFwdSettings
 	{
 		$this->use_account       = (int)$this->settings->get('core_tickets.fwd_use_account');
 		$this->use_agent_address = (bool)$this->settings->get('core_tickets.fwd_use_agent_address');
+		$this->process_agent_fwd = (bool)$this->settings->get('core_tickets.process_agent_fwd');
 
 		if (!$this->use_account || !$this->email_accounts->hasAcccount($this->use_account)) {
 			$acc = Arrays::getFirstItem($this->email_accounts->getAllActiveAccounts('with_transport')) ?: null;
@@ -91,6 +93,7 @@ class TicketFwdSettings
 		foreach (array(
 			'use_account',
 			'use_agent_address',
+			'process_agent_fwd',
 		) as $s) {
 			$export_settings[$s] = $this->$s;
 		}
@@ -108,6 +111,7 @@ class TicketFwdSettings
 
 		$this->use_account       = (int)$set_settings->get('use_account');
 		$this->use_agent_address = (bool)$set_settings->get('use_agent_address');
+		$this->process_agent_fwd = (bool)$set_settings->get('process_agent_fwd');
 
 		if (!$this->use_account || !$this->email_accounts->hasAcccount($this->use_account)) {
 			$acc = Arrays::getFirstItem($this->email_accounts->getAllActiveAccounts('with_transport')) ?: null;
@@ -123,5 +127,6 @@ class TicketFwdSettings
 	{
 		$this->settings->setSetting('core_tickets.fwd_use_account', $this->use_account);
 		$this->settings->setSetting('core_tickets.fwd_use_agent_address', $this->use_agent_address);
+		$this->settings->setSetting('core_tickets.process_agent_fwd', $this->process_agent_fwd);
 	}
 }

@@ -299,6 +299,9 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 		try {
 
 			if ($value !== null) {
+				if ($value === true) $value = '1';
+				else if ($value === false) $value = '0';
+
 				$this->db->executeUpdate("
 					INSERT INTO settings
 						(name, value)
