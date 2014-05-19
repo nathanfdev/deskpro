@@ -145,6 +145,10 @@
           title: 'Send Email To Agents',
           value: 'SendAgentEmail'
         });
+        set_options.push({
+          title: 'Send Eamil',
+          subOptions: options
+        });
         options = [];
         options.push({
           title: 'Stop Processing Triggers',
@@ -253,60 +257,67 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
-        if (!this.loadDataPromise) {
-          this.loadDataPromise = this.Api.sendDataGet({
-            'agents': '/agents',
-            'agent_teams': '/agent_teams',
-            'ticket_deps': '/ticket_deps',
-            'ticket_cats': '/ticket_cats',
-            'ticket_prods': '/ticket_prods',
-            'ticket_pris': '/ticket_pris',
-            'ticket_works': '/ticket_works',
-            'ticket_fields': '/ticket_fields',
-            'user_fields': '/user_fields',
-            'org_fields': '/org_fields',
-            'ticket_slas': '/ticket_slas',
-            'email_accounts': '/email_accounts',
-            'usergroups': '/user_groups'
-          }).then((function(_this) {
-            return function(result) {
-              var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _results;
-              data = result.data;
-              options_data = {};
-              options_data['agents'] = data.agents.agents;
-              options_data['agent_teams'] = data.agent_teams.agent_teams;
-              options_data['ticket_deps'] = data.ticket_deps.departments;
-              options_data['ticket_cats'] = data.ticket_cats.categories;
-              options_data['ticket_pris'] = data.ticket_pris.priorities;
-              options_data['ticket_works'] = data.ticket_works.workflows;
-              options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
-              options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
-              options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
-              options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
-              options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
-              options_data['email_accounts'] = data.email_accounts.email_accounts;
-              options_data['usergroups'] = data.usergroups.groups;
-              _this.options_data = options_data;
-              if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
-                _ref6 = _this.options_data.ticket_fields;
-                for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
-                  f = _ref6[_i];
-                  _this.initFieldGetter('SetTicketField', f);
+        var defer;
+        if (this.options_data) {
+          defer = this.$q.defer();
+          defer.resolve(this.options_data);
+          return defer.promise;
+        } else {
+          if (!this.loadDataPromise) {
+            this.loadDataPromise = this.Api.sendDataGet({
+              'agents': '/agents',
+              'agent_teams': '/agent_teams',
+              'ticket_deps': '/ticket_deps',
+              'ticket_cats': '/ticket_cats',
+              'ticket_prods': '/ticket_prods',
+              'ticket_pris': '/ticket_pris',
+              'ticket_works': '/ticket_works',
+              'ticket_fields': '/ticket_fields',
+              'user_fields': '/user_fields',
+              'org_fields': '/org_fields',
+              'ticket_slas': '/ticket_slas',
+              'email_accounts': '/email_accounts',
+              'usergroups': '/user_groups'
+            }).then((function(_this) {
+              return function(result) {
+                var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _results;
+                data = result.data;
+                options_data = {};
+                options_data['agents'] = data.agents.agents;
+                options_data['agent_teams'] = data.agent_teams.agent_teams;
+                options_data['ticket_deps'] = data.ticket_deps.departments;
+                options_data['ticket_cats'] = data.ticket_cats.categories;
+                options_data['ticket_pris'] = data.ticket_pris.priorities;
+                options_data['ticket_works'] = data.ticket_works.workflows;
+                options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+                options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
+                options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
+                options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
+                options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
+                options_data['email_accounts'] = data.email_accounts.email_accounts;
+                options_data['usergroups'] = data.usergroups.groups;
+                _this.options_data = options_data;
+                if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
+                  _ref6 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
+                    f = _ref6[_i];
+                    _this.initFieldGetter('SetTicketField', f);
+                  }
                 }
-              }
-              if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
-                _ref8 = _this.options_data.user_fields;
-                _results = [];
-                for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
-                  f = _ref8[_j];
-                  _results.push(_this.initFieldGetter('SetUserField', f));
+                if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
+                  _ref8 = _this.options_data.user_fields;
+                  _results = [];
+                  for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
+                    f = _ref8[_j];
+                    _results.push(_this.initFieldGetter('SetUserField', f));
+                  }
+                  return _results;
                 }
-                return _results;
-              }
-            };
-          })(this));
+              };
+            })(this));
+          }
+          return this.loadDataPromise;
         }
-        return this.loadDataPromise;
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgent = function(options) {

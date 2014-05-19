@@ -365,49 +365,54 @@ define [
 			return set_options
 
 		loadDataOptions: ->
-			if not @loadDataPromise
-				@loadDataPromise = @Api.sendDataGet({
-					'agents':          '/agents',
-					'agent_teams':     '/agent_teams',
-					'ticket_deps':     '/ticket_deps',
-					'ticket_cats':     '/ticket_cats',
-					'ticket_prods':    '/ticket_prods',
-					'ticket_pris':     '/ticket_pris',
-					'ticket_works':    '/ticket_works',
-					'ticket_fields':   '/ticket_fields',
-					'user_fields':     '/user_fields',
-					'org_fields':      '/org_fields',
-					'ticket_accounts': '/email_accounts',
-					'usergroups':      '/user_groups',
-				}).then( (result) =>
-					data = result.data
-					options_data = {}
-					options_data['agents']           = data.agents.agents
-					options_data['agent_teams']      = data.agent_teams.agent_teams
-					options_data['ticket_deps']      = data.ticket_deps.departments
-					options_data['ticket_cats']      = data.ticket_cats.categories
-					options_data['ticket_pris']      = data.ticket_pris.priorities
-					options_data['ticket_works']     = data.ticket_works.workflows
-					options_data['ticket_prods']     = data.ticket_prods?.products
-					options_data['ticket_fields']    = data.ticket_fields?.custom_fields
-					options_data['org_fields']       = data.org_fields?.custom_fields
-					options_data['user_fields']      = data.user_fields?.custom_fields
-					options_data['email_accounts']   = data.ticket_accounts.email_accounts
-					options_data['usergroups']       = data.usergroups.groups
-					@options_data = options_data
+			if @options_data
+				defer = @.$q.defer()
+				defer.resolve(@options_data)
+				return defer.promise
+			else
+				if not @loadDataPromise
+					@loadDataPromise = @Api.sendDataGet({
+						'agents':          '/agents',
+						'agent_teams':     '/agent_teams',
+						'ticket_deps':     '/ticket_deps',
+						'ticket_cats':     '/ticket_cats',
+						'ticket_prods':    '/ticket_prods',
+						'ticket_pris':     '/ticket_pris',
+						'ticket_works':    '/ticket_works',
+						'ticket_fields':   '/ticket_fields',
+						'user_fields':     '/user_fields',
+						'org_fields':      '/org_fields',
+						'ticket_accounts': '/email_accounts',
+						'usergroups':      '/user_groups',
+					}).then( (result) =>
+						data = result.data
+						options_data = {}
+						options_data['agents']           = data.agents.agents
+						options_data['agent_teams']      = data.agent_teams.agent_teams
+						options_data['ticket_deps']      = data.ticket_deps.departments
+						options_data['ticket_cats']      = data.ticket_cats.categories
+						options_data['ticket_pris']      = data.ticket_pris.priorities
+						options_data['ticket_works']     = data.ticket_works.workflows
+						options_data['ticket_prods']     = data.ticket_prods?.products
+						options_data['ticket_fields']    = data.ticket_fields?.custom_fields
+						options_data['org_fields']       = data.org_fields?.custom_fields
+						options_data['user_fields']      = data.user_fields?.custom_fields
+						options_data['email_accounts']   = data.ticket_accounts.email_accounts
+						options_data['usergroups']       = data.usergroups.groups
+						@options_data = options_data
 
-					if @options_data?.ticket_fields
-						for f in @options_data.ticket_fields
-							@initFieldGetter('CheckTicketField', f)
-					if @options_data?.user_fields
-						for f in @options_data.user_fields
-							@initFieldGetter('CheckUserField', f)
-					if @options_data?.org_fields
-						for f in @options_data.org_fields
-							@initFieldGetter('CheckOrgField', f)
-				)
+						if @options_data?.ticket_fields
+							for f in @options_data.ticket_fields
+								@initFieldGetter('CheckTicketField', f)
+						if @options_data?.user_fields
+							for f in @options_data.user_fields
+								@initFieldGetter('CheckUserField', f)
+						if @options_data?.org_fields
+							for f in @options_data.org_fields
+								@initFieldGetter('CheckOrgField', f)
+					)
 
-			return @loadDataPromise
+				return @loadDataPromise
 
 		getCheckWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
