@@ -95,25 +95,49 @@
           title: 'Is disabled',
           value: 'FilterUserIsDisabled'
         });
+        options.push({
+          title: 'User Contact Phone',
+          value: 'FilterUserContactPhone'
+        });
+        options.push({
+          title: 'User Contact Address',
+          value: 'FilterUserContactAddress'
+        });
+        options.push({
+          title: 'User Contact Instant Messaging',
+          value: 'FilterUserContactIm'
+        });
         set_options.push({
           title: 'User Criteria',
           subOptions: options
         });
         options = [];
         options.push({
-          title: 'Name',
+          title: 'Organization Name',
           value: 'FilterOrgName'
         });
         options.push({
-          title: 'Label',
+          title: 'Organization Label',
           value: 'FilterOrgLabels'
         });
         options.push({
-          title: 'Email Domain',
+          title: 'Organization Contact Phone',
+          value: 'FilterOrgContactPhone'
+        });
+        options.push({
+          title: 'Organization Contact Address',
+          value: 'FilterOrgContactAddress'
+        });
+        options.push({
+          title: 'Organization Contact Instant Messaging',
+          value: 'FilterOrgContactIm'
+        });
+        options.push({
+          title: 'Organization Email Domain',
           value: 'FilterOrgEmailDomain'
         });
         options.push({
-          title: 'Linked Usergroup',
+          title: 'Organization Linked Usergroup',
           value: 'FilterOrgGroups'
         });
         set_options.push({
@@ -513,6 +537,39 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserContactPhone = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'address';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserContactAddress = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'address';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserContactIm = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'im';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgName = function(options) {
         var def;
         if (options == null) {
@@ -530,6 +587,39 @@
           options = {};
         }
         options.propName = 'labels';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgContactPhone = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'address';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgContactAddress = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'address';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgContactIm = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'im';
         options.operators = ['contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;

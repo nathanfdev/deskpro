@@ -111,6 +111,21 @@ define [
 				value: 'FilterUserIsDisabled'
 			})
 
+			options.push({
+				title: 'User Contact Phone',
+				value: 'FilterUserContactPhone'
+			})
+
+			options.push({
+				title: 'User Contact Address',
+				value: 'FilterUserContactAddress'
+			})
+
+			options.push({
+				title: 'User Contact Instant Messaging',
+				value: 'FilterUserContactIm'
+			})
+
 			set_options.push({
 				title: 'User Criteria',
 				subOptions: options
@@ -123,22 +138,37 @@ define [
 			options = []
 
 			options.push({
-				title: 'Name',
+				title: 'Organization Name',
 				value: 'FilterOrgName'
 			})
 
 			options.push({
-				title: 'Label',
+				title: 'Organization Label',
 				value: 'FilterOrgLabels'
 			})
 
 			options.push({
-				title: 'Email Domain',
+				title: 'Organization Contact Phone',
+				value: 'FilterOrgContactPhone'
+			})
+
+			options.push({
+				title: 'Organization Contact Address',
+				value: 'FilterOrgContactAddress'
+			})
+
+			options.push({
+				title: 'Organization Contact Instant Messaging',
+				value: 'FilterOrgContactIm'
+			})
+
+			options.push({
+				title: 'Organization Email Domain',
 				value: 'FilterOrgEmailDomain'
 			})
 
 			options.push({
-				title: 'Linked Usergroup',
+				title: 'Organization Linked Usergroup',
 				value: 'FilterOrgGroups'
 			})
 
@@ -377,6 +407,24 @@ define [
 			def = @getStandardIs(options)
 			return def
 
+		getFilterUserContactPhone: (options = {}) ->
+			options.propName = 'address'
+			options.operators = ['contains', 'not_contains']
+			def = @getStandardInput(options)
+			return def
+
+		getFilterUserContactAddress: (options = {}) ->
+			options.propName = 'address'
+			options.operators = ['contains', 'not_contains']
+			def = @getStandardInput(options)
+			return def
+
+		getFilterUserContactIm: (options = {}) ->
+			options.propName = 'im'
+			options.operators = ['contains', 'not_contains']
+			def = @getStandardInput(options)
+			return def
+
 		getFilterOrgName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
@@ -385,6 +433,24 @@ define [
 
 		getFilterOrgLabels: (options = {}) ->
 			options.propName = 'labels'
+			options.operators = ['contains', 'not_contains']
+			def = @getStandardInput(options)
+			return def
+
+		getFilterOrgContactPhone: (options = {}) ->
+			options.propName = 'address'
+			options.operators = ['contains', 'not_contains']
+			def = @getStandardInput(options)
+			return def
+
+		getFilterOrgContactAddress: (options = {}) ->
+			options.propName = 'address'
+			options.operators = ['contains', 'not_contains']
+			def = @getStandardInput(options)
+			return def
+
+		getFilterOrgContactIm: (options = {}) ->
+			options.propName = 'im'
 			options.operators = ['contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def

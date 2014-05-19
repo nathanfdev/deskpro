@@ -253,6 +253,62 @@ class LegacyTermsTransformer
 					'op'      => $term->getTermOperator(),
 					'options' => array('workflow' => $options['workflow_ids'])
 				);
+
+			case 'FilterSlaStatus':
+				return array(
+					'type'    => 'sla_status',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterSla':
+				return array(
+					'type'    => 'sla',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterUserContactPhone':
+				return array(
+					'type'    => 'person_contact_phone',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterUserContactAddress':
+				return array(
+					'type'    => 'person_contact_address',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterUserContactIm':
+				return array(
+					'type'    => 'person_contact_im',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterOrgContactPhone':
+				return array(
+					'type'    => 'org_contact_phone',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterOrgContactAddress':
+				return array(
+					'type'    => 'org_contact_address',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterOrgContactIm':
+				return array(
+					'type'    => 'org_contact_im',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
 		}
 
 		return $legacy_terms;
@@ -436,10 +492,13 @@ class LegacyTermsTransformer
 				));
 
 			case 'sla':
-				break;
+				return new Terms\FilterSla($op, array('sla_ids' => @$options['sla_ids'] ?: array()));
 
 			case 'sla_status':
-				break;
+				return new Terms\FilterSlaStatus($op, array(
+					'sla_ids'    => @$options['sla_ids'] ?: array(),
+					'sla_status' => @$options['sla_status'] ?: ''
+				));
 
 			case 'user_waiting':
 				break;
@@ -536,13 +595,13 @@ class LegacyTermsTransformer
 				));
 
 			case 'person_contact_phone':
-				break;
+				return new Terms\FilterUserContactPhone($op, $options);
 
 			case 'person_contact_address':
-				break;
+				return new Terms\FilterUserContactAddress($op, $options);
 
 			case 'person_contact_im':
-				break;
+				return new Terms\FilterUserContactIm($op, $options);
 
 			case 'org_date_created':
 				break;
@@ -563,13 +622,13 @@ class LegacyTermsTransformer
 				));
 
 			case 'org_contact_phone':
-				break;
+				return new Terms\FilterOrgContactPhone($op, $options);
 
 			case 'org_contact_address':
-				break;
+				return new Terms\FilterOrgContactAddress($op, $options);
 
 			case 'org_contact_im':
-				break;
+				return new Terms\FilterOrgContactIm($op, $options);
 		}
 
 		return null;

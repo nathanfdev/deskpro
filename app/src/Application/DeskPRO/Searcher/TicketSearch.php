@@ -1286,6 +1286,9 @@ class TicketSearch extends SearcherAbstract
 
 						$choice = (array)((is_array($choice) && isset($choice['sla_id'])) ? $choice['sla_id'] : $choice);
 						if (!$choice) {
+							((is_array($choice) && isset($choice['sla_ids'])) ? $choice['sla_ids'] : $choice);
+						}
+						if (!$choice) {
 							break;
 						}
 
@@ -1328,6 +1331,9 @@ class TicketSearch extends SearcherAbstract
 						if (is_array($choice) && isset($choice['sla_status'])) {
 							$statuses = (array)$choice['sla_status'];
 							$sla_ids = (array)(isset($choice['sla_id']) ? $choice['sla_id'] : array());
+							if (!$sla_ids) {
+								(isset($choice['sla_ids']) ? $choice['sla_ids'] : array());
+							}
 						} else {
 							$statuses = (array)$choice;
 							$sla_ids = array();
