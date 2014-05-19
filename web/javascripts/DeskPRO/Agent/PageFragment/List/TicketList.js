@@ -1324,6 +1324,17 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		});
 		this.ownObject(groupingMenu);
 
+		$scope.openAgentChat = function(agentId, $event) {
+			if (!agentId) return;
+
+			if ($event) {
+				$event.stopPropagation();
+				$event.preventDefault();
+			}
+
+			DeskPRO_Window.sections.agent_chat_section.newChatWindow([agentId]);
+		}
+
 		//------------------------------
 		// Export
 		//------------------------------

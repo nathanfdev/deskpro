@@ -131,7 +131,7 @@
 					<% if (field == 'agent') { %>
 						<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
 						<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><%- ticket_display.agent.display_name %></span><% } %>
-						<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link"><%- ticket_display.agent.display_name %></a></span><% } %>
+						<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><%- ticket_display.agent.display_name %></a></span><% } %>
 						<% if (!ticket_display.agent) { %><span class="prop-val">{{ phrase('agent.general.unassigned') }}</span><% } %>
 					<% } %>
 
