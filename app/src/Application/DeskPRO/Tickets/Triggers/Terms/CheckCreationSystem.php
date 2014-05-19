@@ -39,7 +39,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if a category is set
+ * Checks the creation system.
  *
  * @option string creation_system
  */

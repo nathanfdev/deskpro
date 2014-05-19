@@ -131,6 +131,14 @@
           value: 'CheckLabel'
         });
         options.push({
+          title: 'Creation System',
+          value: 'CheckCreationSystem'
+        });
+        options.push({
+          title: 'Created via URL',
+          value: 'CheckCreationSystemOption'
+        });
+        options.push({
           title: 'Agent Message',
           value: 'CheckAgentMessage'
         });
@@ -649,6 +657,55 @@
         }
         options.propName = 'message';
         options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCreationSystem = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'creation_system';
+        options.operators = ['is', 'not'];
+        options.options = [
+          {
+            title: "Created by a user via the portal",
+            value: "web.person.portal"
+          }, {
+            title: "Created by a user via the Feedback and Support tab",
+            value: "web.person.widget"
+          }, {
+            title: "Created by a user via an embedded form",
+            value: "web.person.embed"
+          }, {
+            title: "Created by a user via email",
+            value: "gateway.person"
+          }, {
+            title: "Created by an agent via the agent interface",
+            value: "web.agent.portal"
+          }, {
+            title: "Created by an agent via email",
+            value: "gateway.agent"
+          }, {
+            title: "Create by the API in a user context",
+            value: "web.api.person"
+          }, {
+            title: "Create by the API in an agent context",
+            value: "web.api.agent"
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCreationSystemOption = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'creation_system_option';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
