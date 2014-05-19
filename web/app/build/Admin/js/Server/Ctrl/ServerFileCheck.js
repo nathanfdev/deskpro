@@ -31,11 +31,6 @@
         return this.error_logs = [];
       };
 
-
-      /*
-       	 *
-       */
-
       Admin_ServerFileCheck_Ctrl_ServerFileCheck.prototype.initialLoad = function() {
         var data_promise;
         data_promise = this.Api.sendGet('/server_file_check').then((function(_this) {
@@ -53,7 +48,7 @@
 
 
       /*
-       	 * Starting the process of integrity file check
+       		 * Starting the process of integrity file check
        */
 
       Admin_ServerFileCheck_Ctrl_ServerFileCheck.prototype.startCheck = function() {

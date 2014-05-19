@@ -15,7 +15,7 @@
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.CTRL_AS = 'Ctrl';
 
-      Admin_ServerFileUploads_Ctrl_ServerFileUploads.DEPS = ['$state'];
+      Admin_ServerFileUploads_Ctrl_ServerFileUploads.DEPS = ['$state', '$http'];
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.init = function() {
         this.$scope.data = null;
@@ -26,26 +26,16 @@
         return this.setupUploadListeners();
       };
 
-
-      /*
-       	 *
-       */
-
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.initialLoad = function() {
         var data_promise;
         data_promise = this.Api.sendGet('/server_file_uploads').then((function(_this) {
           return function(res) {
             _this.$scope.data = res.data.server_file_uploads;
-            return _this.$scope.fileUploadOptions.url = res.data.server_file_uploads.file_uploader_url;
+            return _this.$scope.fileUploadOptions.url = _this.$http.signUrl(res.data.server_file_uploads.file_uploader_url);
           };
         })(this));
         return this.$q.all([data_promise]);
       };
-
-
-      /*
-       	 *
-       */
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.setupUploadListeners = function() {
         this.$scope.$on('fileuploaddone', (function(_this) {

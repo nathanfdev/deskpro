@@ -197,14 +197,10 @@
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared. If you did not choose a file, you can simply try
-				again now. If you did choose a file and are still seeing this message then it
-				means the server did not to provide the helpdesk with your upload.
-				<br/><br/>
-				The two most common reasons for this are:
+				We detected a problem while trying to upload your file. The most common reasons are:
 				<ul style="margin-top: 3px;">
 					<li style="margin-bottom: 3px;" ng-if="!fileUploadResults.is_tmp_writable">
-						&bull; The temporary storage directory (upload_tmp_dir in php.ini)
+						The temporary storage directory (upload_tmp_dir in php.ini)
 						is currently set to {{ php_vars.upload_tmp_dir_real }}. This
 						directory
 						<strong>is not writable</strong> by the web server. This means
@@ -214,13 +210,13 @@
 						directory so the server can write to it.
 					</li>
 					<li style="margin-bottom: 3px;" ng-if="fileUploadResults.is_tmp_writable">
-						&bull; The temporary storage directory defined in php.ini as
+						The temporary storage directory defined in php.ini as
 						displayed below is not set or is set to a directory
 						that the web server cannot write to. Correcting the directory or
 						making it writable may solve the problem.
 					</li>
 					<li>
-						&bull; You have chosen a file that is larger than your server
+						You have chosen a file that is larger than your server
 						configuration allows. File limits are set using the
 						options in php.ini as displayed below. In addition to these limits, your
 						web server (such as IIS or Apache)
