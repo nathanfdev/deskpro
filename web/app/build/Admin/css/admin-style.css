@@ -9044,6 +9044,7 @@ section.dp-help-content-wrapper {
 
 section.dp-help-content-wrapper .dp-help-content-outer {
   max-width: 1100px;
+  min-width: 1024px;
   margin: 0 auto;
   text-align: left;
   border: 3px solid #eae7da;
