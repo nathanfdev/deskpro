@@ -64,7 +64,7 @@ define ->
 				)
 
 				element.on('click', (ev) ->
-					ev.preventDefault();
+					ev.stopPropagation();
 					open()
 				)
 		}

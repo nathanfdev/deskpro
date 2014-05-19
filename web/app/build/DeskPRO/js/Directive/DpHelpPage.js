@@ -63,7 +63,7 @@
               return toggle();
             });
             return element.on('click', function(ev) {
-              ev.preventDefault();
+              ev.stopPropagation();
               return open();
             });
           }
