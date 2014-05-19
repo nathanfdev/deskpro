@@ -38,6 +38,8 @@ $files = array(
     // cannot be included as commands are discovered based on the path to this class via Reflection
     //'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle',
 
+	'Twig_Extension_Core',
+
 	'Orb\Util\ClassLoader',
 
 	'Orb\\Helper\\HelperManager',
