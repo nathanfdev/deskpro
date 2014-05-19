@@ -377,7 +377,7 @@ define [
 			options.propName = 'agent_team_id'
 			options.dataName = 'agent_teams'
 			options.extraOptions = [
-				{title: 'No Agent', value: 0},
+				{title: 'No Team', value: 0},
 				{title: 'Current Agent\'s Team', value: -1}
 			]
 			def = @getStandardSelect(options)

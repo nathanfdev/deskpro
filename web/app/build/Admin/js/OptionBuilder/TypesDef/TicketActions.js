@@ -371,7 +371,7 @@
         options.dataName = 'agent_teams';
         options.extraOptions = [
           {
-            title: 'No Agent',
+            title: 'No Team',
             value: 0
           }, {
             title: 'Current Agent\'s Team',
