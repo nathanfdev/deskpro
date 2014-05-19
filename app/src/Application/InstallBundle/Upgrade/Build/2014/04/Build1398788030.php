@@ -36,12 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Monolog\NullLogger;
+use Application\DeskPRO\Tickets\Actions\SetDepartment;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckEmailAccount;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\DeskPRO\Tickets\Actions\SetEmailAccount;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\InstallBundle\Data\DefaultData\TriggerData;
 use Application\InstallBundle\Upgrade\Build\Helper201404\TriggerActionConverter;
 use Application\InstallBundle\Upgrade\Build\Helper201404\TriggerTermConverter;
+use Orb\Util\Arrays;
 
 class Build1398788030 extends AbstractBuild
 {
@@ -62,6 +67,7 @@ class Build1398788030 extends AbstractBuild
 
 		$this->out("Upgrading triggers");
 
+		$em = $this->container->getEm();
 		$db = $this->container->getDb();
 		$db->executeUpdate('DELETE FROM ticket_triggers');
 
@@ -83,6 +89,104 @@ class Build1398788030 extends AbstractBuild
 		");
 
 		$this->out("Processing old triggers ...");
+
+		#------------------------------
+		# Install default triggers for deps
+		#------------------------------
+
+		$email_accounts = $em->getRepository('DeskPRO:EmailAccount')->findAll();
+		$email_accounts = Arrays::keyFromData($email_accounts, 'id');
+
+		$deps = $em->getRepository('DeskPRO:Department')->findBy(array('is_tickets_enabled' => true));
+		$deps = Arrays::keyFromData($deps, 'id');
+
+		$old_deps = $this->getUpgradeData('201404', 'departments');
+		if ($old_deps) {
+			$old_deps = Arrays::keyFromData($old_deps, 'id');
+		} else {
+			$old_deps = array();
+		}
+
+		foreach ($deps as $dep) {
+			if (!isset($old_deps[$dep->id])) {
+				continue;
+			}
+
+			$old_dep = $old_deps[$dep->id];
+			$map_id = $old_dep['email_gateway_id'];
+			if (!$map_id || !isset($email_accounts[$map_id])) {
+				continue;
+			}
+
+			$trigger = new TicketTrigger();
+			$trigger->department    = $dep;
+			$trigger->event_trigger = 'newticket';
+			$trigger->by_agent_mode = array('api', 'web');
+			$trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
+			$trigger->title         = 'New Ticket';
+			$trigger->is_enabled    = true;
+			$trigger->run_order     = -100;
+
+			$term_sets = new TriggerTerms();
+			$terms_all = new TriggerTermComposite();
+			$terms_all->add(new CheckDepartment('is', array('department_ids' => array($dep->id))));
+			$term_sets->addTerm($terms_all);
+
+			$actions_set = new TriggerActions();
+			$actions_set->addAction(new SetEmailAccount(array('email_account_id' => $map_id)));
+
+			$trigger->terms = $term_sets;
+			$trigger->actions = $actions_set;
+
+			$em->persist($trigger);
+			$em->flush($trigger);
+		}
+
+		#------------------------------
+		# Install default triggers for email accounts
+		#------------------------------
+
+		$old_accounts = $this->getUpgradeData('201404', 'email_gateways');
+		if ($old_accounts) {
+			$old_accounts = Arrays::keyFromData($old_accounts, 'id');
+		} else {
+			$old_accounts = array();
+		}
+
+		foreach ($email_accounts as $acc) {
+			if (!isset($old_accounts[$acc->id])) {
+				continue;
+			}
+
+			$old_acc = $old_accounts[$acc->id];
+			$map_id = $old_acc['department_id'];
+			if (!$map_id || !isset($deps[$map_id])) {
+				continue;
+			}
+
+			$trigger = new TicketTrigger();
+			$trigger->email_account = $acc;
+			$trigger->event_trigger = 'newticket';
+			$trigger->by_agent_mode = array('api', 'web');
+			$trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
+			$trigger->title         = 'New Ticket';
+			$trigger->is_enabled    = true;
+			$trigger->run_order     = -100;
+
+			$term_sets = new TriggerTerms();
+			$terms_all = new TriggerTermComposite();
+			$terms_all->add(new CheckEmailAccount('is', array('email_account_ids' => array($acc->id))));
+			$term_sets->addTerm($terms_all);
+
+			$actions_set = new TriggerActions();
+			$actions_set->addAction(new SetDepartment(array('department_id' => $map_id)));
+
+			$trigger->terms = $term_sets;
+			$trigger->actions = $actions_set;
+
+			$em->persist($trigger);
+			$em->flush($trigger);
+		}
 
 		#------------------------------
 		# Init helpers
