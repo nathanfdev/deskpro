@@ -1,5 +1,6 @@
 define [
 	'DeskPRO/Directive/DpClickHref',
+	'DeskPRO/Directive/DpClosestNumber',
 	'DeskPRO/Directive/DpTimeWithUnit',
 	'DeskPRO/Directive/DpFilesizeWithUnit',
 	'DeskPRO/Directive/DpStateMark',
@@ -37,6 +38,7 @@ define [
 	'Admin/TicketDeps/Directive/LayoutEditorField',
 ], (
 	DeskPRO_Directive_DpClickHref,
+	DeskPRO_Directive_DpClosestNumber,
 	DeskPRO_Directive_DpTimeWithUnit,
 	DeskPRO_Directive_DpFilesizeWithUnit,
 	DeskPRO_Directive_DpStateMark,
@@ -75,6 +77,7 @@ define [
 ) ->
 	return (Module) ->
 		Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref)
+		Module.directive('dpClosestNumber',                DeskPRO_Directive_DpClosestNumber)
 		Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
 		Module.directive('dpFilesizeWithUnit',             DeskPRO_Directive_DpFilesizeWithUnit)
 		Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)

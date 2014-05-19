@@ -13,7 +13,7 @@
 		</article>
 	</section>
 
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveLabel()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveSettings()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -26,7 +26,21 @@
 								<p>
 									Spammed tickets are automatically purged from the system after
 									<br/>
-									<dp-time-with-unit ng-model="settings.auto_purge_time"></dp-time-with-unit>
+									<select dp-closest-number ng-model="settings.auto_purge_time" ui-select2="{dropdownAutoWidth:true}">
+										<option value="86400">1 day</option>
+										<option value="259200">3 days</option>
+										<option value="432000">5 days</option>
+										<option value="604800">1 week</option>
+										<option value="1209600">2 weeks</option>
+										<option value="1814400">3 weeks</option>
+										<option value="2592000">1 month</option>
+										<option value="5184000">2 months</option>
+										<option value="7776000">3 months</option>
+										<option value="15552000">6 months</option>
+										<option value="23328000">9 months</option>
+										<option value="31536000">1 year</option>
+										<option value="63072000">2 years</option>
+									</select>
 								</p>
 								<br/>
 								<button class="btn btn-default" ng-click="$event.preventDefault(); TicketStatusEdit.startPurge();"><i class="fa fa-trash-o"></i> Run cleanup now</button>
@@ -44,10 +58,10 @@
 						</ul>
 					</div>
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_label">
+						<div dp-hide-spinning="saving_settings">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 						</div>
-						<div dp-show-spinning="saving_label">
+						<div dp-show-spinning="saving_settings">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>
