@@ -40,7 +40,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			for t in teams
 				enabled = false
 				for check in agent.teams
-					if check.id = t.id
+					if check.id == t.id
 						enabled = true
 						break
 

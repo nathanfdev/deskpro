@@ -33,7 +33,7 @@
           _ref2 = agent.teams;
           for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
             check = _ref2[_k];
-            if (check.id = t.id) {
+            if (check.id === t.id) {
               enabled = true;
               break;
             }

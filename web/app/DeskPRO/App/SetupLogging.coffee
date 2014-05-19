@@ -33,8 +33,10 @@ define [
 
 		Module.factory('$exceptionHandler', [ ->
 			return (exception, cause) ->
-				if window.trackJs then window.trackJs.track(exception)
-				else throw exception
+				if window.trackJs
+					window.trackJs.track(exception)
+				else
+					throw exception
 		])
 
 		Module.factory('dpInterfaceTimer', [ '$log', ($log) ->
