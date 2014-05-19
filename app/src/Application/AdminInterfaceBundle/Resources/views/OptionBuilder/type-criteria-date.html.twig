@@ -1,0 +1,48 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" style="vertical-align: top"><label style="margin-top: 3px;">{{ ng_var('type_title') }}</label></td>
+				<td width="50" style="vertical-align: top">
+					<select
+						ui-select2="{dropdownAutoWidth:true}"
+						ng-model="model.op"
+						style="min-width: 50px;"
+					>
+						<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
+						<option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
+						<option ng-if="operators.indexOf('lte') !== -1" value="lte">before</option>
+						<option ng-if="operators.indexOf('gte') !== -1" value="gte">after</option>
+						<option ng-if="operators.indexOf('between') !== -1" value="between">between</option>
+					</select>
+				</td>
+				<td width="100%" style="padding-left: 15px;">
+					<div ng-show="!model.use_relative">
+						<span ng-if="model.op == 'lte' || model.op == 'between'">
+							<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="model.date1" datepicker-options="{'show-weeks': false}" />
+						</span>
+						<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
+						<span ng-if="model.op == 'gte' || model.op == 'between'">
+							<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="model.date2" datepicker-options="{'show-weeks': false}" />
+						</span>
+						<div style="margin-top: 2px; font-size: 11px;">
+							<a href="#" ng-click="model.use_relative = true; $event.preventDefault();">Use relative dates instead &rarr;</a>
+						</div>
+					</div>
+					<div ng-show="model.use_relative">
+						<span ng-if="model.op == 'lte' || model.op == 'between'">
+							<dp-time-with-unit model-type="array" ng-model="model.date1_relative" /> ago
+						</span>
+						<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
+						<span ng-if="model.op == 'gte' || model.op == 'between'">
+							<dp-time-with-unit model-type="array" ng-model="model.date2_relative" /> ago
+						</span>
+						<div style="margin-top: 2px; font-size: 11px;">
+							<a href="#" ng-click="model.use_relative = false; $event.preventDefault();">&larr; Use specifc dates instead</a>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

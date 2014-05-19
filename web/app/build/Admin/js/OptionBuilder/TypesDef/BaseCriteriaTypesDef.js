@@ -8,6 +8,8 @@
         this.dpTemplateManager = dpTemplateManager;
         this.options_data = null;
         this.inputTemplate = 'OptionBuilder/type-criteria-input.html';
+        this.dateTemplate = 'OptionBuilder/type-criteria-date.html';
+        this.timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html';
         this.selectTemplate = 'OptionBuilder/type-criteria-select.html';
         this.isTemplate = 'OptionBuilder/type-criteria-is.html';
         this.init();
@@ -338,6 +340,145 @@
                 value.op = model.op;
                 value.options = {};
                 value.options[prop_name] = val;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getTimeElapsedInput = function(options) {
+        var me, operators, prop_name, type;
+        type = options.type;
+        operators = options.operators || ['lte', 'gte'];
+        prop_name = options.propName;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get(me.timeElapsedTemplate);
+          },
+          getData: function() {
+            return {
+              operators: operators
+            };
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var val, _ref;
+                if (value == null) {
+                  value = {};
+                }
+                val = ((_ref = value.options) != null ? _ref[prop_name] : void 0) || [1, 'days'];
+                return {
+                  op: value.op || _.first(operators),
+                  value: val
+                };
+              },
+              getValue: function(model, data) {
+                var val, value;
+                if (model == null) {
+                  model = {};
+                }
+                val = model.value || [1, 'days'];
+                value = {};
+                value.type = type;
+                value.op = model.op;
+                value.options = {};
+                valie.options[prop_name] = val;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getDateInput = function(options) {
+        var me, operators, type;
+        type = options.type;
+        operators = options.operators || ['lte', 'gte', 'between'];
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get(me.dateTemplate);
+          },
+          getData: function() {
+            return {
+              operators: operators,
+              options: options
+            };
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var date1, date1_relative, date2, date2_relative, use_relative;
+                if (value == null) {
+                  value = {};
+                }
+                value.options = value.options || {};
+                date1 = null;
+                date2 = null;
+                date1_relative = null;
+                date2_relative = null;
+                use_relative = false;
+                if (value.options.date1 || value.options.date2 || (!value.options.date1_relative && !value.options.date2_relative)) {
+                  use_relative = false;
+                  if (value.options.date1) {
+                    date1 = new Date(value.options.date1 * 1000);
+                  }
+                  if (value.options.date2) {
+                    date2 = new Date(value.options.date1 * 1000);
+                  }
+                } else {
+                  use_relative = true;
+                  if (value.options.date1_relative) {
+                    date1_relative = value.options.date1_relative.split(' ');
+                  }
+                  if (value.options.date2_relative) {
+                    date1_relative = value.options.date2_relative.split(' ');
+                  }
+                }
+                return {
+                  op: value.op || _.first(operators),
+                  use_relative: use_relative,
+                  date1: date1 || null,
+                  date2: date2 || null,
+                  date1_relative: date1_relative || [1, 'days'],
+                  date2_relative: date2_relative || [1, 'days']
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = type;
+                value.op = model.op;
+                value.options = {};
+                if (model.use_relative) {
+                  if (model.op === 'lte' || model.op === 'between') {
+                    if (!model.date1) {
+                      model.date1 = new Date();
+                    }
+                    value.date1 = model.date1.getTime() / 1000;
+                  }
+                  if ((model.op === 'gte' || model.op === 'between') && model.date2) {
+                    if (!model.date2) {
+                      model.date2 = new Date();
+                    }
+                    value.date2 = model.date2.getTime() / 1000;
+                  }
+                } else {
+                  if ((model.op === 'lte' || model.op === 'between') && model.date1_relative) {
+                    value.date1_relative = model.date1_relative || [1, 'days'];
+                    value.date1_relative = value.date1_relative.join(' ');
+                  }
+                  if ((model.op === 'lte' || model.op === 'between') && model.date2_relative) {
+                    value.date2_relative = model.date2_relative || [1, 'days'];
+                    value.date2_relative = value.date2_relative.join(' ');
+                  }
+                }
                 return value;
               }
             };

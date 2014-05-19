@@ -62,6 +62,34 @@
           title: 'Hold',
           value: 'FilterHoldStatus'
         });
+        options.push({
+          title: 'Date Created',
+          value: 'FilterDateCreated'
+        });
+        options.push({
+          title: 'Date Resolved',
+          value: 'FilterDateResolved'
+        });
+        options.push({
+          title: 'Date Archived',
+          value: 'FilterDateClosed'
+        });
+        options.push({
+          title: 'Date Of Last Agent Reply',
+          value: 'FilterDateLastAgentReply'
+        });
+        options.push({
+          title: 'Date Of Last User Reply',
+          value: 'FilterDateLastUserReply'
+        });
+        options.push({
+          title: 'User Waiting Time',
+          value: 'FilterUserWaiting'
+        });
+        options.push({
+          title: 'Total User Waiting Time',
+          value: 'FilterTotalUserWaiting'
+        });
         set_options.push({
           title: 'Ticket Criteria',
           subOptions: options
@@ -107,6 +135,10 @@
           title: 'User Contact Instant Messaging',
           value: 'FilterUserContactIm'
         });
+        options.push({
+          title: 'Date User Created',
+          value: 'FilterUserDateCreated'
+        });
         set_options.push({
           title: 'User Criteria',
           subOptions: options
@@ -139,6 +171,10 @@
         options.push({
           title: 'Organization Linked Usergroup',
           value: 'FilterOrgGroups'
+        });
+        options.push({
+          title: 'Date Organization Created',
+          value: 'FilterOrgDateCreated'
         });
         set_options.push({
           title: 'Organization Criteria',
@@ -282,6 +318,71 @@
             };
           }
         };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserWaiting = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'time';
+        def = this.getTimeElapsedInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterTotalUserWaiting = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'time';
+        def = this.getTimeElapsedInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDateCreated = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDateResolved = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDateClosed = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDateLastAgentReply = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDateLastUserReply = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDepartment = function(options) {
@@ -570,6 +671,15 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserDateCreated = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgName = function(options) {
         var def;
         if (options == null) {
@@ -645,6 +755,15 @@
         options.dataName = 'usergroups';
         options.operators = ['is', 'not'];
         def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgDateCreated = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
         return def;
       };
 

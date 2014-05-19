@@ -309,6 +309,79 @@ class LegacyTermsTransformer
 					'op'      => $term->getTermOperator(),
 					'options' => $options
 				);
+
+			case 'FilterDateCreated':
+				return array(
+					'type'    => 'date_created',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterDateResolved':
+				return array(
+					'type'    => 'date_resolved',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterDateClosed':
+				return array(
+					'type'    => 'date_closed',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterDateLastAgentReply':
+				return array(
+					'type'    => 'date_last_agent_reply',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterDateLastUserReply':
+				return array(
+					'type'    => 'date_last_user_reply',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterUserDateCreated':
+				return array(
+					'type'    => 'person_date_created',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterOrgDateCreated':
+				return array(
+					'type'    => 'org_date_created',
+					'op'      => $term->getTermOperator(),
+					'options' => $options
+				);
+
+			case 'FilterUserWaiting':
+				$t = $term->getTermOptions();
+				$t = $t['time'];
+				return array(
+					'type'    => 'user_waiting',
+					'op'      => $term->getTermOperator(),
+					'options' => array(
+						'waiting_time'      => $t[0],
+						'waiting_time_unit' => $t[1]
+					)
+				);
+
+			case 'FilterTotalUserWaiting':
+				$t = $term->getTermOptions();
+				$t = $t['time'];
+				return array(
+					'type'    => 'total_user_waiting',
+					'op'      => $term->getTermOperator(),
+					'options' => array(
+						'waiting_time'      => $t[0],
+						'waiting_time_unit' => $t[1]
+					)
+				);
 		}
 
 		return $legacy_terms;
@@ -501,25 +574,25 @@ class LegacyTermsTransformer
 				));
 
 			case 'user_waiting':
-				break;
+				return new Terms\FilterUserWaiting($op, $options);
 
 			case 'total_user_waiting':
-				break;
+				return new Terms\FilterTotalUserWaiting($op, $options);
 
 			case 'date_created':
-				break;
+				return new Terms\FilterDateCreated($op, $options);
 
 			case 'date_resolved':
-				break;
+				return new Terms\FilterDateResolved($op, $options);
 
 			case 'date_closed':
-				break;
+				return new Terms\FilterDateClosed($op, $options);
 
 			case 'date_last_agent_reply':
-				break;
+				return new Terms\FilterDateLastAgentReply($op, $options);
 
 			case 'date_last_user_reply':
-				break;
+				return new Terms\FilterDateLastUserReply($op, $options);
 
 			case 'person_name':
 				return new Terms\FilterUserName($op, array(
@@ -582,7 +655,7 @@ class LegacyTermsTransformer
 				));
 
 			case 'person_date_created':
-				break;
+				return new Terms\FilterUserDateCreated($op, $options);
 
 			case 'person_label':
 				$labels = @$options['labels'] ?: array();
@@ -604,7 +677,7 @@ class LegacyTermsTransformer
 				return new Terms\FilterUserContactIm($op, $options);
 
 			case 'org_date_created':
-				break;
+				return new Terms\FilterOrgDateCreated($op, $options);
 
 			case 'org_email_domain':
 				return new Terms\FilterOrgEmailDomain($op, array(

@@ -65,6 +65,41 @@ define [
 				value: 'FilterHoldStatus'
 			})
 
+			options.push({
+				title: 'Date Created',
+				value: 'FilterDateCreated'
+			})
+
+			options.push({
+				title: 'Date Resolved',
+				value: 'FilterDateResolved'
+			})
+
+			options.push({
+				title: 'Date Archived',
+				value: 'FilterDateClosed'
+			})
+
+			options.push({
+				title: 'Date Of Last Agent Reply',
+				value: 'FilterDateLastAgentReply'
+			})
+
+			options.push({
+				title: 'Date Of Last User Reply',
+				value: 'FilterDateLastUserReply'
+			})
+
+			options.push({
+				title: 'User Waiting Time',
+				value: 'FilterUserWaiting'
+			})
+
+			options.push({
+				title: 'Total User Waiting Time',
+				value: 'FilterTotalUserWaiting'
+			})
+
 			set_options.push({
 				title: 'Ticket Criteria',
 				subOptions: options
@@ -126,6 +161,11 @@ define [
 				value: 'FilterUserContactIm'
 			})
 
+			options.push({
+				title: 'Date User Created',
+				value: 'FilterUserDateCreated'
+			})
+
 			set_options.push({
 				title: 'User Criteria',
 				subOptions: options
@@ -170,6 +210,11 @@ define [
 			options.push({
 				title: 'Organization Linked Usergroup',
 				value: 'FilterOrgGroups'
+			})
+
+			options.push({
+				title: 'Date Organization Created',
+				value: 'FilterOrgDateCreated'
 			})
 
 			set_options.push({
@@ -267,6 +312,36 @@ define [
 							return value
 					}
 			}
+
+		getFilterUserWaiting: (options = {}) ->
+			options.propName = 'time'
+			def = @getTimeElapsedInput(options)
+			return def
+
+		getFilterTotalUserWaiting: (options = {}) ->
+			options.propName = 'time'
+			def = @getTimeElapsedInput(options)
+			return def
+
+		getFilterDateCreated: (options = {}) ->
+			def = @getDateInput(options)
+			return def
+
+		getFilterDateResolved: (options = {}) ->
+			def = @getDateInput(options)
+			return def
+
+		getFilterDateClosed: (options = {}) ->
+			def = @getDateInput(options)
+			return def
+
+		getFilterDateLastAgentReply: (options = {}) ->
+			def = @getDateInput(options)
+			return def
+
+		getFilterDateLastUserReply: (options = {}) ->
+			def = @getDateInput(options)
+			return def
 
 		getFilterDepartment: (options = {}) ->
 			options.propName = 'department_ids'
@@ -425,6 +500,10 @@ define [
 			def = @getStandardInput(options)
 			return def
 
+		getFilterUserDateCreated: (options = {}) ->
+			def = @getDateInput(options)
+			return def
+
 		getFilterOrgName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
@@ -466,6 +545,10 @@ define [
 			options.dataName  = 'usergroups'
 			options.operators = ['is', 'not']
 			def = @getStandardSelect(options)
+			return def
+
+		getFilterOrgDateCreated: (options = {}) ->
+			def = @getDateInput(options)
 			return def
 
 		getFilterDayOfWeek: (options = {}) ->

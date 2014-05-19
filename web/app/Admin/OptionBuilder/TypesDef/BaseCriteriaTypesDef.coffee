@@ -1,10 +1,12 @@
 define ['DeskPRO/Util/Util'], (Util) ->
 	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef
 		constructor: (@$q, @Api, @dpTemplateManager) ->
-			@options_data   = null
-			@inputTemplate  = 'OptionBuilder/type-criteria-input.html'
-			@selectTemplate = 'OptionBuilder/type-criteria-select.html'
-			@isTemplate     = 'OptionBuilder/type-criteria-is.html'
+			@options_data        = null
+			@inputTemplate       = 'OptionBuilder/type-criteria-input.html'
+			@dateTemplate        = 'OptionBuilder/type-criteria-date.html'
+			@timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html'
+			@selectTemplate      = 'OptionBuilder/type-criteria-select.html'
+			@isTemplate          = 'OptionBuilder/type-criteria-is.html'
 			@init()
 
 		init: ->
@@ -242,6 +244,113 @@ define ['DeskPRO/Util/Util'], (Util) ->
 							value.op = model.op
 							value.options = {}
 							value.options[prop_name] = val
+							return value
+						}
+			}
+
+		getTimeElapsedInput: (options) ->
+			type      = options.type
+			operators = options.operators || ['lte', 'gte']
+			prop_name = options.propName
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get(me.timeElapsedTemplate)
+
+				getData: ->
+					return {
+						operators: operators
+					}
+
+				getDataFormatter: ->
+					return {
+					getViewValue: (value = {}, data) ->
+						val = value.options?[prop_name] || [1, 'days']
+						return {
+							op: value.op || _.first(operators),
+							value: val
+						}
+					getValue: (model = {}, data) ->
+
+						val = model.value || [1, 'days']
+
+						value = {}
+						value.type = type
+						value.op = model.op
+						value.options = {}
+						valie.options[prop_name] = val
+						return value
+					}
+			}
+
+		getDateInput: (options) ->
+			type      = options.type
+			operators = options.operators || ['lte', 'gte', 'between']
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get(me.dateTemplate)
+
+				getData: ->
+					return {
+						operators: operators,
+						options: options
+					}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							value.options = value.options || {}
+
+							date1 = null
+							date2 = null
+							date1_relative = null
+							date2_relative = null
+							use_relative = false
+
+							if value.options.date1 or value.options.date2 or (not value.options.date1_relative and not value.options.date2_relative)
+								use_relative = false
+
+								if value.options.date1
+									date1 = new Date(value.options.date1 * 1000)
+								if value.options.date2
+									date2 = new Date(value.options.date1 * 1000)
+							else
+								use_relative = true
+								if value.options.date1_relative
+									date1_relative = value.options.date1_relative.split(' ')
+								if value.options.date2_relative
+									date1_relative = value.options.date2_relative.split(' ')
+
+							return {
+								op: value.op || _.first(operators),
+								use_relative: use_relative,
+								date1: date1 || null,
+								date2: date2 || null,
+								date1_relative: date1_relative || [1, 'days'],
+								date2_relative: date2_relative || [1, 'days']
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = type
+							value.op = model.op
+							value.options = {}
+
+							if model.use_relative
+								if (model.op == 'lte' || model.op == 'between')
+									if not model.date1 then model.date1 = new Date()
+									value.date1 = model.date1.getTime() / 1000
+								if (model.op == 'gte' || model.op == 'between') and model.date2
+									if not model.date2 then model.date2 = new Date()
+									value.date2 = model.date2.getTime() / 1000
+							else
+								if (model.op == 'lte' || model.op == 'between') and model.date1_relative
+									value.date1_relative = model.date1_relative || [1, 'days']
+									value.date1_relative = value.date1_relative.join(' ')
+								if (model.op == 'lte' || model.op == 'between') and model.date2_relative
+									value.date2_relative = model.date2_relative || [1, 'days']
+									value.date2_relative = value.date2_relative.join(' ')
+
 							return value
 						}
 			}
