@@ -17,6 +17,6 @@
 		Generating a unique secure login token for you...
 	</div>
 	<div ng-hide="is_loading">
-		<a class="btn btn-primary" ng-href="/{{ path('user')|trim('/') }}agent/login/admin-login/{{ ng_var('login_token') }}" target="_blank" ng-click="dismiss();">Click here to log in as {{ ng_var('agentName') }}</a>
+		<a class="btn btn-primary" ng-href="/{{ path('user')|ltrim('/') }}agent/login/admin-login/{{ ng_var('login_token') }}" target="_blank" ng-click="dismiss();">Click here to log in as {{ ng_var('agentName') }}</a>
 	</div>
 {% endblock %}

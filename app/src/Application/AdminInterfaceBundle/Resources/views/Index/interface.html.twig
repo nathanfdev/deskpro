@@ -138,10 +138,10 @@
 
 		<ul class="btm">
 			<li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
-				<a href="/{{ path('user')|trim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
+				<a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
 			</li>
 			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
-				<a href="/{{ path('user')|trim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
+				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
 			</li>
 			<li ng-class="{'section-on': isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
 				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
@@ -176,9 +176,9 @@
 <link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';
-window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
-window.DP_BASE_API_URL   = '{{ path('user')|rtrim('/') }}/api';
-window.DP_BASE_ADMIN_URL = '{{ path('admin')|rtrim('/') }}';
+window.DP_BASE_URL       = '/{{ path('user')|ltrim('/') }}';
+window.DP_BASE_API_URL   = '/{{ path('user')|ltrim('/') }}api';
+window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
 window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
 window.DP_SESSION_ID     = '{{ session.session_code }}';
 window.DP_REQUEST_TOKEN  = '{{ initial_request_token }}';

@@ -37,9 +37,9 @@
 
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';
-window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
-window.DP_BASE_API_URL   = '{{ path('user')|rtrim('/') }}/api';
-window.DP_BASE_ADMIN_URL = '{{ path('admin')|rtrim('/') }}';
+window.DP_BASE_URL       = '/{{ path('user')|ltrim('/') }}';
+window.DP_BASE_API_URL   = '/{{ path('user')|ltrim('/') }}api';
+window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
 window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
 window.DP_SESSION_ID     = '{{ session.session_code }}';
 window.DP_REQUEST_TOKEN  = '{{ initial_request_token }}';
