@@ -1,0 +1,64 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Copy Settings</h4>
+{% endblock %}
+{% block modal_body %}
+	<p>
+		Copy settings from <select ui-select2 style="width: 250px;" ng-model="options.agent_id">
+			<option ng-repeat="agent in agents" value="{{ ng_var('agent.id') }}">{{ ng_var('agent.display_name') }}</option>
+		</select>
+	</p>
+	<p>
+		Which settings do you want to copy?
+	</p>
+	<ul class="checkbox-list" style="min-width: 250px; margin-bottom: 15px;">
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.zones" />
+				<span>Zone Access</span>
+			</label>
+		</li>
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.teams" />
+				<span>Teams</span>
+			</label>
+		</li>
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.groups" />
+				<span>Permission Groups</span>
+			</label>
+		</li>
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.perms" />
+				<span>Permission Overrides</span>
+			</label>
+		</li>
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.ticket_notifs" />
+				<span>Ticket Notification Preferences</span>
+			</label>
+		</li>
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.other_notifs" />
+				<span>Other Notification Preferences</span>
+			</label>
+		</li>
+	</ul>
+	<p>
+		Note that settings will be applied to the edit form and you will
+		need to click the "Save" button to actually save any changes.
+	</p>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-primary" ng-click="doCopySettings(options)">Apply settings to form</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

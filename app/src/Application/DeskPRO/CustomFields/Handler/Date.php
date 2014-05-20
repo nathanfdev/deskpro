@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
-use Orb\Util\Dates;
+use Application\DeskPRO\Entity;
 
 
 /**
@@ -116,7 +115,7 @@ class Date extends HandlerAbstract
 			}
 		}
 
-		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array(
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
 			'required' => false
 		));
 

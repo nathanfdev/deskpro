@@ -1,0 +1,283 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<section class="dp-paneblock dp-listpane">
+	<header>
+		<h3>Settings</h3>
+	</header>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>Your Helpdesk</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-12">
+					<div class="inner-group">
+						<label>
+							<h4>Helpdesk Name</h4>
+						</label>
+						<span class="help-block">
+							This is the name of your helpdesk. The name is displayed to users
+							in their browser window title, and is also used in the default footer email template.
+						</span>
+						<input type="text" class="form-control" ng-model="settings.deskpro_name" style="width: 40%" />
+					</div>
+					<div class="inner-group">
+						<label>
+							<h4>
+								Helpdesk URL
+							</h4>
+						</label>
+						<span class="help-block">
+							The primary URL for your helpdesk. This URL is used whenever the system needs
+							to link to your helpdesk. For example, in email notifications.
+						</span>
+
+						<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>Your Website</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-12">
+					<div class="inner-group">
+						<label>
+							<h4>Website Name</h4>
+						</label>
+						<span class="help-block">
+							Enter the name of your company or company website.
+						</span>
+						<input type="text" class="form-control" ng-model="settings.site_name" style="width: 40%" />
+					</div>
+					<div class="inner-group">
+						<label>
+							<h4>
+								Website URL
+							</h4>
+						</label>
+						<span class="help-block">
+							Enter the URL to your company website.
+						</span>
+						<input type="text" class="form-control" ng-model="settings.site_url" style="width: 40%" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>Dates and Times</span>
+				</h3>
+				<div class="panel-help inhelp-body">
+					<p>
+						Refer to the DeskPRO knowledgebase for information on <a href="https://support.deskpro.com/kb/articles/182" target="_blank">Date and Time formats &rarr;</a>
+					</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-12">
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Default Timezone</h4>
+						</label>
+						<select ng-model="settings.default_timezone" ui-select2 style="width: 210px;">
+							{% for tz in app.getTimezoneList() %}
+								<option value="{{ tz }}">{{ tz }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Full date and time format</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.date_fulltime" style="width: 210px;" />
+					</div>
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Full date format</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.date_full" style="width: 210px;" />
+					</div>
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Date format</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.date_day" style="width: 210px;" />
+					</div>
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Short date format</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.date_day_short" style="width: 210px;" />
+					</div>
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Time format</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.date_time" style="width: 210px;" />
+					</div>
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Send agent task reminders at</h4>
+						</label>
+						<select ng-model="settings.task_reminder_time" ui-select2 style="width: 210px;">
+							{% for i in range(1,23) %}
+								{% if i < 10 %}{% set i = '0' ~ i %}{% endif %}
+								{% set time1 = i ~ ':00' %}
+								{% set time2 = i ~ ':30' %}
+								<option value="{{ time1 }}">{{ time1 }}</option>
+								<option value="{{ time2 }}">{{ time2 }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div style="width: 460px; float:left;">
+			<div class="panel panel-innertable">
+				<div class="panel-heading">
+					<h3>
+						<span>User Attachments</span>
+					</h3>
+				</div>
+				<div class="inner-group">
+					<label>
+						<h4>
+							<input type="radio" name="attach_user_exts_limitmode" value="any" ng-model="attach_user_exts_limitmode" />
+							Allow all files
+						</h4>
+					</label>
+					<br/>
+					<label>
+						<h4>
+							<input type="radio" name="attach_user_exts_limitmode" value="allow" ng-model="attach_user_exts_limitmode" />
+							Only allow specific file extensions
+						</h4>
+					</label>
+					<div ng-show="attach_user_exts_limitmode == 'allow'">
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_must_exts" style="width: 350px;" placeholder="Example: zip, pdf" />
+					</div>
+					<label>
+						<h4>
+							<input type="radio" name="attach_user_exts_limitmode" value="disallow" ng-model="attach_user_exts_limitmode" />
+							Just disallow specific file extensions
+						</h4>
+					</label>
+					<div ng-show="attach_user_exts_limitmode == 'disallow'">
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
+					</div>
+				</div>
+				<div class="inner-group">
+					<label>
+						<h4>
+							Max file size a user can upload.
+						</h4>
+						<span class="help-block">
+							<span class="label label-danger ng-hide" ng-show="settings.attach_user_maxsize > maxUploadSize">Warning</span>
+							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+						</span>
+					</label>
+					<div>
+						<dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="width: 460px; float:left;">
+			<div class="panel panel-innertable">
+				<div class="panel-heading">
+					<h3>
+						<span>Agent Attachments</span>
+					</h3>
+				</div>
+				<div class="inner-group">
+					<label>
+						<h4>
+							<input type="radio" name="attach_agent_exts_limitmode" value="any" ng-model="attach_agent_exts_limitmode" />
+							Allow all files
+						</h4>
+					</label>
+					<br/>
+					<label>
+						<h4>
+							<input type="radio" name="attach_agent_exts_limitmode" value="allow" ng-model="attach_agent_exts_limitmode" />
+							Only allow specific file extensions
+						</h4>
+					</label>
+					<div ng-show="attach_agent_exts_limitmode == 'allow'">
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_must_exts" style="width: 350px;" placeholder="Example: zip, pdf" />
+					</div>
+					<label>
+						<h4>
+							<input type="radio" name="attach_agent_exts_limitmode" value="disallow" ng-model="attach_agent_exts_limitmode" />
+							Just disallow specific file extensions
+						</h4>
+					</label>
+					<div ng-show="attach_agent_exts_limitmode == 'disallow'">
+						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
+					</div>
+				</div>
+				<div class="inner-group">
+					<label>
+						<h4>
+							Max file size a agent can upload.
+						</h4>
+						<span class="help-block">
+							<span class="label label-danger ng-hide" ng-show="settings.attach_agent_maxsize > maxUploadSize">Warning</span>
+							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+						</span>
+					</label>
+					<div>
+						<dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br class="dp-clear"/>
+	</article>
+
+	{##################################################################################################}
+
+	<footer>
+		<div class="dp-content">
+			<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+				<div dp-hide-spinning="saving">
+					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+					<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+				</div>
+				<div dp-show-spinning="saving">
+					<i class="spinner-flat"></i>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</section>
+	</form>
+	<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

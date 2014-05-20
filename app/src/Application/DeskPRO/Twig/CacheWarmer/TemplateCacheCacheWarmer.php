@@ -51,30 +51,21 @@ class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\Te
 			'TwigBundle:Exception:exception.html.twig',
 			'TwigBundle:Exception:exception_full.html.twig',
 			'TwigBundle::layout.html.twig',
-
-			'ReportBundle:Chart:AmChart/Settings/column.xml.twig',
-			'ReportBundle:Chart:AmChart/Settings/line.xml.twig',
-			'ReportBundle:Chart:AmChart/Settings/pie.xml.twig',
-			'ReportBundle:Chart:AmChart/Settings/stackedColumn.xml.twig',
-			'ReportBundle:Chart:AmChart/Settings/stackedLine.xml.twig',
-			'ReportBundle:Chart:DeskPRO/detailedDrillDown.html.twig',
-			'ReportBundle:Chart:DeskPRO/simpleDrillDown.html.twig',
-			'ReportBundle:Chart:DeskPRO/simpleVariation.html.twig',
 		);
 
 		// plugin templates
-		$template_files = Finder::create()->in(DP_WEB_ROOT.'/plugins')->name('*.twig');
+		$template_files = Finder::create()->in(DP_ROOT.'/apps')->name('*.twig');
 
 		foreach ($template_files as $file) {
 			$path = $file->getRealPath();
 			$path = str_replace('\\', '/', $path);
-			$path = str_replace(DP_WEB_ROOT.'/plugins/', '', $path);
+			$path = str_replace(DP_ROOT.'/apps/', '', $path);
 
-			if (!strpos($path, 'Resources/views')) {
+			if (!strpos($path, 'native/Resources/views')) {
 				continue;
 			}
 
-			$path = str_replace('/Resources/views', '', $path);
+			$path = str_replace('/native/Resources/views', '', $path);
 			$path = str_replace('/', ':', $path);
 
 			// Top-level templates, like AddThis::widget.html.twig

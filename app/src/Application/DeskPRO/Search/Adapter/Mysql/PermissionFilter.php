@@ -34,15 +34,9 @@
 
 namespace Application\DeskPRO\Search\Adapter\Mysql;
 
-use Orb\Util\CapabilityInformerInterface;
-
 use Application\DeskPRO\App;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Application\DeskPRO\Search\SearcherResult\ResultSet;
-use Application\DeskPRO\Search\SearcherResult\ResultInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Orb\Util\Strings;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
 
 /**
  * Strips out search results the user cant actually see

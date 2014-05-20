@@ -35,20 +35,62 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
-use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Numbers;
 
-use Application\AgentBundle\Controller\Helper\NewsResults;
-use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
-
+/**
+ * @SWG\Resource(
+ * 	resourcePath="/news",
+ * 	description="Operations about News Items",
+ * 	basePath="/api"
+ * )
+ */
 class NewsController extends AbstractController
 {
+	/**
+	 * @SWG\Api(
+	 * 	path="/news",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Get list of all News Items",
+	 * 		notes="Returns array of all existing News Items",
+	 *		type="array",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="Category ID that needs to be searched",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="category_id_specific",
+	 *				description="Specific Category ID that needs to be searched",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="News label that needs to be searched",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="News status that needs to be searched",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function searchAction()
 	{
 		$search_map = array(
@@ -110,7 +152,26 @@ class NewsController extends AbstractController
 			'news' => $this->getApiData($news)
 		));
 	}
-
+	
+	/**
+	 * @SWG\Api(
+	 * 	path="/news",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Add a new News Item",
+	 * 		notes="Creates a new News Item and returns the ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="body",
+	 *				description="News Object to Add",
+	 *				paramType="body",
+	 *				required=true,
+	 *				type="News"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function newNewsAction()
 	{
 		$errors = array();
@@ -172,6 +233,27 @@ class NewsController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Find News by ID",
+	 * 		notes="Returns a News Item based on ID",
+	 *		type="News",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be fetched",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function getNewsAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -179,6 +261,61 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('news' => $news->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates News Item by ID",
+	 * 		notes="Updated a News Item with form data",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be updated",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="title",
+	 *				description="Updated title of the News Item",
+	 *				paramType="form",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="Updated status of the News Item",
+	 *				paramType="form",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_published",
+	 *				description="Updated published date of the News Item",
+	 *				paramType="form",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="content",
+	 *				description="Updated content of the News Item",
+	 *				paramType="form",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="Updated category_id of the News Item",
+	 *				paramType="form",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function postNewsAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id, 'edit');
@@ -232,6 +369,26 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Delete News by ID",
+	 * 		notes="Deletes a News Item based on ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be deleted",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteNewsAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id, 'delete');
@@ -243,6 +400,26 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/comments",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Find all the comments by News ID",
+	 * 		notes="Retrieves all news comments based on News ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function getNewsCommentsAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -251,6 +428,53 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/comments",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a new Comment by News ID",
+	 * 		notes="Creates a news comments based on News ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="content",
+	 *				description="Comment content",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="person_id",
+	 *				description="ID of the person making the comment",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="status of the comment",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function newNewsCommentAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -285,6 +509,34 @@ class NewsController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/comments/{comment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Find one News comment by News ID and Comment ID",
+	 * 		notes="Retrieves a news comments based on News ID and Comment ID",
+	 *		type="NewsComment",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment_id",
+	 *				description="ID of the comment that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function getNewsCommentAction($news_id, $comment_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -296,6 +548,46 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('comment' => $comment->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/comments/{comment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates one News comment by News ID and Comment ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment_id",
+	 *				description="ID of the comment that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status",
+	 *				description="status of the comment",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="content",
+	 *				description="Comment content",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function postNewsCommentAction($news_id, $comment_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -326,6 +618,33 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/comments/{comment_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Delete one News comment by News ID and Comment ID",
+	 * 		notes="Deletes a news comments based on News ID and Comment ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment_id",
+	 *				description="ID of the comment that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteNewsCommentAction($news_id, $comment_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -342,6 +661,26 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Find all the labels by News ID",
+	 * 		notes="Retrieves all labels based on News ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for labels",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function getNewsLabelsAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -349,6 +688,34 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('labels' => $this->getApiData($news->labels)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a new Label by News ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="Label",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function postNewsLabelsAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id, 'edit');
@@ -368,6 +735,34 @@ class NewsController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Find one Label by News ID and Label",
+	 * 		notes="Retrieves a label based on News ID and Label",
+	 *		type="NewsComment",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="label that needs to be searched",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function getNewsLabelAction($news_id, $label)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -379,6 +774,33 @@ class NewsController extends AbstractController
 		}
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/{news_id}/comments/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Delete one label by News ID and label",
+	 * 		notes="Deletes a news comments based on News ID and Comment ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="news_id",
+	 *				description="ID of the news item that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment_id",
+	 *				description="ID of the comment that needs to be searched for comments",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Item not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteNewsLabelAction($news_id, $label)
 	{
 		$news = $this->_getNewsOr404($news_id, 'edit');
@@ -390,6 +812,15 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/validating-comments",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets news comments that are awaiting validation"
+	 * 	)
+	 * )
+	 */
 	public function getValidatingCommentsAction()
 	{
 		$comments = $this->em->getRepository('DeskPRO:NewsComment')->getValidatingComments();
@@ -404,7 +835,17 @@ class NewsController extends AbstractController
 
 		return $this->createApiResponse(array('comments' => $output));
 	}
-
+	
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available news categories",
+	 * 		notes="Retrieves all available news categories"
+	 * 	)
+	 * )
+	 */
 	public function getCategoriesAction()
 	{
 		$categories = $this->em->getRepository('DeskPRO:NewsCategory')->getFlatHierarchy();
@@ -412,6 +853,15 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('categories' => $categories));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Creates a new News category"
+	 * 	)
+	 * )
+	 */
 	public function postCategoriesAction()
 	{
 		$errors = array();
@@ -473,6 +923,27 @@ class NewsController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{catgory_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Find News Category by ID",
+	 * 		notes="Returns a News Category based on ID",
+	 *		type="NewsCategory",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category that needs to be fetched",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -480,6 +951,47 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('category' => $category->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{catgory_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Update News Category by ID",
+	 * 		notes="Updates a News Category based on ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category that needs to be updated",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="title",
+	 *				description="Updated category title",
+	 *				paramType="path",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="parent_id",
+	 *				description="Updated parent ID",
+	 *				paramType="path",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="display_order",
+	 *				description="Updated display order",
+	 *				paramType="path",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function postCategoryAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -517,6 +1029,26 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{category_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Delete News Category by ID",
+	 * 		notes="Deletes a News Category based on ID",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category that needs to be deleted",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteCategoryAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -530,6 +1062,25 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{catgory_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets news within a news category",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category that needs to be searched",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryNewsAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -569,6 +1120,25 @@ class NewsController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{category_id}/groups",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets groups with access to a news category",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category that needs to be searched",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryGroupsAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -576,6 +1146,32 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('groups' => $this->getApiData($category->usergroups)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{category_id}/groups",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a group to a news category",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category where the new group needs to be added",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="id",
+	 *				description="ID of the group to add access for.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function postCategoryGroupsAction($category_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -608,6 +1204,32 @@ class NewsController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{category_id}/groups/{group_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if a group has access to a news category",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category that needs to be checked",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="group_id",
+	 *				description="ID of the group that needs to be checked",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function getCategoryGroupAction($category_id, $group_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);
@@ -623,6 +1245,32 @@ class NewsController extends AbstractController
 		return $this->createApiResponse(array('exists' => $exists));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/news/categories/{category_id}/groups/{group_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes a group's access to a news category",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="category_id",
+	 *				description="ID of the news category that needs to be checked",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="group_id",
+	 *				description="ID of the group that needs to be checked",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="News Category not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteCategoryGroupAction($category_id, $group_id)
 	{
 		$category = $this->_getCategoryOr404($category_id);

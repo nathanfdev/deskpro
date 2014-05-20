@@ -1,0 +1,85 @@
+<div class="dp-layout-appbody-white-matte">
+	<div ng-if="!Portal.portal_enabled">
+		<div class="dp-portal-editor-frame">
+			<header>
+				<div class="lines"><i class="fa fa-align-justify"></i></div>
+				<div class="address-bar">{{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</div>
+				<div class="control-bar">
+					<button class="btn btn-default btn-xs active" ng-click="Portal.startTogglePortal()"><i class="fa fa-power-off"></i> Portal Disabled</button>
+				</div>
+			</header>
+			<article>
+				<div class="dp-padded">
+					The portal is currently disabled.
+					<br/><br/>
+					<button class="btn btn-primary" ng-click="Portal.startTogglePortal()">Click here to enable the portal <i class="fa fa-long-arrow-right"></i></button>
+				</div>
+			</article>
+		</div>
+	</div>
+	<div ng-if="Portal.portal_enabled">
+		<div dp-portal-editor>
+			<header>
+				<div class="lines"><i class="fa fa-align-justify"></i></div>
+				<div class="address-bar"><img ng-src="{{ ng_var('Portal.favicon_url') }}" class="favicon" ng-click="Portal.openFaviconEditor()" /> {{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</div>
+				<div class="control-bar">
+					<button class="btn btn-default btn-xs" ng-click="Portal.startTogglePortal()"><i class="fa fa-power-off"></i> Disable Portal</button>
+					<button class="btn btn-default btn-xs" id="portal_colors_trigger"><i class="fa fa-th"></i> Color Chooser</button>
+					<button class="btn btn-default btn-xs" ng-click="Portal.openFaviconEditor()"><i class="fa fa-picture-o"></i> Change Favicon</button>
+				</div>
+			</header>
+			<article>
+				<div
+					id="admin_portal_editor"
+					{% if portal_path %}
+						data-portal-url="/{{ portal_path }}?admin_portal_controls=1"
+					{% else %}
+						data-portal-url="{{ app.request.getBaseUrl() }}/{{ portal_path }}?admin_portal_controls=1"
+					{% endif %}
+					data-url-update-orders="{{ path('admin_portaleditor_updateblockorder') }}"
+					data-url-block-toggle="{{ path('admin_portaleditor_blocktoggle', {pid: '_PID_'}) }}"
+				>
+					<div id="portal_iframe_loading"><h1></h1></div>
+					<iframe id="portal_iframe" frameborder="0" marginheight="0" marginwidth="0" scrolling="no" style="border:0;margin:0;padding:0;"></iframe>
+					{% include 'AdminInterfaceBundle:PortalEditor:portal-color-editor.html.twig' %}
+
+					<script type="text/x-deskpro-tmpl" id="admin_portal_block_html_edit_tpl">
+						<section class="dp-html-editor">
+							<div class="overlay-title">
+								<span class="close-overlay close-trigger"></span>
+								<h4>{{ phrase('admin.portal.edit_html') }}</h4>
+							</div>
+							<div class="overlay-content">
+								<textarea style="width: 98%; height: 98%; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;"></textarea>
+							</div>
+							<div class="overlay-footer">
+								<button class="save-trigger clean-white">{{ phrase('agent.general.save') }}</button>
+							</div>
+						</section>
+					</script>
+
+					<script type="text/x-deskpro-tmpl" id="admin_portal_block_simple_html_edit_tpl">
+						<section class="dp-portal-simpleheader-editor">
+							<div class="overlay-title">
+								<span class="close-overlay close-trigger"></span>
+								<h4>Custom Sidebar Block</h4>
+							</div>
+							<div class="overlay-content">
+								<div class="text">
+									<div class="input-title"><input type="text" class="title" name="title" style="width: 65%; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;" value="{{ title }}" placeholder="Enter a title here" /></div>
+									<div class="input-title" style="padding-top: 8px;">
+										<textarea rows="10" cols="60" style="width: 98%; height: 80%; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;" name="content" class="content" placeholder="Enter the block contents heres">{{ content }}</textarea>
+									</div>
+								</div>
+							</div>
+							<div class="overlay-footer">
+								<button class="clean-white save-text-trigger">{{ phrase('agent.general.save') }}</button>
+							</div>
+						</section>
+					</script>
+				</div>
+			</article>
+		</div>
+	</div>
+</div>
+{{ ng_tpl('AdminInterfaceBundle:PortalEditor:change-favicon-modal.html.twig') }}

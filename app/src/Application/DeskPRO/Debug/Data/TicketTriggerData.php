@@ -43,14 +43,11 @@ class TicketTriggerData implements DataInterface
 
 		$data = App::getDb()->fetchAll("SELECT * FROM ticket_triggers ORDER BY id ASC");
 		foreach ($data as &$d) {
-			if ($d['terms']) {
-				$d['terms'] = @unserialize($d['terms']);
+			if (!empty($d['terms'])) {
+				$d['terms'] = @json_decode($d['terms'], true);
 			}
-			if ($d['terms_any']) {
-				$d['terms_any'] = @unserialize($d['terms_any']);
-			}
-			if ($d['actions']) {
-				$d['actions'] = @unserialize($d['actions']);
+			if (!empty($d['actions'])) {
+				$d['actions'] = @json_decode($d['actions'], true);
 			}
 		}
 		unset($d);

@@ -36,8 +36,6 @@ namespace Application\DeskPRO\Usersource\Adapter;
 
 use Orb\Auth\Identity;
 
-use Orb\Util\Arrays;
-
 class Ldap extends AbstractAdapter
 {
 	public function getFieldsFromIdentity(Identity $identity)

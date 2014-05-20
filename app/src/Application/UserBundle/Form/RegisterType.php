@@ -36,15 +36,12 @@ namespace Application\UserBundle\Form;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class RegisterType extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$this->buildPersonForm($builder);
 	}
@@ -54,7 +51,7 @@ class RegisterType extends AbstractType
 	/**
 	 * Configures the person form
 	 */
-	protected function buildPersonForm(FormBuilder $builder)
+	protected function buildPersonForm(FormBuilderInterface $builder)
 	{
 		$builder->add('name', 'text', array('required' => false));
 		$builder->add('email', 'text', array('required' => false));

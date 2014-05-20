@@ -1,0 +1,43 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="EditCtrl.save()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+
+						<h3 style="margin-bottom: 10px;">Do you want to install {{ ng_var('EditCtrl.pack.show_title') }} ({{ ng_var('EditCtrl.pack.title') }})?</h3>
+
+						<p>
+							This language pack has translations for the following areas:
+						</p>
+						<ul>
+							<li>The user portal and user emails</li>
+							<li ng-if="EditCtrl.pack.has_agent">The agent interface and agent email notifications</li>
+							<li ng-if="EditCtrl.pack.has_admin">The admin interface and the reporting interface</li>
+						</ul>
+
+						<div ng-if="!EditCtrl.pack.has_agent || !EditCtrl.pack.has_admin">
+							<p>The following areas are <strong>not</strong> translated in this language pack:</p>
+							<ul>
+								<li ng-if="!EditCtrl.pack.has_agent">The agent interface and agent email notifications</li>
+								<li ng-if="!EditCtrl.pack.has_admin">The admin interface and the reporting interface</li>
+							</ul>
+							<p>
+								Visit the <a href="https://languages.deskpro.com/" target="_blank">DeskPRO translation system</a> to help translate this language.
+							</p>
+						</div>
+
+						<br/>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" ng-click="EditCtrl.doInstall()">Install Language <i class="fa fa-long-arrow-right"></i></button>
+						</div>
+					</div>
+				</div>
+			</article>
+		</section>
+	</form>
+{% endblock %}

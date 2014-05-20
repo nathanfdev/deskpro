@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\Twig\Extension;
 
-use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\Exception\FormException;
-use Symfony\Component\Form\Util\FormUtil;
+use Symfony\Component\Form\FormView;
 
 class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
 {

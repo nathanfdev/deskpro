@@ -36,8 +36,6 @@ namespace Application\UserBundle\Controller\Helper\CommentsAdapter;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
 use Orb\Util\Util;
 
 class FacebookComments extends AbstractComments

@@ -138,7 +138,7 @@ class Logger
 	 */
 	public function isEnabled()
 	{
-		return $this->disabled;
+		return !$this->disabled;
 	}
 
 
@@ -170,7 +170,7 @@ class Logger
 	 * should not be logged. So in this way filters act dually to transform or actually
 	 * filter out items.
 	 *
-	 * @param \Zend\Filter\Filter $filter
+	 * @param \Zend\Filter\FilterInterface $filter
 	 */
 	public function addFilter(\Orb\Filter\FilterInterface $filter)
 	{
@@ -489,7 +489,7 @@ class Logger
 	 * @param $message
 	 * @param string $level
 	 */
-	public function logToatlTime($name = 'default', $message = null, $level = 'DEBUG')
+	public function logTotalTime($name = 'default', $message = null, $level = 'DEBUG')
 	{
 		if (!$message) {
 			$message = "$name time: {{TIME}}";

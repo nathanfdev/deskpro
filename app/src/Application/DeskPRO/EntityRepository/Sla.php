@@ -35,10 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Numbers;
 
 class Sla extends AbstractEntityRepository
 {
@@ -58,6 +55,18 @@ class Sla extends AbstractEntityRepository
 		}
 
 		return $this->_all_slas;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Sla[]
+	 */
+	public function getAutoSlas()
+	{
+		return $this->_em->createQuery("
+			SELECT s
+			FROM DeskPRO:Sla s
+			WHERE s.apply_type IN ('all', 'terms')
+		")->execute();
 	}
 
 	public function clearSlaCache()

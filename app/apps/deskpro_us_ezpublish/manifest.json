@@ -1,0 +1,47 @@
+{
+	"package_name": "deskpro_us_ezpublish",
+	"is_native": true,
+	"title": "eZ Publish Authentication",
+	"description": "Enables user authentication against an eZ Publish site.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "db_dsn",
+			"type": "text",
+			"label": "DSN",
+			"description": "Database DSN",
+			"native_only": true
+		},
+		{
+			"name": "db_username",
+			"type": "text",
+			"label": "DB Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_password",
+			"type": "text",
+			"label": "DB Password",
+			"description": "",
+			"native_only": true
+		}
+	]
+}

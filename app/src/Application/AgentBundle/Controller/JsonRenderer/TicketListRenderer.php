@@ -155,10 +155,6 @@ class TicketListRenderer
 		$data['ref']                     = $ticket->ref;
 		$data['auth']                    = $ticket->auth;
 		$data['sent_to_address']         = $ticket->sent_to_address;
-		$data['notify_email']            = $ticket->notify_email;
-		$data['notify_email_name']       = $ticket->notify_email_name;
-		$data['notify_email_agent']      = $ticket->notify_email_agent;
-		$data['notify_email_name_agent'] = $ticket->notify_email_name_agent;
 		$data['creation_system']         = $ticket->creation_system;
 		$data['creation_system_option']  = $ticket->creation_system_option;
 		$data['ticket_hash']             = $ticket->ticket_hash;
@@ -296,7 +292,12 @@ class TicketListRenderer
 		$data['date_created_ts'] = $person->date_created->getTimestamp();
 
 		$data['display_name']  = $person->getDisplayName();
-		$data['primary_email'] = $person->getPrimaryEmailAddress();
+		if ($person->primary_email) {
+			$data['primary_email'] = array(
+				'id'    => $person->primary_email->id,
+				'email' => $person->primary_email->email
+			);
+		}
 
 		$data['picture_url']    = $person->getPictureUrl();
 		$data['picture_url_80'] = $person->getPictureUrl(80);

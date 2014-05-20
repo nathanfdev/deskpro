@@ -37,9 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use \Doctrine\ORM\EntityRepository;
-use Orb\Util\Arrays;
-
 class TicketLog extends AbstractEntityRepository
 {
 	/**
@@ -63,7 +60,8 @@ class TicketLog extends AbstractEntityRepository
 		$qb->select('log, p')
 			->from('DeskPRO:TicketLog', 'log')
 			->leftJoin('log.person', 'p')
-			->andWhere('log.ticket = :ticket_id');
+			->andWhere('log.ticket = :ticket_id')
+			->andWhere('log.action_type NOT IN (\'trigger\')');
 
 		if ($options['order_dir'] == 'ASC') {
 			$qb->orderBy('log.date_created', 'ASC');
@@ -74,6 +72,11 @@ class TicketLog extends AbstractEntityRepository
 		if (!empty($options['since_id'])) {
 			$qb->andWhere('log.id > :since_id');
 			$params['since_id'] = $options['since_id'];
+		}
+
+		if (!empty($options['types'])) {
+			$qb->andWhere('log.action_type IN (:types)');
+			$params['types'] = $options['types'];
 		}
 
 		$query = $qb->getQuery();
@@ -201,28 +204,26 @@ class TicketLog extends AbstractEntityRepository
 
     public function getLogsForAgent(Entity\Person $agent, array $options = array())
     {
-        if(isset($options['date_range'])) {
-            $query = $this->_em->createQuery("
-				SELECT log
-				FROM DeskPRO:TicketLog log INDEX BY log.id
-				WHERE log.person = ?1
-				AND log.date_created BETWEEN ?2 AND ?3
-				ORDER BY log.date_created ASC
-			")
-            ->setParameter(1, $agent)
-            ->setParameter(2, $options['date_range']['start'])
-            ->setParameter(3, $options['date_range']['end'])
-            ;
-        } else {
-            $query = $this->_em->createQuery("
-				SELECT log
-				FROM DeskPRO:TicketLog log INDEX BY log.id
-				WHERE log.person = ?1
-				ORDER BY log.date_created ASC
-			")
-            ->setParameter(1, $agent);
-        }
+		$qb = $qb = $this->getEntityManager()->createQueryBuilder();
+		$qb->select('log')
+			->from('DeskPRO:TicketLog', 'log INDEX BY log.id')
+			->where('log.person = :person')
+			->orderBy('log.date_created', 'ASC');
 
-        return $query->execute();
+		$params = array();
+		$params['person'] = $agent;
+
+		if (!empty($options['types'])) {
+			$qb->andWhere('log.action_type IN (:types)');
+			$params['types'] = $options['types'];
+		}
+
+		if(!empty($options['date_range'])) {
+			$qb->andWhere('log.date_created BETWEEN :date_start AND :date_end');
+			$params['date_start'] = $options['date_range']['start'];
+			$params['date_end']   = $options['date_range']['end'];
+		}
+
+        return $qb->getQuery()->execute($params);
     }
 }

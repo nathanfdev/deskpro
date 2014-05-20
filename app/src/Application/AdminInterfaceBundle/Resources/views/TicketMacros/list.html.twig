@@ -1,0 +1,74 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="dp-order-ctrl dropdown">
+					<a class="title dropdown-toggle" data-toggle="dropdown">
+						Showing:
+						<span ng-show="display_filter.type == 'all'">All Macros</span>
+						<span ng-show="display_filter.type == 'global'">Global Macros</span>
+						<span ng-show="display_filter.type == 'agent'">Agent Macros</span>
+						<i class="fa fa-caret-down"></i>
+					</a>
+					<ul class="dropdown-menu" style="width: 200px">
+						<li class="dropdown-header">Show</li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'all';">All Macros <i class="fa fa-check" ng-show="display_filter.type == 'all'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'global';">Global Macros <i class="fa fa-check" ng-show="display_filter.type == 'global'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'agent';">Agent Macros <i class="fa fa-check" ng-show="display_filter.type == 'agent'"></i></a></li>
+
+						<li class="divider" ng-show="display_filter.type == 'agent'"></li>
+						<li class="dropdown-header" ng-show="display_filter.type == 'agent'">Filter</li>
+						<li ng-show="display_filter.type == 'agent'">
+							<select ui-select2 ng-model="display_filter.agent" style="width:185px; margin-left: 8px;">
+								<option value="0">All agent macros</option>
+								<option ng-repeat="agent in ListCtrl.agents" value="{{ ng_var('agent.id') }}">{{ ng_var('agent.display_name') }}</option>
+							</select>
+						</li>
+					</ul>
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_macros.count_macros') }}"></h3>
+		</header>
+		<article>
+			<p class="dp-empty-list-notice" ng-if="!ListCtrl.list.length">
+				{{ phrase('adm.ticket_macros.no_macros') }}
+			</p>
+			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
+				<li ng-repeat="macro in filterList" dp-state-mark="tickets.macros.edit.{{ ng_var('macro.id') }}" data-id="{{ ng_var('macro.id') }}">
+					<a href="{{ ng_href('tickets.macros.edit', '{id: macro.id}') }}">
+						<div class="pull-right">
+							<em class="tag"style="margin-left: 6px;">
+								<span ng-if="macro.is_global">Global</span>
+								<span ng-if="!macro.is_global && macro.person_id">{{ ng_var('macro.person.display_name') }}</span>
+							</em>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+						</div>
+						<h4>
+							<span class="title-text">{{ ng_var('macro.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+	{{ ng_tpl('AdminInterfaceBundle:TicketMacros:delete-modal.html.twig') }}
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Macros are pre-defined sequences of actions.</h1>
+		<p>An agent can apply a macro to a ticket with a couple of clicks. Using macros to perform commonly-repeated sequences of actions helps agents work more efficiently.</p>
+	</header>
+	<article>
+		<section>
+			<p>When a macro runs, the actions it contains are applied to the ticket it is run on (or to the user associated with that ticket).</p>
+			<p>Agents can run macros from the content pane using the <strong>Macros</strong> button or the <strong>Send Reply</strong> control. They can also apply a macro as a mass action from the list pane.</p>
+			<p>Macros can be shared (available to everyone), or limited to a specific agent.</p>
+			<p>Agents can create macros in the Preferences area of the agent interface. They choose whether or not their macros are shared.</p>
+			<p>Note that if an agent tries to run a shared macro but lacks the permissions to run all its actions, the macro will not run.</p>
+		</section>
+	</article>
+{% endblock %}

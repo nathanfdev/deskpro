@@ -35,10 +35,10 @@ namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
 
 class FeedbackCommenting implements PersonContextInterface
 {

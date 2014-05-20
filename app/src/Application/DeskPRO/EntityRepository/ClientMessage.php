@@ -35,11 +35,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\HttpFoundation\Session as HttpSession;
-
-use Doctrine\ORM\EntityRepository;
 
 class ClientMessage extends AbstractEntityRepository
 {
@@ -74,7 +71,7 @@ class ClientMessage extends AbstractEntityRepository
 
 		if ($all_messages) {
 			foreach ($all_messages as $message) {
-				$handler = $message->getHandler();
+				$message['data'] = unserialize($message['data']);
 
 				// Mesasge is a numeric array
 				// 0 => id
@@ -82,7 +79,7 @@ class ClientMessage extends AbstractEntityRepository
 				// 2 => data
 				// 3 => (optional) flags
 
-				$msg_data = $handler->getMessage('ajax');
+				$msg_data = $message['data'];
 				$msg_data['from_client'] = $message['created_by_client'];
 
 				$info = array(
@@ -152,7 +149,7 @@ class ClientMessage extends AbstractEntityRepository
 		$names_like = array();
 		foreach ($channels as $ch) {
 			$names[] = "'{$ch}'";
-			$names_like[] = "m.channel LIKE '{$ch}.%'";
+			$names_like[] = "channel LIKE '{$ch}.%'";
 		}
 
 		if (!$names) {
@@ -162,37 +159,35 @@ class ClientMessage extends AbstractEntityRepository
 		$names = implode(',', $names);
 		$names_like = implode(' OR ', $names_like);
 
-		$params = array();
-
-		$qb = $this->createQueryBuilder('m');
-		$qb->select('m');
-		$qb->where('m.channel IN (' . $names . ') OR ('. $names_like . ')');
-
-		// Dont get our own messages, unless they're chat messages then we'll
-		// handle them specially in the code. But we deliver them anyway to consolodate
-		// some UI syncing based on return of AJAX requests
-		$qb->andWhere('m.created_by_client != :n_created_by_client OR (m.channel LIKE \'chat.%\') OR (m.channel LIKE \'chat_convo.%\')');
-		$params['n_created_by_client'] = $client_id;
+		$sql = "
+			SELECT
+				id, for_person_id, channel, data, created_by_client, for_client, date_created
+			FROM client_messages
+			WHERE
+				(channel IN ($names) OR ($names_like))
+				AND (created_by_client != ? OR (channel LIKE 'chat.%') OR (channel LIKE 'chat_convo.%'))
+		";
+		$params = array($client_id);
 
 		if ($person_id) {
-			$qb->andWhere('m.for_client = :for_client OR m.for_person = :for_person OR (m.for_client IS NULL AND m.for_person IS NULL)');
-			$params['for_client'] = $client_id;
-			$params['for_person'] = $person_id;
+			$sql .= "AND (for_client = ? OR for_person_id = ? OR (for_client IS NULL AND for_person_id IS NULL))";
+			$params[] = $client_id;
+			$params[] = $person_id;
 		} else {
-			$qb->andWhere('m.for_client = :for_client OR (m.for_client IS NULL AND m.for_person IS NULL)');
-			$params['for_client'] = $client_id;
+			$sql .= "AND (for_client = ? OR (for_client IS NULL AND for_person_id IS NULL))";
+			$params[] = $client_id;
 		}
 
 		if ($since_id) {
-			$qb->andWhere('m.id > :since_id');
-			$params['since_id'] = $since_id;
+			$sql .= "AND (id > ?)";
+			$params[] = $since_id;
+
+			$sql .= "\nORDER BY id ASC";
 		} else {
-			$qb->setMaxResults(100);
+			$sql .= "\nLIMIT 250\nORDER BY id ASC";
 		}
 
-		$qb->orderBy('m.id', 'asc');
-
-		return $qb->getQuery()->execute($params);
+		return $this->_em->getConnection()->fetchAll($sql, $params);
 	}
 
 	/**
@@ -208,21 +203,25 @@ class ClientMessage extends AbstractEntityRepository
 	 */
 	public function getInitialMessagesForPerson($person_id, $since_id = null)
 	{
-		$qb = $this->createQueryBuilder('m');
-		$qb->select('m');
-		$qb->andWhere('m.for_person = :for_person');
-		$params['for_person'] = $person_id;
+		$sql = "
+			SELECT
+				id, for_person_id, channel, data, created_by_client, for_client, date_created
+			FROM client_messages
+			WHERE
+				for_person_id = ?
+		";
+		$params = array($person_id);
 
 		if ($since_id) {
-			$qb->andWhere('m.id > :since_id');
-			$params['since_id'] = $since_id;
+			$sql .= "AND (id > ?)";
+			$params[] = $since_id;
+
+			$sql .= "\nORDER BY id ASC";
 		} else {
-			$qb->setMaxResults(100);
+			$sql .= "\nLIMIT 250\nORDER BY id ASC";
 		}
 
-		$qb->orderBy('m.id', 'asc');
-
-		return $qb->getQuery()->execute($params);
+		return $this->_em->getConnection()->fetchAll($sql, $params);
 	}
 
 

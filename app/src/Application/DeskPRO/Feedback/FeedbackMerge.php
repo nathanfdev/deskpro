@@ -40,8 +40,6 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
-use Orb\Util\Arrays;
-
 /**
  * Handles merging of one feedback into the other
  */

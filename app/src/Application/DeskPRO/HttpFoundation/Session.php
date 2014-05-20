@@ -34,17 +34,15 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
-use Orb\Util\Strings;
-use Orb\Util\Util;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Strings;
 use Orb\Util\Web;
 
 /**
  * Session is able to load up a user, their language etc.
  */
-class Session extends \Symfony\Component\HttpFoundation\Session implements \ArrayAccess, \IteratorAggregate
+class Session extends \Symfony\Component\HttpFoundation\Session\Session implements \ArrayAccess, \IteratorAggregate
 {
 	/**
 	 * The person this session belongs to
@@ -71,40 +69,85 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	protected $is_first_page = false;
 
 	/**
+	 * @var array
+	 */
+	protected $autostart_interfaces = array(
+		'admin', 'agent', 'reports', 'user', 'dp'
+	);
+
+	public function __construct(
+		\Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface $storage = null,
+		\Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $attributes = null,
+		\Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashes = null
+	)
+	{
+		parent::__construct($storage, $attributes, $flashes);
+	}
+
+	/**
 	 * Starts the session storage.
 	 */
 	public function start()
 	{
-		if (true === $this->started) {
-			return;
-		}
-
-		parent::start();
+		if ($this->storage->isStarted()) return;
+		$this->storage->start();
 
 		$this->is_first_page = empty($_SESSION);
 
-		if (DP_INTERFACE != 'admin' && (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_symfony2']['attributes']['auth_person_id']) || !$_SESSION['_symfony2']['attributes']['auth_person_id'])) {
-			list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
+		if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id'])) {
+			// See if we should carry an agent session
+			if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
 
-			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
-			if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
-				$this->_setCurrentPerson($person);
+				$sid = Entity\Session::getIdFromCode($_COOKIE['dpsid-agent']);
+				if ($sid) {
+					if (App::getSetting('core.session_keepalive_require_page')) {
+						$agent_session = App::getDb()->fetchAssoc("
+							SELECT person_id, auth
+							FROM sessions
+							WHERE id = ? AND date_last > ? AND date_last_page > ?
+						", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'), time() - App::getSetting('core.sessions_lifetime'))));
+					} else {
+						$agent_session = App::getDb()->fetchAssoc("
+							SELECT person_id, auth
+							FROM sessions
+							WHERE id = ? AND date_last > ?
+						", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+					}
 
-				// Set last login date
-				App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+					list (, $auth) = explode('-', $_COOKIE['dpsid-agent']);
 
-				// Insert log
-				if ($person->is_agent) {
-					App::getDb()->insert('login_log', array(
-						'person_id'    => $person_id,
-						'area'         => DP_INTERFACE,
-						'is_success'   => 1,
-						'ip_address'   => dp_get_user_ip_address(),
-						'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-						'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-						'date_created' => date('Y-m-d H:i:s'),
-						'via_cookie'   => 1
-					));
+					if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
+						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
+						if ($person && $person->is_agent) {
+							$person_id = $person->id;
+							$this->_setCurrentPerson($person);
+						}
+					}
+				}
+
+			} elseif (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) {
+				list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
+
+				$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+				if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
+					$this->_setCurrentPerson($person);
+
+					// Set last login date
+					App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+
+					// Insert log
+					if ($person->is_agent) {
+						App::getDb()->insert('login_log', array(
+							'person_id'    => $person_id,
+							'area'         => DP_INTERFACE,
+							'is_success'   => 1,
+							'ip_address'   => dp_get_user_ip_address(),
+							'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+							'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+							'date_created' => date('Y-m-d H:i:s'),
+							'via_cookie'   => 1
+						));
+					}
 				}
 			}
 		}
@@ -202,7 +245,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				$vis['page_url']     = $url;
 				$vis['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 				$vis['ip_address']   = $user_ip;
-				$vis['user_Agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+				$vis['user_agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
 
 				// If there have been multiple requests from the same ip
 				// and those visitor counts arent increasing, it probably means
@@ -415,6 +458,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
         }
 
 		$this->set('dplast', time());
+		$this->set('dplastpage', time());
+
 		if (defined('DP_INTERFACE')) {
 			$this->set('dp_interface', DP_INTERFACE);
 		}
@@ -440,12 +485,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$this->attributes['is_chat_available'] = 1;
 		}
 
-		$this->attributes['auth_person_id'] = $person->getId();
-
-		if (!isset($_SESSION['_symfony2'])) {
-			$_SESSION['_symfony2'] = array();
-		}
-		$_SESSION['_symfony2'] = array_merge($_SESSION['_symfony2'], $this->attributes);
+		$this->set('auth_person_id', $person->getId());
 	}
 
 
@@ -470,15 +510,25 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	{
 		if ($this->person !== null) return $this->person;
 
-		$person_id = $this->get('auth_person_id');
-		$person = false;
-
-		if ($person_id) {
-			$person = $this->getEntity()->person;
+		if (defined('DP_INTERFACE') && in_array(DP_INTERFACE, $this->autostart_interfaces)) {
+			$this->start();
 		}
 
-		if (DP_INTERFACE == 'user' && $person && $person->is_disabled) {
-			$person = false;
+		$person = false;
+		if ($this->isStarted()) {
+			$person_id = $this->get('auth_person_id');
+
+			if (App::getCurrentPerson() && App::getCurrentPerson()->getId() == $person_id) {
+				$person = App::getCurrentPerson();
+			} else {
+				if ($person_id) {
+					$person = $this->getEntity()->person;
+				}
+			}
+
+			if (DP_INTERFACE == 'user' && $person && $person->is_disabled) {
+				$person = false;
+			}
 		}
 
 		if (!$person) {
@@ -517,7 +567,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		$person = $this->getPerson();
 		if ($person && !$person->isGuest()) {
 			$this->language = $person->getLanguage();
-		} elseif ($this->get('language_id')) {
+		} elseif ($this->isStarted() && $this->get('language_id')) {
 			$this->language = App::getDataService('Language')->get($this->get('language_id'));
 		} elseif (isset($_COOKIE['dplid'])) {
 			$this->language = App::getDataService('Language')->get($_COOKIE['dplid']);
@@ -595,19 +645,21 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	}
 
 
+	/**
+	 * Clears all data in the session
+	 */
 	public function clear()
 	{
-		//$this->attributes = array('_flash' => $this->attributes['_flash'], '_locale' => $this->attributes['_locale']);
+		$this->storage->clear();
 	}
 
 
+	/**
+	 * @return int
+	 */
 	public function getEntityId()
     {
-		if ($this->storage instanceof \Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage) {
-        	return $this->storage->getEntityId();
-		} else {
-			return 0;
-		}
+        return $this->getEntity()->getId();
     }
 
 
@@ -654,7 +706,57 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	 */
 	public function getEntity()
 	{
+		if (!$this->isStarted()) $this->start();
 		return $this->storage->getEntity();
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param string $value
+	 */
+	public function setFlash($name, $value)
+	{
+		$this->getFlashBag()->set($name, !is_array($value) ? array('value' => $value) : $value);
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param mixed  $default
+	 * @return array
+	 */
+	public function getFlash($name, array $default = array())
+	{
+		return $this->getFlashBag()->get($name, $default);
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function hasFlash($name)
+	{
+		return $this->getFlashBag()->has($name);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasAnyFlashes()
+	{
+		return count($this->getFlashBag()->peekAll()) > 0;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllFlahses()
+	{
+		return $this->getFlashBag()->all();
 	}
 
 

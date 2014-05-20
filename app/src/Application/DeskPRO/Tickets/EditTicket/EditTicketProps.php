@@ -35,14 +35,18 @@
 namespace Application\DeskPRO\Tickets\EditTicket;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Ticket;
 
 /**
  * This wraps up the 'ticket' data of a newticket
  */
-class EditTicketProps
+class EditTicketProps implements \ArrayAccess
 {
+	protected static $prop_names = array(
+		'subject' => 1, 'department_id' => 1, 'category_id' => 1,
+		'priority_id' => 1, 'product_id' => 1, 'cc_emails' => 1, 'remove_ccs' => 1
+	);
+
 	public $subject = '';
 
 	public $department_id = 0;
@@ -60,4 +64,9 @@ class EditTicketProps
 		$this->product_id     = $ticket->product ? $ticket->product->getId() : 0;
 		$this->subject        = $ticket->subject;
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

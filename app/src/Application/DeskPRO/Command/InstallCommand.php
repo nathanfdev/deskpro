@@ -34,16 +34,15 @@
 
 namespace Application\DeskPRO\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
+use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\InstallBundle\Data\DefaultDataProcessor;
+use Monolog\Logger;
 use Orb\Util\Strings;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -172,6 +171,13 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 				eval($php);
 			}
 
+			$data_proc = new DefaultDataProcessor($this->getContainer());
+			if ($logger) {
+				$orb_logger_adapter = new OrbLoggerAdapterHandler($logger);
+				$data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
+			}
+			$data_proc->runInstall();
+
 			$this->getOrm()->flush();
 
 			\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
@@ -258,7 +264,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         try {
             App::getDb()->connect();
-        } catch (\PDOException $e) {
+        } catch (\Doctrine\DBAL\DBALException $e) {
             if ($e->getCode() == '1049') {
 
                 // Attempt to create an empty database

@@ -36,14 +36,11 @@ namespace Application\DeskPRO\Searcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
-
 use Application\DeskPRO\People\PersonContextInterface;
-
 use Orb\Log\Logger;
-
-use Orb\Util\Util;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Util;
 
 abstract class SearcherAbstract implements PersonContextInterface
 {
@@ -93,6 +90,18 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 * @var \Orb\Log\Logger
 	 */
 	protected $logger;
+
+	/**
+	 * @var bool
+	 */
+	public $is_testing = false;
+
+	public function __construct()
+	{
+		if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing') {
+			$this->is_testing = true;
+		}
+	}
 
 
 	/**
@@ -473,11 +482,11 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$choice = Arrays::getFirstItem($choice);
 		}
 
-		$db = App::getDb();
+		$self = $this;
 		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
-			array_walk($choices_in, function(&$v, $k) use ($db) {
-				$v = $db->quote($v);
+			array_walk($choices_in, function(&$v, $k) use ($self) {
+				$v = $self->quoteDbValue($v);
 			});
 
 			$choices_in = "(" . implode(',', $choices_in) . ")";
@@ -490,11 +499,11 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		} else {
 			$choices_in = (array)$choice;
-			array_walk($choices_in, function(&$v, $k) use ($db, $suffix_only) {
+			array_walk($choices_in, function(&$v, $k) use ($self, $suffix_only) {
 				if ($suffix_only) {
-					$v = $db->quote($v . '%');
+					$v = $self->quoteDbValue($v . '%');
 				} else {
-					$v = $db->quote('%' . $v . '%');
+					$v = $self->quoteDbValue('%' . $v . '%');
 				}
 			});
 
@@ -520,7 +529,6 @@ abstract class SearcherAbstract implements PersonContextInterface
 	protected function _stringSearch($field, $op, $string, $type = 'or')
 	{
 		$string = Strings::utf8_strtolower($string);
-		$db = App::getDb();
 
 		if ($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) {
 			$op_like = 'NOT LIKE';
@@ -540,7 +548,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 			$where = array();
 			foreach ($words as $w) {
-				$where[] = "($field $op_like " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
+				$where[] = "($field $op_like " . $this->quoteDbValue('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
 			}
 
 			if ($type == 'or') {
@@ -555,7 +563,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 				return '1';
 			}
 
-			return "($field $op_like " . $db->quote('%' . str_replace(array('%', '_'), array('%%', '__'), $string) . '%') . ")";
+			return "($field $op_like " . $this->quoteDbValue('%' . str_replace(array('%', '_'), array('%%', '__'), $string) . '%') . ")";
 		}
 	}
 
@@ -572,7 +580,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$not = 'NOT';
 		}
 
-		$string_q = App::getDb()->quote($string, \PDO::PARAM_STR);
+		$string_q = $this->quoteDbValue($string, \PDO::PARAM_STR);
 		return "( $not MATCH ($field) AGAINST ($string_q IN BOOLEAN MODE) )";
 	}
 
@@ -748,6 +756,8 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	protected function _rangeMatch($field, $op, $choice)
 	{
+		$where = '1';
+
 		$choice = (array)$choice;
 		if (!empty($choice['min'])) {
 			$range1 = $choice['min'];
@@ -823,7 +833,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	protected function _choiceMatch($field, $op, $choice, $is_id = false)
 	{
-		$db = App::getDb();
+		$self = $this;
 		$where = '';
 
 		if (is_array($choice) AND count($choice) == 1) {
@@ -842,8 +852,8 @@ abstract class SearcherAbstract implements PersonContextInterface
 		if (is_array($choice)) {
 
 			$choices_in = $choice;
-			array_walk($choices_in, function(&$v, $k) use ($db) {
-				$v = $db->quote($v);
+			array_walk($choices_in, function(&$v, $k) use ($self) {
+				$v = $self->quoteDbValue($v);
 			});
 
 			if (empty($choices_in)) {
@@ -862,8 +872,9 @@ abstract class SearcherAbstract implements PersonContextInterface
 			if ($is_id AND ($choice === 0 OR $choice === '0')) {
 				$choice = 'NULL';
 				$op = ($op == self::OP_IS) ? "IS" : "IS NOT";
-			} else {
-				$choice = $db->quote($choice);
+			}
+			else {
+				$choice = $this->quoteDbValue($choice);
 				$op = ($op == self::OP_IS) ? "=" : "!=";
 			}
 
@@ -1287,5 +1298,33 @@ abstract class SearcherAbstract implements PersonContextInterface
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * @param string $val
+	 * @return string
+	 */
+	public function quoteDbValue($val)
+	{
+		if ($this->is_testing) {
+			return addslashes($val);
+		}
+
+		return App::getDb()->quote($val);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Translate\Translate
+	 */
+	public function getTranslate()
+	{
+		if ($this->is_testing) {
+			$tr = \Mockery::mock('Application\DeskPRO\Translate\Translate')->shouldIgnoreMissing();
+			return $tr;
+		}
+
+		return App::getTranslator();
 	}
 }

@@ -1,0 +1,125 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('agents.agents') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Agents</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Login Logs</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<div class="dp-btn-pagination" ng-show="LogsCtrl.login_logs.logs">
+				<span dp-show-spinning="paginating_login_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="LogsCtrl.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
+						ng-click="LogsCtrl.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							Account
+						</th>
+						<th>
+							Area
+						</th>
+						<th>
+							Successful?
+						</th>
+						<th>
+							IP
+						</th>
+						<th>
+							Hostname
+						</th>
+						<th width="300">
+							User Agent
+						</th>
+						<th width="150">
+							Date
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="log in LogsCtrl.login_logs.logs">
+						<td class="alt" style="white-space: nowrap" nowrap>
+							{{ ng_var('log.agent_name') }}
+						</td>
+						<td width="1">
+							{{ ng_var('log.area') }}
+						</td>
+						<td ng-class="{danger: log.is_success == 0}" style="white-space: nowrap" nowrap width="10">
+							<span ng-if="log.is_success">
+								Yes <span ng-if="log.via_cookie"> (via cookie)</span>
+							</span>
+							<span ng-if="log.is_success == 0">
+								No
+							</span>
+						</td>
+						<td width="1">
+							<input type="text" class="invisible-copytext" value="{{ ng_var('log.ip_address') }}" style="width: 100px" />
+						</td>
+						<td width="1">
+							<input type="text" class="invisible-copytext" value="{{ ng_var('log.hostname') }}" style="width: 125px" />
+						</td>
+						<td width="1">
+							<input type="text" class="invisible-copytext" value="{{ ng_var('log.user_agent') }}" style="width: 200px" />
+						</td>
+						<td style="white-space: nowrap" nowrap width="1">
+							{{ ng_var('log.date_created') }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="dp-btn-pagination" ng-show="LogsCtrl.login_logs.logs">
+				<span dp-show-spinning="paginating_login_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="LogsCtrl.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
+						ng-click="LogsCtrl.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+		</article>
+
+	</section>
+
+{% endblock %}

@@ -1,0 +1,175 @@
+<section>
+	<header>
+		<h1>Automatic Updated</h1>
+	</header>
+	<article>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.waiting.on, 'complete': step.waiting.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Waiting for update to begin</strong>
+			</div>
+			<p>
+				The update has been scheduled and we are waiting for it to begin.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.started.on, 'complete': step.started.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Started</strong>
+			</div>
+			<p>
+				The update process has started and the system is setting up.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.checks.on, 'complete': step.checks.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Server Checks</strong>
+			</div>
+			<p>
+				The updater is running server checks to ensure the process can finish successfully.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.download.on, 'complete': step.download.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Download Distribution</strong>
+			</div>
+			<p>
+				The updater is downloading the latest distribution from the DeskPRO servers.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.backup_files.on, 'complete': step.backup_files.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Backup Files</strong>
+			</div>
+			<p>
+				The updater is backing up the old DeskPRO files.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.disable_helpdesk.on, 'complete': step.disable_helpdesk.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Disable Helpdesk</strong>
+			</div>
+			<p>
+				The updater is disabling your helpdesk.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.backup_database.on, 'complete': step.backup_database.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Backup Database</strong>
+			</div>
+			<p>
+				The updater is backing up your database.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.install_files.on, 'complete': step.install_files.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Install New Files</strong>
+			</div>
+			<p>
+				The updater is extracting the latest distribution and installing the latest set of files.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.install_database.on, 'complete': step.install_database.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Install Database Updates</strong>
+			</div>
+			<p>
+				The updater is installing database updates.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.enable_helpdesk.on, 'complete': step.enable_helpdesk.complete}">
+			<div class="title">
+				<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%"></div></div>
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-circle icon-complete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Enable Helpdesk</strong>
+			</div>
+			<p>
+				All update operations have completed successfully. Your helpdesk is now being re-enabled.
+			</p>
+		</section>
+		<section class="running-section" ng-hide="is_error" ng-class="{'on': step.done.on, 'complete': step.done.complete}">
+			<div class="title">
+				<em>
+					<i class="fa fa-circle-o icon-incomplete"></i>
+					<i class="fa fa-arrow-circle-right icon-on"></i>
+				</em>
+				<strong>Done</strong>
+			</div>
+			<p>
+				The update has been installed successfully.
+				{% if is_wincache %}
+					<div class="alert alert-danger">
+						<strong>Important:</strong>
+						Your server has WinCache installed. Due to a limitation of WinCache, updates to files are not always immediately recognised.
+						You must restart IIS (or your computer) to ensure the updates were fully installed.
+						<br/><br/>
+						If you do not restart, DeskPRO may behave strangely or you may see errors.
+					</div>
+				{% endif %}
+			</p>
+		</section>
+		{% include 'AdminInterfaceBundle:Upgrade:watch-errors.html.twig' %}
+	</article>
+	<footer ng-show="is_error">
+		<a class="btn btn-primary" href="{{ path('admin_upgrade_index') }}">Try running the upgrade again</a>
+	</footer>
+	<footer ng-show="step.done.on">
+		<a class="btn btn-primary" href="{{ path('admin') }}">Go back to the Admin Interface</a>
+	</footer>
+</section>

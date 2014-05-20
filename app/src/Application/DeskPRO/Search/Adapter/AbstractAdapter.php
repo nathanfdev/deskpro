@@ -34,18 +34,13 @@
 
 namespace Application\DeskPRO\Search\Adapter;
 
-use Orb\Util\CapabilityInformerInterface;
-
 use Application\DeskPRO\App;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Search\EntityListener;
-
-use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
+use Application\DeskPRO\Search\SearcherResult\ResultSet;
+use Orb\Util\CapabilityInformerInterface;
 
 /**
  * Search adapter

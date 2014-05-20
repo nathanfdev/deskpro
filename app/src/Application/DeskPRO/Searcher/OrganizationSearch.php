@@ -34,11 +34,8 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
-
 use Application\DeskPRO\Entity\Organization;
+use Orb\Util\Util;
 
 class OrganizationSearch extends SearcherAbstract
 {
@@ -243,6 +240,8 @@ class OrganizationSearch extends SearcherAbstract
 
 				case self::TERM_CONTACT_PHONE:
 
+					if (is_array($choice)) $choice = $choice['phone'];
+
 					$choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
 
 					$joins[] = array(
@@ -256,6 +255,8 @@ class OrganizationSearch extends SearcherAbstract
 
 				case self::TERM_CONTACT_ADDRESS:
 
+					if (is_array($choice)) $choice = $choice['address'];
+
 					$joins[] = array(
 						'organizations_contact_data',
 						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'address')"
@@ -266,6 +267,8 @@ class OrganizationSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CONTACT_IM:
+
+					if (is_array($choice)) $choice = $choice['im'];
 
 					$joins[] = array(
 						'organizations_contact_data',

@@ -1,0 +1,94 @@
+<div class="panel panel-innertable">
+	<div class="panel-heading">
+		<h3>
+			<span>{{ phrase('adm.general.usergroup_perms') }}</span>
+			<button dp-inhelp-btn="admin.ticket_deps.edit.usergroup_perms"></button>
+		</h3>
+	</div>
+	<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.usergroup_perms">
+		<p>
+			{{ phrase('adm.departments.usergroup_perms_explain') }}
+		</p>
+		<p>
+			{{ phrase('adm.departments.usergroup_perms_explain2') }}
+		</p>
+	</div>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>{{ phrase('agent.general.usergroup') }}</th>
+				<th width="120" class="text-center">{{ phrase('adm.general.perm_use') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('adm.departments.usergroup_perm_toggle') }}"></span></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="usergroup in EditCtrl.usergroups">
+				<td>
+					<i class="fa fa-users icon-22x text-middle icon-light"></i>
+					&nbsp;
+					<span class="text-middle"><a href="#">{{ ng_var('usergroup.title') }}</a></span>
+				</td>
+				<td class="text-center">
+					<button dp-toggle-switch ng-model="EditCtrl.form.usergroup_perms[usergroup.id].full"></button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div class="panel panel-innertable">
+	<div class="panel-heading">
+		<h3>
+			<span>{{ phrase('adm.general.agent_perms') }}</span>
+			<button dp-inhelp-btn="admin.ticket_deps.edit.agent_perms"></button>
+		</h3>
+	</div>
+	<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.agent_perms">
+		<p>
+			{{ phrase('adm.departments.agent_perms_explain') }}
+		</p>
+		<ol>
+			<li>{{ phrase('adm.departments.agent_perms_explain_assign') }}</li>
+			<li>{{ phrase('adm.departments.agent_perms_explain_full') }}</li>
+		</ol>
+		<p>
+			{{ phrase('adm.departments.agent_perms_explain_participant') }}
+		</p>
+	</div>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>{{ phrase('adm.departments.agent_agent_group') }}</th>
+				<th width="120" class="text-center">{{ phrase('adm.general.perm_assign') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('adm.departments.perm_assign_tip') }}"></span></th>
+				<th width="120" class="text-center">{{ phrase('adm.general.perm_full_access') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('adm.departments.perm_full_tip') }}"></span></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="groupObj in EditCtrl.form.agent_perms.groups">
+				<td>
+					<i class="fa fa-users icon-22x text-middle icon-light"></i>
+					&nbsp;
+					<span class="text-middle"><a href="#">{{ ng_var('groupObj.model.title') }}</a></span>
+				</td>
+				<td class="text-center">
+					<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+				</td>
+				<td class="text-center">
+					<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="EditCtrl.propogatePermission(groupObj, 'full')"></button>
+				</td>
+			</tr>
+			<tr ng-repeat="agentObj in EditCtrl.form.agent_perms.agents" ng-class="{'first-of-type': $first}">
+				<td>
+					<i class="agent-icon agent-fa fa-22x text-middle" bg-img="agentObj.model.picture_url_22"></i>
+					&nbsp;
+					<span class="text-middle"><a href="#">{{ ng_var('agentObj.model.display_name') }}</a></span>
+				</td>
+				<td class="text-center">
+					<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+				</td>
+				<td class="text-center">
+					<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="EditCtrl.propogatePermission(agentObj, 'full')" locked-tip="{{ phrase('adm.departments.perm_group_locked_tip') }}"></button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

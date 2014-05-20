@@ -39,8 +39,16 @@ use Application\DeskPRO\App;
 /**
  * This wraps up the 'ticket' data of a newticket
  */
-class TicketProps
+class TicketProps implements \ArrayAccess
 {
+	protected static $prop_names = array(
+		'subject' => 1, 'message_is_html' => 1, 'message' => 1,
+		'message_raw' => 1, 'notify_email' => 1, 'cc_emails' => 1,
+		'new_upload' => 1, 'attach_ids' => 1, 'attach_ids_authed' => 1,
+		'department_id' => 1, 'category_id' => 1, 'priority_id' => 1,
+		'workflow_id' => 1
+	);
+
 	public $subject = '';
 	public $message_is_html = false;
 	public $message = '';
@@ -70,4 +78,9 @@ class TicketProps
 		$this->product_id      = App::getSetting('core.default_prod_id') ?: 0;
 		$this->workflow_id     = App::getSetting('core.default_ticket_work') ?: 0;
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

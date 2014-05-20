@@ -35,9 +35,7 @@
 namespace Application\DeskPRO\Chat;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;

@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-
-use Orb\Util\Arrays;
 
 /**
  * This adds the ability to change the user owner of the ticket. But also

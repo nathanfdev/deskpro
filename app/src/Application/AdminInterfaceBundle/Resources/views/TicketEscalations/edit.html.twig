@@ -1,0 +1,142 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<br/>
+
+					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>{{ phrase('agent.general.title') }} *</h3>
+							</div>
+							<div class="col-lg-10">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
+										   style="width: 50%;" required autofocus/>
+									<span class="help-block">
+										{{ phrase('adm.ticket_filters.title_explain') }}
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Event</h3>
+							</div>
+							<div class="col-lg-10">
+								<select
+										ng-model="EditCtrl.form.event_trigger"
+										ui-select2
+										style="width: 300px;"
+										>
+									<option value="time.open">The ticket has been open for...</option>
+									<option value="time.user_waiting">The user has been waiting for...</option>
+									<option value="time.total_user_waiting">The total time the user has been waiting
+										is...
+									</option>
+									<option value="time.agent_waiting">The agent has been waiting for...</option>
+									<option value="time.resolved">The ticket has been resolved for...</option>
+								</select><br/>
+								<dp-time-with-unit ng-model="EditCtrl.form.event_trigger_time"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel panel-innertable" style="padding-top: 0; margin-top: 0;">
+						<div class="panel-heading">
+							<h3>
+								<span>Criteria</span>
+								<button dp-inhelp-btn="admin.ticket_escalations.edit.criteria"></button>
+							</h3>
+						</div>
+						<div class="panel-help" dp-inhelp-body="admin.ticket_escalations.edit.criteria"
+							 style="margin-top: 0;">
+							<p>
+								Criteria that must match for the escalation to apply to a ticket.
+							</p>
+						</div>
+
+						<div class="dp-ob-set">
+							<div class="dp-ob-setrow">
+								<header>
+									<em class="dp-ob-row-tag if">if</em>
+									The following conditions are met:
+								</header>
+								<article>
+									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
+													   save-target="EditCtrl.form.terms"
+													   options="{tag_first: false, tag_after: 'and'}"
+													   option-types="EditCtrl.criteriaOptionTypes">
+										<add-btn-label>Criteria</add-btn-label>
+									</dp-option-builder>
+								</article>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel panel-innertable">
+						<div class="panel-heading">
+							<h3>
+								<span>Actions</span>
+								<button dp-inhelp-btn="admin.ticket_triggers.edit.actions"></button>
+							</h3>
+						</div>
+						<div class="panel-help" dp-inhelp-body="admin.ticket_triggers.edit.actions"
+							 style="margin-top: 0;">
+							<p>
+								These actions will apply when all of the criteria pass.
+							</p>
+						</div>
+
+						<div class="dp-ob-set">
+							<div class="dp-ob-setrow">
+								<header>
+									<em class="dp-ob-row-tag then">then</em>
+									The followings actions will run:
+								</header>
+								<article>
+									<dp-option-builder types-def="EditCtrl.actionsTypeDef"
+													   save-target="EditCtrl.form.actions"
+													   options="{tag_first: '', tag_after: 'then'}"
+													   option-types="EditCtrl.actionOptionTypes">
+										<add-btn-label>Action</add-btn-label>
+									</dp-option-builder>
+								</article>
+							</div>
+						</div>
+					</div>
+					</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.esc.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.esc.ud);">Delete</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_label">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving_label">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+		</section>
+	</form>
+
+{% endblock %}

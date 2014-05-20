@@ -37,6 +37,8 @@ require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Console\CronApplication;
+use Application\DeskPRO\PageLog\PageLogger;
 
 class KernelBooter
 {
@@ -102,11 +104,10 @@ class KernelBooter
 
 		$has_loaded = true;
 
-		if ($debug || defined('DP_BUILDING') || !file_exists(DP_ROOT . '/sys/bootstrap.php') || !file_exists((DP_ROOT . '/sys/compiled.php'))) {
+		if ( ($debug || defined('DP_BUILDING') || !file_exists(DP_ROOT . '/sys/bootstrap.php')) && !defined('DP_USE_COMPILED_BOOTSTRAP')) {
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
 		} else {
 			require(DP_ROOT . '/sys/bootstrap.php');
-			require(DP_ROOT . '/sys/compiled.php');
 		}
 
 		if (isset($GLOBALS['DP_AUTOLOADER']) && !dp_get_config('no_use_classmap_file') && file_exists(DP_ROOT.'/sys/cache/classmap.php')) {
@@ -118,6 +119,13 @@ class KernelBooter
 
 		require(DP_ROOT . '/sys/Kernel/compat.php');
 		require(DP_ROOT . '/sys/system.php');
+
+		if (array_key_exists('HTTP_X_CODECEPTION_CODECOVERAGE', $_SERVER) && isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG']) {
+			define('C3_CODECOVERAGE_MEDIATE_STORAGE', DP_ROOT.'/testing/logs/c3tmp');
+			define('C3_CODECEPTION_CONFIG_PATH', DP_ROOT.'/testing/codeception.yml');
+			define('C3_CODECOVERAGE_PROJECT_ROOT', DP_ROOT);
+			require(DP_ROOT.'/testing/src/c3.php');
+		}
 	}
 
 
@@ -134,7 +142,7 @@ class KernelBooter
 		date_default_timezone_set('UTC');
 		ini_set('default_charset', 'UTF-8');
 
-		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
+		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor-src/php-utf8');
 
 		#------------------------------
 		# Undo magic quotes
@@ -204,24 +212,17 @@ class KernelBooter
 			exit;
 		}
 
+		$kernel_class = 'DeskPRO\\Kernel\\DpKernel';
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');
-		} elseif (preg_match('#^/admin(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\AdminKernel';
+		} elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
 			define('DP_INTERFACE', 'admin');
 		} elseif (preg_match('#^/billing(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\BillingKernel';
 			define('DP_INTERFACE', 'billing');
 		} elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\ReportKernel';
 			define('DP_INTERFACE', 'reports');
 		} elseif (preg_match('#^/api(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\ApiKernel';
 			define('DP_INTERFACE', 'api');
-		} elseif (preg_match('#^/dev(/|\?|$)#', $path) && $env == 'dev') {
-			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
-			define('DP_INTERFACE', 'dev');
 		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
 
 			if (dp_get_config('is_installed_flag')) {
@@ -249,7 +250,6 @@ class KernelBooter
 			header('Location: ' . $url);
 			exit;
 		} else {
-			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'user');
 
 			try {
@@ -318,6 +318,12 @@ class KernelBooter
 			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		}
 
+		dp_pagelog_reset();
+		dp_pagelog_set('user_agent', !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null);
+		dp_pagelog_set('user_ip', dp_get_user_ip_address());
+		dp_pagelog_set('request_id', defined('DP_REQUEST_ID') ? DP_REQUEST_ID : null);
+		dp_pagelog_set('page_url', $request->getRequestUri());
+
 		if (dp_trust_proxy_data()) {
 			\Application\DeskPRO\HttpFoundation\Request::trustProxyData();
 			\Symfony\Component\HttpFoundation\Request::trustProxyData();
@@ -327,7 +333,11 @@ class KernelBooter
 
 		try {
 			if (!$kernel) {
-				$kernel = new $kernel_class($env, $debug);
+				if ($kernel == 'DeskPRO\\Kernel\\InstallKernel') {
+					$kernel = new $kernel_class($env, $debug);
+				} else {
+					$kernel = new $kernel_class($env, $debug, DP_INTERFACE);
+				}
 			}
 			$response = $kernel->handle($request);
 			if (DP_INTERFACE == 'user') {
@@ -335,8 +345,17 @@ class KernelBooter
 					self::_updateCachedFile($response);
 				} catch (\Exception $e) {}
 			}
+
+			if (defined('DP_REQUEST_ID')) {
+				$response->headers->set('X-DeskPRO-RequestID', DP_REQUEST_ID);
+			}
+
 			$response->send();
-		} catch (\PDOException $e) {
+
+			dp_pagelog_set('response_type', $response->headers->get('Content-Type'));
+			dp_pagelog_set('response_code', $response->getStatusCode());
+			dp_pagelog_set('response_size', strlen($response->getContent()));
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
 				// This will show an error page if already installed, so the redirect to install wont happen
 				deskpro_handle_boot_db_exception($e);
@@ -518,7 +537,7 @@ class KernelBooter
 				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 			}
 		} else {
-			if (App::isCacheSkipped()) {
+			if (isset($GLOBALS['DP_SET_SKIP_CACHE']) && $GLOBALS['DP_SET_SKIP_CACHE']) {
 				global $DP_CONFIG;
 				$ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
 				$cache_time = time() + $ttl;
@@ -537,7 +556,7 @@ class KernelBooter
 			}
 		}
 
-		if (!$logged_in && !$skip_cache && !App::isUncachableResult() && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
+		if (!$logged_in && !$skip_cache && !$response->headers->has('X-DeskPRO-Private') && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			if (!is_dir($cache_dir)) {
 				@mkdir($cache_dir, 0777);
@@ -624,6 +643,11 @@ class KernelBooter
 		$app = static::getCliApp('cron', $env, $debug, true);
 
 		if (!$app) {
+			return;
+		}
+
+		if (isset($GLOBALS['DP_USING_TESTING_CONFIG'])) {
+			echo "(Tests are running)\n";
 			return;
 		}
 
@@ -748,6 +772,19 @@ class KernelBooter
 
 
 	/**
+	 * Boot tests
+	 */
+	public static function bootTests()
+	{
+		define('DP_INTERFACE', 'cli');
+		$GLOBALS['DP_IS_IN_CLI'] = true;
+		KernelBooter::bootstrapConfig();
+		KernelBooter::bootstrapLib(true);
+		KernelBooter::bootstrapEnv();
+	}
+
+
+	/**
 	 * Boots the CLI runs the import CLI command
 	 *
 	 * @param string $env
@@ -756,6 +793,15 @@ class KernelBooter
 	public static function bootImport($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
+
+		echo "The version of DeskPRO you have downloaded does not handle importing.";
+
+		echo "\n\nRefer to the DeskPRO knowledgebase for a link to the correct version:\n";
+		echo "http://support.deskpro.com/kb/articles/116-upgrading-to-deskpro-v4";
+
+		echo "\n\nYou should download the DeskPRO version mentioned in the above article\n";
+		echo "and then try running this command again.\n";
+		exit(1);
 
 		$app = static::getCliApp('import', $env, $debug);
 
@@ -824,7 +870,7 @@ class KernelBooter
 		}
 
 		define('DP_INTERFACE', 'cli');
-		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
+		$kernel = new \DeskPRO\Kernel\DpKernel($env, $debug, DP_INTERFACE);
 		$kernel->boot($mode);
 
 		try {
@@ -842,7 +888,7 @@ class KernelBooter
 					return null;
 				}
 			}
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			global $DP_CONFIG;
 			if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
 				echo "DeskPRO is not yet installed. If you believe this a mistake, check your config.php\n";
@@ -857,7 +903,11 @@ class KernelBooter
 			throw $e;
 		}
 
-		$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
+		if ($mode == 'cron') {
+			$app = new CronApplication($kernel);
+		} else {
+			$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
+		}
 		$app->setCatchExceptions(false);
 		return $app;
 	}
@@ -1406,6 +1456,57 @@ HTML;
 		return isset($preferredLanguages[0]) ? $preferredLanguages[0] : $locales[0];
 	}
 
+	public static function pagelogSaveStat()
+	{
+		if (!isset($GLOBALS['DP_DB_CON']['db'])) {
+			return;
+		}
+		$db = $GLOBALS['DP_DB_CON']['db'];
+		$row = array(
+			'date_created'  => gmdate('Y-m-d H:i:s'),
+			'request_id'    => dp_pagelog_get('request_id'),
+			'user_agent'    => dp_pagelog_get('user_agent') ?: '',
+			'user_ip'       => dp_pagelog_get('user_ip') ?: '0.0.0.0',
+			'page_id'       => dp_pagelog_get('page_id') ?: '',
+			'page_url'      => dp_pagelog_get('page_url') ?: '',
+			'response_type' => dp_pagelog_get('response_type') ?: '',
+			'response_code' => dp_pagelog_get('response_code') ?: '',
+			'response_size' => dp_pagelog_get('response_size') ?: '',
+			'query_count'   => dp_pagelog_get('query_count') ?: '',
+			'time_php'      => sprintf("%.4f", dp_pagelog_get('time_php') ?: 0.00),
+			'time_db'       => sprintf("%.4f", dp_pagelog_get('time_db') ?: 0.00),
+			'time_end'      => sprintf("%.4f", dp_pagelog_get('time_end') ?: 0.00),
+		);
+		$db->insert('log_request_stats', $row);
+	}
+
+	public static function pagelogUpdateUsertime($request_id, $set_time)
+	{
+		if (!isset($GLOBALS['DP_DB_CON']['db'])) {
+			return;
+		}
+		$db = $GLOBALS['DP_DB_CON']['db'];
+
+		$m = null;
+		if (!preg_match('#^(\d{4})(\d{2})(\d{2})(\d{2})_#', $request_id, $m)) {
+			return;
+		}
+
+		$date_str = "{$m[1]}-{$m[2]}-{$m[3]} {$m[4]}";
+
+		$set_time = sprintf("%.4f", floatval($set_time));
+
+		App::getDb()->executeUpdate("
+			UPDATE log_request_stats
+			SET time_userend = ?
+			WHERE date_created BETWEEN ? AND ? AND request_id = ?
+		", array(
+			$set_time,
+			"$date_str:00:00",
+			"$date_str:59:59",
+			$request_id
+		));
+	}
 
 	/**#@+
 	 * Handling of shutdown stack and xdebug traces
@@ -1418,6 +1519,29 @@ HTML;
 		$called = true;
 
 		\DpShutdown::run();
+
+		if (dp_pagelog_get('request_id') && $save_pagelog_info = dp_get_config('save_pagelog_info')) {
+			if ($save_pagelog_info === true) {
+				$save_pagelog_info = 'DeskPRO\\Kernel\\KernelBooter';
+			}
+			try {
+				call_user_func(array($save_pagelog_info, 'pagelogSaveStat'));
+			} catch (\Exception $e) {}
+
+			$m = null;
+			if (isset($_REQUEST['__dp_reqtime'])) {
+				$_REQUEST['__dp_reqtime'];
+			}
+			if (isset($_REQUEST['__dp_reqtime']) && preg_match('#^([a-zA-Z0-9_]+)_t([0-9_]+)$#', $_REQUEST['__dp_reqtime'], $m)) {
+				$request_id = $m[1];
+				$set_time = floatval(str_replace('_', '.', $m[2]));
+				if ($request_id && $set_time > 0.000) {
+					try {
+						call_user_func(array($save_pagelog_info, 'pagelogUpdateUsertime'), $request_id, $set_time);
+					} catch (\Exception $e) {}
+				}
+			}
+		}
 
 		if (defined('DP_APC_STATS_KEY')) {
 			if (isset($GLOBALS['DP_QUERY_COUNT'])) {

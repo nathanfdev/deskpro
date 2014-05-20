@@ -1,0 +1,1030 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef'], function(BaseActionTypesDef) {
+    var Admin_OptionBuilder_TypesDef_TicketFilter;
+    return Admin_OptionBuilder_TypesDef_TicketFilter = (function(_super) {
+      __extends(Admin_OptionBuilder_TypesDef_TicketFilter, _super);
+
+      function Admin_OptionBuilder_TypesDef_TicketFilter() {
+        return Admin_OptionBuilder_TypesDef_TicketFilter.__super__.constructor.apply(this, arguments);
+      }
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.init = function() {
+        return this.options_data = null;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
+        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
+        if (types == null) {
+          types = [];
+        }
+        if (typesData == null) {
+          typesData = null;
+        }
+        set_options = [];
+        options = [];
+        options.push({
+          title: 'Set Assigned Agent',
+          value: 'SetAgent'
+        });
+        options.push({
+          title: 'Set Assigned Team',
+          value: 'SetAgentTeam'
+        });
+        options.push({
+          title: 'Set Agent Followers',
+          value: 'SetAgentFollowers'
+        });
+        set_options.push({
+          title: 'Ticket Assignment',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Set Status',
+          value: 'SetStatus'
+        });
+        options.push({
+          title: 'Set Department',
+          value: 'SetDepartment'
+        });
+        options.push({
+          title: 'Set Product',
+          value: 'SetProduct'
+        });
+        options.push({
+          title: 'Set Category',
+          value: 'SetCategory'
+        });
+        options.push({
+          title: 'Set Priority',
+          value: 'SetPriority'
+        });
+        options.push({
+          title: 'Set Workflow',
+          value: 'SetWorkflow'
+        });
+        options.push({
+          title: 'Set Language',
+          value: 'SetLanguage'
+        });
+        options.push({
+          title: 'Set Urgency',
+          value: 'SetUrgency'
+        });
+        options.push({
+          title: 'Set Subject',
+          value: 'SetSubject'
+        });
+        options.push({
+          title: 'Set Labels',
+          value: 'SetLabels'
+        });
+        options.push({
+          title: 'Set Flag',
+          value: 'SetFlag'
+        });
+        options.push({
+          title: 'Set Email Account',
+          value: 'SetEmailAccount'
+        });
+        options.push({
+          title: 'Set CC\'d Users',
+          value: 'SetCcs'
+        });
+        set_options.push({
+          title: 'Ticket Properties',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Set SLAs',
+          value: 'SetSlas'
+        });
+        options.push({
+          title: 'Set SLA Condition Status (Passing/Failing)',
+          value: 'SetSlaStatus'
+        });
+        options.push({
+          title: 'Set SLA State (Waiting/Finished)',
+          value: 'SetSlaRequirements'
+        });
+        set_options.push({
+          title: 'Ticket SLAs',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Set Ticket User',
+          value: 'ChangeUser'
+        });
+        options.push({
+          title: 'Delete Ticket',
+          value: 'DeleteTicket'
+        });
+        options.push({
+          title: 'Add Agent Reply',
+          value: 'AddAgentReply'
+        });
+        options.push({
+          title: 'Require User Email Validation',
+          value: 'SetRequireValidation'
+        });
+        options.push({
+          title: 'Set Hold',
+          value: 'SetHold'
+        });
+        options.push({
+          title: 'Call Web Hook',
+          value: 'WebHook'
+        });
+        set_options.push({
+          title: 'Ticket Actions',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Send Email To User',
+          value: 'SendUserEmail'
+        });
+        options.push({
+          title: 'Send Email To Agents',
+          value: 'SendAgentEmail'
+        });
+        set_options.push({
+          title: 'Send Eamil',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Stop Processing Triggers',
+          value: 'ModStopTriggers'
+        });
+        options.push({
+          title: 'Prevent Emails To User',
+          value: 'ModQuietUserEmails'
+        });
+        options.push({
+          title: 'Prevent Emails To Agents',
+          value: 'ModQuietAgentEmails'
+        });
+        set_options.push({
+          title: 'Trigger Control',
+          subOptions: options
+        });
+        if ((_ref = this.options_data) != null ? _ref.ticket_fields : void 0) {
+          options = [];
+          _ref1 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            f = _ref1[_i];
+            options.push({
+              title: f.title,
+              value: this.initFieldGetter('SetTicketField', f)
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Ticket Fields',
+              subOptions: options
+            });
+          }
+        }
+        if ((_ref2 = this.options_data) != null ? _ref2.user_fields : void 0) {
+          options = [];
+          _ref3 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
+            f = _ref3[_j];
+            options.push({
+              title: f.title,
+              value: this.initFieldGetter('SetUserField', f)
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Person Fields',
+              subOptions: options
+            });
+          }
+        }
+        if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
+          options = [];
+          _ref4 = typesData.dynamicOptions;
+          for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+            opt = _ref4[_k];
+            options.push({
+              title: opt.action_title,
+              value: opt.action_name
+            });
+            typeFunc = "get" + opt.action_name;
+            this[typeFunc] = function(options) {
+              var me;
+              if (options == null) {
+                options = {};
+              }
+              me = this;
+              return {
+                getTemplate: function() {
+                  return me.dpTemplateManager.get(opt.builder_template);
+                },
+                getData: function() {
+                  return {};
+                },
+                getDataFormatter: function() {
+                  return {
+                    getViewValue: function(value, data) {
+                      if (value == null) {
+                        value = {};
+                      }
+                      return data || {};
+                    },
+                    getValue: function(model, data) {
+                      var value;
+                      if (model == null) {
+                        model = {};
+                      }
+                      value = {};
+                      value.type = opt.action_name;
+                      value.options = model || {};
+                      return value;
+                    }
+                  };
+                }
+              };
+            };
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Ticket Options',
+              subOptions: options
+            });
+          }
+        }
+        return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
+        var defer;
+        if (this.options_data) {
+          defer = this.$q.defer();
+          defer.resolve(this.options_data);
+          return defer.promise;
+        } else {
+          if (!this.loadDataPromise) {
+            this.loadDataPromise = this.Api.sendDataGet({
+              'agents': '/agents',
+              'agent_teams': '/agent_teams',
+              'ticket_deps': '/ticket_deps',
+              'ticket_cats': '/ticket_cats',
+              'ticket_prods': '/ticket_prods',
+              'ticket_pris': '/ticket_pris',
+              'ticket_works': '/ticket_works',
+              'ticket_fields': '/ticket_fields',
+              'user_fields': '/user_fields',
+              'org_fields': '/org_fields',
+              'ticket_slas': '/ticket_slas',
+              'email_accounts': '/email_accounts',
+              'usergroups': '/user_groups',
+              'langs': '/langs'
+            }).then((function(_this) {
+              return function(result) {
+                var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+                data = result.data;
+                options_data = {};
+                options_data['agents'] = data.agents.agents;
+                options_data['agent_teams'] = data.agent_teams.agent_teams;
+                options_data['ticket_deps'] = data.ticket_deps.departments;
+                options_data['ticket_cats'] = data.ticket_cats.categories;
+                options_data['ticket_pris'] = data.ticket_pris.priorities;
+                options_data['ticket_works'] = data.ticket_works.workflows;
+                options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+                options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
+                options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
+                options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
+                options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
+                options_data['email_accounts'] = data.email_accounts.email_accounts;
+                options_data['usergroups'] = data.usergroups.groups;
+                options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
+                _this.options_data = options_data;
+                if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
+                  _ref7 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref7.length; _i < _len; _i++) {
+                    f = _ref7[_i];
+                    _this.initFieldGetter('SetTicketField', f);
+                  }
+                }
+                if ((_ref8 = _this.options_data) != null ? _ref8.user_fields : void 0) {
+                  _ref9 = _this.options_data.user_fields;
+                  _results = [];
+                  for (_j = 0, _len1 = _ref9.length; _j < _len1; _j++) {
+                    f = _ref9[_j];
+                    _results.push(_this.initFieldGetter('SetUserField', f));
+                  }
+                  return _results;
+                }
+              };
+            })(this));
+          }
+          return this.loadDataPromise;
+        }
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgent = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_id';
+        options.dataName = 'agents';
+        options.extraOptions = [
+          {
+            title: 'Unassign',
+            value: 0
+          }, {
+            title: 'Current Agent',
+            value: -1
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgentFollowers = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'add_agent_ids';
+        options.dataName = 'agents';
+        options.isMulti = true;
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgentTeam = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_team_id';
+        options.dataName = 'agent_teams';
+        options.extraOptions = [
+          {
+            title: 'No Team',
+            value: 0
+          }, {
+            title: 'Current Agent\'s Team',
+            value: -1
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetWorkflow = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'workflow_id';
+        options.dataName = 'ticket_works';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetLanguage = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'language_id';
+        options.dataName = 'langs';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetHold = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'is_hold';
+        options.options = [
+          {
+            title: "Put ticket on hold",
+            value: "1"
+          }, {
+            title: "Take ticket off hold",
+            value: "0"
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetPriority = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'priority_id';
+        options.dataName = 'ticket_pris';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetCategory = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'category_id';
+        options.dataName = 'ticket_cats';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetLabels = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-set-labels.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                console.log(options);
+                return {
+                  add_labels: (options.add_labels || []).join(', '),
+                  remove_labels: (options.remove_labels || []).join(', ')
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetLabels';
+                value.options = {};
+                value.options.add_labels = (model.add_labels || '').split(',');
+                value.options.remove_labels = (model.remove_labels || '').split(',');
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetStatus = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'status';
+        options.template = 'OptionBuilder/type-actions-status.html';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetDepartment = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'department_id';
+        options.dataName = 'ticket_deps';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetProduct = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'product_id';
+        options.dataName = 'ticket_prods';
+        options.extraOptions = [
+          {
+            title: 'None',
+            value: 0
+          }
+        ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetEmailAccount = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'email_account_id';
+        options.dataName = 'email_accounts';
+        options.optionsFormatter = function(options) {
+          var acc, opts, _i, _len;
+          opts = [];
+          for (_i = 0, _len = options.length; _i < _len; _i++) {
+            acc = options[_i];
+            opts.push({
+              value: acc.id,
+              title: acc.address
+            });
+          }
+          return opts;
+        };
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetEmailSubject = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'subject';
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetUrgency = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-urgency.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  value: options.urgency,
+                  op: options.op || 'add',
+                  only_if_lower: !!options.only_if_lower
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'urgency';
+                value.options = {};
+                value.options.urgency = model.value;
+                value.options.op = model.op;
+                value.options.only_if_lower = !!model.only_if_lower;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetCcs = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-set-ccs.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  add_emails: (options.add_emails || []).join(', '),
+                  remove_emails: (options.remove_emails || []).join(', '),
+                  add_org_managers: options.add_org_managers || false
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetCcs';
+                value.options = {};
+                value.options.add_emails = (model.add_emails || '').split(',');
+                value.options.remove_emails = (model.remove_emails || '').split(',');
+                value.options.add_org_managers = model.add_org_managers || false;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetFlag = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html');
+          },
+          getData: function() {
+            return {
+              options: [
+                {
+                  title: 'Red',
+                  'red': 'red'
+                }, {
+                  title: 'Blue',
+                  'blue': 'blue'
+                }, {
+                  title: 'Green',
+                  'green': 'green'
+                }, {
+                  title: 'Orange',
+                  'orange': 'orange'
+                }, {
+                  title: 'Purple',
+                  'purple': 'purple'
+                }, {
+                  title: 'Pink',
+                  'Pink': 'Pink'
+                }
+              ]
+            };
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  value: value.color
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetFlag';
+                value.options = {};
+                value.options.color = model.value || 'red';
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getDeleteTicket = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'delete_ticket';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetRequireValidation = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'require_validation';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModStopTriggers = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'stop_triggers';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietUserEmails = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietAgentEmails = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendUserEmail = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-senduseremail.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var from_name, from_name_custom;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                from_name = options.from_name || 'helpdesk_name';
+                from_name_custom = null;
+                if (from_name !== 'performer' && from_name !== 'helpdesk_name' && from_name !== 'site_name') {
+                  from_name = 'custom';
+                  from_name_custom = options.from_name;
+                }
+                return {
+                  template: options.template || '',
+                  do_cc_users: !!options.do_cc_users,
+                  from_name: from_name,
+                  from_name_custom: from_name_custom,
+                  from_account: (parseInt(options.from_account || 0) || 0) + ''
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  template: model.template || '',
+                  do_cc_users: !!model.do_cc_users,
+                  from_name: '',
+                  from_account: parseInt(model.from_account || 0)
+                };
+                if (model.from_name === 'custom') {
+                  options.from_name = model.from_name_custom || '';
+                } else {
+                  options.from_name = model.from_name || '';
+                }
+                value = {};
+                value.type = 'SendUserEmail';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendAgentEmail = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentemail.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var agent_ids, aid, from_name, from_name_custom, _i, _len, _ref;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                from_name = options.from_name || 'helpdesk_name';
+                from_name_custom = null;
+                if (from_name !== 'performer' && from_name !== 'helpdesk_name' && from_name !== 'site_name') {
+                  from_name = 'custom';
+                  from_name_custom = options.from_name;
+                }
+                agent_ids = {};
+                if (options.agent_ids) {
+                  _ref = options.agent_ids;
+                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    aid = _ref[_i];
+                    if (aid !== 'notify_list') {
+                      aid = parseInt(aid);
+                    }
+                    agent_ids[aid] = true;
+                  }
+                } else {
+                  agent_ids['notify_list'] = true;
+                }
+                return {
+                  template: options.template || '',
+                  agent_ids: agent_ids,
+                  from_name: from_name,
+                  from_name_custom: from_name_custom,
+                  from_account: (parseInt(options.from_account || 0) || 0) + ''
+                };
+              },
+              getValue: function(model, data) {
+                var k, v, value, _ref;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  template: model.template || '',
+                  agent_ids: [],
+                  from_name: '',
+                  from_account: parseInt(model.from_account || 0)
+                };
+                if (model.from_name === 'custom') {
+                  options.from_name = model.from_name_custom || '';
+                } else {
+                  options.from_name = model.from_name || '';
+                }
+                if (model.agent_ids) {
+                  _ref = model.agent_ids;
+                  for (v in _ref) {
+                    if (!__hasProp.call(_ref, v)) continue;
+                    k = _ref[v];
+                    if (v) {
+                      if (k === 'notify_list') {
+                        options.agent_ids.push('notify_list');
+                      } else {
+                        options.agent_ids.push(parseInt(k));
+                      }
+                    }
+                  }
+                }
+                value = {};
+                value.type = 'SendAgentEmail';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getWebHook = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-webhook.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return value;
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'webhook';
+                value.options = model;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetSlas = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-slas.html');
+          },
+          getData: function() {
+            var defer;
+            defer = me.$q.defer();
+            me.loadDataOptions().then((function(_this) {
+              return function() {
+                var sla, _i, _len, _ref;
+                options = [];
+                _ref = me.options_data['ticket_slas'];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  sla = _ref[_i];
+                  options.push({
+                    title: sla.title,
+                    value: sla.id
+                  });
+                }
+                return defer.resolve({
+                  options: options
+                });
+              };
+            })(this));
+            return defer.promise;
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  add_slas: value.add_slas || [],
+                  remove_slas: value.remove_slas || []
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'slas';
+                value.options = {};
+                value.options.add_slas = model.add_slas;
+                value.options.remove_slas = model.remove_slas;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      return Admin_OptionBuilder_TypesDef_TicketFilter;
+
+    })(BaseActionTypesDef);
+  });
+
+}).call(this);
+
+//# sourceMappingURL=TicketActions.js.map

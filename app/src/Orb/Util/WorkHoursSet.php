@@ -38,18 +38,8 @@ namespace Orb\Util;
  * Utility class to work with a set of work hours/days/holidays
  * to calculate time lengths and thresholds.
  */
-class WorkHoursSet
+class WorkHoursSet implements WorkHoursInterface
 {
-	const ACTIVE_24X7 = 'all';
-	const ACTIVE_WORK_HOURS = 'work_hours';
-
-	/**
-	 * Whether active all the time (all) or during work hours only (work_hours)
-	 *
-	 * @var string
-	 */
-	protected $active_time;
-
 	/**
 	 * When the work day starts. This is stored as the number of seconds after 00:00:00.
 	 *
@@ -86,9 +76,16 @@ class WorkHoursSet
 	 */
 	protected $work_holidays = array();
 
-	public function __construct($active_time, $work_start, $work_end, array $work_days, $work_timezone, array $work_holidays = array())
+
+	/**
+	 * @param int   $work_start
+	 * @param int   $work_end
+	 * @param array $work_days
+	 * @param int   $work_timezone
+	 * @param array $work_holidays
+	 */
+	public function __construct($work_start, $work_end, array $work_days, $work_timezone, array $work_holidays = array())
 	{
-		$this->active_time = $active_time;
 		$this->work_start = $work_start;
 		$this->work_end = $work_end;
 		$this->work_days = $work_days;
@@ -102,73 +99,14 @@ class WorkHoursSet
 		}
 	}
 
-	public function getActiveTime()
-	{
-		return $this->active_time;
-	}
 
-	public function getWorkStart()
-	{
-		return $this->work_start;
-	}
-
-	public function getWorkStartHour()
-	{
-		return floor($this->work_start / 3600);
-	}
-
-	public function getWorkStartMinute()
-	{
-		return floor(($this->work_start % 3600) / 60);
-	}
-
-	public function getWorkEnd()
-	{
-		return $this->work_end;
-	}
-
-	public function getWorkEndHour()
-	{
-		return floor($this->work_end / 3600);
-	}
-
-	public function getWorkEndMinute()
-	{
-		return floor(($this->work_end % 3600) / 60);
-	}
-
-	public function getWorkDays()
-	{
-		return $this->work_days;
-	}
-
-	public function getWorkTimezone()
-	{
-		return $this->work_timezone;
-	}
-
-	public function getWorkHolidays()
-	{
-		return $this->work_holidays;
-	}
-
-	public function getSecondsPerDay()
-	{
-		return $this->work_end - $this->work_start;
-	}
-
-	public function getSecondsPerWeek()
-	{
-		return count($this->work_days) * $this->getSecondsPerDay();
-	}
-
+	/**
+	 * @param  \DateTime $date_start
+	 * @param  int $delay
+	 * @return \DateTime
+	 */
 	public function calculateWorkHoursDelay(\DateTime $date_start, $delay)
 	{
-		if ($this->active_time == 'all') {
-			$date = $date_start->getTimestamp() + $delay;
-			return new \DateTime("@$date");
-		}
-
 		$work_day_length = $this->work_end - $this->work_start;
 		if ($work_day_length <= 0) {
 			return null;
@@ -208,13 +146,14 @@ class WorkHoursSet
 		return new \DateTime('@' . $date_end->getTimestamp());
 	}
 
-	protected function _calculateWorkHoursDelayPast(\DateTime $date_start, $delay)
-	{
-		if ($this->active_time == 'all') {
-			$date = $date_start->getTimestamp() + $delay;
-			return new \DateTime("@$date");
-		}
 
+	/**
+	 * @param \DateTime $date_start
+	 * @param int       $delay
+	 * @return \DateTime|null
+	 */
+	private function _calculateWorkHoursDelayPast(\DateTime $date_start, $delay)
+	{
 		$work_day_length = $this->work_end - $this->work_start;
 		if ($work_day_length <= 0) {
 			return null;
@@ -240,13 +179,15 @@ class WorkHoursSet
 		return $this->calculateWorkHoursDelay($date_end, $delay);
 	}
 
+
+	/**
+	 * @param \DateTime $date
+	 * @param int|null  $time_remaining
+	 * @return bool
+	 */
 	public function isInWorkDay(\DateTime $date, &$time_remaining = null)
 	{
 		$time_remaining = null;
-
-		if ($this->active_time == 'all') {
-			return true;
-		}
 
 		list($dow, $year, $month, $day, $hours, $minutes, $seconds) = explode('|', $date->format('w|Y|n|j|G|i|s'));
 		$dow = intval($dow);
@@ -280,16 +221,16 @@ class WorkHoursSet
 		return true;
 	}
 
+
+	/**
+	 * @param \DateTime $date
+	 * @param bool      $backwards
+	 * @return \DateTime
+	 */
 	public function getNextWorkDayStart(\DateTime $date, $backwards = false)
 	{
 		$work_date = clone $date;
 		$adjust = ($backwards ? '-1 day' : '+1 day');
-
-		if ($this->active_time == 'all') {
-			$work_date->modify($adjust);
-			$work_date->setTime(0, 0, 0);
-			return $work_date;
-		}
 
 		$has_adjusted = false;
 
@@ -340,6 +281,12 @@ class WorkHoursSet
 		return $work_date;
 	}
 
+
+	/**
+	 * @param int|\DateTime $start
+	 * @param int|\DateTime|null $end
+	 * @return int
+	 */
 	public function getWorkTimeBetween($start, $end = null)
 	{
 		$start = ($start instanceof \DateTime ? $start->getTimestamp() : intval($start));
@@ -347,10 +294,6 @@ class WorkHoursSet
 
 		if (!$end) {
 			$end = time();
-		}
-
-		if ($this->active_time == 'all') {
-			return $end - $start;
 		}
 
 		$length = $end - $start;
@@ -394,5 +337,104 @@ class WorkHoursSet
 		}
 
 		return $wait_time;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkStart()
+	{
+		return $this->work_start;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkStartHour()
+	{
+		return floor($this->work_start / 3600);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkStartMinute()
+	{
+		return floor(($this->work_start % 3600) / 60);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkEnd()
+	{
+		return $this->work_end;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkEndHour()
+	{
+		return floor($this->work_end / 3600);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkEndMinute()
+	{
+		return floor(($this->work_end % 3600) / 60);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkDays()
+	{
+		return $this->work_days;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getWorkTimezone()
+	{
+		return $this->work_timezone;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getWorkHolidays()
+	{
+		return $this->work_holidays;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getSecondsPerDay()
+	{
+		return $this->work_end - $this->work_start;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getSecondsPerWeek()
+	{
+		return count($this->work_days) * $this->getSecondsPerDay();
 	}
 }

@@ -1,3 +1,0 @@
-{
-"hipchat_message":{"action_class":"HipChat\\TicketActions\\HipchatMessageAction","setup_class":"HipChat\\TicketActions\\HipchatMessageSetup"}
-}

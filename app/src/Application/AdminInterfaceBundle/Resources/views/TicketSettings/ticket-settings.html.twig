@@ -1,0 +1,564 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketSettings.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>{{ phrase('adm.ticket_settings.title') }}</h3>
+			</header>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Ticket Deflection</span>
+							<button dp-inhelp-btn="admin.ticket_settings.deflection"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_settings.deflection">
+						<p>
+							Content already written in your knowledgebase can be used to deflect new tickets by
+							showing the user articles that look similar to the ticket they are submitting.
+						</p>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-12">
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.kbsuggest_web_enabled" />
+									<h4>Show article suggestions on the new ticket form</h4>
+								</label>
+								<span class="help-block">
+									When enabled, the system will search your knowledgebase for articles that match
+									the ticket the user is submitting.
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Email Settings</span>
+						</h3>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-12">
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.add_agent_ccs" />
+									<h4>Process agents that are in the CC line of incoming emails</h4>
+								</label>
+								<span class="help-block">
+									When enabled, any agent email addresses that are in the CC line of incoming emails will be added
+									as followers on tickets. This means, for example, an end-user could add an agent to their ticket
+									by CC'ing them.
+								</span>
+							</div>
+							<div class="inner-group">
+								<label>
+									<h4>Maximum email size</h4>
+								</label>
+								<br/>
+								<dp-filesize-with-unit ng-model="settings.gateway_max_email" />
+								<span class="help-block">
+									Enter the max size for an email before it is rejected. This refers to the total size of a raw
+									email source. A raw email is roughly 35% larger than the sum of all attachments and text content.
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Ticket Locking</span>
+							<button dp-inhelp-btn="admin.ticket_settings.locking"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_settings.locking">
+						<p>
+							Ticket locking enables agents to obtain a "lock" on a ticket that prevents
+							other agents from editing it. It is a way to prevent multiple agents from
+							attempting to handle a ticket at the same time. Note that this problem is usually avoided
+							without locking because agents can see each other's draft replies.
+						</p>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-12">
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.lock_auto_enabled" />
+									<h4>Automatically enable lock</h4>
+								</label>
+										<span class="help-block">
+											When enabled, a ticket will be automatically locked when an agent opens it in
+											the agent interface.
+										</span>
+							</div>
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.lock_autorelease_enabled" />
+									<h4>Automatically release lock</h4>
+								</label>
+										<span class="help-block">
+											When enabled, the ticket will be automatically unlocked when the owner closes the ticket tab.
+										</span>
+							</div>
+							<div class="inner-group">
+								<label>
+									<h4>Lock timeout</h4>
+									<select
+											ui-select2
+											ng-model="settings.lock_timeout"
+											style="min-width: 240px"
+											>
+										<option value="900">15 minutes</option>
+										<option value="1800">30 minutes</option>
+										<option value="3600">1 hour</option>
+										<option value="7200">2 hours</option>
+										<option value="14400">4 hours</option>
+										<option value="28000">8 hours</option>
+										<option value="86400">1 day</option>
+									</select>
+								</label>
+										<span class="help-block">
+											The time a ticket can be kept locked to one agent before the system automatically unlocks it.
+										</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Ticket Defaults</span>
+							<button dp-inhelp-btn="admin.ticket_settings.agent_defaults"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_settings.agent_defaults">
+						<p>
+							These settings control the default values for options and form inputs in the agent interface.
+						</p>
+					</div>
+
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th colspan="2">New Ticket</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td width="350">
+									Set status
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.newticket_status"
+											style="min-width: 240px"
+											>
+										<option selected="selected" value="awaiting_user">Awaiting User</option>
+										<option value="awaiting_agent">Awaiting Agent</option>
+										<option value="resolved">Resolved</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Set agent (when ticket is unassigned)
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.newticket_agent"
+											style="min-width: 240px"
+											>
+										<option value="0">Keep unassigned</option>
+										<option value="assign">Assign to self</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Set team (when ticket has no team)
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.newticket_team"
+											style="min-width: 240px"
+											>
+										<option value="0">Keep no team</option>
+										<option value="assign">Assign to own team</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									User notification
+								</td>
+								<td>
+									<label style="font-weight: normal; margin: 0;">
+										<input type="checkbox" ng-model="settings.agent_defaults.newticket_user_notify" />
+										Check the "send user email notification" checkbox by default
+									</label>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<br/>
+
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th colspan="2">Ticket Reply</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td width="350">
+									Set status
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.reply_status"
+											style="min-width: 240px"
+											>
+										<option value="0">Do not change status</option>
+										<option selected="selected" value="awaiting_user">Awaiting User</option>
+										<option value="awaiting_agent">Awaiting Agent</option>
+										<option value="resolved">Resolved</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Set agent (when ticket is unassigned)
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.reply_agent_unassigned"
+											style="min-width: 240px"
+											>
+										<option value="0">Keep unassigned</option>
+										<option value="assign">Assign to self</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Set agent (when ticket is already assigned)
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.reply_agent_assigned"
+											style="min-width: 240px"
+											>
+										<option value="0">Keep assignment</option>
+										<option value="assign">Reassign to self</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Set team (when ticket has no team)
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.reply_team_unassigned"
+											style="min-width: 240px"
+											>
+										<option value="0">Keep no team</option>
+										<option value="assign">Assign to own team</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Set team (when ticket is already assigned to a team)
+								</td>
+								<td>
+									<select
+											ui-select2
+											ng-model="settings.agent_defaults.reply_team_assigned"
+											style="min-width: 240px"
+											>
+										<option value="0">Keep team</option>
+										<option value="assign">Assign to own team</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<td>User notification</td>
+								<td>
+									<label style="font-weight: normal; margin: 0;">
+										<input type="checkbox" ng-model="settings.agent_defaults.reply_user_notify" />
+										Check the "send user email notification" checkbox by default
+									</label>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Automatically set status
+								</td>
+								<td>
+									<label style="font-weight: normal; margin: 0;">
+										<input type="checkbox" ng-model="settings.agent_defaults.reply_reassign_auto_change_status" />
+										When changing the assigned agent from the reply box, automatically change the status to Awaiting Agent
+									</label>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									Automatically enable "close tab"
+								</td>
+								<td>
+									<label style="font-weight: normal; margin: 0;">
+										<input type="checkbox" ng-model="settings.agent_defaults.reply_resolve_auto_close_tab" />
+										When changing the status to Resolved from the reply box, automatically check the "close tab after reply" option.
+									</label>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<br/>
+
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th colspan="2">Ticket View</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td width="350">
+									Reverse message order
+								</td>
+								<td>
+									<label style="font-weight: normal; margin: 0;">
+										<input type="checkbox" ng-model="settings.agent_defaults.view_reverse_order" />
+										Show newest messages first with the reply box at the top.
+									</label>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Default Working Hours</span>
+							<button dp-inhelp-btn="admin.ticket_settings.working_hours"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_settings.working_hours">
+						<p>
+							The default working hours as they apply to SLAs and triggers.
+						</p>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-12">
+							<dp-working-hours ng-model="settings.working_hours" />
+						</div>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Ticket Ref Codes</span>
+							<button dp-inhelp-btn="admin.ticket_settings.refs"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_settings.refs">
+						<p>
+							Each ticket is given a unique ID number. You may also enable "ref codes" to show a reference string to users
+							instead of the ID number. These ref codes are generally more readable and user-friendly.
+						</p>
+						<p>
+							By default, ref codes are in the format ""ABCD-1234-EFGH". You can customize the ref code format.
+						</p>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-12">
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.ref_enabled" />
+									<h4>Use ref codes</h4>
+								</label>
+								<span class="help-block">
+									Show user the ref code instead of numeric ID's in email notifications,
+									the web portal and URLs.
+								</span>
+							</div>
+							<div ng-show="settings.ref_enabled">
+								<div class="inner-group">
+									<label>
+										<input type="checkbox" ng-model="settings.ref_custom_enabled" />
+										<h4>
+											Use a custom ref code
+											<span ng-show="settings.ref_custom_enabled"><button dp-inhelp-btn="admin.ticket_settings.ref_custom_enabled"></button></span>
+										</h4>
+									</label>
+									<span class="help-block">
+										Enable to use a custom format for your ref codes.
+									</span>
+								</div>
+								<div class="inner-group" ng-show="settings.ref_custom_enabled">
+									<div class="panel-help" dp-inhelp-body="admin.ticket_settings.ref_custom_enabled">
+										<p>
+											The ref format is composed of tokens surrounded by &lt;angle brackets&gt;. Here are the available tokens:
+										</p>
+										<table>
+											<tr>
+												<td widht="10"><span class="badge">&lt;A&gt;</span></td>
+												<td>A random letter</td>
+
+												<td widht="10"><span class="badge">&lt;#&gt;</span></td>
+												<td>A random number</td>
+											</tr>
+
+											<tr>
+												<td widht="10"><span class="badge">&lt;?&gt;</span></td>
+												<td>A random letter or number</td>
+
+												<td widht="10"><span class="badge">&lt;YEAR&gt;</span></td>
+												<td>Year as a four-digit number (2013)</td>
+											</tr>
+
+											<tr>
+												<td widht="10"><span class="badge">&lt;MONTH&gt;</span></td>
+												<td>Month as a two-digit number (12)</td>
+
+												<td widht="10"><span class="badge">&lt;DAY&gt;</span></td>
+												<td>Day as a two-digit number (31)</td>
+											</tr>
+
+											<tr>
+												<td widht="10"><span class="badge">&lt;HOUR&gt;</span></td>
+												<td>Hour in 24-hour time (24)</span></td>
+
+												<td widht="10"><span class="badge">&lt;MIN&gt;</span></td>
+												<td>Minute as a two-digit number (59)</td>
+											</tr>
+
+											<tr>
+												<td widht="10"><span class="badge">&lt;SEC&gt;</span></td>
+												<td>Second as a two-digit number (59)</td>
+
+												<td widht="10">&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+										</table>
+
+										<p>
+											Here are some examples:
+										</p>
+										<table>
+											<tr>
+												<td><span class="badge">&lt;YEAR&gt;-&lt;MONTH&gt;-(with 3 digits)</span></td>
+												<td width="10">&rarr;</td>
+												<td><em class="badge">2013-10-001</em>, <em class="badge">2013-10-002</em> (counting upwards)</td>
+											</tr>
+											<tr>
+												<td><span class="badge">&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;</span></td>
+												<td width="10">&rarr;</td>
+												<td><span class="badge">1045885</span>, <span class="badge">6947325</span></td>
+											</tr>
+											<tr>
+												<td><span class="badge">&lt;YEAR&gt;-&lt;A&gt;&lt;A&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;</span></td>
+												<td width="10">&rarr;</td>
+												<td><span class="badge">2013-AB34</span>, <span class="badge">2013-HXR8</span></td>
+											</tr>
+											<tr>
+												<td><span class="badge">TICKET-&lt;A&gt;&lt;A&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;</span></td>
+												<td width="10">&rarr;</td>
+												<td><span class="badge">TICKET-AB2952</span>, <span class="badge">TICKET-FV4541</span></td>
+											</tr>
+										</table>
+									</div>
+
+									<input type="text" class="form-control" ng-model="settings.ref_custom_pattern" style="width: 40%" />
+									and append
+									<select
+										ui-select2
+										ng-model="settings.ref_custom_pattern_digits"
+										style="min-width: 120px"
+									>
+										<option value="0">0 digits</option>
+										<option value="1">1 digit</option>
+										<option value="2">2 digits</option>
+										<option value="3">3 digits</option>
+										<option value="4">4 digits</option>
+										<option value="5">5 digits</option>
+										<option value="6">6 digits</option>
+										<option value="7">7 digits</option>
+										<option value="8">8 digits</option>
+									</select> <span class="help-icon" tooltip-placement="top" tooltip="This will append a counter to the end of your pattern. For example, if you based it on the year, you might choose 5 digits and get refs like 2012-00001 and 2012-00002, counting upwards.<br /><br />If your pattern has a low number of possibilities, then it is highly recommended to use a counter to avoid collisions."></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

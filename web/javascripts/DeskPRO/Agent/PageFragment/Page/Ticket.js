@@ -351,7 +351,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					row.find('span').text(ticket.subject);
 
 					var d = new Date(ticket.last_activity*1000);
-					row.find('time').attr('datetime', d.toISOString()).timeago();
+					//row.find('time').attr('datetime', d.toISOString()).timeago();
 
 					row.on('mouseover', function() {
 						updateOverHighlight(ticket.id);
@@ -536,6 +536,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				};
 			})();
 		}
+        
+        this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
+		loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
+		saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
+		ticket_id: this.meta.ticket_id
+	});
+	
+	this.ownObject(this.linkExistingTicket);
 
 		this.addEvent('deactivate', function() {
 			if (self.ticketReplyBox && self.ticketReplyBox.textarea) {
@@ -767,6 +775,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
+		
+		if (this.meta.jiraEnabled) {
+			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
+				ticketId: self.meta.ticket_id,
+				baseId: self.meta.baseId,
+				defaultProject: self.meta.jiraDefaultProject,
+			});
+		}
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -1736,6 +1752,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					case 'linked_ticket':
 						DeskPRO_Window.newTicketLoader.newLinkedTicket(self.meta.ticket_id);
 						break;
+						
+					case 'link_existing_ticket':
+						self.linkExistingTicket.open();
+						break;	
 
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {

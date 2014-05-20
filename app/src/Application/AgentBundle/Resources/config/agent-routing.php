@@ -1,2726 +1,2252 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-################################################################################
-# Misc
-################################################################################
-
-$collection->add('agent', new Route(
-	'/',
-	array('_controller' => 'AgentBundle:Main:index'),
-	array(),
-	array()
+$collection->create('agent', array(
+	'path'        => '/',
+	'controller'  => 'AgentBundle:Main:index',
 ));
 
-$collection->add('agent_savedom', new Route(
-	'/save-dom.json',
-	array('_controller' => 'AgentBundle:Misc:saveDom'),
-	array(),
-	array()
+$collection->create('agent_savedom', array(
+	'path'        => '/save-dom.json',
+	'controller'  => 'AgentBundle:Misc:saveDom',
 ));
 
-$collection->add('agent_combined_sectiondata', new Route(
-	'/get-combined-section-data.json',
-	array('_controller' => 'AgentBundle:Main:getCombinedSectionData'),
-	array(),
-	array()
+$collection->create('agent_requirejs_loader', array(
+	'path'        => '/requirejs-loader.js',
+	'controller'  => 'AgentBundle:Misc:getRequirejsLoader',
 ));
 
-$collection->add('agent_load_recent_tabs', new Route(
-	'/ui/load-recent-tabs.json',
-	array('_controller' => 'AgentBundle:Main:loadRecentTabs'),
-	array(),
-	array()
+$collection->create('agent_apps_config_js', array(
+	'path'        => '/apps-config.js',
+	'controller'  => 'AgentBundle:Misc:getAppsConfig',
 ));
 
-$collection->add('agent_accept_upload', new Route(
-	'/misc/accept-upload',
-	array('_controller' => 'AgentBundle:Misc:acceptTempUpload'),
-	array(),
-	array()
+$collection->create('agent_combined_sectiondata', array(
+	'path'        => '/get-combined-section-data.json',
+	'controller'  => 'AgentBundle:Main:getCombinedSectionData',
 ));
 
-$collection->add('agent_accept_redactor_image_upload', new Route(
-	'/misc/accept-redactor-image-upload',
-	array('_controller' => 'AgentBundle:Misc:acceptRedactorImageUpload'),
-	array(),
-	array()
+$collection->create('agent_load_recent_tabs', array(
+	'path'        => '/ui/load-recent-tabs.json',
+	'controller'  => 'AgentBundle:Main:loadRecentTabs',
 ));
 
-$collection->add('agent_redactor_autosave', new Route(
-	'/misc/redactor-autosave/{content_type}/{content_id}',
-	array('_controller' => 'AgentBundle:Misc:redactorAutosave'),
-	array('content_id' => '\\d+'),
-	array()
+$collection->create('agent_accept_upload', array(
+	'path'        => '/misc/accept-upload',
+	'controller'  => 'AgentBundle:Misc:acceptTempUpload',
 ));
 
-$collection->add('agent_submit_deskpro_feedback', new Route(
-	'/misc/submit-deskpro-feedback.json',
-	array('_controller' => 'AgentBundle:Misc:submitDeskproFeedback'),
-	array(),
-	array()
+$collection->create('agent_accept_redactor_image_upload', array(
+	'path'        => '/misc/accept-redactor-image-upload',
+	'controller'  => 'AgentBundle:Misc:acceptRedactorImageUpload',
 ));
 
-$collection->add('agent_parse_vcard', new Route(
-    '/misc/parse-vcard',
-    array('_controller' => 'AgentBundle:Misc:parseVCard'),
-    array(),
-    array()
+$collection->create('agent_redactor_autosave', array(
+	'path'          => '/misc/redactor-autosave/{content_type}/{content_id}',
+	'controller'    => 'AgentBundle:Misc:redactorAutosave',
+	'requirements'  => array('content_id' => '\\d+'),
 ));
 
-$collection->add('agent_get_server_time', new Route(
-    '/misc/get-server-time',
-    array('_controller' => 'AgentBundle:Misc:getServerTime'),
-    array(),
-    array()
+$collection->create('agent_submit_deskpro_feedback', array(
+	'path'        => '/misc/submit-deskpro-feedback.json',
+	'controller'  => 'AgentBundle:Misc:submitDeskproFeedback',
 ));
 
-$collection->add('agent_ajax_save_prefs', new Route(
-	'/misc/ajax-save-prefs',
-	array('_controller' => 'AgentBundle:Misc:ajaxSavePrefs'),
-	array(),
-	array()
+$collection->create('agent_parse_vcard', array(
+	'path'        => '/misc/parse-vcard',
+	'controller'  => 'AgentBundle:Misc:parseVCard',
 ));
 
-$collection->add('agent_ajax_labels_autocomplete', new Route(
-	'/misc/ajax-labels/{label_type}',
-	array('_controller' => 'AgentBundle:Misc:ajaxLabelsAutocomplete'),
-	array('label_type' => '[a-z]+'),
-	array()
+$collection->create('agent_get_server_time', array(
+	'path'        => '/misc/get-server-time',
+	'controller'  => 'AgentBundle:Misc:getServerTime',
 ));
 
-$collection->add('agent_interface_data_js', new Route(
-	'/misc/interface-data.js',
-	array('_controller' => 'AgentBundle:Misc:getInterfaceData'),
-	array(),
-	array()
+$collection->create('agent_parse_vcard', array(
+	'path'         => '/misc/parse-vcard/{blob_id}',
+	'controller'   => 'AgentBundle:Misc:parseVCard',
+	'requirements' => array('blob_id' => '\\d+'),
 ));
 
-$collection->add('agent_dismiss_help_message', new Route(
-	'/misc/dismiss-help-message/{id}',
-	array('_controller' => 'AgentBundle:Misc:dismissHelpMessage'),
-	array(),
-	array()
+$collection->create('agent_ajax_save_prefs', array(
+	'path'        => '/misc/ajax-save-prefs',
+	'controller'  => 'AgentBundle:Misc:ajaxSavePrefs',
 ));
 
-$collection->add('agent_set_agent_status', new Route(
-	'/misc/set-agent-status/{status}',
-	array('_controller' => 'AgentBundle:Misc:setAgentStatus'),
-	array(),
-	array()
+$collection->create('agent_ajax_labels_autocomplete', array(
+	'path'          => '/misc/ajax-labels/{label_type}',
+	'controller'    => 'AgentBundle:Misc:ajaxLabelsAutocomplete',
+	'requirements'  => array('label_type' => '[a-z]+'),
 ));
 
-$collection->add('agent_proxy', new Route(
-	'/misc/proxy',
-	array('_controller' => 'AgentBundle:Misc:proxy'),
-	array(),
-	array()
+$collection->create('agent_interface_data_js', array(
+	'path'        => '/misc/interface-data.js',
+	'controller'  => 'AgentBundle:Misc:getInterfaceData',
 ));
 
-$collection->add('agent_load_version_notice', new Route(
-	'/misc/version-notices/{id}/log.html',
-	array('_controller' => 'AgentBundle:Main:loadVersionNotice'),
-	array(),
-	array()
+$collection->create('agent_dismiss_help_message', array(
+	'path'        => '/misc/dismiss-help-message/{id}',
+	'controller'  => 'AgentBundle:Misc:dismissHelpMessage',
 ));
 
-$collection->add('agent_dismiss_version_notice', new Route(
-	'/misc/version-notices/{id}/dismiss.json',
-	array('_controller' => 'AgentBundle:Main:dismissVersionNotice'),
-	array(),
-	array()
+$collection->create('agent_set_agent_status', array(
+	'path'        => '/misc/set-agent-status/{status}',
+	'controller'  => 'AgentBundle:Misc:setAgentStatus',
 ));
 
-$collection->add('agent_redirect_out', new Route(
-	'/redirect-out/{url}',
-	array('_controller' => 'AgentBundle:Misc:redirectExternal'),
-	array('url' => '.+'),
-	array()
+$collection->create('agent_proxy', array(
+	'path'        => '/misc/proxy',
+	'controller'  => 'AgentBundle:Misc:proxy',
 ));
 
-$collection->add('agent_redirect_out_info', new Route(
-	'/redirect-out-info/{url}',
-	array('_controller' => 'AgentBundle:Misc:redirectExternalInfo'),
-	array('url' => '.+'),
-	array()
+$collection->create('agent_load_version_notice', array(
+	'path'        => '/misc/version-notices/{id}/log.html',
+	'controller'  => 'AgentBundle:Main:loadVersionNotice',
 ));
 
-$collection->add('agent_password_confirm_code', new Route(
-	'/password-confirm-code.json',
-	array('_controller' => 'AgentBundle:Misc:getPasswordConfirmCode'),
-	array(),
-	array()
+$collection->create('agent_dismiss_version_notice', array(
+	'path'        => '/misc/version-notices/{id}/dismiss.json',
+	'controller'  => 'AgentBundle:Main:dismissVersionNotice',
 ));
 
-$collection->add('agent_quicksearch', new Route(
-	'/quick-search.json',
-	array('_controller' => 'AgentBundle:Main:quickSearch'),
-	array(),
-	array()
+$collection->create('agent_redirect_out', array(
+	'path'          => '/redirect-out/{url}',
+	'controller'    => 'AgentBundle:Misc:redirectExternal',
+	'requirements'  => array('url' => '.+'),
 ));
 
-$collection->add('agent_recyclebin', new Route(
-	'/recycle-bin',
-	array('_controller' => 'AgentBundle:RecycleBin:list'),
-	array(),
-	array('fragment_name' => 'recycle-bin', 'fragment_type' => 'list')
+$collection->create('agent_redirect_out_info', array(
+	'path'          => '/redirect-out-info/{url}',
+	'controller'    => 'AgentBundle:Misc:redirectExternalInfo',
+	'requirements'  => array('url' => '.+'),
 ));
 
-$collection->add('agent_recyclebin_more', new Route(
-	'/recycle-bin/{type}/{page}',
-	array('_controller' => 'AgentBundle:RecycleBin:listMore'),
-	array(),
-	array()
+$collection->create('agent_user_interface_frame', array(
+	'path'          => '/user-interface-frame',
+	'controller'    => 'AgentBundle:Misc:userInterfaceFrame',
 ));
-
-
 
-################################################################################
-# Login
-################################################################################
-
-$collection->add('agent_login_preload_sources', new Route(
-	'/login/preload-sources',
-	array('_controller' => 'AgentBundle:Login:preloadSources'),
-	array(),
-	array()
+$collection->create('agent_password_confirm_code', array(
+	'path'        => '/password-confirm-code.json',
+	'controller'  => 'AgentBundle:Misc:getPasswordConfirmCode',
 ));
 
-$collection->add('agent_browser_requirements', new Route(
-	'/browser-requirements',
-	array('_controller' => 'AgentBundle:Login:browserRequirements'),
-	array(),
-	array()
+$collection->create('agent_quicksearch', array(
+	'path'        => '/quick-search.json',
+	'controller'  => 'AgentBundle:Main:quickSearch',
 ));
 
-$collection->add('agent_browser_requirements_ie_compat', new Route(
-	'/browser-requirements/ie-compat-mode',
-	array('_controller' => 'AgentBundle:Login:ieCompatMode'),
-	array(),
-	array()
+$collection->create('agent_recyclebin', array(
+	'path'        => '/recycle-bin',
+	'controller'  => 'AgentBundle:RecycleBin:list',
+	'options'     => array('fragment_name' => 'recycle-bin', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_login', new Route(
-	'/login',
-	array('_controller' => 'AgentBundle:Login:index'),
-	array(),
-	array()
+$collection->create('agent_recyclebin_more', array(
+	'path'        => '/recycle-bin/{type}/{page}',
+	'controller'  => 'AgentBundle:RecycleBin:listMore',
 ));
 
-$collection->add('agent_login_authenticate_local', new Route(
-	'/login/authenticate-password',
-	array('_controller' => 'AgentBundle:Login:authenticateLocal', 'usersource_id' => 0),
-	array(),
-	array()
+$collection->create('agent_login_preload_sources', array(
+	'path'        => '/login/preload-sources',
+	'controller'  => 'AgentBundle:Login:preloadSources',
 ));
 
-$collection->add('agent_login_adminlogin', new Route(
-	'/login/admin-login/{code}',
-	array('_controller' => 'AgentBundle:Login:authAdminLogin'),
-	array(),
-	array()
+$collection->create('agent_browser_requirements', array(
+	'path'        => '/browser-requirements',
+	'controller'  => 'AgentBundle:Login:browserRequirements',
 ));
-
 
-$collection->add('agent_send_lost', new Route(
-	'/login/send-lost.json',
-	array('_controller' => 'AgentBundle:Login:sendResetPassword', '_format' => 'json'),
-	array(),
-	array()
+$collection->create('agent_browser_requirements_ie_compat', array(
+	'path'        => '/browser-requirements/ie-compat-mode',
+	'controller'  => 'AgentBundle:Login:ieCompatMode',
 ));
-
-
-################################################################################
-# Settings
-################################################################################
 
-$collection->add('agent_settings', new Route(
-	'/settings',
-	array('_controller' => 'AgentBundle:Settings:profile'),
-	array(),
-	array()
+$collection->create('agent_login', array(
+	'path'        => '/login',
+	'controller'  => 'AgentBundle:Login:index',
 ));
 
-$collection->add('agent_settings_profile_save', new Route(
-	'/settings/profile/save.json',
-	array('_controller' => 'AgentBundle:Settings:profileSave'),
-	array(),
-	array()
+$collection->create('agent_login_authenticate_local', array(
+	'path'        => '/login/authenticate-password',
+	'controller'  => 'AgentBundle:Login:authenticateLocal',
+	'defaults'    => array('usersource_id' => 0),
 ));
 
-$collection->add('agent_settings_profile_savewelcome', new Route(
-	'/settings/profile/save-welcome.json',
-	array('_controller' => 'AgentBundle:Settings:profileSaveWelcome'),
-	array(),
-	array()
+$collection->create('agent_login_adminlogin', array(
+	'path'        => '/login/admin-login/{code}',
+	'controller'  => 'AgentBundle:Login:authAdminLogin',
 ));
 
-$collection->add('agent_settings_signature', new Route(
-	'/settings/signature',
-	array('_controller' => 'AgentBundle:Settings:signature'),
-	array(),
-	array()
+$collection->create('agent_send_lost', array(
+	'path'        => '/login/send-lost.json',
+	'controller'  => 'AgentBundle:Login:sendResetPassword',
+	'defaults'    => array('_format' => 'json'),
 ));
 
-$collection->add('agent_settings_signature_save', new Route(
-	'/settings/signature/save.json',
-	array('_controller' => 'AgentBundle:Settings:signatureSave'),
-	array(),
-	array()
+$collection->create('agent_settings', array(
+	'path'        => '/settings',
+	'controller'  => 'AgentBundle:Settings:profile',
 ));
 
-$collection->add('agent_settings_profile_updatetimezone', new Route(
-	'/settings/profile/update-timezone.json',
-	array('_controller' => 'AgentBundle:Settings:updateTimezone'),
-	array(),
-	array()
+$collection->create('agent_settings_profile_save', array(
+	'path'        => '/settings/profile/save.json',
+	'controller'  => 'AgentBundle:Settings:profileSave',
 ));
 
-$collection->add('agent_settings_ticketnotif', new Route(
-	'/settings/ticket-notifications',
-	array('_controller' => 'AgentBundle:Settings:ticketNotifications'),
-	array(),
-	array()
+$collection->create('agent_settings_profile_savewelcome', array(
+	'path'        => '/settings/profile/save-welcome.json',
+	'controller'  => 'AgentBundle:Settings:profileSaveWelcome',
 ));
 
-$collection->add('agent_settings_ticketnotif_save', new Route(
-	'/settings/ticket-notifications/save.json',
-	array('_controller' => 'AgentBundle:Settings:ticketNotificationsSave'),
-	array(),
-	array()
+$collection->create('agent_settings_signature', array(
+	'path'        => '/settings/signature',
+	'controller'  => 'AgentBundle:Settings:signature',
 ));
 
-$collection->add('agent_settings_othernotif', new Route(
-	'/settings/other-notifications',
-	array('_controller' => 'AgentBundle:Settings:otherNotifications'),
-	array(),
-	array()
+$collection->create('agent_settings_signature_save', array(
+	'path'        => '/settings/signature/save.json',
+	'controller'  => 'AgentBundle:Settings:signatureSave',
 ));
 
-$collection->add('agent_settings_othernotif_save', new Route(
-	'/settings/other-notifications/save.json',
-	array('_controller' => 'AgentBundle:Settings:otherNotificationsSave'),
-	array(),
-	array()
+$collection->create('agent_settings_profile_updatetimezone', array(
+	'path'        => '/settings/profile/update-timezone.json',
+	'controller'  => 'AgentBundle:Settings:updateTimezone',
 ));
 
-$collection->add('agent_settings_ticketmacros', new Route(
-	'/settings/ticket-macros',
-	array('_controller' => 'AgentBundle:Settings:ticketMacros'),
-	array(),
-	array()
+$collection->create('agent_settings_ticketnotif', array(
+	'path'        => '/settings/ticket-notifications',
+	'controller'  => 'AgentBundle:Settings:ticketNotifications',
 ));
 
-$collection->add('agent_settings_ticketmacros_edit', new Route(
-	'/settings/ticket-macros/{macro_id}/edit',
-	array('_controller' => 'AgentBundle:Settings:ticketMacroEdit'),
-	array('macro_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketnotif_save', array(
+	'path'        => '/settings/ticket-notifications/save.json',
+	'controller'  => 'AgentBundle:Settings:ticketNotificationsSave',
 ));
 
-$collection->add('agent_settings_ticketmacros_edit_save', new Route(
-	'/settings/ticket-macros/{macro_id}/save',
-	array('_controller' => 'AgentBundle:Settings:ticketMacroEditSave'),
-	array('macro_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_othernotif', array(
+	'path'        => '/settings/other-notifications',
+	'controller'  => 'AgentBundle:Settings:otherNotifications',
 ));
 
-$collection->add('agent_settings_ticketmacros_new', new Route(
-	'/settings/ticket-macros/new',
-	array('_controller' => 'AgentBundle:Settings:ticketMacroEdit', 'macro_id' => 0),
-	array(),
-	array()
+$collection->create('agent_settings_othernotif_save', array(
+	'path'        => '/settings/other-notifications/save.json',
+	'controller'  => 'AgentBundle:Settings:otherNotificationsSave',
 ));
 
-$collection->add('agent_settings_ticketmacros_del', new Route(
-	'/settings/ticket-macros/{macro_id}/delete',
-	array('_controller' => 'AgentBundle:Settings:ticketMacroDelete'),
-	array('macro_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketmacros', array(
+	'path'        => '/settings/ticket-macros',
+	'controller'  => 'AgentBundle:Settings:ticketMacros',
 ));
 
-$collection->add('agent_settings_ticketfilters', new Route(
-	'/settings/ticket-filters',
-	array('_controller' => 'AgentBundle:Settings:ticketFilters'),
-	array(),
-	array()
+$collection->create('agent_settings_ticketmacros_edit', array(
+	'path'          => '/settings/ticket-macros/{macro_id}/edit',
+	'controller'    => 'AgentBundle:Settings:ticketMacroEdit',
+	'requirements'  => array('macro_id' => '\\d+'),
 ));
 
-$collection->add('agent_settings_ticketfilters_edit', new Route(
-	'/settings/ticket-filters/{filter_id}/edit',
-	array('_controller' => 'AgentBundle:Settings:ticketFilterEdit'),
-	array('filter_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketmacros_edit_save', array(
+	'path'          => '/settings/ticket-macros/{macro_id}/save',
+	'controller'    => 'AgentBundle:Settings:ticketMacroEditSave',
+	'requirements'  => array('macro_id' => '\\d+'),
 ));
 
-$collection->add('agent_settings_ticketfilters_edit_save', new Route(
-	'/settings/ticket-filters/{filter_id}/edit/save',
-	array('_controller' => 'AgentBundle:Settings:ticketFilterEditSave'),
-	array('filter_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketmacros_new', array(
+	'path'        => '/settings/ticket-macros/new',
+	'controller'  => 'AgentBundle:Settings:ticketMacroEdit',
+	'defaults'    => array('macro_id' => 0),
 ));
 
-$collection->add('agent_settings_ticketfilters_del', new Route(
-	'/settings/ticket-filters/{filter_id}/delete',
-	array('_controller' => 'AgentBundle:Settings:ticketFilterDelete'),
-	array('filter_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketmacros_del', array(
+	'path'          => '/settings/ticket-macros/{macro_id}/delete',
+	'controller'    => 'AgentBundle:Settings:ticketMacroDelete',
+	'requirements'  => array('macro_id' => '\\d+'),
 ));
 
-$collection->add('agent_settings_ticketfilters_new', new Route(
-	'/settings/ticket-filters/new-filter',
-	array('_controller' => 'AgentBundle:Settings:ticketFilterEdit', 'filter_id' => 0),
-	array(),
-	array()
+$collection->create('agent_settings_ticketfilters', array(
+	'path'        => '/settings/ticket-filters',
+	'controller'  => 'AgentBundle:Settings:ticketFilters',
 ));
 
-$collection->add('agent_settings_ticketslas', new Route(
-	'/settings/ticket-slas',
-	array('_controller' => 'AgentBundle:Settings:ticketSlas'),
-	array(),
-	array()
+$collection->create('agent_settings_ticketfilters_edit', array(
+	'path'          => '/settings/ticket-filters/{filter_id}/edit',
+	'controller'    => 'AgentBundle:Settings:ticketFilterEdit',
+	'requirements'  => array('filter_id' => '\\d+'),
 ));
 
-################################################################################
-# People and People Search
-################################################################################
-
-$collection->add('agent_people_validate_email', new Route(
-	'/people/validate-email/{id}/{security_token}',
-	array('_controller' => 'AgentBundle:Person:validateEmailAddress'),
-	array('id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketfilters_edit_save', array(
+	'path'          => '/settings/ticket-filters/{filter_id}/edit/save',
+	'controller'    => 'AgentBundle:Settings:ticketFilterEditSave',
+	'requirements'  => array('filter_id' => '\\d+'),
 ));
 
-$collection->add('agent_people_view', new Route(
-	'/people/{person_id}',
-	array('_controller' => 'AgentBundle:Person:view'),
-	array('person_id' => '\\d+'),
-	array('fragment_name' => 'p')
+$collection->create('agent_settings_ticketfilters_del', array(
+	'path'          => '/settings/ticket-filters/{filter_id}/delete',
+	'controller'    => 'AgentBundle:Settings:ticketFilterDelete',
+	'requirements'  => array('filter_id' => '\\d+'),
 ));
 
-$collection->add('agent_people_view_basicjson', new Route(
-	'/people/{person_id}/basic.json',
-	array('_controller' => 'AgentBundle:Person:getBasicInfo'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketfilters_new', array(
+	'path'        => '/settings/ticket-filters/new-filter',
+	'controller'  => 'AgentBundle:Settings:ticketFilterEdit',
+	'defaults'    => array('filter_id' => 0),
 ));
 
-$collection->add('agent_people_viewsession', new Route(
-	'/people/session/{session_id}',
-	array('_controller' => 'AgentBundle:Person:viewSession'),
-	array('session_id' => '\\d+'),
-	array()
+$collection->create('agent_settings_ticketslas', array(
+	'path'        => '/settings/ticket-slas',
+	'controller'  => 'AgentBundle:Settings:ticketSlas',
 ));
 
-$collection->add('agent_people_validate_list', new Route(
-	'/people/validate/list',
-	array('_controller' => 'AgentBundle:PeopleSearch:validateList'),
-	array(),
-	array()
+$collection->create('agent_people_validate_email', array(
+	'path'          => '/people/validate-email/{id}/{security_token}',
+	'controller'    => 'AgentBundle:Person:validateEmailAddress',
+	'requirements'  => array('id' => '\\d+'),
 ));
 
-$collection->add('agent_people_validate_approve', new Route(
-	'/people/validate/approve',
-	array('_controller' => 'AgentBundle:PeopleSearch:validateApprove'),
-	array(),
-	array()
+$collection->create('agent_people_view', array(
+	'path'          => '/people/{person_id}',
+	'controller'    => 'AgentBundle:Person:view',
+	'requirements'  => array('person_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'p'),
 ));
 
-$collection->add('agent_people_validate_delete', new Route(
-	'/people/validate/delete',
-	array('_controller' => 'AgentBundle:PeopleSearch:validateDelete'),
-	array(),
-	array()
+$collection->create('agent_people_view_basicjson', array(
+	'path'          => '/people/{person_id}/basic.json',
+	'controller'    => 'AgentBundle:Person:getBasicInfo',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-$collection->add('agent_people_new', new Route(
-	'/people/new',
-	array('_controller' => 'AgentBundle:Person:newPerson'),
-	array(),
-	array()
+$collection->create('agent_people_viewsession', array(
+	'path'          => '/people/session/{session_id}',
+	'controller'    => 'AgentBundle:Person:viewSession',
+	'requirements'  => array('session_id' => '\\d+'),
 ));
 
-$collection->add('agent_people_new_save', new Route(
-	'/people/new/save',
-	array('_controller' => 'AgentBundle:Person:newPersonSave'),
-	array(),
-	array()
+$collection->create('agent_people_validate_list', array(
+	'path'        => '/people/validate/list',
+	'controller'  => 'AgentBundle:PeopleSearch:validateList',
 ));
 
-$collection->add('agent_people_ajaxsave', new Route(
-	'/people/{person_id}/ajax-save',
-	array('_controller' => 'AgentBundle:Person:ajaxSave'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_validate_approve', array(
+	'path'        => '/people/validate/approve',
+	'controller'  => 'AgentBundle:PeopleSearch:validateApprove',
 ));
 
-$collection->add('agent_people_savecontactdata', new Route(
-	'/people/{person_id}/save-contact-data.json',
-	array('_controller' => 'AgentBundle:Person:saveContactData'),
-	array(),
-	array()
+$collection->create('agent_people_validate_delete', array(
+	'path'        => '/people/validate/delete',
+	'controller'  => 'AgentBundle:PeopleSearch:validateDelete',
 ));
 
-$collection->add('agent_people_unban_email', new Route(
-	'/people/{person_id}/unban-email/{email_id}.json',
-	array('_controller' => 'AgentBundle:Person:unbanEmail'),
-	array(),
-	array()
+$collection->create('agent_people_new', array(
+	'path'        => '/people/new',
+	'controller'  => 'AgentBundle:Person:newPerson',
 ));
 
-$collection->add('agent_people_merge_overlay', new Route(
-	'/people/{person_id}/merge-overlay/{other_person_id}',
-	array('_controller' => 'AgentBundle:Person:mergeOverlay'),
-	array('person_id' => '\\d+', 'other_person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_new_save', array(
+	'path'        => '/people/new/save',
+	'controller'  => 'AgentBundle:Person:newPersonSave',
 ));
 
-$collection->add('agent_people_merge', new Route(
-	'/people/{person_id}/merge/{other_person_id}',
-	array('_controller' => 'AgentBundle:Person:merge'),
-	array('person_id' => '\\d+', 'other_person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_ajaxsave', array(
+	'path'          => '/people/{person_id}/ajax-save',
+	'controller'    => 'AgentBundle:Person:ajaxSave',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-$collection->add('agent_people_delete', new Route(
-	'/people/{person_id}/delete/{security_token}',
-	array('_controller' => 'AgentBundle:Person:deletePerson'),
-	array(),
-	array()
+$collection->create('agent_people_savecontactdata', array(
+	'path'        => '/people/{person_id}/save-contact-data.json',
+	'controller'  => 'AgentBundle:Person:saveContactData',
 ));
 
-$collection->add('agent_people_login_as', new Route(
-	'/people/{person_id}/login-as',
-	array('_controller' => 'AgentBundle:Person:loginAs'),
-	array(),
-	array()
+$collection->create('agent_people_unban_email', array(
+	'path'        => '/people/{person_id}/unban-email/{email_id}.json',
+	'controller'  => 'AgentBundle:Person:unbanEmail',
 ));
 
-$collection->add('agent_people_changepicoverlay', new Route(
-	'/people/{person_id}/change-picture-overlay',
-	array('_controller' => 'AgentBundle:Person:changePictureOverlay'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_merge_overlay', array(
+	'path'          => '/people/{person_id}/merge-overlay/{other_person_id}',
+	'controller'    => 'AgentBundle:Person:mergeOverlay',
+	'requirements'  => array('person_id' => '\\d+', 'other_person_id' => '\\d+'),
 ));
 
-$collection->add('agent_people_ajaxsave_note', new Route(
-	'/people/{person_id}/ajax-save-note',
-	array('_controller' => 'AgentBundle:Person:ajaxSaveNote'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_merge', array(
+	'path'          => '/people/{person_id}/merge/{other_person_id}',
+	'controller'    => 'AgentBundle:Person:merge',
+	'requirements'  => array('person_id' => '\\d+', 'other_person_id' => '\\d+'),
 ));
 
-$collection->add('agent_people_ajaxsave_organization', new Route(
-	'/people/{person_id}/ajax-save-organization',
-	array('_controller' => 'AgentBundle:Person:ajaxSaveOrganization'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_delete', array(
+	'path'        => '/people/{person_id}/delete/{security_token}',
+	'controller'  => 'AgentBundle:Person:deletePerson',
 ));
 
-$collection->add('agent_person_ajax_labels_save', new Route(
-	'/person/{person_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Person:ajaxSaveLabels'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_login_as', array(
+	'path'        => '/people/{person_id}/login-as',
+	'controller'  => 'AgentBundle:Person:loginAs',
 ));
 
-$collection->add('agent_person_ajaxsavecustomfields', new Route(
-	'/person/{person_id}/ajax-save-custom-fields',
-	array('_controller' => 'AgentBundle:Person:ajaxSaveCustomFields'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_people_changepicoverlay', array(
+	'path'          => '/people/{person_id}/change-picture-overlay',
+	'controller'    => 'AgentBundle:Person:changePictureOverlay',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-$collection->add('agent_peoplesearch_usergroup', new Route(
-	'/people-search/usergroup/{id}',
-	array('_controller' => 'AgentBundle:PeopleSearch:showUsergroup'),
-	array(),
-	array('fragment_name' => 'usergroup', 'fragment_type' => 'list')
+$collection->create('agent_people_ajaxsave_note', array(
+	'path'          => '/people/{person_id}/ajax-save-note',
+	'controller'    => 'AgentBundle:Person:ajaxSaveNote',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-$collection->add('agent_peoplesearch_organization', new Route(
-	'/people-search/organization/{id}',
-	array('_controller' => 'AgentBundle:PeopleSearch:showOrganizationMembers'),
-	array(),
-	array('fragment_name' => 'organization-members', 'fragment_type' => 'list')
+$collection->create('agent_people_ajaxsave_organization', array(
+	'path'          => '/people/{person_id}/ajax-save-organization',
+	'controller'    => 'AgentBundle:Person:ajaxSaveOrganization',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-
-$collection->add('agent_peoplesearch_customfilter', new Route(
-	'/people-search/search/{letter}',
-	array('_controller' => 'AgentBundle:PeopleSearch:search', 'letter' => '*'),
-	array(),
-	array('fragment_name' => 'people', 'fragment_type' => 'list')
+$collection->create('agent_person_ajax_labels_save', array(
+	'path'          => '/person/{person_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Person:ajaxSaveLabels',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-$collection->add('agent_peoplesearch_getpage', new Route(
-	'/people-search/get-page',
-	array('_controller' => 'AgentBundle:PeopleSearch:getPeoplePage'),
-	array(),
-	array()
+$collection->create('agent_person_ajaxsavecustomfields', array(
+	'path'          => '/person/{person_id}/ajax-save-custom-fields',
+	'controller'    => 'AgentBundle:Person:ajaxSaveCustomFields',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-$collection->add('agent_peoplesearch_performquick', new Route(
-	'/people-search/search-quick',
-	array('_controller' => 'AgentBundle:PeopleSearch:performQuickSearch'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_usergroup', array(
+	'path'        => '/people-search/usergroup/{id}',
+	'controller'  => 'AgentBundle:PeopleSearch:showUsergroup',
+	'options'     => array('fragment_name' => 'usergroup', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_peoplesearch_quickfind', new Route(
-	'/people-search/quick-find',
-	array('_controller' => 'AgentBundle:PeopleSearch:quickFind'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_organization', array(
+	'path'        => '/people-search/organization/{id}',
+	'controller'  => 'AgentBundle:PeopleSearch:showOrganizationMembers',
+	'options'     => array(
+		'fragment_name'  => 'organization-members',
+		'fragment_type'  => 'list',
+	),
 ));
 
-$collection->add('agent_peoplesearch_quickfind_search', new Route(
-	'/people-search/quick-find-search.json',
-	array('_controller' => 'AgentBundle:PeopleSearch:quickFindSearch'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_customfilter', array(
+	'path'        => '/people-search/search/{letter}',
+	'controller'  => 'AgentBundle:PeopleSearch:search',
+	'defaults'    => array('letter' => '*'),
+	'options'     => array('fragment_name' => 'people', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_peoplesearch_getsectiondata', new Route(
-	'/people/get-section-data.json',
-	array('_controller' => 'AgentBundle:PeopleSearch:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_getpage', array(
+	'path'        => '/people-search/get-page',
+	'controller'  => 'AgentBundle:PeopleSearch:getPeoplePage',
 ));
 
-$collection->add('agent_peoplesearch_getsectiondata_reloadcounts', new Route(
-	'/people/get-section-data/reload-counts.json',
-	array('_controller' => 'AgentBundle:PeopleSearch:reloadCounts'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_performquick', array(
+	'path'        => '/people-search/search-quick',
+	'controller'  => 'AgentBundle:PeopleSearch:performQuickSearch',
 ));
 
-$collection->add('agent_peoplesearch_reload_label_sectiondata', new Route(
-	'/people/get-section-data/labels.json',
-	array('_controller' => 'AgentBundle:PeopleSearch:reloadLabelData'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_quickfind', array(
+	'path'        => '/people-search/quick-find',
+	'controller'  => 'AgentBundle:PeopleSearch:quickFind',
 ));
-
 
-################################################################################
-# Organizations and Organizations Search
-################################################################################
-
-$collection->add('agent_org_view', new Route(
-	'/organizations/{organization_id}',
-	array('_controller' => 'AgentBundle:Organization:view'),
-	array('organization_id' => '\\d+'),
-	array('fragment_name' => 'o')
+$collection->create('agent_peoplesearch_quickfind_search', array(
+	'path'        => '/people-search/quick-find-search.json',
+	'controller'  => 'AgentBundle:PeopleSearch:quickFindSearch',
 ));
 
-$collection->add('agent_org_new', new Route(
-	'/organizations/new',
-	array('_controller' => 'AgentBundle:Organization:newOrganization'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_getsectiondata', array(
+	'path'        => '/people/get-section-data.json',
+	'controller'  => 'AgentBundle:PeopleSearch:getSectionData',
 ));
 
-$collection->add('agent_org_new_save', new Route(
-	'/organizations/new/save',
-	array('_controller' => 'AgentBundle:Organization:newOrganizationSave'),
-	array(),
-	array()
+$collection->create('agent_peoplesearch_getsectiondata_reloadcounts', array(
+	'path'        => '/people/get-section-data/reload-counts.json',
+	'controller'  => 'AgentBundle:PeopleSearch:reloadCounts',
 ));
 
-$collection->add('agent_org_ajaxsave', new Route(
-	'/organizations/{organization_id}/ajax-save',
-	array('_controller' => 'AgentBundle:Organization:ajaxSave'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_peoplesearch_reload_label_sectiondata', array(
+	'path'        => '/people/get-section-data/labels.json',
+	'controller'  => 'AgentBundle:PeopleSearch:reloadLabelData',
 ));
 
-$collection->add('agent_org_domain_assign', new Route(
-	'/organizations/{organization_id}/assign-domain',
-	array('_controller' => 'AgentBundle:Organization:assignDomain'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_view', array(
+	'path'          => '/organizations/{organization_id}',
+	'controller'    => 'AgentBundle:Organization:view',
+	'requirements'  => array('organization_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'o'),
 ));
 
-$collection->add('agent_org_domain_unassign', new Route(
-	'/organizations/{organization_id}/unassign-domain',
-	array('_controller' => 'AgentBundle:Organization:unassignDomain'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_new', array(
+	'path'        => '/organizations/new',
+	'controller'  => 'AgentBundle:Organization:newOrganization',
 ));
 
-$collection->add('agent_org_domain_moveusers', new Route(
-	'/organizations/{organization_id}/domain/move-users',
-	array('_controller' => 'AgentBundle:Organization:moveDomainUsers'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_new_save', array(
+	'path'        => '/organizations/new/save',
+	'controller'  => 'AgentBundle:Organization:newOrganizationSave',
 ));
 
-$collection->add('agent_org_domain_moveusers_exist', new Route(
-	'/organizations/{organization_id}/domain/reassign-users',
-	array('_controller' => 'AgentBundle:Organization:moveTakenDomainUsers'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_ajaxsave', array(
+	'path'          => '/organizations/{organization_id}/ajax-save',
+	'controller'    => 'AgentBundle:Organization:ajaxSave',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_save_member_pos', new Route(
-	'/organizations/{organization_id}/save-member-pos/{person_id}',
-	array('_controller' => 'AgentBundle:Organization:savePosition'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_domain_assign', array(
+	'path'          => '/organizations/{organization_id}/assign-domain',
+	'controller'    => 'AgentBundle:Organization:assignDomain',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_save_member_manager', new Route(
-	'/organizations/{organization_id}/save-member-manager/{person_id}',
-	array('_controller' => 'AgentBundle:Organization:saveManager'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_domain_unassign', array(
+	'path'          => '/organizations/{organization_id}/unassign-domain',
+	'controller'    => 'AgentBundle:Organization:unassignDomain',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_savecontactdata', new Route(
-	'/organizations/{organization_id}/save-contact-data.json',
-	array('_controller' => 'AgentBundle:Organization:saveContactData'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('agent_org_domain_moveusers', array(
+	'path'          => '/organizations/{organization_id}/domain/move-users',
+	'controller'    => 'AgentBundle:Organization:moveDomainUsers',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_delete', new Route(
-	'/organizations/{organization_id}/delete/{security_token}',
-	array('_controller' => 'AgentBundle:Organization:deleteOrganization'),
-	array(),
-	array()
+$collection->create('agent_org_domain_moveusers_exist', array(
+	'path'          => '/organizations/{organization_id}/domain/reassign-users',
+	'controller'    => 'AgentBundle:Organization:moveTakenDomainUsers',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_ajaxsave_note', new Route(
-	'/organizations/{organization_id}/ajax-save-note',
-	array('_controller' => 'AgentBundle:Organization:ajaxSaveNote'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_save_member_pos', array(
+	'path'          => '/organizations/{organization_id}/save-member-pos/{person_id}',
+	'controller'    => 'AgentBundle:Organization:savePosition',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_ajax_labels_save', new Route(
-	'/organizations/{organization_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Organization:ajaxSaveLabels'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_save_member_manager', array(
+	'path'          => '/organizations/{organization_id}/save-member-manager/{person_id}',
+	'controller'    => 'AgentBundle:Organization:saveManager',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_ajaxsavecustomfields', new Route(
-	'/organizations/{organization_id}/ajax-save-custom-fields',
-	array('_controller' => 'AgentBundle:Organization:ajaxSaveCustomFields'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_savecontactdata', array(
+	'path'          => '/organizations/{organization_id}/save-contact-data.json',
+	'controller'    => 'AgentBundle:Organization:saveContactData',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-$collection->add('agent_org_changepicoverlay', new Route(
-	'/organizations/{organization_id}/change-picture-overlay',
-	array('_controller' => 'AgentBundle:Organization:changePictureOverlay'),
-	array('organization_id' => '\\d+'),
-	array()
+$collection->create('agent_org_delete', array(
+	'path'        => '/organizations/{organization_id}/delete/{security_token}',
+	'controller'  => 'AgentBundle:Organization:deleteOrganization',
 ));
 
-$collection->add('agent_orgsearch_getpage', new Route(
-	'/organization-search/get-page',
-	array('_controller' => 'AgentBundle:OrganizationSearch:getOrgPage'),
-	array(),
-	array()
+$collection->create('agent_org_ajaxsave_note', array(
+	'path'          => '/organizations/{organization_id}/ajax-save-note',
+	'controller'    => 'AgentBundle:Organization:ajaxSaveNote',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_orgsearch_customfilter', new Route(
-	'/organization-search/search',
-	array('_controller' => 'AgentBundle:OrganizationSearch:search'),
-	array(),
-	array('fragment_name' => 'orgs', 'fragment_type' => 'list')
+$collection->create('agent_org_ajax_labels_save', array(
+	'path'          => '/organizations/{organization_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Organization:ajaxSaveLabels',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_orgsearch_quicknamesearch', new Route(
-	'/organization-search/quick-name-search.json',
-	array('_controller' => 'AgentBundle:OrganizationSearch:performQuickNameSearch'),
-	array(),
-	array()
+$collection->create('agent_org_ajaxsavecustomfields', array(
+	'path'          => '/organizations/{organization_id}/ajax-save-custom-fields',
+	'controller'    => 'AgentBundle:Organization:ajaxSaveCustomFields',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
-$collection->add('agent_orgsearch_namelookup', new Route(
-	'/organization-search/name-lookup.json',
-	array('_controller' => 'AgentBundle:OrganizationSearch:checkName'),
-	array(),
-	array()
+$collection->create('agent_org_changepicoverlay', array(
+	'path'          => '/organizations/{organization_id}/change-picture-overlay',
+	'controller'    => 'AgentBundle:Organization:changePictureOverlay',
+	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
+$collection->create('agent_orgsearch_getpage', array(
+	'path'        => '/organization-search/get-page',
+	'controller'  => 'AgentBundle:OrganizationSearch:getOrgPage',
+));
 
-################################################################################
-# Tickets and Ticket Search
-################################################################################
+$collection->create('agent_orgsearch_customfilter', array(
+	'path'        => '/organization-search/search',
+	'controller'  => 'AgentBundle:OrganizationSearch:search',
+	'options'     => array('fragment_name' => 'orgs', 'fragment_type' => 'list'),
+));
 
-$collection->add('agent_ticketsearch_getsectiondata', new Route(
-	'/ticket-search/get-section-data.json',
-	array('_controller' => 'AgentBundle:TicketSearch:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_orgsearch_quicknamesearch', array(
+	'path'        => '/organization-search/quick-name-search.json',
+	'controller'  => 'AgentBundle:OrganizationSearch:performQuickNameSearch',
 ));
 
-$collection->add('agent_ticketsearch_getsection_reloadarchive', new Route(
-	'/ticket-search/get-section-data/reload-archive-section',
-	array('_controller' => 'AgentBundle:TicketSearch:reloadArchiveSection'),
-	array(),
-	array()
+$collection->create('agent_orgsearch_namelookup', array(
+	'path'        => '/organization-search/name-lookup.json',
+	'controller'  => 'AgentBundle:OrganizationSearch:checkName',
 ));
 
-$collection->add('agent_ticketsearch_refreshsectiondata', new Route(
-	'/ticket-search/refresh-section-data/{section}.json',
-	array('_controller' => 'AgentBundle:TicketSearch:refreshSectionData'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getsectiondata', array(
+	'path'        => '/ticket-search/get-section-data.json',
+	'controller'  => 'AgentBundle:TicketSearch:getSectionData',
 ));
 
-$collection->add('agent_ticketsearch_getlabelssection', new Route(
-	'/ticket-search/get-section/labels',
-	array('_controller' => 'AgentBundle:TicketSearch:getLabelsSection'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getsection_reloadarchive', array(
+	'path'        => '/ticket-search/get-section-data/reload-archive-section',
+	'controller'  => 'AgentBundle:TicketSearch:reloadArchiveSection',
 ));
 
-$collection->add('agent_ticketsearch_getfiltercounts', new Route(
-	'/ticket-search/get-filter-counts.json',
-	array('_controller' => 'AgentBundle:TicketSearch:getFilterCounts'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_refreshsectiondata', array(
+	'path'        => '/ticket-search/refresh-section-data/{section}.json',
+	'controller'  => 'AgentBundle:TicketSearch:refreshSectionData',
 ));
 
-$collection->add('agent_ticketsearch_getslacounts', new Route(
-	'/ticket-search/get-sla-counts.json',
-	array('_controller' => 'AgentBundle:TicketSearch:getSlaCounts'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getlabelssection', array(
+	'path'        => '/ticket-search/get-section/labels',
+	'controller'  => 'AgentBundle:TicketSearch:getLabelsSection',
 ));
 
-$collection->add('agent_ticketsearch_grouptickets', new Route(
-	'/ticket-search/group-tickets.json',
-	array('_controller' => 'AgentBundle:TicketSearch:groupTickets'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getfiltercounts', array(
+	'path'        => '/ticket-search/get-filter-counts.json',
+	'controller'  => 'AgentBundle:TicketSearch:getFilterCounts',
 ));
 
-$collection->add('agent_ticketsearch_getpage', new Route(
-	'/ticket-search/get-page',
-	array('_controller' => 'AgentBundle:TicketSearch:getTicketPage'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getslacounts', array(
+	'path'        => '/ticket-search/get-sla-counts.json',
+	'controller'  => 'AgentBundle:TicketSearch:getSlaCounts',
 ));
 
-$collection->add('agent_ticketsearch_getflaggedsectiondata', new Route(
-	'/tickets/get-flagged-section-data.json',
-	array('_controller' => 'AgentBundle:TicketSearch:getFlaggedSectionData'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_grouptickets', array(
+	'path'        => '/ticket-search/group-tickets.json',
+	'controller'  => 'AgentBundle:TicketSearch:groupTickets',
 ));
 
-$collection->add('agent_ticketsearch_runcustomfilter', new Route(
-	'/ticket-search/custom-filter/run',
-	array('_controller' => 'AgentBundle:TicketSearch:runCustomFilter'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getpage', array(
+	'path'        => '/ticket-search/get-page',
+	'controller'  => 'AgentBundle:TicketSearch:getTicketPage',
 ));
 
-$collection->add('agent_ticketsearch_quicksearch', new Route(
-	'/ticket-search/quick-search',
-	array('_controller' => 'AgentBundle:TicketSearch:quickSearch'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getflaggedsectiondata', array(
+	'path'        => '/tickets/get-flagged-section-data.json',
+	'controller'  => 'AgentBundle:TicketSearch:getFlaggedSectionData',
 ));
 
-$collection->add('agent_ticketsearch_singleticketrow', new Route(
-	'/ticket-search/single-ticket-row/{content_type}/{content_id}',
-	array('_controller' => 'AgentBundle:TicketSearch:getSingleTicketRow'),
-	array('content_id' => '\\d+'),
-	array()
+$collection->create('agent_ticketsearch_runcustomfilter', array(
+	'path'        => '/ticket-search/custom-filter/run',
+	'controller'  => 'AgentBundle:TicketSearch:runCustomFilter',
 ));
 
-$collection->add('agent_ticketsearch_getticketrows', new Route(
-	'/ticket-search/ticket-rows.json',
-	array('_controller' => 'AgentBundle:TicketSearch:getTicketRows'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_quicksearch', array(
+	'path'        => '/ticket-search/quick-search',
+	'controller'  => 'AgentBundle:TicketSearch:quickSearch',
 ));
 
-$collection->add('agent_ticketsearch_runfilter', new Route(
-	'/ticket-search/filter/{filter_id}',
-	array('_controller' => 'AgentBundle:TicketSearch:runFilter'),
-	array('filter_id' => '\\d+'),
-	array('fragment_name' => 'filter', 'fragment_type' => 'list')
+$collection->create('agent_ticketsearch_singleticketrow', array(
+	'path'          => '/ticket-search/single-ticket-row/{content_type}/{content_id}',
+	'controller'    => 'AgentBundle:TicketSearch:getSingleTicketRow',
+	'requirements'  => array('content_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticketsearch_getsubgroupcounts', new Route(
-	'/ticket-search/subgroup-counts.json',
-	array('_controller' => 'AgentBundle:TicketSearch:getSubgroupCounts'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_getticketrows', array(
+	'path'       => '/ticket-search/ticket-rows.json',
+	'controller' => 'AgentBundle:TicketSearch:getTicketRows',
 ));
 
-$collection->add('agent_ticketsearch_runnamedfilter', new Route(
-	'/ticket-search/filter/{filter_name}',
-	array('_controller' => 'AgentBundle:TicketSearch:runNamedFilter'),
-	array(),
-	array('fragment_name' => 'inbox', 'fragment_type' => 'list')
+$collection->create('agent_ticketsearch_runfilter', array(
+	'path'          => '/ticket-search/filter/{filter_id}',
+	'controller'    => 'AgentBundle:TicketSearch:runFilter',
+	'requirements'  => array('filter_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'filter', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_ticketsearch_runsla', new Route(
-	'/ticket-search/sla/{sla_id}/{sla_status}',
-	array('_controller' => 'AgentBundle:TicketSearch:runSla', 'sla_status' => ''),
-	array('sla_id' => '\\d+'),
-	array('fragment_name' => 'sla', 'fragment_type' => 'list')
+$collection->create('agent_ticketsearch_getsubgroupcounts', array(
+	'path'       => '/ticket-search/subgroup-counts.json',
+	'controller' => 'AgentBundle:TicketSearch:getSubgroupCounts',
 ));
 
-$collection->add('agent_ticketsearch_ajax_get_macro', new Route(
-	'/ticket-search/ajax-get-macro',
-	array('_controller' => 'AgentBundle:TicketSearch:ajaxGetMacro'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_runnamedfilter', array(
+	'path'        => '/ticket-search/filter/{filter_name}',
+	'controller'  => 'AgentBundle:TicketSearch:runNamedFilter',
+	'options'     => array('fragment_name' => 'inbox', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_ticketsearch_ajax_get_macro_actions', new Route(
-	'/ticket-search/ajax-get-macro-actions',
-	array('_controller' => 'AgentBundle:TicketSearch:ajaxGetMacroActions'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_runsla', array(
+	'path'          => '/ticket-search/sla/{sla_id}/{sla_status}',
+	'controller'    => 'AgentBundle:TicketSearch:runSla',
+	'defaults'      => array('sla_status' => ''),
+	'requirements'  => array('sla_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'sla', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_ticketsearch_ajax_save_actions', new Route(
-	'/ticket-search/ajax-save-actions',
-	array('_controller' => 'AgentBundle:TicketSearch:ajaxSaveActions'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_ajax_get_macro', array(
+	'path'        => '/ticket-search/ajax-get-macro',
+	'controller'  => 'AgentBundle:TicketSearch:ajaxGetMacro',
 ));
 
-$collection->add('agent_ticketsearch_ajax_delete_tickets', new Route(
-	'/ticket-search/ajax-delete-tickets',
-	array('_controller' => 'AgentBundle:TicketSearch:ajaxDeleteTickets'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_ajax_get_macro_actions', array(
+	'path'        => '/ticket-search/ajax-get-macro-actions',
+	'controller'  => 'AgentBundle:TicketSearch:ajaxGetMacroActions',
 ));
 
-$collection->add('agent_ticketsearch_ajax_release_locks', new Route(
-	'/ticket-search/ajax-release-locks',
-	array('_controller' => 'AgentBundle:TicketSearch:ajaxReleaseLocks'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_ajax_save_actions', array(
+	'path'        => '/ticket-search/ajax-save-actions',
+	'controller'  => 'AgentBundle:TicketSearch:ajaxSaveActions',
 ));
 
-$collection->add('agent_ticket_new', new Route(
-	'/tickets/new',
-	array('_controller' => 'AgentBundle:Ticket:new'),
-	array(),
-	array('fragment_name' => 'nt')
+$collection->create('agent_ticketsearch_ajax_delete_tickets', array(
+	'path'        => '/ticket-search/ajax-delete-tickets',
+	'controller'  => 'AgentBundle:TicketSearch:ajaxDeleteTickets',
 ));
 
-$collection->add('agent_ticket_new_save', new Route(
-	'/tickets/new/save',
-	array('_controller' => 'AgentBundle:Ticket:newSave'),
-	array(),
-	array()
+$collection->create('agent_ticketsearch_ajax_release_locks', array(
+	'path'        => '/ticket-search/ajax-release-locks',
+	'controller'  => 'AgentBundle:TicketSearch:ajaxReleaseLocks',
 ));
 
-$collection->add('agent_ticket_new_getpersonrow', new Route(
-	'/tickets/new/get-person-row/{person_id}',
-	array('_controller' => 'AgentBundle:Ticket:newticketGetPersonRow'),
-	array(),
-	array()
+$collection->create('agent_ticket_new', array(
+	'path'        => '/tickets/new',
+	'controller'  => 'AgentBundle:Ticket:new',
+	'options'     => array('fragment_name' => 'nt'),
 ));
 
-$collection->add('agent_ticket_getmessagetpl', new Route(
-	'/tickets/get-message-template/{id}.json',
-	array('_controller' => 'AgentBundle:Ticket:getTicketMessageTemplate'),
-	array(),
-	array()
+$collection->create('agent_ticket_new_save', array(
+	'path'        => '/tickets/new/save',
+	'controller'  => 'AgentBundle:Ticket:newSave',
 ));
 
-$collection->add('agent_ticket_update_drafts', new Route(
-	'/tickets/update-drafts',
-	array('_controller' => 'AgentBundle:Ticket:updateDrafts'),
-	array(),
-	array()
+$collection->create('agent_ticket_new_getpersonrow', array(
+	'path'        => '/tickets/new/get-person-row/{person_id}',
+	'controller'  => 'AgentBundle:Ticket:newticketGetPersonRow',
 ));
 
-$collection->add('agent_ticket_getmessagetext', new Route(
-	'/tickets/messages/{message_id}/get-message-text.json',
-	array('_controller' => 'AgentBundle:Ticket:ajaxGetMessageText'),
-	array(),
-	array()
+$collection->create('agent_ticket_getmessagetpl', array(
+	'path'        => '/tickets/get-message-template/{id}.json',
+	'controller'  => 'AgentBundle:Ticket:getTicketMessageTemplate',
 ));
 
-$collection->add('agent_ticket_getfullmessage', new Route(
-	'/tickets/messages/{message_id}/get-full-message.json',
-	array('_controller' => 'AgentBundle:Ticket:ajaxGetFullMessage'),
-	array(),
-	array()
+$collection->create('agent_ticket_update_drafts', array(
+	'path'        => '/tickets/update-drafts',
+	'controller'  => 'AgentBundle:Ticket:updateDrafts',
 ));
 
-$collection->add('agent_ticket_savemessagetext', new Route(
-	'/tickets/messages/{message_id}/save-message-text.json',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveMessageText'),
-	array(),
-	array()
+$collection->create('agent_ticket_getmessagetext', array(
+	'path'        => '/tickets/messages/{message_id}/get-message-text.json',
+	'controller'  => 'AgentBundle:Ticket:ajaxGetMessageText',
 ));
 
-$collection->add('agent_ticket_setmessagenote', new Route(
-	'/tickets/messages/{message_id}/set-message-note.json',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSetNote'),
-	array(),
-	array()
+$collection->create('agent_ticket_getfullmessage', array(
+	'path'        => '/tickets/messages/{message_id}/get-full-message.json',
+	'controller'  => 'AgentBundle:Ticket:ajaxGetFullMessage',
 ));
 
-$collection->add('agent_ticket_message_attachments', new Route(
-	'/tickets/messages/{message_id}/attachments',
-	array('_controller' => 'AgentBundle:Ticket:getMessageAttachments'),
-	array(),
-	array()
+$collection->create('agent_ticket_savemessagetext', array(
+	'path'        => '/tickets/messages/{message_id}/save-message-text.json',
+	'controller'  => 'AgentBundle:Ticket:ajaxSaveMessageText',
 ));
 
-$collection->add('agent_ticket_message_attachment_delete', new Route(
-	'/tickets/messages/{message_id}/attachments/{attachment_id}/delete',
-	array('_controller' => 'AgentBundle:Ticket:deleteMessageAttachment'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_ticket_setmessagenote', array(
+	'path'        => '/tickets/messages/{message_id}/set-message-note.json',
+	'controller'  => 'AgentBundle:Ticket:ajaxSetNote',
 ));
 
-$collection->add('agent_ticket_message_delete', new Route(
-	'/tickets/messages/{message_id}/delete',
-	array('_controller' => 'AgentBundle:Ticket:deleteMessage'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_ticket_message_attachments', array(
+	'path'        => '/tickets/messages/{message_id}/attachments',
+	'controller'  => 'AgentBundle:Ticket:getMessageAttachments',
 ));
 
-$collection->add('agent_ticket_view', new Route(
-	'/tickets/{ticket_id}',
-	array('_controller' => 'AgentBundle:Ticket:view'),
-	array('ticket_id' => '\\d+'),
-	array('fragment_name' => 't')
+$collection->create('agent_ticket_message_attachment_delete', array(
+	'path'        => '/tickets/messages/{message_id}/attachments/{attachment_id}/delete',
+	'controller'  => 'AgentBundle:Ticket:deleteMessageAttachment',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_ticket_loadlogs', new Route(
-	'/tickets/{ticket_id}/load-logs',
-	array('_controller' => 'AgentBundle:Ticket:loadTicketLogs'),
-	array('ticket_id' => '\\d+')
+$collection->create('agent_ticket_message_delete', array(
+	'path'        => '/tickets/messages/{message_id}/delete',
+	'controller'  => 'AgentBundle:Ticket:deleteMessage',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_ticket_loadattachlist', new Route(
-	'/tickets/{ticket_id}/load-attach-list',
-	array('_controller' => 'AgentBundle:Ticket:loadAttachList'),
-	array('ticket_id' => '\\d+')
+$collection->create('agent_ticket_view', array(
+	'path'          => '/tickets/{ticket_id}',
+	'controller'    => 'AgentBundle:Ticket:view',
+	'requirements'  => array('ticket_id' => '\\d+'),
+	'options'       => array('fragment_name' => 't'),
 ));
 
-$collection->add('agent_ticket_download_debug_report', new Route(
-	'/tickets/{ticket_id}/download-debug-report',
-	array('_controller' => 'AgentBundle:Ticket:downloadTicketDebug'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_loadlogs', array(
+	'path'          => '/tickets/{ticket_id}/load-logs',
+	'controller'    => 'AgentBundle:Ticket:loadTicketLogs',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_messagepage', new Route(
-	'/tickets/{ticket_id}/message-page/{page}',
-	array('_controller' => 'AgentBundle:Ticket:getMessagePage'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_loadattachlist', array(
+	'path'          => '/tickets/{ticket_id}/load-attach-list',
+	'controller'    => 'AgentBundle:Ticket:loadAttachList',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_doupdate', new Route(
-	'/tickets/{ticket_id}/update-views.json',
-	array('_controller' => 'AgentBundle:Ticket:updateViews'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_download_debug_report', array(
+	'path'          => '/tickets/{ticket_id}/download-debug-report',
+	'controller'    => 'AgentBundle:Ticket:downloadTicketDebug',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_lock', new Route(
-	'/tickets/{ticket_id}/lock-ticket.json',
-	array('_controller' => 'AgentBundle:Ticket:lockTicket'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_messagepage', array(
+	'path'          => '/tickets/{ticket_id}/message-page/{page}',
+	'controller'    => 'AgentBundle:Ticket:getMessagePage',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_unlock', new Route(
-	'/tickets/{ticket_id}/unlock-ticket.json',
-	array('_controller' => 'AgentBundle:Ticket:unlockTicket'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_doupdate', array(
+	'path'          => '/tickets/{ticket_id}/update-views.json',
+	'controller'    => 'AgentBundle:Ticket:updateViews',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_release_lock', new Route(
-	'/tickets/{ticket_id}/release-lock.json',
-	array('_controller' => 'AgentBundle:Ticket:releaseLock'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_lock', array(
+	'path'          => '/tickets/{ticket_id}/lock-ticket.json',
+	'controller'    => 'AgentBundle:Ticket:lockTicket',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_split', new Route(
-	'/tickets/{ticket_id}/split/{message_id}',
-	array('_controller' => 'AgentBundle:Ticket:split', 'message_id' => 0),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_unlock', array(
+	'path'          => '/tickets/{ticket_id}/unlock-ticket.json',
+	'controller'    => 'AgentBundle:Ticket:unlockTicket',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_split_save', new Route(
-	'/tickets/{ticket_id}/split-save',
-	array('_controller' => 'AgentBundle:Ticket:splitSave'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_release_lock', array(
+	'path'          => '/tickets/{ticket_id}/release-lock.json',
+	'controller'    => 'AgentBundle:Ticket:releaseLock',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_merge_overlay', new Route(
-	'/tickets/{ticket_id}/merge-overlay/{other_ticket_id}',
-	array('_controller' => 'AgentBundle:Ticket:mergeOverlay'),
-	array('ticket_id' => '\\d+', 'other_ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_split', array(
+	'path'          => '/tickets/{ticket_id}/split/{message_id}',
+	'controller'    => 'AgentBundle:Ticket:split',
+	'defaults'      => array('message_id' => 0),
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_fwd_overlay', new Route(
-	'/tickets/{ticket_id}/forward/{message_id}',
-	array('_controller' => 'AgentBundle:Ticket:forwardOverlay'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_split_save', array(
+	'path'          => '/tickets/{ticket_id}/split-save',
+	'controller'    => 'AgentBundle:Ticket:splitSave',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_fwd_send', new Route(
-	'/tickets/{ticket_id}/forward/{message_id}/send',
-	array('_controller' => 'AgentBundle:Ticket:forwardSend'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+', '_method' => 'POST'),
-	array()
+$collection->create('agent_ticket_merge_overlay', array(
+	'path'          => '/tickets/{ticket_id}/merge-overlay/{other_ticket_id}',
+	'controller'    => 'AgentBundle:Ticket:mergeOverlay',
+	'requirements'  => array('ticket_id' => '\\d+', 'other_ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_merge', new Route(
-	'/tickets/{ticket_id}/merge/{other_ticket_id}',
-	array('_controller' => 'AgentBundle:Ticket:merge'),
-	array('ticket_id' => '\\d+', 'other_ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_fwd_overlay', array(
+	'path'          => '/tickets/{ticket_id}/forward/{message_id}',
+	'controller'    => 'AgentBundle:Ticket:forwardOverlay',
+	'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_changeuser_overlay', new Route(
-	'/tickets/{ticket_id}/change-user-overlay',
-	array('_controller' => 'AgentBundle:Ticket:changeUserOverlay'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_fwd_send', array(
+	'path'          => '/tickets/{ticket_id}/forward/{message_id}/send',
+	'controller'    => 'AgentBundle:Ticket:forwardSend',
+	'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	'methods'       => array('POST'),
 ));
 
-$collection->add('agent_ticket_changeuser_overlay_preview', new Route(
-	'/tickets/{ticket_id}/change-user-overlay/preview/{new_person_id}',
-	array('_controller' => 'AgentBundle:Ticket:changeUserOverlayPreview'),
-	array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_merge', array(
+	'path'          => '/tickets/{ticket_id}/merge/{other_ticket_id}',
+	'controller'    => 'AgentBundle:Ticket:merge',
+	'requirements'  => array('ticket_id' => '\\d+', 'other_ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_changeuser', new Route(
-	'/tickets/{ticket_id}/change-user',
-	array('_controller' => 'AgentBundle:Ticket:changeUser'),
-	array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_changeuser_overlay', array(
+	'path'          => '/tickets/{ticket_id}/change-user-overlay',
+	'controller'    => 'AgentBundle:Ticket:changeUserOverlay',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_ajaxsavecustomfields', new Route(
-	'/tickets/{ticket_id}/ajax-save-custom-fields',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveCustomFields'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_changeuser_overlay_preview', array(
+	'path'          => '/tickets/{ticket_id}/change-user-overlay/preview/{new_person_id}',
+	'controller'    => 'AgentBundle:Ticket:changeUserOverlayPreview',
+	'requirements'  => array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_ajaxsavereply', new Route(
-	'/tickets/{ticket_id}/ajax-save-reply',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveReply'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_changeuser', array(
+	'path'          => '/tickets/{ticket_id}/change-user',
+	'controller'    => 'AgentBundle:Ticket:changeUser',
+	'requirements'  => array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_ajaxsavesubject', new Route(
-	'/tickets/{ticket_id}/ajax-save-subject.json',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveSubject'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajaxsavecustomfields', array(
+	'path'          => '/tickets/{ticket_id}/ajax-save-custom-fields',
+	'controller'    => 'AgentBundle:Ticket:ajaxSaveCustomFields',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_ajaxchangeuseremail', new Route(
-	'/tickets/{ticket_id}/ajax-change-email.json',
-	array('_controller' => 'AgentBundle:Ticket:ajaxChangeUserEmail'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajaxsavereply', array(
+	'path'          => '/tickets/{ticket_id}/ajax-save-reply',
+	'controller'    => 'AgentBundle:Ticket:ajaxSaveReply',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_ajaxsaveoptions', new Route(
-	'/tickets/{ticket_id}/ajax-save-options',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveOptions'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajaxsavesubject', array(
+	'path'          => '/tickets/{ticket_id}/ajax-save-subject.json',
+	'controller'    => 'AgentBundle:Ticket:ajaxSaveSubject',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_ajaxsaveflagged', new Route(
-	'/tickets/{ticket_id}/ajax-save-flagged',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveFlagged'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajaxchangeuseremail', array(
+	'path'          => '/tickets/{ticket_id}/ajax-change-email.json',
+	'controller'    => 'AgentBundle:Ticket:ajaxChangeUserEmail',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_addpart', new Route(
-	'/tickets/{ticket_id}/add-part',
-	array('_controller' => 'AgentBundle:Ticket:addParticipant'),
-	array(),
-	array()
+$collection->create('agent_ticket_ajaxsaveoptions', array(
+	'path'          => '/tickets/{ticket_id}/ajax-save-options',
+	'controller'    => 'AgentBundle:Ticket:ajaxSaveOptions',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_set_agent_parts', new Route(
-	'/tickets/{ticket_id}/set-agent-parts.json',
-	array('_controller' => 'AgentBundle:Ticket:setAgentParticipants'),
-	array(),
-	array()
+$collection->create('agent_ticket_ajaxsaveflagged', array(
+	'path'          => '/tickets/{ticket_id}/ajax-save-flagged',
+	'controller'    => 'AgentBundle:Ticket:ajaxSaveFlagged',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_delpart', new Route(
-	'/tickets/{ticket_id}/remove-part.json',
-	array('_controller' => 'AgentBundle:Ticket:removeParticipant'),
-	array(),
-	array()
+$collection->create('agent_ticket_addpart', array(
+	'path'        => '/tickets/{ticket_id}/add-part',
+	'controller'  => 'AgentBundle:Ticket:addParticipant',
 ));
 
-$collection->add('agent_ticket_ajax_labels_save', new Route(
-	'/tickets/{ticket_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveLabels'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_set_agent_parts', array(
+	'path'        => '/tickets/{ticket_id}/set-agent-parts.json',
+	'controller'  => 'AgentBundle:Ticket:setAgentParticipants',
 ));
 
-$collection->add('agent_ticket_ajax_get_macro', new Route(
-	'/tickets/{ticket_id}/ajax-get-macro',
-	array('_controller' => 'AgentBundle:Ticket:ajaxGetMacro'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_delpart', array(
+	'path'        => '/tickets/{ticket_id}/remove-part.json',
+	'controller'  => 'AgentBundle:Ticket:removeParticipant',
 ));
 
-$collection->add('agent_ticket_ajax_apply_macro', new Route(
-	'/tickets/{ticket_id}/{macro_id}/apply-macro.json',
-	array('_controller' => 'AgentBundle:Ticket:applyMacro'),
-	array('ticket_id' => '\\d+', 'macro_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajaxtab_releated_content', array(
+	'path'          => '/tickets/{ticket_id}/ajax-tab-related-content',
+	'controller'    => 'AgentBundle:Ticket:ajaxTabRelatedContent',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_ajax_save_actions', new Route(
-	'/tickets/{ticket_id}/ajax-save-actions',
-	array('_controller' => 'AgentBundle:Ticket:ajaxSaveActions'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajax_labels_save', array(
+	'path'          => '/tickets/{ticket_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Ticket:ajaxSaveLabels',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_message_raw', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/view-raw',
-	array('_controller' => 'AgentBundle:Ticket:viewRawMessage'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajax_get_macro', array(
+	'path'          => '/tickets/{ticket_id}/ajax-get-macro',
+	'controller'    => 'AgentBundle:Ticket:ajaxGetMacro',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_message_window', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/window/{type}',
-	array('_controller' => 'AgentBundle:Ticket:viewMessageWindow', 'type' => 'normal'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajax_apply_macro', array(
+	'path'          => '/tickets/{ticket_id}/{macro_id}/apply-macro.json',
+	'controller'    => 'AgentBundle:Ticket:applyMacro',
+	'requirements'  => array('ticket_id' => '\\d+', 'macro_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_message_ajax_getquote', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/ajax-get-quote',
-	array('_controller' => 'AgentBundle:Ticket:ajaxGetMessageQuote'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_ajax_save_actions', array(
+	'path'          => '/tickets/{ticket_id}/ajax-save-actions',
+	'controller'    => 'AgentBundle:Ticket:ajaxSaveActions',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_saveagentparts', new Route(
-	'/ticket/{ticket_id}/save-agent-parts',
-	array('_controller' => 'AgentBundle:Ticket:saveAgentParts'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_message_raw', array(
+	'path'          => '/tickets/{ticket_id}/message-details/{message_id}/view-raw',
+	'controller'    => 'AgentBundle:Ticket:viewRawMessage',
+	'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_addcharge', new Route(
-	'/ticket/{ticket_id}/add-charge',
-	array('_controller' => 'AgentBundle:Ticket:addCharge'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_message_window', array(
+	'path'          => '/tickets/{ticket_id}/message-details/{message_id}/window/{type}',
+	'controller'    => 'AgentBundle:Ticket:viewMessageWindow',
+	'defaults'      => array('type' => 'normal'),
+	'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_chargedelete', new Route(
-	'/ticket/{ticket_id}/charge/{charge_id}/delete/{security_token}',
-	array('_controller' => 'AgentBundle:Ticket:deleteCharge'),
-	array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_message_ajax_getquote', array(
+	'path'          => '/tickets/{ticket_id}/message-details/{message_id}/ajax-get-quote',
+	'controller'    => 'AgentBundle:Ticket:ajaxGetMessageQuote',
+	'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_addsla', new Route(
-	'/ticket/{ticket_id}/add-sla',
-	array('_controller' => 'AgentBundle:Ticket:addSla'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_saveagentparts', array(
+	'path'          => '/ticket/{ticket_id}/save-agent-parts',
+	'controller'    => 'AgentBundle:Ticket:saveAgentParts',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_sladelete', new Route(
-	'/ticket/{ticket_id}/sla/{sla_id}/delete/{security_token}',
-	array('_controller' => 'AgentBundle:Ticket:deleteSla'),
-	array('ticket_id' => '\\d+', 'sla_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_addcharge', array(
+	'path'          => '/ticket/{ticket_id}/add-charge',
+	'controller'    => 'AgentBundle:Ticket:addCharge',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_delete', new Route(
-	'/tickets/{ticket_id}/delete',
-	array('_controller' => 'AgentBundle:Ticket:delete'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_chargedelete', array(
+	'path'          => '/ticket/{ticket_id}/charge/{charge_id}/delete/{security_token}',
+	'controller'    => 'AgentBundle:Ticket:deleteCharge',
+	'requirements'  => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
 ));
 
-$collection->add('agent_ticket_spam', new Route(
-	'/tickets/{ticket_id}/spam',
-	array('_controller' => 'AgentBundle:Ticket:spam'),
-	array('ticket_id' => '\\d+'),
-	array()
+$collection->create('agent_ticket_addsla', array(
+	'path'          => '/ticket/{ticket_id}/add-sla',
+	'controller'    => 'AgentBundle:Ticket:addSla',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-################################################################################
-# Twitter
-################################################################################
+$collection->create('agent_ticket_sladelete', array(
+	'path'          => '/ticket/{ticket_id}/sla/{sla_id}/delete/{security_token}',
+	'controller'    => 'AgentBundle:Ticket:deleteSla',
+	'requirements'  => array('ticket_id' => '\\d+', 'sla_id' => '\\d+'),
+));
 
-$collection->add('agent_twitter_new', new Route(
-	'/twitter/new',
-	array('_controller' => 'AgentBundle:Twitter:newTweet'),
-	array(),
-	array()
+$collection->create('agent_ticket_delete', array(
+	'path'          => '/tickets/{ticket_id}/delete',
+	'controller'    => 'AgentBundle:Ticket:delete',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_twitter_new_save', new Route(
-	'/twitter/new/save',
-	array('_controller' => 'AgentBundle:Twitter:newTweetSave'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_ticket_spam', array(
+	'path'          => '/tickets/{ticket_id}/spam',
+	'controller'    => 'AgentBundle:Ticket:spam',
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_twitter_mine_list', new Route(
-	'/twitter/mine/{account_id}/{group}/{group_value}',
-	array('_controller' => 'AgentBundle:TwitterStatus:listMine', 'group' => '', 'group_value' => ''),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-own', 'fragment_type' => 'list')
+$collection->create('agent_ticket_link_existing_overlay', array(
+	'path' => '/tickets/{ticket_id}/link-overlay',
+	'controller' => 'AgentBundle:Ticket:linkExistingOverlay',
+	'requirements' => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_twitter_team_list', new Route(
-	'/twitter/team/{account_id}/{group}/{group_value}',
-	array('_controller' => 'AgentBundle:TwitterStatus:listTeam', 'group' => '', 'group_value' => ''),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-team', 'fragment_type' => 'list')
+$collection->create('agent_ticket_link_existing', array(
+	'path' => '/tickets/{ticket_id}/link/{linked_ticket_id}',
+	'controller' => 'AgentBundle:Ticket:linkExisting',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_unassigned_list', new Route(
-	'/twitter/unassigned/{account_id}/{group}/{group_value}',
-	array('_controller' => 'AgentBundle:TwitterStatus:listUnassigned', 'group' => '', 'group_value' => ''),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-unassigned', 'fragment_type' => 'list')
+$collection->create('agent_twitter_new', array(
+	'path'        => '/twitter/new',
+	'controller'  => 'AgentBundle:Twitter:newTweet',
 ));
 
-$collection->add('agent_twitter_all_list', new Route(
-	'/twitter/all/{account_id}/{group}/{group_value}',
-	array('_controller' => 'AgentBundle:TwitterStatus:listAll', 'group' => '', 'group_value' => ''),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-all', 'fragment_type' => 'list')
+$collection->create('agent_twitter_new_save', array(
+	'path'        => '/twitter/new/save',
+	'controller'  => 'AgentBundle:Twitter:newTweetSave',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_sent_list', new Route(
-	'/twitter/sent/{account_id}/{group}/{group_value}',
-	array('_controller' => 'AgentBundle:TwitterStatus:listSent', 'group' => '', 'group_value' => ''),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-sent', 'fragment_type' => 'list')
+$collection->create('agent_twitter_mine_list', array(
+	'path'          => '/twitter/mine/{account_id}/{group}/{group_value}',
+	'controller'    => 'AgentBundle:TwitterStatus:listMine',
+	'defaults'      => array('group' => '', 'group_value' => ''),
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-own', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_twitter_timeline_list', new Route(
-	'/twitter/timeline/{account_id}/{group}/{group_value}',
-	array('_controller' => 'AgentBundle:TwitterStatus:listTimeline', 'group' => '', 'group_value' => ''),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-timeline', 'fragment_type' => 'list')
+$collection->create('agent_twitter_team_list', array(
+	'path'          => '/twitter/team/{account_id}/{group}/{group_value}',
+	'controller'    => 'AgentBundle:TwitterStatus:listTeam',
+	'defaults'      => array('group' => '', 'group_value' => ''),
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-team', 'fragment_type' => 'list'),
 ));
 
+$collection->create('agent_twitter_unassigned_list', array(
+	'path'          => '/twitter/unassigned/{account_id}/{group}/{group_value}',
+	'controller'    => 'AgentBundle:TwitterStatus:listUnassigned',
+	'defaults'      => array('group' => '', 'group_value' => ''),
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-unassigned', 'fragment_type' => 'list'),
+));
 
-$collection->add('agent_twitter_followers_list', new Route(
-	'/twitter/followers/{account_id}',
-	array('_controller' => 'AgentBundle:TwitterUser:listFollowers'),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-followers', 'fragment_type' => 'list')
+$collection->create('agent_twitter_all_list', array(
+	'path'          => '/twitter/all/{account_id}/{group}/{group_value}',
+	'controller'    => 'AgentBundle:TwitterStatus:listAll',
+	'defaults'      => array('group' => '', 'group_value' => ''),
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-all', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_twitter_followers_list_new', new Route(
-	'/twitter/followers/{account_id}/new',
-	array('_controller' => 'AgentBundle:TwitterUser:listNewFollowers'),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-newfollowers', 'fragment_type' => 'list')
+$collection->create('agent_twitter_sent_list', array(
+	'path'          => '/twitter/sent/{account_id}/{group}/{group_value}',
+	'controller'    => 'AgentBundle:TwitterStatus:listSent',
+	'defaults'      => array('group' => '', 'group_value' => ''),
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-sent', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_twitter_following_list', new Route(
-	'/twitter/following/{account_id}',
-	array('_controller' => 'AgentBundle:TwitterUser:listFollowing'),
-	array('account_id' => '\\d+'),
-	array('fragment_name' => 'tw-following', 'fragment_type' => 'list')
+$collection->create('agent_twitter_timeline_list', array(
+	'path'          => '/twitter/timeline/{account_id}/{group}/{group_value}',
+	'controller'    => 'AgentBundle:TwitterStatus:listTimeline',
+	'defaults'      => array('group' => '', 'group_value' => ''),
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-timeline', 'fragment_type' => 'list'),
 ));
 
+$collection->create('agent_twitter_followers_list', array(
+	'path'          => '/twitter/followers/{account_id}',
+	'controller'    => 'AgentBundle:TwitterUser:listFollowers',
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-followers', 'fragment_type' => 'list'),
+));
 
-$collection->add('agent_twitter_status_ajaxmasssave', new Route(
-	'/twitter/status/ajax-mass-save.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxMassSave'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_followers_list_new', array(
+	'path'          => '/twitter/followers/{account_id}/new',
+	'controller'    => 'AgentBundle:TwitterUser:listNewFollowers',
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array(
+		'fragment_name'  => 'tw-newfollowers',
+		'fragment_type'  => 'list',
+	),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_note', new Route(
-	'/twitter/status/ajax-note.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveNote'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_following_list', array(
+	'path'          => '/twitter/following/{account_id}',
+	'controller'    => 'AgentBundle:TwitterUser:listFollowing',
+	'requirements'  => array('account_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'tw-following', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_retweet', new Route(
-	'/twitter/status/ajax-retweet.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveRetweet'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_status_ajaxmasssave', array(
+	'path'        => '/twitter/status/ajax-mass-save.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxMassSave',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_unretweet', new Route(
-	'/twitter/status/ajax-unretweet.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveUnretweet'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_note', array(
+	'path'        => '/twitter/status/ajax-note.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveNote',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_reply', new Route(
-	'/twitter/status/ajax-reply.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveReply'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_retweet', array(
+	'path'        => '/twitter/status/ajax-retweet.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveRetweet',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_archive', new Route(
-	'/twitter/status/ajax-archive.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveArchive'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_unretweet', array(
+	'path'        => '/twitter/status/ajax-unretweet.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveUnretweet',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_delete', new Route(
-	'/twitter/status/ajax-delete.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveDelete'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_reply', array(
+	'path'        => '/twitter/status/ajax-reply.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveReply',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_edit', new Route(
-	'/twitter/status/ajax-edit',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveEdit'),
-	array(),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_archive', array(
+	'path'        => '/twitter/status/ajax-archive.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveArchive',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_favorite', new Route(
-	'/twitter/status/ajax-favorite.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveFavorite'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_delete', array(
+	'path'        => '/twitter/status/ajax-delete.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveDelete',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_status_ajaxsave_assign', new Route(
-	'/twitter/status/ajax-assign.json',
-	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveAssign'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_edit', array(
+	'path'        => '/twitter/status/ajax-edit',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveEdit',
 ));
 
-$collection->add('agent_twitter_status_tweet_overlay', new Route(
-	'/twitter/status/tweet-overlay',
-	array('_controller' => 'AgentBundle:TwitterStatus:tweetOverlay'),
-	array(),
-	array()
+$collection->create('agent_twitter_status_ajaxsave_favorite', array(
+	'path'        => '/twitter/status/ajax-favorite.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveFavorite',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_user', new Route(
-	'/twitter/user/{user_id}',
-	array('_controller' => 'AgentBundle:TwitterUser:view'),
-	array('user_id' => '\\d+'),
-	array('fragment_name' => 'twitter')
+$collection->create('agent_twitter_status_ajaxsave_assign', array(
+	'path'        => '/twitter/status/ajax-assign.json',
+	'controller'  => 'AgentBundle:TwitterStatus:ajaxSaveAssign',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_user_statuses', new Route(
-	'/twitter/user/{user_id}/statuses',
-	array('_controller' => 'AgentBundle:TwitterUser:viewUserStatuses'),
-	array('user_id' => '\\d+'),
-	array()
+$collection->create('agent_twitter_status_tweet_overlay', array(
+	'path'        => '/twitter/status/tweet-overlay',
+	'controller'  => 'AgentBundle:TwitterStatus:tweetOverlay',
 ));
 
-$collection->add('agent_twitter_user_following', new Route(
-	'/twitter/user/{user_id}/following',
-	array('_controller' => 'AgentBundle:TwitterUser:viewUserFollowing'),
-	array('user_id' => '\\d+'),
-	array()
+$collection->create('agent_twitter_user', array(
+	'path'          => '/twitter/user/{user_id}',
+	'controller'    => 'AgentBundle:TwitterUser:view',
+	'requirements'  => array('user_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'twitter'),
 ));
 
-$collection->add('agent_twitter_user_followers', new Route(
-	'/twitter/user/{user_id}/followers',
-	array('_controller' => 'AgentBundle:TwitterUser:viewUserFollowers'),
-	array('user_id' => '\\d+'),
-	array()
+$collection->create('agent_twitter_user_statuses', array(
+	'path'          => '/twitter/user/{user_id}/statuses',
+	'controller'    => 'AgentBundle:TwitterUser:viewUserStatuses',
+	'requirements'  => array('user_id' => '\\d+'),
 ));
 
-$collection->add('agent_twitter_user_find', new Route(
-	'/twitter/user/find',
-	array('_controller' => 'AgentBundle:TwitterUser:find'),
-	array(),
-	array()
+$collection->create('agent_twitter_user_following', array(
+	'path'          => '/twitter/user/{user_id}/following',
+	'controller'    => 'AgentBundle:TwitterUser:viewUserFollowing',
+	'requirements'  => array('user_id' => '\\d+'),
 ));
 
-$collection->add('agent_twitter_user_message_overlay', new Route(
-	'/twitter/user/{user_id}/message-overlay',
-	array('_controller' => 'AgentBundle:TwitterUser:messageOverlay'),
-	array('user_id' => '\\d+'),
-	array()
+$collection->create('agent_twitter_user_followers', array(
+	'path'          => '/twitter/user/{user_id}/followers',
+	'controller'    => 'AgentBundle:TwitterUser:viewUserFollowers',
+	'requirements'  => array('user_id' => '\\d+'),
 ));
 
-$collection->add('agent_twitter_user_ajaxsave_follow', new Route(
-	'/twitter/user/ajax-follow.json',
-	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveFollow'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_user_find', array(
+	'path'        => '/twitter/user/find',
+	'controller'  => 'AgentBundle:TwitterUser:find',
 ));
 
-$collection->add('agent_twitter_user_ajaxsave_unfollow', new Route(
-	'/twitter/user/ajax-unfollow.json',
-	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveUnfollow'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_user_message_overlay', array(
+	'path'          => '/twitter/user/{user_id}/message-overlay',
+	'controller'    => 'AgentBundle:TwitterUser:messageOverlay',
+	'requirements'  => array('user_id' => '\\d+'),
 ));
 
-$collection->add('agent_twitter_user_ajaxsave_message', new Route(
-	'/twitter/user/ajax-message.json',
-	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveMessage'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_user_ajaxsave_follow', array(
+	'path'        => '/twitter/user/ajax-follow.json',
+	'controller'  => 'AgentBundle:TwitterUser:ajaxSaveFollow',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_user_ajaxsave_archive', new Route(
-	'/twitter/user/ajax-archive.json',
-	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveArchive'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_user_ajaxsave_unfollow', array(
+	'path'        => '/twitter/user/ajax-unfollow.json',
+	'controller'  => 'AgentBundle:TwitterUser:ajaxSaveUnfollow',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_user_ajaxsave_person', new Route(
-	'/twitter/user/ajax-person.json',
-	array('_controller' => 'AgentBundle:TwitterUser:ajaxSavePerson'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_user_ajaxsave_message', array(
+	'path'        => '/twitter/user/ajax-message.json',
+	'controller'  => 'AgentBundle:TwitterUser:ajaxSaveMessage',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_user_ajaxsave_organization', new Route(
-	'/twitter/user/ajax-organization.json',
-	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveOrganization'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_twitter_user_ajaxsave_archive', array(
+	'path'        => '/twitter/user/ajax-archive.json',
+	'controller'  => 'AgentBundle:TwitterUser:ajaxSaveArchive',
+	'methods'     => array('POST'),
 ));
 
+$collection->create('agent_twitter_user_ajaxsave_person', array(
+	'path'        => '/twitter/user/ajax-person.json',
+	'controller'  => 'AgentBundle:TwitterUser:ajaxSavePerson',
+	'methods'     => array('POST'),
+));
 
-$collection->add('agent_twitter_getsectiondata', new Route(
-	'/twitter/get-section-data.json',
-	array('_controller' => 'AgentBundle:Twitter:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_twitter_user_ajaxsave_organization', array(
+	'path'        => '/twitter/user/ajax-organization.json',
+	'controller'  => 'AgentBundle:TwitterUser:ajaxSaveOrganization',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_twitter_updategrouping', new Route(
-	'/twitter/update-grouping.json',
-	array('_controller' => 'AgentBundle:Twitter:updateGrouping'),
-	array(),
-	array()
+$collection->create('agent_twitter_getsectiondata', array(
+	'path'        => '/twitter/get-section-data.json',
+	'controller'  => 'AgentBundle:Twitter:getSectionData',
 ));
 
-$collection->add('agent_twitter_run_search', new Route(
-	'/twitter/{account_id}/search/{search_id}',
-	array('_controller' => 'AgentBundle:Twitter:runSearch'),
-	array('account_id' => '\\d+', 'search_id' => '\\d+'),
-	array('fragment_name' => 'searches', 'fragment_type' => 'list')
+$collection->create('agent_twitter_updategrouping', array(
+	'path'        => '/twitter/update-grouping.json',
+	'controller'  => 'AgentBundle:Twitter:updateGrouping',
 ));
 
-$collection->add('agent_twitter_search_delete', new Route(
-	'/twitter/{account_id}/search/delete/{security_token}',
-	array('_controller' => 'AgentBundle:Twitter:deleteSearch'),
-	array('account_id' => '\\d+'),
-	array()
+$collection->create('agent_twitter_run_search', array(
+	'path'          => '/twitter/{account_id}/search/{search_id}',
+	'controller'    => 'AgentBundle:Twitter:runSearch',
+	'requirements'  => array('account_id' => '\\d+', 'search_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'searches', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_twitter_new_search', new Route(
-	'/twitter/{account_id}/search/new',
-	array('_controller' => 'AgentBundle:Twitter:newSearch'),
-	array('account_id' => '\\d+'),
-	array()
+$collection->create('agent_twitter_search_delete', array(
+	'path'          => '/twitter/{account_id}/search/delete/{security_token}',
+	'controller'    => 'AgentBundle:Twitter:deleteSearch',
+	'requirements'  => array('account_id' => '\\d+'),
 ));
 
+$collection->create('agent_twitter_new_search', array(
+	'path'          => '/twitter/{account_id}/search/new',
+	'controller'    => 'AgentBundle:Twitter:newSearch',
+	'requirements'  => array('account_id' => '\\d+'),
+));
 
-################################################################################
-# Tasks
-################################################################################
+$collection->create('agent_task_new', array(
+	'path'        => '/tasks/new',
+	'controller'  => 'AgentBundle:Task:new',
+	'options'     => array('fragment_name' => 'nt'),
+));
 
-$collection->add('agent_task_new', new Route(
-	'/tasks/new',
-	array('_controller' => 'AgentBundle:Task:new'),
-	array(),
-	array('fragment_name' => 'nt')
+$collection->create('agent_task_save', array(
+	'path'        => '/tasks/save',
+	'controller'  => 'AgentBundle:Task:create',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_task_save', new Route(
-	'/tasks/save',
-	array('_controller' => 'AgentBundle:Task:create'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_task_delete', array(
+	'path'          => '/tasks/{task_id}/delete',
+	'controller'    => 'AgentBundle:Task:deleteTask',
+	'requirements'  => array('task_id' => '\\d+'),
 ));
 
-$collection->add('agent_task_delete', new Route(
-	'/tasks/{task_id}/delete',
-	array('_controller' => 'AgentBundle:Task:deleteTask'),
-	array('task_id' => '\\d+'),
-	array()
+$collection->create('agent_tasksearch_getsectiondata', array(
+	'path'        => '/tasks/get-section-data.json',
+	'controller'  => 'AgentBundle:Task:getSectionData',
 ));
 
-$collection->add('agent_tasksearch_getsectiondata', new Route(
-	'/tasks/get-section-data.json',
-	array('_controller' => 'AgentBundle:Task:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_task_list', array(
+	'path'        => '/tasks/list/{search_type}/{search_categoty}',
+	'controller'  => 'AgentBundle:Task:taskList',
+	'defaults'    => array('search_type' => NULL, 		'search_categoty' => NULL),
+	'options'     => array('fragment_name' => 'tasks', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_task_list', new Route(
-	'/tasks/list/{search_type}/{search_categoty}',
-	array('_controller' => 'AgentBundle:Task:taskList', 'search_type' => NULL, 'search_categoty' => NULL),
-	array(),
-	array('fragment_name' => 'tasks', 'fragment_type' => 'list')
+$collection->create('agent_task_ajax_labels_save', array(
+	'path'          => '/tasks/{task_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Task:ajaxSaveLabels',
+	'requirements'  => array('task_id' => '\\d+'),
 ));
 
-$collection->add('agent_task_ajax_labels_save', new Route(
-	'/tasks/{task_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Task:ajaxSaveLabels'),
-	array('task_id' => '\\d+'),
-	array()
+$collection->create('agent_task_ajaxsave_comment', array(
+	'path'          => '/tasks/{task_id}/ajax-save-comment',
+	'controller'    => 'AgentBundle:Task:ajaxSaveComment',
+	'requirements'  => array('task_id' => '\\d+', 'person_id' => '\\d+'),
 ));
 
-$collection->add('agent_task_ajaxsave_comment', new Route(
-	'/tasks/{task_id}/ajax-save-comment',
-	array('_controller' => 'AgentBundle:Task:ajaxSaveComment'),
-	array('task_id' => '\\d+', 'person_id' => '\\d+'),
-	array()
+$collection->create('agent_task_ajaxsave', array(
+	'path'        => '/tasks/{task_id}/ajax-save',
+	'controller'  => 'AgentBundle:Task:ajaxSave',
 ));
 
-$collection->add('agent_task_ajaxsave', new Route(
-	'/tasks/{task_id}/ajax-save',
-	array('_controller' => 'AgentBundle:Task:ajaxSave'),
-	array(),
-	array()
+$collection->create('agent_task_ics_all_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/all.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'all'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$' )
 ));
 
+$collection->create('agent_task_ics_assigned_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/assigned.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'assigned'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
+));
 
-################################################################################
-# Deals
-################################################################################
+$collection->create('agent_task_ics_delegated_tasks', array(
+	'path'         => '/tasks/{id}-{authcode}/delegated.ics',
+	'controller'   => 'AgentBundle:Task:iCal',
+	'defaults'     => array('filter' => 'delegated'),
+	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
+));
 
-$collection->add('agent_dealearch_getsectiondata', new Route(
-	'/deal/get-section-data.json',
-	array('_controller' => 'AgentBundle:Deal:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_dealearch_getsectiondata', array(
+	'path'        => '/deal/get-section-data.json',
+	'controller'  => 'AgentBundle:Deal:getSectionData',
 ));
 
-$collection->add('agent_deal_list', new Route(
-	'/deals/list/{owner_type}/{deal_status}/{deal_type_id}',
-	array('_controller' => 'AgentBundle:Deal:dealList', 'owner_type' => NULL, 'deal_status' => NULL, 'deal_type_id' => NULL),
-	array('deal_type_id' => '\\d+'),
-	array()
+$collection->create('agent_deal_list', array(
+	'path'          => '/deals/list/{owner_type}/{deal_status}/{deal_type_id}',
+	'controller'    => 'AgentBundle:Deal:dealList',
+	'defaults'      => array(
+		'owner_type'    => NULL,
+		'deal_status'   => NULL,
+		'deal_type_id'  => NULL,
+	),
+	'requirements'  => array('deal_type_id' => '\\d+'),
 ));
 
-$collection->add('agent_deal_view', new Route(
-	'/deal/{deal_id}',
-	array('_controller' => 'AgentBundle:Deal:view'),
-	array('deal_id' => '\\d+'),
-	array('fragment_name' => 'd')
+$collection->create('agent_deal_view', array(
+	'path'          => '/deal/{deal_id}',
+	'controller'    => 'AgentBundle:Deal:view',
+	'requirements'  => array('deal_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'd'),
 ));
 
-$collection->add('agent_deal_ajaxsave_note', new Route(
-	'/deal/{deal_id}/ajax-save-note',
-	array('_controller' => 'AgentBundle:Deal:ajaxSaveNote'),
-	array('deal_id' => '\\d+'),
-	array()
+$collection->create('agent_deal_ajaxsave_note', array(
+	'path'          => '/deal/{deal_id}/ajax-save-note',
+	'controller'    => 'AgentBundle:Deal:ajaxSaveNote',
+	'requirements'  => array('deal_id' => '\\d+'),
 ));
 
-$collection->add('agent_deal_ajax_labels_save', new Route(
-	'/deal/{deal_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Deal:ajaxSaveLabels'),
-	array('deal_id' => '\\d+'),
-	array()
+$collection->create('agent_deal_ajax_labels_save', array(
+	'path'          => '/deal/{deal_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Deal:ajaxSaveLabels',
+	'requirements'  => array('deal_id' => '\\d+'),
 ));
 
-$collection->add('agent_deal_ajaxsavecustomfields', new Route(
-	'/deal/{deal_id}/ajax-save-custom-fields',
-	array('_controller' => 'AgentBundle:Deal:ajaxSaveCustomFields'),
-	array('deal_id' => '\\d+'),
-	array()
+$collection->create('agent_deal_ajaxsavecustomfields', array(
+	'path'          => '/deal/{deal_id}/ajax-save-custom-fields',
+	'controller'    => 'AgentBundle:Deal:ajaxSaveCustomFields',
+	'requirements'  => array('deal_id' => '\\d+'),
 ));
 
-$collection->add('agent_deal_set_agent_parts', new Route(
-	'/deals/{deal_id}/{agent_id}/set-agent-parts.json',
-	array('_controller' => 'AgentBundle:Deal:setAgentParticipants'),
-	array(),
-	array()
+$collection->create('agent_deal_set_agent_parts', array(
+	'path'        => '/deals/{deal_id}/{agent_id}/set-agent-parts.json',
+	'controller'  => 'AgentBundle:Deal:setAgentParticipants',
 ));
 
-$collection->add('agent_deal_ajaxsave', new Route(
-	'/deals/{deal_id}/ajax-save',
-	array('_controller' => 'AgentBundle:Deal:ajaxSave'),
-	array('deal_id' => '\\d+'),
-	array()
+$collection->create('agent_deal_ajaxsave', array(
+	'path'          => '/deals/{deal_id}/ajax-save',
+	'controller'    => 'AgentBundle:Deal:ajaxSave',
+	'requirements'  => array('deal_id' => '\\d+'),
 ));
 
-$collection->add('agent_deal_new', new Route(
-	'/deals/new',
-	array('_controller' => 'AgentBundle:Deal:new'),
-	array(),
-	array('fragment_name' => 'nt')
+$collection->create('agent_deal_new', array(
+	'path'        => '/deals/new',
+	'controller'  => 'AgentBundle:Deal:new',
+	'options'     => array('fragment_name' => 'nt'),
 ));
 
-$collection->add('agent_deal_new_save', new Route(
-	'/deals/new/save',
-	array('_controller' => 'AgentBundle:Deal:newSave'),
-	array(),
-	array()
+$collection->create('agent_deal_new_save', array(
+	'path'        => '/deals/new/save',
+	'controller'  => 'AgentBundle:Deal:newSave',
 ));
 
-$collection->add('agent_deal_new_getpersonrow', new Route(
-	'/deals/new/get-person-row/{person_id}',
-	array('_controller' => 'AgentBundle:Deal:newdealGetPersonRow'),
-	array(),
-	array()
+$collection->create('agent_deal_new_getpersonrow', array(
+	'path'        => '/deals/new/get-person-row/{person_id}',
+	'controller'  => 'AgentBundle:Deal:newdealGetPersonRow',
 ));
 
-$collection->add('agent_deal_new_getorganizationrow', new Route(
-	'/deals/new/get-organization-row/{org_id}',
-	array('_controller' => 'AgentBundle:Deal:newdealGetOrganizationRow'),
-	array(),
-	array()
+$collection->create('agent_deal_new_getorganizationrow', array(
+	'path'        => '/deals/new/get-organization-row/{org_id}',
+	'controller'  => 'AgentBundle:Deal:newdealGetOrganizationRow',
 ));
 
-$collection->add('agent_deal_create_setpersonrow', new Route(
-	'/deals/new/create-person-row/{person_id}',
-	array('_controller' => 'AgentBundle:Deal:newdealCreatePersonRow'),
-	array(),
-	array()
+$collection->create('agent_deal_create_setpersonrow', array(
+	'path'        => '/deals/new/create-person-row/{person_id}',
+	'controller'  => 'AgentBundle:Deal:newdealCreatePersonRow',
 ));
 
-$collection->add('agent_deal_new_setpersonrow', new Route(
-	'/deals/new/set-person-row/{person_id}',
-	array('_controller' => 'AgentBundle:Deal:newdealSetPersonRow'),
-	array(),
-	array()
+$collection->create('agent_deal_new_setpersonrow', array(
+	'path'        => '/deals/new/set-person-row/{person_id}',
+	'controller'  => 'AgentBundle:Deal:newdealSetPersonRow',
 ));
 
-$collection->add('agent_deal_new_setorganizationrow', new Route(
-	'/deals/new/set-organization-row/{org_id}',
-	array('_controller' => 'AgentBundle:Deal:newdealSetOrganizationRow'),
-	array(),
-	array()
+$collection->create('agent_deal_new_setorganizationrow', array(
+	'path'        => '/deals/new/set-organization-row/{org_id}',
+	'controller'  => 'AgentBundle:Deal:newdealSetOrganizationRow',
 ));
 
-$collection->add('agent_deal_create_setorganizationrow', new Route(
-	'/deals/new/create-organization-row/{org_id}',
-	array('_controller' => 'AgentBundle:Deal:newdealCreateOrganizationRow'),
-	array(),
-	array()
+$collection->create('agent_deal_create_setorganizationrow', array(
+	'path'        => '/deals/new/create-organization-row/{org_id}',
+	'controller'  => 'AgentBundle:Deal:newdealCreateOrganizationRow',
 ));
 
+$collection->create('agent_publish_getsectiondata', array(
+	'path'        => '/publish/get-section-data.json',
+	'controller'  => 'AgentBundle:Publish:getSectionData',
+));
 
-################################################################################
-# Publish
-################################################################################
+$collection->create('agent_publish_ratingwhovoted', array(
+	'path'        => '/publish/rating-who-voted/{object_type}/{object_id}',
+	'controller'  => 'AgentBundle:Publish:ratingWhoVoted',
+));
 
-$collection->add('agent_publish_getsectiondata', new Route(
-	'/publish/get-section-data.json',
-	array('_controller' => 'AgentBundle:Publish:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_publish_whoviewed', array(
+	'path'        => '/publish/who-viewed/{object_type}/{object_id}/{view_action}',
+	'controller'  => 'AgentBundle:Publish:whoViewed',
+	'defaults'    => array('view_action' => 1),
 ));
 
-$collection->add('agent_publish_ratingwhovoted', new Route(
-	'/publish/rating-who-voted/{object_type}/{object_id}',
-	array('_controller' => 'AgentBundle:Publish:ratingWhoVoted'),
-	array(),
-	array()
+$collection->create('agent_publish_save_stickysearchwords', array(
+	'path'        => '/publish/save-sticky-search-words/{type}/{content_id}',
+	'controller'  => 'AgentBundle:Publish:saveStickySearchWords',
 ));
 
-$collection->add('agent_publish_whoviewed', new Route(
-	'/publish/who-viewed/{object_type}/{object_id}/{view_action}',
-	array('_controller' => 'AgentBundle:Publish:whoViewed', 'view_action' => 1),
-	array(),
-	array()
+$collection->create('agent_publish_validatingcontent', array(
+	'path'        => '/publish/content/validating',
+	'controller'  => 'AgentBundle:Publish:listValidatingContent',
+	'options'     => array(
+		'fragment_type'  => 'list',
+		'fragment_name'  => 'validating_content',
+	),
 ));
 
-$collection->add('agent_publish_save_stickysearchwords', new Route(
-	'/publish/save-sticky-search-words/{type}/{content_id}',
-	array('_controller' => 'AgentBundle:Publish:saveStickySearchWords'),
-	array(),
-	array()
+$collection->create('agent_feedback_validatingcontent', array(
+	'path'        => '/feedback/content/validating',
+	'controller'  => 'AgentBundle:Publish:listValidatingFeedbackContent',
+	'options'     => array('fragment_type' => 'list', 'fragment_name' => 'fb_content'),
 ));
 
-$collection->add('agent_publish_validatingcontent', new Route(
-	'/publish/content/validating',
-	array('_controller' => 'AgentBundle:Publish:listValidatingContent'),
-	array(),
-	array('fragment_type' => 'list', 'fragment_name' => 'validating_content')
+$collection->create('agent_feedback_validatingcomments', array(
+	'path'        => '/feedback/comments/validating',
+	'controller'  => 'AgentBundle:Publish:listValidatingFeedbackComments',
+	'options'     => array('fragment_type' => 'list', 'fragment_name' => 'fb_comments'),
 ));
 
-$collection->add('agent_feedback_validatingcontent', new Route(
-	'/feedback/content/validating',
-	array('_controller' => 'AgentBundle:Publish:listValidatingFeedbackContent'),
-	array(),
-	array('fragment_type' => 'list', 'fragment_name' => 'fb_content')
+$collection->create('agent_publish_validatingcontent_approve', array(
+	'path'        => '/publish/content/approve/{type}/{content_id}.json',
+	'controller'  => 'AgentBundle:Publish:approveContent',
 ));
 
-$collection->add('agent_feedback_validatingcomments', new Route(
-	'/feedback/comments/validating',
-	array('_controller' => 'AgentBundle:Publish:listValidatingFeedbackComments'),
-	array(),
-	array('fragment_type' => 'list', 'fragment_name' => 'fb_comments')
+$collection->create('agent_publish_validatingcontent_disapprove', array(
+	'path'        => '/publish/content/disapprove/{type}/{content_id}.json',
+	'controller'  => 'AgentBundle:Publish:disapproveContent',
 ));
 
-$collection->add('agent_publish_validatingcontent_approve', new Route(
-	'/publish/content/approve/{type}/{content_id}.json',
-	array('_controller' => 'AgentBundle:Publish:approveContent'),
-	array(),
-	array()
+$collection->create('agent_publish_validatingcontent_mass', array(
+	'path'        => '/publish/content/validating-mass-actions/{action}',
+	'controller'  => 'AgentBundle:Publish:validatingMassActions',
 ));
 
-$collection->add('agent_publish_validatingcontent_disapprove', new Route(
-	'/publish/content/disapprove/{type}/{content_id}.json',
-	array('_controller' => 'AgentBundle:Publish:disapproveContent'),
-	array(),
-	array()
+$collection->create('agent_publish_validatingcontent_next', array(
+	'path'        => '/publish/content/get-next-validating/{type}/{content_id}.json',
+	'controller'  => 'AgentBundle:Publish:nextValidatingContent',
+	'options'     => array('fragment_name' => 'pending', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_publish_validatingcontent_mass', new Route(
-	'/publish/content/validating-mass-actions/{action}',
-	array('_controller' => 'AgentBundle:Publish:validatingMassActions'),
-	array(),
-	array()
+$collection->create('agent_publish_listcomments', array(
+	'path'        => '/publish/comments/list/{type}',
+	'controller'  => 'AgentBundle:Publish:listComments',
+	'options'     => array('fragment_type' => 'list', 'fragment_name' => 'list_comments'),
 ));
 
-$collection->add('agent_publish_validatingcontent_next', new Route(
-	'/publish/content/get-next-validating/{type}/{content_id}.json',
-	array('_controller' => 'AgentBundle:Publish:nextValidatingContent'),
-	array(),
-	array('fragment_name' => 'pending', 'fragment_type' => 'list')
+$collection->create('agent_publish_validatingcomments', array(
+	'path'        => '/publish/comments/validating',
+	'controller'  => 'AgentBundle:Publish:listValidatingComments',
+	'options'     => array(
+		'fragment_type'  => 'list',
+		'fragment_name'  => 'validating_comments',
+	),
 ));
 
-$collection->add('agent_publish_listcomments', new Route(
-	'/publish/comments/list/{type}',
-	array('_controller' => 'AgentBundle:Publish:listComments'),
-	array(),
-	array('fragment_type' => 'list', 'fragment_name' => 'list_comments')
+$collection->create('agent_publish_approve_comment', array(
+	'path'        => '/publish/comments/approve/{typename}/{comment_id}',
+	'controller'  => 'AgentBundle:Publish:approveComment',
 ));
 
-$collection->add('agent_publish_validatingcomments', new Route(
-	'/publish/comments/validating',
-	array('_controller' => 'AgentBundle:Publish:listValidatingComments'),
-	array(),
-	array('fragment_type' => 'list', 'fragment_name' => 'validating_comments')
+$collection->create('agent_publish_delete_comment', array(
+	'path'        => '/publish/comments/delete/{typename}/{comment_id}',
+	'controller'  => 'AgentBundle:Publish:deleteComment',
 ));
 
-$collection->add('agent_publish_approve_comment', new Route(
-	'/publish/comments/approve/{typename}/{comment_id}',
-	array('_controller' => 'AgentBundle:Publish:approveComment'),
-	array(),
-	array()
+$collection->create('agent_publish_comment_info', array(
+	'path'        => '/publish/comments/info/{typename}/{comment_id}',
+	'controller'  => 'AgentBundle:Publish:commentInfo',
 ));
 
-$collection->add('agent_publish_delete_comment', new Route(
-	'/publish/comments/delete/{typename}/{comment_id}',
-	array('_controller' => 'AgentBundle:Publish:deleteComment'),
-	array(),
-	array()
+$collection->create('agent_publish_comment_save', array(
+	'path'        => '/publish/comments/save-comment/{typename}/{comment_id}',
+	'controller'  => 'AgentBundle:Publish:saveComment',
 ));
 
-$collection->add('agent_publish_comment_info', new Route(
-	'/publish/comments/info/{typename}/{comment_id}',
-	array('_controller' => 'AgentBundle:Publish:commentInfo'),
-	array(),
-	array()
+$collection->create('agent_public_comment_newticketinfo', array(
+	'path'        => '/publish/comments/new-ticket-info/{typename}/{comment_id}.json',
+	'controller'  => 'AgentBundle:Publish:getNewTicketCommentInfo',
 ));
 
-$collection->add('agent_publish_comment_save', new Route(
-	'/publish/comments/save-comment/{typename}/{comment_id}',
-	array('_controller' => 'AgentBundle:Publish:saveComment'),
-	array(),
-	array()
+$collection->create('agent_publish_validatingcomments_mass', array(
+	'path'        => '/publish/comments/validating-mass-actions/{action}',
+	'controller'  => 'AgentBundle:Publish:validatingCommentsMassActions',
 ));
 
-$collection->add('agent_public_comment_newticketinfo', new Route(
-	'/publish/comments/new-ticket-info/{typename}/{comment_id}.json',
-	array('_controller' => 'AgentBundle:Publish:getNewTicketCommentInfo'),
-	array(),
-	array()
+$collection->create('agent_publish_savecats', array(
+	'path'        => '/publish/save-categories/{type}',
+	'controller'  => 'AgentBundle:Publish:saveCategories',
 ));
 
-$collection->add('agent_publish_validatingcomments_mass', new Route(
-	'/publish/comments/validating-mass-actions/{action}',
-	array('_controller' => 'AgentBundle:Publish:validatingCommentsMassActions'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_adddel', array(
+	'path'        => '/publish/categories/{type}/delete-category',
+	'controller'  => 'AgentBundle:Publish:deleteCategory',
 ));
 
-$collection->add('agent_publish_savecats', new Route(
-	'/publish/save-categories/{type}',
-	array('_controller' => 'AgentBundle:Publish:saveCategories'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_addcat', array(
+	'path'        => '/publish/categories/{type}/add-category',
+	'controller'  => 'AgentBundle:Publish:addCategory',
 ));
 
-$collection->add('agent_publish_cats_adddel', new Route(
-	'/publish/categories/{type}/delete-category',
-	array('_controller' => 'AgentBundle:Publish:deleteCategory'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_updateorders', array(
+	'path'        => '/publish/categories/{type}/update-orders',
+	'controller'  => 'AgentBundle:Publish:updateCategoryOrders',
 ));
 
-$collection->add('agent_publish_cats_addcat', new Route(
-	'/publish/categories/{type}/add-category',
-	array('_controller' => 'AgentBundle:Publish:addCategory'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_updatetitles', array(
+	'path'        => '/publish/categories/{type}/update-titles',
+	'controller'  => 'AgentBundle:Publish:updateCategoryTitles',
 ));
 
-$collection->add('agent_publish_cats_updateorders', new Route(
-	'/publish/categories/{type}/update-orders',
-	array('_controller' => 'AgentBundle:Publish:updateCategoryOrders'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_update', array(
+	'path'        => '/publish/categories/{type}/update/{category_id}',
+	'controller'  => 'AgentBundle:Publish:updateCategory',
 ));
 
-$collection->add('agent_publish_cats_updatetitles', new Route(
-	'/publish/categories/{type}/update-titles',
-	array('_controller' => 'AgentBundle:Publish:updateCategoryTitles'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_updatestructure', array(
+	'path'        => '/publish/categories/{type}/update-structure',
+	'controller'  => 'AgentBundle:Publish:updateCategoryStructure',
 ));
 
-$collection->add('agent_publish_cats_update', new Route(
-	'/publish/categories/{type}/update/{category_id}',
-	array('_controller' => 'AgentBundle:Publish:updateCategory'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_newform', array(
+	'path'        => '/publish/categories/{type}/new-form',
+	'controller'  => 'AgentBundle:Publish:addCategoryForm',
 ));
 
-$collection->add('agent_publish_cats_updatestructure', new Route(
-	'/publish/categories/{type}/update-structure',
-	array('_controller' => 'AgentBundle:Publish:updateCategoryStructure'),
-	array(),
-	array()
+$collection->create('agent_publish_cats_newform_save', array(
+	'path'        => '/publish/categories/{type}/new-form/save',
+	'controller'  => 'AgentBundle:Publish:addCategoryFormSave',
 ));
 
-$collection->add('agent_publish_cats_newform', new Route(
-	'/publish/categories/{type}/new-form',
-	array('_controller' => 'AgentBundle:Publish:addCategoryForm'),
-	array(),
-	array()
+$collection->create('agent_public_drafts', array(
+	'path'        => '/publish/drafts/{type}',
+	'controller'  => 'AgentBundle:Publish:listDrafts',
+	'options'     => array('fragment_name' => 'drafts', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_publish_cats_newform_save', new Route(
-	'/publish/categories/{type}/new-form/save',
-	array('_controller' => 'AgentBundle:Publish:addCategoryFormSave'),
-	array(),
-	array()
+$collection->create('agent_public_drafts_mass', array(
+	'path'        => '/publish/drafts/mass-actions/{action}',
+	'controller'  => 'AgentBundle:Publish:draftsMassActions',
 ));
 
-$collection->add('agent_public_drafts', new Route(
-	'/publish/drafts/{type}',
-	array('_controller' => 'AgentBundle:Publish:listDrafts'),
-	array(),
-	array('fragment_name' => 'drafts', 'fragment_type' => 'list')
+$collection->create('agent_publish_search', array(
+	'path'        => '/publish/search',
+	'controller'  => 'AgentBundle:Publish:search',
 ));
 
-$collection->add('agent_public_drafts_mass', new Route(
-	'/publish/drafts/mass-actions/{action}',
-	array('_controller' => 'AgentBundle:Publish:draftsMassActions'),
-	array(),
-	array()
+$collection->create('agent_kb_newarticle_save', array(
+	'path'        => '/kb/article/new/save',
+	'controller'  => 'AgentBundle:Kb:newArticleSave',
 ));
 
-$collection->add('agent_publish_search', new Route(
-	'/publish/search',
-	array('_controller' => 'AgentBundle:Publish:search'),
-	array(),
-	array()
+$collection->create('agent_kb_newarticle', array(
+	'path'        => '/kb/article/new',
+	'controller'  => 'AgentBundle:Kb:newArticle',
 ));
 
-$collection->add('agent_kb_newarticle_save', new Route(
-	'/kb/article/new/save',
-	array('_controller' => 'AgentBundle:Kb:newArticleSave'),
-	array(),
-	array()
+$collection->create('agent_kb_article', array(
+	'path'          => '/kb/article/{article_id}',
+	'controller'    => 'AgentBundle:Kb:viewArticle',
+	'requirements'  => array('article_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'a'),
 ));
 
-$collection->add('agent_kb_newarticle', new Route(
-	'/kb/article/new',
-	array('_controller' => 'AgentBundle:Kb:newArticle'),
-	array(),
-	array()
+$collection->create('agent_kb_ajaxsavecustomfields', array(
+	'path'          => '/kb/article/{article_id}/ajax-save-custom-fields',
+	'controller'    => 'AgentBundle:Kb:ajaxSaveCustomFields',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('agent_kb_article', new Route(
-	'/kb/article/{article_id}',
-	array('_controller' => 'AgentBundle:Kb:viewArticle'),
-	array('article_id' => '\\d+'),
-	array('fragment_name' => 'a')
+$collection->create('agent_kb_article_info', array(
+	'path'          => '/kb/article/{article_id}/info',
+	'controller'    => 'AgentBundle:Kb:articleInfo',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('agent_kb_ajaxsavecustomfields', new Route(
-	'/kb/article/{article_id}/ajax-save-custom-fields',
-	array('_controller' => 'AgentBundle:Kb:ajaxSaveCustomFields'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('agent_kb_article_revisionstab', array(
+	'path'          => '/kb/article/{article_id}/view-revisions',
+	'controller'    => 'AgentBundle:Kb:viewRevisions',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('agent_kb_article_info', new Route(
-	'/kb/article/{article_id}/info',
-	array('_controller' => 'AgentBundle:Kb:articleInfo'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('agent_kb_article_ajaxsave', array(
+	'path'          => '/kb/article/{article_id}/ajax-save',
+	'controller'    => 'AgentBundle:Kb:ajaxSave',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('agent_kb_article_revisionstab', new Route(
-	'/kb/article/{article_id}/view-revisions',
-	array('_controller' => 'AgentBundle:Kb:viewRevisions'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('agent_kb_ajax_save_comment', array(
+	'path'          => '/kb/article/{article_id}/ajax-save-comment',
+	'controller'    => 'AgentBundle:Kb:ajaxSaveComment',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('agent_kb_article_ajaxsave', new Route(
-	'/kb/article/{article_id}/ajax-save',
-	array('_controller' => 'AgentBundle:Kb:ajaxSave'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('agent_kb_ajax_labels_save', array(
+	'path'          => '/kb/article/{article_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Kb:ajaxSaveLabels',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('agent_kb_ajax_save_comment', new Route(
-	'/kb/article/{article_id}/ajax-save-comment',
-	array('_controller' => 'AgentBundle:Kb:ajaxSaveComment'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('agent_kb_comparerevs', array(
+	'path'        => '/kb/compare-revs/{rev_old_id}/{rev_new_id}',
+	'controller'  => 'AgentBundle:Kb:compareRevisions',
 ));
 
-$collection->add('agent_kb_ajax_labels_save', new Route(
-	'/kb/article/{article_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Kb:ajaxSaveLabels'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('agent_kb_newpending', array(
+	'path'        => '/kb/pending-articles/new',
+	'controller'  => 'AgentBundle:Kb:newPendingArticle',
 ));
 
-$collection->add('agent_kb_comparerevs', new Route(
-	'/kb/compare-revs/{rev_old_id}/{rev_new_id}',
-	array('_controller' => 'AgentBundle:Kb:compareRevisions'),
-	array(),
-	array()
+$collection->create('agent_kb_pending_remove', array(
+	'path'        => '/kb/pending-articles/{pending_article_id}/remove',
+	'controller'  => 'AgentBundle:Kb:removePendingArticle',
 ));
 
-$collection->add('agent_kb_newpending', new Route(
-	'/kb/pending-articles/new',
-	array('_controller' => 'AgentBundle:Kb:newPendingArticle'),
-	array(),
-	array()
+$collection->create('agent_kb_pending_info', array(
+	'path'        => '/kb/pending-articles/{pending_article_id}/info',
+	'controller'  => 'AgentBundle:Kb:pendingArticleInfo',
 ));
 
-$collection->add('agent_kb_pending_remove', new Route(
-	'/kb/pending-articles/{pending_article_id}/remove',
-	array('_controller' => 'AgentBundle:Kb:removePendingArticle'),
-	array(),
-	array()
+$collection->create('agent_kb_pending', array(
+	'path'        => '/kb/pending-articles',
+	'controller'  => 'AgentBundle:Kb:listPendingArticles',
+	'options'     => array('fragment_name' => 'pending', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_kb_pending_info', new Route(
-	'/kb/pending-articles/{pending_article_id}/info',
-	array('_controller' => 'AgentBundle:Kb:pendingArticleInfo'),
-	array(),
-	array()
+$collection->create('agent_kb_pending_massactions', array(
+	'path'        => '/kb/pending-articles/mass-actions/{action}',
+	'controller'  => 'AgentBundle:Kb:pendingArticlesMassActions',
 ));
 
-$collection->add('agent_kb_pending', new Route(
-	'/kb/pending-articles',
-	array('_controller' => 'AgentBundle:Kb:listPendingArticles'),
-	array(),
-	array('fragment_name' => 'pending', 'fragment_type' => 'list')
+$collection->create('agent_kb_list', array(
+	'path'        => '/kb/list/{category_id}',
+	'controller'  => 'AgentBundle:Kb:list',
+	'defaults'    => array('category_id' => '0'),
+	'options'     => array('fragment_name' => 'knowledgebase', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_kb_pending_massactions', new Route(
-	'/kb/pending-articles/mass-actions/{action}',
-	array('_controller' => 'AgentBundle:Kb:pendingArticlesMassActions'),
-	array(),
-	array()
+$collection->create('agent_kb_cat', array(
+	'path'        => '/kb/category/{category_id}',
+	'controller'  => 'AgentBundle:Kb:list',
 ));
 
-$collection->add('agent_kb_list', new Route(
-	'/kb/list/{category_id}',
-	array('_controller' => 'AgentBundle:Kb:list', 'category_id' => '0'),
-	array(),
-	array('fragment_name' => 'knowledgebase', 'fragment_type' => 'list')
+$collection->create('agent_kb_mass_save', array(
+	'path'        => '/kb/article/ajax-mass-save',
+	'controller'  => 'AgentBundle:Kb:ajaxMassSave',
 ));
 
-$collection->add('agent_kb_cat', new Route(
-	'/kb/category/{category_id}',
-	array('_controller' => 'AgentBundle:Kb:list'),
-	array(),
-	array()
+$collection->create('agent_glossary_newword_json', array(
+	'path'        => '/glossary/new-word.json',
+	'controller'  => 'AgentBundle:Glossary:glossaryNewWordJson',
 ));
 
-$collection->add('agent_kb_mass_save', new Route(
-	'/kb/article/ajax-mass-save',
-	array('_controller' => 'AgentBundle:Kb:ajaxMassSave'),
-	array(),
-	array()
+$collection->create('agent_glossary_word_json', array(
+	'path'        => '/glossary/{word_id}.json',
+	'controller'  => 'AgentBundle:Glossary:glossaryWordJson',
 ));
 
-$collection->add('agent_glossary_newword_json', new Route(
-	'/glossary/new-word.json',
-	array('_controller' => 'AgentBundle:Glossary:glossaryNewWordJson'),
-	array(),
-	array()
+$collection->create('agent_glossary_saveword_json', array(
+	'path'        => '/glossary/{word_id}/edit.json',
+	'controller'  => 'AgentBundle:Glossary:glossarySaveWordJson',
 ));
 
-$collection->add('agent_glossary_word_json', new Route(
-	'/glossary/{word_id}.json',
-	array('_controller' => 'AgentBundle:Glossary:glossaryWordJson'),
-	array(),
-	array()
+$collection->create('agent_glossary_delword_json', array(
+	'path'        => '/glossary/{word_id}/delete.json',
+	'controller'  => 'AgentBundle:Glossary:glossaryDeleteWordJson',
 ));
 
-$collection->add('agent_glossary_saveword_json', new Route(
-	'/glossary/{word_id}/edit.json',
-	array('_controller' => 'AgentBundle:Glossary:glossarySaveWordJson'),
-	array(),
-	array()
+$collection->create('agent_glossary_word_tip', array(
+	'path'        => '/glossary/{word}/tip',
+	'controller'  => 'AgentBundle:Glossary:tip',
 ));
 
-$collection->add('agent_glossary_delword_json', new Route(
-	'/glossary/{word_id}/delete.json',
-	array('_controller' => 'AgentBundle:Glossary:glossaryDeleteWordJson'),
-	array(),
-	array()
+$collection->create('agent_news_list', array(
+	'path'        => '/news/list/{category_id}',
+	'controller'  => 'AgentBundle:News:list',
+	'defaults'    => array('category_id' => '0'),
+	'options'     => array('fragment_name' => 'news', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_glossary_word_tip', new Route(
-	'/glossary/{word}/tip',
-	array('_controller' => 'AgentBundle:Glossary:tip'),
-	array(),
-	array()
+$collection->create('agent_news_view', array(
+	'path'          => '/news/post/{news_id}',
+	'controller'    => 'AgentBundle:News:view',
+	'requirements'  => array('news_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'n'),
 ));
 
-$collection->add('agent_news_list', new Route(
-	'/news/list/{category_id}',
-	array('_controller' => 'AgentBundle:News:list', 'category_id' => '0'),
-	array(),
-	array('fragment_name' => 'news', 'fragment_type' => 'list')
+$collection->create('agent_news_revisionstab', array(
+	'path'          => '/news/post/{news_id}/view-revisions',
+	'controller'    => 'AgentBundle:News:viewRevisions',
+	'requirements'  => array('news_id' => '\\d+'),
 ));
 
-$collection->add('agent_news_view', new Route(
-	'/news/post/{news_id}',
-	array('_controller' => 'AgentBundle:News:view'),
-	array('news_id' => '\\d+'),
-	array('fragment_name' => 'n')
+$collection->create('agent_news_save', array(
+	'path'          => '/news/post/{news_id}/ajax-save',
+	'controller'    => 'AgentBundle:News:ajaxSave',
+	'requirements'  => array('news_id' => '\\d+'),
 ));
 
-$collection->add('agent_news_revisionstab', new Route(
-	'/news/post/{news_id}/view-revisions',
-	array('_controller' => 'AgentBundle:News:viewRevisions'),
-	array('news_id' => '\\d+'),
-	array()
+$collection->create('agent_news_ajax_labels_save', array(
+	'path'          => '/news/{news_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:News:ajaxSaveLabels',
+	'requirements'  => array('news_id' => '\\d+'),
 ));
 
-$collection->add('agent_news_save', new Route(
-	'/news/post/{news_id}/ajax-save',
-	array('_controller' => 'AgentBundle:News:ajaxSave'),
-	array('news_id' => '\\d+'),
-	array()
+$collection->create('agent_news_ajax_save_comment', array(
+	'path'          => '/news/post/{news_id}/ajax-save-comment',
+	'controller'    => 'AgentBundle:News:ajaxSaveComment',
+	'requirements'  => array('news_id' => '\\d+'),
 ));
 
-$collection->add('agent_news_ajax_labels_save', new Route(
-	'/news/{news_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:News:ajaxSaveLabels'),
-	array('news_id' => '\\d+'),
-	array()
+$collection->create('agent_news_new_save', array(
+	'path'        => '/news/new/save',
+	'controller'  => 'AgentBundle:News:newNewsSave',
 ));
 
-$collection->add('agent_news_ajax_save_comment', new Route(
-	'/news/post/{news_id}/ajax-save-comment',
-	array('_controller' => 'AgentBundle:News:ajaxSaveComment'),
-	array('news_id' => '\\d+'),
-	array()
+$collection->create('agent_news_new', array(
+	'path'        => '/news/new',
+	'controller'  => 'AgentBundle:News:newNews',
 ));
 
-$collection->add('agent_news_new_save', new Route(
-	'/news/new/save',
-	array('_controller' => 'AgentBundle:News:newNewsSave'),
-	array(),
-	array()
+$collection->create('agent_news_comparerevs', array(
+	'path'        => '/news/compare-revs/{rev_old_id}/{rev_new_id}',
+	'controller'  => 'AgentBundle:News:compareRevisions',
 ));
 
-$collection->add('agent_news_new', new Route(
-	'/news/new',
-	array('_controller' => 'AgentBundle:News:newNews'),
-	array(),
-	array()
+$collection->create('agent_downloads_list', array(
+	'path'        => '/downloads/list/{category_id}',
+	'controller'  => 'AgentBundle:Downloads:list',
+	'defaults'    => array('category_id' => '0'),
+	'options'     => array('fragment_name' => 'downloads', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_news_comparerevs', new Route(
-	'/news/compare-revs/{rev_old_id}/{rev_new_id}',
-	array('_controller' => 'AgentBundle:News:compareRevisions'),
-	array(),
-	array()
+$collection->create('agent_downloads_view', array(
+	'path'          => '/downloads/file/{download_id}',
+	'controller'    => 'AgentBundle:Downloads:view',
+	'requirements'  => array('download_id' => '\\d+'),
+	'options'       => array('fragment_name' => 'd'),
 ));
 
-$collection->add('agent_downloads_list', new Route(
-	'/downloads/list/{category_id}',
-	array('_controller' => 'AgentBundle:Downloads:list', 'category_id' => '0'),
-	array(),
-	array('fragment_name' => 'downloads', 'fragment_type' => 'list')
+$collection->create('agent_downloads_info', array(
+	'path'          => '/downloads/file/{download_id}/info',
+	'controller'    => 'AgentBundle:Downloads:info',
+	'requirements'  => array('download_id' => '\\d+'),
 ));
 
-$collection->add('agent_downloads_view', new Route(
-	'/downloads/file/{download_id}',
-	array('_controller' => 'AgentBundle:Downloads:view'),
-	array('download_id' => '\\d+'),
-	array('fragment_name' => 'd')
+$collection->create('agent_kb_downloads_revisionstab', array(
+	'path'          => '/downloads/file/{download_id}/view-revisions',
+	'controller'    => 'AgentBundle:Downloads:viewRevisions',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('agent_downloads_info', new Route(
-	'/downloads/file/{download_id}/info',
-	array('_controller' => 'AgentBundle:Downloads:info'),
-	array('download_id' => '\\d+'),
-	array()
+$collection->create('agent_downloads_save', array(
+	'path'          => '/downloads/file/{download_id}/ajax-save',
+	'controller'    => 'AgentBundle:Downloads:ajaxSave',
+	'requirements'  => array('download_id' => '\\d+'),
 ));
 
-$collection->add('agent_kb_downloads_revisionstab', new Route(
-	'/downloads/file/{download_id}/view-revisions',
-	array('_controller' => 'AgentBundle:Downloads:viewRevisions'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('agent_downloads_ajax_labels_save', array(
+	'path'          => '/downloads/file/{download_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Downloads:ajaxSaveLabels',
+	'requirements'  => array('download_id' => '\\d+'),
 ));
 
-$collection->add('agent_downloads_save', new Route(
-	'/downloads/file/{download_id}/ajax-save',
-	array('_controller' => 'AgentBundle:Downloads:ajaxSave'),
-	array('download_id' => '\\d+'),
-	array()
+$collection->create('agent_downloads_ajax_save_comment', array(
+	'path'          => '/downloads/file/{download_id}/ajax-save-comment',
+	'controller'    => 'AgentBundle:Downloads:ajaxSaveComment',
+	'requirements'  => array('download_id' => '\\d+'),
 ));
 
-$collection->add('agent_downloads_ajax_labels_save', new Route(
-	'/downloads/file/{download_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Downloads:ajaxSaveLabels'),
-	array('download_id' => '\\d+'),
-	array()
+$collection->create('agent_downloads_new_save', array(
+	'path'        => '/downloads/new/save',
+	'controller'  => 'AgentBundle:Downloads:newDownloadSave',
 ));
 
-$collection->add('agent_downloads_ajax_save_comment', new Route(
-	'/downloads/file/{download_id}/ajax-save-comment',
-	array('_controller' => 'AgentBundle:Downloads:ajaxSaveComment'),
-	array('download_id' => '\\d+'),
-	array()
+$collection->create('agent_downloads_new', array(
+	'path'        => '/downloads/new',
+	'controller'  => 'AgentBundle:Downloads:newDownload',
 ));
 
-$collection->add('agent_downloads_new_save', new Route(
-	'/downloads/new/save',
-	array('_controller' => 'AgentBundle:Downloads:newDownloadSave'),
-	array(),
-	array()
+$collection->create('agent_downloads_comparerevs', array(
+	'path'        => '/downloads/compare-revs/{rev_old_id}/{rev_new_id}',
+	'controller'  => 'AgentBundle:Downloads:compareRevisions',
 ));
 
-$collection->add('agent_downloads_new', new Route(
-	'/downloads/new',
-	array('_controller' => 'AgentBundle:Downloads:newDownload'),
-	array(),
-	array()
+$collection->create('agent_feedback_category', array(
+	'path'        => '/feedback/category/{category_id}',
+	'controller'  => 'AgentBundle:Feedback:categoryList',
+	'options'     => array('fragment_name' => 'category', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_downloads_comparerevs', new Route(
-	'/downloads/compare-revs/{rev_old_id}/{rev_new_id}',
-	array('_controller' => 'AgentBundle:Downloads:compareRevisions'),
-	array(),
-	array()
+$collection->create('agent_feedback_status', array(
+	'path'        => '/feedback/status/{status}',
+	'controller'  => 'AgentBundle:Feedback:statusList',
+	'options'     => array('fragment_name' => 'status', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_feedback_category', new Route(
-	'/feedback/category/{category_id}',
-	array('_controller' => 'AgentBundle:Feedback:categoryList'),
-	array(),
-    array('fragment_name' => 'category', 'fragment_type' => 'list')
+$collection->create('agent_feedback_label', array(
+	'path'         => '/feedback/label/{label}',
+	'controller'   => 'AgentBundle:Feedback:labelList',
+	'options'      => array('fragment_name' => 'label', 'fragment_type' => 'list'),
+	'requirements' => array('label' => '.*'),
 ));
 
-$collection->add('agent_feedback_status', new Route(
-	'/feedback/status/{status}',
-	array('_controller' => 'AgentBundle:Feedback:statusList'),
-	array(),
-	array('fragment_name' => 'status', 'fragment_type' => 'list')
+$collection->create('agent_feedback_filter', array(
+	'path'        => '/feedback/filter',
+	'controller'  => 'AgentBundle:Feedback:filterList',
 ));
 
-$collection->add('agent_feedback_label', new Route(
-	'/feedback/label/{label}',
-	array('_controller' => 'AgentBundle:Feedback:labelList'),
-	array('label' => '.*'),
-    array('fragment_name' => 'label', 'fragment_type' => 'list')
+$collection->create('agent_feedback_massactions', array(
+	'path'        => '/feedback/filter/mass-actions/{action}',
+	'controller'  => 'AgentBundle:Feedback:massActions',
 ));
 
-$collection->add('agent_feedback_filter', new Route(
-	'/feedback/filter',
-	array('_controller' => 'AgentBundle:Feedback:filterList'),
-	array(),
-	array()
+$collection->create('agent_feedback_getsectiondata', array(
+	'path'        => '/feedback/get-section-data.json',
+	'controller'  => 'AgentBundle:Feedback:getSectionData',
 ));
 
-$collection->add('agent_feedback_massactions', new Route(
-	'/feedback/filter/mass-actions/{action}',
-	array('_controller' => 'AgentBundle:Feedback:massActions'),
-	array(),
-	array()
+$collection->create('agent_feedback_new', array(
+	'path'        => '/feedback/new',
+	'controller'  => 'AgentBundle:Feedback:newFeedback',
 ));
 
-$collection->add('agent_feedback_getsectiondata', new Route(
-	'/feedback/get-section-data.json',
-	array('_controller' => 'AgentBundle:Feedback:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_feedback_new_save', array(
+	'path'        => '/feedback/new/save',
+	'controller'  => 'AgentBundle:Feedback:newFeedbackSave',
 ));
 
-$collection->add('agent_feedback_new', new Route(
-	'/feedback/new',
-	array('_controller' => 'AgentBundle:Feedback:newFeedback'),
-	array(),
-	array()
+$collection->create('agent_feedback_view', array(
+	'path'        => '/feedback/view/{feedback_id}',
+	'controller'  => 'AgentBundle:Feedback:view',
+	'options'     => array('fragment_name' => 'i'),
 ));
 
-$collection->add('agent_feedback_new_save', new Route(
-	'/feedback/new/save',
-	array('_controller' => 'AgentBundle:Feedback:newFeedbackSave'),
-	array(),
-	array()
+$collection->create('agent_feedback_comparerevs', array(
+	'path'        => '/feedback/compare-revs/{rev_old_id}/{rev_new_id}',
+	'controller'  => 'AgentBundle:Feedback:compareRevisions',
 ));
 
-$collection->add('agent_feedback_view', new Route(
-	'/feedback/view/{feedback_id}',
-	array('_controller' => 'AgentBundle:Feedback:view'),
-	array(),
-	array('fragment_name' => 'i')
+$collection->create('agent_feedback_ajaxsavecustomfields', array(
+	'path'          => '/feedback/view/{feedback_id}/ajax-save-custom-fields',
+	'controller'    => 'AgentBundle:Feedback:ajaxSaveCustomFields',
+	'requirements'  => array('feedback_id' => '\\d+'),
 ));
 
-$collection->add('agent_feedback_comparerevs', new Route(
-	'/feedback/compare-revs/{rev_old_id}/{rev_new_id}',
-	array('_controller' => 'AgentBundle:Feedback:compareRevisions'),
-	array(),
-	array()
+$collection->create('agent_feedback_who_voted', array(
+	'path'        => '/feedback/view/{feedback_id}/who-voted',
+	'controller'  => 'AgentBundle:Feedback:whoVoted',
 ));
 
-$collection->add('agent_feedback_ajaxsavecustomfields', new Route(
-	'/feedback/view/{feedback_id}/ajax-save-custom-fields',
-	array('_controller' => 'AgentBundle:Feedback:ajaxSaveCustomFields'),
-	array('feedback_id' => '\\d+'),
-	array()
+$collection->create('agent_feedback_save', array(
+	'path'          => '/feedback/view/{feedback_id}/ajax-save',
+	'controller'    => 'AgentBundle:Feedback:ajaxSave',
+	'requirements'  => array('news_id' => '\\d+'),
 ));
 
-$collection->add('agent_feedback_who_voted', new Route(
-	'/feedback/view/{feedback_id}/who-voted',
-	array('_controller' => 'AgentBundle:Feedback:whoVoted'),
-	array(),
-	array()
+$collection->create('agent_feedback_ajax_labels_save', array(
+	'path'          => '/feedback/view/{feedback_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:Feedback:ajaxSaveLabels',
+	'requirements'  => array('news_id' => '\\d+'),
 ));
 
-$collection->add('agent_feedback_save', new Route(
-	'/feedback/view/{feedback_id}/ajax-save',
-	array('_controller' => 'AgentBundle:Feedback:ajaxSave'),
-	array('news_id' => '\\d+'),
-	array()
+$collection->create('agent_feedback_ajax_save_comment', array(
+	'path'          => '/feedback/view/{feedback_id}/ajax-save-comment',
+	'controller'    => 'AgentBundle:Feedback:ajaxSaveComment',
+	'requirements'  => array('news_id' => '\\d+'),
 ));
 
-$collection->add('agent_feedback_ajax_labels_save', new Route(
-	'/feedback/view/{feedback_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:Feedback:ajaxSaveLabels'),
-	array('news_id' => '\\d+'),
-	array()
+$collection->create('agent_feedback_ajaxsavecomment', array(
+	'path'        => '/feedback/view/{feedback_id}/ajax-save-comment',
+	'controller'  => 'AgentBundle:Feedback:ajaxSaveComment',
 ));
 
-$collection->add('agent_feedback_ajax_save_comment', new Route(
-	'/feedback/view/{feedback_id}/ajax-save-comment',
-	array('_controller' => 'AgentBundle:Feedback:ajaxSaveComment'),
-	array('news_id' => '\\d+'),
-	array()
+$collection->create('agent_feedback_ajaxsaveeditables', array(
+	'path'        => '/feedback/view/{feedback_id}/ajax-save-editables',
+	'controller'  => 'AgentBundle:Feedback:ajaxSaveEditables',
 ));
 
-$collection->add('agent_feedback_ajaxsavecomment', new Route(
-	'/feedback/view/{feedback_id}/ajax-save-comment',
-	array('_controller' => 'AgentBundle:Feedback:ajaxSaveComment'),
-	array(),
-	array()
+$collection->create('agent_feedback_ajaxupdatecat', array(
+	'path'        => '/feedback/view/{feedback_id}/ajax-update-category/{category_id}',
+	'controller'  => 'AgentBundle:Feedback:ajaxUpdateCategory',
 ));
 
-$collection->add('agent_feedback_ajaxsaveeditables', new Route(
-	'/feedback/view/{feedback_id}/ajax-save-editables',
-	array('_controller' => 'AgentBundle:Feedback:ajaxSaveEditables'),
-	array(),
-	array()
+$collection->create('agent_feedback_ajaxupdatestatus', array(
+	'path'        => '/feedback/view/{feedback_id}/ajax-update-status/{status_code}',
+	'controller'  => 'AgentBundle:Feedback:ajaxUpdateStatus',
 ));
 
-$collection->add('agent_feedback_ajaxupdatecat', new Route(
-	'/feedback/view/{feedback_id}/ajax-update-category/{category_id}',
-	array('_controller' => 'AgentBundle:Feedback:ajaxUpdateCategory'),
-	array(),
-	array()
+$collection->create('agent_feedback_merge_overlay', array(
+	'path'          => '/feedback/merge-overlay/{feedback_id}/{other_feedback_id}',
+	'controller'    => 'AgentBundle:Feedback:mergeOverlay',
+	'requirements'  => array('feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
 ));
 
-$collection->add('agent_feedback_ajaxupdatestatus', new Route(
-	'/feedback/view/{feedback_id}/ajax-update-status/{status_code}',
-	array('_controller' => 'AgentBundle:Feedback:ajaxUpdateStatus'),
-	array(),
-	array()
+$collection->create('agent_feedback_merge', array(
+	'path'          => '/feedback/merge/{feedback_id}/{other_feedback_id}',
+	'controller'    => 'AgentBundle:Feedback:merge',
+	'requirements'  => array('feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
 ));
 
-$collection->add('agent_feedback_merge_overlay', new Route(
-	'/feedback/merge-overlay/{feedback_id}/{other_feedback_id}',
-	array('_controller' => 'AgentBundle:Feedback:mergeOverlay'),
-	array('feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
-	array()
+$collection->create('agent_agentchat_getonlineagents', array(
+	'path'        => '/agent-chat/get-online-agents.json',
+	'controller'  => 'AgentBundle:AgentChat:getOnlineAgents',
 ));
 
-$collection->add('agent_feedback_merge', new Route(
-	'/feedback/merge/{feedback_id}/{other_feedback_id}',
-	array('_controller' => 'AgentBundle:Feedback:merge'),
-	array('feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
-	array()
+$collection->create('agent_agentchat_get_last_convo', array(
+	'path'        => '/agent-chat/get-last-convo',
+	'controller'  => 'AgentBundle:AgentChat:loadConvoMessages',
 ));
 
+$collection->create('agent_agentchat_send_message', array(
+	'path'        => '/agent-chat/send-message/{conversation_id}',
+	'controller'  => 'AgentBundle:AgentChat:sendMessage',
+));
 
-################################################################################
-# Agent and User Chat
-################################################################################
+$collection->create('agent_agentchat_send_agent_message', array(
+	'path'        => '/agent-chat/send-agent-message/{convo_id}',
+	'controller'  => 'AgentBundle:AgentChat:sendAgentMessage',
+));
 
-$collection->add('agent_agentchat_getonlineagents', new Route(
-	'/agent-chat/get-online-agents.json',
-	array('_controller' => 'AgentBundle:AgentChat:getOnlineAgents'),
-	array(),
-	array()
+$collection->create('agent_agentchat_history', array(
+	'path'        => '/agent-chat/agent-history/{agent_id}',
+	'controller'  => 'AgentBundle:AgentChat:agentHistory',
 ));
 
-$collection->add('agent_agentchat_get_last_convo', new Route(
-	'/agent-chat/get-last-convo',
-	array('_controller' => 'AgentBundle:AgentChat:loadConvoMessages'),
-	array(),
-	array()
+$collection->create('agent_agentchat_history_team', array(
+	'path'        => '/agent-chat/agent-history/team/{agent_team_id}',
+	'controller'  => 'AgentBundle:AgentChat:agentTeamHistory',
 ));
 
-$collection->add('agent_agentchat_send_message', new Route(
-	'/agent-chat/send-message/{conversation_id}',
-	array('_controller' => 'AgentBundle:AgentChat:sendMessage'),
-	array(),
-	array()
+$collection->create('agent_agentchat_view', array(
+	'path'        => '/agent-chat/agent-transcript/{conversation_id}',
+	'controller'  => 'AgentBundle:AgentChat:agentChatTranscript',
 ));
 
-$collection->add('agent_agentchat_send_agent_message', new Route(
-	'/agent-chat/send-agent-message/{convo_id}',
-	array('_controller' => 'AgentBundle:AgentChat:sendAgentMessage'),
-	array(),
-	array()
+$collection->create('agent_agentchat_getsectiondata', array(
+	'path'        => '/agent-chat/get-section-data.json',
+	'controller'  => 'AgentBundle:AgentChat:getSectionData',
 ));
 
-$collection->add('agent_agentchat_history', new Route(
-	'/agent-chat/agent-history/{agent_id}',
-	array('_controller' => 'AgentBundle:AgentChat:agentHistory'),
-	array(),
-	array()
+$collection->create('agent_userchat_view', array(
+	'path'        => '/chat/view/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:view',
+	'options'     => array('fragment_name' => 'c'),
 ));
 
-$collection->add('agent_agentchat_history_team', new Route(
-	'/agent-chat/agent-history/team/{agent_team_id}',
-	array('_controller' => 'AgentBundle:AgentChat:agentTeamHistory'),
-	array(),
-	array()
+$collection->create('agent_userchat_save_fields', array(
+	'path'        => '/chat/{conversation_id}/save-fields',
+	'controller'  => 'AgentBundle:UserChat:saveFields',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('agent_agentchat_view', new Route(
-	'/agent-chat/agent-transcript/{conversation_id}',
-	array('_controller' => 'AgentBundle:AgentChat:agentChatTranscript'),
-	array(),
-	array()
+$collection->create('agent_userchat_blockuser', array(
+	'path'        => '/chat/block-user/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:blockUser',
 ));
 
-$collection->add('agent_agentchat_getsectiondata', new Route(
-	'/agent-chat/get-section-data.json',
-	array('_controller' => 'AgentBundle:AgentChat:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_userchat_unblockuser', array(
+	'path'        => '/chat/unblock-user/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:unblockUser',
 ));
 
-$collection->add('agent_userchat_view', new Route(
-	'/chat/view/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:view'),
-	array(),
-	array('fragment_name' => 'c')
+$collection->create('agent_userchat_ajax_labels_save', array(
+	'path'          => '/chat/{conversation_id}/ajax-save-labels',
+	'controller'    => 'AgentBundle:UserChat:ajaxSaveLabels',
+	'requirements'  => array('conversation_id' => '\\d+'),
 ));
 
-$collection->add('agent_userchat_save_fields', new Route(
-	'/chat/{conversation_id}/save-fields',
-	array('_controller' => 'AgentBundle:UserChat:saveFields'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('agent_userchat_open_counts', array(
+	'path'        => '/chat/open-counts.json',
+	'controller'  => 'AgentBundle:UserChat:getOpenCounts',
 ));
 
-$collection->add('agent_userchat_blockuser', new Route(
-	'/chat/block-user/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:blockUser'),
-	array(),
-	array()
+$collection->create('agent_userchat_filterlist_group_counts', array(
+	'path'        => '/chat/group-count.json',
+	'controller'  => 'AgentBundle:UserChat:getGroupByCounts',
 ));
 
-$collection->add('agent_userchat_unblockuser', new Route(
-	'/chat/unblock-user/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:unblockUser'),
-	array(),
-	array()
+$collection->create('agent_userchat_filterlist', array(
+	'path'        => '/chat/filter/{filter_id}',
+	'controller'  => 'AgentBundle:UserChat:filter',
+	'options'     => array('fragment_name' => 'ended', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_userchat_ajax_labels_save', new Route(
-	'/chat/{conversation_id}/ajax-save-labels',
-	array('_controller' => 'AgentBundle:UserChat:ajaxSaveLabels'),
-	array('conversation_id' => '\\d+'),
-	array()
+$collection->create('agent_userchat_list_new', array(
+	'path'        => '/chat/list-new/{department_id}',
+	'controller'  => 'AgentBundle:UserChat:listNewChats',
+	'defaults'    => array('department_id' => '-1'),
+	'options'     => array('fragment_name' => 'new', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_userchat_open_counts', new Route(
-	'/chat/open-counts.json',
-	array('_controller' => 'AgentBundle:UserChat:getOpenCounts'),
-	array(),
-	array()
+$collection->create('agent_userchat_list_active', array(
+	'path'        => '/chat/list-active/{agent_id}',
+	'controller'  => 'AgentBundle:UserChat:listActiveChats',
+	'defaults'    => array('agent_id' => '-1'),
+	'options'     => array('fragment_name' => 'active', 'fragment_type' => 'list'),
 ));
 
-$collection->add('agent_userchat_filterlist_group_counts', new Route(
-	'/chat/group-count.json',
-	array('_controller' => 'AgentBundle:UserChat:getGroupByCounts'),
-	array(),
-	array()
+$collection->create('agent_userchat_send_messageview', array(
+	'path'        => '/chat/send-message/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:sendMessage',
 ));
 
-$collection->add('agent_userchat_filterlist', new Route(
-	'/chat/filter/{filter_id}',
-	array('_controller' => 'AgentBundle:UserChat:filter'),
-	array(),
-	array('fragment_name' => 'ended', 'fragment_type' => 'list')
+$collection->create('agent_userchat_send_filemessage', array(
+	'path'        => '/chat/send-file-message/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:sendFile',
 ));
 
-$collection->add('agent_userchat_list_new', new Route(
-	'/chat/list-new/{department_id}',
-	array('_controller' => 'AgentBundle:UserChat:listNewChats', 'department_id' => '-1'),
-	array(),
-	array('fragment_name' => 'new', 'fragment_type' => 'list')
+$collection->create('agent_userchat_assign', array(
+	'path'        => '/chat/assign/{conversation_id}/{agent_id}',
+	'controller'  => 'AgentBundle:UserChat:assignChat',
 ));
 
-$collection->add('agent_userchat_list_active', new Route(
-	'/chat/list-active/{agent_id}',
-	array('_controller' => 'AgentBundle:UserChat:listActiveChats', 'agent_id' => '-1'),
-	array(),
-	array('fragment_name' => 'active', 'fragment_type' => 'list')
+$collection->create('agent_userchat_syncpart', array(
+	'path'        => '/chat/sync-parts/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:syncParts',
 ));
 
-$collection->add('agent_userchat_send_messageview', new Route(
-	'/chat/send-message/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:sendMessage'),
-	array(),
-	array()
+$collection->create('agent_userchat_addpart', array(
+	'path'        => '/chat/add-part/{conversation_id}/{agent_id}',
+	'controller'  => 'AgentBundle:UserChat:addPart',
 ));
 
-$collection->add('agent_userchat_send_filemessage', new Route(
-	'/chat/send-file-message/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:sendFile'),
-	array(),
-	array()
+$collection->create('agent_userchat_end', array(
+	'path'        => '/chat/end-chat/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:endChat',
 ));
 
-$collection->add('agent_userchat_assign', new Route(
-	'/chat/assign/{conversation_id}/{agent_id}',
-	array('_controller' => 'AgentBundle:UserChat:assignChat'),
-	array(),
-	array()
+$collection->create('agent_userchat_leave', array(
+	'path'        => '/chat/leave/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:leaveChat',
 ));
 
-$collection->add('agent_userchat_syncpart', new Route(
-	'/chat/sync-parts/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:syncParts'),
-	array(),
-	array()
+$collection->create('agent_userchat_invite', array(
+	'path'        => '/chat/invite/{conversation_id}/{agent_id}',
+	'controller'  => 'AgentBundle:UserChat:sendInvite',
 ));
 
-$collection->add('agent_userchat_addpart', new Route(
-	'/chat/add-part/{conversation_id}/{agent_id}',
-	array('_controller' => 'AgentBundle:UserChat:addPart'),
-	array(),
-	array()
+$collection->create('agent_userchat_changeprop', array(
+	'path'        => '/chat/change-props/{conversation_id}',
+	'controller'  => 'AgentBundle:UserChat:changeProperties',
 ));
 
-$collection->add('agent_userchat_end', new Route(
-	'/chat/end-chat/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:endChat'),
-	array(),
-	array()
+$collection->create('agent_userchat_getsectiondata', array(
+	'path'        => '/chat/get-section-data.json',
+	'controller'  => 'AgentBundle:UserChat:getSectionData',
 ));
 
-$collection->add('agent_userchat_leave', new Route(
-	'/chat/leave/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:leaveChat'),
-	array(),
-	array()
+$collection->create('agent_usertrack_winheadertable', array(
+	'path'        => '/user-track/win-header-table.html',
+	'controller'  => 'AgentBundle:UserTrack:winHeaderTable',
 ));
 
-$collection->add('agent_userchat_invite', new Route(
-	'/chat/invite/{conversation_id}/{agent_id}',
-	array('_controller' => 'AgentBundle:UserChat:sendInvite'),
-	array(),
-	array()
+$collection->create('agent_usertrack_view', array(
+	'path'          => '/user-track/{visitor_id}',
+	'controller'    => 'AgentBundle:UserTrack:view',
+	'requirements'  => array('visitor_id' => '\\d+'),
+	'methods'       => array('GET'),
 ));
 
-$collection->add('agent_userchat_changeprop', new Route(
-	'/chat/change-props/{conversation_id}',
-	array('_controller' => 'AgentBundle:UserChat:changeProperties'),
-	array(),
-	array()
+$collection->create('agent_mediamanager', array(
+	'path'        => '/media-manager',
+	'controller'  => 'AgentBundle:MediaManager:window',
 ));
 
-$collection->add('agent_userchat_getsectiondata', new Route(
-	'/chat/get-section-data.json',
-	array('_controller' => 'AgentBundle:UserChat:getSectionData'),
-	array(),
-	array()
+$collection->create('agent_mediamanager_upload', array(
+	'path'        => '/media-manager/upload',
+	'controller'  => 'AgentBundle:MediaManager:upload',
 ));
 
-################################################################################
-# User Tracking
-################################################################################
+$collection->create('agent_mediamanager_browse', array(
+	'path'        => '/media-manager/browse',
+	'controller'  => 'AgentBundle:MediaManager:browse',
+));
 
-$collection->add('agent_usertrack_winheadertable', new Route(
-	'/user-track/win-header-table.html',
-	array('_controller' => 'AgentBundle:UserTrack:winHeaderTable'),
-	array(),
-	array()
+$collection->create('agent_textsnippets_widget_shell', array(
+	'path'        => '/text-snippets/{typename}/widget-shell.txt',
+	'controller'  => 'AgentBundle:TextSnippets:getWidgetShell',
 ));
 
-$collection->add('agent_usertrack_view', new Route(
-	'/user-track/{visitor_id}',
-	array('_controller' => 'AgentBundle:UserTrack:view'),
-	array('visitor_id' => '\d+', '_method' => 'GET'),
-	array()
+$collection->create('agent_textsnippets_reloadclient', array(
+	'path'        => '/text-snippets/{typename}/reload-client.json',
+	'controller'  => 'AgentBundle:TextSnippets:reloadClient',
 ));
 
-################################################################################
-# Media Manager
-################################################################################
+$collection->create('agent_textsnippets_reloadclient_batch', array(
+	'path'        => '/text-snippets/{typename}/reload-client/{batch}.json',
+	'controller'  => 'AgentBundle:TextSnippets:reloadClientBatch',
+));
 
-$collection->add('agent_mediamanager', new Route(
-	'/media-manager',
-	array('_controller' => 'AgentBundle:MediaManager:window'),
-	array(),
-	array()
+$collection->create('agent_textsnippets_filtersnippets', array(
+	'path'        => '/text-snippets/{typename}/filter.json',
+	'controller'  => 'AgentBundle:TextSnippets:filterSnippets',
 ));
 
-$collection->add('agent_mediamanager_upload', new Route(
-	'/media-manager/upload',
-	array('_controller' => 'AgentBundle:MediaManager:upload'),
-	array(),
-	array()
+$collection->create('agent_textsnippets_getsnippet', array(
+	'path'        => '/text-snippets/{typename}/{id}.json',
+	'controller'  => 'AgentBundle:TextSnippets:getSnippet',
 ));
 
-$collection->add('agent_mediamanager_browse', new Route(
-	'/media-manager/browse',
-	array('_controller' => 'AgentBundle:MediaManager:browse'),
-	array(),
-	array()
+$collection->create('agent_textsnippets_savesnippet', array(
+	'path'        => '/text-snippets/{typename}/{id}/save.json',
+	'controller'  => 'AgentBundle:TextSnippets:saveSnippet',
 ));
 
-################################################################################
-# Text Snippets
-################################################################################
+$collection->create('agent_textsnippets_delsnippet', array(
+	'path'        => '/text-snippets/{typename}/{id}/delete.json',
+	'controller'  => 'AgentBundle:TextSnippets:deleteSnippet',
+));
 
-$collection->add('agent_textsnippets_widget_shell', new Route(
-	'/text-snippets/{typename}/widget-shell.txt',
-	array('_controller' => 'AgentBundle:TextSnippets:getWidgetShell'),
-	array(),
-	array()
+$collection->create('agent_textsnippets_savecat', array(
+	'path'        => '/text-snippets/{typename}/categories/{id}/save.json',
+	'controller'  => 'AgentBundle:TextSnippets:saveCategory',
 ));
 
-$collection->add('agent_textsnippets_reloadclient', new Route(
-	'/text-snippets/{typename}/reload-client.json',
-	array('_controller' => 'AgentBundle:TextSnippets:reloadClient'),
-	array(),
-	array()
+$collection->create('agent_textsnippets_delcat', array(
+	'path'        => '/text-snippets/{typename}/categories/{id}/delete.json',
+	'controller'  => 'AgentBundle:TextSnippets:deleteCategory',
 ));
 
-$collection->add('agent_textsnippets_reloadclient_batch', new Route(
-	'/text-snippets/{typename}/reload-client/{batch}.json',
-	array('_controller' => 'AgentBundle:TextSnippets:reloadClientBatch'),
-	array(),
-	array()
+$collection->create('agent_apps_run', array(
+	'path'          => '/apps/{app_id}/{action}',
+	'defaults'      => array('action' => 'default'),
+	'controller'    => 'AgentBundle:Apps:run',
+	'requirements'  => array('app_id' => '\\d+'),
 ));
 
-$collection->add('agent_textsnippets_filtersnippets', new Route(
-	'/text-snippets/{typename}/filter.json',
-	array('_controller' => 'AgentBundle:TextSnippets:filterSnippets'),
-	array(),
-	array()
+$collection->create('jira_widget', array(
+	'path'          => '/jira/widget/{ticket_id}',
+	'controller'    => 'AgentBundle:Jira:widget',
+	'defaults'		=> array('ticket_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_textsnippets_getsnippet', new Route(
-	'/text-snippets/{typename}/{id}.json',
-	array('_controller' => 'AgentBundle:TextSnippets:getSnippet'),
-	array(),
-	array()
+$collection->create('jira_export', array(
+	'path'          => '/jira/export/{ticket_id}',
+	'controller'    => 'AgentBundle:Jira:export',
+	'defaults'		=> array('ticket_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_textsnippets_savesnippet', new Route(
-	'/text-snippets/{typename}/{id}/save.json',
-	array('_controller' => 'AgentBundle:TextSnippets:saveSnippet'),
-	array(),
-	array()
+$collection->create('jira_unlink', array(
+	'path'          => '/jira/unlink/{ticket_id}/{issue_id}',
+	'controller'    => 'AgentBundle:Jira:unlink',
+	'defaults'		=> array('ticket_id' => '-1', 'issue_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+', 'issue_id' => '\\d+'),
 ));
 
-$collection->add('agent_textsnippets_delsnippet', new Route(
-	'/text-snippets/{typename}/{id}/delete.json',
-	array('_controller' => 'AgentBundle:TextSnippets:deleteSnippet'),
-	array(),
-	array()
+$collection->create('jira_lookup', array(
+	'path'          => '/jira/lookup',
+	'controller'    => 'AgentBundle:Jira:lookup',
 ));
 
-$collection->add('agent_textsnippets_savecat', new Route(
-	'/text-snippets/{typename}/categories/{id}/save.json',
-	array('_controller' => 'AgentBundle:TextSnippets:saveCategory'),
-	array(),
-	array()
+$collection->create('jira_associated_issues', array(
+	'path'          => '/jira/issue/{ticket_id}',
+	'controller'    => 'AgentBundle:Jira:getAssociatedIssues',
+	'defaults'		=> array('ticket_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-$collection->add('agent_textsnippets_delcat', new Route(
-	'/text-snippets/{typename}/categories/{id}/delete.json',
-	array('_controller' => 'AgentBundle:TextSnippets:deleteCategory'),
-	array(),
-	array()
+$collection->create('jira_fetchcomments', array(
+	'path'          => '/jira/issue/{ticket_id}/fetchcomments',
+	'controller'    => 'AgentBundle:Jira:getComments',
+	'defaults'		=> array('ticket_id' => '-1'),
+	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
-################################################################################
-# Plugins
-################################################################################
+$collection->create('jira_fetchallcomments', array(
+	'path'          => '/jira/fetchcomments',
+	'controller'    => 'AgentBundle:Jira:fetchAllComment',
+));
 
-$collection->add('agent_plugins_run', new Route(
-	'/plugins/{plugin_id}/run/{action}',
-	array('_controller' => 'AgentBundle:Plugins:run'),
-	array(),
-	array()
+$collection->create('jira_post_comment', array(
+	'path'          => '/jira/{issue_id}/comment',
+	'controller'    => 'AgentBundle:Jira:postComment',
+	'defaults'		=> array('issue_id' => '-1'),
+	'requirements'  => array('issue_id' => '\\d+'),
 ));
 
 return $collection;

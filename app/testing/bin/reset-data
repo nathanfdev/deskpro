@@ -1,0 +1,52 @@
+#!/usr/bin/env php
+<?php
+define('DP_BOOT_MODE', 'testing');
+require(__DIR__. '/../../../index.php');
+require(__DIR__. '/../src/DpTestEnv.php');
+DpTestEnv::init();
+
+$db = DpTestEnv::getContainer()->getDb();
+$db_names = $db->fetchAllCol("SHOW DATABASES");
+$db_names[] = DP_DATABASE_NAME;
+
+foreach ($db_names as $db_name) {
+	if (strpos($db_name, 'dp_test_') === 0) {
+		echo "DROP DATABASE $db_name ... ";
+		$db->exec("DROP DATABASE IF EXISTS $db_name");
+		echo "Done\n";
+	}
+}
+
+echo "Removing testing/data/dbset-cache ... ";
+$db_set_cache = DP_ROOT.'/testing/data/dbset-cache';
+`rm -rf $db_set_cache`;
+echo "Done\n";
+
+echo "Removing testing/logs ... ";
+$logs_dir = DP_ROOT.'/testing/logs';
+`rm -rf $logs_dir`;
+`mkdir $logs_dir`;
+`chmod 0755 $logs_dir`;
+echo "Done\n";
+
+echo "Installing FreshDb into " . DP_DATABASE_NAME . " ... ";
+
+unset($GLOBALS['DP_TESTING_USEDB']);
+$db->exec("CREATE DATABASE IF NOT EXISTS " . DP_DATABASE_NAME);
+
+require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
+require_once(DP_ROOT . '/testing/data/DpDbSets/FreshDb.php');
+$set = new \DpDbSets\FreshDb(\DpTestEnv::getContainer());
+
+$cache_path = DP_ROOT.'/testing/data/dbset-cache';
+if (!is_dir($cache_path)) {
+	mkdir($cache_path, 0777, true);
+	chmod($cache_path, 0777);
+}
+$set->enableCache(
+	$cache_path,
+	'mysql',
+	'mysqldump'
+);
+$set->install(true);
+echo " Done\n";

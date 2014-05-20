@@ -1,0 +1,102 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/Main/DataService/Base', 'Admin/Main/Model/Base', 'Admin/Main/Collection/OrderedDictionary'], function(Admin_Main_DataService_Base, Admin_Main_Model_Base, Admin_Main_Collection_OrderedDictionary) {
+    var Admin_TicketAccounts_DataService_TicketAccounts;
+    return Admin_TicketAccounts_DataService_TicketAccounts = (function(_super) {
+      __extends(Admin_TicketAccounts_DataService_TicketAccounts, _super);
+
+      function Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q) {
+        Admin_TicketAccounts_DataService_TicketAccounts.__super__.constructor.call(this, em);
+        this.$q = $q;
+        this.Api = Api;
+        this.loadListPromise = null;
+        this.recs = new Admin_Main_Collection_OrderedDictionary();
+      }
+
+
+      /**
+      		* Loads list of accounts
+        	*
+        	* @return {Promise}
+       */
+
+      Admin_TicketAccounts_DataService_TicketAccounts.prototype.loadList = function(reload) {
+        var deferred, http_def;
+        if (this.loadListPromise) {
+          return this.loadListPromise;
+        }
+        deferred = this.$q.defer();
+        if (!reload && this.recs.count()) {
+          deferred.resolve(this.recs);
+          return deferred.promise;
+        }
+        http_def = this.Api.sendGet('/email_accounts').success((function(_this) {
+          return function(data, status, headers, config) {
+            _this._setListData(data.email_accounts);
+            return deferred.resolve(_this.recs);
+          };
+        })(this), function(data, status, headers, config) {
+          return deferred.reject();
+        });
+        this.loadListPromise = deferred.promise;
+        return this.loadListPromise;
+      };
+
+      Admin_TicketAccounts_DataService_TicketAccounts.prototype.remove = function(id) {
+        this.recs.remove(id);
+        return this.em.removeById('ticket_account', 'id');
+      };
+
+      Admin_TicketAccounts_DataService_TicketAccounts.prototype._setListData = function(raw_recs) {
+        var model, rec, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = raw_recs.length; _i < _len; _i++) {
+          rec = raw_recs[_i];
+          model = this.em.createEntity('ticket_account', 'id', rec);
+          model.retain();
+          _results.push(this.recs.set(model.id, model));
+        }
+        return _results;
+      };
+
+
+      /*
+        	 * Updates the first-class model (title, etc)
+        	 * with account provided. Or adds it to the list if it doesnt exist.
+       */
+
+      Admin_TicketAccounts_DataService_TicketAccounts.prototype.updateModel = function(account) {
+        var new_model;
+        new_model = this.em.createEntity('ticket_account', 'id', account);
+        this.recs.set(new_model.id, new_model);
+        return new_model;
+      };
+
+
+      /**
+      		* Adds a new model to the existing list (eg was just created)
+        	*
+        	* @return {Admin_Main_Model_Base}
+       */
+
+      Admin_TicketAccounts_DataService_TicketAccounts.prototype.addToList = function(rec) {
+        var model;
+        if (!rec._is_model) {
+          model = this.em.createEntity('ticket_account', 'id', dep);
+        } else {
+          model = this.em.add(rec, true);
+        }
+        this.recs.set(model.id, model);
+        return model;
+      };
+
+      return Admin_TicketAccounts_DataService_TicketAccounts;
+
+    })(Admin_Main_DataService_Base);
+  });
+
+}).call(this);
+
+//# sourceMappingURL=TicketAccounts.js.map

@@ -1,0 +1,68 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'layout:top'|murmurhash") }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'layout:top'}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">Layout (Header, footer, CSS)</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>User Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="info in ListCtrl.templateInfo.user.groups" dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'user:' + info.groupId|murmurhash") }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'user:' + info.groupId}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">{{ ng_var('info.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Agent Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="info in ListCtrl.templateInfo.agent.groups" dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'agent:' + info.groupId|murmurhash") }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'agent:' + info.groupId}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">{{ ng_var('info.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Customize the automatic notification emails sent out to agents and users by editing these templates.</h1>
+		<p>Changes to the header, footer and CSS templates apply to all emails.</p>
+	</header>
+	<article>
+		<section>
+			<h2><span>Related Knowledgebase articles</span></h2>
+			<p><a href="https://support.deskpro.com/kb/articles/162-removing-links-to-the-deskpro-portal-from-email-notifications" target="_blank">Removing links to the DeskPRO Portal from email notifications</a></p>
+		</section>
+	</article>
+{% endblock %}

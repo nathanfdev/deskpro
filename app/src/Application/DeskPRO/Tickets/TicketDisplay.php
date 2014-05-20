@@ -34,8 +34,9 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\People\PersonContextInterface;
 
 class TicketDisplay implements PersonContextInterface
@@ -55,10 +56,17 @@ class TicketDisplay implements PersonContextInterface
 
 	protected $user_ratings;
 
+	protected $ignore_attachments = array();
+
 	public function __construct(Ticket $ticket, Person $person)
 	{
 		$this->ticket = $ticket;
 		$this->setPersonContext($person);
+	}
+
+	public function setIgnoreAttachment(TicketAttachment $a)
+	{
+		$this->ignore_attachments[$a->id] = $a;
 	}
 
 	public function setPersonContext(Person $person, $set_type = null)
@@ -184,7 +192,9 @@ class TicketDisplay implements PersonContextInterface
 
 		$ret = array();
 		foreach ($messagetoattach[$id] as $aid) {
-			$ret[$aid] = $this->attachments[$aid];
+			if (!isset($this->ignore_attachments[$aid])) {
+				$ret[$aid] = $this->attachments[$aid];
+			}
 		}
 
 		return $ret;

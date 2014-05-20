@@ -35,21 +35,16 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Comments\NewCommentFormType;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-
-use Application\UserBundle\Form\NewFeedbackType;
-use Application\DeskPRO\Comments\NewCommentFormType;
-
+use Application\DeskPRO\Feedback\FeedbackCollection;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\FacebookLike;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-
-use Application\DeskPRO\Feedback\FeedbackCollection;
+use Application\UserBundle\Form\NewFeedbackType;
+use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 class FeedbackController extends AbstractController
 {
@@ -236,8 +231,8 @@ class FeedbackController extends AbstractController
 				$validator->setCaptcha($captcha);
 			}
 
-			$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
-			$form->bindRequest($this->get('request'));
+			$newfeedback->custom_fields = $this->in->getRaw('feedback_custom_fields');
+			$form->handleRequest($this->get('request'));
 
 			// Try to set a default name from usersource
 			// This allows sites that user usersources to edit the template to remove the 'name' field
@@ -267,7 +262,7 @@ class FeedbackController extends AbstractController
 				App::getSession()->set('submitted_feedback', $submitted_feedback);
 				App::getSession()->save();
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 				if ($newfeedback->require_login) {
 					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback->id))));
@@ -318,7 +313,7 @@ class FeedbackController extends AbstractController
 		));
 	}
 
-		/**
+	/**
 	 * View an feedback
 	 *
 	 * @param  $feedback_id
@@ -359,7 +354,7 @@ class FeedbackController extends AbstractController
 			$this->em->flush();
 			$this->em->commit();
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		}
 
 		if ($this->request->isXmlHttpRequest()) {
@@ -404,7 +399,7 @@ class FeedbackController extends AbstractController
 
 			$this->em->getConnection()->commit();
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
 			throw $e;
@@ -561,7 +556,7 @@ class FeedbackController extends AbstractController
 				));
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {
 				$this->session->setFlash('comment_error', $validator->getErrors(true));
@@ -573,7 +568,7 @@ class FeedbackController extends AbstractController
 			if ($form->isValid() && !$validator->checkDupe($new_comment)) {
 				$comment = $new_comment->save();
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 				if ($new_comment->require_login) {
 					return $this->redirectRoute('user_newcomment_finishlogin', array(

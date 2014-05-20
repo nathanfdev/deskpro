@@ -1,0 +1,297 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Import CSV File</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<div ng-show="!processStarted">
+				<h4>Choose CSV File</h4>
+
+				<form id="fileupload"
+					  method="POST"
+					  enctype="multipart/form-data"
+					  file-upload="fileUploadOptions"
+					  action="{{ ng_var('fileUploadOptions.url') }}">
+
+					<div class="fileinput-button btn btn-success" ng-show="!active() && !fileSelected">
+						<span>Select CSV File</span>
+						<input type="file" name="file">
+					</div>
+
+					<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
+
+					<div class="pull-left" ng-show="!active() && fileSelected">
+						<button type="button" class="btn btn-warning" ng-click="submit();queue=[];">
+							<span>Click here to upload file</span>
+						</button>
+					</div>
+
+					<div class="pull-left file-upload-cancel" ng-show="!active() && fileSelected">
+						<a href="#" class="file-upload-cancel" ng-click="$event.preventDefault();">cancel</a>
+					</div>
+
+					<div class="clearfix"></div>
+
+					<div class="file-upload-progress-block" ng-show="active() && fileSelected">
+						<div class="progress progress-striped active" file-upload-progress="progress()">
+							<div class="progress-bar progress-bar-success"
+								 ng-style="{width: num + '%'}"></div>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<article class="padd" ng-if="importStarted">
+				<div class="well success-message">
+					Your CSV import request has been started. The records will be imported in the background even if you
+					are not connected.
+					<br><br>
+					The current status will be updated here periodically:
+
+					<span dp-status-update="/import_csv_status"
+						  status-update-conditions="importStarted"
+						  status-update-default-message="Waiting to start..."
+						  status-update-completed-growl-message="CSV Import finished"
+						  status-update-interval="8000"
+						  status-update-immediate="false"
+						  style="font-style:italic;">
+					</span>
+				</div>
+			</article>
+
+			<div class="well danger-message upload-message" ng-if="importErrors.no_move">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				Problems with uploaded file appeared. Please, refresh the page and try again.
+			</div>
+
+			<div class="well danger-message upload-message" ng-if="importErrors.no_email">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				You must select a field that maps to the primary email.
+			</div>
+
+			<div dp-show-spinning="saving">
+				<br><i class="spinner-flat"></i>
+			</div>
+
+			<div ng-if="fileUploadResults && !fileUploadResults.upload_failed && !importStarted" dp-hide-spinning="saving">
+				<h4>Configure Importing:</h4>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>
+								Column Name
+							</th>
+							<th>
+								Example Data
+							</th>
+							<th>
+								Mapping Field
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="(column_id, column_title) in fileUploadResults.columns">
+							<td class="alt dp-id-col">
+								{{ ng_var('column_title') }}
+							</td>
+							<td  class="alt dp-id-col">
+								{{ ng_var('fileUploadResults.examples[column_id]') }}
+							</td>
+							<td>
+								<select
+									ui-select2
+									ng-model="importSettings.fieldMappings[column_id]"
+									style="min-width: 240px"
+									class="no-search"
+									ng-change="Ctrl.selectMapping(column_id, importSettings.fieldMappings[column_id])"
+								>
+									<option value="">Do Not Map</option>
+									<optgroup label="Basic Information">
+										<option value="first_name">First Name</option>
+										<option value="last_name">Last Name</option>
+										<option value="name">Name</option>
+										<option value="title_prefix">Title (Mr., Mrs., etc.)</option>
+										<option value="primary_email">Primary Email</option>
+										<option value="secondary_email">Secondary Email</option>
+										<option value="password">Password</option>
+										<option value="organization">Organization</option>
+										<option value="organization_position">Organization Position</option>
+									</optgroup>
+									<optgroup label="Contact Details">
+										<option value="phone">Phone Number</option>
+										<option value="website">Website URL</option>
+										<option value="im">IM</option>
+										<option value="twitter">Twitter</option>
+										<option value="linkedin">LinkedIn</option>
+										<option value="facebook">Facebook</option>
+										<option value="address1">Address Line 1</option>
+										<option value="address2">Address Line 2</option>
+										<option value="city">City</option>
+										<option value="state">State</option>
+										<option value="post_code">Post Code</option>
+										<option value="country">Country</option>
+									</optgroup>
+									<optgroup label="Custom Fields">
+										<option ng-repeat="field in fileUploadResults.custom_fields"
+												ng-value="field.id">
+											{{ ng_var('field.title') }}
+										</option>
+										<option value="new_custom">New Custom Field</option>
+									</optgroup>
+								</select>
+								<span ng-if="importSettings.showExtraMappings.organization[column_id]">
+									<label>
+										<input type="checkbox"
+											   ng-model="importSettings.additionalMappings[column_id].create_auto" value="1"
+											   checked="checked">
+										Create if does not exist
+									</label>
+								</span>
+								<span ng-if="importSettings.showExtraMappings.phone[column_id]">
+									<select
+										ui-select2
+										ng-model="importSettings.additionalMappings[column_id].type"
+										style="min-width: 120px"
+										class="no-search"
+									>
+										<option value="phone">Phone</option>
+										<option value="mobile">Mobile</option>
+										<option value="fax">Fax</option>
+									</select>
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.website[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.im[column_id]">
+									<select
+										ui-select2
+										ng-model="importSettings.additionalMappings[column_id].type"
+										style="min-width: 120px"
+										class="no-search"
+									>
+										<option value="aim">AIM</option>
+										<option value="msn">MSN</option>
+										<option value="yim">YIM</option>
+										<option value="icq">ICQ</option>
+										<option value="skype">Skype</option>
+										<option value="gtalk">GTalk</option>
+										<option value="other">Other</option>
+									</select>
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.twitter[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+										placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.linkedin[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+										   placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.facebook[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.address1[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.address2[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.city[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.state[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.post_code[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.country[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+											placeholder="Label">
+								</span>
+								<span ng-if="importSettings.showExtraMappings.new_custom[column_id]">
+									<input type="text" ng-model="importSettings.additionalMappings[column_id].title"
+											placeholder="Title">
+									<select
+										ui-select2
+										ng-model="importSettings.additionalMappings[column_id].handler_class"
+										style="min-width: 120px"
+										class="no-search"
+									>
+										<option value="Application\DeskPRO\CustomFields\Handler\Text">
+											Text
+										</option>
+										<option value="Application\DeskPRO\CustomFields\Handler\Textarea">
+											Textarea
+										</option>
+										<option value="Application\DeskPRO\CustomFields\Handler\Choice">
+											Choice
+										</option>
+										<option value="Application\DeskPRO\CustomFields\Handler\Date">
+											Date
+										</option>
+									</select>
+								</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="clearfix"></div>
+				<div class="inner-group">
+					<label style="font-weight: normal; display: block;">
+						<input type="radio" ng-model="importSettings.skipFirst" value="1">
+						Skip the first row <br>
+						This should be selected if the "column name" values above contain labels rather than
+						actual data.
+					</label>
+					<label style="font-weight: normal; display: block;">
+						<input type="radio" ng-model="importSettings.skipFirst" value="0">
+						Import the first row <br>
+						This should be selected if the "column name" values above contain actual data.
+					</label>
+				</div>
+				<div class="clearfix"></div>
+				<button type="button" class="btn btn-success" ng-click="Ctrl.startImport()">
+					<span>Click here to start Import</span>
+				</button>
+			</div>
+
+			<div class="well danger-message upload-message"
+				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'no_file'">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				Problems with uploaded file appeared. No file was provided, please re-upload file.
+			</div>
+
+			<div class="well danger-message upload-message"
+				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'no_move'">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				Problems with uploaded file appeared. Can't move file, check write permissions please.
+			</div>
+
+			<div class="well danger-message upload-message"
+				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'not_csv'">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				Problems with uploaded file appeared.
+				It doesn't have CSV format, please re-upload file in appropriate format.
+			</div>
+
+		</article>
+
+	</section>
+{% endblock %}

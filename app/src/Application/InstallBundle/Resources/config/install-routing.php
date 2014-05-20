@@ -1,99 +1,77 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->add('install_checks', new Route(
-	'/server-checks',
-	array('_controller' => 'InstallBundle:Install:index'),
-	array(),
-	array()
+$collection->create('install_checks', array(
+	'path'        => '/server-checks',
+	'controller'  => 'InstallBundle:Install:index',
 ));
 
-$collection->add('install_check_urls', new Route(
-	'/url-rewriting-check',
-	array('_controller' => 'InstallBundle:Install:installRewriteCheck'),
-	array(),
-	array()
+$collection->create('install_check_urls', array(
+	'path'        => '/url-rewriting-check',
+	'controller'  => 'InstallBundle:Install:installRewriteCheck',
 ));
 
-$collection->add('install_license', new Route(
-	'/',
-	array('_controller' => 'InstallBundle:Install:license'),
-	array(),
-	array()
+$collection->create('install_license', array(
+	'path'        => '/',
+	'controller'  => 'InstallBundle:Install:license',
 ));
 
-$collection->add('install_configedit', new Route(
-	'/config-editor',
-	array('_controller' => 'InstallBundle:Install:configEditor'),
-	array(),
-	array()
+$collection->create('install_configedit', array(
+	'path'        => '/config-editor',
+	'controller'  => 'InstallBundle:Install:configEditor',
 ));
 
-$collection->add('install', new Route(
-	'/',
-	array('_controller' => 'InstallBundle:Install:license'),
-	array(),
-	array()
+$collection->create('install', array(
+	'path'        => '/',
+	'controller'  => 'InstallBundle:Install:license',
 ));
 
-$collection->add('install_verify_files', new Route(
-	'/verify-files',
-	array('_controller' => 'InstallBundle:Install:verifyFiles'),
-	array(),
-	array()
+$collection->create('install_verify_files', array(
+	'path'        => '/verify-files',
+	'controller'  => 'InstallBundle:Install:verifyFiles',
 ));
 
-$collection->add('install_verify_files_do', new Route(
-	'/verify-files/do/{batch}',
-	array('_controller' => 'InstallBundle:Install:doVerifyFiles', 'batch' => 0),
-	array(),
-	array()
+$collection->create('install_verify_files_do', array(
+	'path'        => '/verify-files/do/{batch}',
+	'controller'  => 'InstallBundle:Install:doVerifyFiles',
+	'defaults'    => array('batch' => 0),
 ));
 
-$collection->add('install_create_tables', new Route(
-	'/install-database',
-	array('_controller' => 'InstallBundle:Install:createTables'),
-	array(),
-	array()
+$collection->create('install_create_tables', array(
+	'path'        => '/install-database',
+	'controller'  => 'InstallBundle:Install:createTables',
 ));
 
-$collection->add('install_create_tables_do', new Route(
-	'/install-database/do/{batch}',
-	array('_controller' => 'InstallBundle:Install:doCreateTables', 'batch' => 0),
-	array(),
-	array()
+$collection->create('install_create_tables_do', array(
+	'path'        => '/install-database/do/{batch}',
+	'controller'  => 'InstallBundle:Install:doCreateTables',
+	'defaults'    => array('batch' => 0),
 ));
 
-$collection->add('install_install_data', new Route(
-	'/install-data',
-	array('_controller' => 'InstallBundle:Install:installData'),
-	array(),
-	array()
+$collection->create('install_install_data', array(
+	'path'        => '/install-data',
+	'controller'  => 'InstallBundle:Install:installData',
 ));
 
-$collection->add('install_install_data_save', new Route(
-	'/install-data/save',
-	array('_controller' => 'InstallBundle:Install:installDataSave'),
-	array(),
-	array()
+$collection->create('install_install_data_save', array(
+	'path'        => '/install-data/save',
+	'controller'  => 'InstallBundle:Install:installDataSave',
 ));
 
-$collection->add('install_install_done', new Route(
-	'/install-done',
-	array('_controller' => 'InstallBundle:Install:installDone'),
-	array(),
-	array()
+$collection->create('install_install_done', array(
+	'path'        => '/install-done',
+	'controller'  => 'InstallBundle:Install:installDone',
 ));
 
-$collection->add('install_send_install_report_error', new Route(
-	'/install-report-error',
-	array('_controller' => 'InstallBundle:Install:sendInstallReportError'),
-	array(),
-	array()
+$collection->create('install_send_install_report_error', array(
+	'path'        => '/install-report-error',
+	'controller'  => 'InstallBundle:Install:sendInstallReportError',
 ));
 
 return $collection;

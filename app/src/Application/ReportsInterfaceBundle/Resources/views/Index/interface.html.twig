@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>{{ phrase('admin.general.deskpro_reports_interface') }}</title>
+	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+
+	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/bower_components/select2/select2.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/build/Reports/css/reports-style.css') }}"/>
+</head>
+<body>
+
+<header class="dp-app-header">
+	<div class="user-profile pull-left">
+		<img class="gravatar pull-left" src="{{ app.user.getPictureUrl(32) }}">
+		<div class="username">{{ phrase('agent.chrome.hello-user', {name: app.user.name}) }}</div>
+		<ul class="nav-profile">
+			<li id="user_settings_link"><i class="fa fa-cog"></i> <a>{{ phrase('agent.chrome.link_preferences') }}</a></li>
+			<li id="dp_header_help_trigger"><i class="fa fa-question-circle"></i> <a>{{ phrase('agent.chrome.link_help') }}</a></li>
+			<li onclick="window.location='{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent'; return false;"><i class="fa fa-sign-out"></i> <a>{{ phrase('agent.chrome.link_logout') }}</a></li>
+		</ul>
+	</div>
+
+	<div class="group pull-right">
+		<a href="http://www.deskpro.com/" target="_blank" class="logo"></a>
+	</div>
+</header>
+
+<div id="dp_main_view" ng-controller="Reports_Main_Ctrl_MainPage">
+	<!-- Left Navigation Column -->
+	<nav class="dp-appstrip">
+		<ul>
+			<li tooltip="Overview" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="home" class="state-on">
+				<a href="#/"><i class="app-icon app-icon-home"></i></a>
+			</li>
+			<li tooltip="Report Builder" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="builder">
+				<a href="#/builder"><i class="app-icon app-icon-reports-builder"></i></a>
+			</li>
+			<li tooltip="Billing" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="billing">
+				<a href="#/billing"><i class="app-icon app-icon-reports-billing"></i></a>
+			</li>
+			<li tooltip="Agent Activity" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="agent_activity">
+				<a href="#/agent_activity"><i class="app-icon app-icon-reports-agentactivity"></i></a>
+			</li>
+			<li tooltip="Agent Hours" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="agent_hours">
+				<a href="#/agent_hours"><i class="app-icon app-icon-reports-agenthours"></i></a>
+			</li>
+			<li tooltip="Ticket Satisfaction" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="ticket_satisfaction">
+				<a href="#/ticket_satisfaction"><i class="app-icon app-icon-reports-satisfaction"></i></a>
+			</li>
+		</ul>
+
+		<ul class="btm">
+			<li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="/{{ path('user')|trim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
+			</li>
+			<li class="section-on" tooltip="You are currently using the Reprots Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="#/"><i class="app-icon app-icon-reports-ifce"></i></a>
+			</li>
+			<li tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="/{{ path('user')|trim('/') }}admin/#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+			</li>
+			<li tooltip="Go to Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="/{{ path('user')|trim('/') }}admin/"><i class="app-icon app-icon-admin-ifce"></i></a>
+			</li>
+			<li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="{{ path('user') }}"><i class="app-icon app-icon-user-ifce"></i></a>
+			</li>
+		</ul>
+	</nav>
+	<div class="dp-layout">
+		<div class="dp-layout-app">
+			<div class="dp-layout-appbody" ui-view></div>
+		</div>
+	</div>
+</div>
+
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
+
+<script type="text/javascript">
+window.DP_ASSET_URL      = '{{ asset('') }}';
+window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
+window.DP_BASE_API_URL   = '{{ path('user')|rtrim('/') }}/api';
+window.DP_BASE_ADMIN_URL = '{{ path('user')|rtrim('/') }}/adm';
+window.DP_BASE_REPORTS_URL = '{{ path('reports')|rtrim('/') }}';
+window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
+window.DP_SESSION_ID     = '{{ session.session_code }}';
+window.DP_REQUEST_TOKEN  = '{{ initial_request_token }}';
+window.DP_PERSON_ID      = '{{ app.user.id }}';
+window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
+window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
+window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
+window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
+window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
+</script>
+{{ js_error_tracking('reports_interface') }}
+<script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
+<script	type="text/javascript" src="{{ asset('app/Reports/amcharts27.js') }}"></script>
+<script type="text/javascript">window.DP_INTERFACE_LOADER = 'ReportsLoad';</script>
+<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
+</body>
+</html>

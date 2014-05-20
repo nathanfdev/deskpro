@@ -35,32 +35,38 @@
 
 namespace Application\DeskPRO\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Application\DeskPRO\App;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TestCommand extends ContainerAwareCommand
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function configure()
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
+		$this->setName('dp:test');
 	}
 
+
+	/**
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return parent::getContainer();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo __FILE__;
+		echo DP_ROOT;
 		echo "\n";
-		exit;
+		return 0;
 	}
 }

@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PortalPageDisplay;
 
 class KbCatList extends PortalItemAbstract implements CacheableItem
 {

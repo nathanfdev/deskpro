@@ -36,8 +36,8 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\TwitterAccountSearch;
 use Application\DeskPRO\Entity\TwitterAccount;
+use Application\DeskPRO\Entity\TwitterAccountSearch;
 
 /**
  * Handles creating/editing of Twitter Accounts

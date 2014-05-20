@@ -34,9 +34,8 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Application\DeskPRO\Entity;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
@@ -136,19 +135,10 @@ class PersonFromEmailProcessor
 		$email->setEmail($from->getEmail());
 		$email->person = $person;
 
-		if (!$do_validated) {
-			// If not explicitly validated, then they arent valdiated
-			// The validated flag is switched on NewTicketAction if validation
-			// is not required. Its like this so triggers can affect the validation setting.
-			$email->is_validated = false;
-			$person->is_confirmed = false;
-			$person->getChangeTracker()->recordExtra('email_validating', $from->getEmail());
-		} else {
-			$email->is_validated = true;
-			$person->is_confirmed = true;
-		}
+		$email->is_validated = true;
+		$person->is_confirmed = true;
 
-		if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+		if (App::getSetting('core.agent_validation')) {
 			$person->is_agent_confirmed = false;
 		}
 

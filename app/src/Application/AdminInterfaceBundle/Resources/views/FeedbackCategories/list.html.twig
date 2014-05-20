@@ -1,0 +1,54 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="display_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i>{{ phrase('agent.general.saved') }}</span>
+			</nav>
+
+			<h3 ng-pluralize count="FeedbackCategoriesList.feedback_categories.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_categories') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="FeedbackCategoriesList.sortedListOptions">
+				<li class="with-drag-handle" ng-repeat="category in FeedbackCategoriesList.parent_data" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('category.id') }}" data-id="{{ ng_var('category.id') }}">
+					<a href="{{ ng_href('portal.feedback_categories.edit', '{id: category.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<h4><span class="title-text">{{ ng_var('category.title') }}</span></h4>
+					</a>
+					<ul class="dp-item-list sublist" ng-if="FeedbackCategoriesList.child_data[category.id]" ui-sortable="FeedbackCategoriesList.sortedListOptions">
+						<li class="with-drag-handle" ng-repeat="sub_category in FeedbackCategoriesList.child_data[category.id]" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('sub_category.id') }}" data-id="{{ ng_var('sub_category.id') }}">
+							<a href="{{ ng_href('portal.feedback_categories.edit', '{id: sub_category.id}') }}">
+								<i class="fa fa-bars drag-handle"></i>
+								<h4>
+									<span class="tree-char middle" ng-if="!$last"></span>
+									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-text">{{ ng_var('sub_category.title') }}</span>
+								</h4>
+							</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('portal.feedback_categories.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
+			</div>
+		</article>
+	</section>
+	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Categories are an optional way to organize incoming feedback.</h1>
+		<p>If you enter categories, users will be required to select one when submitting feedback.</p>
+	</header>
+	<article>
+		<section>
+			<p>Examples of possible uses for the category field:</p>
+			<ul>
+				<li>Mobile/Desktop</li>
+				<li>Delivery/Set-up/Usage</li>
+				<li>US/Europe</li>
+			</ul>
+		</section>
+	</article>
+{% endblock %}

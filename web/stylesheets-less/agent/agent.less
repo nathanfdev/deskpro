@@ -1801,7 +1801,6 @@ em.counter, em.list-counter {
 #dp_nav_sections {
 	background-color: @agent_nav_bg_color;
 	border-right: 1px solid darken(@agent_nav_bg_color, 15%);
-	box-shadow: -2px -5px 4px darken(@agent_nav_bg_color, 10%) inset;
 	font-size: 10px;
 	left: 0;
 	overflow: hidden;
@@ -1826,155 +1825,191 @@ em.counter, em.list-counter {
 		right: 5px;
 		top: 10px;
 	}
+}
 
+//######################################################################################################################
+//# App Icons
+//######################################################################################################################
+
+@appIconBlockW: 55px;
+@appIconBlockH: 47px;
+@appIconImgW: 55px;
+@appIconImgH: 47px;
+.dp-appstrip {
+	overflow: hidden;
 	ul {
-		.pos-absolute(0, 0, 0, 0);
 		margin: 0;
 		padding: 0;
-	}
-
-	li {
-		background-position: repeat-y;
-		display: block;
-		width: 100%;
-		cursor: pointer;
-		padding: 1px 0 0 1px;
-		position: relative;
-
-		a {
-			color: #FFFFFF;
+		li {
+			padding: 0;
+			margin: 0;
+			list-style-type: none;
 			display: block;
-			padding: 5px 0 9px 0;
-			text-align: center;
+			border-top: 1px solid transparent;
+			border-bottom: 1px solid transparent;
 
-			span {
-				color: #C0C2CA;
+			a {
 				display: block;
-				font-weight: normal;
-				height: 45px;
-				width: 54px;
-				margin: 0;
-				margin-left: 1px;
-				padding: 0;
-				background-image: url('@{img_path}/agent/app-nav/navigation-icons.png');
+				width: @appIconBlockW;
+				height: @appIconBlockH;
+				overflow: hidden;
+				cursor: pointer;
+			}
+
+			i.app-icon {
+				display: block;
+				overflow: hidden;
+				width: @appIconImgW;
+				height: @appIconImgH;
+
+				background-position: 50% 50%;
 				background-repeat: no-repeat;
+				opacity: 0.75;
+			}
+
+			&:hover i.app-icon {
+				opacity: 1;
+			}
+
+			&.state-on, &.active, &.section-on {
+				background-color: #1D2022;
+				border-top: 1px solid #080909;
+				border-bottom: 1px solid #080909;
+				box-shadow: 0 0px 2px #080909;
+
+				i.app-icon {
+					opacity: 1;
+					-webkit-box-shadow: 0 0 2px 1px rgba(105,154,188,0.8);
+					box-shadow: 0 0 2px 1px rgba(105,154,188,0.8);
+				}
 			}
 		}
 	}
 
-	li.active{
-		background-color: #1f2225;
-		background-color: darken(@agent_nav_bg_color, 6%);
-		z-index: 999;
-		box-shadow: 0 -1px 1px darken(@agent_nav_bg_color, 15%);
-	}
-
-	li a span.ticketNavIcon { background-position: -1px 3px; }
-	li:hover a span.ticketNavIcon, li.active a span.ticketNavIcon { background-position: -1px -97px; }
-	li a span.chatNavIcon { background-position: -80px 0; }
-	li:hover a span.chatNavIcon, li.active a span.chatNavIcon { background-position: -80px -100px; }
-	li a span.peopleNavIcon { background-position: -161px 0; }
-	li:hover a span.peopleNavIcon, li.active a span.peopleNavIcon { background-position: -161px -100px; }
-	li a span.feedbackNavIcon { background-position: -239px 0; }
-	li:hover a span.feedbackNavIcon, li.active a span.feedbackNavIcon { background-position: -239px -100px; }
-	li a span.publishNavIcon { background-position: -317px 0; }
-	li:hover a span.publishNavIcon, li.active a span.publishNavIcon { background-position: -317px -100px; }
-	li a span.tasksNavIcon { background-position: -399px 0; }
-	li:hover a span.tasksNavIcon, li.active a span.tasksNavIcon { background-position: -399px -100px; }
-	li a span.twitterNavIcon { background-position: -478px 0; }
-	li:hover a span.twitterNavIcon, li.active a span.twitterNavIcon { background-position: -478px -100px; }
-	li a span.settingsNavIcon { background-position: -551px -1px; }
-	li:hover a span.settingsNavIcon, li.active a span.settingsNavIcon { background-position: -551px -101px; }
-	li a span.agentchatNavIcon { background-position: -629px 0; }
-	li:hover a span.agentchatNavIcon, li.active a span.agentchatNavIcon { background-position: -629px -100px; }
-	li a span.reportsNavIcon { background-position: -880px 0; }
-	li:hover a span.reportsNavIcon, li.active a span.reportsNavIcon { background-position: -880px -100px; }
-	li a span.billingNavIcon { background-position: -799px 0; }
-	li:hover a span.billingNavIcon, li.active a span.billingNavIcon { background-position: -799px -100px; }
-
-	ul.bottom {
+	ul.btm {
 		position: absolute;
-		bottom: 25px;
-		top: auto;
-	}
-}
-
-@media all and (max-height: 685px) {
-	#dp_nav_sections li a span {
-		height: 35px;
+		bottom: 20px;
+		width: @agent_nav_width;
+		overflow: hidden;
 	}
 
-	#dp_nav_sections {
-		li a span.ticketNavIcon { background-position: -1px 0px; }
-		li:hover a span.ticketNavIcon, li.active a span.ticketNavIcon { background-position: -1px -100px; }
-		li a span.chatNavIcon { background-position: -80px -4px; }
-		li:hover a span.chatNavIcon, li.active a span.chatNavIcon { background-position: -80px -104px; }
-		li a span.peopleNavIcon { background-position: -161px -4px; }
-		li:hover a span.peopleNavIcon, li.active a span.peopleNavIcon { background-position: -161px -104px; }
-		li a span.feedbackNavIcon { background-position: -239px -4px; }
-		li:hover a span.feedbackNavIcon, li.active a span.feedbackNavIcon { background-position: -239px -104px; }
-		li a span.publishNavIcon { background-position: -317px -4px; }
-		li:hover a span.publishNavIcon, li.active a span.publishNavIcon { background-position: -317px -104px; }
-		li a span.tasksNavIcon { background-position: -399px -4px; }
-		li:hover a span.tasksNavIcon, li.active a span.tasksNavIcon { background-position: -399px -104px; }
-		li a span.twitterNavIcon { background-position: -478px -4px; }
-		li:hover a span.twitterNavIcon, li.active a span.twitterNavIcon { background-position: -478px -104px; }
-		li a span.settingsNavIcon { background-position: -551px -3px; }
-		li:hover a span.settingsNavIcon, li.active a span.settingsNavIcon { background-position: -551px -103px; }
-		li a span.agentchatNavIcon { background-position: -629px -4px; }
-		li:hover a span.agentchatNavIcon, li.active a span.agentchatNavIcon { background-position: -629px -104px; }
-		li a span.reportsNavIcon { background-position: -880px -2px; }
-		li:hover a span.reportsNavIcon, li.active a span.reportsNavIcon { background-position: -880px -102px; }
-		li a span.billingNavIcon { background-position: -799px -3px; }
-		li:hover a span.billingNavIcon, li.active a span.billingNavIcon { background-position: -799px -103px; }
+	.app-icon-home                  { background-image: url('@{img_path}/app-icons/1x/Dashboard.png'); }
+	.app-icon-setup                 { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
+	.app-icon-agents                { background-image: url('@{img_path}/app-icons/1x/Agents.png'); }
+	.app-icon-tickets               { background-image: url('@{img_path}/app-icons/1x/Tickets.png'); }
+	.app-icon-users                 { background-image: url('@{img_path}/app-icons/1x/People.png'); }
+	.app-icon-portal                { background-image: url('@{img_path}/app-icons/1x/Portal-Editor.png'); }
+	.app-icon-chat                  { background-image: url('@{img_path}/app-icons/1x/Chat.png'); }
+	.app-icon-twitter               { background-image: url('@{img_path}/app-icons/1x/Twitter.png'); }
+	.app-icon-feedback              { background-image: url('@{img_path}/app-icons/1x/Feedback.png'); }
+	.app-icon-publish               { background-image: url('@{img_path}/app-icons/1x/Publish.png'); }
+	.app-icon-tasks                 { background-image: url('@{img_path}/app-icons/1x/Tasks.png'); }
+	.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x/Apps.png'); }
+	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
+	.app-icon-server                { background-image: url('@{img_path}/app-icons/1x/Server.png'); }
+	.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x/Admin-Interface.png'); }
+	.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x/Agent-Interface.png'); }
+	.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x/Reports.png'); }
+	.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/1x/Leads.png'); }
+	.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/1x/User-Portal.png'); }
+	.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/1x/Report-Builder.png'); }
+	.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/1x/Billing-Graphs.png'); }
+	.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/1x/Agent-Activity-Alt.png'); }
+	.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/1x/Agent-Logs-Alt-2.png'); }
+	.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/1x/Ticket-Feedback.png'); }
+
+	.state-on, .active, .section-on {
+		.app-icon-home                  { background-image: url('@{img_path}/app-icons/1x_active/Dashboard.png'); }
+		.app-icon-setup                 { background-image: url('@{img_path}/app-icons/1x_active/Admin.png'); }
+		.app-icon-agents                { background-image: url('@{img_path}/app-icons/1x_active/Agents.png'); }
+		.app-icon-tickets               { background-image: url('@{img_path}/app-icons/1x_active/Tickets.png'); }
+		.app-icon-users                 { background-image: url('@{img_path}/app-icons/1x_active/People.png'); }
+		.app-icon-portal                { background-image: url('@{img_path}/app-icons/1x_active/Portal-Editor.png'); }
+		.app-icon-chat                  { background-image: url('@{img_path}/app-icons/1x_active/Chat.png'); }
+		.app-icon-twitter               { background-image: url('@{img_path}/app-icons/1x_active/Twitter.png'); }
+		.app-icon-feedback              { background-image: url('@{img_path}/app-icons/1x_active/Feedback.png'); }
+		.app-icon-publish               { background-image: url('@{img_path}/app-icons/1x_active/Publish.png'); }
+		.app-icon-tasks                 { background-image: url('@{img_path}/app-icons/1x_active/Tasks.png'); }
+		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/1x_active/Apps.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/1x_active/Server.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Admin.png'); }
+		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/1x_active/Agent-Interface.png'); }
+		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/1x_active/Reports.png'); }
+		.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/1x_active/Leads.png'); }
+		.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/1x_active/User-Portal.png'); }
+		.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/1x_active/Report-Builder.png'); }
+		.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/1x_active/Billing-Graphs.png'); }
+		.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/1x_active/Agent-Activity-Alt.png'); }
+		.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/1x_active/Agent-Logs-Alt-2.png'); }
+		.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/1x_active/Ticket-Feedback.png'); }
 	}
 
-	ul.bottom {
-		bottom: 15px;
-	}
-}
-
-@media all and (max-height: 545px) {
-	li#reports_section { display: none; }
-}
-
-@media all and (max-height: 470px) {
-	li#settings_section { display: none; }
-}
-
-@media all and (max-height: 408px) {
-	li#agent_chat_section { display: none; }
-}
-
-.dp-is-retina {
-	#dp_nav_sections {
-		li a span {
-			background-image: url('@{img_path}/agent/app-nav/navigation-icons-2x.png');
-			background-size: 650px 100px;
+	@media
+	only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (   min--moz-device-pixel-ratio: 2),
+	only screen and (     -o-min-device-pixel-ratio: 2/1),
+	only screen and (        min-device-pixel-ratio: 2),
+	only screen and (                min-resolution: 192dpi),
+	only screen and (                min-resolution: 2dppx) {
+		i.app-icon {
+			background-size: 32px 32px;
+		}
+		.state-on i.app-icon {
+			background-size: 40px 40px;
 		}
 
-		li a span.ticketNavIcon { background-position: 4px 6px; }
-		li:hover a span.ticketNavIcon, li.active a span.ticketNavIcon { background-position: 4px -44px; }
-		li a span.chatNavIcon { background-position: -45px 6px; }
-		li:hover a span.chatNavIcon, li.active a span.chatNavIcon { background-position: -45px -44px; }
-		li a span.peopleNavIcon { background-position: -96px 6px; }
-		li:hover a span.peopleNavIcon, li.active a span.peopleNavIcon { background-position: -96px -44px; }
-		li a span.feedbackNavIcon { background-position: -144px 6px; }
-		li:hover a span.feedbackNavIcon, li.active a span.feedbackNavIcon { background-position: -144px -44px; }
-		li a span.publishNavIcon { background-position: -192px 6px; }
-		li:hover a span.publishNavIcon, li.active a span.publishNavIcon { background-position: -192px -44px; }
-		li a span.tasksNavIcon { background-position: -244px 6px; }
-		li:hover a span.tasksNavIcon, li.active a span.tasksNavIcon { background-position: -244px -44px; }
-		li a span.twitterNavIcon { background-position: -294px 6px; }
-		li:hover a span.twitterNavIcon, li.active a span.twitterNavIcon { background-position: -294px -44px; }
-		li a span.settingsNavIcon { background-position: -344px 6px; }
-		li:hover a span.settingsNavIcon, li.active a span.settingsNavIcon { background-position: -344px -44px; }
-		li a span.agentchatNavIcon { background-position: -396px 6px; }
-		li:hover a span.agentchatNavIcon, li.active a span.agentchatNavIcon { background-position: -396px -44px; }
-		li a span.reportsNavIcon { background-position: -546px 6px; }
-		li:hover a span.reportsNavIcon, li.active a span.agentchatNavIcon { background-position: -546px -44px; }
-		li a span.billingNavIcon { background-position: -494px 6px; }
-		li:hover a span.billingNavIcon, li.active a span.billingNavIcon { background-position: -494px -44px; }
+		.app-icon-home                  { background-image: url('@{img_path}/app-icons/2x/Dashboard.png'); }
+		.app-icon-setup                 { background-image: url('@{img_path}/app-icons/2x/Admin.png'); }
+		.app-icon-agents                { background-image: url('@{img_path}/app-icons/2x/Agents.png'); }
+		.app-icon-tickets               { background-image: url('@{img_path}/app-icons/2x/Tickets.png'); }
+		.app-icon-users                 { background-image: url('@{img_path}/app-icons/2x/People.png'); }
+		.app-icon-portal                { background-image: url('@{img_path}/app-icons/2x/Portal-Editor.png'); }
+		.app-icon-chat                  { background-image: url('@{img_path}/app-icons/2x/Chat.png'); }
+		.app-icon-twitter               { background-image: url('@{img_path}/app-icons/2x/Twitter.png'); }
+		.app-icon-feedback              { background-image: url('@{img_path}/app-icons/2x/Feedback.png'); }
+		.app-icon-publish               { background-image: url('@{img_path}/app-icons/2x/Publish.png'); }
+		.app-icon-tasks                 { background-image: url('@{img_path}/app-icons/2x/Tasks.png'); }
+		.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x/Apps.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
+		.app-icon-server                { background-image: url('@{img_path}/app-icons/2x/Server.png'); }
+		.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x/Admin.png'); }
+		.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x/Agent-Interface.png'); }
+		.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x/Reports.png'); }
+		.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/2x/Leads.png'); }
+		.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/2x/User-Portal.png'); }
+		.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/2x/Report-Builder.png'); }
+		.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/2x/Billing-Graphs.png'); }
+		.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/2x/Agent-Activity-Alt.png'); }
+		.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/2x/Agent-Logs-Alt-2.png'); }
+		.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x/Ticket-Feedback.png'); }
+
+		.state-on, .active, .section-on {
+			.app-icon-home                  { background-image: url('@{img_path}/app-icons/2x_active/Dashboard.png'); }
+			.app-icon-setup                 { background-image: url('@{img_path}/app-icons/2x_active/Admin.png'); }
+			.app-icon-agents                { background-image: url('@{img_path}/app-icons/2x_active/Agents.png'); }
+			.app-icon-tickets               { background-image: url('@{img_path}/app-icons/2x_active/Tickets.png'); }
+			.app-icon-users                 { background-image: url('@{img_path}/app-icons/2x_active/People.png'); }
+			.app-icon-portal                { background-image: url('@{img_path}/app-icons/2x_active/Portal-Editor.png'); }
+			.app-icon-chat                  { background-image: url('@{img_path}/app-icons/2x_active/Chat.png'); }
+			.app-icon-twitter               { background-image: url('@{img_path}/app-icons/2x_active/Twitter.png'); }
+			.app-icon-feedback              { background-image: url('@{img_path}/app-icons/2x_active/Feedback.png'); }
+			.app-icon-publish               { background-image: url('@{img_path}/app-icons/2x_active/Publish.png'); }
+			.app-icon-tasks                 { background-image: url('@{img_path}/app-icons/2x_active/Tasks.png'); }
+			.app-icon-apps                  { background-image: url('@{img_path}/app-icons/2x_active/Apps.png'); }
+			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
+			.app-icon-server                { background-image: url('@{img_path}/app-icons/2x_active/Server.png'); }
+			.app-icon-admin-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Admin.png'); }
+			.app-icon-agent-ifce            { background-image: url('@{img_path}/app-icons/2x_active/Agent-Interface.png'); }
+			.app-icon-reports-ifce          { background-image: url('@{img_path}/app-icons/2x_active/Reports.png'); }
+			.app-icon-billing-ifce          { background-image: url('@{img_path}/app-icons/2x_active/Leads.png'); }
+			.app-icon-user-ifce             { background-image: url('@{img_path}/app-icons/2x_active/User-Portal.png'); }
+			.app-icon-reports-builder       { background-image: url('@{img_path}/app-icons/2x_active/Report-Builder.png'); }
+			.app-icon-reports-billing       { background-image: url('@{img_path}/app-icons/2x_active/Billing-Graphs.png'); }
+			.app-icon-reports-agentactivity { background-image: url('@{img_path}/app-icons/2x_active/Agent-Activity-Alt.png'); }
+			.app-icon-reports-agenthours    { background-image: url('@{img_path}/app-icons/2x_active/Agent-Logs-Alt-2.png'); }
+			.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x_active/Ticket-Feedback.png'); }
+		}
 	}
 }
 
@@ -4427,5 +4462,54 @@ section.list-results {
 	&.realtime-on {
 		i { color: #444; }
 		em { visibility: hidden; }
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// APPS
+//----------------------------------------------------------------------------------------------------------------------
+
+// app containers are hidden when they are empty
+.dp-app-context-container.as-default-hidden {
+	display: none;
+	&.with-app-contexts {
+		display: block;
+	}
+}
+
+.user-frame-screen {
+	.frame-container {
+		position: absolute;
+		top:    26px;
+		left:   26px;
+		right:  26px;
+		bottom: 26px;
+
+		background: #fff;
+		border: 1px solid #b0b2b3;
+		border-radius: 3px;
+
+		-webkit-box-shadow:inset 0 0 3px 2px rgba(0,0,0,0.2);
+		box-shadow:inset 0 0 3px 2px rgba(0,0,0,0.2);
+
+		.inner-container {
+			position: absolute;
+			top:    8px;
+			left:   8px;
+			right:  8px;
+			bottom: 8px;
+		}
+
+		iframe {
+			position: absolute;
+			top:    0px;
+			left:   0px;
+			right:  0px;
+			bottom: 0px;
+
+			padding: 0;
+			margin: 0;
+			border: none;
+		}
 	}
 }

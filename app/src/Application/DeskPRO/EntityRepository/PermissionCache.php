@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
 class PermissionCache extends AbstractEntityRepository
 {
 	public function loadPermissionTypes($usergroup_key, $person_id, array $types)

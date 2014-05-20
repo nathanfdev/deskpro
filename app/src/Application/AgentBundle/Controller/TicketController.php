@@ -36,13 +36,19 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Debug\Data\TicketData;
 use Application\DeskPRO\Debug\Data\TicketFilterData;
 use Application\DeskPRO\Debug\Data\TicketLogsData;
 use Application\DeskPRO\Debug\Data\TicketPersonData;
 use Application\DeskPRO\Debug\Data\TicketTriggerData;
-use Application\DeskPRO\Debug\DataReportGenerator;
-use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ArticlePendingCreate;
+use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -50,26 +56,14 @@ use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
-use Doctrine\Common\Collections\ArrayCollection;
-use Orb\Validator\StringEmail;
-use Symfony\Component\HttpFoundation\Response;
-
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Entity\TicketLog;
-use Application\DeskPRO\App;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Util;
-use Orb\Util\Dates;
-
-use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
-use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
-
-use Application\DeskPRO\Tickets\TicketSplit;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
+use Application\DeskPRO\Tickets\TicketSplit;
+use Doctrine\Common\Collections\ArrayCollection;
+use Orb\Util\Dates;
+use Orb\Util\Strings;
+use Orb\Validator\StringEmail;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles ticket searches
@@ -269,11 +263,9 @@ class TicketController extends AbstractController
 		$newticket->setValuesFromTicket($ticket);
 
 		$validator = new NewTicketValidator();
-		$ticket_display = new TicketPageZoneCollection('modify');
-		$ticket_display->setPersonContext($this->person);
-		$ticket_display->addPagesFromDb();
-		$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
-		$validator->setPageData($default_page->getPageDisplay('default')->data);
+		$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id ?: 0);
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET);
+		$validator->setLayout($layout);
 
 		$validator_errors = array();
 		if (!$validator->isValid($newticket)) {
@@ -842,7 +834,7 @@ class TicketController extends AbstractController
 					'error' => true,
 					'error_code' => 'invalid_email'
 				));
-			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($email_address)) {
+			} elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($email_address)) {
 				return $this->createJsonResponse(array(
 					'error' => true,
 					'error_code' => 'invalid_email_gatewayaccount'
@@ -1007,13 +999,15 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_labels');
 
+		$tm = $this->container->getTicketManager();
+		$tm->markAsManaged($ticket);
+
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
-
 		$ticket->getLabelManager()->setLabelsArray($labels);
-
 		$this->em->persist($ticket);
-		$this->em->flush();
-		$ticket->_saveTicketLogs();
+
+		$context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+		$tm->saveTicket($ticket, $context);
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -1043,6 +1037,9 @@ class TicketController extends AbstractController
 		} else {
 			$ticket = $this->getTicketOr404($ticket_id, 'reply');
 		}
+
+		$ticket_context = $this->container->getTicketManager()->createAgentExecutorContext($this->person, 'newreply', 'web');
+		$this->container->getTicketManager()->markAsManaged($ticket);
 
 		$action_type = $this->in->getString('options.action');
 		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
@@ -1158,7 +1155,7 @@ class TicketController extends AbstractController
 			}
 
 			if ($notify_email) {
-				$ticket->getTicketLogger()->recordExtra('mention_agents', $notify_email);
+				$ticket_context->getVars()->set('mention_agents', $notify_email);
 			}
 		}
 
@@ -1186,6 +1183,21 @@ class TicketController extends AbstractController
 		}
 
 		$message->convertEmbeddedImagesToInlineAttach();
+                
+                if ($this->in->getBool('options.is_snippet')) {
+                    $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
+                    
+                    if ($snippet) {
+                        $snippetLog = new Entity\TextSnippetLog();
+                    
+                        $snippetLog['ticket']   = $ticket;
+                        $snippetLog['person']   = $this->getPerson();
+                        $snippetLog['snippet']  = $snippet;
+                        
+                        $this->em->persist($snippetLog);
+                        $this->em->flush();
+                    }
+		}
 
 		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
 			return $this->createJsonResponse(array(
@@ -1197,7 +1209,7 @@ class TicketController extends AbstractController
 			$ticket->addMessage($message);
 
 			if (!$this->in->getBool('options.notify_user')) {
-				$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+				$ticket_context->getVars()->set('mute_user_emails', true);
 			}
 		}
 
@@ -1219,7 +1231,7 @@ class TicketController extends AbstractController
 
 			$message->primary_translation = $message_translated;
 		}
-
+                
 		#------------------------------
 		# Handle CC'ing/parts
 		#------------------------------
@@ -1243,7 +1255,7 @@ class TicketController extends AbstractController
 
 		if ($add_cc_emails) {
 			foreach ($add_cc_emails as $email) {
-				if (!$email || !$email_validator->isValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+				if (!$email || !$email_validator->isValid($email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
 					continue;
 				}
 
@@ -1275,11 +1287,6 @@ class TicketController extends AbstractController
 					$rem_parts[] = $person;
 				}
 			}
-		}
-
-		if ($new_user_ids) {
-			$tracker = $ticket->getTicketLogger();
-			$tracker->recordExtra('enabled_cc', $new_user_ids);
 		}
 
 		if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
@@ -1336,8 +1343,7 @@ class TicketController extends AbstractController
 				}
 			}
 
-			$this->em->persist($ticket);
-			$this->em->flush();
+			$this->container->getTicketManager()->saveTicket($ticket, $ticket_context);
 
 			$this->em->getRepository('DeskPRO:Draft')->deleteDraft('ticket', $ticket->id);
 			$this->db->commit();
@@ -1439,11 +1445,10 @@ class TicketController extends AbstractController
 			$newticket = new NewTicket($this->em, $this->person);
 			$newticket->setValuesFromTicket($ticket);
 			$validator = new NewTicketValidator();
-			$ticket_display = new TicketPageZoneCollection('modify');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
-			$default_page = $ticket_display->getDepartmentPage($ticket->department->id);
-			$validator->setPageData($default_page->getPageDisplay('default')->data);
+
+			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->department->id);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
+			$validator->setLayout($layout);
 			if (!$validator->isValid($newticket)) {
 				foreach ($validator->getErrorsInfo() as $info) {
 					$error_messages[] = $info['message'];
@@ -1452,8 +1457,7 @@ class TicketController extends AbstractController
 				// Need to undo setting status!
 				$close_tab = false;
 				$ticket->status = 'awaiting_agent';
-				$this->em->persist($ticket);
-				$this->em->flush();
+				$this->container->getTicketManager()->saveTicket($ticket, $ticket_context);
 			}
 		}
 
@@ -1655,6 +1659,10 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
+		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		if (count($ticket->messages) == 1) {
 			$this->db->replace('tickets_deleted', array(
 				'ticket_id' => $ticket->id,
@@ -1851,11 +1859,9 @@ class TicketController extends AbstractController
 			}
 
 			$validator = new NewTicketValidator();
-			$ticket_display = new TicketPageZoneCollection('modify');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
-			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
-			$validator->setPageData($default_page->getPageDisplay('default')->data);
+			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+			$validator->setLayout($layout);
 
 			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
 			if (count($actions) == 1 && isset($actions['department_id'])) {
@@ -1974,40 +1980,41 @@ class TicketController extends AbstractController
 		// then we'll need to refresh the ticket so those new validation options
 		// are enforced
 		if (!isset($data['data']['refresh']) && $old_department_id != $ticket->getDepartmentId()) {
-			$ticket_display = new TicketPageZoneCollection('modify');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
-
 			$old_page_ids = array();
 			$new_page_ids = array();
 
-			$old_page = $ticket_display->getDepartmentPage($old_department_id);
-			$new_page = $ticket_display->getDepartmentPage($new_department_id);
+			$old_page = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($old_department_id);
+			$new_page = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($new_department_id);
 
 			// - We only care about fields that have validation
 			// - The actual field show/hide changes are handled in JS on the client
 			// - So only when the current validation scheme changes do
 			// we need to resort to re-loading the ticket tab
 			$fn_check_has_validator = function($x) use ($field_manager) {
-				switch ($x['field_type']) {
-					case 'ticket_product':
+				switch ($x->getFieldType()) {
+					case 'product':
 						return App::getSetting('core_tickets.field_validation_ticket_prod_agent_required');
 						break;
 
-					case 'ticket_category':
+					case 'category':
 						return App::getSetting('core_tickets.field_validation_ticket_cat_agent_required');
 						break;
 
-					case 'ticket_priority':
+					case 'priority':
 						return App::getSetting('core_tickets.field_validation_ticket_pri_agent_required');
 						break;
 
-					case 'ticket_workflow':
+					case 'workflow':
 						return App::getSetting('core_tickets.field_validation_ticket_work_agent_required');
 						break;
 
 					case 'ticket_field':
-						$field = $field_manager->getFieldFromId($x['field_id']);
+						$field = $field_manager->getFieldFromId($x->getFieldId());
+						if (!$field) return false;
+						return $field->getOption('agent_required');
+						break;
+					case 'user_field':
+						$field = $field_manager->getFieldFromId($x->getFieldId());
 						if (!$field) return false;
 						return $field->getOption('agent_required');
 						break;
@@ -2016,14 +2023,14 @@ class TicketController extends AbstractController
 				return false;
 			};
 
-			foreach ($old_page->getPageDisplay('default')->data as $x) {
+			foreach ($old_page as $x) {
 				if ($fn_check_has_validator($x)) {
-					$old_page_ids[$x['id']] = $x['id'];
+					$old_page_ids[$x->getId()] = $x->getId();
 				}
 			}
-			foreach ($new_page->getPageDisplay('default')->data as $x) {
+			foreach ($new_page as $x) {
 				if ($fn_check_has_validator($x)) {
-					$new_page_ids[$x['id']] = $x['id'];
+					$new_page_ids[$x->getId()] = $x->getId();
 				}
 			}
 
@@ -2293,6 +2300,8 @@ class TicketController extends AbstractController
 	public function addSlaAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_slas');
+		$tm = $this->container->getTicketManager();
+		$tm->markAsManaged($ticket);
 
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($this->in->getUint('sla_id'));
 		if (!$sla || $sla->apply_type != 'manual') {
@@ -2304,10 +2313,12 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_sla = $ticket->addSla($sla);
-		$ticket_sla->calculateSlaDates(false);
 		if ($ticket_sla && !$ticket_sla->id) {
 			$this->em->persist($ticket_sla);
 			$this->em->flush();
+
+			$context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+			$tm->saveTicket($ticket, $context);
 
 			$data = array(
 				'inserted' => true,
@@ -2572,7 +2583,7 @@ class TicketController extends AbstractController
 					'success' => false,
 					'error' => 'Please enter a valid email address',
 				));
-			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+			} elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
 				return $this->createJsonResponse(array(
 					'success' => false,
 					'error' => 'The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot set an email account as the ticket user.',
@@ -2665,10 +2676,6 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		$ticket->recountStats();
-		$this->em->persist($ticket);
-		$this->em->flush();
-
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'id' => $ticket['id'],
@@ -2706,6 +2713,7 @@ class TicketController extends AbstractController
 		$subject = $this->in->getString('subject');
 
 		$split = new TicketSplit($ticket);
+		$split->setPersonContext($this->person);
 
 		try {
 			$this->em->beginTransaction();
@@ -2826,8 +2834,10 @@ class TicketController extends AbstractController
 		$top .= '--- Forwarded Message ---<br/>';
 		$top .= 'From: '. $message->person->getDisplayName() .' &lt;<a href="mailto:'. $message->person->getPrimaryEmailAddress() .'">'. $message->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
 
-		$from = $ticket->getFromAddress();
-		$top .= 'To: '. $from['name'] .' &lt;<a href="mailto:'. $from['email'] .'">'. $from['email'] .'</a>&gt;<br/>';
+		if ($ticket->email_account) {
+			$from = $ticket->email_account;
+			$top .= 'To: &lt;<a href="mailto:' . $from['address'] . '">' . $from['address'] . '</a>&gt;<br/>';
+		}
 		$top .= 'Subject: '. htmlspecialchars($ticket->subject) . '<br/>';
 		$top .= 'Date: '. $date_created .'<br/>';
 		$top .= '</div>';
@@ -2845,38 +2855,26 @@ class TicketController extends AbstractController
 		$email->setBody($message_raw, 'text/html');
 		$email->setSubject($subject);
 
-		$tr = null;
 		$account = null;
 		if ($this->container->getSetting('core_tickets.fwd_use_account')) {
-			$account = $this->container->getEm()->find('DeskPRO:EmailGateway', $this->container->getSetting('core_tickets.fwd_use_account'));
-			if ($account && $account->is_enabled && $account->linked_transport) {
-				$tr = $account->linked_transport->getTransport();
-			}
+			$account = $this->container->getEmailAccountManager()->getAccount($this->container->getSetting('core_tickets.fwd_use_account'));
+			if ($account && $account->is_enabled && $account->outgoing_account) {}
+			else { $account = null; }
 		}
-		if (!$tr) {
-			$tr_rec = $this->container->getEm()->getRepository('DeskPRO:EmailTransport')->getDefaultTransport();
-			if ($tr_rec) {
-				$tr = $tr_rec->getTransport();
-			}
+		if (!$account) {
+			$account = $this->container->getEmailAccountManager()->getPrimaryEmailAccount();
 		}
 
 		if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
 			$from_email = $this->person->getEmailAddress();
 		} else {
-			$from_email = null;
-			if ($account) {
-				if (!($from_email = $account->getAliasEmailAddress())) {
-					$from_email = $account->getPrimaryEmailAddress();
-				}
- 			}
-			if (!$from_email) {
-				$from_email = $this->container->getSetting('core.default_from_email');
-			}
+			$from_email = $account->getUseEmailAddress();
 		}
 
 		$from_name = $this->person->getDisplayName();
 		$email->setFrom($from_email, $from_name);
 
+		$tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
 		if ($tr) {
 			$email->setForceTransport($tr);
 		}
@@ -2948,7 +2946,7 @@ class TicketController extends AbstractController
 			}
 		}
 
-		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+		require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 
 		if ($this->in->getBool('raw')) {
 			$this->ensureAuthToken('view_raw', $this->in->getString('raw'));
@@ -3004,7 +3002,7 @@ class TicketController extends AbstractController
 
 		switch ($type) {
 			case 'raw':
-				require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+				require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 				$purifier = new \HTMLPurifier();
 				$config = \HTMLPurifier_Config::createDefault();
 				$config->set('Cache.DefinitionImpl', null);
@@ -3160,7 +3158,7 @@ class TicketController extends AbstractController
 				}
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			#------------------------------
@@ -3191,7 +3189,7 @@ class TicketController extends AbstractController
 					$errors['person_no_user'] = true;
 				} elseif (!\Orb\Validator\StringEmail::isValueValid($new_email)) {
 					$errors['person_email_address'] = true;
-				} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+				} elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_email)) {
 					$errors['person_email_address_gateway'] = true;
 				}
 
@@ -3242,13 +3240,11 @@ class TicketController extends AbstractController
 
 			// Validate based on department...
 			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
-			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
+			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
 			$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
 			$newticket->status = $set_status;
-			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
-			$validator->setPageData($default_page->getPageDisplay('default')->data);
+			$validator->setLayout($layout);
 
 			if (!$validator->isValid($newticket)) {
 				$free = array();
@@ -3293,6 +3289,12 @@ class TicketController extends AbstractController
 
 				$newticket->save();
 				$ticket = $newticket->getTicket();
+                                
+				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+				$ticket->getLabelManager()->setLabelsArray($labels);
+
+				$this->em->persist($ticket);
 
 				if ($this->in->getUint('parent_ticket_id')) {
 					$parent_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('parent_ticket_id'));
@@ -3410,7 +3412,7 @@ class TicketController extends AbstractController
 
 				$this->db->commit();
 			} catch (\Application\DeskPRO\Tickets\DuplicateTicketException $e) {
-				$this->db->rollback(false);
+				$this->db->rollback();
 				return $this->createJsonResponse(array(
 					'error' => true,
 					'is_dupe' => true,
@@ -3632,7 +3634,7 @@ class TicketController extends AbstractController
 
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . uniqid('dpd', true);
+		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . "ticket-debug-" . $ticket->id . "_" . date('YmdHis') . "_" . Strings::random(4, Strings::CHARS_ALPHANUM_IU);
 		if (!mkdir($tmpdir, 0777, true)) {
 			echo "Could not create temp dir: " . $tmpdir;
 			exit;
@@ -3669,17 +3671,40 @@ class TicketController extends AbstractController
 			file_put_contents($tmpdir . '/message-'.$message->id.'.json', json_encode($data));
 
 			if ($message->email_source && $message->email_source->blob) {
-				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
+				try {
+					$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
+				} catch (\Exception $e) {
+					file_put_contents($tmpdir . '/message-' . $message->id . '-source.eml', "Could not download blob: {$e->getMessage()}");
+				}
 			}
 
 			if ($message->email_source && $message->email_source->source_info) {
-				file_put_contents($tmpdir . '/message-'.$message->id.'.log', $message->email_source->getSourceInfoAsString());
+				file_put_contents($tmpdir . '/message-'.$message->id.'.source_info.txt', $message->email_source->getSourceInfoAsString());
+			}
+
+			if ($message->email_source && $message->email_source->log_blob) {
+				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-'.$message->id.'.log', $message->email_source->log_blob);
+			}
+		}
+
+		$tm_logs = $this->em->createQuery("
+			SELECT tm_log, b
+			FROM DeskPRO:TicketProcLog tm_log
+			LEFT JOIN tm_log.blob b
+			WHERE tm_log.ticket = ?0
+		")->execute(array($ticket));
+
+		foreach ($tm_logs as $tm_log) {
+			try {
+				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/' . $tm_log->blob->filename, $tm_log->blob);
+			} catch (\Exception $e) {
+				file_put_contents($tmpdir . '/message-' . $message->id . '-source.eml', "Could not download blob: {$e->getMessage()}");
 			}
 		}
 
 		$outfile = $tmpdir.'/zip';
 
-		require_once(DP_ROOT . '/vendor/pclzip/pclzip.lib.php');
+		require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
 		$zip = new \PclZip($outfile);
 		$zip->add(
 			$tmpdir,
@@ -3697,7 +3722,7 @@ class TicketController extends AbstractController
 		fclose($fp);
 
 		unlink($outfile);
-		$fs = new \Symfony\Component\HttpKernel\Util\Filesystem();
+		$fs = new Filesystem();
 		$fs->remove($tmpdir);
 		exit;
 	}
@@ -3791,4 +3816,63 @@ class TicketController extends AbstractController
 
 		return $ticket;
 	}
+	
+	public function linkExistingAction($ticket_id, $linked_ticket_id)
+	{
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		try	{
+			$linkedTicket = $this->getTicketOr404($linked_ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $linked_ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		if ($this->in->getBool('isParent')) {
+			$ticket->parent_ticket = $linkedTicket;
+		} else {
+			$linkedTicket->parent_ticket = $ticket;
+		}
+		
+		$this->em->persist($ticket);
+		$this->em->persist($linkedTicket);
+		
+		$this->em->flush();
+		
+		return $this->createJsonResponse(array('success' => 1));
+		
+	}
+	
+	public function linkExistingOverlayAction($ticket_id)
+	{
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+		
+		return $this->render('AgentBundle:Ticket:link.html.twig');
+	}
+
 }

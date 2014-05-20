@@ -1,0 +1,190 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TwitterSetup.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>{{ phrase('adm.twitter_setup.title') }}</h3>
+			</header>
+
+			<article>
+				<div class="panel panel-innertable">
+					<button dp-inhelp-btn="admin.twitter_setup.beta"></button>
+					<button dp-inhelp-btn="admin.twitter_setup.how_to_setup"></button>
+
+					<div class="panel-help" dp-inhelp-body="admin.twitter_setup.beta">
+						<p>
+							<strong style="color: #FF5500;">BETA</strong>:
+							Twitter is currently in beta testing. Please report bug reports and feedback to
+							<a href="mailto:support@deskpro.com">support@deskpro.com</a> or
+							submit a ticket on our helpdesk at
+							<a href="https://support.deskpro.com/">https://support.deskpro.com</a>.
+						</p>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.twitter_setup.how_to_setup">
+						<p>
+							To setup the full Twitter integration, you must create two <a
+									href="https://dev.twitter.com/apps" target="_blank">Twitter applications</a>, one
+							for agents and one for end users.
+							The specific permissions required by each are listed below.
+							<a href="https://support.deskpro.com/kb/articles/143-managing-twitter-accounts"
+							   target="_blank">Learn more.</a>
+						</p>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Twitter Agent Application</span>
+						</h3>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-2">
+							<h3> {{ phrase('adm.twitter_setup.agent_consumer_key') }} *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group" dp-error-class="form_props.twitter_agent_consumer_key">
+								<input type="text" class="form-control" name="twitter_agent_consumer_key"
+									   ng-model="setup.twitter_agent_consumer_key" style="width: 50%;" required>
+								<span class="help-block">
+									{{ phrase('adm.ticket_filters.agent_consumer_key_explain') }}
+								</span>
+							</div>
+						</div>
+						<div class="col-lg-2">
+							<h3> {{ phrase('adm.twitter_setup.agent_consumer_secret') }} *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group" dp-error-class="form_props.twitter_agent_consumer_secret">
+								<input type="text" class="form-control" name="twitter_agent_consumer_secret"
+									   ng-model="setup.twitter_agent_consumer_secret" style="width: 50%;" required>
+								<span class="help-block">
+									{{ phrase('adm.ticket_filters.agent_consumer_secret_explain') }}
+								</span>
+							</div>
+						</div>
+					</div>
+					<button dp-inhelp-btn="admin.twitter_setup.access_agent"></button>
+					<div class="panel-help" dp-inhelp-body="admin.twitter_setup.access_agent">
+						<p>
+							This application requires <i>Read, Write and Access direct messages</i> permissions.
+						</p>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Twitter User Application</span>
+						</h3>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-2">
+							<h3> {{ phrase('adm.twitter_setup.user_consumer_key') }} *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group" dp-error-class="form_props.twitter_user_consumer_key">
+								<input type="text" class="form-control" name="twitter_user_consumer_key"
+									   ng-model="setup.twitter_user_consumer_key" style="width: 50%;" required>
+								<span class="help-block">
+									{{ phrase('adm.ticket_filters.user_consumer_key_explain') }}
+								</span>
+							</div>
+						</div>
+						<div class="col-lg-2">
+							<h3> {{ phrase('adm.twitter_setup.user_consumer_secret') }} *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group" dp-error-class="form_props.twitter_user_consumer_secret">
+								<input type="text" class="form-control" name="twitter_user_consumer_secret"
+									   ng-model="setup.twitter_user_consumer_secret" style="width: 50%;" required>
+								<span class="help-block">
+									{{ phrase('adm.ticket_filters.user_consumer_secret_explain') }}
+								</span>
+							</div>
+						</div>
+					</div>
+					<button dp-inhelp-btn="admin.twitter_setup.access_user"></button>
+					<div class="panel-help" dp-inhelp-body="admin.twitter_setup.access_user">
+						<p>
+							This application requires <i>Read only</i> permissions.
+						</p>
+					</div>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Twitter Settings</span>
+						</h3>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-2">
+							<h3> {{ phrase('adm.ticket_filters.auto_remove_time') }} *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group">
+								<select name="twitter_auto_remove_time" ng-model="setup.twitter_auto_remove_time" ui-select2 style="min-width: 240px">
+									<option value="86400">1 day</option>
+									<option value="259200">3 days</option>
+									<option value="432000">5 days</option>
+									<option value="604800">1 week</option>
+									<option value="1209600">2 weeks</option>
+									<option value="1814400">3 weeks</option>
+									<option value="2419000">1 month</option>
+									<option value="4838000">2 months</option>
+									<option value="7257000">3 months</option>
+									<option value="14514000">6 months</option>
+									<option value="21771000">9 months</option>
+									<option value="29028000">1 year</option>
+									<option value="58056000">2 years</option>
+								</select>
+								<span class="help-block">
+									{{ phrase('adm.ticket_filters.auto_remove_time_explain') }}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.twitter_agent_consumer_key.$error.required">{{ phrase('adm.twitter_setup.agent_consumer_key_error') }}</li>
+							<li ng-show="form_props.twitter_agent_consumer_secret.$error.required">{{ phrase('adm.twitter_setup.agent_consumer_secret_error') }}</li>
+							<li ng-show="form_props.twitter_user_consumer_key.$error.required">{{ phrase('adm.twitter_setup.user_consumer_key_error') }}</li>
+							<li ng-show="form_props.twitter_user_consumer_secret.$error.required">{{ phrase('adm.twitter_setup.user_consumer_secret_error') }}</li>
+						</ul>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							<button class="btn btn-default">{{ phrase('agent.general.reset') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_setup">Setup saved successfully.</div>
+{% endblock %}

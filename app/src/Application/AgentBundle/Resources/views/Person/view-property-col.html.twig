@@ -1,7 +1,8 @@
-{# Agent Box #}
-{{ dp_widgets(baseId, 'profile', 'agent', 'above', person_api) }}
+{{ dp_app_loc(baseId, 'right_col.top') }}
 
+{# Agent Box #}
 {% if person.is_agent %}
+{{ dp_app_loc(baseId, 'agent.before') }}
 <div class="profile-box-container highlighted">
 	<header>
 		{% if app.user.can_admin %}<a class="edit-gear" href="{{ app.request.getBaseUrl() }}/admin/agents/{{ person.id }}/edit" target="_blank"></a>{% endif %}
@@ -14,9 +15,6 @@
 					<li class="on" data-tab-for="#{{baseId}}_agent_tab">
 						<span class="agent-icon">{{ phrase('agent.general.agent') }}</span>
 					</li>
-					{% for widget in agentTabs %}
-						<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
-					{% endfor %}
 				</ul>
 			</nav>
 		{% endif %}
@@ -32,34 +30,32 @@
 			</ul>
 		{% endif %}
 	</section>
-	{{ dp_widget_tabs(baseId, 'profile', 'agent', 'section', person_api) }}
 </div>
+{{ dp_app_loc(baseId, 'agent.after') }}
 {% endif %}
-
-{{ dp_widgets(baseId, 'profile', 'agent', 'below', person_api) }}
 {# /Box #}
 
 {# Box Contact #}
-{{ dp_widgets(baseId, 'profile', 'contact', 'above', person_api) }}
-
-<div class="profile-box-container summary">
+{{ dp_app_loc(baseId, 'contact.before') }}
+<div class="profile-box-container dp-simpletab-container summary">
 	<header>
 		{% if perms.edit %}<span class="edit-gear contact-edit"></span>{% endif %}
-		{{ dp_widget_tabs_header(baseId, 'profile', 'contact', {
-			(baseId ~ '_contact_body'): phrase('agent.people.contact_info')
-		}) }}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{ baseId }}_contact_body">{{ phrase('agent.people.contact_info') }}</li>
+			</ul>
+		</nav>
 	</header>
-	<section id="{{baseId}}_contact_body">
-		<div class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display">
-			{% include 'AgentBundle:Person:view-contact-display.html.twig' %}
+	<section>
+		<div id="{{baseId}}_contact_body">
+			<div class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display">
+				{% include 'AgentBundle:Person:view-contact-display.html.twig' %}
+			</div>
 		</div>
+		{{ dp_app_loc(baseId, 'contact.tab') }}
 	</section>
-	{{ dp_widget_tabs(baseId, 'profile', 'contact', 'section', person_api) }}
 </div>
-{# /Box Contact #}
-
 <div id="{{baseId}}_contact_outside"></div>
-
 {% if validating_emails %}
 	<div class="profile-box-container summary">
 		<header>
@@ -79,14 +75,13 @@
 		</section>
 	</div>
 {% endif %}
-
-{{ dp_widgets(baseId, 'profile', 'contact', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'contact.after') }}
+{# /Box Contact #}
 
 {# Organization Box #}
-{{ dp_widgets(baseId, 'profile', 'organization', 'above', person_api) }}
-
 {% if person.organization or perms.edit %}
-	<div class="profile-box-container summary" id="{{baseId}}_org_box">
+	{{ dp_app_loc(baseId, 'org.before') }}
+	<div class="profile-box-container summary dp-simpletab-container" id="{{baseId}}_org_box">
 		<header id="{{baseId}}_org_display_header">
 			{% if perms.edit %}
 				<div class="controls">
@@ -99,81 +94,83 @@
 					<button class="saved" style="display: none">{{ phrase('agent.general.saved') }}</button>
 				</div>
 			{% endif %}
-			{{ dp_widget_tabs_header(baseId, 'profile', 'organization', {
-				(baseId ~ '_organization_body'): phrase('agent.general.organization')
-			}) }}
+			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+				<ul>
+					<li data-tab-for="#{{ baseId }}_organization_body">{{ phrase('agent.general.organization') }}</li>
+				</ul>
+			</nav>
 		</header>
-		<section id="{{baseId}}_organization_body">
-			<div class="org-info" id="{{baseId}}_org_display_wrap">
-				{% if person.organization %}
-					{% include 'AgentBundle:Person:view-org-info.html.twig' %}
-				{% endif %}
-			</div>
-			<div class="org-edit" style="display: none" id="{{baseId}}_org_edit_wrap">
-				<div
-					class="org-input"
-					id="{{baseId}}_org_searchbox"
-					data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
-					data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
-					data-highlight-term="1"
-					data-touch-focus="1"
-					data-search-param="term"
-					data-position-bound="@parent(.org-input)"
-				>
-					<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
-						<label>{{ phrase('agent.general.organization') }}:</label>
-					</td><td width="100%">
-						<input type="text" class="org-name" placeholder="{{ phrase('agent.general.enter_organization_name') }}" value="{{ person.organization.name }}" />
-					</td></tr></table>
+		<section>
+			<div id="{{baseId}}_organization_body">
+				<div class="org-info" id="{{baseId}}_org_display_wrap">
+					{% if person.organization %}
+						{% include 'AgentBundle:Person:view-org-info.html.twig' %}
+					{% endif %}
+				</div>
+				<div class="org-edit" style="display: none" id="{{baseId}}_org_edit_wrap">
+					<div
+						class="org-input"
+						id="{{baseId}}_org_searchbox"
+						data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+						data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+						data-highlight-term="1"
+						data-touch-focus="1"
+						data-search-param="term"
+						data-position-bound="@parent(.org-input)"
+					>
+						<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
+							<label>{{ phrase('agent.general.organization') }}:</label>
+						</td><td width="100%">
+							<input type="text" class="org-name" placeholder="{{ phrase('agent.general.enter_organization_name') }}" value="{{ person.organization.name }}" />
+						</td></tr></table>
 
-					<input type="hidden" class="org-id" value="{{ person.organization.id|default(0) }}" />
-					<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-						<li><a>
-							<span class="org-name"></span>
-							<div class="bound-fade"></div>
-						</a></li>
-					</script>
-					<div class="person-search-box org" style="display: none">
-						<section>
-							<ul class="results-list">
+						<input type="hidden" class="org-id" value="{{ person.organization.id|default(0) }}" />
+						<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+							<li><a>
+								<span class="org-name"></span>
+								<div class="bound-fade"></div>
+							</a></li>
+						</script>
+						<div class="person-search-box org" style="display: none">
+							<section>
+								<ul class="results-list">
 
-							</ul>
-							{% if app.user.hasPerm('agent_org.create') %}
-								<footer>
-									<span class="create-org">{{ phrase('agent.general.create_a_new_organization') }}</span>
-								</footer>
-							{% endif %}
-						</section>
+								</ul>
+								{% if app.user.hasPerm('agent_org.create') %}
+									<footer>
+										<span class="create-org">{{ phrase('agent.general.create_a_new_organization') }}</span>
+									</footer>
+								{% endif %}
+							</section>
+						</div>
+					</div>
+					<div class="extra-input" {% if not person.organization %}style="display: none"{% endif %}>
+						<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
+							<label>{{ phrase('agent.general.position') }}:</label>
+						</td><td width="100%">
+							<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.general.set_a_position') }}" value="{{ person.organization_position }}" />
+						</td></tr></table>
+					</div>
+					<div class="extra-input" {% if not person.organization %}style="display: none"{% endif %}>
+						<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
+							<label>{{ phrase('agent.people.manager') }}:</label>
+						</td><td width="100%">
+							<input type="checkbox" class="org-manager-set" value="1" {% if person.organization_manager %}checked="checked"{% endif %} />
+						</td></tr></table>
 					</div>
 				</div>
-				<div class="extra-input" {% if not person.organization %}style="display: none"{% endif %}>
-					<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
-						<label>{{ phrase('agent.general.position') }}:</label>
-					</td><td width="100%">
-						<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.general.set_a_position') }}" value="{{ person.organization_position }}" />
-					</td></tr></table>
-				</div>
-				<div class="extra-input" {% if not person.organization %}style="display: none"{% endif %}>
-					<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
-						<label>{{ phrase('agent.people.manager') }}:</label>
-					</td><td width="100%">
-						<input type="checkbox" class="org-manager-set" value="1" {% if person.organization_manager %}checked="checked"{% endif %} />
-					</td></tr></table>
-				</div>
 			</div>
+			{{ dp_app_loc(baseId, 'org.tab') }}
 		</section>
-		{{ dp_widget_tabs(baseId, 'profile', 'organization', 'section', person_api) }}
 	</div>
+	{{ dp_app_loc(baseId, 'org.after') }}
 {% endif %}
-
-{{ dp_widgets(baseId, 'profile', 'organization', 'below', person_api) }}
 {# /Organization Box #}
 
 {# SLAs Box #}
-{{ dp_widgets(baseId, 'profile', 'slas', 'above', person_api) }}
-
+{{ dp_app_loc(baseId, 'slas.before') }}
 {% if app.getDataService('Sla').getPersonOrgAssociableSlas() and (perms.edit or person.slas|length) %}
-	<div class="profile-box-container summary" id="{{baseId}}_sla_box">
+	<div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_sla_box">
 		<header>
 			{% if perms.edit %}
 			<div class="controls">
@@ -183,92 +180,60 @@
 				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 			{% endif %}
-			{{ dp_widget_tabs_header(baseId, 'profile', 'slas', {
-				(baseId ~ '_sla_body'): phrase('agent.general.slas')
-			}) }}
+			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+				<ul>
+					<li data-tab-for="#{{ baseId }}_sla_body">{{ phrase('agent.general.slas') }}</li>
+				</ul>
+			</nav>
 		</header>
-		<section id="{{baseId}}_sla_body">
-			<div id="{{baseId}}_sla_display_box" class="contact-list">
-				<ul>
-				{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
-					<li class="sla-row sla-row-{{ sla.id }}" {% if not person.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
-				{% endfor %}
-				<li class="no-slas" style="padding-left: 0; {% if person.slas|length %}display: none;{% endif %}}">{{ phrase('agent.people.no_slas') }}</li>
-				</ul>
+		<section>
+			<div id="{{baseId}}_sla_body">
+				<div id="{{baseId}}_sla_display_box" class="contact-list">
+					<ul>
+					{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
+						<li class="sla-row sla-row-{{ sla.id }}" {% if not person.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
+					{% endfor %}
+					<li class="no-slas" style="padding-left: 0; {% if person.slas|length %}display: none;{% endif %}}">{{ phrase('agent.people.no_slas') }}</li>
+					</ul>
+				</div>
+				<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">
+					<ul>
+					{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
+						<li class="sla-row">
+							<label><input type="checkbox" value="{{ sla.id }}" name="sla_ids[]" class="sla-check sla-check-{{ sla.id }}" {% if person.hasSla(sla) %}checked="checked"{% endif %} /> {{ sla.title }}</label>
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
 			</div>
-			<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">
-				<ul>
-				{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
-					<li class="sla-row">
-						<label><input type="checkbox" value="{{ sla.id }}" name="sla_ids[]" class="sla-check sla-check-{{ sla.id }}" {% if person.hasSla(sla) %}checked="checked"{% endif %} /> {{ sla.title }}</label>
-					</li>
-				{% endfor %}
-				</ul>
-			</div>
+			{{ dp_app_loc(baseId, 'slas.tab') }}
 		</section>
-		{{ dp_widget_tabs(baseId, 'profile', 'slas', 'section', person_api) }}
 	</div>
 {% endif %}
-
-{{ dp_widgets(baseId, 'profile', 'slas', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'slas.after') }}
 {# /SLAs Box#}
 
-{# Usersources Box #}
-{% if person.usersource_assoc|length %}
-	<div class="profile-box-container summary" id="{{baseId}}_us_box">
-		<header>
-			{% if perms.edit %}
-				<div class="controls">
-					<span class="edit-gear edit-trigger"></span>
-					<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
-					<button class="cancel cancel-trigger" style="display: none">Done</button>
-				</div>
-			{% endif %}
-			<h4>{{ phrase('agent.general.usersources') }}</h4>
-		</header>
-		<section id="{{baseId}}_us_body">
-			<div id="{{baseId}}_us_display_box" class="contact-list">
-				<ul>
-					{% for as in person.usersource_assoc %}
-						<li class="us-{{ as.usersource.id }}" style="padding-left: 0;">
-							{{ as.usersource.title }}: {{ as.identity_friendly|default(as.identity) }}
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-			<div id="{{baseId}}_us_edit_box" class="contact-list" style="display: none;">
-				<ul>
-					{% for as in person.usersource_assoc %}
-						<li class="us-{{ as.usersource.id }}" style="padding-left: 0;" data-us-id="{{ as.usersource.id }}">
-							{{ as.usersource.title }}: {{ as.identity_friendly|default(as.identity) }}
-							<button class="remove-trigger clean-white small" data-confirm="Are you sure you want to remove this user source?">Remove</button>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-		</section>
-	</div>
-{% endif %}
-
-{# Usergroup Box #}
-{{ dp_widgets(baseId, 'profile', 'usergroups', 'above', person_api) }}
-
-{% if app.usergroups.getUsergroupNames() %}
-	<div class="profile-box-container summary {% if person.getUsergroupIds()|length < 2 %}no-section{% endif %}" id="{{baseId}}_ug_box">
-		<header>
-			{% if perms.edit %}
+{# Usergroups and Usersources #}
+{{ dp_app_loc(baseId, 'usergroups.before') }}
+<div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_sla_box">
+	<header>
+		{% if perms.edit %}
 			<div class="controls">
 				<span class="edit-gear edit-trigger"></span>
 				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
 				<button class="cancel cancel-trigger" style="display: none">{{ phrase('agent.general.cancel') }}</button>
 				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
-			{% endif %}
-			{{ dp_widget_tabs_header(baseId, 'profile', 'usergroups', {
-				(baseId ~ '_usergroups_body'): phrase('agent.general.usergroups')
-			}) }}
-		</header>
-		<section id="{{baseId}}_usergroups_body">
+		{% endif %}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{ baseId }}_usergroups_body">{{ phrase('agent.general.usergroups') }}</li>
+				{% if person.usersource_assoc|length %}<li data-tab-for="#{{ baseId }}_us_body">{{ phrase('agent.general.usersources') }}</li>{% endif %}
+			</ul>
+		</nav>
+	</header>
+	<section>
+		<div id="{{baseId}}_usergroups_body">
 			<div id="{{baseId}}_ug_display_box" class="contact-list">
 				<ul>
 					<li style="padding-left: 0;">{{ reg_group.title }}</li>
@@ -289,10 +254,34 @@
 					{% endfor %}
 				</ul>
 			</div>
-		</section>
-		{{ dp_widget_tabs(baseId, 'profile', 'usergroups', 'section', person_api) }}
-	</div>
-{% endif %}
+		</div>
+		{% if person.usersource_assoc|length %}
+			<div id="{{baseId}}_us_body">
+				<div id="{{baseId}}_us_display_box" class="contact-list">
+					<ul>
+						{% for as in person.usersource_assoc %}
+							<li class="us-{{ as.usersource.id }}" style="padding-left: 0;">
+								{{ as.usersource.title }}: {{ as.identity_friendly|default(as.identity) }}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div id="{{baseId}}_us_edit_box" class="contact-list" style="display: none;">
+					<ul>
+						{% for as in person.usersource_assoc %}
+							<li class="us-{{ as.usersource.id }}" style="padding-left: 0;" data-us-id="{{ as.usersource.id }}">
+								{{ as.usersource.title }}: {{ as.identity_friendly|default(as.identity) }}
+								<button class="remove-trigger clean-white small" data-confirm="Are you sure you want to remove this user source?">Remove</button>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+		{{ dp_app_loc(baseId, 'usergroups.tab') }}
+	</section>
+</div>
+{{ dp_app_loc(baseId, 'usergroups.after') }}
+{# /Usergroups and Usersources #}
 
-{{ dp_widgets(baseId, 'profile', 'usergroups', 'below', person_api) }}
-{# /Usergroup Box #}
+{{ dp_app_loc(baseId, 'right_col.bottom') }}

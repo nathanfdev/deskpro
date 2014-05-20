@@ -36,7 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\UserBundle\Form\NewTicketType;
 use Orb\Util\Arrays;
 
@@ -95,66 +95,6 @@ class NewTicketController extends AbstractController
 		/** @var \Symfony\Component\Form\Form $form */
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-		$ticket_display->setPersonContext($this->person);
-		$ticket_display->addPagesFromDb();
-		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
-		$ticket_display_js .= "\nwindow.DESKPRO_TICKET_PRI_MAP = " . json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()) . ';';
-
-		$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
-
-		if ($default_page) {
-			$default_page_data = $default_page->getPageDisplay('default')->data;
-			$page_data_field_ids = array();
-			foreach ($default_page->getPageDisplay('default')->data as $info) {
-				$page_data_field_ids[] = $info['id'];
-			}
-		} else {
-			$default_page_data = array();
-			$page_data_field_ids = array();
-		}
-
-		$unique_items = array();
-		foreach ($ticket_display->getPagesData() as $page) {
-			foreach ($page as $item) {
-				$unique_items[$item['id']] = $item;
-			}
-		}
-
-		$captcha = null;
-		if (isset($unique_items['captcha']) && empty($this->person->id)) {
-			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
-		}
-
-		$errors = array();
-		$error_fields = array();
-
-		$validator = new \Application\UserBundle\Validator\NewTicketValidator();
-		if ($captcha) {
-			$validator->setCaptcha($captcha);
-		}
-
-		// Custom fields
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newticket[custom_ticket_fields]');
-
-		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
-		$fm = $this->container->getSystemService('TicketFieldsManager');
-		if (isset($_REQUEST['newticket']['custom_ticket_fields'])) {
-			$field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket']['custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
-
-			$field_form_data = $fm->createFieldDataFromArray($field_data);
-			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
-		} else {
-			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
-		}
-
-		$captcha_html = '';
-		if ($captcha) {
-			$captcha_html = $captcha->getHtml();
-		}
-
 		$set_dep_id = null;
 		if ($this->in->getUint('set_dep_id')) {
 			$for_department_id = $this->in->getUint('set_dep_id');
@@ -176,18 +116,90 @@ class NewTicketController extends AbstractController
 			$set_dep_id = $newticket->ticket->department_id;
 		}
 
+		$layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
+		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
+
+		if ($newticket->ticket->department_id) {
+			$default_page = $layouts->getLayout($newticket->ticket->department_id);
+		} else {
+			$default_page = $layouts->getDefaultLayout();
+		}
+
+		$default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::NEW_TICKET);
+
+		if ($default_page) {
+			$page_data_field_ids = array();
+			foreach ($default_page as $field) {
+				$page_data_field_ids[] = $field->getId();
+			}
+		} else {
+			$page_data_field_ids = array();
+		}
+
+		$unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
+
+		$captcha = null;
+		if (isset($unique_items['captcha']) && empty($this->person->id)) {
+			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+		}
+
+		$errors = array();
+		$error_fields = array();
+
+		$validator = new \Application\UserBundle\Validator\NewTicketValidator();
+		if ($captcha) {
+			$validator->setCaptcha($captcha);
+		}
+
+		// Custom fields
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
+		$custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
+
+		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+		$fm = $this->container->getSystemService('TicketFieldsManager');
+		if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
+			if (empty($_REQUEST['newticket_custom_ticket_fields']) || !is_array($_REQUEST['newticket_custom_ticket_fields'])) {
+				$_REQUEST['newticket_custom_ticket_fields'] = array();
+			}
+			$field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
+			$field_form_data = $fm->createFieldDataFromArray($field_data);
+			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+		} else {
+			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
+		}
+
+		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+		$ufm = $this->container->getSystemService('PersonFieldsManager');
+		if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
+			if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
+				$_REQUEST['newticket_custom_user_fields'] = array();
+			}
+			$field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+			$field_form_data = $ufm->createFieldDataFromArray($field_data);
+			$custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, false);
+		} else {
+			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person);
+		}
+
+		$captcha_html = '';
+		if ($captcha) {
+			$captcha_html = $captcha->getHtml();
+		}
+
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 
-			$validator->setPageData($default_page_data);
+			$validator->setLayout($default_page);
 
 			if (!$this->consumeRequest('newticket')) {
 				return $this->redirectRoute('user');
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
-			$newticket->custom_ticket_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
+			$newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
 
 			$trap_fail = false;
 			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
@@ -198,7 +210,7 @@ class NewTicketController extends AbstractController
 				$ticket = $newticket->save();
 				$person = $ticket['person'];
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 				// Its no longer a preticket, so we can delete the record
 				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
@@ -283,28 +295,27 @@ class NewTicketController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
-			'set_dep_id' => $set_dep_id,
-			'all_items' => $unique_items,
+			'set_dep_id'            => $set_dep_id,
+			'all_items'             => $unique_items,
 
-			'newticket' => $newticket,
-			'ticket_options' => $newticket_formtype->getTicketOptions(),
-			'newticket_formtype' => $newticket_formtype,
-			'form' => $form->createView(),
-			'custom_fields' => $custom_fields,
-			'ticket_display_js' => $ticket_display_js,
+			'newticket'             => $newticket,
+			'newticket_formtype'    => $newticket_formtype,
+			'form'                  => $form->createView(),
+			'custom_fields'         => $custom_fields,
+			'custom_user_fields'    => $custom_user_fields,
+			'ticket_display_js'     => $ticket_display_js,
 
-			'captcha_html' => $captcha_html,
-			'errors' => $errors,
-			'error_fields' => $error_fields,
+			'captcha_html'          => $captcha_html,
+			'errors'                => $errors,
+			'error_fields'          => $error_fields,
 
-			'default_page_data' => $default_page_data,
-			'page_data_field_ids' => $page_data_field_ids,
+			'page_data_field_ids'   => $page_data_field_ids,
 
-			'redirect_after' => $redirect_after,
-			'website_url' => $website_url,
+			'redirect_after'        => $redirect_after,
+			'website_url'           => $website_url,
 
-			'hide_name_field'  => $hide_name_field,
-			'hide_email_field' => $hide_email_field,
+			'hide_name_field'       => $hide_name_field,
+			'hide_email_field'      => $hide_email_field,
 		));
     }
 
@@ -357,7 +368,7 @@ class NewTicketController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
-		App::setSkipCache(true);
+		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 		$this->session->set('preticket_id', $preticket->getId());
 
@@ -404,7 +415,7 @@ class NewTicketController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
-		App::setSkipCache(true);
+		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 		$this->session->remove('preticket_id');
 
@@ -457,7 +468,7 @@ class NewTicketController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
-		App::setSkipCache(true);
+		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -520,7 +531,7 @@ class NewTicketController extends AbstractController
 
 			$this->em->getConnection()->commit();
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
 			throw $e;

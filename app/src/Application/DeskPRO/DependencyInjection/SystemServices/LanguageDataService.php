@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Language;
 use Orb\Util\Arrays;
 
 class LanguageDataService extends BaseRepositoryService
@@ -71,7 +70,7 @@ class LanguageDataService extends BaseRepositoryService
 
 	public function init()
 	{
-		$this->default_lang_id = $this->options->get('default_lang_id');
+		$this->default_lang_id = (int)$this->options->get('default_lang_id');
 	}
 
 

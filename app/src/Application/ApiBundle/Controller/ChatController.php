@@ -36,13 +36,88 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
-use Application\DeskPRO\Entity\ChatConversation;
 use Orb\Util\Numbers;
 
+/**
+* @SWG\Resource(
+* 	resourcePath="/chats",
+* 	description="Operations about Chats",
+* 	basePath="/api"
+* )
+*/
 class ChatController extends AbstractController
 {
 	// todo: better search - ordering, more criteria
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Search for chats matching criteria",
+	 * 		notes="Returns list of chats that matched.",
+	 *		type="array",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="agent_id[]",
+	 *				description="Requires chat to be assigned to the specified agent ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="department_id[]",
+	 *				description="Requires chat to be in the specified department ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Requires chat to be have the specified label.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="person_id[]",
+	 *				description="Requires chat to be created by the specified person ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status[]",
+	 *				description="Requires chat to be in the specified status. Possible values are ended and open.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to newest chats. This parameter is not used used yet.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function searchAction()
 	{
 		$search_map = array(
@@ -109,6 +184,27 @@ class ChatController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a chat by chat ID.",
+	 * 		notes="Information about the chat by chat ID.",
+	 *		type="Chat",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function getChatAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -116,6 +212,33 @@ class ChatController extends AbstractController
 		return $this->createApiResponse(array('chat' => $chat->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates a chat by chat ID.",
+	 *		type="Chat",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="department_id",
+	 *				description="Department the chat is in.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function postChatAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -146,6 +269,33 @@ class ChatController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/leave",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Leaves a chat by chat ID.",
+	 *		type="Chat",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be left.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="action",
+	 *				description="If the chat is open, an additional action to take. Options are unassign or end.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function leaveChatAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -171,6 +321,26 @@ class ChatController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/end",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Ends a chat by chat ID.",
+	 *		type="Chat",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be ended.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function endChatAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -181,6 +351,25 @@ class ChatController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/messages",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets all messages in a chat by chat ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be ended.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function getMessagesAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -188,6 +377,32 @@ class ChatController extends AbstractController
 		return $this->createApiResponse(array('messages' => $this->getApiData($chat->messages)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/messages",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Replies to a chat as the API user",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be ended.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="message",
+	 *				description="Message reply text.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function newMessageAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -207,6 +422,25 @@ class ChatController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/participants",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets all participants in a chat by chat ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be ended.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function getParticipantsAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -214,6 +448,32 @@ class ChatController extends AbstractController
 		return $this->createApiResponse(array('participants' => $this->getApiData($chat->participants)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/participants",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a participants in a chat by chat ID and person ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="person_id",
+	 *				description="ID of the person that needs to be added to the Chat.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function postParticipantsAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -235,6 +495,32 @@ class ChatController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/participants/{person_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if a person is participating in a chat.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="person_id",
+	 *				description="ID of the person that needs to be added to be checked.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function getParticipantAction($chat_id, $person_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -247,6 +533,32 @@ class ChatController extends AbstractController
 		return $this->createApiResponse(array('exists' => true));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/participants/{person_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes a participant from a chat",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="person_id",
+	 *				description="ID of the person that needs to be added to be removed.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteParticipantAction($chat_id, $person_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -263,6 +575,25 @@ class ChatController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the labels for a chat",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function getChatLabelsAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -270,6 +601,32 @@ class ChatController extends AbstractController
 		return $this->createApiResponse(array('labels' => $this->getApiData($chat->labels)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a label to a chat.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="Label to add.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function postChatLabelsAction($chat_id)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -289,6 +646,32 @@ class ChatController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if the chat has the label.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="Label to check.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function getChatLabelAction($chat_id, $label)
 	{
 		$chat = $this->_getChatOr404($chat_id);
@@ -300,6 +683,32 @@ class ChatController extends AbstractController
 		}
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/chats/{chat_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes a label from a chat.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="chat_id",
+	 *				description="ID of the chat that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="Label that needs to be removed.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Chat not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteChatLabelAction($chat_id, $label)
 	{
 		$chat = $this->_getChatOr404($chat_id);

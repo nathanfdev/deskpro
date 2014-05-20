@@ -1,0 +1,122 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Scheduled Tasks</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Last Run Time</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<div ng-if="!ListCtrl.server_cron.last_start">
+								Tasks have never been run.
+							</div>
+
+							<div ng-if="ListCtrl.server_cron.last_start">
+								&bull; The last time tasks were executed was
+								{{ ng_var('ListCtrl.server_cron.time_since_start_readable') }} ago
+								({{ ng_var('ListCtrl.server_cron.last_start_ms | fulltime') }}).
+								<br/>
+
+								<div ng-if="!ListCtrl.server_cron.last_run">
+									&bull; Tasks have never completed successfully.
+								</div>
+
+								<div ng-if="ListCtrl.server_cron.last_run">
+									&bull; The last time tasks completed successfully was
+									{{ ng_var('ListCtrl.server_cron.time_since_run_readable') }} ago
+									({{ ng_var('ListCtrl.server_cron.last_run_ms | fulltime') }}).
+								</div>
+
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('admin.logs.task') }}
+						</th>
+						<th>
+							{{ phrase('admin.logs.interval') }}
+						</th>
+						<th>
+							Last Run
+						</th>
+						<th>
+							Last Complete
+						</th>
+						<th>
+							{{ phrase('admin.logs.next_run') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="job in ListCtrl.server_cron.jobs">
+						<td class="alt dp-id-col">
+							{{ ng_var('job.title') }}
+						</td>
+						<td>
+							{{ ng_var('job.interval_readable') }}
+						</td>
+						<td>
+							<span ng-if="job.last_start_date_ts">
+								{{ ng_var('job.last_start_date_ts_ms | fulltime') }}
+							</span>
+							<span ng-if="!job.last_start_date_ts">
+								{{ phrase('agent.general.never') }}
+							</span>
+						</td>
+						<td>
+							<span ng-if="job.last_run_date_ts">
+								{{ ng_var('job.last_run_date_ts_ms | fulltime') }}
+							</span>
+							<span ng-if="!job.last_run_date_ts">
+								{{ phrase('agent.general.never') }}
+							</span>
+						</td>
+						<td>
+							{{ ng_var('job.next_run_time') }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('server.cron.logs') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+
+			<h3>Scheduled Tasks Logs</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('server.task_queue') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+
+			<h3>Task Queue Logs</h3>
+		</a>
+	</section>
+
+{% endblock %}

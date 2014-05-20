@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
 class TwitterAccountSearch extends AbstractEntityRepository
 {
 	public function getExistingSearch($term, \Application\DeskPRO\Entity\TwitterAccount $account)

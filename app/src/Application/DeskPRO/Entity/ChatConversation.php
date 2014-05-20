@@ -34,15 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
 
 /**
  * A conversation between one or more people

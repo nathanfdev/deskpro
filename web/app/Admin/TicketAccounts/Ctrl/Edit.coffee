@@ -1,0 +1,210 @@
+define [
+	'Admin/Main/Ctrl/Base',
+	'Admin/TicketAccounts/FormModel/EditTicketAccountModel',
+], (
+	Admin_Ctrl_Base,
+	EditTicketAccountModel
+) ->
+	class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base
+		@CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
+		@CTRL_AS = 'TicketAccountsEdit'
+		@DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal']
+
+		init: ->
+			@accountId = parseInt(@$stateParams.id || 0)
+			@didPassTest = false
+			@testMessageCount = 0
+			@didConfirmExistingMessages = false
+			@test_email = {
+				to: window.DP_PERSON_EMAIL,
+				from: '',
+				subject: 'Test email',
+				message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
+			}
+
+		initialLoad: ->
+			dep_promise = @DataService.get('TicketDeps').loadList().then( (list) =>
+				@deps = list
+			)
+
+			if not @accountId
+				@account = {}
+				@trigger = {}
+				final_promise = dep_promise
+			else
+				data_promise = @Api.sendDataGet({
+					'email_account': '/email_accounts/' + @accountId
+				}).then( (result) =>
+					@account = result.data.email_account.email_account
+					@trigger = result.data.email_account.trigger
+					@form_model = new EditTicketAccountModel(@account)
+					@$scope.form = @form_model.form
+				)
+
+				final_promise = @$q.all([dep_promise, data_promise])
+
+			final_promise.then(=>
+				@form_model = new EditTicketAccountModel(@account, @deps, @trigger)
+
+				if not @accountId
+					@form_model.form.incoming_account_type = ''
+					@form_model.form.outgoing_account_type = 'smtp'
+
+				@$scope.form = @form_model.form
+			)
+			return final_promise
+
+
+		###
+    	# Saves the current form
+    	#
+    	# @return {promise}
+		###
+		saveAccount: ->
+			postData = @form_model.getFormData()
+
+			@startSpinner('saving_account')
+			if @account.id
+				is_new = false
+				promise = @Api.sendPostJson('/email_accounts/' + @account.id, postData)
+			else
+				is_new = true
+				promise = @Api.sendPutJson('/email_accounts', postData)
+
+			promise.success( (result) =>
+				@account.id = result.email_account_id || @account.id
+				@account.is_enabled = true
+				@stopSpinner('saving_account', true).then(=>
+					@Growl.success(@getRegisteredMessage('saved_account'))
+				)
+
+				@form_model.apply()
+				@TicketAccountsData.updateModel(@account)
+
+				@skipDirtyState()
+				if is_new
+					@$state.go('tickets.ticket_accounts.gocreate')
+				else
+					@$state.go('tickets.ticket_accounts')
+			)
+			promise.error( (info, code) =>
+				@stopSpinner('saving_account', true)
+				@applyErrorResponseToView(info)
+			)
+
+			return promise
+
+
+		###
+    	# Test current account settings
+    	#
+    	# @return {promise}
+		###
+		loadAccountTest: ->
+			return @Api.sendPostJson('/email_accounts/test-account', @form_model.getFormData()).success( (result) =>
+				@didPassTest = result.is_success
+			)
+
+
+		###
+    	# Test current outgoing settings with message details from @test_email object.
+    	#
+    	# @return {promise}
+		###
+		loadOutgoingAccountTest: ->
+			form_data = @form_model.getFormData()
+			form_data.test_email = @test_email
+
+			return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data)
+
+
+		###
+    	# Show the test account modal
+		###
+		testAccountModal: ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketAccounts/test-account-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+					$scope.dismiss = =>
+						$modalInstance.dismiss();
+
+					$scope.showLog = =>
+						$scope.showing_log = true
+
+					testNow = =>
+						$scope.showing_log = false
+						$scope.is_testing = true
+						@loadAccountTest().success( (result) =>
+							$scope.is_testing    = false
+							$scope.is_success    = result.is_success
+							$scope.log           = result.log
+							$scope.message_count = result.message_count
+						).error(=>
+							$scope.showing_log   = true
+							$scope.is_testing    = false
+							$scope.is_success    = false
+							$scope.log           = "Server Error"
+							$scope.message_count = 0
+						)
+
+					testNow();
+
+					$scope.testNow = ->
+						testNow()
+				]
+			});
+
+
+		###
+    	# Show the test account modal
+		###
+		testOutgoingModal: ->
+			me = @
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
+				resolve: {
+					test_email: =>
+						@test_email.from = @form_model.form.address
+						return @test_email
+				},
+				controller: ['$scope', '$modalInstance', 'test_email', ($scope, $modalInstance, test_email) =>
+					$scope.dismiss = =>
+						$modalInstance.dismiss();
+
+					$scope.showLog = =>
+						$scope.showing_log = true
+
+					$scope.test_email = test_email
+
+					testNow = =>
+						$scope.testing_started = true
+						$scope.showing_log = false
+						$scope.is_testing = true
+
+						if not test_email.from
+							test_email.from = me.form_model.form.address
+
+						me.loadOutgoingAccountTest().success( (result) =>
+							$scope.is_testing    = false
+							$scope.is_success    = result.is_success
+							$scope.log           = result.log
+							$scope.message_count = result.message_count
+						).error(=>
+							$scope.showing_log   = true
+							$scope.is_testing    = false
+							$scope.is_success    = false
+							$scope.log           = "Server Error"
+							$scope.message_count = 0
+						)
+
+					resetTest = =>
+						$scope.testing_started = false
+
+					$scope.testNow = ->
+						testNow()
+					$scope.resetTest = ->
+						resetTest()
+				]
+			});
+
+	Admin_TicketAccounts_Ctrl_Edit.EXPORT_CTRL()

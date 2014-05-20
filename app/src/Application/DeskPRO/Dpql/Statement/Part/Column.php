@@ -34,14 +34,14 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Func\Link;
+use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Application\DeskPRO\Dpql\Exception;
-use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
-use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
-use Application\DeskPRO\Dpql\Func\Link;
 
 /**
  * Represents a reference to a column or association.

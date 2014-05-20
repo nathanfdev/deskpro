@@ -34,12 +34,8 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-
-use Orb\Util\Util;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\Entity;
+use Orb\Util\Util;
 
 class TaskSearch extends SearcherAbstract
 {

@@ -14,12 +14,54 @@
 	line-height: 16px;
 }
 
+#dp_source_footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 27px;
+	overflow: hidden;
+
+	.results-nav {
+		border-bottom: none;
+	}
+
+	#agent_chat_online_icons {
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style-type: none;
+			width: 300px;
+			overflow: hidden;
+		}
+		li {
+			display: inline-block;
+			.agent-inline-icon {
+				display: inline-block;
+				margin-right: 4px;
+				overflow: hidden;
+				position: relative;
+				top: 3px;
+				.rounded(2px);
+				cursor: default;
+				width: 16px;
+				height: 16px;
+			}
+		}
+	}
+
+	&:hover .results-nav {
+		background: #ebecee;
+		cursor: pointer;
+	}
+}
+
 #dp_source > section {
 	display: none;
 	position: absolute;
 	top: 0;
 	right: 0;
-	bottom: 0;
+	bottom: 26px;
 	left: 0;
 	overflow: hidden;
 }

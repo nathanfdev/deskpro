@@ -35,11 +35,36 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\GlossaryWord;
 
-
+/**
+* @SWG\Resource(
+* 	resourcePath="/glossary",
+* 	description="Operations about Glossary Words",
+* 	basePath="/api"
+* )
+*/
 class GlossaryController extends AbstractController
 {
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="List glossary words.",
+	 * 		notes="Returns list of words that matched.",
+	 *		type="array",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="word",
+	 *				description="If specified, gets words containing this string.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function listAction()
 	{
 		$word = $this->in->getString('word');
@@ -52,6 +77,26 @@ class GlossaryController extends AbstractController
 		return $this->createApiResponse(array('words' => $words));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary/lookup",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Looks up a specific glossary word.",
+	 * 		notes="Information about the word, if in the glossary.",
+	 *		type="GlossaryWord",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="word",
+	 *				description="If specified, gets this word.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function lookupAction()
 	{
 		$word = $this->in->getString('word');
@@ -64,6 +109,31 @@ class GlossaryController extends AbstractController
 		}
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Add a glossary word.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="definition",
+	 *				description="Definition of given words.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="word[]",
+	 *				description="Comma seperated list of words to associate with this definition.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function newWordAction()
 	{
 		$def = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
@@ -89,6 +159,27 @@ class GlossaryController extends AbstractController
 		return $this->createApiResponse(array('ids' => $ids, 'definition_id' => $def->id));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary/{word_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a glossary word by word ID.",
+	 * 		notes="Information about the word by word ID, if in the glossary.",
+	 *		type="GlossaryWord",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="word_id",
+	 *				description="ID of the word that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Glossary word not found")
+	 * 	)
+	 * )
+	 */
 	public function getWordAction($word_id)
 	{
 		$word = $this->_getWordOr404($word_id);
@@ -96,6 +187,25 @@ class GlossaryController extends AbstractController
 		return $this->createApiResponse(array('word' => $word->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary/{word_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Deletes a glossary word by ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="word_id",
+	 *				description="ID of the word that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Glossary word not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteWordAction($word_id)
 	{
 		$word = $this->_getWordOr404($word_id);
@@ -110,6 +220,27 @@ class GlossaryController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary/definitions/{definition_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a glossary word definition.",
+	 * 		notes="Information about the Glossary Word definition by definition ID, if in the glossary.",
+	 *		type="GlossaryWordDefinition",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="definition_id",
+	 *				description="ID of the word defination that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Glossary definition not found")
+	 * 	)
+	 * )
+	 */
 	public function getDefinitionAction($definition_id)
 	{
 		$def = $this->_getDefinitionOr404($definition_id);
@@ -117,6 +248,25 @@ class GlossaryController extends AbstractController
 		return $this->createApiResponse(array('definition' => $def->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary/definitions/{definition_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates a glossary word definition.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="definition_id",
+	 *				description="ID of the word defination that needs to be updated.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Glossary definition not found")
+	 * 	)
+	 * )
+	 */
 	public function postDefinitionAction($definition_id)
 	{
 		$def = $this->_getDefinitionOr404($definition_id);
@@ -135,6 +285,25 @@ class GlossaryController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/glossary/definitions/{definition_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Deletes a glossary word definition.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="definition_id",
+	 *				description="ID of the word defination that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Glossary definition not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteDefinitionAction($definition_id)
 	{
 		$def = $this->_getDefinitionOr404($definition_id);

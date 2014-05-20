@@ -1,7 +1,8 @@
 {######################################################################################################################}
 {# METADATA #}
 {######################################################################################################################}
-{{ set_tplvar('baseId', el_uid()) }}
+{% set baseId = el_uid() %}
+{{ set_tplvar('baseId', baseId) }}
 <script>
 {% if filter %}
 	{% if filter.sys_name %}
@@ -73,8 +74,8 @@ pageMeta.view_name = '{{ view_name }}';
 pageMeta.orderBy    = '{{ order_by[0] }}';
 pageMeta.orderByDir = '{{ order_by[1] }}';
 
-pageMeta.baseId = '{{ tplvars.baseId }}';
+pageMeta.baseId = '{{ baseId }}';
 </script>
-<script id="{{ tplvars.baseId }}_ticket_json" type="application/json">{{ ticket_json|raw }}</script>
-<script id="{{ tplvars.baseId }}_ticket_ids_json" type="application/json">{{ all_ticket_ids|json_encode|raw }}</script>
-<div id="{{ tplvars.baseId }}_ng_attach">{% include 'AgentBundle:TicketSearch:ticket-list.html.twig' %}</div>
+<script id="{{ baseId }}_ticket_json" type="application/json">{{ ticket_json|raw }}</script>
+<script id="{{ baseId }}_ticket_ids_json" type="application/json">{{ all_ticket_ids|json_encode|raw }}</script>
+<div id="{{ baseId }}_ng_attach">{% include 'AgentBundle:TicketSearch:ticket-list.html.twig' %}</div>

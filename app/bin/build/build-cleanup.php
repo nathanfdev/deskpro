@@ -11,10 +11,12 @@ define('DP_ROOT', realpath(__DIR__ . '/../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
+require_once DP_ROOT . '/sys/load_config.php';
+
 // Remove log stuff
 $rm_paths = array(
-	DP_ROOT.'/sys/cache/dev',
-	DP_ROOT.'/sys/cache/prod/classes.map'
+	dp_get_cache_dir().'/dev',
+	dp_get_cache_dir().'/prod/classes.map'
 );
 
 foreach ($rm_paths as $p) {

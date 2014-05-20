@@ -33,9 +33,8 @@
 
 namespace Application\ApiBundle;
 
+use Application\ApiBundle\DependencyInjection\AuditWriterPass;
 use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
@@ -50,6 +49,7 @@ class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 		parent::build($container);
 
 		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
+		$container->addCompilerPass(new AuditWriterPass());
 	}
 
 	public function getNamespace()

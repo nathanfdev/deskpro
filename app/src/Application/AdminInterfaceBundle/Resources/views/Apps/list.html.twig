@@ -1,0 +1,122 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+
+<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.custom_apps.length">
+	<header>
+		<h3>Your Widgets</h3>
+	</header>
+	<article>
+		<ul class="dp-item-list">
+			<li ng-repeat="app in ListCtrl.custom_apps" dp-state-mark="apps.apps.custom_instance.{{ ng_var('app.id') }}">
+				<a href="{{ ng_href('apps.apps.custom_instance', "{custom_id: 'custom_' + app.id}") }}">
+					<span class="title-text">{{ ng_var('app.title') }}</span>
+				</a>
+			</li>
+		</ul>
+	</article>
+</section>
+
+<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length">
+	<header>
+		<h3 style="margin-bottom: 0;">Installed Apps</h3>
+	</header>
+	<article>
+		<ul class="dp-item-list dp-icon-list compact">
+			<li ng-repeat="app in ListCtrl.apps" dp-state-mark="apps.apps.instance.{{ ng_var('app.id') }}">
+				<aside>
+					<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}"><img src="{{ ng_var('app.package.icon_32') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content">
+					<h4>
+						<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}">
+							<span class="title-text">{{ ng_var('app.title') }}</span>
+							<span class="title-alt" ng-if="app.package.title != app.title">({{ ng_var('app.package.title') }})</span>
+						</a>
+					</h4>
+					<p class="info">
+						by {{ ng_var('app.package.author_name') }} &bull; <a ng-href="{{ ng_var('app.package.author_link') }}">Website</a>
+					</p>
+				</div>
+			</li>
+		</ul>
+	</article>
+</section>
+
+{% macro package_row() %}
+	<aside>
+		<a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><img src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
+	</aside>
+	<div class="content">
+		<h4><a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><span class="title-text">{{ ng_var('package.title') }}</span></a></h4>
+		<p class="info">
+			by {{ ng_var('package.author_name') }} &middot; <a ng-href="{{ ng_var('package.author_link') }}">Website</a>
+		</p>
+		<p>
+			{{ ng_var('package.description') }}
+		</p>
+	</div>
+{% endmacro %}
+
+<section class="dp-paneblock dp-listpane">
+	<header>
+		<nav ng-show="ListCtrl.apps.length">
+			<label style="margin: 10px 15px 0 0; font-size: 11px;">
+				<input type="checkbox" ng-model="hide_installed" /> Hide apps that are already installed
+				<i class="fa fa-question-circle qmark-icon" tooltip="Some apps can be installed multiple times. If you want to install a second instance of an app, uncheck this box so the app appears in the list." tooltip-placement="left"></i>
+			</label>
+		</nav>
+		<h3>Apps</h3>
+	</header>
+	<article>
+		<div class="alert alert-info dp-alert-ribbon">
+			<button class="btn btn-default btn-xs" ng-click="ListCtrl.showNewApp()"><i class="fa fa-asterisk"></i> Create Widget</button>
+			<button class="btn btn-default btn-xs" ng-click="ListCtrl.showUploadApp()"><i class="fa fa-upload"></i> Upload App</button>
+		</div>
+		<ul class="dp-item-list dp-icon-list">
+			<li ng-repeat="package in ListCtrl.general_packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
+				{{ _self.package_row() }}
+			</li>
+		</ul>
+	</article>
+	<header>
+		<h3>Authentication Apps</h3>
+	</header>
+	<article>
+		<ul class="dp-item-list dp-icon-list">
+			<li ng-repeat="package in ListCtrl.auth_packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.install.{{ ng_var('package.name') }}">
+				{{ _self.package_row() }}
+			</li>
+		</ul>
+	</article>
+</section>
+
+<div style="margin-top: 4px; margin-bottom: 8px; margin-right: 18px; text-align: right;">
+	<a href="{{ ng_href('apps.resync') }}">Re-sync app packages &rarr;</a>
+</div>
+
+{{ ng_tpl('AdminInterfaceBundle:Apps:new-app-modal.html.twig') }}
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>You can extend DeskPRO with apps to add new functionality and integration with other services.</h1>
+		<p>Click any app to install and configure it. You can also create your own widgets (basic apps based on HTML and Javascript) or full apps.</p>
+	</header>
+
+	<article>
+		<section>
+			<p>The authentication apps allow agents or users to log in using credentials from other services, rather than a DeskPRO account.</p>
+			<p>Most apps that operate with third-party services require you to set up an account with the service first. Some apps also require you to provide an <strong>API token</strong> or some other authentication code: consult the support pages for the third-party service to find out how to get it.</p>
+			<p>Widgets enable you to add simple HTML and Javascript to predefined places in the agent interface. They are easier to develop, but less powerful than full apps.</p>
+		</section>
+
+
+		<section>
+			<h2><span>Related Knowledgebase Articles</span></h2>
+			<ul>
+				<li><a href="https://support.deskpro.com/kb/articles/88"  target="_blank">API Basics</a></li>
+				<li><a href="https://support.deskpro.com/kb/articles/97" target="_blank">DeskPRO PHP API Wrapper</a></li>
+				<li><a href="https://support.deskpro.com/kb/articles/84" target="_blank">Creating Widgets</a></li>
+			</ul>
+		</section>
+	</article>
+{% endblock %}

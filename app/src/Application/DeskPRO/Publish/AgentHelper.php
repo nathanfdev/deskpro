@@ -37,9 +37,6 @@ namespace Application\DeskPRO\Publish;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
-
-use Application\DeskPRO\Searcher\ArticleSearch;
-
 use Orb\Util\Arrays;
 
 /**

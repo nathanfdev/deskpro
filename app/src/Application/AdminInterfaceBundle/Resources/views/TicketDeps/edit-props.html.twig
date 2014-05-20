@@ -1,0 +1,128 @@
+<div class="panel panel-fill indent">
+	<div class="panel-body">
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>{{ phrase('agent.general.title') }} *</h3>
+			</div>
+			<div class="col-lg-9">
+				<div class="inner-group" dp-error-class="form_props.title">
+					<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" autofocus />
+					{% if app.getLanguages().isMultiLang() %}
+						<span
+							class="translate-button"
+							tooltip="{{ phrase('adm.general.translate') }}"
+							dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + EditCtrl.dep.id }"
+						></span>
+					{% endif %}
+					<span class="help-block">
+						{{ phrase('adm.departments.title_explain') }}
+					</span>
+				</div>
+
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="EditCtrl.form.enable_user_title" value="1" />
+						<h4>{{ phrase('adm.departments.user_title') }}</h4>
+					</label>
+					<div ng-show="EditCtrl.form.enable_user_title">
+						<input type="text" class="form-control" ng-model="EditCtrl.form.user_title" style="width: 50%;" />
+						{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('adm.general.translate') }}" ng-if="EditCtrl.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + EditCtrl.dep.id + '_user' }"></span>{% endif %}
+					</div>
+					<span class="help-block">
+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>{{ phrase('agent.general.parent') }}</h3>
+			</div>
+			<div class="col-lg-9">
+				<select
+					ui-select2
+					ng-model="EditCtrl.form.parent_id"
+					style="min-width: 240px"
+					class="no-search"
+				>
+					<option value="0">No Parent</option>
+					<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in EditCtrl.dep_parent_list">{{ ng_var('dep.title') }}</option>
+				</select>
+				<span class="help-block">
+					{{ phrase('adm.departments.parent_explain') }}
+				</span>
+
+				<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
+					<p>
+						<strong>{{ phrase('adm.departments.parent_not_parent') }}</strong>
+					</p>
+					<ul>
+						<li>{{ phrase('adm.departments.parent_convert', {title: 'ng_var(show_parent_warning.title)' }) }}</li>
+						<li>{{ phrase('adm.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(EditCtrl.form.title)' }) }}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		{##############################################################################################}
+
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>New Ticket Trigger</h3>
+			</div>
+			<div class="col-lg-9">
+				<div class="inner-group" ng-if="EditCtrl.email_accounts.length">
+					Set Email account:&nbsp;
+					<select
+						name="email_gateway"
+						ui-select2="{dropdownAutoWidth:true}"
+						ng-model="EditCtrl.form.trigger_actions.SetEmailAccount.options.email_account_id"
+						style="min-width: 240px"
+						class="no-search"
+					>
+						<option value="{{ ng_var('account.id') }}" ng-repeat="account in EditCtrl.email_accounts">{{ ng_var('account.address') }}</option>
+					</select>
+				</div>
+
+				{# Send newticket auto-response #}
+				<div class="inner-group">
+					<label style="font-weight: normal">
+						<input type="checkbox" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.enabled" value="1" />
+						Send user an auto-response confirming their new ticket
+					</label>
+					<div class="ng-hide" ng-show="EditCtrl.form.trigger_actions.SendUserEmail.enabled">
+						<table class="display-table spaced">
+							<tr>
+								<td>Template:</td>
+								<td>
+									<select ui-select2="{dropdownAutoWidth:true}" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.options.template" style="min-width: 50px;">
+										{% for email in [
+											'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+										] %}
+											<option value="{{ email }}">{{ email }}</option>
+										{% endfor %}
+										<option value="CREATE">Create a new template...</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td>From Name:</td>
+								<td>
+									<select ui-select2="{dropdownAutoWidth:true}" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.options.from_name" ng-init="" style="min-width: 50px;">
+										<option value="helpdesk_name">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
+										{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
+										<option value="custom">Enter a custom name</option>
+									</select>
+									<div style="padding-top: 3px; width: 250px;">
+										<input type="text" class="form-control" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.options.from_name_custom" ng-show="EditCtrl.form.trigger_actions.SendUserEmail.options.from_name == 'custom'" />
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

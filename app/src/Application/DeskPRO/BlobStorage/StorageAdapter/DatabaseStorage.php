@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
-use Doctrine\DBAL\Connection;
 use Orb\Util\Numbers;
 
 class DatabaseStorage extends AbstractStorageAdapter

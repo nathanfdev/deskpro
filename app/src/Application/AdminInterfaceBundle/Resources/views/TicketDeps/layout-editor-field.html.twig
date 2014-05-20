@@ -1,0 +1,77 @@
+<div>
+	<span class="drag_handle"><i class="fa fa-bars"></i></span>
+	<nav>
+		<ul>
+			<li><span class="opt_btn"><i class="fa fa-cog"></i></span></li>
+			<li><span class="remove_btn"><i class="fa fa-times-circle"></i></span></li>
+		</ul>
+	</nav>
+
+	<div ng-if="field.field_type == 'subject'">
+		<h4>Subject</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'message'">
+		<h4>Message</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'department'">
+		<h4>Department</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'category'">
+		<h4>Category</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'priority'">
+		<h4>Priority</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'workflow'">
+		<h4>Workflow</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'product'">
+		<h4>Product</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'captcha'">
+		<h4>CAPTCHA</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'cc'">
+		<h4>CC</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'attach'">
+		<h4>Attachments</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_email'">
+		<h4>User Email</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_name'">
+		<h4>User Name</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_timezone'">
+		<h4>User Timezone</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_language'">
+		<h4>User Language</h4>
+	</div>
+
+	{% for field in app.getTicketFieldManager().getDisplayArray() %}
+		<div ng-if="field.field_type == 'ticket_field' && field.field_id == '{{ field.field_def.id }}'">
+			<h4>{{ field.field_def.title }}</h4>
+		</div>
+	{% endfor %}
+
+	{% for field in app.getPersonFieldManager().getDisplayArray() %}
+		<div ng-if="field.field_type == 'user_field' && field.field_id == '{{ field.field_def.id }}'">
+			<h4>{{ field.field_def.title }}</h4>
+		</div>
+	{% endfor %}
+</div>

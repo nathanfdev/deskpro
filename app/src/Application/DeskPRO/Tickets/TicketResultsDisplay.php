@@ -34,10 +34,10 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class TicketResultsDisplay implements PersonContextInterface

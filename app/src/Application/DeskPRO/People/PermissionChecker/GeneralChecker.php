@@ -35,10 +35,6 @@
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\ChatConversation;
-
-use Orb\Util\Arrays;
 
 class GeneralChecker extends AbstractChecker
 {
@@ -54,15 +50,6 @@ class GeneralChecker extends AbstractChecker
 		}
 
 		return $this->person->hasPerm('agent_general.signature');
-	}
-
-	public function canSetSignatureRte()
-	{
-		if (!$this->canSetSignature()) {
-			return false;
-		}
-
-		return $this->person->hasPerm('agent_general.signature_rte');
 	}
 
 	public function canSetPicture()

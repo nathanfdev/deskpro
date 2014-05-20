@@ -34,14 +34,14 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Application\DeskPRO\CustomFields\OrganizationFieldManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\FieldManager;
 
 class OrgFieldsManagerService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$m = new FieldManager(
+		$m = new OrganizationFieldManager(
 			$container->get('doctrine.orm.entity_manager'),
 			array(
 				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefOrganization',

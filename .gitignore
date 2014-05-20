@@ -9,7 +9,6 @@
 /.tags
 *.komodoproject
 *.sublime*
-*.map
 /running_tests.trigger
 
 # cache and log files
@@ -55,6 +54,7 @@
 /data/emailstore
 
 /web/build
+/web/app/build/*/build.js
 /web/stylesheets/agent
 /web/stylesheets/admin
 /web/stylesheets/report
@@ -71,7 +71,3 @@
 /app/testing/logs/*
 !/app/testing/logs/.gitkeep
 /app/testing/data/dbset-cache
-
-# From other branch
-/app/testing
-/web/app

@@ -1,41 +1,46 @@
 <?php
-/* This file has been auto-generated. See build-vendors-mutate.php */
+/* This file has been auto-generated (2013-10-07). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
-use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;
-use Closure, Exception,
-    Doctrine\Common\EventManager,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\DBAL\Connection,
-    Doctrine\DBAL\LockMode,
-    Doctrine\ORM\Mapping\ClassMetadata,
-    Doctrine\ORM\Mapping\ClassMetadataFactory,
-    Doctrine\ORM\Query\ResultSetMapping,
-    Doctrine\ORM\Proxy\ProxyFactory,
-    Doctrine\ORM\Query\FilterCollection;
+use Doctrine\Common\EventManager;
+use Doctrine\Common\Util\ClassUtils;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Internal;
+use Doctrine\ORM\NativeQuery;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Proxy\ProxyFactory;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\FilterCollection;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\UnitOfWork;
+use Exception;
+
 class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 {
     protected $config;
     protected $conn;
     protected $metadataFactory;
-    protected $repositories = array();
     protected $unitOfWork;
     protected $eventManager;
-    protected $hydrators = array();
     protected $proxyFactory;
+    protected $repositoryFactory;
     protected $expressionBuilder;
     protected $closed = false;
     protected $filterCollection;
     protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
     {
-        $this->conn = $conn;
-        $this->config = $config;
-        $this->eventManager = $eventManager;
+        $this->conn              = $conn;
+        $this->config            = $config;
+        $this->eventManager      = $eventManager;
         $metadataFactoryClassName = $config->getClassMetadataFactoryName();
         $this->metadataFactory = new $metadataFactoryClassName;
         $this->metadataFactory->setEntityManager($this);
         $this->metadataFactory->setCacheDriver($this->config->getMetadataCacheImpl());
-        $this->unitOfWork = new UnitOfWork($this);
-        $this->proxyFactory = new ProxyFactory(
+        $this->repositoryFactory = $config->getRepositoryFactory();
+        $this->unitOfWork        = new UnitOfWork($this);
+        $this->proxyFactory      = new ProxyFactory(
             $this,
             $config->getProxyDir(),
             $config->getProxyNamespace(),
@@ -61,11 +66,14 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     {
         $this->conn->beginTransaction();
     }
-    public function transactional(Closure $func)
+    public function transactional($func)
     {
+        if (!is_callable($func)) {
+            throw new \InvalidArgumentException('Expected argument of type "callable", got "' . gettype($func) . '"');
+        }
         $this->conn->beginTransaction();
         try {
-            $return = $func($this);
+            $return = call_user_func($func, $this);
             $this->flush();
             $this->conn->commit();
             return $return ?: true;
@@ -87,7 +95,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     {
         return $this->metadataFactory->getMetadataFor($className);
     }
-    public function createQuery($dql = "")
+    public function createQuery($dql = '')
     {
         $query = new Query($this);
         if ( ! empty($dql)) {
@@ -120,9 +128,58 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         $this->errorIfClosed();
         $this->unitOfWork->commit($entity);
     }
-    public function find($entityName, $identifier, $lockMode = LockMode::NONE, $lockVersion = null)
+    public function find($entityName, $id, $lockMode = LockMode::NONE, $lockVersion = null)
     {
-        return $this->getRepository($entityName)->find($identifier, $lockMode, $lockVersion);
+        $class = $this->metadataFactory->getMetadataFor(ltrim($entityName, '\\'));
+        if (is_object($id) && $this->metadataFactory->hasMetadataFor(ClassUtils::getClass($id))) {
+            $id = $this->unitOfWork->getSingleIdentifierValue($id);
+            if ($id === null) {
+                throw ORMInvalidArgumentException::invalidIdentifierBindingEntity();
+            }
+        }
+        if ( ! is_array($id)) {
+            $id = array($class->identifier[0] => $id);
+        }
+        $sortedId = array();
+        foreach ($class->identifier as $identifier) {
+            if ( ! isset($id[$identifier])) {
+                throw ORMException::missingIdentifierField($class->name, $identifier);
+            }
+            $sortedId[$identifier] = $id[$identifier];
+        }
+        $unitOfWork = $this->getUnitOfWork();
+                if (($entity = $unitOfWork->tryGetById($sortedId, $class->rootEntityName)) !== false) {
+            if ( ! ($entity instanceof $class->name)) {
+                return null;
+            }
+            switch ($lockMode) {
+                case LockMode::OPTIMISTIC:
+                    $this->lock($entity, $lockMode, $lockVersion);
+                    break;
+                case LockMode::PESSIMISTIC_READ:
+                case LockMode::PESSIMISTIC_WRITE:
+                    $persister = $unitOfWork->getEntityPersister($class->name);
+                    $persister->refresh($sortedId, $entity, $lockMode);
+                    break;
+            }
+            return $entity;         }
+        $persister = $unitOfWork->getEntityPersister($class->name);
+        switch ($lockMode) {
+            case LockMode::NONE:
+                return $persister->load($sortedId);
+            case LockMode::OPTIMISTIC:
+                if ( ! $class->isVersioned) {
+                    throw OptimisticLockException::notVersioned($class->name);
+                }
+                $entity = $persister->load($sortedId);
+                $unitOfWork->lock($entity, $lockMode, $lockVersion);
+                return $entity;
+            default:
+                if ( ! $this->getConnection()->isTransactionActive()) {
+                    throw TransactionRequiredException::transactionRequired();
+                }
+                return $persister->load($sortedId, null, null, array(), $lockMode);
+        }
     }
     public function getReference($entityName, $id)
     {
@@ -132,12 +189,12 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         }
         $sortedId = array();
         foreach ($class->identifier as $identifier) {
-            if (!isset($id[$identifier])) {
+            if ( ! isset($id[$identifier])) {
                 throw ORMException::missingIdentifierField($class->name, $identifier);
             }
             $sortedId[$identifier] = $id[$identifier];
         }
-                if ($entity = $this->unitOfWork->tryGetById($sortedId, $class->rootEntityName)) {
+                if (($entity = $this->unitOfWork->tryGetById($sortedId, $class->rootEntityName)) !== false) {
             return ($entity instanceof $class->name) ? $entity : null;
         }
         if ($class->subClasses) {
@@ -153,7 +210,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     public function getPartialReference($entityName, $identifier)
     {
         $class = $this->metadataFactory->getMetadataFor(ltrim($entityName, '\\'));
-                if ($entity = $this->unitOfWork->tryGetById($identifier, $class->rootEntityName)) {
+                if (($entity = $this->unitOfWork->tryGetById($identifier, $class->rootEntityName)) !== false) {
             return ($entity instanceof $class->name) ? $entity : null;
         }
         if ( ! is_array($identifier)) {
@@ -177,7 +234,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     public function persist($entity)
     {
         if ( ! is_object($entity)) {
-            throw new \InvalidArgumentException(gettype($entity));
+            throw ORMInvalidArgumentException::invalidObject('EntityManager#persist()' , $entity);
         }
         $this->errorIfClosed();
         $this->unitOfWork->persist($entity);
@@ -185,7 +242,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     public function remove($entity)
     {
         if ( ! is_object($entity)) {
-            throw new \InvalidArgumentException(gettype($entity));
+            throw ORMInvalidArgumentException::invalidObject('EntityManager#remove()' , $entity);
         }
         $this->errorIfClosed();
         $this->unitOfWork->remove($entity);
@@ -193,7 +250,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     public function refresh($entity)
     {
         if ( ! is_object($entity)) {
-            throw new \InvalidArgumentException(gettype($entity));
+            throw ORMInvalidArgumentException::invalidObject('EntityManager#refresh()' , $entity);
         }
         $this->errorIfClosed();
         $this->unitOfWork->refresh($entity);
@@ -201,14 +258,14 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     public function detach($entity)
     {
         if ( ! is_object($entity)) {
-            throw new \InvalidArgumentException(gettype($entity));
+            throw ORMInvalidArgumentException::invalidObject('EntityManager#detach()' , $entity);
         }
         $this->unitOfWork->detach($entity);
     }
     public function merge($entity)
     {
         if ( ! is_object($entity)) {
-            throw new \InvalidArgumentException(gettype($entity));
+            throw ORMInvalidArgumentException::invalidObject('EntityManager#merge()' , $entity);
         }
         $this->errorIfClosed();
         return $this->unitOfWork->merge($entity);
@@ -223,18 +280,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     }
     public function getRepository($entityName)
     {
-        $entityName = ltrim($entityName, '\\');
-        if (isset($this->repositories[$entityName])) {
-            return $this->repositories[$entityName];
-        }
-        $metadata = $this->getClassMetadata($entityName);
-        $repositoryClassName = $metadata->customRepositoryClassName;
-        if ($repositoryClassName === null) {
-            $repositoryClassName = $this->config->getDefaultRepositoryClassName();
-        }
-        $repository = new $repositoryClassName($this, $metadata);
-        $this->repositories[$entityName] = $repository;
-        return $repository;
+        return $this->repositoryFactory->getRepository($this, $entityName);
     }
     public function contains($entity)
     {
@@ -266,10 +312,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     }
     public function getHydrator($hydrationMode)
     {
-        if ( ! isset($this->hydrators[$hydrationMode])) {
-            $this->hydrators[$hydrationMode] = $this->newHydrator($hydrationMode);
-        }
-        return $this->hydrators[$hydrationMode];
+        return $this->newHydrator($hydrationMode);
     }
     public function newHydrator($hydrationMode)
     {
@@ -285,7 +328,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
             case Query::HYDRATE_SIMPLEOBJECT:
                 return new Internal\Hydration\SimpleObjectHydrator($this);
             default:
-                if ($class = $this->config->getCustomHydrationMode($hydrationMode)) {
+                if (($class = $this->config->getCustomHydrationMode($hydrationMode)) !== null) {
                     return new $class($this);
                 }
         }
@@ -329,8 +372,7 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
     }
     public function isFiltersStateClean()
     {
-        return null === $this->filterCollection
-           || $this->filterCollection->isClean();
+        return null === $this->filterCollection || $this->filterCollection->isClean();
     }
     public function hasFilters()
     {

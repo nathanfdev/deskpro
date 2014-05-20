@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Person;
 
 abstract class AbstractAgentNotification
 {

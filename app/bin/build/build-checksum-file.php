@@ -11,14 +11,9 @@ define('DP_ROOT', realpath(__DIR__ . '/../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
-require DP_ROOT . '/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require DP_ROOT . '/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-$loader = new UniversalClassLoader();
-$loader->registerNamespaces(array('Symfony' => DP_ROOT.'/vendor/symfony/src'));
-$loader->registerNamespaces(array('Orb' => DP_ROOT.'/src'));
-$loader->registerNamespaces(array('Application' => DP_ROOT.'/src'));
-$loader->register();
+require DP_ROOT . '/sys/autoload.php';
 
 $start = microtime(true);
 echo sprintf("Starting :: %.f\n", $start);

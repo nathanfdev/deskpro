@@ -35,12 +35,10 @@
 namespace Application\DeskPRO\HttpKernel;
 
 use Application\DeskPRO\App;
-
-use Orb\Log\Logger;
-use Orb\Util\Strings;
-
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Application\DeskPRO\Exception\ValidationException;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Strings;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {
@@ -70,6 +68,9 @@ class ExceptionListener
 	{
 		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
 			$this->logRequestException('not_found', $exception);
+			return;
+		}
+		if ($exception instanceof ValidationException && defined('DP_INTERFACE') && DP_INTERFACE == 'api') {
 			return;
 		}
 

@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
  * Abstract base for parts of a DPQL statement

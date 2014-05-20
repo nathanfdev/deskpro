@@ -37,8 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
-use Orb\Util\Arrays;
-
 /**
  * Handles merging of one person into the other
  */
@@ -284,8 +282,6 @@ class PersonMerge implements PersonContextInterface
 			'tickets_messages',
 			'tickets_participants',
 			'tickets_search_active',
-			'tickets_search_message',
-			'tickets_search_message_active',
 			'ticket_access_codes',
 			'ticket_charges',
 			'ticket_feedback',

@@ -41,9 +41,259 @@ use Orb\Util\Numbers;
 
 /**
  * Perform searches or get results from filters.
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/tickets",
+ * 	description="Operations about Tickets",
+ * 	basePath="/api"
+ * )
  */
 class TicketSearchController extends AbstractController
 {
+	/**
+	 * @SWG\Api(
+	 * 	path="/tickets",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Search for Tickets matching criteria",
+	 * 		notes="All constraints are optional. Multiple constraints are AND'd together; multiple values for a single constraint are OR'd.",
+	 *		type="array",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="agent_id[]",
+	 *				description="Requires ticket to be assigned to the specified agent ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="agent_team_id[]",
+	 *				description="Requires ticket to be assigned to an agent in the specific agent team ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="category_id[]",
+	 *				description="Requires ticket to be in the specified category ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="department_id[]",
+	 *				description="Requires ticket to be in the specified department ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[#][]",
+	 *				description="Requires ticket custom field to have the specified value in the listed field.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Requires ticket to be have the specified label.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="language_id[]",
+	 *				description="Requires ticket to be in the specified language ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="organization_id[]",
+	 *				description="Requires ticket to be for the specified organization ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="participant[]",
+	 *				description="Requires ticket to be followed by or copied to the specified person ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="person_id[]",
+	 *				description="Requires ticket to be created by the specified person ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="priority_id[]",
+	 *				description="Requires ticket to be have the specified priority ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="product_id[]",
+	 *				description="Requires ticket to be for the specified product ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="query",
+	 *				description="Requires ticket to contain the specified text within it.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="status[]",
+	 *				description="Requires ticket to be in the specified status. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_completed",
+	 *				description="If specified, requires the ticket to have the SLA requirement completed (1) or incomplete (0).",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="boolean"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_id[]",
+	 *				description="Requires ticket to be have the specified SLA.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_status[]",
+	 *				description="Requires ticket to be have the specified SLA status. Possible values: ok, warning, fail.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="subject[]",
+	 *				description="Requires ticket subject to match the string provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="urgency[]",
+	 *				description="Requires ticket to be have the specified urgency (1-10).",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="workflow_id[]",
+	 *				description="Requires ticket to be have the specified workflow ID.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="id_min",
+	 *				description="Specify min ticket ID (since build 315)",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="id_max",
+	 *				description="Specify max ticket ID (since build 315)",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="ref",
+	 *				description="Specify a ref or the beginning characters of a ref (since build 315)",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_created",
+	 *				description="Constrains results based on the date the ticket was created.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_resolved",
+	 *				description="Constrains results based on the date the ticket was first resolved. Unresolved tickets are not included.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_archived",
+	 *				description="Constrains results based on the date the ticket was first archived. Unarchived tickets are not included.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_status",
+	 *				description="Constrains results based on the date of the last status change.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_last_agent_reply",
+	 *				description="Constrains results based on the date of the last agent reply. Tickets without an agent reply are not included.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_last_user_reply",
+	 *				description="Constrains results based on the date of the last user reply.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="date_last_reply",
+	 *				description="Constrains results based on the date of the last reply (either a user or agent reply, whichever was latest).",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to accessing person's preference or ticket.date_created:desc.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function searchAction()
 	{
 		$search_map = array(
@@ -295,4 +545,19 @@ class TicketSearchController extends AbstractController
 		return App::getApi('tickets.filters');
 	}
 
+
+	public function getQuickStatsAction()
+	{
+		$stats = array();
+		$today = $this->person->getDateTime();
+		$today->setTime(0,0,0);
+		$today->setTimezone(\Orb\Util\Dates::tzUtc());
+		$today = $today->format('Y-m-d H:i:s');
+
+		$stats['created_today']  = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE date_created > ?", array($today));
+		$stats['resolved_today'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE date_resolved > ?", array($today));
+		$stats['awaiting_agent'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE status = 'awaiting_agent'");
+
+		return $this->createApiResponse($stats);
+	}
 }

@@ -34,12 +34,10 @@
 
 namespace Application\AgentBundle\Controller\Helper;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\UI\RuleBuilder;
-use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\App;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 class DownloadResults

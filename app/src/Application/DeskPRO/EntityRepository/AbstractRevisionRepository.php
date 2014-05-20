@@ -37,8 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 
-use \Doctrine\ORM\EntityRepository;
-
 class AbstractRevisionRepository extends AbstractEntityRepository
 {
     public function getRevisionsForAgent(PersonEntity $agent, array $options = array())

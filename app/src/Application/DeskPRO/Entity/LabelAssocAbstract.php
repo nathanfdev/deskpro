@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 use Application\DeskPRO\App;
 
 /**
@@ -56,6 +53,15 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 */
 	protected $label;
 
+
+	/**
+	 * @param string $label
+	 */
+	public function setLabel($label)
+	{
+		$label = trim(strtolower($label));
+		$this->label = $label;
+	}
 
 
 	/**

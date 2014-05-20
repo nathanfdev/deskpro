@@ -1,0 +1,48 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<dp-order-menu ng-model="sortOrder">
+					<option value="label">Label</option>
+					<option value="count">Count</option>
+				</dp-order-menu>
+			</nav>
+
+			<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="label!:crm.user_labels.edit.{{ ng_var('label.label|murmurhash') }}">
+					<a href="{{ ng_href('crm.user_labels.edit', '{label: label.label}') }}">
+						<div class="pull-right">
+							<span class="badge" ng-show="!delete_mode" tooltip="The number of people with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
+								  ng-class="{'active':label.delete_mode}"
+								  ng-click="LabelsList.startDelete(label); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+						</div>
+						<h4>
+							<span class="title-text">{{ng_var('label.label')}}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('crm.user_labels.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Labeling users helps agents filter and search for them.</h1>
+		<p>Labels are a tagging system used by agents to help organize your helpdesk content. You can add, rename or delete labels applied to users here.</p>
+	</header>
+	<article>
+		<section>
+			<p>Labels are text tags which you can apply to users (as well as to tickets, organizations, chats, articles, downloads, news posts and feedback).</p>
+			<p>Labels are used to match items when agents use Quick Search from the toolbar. They are also displayed as filters in the filter pane.</p>
+			<p>You can rename or delete labels here.</p>
+		</section>
+	</article>
+{% endblock %}

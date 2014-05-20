@@ -34,24 +34,85 @@
 
 namespace Application\DeskPRO\Entity;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Ticket
+ * Class Ticket
  *
- *
- * @property \Application\DeskPRO\Entity\Person $person
+ * @property int $id
+ * @property string $ref
+ * @property string $auth
+ * @property Language $language
+ * @property Department $department
+ * @property TicketCategory $category
+ * @property TicketWorkflow $workflow
+ * @property TicketPriority $priority
+ * @property Product $product
+ * @property Person $person
+ * @property PersonEmail $person_email
+ * @property PersonEmailValidating $person_email_validating
+ * @property Person $agent
+ * @property AgentTeam $agent_team
+ * @property Organization $organization
+ * @property ChatConversation $linked_chat
+ * @property TicketAttachment[] $attachment
+ * @property TicketAccessCode[] $access_codes
+ * @property TicketMessage[] $messages
+ * @property CustomDataTicket[] $custom_data
+ * @property LabelTicket[] $labels
+ * @property string $sent_to_address
+ * @property EmailAccount $email_account
+ * @property string $email_account_address
+ * @property string $creation_system
+ * @property string $creation_system_option
+ * @property string $ticket_hash
+ * @property string $status
+ * @property string $hidden_status
+ * @property string $validating
+ * @property bool $is_hold
+ * @property int $urgency
+ * @property int $feedback_rating
+ * @property \DateTime $date_feedback_rating
+ * @property \DateTime $date_created
+ * @property \DateTime $date_resolved
+ * @property \DateTime $date_closed
+ * @property \DateTime $date_first_agent_assign
+ * @property \DateTime $date_first_agent_reply
+ * @property \DateTime $date_last_agent_reply
+ * @property \DateTime $date_last_user_reply
+ * @property \DateTime $date_agent_waiting
+ * @property \DateTime $date_user_waiting
+ * @property \DateTime $date_status
+ * @property int $total_user_waiting
+ * @property int $total_to_first_reply
+ * @property Person $locked_by_agent
+ * @property \DateTime $date_locked
+ * @property bool $has_attachments
+ * @property string $subject
+ * @property string $original_subject
+ * @property array $properties
+ * @property int $count_agent_replies
+ * @property int $count_user_replies
+ * @property string|null $worst_sla_status
+ * @property array $waiting_times
+ * @property TicketParticipant[] $participants
+ * @property TicketCharge[] $charges
+ * @property TicketSla[] $ticket_slas
  */
-class Ticket extends \Application\DeskPRO\Domain\DomainObject
+class Ticket extends DomainObject implements HighlightableModelInterface
 {
+	const TAC_AUTHCODE_LEN = 15;
+
 	const CREATED_WEB_PERSON        = 'web.person';
 	const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
 	const CREATED_WEB_PERSON_WIDGET = 'web.person.widget';
@@ -59,19 +120,21 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const CREATED_WEB_AGENT         = 'web.agent';
 	const CREATED_WEB_AGENT_PORTAL  = 'web.agent.portal';
 	const CREATED_WEB_API           = 'web.api';
+	const CREATED_WEB_API_PERSON    = 'web.api.person';
+	const CREATED_WEB_API_AGENT     = 'web.api.agent';
 	const CREATED_GATEWAY_PERSON    = 'gateway.person';
 	const CREATED_GATEWAY_AGENT     = 'gateway.agent';
 
 	const STATUS_AWAITING_AGENT = 'awaiting_agent';
-	const STATUS_AWAITING_USER = 'awaiting_user';
-	const STATUS_RESOLVED = 'resolved';
-	const STATUS_CLOSED = 'closed';
-	const STATUS_HIDDEN = 'hidden';
+	const STATUS_AWAITING_USER  = 'awaiting_user';
+	const STATUS_RESOLVED       = 'resolved';
+	const STATUS_CLOSED         = 'closed';
+	const STATUS_HIDDEN         = 'hidden';
 
-	const HIDDEN_STATUS_VALIDATING = 'validating';
-	const HIDDEN_STATUS_SPAM = 'spam';
-	const HIDDEN_STATUS_DELETED = 'deleted';
-	const HIDDEN_STATUS_TEMP = 'temp';
+	const HIDDEN_STATUS_VALIDATING  = 'validating';
+	const HIDDEN_STATUS_SPAM        = 'spam';
+	const HIDDEN_STATUS_DELETED     = 'deleted';
+	const HIDDEN_STATUS_TEMP        = 'temp';
 
 	/**#@+
 	 * These strings in $notify_email_name have special meanings.
@@ -79,13 +142,20 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * NOTIFY_NAME_PERSON: The person who sent the reply, or if no person (eg auto-response), then the helpdesk
 	 */
 	const NOTIFY_NAME_HELPDESK = '__DP_HELPDESK__';
-	const NOTIFY_NAME_PERSON = '__DP_PERSON__';
+	const NOTIFY_NAME_PERSON   = '__DP_PERSON__';
 	/**#@-*/
 
 	/**
 	 * @var int
 	 */
 	protected $id = null;
+
+	/**
+	 * The original id (eg before a delete was made)
+	 *
+	 * @var int
+	 */
+	protected $_original_id;
 
 	/**
 	 * @var string
@@ -103,7 +173,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $parent_ticket = null;
-
+	
 	/**
 	 * The language the ticket is in
 	 *
@@ -177,6 +247,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $attachments;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $access_codes;
 
@@ -196,12 +267,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $labels;
 
 	/**
-	 * @var string[]
-	 */
-	protected $original_labels = null;
-
-	/**
-	 * The email address the ticket was sent to if it came in via a gateway
+	 * The email address the ticket was sent to if it came in via a gateway.
+	 * This is a full string (e.g., including CC's) of the original.
 	 *
 	 * @var string
 	 */
@@ -210,41 +277,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The gateway this ticket originated from
 	 *
-	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
-	protected $email_gateway = null;
+	protected $email_account = null;
 
 	/**
-	 * The gateway email address the ticket matched
-	 *
-	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
-	 */
-	protected $email_gateway_address = null;
-
-	/**
-	 * The "from" address to send from
-	 * @var string
-	 */
-	protected $notify_email = '';
-
-	/**
-	 * The name to send from
-	 * @var string
-	 */
-	protected $notify_email_name = '';
-
-	/**
-	 * The "from" address to send from for agent emails
-	 * @var string
-	 */
-	protected $notify_email_agent = '';
-
-	/**
-	 * The name to send from for agent emails
+	 * The email address (from list of to/cc) that matched with the email account.
 	 *
 	 * @var string
 	 */
-	protected $notify_email_name_agent = '';
+	protected $email_account_address = '';
 
 	/**
 	 * @var string
@@ -422,9 +464,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_user_participants;
 
-	public $part_add_ids = array();
-	public $part_del_ids = array();
-
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
@@ -434,34 +473,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $ticket_slas;
-
-	/**
-	 * @var bool
-	 */
-	protected $_recalculate_slas = false;
-
-	/**
-	 * @var bool
-	 */
-	protected $_reset_slas = false;
-
-	/**
-	 * Ticket logger
-	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
-	 */
-	protected $_ticket_logger;
-
-	/**
-	 * When true the ticket log doesnt run in the post event
-	 * @var bool
-	 */
-	public $_no_log = false;
-
-	/**
-	 * Parts that were originally on the ticket (before any changes)
-	 * @var array
-	 */
-	protected $_loaded_part_ids = array();
 
 	/**
 	 * An exploded version of sent_to_addresses
@@ -477,14 +488,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_work_hours_set = null;
 
-	public $_isRemoved;
-
-	/**
-	 * When true the changelog tracker is auto-commited post-flush
-	 *
-	 * @var bool
-	 */
-	protected $_auto_commit_changelog = true;
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
 	/**
 	 * If the tikcet was created from an email just now, then this is the reader
@@ -498,48 +507,69 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public $email_reader_action;
 
-	/**
-	 * @var null
+    /**
+	 * @internal
 	 */
-	public $_old_status = null;
+	public $__dp_is_processing_ticket = false;
 
 	/**
-	 * Sometimes we need to keep track of certain properties on a
-	 * ticket before they have been saved. e.g., labels has a PK on ticket ID and
-	 * we cant save them as managed entities until after the tikcet is first saved,
-	 * but labels added need to be saved somewhere so we can test them during triggers.
-	 *
-	 * @var array
+	 * @internal
 	 */
-	public $_presave_state = array();
+	public $__dp_last_process_save = null;
 
 	/**
-	 * To get around scoping issues with TicketSla event callbacks, we set the
-	 * parent ticket log during TriggerExecutor.
+	 * @internal
 	 */
-	public $inserted_log_row_batch;
+	public $__dp_ticket_change_tracker = null;
 
-	public function __construct($tracker = true)
+	/**
+	 * @internal
+	 */
+	public $__dp_auto_ticket_process = false;
+
+	public function __construct()
 	{
-		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->charges = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->ticket_slas = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->_original_id  = null;
+		$this->participants  = new ArrayCollection();
+		$this->messages      = new ArrayCollection();
+		$this->custom_data   = new ArrayCollection();
+		$this->labels        = new ArrayCollection();
+		$this->access_codes  = new ArrayCollection();
+		$this->attachments   = new ArrayCollection();
+		$this->charges       = new ArrayCollection();
+		$this->ticket_slas   = new ArrayCollection();
+
+		// Default ref (is reset with ref generator)
+		$this->ref = Strings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
 
 		$this['date_created'] = new \DateTime();
 		$this['date_status'] = new \DateTime();
 
-		$len = App::getSetting('core_tickets.ptac_auth_code_len');
-		$this['auth'] = Strings::random($len, Strings::CHARS_KEY);
+		$this['auth'] = Strings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
 
-		if ($tracker) {
-			$this->_initTicketLogger();
-			$this->_ticket_logger->recordExtra('ticket_created', true);
-		}
+		$this->__dp_auto_ticket_process = true;
+	}
+
+	/**
+	 * By default, all ticket chagnes go through the full ticket processing routines
+	 * (triggers, filters etc) automatically on every flush.
+	 *
+	 * This is mostly for legacy reasons though. It's recommneded you always handle it yourself.
+	 * So if you are manually managing the ticket will save the ticket through the TicketManager,
+	 * you should disable auto-processing.
+	 */
+	public function disableAutoTicketProcess()
+	{
+		$this->__dp_auto_ticket_process = false;
+	}
+
+	/**
+	 * Enable auto ticket processing
+	 * @see disableAutoTicketProcess
+	 */
+	public function enableAutoTicketProcess()
+	{
+		$this->__dp_auto_ticket_process = true;
 	}
 
 	/**
@@ -550,31 +580,23 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id;
 	}
 
-	public function setNoLog()
+
+	/**
+	 * @return int|null
+	 */
+	public function getOriginalId()
 	{
-		$this->_no_log = true;
+		return $this->_original_id;
 	}
 
-	public function isLoggingDisabled()
-	{
-		return $this->_no_log;
-	}
 
-	public function _initTicketLogger()
-	{
-		$this->_old_status = $this->getStatusCode();
-		if ($this->_ticket_logger) {
-			$this->removePropertyChangedListener($this->_ticket_logger);
-		}
-		$ticket_logger = new \Application\DeskPRO\Tickets\TicketChangeTracker($this);
-		$this->_ticket_logger = $ticket_logger;
-		$this->addPropertyChangedListener($ticket_logger);
-	}
-
+	/**
+	 * @return string
+	 */
 	public function getSubject()
 	{
 		if (!$this->subject) {
-			return App::getTranslator()->getPhraseText('user.tickets.no_subject');
+			return '(no subject)';
 		}
 
 		return $this->subject;
@@ -633,6 +655,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param string $subject
+	 */
 	public function setSubject($subject)
 	{
 		$subject = Strings::standardEol($subject);
@@ -663,52 +688,36 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Person[]
+	 */
 	public function getUserParticipants()
 	{
-		$this->getOriginalParticipantIds();
 		$ret = array();
 
 		foreach ($this['participants'] as $p) {
 			if (!$p['person']['is_agent']) {
-				$ret[] = $p;
+				$ret[] = $p->person;
 			}
 		}
 
 		return $ret;
 	}
 
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person[]
+	 */
 	public function getAgentParticipants()
 	{
-		$this->getOriginalParticipantIds();
-
 		$ret = array();
 		foreach ($this->participants as $p) {
 			if ($p->person['is_agent']) {
-				$ret[] = $p;
+				$ret[] = $p->person;
 			}
 		}
 
 		return $ret;
-	}
-
-	/**
-	 * The ticket tracker needs to know who was originally added on the ticket, to properly
-	 * determine if the pre-updated ticket used to match a filter. So the change tracker uses this construct
-	 * the "original ticket" object
-	 *
-	 * @return array
-	 */
-	public function getOriginalParticipantIds()
-	{
-		if ($this->_loaded_part_ids !== null) {
-			return $this->_loaded_part_ids;
-		}
-
-		$this->_loaded_part_ids = array();
-		foreach ($this->participants as $part) {
-			$this->_loaded_part_ids[$part->person->getId()] = $part->person->getId();
-		}
-		return $this->_loaded_part_ids;
 	}
 
 
@@ -721,7 +730,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setAgentParticipants(array $agents)
 	{
-		$this->getOriginalParticipantIds();
 		$current_agent_ids = array();
 		foreach ($this->participants as $p) {
 			if ($p->person->is_agent) {
@@ -760,9 +768,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		// Any of the participants
 		} else {
-			foreach ($this->getUserParticipants() as $part) {
-				if ($part->person->findEmailAddress($email_address)) {
-					return $part->person;
+			foreach ($this->getUserParticipants() as $person) {
+				if ($person->findEmailAddress($email_address)) {
+					return $person;
 				}
 			}
 		}
@@ -797,9 +805,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * Modify urgency by $mod, which can be positive or negative.
 	 *
 	 * @param int $mod
-	 * @param bool $reset_on_reply True to reset this urgency after the next reply
 	 */
-	public function modifyUrgency($mod, $reset_on_reply = false)
+	public function modifyUrgency($mod)
 	{
 		$old_u = $this->urgency;
 		$new_u = \Orb\Util\Numbers::bound($old_u + $mod, 1, 10);
@@ -808,10 +815,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->urgency = $new_u;
 
 			$this->_onPropertyChanged('urgency', $old_u, $new_u);
-			if ($reset_on_reply) {
-				$real_diff = $old_u - $new_u;// real mod, taking into account bound()
-				$this->getTicketLogger()->recordExtra('urgency_reset_reply', $real_diff);
-			}
 		}
 	}
 
@@ -842,6 +845,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('date_feedback_rating', new \DateTime());
 	}
 
+
 	/**
 	 * @return string
 	 */
@@ -860,25 +864,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getParticipantPeopleIds()
 	{
-		$this->getOriginalParticipantIds();
 		$ids = array();
 		foreach ($this->getParticipants() as $p) {
 			$ids[] = $p['person']['id'];
 		}
 
 		return $ids;
-	}
-
-	public function getRawParticipants()
-	{
-		$this->getOriginalParticipantIds();
-		return $this->participants;
-	}
-
-	public function setRawParticipants($parts)
-	{
-		$this->getOriginalParticipantIds();
-		$this->participants = $parts;
 	}
 
 
@@ -917,7 +908,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hasParticipantPerson($person_or_id)
 	{
-		$this->getOriginalParticipantIds();
 		$person_id = $person_or_id;
 		if ($person_or_id instanceof Person) {
 			$person_id = $person_or_id['id'];
@@ -929,7 +919,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		foreach ($this->participants as $p) {
-			if ($p['person']['id'] == $person_id) {
+			if ($p->person->id == $person_id) {
 				return $p;
 			}
 		}
@@ -947,7 +937,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function addParticipantPerson($person_or_id)
 	{
-		$this->getOriginalParticipantIds();
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
@@ -957,7 +946,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		if ($person->id == $this->person->id && DP_INTERFACE != 'agent') {
+		if ($this->person && $person->id == $this->person->id && DP_INTERFACE != 'agent') {
 			return null;
 		}
 
@@ -969,15 +958,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_part['person'] = $person;
 		$ticket_part['ticket'] = $this;
 		$this->participants->add($ticket_part);
-		$this->part_add_ids[] = $person->getId();
-
-		if ($this->getTicketLogger()) {
-			$this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $person);
-		}
 
 		if ($this->_user_participants !== null AND !$person['is_agent']) {
 			$this->_user_participants[] = $ticket_part;
 		}
+
+		$this->_onPropertyChanged('participants', null, $this->participants);
 
 		return $ticket_part;
 	}
@@ -992,7 +978,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function removeParticipantPerson($person_or_id)
 	{
-		$this->getOriginalParticipantIds();
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
@@ -1004,9 +989,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		foreach ($this->participants as $k => $p) {
 			if ($p['person']->getId() == $person->getId()) {
-				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $p['person'], null);
 				$this->participants->remove($k);
-				$this->part_del_ids[] = $person->getId();
+				$this->_onPropertyChanged('participants', null, $this->participants);
 				return $p;
 			}
 		}
@@ -1014,13 +998,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
+
+	/**
+	 * @param TicketParticipant $part
+	 */
 	public function addParticipant(TicketParticipant $part)
 	{
-		$this->getOriginalParticipantIds();
 		$part->ticket = $this;
 		$this->participants->add($part);
-		$this->part_add_ids[] = $part->person->getId();
-		if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $part->person);
+		$this->_onPropertyChanged('participants', null, $this->participants);
 	}
 
 
@@ -1033,7 +1019,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setParticipantAgentIds(array $set_agent_ids)
 	{
-		$this->getOriginalParticipantIds();
 		$got_agent_ids = array();
 		$remove_ks = array();
 
@@ -1062,7 +1047,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		foreach ($remove_ks as $k) {
 			App::getOrm()->remove($participants[$k]);
-			if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $participants[$k], null);
+			$this->_onPropertyChanged('participants', null, $this->participants);
 		}
 
 		$new_agent_ids = array_diff($set_agent_ids, $got_agent_ids);
@@ -1073,7 +1058,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				$part['person_id'] = $agent_id;
 
 				$this->addParticipant($part);
-				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $part);
 			}
 		}
 	}
@@ -1090,7 +1074,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setParticipantUserIds(array $set_user_ids)
 	{
-		$this->getOriginalParticipantIds();
 		$got_user_ids = array();
 
 		$set_user_ids_info = array();
@@ -1143,6 +1126,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
+	/**
+	 * @param Person $agent
+	 * @param int $time
+	 * @param int $amount
+	 * @param string $comment
+	 * @return TicketCharge|null
+	 */
 	public function addCharge(Person $agent, $time, $amount = null, $comment = '')
 	{
 		if ($time !== null) {
@@ -1159,7 +1150,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if ($time === null && $amount === null) {
-			return false;
+			return null;
 		}
 
 		$charge = new TicketCharge();
@@ -1173,9 +1164,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->charges->add($charge);
 
+		$this->_onPropertyChanged('charges', null, $this->charges);
+
 		return $charge;
 	}
 
+
+	/**
+	 * @param Sla $sla
+	 * @return TicketSla
+	 */
 	public function addSla(Sla $sla)
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
@@ -1188,35 +1186,46 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_sla->ticket = $this;
 		$ticket_sla->sla = $sla;
 
-		$ticket_sla->calculateSlaDates(false);
-
 		$this->ticket_slas->add($ticket_sla);
+		$this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
 
 		return $ticket_sla;
 	}
 
+
+	/**
+	 * @param Sla $sla
+	 * @return TicketSla|null
+	 */
 	public function removeSla(Sla $sla)
 	{
 		foreach ($this->ticket_slas AS $k => $ticket_sla) {
 			if ($ticket_sla->sla->id == $sla->id) {
 				$this->ticket_slas->remove($k);
+				$this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
 				$this->updateWorstSlaStatus();
-				return true;
+				return $ticket_sla;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
+	/**
+	 * Remove all SLAs from ticket
+	 */
 	public function removeAllSlas()
 	{
-		foreach ($this->ticket_slas AS $k => $ticket_sla) {
-			$this->ticket_slas->remove($k);
-		}
+		$this->ticket_slas->clear();
+		$this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
 
 		$this->setModelField('worst_sla_status', null);
 	}
 
+	/**
+	 * @param Sla $sla
+	 * @return bool
+	 */
 	public function hasSla(Sla $sla)
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
@@ -1228,6 +1237,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return false;
 	}
 
+
+	/**
+	 * @param $sla_id
+	 * @return null
+	 */
 	public function getSlaById($sla_id)
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
@@ -1239,6 +1253,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
+
+	/**
+	 * @return array
+	 */
 	public function getSlaIds()
 	{
 		$ids = array();
@@ -1269,8 +1287,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 				if (!$this->date_first_agent_reply) {
 					$this['date_first_agent_reply'] = $now;
-					$this->_recalculate_slas = true; // may have a "first reply" sla
-
 					$this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
 				}
 			}
@@ -1280,17 +1296,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		if (count($message->attachments) && $this->getTicketLogger()) {
-			foreach ($message->attachments as $attach) {
-				$this->getTicketLogger()->recordMultiPropertyChanged('attachments', null, $attach);
-			}
-		}
-
-		$this->_onPropertyChanged('messages', null, $message);
-
-		if ($this->getTicketLogger() && DP_INTERFACE == 'user') {
-			$this->getTicketLogger()->recordExtra('is_user_reply', true);
-		}
+		$this->_onPropertyChanged('messages', null, $this->messages, true);
+		$this->getStateChangeRecorder()->record('message', null, $message);
 	}
 
 
@@ -1305,9 +1312,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$attach->ticket = $this;
 		$this->attachments->add($attach);
 
-		if ($this->getTicketLogger()) {
-			$this->getTicketLogger()->recordMultiPropertyChanged('attachments', null, $attach);
-		}
+		$this->_onPropertyChanged('attachments', null, $this->attachments);
 	}
 
 
@@ -1411,13 +1416,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->addCustomData($custom_data);
 		}
 
-		if ($this->id) {
-			App::getEntityRepository('DeskPRO:Cache')->delete("ticket_custom_fields.{$this->id}");
-		}
+		$this->_onPropertyChanged('custom_data', null, $this->participants);
 
 		return $custom_data;
 	}
 
+
+	/**
+	 * @param $field
+	 */
 	public function removeCustomDataForField($field)
 	{
 		$parent_id = null;
@@ -1426,10 +1433,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$parent_id = $field->parent['id'];
 		}
 
+		$change = false;
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+				$change = true;
 				$this->custom_data->removeElement($data);
 			}
+		}
+
+		if ($change) {
+			$this->_onPropertyChanged('custom_data', null, $this->participants);
 		}
 	}
 
@@ -1442,6 +1455,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->custom_data->add($data);
 		$data['ticket'] = $this;
+
+		$this->_onPropertyChanged('custom_data', null, $this->participants);
 	}
 
 
@@ -1493,8 +1508,72 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function addLabel(LabelTicket $label)
 	{
-		$label['ticket'] = $this;
+		if ($ret = $this->findLabelByString($label->label)) {
+			return $ret;
+		}
+
+		$label->ticket = $this;
 		$this->labels->add($label);
+		$this->_onPropertyChanged('labels', null, $this->labels);
+		return $label;
+	}
+
+
+	/**
+	 * @param string $l
+	 * @return LabelTicket
+	 */
+	public function addLabelByString($l)
+	{
+		if ($ret = $this->findLabelByString($l)) {
+			return $ret;
+		}
+
+		$label = new LabelTicket();
+		$label->label = $l;
+		$label->ticket = $this;
+		$this->labels->add($label);
+		$this->_onPropertyChanged('labels', null, $this->labels);
+
+		return $label;
+	}
+
+
+	/**
+	 * @param string $l
+	 * @return LabelTicket|null
+	 */
+	public function removeLabelByString($l)
+	{
+		$x = new LabelTicket();
+		$x->label = $l;
+
+		foreach ($this->labels as $idx => $label) {
+			if ($label->label == $x->label) {
+				$this->labels->remove($idx);
+				$this->_onPropertyChanged('labels', null, $this->labels);
+				return $label;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @param string $l
+	 * @return LabelTicket|null
+	 */
+	public function findLabelByString($l)
+	{
+		$x = new LabelTicket();
+		$x->label = $l;
+
+		if (($idx = $this->labels->indexOf($x->label)) !== false) {
+			return $this->labels->get($idx);
+		}
+
+		return null;
 	}
 
 	public function getPersonId()
@@ -1505,7 +1584,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setPersonId($id)
 	{
 		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
-		$this->setPerson($person);
+		$this['person'] = $person;
 	}
 
 	public function setPerson(Person $person)
@@ -1525,18 +1604,27 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function setPersonEmail(PersonEmail $email = null)
-	{
-		if ($email) {
-			if ($this->person && $email->person && $this->person->id != $email->person->id) {
-				throw new \InvalidArgumentException("The email address does not belong to the person who owns the ticket.");
-			}
-		}
 
-		$this->setModelField('person_email', $email);
+	/**
+	 * @deprecated
+	 * @return PersonEmail
+	 */
+	public function getPersonEmail()
+	{
+		if ($this->person_email) {
+			return $this->person_email;
+		} else {
+			return $this->person['primary_email'];
+		}
 	}
 
-	public function getPersonEmail()
+
+	/**
+	 * Gets the email address that sholud be used for this ticket.
+	 *
+	 * @return PersonEmail
+	 */
+	public function getTicketPersonEmail()
 	{
 		if ($this->person_email) {
 			return $this->person_email;
@@ -1568,32 +1656,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this['department'] = null;
 		}
-	}
-
-	public function setDepartment(Department $dep = null)
-	{
-		// Dep check
-		if ($dep) {
-			// For backwards compat, with TicketChangeTracker::getOriginalTicket,
-			// dont apply for that
-			if (!$this->_isNoPersist()) {
-				if (!$dep->is_tickets_enabled) {
-					$e = new \InvalidArgumentException("Department is not a ticket department");
-					KernelErrorHandler::logException($e, true, 'ticket_dep_err1');
-					return;
-				}
-
-				if (count($dep->children)) {
-					$e = new \InvalidArgumentException("Department is a parent");
-					KernelErrorHandler::logException($e, false, 'ticket_dep_err2');
-					return;
-				}
-			}
-		}
-
-		$old_dep = $this->department;
-		$this->department = $dep;
-		$this->_onPropertyChanged('department', $old_dep, $dep);
 	}
 
 	public function isLangSet()
@@ -1751,25 +1813,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this['agent_team'] = $agent_team;
 		} else {
 			$this['agent_team'] = null;
-		}
-	}
-
-	public function getEmailGatewayId()
-	{
-		if (!$this->email_gateway) {
-			return 0;
-		}
-
-		return $this->email_gateway['id'];
-	}
-
-	public function setEmailGatewayId($id)
-	{
-		if ($id) {
-			$g = App::getOrm()->getRepository('DeskPRO:EmailGateway')->find($id);
-			$this['email_gateway'] = $g;
-		} else {
-			$this['email_gateway'] = null;
 		}
 	}
 
@@ -2178,9 +2221,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
 		}
-
-		$this->_reset_slas = true;
-		$this->_recalculate_slas = true;
 	}
 
 	public function setHiddenStatus($hstatus)
@@ -2210,22 +2250,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->setModelField('is_hold', true);
 		} else {
 			$this->setModelField('is_hold', false);
-		}
-	}
-
-	public function recalculateSlaDates()
-	{
-		foreach ($this->ticket_slas AS $ticket_sla) {
-			$ticket_sla->calculateSlaDates();
-		}
-	}
-
-	public function resetSlaStatuses()
-	{
-		foreach ($this->ticket_slas AS $ticket_sla) {
-			if (!$ticket_sla->is_completed_set) {
-				$ticket_sla->is_completed = false;
-			}
 		}
 	}
 
@@ -2523,7 +2547,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public static function decodeAccessCode($access_code)
 	{
-		$len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$len = Ticket::TAC_AUTHCODE_LEN;
 		if (strlen($access_code) < ($len+1)) return false;
 
 		$matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
@@ -2537,13 +2561,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'ticket_id' => $ticket_id,
 			'auth'      => $auth
 		);
-	}
-
-	public function __clone()
-	{
-		parent::__clone();
-		$this->_ticket_logger = null;
-		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
@@ -2599,149 +2616,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->recomputeHash();
 	}
 
-
-	/**
-	 */
-	public function _preInsert()
-	{
-		// Get the new ref
-		if (!$this->ref) {
-			try {
-				$this['ref'] = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
-			} catch (\Exception $e) {
-				KernelErrorHandler::logException($e);
-
-				// Using a custom format.
-				// We just ran into a collision which means the pattern is not a good pattern.
-				// We are going to append a random number automatically if it isn't part of the pattern already
-				if (App::getSetting('core.ref_pattern') && strpos(App::getSetting('core.ref_pattern'), '<?>') === -1 && strpos(App::getSetting('core.ref_pattern'), '<A>') === -1) {
-					$set_pattern = App::getSetting('core.ref_pattern');
-					$set_pattern .= '-<A><A><A>';
-					App::getContainer()->getSettingsHandler()->setSetting('core.ref_pattern', $set_pattern);
-				}
-
-				// Log and fallback to a random ref
-				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
-				$this['ref'] = $ref;
-			}
-		}
-
-		if (!$this->_no_log && $this->_ticket_logger) {
-			$this->getTicketLogger()->recordExtra('created', true);
-		}
-
-		if ($this->organization) {
-			$managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($this->organization);
-			foreach ($managers AS $manager) {
-				if ($manager->getPref('org.manager_auto_add')) {
-					$this->addParticipantPerson($manager);
-				}
-			}
-		}
-
-		$this->_applySlas();
-	}
-
-	public function _preUpdate()
-	{
-		$self = $this;
-		$reset = $this->_reset_slas;
-
-		if ($this->_recalculate_slas) {
-			$orm = App::getOrm();
-
-			if (method_exists($orm, 'delayedUpdate')) {
-				$orm->delayedUpdate(function($em) use ($self, $reset) {
-					// this is deferred until all changes are done to ensure everything is correct
-					if ($reset) {
-						$self->resetSlaStatuses();
-					}
-					$self->recalculateSlaDates();
-				});
-			}
-		}
-
-		$this->_reset_slas = false;
-		$this->_recalculate_slas = false;
-	}
-
-	public function _applySlas()
-	{
-		if ($this->status == 'hidden') {
-			return;
-		}
-
-		$slas = App::getEntityRepository('DeskPRO:Sla')->getAllSlas();
-		foreach ($slas AS $sla) {
-			if ($sla->apply_type == 'all') {
-				$this->addSla($sla);
-				continue;
-			}
-
-			if ($sla->apply_type == 'priority' && $sla->apply_priority && $this->priority && $sla->apply_priority->id == $this->priority->id) {
-				$this->addSla($sla);
-				continue;
-			}
-
-			if ($sla->apply_type == 'people_orgs' && $sla->appliesToPerson($this->person)) {
-				$this->addSla($sla);
-				continue;
-			}
-
-			if ($sla->apply_type == 'people_orgs' && $this->organization && $sla->appliesToOrganization($this->organization)) {
-				$this->addSla($sla);
-				continue;
-			}
-
-			// don't need to do the apply trigger here - it will be handled elsewhere
-		}
-	}
-
-	/**
-	 */
-	public function _presaveTicketLogs()
-	{
-		if (!$this->_no_log && $this->_ticket_logger) {
-			$this->_ticket_logger->preDone();
-		}
-	}
-
-	public function resetTicketLogger()
-	{
-		$this->_initTicketLogger();
-		$this->_presave_state = array();
-	}
-
-	public function unsetTicketLogger()
-	{
-		$this->_ticket_logger = null;
-	}
-
-
-	public function _autoSaveTicketLogs()
-	{
-		if ($this->_auto_commit_changelog) {
-			$this->_saveTicketLogs();
-		}
-	}
-
-	public function _saveTicketLogs()
-	{
-		if (!$this->_no_log && $this->_ticket_logger) {
-			$this->_ticket_logger->done();
-			$this->resetTicketLogger();
-		}
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Tickets\TicketChangeTracker
-	 */
-	public function getTicketLogger()
-	{
-		return $this->_ticket_logger;
-	}
-
-
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
@@ -2754,10 +2628,27 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_label_manager;
 	}
 
+
+	/**
+	 * Copy this ticket properties to a new ticket.
+	 *
+	 * @return Ticket
+	 */
 	public function copy()
 	{
-		$alt_ticket = new Ticket();
+		$ticket = new Ticket();
+		$this->copyTo($ticket);
+		return $ticket;
+	}
 
+
+	/**
+	 * Copy this ticket properties on to another ticket.
+	 *
+	 * @param Ticket $ticket
+	 */
+	public function copyTo(Ticket $ticket)
+	{
 		$load = array(
 			'agent',
 			'agent_team',
@@ -2769,9 +2660,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'workflow',
 			'language',
 			'organization',
-			'email_gateway',
-			'email_gateway_address',
-			'sent_to_address',
 			'status',
 			'hidden_status',
 			'subject',
@@ -2780,7 +2668,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		);
 
 		foreach ($load as $k) {
-			$alt_ticket[$k] = $this[$k];
+			$ticket[$k] = $this[$k];
 		}
 
 		// Custom field data
@@ -2788,10 +2676,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$new_custom_data = clone $custom_data;
 			$new_custom_data->ticket = $alt_ticket;
 
-			$alt_ticket->addCustomData($new_custom_data);
+			$ticket->addCustomData($new_custom_data);
 		}
-
-		return $alt_ticket;
 	}
 
 
@@ -2827,14 +2713,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return 0;
 	}
 
-
-	public function _markRemoved()
-	{
-		$this->_isRemoved = $this->getId();
-	}
-
-
-
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
@@ -2844,8 +2722,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				$data['labels'][] = $label['label'];
 			}
 		}
-
-		$data['status_code'] = $this->getStatusCode();
 
 		$data['total_user_waiting_real'] = $this->getRealTotalUserWaiting();
 		$data['total_user_waiting_work'] = $this->getTotalUserWaitingWorkTime();
@@ -3004,12 +2880,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getWorkHoursSet()
 	{
 		if (!$this->_work_hours_set) {
-			$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
-			$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
-				$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
-				$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
-				$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
-			);
+			$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
 		}
 
 		return $this->_work_hours_set;
@@ -3057,161 +2928,704 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('properties', $old, $this->properties);
 	}
 
-	public function recountStats()
+
+	/**
+	 * Returns the data as it would be returned from the database
+	 *
+	 * @return array
+	 */
+	public function getDbRow()
 	{
-		$agent_ids_in = implode(',', App::getDataService('Agent')->getIds());
-
-		$this['count_agent_replies'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*) FROM tickets_messages
-			WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
-		", array($this->id));
-
-		$this['count_user_replies'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*) FROM tickets_messages
-			WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
-		", array($this->id));
-	}
-
-	public function getFromAddress($context = 'user', array $options = null)
-	{
-		if ($context == 'user' && $this->notify_email) {
-			$from_email = $this->notify_email;
-		} elseif ($context == 'agent' && $this->notify_email_agent) {
-			$from_email = $this->notify_email_agent;
-		} elseif ($this->email_gateway && $this->email_gateway->getPrimaryEmailAddress() && $this->email_gateway->is_enabled) {
-			$from_email = $this->email_gateway->getPrimaryEmailAddress();
-		} else {
-			$from_email = App::getSetting('core.default_from_email');
-			$default_address = App::getDb()->fetchColumn("
-				SELECT match_pattern
-				FROM email_gateway_addresses
-				LEFT JOIN email_gateways ON (email_gateways.id = email_gateway_addresses.email_gateway_id)
-				WHERE match_type = 'exact' AND email_gateways.gateway_type = 'tickets'
-				ORDER BY email_gateway_addresses.run_order ASC, email_gateway_addresses.id ASC
-				LIMIT 1
-			");
-
-			if ($default_address) {
-				$from_email = $default_address;
-			}
-		}
-
-		if ($context == 'user' && $this->notify_email_name) {
-			$from_name = $this->notify_email_name;
-		} elseif ($context == 'agent' && $this->notify_email_name_agent) {
-			$from_name = $this->notify_email_name_agent;
-		} else {
-			$from_name = App::getSetting('core.deskpro_name');
-
-			if ($options && isset($options['default_from']) && $options['default_from']) {
-				$from_name = $options['default_from'];
-			}
-		}
-
-		return array(
-			'email' => $from_email,
-			'name'  => $from_name
+		$row_data = array(
+			'id'                           => $this->id,
+			'language_id'                  => $this->language ? $this->language->id : null,
+			'department_id'                => $this->department ? $this->department->id : null,
+			'category_id'                  => $this->category ? $this->category->id : null,
+			'priority_id'                  => $this->priority ? $this->priority->id : null,
+			'workflow_id'                  => $this->workflow ? $this->workflow->id : null,
+			'product_id'                   => $this->product ? $this->product->id : null,
+			'person_id'                    => $this->person ? $this->person->id : null,
+			'person_email_id'              => $this->person_email ? $this->person_email->id : null,
+			'person_email_validating_id'   => $this->person_email_validating ? $this->person_email_validating->id : null,
+			'agent_id'                     => $this->agent ? $this->agent->id : null,
+			'agent_team_id'                => $this->agent_team ? $this->agent_team->id : null,
+			'organization_id'              => $this->organization ? $this->organization->id : null,
+			'linked_chat_id'               => $this->linked_chat ? $this->linked_chat->id : null,
+			'email_account_id'             => $this->email_account ? $this->email_account->id : null,
+			'locked_by_agent'              => $this->locked_by_agent ? $this->locked_by_agent->id : null,
+			'ref'                          => $this->ref,
+			'auth'                         => $this->auth,
+			'sent_to_address'              => $this->sent_to_address,
+			'creation_system'              => $this->creation_system,
+			'creation_system_option'       => $this->creation_system_option,
+			'ticket_hash'                  => $this->ticket_hash,
+			'status'                       => $this->status,
+			'hidden_status'                => $this->hidden_status,
+			'validating'                   => $this->validating,
+			'is_hold'                      => $this->is_hold,
+			'urgency'                      => $this->urgency,
+			'count_agent_replies'          => $this->count_agent_replies,
+			'count_user_replies'           => $this->count_user_replies,
+			'feedback_rating'              => $this->feedback_rating,
+			'date_feedback_rating'         => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
+			'date_created'                 => $this->date_created->format('Y-m-d H:i:s'),
+			'date_resolved'                => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
+			'date_closed'                  => $this->date_closed ? $this->date_closed->format('Y-m-d H:i:s') : null,
+			'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
+			'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
+			'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
+			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
+			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
+			'date_agent_waiting'           => $this->date_agent_waiting ? $this->date_agent_waiting->format('Y-m-d H:i:s') : null,
+			'date_user_waiting'            => $this->date_user_waiting ? $this->date_user_waiting->format('Y-m-d H:i:s') : null,
+			'date_status'                  => $this->date_status->format('Y-m-d H:i:s'),
+			'total_user_waiting'           => $this->total_user_waiting,
+			'total_to_first_reply'         => $this->total_to_first_reply,
+			'date_locked'                  => $this->date_locked ? $this->date_locked->format('Y-m-d H:i:s') : null,
+			'has_attachments'              => $this->has_attachments,
+			'subject'                      => $this->subject,
+			'original_subject'             => $this->original_subject,
+			'properties'                   => $this->properties ? serialize($this->properties) : null,
+			'worst_sla_status'             => $this->worst_sla_status,
+			'waiting_times'                => $this->waiting_times ? serialize($this->waiting_times) : null,
 		);
+
+		return $row_data;
 	}
 
-	public function disableChangetrackerAutocommit()
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\StateChangeRecorder
+	 */
+	public function getStateChangeRecorder()
 	{
-		$this->_auto_commit_changelog = false;
+		//This is overridden just so phpcod returns proper subclass
+		return parent::getStateChangeRecorder();
 	}
+
+
+	/**
+	 * @return TicketChangeTracker
+	 */
+	public function getTicketLogger()
+	{
+		if ($this->__dp_ticket_change_tracker) {
+			return $this->__dp_ticket_change_tracker;
+		}
+
+		$this->__dp_ticket_change_tracker = new TicketChangeTracker($this);
+		return $this->__dp_ticket_change_tracker;
+	}
+
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
 
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
 
+	public function _setOriginalId()
+	{
+		$this->_original_id = $this->id;
+		$this->__dp_auto_ticket_process = true;
+	}
+
+	public function _autoProcessTicket()
+	{
+		if ($this->__dp_is_processing_ticket) {
+			return;
+		}
+
+		if ($this->__dp_auto_ticket_process) {
+
+			// Detect when we last did a save
+			if ($this->__dp_last_process_save) {
+				$state = $this->getStateChangeRecorder();
+				if ($state->getStateVersion() <= $this->__dp_last_process_save) {
+					return;
+				}
+			}
+
+			$tm = App::$container->getTicketManager();
+
+			$context = new ExecutorContext();
+			if (App::getCurrentPerson()) {
+				$context->setPersonContext(App::getCurrentPerson(), true);
+			}
+
+			$state = $this->getStateChangeRecorder();
+			if ($state->isNewTicket()) {
+				$event_type = 'newticket';
+			} elseif ($state->hasNewReply()) {
+				$event_type = 'newreply';
+			} else {
+				$event_type = 'update';
+			}
+
+			if (defined('DP_INTERFACE')) {
+				switch (DP_INTERFACE) {
+					case 'admin':
+					case 'agent':
+						$context = $tm->createAgentExecutorContext(
+							App::getCurrentPerson(),
+							$event_type,
+							'web'
+						);
+						break;
+					case 'user':
+						$context = $tm->createUserExecutorContext(
+							App::getCurrentPerson(),
+							$event_type,
+							'portal'
+						);
+						break;
+					case 'api':
+						$context = $tm->createAgentExecutorContext(
+							App::getCurrentPerson(),
+							$event_type,
+							'api'
+						);
+						break;
+					default:
+						$context = $tm->createSystemExecutorContext(
+							App::getCurrentPerson(),
+							$event_type,
+							'api'
+						);
+						break;
+				}
+			}
+
+			$this->__dp_is_processing_ticket = true;
+
+			try {
+				$tm->saveTicket($this, $context);
+				$this->__dp_is_processing_ticket = false;
+			} catch (\Exception $e) {
+				$this->__dp_is_processing_ticket = false;
+				throw $e;
+			}
+		}
+	}
+
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
+		$metadata->addLifecycleCallback('_setOriginalId', 'postLoad');
+		$metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
+		$metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
 		$metadata->setPrimaryTable(array(
-			'name' => 'tickets',
+			'name'    => 'tickets',
 			'indexes' => array(
 				'date_created_idx' => array('columns' => array('date_created')),
-				'date_locked_idx' => array('columns' => array('date_locked')),
-				'status_idx' => array('columns' => array('status')),
+				'date_locked_idx'  => array('columns' => array('date_locked')),
+				'status_idx'       => array('columns' => array('status')),
 			),
 			'uniqueConstraints' => array(
 				'ref_idx' => array('columns' => array('ref'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('_initTicketLogger', 'postLoad');
-		$metadata->addLifecycleCallback('initHashCode', 'prePersist');
-		$metadata->addLifecycleCallback('_preInsert', 'prePersist');
-		$metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
-		$metadata->addLifecycleCallback('_presaveTicketLogs', 'prePersist');
-		$metadata->addLifecycleCallback('_presaveTicketLogs', 'preUpdate');
-		$metadata->addLifecycleCallback('_autoSaveTicketLogs', 'postPersist');
-		$metadata->addLifecycleCallback('_autoSaveTicketLogs', 'postUpdate');
-		$metadata->addLifecycleCallback('_markRemoved', 'preRemove');
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
-		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-		$metadata->mapField(array( 'fieldName' => 'sent_to_address', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sent_to_address', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_name', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email_agent', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_agent', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_email_name_agent', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_name_agent', ));
-		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
-		$metadata->mapField(array( 'fieldName' => 'creation_system_option', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system_option', ));
-		$metadata->mapField(array( 'fieldName' => 'ticket_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_hash', ));
-		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
-		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));
-		$metadata->mapField(array( 'fieldName' => 'is_hold', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_hold', ));
-		$metadata->mapField(array( 'fieldName' => 'urgency', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'urgency', ));
-		$metadata->mapField(array( 'fieldName' => 'count_agent_replies', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_agent_replies', ));
-		$metadata->mapField(array( 'fieldName' => 'count_user_replies', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_user_replies', ));
-		$metadata->mapField(array( 'fieldName' => 'feedback_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'feedback_rating', ));
-		$metadata->mapField(array( 'fieldName' => 'date_feedback_rating', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_feedback_rating', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'date_resolved', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_resolved', ));
-		$metadata->mapField(array( 'fieldName' => 'date_closed', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_closed', ));
-		$metadata->mapField(array( 'fieldName' => 'date_first_agent_assign', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_assign', ));
-		$metadata->mapField(array( 'fieldName' => 'date_first_agent_reply', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_last_agent_reply', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_agent_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_last_user_reply', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_user_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_agent_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_agent_waiting', ));
-		$metadata->mapField(array( 'fieldName' => 'date_user_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_user_waiting', ));
-		$metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
-		$metadata->mapField(array( 'fieldName' => 'total_user_waiting', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_user_waiting', ));
-		$metadata->mapField(array( 'fieldName' => 'total_to_first_reply', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_first_reply', ));
-		$metadata->mapField(array( 'fieldName' => 'date_locked', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_locked', ));
-		$metadata->mapField(array( 'fieldName' => 'has_attachments', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_attachments', ));
-		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
-		$metadata->mapField(array( 'fieldName' => 'original_subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'original_subject', ));
-		$metadata->mapField(array( 'fieldName' => 'properties', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'properties', ));
-		$metadata->mapField(array( 'fieldName' => 'worst_sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'worst_sla_status', ));
-		$metadata->mapField(array( 'fieldName' => 'waiting_times', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'waiting_times', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'parent_ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'priority', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketPriority', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'priority_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'workflow', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketWorkflow', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'workflow_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'product', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'product_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true, 'dpApiDeep' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person_email_validating', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmailValidating', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_validating_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'linked_chat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'linked_chat_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'access_codes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAccessCode', 'cascade' => array('persist', 'merge'), 'mappedBy' => 'ticket', 'onDelete' => 'cascade' ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket',  'orderBy' => array( 'date_created' => 'ASC', ), ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataTicket', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true,  'dpApi' => true));
-		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelTicket', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway_address', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_address_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'locked_by_agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'locked_by_agent', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'charges', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCharge', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'ticket_slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSla', 'cascade' => array( 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
-		}
+
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'ref',
+			'fieldName'  => 'ref',
+			'type'       => 'string',
+			'length'     => 100,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'auth',
+			'fieldName'  => 'auth',
+			'type'       => 'string',
+			'length'     => 20,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'sent_to_address',
+			'fieldName'  => 'sent_to_address',
+			'type'       => 'string',
+			'length'     => 200,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'email_account_address',
+			'fieldName'  => 'email_account_address',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'creation_system',
+			'fieldName'  => 'creation_system',
+			'type'       => 'string',
+			'length'     => 100,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'creation_system_option',
+			'fieldName'  => 'creation_system_option',
+			'type'       => 'string',
+			'length'     => 1000,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'ticket_hash',
+			'columnName' => 'ticket_hash',
+			'type'       => 'string',
+			'length'     => 40,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'status',
+			'columnName' => 'status',
+			'type'       => 'string',
+			'length'     => 30,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'hidden_status',
+			'columnName' => 'hidden_status',
+			'type'       => 'string',
+			'length'     => 30,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'validating',
+			'columnName' => 'validating',
+			'type'       => 'string',
+			'length'     => 35,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'is_hold',
+			'columnName' => 'is_hold',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'urgency',
+			'columnName' => 'urgency',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'count_agent_replies',
+			'columnName' => 'count_agent_replies',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'count_user_replies',
+			'columnName' => 'count_user_replies',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'feedback_rating',
+			'columnName' => 'feedback_rating',
+			'type'       => 'integer',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_feedback_rating',
+			'columnName' => 'date_feedback_rating',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_created',
+			'columnName' => 'date_created',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_resolved',
+			'columnName' => 'date_resolved',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_closed',
+			'columnName' => 'date_closed',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_first_agent_assign',
+			'columnName' => 'date_first_agent_assign',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_first_agent_reply',
+			'columnName' => 'date_first_agent_reply',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_last_agent_reply',
+			'columnName' => 'date_last_agent_reply',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_last_user_reply',
+			'columnName' => 'date_last_user_reply',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_agent_waiting',
+			'columnName' => 'date_agent_waiting',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_user_waiting',
+			'columnName' => 'date_user_waiting',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_status',
+			'columnName' => 'date_status',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'total_user_waiting',
+			'columnName' => 'total_user_waiting',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'total_to_first_reply',
+			'columnName' => 'total_to_first_reply',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_locked',
+			'columnName' => 'date_locked',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'has_attachments',
+			'columnName' => 'has_attachments',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'subject',
+			'columnName' => 'subject',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'original_subject',
+			'columnName' => 'original_subject',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'properties',
+			'columnName' => 'properties',
+			'type'       => 'array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'worst_sla_status',
+			'columnName' => 'worst_sla_status',
+			'type'       => 'string',
+			'length'     => 20,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'waiting_times',
+			'columnName' => 'waiting_times',
+			'type'       => 'array',
+			'nullable'   => true,
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'parent_ticket',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+			'joinColumns'  => array(array(
+				'name'                 => 'parent_ticket_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null'
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'language',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Language',
+			'joinColumns'          => array(array(
+				'name'                 => 'language_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'department',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Department',
+			'joinColumns'          => array(array(
+				'name'                 => 'department_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'category',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketCategory',
+			'joinColumns'          => array(array(
+				'name'                 => 'category_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'priority',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketPriority',
+			'joinColumns'          => array(array(
+				'name'                 => 'priority_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'workflow',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketWorkflow',
+			'joinColumns'          => array(array(
+				'name'                 => 'workflow_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'product',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Product',
+			'joinColumns'          => array(array(
+				'name'                 => 'product_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'person',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'          => array(array(
+				'name'                 => 'person_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			)),
+			'dpApi'                => true,
+			'dpApiDeep'            => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'person_email',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\PersonEmail',
+			'joinColumns'          => array(array(
+				'name'                 => 'person_email_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true,
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'person_email_validating',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\PersonEmailValidating',
+			'joinColumns'          => array(array(
+				'name'                 => 'person_email_validating_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true,
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'agent',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'          => array(array(
+				'name'                 => 'agent_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'agent_team',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'joinColumns'          => array(array(
+				'name'                 => 'agent_team_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'organization',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Organization',
+			'joinColumns'          => array(array(
+				'name'                 => 'organization_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'linked_chat',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\ChatConversation',
+			'joinColumns'          => array(array(
+				'name'                 => 'linked_chat_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'attachments',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+			'cascade'              => array('remove', 'persist', 'merge', ),
+			'mappedBy'             => 'ticket',
+			'fetch'                => 'EXTRA_LAZY'
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'access_codes',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketAccessCode',
+			'cascade'              => array('persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'onDelete'             => 'cascade'
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'messages',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketMessage',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'fetch'                => 'EXTRA_LAZY',
+			'orderBy'              => array( 'date_created' => 'ASC'),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'custom_data',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\CustomDataTicket',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'labels',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\LabelTicket',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'email_account',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\EmailAccount',
+			'joinColumns'          => array(array(
+				'name'                 => 'email_account_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'            => 'locked_by_agent',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'          => array(array(
+				'name'                => 'locked_by_agent',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+				'columnDefinition'     => NULL
+			)),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'participants',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketParticipant',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true,
+			'dpApiDeep'            => true
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'charges',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketCharge',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true,
+			'dpApiDeep'            => true
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'ticket_slas',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketSla',
+			'cascade'              => array('persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => true,
+			'dpApiDeep'            => true
+		));
+	}
 }

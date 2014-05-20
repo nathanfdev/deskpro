@@ -1,0 +1,30 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Purge Spam</h4>
+{% endblock %}
+{% block modal_body %}
+	<div ng-show="is_done">
+		<p>
+			{{ ng_var('count') }} deleted tickets were purged.
+		</p>
+	</div>
+	<div ng-hide="is_done">
+		<p>
+			This will <strong>permanently</strong> remove all tickets marked as deleted in the recycle bin. Are you sure you want to continue?
+		</p>
+	</div>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+	<div ng-hide="is_loading">
+		<div ng-show="is_done">
+			<button class="btn btn-success" ng-click="dismiss()">Close</button>
+		</div>
+		<div ng-hide="is_done">
+			<button class="btn btn-success" ng-click="dismiss()"><i class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}</button>
+			<button class="btn btn-danger" ng-click="confirm()"><i class="fa fa-trash-o"></i> Purge Recycle Bin</button>
+		</div>
+	</div>
+{% endblock %}

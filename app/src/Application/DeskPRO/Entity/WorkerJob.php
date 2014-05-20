@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Log\Logger;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\Log\Logger;
 
 /**
  * A worker job is some task that needs to run regularly, or on a schedule.
@@ -142,6 +141,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * Guess if the task has crashed or did crash
 	 *
 	 * @param int $threshold
+	 *
 	 * @return bool
 	 */
 	public function getIsCrashed($threshold = 900)
@@ -203,7 +203,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	public function getNextRunRelativeTime()
 	{
 		$date = $this->getNextRunDate();
-		$ts = $date->getTimestamp();
+		$ts   = $date->getTimestamp();
 
 		$diff = $ts - time();
 
@@ -228,6 +228,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @param \Application\DeskPRO\Log\Logger $logger
+	 *
 	 * @return \Application\DeskPRO\WorkerProcess\Job\AbstractJob
 	 */
 	public function createJobObj(Logger $logger, array $options = array())
@@ -259,7 +260,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -267,16 +267,95 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'worker_jobs', ));
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\WorkerJob';
+		$metadata->setPrimaryTable(array('name' => 'worker_jobs',));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'worker_group', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'worker_group', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'description', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'description', ));
-		$metadata->mapField(array( 'fieldName' => 'job_class', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'job_class', ));
-		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'data', ));
-		$metadata->mapField(array( 'fieldName' => 'interval', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_interval', ));
-		$metadata->mapField(array( 'fieldName' => 'last_run_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_run_date', ));
-		$metadata->mapField(array( 'fieldName' => 'last_start_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_start_date', ));
+		$metadata->mapField(array(
+			'fieldName'  => 'id',
+			'type'       => 'string',
+			'length'     => 50,
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => false,
+			'columnName' => 'id',
+			'id'         => true,
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'worker_group',
+			'type'       => 'string',
+			'length'     => 50,
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => true,
+			'columnName' => 'worker_group',
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'title',
+			'type'       => 'string',
+			'length'     => 100,
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => false,
+			'columnName' => 'title',
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'description',
+			'type'       => 'string',
+			'length'     => 255,
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => false,
+			'columnName' => 'description',
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'job_class',
+			'type'       => 'string',
+			'length'     => 100,
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => false,
+			'columnName' => 'job_class',
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'options',
+			'type'       => 'array',
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => true,
+			'columnName' => 'data',
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'interval',
+			'type'       => 'integer',
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => false,
+			'columnName' => 'run_interval',
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'last_run_date',
+			'type'       => 'datetime',
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => true,
+			'columnName' => 'last_run_date',
+			'dpApi'      => true,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'last_start_date',
+			'type'       => 'datetime',
+			'precision'  => 0,
+			'scale'      => 0,
+			'nullable'   => true,
+			'columnName' => 'last_start_date',
+			'dpApi'      => true,
+		));
 	}
 }

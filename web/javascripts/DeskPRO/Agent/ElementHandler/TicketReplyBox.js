@@ -613,7 +613,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				} else {
 					self.page.insertTextInReply(result);
 				}
-
+                                
+                                $("#" + self.page.meta.baseId + "_is_snippet").val(1);
+                                $("#" + self.page.meta.baseId + "_snippet_id").val(snippetId);
+                                
 				self.snippetsViewer.close();
 			}
 		});
@@ -1394,10 +1397,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			return;
 		}
 
+		var textarea = this.textarea;
+		var api = this.textarea.data('redactor');
+
 		var formData = {
 			from: 'me',
 			to: to,
-			message_text: this.getElById('replybox_txt').val()
+			message_text: textarea.val()
 		};
 
 		var translateControls = this.el.find('.translate-controls');

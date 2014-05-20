@@ -18,6 +18,7 @@
 	'admin.custom_fields.explain_widget_field'       => 'This is a widget field that lets you enter any kind of HTML for display purposes. It does not take any input.',
 	'admin.custom_fields.feedback_fields'            => 'Feedback Fields',
 	'admin.custom_fields.field_type'                 => 'Field type',
+	'admin.custom_fields.fields'                     => 'Fields',
 	'admin.custom_fields.hidden'                     => 'Hidden',
 	'admin.custom_fields.how_to_display_the_options' => 'How to display the options',
 	'admin.custom_fields.html_to_display'            => 'HTML to display',

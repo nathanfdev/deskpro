@@ -190,7 +190,7 @@ class HtmlPurifier implements CleanerPlugin
 		# HTML Purifier cleaners
 		#------------------------------
 
-		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+		require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 
 		$purifier = new \HTMLPurifier();
 		$config = $this->getConfigForType($type);

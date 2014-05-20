@@ -38,8 +38,27 @@ function dp_load_config()
 	}
 
 	if (!is_array($DP_CONFIG)) {
-		if (file_exists(DP_CONFIG_FILE)) {
-			require DP_CONFIG_FILE;
+
+		$config_file = DP_CONFIG_FILE;
+		if (
+			(defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing')
+			||
+			(file_exists(DP_CONFIG_FILE) && file_exists(dirname(DP_CONFIG_FILE).DIRECTORY_SEPARATOR.'running_tests.trigger'))
+		) {
+			$config_file = str_replace('.php', '.testing.php', $config_file);
+			if (!file_exists($config_file)) {
+				echo "!!!!!!!!!!!!!!!!!!!!!!\n";
+				echo "Running tests requires a separate config.testing.php file.\n\n";
+				echo "Copy your config.php to config.testing.php and try again.\n";
+				echo "Make sure config.testing.php includes database details for a test database you don't mind losing.\n";
+				echo "!!!!!!!!!!!!!!!!!!!!!!\n\n";
+				exit(1);
+			}
+			$GLOBALS['DP_USING_TESTING_CONFIG'] = true;
+		}
+
+		if (file_exists($config_file)) {
+			require_once $config_file;
 
 			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
 				$DP_CONFIG = array();
@@ -105,6 +124,20 @@ function dp_load_file_into_config($file, $key)
 	} else {
 		$DP_CONFIG[$key] = array();
 	}
+}
+
+$GLOBALS['DP_PAGELOG_INFO'] = array();
+function dp_pagelog_reset()
+{
+	$GLOBALS['DP_PAGELOG_INFO'] = array();
+}
+function dp_pagelog_set($name, $value)
+{
+	$GLOBALS['DP_PAGELOG_INFO'][$name] = $value;
+}
+function dp_pagelog_get($name)
+{
+	return isset($GLOBALS['DP_PAGELOG_INFO'][$name]) ? $GLOBALS['DP_PAGELOG_INFO'][$name] : null;
 }
 
 
@@ -282,6 +315,19 @@ function dp_get_tmp_dir()
 	}
 
 	return $dir;
+}
+
+
+/**
+ * @return string
+ */
+function dp_get_cache_dir()
+{
+	if (defined('DP_CACHE_DIR')) {
+		return DP_CACHE_DIR;
+	}
+
+	return DP_ROOT.'/sys/cache';
 }
 
 

@@ -1,0 +1,17 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<article>
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<p>
+						A Resolved ticket is a finished ticket that no longer requires action from the agent nor the user.
+					</p>
+					<p>
+						You currently have <strong>{{ ng_var('getCount()') }}</strong> resolved tickets.
+					</p>
+				</div>
+			</div>
+		</article>
+	</section>
+{% endblock %}

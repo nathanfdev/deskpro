@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\ORM\EntityManager;
 
@@ -120,7 +119,56 @@ class FieldManager
 		$this->options->setArrayDefault(array(
 			'custom_data_property' => 'custom_data'
 		));
+
+		$this->init();
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getEntityClass()
+	{
+		return $this->options->get('entity_class');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getEntityName()
+	{
+		return $this->options->get('entity_name');
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->getFields());
+	}
+
+
+	/**
+	 * Creates a new field def entity. This entity will be unmanaged by this
+	 * manager. You will need to persist, flush and then reset this object to have the new field added
+	 * to this manager.
+	 *
+	 * @return CustomDefAbstract
+	 */
+	public function createNewDefEntity()
+	{
+		$class = $this->options->get('entity_class');
+		$obj = new $class();
+
+		return $obj;
+	}
+
+
+
+	protected function init() {}
 
 	/**
 	 * Get a collection of all top-level (parent) fields
@@ -139,7 +187,7 @@ class FieldManager
 				return $this->fields;
 			}
 
-			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getFields();
 
 			foreach ($all_fields as $f) {
 
@@ -172,7 +220,7 @@ class FieldManager
 			}
 
 			// Choice fields that have no options are considered disabled
-			foreach ($this->fields as $f) {
+			/*foreach ($this->fields as $f) {
 				if ($f->isChoiceType()) {
 					if (!$this->getFieldChildren($f)) {
 						unset(
@@ -184,7 +232,7 @@ class FieldManager
 						);
 					}
 				}
-			}
+			}*/
 		}
 
 		return $this->fields;
@@ -413,6 +461,10 @@ class FieldManager
 	{
 		$prop = $this->options->get('custom_data_property');
 		$data = $object->$prop;
+
+		if (!$data) {
+			$data = array();
+		}
 
 		return $this->createFieldDataFromArray($data);
 	}

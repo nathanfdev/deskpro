@@ -33,14 +33,12 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ApiKey;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
 
 class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -53,6 +51,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 		$this->addOption('delete', null, InputOption::VALUE_NONE, 'Send a DELETE request');
 		$this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database.');
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
+		$this->addOption('printr', null, InputOption::VALUE_NONE, 'Output as PHP array');
 		$this->addArgument('path', InputArgument::REQUIRED, 'The API endpoint to request');
 		$this->addArgument('data', InputArgument::OPTIONAL, 'Data to send. This should be a JSON-encoded string. Specify a PHP file that returns an array by prefixing the string with @. E.g., @/my-data.php');
 	}
@@ -187,8 +186,12 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
 		try {
 			$response = $request->send();
-		} catch (\Guzzle\Http\Exception\ServerErrorResponseException $e) {
-			$response = $e->getResponse();
+		} catch (\Guzzle\Http\Exception\RequestException $e) {
+			if (method_exists($e, 'getResponse')) {
+				$response = $e->getResponse();
+			} else {
+				throw $e;
+			}
 		}
 
 		if ($input->getOption('raw')) {
@@ -208,7 +211,15 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 			$json = @json_decode($res, true);
 
 			if ($json) {
-				print_r($json);
+				if ($input->getOption('printr')) {
+					print_r($json);
+				} else {
+					if (defined('JSON_PRETTY_PRINT')) {
+						echo json_encode($json, JSON_PRETTY_PRINT);
+					} else {
+						echo $this->_jsonpp(json_encode($json));
+					}
+				}
 			} else {
 				echo $res;
 			}
@@ -217,5 +228,26 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 		}
 
 		return 0;
+	}
+
+
+	private function _jsonpp($json, $istr='  ')
+	{
+		$result = '';
+		for($p=$q=$i=0; isset($json[$p]); $p++)
+		{
+			$json[$p] == '"' && ($p>0?$json[$p-1]:'') != '\\' && $q=!$q;
+			if(strchr('}]', $json[$p]) && !$q && $i--)
+			{
+				strchr('{[', $json[$p-1]) || $result .= "\n".str_repeat($istr, $i);
+			}
+			$result .= $json[$p];
+			if(strchr(',{[', $json[$p]) && !$q)
+			{
+				$i += strchr('{[', $json[$p])===FALSE?0:1;
+				strchr('}]', $json[$p+1]) || $result .= "\n".str_repeat($istr, $i);
+			}
+		}
+		return $result;
 	}
 }

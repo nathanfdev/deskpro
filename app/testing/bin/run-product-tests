@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+cd ..
+
+if [ ! -d logs/coverage-clover ]; then
+	mkdir logs/coverage-clover
+fi
+rm -rf logs/coverage.xml
+
+IS_ERROR=0
+
+sudo chmod -R 0777 ../sys/cache
+
+echo ""
+echo "========================"
+echo "Running Product Tests"
+echo "========================"
+echo ""
+
+bin/codecept run product --coverage --xml
+
+if [[ $? -ne 0 ]] ; then
+	echo "!!! Product Tests Failure !!!"
+	IS_ERROR=1
+fi
+
+if [ -f logs/coverage.xml ]; then
+	mv logs/coverage.xml logs/coverage-clover/product-tests-coverage.xml
+fi
+
+if [ $IS_ERROR -ne 0 ] ; then
+	exit 1
+fi
+exit 0

@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 
 /**
  * This cleans up various temporary data

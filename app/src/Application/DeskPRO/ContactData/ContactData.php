@@ -35,9 +35,7 @@ namespace Application\DeskPRO\ContactData;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 class ContactData
 {

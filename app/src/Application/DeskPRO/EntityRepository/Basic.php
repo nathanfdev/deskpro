@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
-use \Doctrine\ORM\EntityRepository;
 
 /**
  * This is a basic entity repository that implements the custom DeskPRO methods but nothing more.

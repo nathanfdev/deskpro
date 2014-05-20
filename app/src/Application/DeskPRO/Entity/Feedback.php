@@ -34,17 +34,16 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
  * Feedback (feedback)
+ * @SWG\Model
  */
-class Feedback extends ContentAbstract
+class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
 	const STATUS_NEW      = 'new';
 	const STATUS_ACTIVE   = 'active';
@@ -53,41 +52,49 @@ class Feedback extends ContentAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
+	 * @SWG\Property(name="status_category",type="FeedbackStatusCategory")
 	 */
 	protected $status_category = null;
 
 	/**
 	 * @var string
+	 * @SWG\Property(name="hidden_status",type="string")
 	 */
 	protected $hidden_status = null;
 
 	/**
 	 * @var string
+	 * @SWG\Property(name="validating",type="string")
 	 */
 	protected $validating = null;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="category",type="array", items="$ref:FeedbackCategory")
 	 */
 	protected $category;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="revisions",type="array", items="$ref:FeedbackRevision")
 	 */
 	protected $revisions;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="comments",type="array", items="$ref:FeedbackComment")
 	 */
 	protected $comments;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="labels",type="array", items="$ref:LabelFeedback")
 	 */
 	protected $labels;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="custom_data",type="array", items="$ref:CustomDataFeedback")
 	 */
 	protected $custom_data;
 
@@ -95,15 +102,24 @@ class Feedback extends ContentAbstract
 	 * Popularity (see recalculatePopularity).
 	 *
 	 * @var string
+	 * @SWG\Property(name="popularity",type="string")
 	 */
 	protected $popularity = 0;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="custom_data",type="array", items="$ref:FeedbackAttachment")
 	 */
 	protected $attachments;
 
 	protected $_is_new = false;
+
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
 	public function __construct()
 	{
@@ -355,6 +371,37 @@ class Feedback extends ContentAbstract
 
 		return $data;
 	}
+
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
 
 	############################################################################
 	# Doctrine Metadata

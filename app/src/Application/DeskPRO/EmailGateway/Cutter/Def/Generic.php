@@ -33,8 +33,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
-use Orb\Util\Strings;
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
 class Generic implements ForwardDef, QuoteDef
 {

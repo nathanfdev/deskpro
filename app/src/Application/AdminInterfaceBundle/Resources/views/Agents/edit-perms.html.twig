@@ -1,0 +1,232 @@
+{% macro perm_row(typename, permname, opts) %}
+	{% set row_id = 'perm_' ~ typename ~ '_' ~ permname %}
+
+	<tr
+		class="{% if opts.first %}first-of-type{% endif %} {% if opts.toggleName %}nested{% endif %}"
+		{% if opts.toggleName %}
+			{% set toggleNameId = 'perm_' ~ opts.toggleName|replace({'.':'_'}) %}
+			ng-show="{{ toggleNameId }}_toggler"
+		{% endif %}
+	>
+		<td width="100%">
+			<span class="title">
+				{% if has_phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname) %}
+					{{ phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname) }}
+				{% else %}
+					{{ phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname|replace({'_own': '', '_followed': '', '_unassigned': '', '_others': ''})) }}
+				{% endif %}
+			</span>
+
+			{% if opts.showToggler %}
+				<span class="toggle-wrap" ng-click="{{ row_id }}_toggler = !{{ row_id }}_toggler">
+					<span ng-show="!{{ row_id }}_toggler">expand <i class="fa fa-caret-down"></i></span>
+					<span ng-show="{{ row_id }}_toggler">collapse <i class="fa fa-caret-up"></i></span>
+				</span>
+			{% endif %}
+		</td>
+		<td>
+			<input
+				dp-slider-switch
+				ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
+				ng-change="EditCtrl.updateHasPermOverridesStatus()"
+				is-on="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
+				is-locked="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
+				{% if opts.toggleName %}
+					locked-tip-e="(EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}) && 'This permission is locked because you have enabled the parent permission' || 'This permission is locked because this agent is part of a usergroup with this perimssion'"
+				{% else %}
+					locked-tip="This permission is locked because this agent is part of a usergroup with this perimssion"
+				{% endif %}
+			/>
+		</td>
+	</tr>
+{% endmacro %}
+
+<div class="panel panel-innertable">
+
+	<div class="alert alert-info">
+		<p>
+			Permission groups are pre-defined sets of permissions you can easily apply to multiple agents.
+		</p>
+		<p>
+			Select the permission groups to apply to this agent:
+		</p>
+		<ul class="checkbox-list" style="min-width: 250px">
+			<li ng-repeat="group in EditCtrl.form.agent_groups">
+				<label>
+					<input type="checkbox" ng-model="group.value" />
+					<span>{{ ng_var('group.title') }}</span>
+				</label>
+			</li>
+		</ul>
+	</div>
+
+	<div ng-show="EditCtrl.hasPermOverrides">
+		<div class="alert alert-warning">
+			<p>
+				<span class="fa fa-exclamation-triangle"></span>
+				There are permission overrides set on this agent. Manage permission overrides below.
+				<button class="btn btn-default btn-xs" ng-click="$event.preventDefault(); showConfirm('Are you sure you want to unset all permission overrides?', EditCtrl.clearPermOverrides);" style="float:right">Click here to remove overrides</button>
+			</p>
+		</div>
+	</div>
+
+	<nav class="dp-tabletabs">
+		<ul>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#">Tickets</a></li>
+			<li dp-tab-btn="main.perms.people"><a href="#">People</a></li>
+			<li dp-tab-btn="main.perms.chat"><a href="#">Chat</a></li>
+			<li dp-tab-btn="main.perms.publish"><a href="#">Publish</a></li>
+			<li dp-tab-btn="main.perms.profile"><a href="#">Profile</a></li>
+		</ul>
+	</nav>
+
+	{# TICKET PERMISSIONS #}
+	<table class="table table-hover agent-perms-table" dp-tab-body="main.perms.tickets">
+		<tbody>
+			{{ _self.perm_row('ticket', 'use') }}
+			{{ _self.perm_row('ticket', 'create') }}
+			{{ _self.perm_row('ticket', 'reply_mass') }}
+			{{ _self.perm_row('ticket', 'modify_set_closed') }}
+		</tbody>
+		<tbody>
+			{{ _self.perm_row('ticket', 'reply_own',                     {first: true}) }}
+			{{ _self.perm_row('ticket', 'modify_own',                    {showToggler: true}) }}
+			{{ _self.perm_row('ticket', 'modify_department_own',         {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_fields_own',             {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_agent_own',       {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_team_own',        {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_self_own',        {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_cc_own',                 {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_merge_own',              {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_labels_own',             {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_slas_own',               {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_notes_own',              {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_hold_own',           {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_awaiting_user_own',  {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_own', {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
+			{{ _self.perm_row('ticket', 'modify_messages_own') }}
+			{{ _self.perm_row('ticket', 'delete_own') }}
+		</tbody>
+		<tbody>
+		{{ _self.perm_row('ticket', 'reply_to_followed',                  {first: true}) }}
+		{{ _self.perm_row('ticket', 'modify_followed',                    {showToggler: true}) }}
+		{{ _self.perm_row('ticket', 'modify_department_followed',         {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_fields_followed',             {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_assign_agent_followed',       {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_assign_team_followed',        {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_assign_self_followed',        {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_cc_followed',                 {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_merge_followed',              {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_labels_followed',             {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_slas_followed',               {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_notes_followed',              {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_hold_followed',           {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_followed',  {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_followed', {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_messages_followed') }}
+		{{ _self.perm_row('ticket', 'delete_followed') }}
+		</tbody>
+		<tbody>
+			{{ _self.perm_row('ticket', 'view_unassigned',                       {first: true}) }}
+			{{ _self.perm_row('ticket', 'reply_unassigned') }}
+			{{ _self.perm_row('ticket', 'modify_unassigned',                     {showToggler: true}) }}
+			{{ _self.perm_row('ticket', 'modify_department_unassigned',          {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_fields_unassigned',              {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_agent_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_team_unassigned',         {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_self_unassigned',         {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_cc_unassigned',                  {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_merge_unassigned',               {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_labels_unassigned',              {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_slas_unassigned',                {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_notes_unassigned',               {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_hold_unassigned',            {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_awaiting_user_unassigned',   {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_unassigned',  {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_messages_unassigned') }}
+			{{ _self.perm_row('ticket', 'delete_unassigned') }}
+		</tbody>
+		<tbody>
+			{{ _self.perm_row('ticket', 'view_others',                      {first: true}) }}
+			{{ _self.perm_row('ticket', 'reply_others') }}
+			{{ _self.perm_row('ticket', 'modify_others',                    {showToggler: true}) }}
+			{{ _self.perm_row('ticket', 'modify_department_others',         {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_fields_others',             {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_agent_others',       {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_team_others',        {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_assign_self_others',        {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_cc_others',                 {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_merge_others',              {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_labels_others',             {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_slas_others',               {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_notes_others',              {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_hold_others',           {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_awaiting_user_others',  {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_others', {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_messages_others') }}
+			{{ _self.perm_row('ticket', 'delete_others') }}
+		</tbody>
+	</table>
+	{# /TICKET PERMISSIONS #}
+
+	{# PEOPLE PERMISSIONS #}
+	<table class="table table-hover" dp-tab-body="main.perms.people">
+		<tbody>
+			{{ _self.perm_row('people', 'use') }}
+			{{ _self.perm_row('people', 'create') }}
+			{{ _self.perm_row('people', 'edit') }}
+			{{ _self.perm_row('people', 'validate') }}
+			{{ _self.perm_row('people', 'manage_emails') }}
+			{{ _self.perm_row('people', 'reset_password') }}
+			{{ _self.perm_row('people', 'notes') }}
+			{{ _self.perm_row('people', 'delete') }}
+			{{ _self.perm_row('people', 'disable') }}
+			{{ _self.perm_row('people', 'login_as') }}
+			{{ _self.perm_row('people', 'merge') }}
+		</tbody>
+		<tbody>
+			{{ _self.perm_row('org', 'create', {first: true}) }}
+			{{ _self.perm_row('org', 'edit') }}
+			{{ _self.perm_row('org', 'notes') }}
+			{{ _self.perm_row('org', 'delete') }}
+		</tbody>
+	</table>
+	{# /PEOPLE PERMISSIONS #}
+
+	{# CHAT PERMISSIONS #}
+	{% if app.getSetting('core.apps_chat') %}
+		<table class="table table-hover" dp-tab-body="main.perms.chat">
+			<tbody>
+				{{ _self.perm_row('chat', 'use') }}
+				{{ _self.perm_row('chat', 'view_transcripts') }}
+				{{ _self.perm_row('chat', 'view_unassigned') }}
+				{{ _self.perm_row('chat', 'view_others') }}
+				{{ _self.perm_row('chat', 'delete') }}
+			</tbody>
+		</table>
+	{% endif %}
+	{# /CHAT PERMISSIONS #}
+
+	{# PUBLISH PERMISSIONS #}
+	<table class="table table-hover" dp-tab-body="main.perms.publish">
+		<tbody>
+			{{ _self.perm_row('publish', 'create') }}
+			{{ _self.perm_row('publish', 'delete') }}
+			{{ _self.perm_row('publish', 'edit') }}
+			{{ _self.perm_row('publish', 'validate') }}
+		</tbody>
+	</table>
+	{# /PUBLISH PERMISSIONS #}
+
+	{# GENERAL PERMISSIONS #}
+	<table class="table table-hover" dp-tab-body="main.perms.profile">
+			{{ _self.perm_row('general', 'picture') }}
+			{{ _self.perm_row('general', 'signature') }}
+		</tbody>
+	</table>
+	{# /GENERAL PERMISSIONS #}
+</div>

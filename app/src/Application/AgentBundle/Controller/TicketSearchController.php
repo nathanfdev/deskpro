@@ -35,19 +35,16 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
-use Application\DeskPRO\Searcher\TicketSearch;
-use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
-
-use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
-
+use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\UI\RuleBuilder;
-
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 /**
  * Handles ticket searches
@@ -1354,8 +1351,7 @@ class TicketSearchController extends AbstractController
             'agent_team_id',
             'organization_id',
             'linked_chat_id',
-            'email_gateway_id',
-            'email_gateway_address_id',
+            'email_account_id',
             'locked_by_agent',
             'ref',
             'auth',
@@ -1404,7 +1400,7 @@ class TicketSearchController extends AbstractController
                 case 'category_id':
                 case 'workflow_id':
                 case 'product_id':
-                case 'email_gateway_id':
+                case 'email_account_id':
                     $row[] = $display_field;
                     $row[] = preg_replace('/id$/' , 'title', $display_field);
                     break;
@@ -1462,7 +1458,7 @@ class TicketSearchController extends AbstractController
                     case 'category_id':
                     case 'workflow_id':
                     case 'product_id':
-                    case 'email_gateway_id':
+                    case 'email_account_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
                         $entity = $ticket->{$name};
@@ -1811,11 +1807,8 @@ class TicketSearchController extends AbstractController
 			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 		}
 
-		$actions = $macro->getActionsArrayForCollection($tickets);
-
 		$data = array();
 		$data['raw_actions'] = array();
-		$data['ticket_actions'] = $actions;
 
 		$raw_actions = $macro->getActionsArray();
 		if (!empty($raw_actions['new_reply'])) {
@@ -1916,7 +1909,6 @@ class TicketSearchController extends AbstractController
 						}
 						$collection->apply(null, $ticket, $this->person);
 						$this->em->persist($ticket);
-						$ticket->_saveTicketLogs();
 						$this->em->flush();
 						$this->db->commit();
 

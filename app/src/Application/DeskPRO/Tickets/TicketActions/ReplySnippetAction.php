@@ -35,14 +35,11 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
-
-use Application\DeskPRO\Tickets\SnippetFormatter;
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketAttachment;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Tickets\SnippetFormatter;
 
 class ReplySnippetAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {

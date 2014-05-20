@@ -102,6 +102,35 @@ class Reader
 	}
 
 
+	/**
+	 * Resets all sources
+	 */
+	public function resetSources()
+	{
+		foreach ($this->sources as $s) {
+			if ($s instanceof Source\ResetSourceInterface) {
+				$s->resetSource();
+			}
+		}
+	}
+
+
+	/**
+	 * @param $source_name
+	 * @return array
+	 */
+	public function getAll($source_name)
+	{
+		$source = $this->getSource($source_name);
+
+		if (method_exists($source, 'getAll')) {
+			return $source->getAll();
+		} else {
+			return array();
+		}
+	}
+
+
 
 	/**
 	 * Get the raw value from a source.

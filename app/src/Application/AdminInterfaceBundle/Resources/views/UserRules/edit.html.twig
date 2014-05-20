@@ -1,0 +1,98 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Email Address Pattern</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.email_patterns">
+									<textarea class="form-control" name="email_patterns"
+											  ng-model="EditCtrl.form.email_patterns"
+											  style="width: 50%;" required autofocus>
+									</textarea>
+									<span class="help-block">
+										Enter a pattern, one per line. Example: *@example.com
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>When matching, add user to usergroup</h3>
+							</div>
+							<div class="col-lg-9" dp-error-class="form_props.usergroup">
+								<select
+									ui-select2
+									name="usergroup"
+									ng-model="EditCtrl.form.usergroup.id"
+									style="min-width: 240px"
+									class="no-search"
+									required
+								>
+									<option value="{{ ng_var('id') }}" ng-repeat="(id, title) in EditCtrl.form.usergroups">
+										{{ ng_var('title') }}
+									</option>
+								</select>
+								<span class="help-block">
+									You could select any non-system and non-agent usergroup
+								</span>
+							</div>
+						</div>
+						<div ng-if="EditCtrl.user_rule.id" class="form-group">
+							<span ng-if="!EditCtrl.apply_started" class="btn btn-success"
+								  ng-click="EditCtrl.applyRuleToUsers()">
+								Click here to apply this rule to all existing users
+							</span>
+
+							<div ng-if="EditCtrl.apply_started" class="well info-message"
+								 ng-bind-html="EditCtrl.apply_log"
+								 style="overflow: auto; width: 300px; height: 100px;">
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.email_patterns.$error.required">
+								Please set Email Address Pattern for this User Rule
+							</li>
+							<li ng-show="form_props.usergroup.$error.required">
+								Please set Usergroup for this User Rule
+							</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.user_rule.id">
+						<button class="btn btn-danger"
+								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.user_rule.id);">
+							Delete
+						</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+		</section>
+	</form>
+
+{% endblock %}

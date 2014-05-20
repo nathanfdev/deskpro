@@ -1,0 +1,65 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('server.error_logs') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+
+			<h3>Error Logs</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Error Log # {{ ng_var('ServerErrorLogsView.error_log.id') }}</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-3">
+							<h3>{{ phrase('agent.general.id') }}</h3>
+						</div>
+						<div class="col-sm-9">
+							{{ ng_var('ServerErrorLogsView.error_log.id') }}
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-3">
+							<h3>{{ phrase('agent.general.date') }}</h3>
+						</div>
+						<div class="col-sm-9">
+							{{ ng_var('ServerErrorLogsView.error_log.date') }}
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-3">
+							<h3>Summary</h3>
+						</div>
+						<div class="col-sm-9">
+							<textarea style="width: 600px; height: 200px;">
+								{{ ng_var('ServerErrorLogsView.error_log.summary') }}
+							</textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-3">
+							<h3>Raw</h3>
+						</div>
+						<div class="col-sm-9">
+							<textarea style="width: 600px; height: 200px;">
+								{{ ng_var('ServerErrorLogsView.error_log.log') }}
+							</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+
+	</section>
+
+{% endblock %}

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\CacheInvalidator;
 
-use Orb\Util\Strings;
 use Application\DeskPRO\App;
 
 class UserPageCache

@@ -34,14 +34,9 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
-
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\Entity\TicketTrigger;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
+use Application\DeskPRO\Tickets\Actions\ActionApplicator;
+use Application\DeskPRO\Tickets\Slas\SlaProcessor;
 
 /**
  * Handles SLA warn/fail updates
@@ -50,40 +45,25 @@ class TicketSlas extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 60;
 
+	private $count_failed = 0;
+	private $count_warning = 0;
+
 	public function run()
 	{
 		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
 
-		$em = App::getOrm();
+		$proc = new SlaProcessor(App::$container->getEm(), new ActionApplicator(App::$container));
 
-		$count_failed = 0;
-		$count_warning = 0;
+		$context_factory = function() {
+			$context = App::$container->getTicketManager()->createSystemExecutorContext('slas');
+			return $context;
+		};
 
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
-
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_FAIL) {
-				$count_failed++;
-			}
-		}
-
+		$count_failed = $proc->processAllFailed($context_factory);
 		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
 		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
 
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
-
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_WARNING) {
-				$count_warning++;
-			}
-		}
-
+		$count_warning = $proc->processAllWarning($context_factory);
 		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
 		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
 

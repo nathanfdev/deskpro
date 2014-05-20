@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\RefGenerator;
 
 use Application\DeskPRO\App;
-
 use Orb\Util\Strings;
 
 class RandomRef implements RefGeneratorInterface

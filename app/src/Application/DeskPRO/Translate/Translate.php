@@ -35,23 +35,18 @@
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Entity\Language as LanguageEntity;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EventDispatcher\DataEvent;
+use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Translate\Loader\LoaderInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
-
-use Application\DeskPRO\Translate\Loader\LoaderInterface;
-use Application\DeskPRO\Entity\Language as LanguageEntity;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Person;
-
-use Application\DeskPRO\EventDispatcher\DataEvent;
-
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
-use Application\DeskPRO\HttpFoundation\Session;
+use Orb\Util\Strings;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class is responsible for loading phrases from a language stored in the database.
@@ -139,10 +134,10 @@ class Translate implements PersonContextInterface
 
 
 	/**
-	 * @param string $language The default language to use
-	 * @param LoaderInterface $loader A loader that'll load phrases from somehwere
+	 * @param LoaderInterface $loader
+	 * @param EventDispatcherInterface $event_dispatcher
 	 */
-	public function __construct(LoaderInterface $loader, EventDispatcher $event_dispatcher = null)
+	public function __construct(LoaderInterface $loader, EventDispatcherInterface $event_dispatcherr = null)
 	{
 		$this->setLanguage(SystemLanguage::getInstance(), false);
 		$this->loader = $loader;
@@ -151,7 +146,7 @@ class Translate implements PersonContextInterface
             \DpShutdown::add(array($this, 'reportMissingPhrases'));
         }
 
-		$this->_event_dispatcher = $event_dispatcher;
+		$this->_event_dispatcher = $event_dispatcherr;
 	}
 
 
@@ -160,7 +155,7 @@ class Translate implements PersonContextInterface
 	 */
 	public function setSession(Session $session = null)
 	{
-		if (!$session) {
+		if (!$session || !$session->isStarted()) {
 			return;
 		}
 
@@ -499,6 +494,71 @@ class Translate implements PersonContextInterface
         }
     }
 
+
+	/**
+	 * @param array $phrase_names
+	 */
+	public function getArrayPhraseTexts(array $phrase_names, $language = null)
+	{
+		if ($language === null) $language = $this->_language;
+
+		if (Numbers::isInteger($language)) {
+			$language_id = $language;
+		} else {
+			$language_id = $language['id'];
+		}
+
+		$preload_groups = array();
+
+		$star_patterns  = array();
+		$regex_patterns = array();
+		$phrase_ids     = array();
+
+		foreach ($phrase_names as $phrase_name) {
+			$preload_groups[] = $this->getPhraseGroupFromName($phrase_name);
+
+			// A regex pattern like /admin\.general\.default.*?/
+			if ($phrase_name[0] == '/' && substr($phrase_name, -1, 1) == '/') {
+				$regex_patterns[] = $phrase_name;
+
+			// A simplified star pattern like admin.general.default*
+			} else if (strpos($phrase_name, '*') !== false) {
+				$star_patterns[] = $phrase_name;
+
+			// A fully-qualified phrase name
+			} else {
+				$phrase_ids[] = $phrase_name;
+			}
+		}
+
+		$this->loadPhraseGroups($preload_groups);
+
+		$phrase_texts = array();
+		foreach ($phrase_ids as $phrase_name) {
+			$text = $this->getPhraseText($phrase_name, $language, true);
+			$phrase_texts[$phrase_name] = $text;
+		}
+
+		if ($star_patterns || $regex_patterns) {
+			$this->_loadPendingPhraseGroups();
+			foreach ($this->_phrases[$language_id] as $phrase_name => $text) {
+				foreach ($star_patterns as $pattern) {
+					if (Strings::isStarMatch($pattern, $phrase_name)) {
+						$phrase_texts[$phrase_name] = $text;
+					}
+				}
+				foreach ($regex_patterns as $pattern) {
+					if (preg_match($pattern, $phrase_name)) {
+						$phrase_texts[$phrase_name] = $text;
+					}
+				}
+			}
+		}
+
+		return $phrase_texts;
+	}
+
+
 	/**
 	 * Called when there is no such phrase name. By default this simply
 	 * returns null. But an event might change this.
@@ -723,6 +783,14 @@ class Translate implements PersonContextInterface
 				if ($sub_phrase_name == $phrase_name) continue; //prevent loops
 				$sub_phrase_text = $this->phrase($sub_phrase_name, $vars, $language);
 				$phrase_text = str_replace("{{phrase.$sub_phrase_name}}", $sub_phrase_text, $phrase_text);
+			}
+		}
+
+		// Pass to detect which should be output as ng_Vars
+		$m = null;
+		if (preg_match_all('#ng_var\(([a-zA-Z0-9\-_\.]+)\)#', $phrase_text, $m, \PREG_SET_ORDER)) {
+			foreach ($m as $match) {
+				$phrase_text = str_replace($match[0], '{{' . $match[1] . '}}', $phrase_text);
 			}
 		}
 

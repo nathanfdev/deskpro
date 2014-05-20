@@ -35,12 +35,11 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Languages\LangPackInfo;
-use Orb\Util\Arrays;
+use Guzzle\Http\Client as HttpClient;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Guzzle\Http\Client as HttpClient;
 
 class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

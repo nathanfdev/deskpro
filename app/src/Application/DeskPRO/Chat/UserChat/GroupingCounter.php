@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Chat\UserChat;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
-use Orb\Util\Arrays;
 
 class GroupingCounter
 {

@@ -1,0 +1,136 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('setup.languages') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Languages</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Language Settings</h3>
+		</header>
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<label>
+								<input type="checkbox" ng-model="EditCtrl.form.lang_auto_install" />
+								<h4>Automatically install new langauges</h4>
+							</label>
+							<span class="help-block">
+								New language translations are sometimes added with new DeskPRO updates. When this option is enabled,
+								new lanugages will be autoatmically installed and enabled on your helpdesk.
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="saving_settings">
+						<button class="btn btn-primary" ng-click="EditCtrl.saveSettings()">{{ phrase('agent.general.save') }}</button>
+					</div>
+					<div dp-show-spinning="saving_settings">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Mass update ticket language</h3>
+		</header>
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<div style="padding-bottom: 4px;">
+								Update all
+								<select ng-model="EditCtrl.form.tickets_move_from" ui-select2 style="width: 170px;">
+									<option value="0">(no language)</option>
+									<option ng-repeat="l in EditCtrl.langChoices" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select> tickets
+							</div>
+							<div>
+								and set the language to
+								<select ng-model="EditCtrl.form.tickets_move_to" ui-select2 style="width: 170px;">
+									<option value="0">(no language)</option>
+									<option ng-repeat="l in EditCtrl.langChoices" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="saving_tickets">
+						<button class="btn btn-primary" ng-click="EditCtrl.doMassTicketMove()">Mass-update tickets now</button>
+					</div>
+					<div dp-show-spinning="saving_tickets">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Mass update user language choice</h3>
+		</header>
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<div style="padding-bottom: 4px;">
+								Update all
+								<select ng-model="EditCtrl.form.users_move_from" ui-select2 style="width: 170px;">
+									<option value="0">(no language)</option>
+									<option ng-repeat="l in EditCtrl.langChoices" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select> users
+							</div>
+							<div>
+								and set their language to
+								<select ng-model="EditCtrl.form.users_move_to" ui-select2 style="width: 170px;">
+									<option value="0">(no language)</option>
+									<option ng-repeat="l in EditCtrl.langChoices" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="saving_users">
+						<button class="btn btn-primary" ng-click="EditCtrl.doMassUserMove()">Mass-update users now</button>
+					</div>
+					<div dp-show-spinning="saving_users">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+
+	<div dp-register-message="confirm_move_tickets">
+		Are you sure you want to mass update language on all tickets in your database? This action cannot be undone.
+	</div>
+	<div dp-register-message="confirm_move_users">
+		Are you sure you want to mass update language on all users in your database? This action cannot be undone.
+	</div>
+{% endblock %}

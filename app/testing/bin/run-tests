@@ -1,0 +1,100 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+cd ..
+
+if [ -d logs/coverage-clover ]; then
+	rm -rf logs/coverage-clover
+fi
+mkdir logs/coverage-clover
+rm -rf logs/coverage.xml
+
+IS_ERROR=0
+
+echo ""
+echo "=========================="
+echo "Running Unit Tests"
+echo "=========================="
+echo ""
+
+bin/codecept run unit --coverage --xml
+
+if [[ $? -ne 0 ]] ; then
+	echo "!!! Unit Test Failure !!!"
+	IS_ERROR=1
+fi
+
+if [ -f logs/coverage.xml ]; then
+	mv logs/coverage.xml logs/coverage-clover/unit-tests-coverage.xml
+fi
+
+if [ $IS_ERROR -ne 1 ] ; then
+	echo ""
+	echo "=========================="
+	echo "Running Integration Tests"
+	echo "=========================="
+	echo ""
+
+	bin/codecept run integration --coverage --xml
+
+	if [[ $? -ne 0 ]] ; then
+		echo "!!! Unit Integration Failure !!!"
+		IS_ERROR=1
+	fi
+
+	if [ -f logs/coverage.xml ]; then
+		mv logs/coverage.xml logs/coverage-clover/integration-tests-coverage.xml
+	fi
+fi
+
+if [ $IS_ERROR -ne 1 ] ; then
+
+	# phpunit will have created cache dirs owned by the cli user
+	# but we'll be making web requests now, so we need to make sure
+	# the web server can write too
+	sudo chmod -R 0777 ../sys/cache
+
+	echo ""
+	echo "========================"
+	echo "Running Acceptance Tests"
+	echo "========================"
+	echo ""
+
+	bin/codecept run acceptance
+	#bin/codecept run acceptance --coverage --xml
+
+	if [[ $? -ne 0 ]] ; then
+		echo "!!! Acceptance Tests Failure !!!"
+		IS_ERROR=1
+	fi
+
+	#if [ -f logs/coverage.xml ]; then
+	#	mv logs/coverage.xml logs/coverage-clover/acceptance-tests-coverage.xml
+	#fi
+fi
+
+if [ $IS_ERROR -ne 1 ] ; then
+	echo ""
+	echo "========================"
+	echo "Running Product Tests"
+	echo "========================"
+	echo ""
+
+	bin/codecept run product
+	#bin/codecept run product --coverage --xml
+
+	if [[ $? -ne 0 ]] ; then
+		echo "!!! Product Tests Failure !!!"
+		IS_ERROR=1
+	fi
+
+	#if [ -f logs/coverage.xml ]; then
+	#	mv logs/coverage.xml logs/coverage-clover/product-tests-coverage.xml
+	#fi
+fi
+
+if [ $IS_ERROR -ne 0 ] ; then
+	exit 1
+fi
+exit 0

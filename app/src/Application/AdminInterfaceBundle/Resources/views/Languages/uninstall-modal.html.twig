@@ -1,0 +1,22 @@
+<div class="modal-dialog">
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Uninstall Language</h4>
+	</div>
+	<div class="modal-body">
+		<p>
+			Are you sure you want to uninstall this language?
+		</p>
+		<ul>
+			<li>Users will no longer be able to select this language from the portal</li>
+			<li>Existing users using this language will be reverted back to using the default language.</li>
+			<li>Tickets using this lanugage will be reverted back to using the default language</li>
+		</ul>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-success" ng-click="dismiss()"><i class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}</button>
+		<button class="btn btn-danger" ng-click="confirm()"><i class="fa fa-trash-o"></i> Uninstall</button>
+	</div>
+</div>
+</div>

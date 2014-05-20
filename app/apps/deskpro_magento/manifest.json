@@ -1,0 +1,69 @@
+{
+	"package_name": "deskpro_magento",
+	"is_native": true,
+	"title": "Magento",
+	"description": "Enables user authentication through magento and agent interface widgets.",
+	"tags": ["usersources", "profiles"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "url",
+			"type": "text",
+			"label": "Magento URL",
+			"description": "This is the URL to your Magento site (without any trailing slash).",
+			"native_only": true
+		},
+		{
+			"name": "api_user",
+			"type": "text",
+			"label": "Magento API User",
+			"description": "Enter the name of an API user that you setup in Magento via System > Web Services > SOAP/XML-RPC - Users.",
+			"native_only": true
+		},
+		{
+			"name": "api_key",
+			"type": "text",
+			"label": "Magento API Key",
+			"description": "Enter the API key for your user.",
+			"native_only": true
+		},
+		{
+			"name": "widget_ticket",
+			"type": "checkbox",
+			"label": "Enable Ticket Widget",
+			"checkbox_label": "Enable",
+			"description": "Show the Magento widget on tickets",
+			"native_only": false
+		},
+		{
+			"name": "widget_profile",
+			"type": "checkbox",
+			"checkbox_label": "Enable",
+			"label": "Enable Profile Widget",
+			"description": "Show the Magento widget on user profiles",
+			"native_only": false
+		},
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enable User Source",
+			"description": "Allow users to log in to DeskPRO using their Magento credentials?",
+			"native_only": true
+		},
+		{
+			"name": "enable_sso",
+			"type": "checkbox",
+			"label": "Enable SSO",
+			"description": "When SSO is enabled, users will be automatically logged-in if they visit DeskPRO while they have an active Magento session.",
+			"native_only": true
+		}
+	]
+}

@@ -33,6 +33,7 @@
 
 namespace Application\UserBundle\Controller;
 
+use Application\AgentBundle\Controller\Helper\CarryAdminSession;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -111,7 +112,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				$this->person = new \Application\DeskPRO\People\PersonGuest();;
 			}
 
-			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+			$cas = new CarryAdminSession($this);
 			$cas->process();
 
 			// With admin portal controls, give permission to the sections even if we dont usually
@@ -151,6 +152,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
 			$tpl_globals->setVariable('admin_portal_controls', true);
 			$tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
+		}
+
+		if ($this->person && $this->person->id && !($this instanceof ProfileController)) {
+			/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+			$password_validator = App::$container->getSystemService('password_policy_validator');
+			if ($password_validator->isPasswordExpired($this->person)) {
+				return $this->redirectRoute('user_profile');
+			}
 		}
 
 		if (

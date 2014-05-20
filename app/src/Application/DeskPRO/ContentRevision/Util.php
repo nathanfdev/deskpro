@@ -37,8 +37,6 @@ namespace Application\DeskPRO\ContentRevision;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Arrays;
-
 class Util
 {
 	private function __construct() {}

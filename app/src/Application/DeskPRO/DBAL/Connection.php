@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\DBAL;
 
-use DeskPRO\Kernel\KernelErrorHandler;
-use PDO;
 use Orb\Log\Logger;
+use PDO;
 
 /**
  * Some enhancements to Doctrine's connection class.
@@ -426,7 +425,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::executeQuery($query, $params, $types, $qcp);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$e->_dp_query = $query;
 			$e->_dp_query_params = $params;
 			throw $e;
@@ -447,7 +446,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		try {
 			return parent::executeUpdate($query, $params, $types);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 
 			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
 				usleep(500000);
@@ -532,9 +531,10 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $table
 	 * @param array $ids
 	 * @param string $field
+	 * @param array|string $other_wheres
 	 * @return int
 	 */
-	public function deleteIn($table, array $ids, $field = 'id', $not = false)
+	public function deleteIn($table, array $ids, $field = 'id', $not = false, $other_wheres = '')
 	{
 		if (!$ids) {
 			return 0;
@@ -546,7 +546,17 @@ class Connection extends \Doctrine\DBAL\Connection
 			$not = '';
 		}
 
-		return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (" . $this->quoteIn($ids) . ")");
+		$more_where = '';
+		if ($other_wheres) {
+			if (is_array($other_wheres)) {
+				$more_where = 'AND ' . implode(' AND ', $other_wheres);
+			} else {
+				$more_where = 'AND ' . $other_wheres;
+			}
+
+		}
+
+		return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (" . $this->quoteIn($ids) . ") $more_where");
 	}
 
 
@@ -587,7 +597,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::exec($statement);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$e->_dp_query = is_string($statement) ? $statement : null;
 			$e->_dp_query_params = array();
 			throw $e;
@@ -665,20 +675,6 @@ class Connection extends \Doctrine\DBAL\Connection
 		$level = $this->getTransactionNestingLevel();
 
 		if ($is_unexpected) {
-			// Set in SearchUpdater::run
-			// - This flag means we've updated records in the search tables.
-			// - Search tables are no innodb which means they cant be rolled back
-			// - So we have to set this reset flag so the cron job will regenerate them next turn
-			if (isset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'])) {
-				unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
-				try {
-					$this->executeUpdate("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '1'");
-
-					$e = new \RuntimeException("Rollback will result in corrupted search tables");
-					KernelErrorHandler::logException($e, false);
-				} catch (\Exception $e) {}
-			}
-
 			if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
 				$this->running_trans_event = true;
 				$eventArgs = new Event\PostCommit($this);

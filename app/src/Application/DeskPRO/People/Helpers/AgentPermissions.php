@@ -125,11 +125,20 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 			return $this->_allowed_ids[$context];
 		}
 
+		$uids = array();
+		$uids = $this->person->getUsergroupIds();
+		if (!$uids) {
+			$uids[] = '0';
+		}
+		$uids = implode(',', $uids);
+
 		$raw = App::getDb()->fetchAll("
 			SELECT app, department_id
 			FROM department_permissions
-			WHERE person_id = ?
-				AND name = 'full' AND value = 1
+			WHERE
+				(person_id = ? OR usergroup_id IN ($uids))
+				AND name = 'full'
+				AND value = 1
 		", array($this->person->id));
 
 		$this->_allowed_ids = array();

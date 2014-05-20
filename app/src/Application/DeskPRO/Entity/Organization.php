@@ -34,23 +34,20 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
-
-use Application\DeskPRO\Entity;
 
 
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
  */
-class Organization extends \Application\DeskPRO\Domain\DomainObject
+class Organization extends DomainObject implements HighlightableModelInterface
 {
 	/**
 	 * The unique ID.
@@ -139,6 +136,13 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	protected $twitter_users;
 
 	protected $_label_manager = null;
+
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
 	public function __construct()
 	{
@@ -464,6 +468,37 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 
 		return $data;
 	}
+
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
 
 	############################################################################
 	# Doctrine Metadata

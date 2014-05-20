@@ -1,0 +1,65 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap"><label>Send User Email</label></td>
+				<td>
+					<table class="display-table spaced">
+						<tr>
+							<td>Template:</td>
+							<td>
+								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || ''">
+									{% for email in [
+										'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+										'DeskPRO:emails_user:ticket-new-byagent.html.twig',
+										'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
+										'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+									] %}
+										<option value="{{ email }}">{{ email }}</option>
+									{% endfor %}
+									<option value="CREATE">Create a new template...</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>Include CC's:</td>
+							<td>
+								<label>
+									<input type="checkbox" ng-model="model.do_cc_users" />
+									CC in all additional user participants.
+								</label>
+							</td>
+						</tr>
+						<tr>
+							<td>From Name:</td>
+							<td>
+								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.from_name" ng-init="" style="min-width: 50px;">
+									<option value="performer">Name of the person who initiated the action</option>
+									<option value="helpdesk_name">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
+									{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
+									<option value="custom">Enter a custom name</option>
+								</select>
+								<div style="padding-top: 3px; width: 250px;">
+									<input type="text" class="form-control" ng-model="model.from_name_custom" ng-show="model.from_name == 'custom'" />
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>From Email:</td>
+							<td>
+								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.from_account" ng-init="" style="min-width: 50px;">
+									<optgroup label="Default">
+										<option value="0">The account set on the ticket</option>
+									</optgroup>
+									<optgroup label="Specific account">
+										<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.address') }}</option>
+									</optgroup>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

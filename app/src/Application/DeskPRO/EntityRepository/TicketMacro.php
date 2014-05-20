@@ -37,10 +37,17 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use \Doctrine\ORM\EntityRepository;
-
 class TicketMacro extends AbstractEntityRepository
 {
+	public function getMacros()
+	{
+		return $this->_em->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMacro m
+			ORDER BY m.title ASC
+		")->execute();
+	}
+
 	public function getMacrosForPerson(Entity\Person $person)
 	{
 		return $this->_em->createQuery("

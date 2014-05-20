@@ -1,0 +1,35 @@
+<section class="report-wrapper">
+	<header>
+		<h2>
+			There is a Total of {{ ng_var('tickets_status.sum') }} Tickets in Your Helpdesk
+		</h2>
+		<h3>Showing Grouped by Status</h3>
+	</header>
+	<article>
+		<div class="dp-layout-loading" ng-show="tickets_status.loading"><i></i></div>
+		<table class="stat-table" width="100%" ng-if="!tickets_status.empty" ng-hide="tickets_status.loading">
+			<tr ng-repeat="stat in tickets_status.stats">
+				<td class="title"><span>{{ ng_var('stat.title') }}</span></td>
+				<td width="100%">
+					<table width="100%" class="stat-value">
+						<tr>
+							<td class="value" width="{{ ng_var('stat.left_percentage') }}%">
+								<div>&nbsp;</div>
+							</td>
+							<td width="{{ ng_var('stat.right_percentage') }}%">
+								{{ ng_var('stat.value') }}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr class="total-row">
+				<td class="title">Total:</td>
+				<td class="val">{{ ng_var('tickets_status.sum') }}</td>
+			</tr>
+		</table>
+		<div class="no-data" ng-if="tickets_status.empty" ng-hide="tickets_status.loading">
+			<h3>No matching data</h3>
+		</div>
+	</article>
+</section>

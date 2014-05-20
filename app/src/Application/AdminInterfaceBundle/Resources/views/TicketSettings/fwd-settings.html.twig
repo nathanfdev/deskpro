@@ -1,0 +1,116 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Fwd.save()">
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Ticket Forwarding &mdash; Inbound</h3>
+		</header>
+
+		<article>
+			<div class="panel panel-innertable">
+				<p>
+					When an agent forwards an email from their own email inbox into the helpdesk, DeskPRO can parse the message
+					to create a new ticket for the user the original email was from. This makes it easy for agents to enter
+					new tickets into the helpdesk via email on behalf of other users who may be emailing them.
+				</p>
+				<p>
+					<a href="http://support.deskpro.com/kb/articles/106" target="_blank">Read more about this feature in the DeskPRO knowledgebase &rarr;</a>
+				</p>
+			</div>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<div class="col-lg-12">
+							<label>
+								<input type="checkbox" ng-model="settings.process_agent_fwd" />
+								<h4>Enable smart-parsing of emails forwarded into the helpdesk by agents</h4>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Ticket Forwarding &mdash; Outbound</h3>
+		</header>
+
+		<article>
+			<div class="panel panel-innertable">
+				<p>
+					These settings control how individual ticket messages are forwarded out of the helpdesk using the "Forward Message" function from the Agent Interface. This feature is available from the gear menu on each message in a ticket.
+				</p>
+			</div>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<div class="col-lg-12">
+							<label>
+								<h4>Ticket Account</h4>
+							</label>
+							<div class="inner-group">
+								<select ng-model="settings.use_account" ui-select2="{dropdownAutoWidth:true}">
+									<option ng-repeat="acc in Fwd.email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.address') }}</option>
+								</select>
+								<span class="help-block">
+									Choose the email account to use when an agent forwards a ticket message out of the helpdesk.
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="inner-group">
+						<div class="col-lg-12">
+							<label>
+								<input type="checkbox" ng-model="settings.use_agent_address" />
+								<h4>Use the agent "From" email address</h4>
+							</label>
+							<div class="inner-group">
+								<p>
+									When enabled, DeskPRO will attempt to send the email "From" the same email address as the logged-in agent.
+									For example, if you forwarded a message out, it would appear to be from <code>{{ app.user.primary_email_address }}</code> instead of the account address <code>{{ ng_var('use_account_address') }}</code>.
+								</p>
+								<div class="alert alert-info ng-hide" ng-show="settings.use_agent_address">
+									<p>
+										Important: To use this feature, the outgoing email account you selected above (<code>{{ ng_var('use_account_address') }}</code>) must be able to send from arbitrary email addresses.
+										This may require special configuration on your email server.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div dp-hide-spinning="saving">
+						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+					</div>
+					<div dp-show-spinning="saving">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+</form>
+<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

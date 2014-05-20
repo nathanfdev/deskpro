@@ -36,22 +36,51 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
 class BanEmail extends AbstractEntityRepository
 {
 	/**
 	 * Get a list of emails suitable for display
 	 */
-	public function getList()
+
+	public function getList($from = 0, $limit = 20, $search_phrase = '')
 	{
+		$where = '';
+
+		if (!empty($search_phrase)) {
+
+			$where = " WHERE banned_email LIKE '%" . $search_phrase . "%'";
+		}
+
 		$list = App::getDb()->fetchAllCol("
 			SELECT banned_email
 			FROM ban_emails
+			$where
 			ORDER BY banned_email ASC
+			LIMIT " . $from . ", " . $limit . "
 		");
 
 		return $list;
+	}
+
+	/**
+	 * @param int $per_page
+	 * @param string $search_phrase
+	 *
+	 * @return int
+	 */
+
+	public function getPageCount($per_page = 20, $search_phrase = '')
+	{
+		$where = '';
+
+		if (!empty($search_phrase)) {
+
+			$where = "banned_email LIKE '%" . $search_phrase . "%'";
+		}
+
+		$count = App::getDb()->count('ban_emails', $where);
+
+		return ceil($count / $per_page);
 	}
 
 	public function getPatterns($reload = false)

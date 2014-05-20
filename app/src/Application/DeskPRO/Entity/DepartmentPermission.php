@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
 
 /**
  * Stores who has access to departments
@@ -112,6 +111,24 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 		if ($p !== null) {
 			$this->usergroup = null;
 		}
+	}
+
+	/**
+	 * A name that identifies this permission (eg could be used as an map key)
+	 *
+	 * @return string
+	 */
+	public function getPermissionSysId()
+	{
+		$x = $this->department->id . '.' . $this->app . '.';
+		if ($this->usergroup) {
+			$x .= 'ug' . $this->usergroup->id;
+		} else if ($this->person) {
+			$x .= 'p' . $this->person->id;
+		}
+		$x .= '.' . $this->name . '.1';
+
+		return $x;
 	}
 
 

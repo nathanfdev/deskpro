@@ -1,0 +1,158 @@
+.dp-app-header {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: @topHeight;
+	z-index: 2;
+}
+
+.dp-appstrip {
+	position: absolute;
+	top: @topHeight;
+	bottom: 0;
+	left: 0;
+	width: @appNavWidth;
+	background: #2b2f33;
+	z-index: 2;
+}
+
+//######################################################################################################################
+//# App Layout
+//# - The main wrapper around the "app"
+//# - This includes the app nav (optional) and the app body
+//######################################################################################################################
+
+.dp-layout-app {
+	background: #F5F7FA;
+	position: fixed;
+	top: @topHeight;
+	bottom: 0;
+	left: @appNavWidth;
+	right: 0;
+	overflow: hidden;
+}
+
+//######################################################################################################################
+//# App Nav
+//# - The menu for each app, eg Tickets has Departments, Ticket Accounts, Triggers etc
+//# - This is an optional element. When enabled, .dp-layout-app will have .with-layout-appnav
+//######################################################################################################################
+
+.dp-layout-appnav {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: @navWidth;
+	overflow: auto;
+	display: none;
+
+	background: #eceef0;
+	border-right: 1px solid #b7bac0;
+}
+
+.dp-layout-appnav.as-altstyle {
+	//background: #fff;
+}
+
+.with-layout-appnav .dp-layout-appnav {
+	display: block;
+}
+
+.as-appnav-extrawide .dp-layout-appnav {
+	width: @navWidthExtraWide;
+}
+
+//######################################################################################################################
+//# App Alt
+//# - Absolutely positioned to the right. Basically like App Nav except on the right.
+//######################################################################################################################
+
+.dp-layout-appalt {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: @appAltWidth;
+	overflow: auto;
+	display: none;
+
+	background: #eceef0;
+	border-left: 1px solid #b7bac0;
+}
+
+.with-layout-appalt .dp-layout-appalt {
+	display: block;
+}
+
+//######################################################################################################################
+//# App Body
+//# - The body is a dumb container; depending on the route, it might include a list with edit pane, a full page etc
+//######################################################################################################################
+
+.dp-layout-appbody {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+}
+
+.dp-layout-appbody-white-matte {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+	background: #fff;
+}
+
+.with-layout-appnav .dp-layout-appbody {
+	left: @navWidth;
+}
+
+.with-layout-appnav.as-appnav-extrawide .dp-layout-appbody {
+	left: @navWidthExtraWide;
+}
+
+.with-layout-appalt .dp-layout-appbody {
+	right: @appAltWidth;
+}
+
+//######################################################################################################################
+//# List Layout
+//# - Lists always have two panes. The first is a list pane which is fixed width
+//# - The second edit pane is fluid and generally contains edit controls
+//######################################################################################################################
+
+.dp-layout-list {
+	position: relative;
+}
+
+.dp-layout-list-listpane {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: @listWidth;
+}
+
+.dp-layout-list-editpane {
+	position: absolute;
+	top: 0;
+	left: @listWidth;
+	right: 0;
+	min-width: 745px;
+}
+
+//######################################################################################################################
+//# Page Layout
+//# - Page Layout is a 100% width layout
+//# - Generally no sub-views
+//######################################################################################################################
+
+.dp-layout-fullpage {
+	min-width: 800px;
+}

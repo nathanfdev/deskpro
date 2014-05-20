@@ -37,8 +37,6 @@ namespace Application\DeskPRO\People\PermissionLoader;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Arrays;
-
 /**
  * A permission loader knows how to load permissions for a thing.
  */
@@ -72,7 +70,7 @@ abstract class AbstractLoader implements \Serializable
 	public function __construct(array $usergroup_ids, Person $person = null)
 	{
 		$this->usergroup_ids = $usergroup_ids;
-		if (App::getDataService('Usergroup')->find(1)->is_enabled) {
+		if (App::$container->getUserGroups()->getEveryoneGroup()->is_enabled) {
 			$this->usergroup_ids[] = 1;
 		} else {
 			$this->usergroup_ids[] = 0;

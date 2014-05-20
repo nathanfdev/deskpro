@@ -36,10 +36,8 @@ namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-use Orb\Validator\AbstractValidator;
 use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
+use Orb\Validator\AbstractValidator;
 
 class RegisterValidator extends AbstractValidator
 {
@@ -84,9 +82,12 @@ class RegisterValidator extends AbstractValidator
 			}
 		}
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 5));
-		if (!$validator->isValid($this->register->password)) {
-			$this->addError('password.short');
+		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+		$password_validator = App::$container->getSystemService('password_policy_validator');
+
+		$mock_user = new Entity\Person();
+		if (!$password_validator->checkPassword($this->register->password, $mock_user)) {
+			$this->addError('password.invalid');
 		} elseif ($this->register->password != $this->register->password2) {
 			$this->addError('password.mismatch');
 		}

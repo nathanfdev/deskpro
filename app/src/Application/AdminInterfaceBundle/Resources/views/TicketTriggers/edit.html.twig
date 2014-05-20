@@ -1,0 +1,201 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="TicketTriggersEdit.saveTrigger()">
+
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>{{ phrase('agent.general.title') }} *</h3>
+							</div>
+							<div class="col-lg-10">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text" class="form-control" name="title" ng-model="form.title" style="width: 50%;" required autofocus />
+									<span class="help-block">
+										{{ phrase('adm.ticket_triggers.title_explain') }}
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Event</h3>
+							</div>
+							<div class="col-lg-10">
+								<p ng-if="triggerType == 'newticket'">When a new ticket is created</p>
+								<p ng-if="triggerType == 'newreply'">When a new reply is submitted</p>
+								<p ng-if="triggerType == 'update'">When a property on a ticket is changed</p>
+
+								<div>
+									<div style="float: left; width: 55%">
+										<label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.typeForm.by_user" value="1" />
+											By a user
+										</label>
+										<div ng-show="form.typeForm.by_user">
+											&mdash; <label style="font-weight: normal;">
+												<input type="checkbox" dp-tristate-check="form.typeForm.by_user_mode.portal, form.typeForm.by_user_mode.widget, form.typeForm.by_user_mode.form" />
+												via the web
+											</label>
+											<i class="fa fa-cog" ng-click="show_byuser_web = !show_byuser_web" style="cursor: pointer; color: #888"></i>
+											<div style="margin-left: 11px; background: #efefef; border-radius: 2px; padding: 5px; padding-bottom: 0;" ng-show="show_byuser_web">
+												<label style="font-weight: normal;"><input type="checkbox" ng-model="form.typeForm.by_user_mode.portal" value="1" /> Portal</label>
+												&nbsp;
+												<label style="font-weight: normal;"><input type="checkbox" ng-model="form.typeForm.by_user_mode.widget" value="1" /> Feedback and Support Tab</label>
+												&nbsp;
+												<label style="font-weight: normal;"><input type="checkbox" ng-model="form.typeForm.by_user_mode.form" value="1" /> Contact Form</label>
+											</div>
+											<br/>
+											&mdash; <label style="font-weight: normal;">
+												<input type="checkbox" ng-model="form.typeForm.by_user_mode.email" value="1" />
+												via email
+											</label><br/>
+											&mdash; <label style="font-weight: normal;">
+												<input type="checkbox" ng-model="form.typeForm.by_user_mode.api" value="1" />
+												via the API
+											</label>
+										</div>
+									</div>
+									<div style="float: left; margin-left: 10px; width: 35%">
+										<label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.typeForm.by_agent" value="1" />
+											By an agent
+										</label>
+										<div ng-show="form.typeForm.by_agent">
+											&mdash; <label style="font-weight: normal;">
+												<input type="checkbox" ng-model="form.typeForm.by_agent_mode.web" value="1" />
+												via the agent interface
+											</label><br/>
+											&mdash; <label style="font-weight: normal;">
+												<input type="checkbox" ng-model="form.typeForm.by_agent_mode.email" value="1" />
+												via email
+											</label><br/>
+											&mdash; <label style="font-weight: normal;">
+												<input type="checkbox" ng-model="form.typeForm.by_agent_mode.api" value="1" />
+												via the API
+											</label>
+										</div>
+									</div>
+									<br class="clear;" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group" style="margin-bottom: 15px;" ng-if="triggerType == 'update'">
+							<div class="col-lg-2">
+								<h3>Options</h3>
+							</div>
+							<div class="col-lg-10">
+								<label>
+									<input type="checkbox" ng-model="form.flags.run_newreply" /> Also run when properties have changed during a reply
+								</label>
+								<span class="help-block">
+									When this option is enabled, this trigger will run if an agent has made updates at the same time as replying.
+									<i class="fa fa-question-circle qmark-icon" tooltip="Agents can reply and make changes at the same time. For example, from the Agent Interface there are controls to change status and assignment or apply macros." tooltip-placement="left"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+		</section>
+
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel panel-innertable" style="padding-top: 0; margin-top: 0;">
+						<div class="panel-heading">
+							<h3>
+								<span>Criteria</span>
+								<button dp-inhelp-btn="admin.ticket_triggers.edit.criteria"></button>
+							</h3>
+						</div>
+						<div class="panel-help" dp-inhelp-body="admin.ticket_triggers.edit.criteria" style="margin-top: 0;">
+							<p>
+								The criteria section is a list of terms that must match before the actions are applied to the ticket.
+							</p>
+						</div>
+
+						<div class="dp-ob-set" dp-option-builder-set="{typedef: TicketTriggersEdit.criteraTypeDef, template: 'ticket_deps_criteria_setrow', option_types: criteriaOptionTypes }" sets-object="form.terms_set">
+							<div class="dp-ob-addition-setrow">
+								<script type="text/ng-template" id="ticket_deps_criteria_setrow">
+									<div class="dp-ob-setrow">
+										<div class="fade-overlay"></div>
+										<header>
+											<div class="remove-btn-wrap">
+												<span class="removerow_btn"><i class="fa fa-times-circle"></i></span>
+											</div>
+											<em class="dp-ob-row-tag if" ng-if="setIndex == 1">when</em>
+											<em class="dp-ob-row-tag if" ng-if="setIndex != 1">or</em>
+											The following conditions are met:
+										</header>
+										<article>
+											<dp-option-builder types-def="criteria_typedef" save-target="criteria_set_row" option-types="option_types">
+												<add-btn-label>Criteria</add-btn-label>
+											</dp-option-builder>
+										</article>
+									</div>
+								</script>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel panel-innertable">
+						<div class="panel-heading">
+							<h3>
+								<span>Actions</span>
+								<button dp-inhelp-btn="admin.ticket_triggers.edit.actions"></button>
+							</h3>
+						</div>
+						<div class="panel-help" dp-inhelp-body="admin.ticket_triggers.edit.actions" style="margin-top: 0;">
+							<p>
+								These actions will apply when all of the criteria pass.
+							</p>
+						</div>
+
+						<div class="dp-ob-set">
+							<div class="dp-ob-setrow">
+								<header>
+									<em class="dp-ob-row-tag then">then</em>
+									The followings actions will run:
+								</header>
+								<article>
+									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+										<add-btn-label>Action</add-btn-label>
+									</dp-option-builder>
+								</article>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+		</section>
+
+		<section class="dp-paneblock dp-editpane">
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">Please enter a title</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="TicketTriggersEdit.trigger.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketTriggersList.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_dep">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving_dep">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+{% endblock %}

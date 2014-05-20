@@ -1,0 +1,73 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Agents</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" dp-list-autoload>
+				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents.edit.{{ ng_var('agent.id') }}">
+					<a href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}" title="{{ ng_var('agent.primary_email.email') }}">
+						<div style="float:right">
+							<span style="display: inline-block; font-size: 10pt; margin-right: 3px;" tooltip-placement="left" tooltip="Access to admin interface" ng-show="agent.can_admin"><i class="fa fa-wrench"></i></span>
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to reports interface" ng-show="agent.can_reports"><i class="fa fa-bar-chart-o"></i></span>
+						</div>
+						<h4>
+							<span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
+							<span class="title-text">{{ ng_var('agent.display_name') }}</span>
+							<span style="display: inline-block; color: #00d800; margin-left: 5px;" tooltip-placement="right" tooltip="Agent is online" ng-show="agent.is_online_now && !agent.is_available_chat"><i class="fa fa-circle"></i></span>
+							<span style="display: inline-block; color: #00d800; margin-left: 5px;" tooltip-placement="right" tooltip="Agent is online and signed in to chat" ng-show="agent.is_available_chat"><i class="fa fa-comment"></i></span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('agents.agents.create') }}">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-panelink" ng-show="ListCtrl.deletedCount > 0">
+		<a href="{{ ng_href('agents.agents_deleted') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>{{ ng_var('ListCtrl.deletedCount') }} Deleted Agents</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('agents.login_log') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>View Login Log</h3>
+		</a>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Agents use the helpdesk to provide assistance to users.</h1>
+		<p>
+			Agent <strong>permissions</strong> control what each agent is allowed to do.
+			Click on each agent to edit their permissions and other details.</p>
+		</p>
+	</header>
+	<article>
+		<section>
+			<p><strong>Zones</strong> control which agents can access this admin interface or the reports interface.</p>
+			<p>Use the <strong>Departments</strong> tab to control access to tickets in each department:</p>
+			<ul>
+				<li><strong>Full</strong> means the agent can view and work on tickets in that department</li>
+				<li><strong>Assign</strong> means the agent can assign tickets to the department, but nothing more (they can't view them afterwards)</li>
+			</ul>
+			<p>You can separately set <strong>chat</strong> access for each department.</p>
+			<p>Instead of deciding individual permissions for every agent, it's quicker to define permission groups and then assign agents to a permission group.</p>
+		</section>
+		<section>
+			<h2><span>Related Knowledgebase Articles</span></h2>
+			<ul>
+				<li><a href="https://support.deskpro.com/kb/articles/94" target="_blank">What is an Agent?</a></li>
+			</ul>
+		</section>
+	</article>
+{% endblock %}

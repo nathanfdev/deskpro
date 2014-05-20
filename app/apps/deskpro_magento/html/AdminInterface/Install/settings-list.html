@@ -1,0 +1,62 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Magento URL</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.url" />
+		<span class="help-block">This is the URL to your Magento directory (without a trailing slash).</span>
+		<p ng-show="errors.url" class="text-danger">Please enter your Magento URL.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Magento API User</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.api_user" />
+		<span class="help-block">Enter the name of an API user that you setup in Magento via System &gt; Web Services &gt; SOAP/XML-RPC - Users.</span>
+		<p ng-show="errors.api_user" class="text-danger">Please enter your Magento API User.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Magento API Key</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.api_key" />
+		<span class="help-block">Please enter your Magento API Key.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enable Widgets</h3>
+	</div>
+	<div class="col-lg-8">
+		<label><input type="checkbox" ng-model="setting_values.widget_ticket" /> Show widget on tickets</label>
+		<label><input type="checkbox" ng-model="setting_values.widget_profile" /> Show widget on user profiles</label>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enable User Source</h3>
+	</div>
+	<div class="col-lg-8">
+		<label><input type="checkbox" ng-model="setting_values.enable_usersource" /> Allow users to log in to DeskPRO using their Magento credentials</label>
+	</div>
+</div>
+
+<div class="form-group" ng-if="setting_values.enable_usersource">
+	<div class="col-lg-4">
+		<h3>Enable Single Sign On</h3>
+	</div>
+	<div class="col-lg-8">
+		<label><input type="checkbox" ng-model="setting_values.enable_sso" /> Automatically log in to DeskPRO when a user is logged in to Magento.</label>
+		<span class="help-block">
+			Note: You must have the <a href="http://www.magentocommerce.com/magento-connect/deskpro-integration-3130.html" target="_blank">DeskPRO Integration</a> extension installed in Magento for SSO to work.
+		</span>
+	</div>
+</div>

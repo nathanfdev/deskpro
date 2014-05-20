@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\App;
 
 class EmailSource extends AbstractEntityRepository
@@ -73,7 +71,7 @@ class EmailSource extends AbstractEntityRepository
 		$count = $this->_em->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = 'error' AND error_code IN ('server_error', 'timeout')
+			WHERE object_type IN ($types_place) AND status = 'error'
 		", $params);
 
 		return $count;
@@ -93,7 +91,7 @@ class EmailSource extends AbstractEntityRepository
 		$count = $this->_em->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = 'error' AND error_code NOT IN ('server_error', 'timeout')
+			WHERE object_type IN ($types_place) AND status = 'rejected'
 		", $params);
 
 		return $count;

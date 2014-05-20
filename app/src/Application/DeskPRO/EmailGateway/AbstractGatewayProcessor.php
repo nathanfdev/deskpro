@@ -33,15 +33,17 @@
 
 namespace Application\DeskPRO\EmailGateway;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\App;
-
 use Orb\Util\Arrays;
 
 abstract class AbstractGatewayProcessor
 {
-	const EVENT_PROCESS_BLOBS       = 'DeskPRO_onEmailGatewayProcessBlobs';
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	protected $container;
 
 	/**
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
@@ -49,14 +51,14 @@ abstract class AbstractGatewayProcessor
 	protected $reader;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
-	protected $gateway;
+	protected $account;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
+	 * @var string
 	 */
-	protected $gateway_address;
+	protected $account_email_address;
 
 	/**
 	 * @var string
@@ -64,7 +66,7 @@ abstract class AbstractGatewayProcessor
 	protected $sent_to;
 
 	/**
-	 * @var \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
+	 * @var \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
 	 */
 	protected $event_dispatcher;
 
@@ -92,13 +94,14 @@ abstract class AbstractGatewayProcessor
 	protected $cleaner;
 
 	/**
-	 * @var \Orb\Log\Writer\Stream
+	 * @var \Orb\Log\Logger
 	 */
 	public $logger;
 
-	public function __construct(Entity\EmailGateway $gateway, AbstractReader $reader, array $options = array())
+	public function __construct(Entity\EmailAccount $account, AbstractReader $reader, array $options = array())
 	{
-		$this->gateway      = $gateway;
+		$this->container    = App::getContainer();
+		$this->account      = $account;
 		$this->reader       = $reader;
 		$this->options      = $options;
 
@@ -110,43 +113,24 @@ abstract class AbstractGatewayProcessor
 
 		$this->cleaner = App::get('deskpro.core.input_cleaner');
 
-		$address_matcher = App::getSystemService('gateway_address_matcher');
-		$this->gateway_address = $address_matcher->getMatchingAddressFromReader($reader, $this->gateway);
+		$this->account_email_address = '';
+		foreach ($reader->getReceivedAddresses() as $addr) {
+			if ($email_match = $this->account->getEmailAddressMatch($addr->getEmail())) {
+				$this->account_email_address = $email_match;
+			}
+		}
 
 		if (isset($options['logger'])) {
 			$this->logger = $options['logger'];
 		}
 
-		if($this->gateway_address) {
-			$this->logMessage(sprintf("Matched address %s (%d)", $this->gateway_address->getTitle(), $this->gateway_address->id));
+		if($this->account_email_address) {
+			$this->logMessage(sprintf("Matched address %s", $this->account_email_address));
 		} else {
-			$this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $gateway->id));
+			$this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $account->id));
 		}
 
-		$to_addresses = array();
-
-		$orig_to = $this->reader->getOriginalTo();
-		if ($orig_to) {
-			$to_addresses[] = $orig_to;
-		}
-		if ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
-			$to_addresses[] = $this->gateway_address->match_pattern;
-		}
-
-		$tos = $this->reader->getToAddresses();
-		if ($tos) {
-			foreach ($tos as $to) {
-				$to_addresses[] = $to->getEmail();
-			}
-		}
-
-		$ccs = $this->reader->getCcAddresses();
-		if ($ccs) {
-			foreach ($ccs as $to) {
-				$to_addresses[] = $to->getEmail();
-			}
-		}
-
+		$to_addresses = array_map(function($e) { return $e->email; }, $reader->getReceivedAddresses());
 		$this->sent_to = implode(',', $to_addresses);
 
 		$this->logMessage('sent_to: ' . $this->sent_to);
@@ -198,29 +182,25 @@ abstract class AbstractGatewayProcessor
 			}
 		}
 
-		$ev = $this->createGatewayEvent(array('processed_blobs' => $this->processed_blobs));
-		$this->event_dispatcher->dispatch(self::EVENT_PROCESS_BLOBS, $ev);
-		$this->processed_blobs = $ev->processed_blobs;
-
 		return $this->processed_blobs;
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway
+	 * @return \Application\DeskPRO\Entity\EmailAccount
 	 */
-	public function getGateway()
+	public function getAccount()
 	{
-		return $this->gateway;
+		return $this->account;
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\EmailGatewayAddress
+	 * @return string
 	 */
-	public function getGatewayAddress()
+	public function getAccountEmailAddress()
 	{
-		return $this->gateway_address;
+		return $this->account_email_address;
 	}
 
 
@@ -230,6 +210,24 @@ abstract class AbstractGatewayProcessor
 	public function getReader()
 	{
 		return $this->reader;
+	}
+
+
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getEm()
+	{
+		return $this->container->getEm();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->container->getDb();
 	}
 
 
@@ -256,34 +254,37 @@ abstract class AbstractGatewayProcessor
 
 
 	/**
-	 * @return \Application\DeskPRO\EmailGateway\GatewayEvent
-	 */
-	public function createGatewayEvent(array $data = array())
-	{
-		return new GatewayEvent($this, $data);
-	}
-
-
-	/**
-	 * @return \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
+	 * @return \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
 	 */
 	public function getEventManager()
 	{
 		return $this->event_dispatcher;
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	public function isValid()
 	{
 		return $this->getErrorCode() === null;
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	public function getErrorCode()
 	{
-		return false;
+		return null;
 	}
 
+
+	/**
+	 * @return array
+	 */
 	public function getSourceInfo()
 	{
-		return null;
+		return array();
 	}
 }

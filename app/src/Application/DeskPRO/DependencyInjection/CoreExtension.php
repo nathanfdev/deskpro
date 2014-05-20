@@ -34,12 +34,12 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * Registers basic core stuff
@@ -51,9 +51,6 @@ class CoreExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\StaticLoader\\SystemEvents');
 		$definition->addArgument(new Reference('event_dispatcher'));
 		$container->setDefinition('deskpro.sys_events_loader', $definition);
-
-		$definition = new Definition('Application\\DeskPRO\\ConfigServiceLoader');
-		$container->setDefinition('deskpro.config_service_loader', $definition);
 
 		$definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
 		$container->setDefinition('response', $definition);
@@ -75,9 +72,6 @@ class CoreExtension extends Extension
 		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger'), 'query_logger'));
 		$container->setDefinition('doctrine.dbal.logger', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Plugin\\PluginManager', array(new Reference('doctrine.orm.entity_manager')));
-		$container->setDefinition('deskpro.plugin_manager', $definition);
-
 		$definition = new Definition('Application\\DeskPRO\\Entity\\Person');
 		$definition->setFactoryService('session')->setFactoryMethod('getPerson');
 		$container->setDefinition('deskpro.session_person', $definition);
@@ -87,10 +81,29 @@ class CoreExtension extends Extension
 		));
 		$container->setDefinition('deskpro.person_activity_logger', $definition);
 
+		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
     }
+
+	protected function loadPeople(ContainerBuilder $container)
+	{
+		$definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
+		$definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
+		$definition->setFactoryMethod('createFromEntityManager');
+		$container->setDefinition('deskpro.people.groups_repos_factory', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\People\\AgentGroups');
+		$definition->setFactoryService('deskpro.people.groups_repos_factory');
+		$definition->setFactoryMethod('createAgentGroups');
+		$container->setDefinition('deskpro.people.agent_groups', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\People\\UserGroups');
+		$definition->setFactoryService('deskpro.people.groups_repos_factory');
+		$definition->setFactoryMethod('createUserGroups');
+		$container->setDefinition('deskpro.people.user_groups', $definition);
+	}
 
 	/**
 	 * Sets up the translater
@@ -165,10 +178,10 @@ class CoreExtension extends Extension
 		$container->setDefinition('deskpro.core.input_cleaner', $definition);
 
 		// Init reader
-		$definition = new Definition('Orb\Input\Reader\Reader', array(new Reference('deskpro.core.input_cleaner')));
+		$definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
 		$definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
 		$definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
-		$definition->addMethodCall('addSource',array('get', new Reference('deskpro.core.input_reader_get')));
+		$definition->addMethodCall('addSource', array('get', new Reference('deskpro.core.input_reader_get')));
 		$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
 		$definition->addMethodCall('setArrayStringSeparator', array('.'));
 		$container->setDefinition('deskpro.core.input_reader', $definition);
@@ -182,15 +195,9 @@ class CoreExtension extends Extension
 	protected function loadSettings(ContainerBuilder $container)
 	{
 		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-			array(
-				'core'  => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
-				'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
-				'user'  => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
-				'dev'   => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
-			),
+			DP_ROOT . '/sys/config/settings.php',
 			new Reference('database_connection')
 		));
-		$definition->addMethodCall('loadGroups', array('core'));
 		$container->setDefinition('deskpro.core.settings', $definition);
 	}
 

@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\ORM\Proxy;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Common\Util\ClassUtils;
 use Application\DeskPRO\ORM\Unprivate\UnprivateProxyFactory;
 
 /**
@@ -45,94 +42,5 @@ use Application\DeskPRO\ORM\Unprivate\UnprivateProxyFactory;
  */
 class ProxyFactory extends UnprivateProxyFactory
 {
-	protected static $has_mutated_tpl = false;
 
-	public function generateProxyClasses(array $classes, $toDir = null)
-	{
-		if (!self::$has_mutated_tpl) {
-			self::$has_mutated_tpl = true;
-			self::$_proxyClassTemplate = str_replace(array(
-				'private $_entityPersister',
-				'private $_identifier',
-				'$this->_entityPersister',
-				'$this->_identifier'
-			), array(
-				'protected $__entityPersister__',
-				'protected $__identifier__',
-				'$this->__entityPersister__',
-				'$this->__identifier__'
-			), self::$_proxyClassTemplate);
-
-			self::$_proxyClassTemplate = str_replace(
-				'protected $__entityPersister__;',
-				'protected $__entityPersister__;' . "\n\t" . 'public $_dp_object_translatable;',
-				self::$_proxyClassTemplate
-			);
-		}
-
-		parent::generateProxyClasses($classes, $toDir);
-	}
-
-	protected function _generateMethods(ClassMetadata $class)
-	{
-		$methods = '';
-		$methodNames = array();
-		foreach ($class->reflClass->getMethods() as $method) {
-			if ($method->isConstructor() || in_array(strtolower($method->getName()), array("__sleep", "__clone", "__getpropvalue__", "__setpropvalue__", '__hasrunload__', 'addcustomcallable', 'getobjecttranslatable', 'ensuredefaultpropertychangedlistener', 'addpropertychangedlistener', 'removepropertychangedlistener')) || isset($methodNames[$method->getName()])) {
-				continue;
-			}
-			$methodNames[$method->getName()] = true;
-			if ($method->isPublic() && ! $method->isFinal() && ! $method->isStatic()) {
-				$methods .= "\n" . '    public function ';
-				if ($method->returnsReference()) {
-					$methods .= '&';
-				}
-				$methods .= $method->getName() . '(';
-				$firstParam = true;
-				$parameterString = $argumentString = '';
-				foreach ($method->getParameters() as $param) {
-					if ($firstParam) {
-						$firstParam = false;
-					} else {
-						$parameterString .= ', ';
-						$argumentString  .= ', ';
-					}
-					if (($paramClass = $param->getClass()) !== null) {
-						$parameterString .= '\\' . $paramClass->getName() . ' ';
-					} else if ($param->isArray()) {
-						$parameterString .= 'array ';
-					}
-					if ($param->isPassedByReference()) {
-						$parameterString .= '&';
-					}
-					$parameterString .= '$' . $param->getName();
-					$argumentString  .= '$' . $param->getName();
-					if ($param->isDefaultValueAvailable()) {
-						$parameterString .= ' = ' . var_export($param->getDefaultValue(), true);
-					}
-				}
-				$methods .= $parameterString . ')';
-				$methods .= "\n" . '    {' . "\n";
-				if ($this->isShortIdentifierGetter($method, $class)) {
-					$identifier = lcfirst(substr($method->getName(), 3));
-					$cast = in_array($class->fieldMappings[$identifier]['type'], array('integer', 'smallint')) ? '(int) ' : '';
-					$methods .= '        if ($this->__isInitialized__ === false) {' . "\n";
-					$methods .= '            return ' . $cast . '$this->__identifier__["' . $identifier . '"];' . "\n";
-					$methods .= '        }' . "\n";
-				}
-				$methods .= '        if ($this->__isInitialized__ === false) $this->__load();' . "\n";
-				$methods .= '        return parent::' . $method->getName() . '(' . $argumentString . ');';
-				$methods .= "\n" . '    }' . "\n";
-			}
-		}
-
-		$methods .= <<<'CODE'
-
-	public function __getPropValue__($k) { return $this->$k; }
-	public function __setPropValue__($k, $v) { $this->$k = $v; }
-	public function __hasRunLoad__() { if (isset($this->__entityPersister__)) return false; return true; }
-CODE;
-
-		return $methods;
-	}
 }

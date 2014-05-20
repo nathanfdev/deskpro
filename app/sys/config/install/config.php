@@ -36,11 +36,6 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\InterfaceValue');
 $container->setDefinition('deskpro.interface_value', $definition);
 
-// deskpro.profiler.request_matcher
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Profiler\\RequestMatcher');
-$container->setDefinition('deskpro.profiler.request_matcher', $definition);
-
 // deskpro.service_urls
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
@@ -70,17 +65,13 @@ $container->loadFromExtension('framework', array(
 	'router' => array(
 		'resource' => DP_ROOT.'/sys/config/install/routing.php'
 	),
-	'charset' => 'UTF-8',
 	'secret' => 'mube224etsmhxky1gvwixc4b',
 	'templating' => array(
 		'engines' => array('php'),
 		'assets_base_urls' => 'CONFIG_HTTP'
 	),
 	'validation' => array('enabled' => true),
-	'session' => array(
-		'default_locale' => 'en',
-		'lifetime' => 3600,
-	),
+	'session' => array(),
 	'form' => array('enabled' => true)
 ));
 

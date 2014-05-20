@@ -35,317 +35,66 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Orb\Util\Numbers;
-use Orb\Util\Arrays;
-
-use \Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class TicketTrigger extends AbstractEntityRepository
 {
 	/**
-	 * Get all event-based triggers (that is, not time-based)
-	 *
-	 * @param bool $only_enabeld
-	 * @param bool $include_sys
-	 * @return array
+	 * @param string $event_type
+	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
 	 */
-	public function getEventTriggers($only_enabeld = true, $include_sys = true)
+	public function getTriggersForEventType($event_type)
 	{
-		if ($include_sys) {
-			$include_sys = '';
-		} else {
-			$include_sys = 'AND trig.sys_name IS NULL';
-		}
-
-		if ($only_enabeld) {
-			$only_enabeld = 'AND trig.is_enabled = true';
-		} else {
-			$only_enabeld = '';
-		}
-
-		$triggers = $this->getEntityManager()->createQuery("
-			SELECT trig
-			FROM DeskPRO:TicketTrigger trig
-			WHERE
-				trig.event_trigger NOT LIKE 'time_%'
-				$include_sys
-				$only_enabeld
-			ORDER BY trig.run_order ASC
-		")->execute();
+		$triggers = $this->_em->createQuery("
+			SELECT t
+			FROM DeskPRO:TicketTrigger t
+			WHERE t.event_trigger = :event_type AND t.is_enabled = true
+			ORDER BY t.run_order
+		")->execute(array('event_type' => $event_type));
 
 		return $triggers;
 	}
 
-
 	/**
-	 * Get events grouped by their trigger type
-	 *
-	 * @return array
+	 * @param string|null $type
+	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
 	 */
-	public function getGroupedTriggers($type = null)
+	public function getTriggers($type = null)
 	{
 		if ($type) {
-			$type = (array)$type;
-
-			$triggers = $this->getEntityManager()->createQuery("
-				SELECT trig
-				FROM DeskPRO:TicketTrigger trig
-				WHERE trig.event_trigger IN (?0)
-				ORDER BY trig.run_order ASC
+			return $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketTrigger t
+				WHERE t.event_trigger = ?0
+				ORDER BY t.run_order, t.title ASC
 			")->execute(array($type));
 		} else {
-			$triggers = $this->getEntityManager()->createQuery("
-				SELECT trig
-				FROM DeskPRO:TicketTrigger trig
-				ORDER BY trig.run_order ASC
+			return $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketTrigger t
+				ORDER BY t.run_order, t.title ASC
 			")->execute();
 		}
-
-		$grouped = array();
-
-		foreach ($triggers as $tr) {
-			$group = $tr->event_trigger;
-
-			if (!isset($grouped[$group])) {
-				$grouped[$group] = array();
-			}
-
-			$grouped[$group][] = $tr;
-		}
-
-		return $grouped;
 	}
 
 
 	/**
-	 * Get all time-based triggers (aka escalations)
-	 *
-	 * @param bool $only_enabeld
-	 * @param bool $include_sys
-	 * @return array
+	 * @param array $run_orders
 	 */
-	public function getTimeTriggers($only_enabeld = true, $include_sys = true)
+	public function updateRunOrders(array $run_orders)
 	{
-		if ($include_sys) {
-			$include_sys = '';
-		} else {
-			$include_sys = 'AND trig.sys_name IS NULL';
-		}
+		$run_orders = array_keys($run_orders);
 
-		if ($only_enabeld) {
-			$only_enabeld = 'AND trig.is_enabled = true';
-		} else {
-			$only_enabeld = '';
-		}
+		$db = $this->_em->getConnection();
+		$db->beginTransaction();
 
-		$triggers = $this->getEntityManager()->createQuery("
-			SELECT trig
-			FROM DeskPRO:TicketTrigger trig
-			WHERE
-				trig.event_trigger LIKE 'time_%'
-				$include_sys
-				$only_enabeld
-			ORDER BY trig.run_order ASC
-		")->execute();
-
-		return $triggers;
-	}
-
-
-	/**
-	 * Get all system triggers with a certain prefix, and index by the sysname
-	 *
-	 * @param string $prefix
-	 * @return array
-	 */
-	public function getSystemTriggers($prefix = null)
-	{
-		if ($prefix) {
-			$triggers = $this->getEntityManager()->createQuery("
-				SELECT trig
-				FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
-				WHERE trig.sys_name LIKE '{$prefix}.%'
-				ORDER BY trig.run_order ASC
-			")->execute();
-		} else {
-			$triggers = $this->getEntityManager()->createQuery("
-				SELECT trig
-				FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
-				ORDER BY trig.run_order ASC
-			")->execute();
-		}
-
-		return $triggers;
-	}
-
-
-	/**
-	 * Find all triggers that should be run/tested for a given event type.
-	 *
-	 * @return array
-	 */
-	public function getTriggersForEvents(array $events)
-	{
-		if (!$events) {
-			return array();
-		}
-
-		// Gets all event names from specific to most general
-		// E.g., new.web.user.portal, new.web.user, new.web and new
-		$all_events = array();
-		foreach ($events as $event) {
-			$all_events[] = $event;
-			$parts = explode('.', $event);
-			while (array_pop($parts)) {
-				$all_events[] = implode('.', $parts);
-			}
-		}
-
-		$dql = array();
-		$params = array();
 		$x = 0;
-		foreach ($all_events as $event) {
-			$y = $x+1;
-			$dql[] = "trig.event_trigger = ?$x OR trig.event_trigger LIKE ?$y";
-
-			$params[$x] = $event;
-			$params[$y] = $event . ".%";
-
-			$x++;
+		foreach ($run_orders as $tr_id) {
+			$x += 10;
+			$db->update('ticket_triggers', array('run_order' => $x), array('id' => $tr_id));
 		}
 
-		$dql = implode(" OR ", $dql);
+		$db->executeUpdate("UPDATE ticket_triggers SET run_order = -100 WHERE department_id IS NOT NULL OR email_account_id IS NOT NULL");
 
-		$triggers = $this->getEntityManager()->createQuery("
-			SELECT trig
-			FROM DeskPRO:TicketTrigger trig
-			WHERE
-				($dql)
-				AND trig.is_enabled = true
-			ORDER BY trig.run_order ASC
-		")->execute($params);
-
-		return $triggers;
-	}
-
-
-	/**
-	 * Search for triggers that force an email notification on an agent.
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $agent
-	 * @return array
-	 */
-	public function findTriggersForcingNotificationForAgent(PersonEntity $agent)
-	{
-		$triggers = $this->getEntityManager()->createQuery("
-			SELECT trig
-			FROM DeskPRO:TicketTrigger trig
-			WHERE trig.is_enabled = true
-		")->execute();
-
-		$ret = array();
-
-		$find_codes = array('agent.' . $agent->id);
-		foreach ($agent->getHelper('Agent')->getTeamIds() as $tid) {
-			$find_codes[] = 'agent_team.' . $tid;
-		}
-
-		foreach ($triggers as $tr) {
-			foreach ($tr->actions as $action) {
-				if ($action['type'] != 'add_agent_notify') {
-					continue;
-				}
-
-				foreach ($find_codes as $code) {
-					if (in_array($code, $action['options']['codes'])) {
-						$ret[] = $tr;
-						break;
-					}
-				}
-			}
-		}
-
-		return $ret;
-	}
-
-	public function getTriggerTermOptions()
-	{
-		$container = App::getContainer();
-		$em = $this->getEntityManager();
-
-		$term_options = App::getApi('tickets')->getTicketOptions(App::getCurrentPerson());
-		$term_options['people_term_options']  = array();
-		$term_options['people_term_options']  = array();
-		$term_options['people_term_options']['organizations']  = $container->getDataService('Organization')->getOrganizationNames();
-		$term_options['people_term_options']['usergroups']     = $container->getDataService('Usergroup')->getUsergroupNames();
-		$term_options['email_gateway_addresses'] = $em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
-
-		if ($container->getDataService('Language')->isMultiLang()) {
-			$term_options['people_term_options']['languages']  = $container->getDataService('Language')->getTitles();
-		}
-
-		$term_options['web_hooks']  = $container->getDataService('WebHook')->getHookTitles();
-		$term_options['api_keys']  = $container->getDataService('ApiKey')->getApiKeyTitles();
-		$term_options['slas']  = $container->getDataService('Sla')->getSlaTitles();
-
-		$term_options['plugin_actions'] = $container->getDataService('TicketTriggerPluginActions')->getSetupObjects();
-		foreach ($term_options['plugin_actions'] AS $object) {
-			$term_options = $object->alterTermOptionData($term_options);
-		}
-
-		return $term_options;
-	}
-
-
-
-	public function getTemplateVariantMap()
-	{
-		$triggers = App::getDb()->fetchAll("
-			SELECT id, title, actions
-			FROM ticket_triggers
-			ORDER BY title ASC, id ASC
-		");
-
-		$map = array();
-
-		foreach ($triggers as $trigger) {
-			$trigger['actions'] = @unserialize($trigger['actions']);
-			if (!$trigger['actions']) {
-				continue;
-			}
-
-			foreach ($trigger['actions'] as $info) {
-				switch ($info['type']) {
-					case 'set_user_email_template_newticket':
-					case 'user_newticket_agent':
-					case 'set_user_email_template_newticket_validate':
-					case 'set_agent_email_template_newticket':
-					case 'set_user_email_template_newticket_agent':
-					case 'set_user_email_template_newreply_agent':
-					case 'set_agent_email_template_newreply_agent':
-					case 'set_user_email_template_newreply_user':
-					case 'set_agent_email_template_newreply_user':
-					case 'send_user_email':
-					case 'send_agent_email':
-						$template_name = !empty($info['options']['template_name']) ? $info['options']['template_name'] : null;
-
-						if ($template_name) {
-							if (!isset($map[$template_name])) {
-								$map[$template_name] = array();
-							}
-
-							$map[$template_name][] = array(
-								'id' => $trigger['id'],
-								'title' => $trigger['title']
-							);
-						}
-
-						break;
-				}
-			}
-		}
-
-		return $map;
+		$db->commit();
 	}
 }

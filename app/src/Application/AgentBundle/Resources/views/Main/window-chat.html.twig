@@ -4,6 +4,7 @@
 			<ul id="agent_chat_panel_listviews">
 				<li data-tab-for="#agent_chat_panel .agents-list" class="active agents"><a><span class="user-icon">{{ phrase('agent.general.agents') }}</span></a></li>
 				{% if app.getSetting('core.use_agent_team') %}{% if agent_teams|length %}<li data-tab-for="#agent_chat_panel .teams-list" class="teams"><a><span class="team-icon">{{ phrase('agent.general.teams') }}</span></a></li>{% endif %}{% endif %}
+                                <li data-tab-for="#agent_chat_panel .everyone" class="active agents"><a><span class="team-icon">{{ phrase('agent.general.everyone') }}</span></a></li>
 			</ul>
 		</div>
 		<span class="close-btn close-trigger"></span>
@@ -59,6 +60,16 @@
 			</ul>
 		</div>
 		{% endif %}
+                <div class="everyone" style="display: none;">
+                    <ul id="everyone_list" class="list">
+                        <li
+                            data-member-ids="{% for agent in agents %}{{ agent.id }}{% if not loop.last %},{% endif %}{% endfor %}"
+                        >
+                            {#<div class="avatar" style="background-image: url({{ asset('images/icons.png') }});"></div>#}
+                            Broadcast!
+                        </li>
+                    </ul>
+            </div>
 	</section>
 	<footer>
 		<button class="view-history view-history-trigger">{{ phrase('agent.chat.chat_history') }}</button>

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Orb\Auth\Identity;
-
 class Vbulletin extends DbTablePhpPasswordCheck
 {
 	/**
@@ -43,6 +41,6 @@ class Vbulletin extends DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\Vbulletin($this->getDb(), $this->usersource->options);
+		return new \Orb\Auth\Adapter\Vbulletin($this->getDbAsCallback(), $this->usersource->options);
 	}
 }

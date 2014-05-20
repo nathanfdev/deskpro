@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-use Application\DeskPRO\Entity\PortalPageDisplay;
-
 /**
  * Renders notifications section at the top of the page if the user
  * is logged in and has notifications.

@@ -16,7 +16,8 @@
 			</h1>
 		</header>
 		<article class="popover-inner">
-        {{ agentui.scroll_containers('', '') }}
+        <div class="layout-content">
+        <div class="dp-page-content">
 			{% if macros|length %}
 				<div class="macro-load">
 					<select name="macro_id" class="macro macro_id is-not-loading" data-placeholder="Apply a macro">
@@ -270,7 +271,8 @@
 					</dd>
 				</dl>
 			</div>
-        {{ agentui.scroll_containers_end() }}
+        </div>
+        </div>
 		</article>
 		<footer>
 			<div class="is-not-loading"><button class="apply-actions">{{ phrase('agent.general.apply') }}</button></div>

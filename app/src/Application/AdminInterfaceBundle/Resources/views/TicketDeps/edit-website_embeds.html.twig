@@ -1,0 +1,171 @@
+<div class="panel panel-fill indent" style="position: relative">
+	<div class="dp-grayed-placeholder fill" ng-if="!EditCtrl.dep.id">
+		<div class="bg"></div>
+		<p>
+			{{ phrase('adm.departments.embed_unavailable') }}
+		</p>
+	</div>
+	<div class="panel-body">
+		<div class="form-group">
+			<div class="row">
+				<div class="col-lg-12">
+					<p>
+						{{ phrase('adm.departments.embed_explain') }}
+					</p>
+					<p>
+						<label style="font-weight: normal; display: block; margin-bottom: 4px;">
+							<input type="radio" name="embed_code_type" ng-model="embed_code_type" value="department" />
+							Show code snippets for forms specifically for this department.
+						</label>
+
+						<label style="font-weight: normal; display: block; margin-bottom: 4px;">
+							<input type="radio" name="embed_code_type" ng-model="embed_code_type" value="all" />
+							Show code snippets for forms where the user can change the department
+						</label>
+					</p>
+					<p>
+						Show code snippet for:
+						<select ng-model="snippet_type" ng-init="snippet_type = 'embed_form'" ui-select2 style="width:200px;">
+							<option value="direct_link">{{ phrase('adm.departments.embed_direct_link') }}</option>
+							<option value="embed_form">{{ phrase('adm.departments.embed_form') }}</option>
+							<option value="popup_window">{{ phrase('adm.departments.embed_popup_window') }}</option>
+							<option value="api">Using the API</option>
+						</select>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="embed_code_type == 'department'">
+			<div class="form-group">
+				<div class="row" ng-show="snippet_type == 'direct_link'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">{{ phrase('adm.departments.embed_direct_link') }}</h3>
+						<input type="text" class="form-control" value="{{ ng_var("code_link") }}" />
+					</div>
+				</div>
+
+				<div class="row" ng-show="snippet_type == 'popup_window'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">{{ phrase('adm.departments.embed_popup_window') }}</h3>
+						<div class="editor-row">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_win" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 110px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="snippet_type == 'embed_form'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">{{ phrase('adm.departments.embed_form') }}</h3>
+						<div class="editor-row">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_embed" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 220px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="snippet_type == 'api'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">Using the API</h3>
+						<div class="editor-row">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_phpapi" ui-ace="{
+									mode: 'php',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 220px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="embed_code_type == 'all'">
+			<div class="form-group">
+				<div class="row" ng-show="snippet_type == 'direct_link'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">{{ phrase('adm.departments.embed_direct_link') }}</h3>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" value="{{ ng_var("code_all_link") }}" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="snippet_type == 'popup_window'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">{{ phrase('adm.departments.embed_popup_window') }}</h3>
+						<div class="editor-row">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_all_win" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 110px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="snippet_type == 'embed_form'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">{{ phrase('adm.departments.embed_form') }}</h3>
+						<div class="editor-row">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_all_embed" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 220px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="snippet_type == 'api'">
+					<div class="col-lg-12">
+						<h3 style="margin-bottom: 4px;">Using the API</h3>
+						<div class="editor-row">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_phpapi" ui-ace="{
+									mode: 'php',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 220px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div ng-if="!EditCtrl.dep.id">
+			<p>
+				{{ phrase('adm.departments.embed_unavailable') }}
+			</p>
+		</div>
+	</div>
+</div>

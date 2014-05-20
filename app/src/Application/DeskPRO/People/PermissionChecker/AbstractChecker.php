@@ -37,8 +37,6 @@ namespace Application\DeskPRO\People\PermissionChecker;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Arrays;
-
 /**
  * A permission checker knows how to check access to particular things
  */

@@ -1,0 +1,9 @@
+# Microsoft Translator
+
+This app allows you to use Microsoft Translator to translate user and agent messages.
+
+## Sign up
+
+To use Microsoft Translator, you need to register and get a Client ID and Client Secret.
+
+[Walkthrough: Signing up for Microsoft Translator and getting your credentials](http://blogs.msdn.com/b/translation/p/gettingstarted1.aspx)

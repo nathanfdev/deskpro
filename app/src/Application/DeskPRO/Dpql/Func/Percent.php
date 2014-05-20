@@ -34,12 +34,10 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
-use Application\DeskPRO\Dpql\Exception;
-use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
-use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
  * Gets the percentage of all rows in the group that match the given argument.

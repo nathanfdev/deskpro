@@ -36,9 +36,6 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
 use Application\UserBundle\Form\RegisterType;
 
 class RegisterController extends \Application\DeskPRO\Controller\AbstractController
@@ -49,7 +46,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			return $this->redirectRoute('user');
 		}
 
-		if ($this->container->getSetting('core.user_mode') == 'closed') {
+		if (!$this->container->getSetting('core.reg_enabled')) {
 			return $this->redirectRoute('user');
 		}
 
@@ -61,7 +58,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 		// Custom fields
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('custom_fields', 'form');
 
 		/** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
 		$fm = $this->container->getSystemService('PersonFieldsManager');
@@ -104,7 +101,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 		$error_fields = null;
 		$errors = null;
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit') && !$trap_fail) {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$register->custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 
 			$validator = new \Application\UserBundle\Validator\RegisterValidator();
@@ -138,7 +135,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			if ($is_valid) {
 				$person = $register->save();
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 				$this->session->setFlash('register_done', 1);
 

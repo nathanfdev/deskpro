@@ -47,7 +47,7 @@ class PasswordSchemeFactory
 		switch ($options['scheme']) {
 			case 'deskpro3':
 			case 'deskpro3_tech':
-				return new \Application\DeskPRO\Import\PasswordScheme\Deskpro3PasswordScheme();
+				return new \Application\DeskPRO\People\PasswordScheme\Deskpro3();
 
 			case 'deskpro4original':
 				return new \Application\DeskPRO\People\PasswordScheme\Deskpro4Original();

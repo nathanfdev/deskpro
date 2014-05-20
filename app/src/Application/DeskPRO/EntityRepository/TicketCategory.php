@@ -35,11 +35,15 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
-
-use Orb\Util\Arrays;
 
 class TicketCategory extends AbstractCategoryRepository
 {
-
+	public function getCategories()
+	{
+		return $this->_em->createQuery("
+			SELECT c
+			FROM DeskPRO:TicketCategory c
+			ORDER BY c.display_order ASC
+		")->execute();
+	}
 }

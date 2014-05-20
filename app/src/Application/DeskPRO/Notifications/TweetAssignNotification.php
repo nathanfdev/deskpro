@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Notifications;
 
-use Application\DeskPRO\Entity\TwitterAccountStatus;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TwitterAccountStatus;
 
 class TweetAssignNotification extends AbstractAgentNotification
 {

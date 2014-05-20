@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Orb\Util\Strings;
 
 /**
@@ -50,7 +50,7 @@ class Text extends HandlerAbstract
 			$setData = $data['value'];
 		}
 
-		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array('required' => false));
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array('required' => false));
 
 		return $field;
 	}

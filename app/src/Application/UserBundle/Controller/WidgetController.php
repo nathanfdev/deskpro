@@ -36,9 +36,8 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Application\UserBundle\Form\NewTicketType;
 use Application\UserBundle\Form\NewFeedbackType;
+use Application\UserBundle\Form\NewTicketType;
 
 class WidgetController extends AbstractController
 {
@@ -249,7 +248,7 @@ class WidgetController extends AbstractController
 		$newticket_formtype = new NewTicketType($person_context);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 
 		$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 		$newticket->ticket->attach_ids_authed = true;
@@ -261,7 +260,7 @@ class WidgetController extends AbstractController
 			$ticket = $newticket->save();
 			$person = $ticket['person'];
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			return $this->createJsonResponse(array(
 				'ticket_id' => $ticket->id,
@@ -288,10 +287,10 @@ class WidgetController extends AbstractController
 		$newfeedback->setPersonContext($this->person);
 		$newfeedback->enableWidgetMode();
 
-		$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
+		$newfeedback->custom_fields = $this->in->getRaw('feedback_custom_fields');
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 
 		$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
@@ -327,7 +326,7 @@ class WidgetController extends AbstractController
 				$feedback_id = $dupe;
 			}
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			return $this->createJsonResponse(array(
 				'feedback_id' => $feedback_id
@@ -428,7 +427,7 @@ class WidgetController extends AbstractController
 			}
 		}
 
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'chat_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('chat_fields', 'form');
 
 		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
 		$fm = $this->container->getSystemService('ChatFieldsManager');

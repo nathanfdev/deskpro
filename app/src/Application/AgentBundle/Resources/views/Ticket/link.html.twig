@@ -1,0 +1,48 @@
+<div class="extended-merge overlay">
+	<div class="overlay-title">
+		<h4>Link Existing Ticket</h4>
+	</div>
+
+	<div class="overlay-content">
+		{% if other_ticket and other_ticket.id == ticket.id %}
+			{{ phrase('agent.tickets.error_merge_with_self') }}
+		{% else %}
+			<form>
+				<div
+					class="ticket-finder"
+					data-element-handler="DeskPRO.Agent.ElementHandler.TicketSearchBox"
+					data-search-url="{{ path('agent_ticketsearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
+					data-highlight-term="1"
+					data-touch-focus="1"
+					data-search-param="term"
+				>
+					<script type="text/x-deskpro-tmpl" class="ticket-row-tpl">
+						<li><a>
+							<span class="ticket-id pill">1234</span>
+							<span class="ticket-subject"></span>
+							<div class="right">
+								<div class="status-pill ticket-status"></div>
+								<time class="ticket-time"></time>
+							</div>
+						</a></li>
+					</script>
+					<div class="input-wrapper">
+						<input type="text" style="width: 78%" class="term" placeholder="{{ phrase('agent.tickets.find_ticket') }}" class="user-input" />
+						<div style="width: 20%; display: inline-block; float: right;">
+							<input type="checkbox" id="is-parent" name="is_parent">
+							<label for="is-parent">Is Parent</label>
+						</div>
+					</div>
+					<input type="hidden" name="ticket_id" class="ticket-id" value="" />
+					<div class="ticket-search-box person-search-box" style="display: none">
+						<section>
+							<ul class="results-list">
+
+							</ul>
+						</section>
+					</div>
+				</div>
+			</form>
+		</div>
+	{% endif %}
+</div>

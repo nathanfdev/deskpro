@@ -1,0 +1,136 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.list.ip_bans.length || 0"
+				when="{{ ng_plural_phrase('adm.general.x_ip_bans') }}">
+
+			</h3>
+		</header>
+		<article>
+
+			<div class="alert">
+				<input type="text" ng-model="ListCtrl.search_phrase.ip_ban" style="width: 200px; display: inline-block;"
+					   class="form-control">
+				<button class="btn btn-primary" ng-click="ListCtrl.reloadList(true, false)">Search</button>
+			</div>
+
+			<ul class="dp-item-list">
+				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.ip_bans"
+					dp-state-mark="ban!:crm.banning.edit_ip.{{ ng_var('ban.banned_ip|murmurhash') }}">
+					<a href="{{ ng_href('crm.banning.edit_ip', '{ban: ban.banned_ip}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('ban.banned_ip') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+
+			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.ip_bans">
+				<span dp-show-spinning="paginating_ip_bans">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="ListCtrl.pagination.ip_bans.page > 1" ng-click="ListCtrl.goPrevIpBanPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="ListCtrl.pagination.ip_bans.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in ListCtrl.pagination.ip_bans.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="ListCtrl.pagination.ip_bans.page < ListCtrl.pagination.ip_bans.num_pages"
+						ng-click="ListCtrl.goNextIpBanPage()">
+					Next &gt;
+				</button>
+			</div>
+
+			<div class="clearfix"></div>
+
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create_ip') }"
+				   href="{{ ng_href('crm.banning.gocreate_ip') }}">
+					<i class="fa fa-plus"></i> New IP Ban
+				</a>
+			</div>
+		</article>
+	</section>
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.list.email_bans.length || 0"
+				when="{{ ng_plural_phrase('adm.general.x_email_bans') }}">
+
+			</h3>
+		</header>
+		<article>
+
+			<div class="alert">
+				<input type="text" ng-model="ListCtrl.search_phrase.email_ban" style="width: 200px; display: inline-block;"
+					   class="form-control">
+				<button class="btn btn-primary" ng-click="ListCtrl.reloadList(false, true)">Search</button>
+			</div>
+
+			<ul class="dp-item-list">
+				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.email_bans"
+					dp-state-mark="ban!:crm.banning.edit_email.{{ ng_var('ban.banned_email|murmurhash') }}">
+					<a href="{{ ng_href('crm.banning.edit_email', '{ban: ban.banned_email}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('ban.banned_email') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+
+			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.email_bans">
+				<span dp-show-spinning="paginating_email_bans">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="ListCtrl.pagination.email_bans.page > 1"
+						ng-click="ListCtrl.goPrevEmailBanPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="ListCtrl.pagination.email_bans.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in ListCtrl.pagination.email_bans.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="ListCtrl.pagination.email_bans.page < ListCtrl.pagination.email_bans.num_pages"
+						ng-click="ListCtrl.goNextEmailBanPage()">
+					Next &gt;
+				</button>
+			</div>
+
+			<div class="clearfix"></div>
+
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create_email') }"
+				   href="{{ ng_href('crm.banning.gocreate_email') }}">
+					<i class="fa fa-plus"></i> New Email Ban
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Banning by IP address or email can deter problem users.</h1>
+		<p>Banning an IP address blocks a certain computer or network from using your helpdesk. Banning an email address stops anyone using it to register or log in.</p>
+	</header>
+	<article>
+		<section>
+			<p>You can use wildcard patterns in bans. For example:</p>
+			<ul>
+				<li><code>63.239.67.*</code> bans all IPs from 63.239.67.1 to 63.239.67.255</li>
+				<li><code>*@spam.example.com</code> bans all email addresses from the domain.</li>
+			</ul>
+			<p>Keep in mind that banning an IP for a shared network (such as a business, university or wi-fi hotspot) might affect other users, and that users accessing the internet from home or mobile broadband do not usually have a fixed IP address.</p>
+		</section>
+	</article>
+{% endblock %}

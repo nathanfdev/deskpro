@@ -1,0 +1,75 @@
+<style>
+	div.select2-result-label img.icon {
+		margin: 0 3px -3px -3px;
+		padding: 0px;
+	}
+</style>
+<form method="POST" class="actions-overlay export-jira" data-target="{{ path('jira_export', {'ticket_id': ticket.id}) }}" style="width: 650px; height: 570px;">
+	<div class="overlay-title">
+		<h4>{{ phrase('agent.jira.export_jira') }}</h4>
+	</div>
+	<div class="overlay-content">
+		<div style="display: inline-block; width: 18%; float: left;">
+			<label for="jira-issue-title">{{ phrase('agent.jira.labels.title')}} *</label>
+		</div>
+		<div style="display: inline-block; width: 77%; float: left; padding: 5px;">
+			<input style="width: 99%" type="text" name="title" id="jira-issue-title" value="[{{ticket.ref}}] {{ticket.subject}}"/>
+		</div>
+		<br/>
+		<br/>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-project">{{ phrase('agent.jira.labels.project')}} *</label>
+			<select class="dpe_select"  style="width: 60%; float: right;" name="project" id="jira-issue-project">
+				{% for project in projects %}
+					<option value={{project.key}}>{{ project.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-type">{{ phrase('agent.jira.labels.type')}} *</label>
+			<select class="dpe_select" style="width: 60%; float: right;" name="issuetype" id="jira-issue-type"  data-style-type="icons" data-select-icon-size="22"></select>
+		</div>
+		<br/>
+		<br/>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-priority">{{ phrase('agent.jira.labels.priority')}} *</label>
+			<select class="dpe_select"  style="width: 60%; float: right;" name="priority" id="jira-issue-priority"></select>
+		</div>
+		<div style="display: inline-block; width: 50%; float: left;">
+			<label for="jira-issue-assignee">{{ phrase('agent.jira.labels.assignee')}} *</label>
+			<select class="dpe_select" style="width: 60%; float: right;" name="assignee" id="jira-issue-assignee"  data-style-type="icons" data-select-icon-size="22"></select>
+		</div>
+		<br/>	
+		<br/>
+		<div class="row">
+			<div class="left" style="width: 20%">
+				<label for="description">{{ phrase('agent.jira.labels.description') }} *</label>
+			</div>
+			<div class="right" style="width: 100%">
+				<textarea id="description" name="description">{{description}}</textarea><br/>
+				<div class="instruction">{{ phrase('agent.jira.labels.description.warning') }}. {{ phrase('agent.jira.labels.smarttags') }}
+					<ol class="smart-tags">
+						<li><span class="bold">@agent</span>: The current agent</li>
+						<li><span class="bold">@department</span>: The department in which the ticket is raised.</li>
+						<li><span class="bold">@ticket</span>: The current ticket</li>
+						<li><span class="bold">@customer</span>: The customer</li>
+					</ol>
+			</div>
+		</div>
+		</div>
+		<div class="row">
+			<label for="label">{{ phrase('agent.jira.labels.labels') }}</label>
+			<input type="text" style="width: 97%;" value="{{ app.getSetting('core.apps_jira.defaultTags') }}" id="labels" name="labels"/>
+			<p class="instruction">{{ phrase('agent.jira.labels.labels.instrcution') }}</p>
+		</div>
+	</div>
+	<div class="overlay-footer">
+		<div class="is-not-loading">
+			<button type="reset" id="jira-form-cancel" class="close  clean-white">{{ phrase('agent.general.reset') }}</button>
+			<button type="submit" id="jira-form-submit" class="export clean-white">{{ phrase('agent.jira.labels.export') }}</button>
+		</div>
+		<div class="is-loading">
+			<i class="flat-spinner"></i>
+		</div>
+	</div>
+</form>

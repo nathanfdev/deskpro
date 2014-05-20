@@ -34,24 +34,26 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Orb\Util\Strings;
-use Orb\Util\Numbers;
 
 /**
  * Ban an IP addresses and ranges
  *
+ * @property string $banned_ip
+ * @property int $ip_start
+ * @property int $ip_end
  */
-class BanIp extends \Application\DeskPRO\Domain\DomainObject
+class BanIp extends DomainObject
 {
 	/**
 	 * The banned IP address (human readable)
 	 *
 	 * @var string
 	 */
+
 	protected $banned_ip;
 
 	/**
@@ -59,6 +61,7 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 */
+
 	protected $ip_start;
 
 	/**
@@ -66,7 +69,17 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 */
+
 	protected $ip_end;
+
+	/**
+	 * @return BanIp
+	 */
+
+	public static function createBanIp()
+	{
+		return new self();
+	}
 
 	public function setBannedIp($ip)
 	{
@@ -80,37 +93,43 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 		$ip = trim($ip, '.');
 
 		$parts = explode('.', $ip);
+
 		if (count($parts) < 1 OR count($parts) > 4) {
+
 			throw new \InvalidArgumentException('Invalid IP address: `'.$ip.'`');
 		}
 
 		$start = array();
-		$end = array();
+		$end   = array();
 
 		foreach ($parts as $part) {
+
 			$start[] = $part;
-			$end[] = $part;
+			$end[]   = $part;
 		}
 
 		// For wildcarded parts we're missing some octets,
 		// so we'll fill them in automatically
+
 		while (count($start) < 4) {
+
 			$start[] = 0;
-			$end[] = 255;
+			$end[]   = 255;
 		}
 
 		if (count($parts) < 4) {
+
 			$human = implode('.', $parts) . '.*';
+
 		} else {
+
 			$human = implode('.', $parts);
 		}
 
 		$this->banned_ip = $human;
-		$this->ip_start = sprintf("%u", ip2long(implode('.', $start)));
-		$this->ip_end = sprintf("%u", ip2long(implode('.', $end)));
+		$this->ip_start  = sprintf("%u", ip2long(implode('.', $start)));
+		$this->ip_end    = sprintf("%u", ip2long(implode('.', $end)));
 	}
-
-
 
 	############################################################################
 	# Doctrine Metadata
@@ -120,10 +139,39 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanIp';
-		$metadata->setPrimaryTable(array( 'name' => 'ban_ips', ));
+		$metadata->setPrimaryTable(array('name' => 'ban_ips',));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'banned_ip', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'banned_ip', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'ip_start', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_start', ));
-		$metadata->mapField(array( 'fieldName' => 'ip_end', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_end', ));
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'banned_ip',
+				 'type'       => 'string',
+				 'length'     => 100,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'banned_ip',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'ip_start',
+				 'type'       => 'bigint',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'ip_start',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'ip_end',
+				 'type'       => 'bigint',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'ip_end',
+			)
+		);
 	}
 }

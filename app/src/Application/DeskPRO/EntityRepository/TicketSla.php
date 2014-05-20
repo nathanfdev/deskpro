@@ -35,10 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Numbers;
 
 class TicketSla extends AbstractEntityRepository
 {
@@ -134,7 +131,7 @@ class TicketSla extends AbstractEntityRepository
 		return $output;
 	}
 
-	public function getTicketSlasPastThreshold($type)
+	public function getTicketSlasPastThreshold($type, $limit = 250)
 	{
 		switch ($type) {
 			case 'warning': $date_field = 'warn_date'; $statuses = "'ok'"; break;
@@ -148,7 +145,7 @@ class TicketSla extends AbstractEntityRepository
 			WHERE ts.is_completed = 0
 				AND ts.sla_status IN ($statuses)
 				AND ts.$date_field < ?0
-		")->setMaxResults(250)->execute(array(new \DateTime('now', new \DateTimeZone('UTC'))));
+		")->setMaxResults($limit)->execute(array(new \DateTime('now', new \DateTimeZone('UTC'))));
 	}
 
 	public function getTicketSlaAdminGraphData()

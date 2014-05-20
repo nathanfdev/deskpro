@@ -47,7 +47,7 @@ class Statement extends \Doctrine\DBAL\Statement
 		}
 		try {
 			parent::execute($params);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$e->_dp_query = $this->sql;
 			$e->_dp_query_params = $params;
 			throw $e;

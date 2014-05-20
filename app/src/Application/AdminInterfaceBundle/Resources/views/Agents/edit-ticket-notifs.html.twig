@@ -1,0 +1,121 @@
+<div class="panel panel-innertable">
+	<nav class="dp-tabletabs">
+		<ul>
+			<li class="active" dp-tab-btn="main.notifs.email"><a href="#">Email Notifications</a></li>
+			<li dp-tab-btn="main.notifs.alerts"><a href="#">Browser Alerts</a></li>
+		</ul>
+	</nav>
+
+	{###################################################################################################################}
+	{# Email Alerts #}
+
+	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.notifs.email">
+		<table class="table table-hover notify-pref-table">
+			<thead>
+				<tr>
+					<th class="pref-title">&nbsp;</th>
+					<th class="pref-col" ng-repeat="col in EditCtrl.notif_prefs.subs.sys_filters_email.columns">
+						{{ ng_var('col.title') }}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="row in EditCtrl.notif_prefs.subs.sys_filters_email.rows">
+					<td class="pref-title">
+						{{ ng_var('row.filter.title') }}
+					</td>
+					<td ng-repeat="col in row.cols" class="pref-col">
+						<div class="pref-opt" ng-repeat="part in col" style="display: inline-block">
+							<div ng-if="part" style="display: inline-block" tooltip="{{ ng_var('part.desc') }}">
+								<button dp-toggle-switch ng-model="part.value"></button>
+							</div>
+							<div ng-if="!part">&nbsp;</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div ng-if="EditCtrl.notif_prefs.subs.custom_filters_email">
+			<h3>Filters</h3>
+
+			<table class="table table-hover notify-pref-table">
+				<thead>
+				<tr>
+					<th class="pref-title">&nbsp;</th>
+					<th class="pref-col" ng-repeat="col in EditCtrl.notif_prefs.subs.custom_filters_email.columns">
+						{{ ng_var('col.title') }}
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="row in EditCtrl.notif_prefs.subs.custom_filters_email.rows">
+					<td class="pref-title">
+						{{ ng_var('row.filter.title') }}
+					</td>
+					<td ng-repeat="col in row.cols" class="pref-col">
+						<div class="pref-opt" ng-repeat="part in col" style="display: inline-block" tooltip="{{ ng_var('part.desc') }}">
+							<button dp-toggle-switch ng-model="part.value"></button>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	{###################################################################################################################}
+	{# Browser Alerts #}
+
+	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.notifs.alerts">
+		<table class="table table-hover notify-pref-table">
+			<thead>
+			<tr>
+				<th class="pref-title">&nbsp;</th>
+				<th class="pref-col" ng-repeat="col in EditCtrl.notif_prefs.subs.sys_filters_alert.columns">
+					{{ ng_var('col.title') }}
+				</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="row in EditCtrl.notif_prefs.subs.sys_filters_alert.rows">
+				<td class="pref-title">
+					{{ ng_var('row.filter.title') }}
+				</td>
+				<td ng-repeat="col in row.cols" class="pref-col">
+					<div class="pref-opt" ng-repeat="part in col" style="display: inline-block" tooltip="{{ ng_var('part.desc') }}">
+						<button dp-toggle-switch ng-model="part.value"></button>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+
+		<div ng-if="EditCtrl.notif_prefs.subs.custom_filters_email">
+			<h3>Filters</h3>
+			<table class="table table-hover notify-pref-table" ng-if="EditCtrl.notif_prefs.subs.custom_filters_alert">
+				<thead>
+				<tr>
+					<th class="pref-title">&nbsp;</th>
+					<th class="pref-col" ng-repeat="col in EditCtrl.notif_prefs.subs.custom_filters_alert.columns">
+						{{ ng_var('col.title') }}
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="row in EditCtrl.notif_prefs.subs.custom_filters_alert.rows">
+					<td class="pref-title">
+						{{ ng_var('row.filter.title') }}
+					</td>
+					<td ng-repeat="col in row.cols" class="pref-col">
+						<div class="pref-opt" ng-repeat="part in col" style="display: inline-block" tooltip="{{ ng_var('part.desc') }}">
+							<button dp-toggle-switch ng-model="part.value"></button>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>

@@ -35,12 +35,7 @@
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
-
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-
-use Application\DeskPRO\Translate\Translate;
 
 /**
  * This takes a Twig template and covnerts phrase tags into literal phrases.

@@ -38,8 +38,6 @@ namespace Application\DeskPRO\People\PersonMerge\Property;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Arrays;
-
 /**
  * A property is something that can be merged in a person
  */

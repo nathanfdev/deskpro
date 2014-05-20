@@ -176,7 +176,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		var self = this, $scope = this.$scope, wrapperEl = this.wrapper;
 
 		this.queuedChangeEvents_timeout = null;
-		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
+		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], 'postRun': []};
 
 		this.fieldUtil  = DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil;
 		this.orderBy    = this.meta.orderBy.replace(/^ticket\./, '');
@@ -245,7 +245,16 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			if (currentlyInView) {
 				self.queueChangeEvent('refreshTicketResults', [ticketId]);
 			} else {
-				self.queueChangeEvent('addTicketResults', [ticketId]);
+				// Need to put this in a post run because currentlyInView needs to know latest state
+				// and a removeTicketResults might be queued
+				self.queuePostChangeEvent(function() {
+					currentlyInView = $scope.tickets.filter(function(x) { return x.id === ticketId; }).length === 1;
+					if (currentlyInView) {
+						self.queueChangeEvent('refreshTicketResults', [ticketId]);
+					} else {
+						self.queueChangeEvent('addTicketResults', [ticketId]);
+					}
+				});
 			}
 		}, null, [this.OBJ_ID]);
 
@@ -304,8 +313,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @param {Array} ticketIds
 	 */
 	queueChangeEvent: function(type, ticketIds) {
-		var self = this,
-			$timeout = this.$timeout;
+		var self = this;
 
 		ticketIds.forEach(function(tid) {
 			if (self.queuedChangeEvents[type].indexOf(tid) === -1) {
@@ -313,23 +321,45 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		});
 
-		if (!this.queuedChangeEvents_timeout) {
-			this.queuedChangeEvents_timeout = $timeout(function() {
-				var events = self.queuedChangeEvents;
-				self.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': []};
-				self.queuedChangeEvents_timeout = null;
+		this._ensureQueuedChangeEventsTimeout();
+	},
 
-				if (events.removeTicketResults.length) {
-					self.removeTicketResults(events.removeTicketResults);
-				}
-				if (events.refreshTicketResults.length) {
-					self.refreshTicketResults(events.refreshTicketResults);
-				}
-				if (events.addTicketResults.length) {
-					self.addTicketResults(events.addTicketResults);
-				}
-			}, 600);
+	_ensureQueuedChangeEventsTimeout: function() {
+		var self = this, $timeout = this.$timeout;
+		if (!this.queuedChangeEvents_timeout) {
+			this.queuedChangeEvents_timeout = $timeout(function() { self._runQueuedChangeEvents(); }, 500);
 		}
+	},
+
+	_runQueuedChangeEvents: function() {
+		var events = this.queuedChangeEvents;
+		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], 'postRun': []};
+		this.queuedChangeEvents_timeout = null;
+
+		if (events.removeTicketResults.length) {
+			this.removeTicketResults(events.removeTicketResults);
+		}
+		if (events.refreshTicketResults.length) {
+			this.refreshTicketResults(events.refreshTicketResults);
+		}
+		if (events.addTicketResults.length) {
+			this.addTicketResults(events.addTicketResults);
+		}
+		if (events.postRun.length) {
+			for (var x = 0; x < events.postRun.length; x++) {
+				events.postRun[x]();
+			}
+		}
+	},
+
+
+	/**
+	 * Queues an event post run callback
+	 * @param {Function} fn
+	 */
+	queuePostChangeEvent: function(fn) {
+		this.queuedChangeEvents.postRun.push(fn);
+		this._ensureQueuedChangeEventsTimeout();
 	},
 
 
@@ -1294,6 +1324,17 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		});
 		this.ownObject(groupingMenu);
 
+		$scope.openAgentChat = function(agentId, $event) {
+			if (!agentId) return;
+
+			if ($event) {
+				$event.stopPropagation();
+				$event.preventDefault();
+			}
+
+			DeskPRO_Window.sections.agent_chat_section.newChatWindow([agentId]);
+		}
+
 		//------------------------------
 		// Export
 		//------------------------------
@@ -2191,7 +2232,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		var bottom = 10;
 		var height = '';
 
-		var scrollContent = $('.scroll-content', this.wrapper).first();
+		var scrollContent = $('.dp-page-content', this.wrapper).first();
 		var contentH = false;
 		var hasHeader = !!($('> section > header', this.wrapper).length);
 		var hasFooter = !!($('> section > footer', this.wrapper).length);
@@ -2205,7 +2246,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 				contentH += 45;
 			}
 
-			contentH += 31;
+			contentH += 50;
 		}
 
 		if (hasHeader) $('> section > article', this.wrapper).removeClass('no-header');

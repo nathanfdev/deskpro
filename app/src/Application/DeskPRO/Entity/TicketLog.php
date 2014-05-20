@@ -34,15 +34,28 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Ticket log items
  *
+ * @property int $id
+ * @property TicketLog $parent
+ * @property Ticket $ticket
+ * @property Person $person
+ * @property string $action_type
+ * @property int $id_object
+ * @property int $id_before
+ * @property int $id_after
+ * @property int $trigger_id
+ * @property Sla $sla
+ * @property string $sla_status
+ * @property array $details
+ * @property \DateTime $date_created
  */
-class TicketLog extends \Application\DeskPRO\Domain\DomainObject
+class TicketLog extends DomainObject
 {
 	/**
 	 * @var int
@@ -94,10 +107,18 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	protected $id_after = null;
 
 	/**
-	 * If the change was caused by a trigger, the trigger id
+	 * If the change was caused by a trigger, the trigger id.
+	 * Note this is the integer ID (not a FK relation) so the record is kept even if the trigger itself is deleted.
 	 * @var int
 	 */
 	protected $trigger_id = null;
+
+	/**
+	 * If the change was caused by an escalation
+	 * Note this is the integer ID (not a FK relation) so the record is kept even if the esc itself is deleted.
+	 * @var int
+	 */
+	protected $escalation_id = null;
 
 	/**
 	 * If the change was caused by an SLA, the SLA
@@ -146,25 +167,10 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 		return $this->person['id'];
 	}
 
-	public function setPersonId($id)
-	{
-		if ($id) {
-			$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
-			$this['person'] = $person;
-		} else {
-			$this['person'] = null;
-		}
-	}
 
 	public function getTicketId()
 	{
 		return $this->ticket['id'];
-	}
-
-	public function setTicketId($id)
-	{
-		$ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($id);
-		$this['ticket'] = $ticket;
 	}
 
 	public function setDetails(array $details)
@@ -185,16 +191,13 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('details', $details);
 	}
 
-	public function setSlaId($sla_id)
+	public function setDetailItem($name, $value)
 	{
-		if ($sla_id) {
-			$this['sla'] = App::getOrm()->getRepository('DeskPRO:Sla')->find($sla_id);
-		} else {
-			$this['sla'] = null;
-		}
+		$details = $this->details;
+		$details[$name] = $value;
+
+		$this->setModelField('details', $details);
 	}
-
-
 
 	############################################################################
 	# Doctrine Metadata
@@ -212,6 +215,7 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id_before', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'id_before', ));
 		$metadata->mapField(array( 'fieldName' => 'id_after', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'id_after', ));
 		$metadata->mapField(array( 'fieldName' => 'trigger_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'trigger_id', ));
+		$metadata->mapField(array( 'fieldName' => 'escalation_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'escalation_id', ));
 		$metadata->mapField(array( 'fieldName' => 'sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sla_status', ));
 		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'details', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

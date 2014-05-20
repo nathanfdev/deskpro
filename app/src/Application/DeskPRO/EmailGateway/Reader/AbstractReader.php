@@ -34,9 +34,8 @@
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 abstract class AbstractReader
 {
@@ -180,6 +179,29 @@ abstract class AbstractReader
 		}
 
 		return $this->vals['to_address'];
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress[]
+	 */
+	public function getReceivedAddresses()
+	{
+		$to = $this->getToAddresses();
+		$cc = $this->getCcAddresses();
+		$orig_to = null;
+
+		if ($orig_to_email = $this->getOriginalTo()) {
+			$eml = new EmailAddress();
+			$eml->email = strtolower($orig_to_email);
+			$orig_to = array($eml);
+		}
+
+		$all = array();
+		if ($to) $all = array_merge($all, $to);
+		if ($cc) $all = array_merge($all, $cc);
+		if ($orig_to) $all = array_merge($all, $orig_to);
+
+		return $all;
 	}
 
 	/**

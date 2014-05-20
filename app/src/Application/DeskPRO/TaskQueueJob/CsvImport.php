@@ -190,7 +190,7 @@ class CsvImport extends AbstractJob
 		$addresses = array();
 
 		foreach ($field_maps AS $column_id => $info) {
-			if (!$info['map']) {
+			if (empty($info['map'])) {
 				continue;
 			}
 
@@ -201,7 +201,7 @@ class CsvImport extends AbstractJob
 
 			if ($info['map'] == 'primary_email') {
 
-				if (!\Orb\Validator\StringEmail::isValueValid($column_value) || App::getSystemService('gateway_address_matcher')->isManagedAddress($column_value)) {
+				if (!\Orb\Validator\StringEmail::isValueValid($column_value) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($column_value)) {
 					continue;
 				}
 				if ($person_em->findOneByEmail($column_value)) {
@@ -210,7 +210,7 @@ class CsvImport extends AbstractJob
 
 				$primary_email = strtolower($column_value);
 			} else if ($info['map'] == 'secondary_email') {
-				if (!\Orb\Validator\StringEmail::isValueValid($column_value) || App::getSystemService('gateway_address_matcher')->isManagedAddress($column_value)) {
+				if (!\Orb\Validator\StringEmail::isValueValid($column_value) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($column_value)) {
 					break;
 				}
 				if ($person_em->findOneByEmail($column_value)) {

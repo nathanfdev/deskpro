@@ -1,0 +1,104 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders">
+					<i class="fa fa-check-square-o-square"></i>
+					{{ phrase('agent.general.saved') }}
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.deps.length || 0"
+				when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload>
+				<li class="with-drag-handle" ng-repeat="dep in ListCtrl.depList"
+					dp-state-mark="chat.chat_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
+
+					<a href="{{ ng_href('chat.chat_deps.edit', '{id: dep.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+					</a>
+
+					<ul class="dp-item-list sublist" ng-show="dep.children.length"
+						ui-sortable="ListCtrl.sortedListOptions">
+						<li class="with-drag-handle" ng-repeat="subdep in dep.children"
+							dp-state-mark="chat.chat_deps.edit.{{ ng_var('subdep.id') }}"
+							data-id="{{ ng_var('subdep.id') }}">
+							<a href="{{ ng_href('chat.chat_deps.edit', '{id: subdep.id}') }}">
+								<i class="fa fa-bars drag-handle"></i>
+								<h4>
+									<span class="tree-char middle" ng-if="!$last"></span>
+									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-text">{{ ng_var('subdep.title') }}</span>
+								</h4>
+							</a>
+						</li>
+					</ul>
+
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
+				   href="{{ ng_href('chat.chat_deps.gocreate') }}" dp-list-autoload autoload-priority="2">
+					<i class="fa fa-plus"></i> New Department
+				</a>
+			</div>
+
+			<div class="dp-empty-list-notice" ng-show="ListCtrl.deps.length == 1">
+				<p>
+					{{ phrase('adm.departments.not_user_visible') }}
+				</p>
+			</div>
+		</article>
+	</section>
+
+	<div dp-register-message="no_delete_last">{{ phrase('adm.departments.no_delete_last') }}</div>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Departments are a way to divide up the helpdesk and control access.</h1>
+		<p>The Department field is powerful and has many functions. You can use departments to limit agent and user access. Chat departments are separate from ticket departments.</p>
+	</header>
+
+	<article>
+		<section>
+			<ul>
+				<li>Agent chat permissions are based upon departments; you can create agents that can view some chats but not others.</li>
+				<li>User chat permissions are based upon departments; you can set a usergroup so that members can open chats in some departments but not others.</li>
+				<li>You can set a user-facing department name to be displayed only to users e.g. agents see "Terms of Service Violations", while users see "Support".</li>
+				<li>Each chat will always have a department - it is the only required field in DeskPRO.</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2><span>FAQ</span></h2>
+			<dl>
+				<dt><em>Q:</em> How many departments can I have?</dt>
+				<dd><em>A:</em> You can have an unlimited number of departments. Typically, companies will have less than ten departments, but you can structure your departments as you feel suitable.</dd>
+
+				<dt><em>Q:</em> Can I use sub-departments/child departments?</dt>
+				<dd><em>A:</em>
+					Yes. A department can have sub-departments,
+					e.g. the "Support" department can contain "Support Tier 1" and "Support Tier 2".<br/>
+					Note that you can't assign tickets to a department if it contains sub-departments;
+					you must assign to the sub-departments. In the example above, you could assign chats to "Support Tier 1" and "Support Tier 2",
+					but not to "Support".
+				</dd>
+
+				<dt><em>Q:</em> I don't need departments - can I disable the field?</dt>
+				<dd><em>A:</em>
+					Chats always have a department, but if you only have one department defined,
+					it will not be shown to users, effectively disabling the field.
+				</dd>
+
+				<dt><em>Q:</em> What is the difference between ticket departments and chat departments?</dt>
+				<dd><em>A:</em>
+					Like chat departments, ticket departments are the key field for grouping chats.
+					The two types of departments are not linked together - you can have different departments for tickets and chats.
+				</dd>
+			</dl>
+		</section>
+	</article>
+{% endblock %}

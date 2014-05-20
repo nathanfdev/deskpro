@@ -1,0 +1,47 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+<form role="form" name="form_props" ng-submit="EditCtrl.doSave()">
+	<section class="dp-paneblock dp-editpane nomaxw">
+		<article class="form-horizontal dp-form">
+
+			<table class="table phrases-table phrases-restable">
+				<thead>
+					<tr>
+						<th width="100%">Default</th>
+						<th>Translated</th>
+					</tr>
+				</thead>
+				<tbody ng-if="EditCtrl.phrases.length">
+					<tr ng-repeat="phrase in EditCtrl.phrases" ng-class="{'phrase-custom': phrase.set && phrase.set != phrase.default }">
+						<td class="phrase-title">
+							<span ng-if="phrase.depth_items.length" class="indent">
+								<span ng-repeat="d in phrase.depth_items"><i class="fa fa-caret-right"></i></span>
+							</span>
+							<span>{{ ng_var('phrase.default') }}</span>
+						</td>
+						<td class="phrase-user-title"><input type="text" ng-model="phrase.set" spellcheck="false" /></td>
+					</tr>
+				</tbody>
+				<tbody ng-if="!EditCtrl.phrases.length">
+					<tr><td colspan="2">There are no phrases in this group.</td></tr>
+				</tbody>
+			</table>
+
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="saving">
+						<button class="btn btn-primary" dp-submit-form>
+							{{ phrase('agent.general.save') }}
+						</button>
+					</div>
+					<div dp-show-spinning="saving">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+</form>
+{% endblock %}

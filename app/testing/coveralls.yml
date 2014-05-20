@@ -1,0 +1,4 @@
+service_name: travis-pro
+src_dir: ../
+coverage_clover: logs/coverage-clover/*.xml
+json_path: logs/coverage-clover/coveralls-upload.json

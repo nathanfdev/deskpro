@@ -14,6 +14,7 @@ define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
 require DP_ROOT . '/bin/build/inc.php';
+require_once DP_ROOT . '/sys/load_config.php';
 require DP_ROOT . '/bin/build/php-path.php';
 
 $proc_kernel = null;
@@ -24,21 +25,15 @@ if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
 }
 
 $kernel_classes = array(
-	'DeskPRO\\Kernel\\AdminKernel',
-	'DeskPRO\\Kernel\\AgentKernel',
-	'DeskPRO\\Kernel\\ApiKernel',
-	'DeskPRO\\Kernel\\CliKernel',
-	'DeskPRO\\Kernel\\ReportKernel',
-	'DeskPRO\\Kernel\\UserKernel',
+	'DeskPRO\\Kernel\\DpKernel',
 	'DeskPRO\\Kernel\\InstallKernel',
-	'DeskPRO\\Kernel\\BillingKernel',
 );
 
 if ($proc_kernel === null) {
-	$cache_dir = DP_ROOT.'/sys/cache';
-
+	$cache_dir = dp_get_cache_dir();
 	echo "Removing existing caches dir $cache_dir ... ";
-	$proc = new Symfony\Component\Process\Process('rm -rf dev prod doctrine-proxies prod twig-compiled annotations.php', DP_ROOT.'/sys/cache');
+
+	$proc = new Symfony\Component\Process\Process('rm -rf dev prod doctrine-proxies prod twig-compiled annotations.php', dp_get_cache_dir());
 	$proc->run();
 	if (!$proc->isSuccessful()) {
 		echo "ERROR\n\n";
@@ -74,7 +69,7 @@ if ($proc_kernel === null) {
 	exit(0);
 } else {
 
-	require DP_ROOT.'/sys/system.php';
+	require_once DP_ROOT.'/sys/system.php';
 
 	$class = $kernel_classes[$proc_kernel];
 	$kernel = new $class('prod', false);

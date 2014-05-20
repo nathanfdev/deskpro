@@ -35,9 +35,9 @@
 namespace Application\DeskPRO\Tickets\NewTicket;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form
@@ -45,8 +45,15 @@ use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
  * NOTE: New users are always created with 'validating' email addresses. If validation is disabled
  * then the ticket trigger will automatically convert the validating address into a real address.
  */
-class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
+class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
+	protected static $prop_names = array(
+		'person' => 1, 'ticket' => 1, 'language' => 1,
+		'custom_ticket_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
+		'require_login' => 1, 'attach_blobs' => 1, 'blobs_inline_ids' => 1, 'gateway' => 1, 'gateway_address' => 1,
+		'sent_to' => 1, 'logger' => 1, 'do_dupe_check' => 1
+	);
+
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\PersonProps
 	 */
@@ -77,8 +84,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	protected $mode = 'untrusted';
 
-	public $gateway;
-	public $gateway_address;
+	public $account;
+	public $account_address;
 	public $sent_to;
 
 	/**
@@ -192,16 +199,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 							$person->name = $this->person->name;
 						}
 						$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
-						$person->is_confirmed = false;
 
-						if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+						if (App::getSetting('core.agent_validation')) {
 							$person->is_agent_confirmed = false;
 						}
 
 						$email = new \Application\DeskPRO\Entity\PersonEmail();
 						$email->setEmail($this->person->email);
 						$email->person = $person;
-						$email->setIsValidated(false);
 						$person->addEmailAddress($email);
 
 						App::getOrm()->persist($person);
@@ -248,6 +253,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			#------------------------------
 
 			$ticket = new Entity\Ticket();
+			$ticket->disableAutoTicketProcess();
 			if ($this->logger) {
 				$ticket->getTicketLogger()->setLogger($this->logger);
 			}
@@ -285,14 +291,11 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket['sent_to_address'] = $this->sent_to;
 			}
 
-			if ($this->gateway) {
-				$ticket->email_gateway = $this->gateway;
+			if ($this->account) {
+				$ticket->email_account = $this->account;
 			}
-			if ($this->gateway_address) {
-				$ticket->email_gateway_address = $this->gateway_address;
-			}
-			if (!$this->gateway) {
-				$ticket['notify_email'] = $this->ticket->notify_email;
+			if ($this->account_address) {
+				$ticket->email_account_address = $this->account_address;
 			}
 
 			if ($email_validating) {
@@ -455,7 +458,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 				foreach ($ccs as &$_) {
 					$_ = trim(strtolower($_));
-					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::getSystemService('gateway_address_matcher')->isManagedAddress($_)) {
+					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($_)) {
 						$_ = null;
 					}
 				}
@@ -470,6 +473,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				}
 			}
 
+			$ticket_manager = App::$container->getTicketManager();
+			$context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+
+			$ticket_manager->saveTicket($ticket, $context);
 			App::getOrm()->flush();
 			App::getOrm()->commit();
 
@@ -487,14 +494,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	public function handleCc(Entity\Ticket $ticket, $cc_email)
 	{
-		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
-
-		if (!\Orb\Validator\StringEmail::isValueValid($cc_email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($cc_email)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($cc_email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($cc_email)) {
 			return null;
 		}
 
-		$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
-		if ($addr) {
+		$account_manager = App::$container->getEmailAccountManager();
+		if ($account_manager->findAccountForEmailAddress($cc_email)) {
 			return null;
 		}
 
@@ -537,4 +542,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 		return $cc_person;
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

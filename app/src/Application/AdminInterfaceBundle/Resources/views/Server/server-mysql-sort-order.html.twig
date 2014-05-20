@@ -1,0 +1,84 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="ServerMysqlSortOrder.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>MySQL Sort Order</h3>
+			</header>
+
+			<article class="padd">
+
+				<a ng-href="{{ ng_href('server.mysql_info') }}">MySQL Info</a> |
+				<a ng-href="{{ ng_href('server.mysql_status') }}">MySQL Status</a> |
+				Update Sort Order
+
+			</article>
+
+			<article class="padd" ng-if="update_started">
+				<div class="well success-message">
+					Your sort order update has been started. The records will be imported in the background even if you
+					are not connected.
+					<br><br>
+					The current status will be updated here periodically:
+
+					<span dp-status-update="/server_mysql_sort_order_status"
+						  status-update-conditions="update_started"
+						  status-update-default-message="Waiting to start..."
+						  status-update-completed-growl-message="Update of sort order finished"
+						  style="font-style:italic;">
+					</span>
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="form-group">
+						<div class="col-lg-3">
+							<h3> Current Sort Order</h3>
+						</div>
+						<div class="col-lg-9">
+							{{ ng_var('current_sort_order') }}
+						</div>
+					</div>
+					<br/>
+					<div class="form-group">
+						<div class="col-lg-3">
+							<h3> Update Sort Order</h3>
+						</div>
+						<div class="col-lg-9">
+							<div class="inner-group">
+								<label ng-repeat="(key, value) in all_collations" style="font-weight: normal; display: block;">
+									<input type="radio" ng-model="server_mysql_sort_order.db_collation" ng-value="key">
+									{{ ng_var('value') }}
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+
+						</ul>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+{% endblock %}

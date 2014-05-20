@@ -36,40 +36,33 @@ namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Strings;
+use Application\DeskPRO\People\UserPermissions\GroupsDbLoader;
+use Application\DeskPRO\People\UserPermissions\UserPermissions;
 
 class UserGroupPermScanner
 {
-	protected $path;
-
 	/**
 	 * @var array
 	 */
 	protected $perm_names = null;
 
-	public function __construct($path = null)
-	{
-		if (!$path) {
-			$path = DP_ROOT.'/src/Application/AdminBundle/Resources/views/Usergroups/edit-permtable.html.twig';
-		}
-
-		$this->path = $path;
-	}
-
-
 	protected function load()
 	{
-		if ($this->perm_names !== null) return;
-		$this->perm_names = array();
-
-		$content = file_get_contents($this->path);
-		$m = null;
-		preg_match_all('#<!\-\-\s*PERMISSION:(.*?)\s*\-\->#',$content, $m, PREG_SET_ORDER);
-
-		foreach ($m as $match) {
-			$this->perm_names[] = $match[1];
+		if ($this->perm_names !== null) {
+			return;
 		}
+
+		$perms = new UserPermissions();
+
+		$set_perms = array();
+		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+			$obj = $perms->$coll_name;
+			foreach ($obj->getNames() as $prop) {
+				$set_perms[] = $real_name . '.' . $prop;
+			}
+		}
+
+		$this->perm_names = $set_perms;
 	}
 
 

@@ -1,0 +1,22 @@
+class_name: ProductGuy
+modules:
+  enabled:
+    - DpControlHelper
+    - WebDriver
+    - WebHelper
+  config:
+    WebDriver:
+      url: 'http://localhost:8888/'
+      browser: firefox
+coverage:
+  enabled: true
+  blacklist:
+    include:
+      - ../vendor/*
+      - ../testing/*
+      - ../vendor-src/*
+      - ../sys/*
+      - ../src/Orb/*
+      - ../src/Application/DeskPRO/Domain/*
+      - ../src/Application/DeskPRO/Entity/*
+      - ../src/Application/DeskPRO/People/*

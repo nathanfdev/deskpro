@@ -33,7 +33,7 @@
 
 namespace Application\DeskPRO\Languages;
 
-use \SimpleXMLElement;
+use SimpleXMLElement;
 
 /**
  * A language pack file is simple XML that looks like this:

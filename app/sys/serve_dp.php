@@ -410,7 +410,7 @@ class DpLoader extends LoaderAbstract
 					$geoip = new \Orb\GeoIp\GeoIpExtension();
 				} else {
 					$geoip = new \Orb\GeoIp\GeoIpPhp();
-					$geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor/geoip-db/GeoIP.dat');
+					$geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor-src/geoip-db/GeoIP.dat');
 				}
 			}
 
@@ -694,6 +694,11 @@ class DpLoader extends LoaderAbstract
 					$container = $this->bootFullSystem();
 
 					$sessionObj = $container->get('session');
+
+					if (!$sessionObj->isStarted()) {
+						$sessionObj->start();
+					}
+
 					$session_id = $sessionObj->getId();
 					$session = $sessionObj->getEntity();
 					$chat_manager = $container->getSystemObject('user_chat_manager', array('session' => $session));

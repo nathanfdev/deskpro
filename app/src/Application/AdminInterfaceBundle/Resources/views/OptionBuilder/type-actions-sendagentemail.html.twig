@@ -1,0 +1,75 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap"><label>Send Agent Email</label></td>
+				<td>
+					<table class="display-table spaced">
+						<tr>
+							<td>Template:</td>
+							<td>
+								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || ''">
+									{% for email in [
+										'DeskPRO:emails_agent:ticket-new.html.twig',
+										'DeskPRO:emails_agent:ticket-reply.html.twig',
+										'DeskPRO:emails_agent:ticket-update.html.twig'
+									] %}
+										<option value="{{ email }}">{{ email }}</option>
+									{% endfor %}
+									<option value="CREATE">Create a new template...</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top;">Agents:</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px">
+									<li style="border-bottom: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.notify_list" />
+											Subscribed agents
+											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="All agents have notification subscription preferences. This option will send the email to any agent who is subscribed to whatever action initiated this event. For example, if this action was fired via a new ticket, then this option will send an email to any agent subscribed to 'new tickets'."></i>
+										</label>
+									</li>
+									<li ng-repeat="agent in agents">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids[agent.id]" />
+											{{ ng_var('agent.display_name') }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>From Name:</td>
+							<td>
+								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.from_name" ng-init="" style="min-width: 50px;">
+									<option value="performer">Name of the person who initiated the action</option>
+									<option value="helpdesk_name">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
+									{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
+									<option value="custom">Enter a custom name</option>
+								</select>
+								<div style="padding-top: 3px; width: 250px;">
+									<input type="text" class="form-control" ng-model="model.from_name_custom" ng-show="model.from_name == 'custom'" />
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>From Email:</td>
+							<td>
+								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.from_account" ng-init="" style="min-width: 50px;">
+									<optgroup label="Default">
+										<option value="0">The account set on the ticket</option>
+									</optgroup>
+									<optgroup label="Specific account">
+										<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.address') }}</option>
+									</optgroup>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

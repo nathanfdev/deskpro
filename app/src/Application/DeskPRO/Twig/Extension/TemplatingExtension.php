@@ -34,14 +34,13 @@
 
 namespace Application\DeskPRO\Twig\Extension;
 
-use Orb\Data\Countries;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Application\DeskPRO\App;
-
-use Orb\Util\Util;
-use Orb\Util\Strings;
+use Orb\Data\Countries;
+use Orb\Util\Arrays;
 use Orb\Util\Dates;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -128,6 +127,7 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_widgets_raw'                   => new \Twig_Function_Method($this, 'getWidgetsRaw'),
 			'dp_widget_id'                     => new \Twig_Function_Method($this, 'getWidgetHtmlId'),
 			'dp_widget_tabs_header'            => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
+			'dp_app_loc'                       => new \Twig_Function_Method($this, 'getDpAppLocation', array('is_safe' => array('html'))),
 			'dp_widget_tabs'                   => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
 			'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
 			'dp_js_sso_share'                  => new \Twig_Function_Method($this, 'getJsSsoShare', array('is_safe' => array('html'))),
@@ -138,11 +138,17 @@ class TemplatingExtension extends \Twig_Extension
 			'match'                            => new \Twig_Function_Method($this, 'match'),
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
+			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_plural_phrase'                 => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
+			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
+			'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
 
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
 			'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
 			'ng_static_var'                    => new \Twig_Function_Method($this, 'ngStaticVar', array('is_safe' => array('html'))),
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
+
+			'js_error_tracking'                => new \Twig_Function_Method($this, 'js_error_tracking', array('is_safe' => array('html'))),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -159,6 +165,8 @@ class TemplatingExtension extends \Twig_Extension
 			'raw_url_encode'         => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
 			'repeat'                 => new \Twig_Filter_Method($this, 'strRepeat'),
 			'trim'                   => new \Twig_Filter_Method($this, 'strTrim'),
+			'ltrim'                  => new \Twig_Filter_Method($this, 'strLtrim'),
+			'rtrim'                  => new \Twig_Filter_Method($this, 'strRtrim'),
 			'encode_number'          => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
 			'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
@@ -183,6 +191,7 @@ class TemplatingExtension extends \Twig_Extension
 			'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
 			'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
 			'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
+			'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
 
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -201,7 +210,7 @@ class TemplatingExtension extends \Twig_Extension
 		try {
         	return App::getRouter()->generate($name, $parameters, false);
 		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
-			if (App::isDebug()) {
+			if ($this->container->isDebug()) {
 				throw $e;
 			}
 			return '';
@@ -213,7 +222,7 @@ class TemplatingExtension extends \Twig_Extension
 		try {
         	return App::getRouter()->generate($name, $parameters, true);
 		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
-			if (App::isDebug()) {
+			if ($this->container->isDebug()) {
 				throw $e;
 			}
 			return '';
@@ -535,6 +544,17 @@ class TemplatingExtension extends \Twig_Extension
 		switch ($id) {
 			case 'country_names':
 				return \Orb\Data\Countries::getCountryNames();
+				break;
+			case 'timezones':
+				$tzs = \DateTimeZone::listIdentifiers();
+				$tzs = array_combine($tzs, $tzs);
+
+				foreach ($tzs as &$tz_name) {
+					$tz_name = str_replace('/', ' ▸ ', $tz_name);
+					$tz_name = str_replace('_', ' ', $tz_name);
+				}
+
+				return $tzs;
 				break;
 			default:
 				return null;
@@ -907,9 +927,19 @@ class TemplatingExtension extends \Twig_Extension
 		return str_repeat($str, $count);
 	}
 
-	public function strTrim($str)
+	public function strTrim($str, $chars = null)
 	{
-		return trim($str);
+		return trim($str, $chars);
+	}
+
+	public function strLtrim($str, $chars = null)
+	{
+		return ltrim($str, $chars);
+	}
+
+	public function strRtrim($str, $chars = null)
+	{
+		return rtrim($str, $chars);
 	}
 
 	/**
@@ -1100,7 +1130,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function isDebugMode()
 	{
-		return App::isDebug();
+		return $this->container->isDebug();
 	}
 
 	public function getMd5($string)
@@ -1110,7 +1140,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function assetFull($location)
 	{
-		$url = App::getSetting('core.deskpro_assets_full_url');
+		$url = dp_get_config('assets_full_url');
 		if (!$url) {
 			$url = App::getSetting('core.deskpro_url');
 			$url = trim(str_replace('/index.php', '', $url), '/');
@@ -1248,6 +1278,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getWidgets($baseId, $page, $location, $position = '*', $data = array())
 	{
+		return '';
 		$widgets = $this->_getPageLocationWidgets($page, $location, $position);
 		if (!$widgets) {
 			return '';
@@ -1269,11 +1300,13 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getWidgetsRaw($page, $location, $position = '')
 	{
+		return '';
 		return $this->_getPageLocationWidgets($page, $location, $position);
 	}
 
 	protected function _getPageLocationWidgets($page, $location, $position = '')
 	{
+		return array();
 		if (!array_key_exists($page, $this->_widgetCache)) {
 			$this->_widgetCache[$page] = App::getEntityRepository('DeskPRO:Widget')->getEnabledPageWidgetsGrouped($page);
 		}
@@ -1297,96 +1330,19 @@ class TemplatingExtension extends \Twig_Extension
 		}
 	}
 
-	public function getWidgetHtmlId($baseId, \Application\DeskPRO\Entity\Widget $widget)
+	public function getWidgetHtmlId($baseId, $widget)
 	{
-		return "{$baseId}-widget-{$widget->id}";
+		return '';
 	}
 
-	protected function _insertWidget($baseId, \Application\DeskPRO\Entity\Widget $widget, $wrapper, $data = array())
+	protected function _insertWidget($baseId, $widget, $wrapper, $data = array())
 	{
-		$jsOnly = !$widget->page_location;
-		$htmlId = ($jsOnly ? '' : $this->getWidgetHtmlId($baseId, $widget));
-
-		if (!is_array($data) && !($data instanceof \ArrayAccess)) {
-			$data = array();
-		}
-		$data['base_id'] = $baseId;
-		$data['html_id'] = $htmlId;
-		$data['settings'] = App::get(App::SERVICE_SETTINGS);
-
-		if ($jsOnly) {
-			$output = '';
-		} else {
-			$output = strtr($wrapper, array(
-				'{id}' => $htmlId,
-				'{widget}' => $widget->id,
-				'{html}' => $this->_replaceWidgetPlaceholders($widget->html, $data, 'html'),
-				'{title}' => $widget->title
-			));
-		}
-
-		if ($widget->css) {
-			$css = $this->_replaceWidgetPlaceholders($widget->css, $data, 'css');
-			$hash = md5($css);
-			$output .= '<style type="text/css" data-widget="' . $widget->id . '" data-hash="' . $hash . '">' . $css . '</style>';
-		}
-		if ($widget->js) {
-			$js = $this->_replaceWidgetPlaceholders($widget->js, $data, 'js');
-			$output .= '<script type="text/javascript" data-widget="' . $widget->id . '" data-html-id="' . $htmlId . '">'
-				. $js . '</script>';
-		}
-
-		return $output;
+		return '';
 	}
 
 	protected function _replaceWidgetPlaceholders($content, $data, $context)
 	{
-		return preg_replace_callback('/\{\{\s*([a-z0-9_.]+)\s*\}\}/i', function (array $match) use ($data, $context) {
-			$parts = explode('.', $match[1]);
-			$reference = $data;
-			while (($part = array_shift($parts)) !== null) {
-				if ($part == '') {
-					continue;
-				}
-
-				if (!is_array($reference) && !($reference instanceof \ArrayAccess)) {
-					$reference = '';
-					break;
-				}
-
-				if (isset($reference[$part])) {
-					$reference = $reference[$part];
-
-					if ($reference instanceof \Application\DeskPRO\Settings\Settings) {
-						$reference = ($parts ? $reference[implode('.', $parts)] : '');
-						break;
-					}
-				} else {
-					$reference = '';
-					break;
-				}
-			}
-
-			$reference = strval($reference);
-
-			switch ($context) {
-				case 'html':
-					return htmlspecialchars($reference);
-
-				case 'js':
-					return strtr($reference, array(
-						'"' => '\\"',
-						"'" => "\\'",
-						"\n" => '\n',
-						"\r" => '\r',
-						'\\' => '\\\\',
-						'</script>' => '<\\/script>'
-					));
-
-				default:
-					return $reference;
-			}
-		}, $content);
+		return $content;
 	}
 
 	public function getWidgetTabsHeader($baseId, $page, $location, array $tabs)
@@ -1426,15 +1382,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getWidgetTabsBody($baseId, $page, $location, $wrapper, $data = array())
 	{
-		$output = '';
-		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
-			$output .= $this->_insertWidget($baseId, $widget,
-				'<' . $wrapper . ' class="widget-content" id="{id}" data-widget="{widget}" style="display: none">{html}</' . $wrapper . '>',
-				$data
-			);
-		}
-
-		return $output;
+		return '';
 	}
 
 	public function getJsSsoLoader()
@@ -1556,6 +1504,35 @@ class TemplatingExtension extends \Twig_Extension
 		return '{{' . $var . '}}';
 	}
 
+	public function ngPluralPhrase($phrase_name)
+	{
+		$positions = array();
+
+		for ($i = 0; $i < 5; $i++) {
+			$text = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
+			$text = str_replace('{{count}}', '{}', $text);
+			$positions[$i] = $text;
+		}
+
+		$positions = array_unique($positions);
+
+		if (count($positions) == 2) {
+			$positions['other'] = $positions[0];
+			unset($positions[0]);
+		} else {
+			if (!isset($positions[0])) {
+				Arrays::unshiftAssoc(
+					$positions,
+					'0',
+					Arrays::getFirstItem($positions)
+				);
+			}
+			$positions['other'] = Arrays::getLastItem($positions);
+		}
+
+		return json_encode($positions);
+	}
+
 	public function ngBind($var)
 	{
 		return '<span ng-bind="' . htmlspecialchars($var) . '"></span>';
@@ -1584,8 +1561,20 @@ class TemplatingExtension extends \Twig_Extension
 			$save_name = preg_replace('#\.twig$#', '', $save_name);
 		}
 
-		$html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
+		if (strpos($rendered, '<script') !== false) {
+			// If it has inner script tags we should be using our special dp-ng-template tag and encode the tpl as json
+			$json = \Application\DeskPRO\Util::jsonEncode(array('template' => $rendered));
+			$html = '<script type="text/dp-ng-template" id="'.$save_name.'">' . $json . '</script>';
+		} else {
+			$html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
+		}
+
 		return $html;
+	}
+
+	public function ngHref($route, $params = '{}')
+	{
+		return '{{ state_path(\'' . addslashes($route) . '\', ' . $params . ') }}';
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)
@@ -1594,6 +1583,61 @@ class TemplatingExtension extends \Twig_Extension
 			$break = Strings::ZERO_WIDTH_SPACE;
 		}
 		return Strings::smartWordWrap($string, $len, $break);
+	}
+
+	public function getDpAppLocation($base_id, $loc_name)
+	{
+		$loc_id = preg_replace('#[^a-zA-Z0-9_]#', '_', $loc_name);
+		return '<div id="'.$base_id.'_'.$loc_id.'" class="dp-app-context-container as-default-hidden" data-location-name="'.$loc_name.'"></div>';
+	}
+
+	public function jsonEncodeInHtml($data)
+	{
+		return \Application\DeskPRO\Util::jsonEncode($data);
+	}
+
+	public function js_error_tracking($loc, array $options = array())
+	{
+		if ($this->getContainer()->isDebug()) {
+			if (!defined('DP_USE_JS_LOGGER')) {
+				return '';
+			}
+		}
+
+		$sid = '';
+		if ($this->getContainer()->isDebug()) {
+			$sid .= 'DEV-';
+		}
+		if (defined('DP_BUILD_TIME')) {
+			$sid .= '#' . DP_BUILD_TIME . '-';
+		} else {
+			$sid .= '#0-';
+		}
+		if (defined('DP_REQUEST_ID')) {
+			$sid .= DP_REQUEST_ID;
+		} else {
+			$sid .= 'unknown';
+		}
+
+		/** @var \Application\DeskPRO\Templating\Asset\UrlPackage $helper */
+		$helper = $this->getContainer()->get('templating.helper.assets');
+
+		$src = $helper->getUrl('vendor/trackjs/tracker.js');
+
+		$html = <<<HTML
+<script type="text/javascript">
+window.onerror = null; delete window.onerror;
+var _trackJs = {
+	customer: '4eebe4aa1bc2404e89fc4250152d18a0',
+	sessionId: '$sid',
+	trackAjaxFail: false,
+	trackConsoleError: true,
+	trackGlobal: true
+};
+</script>
+<script type="text/javascript" src="$src"></script>
+HTML;
+		return $html;
 	}
 }
 

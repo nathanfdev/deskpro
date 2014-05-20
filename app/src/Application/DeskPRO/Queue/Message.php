@@ -34,14 +34,10 @@
 
 namespace Application\DeskPRO\Queue;
 
-use Orb\Util\Strings;
-use Orb\Util\Util;
-use Application\DeskPRO\Entity\QueueItem;
-
 /**
  * Automatically load the body from a QI item
  */
-class Message extends \Zend\Queue\Message
+class Message extends \ZendQueue\Message
 {
 	protected $_has_init_qi = false;
 

@@ -20,10 +20,18 @@
 			<p>
 				{{ phrase('agent.chrome.help-contact-us-explain') }}
 			</p>
-			<p>
-				{{ phrase('agent.chrome.help-quickstart-guide-link', {link: path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }) }}
-			</p>
 		</div>
+
+		<h3>{{ phrase('agent.chrome.help-manuals') }}</h3>
+		<p style="text-align: center;">
+			<a href="{{ path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }}" style="display: inline-block; text-decoration: none; text-align: center; margin-right: 15px;"><img src="{{ asset('images/filetypes/file_pdf.png') }}" title="Getting Started with DeskPRO PDF (2.1 MB)" /><br/>Getting Started</a>
+
+			<a href="{{ path('serve_dp_asset', { filename: 'Agent-Manual.pdf' }) }}" style="display: inline-block; text-decoration: none; text-align: center; margin-right: 15px;"><img src="{{ asset('images/filetypes/file_pdf.png') }}" title="Agent Manual PDF (7 MB)" /><br/>Agent Manual</a>
+
+			{% if app.user.can_admin %}
+				<a href="{{ path('serve_dp_asset', { filename: 'Admin-Manual.pdf' }) }}" style="display: inline-block; text-decoration: none; text-align: center;"><img src="{{ asset('images/filetypes/file_pdf.png') }}" title="Adnub Manual PDF (7 MB)" /><br/>Admin Manual</a>
+			{% endif %}
+		</p>
 
 		{% if app.getSetting('core.agent_enable_kb_shortcuts') %}
 			<h3>{{ phrase('agent.chrome.kbd-shortcuts') }}</h3>

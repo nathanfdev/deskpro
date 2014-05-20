@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+define('DP_BOOT_MODE', 'testing');
+require(__DIR__. '/../../../index.php');
+require(__DIR__. '/../src/DpTestEnv.php');
+DpTestEnv::init();
+
+unset($GLOBALS['DP_TESTING_USEDB']);
+$db = DpTestEnv::getContainer()->getDb();
+$db->exec("CREATE DATABASE IF NOT EXISTS " . DP_DATABASE_NAME);
+
+require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
+require_once(DP_ROOT . '/testing/data/DpDbSets/FreshDb.php');
+$set = new \DpDbSets\FreshDb(\DpTestEnv::getContainer());
+
+$cache_path = DP_ROOT.'/testing/data/dbset-cache';
+if (!is_dir($cache_path)) {
+	mkdir($cache_path, 0777, true);
+	chmod($cache_path, 0777);
+}
+$set->enableCache(
+	$cache_path,
+	'mysql',
+	'mysqldump'
+);
+$set->install(true);
+echo " Done\n";

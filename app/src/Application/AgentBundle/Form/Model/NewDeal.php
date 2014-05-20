@@ -37,10 +37,9 @@ namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Deal;
-use Application\DeskPRO\Entity\DealNote;
 use Application\DeskPRO\Entity\DealAttachment;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 
 
 class NewDeal

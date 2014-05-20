@@ -12,25 +12,16 @@ define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
 require DP_ROOT . '/bin/build/inc.php';
+require_once DP_ROOT . '/sys/load_config.php';
 require DP_ROOT.'/sys/system.php';
 
 $dirs = array(
 	DP_ROOT.'/src',
-	DP_ROOT.'/vendor/doctrine/lib',
-	DP_ROOT.'/vendor/doctrine-common/lib',
-	DP_ROOT.'/vendor/doctrine-dbal/lib',
-	DP_ROOT.'/vendor/doctrine-migrations/lib',
-	DP_ROOT.'/vendor/metadata/src',
-	DP_ROOT.'/vendor/monolog/src',
-	DP_ROOT.'/vendor/swiftmailer/lib/classes',
-	DP_ROOT.'/vendor/symfony/src',
-	DP_ROOT.'/vendor/twig/lib',
-	DP_ROOT.'/vendor/zend/library',
+	DP_ROOT.'/vendor-src/metadata/src',
 );
 
 $no_ns = array(
-	DP_ROOT.'/vendor/twig/lib',
-	DP_ROOT.'/vendor/swiftmailer/lib/classes',
+	DP_ROOT.'/vendor-src/swiftmailer/lib/classes',
 );
 
 $map = array("<?php return array(");
@@ -71,5 +62,5 @@ echo "\n";
 $map[] = ");";
 $map = implode("\n", $map);
 
-file_put_contents(DP_ROOT.'/sys/cache/classmap.php', $map);
+file_put_contents(dp_get_cache_dir().'/classmap.php', $map);
 unset($map);

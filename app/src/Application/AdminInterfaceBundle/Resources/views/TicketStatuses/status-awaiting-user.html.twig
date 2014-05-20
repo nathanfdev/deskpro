@@ -1,0 +1,15 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<article>
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<p>The Awaiting User status means the ticket is waiting for the user to reply.</p>
+					<p>
+						You currently have <strong>{{ ng_var('getCount()') }}</strong> tickets awaiting user.
+					</p>
+				</div>
+			</div>
+		</article>
+	</section>
+{% endblock %}

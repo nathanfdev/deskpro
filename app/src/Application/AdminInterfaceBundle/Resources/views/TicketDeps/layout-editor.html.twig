@@ -1,0 +1,195 @@
+<div class="dp-layout-editor">
+	<nav>
+		<ul>
+			<li ng-class="{'active': form_tab == 'user'}" ng-click="form_tab = 'user'">User Form</li>
+			<li ng-class="{'active': form_tab == 'agent'}" ng-click="form_tab = 'agent'">Agent Form</li>
+		</ul>
+	</nav>
+	<section>
+		<article class="user-form" ng-show="form_tab == 'user'">
+			<div class="form-elements">
+				<div class="group">
+					<header>
+						<h3>Ticket Fields &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
+					</header>
+					<article>
+						<ul>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="subject" data-is-required="1"><span>Subject</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="message" data-is-required="1"><span>Message</span></li>
+
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department"><span>Department</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="product"><span>Product</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="category"><span>Category</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="workflow"><span>Workflow</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="priority"><span>Priority</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="cc"><span>CC</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="captcha"><span>CAPTCHA</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="attach"><span>Attachments</span></li>
+							{% for field in app.getTicketFieldManager().getDisplayArray() %}
+								<li class="dp-layout-editor-layout-field layout-field" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+							{% endfor %}
+						</ul>
+					</article>
+				</div>
+				<div class="group">
+					<header>
+						<h3>User Fields &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
+					</header>
+					<article>
+						<ul>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_email" data-is-required="1"><span>Email</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name"><span>Name</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
+							{% for field in app.getPersonFieldManager().getDisplayArray() %}
+								<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+							{% endfor %}
+						</ul>
+					</article>
+				</div>
+			</div>
+			<div class="form-worksheet">
+				<ul></ul>
+			</div>
+		</article>
+		<article class="agent-form" ng-show="form_tab == 'agent'">
+			<div class="form-elements">
+				<div class="group">
+					<header>
+						<h3>Ticket Fields &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
+					</header>
+					<article>
+						<ul>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="subject" data-is-required="1"><span>Subject</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="message" data-is-required="1"><span>Message</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department"><span>Department</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="product"><span>Product</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="category"><span>Category</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="workflow"><span>Workflow</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="priority"><span>Priority</span></li>
+							{% for field in app.getTicketFieldManager().getDisplayArray() %}
+								<li class="dp-layout-editor-layout-field layout-field" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+							{% endfor %}
+						</ul>
+					</article>
+				</div>
+				<div class="group">
+					<header>
+						<h3>User Fields &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
+					</header>
+					<article>
+						<ul>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_email" data-is-required="1"><span>Email</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name"><span>Name</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
+							{% for field in app.getPersonFieldManager().getDisplayArray() %}
+								<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+							{% endfor %}
+						</ul>
+					</article>
+				</div>
+			</div>
+			<div class="form-worksheet">
+				<ul></ul>
+			</div>
+		</article>
+		<div style="clear:both;height:10px;overflow:hidden;">&nbsp;</div>
+	</section>
+	<script type="text/ng-template" id="ticketdeps_layouteditor_user_options">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Options</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						<button dp-toggle-switch ng-model="options.on_newticket"></button> Show this field during ticket creation
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="options.on_viewticket"></button> Let the user view this field after the ticket is created
+						<div style="margin-left: 49px; margin-top: -10px;" ng-show="options.on_viewticket">
+							<label style="font-weight: normal;">
+								<input type="checkbox" ng-model="options.on_viewticket_mode" ng-true-value="value" /> Only show when there is a value
+							</label>
+						</div>
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="options.on_editticket"></button> Let the user edit this field after the ticket is created
+					</p>
+					<p style="margin-top: 11px; padding-top: 9px; border-top: 1px solid #ccc;">
+						<button dp-toggle-switch ng-model="with_criteria"></button>
+						Only show this field based on custom criteria
+					</p>
+					<div ng-show="with_criteria" style="margin-left: 49px;">
+						<div style="margin-bottom: 5px;">
+							Show when
+							<select ng-model="options.criteria.mode" ui-select2 style="width: 80px;">
+								<option value="all">all</option>
+								<option value="any">any</option>
+							</select>
+							of the following criteria match:
+						</div>
+
+						<dp-option-builder types-def="criteriaTypesDef" save-target="options.criteria.terms" options="{tag_first: '', tag_after: ''}" option-types="criteriaOptions">
+							<add-btn-label>Criteria</add-btn-label>
+						</dp-option-builder>
+						<br/>
+					</div>
+
+					<div class="modal-footer">
+						<button class="btn btn-success" ng-click="done()">Done</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/ng-template" id="ticketdeps_layouteditor_agent_options">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Options</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						<button dp-toggle-switch ng-model="options.on_newticket"></button> Show this field during ticket creation
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="options.on_viewticket"></button> Show the field to agents when viewing the ticket
+					<div style="margin-left: 49px; margin-top: -10px;" ng-show="options.on_viewticket">
+						<label style="font-weight: normal;">
+							<input type="checkbox" ng-model="options.on_viewticket_mode" ng-true-value="value" /> Only show when there is a value
+						</label>
+					</div>
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="options.on_editticket"></button> Allow agents to edit the field
+					</p>
+					<p style="margin-top: 11px; padding-top: 9px; border-top: 1px solid #ccc;">
+						<button dp-toggle-switch ng-model="with_criteria"></button>
+						Only show this field based on custom criteria
+					</p>
+					<div ng-show="with_criteria" style="margin-left: 49px;">
+						<div style="margin-bottom: 5px;">
+							Show when
+							<select ng-model="options.criteria.mode" ui-select2 style="width: 80px;">
+								<option value="all">all</option>
+								<option value="any">any</option>
+							</select>
+							of the following criteria match:
+						</div>
+
+						<dp-option-builder types-def="criteriaTypesDef" save-target="options.criteria.terms" options="{tag_first: '', tag_after: ''}" option-types="criteriaOptions">
+							<add-btn-label>Criteria</add-btn-label>
+						</dp-option-builder>
+						<br/>
+					</div>
+
+					<div class="modal-footer">
+						<button class="btn btn-success" ng-click="done()">Done</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+</div>

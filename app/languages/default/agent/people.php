@@ -41,7 +41,7 @@
 	'agent.people.manager'                                  => 'Manager',
 	'agent.people.member_of_teams'                          => 'They are a member of the following teams:',
 	'agent.people.merge_people'                             => 'Merge People',
-	'agent.people.merge_people_info'                        => 'This tool allows you to merge two users into one user. Tickets, chats, notes and a number of other objects from the deleted user will be added to the user that you are keeping. The other user will be permantely deleted.',
+	'agent.people.merge_people_info'                        => 'This tool allows you to merge two users into one user. Tickets, chats, notes and a number of other objects from the deleted user will be added to the user that you are keeping. The other user will be permanently deleted.',
 	'agent.people.merge_submit_btn'                         => 'Merge these two profiles',
 	'agent.people.new_registration'                         => 'New Registration',
 	'agent.people.new_registration_name'                    => 'New Registration: {{name}}',
@@ -79,4 +79,5 @@
 	'agent.people.warn_email_address'                       => 'The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information.',
 	'agent.people.website'                                  => 'Website',
 	'agent.people.website_url_placeholder'                  => 'Website URL',
+        'agent.people.upload_vcard'                             => 'Upload vCard'
 );

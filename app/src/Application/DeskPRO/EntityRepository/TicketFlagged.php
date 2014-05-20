@@ -36,10 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Application\DeskPRO\Searcher\TicketSearch;
-use \Doctrine\ORM\EntityRepository;
-
 use Orb\Util\Arrays;
 
 class TicketFlagged extends AbstractEntityRepository

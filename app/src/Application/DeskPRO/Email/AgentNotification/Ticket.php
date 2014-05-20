@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Email\AgentNotification;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 /**
  * Used to send email notifications
  */

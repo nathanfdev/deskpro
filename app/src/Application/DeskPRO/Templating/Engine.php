@@ -33,9 +33,9 @@
 
 namespace Application\DeskPRO\Templating;
 
-use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as BaseEngine;
-use Application\DeskPRO\ResourceScanner\TemplateFiles;
 use Application\DeskPRO\App;
+use Application\DeskPRO\ResourceScanner\TemplateFiles;
+use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as BaseEngine;
 
 class Engine extends BaseEngine
 {

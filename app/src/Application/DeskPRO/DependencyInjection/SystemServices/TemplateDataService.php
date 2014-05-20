@@ -50,37 +50,6 @@ class TemplateDataService extends BaseRepositoryService
 		return $o;
 	}
 
-	/**
-	 * Get an array of custom email names by their type.
-	 *
-	 * @return array
-	 */
-	public function getCustomEmails()
-	{
-		if ($this->custom_emails !== null) {
-			return $this->custom_emails;
-		}
-
-		$this->custom_emails = $this->db->fetchAllGrouped("
-			SELECT name, variant_of
-			FROM templates
-			WHERE variant_of IS NOT NULL
-		", array(), 'variant_of', null, 'name');
-
-		return $this->custom_emails;
-	}
-
-
-	/**
-	 * @param string $type
-	 * @return string
-	 */
-	public function getCustomEmailsOfType($type)
-	{
-		$emails = $this->getCustomEmails();
-		return isset($emails[$type]) ? $emails[$type] : null;
-	}
-
 
 	/**
 	 * Check if a given template is an existing custom email

@@ -1,0 +1,241 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace Application\DeskPRO\CsvUpload;
+
+use Application\DeskPRO\App;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+class CsvUpload
+{
+	/**
+	 * @var \Application\DeskPRO\ORM\EntityManager
+	 */
+
+	protected $em;
+
+	/**
+	 * @param EntityManager $em
+	 */
+
+	public function __construct(EntityManager $em)
+	{
+		$this->em = $em;
+	}
+
+	/**
+	 * @param UploadedFile $file
+	 *
+	 * @return array
+	 */
+
+	public function upload(UploadedFile $file)
+	{
+		if (!$file instanceof UploadedFile || !$file->getSize()) {
+
+			return array('error' => 'no_file');
+		}
+
+		if (!is_uploaded_file($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename())) {
+
+			return array('error' => 'no_move');
+		}
+
+		$allowedTypes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv');
+
+		if (!in_array($file->getMimeType(), $allowedTypes)) {
+
+			return array('error' => 'not_csv');
+		}
+
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+			$file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(),
+			$file->getClientOriginalName(),
+			'text/csv'
+		);
+
+		$csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+		copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
+
+		return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName());
+	}
+
+	/**
+	 * @param array $field_maps
+	 * @param string $filename
+	 * @param string $user_filename
+	 * @param boolean $skip_first
+	 *
+	 * @return array
+	 */
+
+	public function startImportTask($field_maps, $filename, $user_filename, $skip_first)
+	{
+		$has_email = false;
+
+		foreach ($field_maps AS $map_field) {
+			if (!empty($map_field['map']) && $map_field['map'] == 'primary_email') {
+				$has_email = true;
+				break;
+			}
+		}
+
+		if (!$has_email) {
+			return array('error' => 'no_email');
+		}
+
+		$blob = App::getOrm()->find('DeskPRO:Blob', $filename);
+
+		if (!$blob) {
+			return array('error' => 'no_move');
+		}
+
+		$task_data = array(
+			'blob_id'       => $blob->getId(),
+			'field_maps'    => $field_maps,
+			'skip_first'    => $skip_first,
+			'welcome_email' => false,
+			'user_filename' => $user_filename
+		);
+
+		$task = $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
+			'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
+			$task_data,
+			'data_import'
+		);
+
+		return array('success' => 'task_started');
+	}
+
+	/**
+	 * @return array
+	 */
+
+	public function returnStatusOfImport()
+	{
+		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import');
+
+		if (!count($tasks)) {
+
+			return array(
+				'status'  => 'completed',
+				'message' => 'CSV Import done',
+			);
+
+		} else {
+
+			$task   = reset($tasks);
+			$runner = $task->getRunner();
+
+			return array(
+				'status'  => 'progress',
+				'message' => $runner->getTitle(),
+			);
+		}
+	}
+
+	/**
+	 * @param string $filename
+	 * @param string $user_filename
+	 *
+	 * @return array
+	 */
+
+	protected function _returnUploadFileResponse($filename, $user_filename)
+	{
+		$csv_path = dp_get_tmp_dir() . '/blob-' . $filename . '.csv';
+		$blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
+
+		if (!$blob) {
+
+			return array('error' => 'no_move');
+		}
+
+		if (!is_file($csv_path)) {
+
+			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
+		}
+
+		$fp           = fopen($csv_path, 'r');
+		$columns      = fgetcsv($fp);
+		$column_count = count($columns);
+
+		$examples      = array();
+		$example_total = 0;
+
+		for ($i = 0; $i < 100; $i++) {
+
+			$row = fgetcsv($fp);
+
+			if (!$row) {
+				// eof or can't read properly
+				break;
+			}
+
+			if (isset($row[0]) && $row[0] === null) {
+				// empty row
+				continue;
+			}
+
+			foreach ($row AS $id => $value) {
+
+				if ($value !== '' && !isset($examples[$id])) {
+
+					$examples[$id] = $value;
+					$example_total++;
+
+					if ($example_total == $column_count) {
+						// have example for all columns
+						break 2;
+					}
+				}
+			}
+		}
+
+		fclose($fp);
+
+		$custom_fields      = App::getApi('custom_fields.people')->getEnabledFields();
+		$show_welcome_email = !defined('DPC_IS_CLOUD');
+
+		return array(
+			'filename'           => $filename,
+			'user_filename'      => $user_filename,
+			'columns'            => $columns,
+			'examples'           => $examples,
+			'custom_fields'      => $custom_fields,
+			'show_welcome_email' => $show_welcome_email
+		);
+
+	}
+}

@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\Validator;
 
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
-
+use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Validator\AbstractValidator;
 
 abstract class AbstractPersonContextValidator extends AbstractValidator implements PersonContextInterface

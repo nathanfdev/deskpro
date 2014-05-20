@@ -34,17 +34,24 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\App;
 
 /**
  * Email addresses attached to a person. This is a separate entity because emails are
  * roughly tied to identity (ie local login uses email as identity), and are integral
  * in many cases (notifications etc).
+ *
+ * @property int $id
+ * @property Person $person
+ * @property string $email
+ * @property string $email_domain
+ * @property bool $is_own_validated
+ * @property bool $is_validated
+ * @property string $comment
+ * @property \DateTime $date_created
  */
 class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -78,6 +85,18 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * @var bool
 	 */
 	protected $is_validated = true;
+
+	/**
+	 * True if this email has been manually validated. $is_validated above
+	 * is true just when the email is valid and ready to use. e.g, if email validation
+	 * was disabled, then the email would have been created is_validated=true.
+	 *
+	 * So you can check this value if you need to know if the email was ever validated
+	 * by the user or not.
+	 *
+	 * @var bool
+	 */
+	protected $is_own_validated = false;
 
 	/**
 	 * A comment or description of the email address. For example, "work" or "home."
@@ -246,7 +265,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Email address should be validated by the time we get here,
 		// this is a failsafe check
-		if (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->email)) {
+		if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->email)) {
 			throw new \RuntimeException("`{$this->email}`` is an a gateway account address");
 		}
 	}
@@ -277,6 +296,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_domain', ));
+		$metadata->mapField(array( 'fieldName' => 'is_own_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_own_validated', ));
 		$metadata->mapField(array( 'fieldName' => 'is_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_validated', ));
 		$metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

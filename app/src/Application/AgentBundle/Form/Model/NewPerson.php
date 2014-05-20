@@ -35,9 +35,8 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 
 class NewPerson
 {
@@ -71,7 +70,7 @@ class NewPerson
 
 	public function setCustomFieldForm(array $form)
 	{
-		$this->custom_fields = isset($form['newperson']['custom_fields']) ? $form['newperson']['custom_fields'] : array();
+		$this->custom_fields = isset($form['newperson_custom_fields']) ? $form['newperson_custom_fields'] : array();
 	}
 
 	public function save()

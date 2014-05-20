@@ -54,7 +54,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			FROM {$this->_entityName} f INDEX BY f.id
 			ORDER BY f.display_order ASC, f.title
 		");
-		$q->useResultCache(true, null, static::getCacheId('getfields'));
 
 		return $q->execute();
 	}
@@ -67,7 +66,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			WHERE f.is_enabled = true
 			ORDER BY f.display_order ASC, f.title
 		");
-		$q->useResultCache(true, null, static::getCacheId('getenabledfields'));
 
 		return $q->execute();
 	}
@@ -80,7 +78,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			WHERE f.is_enabled = true AND f.is_agent_field = false
 			ORDER BY f.display_order ASC, f.title
 		");
-		$q->useResultCache(true, null, static::getCacheId('getenabledfields'));
 
 		return $q->execute();
 	}
@@ -97,8 +94,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			ORDER BY f.display_order ASC, f.title
 		");
 
-		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
-
 		return $q->execute();
 	}
 
@@ -111,8 +106,25 @@ class CustomDefAbstract extends AbstractEntityRepository
 			ORDER BY f.display_order ASC, f.title
 		");
 
-		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
-
 		return $q->execute();
+	}
+
+	/**
+	 * @param array $display_orders
+	 */
+	public function updateDisplayOrders(array $display_orders)
+	{
+		$display_orders = array_values($display_orders);
+
+		$db = $this->_em->getConnection();
+		$db->beginTransaction();
+
+		$x = 0;
+		foreach ($display_orders as $tr_id) {
+			$x += 10;
+			$db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
+		}
+
+		$db->commit();
 	}
 }

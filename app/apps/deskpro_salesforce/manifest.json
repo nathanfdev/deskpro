@@ -1,0 +1,55 @@
+{
+	"package_name": "deskpro_salesforce",
+	"is_native": true,
+	"title": "Salesforce",
+	"description": "Adds widgets to tickets and user profiles that pulls data from Salesforce.",
+	"tags": ["profiles"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "api_user",
+			"type": "text",
+			"label": "Salesforce Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "api_password",
+			"type": "password",
+			"label": "Salesforce Password",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "api_security_token",
+			"type": "text",
+			"label": "API Security Token",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "widget_ticket",
+			"type": "checkbox",
+			"label": "Enable Ticket Widget",
+			"checkbox_label": "Enable",
+			"description": "Show the widget on tickets",
+			"native_only": false
+		},
+		{
+			"name": "widget_profile",
+			"type": "checkbox",
+			"checkbox_label": "Enable",
+			"label": "Enable Profile Widget",
+			"description": "Show the widget on user profiles",
+			"native_only": false
+		}
+	]
+}

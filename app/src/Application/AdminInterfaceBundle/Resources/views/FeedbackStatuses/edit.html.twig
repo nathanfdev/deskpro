@@ -1,0 +1,64 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="FeedbackStatusesEdit.saveFeedbackStatus()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.feedback_statuses.title') }} *</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input
+											type="text"
+											class="form-control"
+											name="title"
+											ng-model="FeedbackStatusesEdit.feedback_status.title"
+											dp-server-validation="title.not_blank,title.length"
+											style="width: 50%;" autofocus required>
+								<span class="help-block">
+									{{ phrase('adm.feedback_statuses.title_explain') }}
+								</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required || form_props.title.$error.not_blank">
+								{{ phrase('adm.feedback_statuses.title_error') }}
+							</li>
+							<li ng-show="form_props.title.$error.length">
+								Title can't be less than 2 symbols
+							</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="FeedbackStatusesEdit.feedback_status.id">
+						<button class="btn btn-danger"
+								ng-click="$event.preventDefault(); $parent.FeedbackStatusesList.startDelete(FeedbackStatusesEdit.feedback_status);">
+							Delete
+						</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_feedback_status">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving_feedback_status">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_feedback_status">{{ ng_var('FeedbackStatusesEdit.feedback_status.title') }} was saved successfully</div>
+{% endblock %}

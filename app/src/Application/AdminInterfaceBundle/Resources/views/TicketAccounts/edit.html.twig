@@ -1,0 +1,86 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="TicketAccountsEdit.saveAccount()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+
+						{% include 'AdminInterfaceBundle:TicketAccounts:edit-props.html.twig' %}
+
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Type</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" style="padding-top: 3px;">
+									<select
+										ui-select2
+										ng-model="form.account_type"
+										style="min-width: 240px"
+									>
+										<option value="tickets">Ticket Email Account</option>
+										<option value="outgoing">Outgoing Email Account</option>
+									</select>
+									<div style="padding-top: 5px;">
+										<div ng-show="form.account_type == 'tickets'">
+											<p>
+												Ticket accounts are email accounts that DeskPRO will download emails from and process into tickets
+												and replies.
+											</p>
+										</div>
+										<div ng-show="form.account_type == 'outgoing'">
+											<p>
+												Outgoing accounts only configure outgoing email. Since no incoming email inbox details are defined, no replies that come
+												back to this email address are read.
+											</p>
+											<p>
+												This type of email account is not often used unless you plan to configure a more advanced
+												email setup where emails are forwarded into some other ticket account.
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{% include 'AdminInterfaceBundle:TicketAccounts:edit-in.html.twig' %}
+						{% include 'AdminInterfaceBundle:TicketAccounts:edit-out.html.twig' %}
+						{% include 'AdminInterfaceBundle:TicketAccounts:edit-actions.html.twig' %}
+
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="TicketAccountsEdit.account.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketAccountsList.startDelete(TicketAccountsEdit.account.id);">Delete</button>
+					</div>
+
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_account">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							<button class="btn btn-default" ng-click="TicketAccountsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+						</div>
+						<div dp-show-spinning="saving_account">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+
+	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-account-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-outgoing-modal.html.twig') }}
+
+	<div dp-register-message="saved_account">{{ ng_var('form.email_address') }} was saved successfully</div>
+{% endblock %}

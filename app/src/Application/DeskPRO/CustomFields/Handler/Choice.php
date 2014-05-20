@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 /**
@@ -172,7 +172,7 @@ class Choice extends HandlerAbstract
 			$field_opts['expanded'] = true;
 		}
 
-		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), null, $field_opts);
+		$field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);
 		if ($setData) {
 			$field_choice->setData($setData);
 		}

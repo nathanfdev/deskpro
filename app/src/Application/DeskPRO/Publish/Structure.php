@@ -34,26 +34,20 @@
 
 namespace Application\DeskPRO\Publish;
 
-use	Doctrine\ORM\EntityManager;
-use Orb\Doctrine\Common\Cache\PreloadedMysqlCache;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\Searcher\ArticleSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
-use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\NewsSearch;
-
-use Application\DeskPRO\People\PersonContextInterface;
-
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\DownloadSearch;
+use Application\DeskPRO\Searcher\FeedbackSearch;
+use Application\DeskPRO\Searcher\NewsSearch;
+use Doctrine\ORM\EntityManager;
+use Orb\Doctrine\Common\Cache\PreloadedMysqlCache;
+use Orb\Util\Arrays;
 
 class Structure implements PersonContextInterface
 {

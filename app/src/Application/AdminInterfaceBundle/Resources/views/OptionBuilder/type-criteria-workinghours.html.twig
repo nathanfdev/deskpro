@@ -1,0 +1,26 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td width="100%">
+					<select
+							ui-select2
+							ng-model="model.op"
+							style="min-width: 150px;"
+							>
+						<option ng-if="operators.indexOf('is') !== -1" value="is">Is within working hours</option>
+						<option ng-if="operators.indexOf('not') !== -1" value="not">Is outside of working hours</option>
+					</select>
+					<div style="margin: 10px 0;">
+						<label style="width: auto;"><input type="radio" name="working_hours_x" ng-model="model.set_name" /> Default working hours</label>
+						&nbsp;&nbsp;
+						<label style="width: auto;"><input type="radio" name="working_hours_x" ng-model="model.set_name" value="custom" /> Set custom working hours</label>
+					</div>
+					<div ng-show="model.set_name == 'custom'">
+						<dp-working-hours ng-model="model.working_hours" />
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

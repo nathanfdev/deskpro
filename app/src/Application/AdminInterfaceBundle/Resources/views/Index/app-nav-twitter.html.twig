@@ -1,0 +1,21 @@
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="twitter.setup">
+				<a href="{{ ng_href('twitter.setup') }}">
+					<i class="fa fa-cog"></i>
+					<span>Setup</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
+			<li dp-state-mark="twitter.accounts">
+				<a href="{{ ng_href('twitter.accounts') }}">
+					<i class="fa fa-twitter"></i>
+					<span>Accounts</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
+		</ul>
+	</nav>
+{% endblock %}

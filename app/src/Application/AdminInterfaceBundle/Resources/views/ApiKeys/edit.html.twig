@@ -1,0 +1,117 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Description</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.note">
+									<input type="text" class="form-control" name="note" ng-model="EditCtrl.form.note"
+										   style="width: 50%;" required autofocus/>
+									<span class="help-block">
+										Used as note for this API key.
+										You could use this field as a reminder of what this API key will be used for.
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group" ng-if="EditCtrl.form.id">
+							<div class="col-lg-3">
+								<h3>API Key Code</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="pull-right">
+									<span class="btn btn-success" ng-click="EditCtrl.regenerateApiKey()">
+										Regenerate API Key
+									</span>
+								</div>
+								<div class="inner-group">
+									{{ ng_var('EditCtrl.form.keyString') }}
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>API Key Type</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top: 6px;">
+										<label style="font-weight: normal; display: block;">
+											<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="true">
+											Super User
+										</label>
+										<label style="font-weight: normal; display: block;">
+											<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="false">
+											Specific Agent
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div ng-if="EditCtrl.form.isSuperUser" class="alert alert-info">
+							A super user key is not associated with a particular agent. Every request must specify the
+							agent performing the action.
+						</div>
+						<div ng-if="!EditCtrl.form.isSuperUser" class="form-group">
+							<div class="alert alert-info">
+								Perform all API requests as a specific agent.
+							</div>
+							<div class="col-lg-3">
+								<h3>Select specific agent</h3>
+							</div>
+							<div class="col-lg-9">
+								<select
+										ui-select2
+										ng-model="EditCtrl.form.person.id"
+										style="min-width: 240px"
+										class="no-search"
+										>
+									<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.form.agents">
+										{{ ng_var('agent.display_name') }}
+									</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.note.$error.required">Please set title for this API Key</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.api_key.id">
+						<button class="btn btn-danger"
+								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.api_key.id);">
+							Delete
+						</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+		</section>
+	</form>
+
+{% endblock %}

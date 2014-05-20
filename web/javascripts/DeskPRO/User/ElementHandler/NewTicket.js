@@ -115,11 +115,13 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		if (!window.DESKPRO_TICKET_DISPLAY) {
 			return;
 		}
-		if (!activeDepId || !window.DESKPRO_TICKET_DISPLAY[activeDepId]) {
+		if (!activeDepId) {
 			activeDepId = 0;
 		}
 
-		var depItems = window.DESKPRO_TICKET_DISPLAY[activeDepId];
+		var layout = window.DESKPRO_TICKET_DISPLAY.getLayout(activeDepId);
+		var depItems = layout.getFields();
+
 		this.depItems = depItems;
 		this.depItemsWithChecked = false;
 
@@ -128,14 +130,22 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		$('.ticket-display-field').hide();
 
 		Array.each(depItems, function(item) {
-			var itemId = this.getItemId(item);
-			var itemEl = $('.' + itemId).closest('.ticket-display-field');
+			var itemEl = $('.' + item.id);
+			if (!itemEl.hasClass('ticket-display-field')) {
+				itemEl = itemEl.closest('.ticket-display-field');
+			}
+
+			if (!itemEl[0]) {
+				DP.console.log('Could not find item %s %o', item.id, item);
+				return;
+			};
 
 			// Detach and re-attach to correct ordering
 			itemEl.detach().appendTo('#fields_container');
 
 			// Turn on criteria-less fields now
-			if (!item.check) {
+			if (!item.checkFn) {
+				itemEl.removeClass('with-criteria');
 				itemEl.show();
 			} else {
 				itemEl.addClass('with-criteria');
@@ -162,7 +172,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			var item = self.findItemForEl(el);
 			if (!item) return;
 
-			if (item.check(ticketReader)) {
+			if (item.checkFn(ticketReader)) {
 				if (!el.is(':visible')) {
 					changed = true;
 				}
@@ -184,30 +194,19 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 	findItemForEl: function(el) {
 		var fieldId = el.data('field-id');
-		var theitem = null;
-		Array.each(this.depItems, function(item) {
-			if (item.id == fieldId) {
-				theitem = item;
-				return false;
-			}
-		});
 
-		return theitem;
+		for (var i = 0; i < this.depItems.length; ++i) {
+			if (this.depItems[i].id == fieldId) {
+				return this.depItems[i];
+			}
+		}
+
+		return null;
 	},
 
 	clearAll: function() {
 		$('.ticket-display-field').hide().removeClass('field-enabled with-criteria');
 	},
-
-	getItemId: function(item) {
-		var itemId = item.field_type;
-		if (item.field_id) {
-			itemId += '_' + item.field_id;
-		}
-
-		return itemId;
-	},
-
 
 	//#########################################################################
 	// In-page login form

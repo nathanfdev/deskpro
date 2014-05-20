@@ -49,7 +49,7 @@ abstract class AbstractWriter
 	protected $_filter_chain = null;
 
 
-	
+
 	/**
 	 * Get the filter chain instance
 	 *
@@ -64,11 +64,11 @@ abstract class AbstractWriter
 	}
 
 
-	
+
 	/**
 	 * Add a filter to be applied to every item.
-	 * 
-	 * @param \Zend\Filter\Filter $filter
+	 *
+	 * @param \Zend\Filter\FilterInterface $filter
 	 * @return AbstractWriter
 	 */
 	public function addFilter(\Orb\Filter\FilterInterface $filter)
@@ -77,7 +77,7 @@ abstract class AbstractWriter
 		return $this;
 	}
 
-	
+
 
 	/**
 	 * Run filters on the log items
@@ -96,7 +96,7 @@ abstract class AbstractWriter
 	}
 
 
-	
+
 	/**
 	 * Write a log message
 	 *
@@ -117,7 +117,7 @@ abstract class AbstractWriter
 	}
 
 
-	
+
     /**
      * Write a log message
      *
@@ -135,6 +135,6 @@ abstract class AbstractWriter
      */
     public function shutdown()
 	{
-		
+
 	}
 }

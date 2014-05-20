@@ -24,14 +24,8 @@ if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
 }
 
 $kernel_classes = array(
-	'DeskPRO\\Kernel\\AdminKernel',
-	'DeskPRO\\Kernel\\AgentKernel',
-	'DeskPRO\\Kernel\\ApiKernel',
-	'DeskPRO\\Kernel\\CliKernel',
-	'DeskPRO\\Kernel\\ReportKernel',
-	'DeskPRO\\Kernel\\UserKernel',
+	'DeskPRO\\Kernel\\DpKernel',
 	'DeskPRO\\Kernel\\InstallKernel',
-	'DeskPRO\\Kernel\\BillingKernel',
 );
 
 if ($proc_kernel === null) {
@@ -65,6 +59,8 @@ if ($proc_kernel === null) {
 } else {
 
 	@ini_set('memory_limit', '524288000');
+
+	require_once DP_ROOT . '/sys/load_config.php';
 
 	$class = $kernel_classes[$proc_kernel];
 	$kernel = new $class('prod', false);

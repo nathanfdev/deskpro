@@ -35,12 +35,95 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Searcher\OrganizationSearch;
 use Orb\Util\Numbers;
 
+/**
+* @SWG\Resource(
+* 	resourcePath="/organization",
+* 	description="Operations about Organization",
+* 	basePath="/api"
+* )
+*/
 class OrganizationController extends AbstractController
 {
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Search for organizations matching criteria",
+	 * 		notes="Returns list of organizations that matched.",
+	 *		type="array",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="address[]",
+	 *				description="Requires an organization's address to contain this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[#][]",
+	 *				description="Requires organization custom field to have the specified value in the listed field.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="im[]",
+	 *				description="Requires an organization to have an instant messenger contact that contains this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Requires organization to be have the specified label.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="name[]",
+	 *				description="Requires an organization to have a name that contains this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="phone[]",
+	 *				description="Requires organization to have a phone number that contains this value.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to accessing organization's preference or organizations.id:asc.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function searchAction()
 	{
 		$search_map = array(
@@ -104,6 +187,59 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Creates a new organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="name",
+	 *				description="Name of the organization.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="contact_data[#]",
+	 *				description="Components of a contact detail to add. See the Setting Contact Data organization for more information.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[#]",
+	 *				description="Value for the specified custom organization field.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="group_id[]",
+	 *				description="ID of a usergroup to add this organization to.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label[]",
+	 *				description="Label to apply to the ticket.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="summary",
+	 *				description="Summary of the organization's details.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		)
+	 * 	)
+	 * )
+	 */
 	public function newOrganizationAction()
 	{
 		if (!$this->person->hasPerm('agent_org.create')) {
@@ -202,6 +338,27 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a organization by organization ID.",
+	 * 		notes="Information about the organization by organization ID.",
+	 *		type="Organization",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -209,6 +366,46 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('organization' => $org->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates a organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be updated.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="name",
+	 *				description="Name of the organization.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="field[#]",
+	 *				description="Value for the specified custom organization field.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="summary",
+	 *				description="Summary of the organization's details.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -248,6 +445,25 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETEs a organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'delete');
@@ -258,7 +474,32 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
-
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/picture",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a link to an organization's picture.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="size",
+	 *				description="The maximum size (in pixels) that the picture should be. Defaults to 80",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationPictureAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -275,6 +516,39 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/picture",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Updates an organization's picture.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="file",
+	 *				description="An uploaded image. Required if no blob_id is provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="blob_id",
+	 *				description="ID of a blob record that holds the picture already. Required if no file is provided.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationPictureAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -311,6 +585,25 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/picture",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="DELETEs an organization's picture.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationPictureAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -322,6 +615,32 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/activity-stream",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets activity stream for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationActivityStreamAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -343,6 +662,46 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/members",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets members of an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to person.name:asc.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache",
+	 *				description="The number of seconds to cache the result for. Defaults to 3600. Use 0 to disable the cache",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationMembersAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -387,6 +746,46 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/tickets",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets tickets by an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="order",
+	 *				description="Order of the results. Defaults to person.name:asc.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationTicketsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -431,6 +830,39 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/chats",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets chats by a organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="The page number of the results to fetch.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="cache_id",
+	 *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationChatsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -479,6 +911,25 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/slas",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a list of automatically applied SLAs for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationSlasAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -488,6 +939,32 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/slas",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds an SLA to the automatically applied SLAs for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of SLA to add.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationSlasAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -508,6 +985,32 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/slas/{sla_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if an SLA exists for an organization",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of the SLA that needs to be checked.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationSlaAction($organization_id, $sla_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -529,6 +1032,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('exists' => $exists));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/slas/{sla_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes an SLA from an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="sla_id",
+	 *				description="ID of the SLA that needs to be removed.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationSlaAction($organization_id, $sla_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -545,6 +1074,25 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/notes",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets a list of Organization Notes for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationNotesAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -554,6 +1102,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('notes' => $this->getApiData($notes)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/notes",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds a new Organization Notes to an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="note",
+	 *				description="The Note content",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationNotesAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'note');
@@ -577,6 +1151,32 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/notes/{note_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets an Organization Note for an organization by Organization ID and Note ID.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="note_id",
+	 *				description="ID of the organization note that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationNoteAction($organization_id, $note_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -589,6 +1189,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('note' => $note->toApiData()));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/billing-charges",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets billing charges for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="page",
+	 *				description="Page number to retrieve.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationBillingChargesAction($organization_id)
 	{
 		$organization = $this->_getOrganizationOr404($organization_id);
@@ -613,6 +1239,25 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/email-domains",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets associated email domains for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationEmailDomainsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -636,6 +1281,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('domains' => $domains));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/email-domains",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds an email domain for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="domain",
+	 *				description="Domain name to associate. May not already be in use.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationEmailDomainsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -659,6 +1330,32 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/email-domains/{domain}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if a domain is associated with an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="domain",
+	 *				description="Domain that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationEmailDomainAction($organization_id, $domain)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -674,6 +1371,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('exists' => $exists));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/email-domains/{domain}/move-users",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Moves users to an organization (if they have no organization).",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="domain",
+	 *				description="Domain where the users need to be moved",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationEmailDomainMoveUsersAction($organization_id, $domain)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -687,6 +1410,32 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/email-domains/{domain}/move-taken-users",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Moves users to an organization (if they have another organization).",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="domain",
+	 *				description="Domain where the users need to be moved",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationEmailDomainMoveTakenUsersAction($organization_id, $domain)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -700,6 +1449,32 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/email-domains/{domain}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Deletes a domain association for an organization",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="domain",
+	 *				description="Domain that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationEmailDomainAction($organization_id, $domain)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -713,6 +1488,25 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/contact-details",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets contact details for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationContactDetailsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -720,6 +1514,46 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('details' => $this->getApiData($org->contact_data)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/contact-details",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Creates a contact detail for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="type",
+	 *				description="Type of contact detail to add.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="data",
+	 *				description="Contact detail-specific data.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="comment",
+	 *				description="Comment or label for the contact detail.",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationContactDetailsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -768,6 +1602,32 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/contact-details/{contact_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if contact ID exists for organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="contact_id",
+	 *				description="ID of the contact that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationContactDetailAction($organization_id, $contact_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -781,6 +1641,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('exists' => false));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/contact-details/{contact_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Deletes a contact for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="contact_id",
+	 *				description="ID of the contact that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationContactDetailAction($organization_id, $contact_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -797,6 +1683,25 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/groups",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the groups for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationGroupsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -804,6 +1709,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('groups' => $this->getApiData($org->usergroups)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/groups",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Adds an organization to a group.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="id",
+	 *				description="ID of the group to add this organization to.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationGroupsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -841,6 +1772,32 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/groups/{usergroup_id}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if an organization is a member of a group.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="usergroup_id",
+	 *				description="ID of the usergroup that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationGroupAction($organization_id, $usergroup_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -854,6 +1811,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('exists' => false));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/groups/{usergroup_id}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Removes an organization from a group.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="usergroup_id",
+	 *				description="ID of the usergroup that needs to be removed.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationGroupAction($organization_id, $usergroup_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -873,6 +1856,25 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets the labels for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationLabelsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -880,6 +1882,32 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('labels' => $this->getApiData($org->labels)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/labels",
+	 * 	@SWG\Operation(
+	 * 		method="POST",
+	 * 		summary="Add a label for an organization.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="Label to add",
+	 *				paramType="query",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function postOrganizationLabelsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -899,6 +1927,32 @@ class OrganizationController extends AbstractController
 		);
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Determines if an organization has a label.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="label that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function getOrganizationLabelAction($organization_id, $label)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
@@ -910,6 +1964,32 @@ class OrganizationController extends AbstractController
 		}
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/{organization_id}/labels/{label}",
+	 * 	@SWG\Operation(
+	 * 		method="DELETE",
+	 * 		summary="Determines if an organization has a label.",
+	 *		@SWG\Parameters (
+	 *			@SWG\Parameter(
+	 *				name="organization_id",
+	 *				description="ID of the organization that needs to be searched.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="integer"
+	 *			),
+	 *			@SWG\Parameter(
+	 *				name="label",
+	 *				description="label that needs to be deleted.",
+	 *				paramType="path",
+	 *				required=true,
+	 *				type="string"
+	 *			)
+	 *		),
+	 *		@SWG\ResponseMessage(code=404, message="Organization not found")
+	 * 	)
+	 * )
+	 */
 	public function deleteOrganizationLabelAction($organization_id, $label)
 	{
 		$org = $this->_getOrganizationOr404($organization_id, 'edit');
@@ -921,6 +2001,15 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/fields",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available custom organization fields."
+	 * 	)
+	 * )
+	 */
 	public function getFieldsAction()
 	{
 		$field_manager = $this->container->getSystemService('org_fields_manager');
@@ -929,6 +2018,15 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
 	}
 
+	/**
+	 * @SWG\Api(
+	 * 	path="/organization/fields",
+	 * 	@SWG\Operation(
+	 * 		method="GET",
+	 * 		summary="Gets available usergroups."
+	 * 	)
+	 * )
+	 */
 	public function getGroupsAction()
 	{
 		$groups = $this->em->createQuery('

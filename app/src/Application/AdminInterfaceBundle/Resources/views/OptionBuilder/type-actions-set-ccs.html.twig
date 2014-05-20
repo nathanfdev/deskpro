@@ -1,0 +1,28 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" width="50"><label>Set CCs</label></td>
+				<td>
+					<table class="display-table spaced" width="100%">
+						<tr>
+							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">Add email addresses:</td>
+							<td>
+								<input type="text" ng-model="model.add_emails" class="form-control" />
+								<div style="margin-top: 3px;">
+									<label><input type="checkbox" ng-model="model.add_org_managers" /> Add all organization managers</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">Remove email addresses:</td>
+							<td>
+								<input type="text" ng-model="model.remove_emails" class="form-control" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

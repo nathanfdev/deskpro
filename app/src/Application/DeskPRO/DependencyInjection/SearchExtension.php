@@ -34,11 +34,11 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
 use Application\DeskPRO\App;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class SearchExtension extends Extension
 {
@@ -49,16 +49,13 @@ class SearchExtension extends Extension
 		$definition->setFactoryMethod('getSearchAdapter');
 		$container->setDefinition('deskpro.search_adapter', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Search\\EntityListener', array(new Reference('deskpro.search_adapter')));
-		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostUpdate'));
-		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostPersist'));
-		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostRemove'));
-		$container->setDefinition('deskpro.search_adapter_entity_listener', $definition);
-
 		// Doctrine listener to support search engine
 		$definition = new Definition('Application\\DeskPRO\\Search\\EntityWatcher\\EntityWatcher', array(new Reference('service_container')));
 		$definition->addTag('doctrine.event_subscriber');
 		$container->setDefinition('deskpro.search.entity_listener', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', array(new Reference('deskpro.core.settings')));
+		$container->setDefinition('deskpro.elastica.client_factory', $definition);
 	}
 
 	public function getXsdValidationBasePath()

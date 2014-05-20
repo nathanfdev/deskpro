@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Notifications;
 
-use Application\DeskPRO\Entity\Task;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Task;
 
 class TaskAssignNotification extends AbstractAgentNotification
 {

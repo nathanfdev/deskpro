@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketFilter;
-use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Filters
 {

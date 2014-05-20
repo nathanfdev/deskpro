@@ -52,7 +52,7 @@ echo "Checking " . count($check_files) . " files ...\n";
 $has_failed = array();
 $bad_size = array();
 foreach ($check_files as $filepath) {
-	if (strpos($filepath, '/src/vendor/') === false) {
+	if (strpos($filepath, '/src/vendor/') === false && strpos($filepath, '/src/vendor-src/') === false) {
 		$cmd = DP_PHP_PATH . " -l \"" . $filepath . "\"";
 
 		$out = null;

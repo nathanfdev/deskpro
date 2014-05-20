@@ -34,15 +34,16 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
+// This class_exists check is needed because when doing a schema check,
+// doctrine will try to load this source file. But the Language class
+// is compiled in to bootstrap.php so we'd end up with a dupe error
+if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
 
 /**
  * A language groups phrases and defines a locale code.
@@ -120,6 +121,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
 	 */
 	protected $has_admin = true;
 
+
 	/**
 	 * @return int
 	 */
@@ -128,12 +130,13 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
 		return $this->id;
 	}
 
+
 	public function _invalidateLanguageCache()
 	{
 		$orm = App::getOrm();
 
 		if (method_exists($orm, 'delayedUpdate')) {
-			$orm->delayedUpdate(function($em) {
+			$orm->delayedUpdate(function ($em) {
 				// defer this until after the flush to avoid a race condition and make sure it's updated after insert
 				$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
 				$cache->invalidateLanguageCache();
@@ -141,10 +144,11 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
 		}
 	}
 
+
 	/**
 	 * Return a unique ID that we can use to look up translations for this object
 	 *
-	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @param string    $property  If supplied, the property on the object we want to translate.
 	 * @param Translate $translate The translate object requesting
 	 * @return string
 	 */
@@ -153,10 +157,11 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
 		return 'user.lang.lang_title_' . $this->sys_name;
 	}
 
+
 	/**
 	 * Get the default value phrase for the object
 	 *
-	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @param string    $property  If supplied, the property on the object we want to translate.
 	 * @param Translate $translate The translate object requesting
 	 * @return string
 	 */
@@ -174,20 +179,22 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
-		$metadata->setPrimaryTable(array( 'name' => 'languages', ));
+		$metadata->setPrimaryTable(array('name' => 'languages',));
 		$metadata->addLifecycleCallback('_invalidateLanguageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name', ));
-		$metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lang_code', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath', ));
-		$metadata->mapField(array( 'fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale', ));
-		$metadata->mapField(array( 'fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image', ));
-		$metadata->mapField(array( 'fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl', ));
-		$metadata->mapField(array( 'fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user', ));
-		$metadata->mapField(array( 'fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent', ));
-		$metadata->mapField(array( 'fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin', ));
+		$metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true,));
+		$metadata->mapField(array('fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name',));
+		$metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lang_code',));
+		$metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title',));
+		$metadata->mapField(array('fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath',));
+		$metadata->mapField(array('fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale',));
+		$metadata->mapField(array('fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image',));
+		$metadata->mapField(array('fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl',));
+		$metadata->mapField(array('fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user',));
+		$metadata->mapField(array('fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent',));
+		$metadata->mapField(array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin',));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
+
+} // end class_exists

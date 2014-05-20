@@ -34,15 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Page;
 
-use Application\DeskPRO\Entity\PageDisplayAbstract;
-use Application\DeskPRO\Entity\PortalPageDisplay;
-use Application\DeskPRO\Entity\Person;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract;
-
-use Orb\Util\Strings;
-
 class PortalPageLoader
 {
 	protected $em;

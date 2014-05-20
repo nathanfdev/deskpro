@@ -35,10 +35,9 @@
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 use Application\DeskPRO\Entity\Person;
-
 use Application\DeskPRO\PageDisplay\Item\ItemAbstract;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\People\PersonContextInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class PortalItemAbstract extends ItemAbstract implements PersonContextInterface
 {

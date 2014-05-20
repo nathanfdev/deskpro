@@ -94,42 +94,6 @@
 	</div>
 	{% endif %}
 
-	{% if 'gateway_address' not in no_show_fields and term_options.gateway_addresses %}
-		<div class="builder-type" title="{{ phrase('agent.general.ticket_gateway_address') }}" data-rule-type="gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,address,gateway_address">
-			<div class="builder-op">
-				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.general.is') }}</option>
-					<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				</select>
-			</div>
-			<div class="builder-options">
-				<select name="gateway_address">
-					{% for id,addr in term_options.gateway_addresses %}
-						<option value="{{ id }}">{{ addr }}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if 'gateway_account' not in no_show_fields and term_options.gateway_accounts %}
-		<div class="builder-type" title="{{ phrase('agent.general.ticket_gateway_account') }}" data-rule-type="gateway_account" data-term-type="GenericMenuTerm" data-term-triggers="gateway,account,gateway_account">
-			<div class="builder-op">
-				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.general.is') }}</option>
-					<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				</select>
-			</div>
-			<div class="builder-options">
-				<select name="gateway_account">
-					{% for id,name in term_options.gateway_accounts %}
-					<option value="{{ id }}">{{ name }}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
 	{% if 'subject' not in no_show_fields %}
 	<div class="builder-type" title="{{ phrase('agent.general.subject') }}" data-rule-type="subject">
 		<div class="builder-op">

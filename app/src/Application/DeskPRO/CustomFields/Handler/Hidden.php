@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
-use Orb\Util\Strings;
+use Application\DeskPRO\Entity;
 
 /**
  * Hidden input field

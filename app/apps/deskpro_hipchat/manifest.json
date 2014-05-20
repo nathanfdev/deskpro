@@ -1,0 +1,32 @@
+{
+	"package_name": "deskpro_hipchat",
+	"is_native": true,
+	"title": "HipChat",
+	"description": "Allows you to add a ticket trigger that inserts a message into a HipChat room when matched.",
+	"tags": ["notifications", "ticket-triggers"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "api_token",
+			"type": "text",
+			"label": "API Token",
+			"description": "This is the API token for HipChat account. This can be created at https://www.hipchat.com/admin/api",
+			"native_only": true
+		},
+		{
+			"name": "notify",
+			"type": "checkbox",
+			"label": "Notify",
+			"checkbox_label": "Yes",
+			"description": "Notify room members of a new message"
+		}
+	]
+}

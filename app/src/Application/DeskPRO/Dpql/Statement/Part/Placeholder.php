@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Placeholder\AbstractPlaceholder;
+use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
  * Represents a placeholder reference.

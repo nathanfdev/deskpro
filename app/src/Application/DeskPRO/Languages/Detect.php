@@ -34,7 +34,7 @@
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
-use \Text_LanguageDetect;
+use Text_LanguageDetect;
 
 class Detect
 {

@@ -35,15 +35,12 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Searcher\TicketSearch;
-use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\OrganizationSearch;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-
-use Orb\Util\Dates;
-use Orb\Util\Numbers;
+use Application\DeskPRO\Searcher\PersonSearch;
+use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 class TicketTerms
@@ -87,7 +84,7 @@ class TicketTerms
 	protected $term_ids_map = array();
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+	 * @var null
 	 */
 	protected $tracker = null;
 
@@ -194,7 +191,6 @@ class TicketTerms
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @param TicketChangeTracker|null $tracker
 	 * @return bool
 	 */
 	public function doesTicketMatchAny(Entity\Ticket $ticket)
@@ -621,22 +617,6 @@ class TicketTerms
 				if (!$this->_testStringMatch($to, $op, $check)) {
 					return false;
 				}
-				break;
-
-			case 'email_account_bcc':
-
-				if (!$ticket->email_reader) {
-					return false;
-				}
-
-				$matcher_service = App::getSystemService('GatewayAddressMatcher');
-				$found_match = $matcher_service->getMatchingAddressFromReader($ticket->email_reader);
-
-				if (!$found_match) {
-					return true;
-				}
-				return false;
-
 				break;
 
 			case 'email_subject':
@@ -1095,17 +1075,15 @@ class TicketTerms
 				break;
 
 			case 'gateway_account':
-				$gid = $ticket->email_gateway ? $ticket->email_gateway->getId() : 0;
-				if (!$this->_testChoiceMatch($gid, $op, $choice)) {
-					return false;
-				}
+				$e = new \RuntimeException("not supported");
+				KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
+				return false;
 				break;
 
 			case 'gateway_address':
-				$gid = $ticket->email_gateway_address ? $ticket->email_gateway_address->getId() : 0;
-				if (!$this->_testChoiceMatch($gid, $op, $choice)) {
-					return false;
-				}
+				$e = new \RuntimeException("not supported");
+				KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
+				return false;
 				break;
 
 			case 'api_key':

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-use Application\DeskPRO\Entity\PortalPageDisplay;
-
 /**
  * Similar to Content except this just takes a template name and renders it.
  * 

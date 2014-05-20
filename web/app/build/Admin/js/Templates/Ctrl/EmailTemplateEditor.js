@@ -1,0 +1,129 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+    var Admin_Templates_Ctrl_EmailTemplateEditor;
+    Admin_Templates_Ctrl_EmailTemplateEditor = (function(_super) {
+      __extends(Admin_Templates_Ctrl_EmailTemplateEditor, _super);
+
+      function Admin_Templates_Ctrl_EmailTemplateEditor() {
+        return Admin_Templates_Ctrl_EmailTemplateEditor.__super__.constructor.apply(this, arguments);
+      }
+
+      Admin_Templates_Ctrl_EmailTemplateEditor.CTRL_ID = 'Admin_Templates_Ctrl_EmailTemplateEditor';
+
+      Admin_Templates_Ctrl_EmailTemplateEditor.CTRL_AS = 'EmailTemplateEditor';
+
+      Admin_Templates_Ctrl_EmailTemplateEditor.DEPS = ['$modalInstance', 'templateName'];
+
+      Admin_Templates_Ctrl_EmailTemplateEditor.prototype.init = function() {
+        this.$scope.dismiss = (function(_this) {
+          return function() {
+            return _this.$modalInstance.dismiss('cancel');
+          };
+        })(this);
+        this.$scope.save = (function(_this) {
+          return function() {
+            var postData;
+            _this.$scope.saving_template = true;
+            postData = {
+              template: {
+                subject: _this.editorSubject.getValue(),
+                body: _this.editorMessage.getValue()
+              }
+            };
+            return _this.Api.sendPostJson("/templates/" + _this.templateName, postData).then(function() {
+              _this.$scope.saving_template = false;
+              return _this.$modalInstance.close({
+                templateName: _this.templateName,
+                mode: 'custom'
+              });
+            });
+          };
+        })(this);
+        this.$scope.revert = (function(_this) {
+          return function() {
+            return _this.showConfirm('Are you sure you want to revert this template? Your changes will be completely lost and the template will be returned to the default.').result.then(function() {
+              _this.$scope.saving_template = true;
+              return _this.Api.sendDelete("/templates/" + _this.templateName).then(function() {
+                _this.$scope.saving_template = false;
+                return _this.$modalInstance.close({
+                  templateName: _this.templateName,
+                  mode: 'revert'
+                });
+              });
+            });
+          };
+        })(this);
+        this.$scope.aceLoadedSubject = (function(_this) {
+          return function(editor) {
+            var maxH, updateH;
+            _this.editorSubject = editor;
+            maxH = $(editor.container).data('max-height') || 150;
+            updateH = function() {
+              var newHeight;
+              newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+              if (newHeight > maxH) {
+                newHeight = maxH;
+              }
+              if (newHeight < 10) {
+                newHeight = 10;
+              }
+              $(editor.container).height(newHeight);
+              return editor.resize();
+            };
+            updateH();
+            editor.getSession().on('change', updateH);
+            return editor.setShowPrintMargin(false);
+          };
+        })(this);
+        return this.$scope.aceLoadedMessage = (function(_this) {
+          return function(editor) {
+            var maxH, updateH;
+            _this.editorMessage = editor;
+            maxH = $(editor.container).data('max-height') || 500;
+            updateH = function() {
+              var newHeight;
+              newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+              if (newHeight > maxH) {
+                newHeight = maxH;
+              }
+              if (newHeight < 10) {
+                newHeight = 10;
+              }
+              $(editor.container).height(newHeight);
+              return editor.resize();
+            };
+            updateH();
+            editor.getSession().on('change', updateH);
+            return editor.setShowPrintMargin(false);
+          };
+        })(this);
+      };
+
+      Admin_Templates_Ctrl_EmailTemplateEditor.prototype.initialLoad = function() {
+        var p;
+        p = this.Api.sendGet("/templates/" + this.templateName).success((function(_this) {
+          return function(data) {
+            return _this.initTemplateData(data);
+          };
+        })(this));
+        return p;
+      };
+
+      Admin_Templates_Ctrl_EmailTemplateEditor.prototype.initTemplateData = function(info) {
+        this.templateName = info.name;
+        this.email = info;
+        return this.$scope.email = this.email;
+      };
+
+      return Admin_Templates_Ctrl_EmailTemplateEditor;
+
+    })(Admin_Ctrl_Base);
+    return Admin_Templates_Ctrl_EmailTemplateEditor.EXPORT_CTRL();
+  });
+
+}).call(this);
+
+//# sourceMappingURL=EmailTemplateEditor.js.map

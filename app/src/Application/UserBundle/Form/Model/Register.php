@@ -38,8 +38,13 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 
-class Register
+class Register implements \ArrayAccess
 {
+	protected static $prop_names = array(
+		'name' => 1, 'email' => 1, 'password' => 1, 'password2' => 1,
+		'language_id' => 1, 'no_validation' => 1, 'custom_fields' => 1,
+	);
+
 	public $name;
 	public $email;
 	public $password;
@@ -101,7 +106,7 @@ class Register
 				}
 			}
 
-			if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+			if (App::getSetting('core.agent_validation')) {
 				$person->is_agent_confirmed = false;
 			}
 
@@ -158,4 +163,9 @@ class Register
 	{
 		$this->_custom_fields = $custom_fields;
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

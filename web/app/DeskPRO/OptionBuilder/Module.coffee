@@ -1,0 +1,153 @@
+define [
+	'angular',
+	'DeskPRO/OptionBuilder/Controller',
+	'DeskPRO/Util/Arrays'
+], (
+	angular,
+	DeskPRO_OptionBuilder_Controller,
+	Arrays
+) ->
+	angular.module('deskpro.option_builder', [])
+		.directive('dpOptionBuilder', [ ->
+			return {
+				restrict: 'E',
+				templateUrl: DP_BASE_ADMIN_URL+'/load-view/OptionBuilder/control.html',
+				replace: true,
+				transclude: true,
+				controller: DeskPRO_OptionBuilder_Controller.FACTORY,
+				controllerAs: 'OptionBuilder',
+				scope: {
+					getTypesDef: '&typesDef',
+					getOptions:  '&options',
+					optionTypes: '=optionTypes',
+					saveTarget: '=saveTarget'
+				}
+			}
+		])
+		.directive('dpOptionbuilderRow', [ ->
+			return {
+				restrict: 'E',
+				template: """
+					<div class="dp-ob-row">
+						<div class="remove-row-trigger"><i class="fa fa-times-circle"></i></div>
+						<table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
+							<tr>
+								<td style="vertical-align: middle; padding: 0; margin: 0;"><div class="dp-ob-row-tag-wrap"></div></td>
+								<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
+									<div class="dp-ob-row-content" ng-transclude></div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				""",
+				replace: true,
+				transclude: true,
+				link: (scope, element, attrs) ->
+					if scope.tag?
+						tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.tag).text(scope.tag)
+						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'))
+					else
+						tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag')
+						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('without-tag'))
+			}
+		]).directive('dpOptionBuilderSet', [ '$compile', '$templateCache', ($compile, $templateCache) ->
+			return {
+			restrict: 'A',
+			link: (scope, iElement, iAttrs) ->
+
+				rows = []
+				opts = scope.$eval(iAttrs.dpOptionBuilderSet)
+				scope.setCount = 0
+				lastEmpty = null
+				containRow = iElement.find('.dp-ob-addition-setrow')
+
+				reset = (withSet) ->
+					opts = scope.$eval(iAttrs.dpOptionBuilderSet)
+					scope.setCount = 0
+					lastEmpty = null
+					containRow.empty()
+					rows = []
+
+					any = false
+					for own setId, set of withSet
+						addRow(setId)
+						any = true
+
+					if not any
+						addRow()
+
+				scope.$watch(iAttrs.setsObject, (newVal) ->
+					reset(newVal)
+				)
+
+				recountRows = ->
+					for row, i in rows
+						if row.rowScope.setIndex != i+1
+							row.rowScope.$apply(-> row.rowScope.setIndex = i+1)
+
+				addRow = (useExistSetId) ->
+					tpl = $templateCache.get(opts.template)
+					rowScope = scope.$new()
+
+					setsObject = scope.$eval(iAttrs.setsObject)
+					if not setsObject
+						setsObject = {}
+
+					if useExistSetId
+						setId = useExistSetId
+					else
+						setId = rowScope.$id
+						setsObject[setId] = {}
+
+					rowScope.criteria_typedef = opts.typedef
+					rowScope.criteria_set_row = setsObject[setId]
+					rowScope.option_types     = opts.option_types
+
+					rowScope.$on('rowAdded', ->
+						if (element.hasClass('empty') or scope.setCount <= 1) and lastEmpty == element
+							addRow()
+
+						element.removeClass('empty')
+					)
+					rowScope.$on('rowRemoved', (ev, ctrl, e, s, rowsCount) ->
+						if rowsCount == 0
+							if scope.setCount == 1
+								element.addClass('empty')
+					)
+					rowScope.setIndex = rows.length+1
+
+					element = $compile(tpl)(rowScope)
+
+					rows.push({
+						rowScope: rowScope,
+						element: element
+					})
+
+					if scope.setCount >= 1
+						element.addClass('empty')
+
+					element.find('.removerow_btn').on('click', (ev) ->
+						ev.preventDefault()
+						rowScope.$destroy()
+						scope.setCount -= 1
+						element.remove()
+
+						Arrays.findAndRemove(rows, (v) -> v.rowScope == rowScope)
+
+						recountRows()
+						if scope.setCount == 0
+							addRow()
+					)
+
+					containRow.append(element)
+					scope.setCount += 1
+					lastEmpty = element
+
+				iElement.find('.add_btn').on('click', (ev) ->
+					ev.preventDefault()
+					addRow()
+				)
+
+				reset()
+			}
+		])

@@ -34,13 +34,10 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\BigMode;
-use Orb\Util\Util;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 class PersonSearch extends SearcherAbstract
 {
@@ -522,6 +519,8 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_CONTACT_PHONE:
 
+					if (is_array($choice)) $choice = $choice['phone'];
+
 					$choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
 					$joins[] = array(
 						'people_contact_data',
@@ -533,6 +532,9 @@ class PersonSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CONTACT_ADDRESS:
+
+					if (is_array($choice)) $choice = $choice['address'];
+
 					$joins[] = array(
 						'people_contact_data',
 						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'address')"
@@ -543,6 +545,8 @@ class PersonSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CONTACT_IM:
+
+					if (is_array($choice)) $choice = $choice['im'];
 
 					$joins[] = array(
 						'people_contact_data',

@@ -37,12 +37,9 @@ namespace Application\DeskPRO\People\ActivityLogger;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonActivity;
-
 use Application\DeskPRO\People\ActivityLogger\ActionType\ActionTypeAbstract;
-
-use Orb\Util\Arrays;
-use Orb\Util\Util;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 
 class ActivityLogger
 {

@@ -227,9 +227,11 @@ $CONFIG['agent_pages'] = array(
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadVcard.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/DeleteControl.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/StickyWords.js',
@@ -277,6 +279,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/QuickSearch.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
@@ -331,7 +334,6 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
 		'javascripts/DeskPRO/Agent/Notifications.js',
 		'javascripts/DeskPRO/Agent/RecentTabs.js',
-		'javascripts/DeskPRO/Agent/AgentApp.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
@@ -411,6 +413,7 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
+		'javascripts/DeskPRO/Agent/Jira/Widget.js',
 	)
 );
 
@@ -666,6 +669,7 @@ $CONFIG['agent_interface_css2'] = array(
 		'stylesheets-less/agent/dp-list-pane.less',
 		'stylesheets-less/agent/dp-content-pane.less',
 		'stylesheets-less/agent/agent.less',
+		'stylesheets-less/agent/jira.less',
 	)
 );
 

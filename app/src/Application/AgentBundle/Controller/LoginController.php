@@ -34,12 +34,8 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\Controller\Helper\LoginHelper;
-use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
-
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\License;
+use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {

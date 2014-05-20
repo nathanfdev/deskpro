@@ -1,0 +1,27 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel-body">
+					<div class="panel panel-fill indent">
+						<p>
+							You can extend DeskPRO with more authentication sources by installing apps from the apps section.
+						</p>
+						<p>
+							For example, there are apps that connect DeskPRO to your custom MySQL or MS SQL database,
+							Active Directory, LDAP and more.
+						</p>
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="dp-btn-controls">
+						<a class="btn btn-primary" href="{{ ng_href('apps.apps') }}">Go to the Apps section <i class="fa fa-arrow-right"></i></a>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+{% endblock %}

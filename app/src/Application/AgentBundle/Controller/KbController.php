@@ -34,33 +34,18 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Orb\Data\ContentTypes;
-use Symfony\Component\HttpFoundation\Response;
-
+use Application\AgentBundle\Controller\Helper\ArticleResults;
 use Application\DeskPRO\App;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Searcher\ArticleSearch;
-use Application\DeskPRO\UI\RuleBuilder;
-use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-
-use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-
-use Application\AgentBundle\Controller\Helper\ArticleResults;
-
-use Orb\Util\Strings;
+use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-use Orb\Util\Util;
-
-use FineDiff;
-use Zend\Http\Header\ContentType;
+use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles ticket searches
@@ -960,7 +945,7 @@ class KbController extends AbstractController
 		$this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", array($this->person->id));
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			$validator = new \Application\AgentBundle\Validator\NewArticleValidator();

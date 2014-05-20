@@ -1,0 +1,67 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="EditCtrl.saveAll()">
+		<section class="dp-paneblock dp-editpane">
+			<nav class="dp-blocktabs">
+				<ul>
+					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-users"></i> {{ phrase('agent.general.permissions') }}</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.layout"><a href="#"><i class="fa fa-columns"></i> {{ phrase('adm.general.layout') }}</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.website_embeds"><a href="#"><i class="fa fa-code"></i> {{ phrase('adm.general.website_embed') }}</a></li>
+				</ul>
+			</nav>
+			<article class="form-horizontal dp-form">
+				<div dp-tab-body="main.props">
+					{% include 'AdminInterfaceBundle:TicketDeps:edit-props.html.twig' %}
+				</div>
+
+				<div dp-tab-body="main.perms">
+					{% include 'AdminInterfaceBundle:TicketDeps:edit-perms.html.twig' %}
+				</div>
+
+				<div dp-tab-body="main.layout">
+					{% include 'AdminInterfaceBundle:TicketDeps:edit-layout.html.twig' %}
+				</div>
+
+				<div dp-tab-body="main.website_embeds">
+					{% include 'AdminInterfaceBundle:TicketDeps:edit-website_embeds.html.twig' %}
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+							<li ng-show="form_props.email_gateway_id.$error">{{ phrase('adm.departments.email_account_required') }}</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.dep.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.dep.id);">Delete</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_dep">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							<button class="btn btn-default" ng-click="EditCtrl.resetForm()">{{ phrase('agent.general.reset') }}</button>
+						</div>
+						<div dp-show-spinning="saving_dep">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_dep">{{ phrase('adm.departments.saved_dep_x_success', {title: 'ng_var(EditCtrl.form.title)'}) }}</div>
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-phpapi.html.twig', 'TicketDeps/code-phpapi.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-link.html.twig', 'TicketDeps/code-link.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-win.html.twig', 'TicketDeps/code-win.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:code-embed.html.twig', 'TicketDeps/code-embed.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:layout-editor.html.twig', 'TicketDeps/layout-editor.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketDeps:layout-editor-field.html.twig', 'TicketDeps/layout-editor-field.html') }}
+{% endblock %}

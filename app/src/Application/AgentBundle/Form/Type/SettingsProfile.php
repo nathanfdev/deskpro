@@ -36,11 +36,11 @@ namespace Application\AgentBundle\Form\Type;
 
 use Application\DeskPRO\App;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class SettingsProfile extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
     {
 		$builder->add('name', 'text', array('required' => false));
 	    $builder->add('override_display_name', 'text', array('required' => false));

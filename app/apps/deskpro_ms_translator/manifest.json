@@ -1,0 +1,32 @@
+{
+	"package_name": "deskpro_ms_translator",
+	"is_native": true,
+	"title": "Microsoft Translator",
+	"description": "Adds translation controls to ticket messages to translate messages between languages, and also allows agents to translate their replies before sending.",
+	"tags": ["translation"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "client_id",
+			"type": "text",
+			"label": "Client ID",
+			"description": "Enter your Client ID. This is a human-readable name that you signed up under. Refer to README for more information.",
+			"native_only": true
+		},
+		{
+			"name": "client_secret",
+			"type": "text",
+			"label": "Client Secret",
+			"description": "Enter your Client Secret. This is a long randomly generated secret provided by Microsoft. Refer to the README for more information.",
+			"native_only": true
+		}
+	]
+}

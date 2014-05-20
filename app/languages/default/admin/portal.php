@@ -125,7 +125,7 @@
 	'admin.portal.website_widget_install'                  => 'Copy and paste this HTML code into your website. We recommend placing it directly before the &lt;/body&gt; tag.',
 	'admin.portal.website_widgets'                         => 'Website Widgets',
 	'admin.portal.website_widgets_chat'                    => 'Chat Widget',
-	'admin.portal.website_widgets_chat_explain'            => 'The chat widget puts a small button on the bottom left of your website. When the user clicks the button, a small chat window opens on top of your site and allows your visitors to chat with any online agents. Users can continue to browse around your site while the chat is active.',
+	'admin.portal.website_widgets_chat_explain'            => 'The chat widget puts a small button on the bottom left of your website. When the user clicks the button, a chat window opens on top of your site and allows your visitors to chat with any online agents. Users can continue to browse around your site while the chat is active.',
 	'admin.portal.website_widgets_overlay'                 => 'Helpdesk Widget',
 	'admin.portal.website_widgets_overlay_explain'         => 'The tab widget places a tab button on the left of your website. When the user clicks the tab, an overlay opens on top of your site where a user can interact with the helpdesk without ever leaving the page they are on.',
 );

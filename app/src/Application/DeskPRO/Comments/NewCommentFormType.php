@@ -36,11 +36,8 @@ namespace Application\DeskPRO\Comments;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class NewCommentFormType extends AbstractType
 {
@@ -51,7 +48,7 @@ class NewCommentFormType extends AbstractType
 		$this->person = $person;
 	}
 
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		if (!$this->person['id']) {
 			$builder->add('email', 'text');

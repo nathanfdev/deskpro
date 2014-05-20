@@ -36,18 +36,12 @@ namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\Tickets\DetectSearchTableErrors;
-use DeskPRO\Kernel\KernelErrorHandler;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Strings;
+use Application\DeskPRO\Tickets\DetectSearchTableErrors;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class VerifySearchTablesCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

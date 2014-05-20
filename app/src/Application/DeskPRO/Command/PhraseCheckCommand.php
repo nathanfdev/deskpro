@@ -35,20 +35,11 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\App;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
 
 class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -96,11 +87,6 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		# Now check the files
 		#------------------------------
 
-		$admin_list = iterator_to_array(Finder::create()->files()->in(array(
-			DP_ROOT.'/src/Application/AdminBundle',
-			DP_ROOT.'/src/Cloud/AdminBundle',
-		))->getIterator());
-
 		$agent_list = iterator_to_array(Finder::create()->files()->in(array(
 			DP_ROOT.'/src/Application/AgentBundle',
 		))->getIterator());
@@ -110,12 +96,8 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		))->getIterator());
 
 		$other_list = iterator_to_array(Finder::create()->files()->in(array(
-			DP_ROOT.'/src/Application/ReportBundle',
-			DP_ROOT.'/src/Application/BillingBundle',
 			DP_ROOT.'/src/Application/DeskPRO',
 			DP_ROOT.'/src/Application/InstallBundle',
-			DP_ROOT.'/src/Cloud/BillingBundle',
-			DP_WEB_ROOT.'/plugins',
 		))->getIterator());
 
 		foreach ($check_phrases as $phrase) {

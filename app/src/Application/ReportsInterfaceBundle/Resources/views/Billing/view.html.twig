@@ -1,0 +1,23 @@
+{% extends 'ReportsInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+	<section class="dp-paneblock dp-editpane">
+		<article class="form-horizontal dp-form">
+
+			<div class="panel panel-innertable">
+				<div class="panel-heading">
+					<h3>
+						<span>Results</span>
+					</h3>
+				</div>
+				<div ng-bind-html="Ctrl.rendered_result"></div>
+				<div ng-if="!Ctrl.rendered_result" class="report-no-results">
+					No results for this report
+				</div>
+			</div>
+		</article>
+
+	</section>
+
+{% endblock %}

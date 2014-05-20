@@ -1,692 +1,548 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->add('user', new Route(
-	'/',
-	array('_controller' => 'UserBundle:Portal:portal', '_locale' => 'en'),
-	array(),
-	array()
+$collection->create('user', array(
+	'path'        => '/',
+	'controller'  => 'UserBundle:Portal:portal',
+	'defaults'    => array('_locale' => 'en'),
 ));
 
-$collection->add('user_admin_rendertpl', new Route(
-	'/admin-render-template/{type}',
-	array('_controller' => 'UserBundle:Main:adminRenderTemplate'),
-	array(),
-	array()
+$collection->create('user_admin_rendertpl', array(
+	'path'        => '/admin-render-template/{type}',
+	'controller'  => 'UserBundle:Main:adminRenderTemplate',
 ));
 
-$collection->add('user_comment_form_login_partial', new Route(
-	'/_misc/comment-form-login-partial',
-	array('_controller' => 'UserBundle:Main:commentFormLoginPartial'),
-	array(),
-	array()
+$collection->create('user_comment_form_login_partial', array(
+	'path'        => '/_misc/comment-form-login-partial',
+	'controller'  => 'UserBundle:Main:commentFormLoginPartial',
 ));
 
-
-$collection->add('user_test', new Route(
-	'/test',
-	array('_controller' => 'UserBundle:Test:index'),
-	array(),
-	array()
-));
-
-$collection->add('user_saverating', new Route(
-	'/portal/save-rating/{object_type}/{object_id}',
-	array('_controller' => 'UserBundle:Portal:saveRating'),
-	array('_method' => 'POST'),
-	array()
-));
-
-$collection->add('user_newcomment_finishlogin', new Route(
-	'/portal/save-comment/login-finished/{comment_type}/{comment_id}',
-	array('_controller' => 'UserBundle:Portal:newCommentFinishLogin'),
-	array(),
-	array()
+$collection->create('user_test', array(
+	'path'        => '/test',
+	'controller'  => 'UserBundle:Test:index',
 ));
 
-$collection->add('user_accept_upload', new Route(
-	'/accept-temp-upload',
-	array('_controller' => 'UserBundle:Main:acceptTempUpload'),
-	array(),
-	array()
+$collection->create('user_saverating', array(
+	'path'        => '/portal/save-rating/{object_type}/{object_id}',
+	'controller'  => 'UserBundle:Portal:saveRating',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_validate_email', new Route(
-	'/validate-email/{id}/{auth}',
-	array('_controller' => 'UserBundle:Main:validateEmail'),
-	array(),
-	array()
+$collection->create('user_newcomment_finishlogin', array(
+	'path'        => '/portal/save-comment/login-finished/{comment_type}/{comment_id}',
+	'controller'  => 'UserBundle:Portal:newCommentFinishLogin',
 ));
 
-$collection->add('user_validate_ticket', new Route(
-	'/validate-ticket-email/{access_code}',
-	array('_controller' => 'UserBundle:Main:validateTicketEmail'),
-	array(),
-	array()
+$collection->create('user_accept_upload', array(
+	'path'        => '/accept-temp-upload',
+	'controller'  => 'UserBundle:Main:acceptTempUpload',
 ));
 
-$collection->add('user_jstell_login', new Route(
-	'/login/jstell/{jstell}/{security_token}/{usersource_id}',
-	array('_controller' => 'UserBundle:Login:jstellLogin'),
-	array(),
-	array()
+$collection->create('user_validate_email', array(
+	'path'        => '/validate-email/{id}/{auth}',
+	'controller'  => 'UserBundle:Main:validateEmail',
 ));
 
-$collection->add('user_login', new Route(
-	'/login',
-	array('_controller' => 'UserBundle:Login:index'),
-	array(),
-	array()
+$collection->create('user_validate_ticket', array(
+	'path'        => '/validate-ticket-email/{access_code}',
+	'controller'  => 'UserBundle:Main:validateTicketEmail',
 ));
 
-$collection->add('user_login_inline', new Route(
-	'/login/inline-login',
-	array('_controller' => 'UserBundle:Login:inlineLogin'),
-	array(),
-	array()
+$collection->create('user_jstell_login', array(
+	'path'        => '/login/jstell/{jstell}/{security_token}/{usersource_id}',
+	'controller'  => 'UserBundle:Login:jstellLogin',
 ));
 
-$collection->add('user_login_usersource_sso', new Route(
-	'/login/usersource-sso/{usersource_id}',
-	array('_controller' => 'UserBundle:Login:usersourceSso'),
-	array('usersource_id' => '\d+'),
-	array()
+$collection->create('user_login', array(
+	'path'        => '/login',
+	'controller'  => 'UserBundle:Login:index',
 ));
 
-$collection->add('user_logout', new Route(
-	'/logout/{auth}',
-	array('_controller' => 'UserBundle:Login:logout'),
-	array(),
-	array()
+$collection->create('user_login_inline', array(
+	'path'        => '/login/inline-login',
+	'controller'  => 'UserBundle:Login:inlineLogin',
 ));
 
-$collection->add('user_login_authenticate_local', new Route(
-	'/login/authenticate-password',
-	array('_controller' => 'UserBundle:Login:authenticateLocal', 'usersource_id' => 0),
-	array(),
-	array()
+$collection->create('user_login_usersource_sso', array(
+	'path'          => '/login/usersource-sso/{usersource_id}',
+	'controller'    => 'UserBundle:Login:usersourceSso',
+	'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
-$collection->add('user_login_authenticate', new Route(
-	'/login/authenticate/{usersource_id}',
-	array('_controller' => 'UserBundle:Login:authenticate', 'usersource_id' => 0),
-	array('usersource_id' => '\\d+'),
-	array()
+$collection->create('user_logout', array(
+	'path'        => '/logout/{auth}',
+	'controller'  => 'UserBundle:Login:logout',
 ));
 
-$collection->add('user_login_callback', new Route(
-	'/login/authenticate-callback/{usersource_id}',
-	array('_controller' => 'UserBundle:Login:authenticateCallback'),
-	array('usersource_id' => '\\d+'),
-	array()
+$collection->create('user_login_authenticate_local', array(
+	'path'        => '/login/authenticate-password',
+	'controller'  => 'UserBundle:Login:authenticateLocal',
+	'defaults'    => array('usersource_id' => 0),
 ));
 
-$collection->add('user_login_resetpass', new Route(
-	'/login/reset-password',
-	array('_controller' => 'UserBundle:Login:resetPassword'),
-	array(),
-	array()
+$collection->create('user_login_authenticate', array(
+	'path'          => '/login/authenticate/{usersource_id}',
+	'controller'    => 'UserBundle:Login:authenticate',
+	'defaults'      => array('usersource_id' => 0),
+	'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
-$collection->add('user_login_resetpass_send', new Route(
-	'/login/reset-password/send.{_format}',
-	array('_controller' => 'UserBundle:Login:sendResetPassword', '_format' => 'html'),
-	array(),
-	array()
+$collection->create('user_login_callback', array(
+	'path'          => '/login/authenticate-callback/{usersource_id}',
+	'controller'    => 'UserBundle:Login:authenticateCallback',
+	'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
-$collection->add('user_login_resetpass_newpass', new Route(
-	'/login/reset-password/{code}',
-	array('_controller' => 'UserBundle:Login:resetPasswordNewPass'),
-	array('code' => '[A-Za-z0-9\\-]{17,}'),
-	array()
+$collection->create('user_login_resetpass', array(
+	'path'        => '/login/reset-password',
+	'controller'  => 'UserBundle:Login:resetPassword',
 ));
 
-$collection->add('user_login_agentlogin', new Route(
-	'/login/agent-login/{code}',
-	array('_controller' => 'UserBundle:Login:authAgentLogin'),
-	array(),
-	array()
+$collection->create('user_login_resetpass_send', array(
+	'path'        => '/login/reset-password/send.{_format}',
+	'controller'  => 'UserBundle:Login:sendResetPassword',
+	'defaults'    => array('_format' => 'html'),
 ));
 
-$collection->add('user_register', new Route(
-	'/register',
-	array('_controller' => 'UserBundle:Register:register'),
-	array(),
-	array()
+$collection->create('user_login_resetpass_newpass', array(
+	'path'          => '/login/reset-password/{code}',
+	'controller'    => 'UserBundle:Login:resetPasswordNewPass',
+	'requirements'  => array('code' => '[A-Za-z0-9\\-]{17,}'),
 ));
 
-$collection->add('user_profile', new Route(
-	'/profile',
-	array('_controller' => 'UserBundle:Profile:index'),
-	array(),
-	array()
+$collection->create('user_login_agentlogin', array(
+	'path'        => '/login/agent-login/{code}',
+	'controller'  => 'UserBundle:Login:authAgentLogin',
 ));
 
-$collection->add('user_profile_setlang', new Route(
-	'/profile/quick-set-language',
-	array('_controller' => 'UserBundle:Main:quickSetLanguage'),
-	array(),
-	array()
+$collection->create('user_register', array(
+	'path'        => '/register',
+	'controller'  => 'UserBundle:Register:register',
 ));
 
-$collection->add('user_profile_associate_twitter', new Route(
-	'/profile/associate-twitter',
-	array('_controller' => 'UserBundle:Profile:associateTwitter'),
-	array(),
-	array()
+$collection->create('user_profile', array(
+	'path'        => '/profile',
+	'controller'  => 'UserBundle:Profile:index',
 ));
 
-$collection->add('user_profile_twitter_remove', new Route(
-	'/profile/twitter/{account_id}/remove',
-	array('_controller' => 'UserBundle:Profile:removeTwitter'),
-	array('account_id' => '\\d+'),
-	array()
+$collection->create('user_profile_setlang', array(
+	'path'        => '/profile/quick-set-language',
+	'controller'  => 'UserBundle:Main:quickSetLanguage',
 ));
 
-$collection->add('user_profile_changepassword', new Route(
-	'/profile/change-password',
-	array('_controller' => 'UserBundle:Profile:changePassword'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_profile_associate_twitter', array(
+	'path'        => '/profile/associate-twitter',
+	'controller'  => 'UserBundle:Profile:associateTwitter',
 ));
 
-$collection->add('user_profile_emails_new', new Route(
-	'/profile/emails/new',
-	array('_controller' => 'UserBundle:Profile:newEmail'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_profile_twitter_remove', array(
+	'path'          => '/profile/twitter/{account_id}/remove',
+	'controller'    => 'UserBundle:Profile:removeTwitter',
+	'requirements'  => array('account_id' => '\\d+'),
 ));
 
-$collection->add('user_profile_emails_remove', new Route(
-	'/profile/emails/{email_id}/remove',
-	array('_controller' => 'UserBundle:Profile:removeEmail'),
-	array(),
-	array()
+$collection->create('user_profile_changepassword', array(
+	'path'        => '/profile/change-password',
+	'controller'  => 'UserBundle:Profile:changePassword',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_profile_emails_validate_remove', new Route(
-	'/profile/emails/{email_id}/remove-validating',
-	array('_controller' => 'UserBundle:Profile:removeEmailValidating'),
-	array(),
-	array()
+$collection->create('user_profile_emails_new', array(
+	'path'        => '/profile/emails/new',
+	'controller'  => 'UserBundle:Profile:newEmail',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_profile_emails_validate_sendlink', new Route(
-	'/profile/emails/{email_id}/validate/send-link',
-	array('_controller' => 'UserBundle:Profile:sendValidateEmailLink'),
-	array(),
-	array()
+$collection->create('user_profile_emails_remove', array(
+	'path'        => '/profile/emails/{email_id}/remove',
+	'controller'  => 'UserBundle:Profile:removeEmail',
 ));
 
-$collection->add('user_profile_emails_setdefault', new Route(
-	'/profile/emails/{email_id}/set-default',
-	array('_controller' => 'UserBundle:Profile:setDefaultEmail'),
-	array(),
-	array()
+$collection->create('user_profile_emails_validate_remove', array(
+	'path'        => '/profile/emails/{email_id}/remove-validating',
+	'controller'  => 'UserBundle:Profile:removeEmailValidating',
 ));
 
-$collection->add('user_search', new Route(
-	'/search',
-	array('_controller' => 'UserBundle:Search:search'),
-	array(),
-	array()
+$collection->create('user_profile_emails_validate_sendlink', array(
+	'path'        => '/profile/emails/{email_id}/validate/send-link',
+	'controller'  => 'UserBundle:Profile:sendValidateEmailLink',
 ));
 
-$collection->add('user_search_labels', new Route(
-	'/search/labels/{type}/{label}',
-	array('_controller' => 'UserBundle:Search:labelSearch', 'label' => '', 'type' => 'all'),
-	array('label' => '.*'),
-	array()
+$collection->create('user_profile_emails_setdefault', array(
+	'path'        => '/profile/emails/{email_id}/set-default',
+	'controller'  => 'UserBundle:Profile:setDefaultEmail',
 ));
 
-$collection->add('user_search_omnisearch', new Route(
-	'/search/omnisearch/{query}',
-	array('_controller' => 'UserBundle:Search:omnisearch'),
-	array('query' => '.+'),
-	array()
+$collection->create('user_search', array(
+	'path'        => '/search',
+	'controller'  => 'UserBundle:Search:search',
 ));
 
-$collection->add('user_search_similarto', new Route(
-	'/search/similar-to/{content_type}',
-	array('_controller' => 'UserBundle:Search:similarTo'),
-	array(),
-	array()
+$collection->create('user_search_labels', array(
+	'path'          => '/search/labels/{type}/{label}',
+	'controller'    => 'UserBundle:Search:labelSearch',
+	'defaults'      => array('label' => '', 'type' => 'all'),
+	'requirements'  => array('label' => '.*'),
 ));
 
-$collection->add('user_tickets', new Route(
-	'/tickets',
-	array('_controller' => 'UserBundle:Tickets:list'),
-	array(),
-	array()
+$collection->create('user_search_omnisearch', array(
+	'path'          => '/search/omnisearch/{query}',
+	'controller'    => 'UserBundle:Search:omnisearch',
+	'requirements'  => array('query' => '.+'),
 ));
 
-$collection->add('user_tickets_organization', new Route(
-	'/tickets/organization',
-	array('_controller' => 'UserBundle:Tickets:listOrganization'),
-	array(),
-	array()
+$collection->create('user_search_similarto', array(
+	'path'        => '/search/similar-to/{content_type}',
+	'controller'  => 'UserBundle:Search:similarTo',
 ));
 
-$collection->add('user_tickets_new', new Route(
-	'/new-ticket/{for_department_id}',
-	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'normal', 'for_department_id' => 0),
-	array(),
-	array()
+$collection->create('user_tickets', array(
+	'path'        => '/tickets',
+	'controller'  => 'UserBundle:Tickets:list',
 ));
 
-$collection->add('user_tickets_new_finishlogin', new Route(
-	'/new-ticket/login-finish/{ticket_id}',
-	array('_controller' => 'UserBundle:NewTicket:newFinishLogin'),
-	array(),
-	array()
+$collection->create('user_tickets_organization', array(
+	'path'        => '/tickets/organization',
+	'controller'  => 'UserBundle:Tickets:listOrganization',
 ));
 
-$collection->add('user_tickets_new_simple', new Route(
-	'/tickets/new-simple/{for_department_id}',
-	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'iframe', 'for_department_id' => 0),
-	array(),
-	array()
+$collection->create('user_tickets_new', array(
+	'path'        => '/new-ticket/{for_department_id}',
+	'controller'  => 'UserBundle:NewTicket:new',
+	'defaults'    => array('format' => 'normal', 'for_department_id' => 0),
 ));
 
-$collection->add('user_tickets_new_savestatus', new Route(
-	'/tickets/new/save-status',
-	array('_controller' => 'UserBundle:NewTicket:saveStatus'),
-	array(),
-	array()
+$collection->create('user_tickets_new_finishlogin', array(
+	'path'        => '/new-ticket/login-finish/{ticket_id}',
+	'controller'  => 'UserBundle:NewTicket:newFinishLogin',
 ));
 
-$collection->add('user_tickets_new_contentsolved_save', new Route(
-	'/tickets/new/content-solved-save.json',
-	array('_controller' => 'UserBundle:NewTicket:contentSolvedSave'),
-	array(),
-	array()
+$collection->create('user_tickets_new_simple', array(
+	'path'        => '/tickets/new-simple/{for_department_id}',
+	'controller'  => 'UserBundle:NewTicket:new',
+	'defaults'    => array('format' => 'iframe', 'for_department_id' => 0),
 ));
 
-$collection->add('user_tickets_new_contentsolved', new Route(
-	'/tickets/new/content-solved-redirect',
-	array('_controller' => 'UserBundle:NewTicket:contentSolvedRedirect'),
-	array(),
-	array()
+$collection->create('user_tickets_new_savestatus', array(
+	'path'        => '/tickets/new/save-status',
+	'controller'  => 'UserBundle:NewTicket:saveStatus',
 ));
 
-$collection->add('user_tickets_new_thanks', new Route(
-	'/tickets/new/thanks/{ticket_ref}',
-	array('_controller' => 'UserBundle:NewTicket:thanks'),
-	array(),
-	array()
+$collection->create('user_tickets_new_contentsolved_save', array(
+	'path'        => '/tickets/new/content-solved-save.json',
+	'controller'  => 'UserBundle:NewTicket:contentSolvedSave',
 ));
 
-$collection->add('user_tickets_new_thanks_simple', new Route(
-	'/tickets/new/thanks-simple/{ticket_ref}',
-	array('_controller' => 'UserBundle:NewTicket:simpleThanks'),
-	array(),
-	array()
+$collection->create('user_tickets_new_contentsolved', array(
+	'path'        => '/tickets/new/content-solved-redirect',
+	'controller'  => 'UserBundle:NewTicket:contentSolvedRedirect',
 ));
 
-$collection->add('user_tickets_view', new Route(
-	'/ticket/{ticket_ref}',
-	array('_controller' => 'UserBundle:TicketView:load'),
-	array(),
-	array()
+$collection->create('user_tickets_new_thanks', array(
+	'path'        => '/tickets/new/thanks/{ticket_ref}',
+	'controller'  => 'UserBundle:NewTicket:thanks',
 ));
 
-$collection->add('user_tickets_addreply', new Route(
-	'/ticket-edit/{ticket_ref}/add-reply',
-	array('_controller' => 'UserBundle:Tickets:addReply'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_tickets_new_thanks_simple', array(
+	'path'        => '/tickets/new/thanks-simple/{ticket_ref}',
+	'controller'  => 'UserBundle:NewTicket:simpleThanks',
 ));
 
-$collection->add('user_tickets_participants', new Route(
-	'/ticket-edit/{ticket_ref}/people',
-	array('_controller' => 'UserBundle:Tickets:manageParticipants'),
-	array(),
-	array()
+$collection->create('user_tickets_view', array(
+	'path'        => '/ticket/{ticket_ref}',
+	'controller'  => 'UserBundle:TicketView:load',
 ));
 
-$collection->add('user_tickets_participants_add', new Route(
-	'/ticket-edit/{ticket_ref}/people/add',
-	array('_controller' => 'UserBundle:Tickets:addParticipant'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_tickets_addreply', array(
+	'path'        => '/ticket-edit/{ticket_ref}/add-reply',
+	'controller'  => 'UserBundle:Tickets:addReply',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_tickets_participants_remove', new Route(
-	'/ticket-edit/{ticket_ref}/people/remove/{person_id}',
-	array('_controller' => 'UserBundle:Tickets:removeParticipant'),
-	array(),
-	array()
+$collection->create('user_tickets_participants', array(
+	'path'        => '/ticket-edit/{ticket_ref}/people',
+	'controller'  => 'UserBundle:Tickets:manageParticipants',
 ));
 
-$collection->add('user_tickets_resolve', new Route(
-	'/ticket-edit/{ticket_ref}/resolve',
-	array('_controller' => 'UserBundle:Tickets:resolve'),
-	array(),
-	array()
+$collection->create('user_tickets_participants_add', array(
+	'path'        => '/ticket-edit/{ticket_ref}/people/add',
+	'controller'  => 'UserBundle:Tickets:addParticipant',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_tickets_unresolve', new Route(
-	'/ticket-edit/{ticket_ref}/unresolve',
-	array('_controller' => 'UserBundle:Tickets:unresolve'),
-	array(),
-	array()
+$collection->create('user_tickets_participants_remove', array(
+	'path'        => '/ticket-edit/{ticket_ref}/people/remove/{person_id}',
+	'controller'  => 'UserBundle:Tickets:removeParticipant',
 ));
 
-$collection->add('user_tickets_feedback', new Route(
-	'/ticket-rate/{ticket_ref}/{auth}/{message_id}',
-	array('_controller' => 'UserBundle:Tickets:feedback'),
-	array(),
-	array()
+$collection->create('user_tickets_resolve', array(
+	'path'        => '/ticket-edit/{ticket_ref}/resolve',
+	'controller'  => 'UserBundle:Tickets:resolve',
 ));
 
-$collection->add('user_tickets_feedback_save', new Route(
-	'/ticket-rate/{ticket_ref}/{auth}/{message_id}/save',
-	array('_controller' => 'UserBundle:Tickets:feedbackSave'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_tickets_unresolve', array(
+	'path'        => '/ticket-edit/{ticket_ref}/unresolve',
+	'controller'  => 'UserBundle:Tickets:unresolve',
 ));
 
-$collection->add('user_tickets_feedback_closeticket', new Route(
-	'/ticket-edit/{ticket_ref}/feedback/{message_id}/close-ticket',
-	array('_controller' => 'UserBundle:Tickets:feedbackCloseTicket'),
-	array(),
-	array()
+$collection->create('user_tickets_feedback', array(
+	'path'        => '/ticket-rate/{ticket_ref}/{auth}/{message_id}',
+	'controller'  => 'UserBundle:Tickets:feedback',
 ));
 
-$collection->add('user_articles_home', new Route(
-	'/kb',
-	array('_controller' => 'UserBundle:Articles:browse', 'slug' => ''),
-	array(),
-	array()
+$collection->create('user_tickets_feedback_save', array(
+	'path'        => '/ticket-rate/{ticket_ref}/{auth}/{message_id}/save',
+	'controller'  => 'UserBundle:Tickets:feedbackSave',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_articles', new Route(
-	'/kb/{slug}',
-	array('_controller' => 'UserBundle:Articles:browse', 'slug' => ''),
-	array('slug' => '(\\d+(\\-.*?)?)?'),
-	array()
+$collection->create('user_tickets_feedback_closeticket', array(
+	'path'        => '/ticket-edit/{ticket_ref}/feedback/{message_id}/close-ticket',
+	'controller'  => 'UserBundle:Tickets:feedbackCloseTicket',
 ));
 
-$collection->add('user_articles_article', new Route(
-	'/kb/articles/{slug}',
-	array('_controller' => 'UserBundle:Articles:article'),
-	array(),
-	array()
+$collection->create('user_articles_home', array(
+	'path'        => '/kb',
+	'controller'  => 'UserBundle:Articles:browse',
+	'defaults'    => array('slug' => ''),
 ));
 
-$collection->add('user_articles_article_togglesub', new Route(
-	'/kb/article-subscription/{article_id}/{auth}',
-	array('_controller' => 'UserBundle:Articles:articleSubscription'),
-	array(),
-	array()
+$collection->create('user_articles', array(
+	'path'          => '/kb/{slug}',
+	'controller'    => 'UserBundle:Articles:browse',
+	'defaults'      => array('slug' => ''),
+	'requirements'  => array('slug' => '(\\d+(\\-.*?)?)?'),
 ));
 
-$collection->add('user_articles_cat_togglesub', new Route(
-	'/kb/category-subscription/{category_id}/{auth}',
-	array('_controller' => 'UserBundle:Articles:categorySubscription'),
-	array(),
-	array()
+$collection->create('user_articles_article', array(
+	'path'        => '/kb/articles/{slug}',
+	'controller'  => 'UserBundle:Articles:article',
 ));
 
-$collection->add('user_articles_unsub_all', new Route(
-	'/kb/unsubscribe-all/{person_id}/{auth}',
-	array('_controller' => 'UserBundle:Articles:unsubscribeAll'),
-	array(),
-	array()
+$collection->create('user_articles_article_togglesub', array(
+	'path'        => '/kb/article-subscription/{article_id}/{auth}',
+	'controller'  => 'UserBundle:Articles:articleSubscription',
 ));
 
-$collection->add('user_articles_article_agent_iframe', new Route(
-	'/kb/articles/agent-iframe/{article_id}/{agent_session_id}',
-	array('_controller' => 'UserBundle:Articles:articleAgentIframe'),
-	array('article_id' => '\\d+'),
-	array()
+$collection->create('user_articles_cat_togglesub', array(
+	'path'        => '/kb/category-subscription/{category_id}/{auth}',
+	'controller'  => 'UserBundle:Articles:categorySubscription',
 ));
-
-$collection->add('user_articles_newcomment', new Route(
-	'/kb/new-comment/{article_id}',
-	array('_controller' => 'UserBundle:Articles:newComment'),
-	array('_method' => 'POST'),
-	array()
-));
-
-$collection->add('user_downloads_home', new Route(
-	'/downloads',
-	array('_controller' => 'UserBundle:Downloads:browse', 'slug' => ''),
-	array(),
-	array()
-));
-
 
-$collection->add('user_downloads', new Route(
-	'/downloads/{slug}',
-	array('_controller' => 'UserBundle:Downloads:browse', 'slug' => ''),
-	array('slug' => '(\\d+(\\-.*?)?)?'),
-	array()
+$collection->create('user_articles_unsub_all', array(
+	'path'        => '/kb/unsubscribe-all/{person_id}/{auth}',
+	'controller'  => 'UserBundle:Articles:unsubscribeAll',
 ));
 
-$collection->add('user_downloads_file', new Route(
-	'/downloads/files/{slug}',
-	array('_controller' => 'UserBundle:Downloads:file'),
-	array(),
-	array()
+$collection->create('user_articles_article_agent_iframe', array(
+	'path'          => '/kb/articles/agent-iframe/{article_id}/{agent_session_id}',
+	'controller'    => 'UserBundle:Articles:articleAgentIframe',
+	'requirements'  => array('article_id' => '\\d+'),
 ));
 
-$collection->add('user_downloads_file_download', new Route(
-	'/downloads/files/{slug}/download',
-	array('_controller' => 'UserBundle:Downloads:downloadFile'),
-	array(),
-	array()
+$collection->create('user_articles_newcomment', array(
+	'path'        => '/kb/new-comment/{article_id}',
+	'controller'  => 'UserBundle:Articles:newComment',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_downloads_newcomment', new Route(
-	'/downloads/new-comment/{download_id}',
-	array('_controller' => 'UserBundle:Downloads:newComment'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_downloads_home', array(
+	'path'        => '/downloads',
+	'controller'  => 'UserBundle:Downloads:browse',
+	'defaults'    => array('slug' => ''),
 ));
 
-$collection->add('user_news_home', new Route(
-	'/news.{_format}',
-	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1, '_format' => 'html'),
-	array('_format' => '(html|rss)'),
-	array()
+$collection->create('user_downloads', array(
+	'path'          => '/downloads/{slug}',
+	'controller'    => 'UserBundle:Downloads:browse',
+	'defaults'      => array('slug' => ''),
+	'requirements'  => array('slug' => '(\\d+(\\-.*?)?)?'),
 ));
 
-$collection->add('user_news', new Route(
-	'/news/{slug}.{_format}',
-	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1, '_format' => 'html'),
-	array('slug' => '(\\d+(\\-.*?)?)?', 'page' => '\\d+', '_format' => '(html|rss)'),
-	array()
+$collection->create('user_downloads_file', array(
+	'path'        => '/downloads/files/{slug}',
+	'controller'  => 'UserBundle:Downloads:file',
 ));
 
-$collection->add('user_news_view', new Route(
-	'/news/view/{slug}',
-	array('_controller' => 'UserBundle:News:view'),
-	array(),
-	array()
+$collection->create('user_downloads_file_download', array(
+	'path'        => '/downloads/files/{slug}/download',
+	'controller'  => 'UserBundle:Downloads:downloadFile',
 ));
 
-$collection->add('user_news_newcomment', new Route(
-	'/news/new-comment/{post_id}',
-	array('_controller' => 'UserBundle:News:newComment'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_downloads_newcomment', array(
+	'path'        => '/downloads/new-comment/{download_id}',
+	'controller'  => 'UserBundle:Downloads:newComment',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_feedback_home', new Route(
-	'/feedback',
-	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'open', 'slug' => 'all-categories', 'order_by' => 'popular'),
-	array(),
-	array()
+$collection->create('user_news_home', array(
+	'path'          => '/news.{_format}',
+	'controller'    => 'UserBundle:News:browse',
+	'defaults'      => array('slug' => '', 'page' => 1, 		'_format' => 'html'),
+	'requirements'  => array('_format' => '(html|rss)'),
 ));
 
-$collection->add('user_feedback', new Route(
-	'/feedback/{order_by}/{status}/{slug}',
-	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'open', 'slug' => 'all-categories', 'order_by' => 'popular'),
-	array(
-		'slug'   => '((\\d+(\\-.*?)?)?)|all\-categories',
-		'status' => '(open|any-status|gathering\-feedback|active|closed)(\\.([0-9]+))?',
-		'order_by'   => '(popular|newest|most\-voted|i\-voted)',
+$collection->create('user_news', array(
+	'path'          => '/news/{slug}.{_format}',
+	'controller'    => 'UserBundle:News:browse',
+	'defaults'      => array('slug' => '', 'page' => 1, 		'_format' => 'html'),
+	'requirements'  => array(
+		'slug'     => '(\\d+(\\-.*?)?)?',
+		'page'     => '\\d+',
+		'_format'  => '(html|rss)',
 	),
-	array()
 ));
 
-$collection->add('user_feedback_new', new Route(
-	'/feedback/new-feedback',
-	array('_controller' => 'UserBundle:Feedback:filter', 'just_form' => 1,  'status' => 'any-status', 'slug' => 'all-categories', 'order_by' => 'popular'),
-	array(),
-	array()
+$collection->create('user_news_view', array(
+	'path'        => '/news/view/{slug}',
+	'controller'  => 'UserBundle:News:view',
 ));
 
-$collection->add('user_feedback_view', new Route(
-	'/feedback/view/{slug}',
-	array('_controller' => 'UserBundle:Feedback:view'),
-	array(),
-	array()
+$collection->create('user_news_newcomment', array(
+	'path'        => '/news/new-comment/{post_id}',
+	'controller'  => 'UserBundle:News:newComment',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_feedback_newfeedback_finishlogin', new Route(
-	'/feedback/new-feedback/login-finished/{feedback_id}',
-	array('_controller' => 'UserBundle:Feedback:newFinishLogin'),
-	array(),
-	array()
+$collection->create('user_feedback_home', array(
+	'path'        => '/feedback',
+	'controller'  => 'UserBundle:Feedback:filter',
+	'defaults'    => array(
+		'status'    => 'open',
+		'slug'      => 'all-categories',
+		'order_by'  => 'popular',
+	),
 ));
 
-$collection->add('user_feedback_newcomment', new Route(
-	'/feedback/new-comment/{feedback_id}',
-	array('_controller' => 'UserBundle:Feedback:newComment'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_feedback', array(
+	'path'          => '/feedback/{order_by}/{status}/{slug}',
+	'controller'    => 'UserBundle:Feedback:filter',
+	'defaults'      => array(
+		'status'    => 'open',
+		'slug'      => 'all-categories',
+		'order_by'  => 'popular',
+	),
+	'requirements'  => array(
+		'slug'      => '((\\d+(\\-.*?)?)?)|all\\-categories',
+		'status'    => '(open|any-status|gathering\\-feedback|active|closed)(\\.([0-9]+))?',
+		'order_by'  => '(popular|newest|most\\-voted|i\\-voted)',
+	),
 ));
 
-$collection->add('user_feedback_vote', new Route(
-	'/feedback/vote/{feedback_id}',
-	array('_controller' => 'UserBundle:Feedback:vote'),
-	array('_method' => 'POST'),
-	array()
+$collection->create('user_feedback_new', array(
+	'path'        => '/feedback/new-feedback',
+	'controller'  => 'UserBundle:Feedback:filter',
+	'defaults'    => array(
+		'just_form'  => 1,
+		'status'     => 'any-status',
+		'slug'       => 'all-categories',
+		'order_by'   => 'popular',
+	),
 ));
 
-$collection->add('user_chat_initsession', new Route(
-	'/chat/chat-session',
-	array('_controller' => 'UserBundle:Chat:chatSession'),
-	array(),
-	array()
+$collection->create('user_feedback_view', array(
+	'path'        => '/feedback/view/{slug}',
+	'controller'  => 'UserBundle:Feedback:view',
 ));
 
-$collection->add('user_chat_widgetisavail', new Route(
-	'/dp.php/chat/is-available.js',
-	array('_controller' => '(see: serve_dp.php)'),
-	array(),
-	array()
+$collection->create('user_feedback_newfeedback_finishlogin', array(
+	'path'        => '/feedback/new-feedback/login-finished/{feedback_id}',
+	'controller'  => 'UserBundle:Feedback:newFinishLogin',
 ));
 
-$collection->add('user_chat_poll', new Route(
-	'/chat/poll/{session_code}',
-	array('_controller' => 'UserBundle:Chat:poll'),
-	array(),
-	array()
+$collection->create('user_feedback_newcomment', array(
+	'path'        => '/feedback/new-comment/{feedback_id}',
+	'controller'  => 'UserBundle:Feedback:newComment',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_chat_sendmessage', new Route(
-	'/chat/send-message/{session_code}',
-	array('_controller' => 'UserBundle:Chat:sendMessage'),
-	array(),
-	array()
+$collection->create('user_feedback_vote', array(
+	'path'        => '/feedback/vote/{feedback_id}',
+	'controller'  => 'UserBundle:Feedback:vote',
+	'methods'     => array('POST'),
 ));
 
-$collection->add('user_chat_sendmessage_attach', new Route(
-	'/chat/send-attach/{session_code}',
-	array('_controller' => 'UserBundle:Chat:sendFile'),
-	array(),
-	array()
+$collection->create('user_chat_initsession', array(
+	'path'        => '/chat/chat-session',
+	'controller'  => 'UserBundle:Chat:chatSession',
 ));
 
-$collection->add('user_chat_sendusertyping', new Route(
-	'/chat/user-typing/{session_code}',
-	array('_controller' => 'UserBundle:Chat:userTyping'),
-	array(),
-	array()
+$collection->create('user_chat_widgetisavail', array(
+	'path'        => '/dp.php/chat/is-available.js',
+	'controller'  => '(see: serve_dp.php)',
 ));
 
-$collection->add('user_chat_chatended', new Route(
-	'/chat/chat-finished/{session_code}',
-	array('_controller' => 'UserBundle:Chat:chatEnded'),
-	array(),
-	array()
+$collection->create('user_chat_poll', array(
+	'path'        => '/chat/poll/{session_code}',
+	'controller'  => 'UserBundle:Chat:poll',
 ));
 
-$collection->add('user_chat_chatended_feedback', new Route(
-	'/chat/chat-finished-feedback/{session_code}',
-	array('_controller' => 'UserBundle:Chat:chatEndedFeedback'),
-	array(),
-	array()
+$collection->create('user_chat_sendmessage', array(
+	'path'        => '/chat/send-message/{session_code}',
+	'controller'  => 'UserBundle:Chat:sendMessage',
 ));
 
-$collection->add('user_chatlogs', new Route(
-	'/chat-logs',
-	array('_controller' => 'UserBundle:ChatLog:list'),
-	array(),
-	array()
+$collection->create('user_chat_sendmessage_attach', array(
+	'path'        => '/chat/send-attach/{session_code}',
+	'controller'  => 'UserBundle:Chat:sendFile',
 ));
 
-$collection->add('user_chatlogs_view', new Route(
-	'/chat-logs/{conversation_id}',
-	array('_controller' => 'UserBundle:ChatLog:view'),
-	array('conversation_id' => '\d+'),
-	array()
+$collection->create('user_chat_sendusertyping', array(
+	'path'        => '/chat/user-typing/{session_code}',
+	'controller'  => 'UserBundle:Chat:userTyping',
 ));
 
-$collection->add('user_widget_overlay', new Route(
-	'/widget/overlay.html',
-	array('_controller' => 'UserBundle:Widget:overlay'),
-	array(),
-	array()
+$collection->create('user_chat_chatended', array(
+	'path'        => '/chat/chat-finished/{session_code}',
+	'controller'  => 'UserBundle:Chat:chatEnded',
 ));
 
-$collection->add('user_widget_newticket', new Route(
-	'/widget/new-ticket.json',
-	array('_controller' => 'UserBundle:Widget:newTicket'),
-	array(),
-	array()
+$collection->create('user_chat_chatended_feedback', array(
+	'path'        => '/chat/chat-finished-feedback/{session_code}',
+	'controller'  => 'UserBundle:Chat:chatEndedFeedback',
 ));
 
-$collection->add('user_widget_newfeedback', new Route(
-	'/widget/new-feedback.json',
-	array('_controller' => 'UserBundle:Widget:newFeedback'),
-	array(),
-	array()
+$collection->create('user_chatlogs', array(
+	'path'        => '/chat-logs',
+	'controller'  => 'UserBundle:ChatLog:list',
 ));
 
-
-$collection->add('user_widget_chat', new Route(
-	'/widget/chat.html',
-	array('_controller' => 'UserBundle:Widget:chat'),
-	array(),
-	array()
+$collection->create('user_chatlogs_view', array(
+	'path'          => '/chat-logs/{conversation_id}',
+	'controller'    => 'UserBundle:ChatLog:view',
+	'requirements'  => array('conversation_id' => '\\d+'),
 ));
 
-$collection->add('user_long_tweet_view', new Route(
-	'/long-tweet/{long_id}',
-	array('_controller' => 'UserBundle:Twitter:viewLong'),
-	array('long_id' => '\\d+'),
-	array()
+$collection->create('user_widget_overlay', array(
+	'path'        => '/widget/overlay.html',
+	'controller'  => 'UserBundle:Widget:overlay',
 ));
 
-################################################################################
-# Plugins
-################################################################################
-
-$collection->add('user_plugins_run', new Route(
-	'/ext-plugins/{plugin_id}/run/{action}',
-	array('_controller' => 'UserBundle:Plugins:run'),
-	array(),
-	array()
+$collection->create('user_widget_newticket', array(
+	'path'        => '/widget/new-ticket.json',
+	'controller'  => 'UserBundle:Widget:newTicket',
 ));
 
+$collection->create('user_widget_newfeedback', array(
+	'path'        => '/widget/new-feedback.json',
+	'controller'  => 'UserBundle:Widget:newFeedback',
+));
+
+$collection->create('user_widget_chat', array(
+	'path'        => '/widget/chat.html',
+	'controller'  => 'UserBundle:Widget:chat',
+));
+
+$collection->create('user_long_tweet_view', array(
+	'path'          => '/long-tweet/{long_id}',
+	'controller'    => 'UserBundle:Twitter:viewLong',
+	'requirements'  => array('long_id' => '\\d+'),
+));
 
 return $collection;

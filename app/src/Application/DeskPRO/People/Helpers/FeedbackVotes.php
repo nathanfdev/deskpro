@@ -35,12 +35,8 @@
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PermissionCache;
-
-use Orb\Util\Arrays;
-use Orb\Util\Util;
+use Application\DeskPRO\Entity;
 
 /**
  * Helps figure out this users votes on feedback and how many votes remain

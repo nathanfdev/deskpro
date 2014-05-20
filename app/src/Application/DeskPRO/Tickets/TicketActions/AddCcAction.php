@@ -35,12 +35,9 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 
@@ -95,7 +92,7 @@ class AddCcAction extends AbstractAction
 			if ($person) {
 				$this->add_people[$person->getId()] = $person;
 			} else {
-				if (App::getContainer()->getSetting('core.user_mode') == 'closed') {
+				if (App::getContainer()->getSetting('core.reg_enabled')) {
 					continue;
 				}
 				$person_processor = new PersonFromEmailProcessor();

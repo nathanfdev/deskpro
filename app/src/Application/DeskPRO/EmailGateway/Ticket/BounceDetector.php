@@ -33,9 +33,7 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use Orb\Log\Logger;
 use Orb\Util\Strings;
-use Application\DeskPRO\Entity\Ticket;
 
 class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 {

@@ -35,12 +35,18 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-use Orb\Util\Numbers;
 
 class Template extends AbstractEntityRepository
 {
+	/**
+	 * @param $name
+	 * @return null|\Application\DeskPRO\Entity\Template
+	 */
+	public function getTemplateByName($name)
+	{
+		return $this->findOneBy(array('name' => $name));
+	}
+
 	public function getTemplateForStyle($template_name, $style = null)
 	{
 		try {

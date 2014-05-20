@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Dpql\Renderer;
 
-use Application\DeskPRO\Dpql\ResultHandler;
-use Application\DeskPRO\Dpql\Results;
 use Application\DeskPRO\App;
 
 /**

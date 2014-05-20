@@ -16,6 +16,7 @@ pageMeta.personGravatarIcon = '{{ person.primary_email.getGravatarUrl() }}&s=13'
 {% endif %}
 
 pageMeta.person = {{ person_api|json_encode|raw }};
+pageMeta.api_data = {{ person.toApiData()|json_encode|raw }};
 
 pageMeta.perms = {{ perms|json_encode|raw }};
 
@@ -25,9 +26,8 @@ pageMeta.baseId = '{{ baseId }}';
 {% if person.is_agent %}pageMeta.isAgent = true;{% endif %}
 </script>
 {# Page Containers #}
-<div class="profile layout-content with-scrollbar {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+<div class="profile layout-content {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
+	<div class="dp-page-content">
 {# /Page Containers #}
 
 {% if (not person.is_confirmed or not person.is_agent_confirmed) or (person.is_confirmed and person.is_agent_confirmed and has_email_validating) %}
@@ -43,6 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 {% endif %}
 
 <header class="page-header">
+	{{ dp_app_loc(baseId, 'header.top') }}
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box tipped" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
 			<img src="{{ person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
@@ -119,15 +120,24 @@ pageMeta.baseId = '{{ baseId }}';
 			>
 				{{ phrase('agent.people.delete_user') }}
 			</li>
+			<li
+				data-action="upload-vcard"
+				class="upload-vcard-trigger address"
+			>
+				{{ phrase('agent.people.upload_vcard') }}
+			</li>
 		{% endif %}
 	</ul>
 
 	<ul id="{{baseId}}_merge_menu" style="display: none;">
 		<li>{{ phrase('agent.people.find_person') }}</li>
 	</ul>
+
+	{{ dp_app_loc(baseId, 'header.bottom') }}
 </header>
 
-{{ dp_widgets(baseId, 'profile', 'header', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'header.after') }}
+{{ dp_app_loc(baseId, 'main.before') }}
 
 <table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
@@ -139,15 +149,15 @@ pageMeta.baseId = '{{ baseId }}';
 	</section>
 </td></tr></table>
 
-{{ dp_widgets(baseId, 'profile', 'footer', 'above', person_api) }}
+{{ dp_app_loc(baseId, 'main.after') }}
+{{ dp_app_loc(baseId, 'footer') }}
 
 {% include 'AgentBundle:Person:contact-overlay.html.twig' %}
 
-{{ dp_widgets(baseId, 'profile', '', '', person_api) }}
-
 <div style="display: none">
 	<div id="{{ baseId }}_delete_confirm">
-		{{ phrase('agent.people.person_delete_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted') }}</strong>
+		{{ phrase('agent.people.person_delete_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted') }}</strong><br/>
+                {{ phrase('agent.general.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
 		{% if person_object_counts.tickets or person_object_counts.chats %}
 			<br/><br/>{{ phrase('agent.people.other_user_content_being_deleted') }}<br/>
 			{% if person_object_counts.tickets %}&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}<br/>{% endif %}
@@ -156,7 +166,8 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<div id="{{ baseId }}_ban_confirm">
-		{{ phrase('agent.people.person_ban_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted_banned') }}</strong>
+		{{ phrase('agent.people.person_ban_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted_banned') }}</strong><br/>
+                {{ phrase('agent.general.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
 		{% if person_object_counts.tickets or person_object_counts.chats %}
 			<br/><br/>{{ phrase('agent.people.other_user_content_being_deleted') }}<br/>
 			{% if person_object_counts.tickets %}&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}<br/>{% endif %}
@@ -166,7 +177,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 {# Page Containers #}
-</div>
 {% if with_warn_for_email %}
 <div class="full-tab-warn">
 	<div class="message">

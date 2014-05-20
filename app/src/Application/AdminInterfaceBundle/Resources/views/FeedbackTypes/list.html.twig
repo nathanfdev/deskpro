@@ -1,0 +1,37 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="display_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="FeedbackTypesList.feedback_types.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_types') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="FeedbackTypesList.sortedListOptions">
+				<li class="with-drag-handle" ng-repeat="type in FeedbackTypesList.feedback_types" dp-state-mark="portal.feedback_types.edit.{{ ng_var('type.id') }}" data-id="{{ ng_var('type.id') }}">
+					<a href="{{ ng_href('portal.feedback_types.edit', '{id: type.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<h4><span class="title-text">{{ ng_var('type.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('portal.feedback_types.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+	<div dp-register-message="no_delete_last">{{ phrase('adm.feedback_types.no_delete_last') }}</div>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Types help agents to organize incoming feedback.</h1>
+		<p>Users have to choose a type when they submit an item of feedback. The type field is intended to record whether the feedback is a suggestion, complaint, bug report etc.</p>
+	</header>
+	<article>
+		<section>
+			<p>Customize the types available here. Click to edit, or drag to change the order in which they are displayed to users and agents.</p>
+		</section>
+	</article>
+{% endblock %}

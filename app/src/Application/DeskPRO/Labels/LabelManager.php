@@ -63,7 +63,11 @@ class LabelManager
 
 		foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
 			if ($labelobj['label'] == $label) {
-				$this->entity[$this->labels_property]->remove($k);
+				if ($this->entity instanceof Ticket) {
+					$this->entity->removeLabelByString($label);
+				} else {
+					$this->entity[$this->labels_property]->remove($k);
+				}
 
 				if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
 					$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_removed', $label, null);
@@ -149,9 +153,6 @@ class LabelManager
 		foreach ($added as $added_label) {
 			if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
 				$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $added_label);
-
-				if (!isset($this->entity->_presave_state['label_added'])) $this->entity->_presave_state['label_added'] = array();
-				$this->entity->_presave_state['label_added'][] = $added_label;
 			}
 		}
 		foreach ($removed as $removed_label) {
@@ -173,13 +174,6 @@ class LabelManager
 		$labels = array();
 		foreach ($this->entity[$this->labels_property] as $label) {
 			$labels[] = $label['label'];
-		}
-
-		// If its a ticket then a label might have been added to the property array
-		if (isset($this->entity->_presave_state['label_added'])) {
-			foreach ($this->entity->_presave_state['label_added'] as $x) {
-				$labels[] = $x;
-			}
 		}
 
 		return $labels;

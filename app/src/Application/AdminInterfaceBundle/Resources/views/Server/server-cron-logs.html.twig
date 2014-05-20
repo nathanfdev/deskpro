@@ -1,0 +1,140 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('server.cron') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+
+			<h3>Scheduled Tasks</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Scheduled Tasks Logs</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<div class="alert alert-info">
+				<div>
+					<table>
+						<tr>
+							<td style="width: 100px; text-align:center;">Logs Type</td>
+							<td>
+								<select
+										ui-select2
+										ng-model="LogsCtrl.filter.job_id"
+										style="width: 300px;"
+										>
+									<option value="">All Logs</option>
+									<option ng-repeat="job in LogsCtrl.server_cron_logs.jobs" ng-value="job.id">
+										{{ ng_var('job.title') }} ({{ ng_var('job.id') }})
+									</option>
+								</select>
+							</td>
+
+							<td style="width: 70px; text-align:center;">Priority</td>
+							<td>
+								<select
+										ui-select2
+										ng-model="LogsCtrl.filter.priority"
+										style="width: 150px;"
+										>
+									<option value="">All Priorities</option>
+									<option value="3">Errors</option>
+									<option value="6">Info</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+					<div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
+						<button class="btn btn-primary" ng-click="LogsCtrl.updateFilter()">Filter</button>
+					</div>
+				</div>
+			</div>
+
+			<button class="btn btn-danger" ng-click="LogsCtrl.startClearAll();">
+				Clear Scheduled Tasks Logs
+			</button>
+
+			<div class="dp-btn-pagination" ng-show="LogsCtrl.server_cron_logs.logs">
+				<span dp-show-spinning="paginating_server_cron_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="LogsCtrl.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
+						ng-click="LogsCtrl.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('admin.logs.log') }}
+						</th>
+						<th>
+							Message
+						</th>
+						<th width="150">
+							{{ phrase('agent.general.date') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="log in LogsCtrl.server_cron_logs.logs">
+						<td class="alt dp-id-col">
+							{{ ng_var('log.log_name') }}
+						</td>
+						<td ng-class="{danger: log.priority <= 4}">
+							{{ ng_var('log.message') }}
+						</td>
+						<td>
+							{{ ng_var('log.date_created * 1000 | fulltime') }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="dp-btn-pagination" ng-show="LogsCtrl.server_cron_logs.logs">
+				<span dp-show-spinning="paginating_server_cron_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="LogsCtrl.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
+						ng-click="LogsCtrl.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+		</article>
+
+	</section>
+
+{% endblock %}

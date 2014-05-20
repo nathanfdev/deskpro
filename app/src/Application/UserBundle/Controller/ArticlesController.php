@@ -35,18 +35,13 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-use Orb\Util\Util;
-use Orb\Util\Numbers;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Comments\NewCommentFormType;
-
-use Application\UserBundle\Controller\Helper\ContentRating;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity;
 use Application\UserBundle\Controller\Helper\Comments;
+use Application\UserBundle\Controller\Helper\ContentRating;
 use Application\UserBundle\Controller\Helper\FacebookLike;
+use Orb\Util\Numbers;
 
 class ArticlesController extends AbstractController
 {
@@ -472,7 +467,7 @@ class ArticlesController extends AbstractController
 		// Disable cache for this guest so the flash message
 		// appears and doesnt get cached for everyone
 		if ($this->person->isGuest()) {
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		}
 
 		return $this->redirectRoute('user');
@@ -523,7 +518,7 @@ class ArticlesController extends AbstractController
 				));
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {
 				$this->session->setFlash('comment_error', $validator->getErrors(true));
@@ -534,7 +529,7 @@ class ArticlesController extends AbstractController
 
 			$comment = $new_comment->save();
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			if ($new_comment->require_login) {
 				$return_url = $this->generateUrl('user_newcomment_finishlogin', array(

@@ -34,15 +34,9 @@
 
 namespace Application\DeskPRO\Organizations;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationEmailDomain;
-
 use Doctrine\ORM\EntityManager;
-
-use Orb\Util\Strings;
-use Orb\Util\Util;
 
 class EmailDomainManager
 {
@@ -194,7 +188,7 @@ class EmailDomainManager
 					LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 					SET tickets.organization_id = ?
 					WHERE people.organization_id = ? AND people_emails.email_domain = ?
-				", array($orgdomain->organization->id, $orgdomain->domain));
+				", array(null, $orgdomain->organization->id, $orgdomain->domain));
 
 				$this->db->executeUpdate("
 					UPDATE tickets_search_active
@@ -202,7 +196,7 @@ class EmailDomainManager
 					LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 					SET tickets_search_active.organization_id = ?
 					WHERE people.organization_id = ? AND people_emails.email_domain = ?
-				", array($orgdomain->organization->id, $orgdomain->domain));
+				", array(null, $orgdomain->organization->id, $orgdomain->domain));
 
 				$count = $this->db->executeUpdate("
 					UPDATE people

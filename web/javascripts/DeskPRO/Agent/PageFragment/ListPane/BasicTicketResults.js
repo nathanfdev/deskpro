@@ -26,6 +26,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
         $('.extra-fields .agent .agent_link', this.el).on('click', function(ev) {
             var agent_id = $(this).parent().data('prop-value');
+			if (!agent_id) {
+				agent_id = $(this).parent().data('agent-id');
+			}
 
             if(agent_id) {
                 ev.stopPropagation();

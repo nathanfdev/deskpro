@@ -33,14 +33,12 @@
 
 namespace Application\DeskPRO\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Entity;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -52,7 +50,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		$this->addOption('with-owl', null, InputOption::VALUE_NONE);
 		$this->addOption('owl-size', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('real-send', null, InputOption::VALUE_NONE);
-		$this->addOption('subject', null, InputOption::VALUE_NONE);
+		$this->addOption('subject', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
 	}
 
@@ -715,11 +713,7 @@ SRC;
 			$message->setSubject('Test Email - ' . $time);
 			$message->getBody("Test Message\n\n" . uniqid('eml-', true));
 
-			$tr = new \Application\DeskPRO\Entity\EmailTransport();
-			$tr->match_type = 'all';
-			$tr->title = 'contact';
-			$tr->transport_type = 'mail';
-
+			$tr = App::$container->getEmailAccountManager()->getTransportFactory()->createPhpMailTransport(new PhpMailConfig());
 			$message->setForceTransport($tr);
 
 			App::getMailer()->send($message);

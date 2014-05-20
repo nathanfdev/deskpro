@@ -45,7 +45,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	initSection: function() {
-
+		this.updateOnlineCount();
 	},
 
 	_initMessageHandlers: function() {
@@ -59,6 +59,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			$('#agent_online_list').find('li').not('.no-agents').remove();
 			$('#agent_online_list').find('li.no-agents').show();
 			$('#agent_offline_list').find('li').show();
+			$('#agent_chat_online_icons').find('li').not('.agent-me').hide();
 			self.onlineCountEl.html('0');
 
 			Array.each(info.online_agents, function(agent_id) {
@@ -70,9 +71,11 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	_initInterface: function() {
 		this.panelEl = $('#agent_chat_panel');
 		this.onlineListEl = $('#agent_online_list');
+		this.onlineIconsEl = $('#agent_chat_online_icons');
 		this.offlineListEl = $('#agent_offline_list');
 		this.onlineCountEl = $('#chat_online_count');
 		this.agentTeamList = $('#agent_team_list');
+		this.everyone      = $('#everyone_list');
 
 		$('.show-offline-opt', this.panelEl).on('click', function() {
 			if ($(this).is(':checked')) {
@@ -130,6 +133,18 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 			self.newChatWindow(agentIds, name);
 		});
+                
+		this.everyone.on('click', 'li', function(ev) {
+			ev.stopPropagation();
+			var agentIds = $(this).data('member-ids') || '';
+			agentIds = (agentIds+"").split(',');
+			agentIds.include(window.DESKPRO_PERSON_ID);
+			agentIds = agentIds.filter(function(x) {
+				if (x) return true;
+			});
+
+			self.newChatWindow(agentIds, "Everyone");
+		});
 
 		// Agents/teams tabs
 		this.listTabs = new DeskPRO.UI.SimpleTabs({
@@ -151,6 +166,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		$('li.online-now', '#agent_offline_list').each(function() {
 			self.addOnlineAgent($(this).removeClass('online-now').data('agent-id'));
 		});
+
+		this.updateOnlineCount();
 
 		this.panelEl.on('click', function() {
 
@@ -232,6 +249,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			return;
 		}
 
+		var li2 = this.onlineIconsEl.find('.agent-' + agent_id);
+		li2.show();
+
 		// Make sure they aren't already there (ie logged out/logged in before we could see theyre gone)
 		if ($('.agent-' + agent_id, this.onlineListEl).length) {
 			return;
@@ -247,6 +267,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var countInt = parseInt(this.onlineCountEl.html());
 		countInt++;
 		this.onlineCountEl.html(countInt);
+		this.updateOnlineCount();
 
 		$('li.no-agents', this.onlineListEl).hide();
 	},
@@ -257,6 +278,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}
 
 		var li = $('.agent-' + agent_id, this.onlineListEl);
+		var li2 = this.onlineIconsEl.find('.agent-' + agent_id);
 		var offlineLi = $('.agent-' + agent_id, this.offlineListEl);
 
 		if (!li.length) {
@@ -264,6 +286,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}
 
 		li.remove();
+		li2.hide();
 
 		// Show them in offline again
 		offlineLi.show();
@@ -275,5 +298,14 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		if (countInt < 1) {
 			$('li.no-agents', this.onlineListEl).show();
 		}
+		this.updateOnlineCount();
+	},
+
+	updateOnlineCount: function(countInt) {
+		if (!countInt) {
+			countInt = this.onlineListEl.find('li').length - 1; //-1 because theres an li for 'no online'
+		}
+
+		$('#agent_chat_section').attr('title', 'Online Agents: ' + countInt + '. Click to open IM window.');
 	}
 });

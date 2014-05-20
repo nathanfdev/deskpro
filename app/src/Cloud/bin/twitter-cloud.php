@@ -127,7 +127,7 @@ if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.
 require_once DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 require DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 require DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
 require_once DP_ROOT.'/sys/autoload.php';

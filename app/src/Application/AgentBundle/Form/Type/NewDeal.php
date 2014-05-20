@@ -35,17 +35,17 @@
 namespace Application\AgentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class NewDeal extends AbstractType
 {
-    public function buildForm(FormBuilder $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         #------------------------------
 		# User fields
 		#------------------------------
 
-		$user_builder = $builder->create('person', 'form', array('data_class' => 'Application\\AgentBundle\\Form\\Model\\NewDealPerson'));                
+		$user_builder = $builder->create('person', 'form', array('data_class' => 'Application\\AgentBundle\\Form\\Model\\NewDealPerson'));
 		$user_builder->add('id', 'hidden');
 		$user_builder->add('name', 'text', array('required' => false));
 		$user_builder->add('email_address', 'text', array('required' => false));
@@ -80,7 +80,7 @@ class NewDeal extends AbstractType
 			'allow_add' => true,
 			'allow_delete' => true
 		));
-        
+
     }
 
     public function getDefaultOptions(array $options)

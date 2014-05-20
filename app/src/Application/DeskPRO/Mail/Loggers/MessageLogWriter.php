@@ -33,7 +33,7 @@
  */
 
 namespace Application\DeskPRO\Mail\Loggers;
-use \Orb\Log\LogItem;
+use Orb\Log\LogItem;
 
 class MessageLogWriter extends \Orb\Log\Writer\AbstractWriter
 {

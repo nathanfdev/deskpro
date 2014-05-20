@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewDownload';
 
@@ -12,8 +11,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ phrase('agent.publish.no_downlod_cats_error') }}
 </div>
 <div class="form-outer">
-
-{{ agentui.scroll_containers('page-new-download page-new-content') }}
+<div class="layout-content page-new-download page-new-content">
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
@@ -142,4 +140,5 @@ pageMeta.baseId = '{{ baseId }}';
 </form>
 
 </div>
-{{ agentui.scroll_containers_end() }}
+</div>
+</div>

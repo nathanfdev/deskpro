@@ -29,19 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Entities
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Log\LoggerManager;
+use Application\DeskPRO\Monolog\LoggerFactory;
+use Application\DeskPRO\Monolog\LoggerManager;
 
 class LoggerManagerService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$logger_manager = new LoggerManager(dp_get_log_dir());
-		return $logger_manager;
+		$factory = new LoggerFactory($container);
+		$manager = new LoggerManager($factory);
+
+		return $manager;
 	}
 }

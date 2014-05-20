@@ -34,14 +34,14 @@
 
 namespace Application\AgentBundle\Form\Model;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketAttachment;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\App;
 
 class NewTicket
 {
@@ -84,6 +84,11 @@ class NewTicket
 	protected $_ticket;
 
 	/**
+	 * @var \Application\DeskPRO\Tickets\TicketManager
+	 */
+	protected $_ticket_manager;
+
+	/**
 	 * @var callable
 	 */
 	protected $_pre_save_callback;
@@ -106,7 +111,39 @@ class NewTicket
 		$this->_em = $em;
 		$this->_person_context = $person_context;
 
+		// TODO
+		$this->_ticket_manager = App::$container->getTicketManager();
+
 		$this->person = new NewTicketPerson();
+	}
+
+
+	/**
+	 * @return Ticket
+	 */
+	public function getMockTicket()
+	{
+		$t = new Ticket();
+
+		if ($this->department_id) {
+			$t->setDepartmentId($this->department_id);
+		}
+		if ($this->workflow_id) {
+			$t->setWorkflowId($this->workflow_id);
+		}
+		if ($this->product_id) {
+			$t->setProductId($this->product_id);
+		}
+		if ($this->priority_id) {
+			$t->setPriorityId($this->priority_id);
+		}
+		if ($this->category_id) {
+			$t->setCategoryId($this->category_id);
+		}
+		if ($this->status) {
+			$t->setStatus($this->status);
+		}
+		return $t;
 	}
 
 	public function setValuesFromTicket(Ticket $ticket)
@@ -207,7 +244,7 @@ class NewTicket
 		$add_cc_people = $this->add_cc_newpeople;
 
 		foreach ($this->add_cc_newperson as $info) {
-			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email']) || App::getSystemService('gateway_address_matcher')->isManagedAddress($info['email'])) {
+			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email']) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($info['email'])) {
 				continue;
 			}
 
@@ -245,11 +282,15 @@ class NewTicket
 
 		// Ticket props
 		$ticket = new Ticket();
+		$this->_ticket_manager->markAsManaged($ticket);
+
+		$ticket_context = $this->_ticket_manager->createAgentExecutorContext($this->_person_context, 'newticket', 'web');
+
 		$ticket['creation_system'] = Ticket::CREATED_WEB_AGENT_PORTAL;
 		$ticket['language'] = $person->getRealLanguage();
 
 		if ($this->suppress_user_notify) {
-			$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+			$ticket_context->getVars()->set('mute_user_emails', true);
 		}
 
 		$this->_email = $person->findEmailAddress($this->person->email_address);
@@ -269,11 +310,6 @@ class NewTicket
 		foreach ($standard as $k) {
 			$ticket[$k] = $this->$k;
 		}
-
-		if (!$ticket['notify_template']) {
-			$ticket['notify_template'] = '';
-		}
-
 
 		$ticket->person = $person;
 
@@ -364,9 +400,10 @@ class NewTicket
 			}
 		}
 
-		$this->_em->flush();
+		$this->_em->persist($ticket);
 		$this->_em->persist($message);
-		$this->_em->flush();
+
+		$this->_ticket_manager->saveTicket($ticket, $ticket_context);
 
 		$this->_ticket = $ticket;
 

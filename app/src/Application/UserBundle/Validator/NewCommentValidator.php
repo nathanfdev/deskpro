@@ -36,10 +36,8 @@ namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
 use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
 use Application\DeskPRO\People\PersonContextInterface;
-use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
 
 class NewCommentValidator extends AbstractValidator implements PersonContextInterface

@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\BlobStorage\MoveBlobsUtil;
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\MoveBlobsUtil;
 
 /**
  * Goes through blobs that need to be moved from one storage mechanism to another

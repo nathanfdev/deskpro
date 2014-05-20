@@ -37,8 +37,6 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-
 /**
  * Performs groupings for specific tickets only.
  */

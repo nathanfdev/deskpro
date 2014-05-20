@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
-use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
 class ApiToken extends AbstractEntityRepository
@@ -63,7 +62,7 @@ class ApiToken extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:ApiToken t
-			WHERE t.person = ?0
+			WHERE t.person = ?0 AND t.scope = 'client'
 		")->setParameters(array($person))->getOneOrNullResult();
 	}
 

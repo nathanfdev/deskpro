@@ -33,16 +33,13 @@
 
 namespace Application\DeskPRO\Command;
 
-use Orb\Util\Strings;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Logger;
+use Orb\Util\Strings;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -57,8 +54,6 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			->addOption('job', 'j', InputOption::VALUE_REQUIRED, 'Run only specific job')
 			->addOption('group', 'g', InputOption::VALUE_REQUIRED, 'Run only a specific group of jobs')
 			->addOption('ignore-interval', 'f', InputOption::VALUE_NONE, 'Always run job(s) even if the job interval has not ellapsed since last run')
-			->addOption('daemon', null, InputOption::VALUE_NONE, 'Runs forever. Only "checkable" jobs supported. php-exec option is required.')
-			->addOption('php-exec', 'p', InputOption::VALUE_REQUIRED, 'Runs jobs as child processes using this path to PHP.')
 			->addOption('options', 'o', InputOption::VALUE_REQUIRED, 'Specify a JSON-encoded array of options to pass to worker jobs')
 			->addOption('info', null, InputOption::VALUE_NONE, 'Don\'t execute anything, just list info about scheduled tasks');
 	}
@@ -136,100 +131,6 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		}
 
 		App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
-
-		#------------------------------
-		# Report fatal errors from logs
-		#------------------------------
-
-		if (!defined('DPC_IS_CLOUD')) {
-			$date_cut = time() - 259200;
-			$date_cut_min = time() - 172800;
-			foreach (array('server-phperr-web.log', 'cli-phperr.log') as $logfile) {
-				$logpath = dp_get_log_dir() . '/' . $logfile;
-				if (!file_exists($logpath)) {
-					continue;
-				}
-
-				$mtime = @filemtime($logpath);
-				if (!$mtime || $mtime < $date_cut_min) {
-					continue;
-				}
-
-				// One per day
-				$check = (int)App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.cron_logreport.' . $logfile));
-				if ($check && $check > $date_cut) {
-					continue;
-				}
-
-				App::getDb()->replace('settings', array('name' => 'core.cron_logreport.' . $logfile, 'value' => time()));
-
-				if ($is_verbose) {
-					$output->writeln("Submitting $logfile log");
-				}
-
-				$log = file_get_contents($logpath);
-				if (filesize($logpath) > 307200) {
-					$log = substr($log, -307200);
-				}
-
-				// With this reporting we are trying to get notified of fatal errors that couldnt be
-				// handled. If we handled the erorr properly, then the path would have been truncated.
-				// So an easy way to check is by checking for the full file path and then getting the timestamp
-				// of that log line.
-				$last_pos = strrpos($log, DP_ROOT);
-				if ($last_pos === false) {
-					continue;
-				}
-
-				// Now try to find the line timestamp
-				$last_timestamp = null;
-				$x = 0;
-				while ($x++ < 100) {
-					$line_start = strrpos($log, "\n[", max($last_pos-1000, 0));
-					$last_timestamp = Strings::extractRegexMatch('#\[((.*?)-(.*?)-(.*?) (.*?))\]#', substr($log, $line_start, 100));
-
-					if ($last_timestamp) {
-						$last_timestamp = @strtotime($last_timestamp);
-						if ($last_timestamp) {
-							break;
-						}
-					}
-				}
-
-				if (!$last_timestamp) {
-					continue;
-				}
-
-				// And make sure the timestamp is after our last submission
-				if ($last_timestamp > $date_cut_min) {
-					continue;
-				}
-
-				$errinfo = array(
-					'type'            => 'error',
-					'session_name'    => '',
-					'die'             => false,
-					'pri'             => 'ERR',
-					'trace'           => $log,
-					'summary'         => 'PHP error log ('.$logfile.')',
-					'errstr'          => 'PHP error log ('.$logfile.')',
-					'errname'         => 'E_ERROR',
-					'errno'           => 1,
-					'errfile'         => $logfile,
-					'errline'         => 1,
-					'display'         => false,
-					'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-					'process_log'     => '',
-					'context_data'    => '',
-					'error_time'      => microtime(true),
-					'time_to_error'   => 1
-				);
-
-				try {
-					\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
-				} catch (\Exception $e) {}
-			}
-		}
 
 		#------------------------------
 		# Run
@@ -411,17 +312,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			$ignore_interval = true;
 		}
 
-		if ($input->getOption('php-exec')) {
-			$cmd = $input->getOption('php-exec') . ' "' . DP_ROOT . '/bin/console-dev" dp:worker-job '.($verbose ? '-v ' : '').'-f -j %job%';
-
-			if ($input->getOption('daemon')) {
-				$runner = new \Application\DeskPRO\WorkerProcess\Runner\CheckParallel($cmd);
-			} else {
-				$runner = new \Application\DeskPRO\WorkerProcess\Runner\ExecParallel($cmd);
-			}
-		} else {
-			$runner = new \Application\DeskPRO\WorkerProcess\Runner\Standard();
-		}
+		$runner = new \Application\DeskPRO\WorkerProcess\Runner\Standard();
 
 		$runner->setJobOptions($options);
 

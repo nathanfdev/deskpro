@@ -34,10 +34,8 @@
 
 namespace Application\InstallBundle\Install;
 
-use Application\DeskPRO\DBAL\Connection;
-use Orb\Log\Logger;
-
 use Application\DeskPRO\App;
+use Orb\Log\Logger;
 use Orb\Util\Env;
 use Orb\Util\Strings;
 

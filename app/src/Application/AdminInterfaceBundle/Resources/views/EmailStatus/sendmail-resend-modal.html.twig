@@ -1,0 +1,21 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Resend Email</h4>
+{% endblock %}
+{% block modal_body %}
+	<p>
+		Are you sure you want to resend this email?
+	</p>
+	<p>
+		Resending the email will make DeskPRO send the email in the same way it was sent before.
+		Typically you only need to do this if you want to retry a failed attempt from before.
+	</p>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-primary" ng-click="doResend()"><i class="fa fa-trash-o"></i> Resend Email</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

@@ -156,8 +156,12 @@ class MainController extends AbstractController
 		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
 		$chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
 
+		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+		$password_validator = App::$container->getSystemService('password_policy_validator');
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
+			'password_expired'    => $password_validator->isPasswordExpired($this->person),
 			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names'         => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
 			'online_agent_ids'    => $online_agent_ids,
@@ -321,399 +325,68 @@ class MainController extends AbstractController
 	{
 		$q = $this->in->getString('q');
 
-		$type_to_ent = array(
-			'article'      => 'DeskPRO:Article',
-			'download'     => 'DeskPRO:Download',
-			'feedback'     => 'DeskPRO:Feedback',
-			'news'         => 'DeskPRO:News',
-			'ticket'       => 'DeskPRO:Ticket',
-			'person'       => 'DeskPRO:Person',
-			'organization' => 'DeskPRO:Organization',
-			'chat'         => 'DeskPRO:ChatConversation'
-		);
+        $results = array(
+            'article'              => array(),
+            'download'             => array(),
+            'feedback'             => array(),
+            'news'                 => array(),
+            'ticket'               => array(),
+            'person'               => array(),
+            'person_related'       => array(),
+            'organization'         => array(),
+            'organization_related' => array(),
+            'chat'                 => array()
+        );
 
-		$results = array(
-			'article'                => array(),
-			'download'               => array(),
-			'feedback'               => array(),
-			'news'                   => array(),
-			'ticket'                 => array(),
-			'person'                 => array(),
-			'person_related'         => array(),
-			'organization'           => array(),
-			'organization_related'   => array(),
-			'chat'                   => array()
-		);
+        $result_meta = array();
+        $people_top  = false;
 
-		if (!$this->person->hasPerm('agent_people.use')) {
-			unset($type_to_ent['person']);
-			unset($type_to_ent['organization']);
-		}
+        if (!$q) {
+            return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+                'q'           => $q,
+                'router'      => App::getRouter(),
+                'results'     => $results,
+                'result_meta' => $result_meta,
+                'people_top'  => $people_top,
+            ));
+        }
 
-		$result_meta = array();
-
-		$people_top = false;
-
-		if (!$q) {
-			return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
-				'q' => $q,
-				'router' => App::getRouter(),
-				'results' => $results,
-				'result_meta' => $result_meta,
-				'people_top' => $people_top,
-			));
-		}
-
-		#------------------------------
-		# ID based
-		#------------------------------
-
-		$is_label = false;
-		if (preg_match('#^\[(.*?)\]$#', $q, $m)) {
-			$is_label = $m[1];
-		}
-
-		// We dont know about past ref formats, so just always try to find
-		// a ref if its a valid form
-		if (preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
-			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef(strtoupper($q));
-			if ($ticket) {
-				if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-					$results['ticket'][] = $ticket;
-				}
-			} elseif (strlen($q) >= 3) {
-				$tickets = $this->em->getRepository('DeskPRO:Ticket')->searchTicketRef($q);
-				foreach ($tickets as $ticket) {
-					if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-						$results['ticket'][] = $ticket;
-					}
-				}
-			}
-		}
-
-		// See if its a tac code (from the URL in user emails)
-		$info = \Application\DeskPRO\Entity\Ticket::decodeAccessCode($q);
-		if (!empty($info['ticket_id']) && $info['ticket_id']) {
-			$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($info['ticket_id']);
-			if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-				$results['ticket'][] = $ticket;
-			}
-		}
-
-		// Subject search against tickets
-		$words = Strings::utf8_strtolower($q);
-		$words = explode(' ', $words);
-		$words = Arrays::removeFalsey($words);
-		$words = array_unique($words);
-		$words = array_filter($words, function($s) {
-			if (strlen($s) >= 3) {
-				return true;
-			} else {
-				return false;
-			}
-		});
-
-		$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
-		$after_id = $after_id - 10000;
-
-		if ($words) {
-			$db = App::getDbRead();
-
-			#------------------------------
-			# Ticket Subject
-			#------------------------------
-
-			$where = array();
-			foreach ($words as $w) {
-				$where[] = "(subject LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
-			}
-
-			$where[] = "(id > $after_id)";
-
-			$where = implode(' AND ', $where);
-
-			$ticket_ids = App::getDbRead()->fetchAllCol("
-				SELECT id
-				FROM tickets
-				WHERE $where
-				ORDER BY id DESC
-				LIMIT 100
-			");
-
-			if ($ticket_ids) {
-				$tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
-				foreach ($tickets as $ticket) {
-					if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-						$results['ticket'][] = $ticket;
-					}
-				}
-			}
-
-			#------------------------------
-			# Titles
-			#------------------------------
-
-			$where = array();
-			foreach ($words as $w) {
-				$where[] = "(title LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
-			}
-			$where[] = "(status != 'hidden')";
-			$where = implode(' AND ', $where);
-
-			foreach (array(
-				'article'      => 'articles',
-				'download'     => 'downloads',
-				'feedback'     => 'feedback',
-				'news'         => 'news',
-			) as $type => $table) {
-				$ids = App::getDbRead()->fetchAllCol("
-					SELECT id
-					FROM $table
-					WHERE $where
-					ORDER BY id DESC
-					LIMIT 25
-				");
-
-				if ($ids) {
-					$results[$type] = $this->em->getRepository($type_to_ent[$type])->getByIds($ids, true);
-				}
-			}
-		}
-
-		if (!$is_label && Numbers::isInteger($q)) {
-			foreach ($type_to_ent as $type => $ent) {
-				if ($type == 'ticket') {
-					$obj = $this->em->getRepository('DeskPRO:Ticket')->findTicketId($q);
-					if ($obj && $obj->getId() != $q) {
-						$result_meta['ticket_deleted'] = $obj->getId();
-						$result_meta['ticket_deleted_oldid'] = $q;
-					}
-				} else {
-					$obj = $this->em->find($ent, $q);
-				}
-				if ($obj) {
-					if ($obj instanceof \Application\DeskPRO\Entity\Ticket && !$this->person->PermissionsManager->TicketChecker->canView($obj)) {
-						continue;
-					}
-					$results[$type][] = $obj;
-				}
-			}
-
-		} else {
-
-			if ($this->person->hasPerm('agent_people.use')) {
-				if (!$is_label) {
-					#------------------------------
-					# Email address: Full or partial
-					#------------------------------
-
-					if (preg_match('#^\S*@\S*$#', $q)) {
-
-						$people_top = true;
-						$people = array();
-
-						// Complete email address
-						if (\Orb\Validator\StringEmail::isValueValid($q)) {
-							$p = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-							$people = array();
-							if ($p) {
-								$people[] = $p;
-							}
-						} else {
-							if (strpos($q, '@') === 0) {
-								$email = substr($q, 1);
-								$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
-
-								if ($this->settings->get('core_tablecounts.people') < 150000) {
-									$people_ids = $this->db->fetchAllCol("
-										SELECT people.id
-										FROM people
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE people_emails.email_domain LIKE ?
-										ORDER BY people.id DESC
-										LIMIT 15
-									", array($email));
-								} else {
-									$people_ids = $this->db->fetchAllCol("
-										SELECT people.id
-										FROM people
-										LEFT JOIN tickets ON (tickets.person_id = people.id)
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE
-											tickets.id > ?
-											AND people_emails.email_domain LIKE ?
-										ORDER BY tickets.id DESC
-										LIMIT 15
-									", array($after_id, $email));
-								}
-							} else {
-								$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
-
-								if ($this->settings->get('core_tablecounts.people') < 150000) {
-									$people_ids = $this->db->fetchAllCol("
-										SELECT people.id
-										FROM people
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE people_emails.email LIKE ?
-										ORDER BY people.id DESC
-										LIMIT 15
-									", array($email));
-								} else {
-									$people_ids = $this->db->fetchAllCol("
-										SELECT people.id
-										FROM people
-										LEFT JOIN tickets ON (tickets.person_id = people.id)
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE
-											tickets.id > ?
-											AND people_emails.email LIKE ?
-										ORDER BY tickets.id DESC
-										LIMIT 15
-									", array($after_id, $email));
-								}
-							}
-
-							if ($people_ids) {
-								$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
-							}
-						}
-
-						foreach ($people as $p) {
-							$results['person'][$p->id] = $p;
-
-							if ($p->organization) {
-								$results['organization'][$p->organization->id] = $p->organization;
-							}
-						}
-
-						#------------------------------
-						# Search for string match in name or email
-						#------------------------------
-
-					} else {
-						$people = array();
-
-						$q = preg_replace('#\s+#', ' ', $q);
-						$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
-
-						if ($this->settings->get('core_tablecounts.people') < 150000) {
-							$people_ids = $this->db->fetchAllCol("
-								SELECT people.id
-								FROM people
-								LEFT JOIN tickets ON (tickets.person_id = people.id)
-								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-								WHERE
-									people.name LIKE ?
-									OR people.first_name LIKE ?
-									OR people.last_name LIKE ?
-									OR people_emails.email LIKE ?
-									OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
-								ORDER BY people.id DESC
-								LIMIT 15
-							", array($q_search, $q_search, $q_search, $q_search, $q_search));
-						} else {
-							$people_ids = $this->db->fetchAllCol("
-								SELECT people.id
-								FROM people
-								LEFT JOIN tickets ON (tickets.person_id = people.id)
-								LEFT JOIN tickets_participants ON (tickets_participants.person_id = people.id)
-								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-								WHERE
-									(tickets.id > ? OR tickets_participants.ticket_id > ?)
-									AND (
-										people.name LIKE ?
-										OR people.first_name LIKE ?
-										OR people.last_name LIKE ?
-										OR people_emails.email LIKE ?
-										OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
-									)
-								ORDER BY tickets.id DESC
-								LIMIT 15
-							", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
-						}
-
-						if ($people_ids) {
-							$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
-						}
-
-						foreach ($people as $p) {
-							$results['person'][$p->id] = $p;
-
-							if ($p->organization) {
-								$results['organization'][$p->organization->id] = $p->organization;
-							}
-						}
-
-						// Organizations
-						$orgs = $this->em->getRepository('DeskPRO:Organization')->search($q, 25);
-						$oids = array();
-						foreach ($orgs as $o) {
-							$results['organization'][$o->id] = $o;
-							$oids[] = $o->getId();
-						}
-
-						if ($oids) {
-							// Fetch users of these orgs too
-							$people = $this->em->createQuery("
-								SELECT p
-								FROM DeskPRO:Person p
-								WHERE p.organization IN (?0)
-								ORDER BY p.date_last_login DESC, p.id DESC
-							")->setMaxResults(100)->execute(array($oids));
-							foreach ($people as $p) {
-								$results['person'][$p->id] = $p;
-							}
-						}
-					}
-
-					if ($results['person']) {
-						$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 250);
-						foreach ($tickets as $t) {
-							if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
-								if (!isset($results['person_related'][$t->person->getId()])) {
-									$results['person_related'][$t->person->getId()] = array();
-								}
-								$results['person_related'][$t->person->getId()][] = $t;
-							}
-						}
-					}
-				} // is label
-			} // agent_people.use perm
-
-			#------------------------------
-			# Labels
-			#------------------------------
-
-			$label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
-
-			$search_types = array('article', 'download', 'feedback', 'news', 'ticket');
-
-			if ($this->person->hasPerm('agent_people.use')) {
-				$search_types[] = 'organization';
-				$search_types[] = 'person';
-			}
-
-			$label_results = $label_search->search($is_label ? $is_label : $q);
-
-			if ($label_results) {
-				foreach ($label_results as $type => $type_results) {
-					foreach ($type_results as $res) {
-						$results[$type][] = $res;
-					}
-				}
-			}
-
-			if (App::getConfig('enable_twitter') && count(App::getCurrentPerson()->getTwitterAccountIds()) && preg_match('/^@[a-z0-9_]+$/i', $q)) {
-				$results['twitter'] = $q;
-			}
-		}
-
-		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
-			'q' => $q,
-			'router' => App::getRouter(),
-			'results' => $results,
-			'result_meta' => $result_meta,
-			'people_top' => $people_top,
-		));
+        if ($this->container->getSetting('elastica.enabled')) {
+            return $this->searchInElasticsearch($q);
+        } else {
+            return $this->searchInDB($q);
+        }
 	}
+
+    private function searchInElasticsearch($q)
+    {
+        $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
+        $elasticsearch->setPersonContext($this->person);
+
+        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q);
+
+        return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+            'q'           => $q,
+            'router'      => App::getRouter(),
+            'results'     => $results,
+            'result_meta' => $result_meta,
+            'people_top'  => $people_top,
+        ));
+    }
+
+    private function searchInDB($q)
+    {
+        $doctrine = $this->container->get('deskpro.search_manager.doctrine');
+        $doctrine->setPersonContext($this->person);
+
+        list($results, $result_meta, $people_top) = $doctrine->quickSearch($q);
+
+        return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+            'q'           => $q,
+            'router'      => App::getRouter(),
+            'results'     => $results,
+            'result_meta' => $result_meta,
+            'people_top'  => $people_top,
+        ));
+    }
 }

@@ -34,16 +34,13 @@
 
 namespace Application\UserBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
-
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\UserBundle\Form\NewTicketReplyType;
-
-use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Response;
 
 class TicketViewController extends AbstractController
 {
@@ -254,12 +251,16 @@ class TicketViewController extends AbstractController
             return $response;
         }
 
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('view');
-		$ticket_display->setPersonContext($this->person);
-		$ticket_display->addPagesFromDb();
-		$page = $ticket_display->getDepartmentPage($ticket->getDepartmentId());
-		$vars['page_display'] = $page->getPageDisplay('default')->data;
+		$layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+		$vars['page_display'] = $layout;
 
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+		$user_field_manager = $this->container->getSystemService('person_fields_manager');
+		$custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('custom_user_fields', 'form');
+		$custom_user_fields = $user_field_manager->getDisplayArrayForObject($ticket->person, $custom_user_fields_form);
 
 		$tpl = 'UserBundle:TicketView:view.html.twig';
 		if ($this->in->getBool('edit')) {
@@ -273,47 +274,37 @@ class TicketViewController extends AbstractController
 			$errors = array();
 			$error_fields = array();
 
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
-			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+			$layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
+			$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
 
-			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('modify');
-			$ticket_display->setPersonContext($this->person);
-			$ticket_display->addPagesFromDb();
-			$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
-			$ticket_display_js .= "\nwindow.DESKPRO_TICKET_PRI_MAP = " . json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()) . ';';
-
-			$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
+			$default_page = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
+			$default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::EDIT_TICKET, $ticket);
 
 			if ($default_page) {
-				$default_page_data = $default_page->getPageDisplay('default')->data;
 				$page_data_field_ids = array();
-				foreach ($default_page_data as $info) {
-					$page_data_field_ids[] = $info['id'];
+				foreach ($default_page as $field) {
+					$page_data_field_ids[] = $field->getId();
 				}
 			} else {
-				$default_page_data = array();
 				$page_data_field_ids = array();
 			}
 
-			$unique_items = array();
-			foreach ($ticket_display->getPagesData() as $page) {
-				foreach ($page as $item) {
-					$unique_items[$item['id']] = $item;
-				}
-			}
+			$unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
 			$errors = array();
 			$error_fields = array();
 
 			if ($this->in->getBool('process')) {
 
-				$newticket->setPageData($default_page_data);
+				$newticket->setLayout($default_page);
 
 				$validator = new \Application\UserBundle\Validator\NewTicketValidator();
-				$validator->setPageData($default_page_data);
-				$form->bindRequest($this->get('request'));
+				$validator->enableEditMode();
+				$validator->setLayout($default_page);
+				$form->handleRequest($this->get('request'));
 
 				$newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
+				$newticket->custom_user_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 
 				if ($validator->isValid($newticket)) {
 					$newticket->save();
@@ -332,13 +323,13 @@ class TicketViewController extends AbstractController
 			}
 
 			$vars = array_merge($vars, array(
-				'default_page_data' => $default_page_data,
 				'page_data_field_ids' => $page_data_field_ids,
 				'all_items' => $unique_items,
 
 				'form' => $form->createView(),
 				'newticket' => $newticket,
 				'custom_fields' => $custom_fields,
+				'custom_user_fields' => $custom_user_fields,
 				'errors' => $errors,
 				'error_fields' => $error_fields,
 				'ticket_display_js' => $ticket_display_js,

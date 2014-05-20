@@ -36,11 +36,9 @@ namespace Application\UserBundle\Form;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
 use Orb\Util\Arrays;
-
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * The new ticket form
@@ -73,7 +71,7 @@ class NewTicketType extends AbstractType
 		$this->mode = $mode;
 	}
 
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$this->buildPersonForm($builder);
 		$this->buildTicketForm($builder);
@@ -84,7 +82,7 @@ class NewTicketType extends AbstractType
 	/**
 	 * Configures the person form
 	 */
-	protected function buildPersonForm(FormBuilder $builder)
+	protected function buildPersonForm(FormBuilderInterface $builder)
 	{
 		if ($this->person AND $this->person['id']) {
 			$this->mock_person = $this->person;
@@ -107,7 +105,7 @@ class NewTicketType extends AbstractType
 	/**
 	 * Configures the ticket form
 	 */
-	protected function buildTicketForm(FormBuilder $builder)
+	protected function buildTicketForm(FormBuilderInterface $builder)
 	{
 		$ticket_builder = $builder->create('ticket', 'form');
 

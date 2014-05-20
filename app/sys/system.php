@@ -37,9 +37,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Orb\Util\Arrays;
 use Orb\Util\Env;
 
@@ -47,10 +45,9 @@ use Application\DeskPRO\App;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
-require_once DP_ROOT.'/sys/Kernel/BaseAbstractKernel.php';
 require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
-abstract class AbstractKernel extends BaseAbstractKernel
+abstract class AbstractKernel extends BaseKernel
 {
 	final public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
@@ -67,7 +64,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		try {
 			App::getSetting('core.license');
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			global $DP_CONFIG;
 			if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
 				// This will show an error page if already installed, so the redirect to install wont happen
@@ -123,7 +120,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
-		if ($this instanceof UserKernel) {
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 			$website_url = '';
 			if (!empty($_REQUEST['dp_website_url'])) {
 				$website_url = $_REQUEST['dp_website_url'];
@@ -144,7 +141,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$GLOBALS['DP_WEBSITE_URL'] = $website_url;
 		}
 
-		if ($this instanceof UserKernel && $this->isHelpdeskOffline()) {
+		if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $this->isHelpdeskOffline()) {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
 			$scheme_host = $request->getScheme().'://'.$request->getHttpHost();
@@ -238,40 +235,32 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		# License checks
 		#------------------------------
 
-		if ($response->headers->get('content-type') == 'text/html' && $type == HttpKernelInterface::MASTER_REQUEST) {
+		$is_page_load = strpos($response->headers->get('content-type'), 'text/html') !== false
+			&& $type == HttpKernelInterface::MASTER_REQUEST
+			&& !preg_match('#^/admin/load-view#', $path)
+			&& !preg_match('#^/reports/load-view#', $path);
 
+		if ($is_page_load
+			&& (!isset($GLOBALS['DP_USING_TESTING_CONFIG']) || !$GLOBALS['DP_USING_TESTING_CONFIG'])
+			&& !preg_match('#^/admin/start#', $path)
+			&& !preg_match('#^/admin/login#', $path)
+			&& !preg_match('#^/agent/login#', $path)
+		) {
 			#------------------------------
 			# No license
 			#------------------------------
 
-			// If we dont have a license or not completed installs, then we are allowed to view exactly five sections:
-			// 1) /admin/login               Logging in
-			// 2) /admin/welcome             Initial config
-			// 3) /admin/setup/default-smtp  Setting up outgoing email
-			// 4) /billing                   Setting up the license
-			// 5) /admin/license             Updating license code
-
+			// If we dont have a license or not completed installs, then we are allowed to view exactly:
+			// 1) /admin/login             Logging in
+			// 1) /agent/login             Logging in
+			// 2) /admin/start             Initial config
 			$is_installed = App::getSetting('core.setup_initial');
-			if (
-				(!License::getLicense()->hasLicense() || !$is_installed)
-				&& !preg_match('#^/admin/login#', $path)
-				&& !preg_match('#^/admin/license#', $path)
-				&& !preg_match('#^/admin/welcome#', $path)
-				&& !preg_match('#^/admin/email#', $path)
-				&& !preg_match('#^/admin/setup/default-smtp#', $path)
-				&& !preg_match('#^/billing#', $path)
-				&& !preg_match('#^/admin/welcome#', $path)
-			) {
-				$response = new RedirectResponse($request->getBaseUrl() . '/admin/welcome');
+			if (!License::getLicense()->hasLicense() || !$is_installed) {
+				$response = new RedirectResponse($request->getBaseUrl() . '/admin/start');
 				return $response;
-			}
 
-			if (
-				!preg_match('#^/admin/login#', $path)
-				&& !preg_match('#^/billing#', $path)
-				&& !preg_match('#^/admin/license#', $path)
-				&& !preg_match('#^/admin/upgrade#', $path)
-			) {
+			} else {
+
 				#------------------------------
 				# Max agent checks
 				#------------------------------
@@ -301,85 +290,83 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				# Expiry checks
 				#------------------------------
 
-				if (DP_INTERFACE != 'billing' && !preg_match('#^/(index\.php/)?agent/login#', $request->getRequestUri()) && !preg_match('#^/(index\.php/)?login#', $request->getRequestUri())) {
-					if (defined('DPC_IS_CLOUD')) {
-						// Demos have a set expiry date
-						if (License::getLicense()->isPastExpireDate()) {
-							// Admin just goes right to billing
-							if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent') {
-								$response = new RedirectResponse($request->getBaseUrl() . '/billing');
-								return $response;
-							} else {
-								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_demo_expired', $request->getBaseUrl()));
-								return $response;
-							}
+				if (defined('DPC_IS_CLOUD')) {
+					// Demos have a set expiry date
+					if (License::getLicense()->isPastExpireDate()) {
+						// Admin just goes right to billing
+						if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent') {
+							$response = new RedirectResponse($request->getBaseUrl() . '/billing');
+							return $response;
+						} else {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_demo_expired', $request->getBaseUrl()));
+							return $response;
+						}
+					}
+
+					// Bill failures are handled a bit differently...
+					if (DPC_BILL_FAILED) {
+						// Admin just goes right to billing
+						if (DP_INTERFACE == 'admin') {
+							$response = new RedirectResponse($request->getBaseUrl() . '/billing');
+							return $response;
 						}
 
-						// Bill failures are handled a bit differently...
-						if (DPC_BILL_FAILED) {
-							// Admin just goes right to billing
-							if (DP_INTERFACE == 'admin') {
-								$response = new RedirectResponse($request->getBaseUrl() . '/billing');
-								return $response;
-							}
+						// Agent might be disbaled
+						if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
+							$response = new RedirectResponse($request->getBaseUrl() . '/billing');
+							return $response;
+						}
 
-							// Agent might be disbaled
-							if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
-								$response = new RedirectResponse($request->getBaseUrl() . '/billing');
-								return $response;
-							}
-
-							// User might be off too
-							if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
-								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_user', $request->getBaseUrl()));
-								return $response;
-							}
-						} else {
-							// Standard offline messages ...
-
-							// Admin always shows notice
-							if (DP_INTERFACE == 'admin' && DPC_ADMIN_OFF) {
-								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_admin', $request->getBaseUrl()));
-								return $response;
-							}
-
-							// Agent might be disbaled
-							if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
-								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_agent', $request->getBaseUrl()));
-								return $response;
-							}
-
-							// User might be off too
-							if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
-								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_user', $request->getBaseUrl()));
-								return $response;
-							}
+						// User might be off too
+						if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_user', $request->getBaseUrl()));
+							return $response;
 						}
 					} else {
-						if (License::getLicense()->isPastExpireDate()) {
-							// Show lic error if not user, or if its been 14 days then show it for users too
-							if (DP_INTERFACE != 'user' || License::getLicense()->isPastExpireDate() >= 14) {
-								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
-								return $response;
-							}
+						// Standard offline messages ...
+
+						// Admin always shows notice
+						if (DP_INTERFACE == 'admin' && DPC_ADMIN_OFF) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_admin', $request->getBaseUrl()));
+							return $response;
+						}
+
+						// Agent might be disbaled
+						if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_agent', $request->getBaseUrl()));
+							return $response;
+						}
+
+						// User might be off too
+						if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_user', $request->getBaseUrl()));
+							return $response;
 						}
 					}
-
-					if (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED) {
-						$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('sys_disabled.'.DPC_SYS_DISABLED, $request->getBaseUrl()));
-						return $response;
+				} else {
+					if (License::getLicense()->isPastExpireDate()) {
+						// Show lic error if not user, or if its been 14 days then show it for users too
+						if (DP_INTERFACE != 'user' || License::getLicense()->isPastExpireDate() >= 14) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
+							return $response;
+						}
 					}
+				}
+
+				if (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED) {
+					$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('sys_disabled.'.DPC_SYS_DISABLED, $request->getBaseUrl()));
+					return $response;
 				}
 			}
 		}
 
-		$this->postResponseHandled($response);
+		$this->postResponseHandled($response, $request);
 
-		if ($response->headers->get('Content-Type') == 'text/html') {
+		if ($is_page_load) {
 			$content = $response->getContent();
 			$content = str_replace('</head>', "\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />\n\t</head>", $content);
 
-			if ($this instanceof UserKernel) {
+			if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 				$website_url = isset($GLOBALS['DP_WEBSITE_URL']) ? $GLOBALS['DP_WEBSITE_URL'] : '';
 				$content = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="' . htmlspecialchars($website_url) . '" />', $content);
 			}
@@ -387,7 +374,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$response->setContent($content);
 		}
 
-		if ($this instanceof UserKernel && $response->headers->get('Content-Type') == 'text/html' && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
+		if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $is_page_load && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
 			if (!License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
 				// Dont show lic error when serving exception page in debug mode
 				if (!(strpos($response->getContent(), 'sf-exceptionreset') && $this->isDebug())) {
@@ -401,14 +388,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 	}
 }
 
-require_once DP_ROOT.'/sys/Kernel/AdminKernel.php';
-require_once DP_ROOT.'/sys/Kernel/AgentKernel.php';
-require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
-require_once DP_ROOT.'/sys/Kernel/BillingKernel.php';
-require_once DP_ROOT.'/sys/Kernel/CliKernel.php';
+require_once DP_ROOT.'/sys/Kernel/DpKernel.php';
 require_once DP_ROOT.'/sys/Kernel/InstallKernel.php';
-require_once DP_ROOT.'/sys/Kernel/ReportKernel.php';
-require_once DP_ROOT.'/sys/Kernel/UserKernel.php';
 
 ###############################################################################
 # License
@@ -476,6 +457,20 @@ final class License
 		}
 
 		return DP_MA_SERVER;
+	}
+
+
+	/**
+	 * @static
+	 * @return string
+	 */
+	public static function getSupportUrl()
+	{
+		if (!defined('DP_SUPPORT_URL')) {
+			define('DP_SUPPORT_URL', 'https://support.deskpro.com');
+		}
+
+		return DP_SUPPORT_URL;
 	}
 
 

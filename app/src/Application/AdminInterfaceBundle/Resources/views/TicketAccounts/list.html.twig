@@ -1,0 +1,69 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="TicketAccountsList.accounts.length || 0" when="{{ ng_plural_phrase('adm.tickets.x_email_accounts') }}"></h3>
+		</header>
+		<article>
+			<p class="dp-empty-list-notice" ng-if="!TicketAccountsList.accounts.length">
+				{{ phrase('adm.tickets.no_email_accounts') }}
+			</p>
+			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">
+				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
+					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
+						<div class="pull-right">
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketAccountsList.startDelete(acc); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+						</div>
+
+						<h4><i class="fa fa-inbox"></i> <span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_accounts.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> New Email Account</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Incoming Email Log</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Outgoing Email Log</h3>
+		</a>
+	</section>
+
+	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+	{{ ng_tpl('AdminInterface:TicketAccounts:delete-modal.html.twig') }}
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Set up the email accounts that DeskPRO checks for tickets and replies.</h1>
+		<p>DeskPRO can automatically turn incoming emails to a support address like <code>support@yourcompany.com</code> or <code>sales@yourcompany.com</code> into tickets.</p>
+	</header>
+	<article>
+		<section>
+			<p>When you configure a new email account, DeskPRO will read email messages in the account and process new emails as new tickets, and replies as ticket replies.</p>
+			<p>In <strong>Email Settings</strong> you can change how DeskPRO handles email forwarded to ticket addresses, how it processes email CCs, and the maximum email size to accept.</p>
+			<p>You can also see logs of incoming and outgoing email.</p>
+		</section>
+		<section>
+			<h2><span>Related Knowledgebase Articles</span></h2>
+			<ul>
+				<li><a href="https://support.deskpro.com/kb/articles/80" target="_blank">Using a custom email address</a></li>
+				<li><a href="https://support.deskpro.com/kb/articles/157" target="_blank">Why can't users or agents use email addresses that are also ticket accounts?</a></li>
+				<li><a href="https://support.deskpro.com/kb/articles/149" target="_blank">Viewing the raw email source for a ticket message</a></li>
+				<li><a href="https://support.deskpro.com/kb/articles/106" target="_blank">Agent ticket forwarding</a></li>
+			</ul>
+		</section>
+	</article>
+{% endblock %}

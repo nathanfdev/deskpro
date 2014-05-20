@@ -35,18 +35,15 @@
 namespace Application\DeskPRO\DBAL;
 
 use Application\DeskPRO\App;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Types\Type;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Custom loading database creds from config.php
  */
-class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory implements ContainerAwareInterface
+class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactory implements ContainerAwareInterface
 {
 	/**
 	 * @var \Symfony\Component\DependencyInjection\ContainerInterface
@@ -56,9 +53,19 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 	public function __construct(array $typesConfig)
 	{
 		parent::__construct($typesConfig);
-		\Doctrine\DBAL\Types\Type::addType('dpblob', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType');
-		\Doctrine\DBAL\Types\Type::addType('dpblob_file', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType');
+
+		if (!\Doctrine\DBAL\Types\Type::hasType('dpblob')) {
+			\Doctrine\DBAL\Types\Type::addType('dpblob', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType');
+		}
+		if (!\Doctrine\DBAL\Types\Type::hasType('dpblob_file')) {
+			\Doctrine\DBAL\Types\Type::addType('dpblob_file', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType');
+		}
+		if (!\Doctrine\DBAL\Types\Type::hasType('dp_json_obj')) {
+			\Doctrine\DBAL\Types\Type::addType('dp_json_obj', 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject');
+		}
+
 		\Doctrine\DBAL\Types\Type::overrideType('array', 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType');
+		\Doctrine\DBAL\Types\Type::overrideType('object', 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType');
 	}
 
 	public function setContainer(ContainerInterface $container = null)
@@ -72,8 +79,12 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 
 		$host = $params['host'];
 		$m = null;
+		$dp_global_key = null;
+		$recreate_retry = false;
+
 		if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
 			$key = $m[1];
+			$dp_global_key = $key;
 			unset($params['host']);
 
 			$conf = App::getConfig($key);
@@ -88,6 +99,16 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			if (empty($params['driver'])) {
 				$params['driver'] = 'pdo_mysql';
 			}
+
+			// When in testing mode, the db might be changed by overwriting a var
+			if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing' && !empty($GLOBALS['DP_TESTING_USEDB'])) {
+				$params['dbname'] = $GLOBALS['DP_TESTING_USEDB'];
+				$recreate_retry = true;
+
+			// When testing a web request (eg selenium), there might exist a file that contains a different db name
+			} else if (isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'] && file_exists(DP_WEB_ROOT.'/testing_db_name')) {
+				$params['dbname'] = trim(file_get_contents(DP_WEB_ROOT.'/testing_db_name'));
+			}
 		}
 
 		// Sometimes in a pre-boot handler like serve_file.php we might
@@ -99,13 +120,40 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 		/** @var $conn \Doctrine\DBAL\Connection */
 		$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
 
-		$evm = $conn->getEventManager();
+		if ($recreate_retry) {
+			try {
+				$conn->connect();
+			} catch (\PDOException $err) {
+				if (strpos($err->getMessage(), 'Unknown database') !== false) {
+					$params_2 = $params;
+					unset($params_2['dbname']);
+					try {
+						$conn2 = parent::createConnection($params_2);
+						$conn2->exec("CREATE DATABASE `{$params['dbname']}`");
 
-		if ($this->container && $this->container->has('event_dispatcher')) {
-			$evm->addEventSubscriber(new SymfonyEventConnector($this->container->get('event_dispatcher')));
+						$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
+						$conn->connect();
+					} catch (\Exception $e) {
+						error_log("Could not create test database: {$e->getMessage()}");
+						throw $err;
+					}
+				} else {
+					throw $err;
+				}
+			}
 		}
 
 		$conn->getDatabasePlatform()->registerDoctrineTypeMapping('BLOB', 'dpblob');
+
+		if ($dp_global_key) {
+			// Save ref in globals
+			// This is an optimisation used by some logging that happens
+			// outside of normal request/DI flow
+			if (!isset($GLOBALS['DP_DB_CON'])) {
+				$GLOBALS['DP_DB_CON'] = array();
+			}
+			$GLOBALS['DP_DB_CON'][$dp_global_key] = $conn;
+		}
 
 		return $conn;
 	}

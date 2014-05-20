@@ -70,22 +70,41 @@ ini_set('default_charset', 'UTF-8');
 require_once DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
 require_once DP_ROOT . '/sys/load_config.php';
 
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpKernel/Util/Filesystem.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Process/ExecutableFinder.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Finder.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Glob.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/SplFileInfo.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
-require_once DP_ROOT.'/src/Orb/Util/Numbers.php';
-require_once DP_ROOT.'/src/Orb/Util/Env.php';
+require_once DP_ROOT . '/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require_once DP_ROOT . '/src/Orb/Util/ClassLoader.php';
+require_once DP_ROOT . '/sys/autoload.php';
 require_once DP_ROOT.'/src/Application/DeskPRO/LowUtil/RemoteRequest.php';
-
 dp_load_config();
+
+// Handle initing various build counters
+// when in dev mode. THe build info is usually generated during build
+if (dp_get_config('debug.dev')) {
+
+	if (isset($DP_CONFIG['db']['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG['db']['host'], $m)) {
+		$host = $m[1];
+		$port = ";port={$m[2]};";
+	} else {
+		$host = $DP_CONFIG['db']['host'];
+		$port = '';
+	}
+	$pdo = new \PDO("mysql:host={$host};dbname={$DP_CONFIG['db']['dbname']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+	$version = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
+
+	if ($version) {
+		$version = $version[0];
+	} else {
+		$version = $pdo->query("SELECT value FROM settings WHERE name = 'core.install_timestamp'")->fetch(\PDO::FETCH_NUM);
+		$version = $version[0];
+		$pdo->query("REPLACE INTO settings SET name = 'core.deskpro_build', value = '$version'");
+	}
+
+	if (!file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+		file_put_contents(
+			DP_ROOT.'/sys/config/build-time.php',
+			'<?php define("DP_BUILD_TIME", '.$version.'); '
+		);
+	}
+}
 
 if (!@ini_get('error_log')) {
 	@ini_set('error_log', dp_get_log_dir() . '/server-phperr-cli.log');
@@ -2068,7 +2087,7 @@ function Upgrade_Shutdown_Function()
 # Custom filesystem util class
 ########################################################################################################################
 
-class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
+class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
 {
 	protected $dry_run = false;
 
@@ -2157,7 +2176,7 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 		return parent::mkdir($dirs, $mode);
 	}
 
-	public function touch($files)
+	public function touch($files, $time = null, $atime = null)
 	{
 		if ($this->dry_run) {
 			foreach ($this->toIterator($files) as $file) {
@@ -2219,7 +2238,7 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 		}
 	}
 
-	public function chmod($files, $mode, $umask = 0000)
+	public function chmod($files, $mode, $umask = 0000, $recursive = false)
 	{
 		if ($this->dry_run) {
 			foreach ($this->toIterator($files) as $file) {
@@ -2231,7 +2250,7 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 		parent::chmod($files, $mode, $umask);
 	}
 
-	public function rename($origin, $target)
+	public function rename($origin, $target, $overwrite = false)
 	{
 		if ($this->dry_run) {
 			echo "[rename] $origin => $target\n";
@@ -2345,13 +2364,13 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Load the required Symfony libs
 		#------------------------------
 
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyleInterface.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyle.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatter.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/HelperInterface.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/Helper.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/DialogHelper.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/FormatterHelper.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyleInterface.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyle.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Formatter/OutputFormatter.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/HelperInterface.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/Helper.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/DialogHelper.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/FormatterHelper.php';
 
 		#------------------------------
 		# Create helpers
@@ -2495,18 +2514,30 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Menu
 		#------------------------------
 
-		try {
-			$version_info = $this->upgrade->getLatestVersion();
-		} catch (\Exception $e) {
-			$this->upgrade->log("getLatestVersion error: {$e->getMessage()}");
-			$version_info = null;
+		$version_info = null;
+		if (!dp_get_config('debug.dev')) {
+			try {
+				$version_info = $this->upgrade->getLatestVersion();
+			} catch (\Exception $e) {
+				$this->upgrade->log("getLatestVersion error: {$e->getMessage()}");
+				$version_info = null;
+			}
 		}
+
+
+		#-----
+		# Dev mode, just install the db updates
+		#-----
+
+		if (dp_get_config('debug.dev')) {
+
+			$this->runAction_checkAndUpgrade();
 
 		#-----
 		# We have version info
 		#-----
 
-		if ($version_info) {
+		} else if ($version_info) {
 			$this->upgrade->log("(Interactive Upgrader)");
 			$this->out(sprintf("Your build:      %s (%s)", DP_BUILD_NUM, $this->upgrade->formatBuild(DP_BUILD_TIME)));
 			$this->out(sprintf("Latest build:    %s (%s)", $version_info['build_num'], $this->upgrade->formatBuild($version_info['build'])));
@@ -2775,71 +2806,73 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$version = $version[0];
 
-		$this->out(sprintf("File build time:      %s", $this->upgrade->formatBuild(DP_BUILD_TIME)));
-		$this->out(sprintf("Database build time:  %s", $this->upgrade->formatBuild($version)));
-
-		$this->out();
-
-		if ($version >= DP_BUILD_TIME) {
-			$this->out("<info>Your database and source file builds correspond. No database upgrades need to be run.</info>");
-			$this->out();
-			$this->out("");
-			exit(0);
-		}
-
-		#------------------------------
-		# Gather input
-		#------------------------------
-
-		$this->out("<info>Your database is out of date. Would you like to perform an upgrade now?</info>");
-		$this->out("Upgrade now? ", false);
-
-		$ret = $this->askConfirmation($this, "[Y/n]> ", true);
-		if (!$ret) {
-			$this->out();
-			$this->out("");
-			exit(0);
-		}
-
-		$this->out("<prompt>Before we install the updates, you should generate back up first.</prompt>");
-
-		while(true) {
-			$this->out("Do you want to back up your database? ", false);
-			$this->answer_backup_db = $this->askConfirmation($this, "[Y/n]> ", true);
+		if (!dp_get_config('debug.dev')) {
+			$this->out(sprintf("File build time:      %s", $this->upgrade->formatBuild(DP_BUILD_TIME)));
+			$this->out(sprintf("Database build time:  %s", $this->upgrade->formatBuild($version)));
 
 			$this->out();
-			$this->out("<comment>Backup database: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
 
-			$this->out();
-			$this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
-			$this->out("Continue with the upgrade? ", false);
+			if ($version >= DP_BUILD_TIME) {
+				$this->out("<info>Your database and source file builds correspond. No database upgrades need to be run.</info>");
+				$this->out();
+				$this->out("");
+				exit(0);
+			}
+
+			#------------------------------
+			# Gather input
+			#------------------------------
+
+			$this->out("<info>Your database is out of date. Would you like to perform an upgrade now?</info>");
+			$this->out("Upgrade now? ", false);
 
 			$ret = $this->askConfirmation($this, "[Y/n]> ", true);
-			if ($ret) {
-				break;
-			}
-			$this->out();
-		}
-
-		$fileutil = new FilesystemUtil();
-		$fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-
-		#------------------------------
-		# Backup database
-		#------------------------------
-
-		if ($this->answer_backup_db) {
-			$this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
-
-			try {
-				$this->db_backup = $this->upgrade->backupDatabase();
-			} catch (\Exception $e) {
-				$this->upgrade->outAndLog($e->getMessage());
-				$this->errorExit("There was a problem backing up your database.");
+			if (!$ret) {
+				$this->out();
+				$this->out("");
+				exit(0);
 			}
 
-			$this->revert_checkpoint = 'db';
-			$this->out("<info>DONE</info>");
+			$this->out("<prompt>Before we install the updates, you should generate back up first.</prompt>");
+
+			while(true) {
+				$this->out("Do you want to back up your database? ", false);
+				$this->answer_backup_db = $this->askConfirmation($this, "[Y/n]> ", true);
+
+				$this->out();
+				$this->out("<comment>Backup database: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
+
+				$this->out();
+				$this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
+				$this->out("Continue with the upgrade? ", false);
+
+				$ret = $this->askConfirmation($this, "[Y/n]> ", true);
+				if ($ret) {
+					break;
+				}
+				$this->out();
+			}
+
+			$fileutil = new FilesystemUtil();
+			$fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+
+			#------------------------------
+			# Backup database
+			#------------------------------
+
+			if ($this->answer_backup_db) {
+				$this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
+
+				try {
+					$this->db_backup = $this->upgrade->backupDatabase();
+				} catch (\Exception $e) {
+					$this->upgrade->outAndLog($e->getMessage());
+					$this->errorExit("There was a problem backing up your database.");
+				}
+
+				$this->revert_checkpoint = 'db';
+				$this->out("<info>DONE</info>");
+			}
 		}
 
 		#------------------------------
@@ -2865,8 +2898,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->outHeader("DONE");
 
+		$this->out('');
 		$this->out("<info>DeskPRO has been upgraded successfully.</info>");
-		$this->out();
 		$this->out('');
 
 		$this->upgrade->postUpgrade();
@@ -3224,7 +3257,7 @@ class Zip_PclZip implements DpZip
 {
 	public function __construct()
 	{
-		require_once(DP_ROOT . '/vendor/pclzip/pclzip.lib.php');
+		require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
 	}
 
 	public function compressFile($path)

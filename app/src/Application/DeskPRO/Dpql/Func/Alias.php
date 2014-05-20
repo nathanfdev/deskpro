@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
-use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
  * This is used in SELECT/GROUP BY clauses to alias a column. This can be used in other clauses

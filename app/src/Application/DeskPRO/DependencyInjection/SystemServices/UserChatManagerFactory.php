@@ -34,10 +34,9 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Application\DeskPRO\Chat\UserChat\UserChatManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Orb\Util\CheckedOptionsArray;
-use Orb\Util\CheckedOptionsException;
-use Application\DeskPRO\Chat\UserChat\UserChatManager;
 
 class UserChatManagerFactory
 {
