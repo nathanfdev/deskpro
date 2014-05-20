@@ -1,11 +1,6 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Config\Resource\FileResource;
-
 
 ############################################################################
 # Parameters
@@ -16,11 +11,47 @@ $container->setParameter('routing.file_locator.class', 'Application\\DeskPRO\\Ht
 $container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
-
+$container->setParameter('templating.globals.class', 'Application\\DeskPRO\\Templating\\GlobalVariables');
+$container->setParameter('templating.name_parser.class', 'Application\\DeskPRO\\Templating\\TemplateNameParser');
+$container->setParameter('templating.asset.url_package.class', 'Application\\DeskPRO\\Templating\\Asset\\UrlPackage');
+$container->setParameter('templating.asset.path_package.class', 'Application\\DeskPRO\\Templating\\Asset\\PathPackage');
+$container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
+$container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
+$container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
+$container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
+$container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
+$container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
 
 ############################################################################
 # Services
 ############################################################################
+
+// twig.helpers.deskpro_templating
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$definition->addTag('twig.extension', array());
+$container->setDefinition('twig.helpers.deskpro_templating', $definition);
+
+// twig.helpers.deskpro_user_templating
+$definition = new Definition();
+$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$definition->addTag('twig.extension', array());
+$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
+
+// twig.helpers.deskpro_user_templating
+$definition = new Definition();
+$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$definition->addTag('twig.extension', array());
+$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 
 // doctrine.dbal.connection_factory
 $definition = new Definition();
