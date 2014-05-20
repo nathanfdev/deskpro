@@ -4,7 +4,8 @@ define(['DeskPRO/App/Context/TabContext/TabContext'], function(TabContext) {
 
 		getInjectables: function() {
 			return [
-				['$ticket', this.getFragment().meta.api_data]
+				['$ticket', this.getFragment().meta.api_data],
+				['$person', this.getFragment().meta.api_data.person]
 			]
 		}
 	});

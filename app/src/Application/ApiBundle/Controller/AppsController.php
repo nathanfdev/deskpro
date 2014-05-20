@@ -537,6 +537,7 @@ class AppsController extends AbstractController
 				$injects = array('$scope');
 				if ($type == 'ticket') {
 					$injects[] = '$ticket';
+					$injects[] = '$person';
 				} else if ($type == 'user') {
 					$injects[] = '$user';
 				} else if ($type == 'org') {
