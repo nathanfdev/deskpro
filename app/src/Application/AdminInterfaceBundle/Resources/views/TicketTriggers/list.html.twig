@@ -92,16 +92,17 @@
 {% endblock %}
 {% block listpane_help %}
 	<header>
-		<h1>Triggers are automatic processes that perform actions when the right criteria are met.</h1>
-		<p ng-if="TicketTriggersList.eventType == 'newreply'">Triggers in this section run when a <strong>new reply</strong> arrives from a user, if their criteria are met.</p>
-		<p ng-if="TicketTriggersList.eventType == 'newticket'">Triggers in this section run when a <strong>new ticket</strong> is created, if their criteria are met.</p>
-		<p ng-if="TicketTriggersList.eventType == 'update'">Triggers in this section run when a ticket is <strong>updated</strong>, if their criteria are met.</p>
+		<h1>Triggers are automatic processes that perform actions in response to events when the criteria you choose are met.</h1>
+		<p ng-if="TicketTriggersList.eventType == 'newreply'">Triggers in this section check their criteria when a <strong>new reply</strong> is made by a user or agent.</p>
+		<p ng-if="TicketTriggersList.eventType == 'newticket'">Triggers in this section check their criteria when a <strong>new ticket</strong> is created.</p>
+		<p ng-if="TicketTriggersList.eventType == 'update'">Triggers in this section check their criteria when a ticket is <strong>updated</strong>.</p>
 	</header>
 
 	<article>
 		<section>
-			<p>You can use the <strong>Event</strong> section to have the trigger run selectively; for example, to run only in response to actions by users, rather than agents.</p>
-			<p>Criteria can be used to check properties of the:</p>
+			<p>Use the <strong>Event</strong> section to refine when the trigger is checked. You can choose to have the trigger respond only to user actions, only to agent actions, or to both; or to respond only to certain interfaces (email, web, etc.).</p>
+	
+			<p><strong>Criteria</strong> can be used to check properties of the:</p>
 			<ul>
 				<li>email</li>
 				<li>ticket</li>
@@ -110,7 +111,35 @@
 				<li>user's organization</li>
 				<li>the current time</li>
 			</ul>
-			<p>Actions can be used to notify agents and users, or change the state of a ticket, or even trigger an API call to a web-based service.</p>
+	
+			<p>When the right combination of events and criteria happen, your trigger will run its <strong>actions</strong>. With actions, you can automatically do most of the things you would do to a ticket in the agent interface.</p>
+			
+			<p>Actions can change ticket assignment, set the user, set ticket properties, set or change SLAs, set the value of custom fields, or delete the ticket.</p>
+			
+			<p>
+				<strong>Trigger Control</strong>: the action <strong>Stop Processing Triggers</strong> stops subsequent triggers being applied to the ticket. It does not stop other actions within the same trigger from being applied. You can also use <strong>Prevent Emails to User</strong> or <strong>Prevent Emails to Agents</strong> to prevent subsequent email notifications.
+				
+			</p>
+			
+			<p>
+			<strong>Add Agent Reply</strong> lets you enter a reply to be sent from the assigned agent.</strong>
+			</p>
+			
+			<p>
+			<strong>Call Web Hook</strong>: this action sends an HTTP request. You can use it to make calls to external software that offers a web-based API. It is useful for integrating DeskPRO with other services.
+			</p>
+				
+			<p> If you are having trouble understanding how your triggers are behaving, don't forget that you can see which triggers ran and in what order using the ticket <strong>Full Log</strong> tab.</p>
+							
 		</section>
-	</article>
+		
+		<section>
+		<h2><span>Related Knowledgebase Articles</span></h2>
+		<ul>
+			<li><a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
+			<li><a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
+			<li><a href="https://support.deskpro.com/kb/articles/194">Automatically assign agents to tickets they reply to by email</a></li>
+		</ul>
+	</section>
+</article>
 {% endblock %}
