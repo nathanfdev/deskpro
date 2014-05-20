@@ -35,10 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Numbers;
 
 class Draft extends AbstractEntityRepository
 {
@@ -152,7 +149,7 @@ class Draft extends AbstractEntityRepository
 
 			$this->getEntityManager()->persist($draft);
 			$this->getEntityManager()->flush($draft);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			return null;
 		}
 
@@ -179,8 +176,7 @@ class Draft extends AbstractEntityRepository
 						'ticket_id'      => $content_id,
 						'draft_html'     => false,
 						'via_person'     => $person->getId()
-					)),
-					'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+					))
 				));
 			}
 		}

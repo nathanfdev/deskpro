@@ -56,6 +56,10 @@ class Xenforo extends DbTable
 			WHERE $where
 		";
 
+		if (!$this->getDb()) {
+			return null;
+		}
+
 		$result = $this->db->fetchAssoc($sql, array($param));
 		if (!$result) {
 			return null;

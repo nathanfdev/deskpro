@@ -35,13 +35,29 @@
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-
-use Orb\Util\Arrays;
 
 class TicketChecker extends AbstractChecker
 {
+	public static $modify_ops = array(
+		'set_closed',
+		'department',
+		'fields',
+		'assign_agent',
+		'assign_team',
+		'assign_self',
+		'cc',
+		'slas',
+		'merge',
+		'labels',
+		'notes',
+		'set_hold',
+		'set_awaiting_user',
+		'set_awaiting_agent',
+		'set_resolved',
+		'followed',
+	);
+
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
@@ -247,9 +263,9 @@ class TicketChecker extends AbstractChecker
 			return false;
 
 		}
-		if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'modify_set_awaiting_user') || $this->canModify($ticket, 'modify_set_awaiting_agent'))) {
+		if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'set_awaiting_user') || $this->canModify($ticket, 'set_awaiting_agent'))) {
 			return true;
-		} elseif ($this->canModify($ticket, 'modify_set_resolved')) {
+		} elseif ($this->canModify($ticket, 'set_resolved')) {
 			return true;
 		}
 
@@ -267,6 +283,9 @@ class TicketChecker extends AbstractChecker
 			return false;
 		}
 
+		if (!in_array($op, self::$modify_ops)) {
+			throw new \InvalidArgumentException("Invalid modify permission op: $op");
+		}
 
 		#------------------------------
 		# Figure out which set of permissions

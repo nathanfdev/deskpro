@@ -34,19 +34,26 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use Orb\Util\Strings;
-use Orb\Util\Util;
-
 /**
  * Report builder query
+ *
+ * @property int $id
+ * @property ReportBuilder $parent
+ * @property string $title
+ * @property string $description
+ * @property string $query
+ * @property boolean $is_custom
+ * @property string $category
+ * @property integer $display_order
  */
-class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
+class ReportBuilder extends DomainObject
 {
 	/**
 	 * @var int
@@ -96,9 +103,24 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->favorited_by = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->favorited_by = new ArrayCollection();
 	}
 
+
+	/**
+	 * @return ReportBuilder
+	 */
+	public static function createReportBuilder()
+	{
+		return new self();
+	}
+
+
+	/**
+	 * @param string $type
+	 * @param array  $params
+	 * @return mixed|string
+	 */
 	public function getTitle($type = 'raw', $params = array())
 	{
 		if ($type == 'raw') {
@@ -234,6 +256,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		return $title;
 	}
 
+
 	/**
 	 * Gets the DPQL parts for this report's query
 	 *
@@ -247,6 +270,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		return $statement->getDpqlParts();
 	}
 
+
 	/**
 	 * @return bool
 	 */
@@ -255,10 +279,15 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		return ($this->is_custom || App::getConfig('debug.dev'));
 	}
 
+
+	/**
+	 * @return int
+	 */
 	public function hasPlaceholders()
 	{
 		return preg_match('/<\d+:[^>]+>/', $this->title);
 	}
+
 
 	/**
 	 * Determines if the passed string is effectively different.
@@ -275,12 +304,14 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		return ($query != $thisQuery);
 	}
 
+
 	/**
 	 * Quick lookup handler to determine if a particular user has favorited this
 	 *
 	 * @var array
 	 */
 	protected $_is_favorited = array();
+
 
 	/**
 	 * Returns true if the specified person has favorited this
@@ -298,6 +329,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		return false;
 	}
 
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -306,26 +338,120 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportBuilder';
-		$metadata->setPrimaryTable(array(
-			'name' => 'report_builder',
-			'indexes' => array(
-				'parent_id_idx' => array('columns' => array('parent_id'))
-			),
-			'uniqueConstraints' => array(
-				'unique_key_idx' => array('columns' => array('unique_key'))
+		$metadata->setPrimaryTable(
+			array(
+				 'name'              => 'report_builder',
+				 'indexes'           => array(
+					 'parent_id_idx' => array('columns' => array('parent_id'))
+				 ),
+				 'uniqueConstraints' => array(
+					 'unique_key_idx' => array('columns' => array('unique_key'))
+				 )
 			)
-		));
+		);
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'unique_key', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'unique_key', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'description', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'description', ));
-		$metadata->mapField(array( 'fieldName' => 'query', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'query', ));
-		$metadata->mapField(array( 'fieldName' => 'is_custom', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_custom', ));
-		$metadata->mapField(array( 'fieldName' => 'category', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'category', ));
-		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'id',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'id',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'unique_key',
+				 'type'       => 'string',
+				 'length'     => 50,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => true,
+				 'columnName' => 'unique_key',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'title',
+				 'type'       => 'string',
+				 'length'     => 255,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'title',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'description',
+				 'type'       => 'text',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'description',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'query',
+				 'type'       => 'text',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'query',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'is_custom',
+				 'type'       => 'boolean',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'is_custom',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'category',
+				 'type'       => 'string',
+				 'length'     => 25,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => true,
+				 'columnName' => 'category',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'display_order',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'display_order',
+			)
+		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
-		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(
+			array(
+				 'fieldName'    => 'parent',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder',
+				 'mappedBy'     => null,
+				 'inversedBy'   => null,
+				 'joinColumns'  => array(
+					 0 => array(
+						 'name'                 => 'parent_id',
+						 'referencedColumnName' => 'id',
+						 'nullable'             => true,
+						 'onDelete'             => 'set null',
+						 'columnDefinition'     => null,
+					 ),
+				 ),
+			)
+		);
 	}
 }

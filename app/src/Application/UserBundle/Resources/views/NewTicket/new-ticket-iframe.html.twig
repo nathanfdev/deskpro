@@ -113,7 +113,7 @@ var ticketReader = {
 	{#--- FIELDS CONTAINER ---#}
 	<div id="fields_container">
 		{# First time outputs items in order and visible depending on the page data #}
-		{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
+		{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
 	</div>
 	{#--- FIELDS CONTAINER ---#}
 

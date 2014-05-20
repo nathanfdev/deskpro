@@ -34,15 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\Entity;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
@@ -70,14 +66,6 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	protected $members = null;
 
 	/**
-	 * Creates a new team.
-	 */
-	public function __construct()
-	{
-		$this->assigned_tasks = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
-	/**
 	 * @return int
 	 */
 	public function getId()
@@ -99,6 +87,15 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('members', $this->members, $this->members);
 	}
 
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('name', new NotBlank());
+	}
 
 
 	############################################################################

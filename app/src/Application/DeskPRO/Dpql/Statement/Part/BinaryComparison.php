@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Parser;
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Parser;
+use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
  * Represents a binary comparison (=, >, <=, etc).

@@ -1,0 +1,36 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders">
+					<i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_twitter_accounts') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload>
+				<li class="with-drag-handle" ng-repeat="twitter_account in ListCtrl.list"
+					dp-state-mark="twitter.accounts.edit.{{ ng_var('twitter_account.id') }}" data-id="{{ ng_var('twitter_account.id') }}">
+					<a href="{{ ng_href('twitter.accounts.edit', '{id: twitter_account.id}') }}">
+						<h4>
+							<img ng-src="{{ ng_var('twitter_account.user.profile_image_url') }}" width="28" height="28" border="0" />
+							<span class="title-text">{{ ng_var('twitter_account.user.name') }} @{{ ng_var('twitter_account.user.screen_name') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('twitter.accounts.create') }}" ng-class="{'active': isStateActive('.create') }" dp-list-autoload autoload-priority="2">
+					<i class="fa fa-plus"></i>
+					{{ phrase('adm.twitter_accounts.new_twitter_account') }}
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:TwitterAccounts:help-page.html.twig' %}
+{% endblock %}

@@ -1,0 +1,45 @@
+<div class="modal-dialog">
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Test Account</h4>
+	</div>
+	<div class="modal-body">
+		<div ng-hide="is_testing">
+			<div ng-if="is_success">
+				<h3 style="margin-top: 0; margin-bottom: 10px;"><i class="fa fa-check-circle"></i> Your account details are correct</h3>
+				<p>
+					The account details you entered appear to be correct. The mailbox currently has {{ ng_var('message_count') }}
+					messages that are waiting to be processed.
+				</p>
+				<p>
+					<button class="btn btn-xs" ng-hide="showing_log" ng-click="showLog()"><i class="fa fa-file-text-o"></i> View Log</button>
+				</p>
+			</div>
+			<div ng-if="!is_success">
+				<h3 style="margin-top: 0; margin-bottom: 10px;"><i class="fa fa-clock-os-circle"></i> Your account details are incorrect</h3>
+				<p>
+					The account details you entered appear to be incorrect. Refer to the log below for more information
+					or contact <a href="mailto:support@deskpro.com">support@deskpro.com</a> for assistance.
+				</p>
+			</div>
+			<pre class="pre-scrollable" ng-show="showing_log || !is_success">{{ ng_var('log') }}</pre>
+		</div>
+		<div ng-show="is_testing">
+			<br/><br/>
+			<div class="text-center">
+				Testing... Please wait.
+			</div>
+			<br/><br/>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<div ng-hide="is_testing">
+			<button class="btn btn-info" ng-click="testNow()"><i class="fa fa-bolt"></i> Test Again</button>
+		</div>
+		<div ng-show="is_testing">
+			<i class="spinner-flat"></i>
+		</div>
+	</div>
+</div>
+</div>

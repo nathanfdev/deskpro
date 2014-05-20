@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Orb\Auth\Identity;
-use Doctrine\DBAL\Connection;
 
 class DbTablePhpPasswordCheck extends AbstractAdapter
 {
@@ -64,15 +63,36 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 	{
 		if ($this->db) return $this->db;
 
-		$pdo = new \PDO(
-			$this->usersource->getOption('db_dsn'),
-			$this->usersource->getOption('db_username'),
-			$this->usersource->getOption('db_password')
-		);
+		if ($this->usersource->getOption('connection_options')) {
+			$options = $this->usersource->getOption('connection_options');
+			if (is_string($options)) {
+				$options = json_decode($options);
+			}
 
-		$this->db = \Doctrine\DBAL\DriverManager::getConnection(array('pdo' => $pdo));
+			$this->db = \Doctrine\DBAL\DriverManager::getConnection($options);
+		} else {
+			$pdo = new \PDO(
+				$this->usersource->getOption('db_dsn'),
+				$this->usersource->getOption('db_username'),
+				$this->usersource->getOption('db_password')
+			);
+
+			$this->db = \Doctrine\DBAL\DriverManager::getConnection(array('pdo' => $pdo));
+		}
 
 		return $this->db;
+	}
+
+
+	/**
+	 * @return callable
+	 */
+	public function getDbAsCallback()
+	{
+		$me = $this;
+		return function() use ($me) {
+			return $me->getDb();
+		};
 	}
 
 
@@ -109,7 +129,8 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck(array($this, 'getDb'), $this->usersource->options);
+
+		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDbAsCallback(), $this->usersource->options);
 	}
 
 

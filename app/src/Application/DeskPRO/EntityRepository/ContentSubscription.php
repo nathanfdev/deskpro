@@ -35,13 +35,11 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Article as ArticleEntity;
 use Application\DeskPRO\Entity\Download as DownloadEntity;
-use Application\DeskPRO\Entity\News as NewsEntity;
 use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
-
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Entity\News as NewsEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class ContentSubscription extends AbstractEntityRepository
 {

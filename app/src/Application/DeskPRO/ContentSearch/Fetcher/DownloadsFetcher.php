@@ -35,9 +35,6 @@
 namespace Application\DeskPRO\ContentSearch\Fetcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-
-use Orb\Util\Strings;
 
 class DownloadsFetcher extends AbstractFetcher
 {

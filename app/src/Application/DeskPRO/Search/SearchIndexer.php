@@ -35,10 +35,8 @@
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\App;
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Queue\Queue;
-
-use Orb\Util\Arrays;
+use Doctrine\ORM\EntityManager;
 
 /**
  * When something needs to be indexed, index it through this

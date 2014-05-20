@@ -36,24 +36,57 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
 class BanIp extends AbstractEntityRepository
 {
 	/**
 	 * Get a list of IPs suitable for display
+	 * @param int    $from
+	 * @param int    $limit
+	 * @param string $search_phrase
+	 *
+	 * @return array
 	 */
-	public function getList()
+
+	public function getList($from = 0, $limit = 20, $search_phrase = '')
 	{
+		$where = '';
+
+		if (!empty($search_phrase)) {
+
+			$where = " WHERE banned_ip LIKE '%" . $search_phrase . "%'";
+		}
+
 		$list = App::getDb()->fetchAllCol("
 			SELECT banned_ip
 			FROM ban_ips
+			$where
 			ORDER BY ip_start ASC
+			LIMIT " . $from . ", " . $limit . "
 		");
 
 		return $list;
 	}
 
+	/**
+	 * @param int $per_page
+	 * @param string $search_phrase
+	 *
+	 * @return int
+	 */
+
+	public function getPageCount($per_page = 20, $search_phrase = '')
+	{
+		$where = '';
+
+		if (!empty($search_phrase)) {
+
+			$where = "banned_ip LIKE '%" . $search_phrase . "%'";
+		}
+
+		$count = App::getDb()->count('ban_ips', $where);
+
+		return ceil($count / $per_page);
+	}
 
 	/**
 	 * @param $ip

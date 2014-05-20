@@ -36,8 +36,6 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * A single table that controls subscriptions to all common content types

@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Notifications;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\Person;
 
 class NewCommentNotification extends AbstractAgentNotification
 {

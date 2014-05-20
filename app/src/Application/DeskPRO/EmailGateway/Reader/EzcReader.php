@@ -35,10 +35,8 @@ namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item;
-
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * The ezcParser uses the ezcMailParser class from ezComponents

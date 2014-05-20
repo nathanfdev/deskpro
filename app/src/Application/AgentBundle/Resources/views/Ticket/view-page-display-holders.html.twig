@@ -28,7 +28,7 @@
 
 {# Standard fields #}
 {% if app.getSetting('core.use_ticket_category') %}
-	<tbody class="ticket_category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category" style="display:none">
+	<tbody class="category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category" style="display:none">
 		<tr class="mode-display">
 			<th width="80">
 				<span class="category_id label">{{ phrase('agent.general.category') }}:</span>
@@ -59,7 +59,7 @@
 	</tbody>
 {% endif %}
 {% if app.getSetting('core.use_product') %}
-	<tbody class="ticket_product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
+	<tbody class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
 		<tr class="mode-display">
 			<th width="80">
 				<span class="product label">{{ phrase('agent.general.product') }}:</span>
@@ -99,7 +99,7 @@
 	</tbody>
 {% endif %}
 {% if app.getSetting('core.use_ticket_priority') %}
-	<tbody class="ticket_priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority" style="display:none">
+	<tbody class="priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority" style="display:none">
 		<tr class="mode-display">
 			<th width="80">
 				<span class="priority_id label">{{ phrase('agent.general.priority') }}:</span>
@@ -122,7 +122,7 @@
 	</tbody>
 {% endif %}
 {% if app.getSetting('core.use_ticket_workflow') %}
-	<tbody class="ticket_workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow" style="display:none">
+	<tbody class="workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow" style="display:none">
 		<tr class="mode-display">
 			<th width="80">
 				<span class="workflow_id label">{{ phrase('agent.general.workflow') }}:</span>

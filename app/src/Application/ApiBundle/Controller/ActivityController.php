@@ -35,8 +35,6 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Searcher\ChatConversationSearch;
-use Application\DeskPRO\Entity\ChatConversation;
 use Orb\Util\Arrays;
 
 class ActivityController extends AbstractController

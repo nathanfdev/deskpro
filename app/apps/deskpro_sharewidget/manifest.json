@@ -1,0 +1,46 @@
+{
+	"package_name": "deskpro_sharewidget",
+	"is_native": true,
+	"title": "Share Widget",
+	"description": "Add share buttons (Facebook, Twitter, Google+, LinkedIn) to news, articles and feedback.",
+	"tags": ["sharing"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "show_share_facebook",
+			"type": "checkbox",
+			"label": "Facebook",
+			"checkbox_label": "Show the Facebook 'Like' button",
+			"description": ""
+		},
+		{
+			"name": "show_share_twitter",
+			"type": "checkbox",
+			"label": "Twitter",
+			"checkbox_label": "Show the Twitter 'Tweet' button",
+			"description": ""
+		},
+		{
+			"name": "show_share_gplus",
+			"type": "checkbox",
+			"label": "Google+",
+			"checkbox_label": "Show the Google Plus '+1' button",
+			"description": ""
+		},
+		{
+			"name": "show_share_linkedin",
+			"type": "checkbox",
+			"label": "LinkedIn",
+			"checkbox_label": "Show the LinkedIn 'Share' button",
+			"description": ""
+		}
+	]
+}

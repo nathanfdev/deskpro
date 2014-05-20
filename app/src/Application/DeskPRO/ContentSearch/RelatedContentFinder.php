@@ -37,8 +37,6 @@ namespace Application\DeskPRO\ContentSearch;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Strings;
-
 class RelatedContentFinder
 {
 	/**

@@ -34,20 +34,30 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\UI\RuleBuilder;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Ticket filters
+ * @property int $id
+ * @property Person $person
+ * @property AgentTeam $agent_team
+ * @property bool $is_global
+ * @property string $title
+ * @property bool $is_enabled
+ * @property string $sys_name
+ * @property array $terms
+ * @property string $group_by
+ * @property string $order_by
+ * @property string $display_order
  */
-class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
+class TicketFilter extends DomainObject
 {
 	/**
 	 * @var int
-	 *
 	 */
 	protected $id = null;
 
@@ -87,9 +97,9 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	protected $sys_name = null;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
-	protected $terms;
+	protected $terms = array();
 
 	/**
 	 * @var string
@@ -100,6 +110,11 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $order_by = '';
+
+	/**
+	 * @var int
+	 */
+	protected $display_order = 0;
 
 	/**
 	 * Results from the last search
@@ -232,6 +247,10 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	public function getTitle()
 	{
 		if ($this->sys_name) {
+			if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing') {
+				return $this->sys_name;
+			}
+
 			$tr = App::getTranslator();
 
 			switch ($this->sys_name) {
@@ -354,6 +373,25 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		return $data;
+	}
+
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new NotBlank());
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -361,20 +399,96 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFilter';
-		$metadata->setPrimaryTable(array( 'name' => 'ticket_filters', 'uniqueConstraints' => array( 'sys_name_unique' => array( 'columns' => array( 0 => 'sys_name', ), ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
-		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
-		$metadata->mapField(array( 'fieldName' => 'terms', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'terms', ));
-		$metadata->mapField(array( 'fieldName' => 'group_by', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'group_by', ));
-		$metadata->mapField(array( 'fieldName' => 'order_by', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'order_by', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+
+		$metadata->setPrimaryTable(array(
+			'name' => 'ticket_filters',
+			'uniqueConstraints' => array( 'sys_name_unique' => array('columns' => array('sys_name')))
+		));
+
+		$metadata->mapField(array(
+			'id'         => true,
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'is_global',
+			'fieldName'  => 'is_global',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'title',
+			'fieldName'  => 'title',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'is_enabled',
+			'fieldName'  => 'is_enabled',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'sys_name',
+			'fieldName'  => 'sys_name',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'terms',
+			'fieldName'  => 'terms',
+			'type'       => 'json_array',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'group_by',
+			'fieldName'  => 'group_by',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'order_by',
+			'fieldName'  => 'order_by',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'display_order',
+			'fieldName'  => 'display_order',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'person',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'dpApi'        => true,
+			'joinColumns'  => array(array(
+				'name'                 => 'person_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			))
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'agent_team',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'dpApi'        => true,
+			'joinColumns' => array(array(
+				'name'                 => 'agent_team_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			))
+		));
 	}
 }

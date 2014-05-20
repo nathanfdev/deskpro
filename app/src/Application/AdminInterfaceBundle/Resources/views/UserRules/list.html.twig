@@ -1,0 +1,51 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders">
+					<i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_user_rules') }}">
+
+			</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload>
+				<li class="with-drag-handle" ng-repeat="user_rule in ListCtrl.list"
+					dp-state-mark="crm.rules.edit.{{ ng_var('user_rule.id') }}" data-id="{{ ng_var('user_rule.id') }}">
+					<a href="{{ ng_href('crm.rules.edit', '{id: user_rule.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('user_rule.email_patterns') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
+				   href="{{ ng_href('crm.rules.gocreate') }}" dp-list-autoload autoload-priority="2">
+					<i class="fa fa-plus"></i> Add New Rule
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>User rules automatically add users to usergroups based on their email address.</h1>
+		<p>Define an <strong>email address pattern</strong> and select which usergroup to which the users who match it should be added.</p>
+	</header>
+	<article>
+		<section>
+			<p>You can add multiple patterns, starting a new one on each line. If a new user email address matches any of the patterns, the rule will add it to the selected usergroup.</p>
+			<p>You can use * as a wildcard.</p>
+			<ul>
+				<li><code>*@example.com</code> matches all email addresses ending with <code>@example.com</code>.</li>
+				<li><code>sales@*</code> matches all email addresses beginning with <code>sales@</code>.</li>
+				<li><code>sales@*.co.uk</code> matches all email address beginning with <code>sales@</code> and ending with <code>.co.uk</code></li>
+				<li><code>*@example.*</code> matches <code>it@example.org</code> and <code>sales@example.co.uk</code> etc.</li>
+			</ul>
+		</section>
+	</article>
+{% endblock %}

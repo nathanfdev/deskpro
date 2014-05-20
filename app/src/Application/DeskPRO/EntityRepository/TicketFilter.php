@@ -35,12 +35,52 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-
-use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
 class TicketFilter extends AbstractEntityRepository
 {
+	public function getFilters()
+	{
+		$filters = $this->_em->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q
+			ORDER BY q.display_order
+		")->execute();
+
+		return $filters;
+	}
+
+	public function getDefinedFilters()
+	{
+		$filters = $this->_em->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q
+			WHERE q.sys_name IS NULL
+			ORDER BY q.display_order
+		")->execute();
+
+		return $filters;
+	}
+
+
+	/**
+	 * Updates display orders of $filter_ids
+	 * @param array $filter_ids
+	 */
+	public function updateDisplayOrder(array $filter_ids)
+	{
+		$x = 0;
+		foreach ($filter_ids as $fid) {
+			$x += 10;
+			$this->_em->getConnection()->executeUpdate("
+				UPDATE ticket_filters
+				SET display_order = ?
+				WHERE id = ?
+			", array($x, $fid));
+		}
+	}
+
+
 	public function getAllForActiveAgents()
 	{
 		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);

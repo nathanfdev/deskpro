@@ -36,15 +36,20 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * Feedback status types for accepted/declined statuses
  *
  */
-class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, HasValidationMetadataInterface
 {
 	const STATUS_ACTIVE = 'active';
 	const STATUS_CLOSED = 'closed';
@@ -75,6 +80,43 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 	public function getId()
 	{
 		return $this->id;
+	}
+
+	/**
+	 * @return FeedBackStatusCategory
+	 */
+	
+	public static function createFeedbackStatusCategory()
+	{
+		$status_category = new self();
+		return $status_category;
+	}
+
+	/**
+	 * @return string
+	 */
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * @return string
+	 */
+
+	public function getStatusType()
+	{
+		return $this->status_type;
+	}
+
+	/**
+	 * @return int
+	 */
+
+	public function getDisplayOrder()
+	{
+		return $this->display_order;
 	}
 
 	public function getStatusCode()
@@ -129,6 +171,23 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 	}
 
 
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new NotBlank());
+		$metadata->addPropertyConstraint('title', new Length(array('min' => 2)));
+		$metadata->addPropertyConstraint(
+			'status_type',
+			new Choice(
+				array(
+					 'choices' => array('active', 'closed'),
+				)
+			)
+		);
+	}
 
 	############################################################################
 	# Doctrine Metadata

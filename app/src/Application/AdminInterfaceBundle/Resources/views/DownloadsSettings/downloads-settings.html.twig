@@ -1,0 +1,66 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Ctrl.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>Downloads Settings</h3>
+			</header>
+
+			<article>
+				<div class="panel panel-innertable">
+					<div class="form-group">
+						<div class="labels-group">
+							<label>
+								<input type="radio" ng-model="settings.enabled" ng-value="true" />
+								<h4>Enable the Downloads section</h4>
+								<span class="help-block" ng-show="settings.enabled">
+									Enable the downloads section at <a href="{{ url_full('user_downloads') }}" target="_blank">{{ url_full('user_downloads') }}</a>
+								</span>
+							</label>
+							<label>
+								<input type="radio" ng-model="settings.enabled" ng-value="false" />
+								<h4>Disable the Downloads section</h4>
+								<span class="help-block" ng-show="!settings.enabled">
+									Disable the downloads section.
+								</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</article>
+			<article>
+				<div class="panel panel-innertable">
+					<div class="form-group" ng-show="settings.enabled">
+						<label>
+							<input type="checkbox" ng-model="settings.tab_enabled" />
+							<h4>Enable the Downloads tab in the portal tab bar</h4>
+							<span class="help-block">
+								<p>
+									Enable the Downloads tab in the navigation tab bar? When not checked, the Downloads tab will not be visible
+									but the Downloads section will still be active (e.g., you could create your own link to the downloads URL).
+								</p>
+								<p>
+									Use the <a href="{{ ng_href('portal.portal_editor') }}">Portal Editor</a> to re-order items in the tab bar.
+								</p>
+							</span>
+						</label>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+		</section>
+	</form>
+{% endblock %}

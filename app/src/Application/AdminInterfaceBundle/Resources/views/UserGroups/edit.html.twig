@@ -1,0 +1,55 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<nav class="dp-blocktabs">
+				<ul>
+					<li class="active" dp-tab-btn="main.props">
+						<a href="#">
+							<i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}
+						</a>
+					</li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.perms">
+						<a href="#"><i class="fa fa-key"></i> Permissions</a>
+					</li>
+				</ul>
+			</nav>
+
+			<article class="form-horizontal dp-form">
+				<div dp-tab-body="main.props">
+					{% include 'AdminInterfaceBundle:UserGroups:edit-props.html.twig' %}
+				</div>
+				<div dp-tab-body="main.perms">
+					{% include 'AdminInterfaceBundle:UserGroups:edit-perms.html.twig' %}
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+							<li ng-show="form_props.note.$error.required">You must enter a valid note / description</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.group.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	{{ ng_tpl('AdminInterfaceBundle:UserGroups:delete-modal.html.twig') }}
+{% endblock %}

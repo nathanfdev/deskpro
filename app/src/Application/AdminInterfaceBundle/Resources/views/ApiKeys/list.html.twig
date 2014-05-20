@@ -1,0 +1,35 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_api_keys') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" dp-list-autoload>
+				<li ng-repeat="api_key in ListCtrl.list" dp-state-mark="apps.api_keys.edit.{{ ng_var('api_key.id') }}" data-id="{{ ng_var('api_key.id') }}">
+					<a href="{{ ng_href('apps.api_keys.edit', '{id: api_key.id}') }}">
+						<h4>
+							<span ng-if="api_key.person" class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + api_key.person.picture_url_16 + ')'}" title="{{ ng_var('api_key.person.display_name') }}"></span>
+							<span ng-if="!api_key.person" style="display: inline-block; vertical-align: text-bottom; width: 16px; height: 16px; text-align: center; font-size: 16px;" title="Super User"><span class="fa fa-asterisk"></span></span>
+							<span class="title-text">
+								<span ng-if="api_key.note">{{ ng_var('api_key.note') }}</span>
+								<span ng-if="!api_key.note && api_key.person">{{ ng_var('api_key.person.display_name') }}</span>
+								<span ng-if="!api_key.note && !api_key.person"><em>(Untitled)</em></span>
+							</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
+				   href="{{ ng_href('apps.api_keys.gocreate') }}" dp-list-autoload autoload-priority="2">
+					<i class="fa fa-plus"></i> New Api Key
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:ApiKeys:help-page.html.twig' %}
+{% endblock %}

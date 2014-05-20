@@ -67,6 +67,27 @@ class TemplateLocator extends BaseTemplateLocator
 			return $this->cache[$key]['path'];
 		}
 
+		// App views
+		try {
+			$bundle = $template->get('bundle');
+		} catch (\InvalidArgumentException $e) {
+			$bundle = null;
+		}
+		if (!$bundle) {
+			$tpl = ltrim($key, ':');
+			$parts = explode(':', $tpl, 2);
+			if (isset($parts[1])) {
+				$native_name = $parts[0];
+				$file_name = $parts[1];
+
+				$path = DP_ROOT.'/apps/' . $native_name . '/native/Resources/views/' . ltrim($file_name, '/');
+				if (file_exists($path)) {
+					$this->cache[$key] = array('path' => $path);
+					return $path;
+				}
+			}
+		}
+
 		try {
 			$this->cache[$key] = array(
 				'path' => $this->locator->locate($template->getPath(), $currentPath)
@@ -80,35 +101,10 @@ class TemplateLocator extends BaseTemplateLocator
 
 	protected function logUsedTemplate($key, $path)
 	{
-		if (defined('DEBUG_BACKTRACE_IGNORE_ARGS') && isset($GLOBALS['DP_CONFIG']['debug']['enable_log_tpl_use']) && $GLOBALS['DP_CONFIG']['debug']['enable_log_tpl_use']) {
-			$back = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
-		} else {
-			$back = debug_backtrace();
-		}
-		$guess_origin = 'unknown';
-
-		foreach ($back as $b) {
-			if (!isset($b['file']) || !isset($b['line'])) {
-				continue;
-			}
-
-			if (
-				strpos($b['file'], '/Templating/') === false
-				&& strpos($b['file'], '/TwigBundle/') === false
-				&& strpos($b['file'], '/Twig/Loader') === false
-				&& strpos($b['file'], '/DeskPRO/Twig') === false
-				&& strpos($b['file'], '/lib/Twig/') === false
-				&& strpos($b['file'], '/symfony/src/') === false
-			) {
-				$guess_origin = $b['file'] . ' line ' . $b['line'];
-				break;
-			}
-		}
-
 		$this->loaded_list[] = array(
-			'key' => $key,
-			'path' => $path,
-			'origin' => $guess_origin
+			'key'    => $key,
+			'path'   => $path,
+			'origin' => null
 		);
 	}
 

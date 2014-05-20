@@ -1,0 +1,27 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('agents.agents') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Agents</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Deleted Agents</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents_deleted.restore.{{ ng_var('agent.id') }}">
+					<a href="{{ ng_href('agents.agents_deleted.restore', '{id: agent.id}') }}" title="{{ ng_var('agent.primary_email.email') }}">
+						<h4>
+							<span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
+							<span class="title-text">{{ ng_var('agent.display_name') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}

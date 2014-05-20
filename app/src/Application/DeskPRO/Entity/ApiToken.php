@@ -35,18 +35,50 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
-class ApiToken extends \Application\DeskPRO\Domain\DomainObject
+/**
+ * @property int $id
+ * @property string $token
+ * @property string $scope
+ * @property \DateTime|null $date_expires
+ * @property Person $person
+ */
+class ApiToken extends DomainObject
 {
+	/**
+	 * Scope used when the token should be acompanied by a session.
+	 */
+	const SCOPE_SESSION = 'session';
+
+	/**
+	 * This scope is any type of client (eg mobile app)
+	 * These typicaly dont expire
+	 */
+	const SCOPE_CLIENT = 'client';
+
+	/**
+	 * @var int
+	 */
+	protected $id = null;
+
 	/**
 	 * @var string
 	 */
 	protected $token;
+
+	/**
+	 * This is 'where' this token is valid. Right now we use this to scope the token
+	 * in the admin interface. We say 'admin_interface' which means there must also
+	 * be an active session for it to be valid. This in turn enforces request tokens
+	 * on every request which prevents XSS.
+	 *
+	 * @var string
+	 */
+	protected $scope;
 
 	/**
 	 * @var \DateTime|null
@@ -64,11 +96,14 @@ class ApiToken extends \Application\DeskPRO\Domain\DomainObject
 		$this['token'] = Strings::random(25, Strings::CHARS_KEY);
 	}
 
+
+	/**
+	 * Regenerates a new token
+	 */
 	public function regenerateToken()
 	{
 		$this['token'] = Strings::random(25, Strings::CHARS_KEY);
 	}
-
 
 
 	/**
@@ -79,9 +114,8 @@ class ApiToken extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getKeyString()
 	{
-		return $this->person->id . ':' . $this->token;
+		return $this->id . ':' . $this->token;
 	}
-
 
 
 	############################################################################
@@ -90,12 +124,53 @@ class ApiToken extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiToken';
-		$metadata->setPrimaryTable(array( 'name' => 'api_token', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'token', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'token', ));
-		$metadata->mapField(array( 'fieldName' => 'date_expires', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expires', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'id' => true, 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+
+		$metadata->setPrimaryTable(array(
+			'name' => 'api_token'
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'fieldName'  => 'token',
+			'columnName' => 'token',
+			'type'       => 'string',
+			'length'     => 25,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'scope',
+			'columnName' => 'scope',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'date_expires',
+			'columnName' => 'date_expires',
+			'type'       => 'datetime',
+			'nullable'   => true,
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'person',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'  => array(array(
+				'name'                 => 'person_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => false,
+				'onDelete'             => 'cascade',
+			))
+		));
 	}
 }

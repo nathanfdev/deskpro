@@ -342,6 +342,18 @@ $DP_CONFIG['debug']['page_log'] = array(
 );
 
 ######################################################
+# OPTIONAL : Ticket Log                              #
+######################################################
+# Enable full logging for tickets and triggers to    #
+# logs/ticket.log                                    #
+#                                                    #
+# Note that this can use a LOT of disk space for     #
+# busy helpdesks.                                    #
+######################################################
+
+$DP_CONFIG['debug']['enable_ticket_log'] = false;
+
+######################################################
 # OPTIONAL : Usersource Log                          #
 ######################################################
 #                                                    #

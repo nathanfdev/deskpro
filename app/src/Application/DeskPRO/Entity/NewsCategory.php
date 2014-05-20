@@ -34,27 +34,30 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-use Application\DeskPRO\App;
-
 /**
  * Feedback categories
- *
+ * 
+ * @SWG\Model (id="NewsCategory")
  */
 class NewsCategory extends CategoryAbstract
 {
 	/**
+	 * @SWG\Property(name="parent",type="NewsCategory")
 	 */
 	protected $parent;
 
 	/**
+	 * @SWG\Property(name="children",type="array",@SWG\Items("NewsCategory"))
 	 */
 	protected $children;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="tags",type="array",@SWG\Items("Usergroup"))
 	 */
 	protected $usergroups;
 

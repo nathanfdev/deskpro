@@ -36,9 +36,11 @@ namespace Application\InstallBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\InstallBundle\Data\DefaultDataProcessor;
+use Monolog\Logger;
 use Orb\Util\Strings;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Installation
@@ -707,6 +709,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			$this->getOrm()->flush();
 
+			$data_proc = new DefaultDataProcessor($this->container);
+			if ($this->getLogger()) {
+				$orb_logger_adapter = new OrbLoggerAdapterHandler($this->getLogger());
+				$data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
+			}
+			$data_proc->runInstall();
+
 			\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
 			// For the all agent group, fetch permissions from the template
@@ -759,6 +768,15 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$prev_time = (float)$prev_time;
 		$prev_time += microtime(true) - $start;
 		$this->getDb()->replace('install_data', array('build' =>'default', 'name' => 'install_time', 'data' => sprintf('%.4f', $prev_time)));
+
+		$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
+		$data_init->admin_user = $agent;
+		$data_init->run();
+
+		App::getDb()->replace('settings', array(
+			'name' => 'core.done_data_initializer',
+			'value' => 1,
+		));
 
 		$url = $this->generateUrl('install_install_done', array(), true);
 		return $this->redirect($url, 302);
@@ -937,7 +955,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	}
 
 	/**
-	 * @return \Orb\Input\Reader\Reader
+	 * @return \Application\DeskPRO\Input\Reader
 	 */
 	public function getIn()
 	{

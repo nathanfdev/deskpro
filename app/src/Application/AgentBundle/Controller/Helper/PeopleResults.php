@@ -34,12 +34,11 @@
 
 namespace Application\AgentBundle\Controller\Helper;
 
-use Application\DeskPRO\Searcher\PeopleSearch;
-use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\People;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\App;
-use Orb\Util\Strings;
+use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Searcher\PeopleSearch;
 use Orb\Util\Arrays;
 
 /**

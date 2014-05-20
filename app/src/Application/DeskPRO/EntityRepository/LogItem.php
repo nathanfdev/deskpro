@@ -34,11 +34,59 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
 class LogItem extends AbstractEntityRepository
 {
+	/**
+	 * @param string $job_id
+	 * @param int    $priority
+	 * @param int    $from
+	 * @param int    $limit
+	 *
+	 * @return array
+	 */
+
+	public function getCronLogs($job_id, $priority, $from = 0, $limit = 100)
+	{
+		// For some reason parameter binding is not working for LIMIT here..
+
+		return App::getDb()->fetchAll(
+			"
+			SELECT log_name, session_name, message, priority, UNIX_TIMESTAMP(date_created) AS date_created
+			FROM log_items
+			WHERE log_name LIKE ? AND priority <= ?
+			ORDER BY id DESC
+			LIMIT " . $from . ", " . $limit . "
+			",
+			array($job_id, $priority)
+		);
+	}
+
+	/**
+	 * @param string $job_id
+	 * @param int    $priority
+	 * @param int    $per_page
+	 *
+	 * @return int
+	 */
+
+	public function getCronPagesCount($job_id, $priority, $per_page = 100)
+	{
+		$q = $this
+			->getEntityManager()
+			->createQueryBuilder()
+			->select('COUNT(l)')
+			->from('DeskPRO:LogItem', 'l')
+			->where('l.log_name LIKE :job_id AND l.priority <= :priority')
+			->setParameter('job_id', $job_id)
+			->setParameter('priority', $priority);
+
+		$count = (int) $q->getQuery()->getSingleScalarResult();
+
+		return ceil($count / $per_page);
+	}
+
 	public function findBySn($log_sn)
 	{
 		try {

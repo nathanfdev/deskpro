@@ -1,0 +1,417 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+* DeskPRO
+*
+* @package DeskPRO
+*/
+
+namespace Application\ImportBundle\Generator;
+
+use Application\ImportBundle\GeneratorConfig;
+
+/**
+ * Description of OsTicket
+ *
+ * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ */
+class OsTicket implements GeneratorInterface
+{
+	protected $db;
+	
+	protected $output_path;
+	
+	protected $ticket_offset;
+	
+	protected $batch_size;
+	
+	/** @var Psr\Log\LoggerInterface */
+	protected $logger;
+	
+	/** @var GeneratorConfig */
+	protected $config;
+
+	public function __construct(GeneratorConfig $config, $logger)
+	{
+		$os_config = dp_get_config('osticket_import');
+		
+		$db_host = $os_config['db_host'];
+		$db_name = $os_config['db_name'];
+		$db_username = $os_config['db_username'];
+		$db_password = $os_config['db_password'];
+		
+		if (!is_dir($config->output_path)) {
+			throw new \Exception('Invalid output-path ' . $config->output_path);
+		}
+		
+		$this->config = $config;
+		
+		$this->output_path = $config->output_path;
+		
+		$this->batch_size = 10;
+		
+		//$this->logger = $logger;
+
+		$this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
+	}
+	
+	public function getTicketCount()
+	{
+		$query = 'SELECT count(ticket_id) FROM ost_ticket';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute();
+		
+		return $stmt->fetchColumn();
+	}
+	
+	public function getPeopleCount()
+	{
+		$query = 'SELECT count(staff_id) FROM ost_staff';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute();
+		
+		$staff_count = $stmt->fetchColumn();
+		
+		$query = 'SELECT count(id) FROM ost_user';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute();
+		
+		$user_count = $stmt->fetchColumn();
+		
+		return $staff_count + $user_count;
+	}
+	
+	public function findAllTickets($offset)
+	{
+		$query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
+		. ' LIMIT :limit'
+		. ' OFFSET :offset';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
+		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
+		
+		$result = $stmt->execute();
+		
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
+	public function findTicketAttachment($ticket_id)
+	{
+		$ticket_id = (int) $ticket_id;
+		
+		$query = 'SELECT f.name, f.type, a.file_id  FROM ost_file f JOIN ost_ticket_attachment a '
+		. ' ON f.id = a.file_id'
+		. ' WHERE ticket_id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($ticket_id));
+		
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
+	public function findAllStaff($offset = 0)
+	{
+		$query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
+		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
+		
+		$result = $stmt->execute();
+		
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
+	public function findAllUser($offset = 0)
+	{
+		$query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id'
+		. ' LIMIT :limit'
+		. ' OFFSET :offset';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
+		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
+		
+		$result = $stmt->execute();
+		
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	public function findDepartmentFromId($id)
+	{
+		$query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($id));
+		
+		return $stmt->fetchColumn();
+	}
+	
+	public function findUserEmailFromId($id)
+	{
+		$query = 'SELECT address FROM ost_user_email e'
+		. ' LEFT JOIN ost_user u '
+		. ' ON e.user_id=u.id'
+		. ' WHERE u.id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($id));
+		
+		return $stmt->fetchColumn();
+	}
+	
+	public function findStaffEmailFromId($id)
+	{
+		$query = 'SELECT email FROM ost_staff WHERE id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($id));
+		
+		return $stmt->fetchColumn();
+	}
+	
+	public function findTeamNameFromId($id)
+	{
+		$query = 'SELECT name FROM ost_team WHERE id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($id));
+		
+		return $stmt->fetchColumn();
+	}
+	
+	public function findMessageThreadFromId($ticket_id)
+	{
+		$query = 'SELECT thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($ticket_id));
+		
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
+	public function findTimezoneFromId($id)
+	{
+		$query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($id));
+		
+		return $stmt->fetchColumn();
+	}
+	
+	public function getFileData($file_id)
+	{
+		$data = '';
+		
+		$query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
+		
+		$stmt   = $this->db->prepare($query);
+		
+		$result = $stmt->execute(array($file_id));
+		
+		$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		
+		foreach ($rows as $chunk) {
+			$data .= $chunk['filedata'];
+		}
+		
+		return $data;
+	}
+	
+	public function exportPeople()
+	{
+		$file_path = $this->output_path . 'people/';
+
+		$index = 1;
+		
+		$offset = 0;
+		
+		$person_batch = $this->findAllStaff($offset);
+		
+		while($person_batch) {
+			foreach ($person_batch as $person) {
+				$transformedArray = array();
+
+				$transformedArray['oid']		= $index;
+				$transformedArray['is_agent']		= true;
+				$transformedArray['first_name']		= $person['firstname'];
+				$transformedArray['last_name']		= $person['lastname'];
+				$transformedArray['timezone']		= $this->findTimezoneFromId($person['timezone_id']);
+				$transformedArray['date_created']	= $person['created'];
+				$transformedArray['emails']		= array($person['email']);
+
+				$file_name = 'person' . $index . '.json';
+
+				if ($this->config->mode === 'live') {
+					file_put_contents($file_path . $file_name, json_encode($transformedArray));
+				}
+
+				//$this->logger->info(sprintf('%s exported successfully!', $file_name));
+
+				$index++;
+				
+				$offset++;
+			}
+
+			unset($person);
+			
+			$person_batch = $this->findAllStaff($offset);
+		}
+		
+		foreach ($this->findAllUser() as $person) {
+			$transformedArray = array();
+			
+			$transformedArray['oid']		= $index;
+			$transformedArray['is_user']		= true;
+			$transformedArray['name']		= $person['name'];
+			$transformedArray['date_created']	= $person['created'];
+			$transformedArray['emails']		= array($person['address']);
+
+			$file_name = 'person' . $index . '.json';
+
+			if ($this->config->mode === 'live') {
+				file_put_contents($file_path . $file_name, json_encode($transformedArray));
+			}
+			
+			$this->config->progress_bar->advance();
+			
+			//$this->logger->info(sprintf('%s exported successfully!', $file_name));
+			
+			$index++;
+		}
+	}
+	
+	public function exportTickets()
+	{
+		$ticketPath = $this->output_path . '/tickets/';
+
+		$index = 1;
+		
+		$offset = 0;
+		
+		$ticket_batch = $this->findAllTickets($offset);
+		
+		while ($ticket_batch) {
+			foreach ($ticket_batch as $ticket) {
+				//print_r($ticket);
+
+				$transformedArray = array();
+
+				$transformedArray['ref']		= $ticket['number'];
+				$transformedArray['department']		= $this->findDepartmentFromId($ticket['dept_id']);
+				$transformedArray['person']		= $this->findUserEmailFromId($ticket['user_id']);
+				$transformedArray['agent']		= $this->findUserEmailFromId($ticket['staff_id']) ?: null;
+				$transformedArray['agent_team']		= $this->findUserEmailFromId($ticket['team_id']) ?: null;
+				$transformedArray['status']		= $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent';
+				$transformedArray['date_created']	= $ticket['created'];
+				$transformedArray['subject']		= $ticket['subject'];
+				$transformedArray['priority']		= $ticket['priority'];
+
+				foreach ($this->findMessageThreadFromId($ticket['ticket_id']) as $message_thread) {
+					if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
+						$person_email = $this->findStaffEmailFromId($message_thread['staff_id']);
+
+					} elseif ($message_thread['thread_type'] === 'M' && $message_thread['user_id']) {
+						$person_email = $this->findUserEmailFromId($message_thread['user_id']);
+					}
+					
+					$message_array = array(
+						'person'	=> $person_email,
+						'date_created'	=> $message_thread['created'],
+						'message_text'	=> $message_thread['body']
+					);
+					
+					if ($this->findTicketAttachment($ticket['ticket_id'])) {
+						$attachments = $this->findTicketAttachment($ticket['ticket_id']);
+						
+						foreach ($attachments as $attachment) {
+							$file_data = $this->getFileData($attachment['file_id']);
+							
+							$message_array['attachments'][] = array(
+								'oid'		=> $index,
+								'blob_data'	=> base64_encode($file_data),
+								'file_name'	=> $attachment['name'],
+								'content_type'	=> $attachment['type']
+							);
+						}
+					}
+
+					$transformedArray['messages'][] = $message_array;
+				}
+
+				$file_name = 'ticket' . $index++ . '.json';
+
+				if ($this->config->mode === 'live') {
+					file_put_contents($ticketPath . $file_name, json_encode($transformedArray));
+				}
+				
+				unset($transformedArray);
+				
+				$offset++;
+
+				//$this->logger->info(sprintf('%s exported successfully!', $file_name));
+				
+				$this->config->progress_bar->advance();
+			}
+			
+			$ticket_batch = $this->findAllTickets($offset);
+		}
+	}
+	
+	public function generateJson()
+	{
+		$steps = $this->getPeopleCount() + $this->getTicketCount();
+		
+		$this->config->progress_bar->start($this->config->output, $steps);
+		
+		try {
+			$this->exportPeople();
+			$this->exportTickets();
+		} catch (\Exception $ex) {
+			//$this->logger->warning($ex->getMessage());
+		}
+	}
+}

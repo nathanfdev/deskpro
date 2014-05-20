@@ -34,14 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Orb\Util\Strings;
 use Orb\Util\Numbers;
-
-use Application\DeskPRO\Entity\LabelBlob;
+use Orb\Util\Strings;
 
 /**
  * A blob is just a pointer to data.
@@ -418,14 +415,26 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
+		$is_image = $this->isImage();
 		return array(
-			'id' => $this->id,
-			'authcode' => $this->authcode,
-			'filename' => $this->filename,
-			'filesize' => $this->filesize,
+			'id'               => $this->id,
+			'authcode'         => $this->authcode,
+			'filename'         => $this->filename,
+			'file_ext'         => $this->getExtension(),
+			'filesize'         => $this->filesize,
 			'filesize_display' => $this->getReadableFilesize(),
-			'content_type' => $this->content_type,
-			'download_url' => $this->getDownloadUrl(true)
+			'content_type'     => $this->content_type,
+			'is_image'         => $is_image,
+			'name_hash'        => $this->getNameHash(),
+			'blob_hash'        => $this->blob_hash,
+			'download_url'     => $this->getDownloadUrl(true),
+			'relative_url'     => $this->getDownloadUrl(false),
+			'thumbnail_url_80' => $is_image ? $this->getThumbnailUrl(80, true) : null,
+			'thumbnail_url_75' => $is_image ? $this->getThumbnailUrl(75, true) : null,
+			'thumbnail_url_50' => $is_image ? $this->getThumbnailUrl(50, true) : null,
+			'thumbnail_url_30' => $is_image ? $this->getThumbnailUrl(30, true) : null,
+			'thumbnail_url_20' => $is_image ? $this->getThumbnailUrl(20, true) : null,
+			'thumbnail_url_16' => $is_image ? $this->getThumbnailUrl(16, true) : null,
 		);
 	}
 

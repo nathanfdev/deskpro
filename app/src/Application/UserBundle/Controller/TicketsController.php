@@ -36,12 +36,9 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
-use Application\UserBundle\Form\EditTicketType;
-use Application\UserBundle\Form\NewTicketReplyType;
 use Application\UserBundle\Form\NewTicketParticipantType;
+use Application\UserBundle\Form\NewTicketReplyType;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 class TicketsController extends AbstractController
@@ -56,7 +53,7 @@ class TicketsController extends AbstractController
 
 		if ($this->session->get('ticket_access')) {
 			$this->session_allowed = $this->session->get('ticket_access');
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		}
 	}
 
@@ -353,7 +350,7 @@ class TicketsController extends AbstractController
 		$form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
 		$validator = new \Application\UserBundle\Validator\NewTicketReplyValidator();
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 
 		$newreply->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 		$newreply->attach_ids_authed = true;
@@ -363,7 +360,7 @@ class TicketsController extends AbstractController
 
 			$ticket_message = $newreply->getNewMessage();
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		} else {
 			$errors = $validator->getErrors(true);
 			$error_fields = $validator->getErrorGroups(true);
@@ -413,12 +410,12 @@ class TicketsController extends AbstractController
 		$newpart_form = $this->get('form.factory')->create(new NewTicketParticipantType(), $newpart);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$newpart_form->bindRequest($this->get('request'));
+			$newpart_form->handleRequest($this->get('request'));
 
 			if ($newpart_form->isValid()) {
 				$newpart->save();
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 			}
 		}
 
@@ -440,7 +437,7 @@ class TicketsController extends AbstractController
 			$em->flush();
 		});
 
-		App::setSkipCache(true);
+		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 		return $this->redirectRoute('user_tickets_participants', array('ticket_ref' => $ticket['ref']));
 	}
@@ -494,7 +491,7 @@ class TicketsController extends AbstractController
 				$this->em->persist($feedback);
 				$this->em->flush();
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 				// AJAX request used to auto-save rating as soon as user clicked link
 				if ($this->request->isXmlHttpRequest()) {
@@ -548,7 +545,7 @@ class TicketsController extends AbstractController
 			$em->flush();
 		});
 
-		App::setSkipCache(true);
+		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 		return $this->render('UserBundle:Tickets:feedback-thank.html.twig', array(
 			'ticket' => $ticket,
@@ -590,7 +587,7 @@ class TicketsController extends AbstractController
 			$em->flush();
 		});
 
-		App::setSkipCache(true);
+		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 		return $this->render('UserBundle:Tickets:feedback-close.html.twig', array(
 			'ticket' => $ticket,
@@ -613,7 +610,7 @@ class TicketsController extends AbstractController
 				$em->flush();
 			});
 
-			App::setSkipCache(true);
+			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			$ticket_message = null;
 			if (!$ticket->date_feedback_rating) {

@@ -34,21 +34,19 @@
 
 namespace Application\DeskPRO\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The abstract controller sets up some default objects.
  *
  * @property \Doctrine\ORM\EntityManager $em
  * @property \Application\DeskPRO\DBAL\Connection $db
- * @property \Orb\Input\Reader\Reader $in
+ * @property \Application\DeskPRO\Input\Reader $in
  * @property \Orb\Input\Cleaner\Cleaner $cleaner
  * @property \Application\DeskPRO\Templating\Engine $tpl
  * @property \Application\DeskPRO\Settings\Settings $settings
  * @property \Application\DeskPRO\HttpFoundation\Session $session
- * @property \Application\DeskPRO\Plugin\PluginRepository $plugins
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
@@ -62,7 +60,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			case 'settings': return $this->get('deskpro.core.settings');
 			case 'session': return $this->get('session');
 			case 'tpl': return $this->get('templating');
-			case 'plugins': return $this->getContainer()->getSystemService('plugins');
 			default:
 				throw new \InvalidArgumentException("Unknown property {$prop}");
 		}

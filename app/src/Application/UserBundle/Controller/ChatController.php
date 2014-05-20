@@ -120,12 +120,12 @@ class ChatController extends AbstractController
 
 				$all_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessagesForClientInChannels($session['id'], 0, $channels, $since);
 				foreach ($all_messages as $message) {
-					$handler = $message->getHandler();
+					$message['data'] = unserialize($message['data']);
 
 					if ($message['created_by_client'] != $session['id']) {
 						$data['messages'][] = array(
 							$message['channel'],
-							$handler->getMessage('ajax')
+							$message['data']
 						);
 					}
 

@@ -1,0 +1,554 @@
+{% extends "AdminInterfaceBundle:Layout:widget-modal.html.twig" %}
+{% block modal_title %}
+	<h4 class="modal-title">
+		New Widget
+	</h4>
+{% endblock %}
+{% block modal_body %}
+	<article class="form-horizontal dp-form">
+
+		<div class="alert alert-info">
+			<p>
+				A widget is a basic app that lets you add simple HTML and Javascript to pre-defined locations in
+				the agent interface.
+			</p>
+			<p>
+				Full apps are capable of doing much more than this. If you want more information about how to build
+				and package apps, refer to the <a href="http://support.deskpro.com/" target="_blank">Apps Developer Guide</a>.
+			</p>
+		</div>
+
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Title</h3>
+			</div>
+			<div class="col-lg-9">
+				<input type="text" class="form-control" ng-model="opt.title" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>
+					<label>
+						<input type="checkbox" ng-model="opt.ticket_on" />
+						Tickets
+					</label>
+				</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="opt.ticket_on">
+					<ul class="checkbox-list" style="display: block; max-height: 200px; overflow: auto;">
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket.blank" />
+								<span>No UI (just Javascript)</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['header.top']" />
+								<span>Top of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['header.bottom']" />
+								<span>Bottom of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['header.after']" />
+								<span>After the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['properties.before']" />
+								<span>Before the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['properties.tab']" />
+								<span>A new tab in the properties box</span>
+							</label>
+							<div ng-show="opt.ticket['properties.tab']" style="padding-left: 30px;">
+								Tab Title: <input type="text" style="width: 100px;" ng-model="opt.ticket['properties.tab.title']" />
+							</div>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['properties.after']" />
+								<span>After the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['main.top']" />
+								<span>Top of the main content area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['replybox.before']" />
+								<span>Before the reply box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['replybox.after']" />
+								<span>After the reply box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['messages.before']" />
+								<span>Before the messages list</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['messages.aget']" />
+								<span>After the messages list</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['main.after']" />
+								<span>After the main content area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.ticket['footer']" />
+								<span>At the very bottom of the tab (footer)</span>
+							</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>
+					<label>
+						<input type="checkbox" ng-model="opt.user_on" />
+						Users
+					</label>
+				</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="opt.user_on">
+					<ul class="checkbox-list" style="display: block; max-height: 200px; overflow: auto;">
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user.blank" />
+								<span>No UI (just Javascript)</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['header.top']" />
+								<span>Top of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['header.bottom']" />
+								<span>Bottom of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['header.after']" />
+								<span>After the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['main.before']" />
+								<span>Before the main content</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['main.after']" />
+								<span>After the main content</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['footer']" />
+								<span>At the very bottom of the tab (footer)</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['left_col.top']" />
+								<span>At the top of the left column</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['left_col.bottom']" />
+								<span>At the bottom of the left column</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['summary.before']" />
+								<span>Before the summary box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['summary.tab']" />
+								<span>A tab in the summary box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['summary.after']" />
+								<span>After the summary box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['properties.before']" />
+								<span>Before the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['properties.tab']" />
+								<span>A tab in the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['properties.after']" />
+								<span>After the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['interactions.before']" />
+								<span>Before the interactions box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['interactions.before']" />
+								<span>A tab in the interactions box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['interactions.after']" />
+								<span>After the interactions box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['details.before']" />
+								<span>Before the details box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['details.tab']" />
+								<span>A tab inside of the details box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['details.after']" />
+								<span>After the details box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['right_col.top']" />
+								<span>At the top of the right column</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['right_col.bottom']" />
+								<span>At the bottom of the right column</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['agent.before']" />
+								<span>Before the agent box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['agent.after']" />
+								<span>After the agent box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['contact.before']" />
+								<span>Before the contact box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['contact.tab']" />
+								<span>A tab inside of the contact box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['contact.after']" />
+								<span>After the contact box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['org.before']" />
+								<span>Before the org box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['org.tab']" />
+								<span>A tab inside of the org box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['org.after']" />
+								<span>After the org box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['usergroups.before']" />
+								<span>Before the usergroups box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['usergroups.tab']" />
+								<span>A tab inside of the usergroups box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.user['usergroups.after']" />
+								<span>After the usergroups box</span>
+							</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>
+					<label>
+						<input type="checkbox" ng-model="opt.org_on" />
+						Organizations
+					</label>
+				</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="opt.org_on">
+					<ul class="checkbox-list" style="display: block; max-height: 200px; overflow: auto;">
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org.blank" />
+								<span>No UI (just Javascript)</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['header.top']" />
+								<span>Top of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['header.bottom']" />
+								<span>Bottom of the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['header.after']" />
+								<span>After the header area</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['main.before']" />
+								<span>Before the main content</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['main.after']" />
+								<span>After the main content</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['footer']" />
+								<span>At the very bottom of the tab (footer)</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['left_col.top']" />
+								<span>At the top of the left column</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['left_col.bottom']" />
+								<span>At the bottom of the left column</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['summary.before']" />
+								<span>Before the summary box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['summary.tab']" />
+								<span>A tab inside of the summary box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['summary.after']" />
+								<span>After the summary box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['members.before']" />
+								<span>Before the members box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['members.tab']" />
+								<span>A tab inside of the members box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['members.after']" />
+								<span>After the members box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['notes.before']" />
+								<span>Before the notes box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['notes.tab']" />
+								<span>A tab inside of the notes box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['notes.after']" />
+								<span>After the notes box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['contact.before']" />
+								<span>Before the contact box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['contact.tab']" />
+								<span>A tab inside of the contact box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['contact.after']" />
+								<span>After the contact box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['properties.before']" />
+								<span>Before the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['properties.tab']" />
+								<span>A tab inside of the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['properties.after']" />
+								<span>After the properties box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['email_assoc.before']" />
+								<span>Before the email associations box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['email_assoc.after']" />
+								<span>After the email associations box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['usergroups.before']" />
+								<span>Before the usergroups box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['usergroups.tab']" />
+								<span>A tab inside of the usergroups box</span>
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" ng-model="opt.org['usergroups.after']" />
+								<span>After the usergroups box</span>
+							</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</article>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-primary" ng-click="doCreate()">Create Widget</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

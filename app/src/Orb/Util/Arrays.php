@@ -409,6 +409,63 @@ class Arrays
 	}
 
 
+	/**
+	 * Just like array_diff except works with === identity checks (good for checking objects).
+	 *
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	public static function arrayDiffIdentity(array $array1, array $array2)
+	{
+		return array_udiff($array1, $array2, function($a, $b) {
+			return $a === $b ? 0 : -1;
+		});
+	}
+
+
+	/**
+	 * Just like array_diff_assoc except works with === identity checks (good for checking objects).
+	 *
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	public static function arrayDiffAssocIdentity(array $array1, array $array2)
+	{
+		return array_udiff_assoc($array1, $array2, function($a, $b) {
+			return $a === $b ? 0 : -1;
+		});
+	}
+
+
+	/**
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	public static function arrayDiffAssocRecursive(array $array1, array $array2)
+	{
+		$diff = array();
+
+		foreach($array1 as $key => $value) {
+			if (is_array($value)) {
+				if (array_key_exists($key, $array2) || !is_array($array2[$key])) {
+					$diff[$key] = $value;
+				} else {
+					$new_diff = self::arrayDiffAssocRecursive($value, $array2[$key]);
+					if (!empty($new_diff)) {
+						$diff[$key] = $new_diff;
+					}
+				}
+			} elseif (!array_key_exists($key,$array2) || $array2[$key] !== $value) {
+				$diff[$key] = $value;
+			}
+		}
+
+		return $diff;
+	}
+
 
 	/**
 	 * Remove all falsey values from an array.
@@ -564,6 +621,28 @@ class Arrays
 	    return $array;
 	}
 
+
+	/**
+	 * Remove all values from an array that are an empty array. This differs
+	 * from removeFalsey() in that only empty arrays are removed.
+	 *
+	 * @param    array    $array   The array to search in
+	 * @return   array
+	 */
+	public static function removeNull($array)
+	{
+		if (!is_array($array)) {
+			$array = (array)$array;
+		}
+
+		foreach (array_keys($array) as $k) {
+			if ($array[$k] === null) {
+				unset($array[$k]);
+			}
+		}
+
+		return $array;
+	}
 
 
 	/**
@@ -731,6 +810,35 @@ class Arrays
 	}
 
 
+	/**
+	 * Takes a nested array and returns a flat version where sub-keys are separated with a dot.
+	 *
+	 * @param array $array
+	 * @param string $sub_sep
+	 * @param string $_start_key {internal}
+	 * @param array $_result {internal}
+	 * @return array
+	 */
+	public static function flattenKeyValueArray($array, $sub_sep = '.', $_start_key = '', array &$_result = null)
+	{
+		if (!$_result) {
+			$_result = array();
+		}
+
+		foreach ($array as $k => $v) {
+			$real_k = $_start_key ? $_start_key . $sub_sep . $k : $k;
+
+			if (is_array($v) || $v instanceof \Traversable) {
+				self::flattenKeyValueArray($v, $sub_sep, $real_k, $_result);
+			} else {
+				$_result[$real_k] = $v;
+			}
+		}
+
+		return $_result;
+	}
+
+
 
 	/**
 	 * Returns a string from an array using the given template on each item. Sortof like
@@ -740,20 +848,87 @@ class Arrays
 	 * @param string $tpl The template to use. Variables {VAL} and {KEY} are available.
 	 * @return string
 	 */
-	public static function implodeTemplate($array, $tpl = '<li>{VAL}</li>')
+	public static function implodeTemplate($array, $tpl = '<li>{VAL}</li>', $key_prefix = null)
 	{
-	    if (!is_array($array)) {
-	        $array = (array)$array;
-	    }
-
-
 	    $string = '';
 
 	    foreach ($array as $k => $v) {
-	        $string .= str_replace(array('{KEY}', '{VAL}'), array($k, $v), $tpl);
+			if (is_array($v)) {
+				$string .= self::implodeTemplate($v, $tpl, "$k.");
+			} else {
+				$key_str = ($key_prefix ?: '') . $k;
+				$string .= str_replace(array('{KEY}', '{VAL}'), array($key_str, $v), $tpl);
+			}
 	    }
 
 	    return $string;
+	}
+
+
+	/**
+	 * Like var_export except the result is prettier.
+	 *
+	 * @param array $array
+	 * @return string
+	 */
+	public static function prettyDump(array $array, $_level = 0)
+	{
+		if (!count($array)) {
+			return 'array()';
+		}
+
+		if (isset($array[0])) {
+			$is_numeric_array = true;
+			$max_keylen = 0;
+		} else {
+			$is_numeric_array = false;
+			$max_keylen = 0;
+
+			foreach ($array as $k => $v) {
+				$len = strlen($k);
+				if ($len > $max_keylen) {
+					$max_keylen = $len;
+				}
+			}
+
+			$max_keylen += 3;
+		}
+
+		$rows = array();
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				$v = self::prettyDump($v, $_level+1);
+				$v = ltrim($v);
+
+				if (strlen($v) < 80) {
+					$v = str_replace("\n", " ", $v);
+					$v = preg_replace('#\s*=>\s*#', ' => ', $v);
+					$v = preg_replace("#',\s*'#", '\', \'', $v);
+					$v = trim($v);
+					$v = preg_replace('#^array\(\s*#', 'array(', $v);
+					$v = preg_replace('#\s*\)$#', ')', $v);
+					$v = preg_replace('#,\)$#', ')', $v);
+				}
+
+			} else {
+				$v = var_export($v, true);
+			}
+
+			if ($is_numeric_array) {
+				$row = str_repeat("\t", $_level+1) . $v;
+			} else {
+				$row = sprintf("%s%-{$max_keylen}s => %s", str_repeat("\t", $_level+1), var_export($k, true), $v);
+			}
+
+			$rows[] = $row;
+		}
+
+		$rows = implode(",\n", $rows);
+		$rows .= ',';
+
+		$output = str_repeat("\t", $_level) . "array(\n" . $rows . "\n" . str_repeat("\t", $_level) . ')';
+
+		return $output;
 	}
 
 
@@ -876,6 +1051,38 @@ class Arrays
 	}
 
 
+	/**
+	 * @param $array
+	 * @param string $order_key
+	 * @param string $parent_id_key
+	 */
+	public static function sortFlatHierarchyArray(&$array, $order_key = 'display_order', $parent_key = 'parent', $keep_keys = false)
+	{
+		$sort_fn = $keep_keys ? 'uasort' : 'usort';
+
+		$sort_fn($array, function($a, $b) use ($order_key, $parent_key) {
+
+			if ($a[$parent_key]) {
+				$a_order = floatval($a[$parent_key][$order_key] . '.' . $a[$order_key]);
+			} else {
+				$a_order = floatval($a[$order_key]);
+			}
+
+			if ($b[$parent_key]) {
+				$b_order = floatval($b[$parent_key][$order_key] . '.' . $b[$order_key]);
+			} else {
+				$b_order = floatval($b[$order_key]);
+			}
+
+			if ($a_order == $b_order) {
+				return 0;
+			}
+
+			return $a_order < $b_order ? -1 : 1;
+		});
+	}
+
+
 
 	/**
 	 * Takes an array hierarchy and converts it into a k=>title array suitable for a flat select box.
@@ -889,7 +1096,7 @@ class Arrays
 	public static function selectArrayFromHierarchy($array, $index_key = 'id', $title_key = 'title', $indent = '--')
 	{
 		if (!is_array($array)) {
-			$deps = iterator_to_array($array);
+			$array = iterator_to_array($array);
 		}
 		$flat = self::flattenHierarchy($array);
 
@@ -1278,6 +1485,45 @@ class Arrays
 		return $found_keys;
 	}
 
+
+	/**
+	 * Use a callback function to get the value of first match in an array.
+	 *
+	 * @param  array    $array
+	 * @param  callable $callback
+	 * @param  mixed    $default
+	 * @return mixed
+	 */
+	public static function findValue($array, $callback, $default = null)
+	{
+		foreach ($array as $k => $v) {
+			if (call_user_func($callback, $v, $k)) {
+				return $v;
+			}
+		}
+
+		return $default;
+	}
+
+
+	/**
+	 * Use a callback function to find the key of the first match in an array
+	 *
+	 * @param  array     $array
+	 * @param  callback $callback
+	 * @param  mixed    $default
+	 * @return mixed
+	 */
+	public static function findKey($array, $callback, $default = null)
+	{
+		foreach ($array as $k => $v) {
+			if (call_user_func($callback, $v, $k)) {
+				return $k;
+			}
+		}
+
+		return $default;
+	}
 
 
 	/**

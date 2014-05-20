@@ -1,0 +1,23 @@
+{% extends "AdminInterfaceBundle:Layout:widget-modal.html.twig" %}
+{% block modal_title %}
+	<div style="float:left; position: relative; top: -4px; left: -5px;">
+		<img ng-src="{{ ng_var('pack.icon_32') }}" />
+	</div>
+	<h4 class="modal-title">
+		Remove "{{ ng_var('pack.title') }}"
+	</h4>
+{% endblock %}
+{% block modal_body %}
+	<article class="form-horizontal dp-form">
+		Are you sure you want to remove this app package? If the app is installed, it will be uninstalled.
+	</article>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-default" ng-click="dismiss()">Cancel</button>
+		<button class="btn btn-danger" ng-click="confirm()">Remove App Package</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

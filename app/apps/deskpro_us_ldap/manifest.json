@@ -1,0 +1,94 @@
+{
+	"package_name": "deskpro_us_ldap",
+	"is_native": true,
+	"title": "LDAP Authentication",
+	"description": "Enables user authentication against any LDAP directory.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "host",
+			"type": "text",
+			"label": "Host",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "port",
+			"type": "text",
+			"label": "Port",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "secure",
+			"type": "choice",
+			"label": "Secure",
+			"description": "",
+			"native_only": true,
+			"options": [
+				{ "label": "None", "value": "" },
+				{ "label": "SSL", "value": "ssl" },
+				{ "label": "TLS", "value": "tls" }
+			]
+		},
+		{
+			"name": "base_dn",
+			"type": "text",
+			"label": "Base DN",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "service_username",
+			"type": "text",
+			"label": "Service Account Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "service_password",
+			"type": "password",
+			"label": "Service Account Password",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_username",
+			"type": "text",
+			"label": "Field: Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_email",
+			"type": "text",
+			"label": "Field: Email",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "account_filter",
+			"type": "text",
+			"label": "Filter",
+			"description": "",
+			"native_only": true
+		}
+	]
+}

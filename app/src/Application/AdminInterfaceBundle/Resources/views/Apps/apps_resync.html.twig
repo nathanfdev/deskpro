@@ -1,0 +1,35 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+<section class="dp-paneblock dp-panelink">
+	<a href="{{ ng_href('apps.apps') }}">
+		<em><i class="fa fa-chevron-down"></i></em>
+		<h3>Apps</h3>
+	</a>
+</section>
+
+<section class="dp-paneblock dp-listpane">
+	<header>
+		<h3>Re-sync App Packages</h3>
+	</header>
+	<article class="dp-padded" ng-show="state == 'default'">
+		DeskPRO automatically syncs new app packages when you upgrade. But if you have made changes to an app or have installed new apps to the filesystem,
+		then you can manually run a re-sync now.
+		<br/><br/>
+		<button class="btn btn-primary" ng-click="Ctrl.beginResync()">Re-sync app packages now &rarr;</button>
+	</article>
+	<article class="dp-padded" ng-show="state == 'running'">
+		<div style="display: inline-block; width: 400px; text-align: center;">
+			App packages are being re-synced... Please wait.
+			<br/>
+			<i class="spinner-editor"></i>
+		</div>
+	</article>
+	<article class="dp-padded" ng-show="state == 'done'">
+		App packages have been re-sycned.
+		<br/>
+		<pre class="pre-scrollable">{{ ng_var('log') }}</pre>
+		<br/><br/>
+		<a href="{{ ng_href('apps.apps') }}" class="btn btn-primary">&larr; Go back to Apps</a>
+	</article>
+</section>
+{% endblock %}

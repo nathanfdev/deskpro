@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\ORM\Util;
 
-use Doctrine\ORM\PersistentCollection;
-use Application\DeskPRO\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
 use Application\DeskPRO\App;
+use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * Simple utility methods for working with the ORM

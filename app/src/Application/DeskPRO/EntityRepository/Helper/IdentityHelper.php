@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManager;
 
 class IdentityHelper

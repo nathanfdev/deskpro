@@ -821,7 +821,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		var bottom = 10;
 		var height = '';
 
-		var scrollContent = $('.scroll-content', this.wrapper).first();
+		var scrollContent = $('.dp-page-content', this.wrapper).first();
 		var contentH = false;
 		var hasHeader = !!($('> section > header', this.wrapper).length);
 		var hasFooter = !!($('> section > footer', this.wrapper).length);
@@ -835,7 +835,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 				contentH += 45;
 			}
 
-			contentH += 31;
+			contentH += 50;
 		}
 
 		if (hasHeader) $('> section > article', this.wrapper).removeClass('no-header');

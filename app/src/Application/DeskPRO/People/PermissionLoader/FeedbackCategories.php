@@ -36,9 +36,6 @@ namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
-
-use Orb\Util\Arrays;
 
 /**
  * Loads feedback category permissions

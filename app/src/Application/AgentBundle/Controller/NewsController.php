@@ -34,24 +34,14 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsComment;
-use Application\DeskPRO\Searcher\NewsSearch;
-use Application\DeskPRO\UI\RuleBuilder;
-
 use Application\AgentBundle\Controller\Helper\NewsResults;
+use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
-use Orb\Util\Util;
-use Orb\Util\Numbers;
-
-use FineDiff;
+use Orb\Util\Strings;
 
 /**
  * Handles listing and editing of news
@@ -383,7 +373,7 @@ class NewsController extends AbstractController
 		$this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", array($this->person->id));
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			$validator = new \Application\AgentBundle\Validator\NewNewsValidator();

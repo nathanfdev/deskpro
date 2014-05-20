@@ -34,21 +34,21 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\EmailGateway;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 
 /**
  * A fetcher takes makes a conenction to a resource described in
- * an EmailGateway record, and reads messages into the database for storage.
+ * an EmailAccount record, and reads messages into the database for storage.
  */
 abstract class AbstractFetcher
 {
 	/**
-	 * \Application\DeskPRO\EmailGateway
+	 * \Application\DeskPRO\EmailAccount
 	 */
-	protected $gateway;
+	protected $account;
 
 	/**
 	 * @var \Zend\Mail\Storage\AbstractStorage
@@ -67,12 +67,12 @@ abstract class AbstractFetcher
 	protected $max_size = 0;
 
 	/**
-	 * @param \Application\DeskPRO\Entity\EmailGateway $gateway
+	 * @param \Application\DeskPRO\Entity\EmailAccount $account
 	 * @param int $max_size  The max size in bytes to read. 0 to disable.
 	 */
-	public function __construct(EmailGateway $gateway, $max_size = 0)
+	public function __construct(EmailAccount $account, $max_size = 0)
 	{
-		$this->gateway = $gateway;
+		$this->account = $account;
 		$this->logger = new Logger();
 		$this->setMaxSize($max_size);
 		$this->init();
@@ -123,6 +123,7 @@ abstract class AbstractFetcher
 
 
 	/**
+	 * @param bool $reconnect
 	 * @return mixed
 	 */
 	public function getStorage($reconnect = false)
@@ -150,7 +151,7 @@ abstract class AbstractFetcher
 
 
 	/**
-	 * @param $logger \Application\DeskPRO\Log\Logger
+	 * @param Logger $logger
 	 */
 	public function setLogger(Logger $logger)
 	{
@@ -189,8 +190,8 @@ abstract class AbstractFetcher
 	 * Returns null if there are no more messages.
 	 *
 	 * @param string $object_type
-	 *
 	 * @return \Application\DeskPRO\Entity\EmailSource
+	 * @throws \Exception
 	 */
 	public function readNext($object_type = 'ticket')
 	{
@@ -217,7 +218,7 @@ abstract class AbstractFetcher
 
 			$source = new EmailSource();
 			$source->fromArray(array(
-				'gateway' => $this->gateway,
+				'email_account' => $this->account,
 				'headers' => $raw_message->headers,
 				'status' => 'inserted'
 			));
@@ -233,8 +234,8 @@ abstract class AbstractFetcher
 
 				App::getDb()->executeUpdate("
 					INSERT IGNORE INTO email_uids
-					SET id = ?, gateway_id = ?, date_created = ?
-				", array($raw_message->uid, $this->gateway->getId(), date('Y-m-d H:i:s')));
+					SET id = ?, email_account_id = ?, date_created = ?
+				", array($raw_message->uid, $this->account->getId(), date('Y-m-d H:i:s')));
 
 				$this->logger->log(sprintf("Saved UID: %s", $raw_message->uid), 'debug');
 			}

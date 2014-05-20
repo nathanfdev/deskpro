@@ -1,0 +1,58 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('setup.languages.edit', '{id: ListCtrl.pack.id}') }}" dp-state-mark="setup.languages.edit.{{ ng_var('ListCtrl.pack.id') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Language: {{ ng_var('ListCtrl.pack.show_title') }} ({{ ng_var('ListCtrl.pack.title') }})</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Resources</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-state-mark="id,groupId:setup.phrases.viewgroup.{{ ng_var("'phrases-' + ListCtrl.pack.id") }}.custom">
+					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'custom'}") }}">
+						<h4>
+							<span class="title-text">
+								All Custom Phrases
+							</span>
+						</h4>
+					</a>
+				</li>
+				<li ng-repeat="group in ListCtrl.phraseGroups.object" dp-state-mark="id,groupId:setup.phrases.viewresgroup.{{ ng_var("'phrases-' + ListCtrl.pack.id") }}.{{ ng_var("'res-' + group.id") }}">
+					<a href="{{ ng_href('setup.phrases.viewresgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: 'res-' + group.id}") }}">
+						<h4>
+							<span class="title-text">
+								{{ ng_var('group.title') }}
+							</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>User Interface Phrases</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="group in ListCtrl.phraseGroups.user" dp-state-mark="id,groupId:setup.phrases.viewgroup.{{ ng_var("'phrases-' + ListCtrl.pack.id") }}.{{ ng_var("group.id") }}">
+					<a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: group.id}") }}">
+						<h4>
+							<span class="title-text">
+								{{ ng_var('group.title') }}
+							</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+{% endblock %}
+{% block listpane_help %}{% endblock %}

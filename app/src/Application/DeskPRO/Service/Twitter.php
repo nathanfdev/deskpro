@@ -37,11 +37,11 @@ namespace Application\DeskPRO\Service;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TwitterAccount;
 use Application\DeskPRO\Entity\TwitterAccountStatus;
-use Application\DeskPRO\Entity\TwitterUser;
 use Application\DeskPRO\Entity\TwitterStatus;
 use Application\DeskPRO\Entity\TwitterStatusMention;
 use Application\DeskPRO\Entity\TwitterStatusTag;
 use Application\DeskPRO\Entity\TwitterStatusUrl;
+use Application\DeskPRO\Entity\TwitterUser;
 
 class Twitter
 {
@@ -889,8 +889,7 @@ class Twitter
 			'channel' => 'agent.tweet-added',
 			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize($this->_getCmBaseData($account_status)),
-			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			'data' => serialize($this->_getCmBaseData($account_status))
 		));
 	}
 
@@ -902,8 +901,7 @@ class Twitter
 			'channel' => 'agent.tweet-updated',
 			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize($data),
-			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			'data' => serialize($data)
 		));
 	}
 

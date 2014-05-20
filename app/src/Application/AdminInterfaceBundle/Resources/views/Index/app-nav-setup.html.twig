@@ -1,0 +1,30 @@
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="setup.settings">
+				<a href="{{ ng_href('setup.settings') }}">
+					<i class="fa fa-cog"></i>
+					<span>Settings</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
+			<li dp-state-mark="setup.languages">
+				<a href="{{ ng_href('setup.languages') }}">
+					<i class="fa fa-globe"></i>
+					<span>Languages</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
+			{% if app.getSetting('elastica.allow_elastic') %}
+				<li dp-state-mark="setup.elastic_search">
+					<a href="{{ ng_href('setup.elastic_search') }}">
+						<i class="fa fa-search"></i>
+						<span>Elastic Search</span>
+						<i class="fa fa-caret-right"></i>
+					</a>
+				</li>
+			{% endif %}
+		</ul>
+	</nav>
+{% endblock %}

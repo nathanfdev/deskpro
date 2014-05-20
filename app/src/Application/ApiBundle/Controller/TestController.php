@@ -42,7 +42,7 @@ class TestController extends AbstractController
 {
 	public function preAction($action, $arguments = null)
 	{
-		if ($action == 'testAction') {
+		if ($action == 'TestAction' || $action == 'AboutAction') {
 			return null;
 		}
 
@@ -51,24 +51,24 @@ class TestController extends AbstractController
 
 	public function aboutAction()
 	{
-		return $this->createApiResponse(array(
-			'about'         => 'This is the DeskPRO API. Refer to the API Documentation for available endpoints.',
-			'documentation' => 'https://support.deskpro.com/kb/articles/88-api-basics',
-			'libraries'     => array('php' => 'https://support.deskpro.com/kb/articles/97-deskpro-api-wrapper-php')
-		));
+		return $this->render('ApiBundle:SwaggerUi:index.html.twig');
 	}
 
 	/**
 	 * This action simply returns a message to indicate that the API is working
+	 *
+	 * @depreciated
 	 */
 	public function testAction()
 	{
+		$request = $this->container->getRequest();
+
 		$api_url = App::getSetting('core.deskpro_url');
 		$api_url .= 'index.php/';
 
 		// If this call is secure, then we know https works and the client
 		// requested it specifically, so return the same protocol
-		if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
+		if ($request->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
 			$api_url = preg_replace('#^http://#', 'https://', $api_url);
 		}
 
@@ -77,6 +77,39 @@ class TestController extends AbstractController
 			'api_version' => DP_BUILD_TIME,
 			'api_url'     => $api_url
 		));
+	}
+
+
+	/**
+	 * This returns info about the helpdesk. It's meant to verify the existence of DeskPRO (eg mobile app)
+	 * and give the API endpoint.
+	 */
+	public function discoverAction()
+	{
+		$request = $this->container->getRequest();
+
+		$data = array();
+		$data['helpdesk_url'] = App::getSetting('core.deskpro_url');
+		$data['helpdesk_url'] = str_replace('/index.php', '', $data['helpdesk_url']);
+		$data['helpdesk_url'] = rtrim($data['helpdesk_url'], '/') . '/';
+
+		$url_info = @parse_url($data['helpdesk_url']);
+		$data['helpdesk_path'] = @$url_info['path'];
+
+		$data['api_url'] = $data['helpdesk_url'] . '/index.php/api/';
+
+		// If this request itself is secure then we know ssl works
+		// so we sholud prefer it
+		if ($request->isSecure()) {
+			$data['api_url'] = preg_replace('#^http://#', 'https', $data['api_url']);
+		}
+
+		$url_info = @parse_url($data['api_url']);
+		$data['api_path'] = @$url_info['path'];
+
+		$data['api_version'] = DP_BUILD_TIME;
+
+		return $this->createApiResponse($data);
 	}
 
 

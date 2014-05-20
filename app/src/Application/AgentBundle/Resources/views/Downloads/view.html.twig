@@ -21,9 +21,8 @@ pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {# scroll containers #}
-<div class="layout-content with-scrollbar page-listing page-download-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+<div class="layout-content page-listing page-download-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="dp-page-content">
 {# /scroll containers #}
 
 <div class="delete-notice" {% if download.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
@@ -295,5 +294,4 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.category_ob(download_categories, phrase('agent.publish.download_category'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
-</div></div> {# scrollbar divs #}
-</div> {# main layout div #}
+</div></div>{# main layout div #}

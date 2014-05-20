@@ -9,6 +9,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
 	},
+        
+        _initLabels: function() {
+            if (this.getEl('labels_input')[0]) {
+                this.labelsInput = new DeskPRO.UI.LabelsInput({
+                    type: 'tickets',
+                    input: this.getEl('labels_input')
+                });
+                this.ownObject(this.labelsInput);
+            }
+	},
 
 	initPage: function(el) {
 		var self = this;
@@ -27,6 +37,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initMessageSection();
 		this._initOtherSection();
 		this._initCcSelection();
+                
+                this._initLabels();
 
 		this.meta.person_api_data = {};
 
@@ -208,21 +220,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var depSel = this.getEl('dep');
 
 		var ticketReader = {
+			getDepartmentId: function() {
+				return parseInt(depSel.val()) || 0;
+			},
 			getCategoryId: function() {
 				var catId = self.getEl('cat').val();
 				return parseInt(catId) || 0;
-			},
-			getPriorityVal: function() {
-				var id = this.getPriorityId();
-				if (!id) {
-					return -999999999;
-				}
-
-				if (!window.DESKPRO_TICKET_PRI_MAP || !window.DESKPRO_TICKET_PRI_MAP[id]) {
-					return 0;
-				}
-
-				return parseInt(window.DESKPRO_TICKET_PRI_MAP[id]);
 			},
 			getPriorityId: function() {
 				var catId = self.getEl('pri').val();
@@ -235,7 +238,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			getOrganizationId: function() {
 				return 0;
 			},
-			getWorkflow: function() {
+			getWorkflowId: function() {
 				var catId = self.getEl('work').val();
 				return parseInt(catId) || 0;
 			}

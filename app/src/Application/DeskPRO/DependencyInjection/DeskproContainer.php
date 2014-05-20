@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
-use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -49,31 +48,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class DeskproContainer extends Container
 {
-	/**#@+
-	 * Names of common services
-	 */
-	const SERVICE_DB                 = 'database_connection';
-	const SERVICE_ORM                = 'doctrine.orm.entity_manager';
-	const SERVICE_EM                 = 'doctrine.orm.entity_manager';
-	const SERVICE_INPUT_READER       = 'deskpro.core.input_reader';
-	const SERVICE_INPUT_CLEANER      = 'deskpro.core.input_cleaner';
-	const SERVICE_SETTINGS           = 'deskpro.core.settings';
-	const SERVICE_SESSION            = 'session';
-	const SERVICE_ROUTER             = 'router';
-	const SERVICE_REQUEST            = 'request';
-	const SERVICE_RESPONSE           = 'response';
-	const SERVICE_MAILER             = 'mailer';
-	const SERVICE_TRANSLATOR         = 'deskpro.core.translate';
-	const SERVICE_EVENT_DISPATCHER   = 'event_dispatcher';
-	const SERVICE_FORM_FACTORY       = 'form.factory';
-	const SERVICE_SEARCH_ENGINE      = 'deskpro.search_engine';
-	const SERVICE_TEMPLATING         = 'templating';
-	const SERVICE_SEARCH             = 'deskpro.search_adapter';
-	const SERVICE_PERSON_ACTIVITY_LOGGER = 'deskpro.person_activity_logger';
-	/**#@-*/
-
 	/**
-	 * @var \DeskPRO\Kernel\BaseAbstractKernel
+	 * @var \DeskPRO\Kernel\AbstractKernel
 	 */
 	public $kernel;
 
@@ -89,7 +65,7 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \DeskPRO\Kernel\BaseAbstractKernel
+	 * @return \DeskPRO\Kernel\AbstractKernel
 	 */
 	public function getKernel()
 	{
@@ -99,8 +75,28 @@ class DeskproContainer extends Container
 
 	public function __construct(ParameterBagInterface $parameterBag = null)
 	{
+		require_once DP_ROOT . '/sys/load_config.php';
+
 		$GLOBALS['DP_CONTAINER'] = $this;
 		parent::__construct($parameterBag);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isDebug()
+	{
+		return $this->kernel ? $this->kernel->getEnvironment() == 'dev' : true;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getEnvironment()
+	{
+		return $this->kernel ? $this->kernel->getEnvironment() : 'dev';
 	}
 
 
@@ -129,6 +125,9 @@ class DeskproContainer extends Container
 	 */
 	public function getSystemService($id)
 	{
+		if ($this->has("deskpro.$id")) {
+			return $this->get("deskpro.$id");
+		}
 		if (isset($this->system_services[$id])) {
 			return $this->system_services[$id];
 		}
@@ -158,15 +157,6 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \Application\DeskPRO\Plugin\PluginRepository
-	 */
-	public function getPlugins()
-	{
-		return $this->getSystemService('plugins');
-	}
-
-
-	/**
 	 * @param string $id
 	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
 	 */
@@ -181,6 +171,7 @@ class DeskproContainer extends Container
 	 *
 	 * @throws \InvalidArgumentException
 	 * @param string $id
+	 * @param array $options
 	 * @return mixed
 	 */
 	public function getSystemObject($id, array $options = array())
@@ -198,26 +189,11 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * Get the autoloader
-	 *
-	 * @var \Orb\Util\ClassLoader
-	 */
-	public function getClassLoader()
-	{
-		if (isset($GLOBALS['DP_AUTOLOADER'])) {
-			return $GLOBALS['DP_AUTOLOADER'];
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * @return \Orb\Input\Reader\Reader
+	 * @return \Application\DeskPRO\Input\Reader
 	 */
 	public function getIn()
 	{
-		return $this->get(self::SERVICE_INPUT_READER);
+		return $this->get('deskpro.core.input_reader');
 	}
 
 
@@ -226,7 +202,7 @@ class DeskproContainer extends Container
 	 */
 	public function getInputCleaner()
 	{
-		return $this->get(self::SERVICE_INPUT_CLEANER);
+		return $this->get('deskpro.core.input_cleaner');
 	}
 
 
@@ -237,7 +213,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSearchAdapter()
 	{
-		return $this->get(self::SERVICE_SEARCH);
+		return $this->get('deskpro.search_adapter');
 	}
 
 
@@ -248,7 +224,7 @@ class DeskproContainer extends Container
 	 */
 	public function getDb()
 	{
-		return $this->get(self::SERVICE_DB);
+		return $this->get('database_connection');
 	}
 
 
@@ -348,7 +324,7 @@ class DeskproContainer extends Container
 	 */
 	public function getOrm()
 	{
-		return $this->get(self::SERVICE_ORM);
+		return $this->get('doctrine.orm.entity_manager');
 	}
 
 
@@ -360,7 +336,7 @@ class DeskproContainer extends Container
 	 */
 	public function getEm()
 	{
-		return $this->get(self::SERVICE_EM);
+		return $this->get('doctrine.orm.entity_manager');
 	}
 
 
@@ -368,11 +344,12 @@ class DeskproContainer extends Container
 	/**
 	 * Get the request
 	 *
+	 * @deprecated Should inject the request into the current controller action
 	 * @return \Symfony\Component\HttpFoundation\Request
 	 */
 	public function getRequest()
 	{
-		return $this->get(self::SERVICE_REQUEST);
+		return $this->get('request');
 	}
 
 
@@ -383,7 +360,7 @@ class DeskproContainer extends Container
 	 */
 	public function getResponse()
 	{
-		return $this->get(self::SERVICE_RESPONSE);
+		return $this->get('response');
 	}
 
 
@@ -394,7 +371,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSession()
 	{
-		return $this->get(self::SERVICE_SESSION);
+		return $this->get('session');
 	}
 
 
@@ -405,7 +382,7 @@ class DeskproContainer extends Container
 	 */
 	public function getMailer()
 	{
-		return $this->get(self::SERVICE_MAILER);
+		return $this->get('mailer');
 	}
 
 
@@ -416,7 +393,7 @@ class DeskproContainer extends Container
 	 */
 	public function getTranslator()
 	{
-		return $this->get(self::SERVICE_TRANSLATOR);
+		return $this->get('deskpro.core.translate');
 	}
 
 
@@ -427,7 +404,18 @@ class DeskproContainer extends Container
 	 */
 	public function getTemplating()
 	{
-		return $this->get(self::SERVICE_TEMPLATING);
+		return $this->get('templating');
+	}
+
+
+	/**
+	 * Get the twig service
+	 *
+	 * @return \Application\DeskPRO\Twig\Environment
+	 */
+	public function getTwig()
+	{
+		return $this->get('twig');
 	}
 
 
@@ -438,18 +426,27 @@ class DeskproContainer extends Container
 	 */
 	public function getRouter()
 	{
-		return $this->get(self::SERVICE_ROUTER);
+		return $this->get('router');
+	}
+
+
+	/**
+	 * @return \Symfony\Component\Validator\Validator
+	 */
+	public function getValidator()
+	{
+		return $this->get('validator');
 	}
 
 
 	/**
 	 * Get the app event dispatcher
 	 *
-	 * @return \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
+	 * @return \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
 	 */
 	public function getEventDispatcher()
 	{
-		return $this->get(self::SERVICE_EVENT_DISPATCHER);
+		return $this->get('event_dispatcher');
 	}
 
 
@@ -460,7 +457,7 @@ class DeskproContainer extends Container
 	 */
 	public function getFormFactory()
 	{
-		return $this->get(self::SERVICE_FORM_FACTORY);
+		return $this->get('form.factory');
 	}
 
 
@@ -471,7 +468,7 @@ class DeskproContainer extends Container
 	 */
 	public function getSearchEngine()
 	{
-		return $this->get(self::SERVICE_SEARCH_ENGINE);
+		return $this->get('deskpro.search_engine');
 	}
 
 
@@ -491,7 +488,7 @@ class DeskproContainer extends Container
 	 */
 	public function getPersonActivityLogger()
 	{
-		return $this->get(self::SERVICE_PERSON_ACTIVITY_LOGGER);
+		return $this->get('deskpro.person_activity_logger');
 	}
 
 
@@ -507,8 +504,18 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
+	 */
+	public function getEmailAccountManager()
+	{
+		return $this->getSystemService('email_account_manager');
+	}
+
+
+	/**
 	 * Get the queuer
 	 *
+	 * @param string $name
 	 * @return \Application\DeskPRO\Queue\Queue
 	 */
 	public function getQueue($name)
@@ -548,14 +555,141 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Tickets\TicketManager
+	 */
+	public function getTicketManager()
+	{
+		return $this->getSystemService('ticket_manager');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\TicketLayout\TicketLayoutManager
+	 */
+	public function getTicketLayoutManager()
+	{
+		return $this->getSystemService('ticket_layout_manager');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\CustomFields\TicketFieldManager
+	 */
+	public function getTicketFieldManager()
+	{
+		return $this->getSystemService('ticket_fields_manager');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Departments\TicketDepartments
+	 */
+	public function getTicketDepartments()
+	{
+		return $this->getSystemService('ticket_departments');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Departments\ChatDepartments
+	 */
+	public function getChatDepartments()
+	{
+		return $this->getSystemService('chat_departments');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketCategories
+	 */
+	public function getTicketCategories()
+	{
+		return $this->getSystemService('ticket_categories');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketPriorities
+	 */
+	public function getTicketPriorities()
+	{
+		return $this->getSystemService('ticket_priorities');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketWorkflows
+	 */
+	public function getTicketWorkflows()
+	{
+		return $this->getSystemService('ticket_workflows');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\Filters\FilterChangeDetector
+	 */
+	public function getTicketFilterChangeDetector()
+	{
+		return $this->getSystemService('ticket_filter_change_detector');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Products\Products
+	 */
+	public function getProducts()
+	{
+		return $this->getSystemService('products');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\People\AgentGroups
+	 */
+	public function getAgentGroups()
+	{
+		return $this->get('deskpro.people.agent_groups');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\People\UserGroups
+	 */
+	public function getUserGroups()
+	{
+		return $this->get('deskpro.people.user_groups');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\CustomFields\PersonFieldManager
+	 */
+	public function getPersonFieldManager()
+	{
+		return $this->getSystemService('person_fields_manager');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	public function getOrgFieldManager()
+	{
+		return $this->getSystemService('org_fields_manager');
+	}
+
+
+	/**
 	 * Get the value of a setting.
 	 *
 	 * @param string $name The name of the setting to get
+	 * @param mixed $default
 	 * @return string
 	 */
 	public function getSetting($name, $default = null)
 	{
-		$settings = $this->get(self::SERVICE_SETTINGS);
+		$settings = $this->get('deskpro.core.settings');
 		return $settings->get($name, $default);
 	}
 
@@ -567,8 +701,17 @@ class DeskproContainer extends Container
 	 */
 	public function getSettingsHandler()
 	{
-		$settings = $this->get(self::SERVICE_SETTINGS);
+		$settings = $this->get('deskpro.core.settings');
 		return $settings;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Monolog\LoggerManager
+	 */
+	public function getLoggerManager()
+	{
+		return $this->getSystemService('logger_manager');
 	}
 
 
@@ -671,26 +814,7 @@ class DeskproContainer extends Container
 	 */
 	public function getLogDir()
 	{
-		return $this->kernel->getLogDir();
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Log\LoggerManager
-	 */
-	public function getLoggerManager()
-	{
-		return $this->getSystemService('LoggerManager');
-	}
-
-
-	/**
-	 * @param string $id
-	 * @return \Orb\Log\Logger
-	 */
-	public function getLogger($id)
-	{
-		return $this->getLoggerManager()->get($id);
+		return dp_get_log_dir();
 	}
 
 
@@ -699,7 +823,7 @@ class DeskproContainer extends Container
 	 */
 	public function getBlobDir()
 	{
-		return $this->kernel->getBlobDir();
+		return dp_get_blob_dir();
 	}
 
 
@@ -708,7 +832,7 @@ class DeskproContainer extends Container
 	 */
 	public function getBackupDir()
 	{
-		return $this->kernel->getBackupDir();
+		return dp_get_backup_dir();
 	}
 
 
@@ -735,5 +859,23 @@ class DeskproContainer extends Container
 	public function generateStaticSecurityToken($name, $timeout = 18000)
 	{
 		return Util::generateStaticSecurityToken(md5($this->getSetting('core.app_secret', 'secret') . $name), $timeout);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\App\AppManager
+	 */
+	public function getAppManager()
+	{
+		return $this->getSystemService('app_manager');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\Actions\ActionDef\TicketActionDefManager
+	 */
+	public function getTicketActionDefManager()
+	{
+		return $this->getSystemService('ticket_action_def_manager');
 	}
 }

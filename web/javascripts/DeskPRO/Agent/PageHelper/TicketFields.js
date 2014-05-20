@@ -32,18 +32,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 				return parseInt(catId) || 0;
 			},
-			getPriorityVal: function() {
-				var id = this.getPriorityId();
-				if (!id) {
-					return -999999999;
-				}
-
-				if (!window.DESKPRO_TICKET_PRI_MAP || !window.DESKPRO_TICKET_PRI_MAP[id]) {
-					return 0;
-				}
-
-				return parseInt(window.DESKPRO_TICKET_PRI_MAP[id]);
-			},
 			getPriorityId: function() {
 				var catId = null;
 				if (self.mode == 'edit') {
@@ -68,7 +56,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			getOrganizationId: function() {
 				return 0;
 			},
-			getWorkflow: function() {
+			getWorkflowId: function() {
 				var catId = null;
 				if (self.mode == 'edit') {
 					catId = self.page.getEl('value_form').find('.workflow_id').val();
@@ -273,7 +261,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				var classname = f.field_type;
 			}
 
-			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
+			var row = this.display.find('.item.' + classname);
+			row.detach().appendTo(this.display).show().addClass('item-on');
+			if (f.isVisibleOnViewAlways) {
+				row.addClass('always-display');
+			} else {
+				row.removeClass('always-display');
+			}
 		}, this);
 
 		last.detach().appendTo(this.display);

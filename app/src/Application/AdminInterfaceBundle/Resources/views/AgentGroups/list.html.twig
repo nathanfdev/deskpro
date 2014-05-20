@@ -1,0 +1,44 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Agent Permission Groups</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" dp-list-autoload>
+				<li ng-repeat="group in ListCtrl.groups" dp-state-mark="agents.groups.edit.{{ ng_var('group.id') }}">
+					<a href="{{ ng_href('agents.groups.edit', '{id: group.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('group.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('agents.groups.create') }}">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Permission groups enable you to set permissions for groups of agents.</h1>
+		<p>Agent <strong>permissions</strong> control what each agent is allowed to do. You can use these groups to quickly control permissions for many agents at once. The permissions for the group are applied to all agents who are members.</p>
+	</header>
+	<article>
+		<section>
+			<p>Agent <strong>permissions</strong> control what each agent is allowed to do. You can use these groups to quickly control permissions for many agents at once. The permissions for the group are applied to all agents who are members.</p>
+			<p>Click the permission groups to edit them and set which agents are members.</p>
+			<p>By default, the "All Permissions" group enables agents who are members to do everything. "All Non-Destructive Permissions" lets agents do everything but delete content (and a few other potentially damaging actions, like writing mass replies to users).</p>
+			<p>Use the <strong>Departments</strong> tab to control access to tickets in each department:</p>
+			<ul>
+				<li><strong>Full</strong> means the agent can view and work on tickets in that department</li>
+				<li><strong>Assign</strong> means the agent can assign tickets to the department, but nothing more (they can't view them afterwards)</li>
+			</ul>
+			<p>You can separately set <strong>chat</strong> access for each department.</p>
+		</section>
+	</article>
+{% endblock %}

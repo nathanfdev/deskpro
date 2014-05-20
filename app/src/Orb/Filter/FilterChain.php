@@ -43,13 +43,13 @@ class FilterChain extends AbstractFilter implements \Countable, \IteratorAggrega
 	protected $_filters = array();
 
 
-	
+
 	/**
 	 * Add a new filter to the chain
 	 *
-	 * @param \Zend\Filter\Filter $filter
+	 * @param \Zend\Filter\FilterInterface $filter
 	 */
-	public function addFilter(\Zend\Filter\Filter $filter)
+	public function addFilter(\Zend\Filter\FilterInterface $filter)
 	{
 		$this->_filters[] = $filter;
 	}
@@ -58,7 +58,7 @@ class FilterChain extends AbstractFilter implements \Countable, \IteratorAggrega
 
 	/**
 	 * Get the filters currently set.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getFilters()
@@ -67,7 +67,7 @@ class FilterChain extends AbstractFilter implements \Countable, \IteratorAggrega
 	}
 
 
-	
+
 	/**
 	 * Filter a value.
 	 *
@@ -84,7 +84,7 @@ class FilterChain extends AbstractFilter implements \Countable, \IteratorAggrega
 	}
 
 
-	
+
 	/**
 	 * Count how many filters there are.
 	 *

@@ -35,14 +35,13 @@
 namespace Application\DeskPRO\ResourceScanner;
 
 use Application\DeskPRO\App;
-use Orb\Util\Arrays;
 
 /**
  * Defines which settings are to be displayed in the 'advanced' page
  */
 class AdvancedSettings extends SettingFiles
 {
-	public function getAllSettings()
+	public function getShowSettings()
 	{
 		$settings = parent::getAllSettings();
 

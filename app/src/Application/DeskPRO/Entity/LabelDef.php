@@ -34,29 +34,35 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\App;
 
 /**
  * These are pre-defined labels that are allowed to be used.
  *
+ * @property string $label_type
+ * @property string $label
+ * @property int $total
  */
-class LabelDef extends \Application\DeskPRO\Domain\DomainObject
+class LabelDef extends DomainObject
 {
 	/**
 	 * @var string
 	 */
+
 	protected $label_type;
 
 	/**
 	 * @var string
 	 */
+
 	protected $label;
+
+	/**
+	 * @var int
+	 */
 
 	protected $total = 0;
 
@@ -65,6 +71,7 @@ class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return string
 	 */
+
 	public function getLabelEntityName()
 	{
 		return App::getEntityRepository('DeskPRO:LabelDef')->getLabelEntityFromType($this->label_type);
@@ -75,6 +82,7 @@ class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return string
 	 */
+
 	public function getLabelTable()
 	{
 		$ent = App::getEntityRepository('DeskPRO:LabelDef')->getLabelEntityFromType($this->label_type);
@@ -84,8 +92,6 @@ class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 		return $table;
 	}
 
-
-
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -94,15 +100,48 @@ class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelDef';
-		$metadata->setPrimaryTable(array(
-			'name' => 'label_defs',
-			'indexes' => array(
-				'type_total_idx' => array('columns' => array('label_type', 'total'))
+		$metadata->setPrimaryTable(
+			array(
+				 'name'    => 'label_defs',
+				 'indexes' => array(
+					 'type_total_idx' => array('columns' => array('label_type', 'total'))
+				 )
 			)
-		));
+		);
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'label_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'label_type', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'label', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'total', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total' ));
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'label_type',
+				 'type'       => 'string',
+				 'length'     => 50,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'label_type',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'label',
+				 'type'       => 'string',
+				 'length'     => 255,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'label',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'total',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'total'
+			)
+		);
 	}
 }

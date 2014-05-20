@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\RefGenerator;
 
 use Application\DeskPRO\App;
-
 use Orb\Util\Strings;
 
 class CustomRef implements RefGeneratorInterface
@@ -208,15 +207,17 @@ class CustomRef implements RefGeneratorInterface
 			} while ($count > 0 || $count2 > 0);
 
 			try {
+				$this->db->beginTransaction();
 				$this->db->insert('ref_reserve', array(
 					'obj_type' => $table,
 					'ref'      => $ref,
 				));
+				$this->db->commit();
 				break;
 			} catch (\Exception $e) {
 				// Try again..
 			}
-		}
+		};
 
 		return $ref;
 	}

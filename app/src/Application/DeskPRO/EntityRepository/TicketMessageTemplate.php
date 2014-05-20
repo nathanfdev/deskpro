@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
-use \Doctrine\ORM\EntityRepository;
 
 class TicketMessageTemplate extends AbstractEntityRepository
 {

@@ -35,11 +35,7 @@
 namespace Application\DeskPRO\HttpKernel\Controller;
 use Application\DeskPRO\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -79,20 +75,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	public function __construct(ContainerInterface $container)
 	{
 		$this->setContainer($container);
-
 		$this->request           = $this->get('request');
 		$this->response          = $this->get('response');
 		$this->event_dispatcher  = $this->get('event_dispatcher');
-
-		$self=$this;
-		$this->event_dispatcher->addListener('DeskPRO_onControllerPreAction', function($ev) use ($self) {
-			$self->request_type = $ev->get('request_type') ?: HttpKernelInterface::MASTER_REQUEST;
-			$self->DeskPRO_onControllerPreAction($ev);
-		});
-		$this->event_dispatcher->addListener('DeskPRO_onControllerPostAction', function($ev) use ($self) {
-			$self->DeskPRO_onControllerPostAction($ev);
-		});
-
 		$this->init();
 	}
 
@@ -147,6 +132,18 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 			$event->setResponse($ret);
 		}
 	}
+
+
+	/**
+	 * @param \Exception $e
+	 * @throws \Exception
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function handleActionException(\Exception $e)
+	{
+		throw $e;
+	}
+
 
 	/**
 	 * Called by the HttpKernel after an action has been executed.

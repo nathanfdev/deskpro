@@ -1,0 +1,25 @@
+{
+	"package_name": "deskpro_googleanalytics",
+	"is_native": true,
+	"title": "Google Analytics",
+	"description": "Add your Google Analytics tracking code to all user interface pages.",
+	"tags": ["analytics"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "ga_property_id",
+			"type": "text",
+			"label": "Google Analytics Tracking ID",
+			"description": "Enter your Tracking ID here. This will look like: UA-000000-01.",
+			"native_only": true
+		}
+	]
+}

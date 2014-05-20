@@ -19,10 +19,8 @@ pageMeta.isValidating = true;
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content full-page page-feedback-view with-scrollbar {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content"related-content>
-
+<div class="layout-content full-page page-feedback-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="dp-page-content">
 <div class="delete-notice" {% if feedback.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.feedback.feedback_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
@@ -263,5 +261,6 @@ pageMeta.baseId = '{{ baseId }}';
 {{ optionbox.category_ob(feedback_categories, phrase('agent.general.type'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
-</div></div></div>
+</div>
+</div>
 {# /scroll containers #}

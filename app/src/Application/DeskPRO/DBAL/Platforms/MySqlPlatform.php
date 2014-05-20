@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\DBAL\Platforms;
 
 use Doctrine\DBAL\Schema\Index;
-use Doctrine\DBAL\Schema\TableDiff;
 
 class MySqlPlatform extends \Doctrine\DBAL\Platforms\MySqlPlatform
 {

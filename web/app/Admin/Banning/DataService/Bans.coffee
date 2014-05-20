@@ -1,0 +1,183 @@
+define [
+	'Admin/Main/DataService/BaseListEdit',
+	'Admin/Banning/IpBanEditFormMapper',
+	'Admin/Banning/EmailBanEditFormMapper',
+], (
+	BaseListEdit,
+	IpBanEditFormMapper,
+	EmailBanEditFormMapper,
+)  ->
+	class Bans extends BaseListEdit
+		@$inject = ['Api', '$q']
+		@type = 'ip'
+
+		###
+ 	#
+ 	###
+
+		init: ->
+			@setSubLists ['ip_bans', 'email_bans']
+			@search_phrase = {
+				ip_ban: '',
+				email_ban: ''
+			}
+
+		###
+ 	#
+ 	###
+
+		_doLoadList: ->
+
+			deferred = @$q.defer()
+
+			@Api.sendGet('/banning').success( (data) =>
+
+				models = data.bans
+				deferred.resolve(models)
+			, (data, status, headers, config) ->
+				deferred.reject()
+			)
+
+			return deferred.promise
+
+		###
+		#
+		###
+
+		_doRefreshList: () ->
+
+			deferred = @$q.defer()
+
+			@Api.sendGet('/banning', {
+
+				ip_ban_page: @pagination.ip_bans.page,
+				email_ban_page: @pagination.email_bans.page,
+				ip_ban_search_phrase: @search_phrase.ip_ban
+				email_ban_search_phrase: @search_phrase.email_ban
+
+			}).success( (data) =>
+
+				models = data.bans
+				deferred.resolve(models)
+			, (data, status, headers, config) ->
+				deferred.reject()
+			)
+
+			return deferred.promise
+
+		###
+ 	# Returns object representing the search string defined via user UI
+ 	###
+
+		getSearchPhrase: ->
+
+			return @search_phrase
+
+		###
+ 	# Sets type of ban that is used for create / update / delete operations
+		#
+ 	# @param {string} type
+ 	###
+
+		setType: (type) ->
+
+			@type = type
+			@idProp = 'banned_' + @type # there is no 'id' in database, primary key is another field
+
+		###
+		# Get the form mapper
+		#
+		# @return {IpBanEditFormMapper|EmailBanEditFormMapper}
+		###
+
+		getFormMapper: ->
+
+			if @type == 'ip' then @formMapper = new IpBanEditFormMapper()
+			if @type == 'email' then @formMapper = new EmailBanEditFormMapper()
+
+			return @formMapper
+
+		###
+  # Remove a model
+  #
+  # @param {Integer} id
+  # @return {promise}
+		###
+
+		deleteBanById: (id) ->
+
+			promise = @Api.sendDelete('/banning_' + @type + '/' + id).success( =>
+				@removeListModelById(id)
+			)
+
+			return promise
+
+		###
+  # Get all data needed for the edit page
+  #
+  # @param {String} id
+  # @return {promise}
+		###
+
+		loadEditBanData: (id) ->
+
+			deferred = @$q.defer()
+
+			if id
+
+				@Api.sendGet('/banning_' + @type + '/' + id).then( (result) =>
+
+					data = {}
+					data[@type + '_ban'] = result.data[@type + '_ban']
+					data[@type + '_ban'].old_id = result.data[@type + '_ban'][@idProp]
+
+					data.form = @getFormMapper().getFormFromModel(data)
+
+					deferred.resolve(data)
+				, ->
+					deferred.reject()
+				)
+
+			else
+
+				data = {}
+				data[@type + '_ban'] = {}
+
+				data.form = @getFormMapper().getFormFromModel(data)
+
+				deferred.resolve(data)
+
+			return deferred.promise
+
+		###
+  # Saves a form model and merges model with list data
+  #
+  # @param {Object} model
+ 	# @param {Object} formModel  The model representing the form
+  # @return {promise}
+		###
+
+		saveFormModel: (model, formModel) ->
+
+			mapper = @getFormMapper()
+
+			postData = mapper.getPostDataFromForm(formModel)
+
+			sendData = {}
+			sendData[@type + '_ban'] = postData
+
+			if model['banned_' + @type]
+				promise = @Api.sendPostJson('/banning_' + @type + '/' + model['banned_' + @type], sendData).success( (data) =>
+					model['banned_' + @type] = data['banned_' + @type]
+				)
+			else
+				promise = @Api.sendPutJson('/banning_' + @type, sendData).success( (data) =>
+					model['banned_' + @type] = data['banned_' + @type]
+				)
+
+			promise.success( =>
+				mapper.applyFormToModel(model, formModel)
+				@mergeDataModel(model, null, @type + '_bans')
+			)
+
+			return promise

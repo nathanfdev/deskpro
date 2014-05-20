@@ -79,8 +79,8 @@
 	<div class="userinfo">
 		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket_display.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- ticket_display.person.picture_url_16 %>');"><%- ticket_display.person.display_name %></span></a>
-			<% if (ticket_display.person.primary_email) { %>
-				<span class="email">&lt;<%- ticket_display.person.primary_email %>&gt;</span>
+			<% if (ticket_display.person.primary_email.email) { %>
+				<span class="email">&lt;<%- ticket_display.person.primary_email.email %>&gt;</span>
 			<% } %>
 			<% if (ticket_display.organization) { %>
 				<span class="org">
@@ -131,7 +131,7 @@
 					<% if (field == 'agent') { %>
 						<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
 						<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><%- ticket_display.agent.display_name %></span><% } %>
-						<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link"><%- ticket_display.agent.display_name %></a></span><% } %>
+						<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><%- ticket_display.agent.display_name %></a></span><% } %>
 						<% if (!ticket_display.agent) { %><span class="prop-val">{{ phrase('agent.general.unassigned') }}</span><% } %>
 					<% } %>
 

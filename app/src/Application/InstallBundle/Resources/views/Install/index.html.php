@@ -45,9 +45,9 @@
 
 <div id="success_display" class="alert-message block-message success" <?php if ($is_fatal): ?>style="display: none"<?php endif ?>>
 	<?php if ($new_download): ?>
-		If you do not want to download the updated version of DeskPRO, you can conitnue on to the next step to install this outdated version.
+		If you do not want to download the updated version of DeskPRO, you can continue on to the next step to install this outdated version.
 	<?php else: ?>
-		<strong>Everything looks okay.</strong> You are ready to continue to continute
+		<strong>Everything looks okay.</strong> You are ready to continue
 		to the next step.
 	<?php endif ?>
 

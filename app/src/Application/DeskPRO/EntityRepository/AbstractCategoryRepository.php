@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
-
 use Orb\Util\Arrays;
 
 class AbstractCategoryRepository extends AbstractEntityRepository

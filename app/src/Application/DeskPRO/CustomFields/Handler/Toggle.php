@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
-use Orb\Util\Strings;
+use Application\DeskPRO\Entity;
 
 /**
  * Handles the toggle field
@@ -50,7 +49,7 @@ class Toggle extends HandlerAbstract
 			$setData = true;
 		}
 
-		$field = App::getFormFactory()->createNamedBuilder('checkbox', $this->getFormFieldName(), $setData, array('required' => false));
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'checkbox', $setData, array('required' => false));
 
 		return $field;
 	}

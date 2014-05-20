@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Publish\Feedback;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
 use Orb\Util\Arrays;
 
 class GroupingCounter

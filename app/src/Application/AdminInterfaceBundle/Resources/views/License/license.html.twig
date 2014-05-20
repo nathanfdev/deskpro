@@ -1,0 +1,176 @@
+{% extends 'AdminInterfaceBundle:Layout:fill-page-alt.html.twig' %}
+{% block fillpage_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>License</h3>
+			</header>
+
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent"><div class="panel-body">
+					<div class="form-group">
+						<div class="col-lg-2">
+							<label>
+								<h4>License ID</h4>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group form-control-static">
+								{{ ng_var('Ctrl.license.licenseId') }}
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group" ng-if="Ctrl.license.org">
+						<div class="col-lg-2">
+							<label>
+								<h4>Licensee</h4>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group form-control-static">
+								{{ ng_var('Ctrl.license.org') }}
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group" ng-if="Ctrl.license.isDemo">
+						<div class="col-lg-2">
+							<label>
+								<h4>Demo License</h4>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group form-control-static">
+								<div ng-if="!Ctrl.license.isExpired">
+									Your demo period expires in {{ ng_var('Ctrl.license.expireDays') }} days.
+									<div style="padding-top: 3px;">
+										<a target="_blank" class="btn btn-primary" href="http://www.deskpro.com/pricing/?download"><i class="fa fa-dollar"></i> Purchase your License Now</a>
+									</div>
+								</div>
+								<div ng-if="Ctrl.license.isExpired">
+									Your demo period expired on {{ ng_var('Ctrl.license.expireDate') }}.
+									<div style="padding-top: 3px;">
+										<a target="_blank" class="btn btn-primary" href="http://www.deskpro.com/pricing/?download"><i class="fa fa-dollar"></i> Purchase your License Now</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group" ng-if="Ctrl.license.isDemo">
+						<div class="col-lg-2">
+							<label>
+								<h4>Agents</h4>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group form-control-static">
+								You can use unlimited agents during the demo period.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group" ng-if="!Ctrl.license.isDemo">
+						<div class="col-lg-2">
+							<label>
+								<h4>Expires</h4>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group form-control-static">
+								<div ng-if="!Ctrl.license.isExpired">
+									<div ng-if="Ctrl.license.expireDays && Ctrl.license.expireDays < 30">
+										Your license expires in {{ ng_var('Ctrl.license.expireDays') }} days on {{ ng_var('Ctrl.license.expireDate') }}.
+										<div style="padding-top: 3px;">
+											<a target="_blank" class="btn btn-warning" ng-click="$event.preventDefault(); Ctrl.goToMembersArea();" href="http://www.deskpro.com/members/"><i class="fa fa-calendar"></i> Extend your license</a>
+										</div>
+									</div>
+									<div ng-if="!Ctrl.license.expireDays || Ctrl.license.expireDays >= 30">
+										Your license expires on {{ ng_var('Ctrl.license.expireDate') }}.
+										<div style="padding-top: 3px;">
+											<a target="_blank" class="btn btn-default" ng-click="$event.preventDefault(); Ctrl.goToMembersArea();" href="http://www.deskpro.com/members/"><i class="fa fa-calendar"></i> Extend your license</a>
+										</div>
+									</div>
+								</div>
+								<div ng-if="Ctrl.license.isExpired">
+									Your license period expired on {{ ng_var('Ctrl.license.expireDate') }}.
+									&nbsp;&nbsp;&nbsp;
+									<a target="_blank" class="btn btn-warning" ng-click="$event.preventDefault(); Ctrl.goToMembersArea();" href="http://www.deskpro.com/members/"><i class="fa fa-calendar"></i> Renew your license now</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group" ng-if="!Ctrl.license.isDemo">
+						<div class="col-lg-2">
+							<label>
+								<h4>Agents</h4>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group form-control-static">
+								<div ng-if="!Ctrl.license.maxAgents || Ctrl.license.maxAgents >= 100">
+									Unlimited
+								</div>
+								<div ng-if="Ctrl.license.maxAgents && Ctrl.license.maxAgents < 100">
+									{{ ng_var('Ctrl.license.maxAgents') }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-2">
+							<label>
+								<h4>License Code</h4><br/>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group">
+								<textarea class="form-control" style="width: 400px; height: 160px; font-family: Monaco, Consolas, monospace; font-size: 11px;" ng-model="lic_code"></textarea>
+								<br/>
+								<div dp-hide-spinning="saving" ng-show="lic_code != Ctrl.license.licenseCode" style="padding-top: 3px;">
+									<button class="btn btn-primary" ng-click="$event.preventDefault(); Ctrl.saveLicenseCode()"><i class="fa fa-save"></i> Update License Code</button>
+								</div>
+								<div dp-show-spinning="saving" style="padding: 5px;">
+									<i class="spinner-flat"></i>
+								</div>
+								<div class="alert alert-danger" ng-show="show_lic_error" style="margin-top: 4px;">
+									The license code you entered appears to be invalid. Contact <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+									if you need assistance. <span ng-show="lic_error_code">(Error code: {{ ng_var('lic_error_code') }})</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-2">
+							<label>
+								<h4>Key File</h4>
+							</label>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group">
+								If your server is not connected to the internet or there is a problem updating your license code
+								automatically, you should email this Key File to <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+								so your license code can be generally by a DeskPRO agent.
+
+								<div style="padding-top: 3px;">
+									<button class="btn btn-default" ng-click="Ctrl.downloadKeyfile()">
+										<i class="fa fa-key"></i>
+										Download Key File
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div></div>
+			</article>
+
+		</section>
+	</form>
+	<div dp-register-message="saved_lic">Your license was saved successfully.</div>
+{% endblock %}

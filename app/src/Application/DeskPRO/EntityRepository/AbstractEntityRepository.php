@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 {
@@ -60,6 +59,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * Get a collection of entities by ID
 	 *
+	 * @param array $ids
 	 * @param bool $keep_order True to order the resulting array in the same order that ids are provided in $ids
 	 * @return array
 	 */
@@ -73,7 +73,9 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 		if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
 			$this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
-			return $this->getIdentityHelper()->findByIds($ids, $keep_order);
+			$recs = $this->getIdentityHelper()->findByIds($ids, $keep_order);
+			$recs = Arrays::keyFromData($recs, 'id');
+			return $recs;
 		} else {
 			$q_res = $this->getEntityManager()->createQuery("
 				SELECT o
@@ -87,6 +89,19 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 			return $q_res;
 		}
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllIndexedById()
+	{
+		$class = $this->getName();
+		return $this->getEntityManager()->createQuery("
+			SELECT o
+			FROM {$class} o INDEX BY o.id
+		")->execute();
 	}
 
 

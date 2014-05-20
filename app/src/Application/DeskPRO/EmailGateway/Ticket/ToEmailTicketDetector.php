@@ -36,7 +36,6 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
-
 use Orb\Util\Strings;
 
 /**
@@ -70,13 +69,13 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	 * $detector = new ToEmailTicketDetector('ticket-TAC@example.com');
 	 * </code>
 	 *
-	 * @param string The pattern with the special token TICKET_CODE in it.
+	 * @param string $account_pattern The pattern with the special token TICKET_CODE in it.
 	 */
 	public function __construct($account_pattern)
 	{
 		$account_pattern = preg_quote($account_pattern, '#');
 
-		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$auth_len = Ticket::TAC_AUTHCODE_LEN;
 		$authcode_min_len = $auth_len + 1;
 		$authcode_max_len = $auth_len + 7;
 
@@ -87,7 +86,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -121,8 +120,9 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		return null;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -133,7 +133,11 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		return null;
 	}
 
-	public function canAddUnknownPerson()
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return true;
 	}

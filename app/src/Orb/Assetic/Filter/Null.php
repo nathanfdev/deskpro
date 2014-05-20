@@ -36,7 +36,6 @@ namespace Orb\Assetic\Filter;
 
 use Assetic\Filter\FilterInterface;
 use Assetic\Asset\AssetInterface;
-use Assetic\Util\ProcessBuilder;
 
 class Null implements FilterInterface
 {

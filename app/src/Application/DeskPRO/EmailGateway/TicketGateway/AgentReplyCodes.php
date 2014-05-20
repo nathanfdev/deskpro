@@ -35,10 +35,7 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader as AbstractEmailReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
-use Application\DeskPRO\Entity\TicketMessage;
-use Doctrine\ORM\EntityManager;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
@@ -157,7 +154,7 @@ class AgentReplyCodes implements Loggable
 					// Then use a random token so we can anchor a regex to remove surrounding whitespace easily
 					$tok = '__' . Strings::random(10, Strings::CHARS_ALPHANUM_IU) . '__';
 					$this->new_body = Strings::inject($this->new_body, $tok, $code_pos);
-					$this->new_body = preg_replace("#\s*$tok\s*#s", '', $this->new_body);
+					$this->new_body = preg_replace("#\\s*$tok\\s*#s", '', $this->new_body);
 				} else {
 					$this->getLogger()->logDebug('[AgentReplyCodes] Could not find tokens to clean: '. $m[0]);
 				}

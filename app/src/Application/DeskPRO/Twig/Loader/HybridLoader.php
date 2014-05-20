@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\Twig\Loader;
 
 use Application\DeskPRO\App;
-use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\Templating\TemplateNameParserInterface;
 
 /**
  * This hybrid loader loads templates from the filesystem first, and then from the
@@ -151,6 +151,32 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
 		if (!isset($this->crashed_custom_templates[$logicalName]) && isset($this->style_template_info[$logicalName])) {
 			return false;
+		}
+
+		if (strpos($logicalName, 'Apps:') === 0) {
+			if (class_exists('Application\\DeskPRO\\App', false)) {
+
+				$logicalName = preg_replace('#^Apps:#', '', $logicalName);
+
+				try {
+					$manager = App::getContainer()->getAppManager();
+					$package = null;
+					foreach ($manager->getAllPackages() as $p) {
+						if (!$p->native_name) continue;
+						if (preg_match('#^' . preg_quote($p->native_name) . ':#', $logicalName)) {
+							$package = $p;
+							break;
+						}
+					}
+
+					if ($package) {
+						$path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
+						$path_name = str_replace(':', '/', $path_name);
+						$path = DP_ROOT.'/apps/' . $package->native_name . '/native/Resources/views/'.$path_name;
+						return $path;
+					}
+				} catch (\Exception $e) {}
+			}
 		}
 
 		return parent::findTemplate($template);

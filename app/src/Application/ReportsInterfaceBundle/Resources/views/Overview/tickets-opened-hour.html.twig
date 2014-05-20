@@ -1,0 +1,57 @@
+<section class="report-wrapper">
+	<header>
+		<h2 style="float: left;">
+			<span class="label-sum">{{ ng_var('tickets_opened_hour.sum') }}</span>
+			Tickets were Created
+		</h2>
+		<div style="float: left; padding-bottom: 5px;">
+			<select ui-select2 ng-model="tickets_opened_hour.date_choice" style="min-width: 120px" class="no-search"
+					ng-change="Overview.getStats('tickets_opened_hour')">
+				{% for field,title in {
+					'today': 'Today',
+					'this_week': 'This Week',
+					'this_month': 'This Month',
+					'this_year': 'This Year',
+				} %}
+					<option value="{{ field }}">
+						{{ title }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="clearfix"></div>
+	</header>
+	<article>
+		<div class="dp-layout-loading" ng-show="tickets_opened_hour.loading"><i></i></div>
+		<table class="stat-table stat-table-vert" width="100%" ng-if="!tickets_opened_hour.empty"
+			   ng-hide="tickets_opened_hour.loading">
+			<tr>
+				<td ng-repeat="stat in tickets_opened_hour.stats"
+					width="{{ ng_var('tickets_opened_hour.column_width') }}%"
+					style="height: 100px; vertical-align: bottom; text-align: center;" valign="bottom">
+					{{ ng_var('stat.value') }}<br>
+					<table ng-if="stat.percentage" width="100%" class="stat-value" style="vertical-align: bottom;"
+						   valign="bottom">
+						<tr>
+							<td class="value">
+								<div style="height: {{ ng_var('stat.percentage') }}px;">&nbsp;</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td ng-repeat="stat in tickets_opened_hour.stats"
+					width="{{ ng_var('tickets_opened_hour.column_width') }}%"
+					style="text-align: center">
+					<span style="font-size:10px">
+						{{ ng_var('stat.title') }}
+					</span>
+				</td>
+			</tr>
+		</table>
+		<div class="no-data" ng-if="tickets_opened_hour.empty" ng-hide="tickets_opened_hour.loading">
+			<h3>No matching data</h3>
+		</div>
+	</article>
+</section>

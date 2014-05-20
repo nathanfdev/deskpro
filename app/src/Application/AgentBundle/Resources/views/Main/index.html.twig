@@ -241,6 +241,7 @@
 	{% include 'AgentBundle:Settings:welcome.html.twig' %}
 {% endif %}
 
+{{ js_error_tracking('agent_interface') }}
 {% include 'AgentBundle:Main:resources.html.twig' with {'in_body': true} %}
 {% include 'AgentBundle:Settings:settings-window.html.twig' %}
 {% include 'AgentBundle:MediaManager:media-window.html.twig' %}

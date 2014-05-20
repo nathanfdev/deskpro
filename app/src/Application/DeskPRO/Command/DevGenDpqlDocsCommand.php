@@ -34,15 +34,11 @@
 
 namespace Application\DeskPRO\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Orb\Util\Util;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 
 class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand

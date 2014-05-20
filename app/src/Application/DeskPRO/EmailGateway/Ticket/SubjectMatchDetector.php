@@ -36,11 +36,10 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
-
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Orb\Log\Logger;
-use Orb\Log\Loggable;
 
 /**
  * Detects a ticket based off of a common subject and From email address.
@@ -48,7 +47,7 @@ use Orb\Log\Loggable;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class SubjectMatchDetector implements TicketDetectorInterface, Loggable
+class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterface, Loggable
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -70,6 +69,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 	 */
 	protected $is_bounce_mode = false;
 
+
 	/**
 	 * Enable bounce mode if the message is or is suspected ot be a bounced message.
 	 * This will look for PTAC/TAC 'headers' in the body text.
@@ -79,6 +79,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		$this->is_bounce_mode = true;
 	}
 
+
 	/**
 	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
 	 */
@@ -87,8 +88,9 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		$this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -110,6 +112,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		return $ticket;
 	}
 
+
 	public function _findExistingTicket(AbstractReader $reader, $subject)
 	{
 		$ticket = $this->_findExistingTicketStandard($reader, $subject);
@@ -119,6 +122,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 
 		return $ticket;
 	}
+
 
 	/**
 	 * Tries to find a subject by stripping off standard subject prefixes.
@@ -264,8 +268,9 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		return null;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -276,15 +281,15 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		return null;
 	}
 
+
 	/**
-	 * Unknown users cant be added based just on subject
-	 *
-	 * @return bool
+	 * {@inheritDoc}
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return false;
 	}
+
 
 	/**
 	 * Set the logger
@@ -294,6 +299,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 	{
 		$this->logger = $logger;
 	}
+
 
 	/**
 	 * @return \Orb\Log\Logger

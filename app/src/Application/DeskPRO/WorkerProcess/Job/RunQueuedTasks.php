@@ -35,8 +35,6 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\Entity\Article;
 
 /**
  * Runs queued tasks if there are any

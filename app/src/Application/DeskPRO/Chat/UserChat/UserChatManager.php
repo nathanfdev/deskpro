@@ -34,22 +34,15 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
-use Orb\Util\Util;
-
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Translate\Translate;
-
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Session;
-use Application\DeskPRO\Entity\Visitor;
+use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
-
-use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
-use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Translate\Translate;
+use Doctrine\ORM\EntityManager;
 use Orb\Validator\StringEmail;
 
 /**
@@ -161,7 +154,7 @@ class UserChatManager
 			if (!empty($chat_options['name'])) {
 				$convo->person_name = $chat_options['name'];
 			}
-			if (!empty($chat_options['email']) && \Orb\Validator\StringEmail::isValueValid($chat_options['email']) && !App::getSystemService('gateway_address_matcher')->isManagedAddress($chat_options['email'])) {
+			if (!empty($chat_options['email']) && \Orb\Validator\StringEmail::isValueValid($chat_options['email']) && !App::$container->getEmailAccountManager()->findAccountForEmailAddress($chat_options['email'])) {
 				$convo->person_email = $chat_options['email'];
 
 				$related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($chat_options['email']);

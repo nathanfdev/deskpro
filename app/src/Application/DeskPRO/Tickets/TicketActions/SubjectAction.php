@@ -34,14 +34,9 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\SnippetFormatter;
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-
 use Application\DeskPRO\App;
-
-use Orb\Util\Numbers;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\SnippetFormatter;
 
 class SubjectAction extends AbstractAction
 {

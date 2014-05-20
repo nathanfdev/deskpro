@@ -35,17 +35,12 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-
 use Application\DeskPRO\Entity\TwitterAccount;
-use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterAccountFollower;
+use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterAccountStatus;
-use Application\DeskPRO\Entity\TwitterStatus;
-use Application\DeskPRO\Entity\TwitterStatusMention;
-use Application\DeskPRO\Entity\TwitterStatusTag;
-use Application\DeskPRO\Entity\TwitterStatusUrl;
 use Application\DeskPRO\Entity\TwitterUser;
+
 /**
  * Processes Twitter stream events.
  */
@@ -377,8 +372,7 @@ class TwitterStream extends AbstractJob
 								'channel' => 'agent.twitter-friend',
 								'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 								'date_created' => date('Y-m-d H:i:s'),
-								'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),
-								'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+								'data' => serialize(array('action' => 'new', 'account_id' => $account->id))
 							));
 						}
 					} else if ($targetUser->id == $account->getUserId()) {
@@ -396,8 +390,7 @@ class TwitterStream extends AbstractJob
 								'channel' => 'agent.twitter-follower',
 								'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 								'date_created' => date('Y-m-d H:i:s'),
-								'data' => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id)),
-								'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+								'data' => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id))
 							));
 						}
 					}

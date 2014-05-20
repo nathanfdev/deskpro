@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * Templates used in the system
@@ -82,7 +81,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $original_phrase;
+	protected $original_phrase = '';
 
 	/**
 	 * @var string
@@ -126,8 +125,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->setModelField('name', $name);
 
-		$groupname = Strings::rexplode('.', $name, 2);
-		$groupname = array_shift($groupname);
+		$groupname = self::getGroupFromName($name);
 
 		if ($groupname) {
 			$this->setModelField('groupname', $groupname);
@@ -142,6 +140,18 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	public function __toString()
 	{
 		return $this->phrase;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return string
+	 */
+	public static function getGroupFromName($name)
+	{
+		$groupname = Strings::rexplode('.', $name, 2);
+		$groupname = array_shift($groupname);
+		return $groupname;
 	}
 
 
@@ -171,6 +181,6 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
 		$metadata->mapField(array( 'fieldName' => 'updated_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'updated_at', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
 	}
 }

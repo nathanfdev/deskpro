@@ -33,9 +33,10 @@
 
 namespace Application\DeskPRO;
 
+use Application\DeskPRO\DependencyInjection\CoreExtension;
+use Application\DeskPRO\DependencyInjection\ElasticaClientPass;
+use Application\DeskPRO\DependencyInjection\SearchExtension;
 use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
@@ -50,8 +51,9 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         // register the extension(s) found in DependencyInjection/ directory
         parent::build($container);
 
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SearchExtension());
+        $container->registerExtension(new CoreExtension());
+        $container->registerExtension(new SearchExtension());
+		$container->addCompilerPass(new ElasticaClientPass());
     }
 
 	/**
@@ -64,10 +66,9 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\AsseticCommand',
 			'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
 			'Application\\DeskPRO\\Command\\DecodeTacCommand',
+			'Application\\DeskPRO\\Command\\DefaultDataCommand',
 			'Application\\DeskPRO\\Command\\DevBuildLangCommand',
 			'Application\\DeskPRO\\Command\\DevCheckReservedWordsCommand',
-			'Application\\DeskPRO\\Command\\DevCommand',
-			'Application\\DeskPRO\\Command\\DevDoMigrationCommand',
 			'Application\\DeskPRO\\Command\\DevExportLangCommand',
 			'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
 			'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
@@ -78,26 +79,22 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\DevPagelogCommand',
 			'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
 			'Application\\DeskPRO\\Command\\DevTestApiCommand',
-			'Application\\DeskPRO\\Command\\ElasticInitializerCommand',
 			'Application\\DeskPRO\\Command\\GenBuildClassCommand',
 			'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
 			'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
-			'Application\\DeskPRO\\Command\\ImportCommand',
-			'Application\\DeskPRO\\Command\\ImportRestoreUnknownAgentsCommand',
-			'Application\\DeskPRO\\Command\\ImportZendeskCommand',
 			'Application\\DeskPRO\\Command\\InstallCommand',
+			'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
 			'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
 			'Application\\DeskPRO\\Command\\LanguageToPOCommand',
 			'Application\\DeskPRO\\Command\\LicenseInfoCommand',
 			'Application\\DeskPRO\\Command\\LoginTokenCommand',
 			'Application\\DeskPRO\\Command\\MoveBlobsCommand',
 			'Application\\DeskPRO\\Command\\PhraseCheckCommand',
-			'Application\\DeskPRO\\Command\\PluginCommand',
+			'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
 			'Application\\DeskPRO\\Command\\ProcessEmailCommand',
 			'Application\\DeskPRO\\Command\\RecountRatingsCommand',
 			'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
 			'Application\\DeskPRO\\Command\\SchemaCommand',
-			'Application\\DeskPRO\\Command\\SchemaCorrectionCommand',
 			'Application\\DeskPRO\\Command\\SearchReindexCommand',
 			'Application\\DeskPRO\\Command\\SyncDataCommand',
 			'Application\\DeskPRO\\Command\\TestCommand',

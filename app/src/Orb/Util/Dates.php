@@ -59,6 +59,7 @@ class Dates
 	 * Units of time
 	 * @var int
 	 */
+	const UNIT_SECONDS = 'seconds';
 	const UNIT_MINUTES = 'minutes';
 	const UNIT_HOURS   = 'hours';
 	const UNIT_DAYS    = 'days';
@@ -188,6 +189,7 @@ class Dates
 	 *
 	 * @param \DateTime $date
 	 * @param int       $mod_months  Months to modify by, can be negative
+	 * @return \DateTime
 	 */
 	public static function modMonths(\DateTime $date, $mod_months)
 	{
@@ -233,7 +235,8 @@ class Dates
 	 * Adds or removes years from a date.
 	 *
 	 * @param \DateTime $date
-	 * @param int       $months  Months to modify by, can be negative
+	 * @param int       $mod_years  Years to modify by, can be negative
+	 * @return \DateTime
 	 */
 	public static function modYears(\DateTime $date, $mod_years)
 	{
@@ -279,9 +282,9 @@ class Dates
 	/**
 	 * Take some date show readable form of seconds/minutes/hours/days/years ago
 	 *
-	 * @param  int    $seconds  The seconds
-	 * @param  int    $detail   How much detail to go into, 1-5
-	 * @param  array  $lang     Phrases to use for each unit
+	 * @param \DateTime $date
+	 * @param int       $detail
+	 * @param null      $lang
 	 * @return string
 	 */
 	public static function dateToAgo(\DateTime $date, $detail = 2, $lang = null)
@@ -298,6 +301,7 @@ class Dates
 	 * @param  int    $detail   How much detail to go into, 1-5
 	 * @param  array  $lang     Phrases to use for each unit
 	 * @return string
+	 * @throws \Exception
 	 */
 	public static function secsToReadable($seconds, $detail = 2, $lang = null)
 	{
@@ -504,6 +508,8 @@ class Dates
 	public static function getUnitInSeconds($num, $unit)
 	{
 		switch ($unit) {
+			case self::UNIT_SECONDS:
+				return $num;
 			case self::UNIT_MINUTES:
 				return $num * 60;
 			case self::UNIT_HOURS:
@@ -519,5 +525,34 @@ class Dates
 		}
 
 		throw new \InvalidArgumentException("$unit is not a known unit");
+	}
+
+
+	/**
+	 * Convert a relative time input to a concrete date from now.
+	 *
+	 * @param int            $num          How many of the unit
+	 * @param string         $unit         Unit of time: seconds, minutes, hours, days, weeks, months, years
+	 * @param bool           $ago          True to produce a date in the past ("1 hour ago"), false for a future date ("in 1 hour")
+	 * @param \DateTime|null $from_date    Date to start from
+	 * @return \DateTime
+	 */
+	public function relativeTimeToDate($num, $unit, $ago = true, \DateTime $from_date = null)
+	{
+		$seconds = self::getUnitInSeconds($num, $unit);
+
+		if ($from_date) {
+			$date = clone $from_date;
+		} else {
+			$date = new \DateTime();
+		}
+
+		if ($ago) {
+			$date->modify("-{$seconds} seconds");
+		} else {
+			$date->modify("+{$seconds} seconds");
+		}
+
+		return $date;
 	}
 }

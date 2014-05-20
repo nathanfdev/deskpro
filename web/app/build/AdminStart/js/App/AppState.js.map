@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "AppState.js",
+  "sourceRoot": "../../../../AdminStart/App/",
+  "sources": [
+    "AppState.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA;AAAA,EAAA,MAAA,CAAO,SAAA,GAAA;AACN,QAAA,QAAA;WAAM;AACQ,MAAA,kBAAE,GAAF,GAAA;AACZ,QADa,IAAC,CAAA,MAAA,GACd,CAAA;AAAA,cAAA,CADY;MAAA,CAAb;;sBAAA;;SAFK;EAAA,CAAP,CAAA,CAAA;AAAA"
+}

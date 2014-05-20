@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Orb\Auth\Identity;
-
 class Xenforo extends DbTablePhpPasswordCheck
 {
 	/**
@@ -43,6 +41,6 @@ class Xenforo extends DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\Xenforo($this->getDb(), $this->usersource->options);
+		return new \Orb\Auth\Adapter\Xenforo($this->getDbAsCallback(), $this->usersource->options);
 	}
 }

@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
 
-use Orb\Util\Strings;
-
 class HtmlMatcher
 {
 	const CUT_MARK = '<!-- DP_EMAIL_CUT_MARK -->';

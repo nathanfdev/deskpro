@@ -33,21 +33,20 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\AgentBundle\FragmentRouter;
-
-use Orb\Util\Util;
-use Orb\Util\Strings;
+use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Assets\RequireJsConfigGenerator;
+use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
-use Symfony\Component\HttpFoundation\Response;
+use Orb\Util\Strings;
 
 class MiscController extends AbstractController
 {
 	public function requireRequestToken($action, $arguments = null)
 	{
-		if ($action == 'getInterfaceDataAction') {
+		if ($action == 'getInterfaceDataAction' || $action == 'getRequirejsLoaderAction' || $action == 'getAppsConfigAction' || $action == 'userInterfaceFrameAction') {
 			return false;
 		}
 
@@ -140,18 +139,8 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = ' . json_encode($system_filters) . ';';
 
 		// Ticket display elements
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-		$ticket_display->addPagesFromDb();
-		$js[] = "window.DESKPRO_TICKET_DISPLAY = {}";
-		$js[] = "window.DESKPRO_TICKET_DISPLAY.create = " . $ticket_display->compileJs() . ";";
-
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('modify');
-		$ticket_display->addPagesFromDb();
-		$js[] = "window.DESKPRO_TICKET_DISPLAY.modify = " . $ticket_display->compileJs() . ";";
-
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('view');
-		$ticket_display->addPagesFromDb();
-		$js[] = "window.DESKPRO_TICKET_DISPLAY.view = " . $ticket_display->compileJs() . ";";
+		$layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
+		$js[] = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
 
 		// Snippet short codes
 		$ticket_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
@@ -207,25 +196,31 @@ class MiscController extends AbstractController
 
 		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
 
-		if ($this->plugins->isPluginInstalled('MicrosoftTranslator')) {
-			$lang_codes = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate();
+		if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
+			$ms_translator = $this->container->getAppManager()->getService('ms_translator');
+			$lang_codes = $ms_translator->getLanguagesForTranslate();
 			try {
-				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
-					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+				$lang_names = $ms_translator->getLanguageNames(
+					$ms_translator->getLanguagesForTranslate(),
 					$this->person->getLanguage()->getLocale()
 				);
 			} catch (\Exception $e) {
-				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
-					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+				$lang_names = $ms_translator->getLanguageNames(
+					$ms_translator->getLanguagesForTranslate(),
 					'en'
 				);
+			}
+
+			$app_id = 0;
+			if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
+				$app_id = $this->container->getAppManager()->getPackageApp('deskpro_ms_translator')->id;
 			}
 
 			$info = array(
 				'lang_codes' => $lang_codes,
 				'lang_names' => $lang_names,
-				'translate_ticket_message_url' => $this->generateUrl('agent_plugins_run', array('plugin_id' => 'MicrosoftTranslator', 'action' => 'translate-ticket-message')),
-				'translate_text_url'           => $this->generateUrl('agent_plugins_run', array('plugin_id' => 'MicrosoftTranslator', 'action' => 'translate-text')),
+				'translate_ticket_message_url' => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-ticket-message')),
+				'translate_text_url'           => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-text')),
 			);
 
 			$js[] = "window.DESKPRO_TRANSLATE_SERVICE = " . json_encode($info) . ";";
@@ -598,8 +593,7 @@ JS;
 					'ticket_id'      => $content_id,
 					'draft_html'     => $html,
 					'via_person'     => $this->person->id
-				)),
-				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+				))
 			));
 		}
 
@@ -608,29 +602,21 @@ JS;
 		));
 	}
 
-    public function parseVCardAction()
+    public function parseVCardAction($blob_id = null)
     {
-        $file = $this->request->files->get('files');
+        if ($blob_id) {
+            $blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-        $content = file_get_contents($file[0]->getPathName());
-        $parse = \File_IMC::parse('vCard');
-        $vcard = $parse->fromText($content);
-        $fields = array();
+            $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+        } else {
+            $file = $this->request->files->get('files');
 
-        if(isset($vcard['VCARD'])) {
-            foreach($vcard['VCARD'] as $vc) {
-
-                if(isset($vc['EMAIL'])
-                && isset($vc['EMAIL'][0]['value'])) {
-                    $fields['email'] = $vc['EMAIL'][0]['value'][0][0];
-                }
-
-                if(isset($vc['FN'])
-                && isset($vc['FN'][0]['value'])) {
-                    $fields['name'] = $vc['FN'][0]['value'][0][0];
-                }
-            }
-        }
+            $content = file_get_contents($file[0]->getPathName());
+        }        
+        
+        $fields = \Application\DeskPRO\Reader\VCard::parseVCard($content);
+        
+        //var_dump($fields); die;
 
         $res = $this->createJsonResponse(array(array('fields' => $fields)));
 
@@ -705,6 +691,11 @@ JS;
 
 
 		return $this->createJsonResponse(array('success' =>true, 'status' => $status));
+	}
+
+	public function userInterfaceFrameAction()
+	{
+		return $this->render('AgentBundle:Misc:user-frame.html.twig');
 	}
 
 	public function redirectExternalAction($url)
@@ -848,5 +839,142 @@ JS;
 		$dom = $this->in->getRaw('html');
 		file_put_contents(dp_get_data_dir() . '/dom.html', $dom);
 		return $this->createJsonResponse(array('okay' => true));
+	}
+
+	public function getRequirejsLoaderAction()
+	{
+		$manager = $this->container->getAppManager()->getScopeFilter('agent');
+
+		$rjs = new RequireJsConfigGenerator();
+		$rjs->setBaseUrlExpr('ASSETS_BASE_URL');
+
+		if ($this->container->isDebug()) {
+			$rjs->setUrlArgsExpr('"bust=" + (new Date()).getTime()');
+		}
+
+		$rjs->addPath('DeskPRO/App', 'javascripts/DeskPRO/App');
+		$rjs->addPath('AppPlatform', 'javascripts/DeskPRO/App/Platform');
+		$rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
+		$rjs->addPath('DeskPRO/Util', 'app/build/DeskPRO/js/Util');
+		$rjs->addPath('AgentApp', 'javascripts/DeskPRO/App/AgentApp');
+		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular"');
+		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
+		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
+
+		$rjs->addShim('angular', array('exports' => 'angular'));
+		$rjs->addShim('angularAnimate', array('angular'));
+		$rjs->addShim('angularSanitize', array('angular'));
+
+		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
+		$rjs->addPathsFromGenerator($rjs_apps);
+
+		$rjs_config = $rjs->generateRequireJsConfigCode();
+
+		$js = <<<JS
+$rjs_config
+requirejs(['AppPlatform', 'AppPlatformConfig', 'AgentApp', 'angular'], function(AppPlatform, AppPlatformConfig, AgentApp, angular) {
+	angular.element(document).ready(function() {
+		angular.bootstrap(document, ['AgentApp']);
+
+		AgentApp.dpInjector = angular.element(document).injector();
+		window.AppPlatform = new AppPlatform(AgentApp, AppPlatformConfig);
+
+		window.DP_ONLOAD();
+
+		if (window.DeskPRO_Window) {
+			window.DeskPRO_Window.initAppPlatform(window.AppPlatform);
+		}
+	});
+})
+JS;
+
+		$response = $this->response;
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($js);
+
+		return $response;
+	}
+
+	public function getAppsConfigAction()
+	{
+		$js = array();
+		$require_paths = array('DeskPRO/App/Context/AppContext');
+		$require_names = array('AppContext');
+
+		$manager = $this->container->getAppManager()->getScopeFilter('agent');
+
+		foreach ($manager->getAllApps() as $app) {
+			$package = $app->package;
+			$appAsset = $package->getTaggedAsset('app_js');
+			$name = "{$package->name}/app";
+
+			if ($appAsset) {
+				$class_name = ucfirst(Strings::underscoreToCamelCase(str_replace(array('.', '/'), '_', $name)));
+				$require_paths[] = $name;
+				$require_names[] = $class_name;
+			} else {
+				$class_name = "AppContext";
+			}
+
+			if ($package->native_name) {
+				$native_baseurl = $this->generateUrl('serve_file_root') . '/apps/' . $package->native_name;
+			} else {
+				$native_baseurl = null;
+			}
+
+			$asset_files = array();
+			foreach (array('html', 'res') as $asset_type) {
+				foreach ($package->getTaggedAssets($asset_type) as $asset) {
+					$asset_id = $package->name . "/$asset_type/" . $asset->name;
+
+					if ($native_baseurl) {
+						$asset_path = $native_baseurl . "/$asset_type/" . $asset->name;
+					} else {
+						$asset_path = $asset->blob->getDownloadUrl();
+					}
+
+					$asset_files[$asset_id] = $asset_path;
+				}
+			}
+
+			if ($asset_files) {
+				$asset_files_js = array();
+				foreach ($asset_files as $k => $v) {
+					$asset_files_js[] = "\t\t\t\"$k\": \"$v\"";
+				}
+				$asset_files_js = "{\n" . implode(",\n", $asset_files_js) . "\n\t\t}";
+			} else {
+				$asset_files_js = "{}";
+			}
+
+			$infoJson = '';
+			$infoJson .= "\t\t\"id\": {$app->id},\n";
+			$infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
+			$infoJson .= "\t\t\"contextClass\": $class_name,\n";
+			$infoJson .= "\t\t\"scope\": \"agent\",\n";
+			$infoJson .= "\t\t\"settings\": ".json_encode($app->getOutputSettings(), JSON_FORCE_OBJECT).",\n";
+			$infoJson .= "\t\t\"assets\": $asset_files_js\n";
+
+			$infoJson = trim($infoJson);
+
+			$js_row = "\t// {$package->name} :: App[{$app->id}]\n";
+			$js_row .= "\tapps.push({\n\t\t$infoJson\n\t});";
+			$js[] = $js_row;
+		}
+
+		$require_paths = "\t'" . implode("',\n\t'", $require_paths) . "'";
+		$require_names = "\t" . implode(",\n\t", $require_names);
+
+		array_unshift($js, "define([\n$require_paths\n], function(\n$require_names\n) {\n\tvar apps = [];");
+
+		$js[] = "\treturn apps;\n});\n";
+
+		$js = implode("\n\n", $js);
+
+		$response = $this->response;
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($js);
+
+		return $response;
 	}
 }

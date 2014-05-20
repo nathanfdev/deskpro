@@ -34,14 +34,10 @@
 
 namespace Application\DeskPRO\Feedback;
 
-use Orb\Util\Arrays;
-
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\CustomFields\FeedbackFieldManager;
-use Application\DeskPRO\Feedback\UserCategory;
 use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\CustomDataFeedback;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Doctrine\ORM\EntityManager;
+use Orb\Util\Arrays;
 
 class FeedbackCollection
 {

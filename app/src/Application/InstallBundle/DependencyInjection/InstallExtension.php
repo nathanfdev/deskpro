@@ -34,28 +34,19 @@
 
 namespace Application\InstallBundle\DependencyInjection;
 
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class InstallExtension extends Extension
 {
 	public function load(array $config, ContainerBuilder $container)
     {
-		$definition = new Definition('Application\\DeskPRO\\ConfigServiceLoader');
-		$container->setDefinition('deskpro.config_service_loader', $definition);
-
 		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-			array(
-				'core'  => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
-				'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
-				'user'  => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
-				'dev'   => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
-			),
+			DP_ROOT . '/sys/config/settings.php',
 			new Reference('database_connection')
 		));
-		$definition->addMethodCall('loadGroups', array('core'));
 		$container->setDefinition('deskpro.core.settings', $definition);
 
 		$definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
@@ -89,7 +80,7 @@ class InstallExtension extends Extension
 		$container->setDefinition('deskpro.core.input_cleaner', $definition);
 
 		// Init reader
-		$definition = new Definition('Orb\Input\Reader\Reader', array(new Reference('deskpro.core.input_cleaner')));
+		$definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
 		$definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
 		$definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
 		$definition->addMethodCall('addSource',array('get', new Reference('deskpro.core.input_reader_get')));

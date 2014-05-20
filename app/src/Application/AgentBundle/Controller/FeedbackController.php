@@ -34,28 +34,16 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackComment;
-
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
-use Application\DeskPRO\UI\RuleBuilder;
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
-
+use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-
-use Application\DeskPRO\Publish\Feedback\GroupingCounter;
-
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Feedback\FeedbackMerge;
-
-use Orb\Util\Strings;
+use Application\DeskPRO\Publish\Feedback\GroupingCounter;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Orb\Util\Arrays;
-use Orb\Util\Util;
-
-use FineDiff;
+use Orb\Util\Strings;
 
 /**
  * Handles ticket searches
@@ -881,7 +869,7 @@ class FeedbackController extends AbstractController
 		$form = $this->get('form.factory')->create($formType, $newfeedback);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			$validator = new \Application\AgentBundle\Validator\NewFeedbackValidator();

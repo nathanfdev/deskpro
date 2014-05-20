@@ -320,7 +320,7 @@ class AgentMessagesLoader extends LoaderAbstract
 						'agent-notify.'.$r['typename'],
 						array(
 							'type'     => $r['typename'],
-							'alert_id' => $r['id'],
+							'alert_id' => (int)$r['id'],
 							'row'      => $r['data']['browser_rendered']
 						)
 					);
@@ -407,9 +407,10 @@ class AgentMessagesLoader extends LoaderAbstract
 			foreach ($all_messages as $message) {
 				$msg_data = unserialize($message['data']);
 				$msg_data['from_client'] = $message['created_by_client'];
+				$msg_data['alert_id'] = (int)$message['id'];
 
 				$info = array(
-					$message['id'],
+					(int)$message['id'],
 					$message['channel'],
 					$msg_data
 				);

@@ -1,0 +1,9 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<article class="form-horizontal dp-form">
+			{% include 'AdminInterfaceBundle:Apps:package-summary.html.twig' %}
+		</article>
+	</section>
+	{{ ng_tpl('AdminInterfaceBundle:Apps:instance-delete-modal.html.twig') }}
+{% endblock %}

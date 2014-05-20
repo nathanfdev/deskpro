@@ -1,0 +1,53 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Agent Teams</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" dp-list-autoload>
+				<li ng-repeat="team in ListCtrl.teams" dp-state-mark="agents.teams.edit.{{ ng_var('team.id') }}">
+					<a href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('team.name') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('agents.teams.create') }}">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Agent teams allow tickets and tasks to be assigned to groups of agents.</h1>
+		<p>
+			Assigning a ticket to a team brings it to the attention of all the members of that team.
+		</p>
+	</header>
+	<article>
+		<section>
+			<p>Teams usually consist of agents who work closely together and all handle the same kind of ticket (e.g. first-line support team, sales team, engineering team).</p>
+		</section>
+
+		<section>
+			<h2><span>FAQ</span></h2>
+			<dl>
+				<dt><em>Q:</em> How can I make it so that teams can't see each other's tickets?</dt>
+				<dd><em>A:</em> If you need to limit who can view tickets, you should use <strong>departments</strong>.</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h2><span>Related Knowledgebase Articles</span></h2>
+			<ul>
+				<li><a href="https://support.deskpro.com/kb/articles/181" target="_blank">Ticket assignment workflows in DeskPRO</a></li>
+			</ul>
+		</section>
+	</article>
+{% endblock %}

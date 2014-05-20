@@ -35,7 +35,6 @@
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DBAL\Connection;
-use Orb\Util\Strings;
 
 class ServerStats
 {

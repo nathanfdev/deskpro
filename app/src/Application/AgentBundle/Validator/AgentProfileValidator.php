@@ -36,10 +36,7 @@ namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
-use Application\AgentBundle\Form\Model\SettingsProfile;
 
 class AgentProfileValidator extends AbstractValidator
 {
@@ -61,7 +58,7 @@ class AgentProfileValidator extends AbstractValidator
 			$this->addError('name.short');
 		}
 
-		if (!\Orb\Validator\StringEmail::isValueValid($this->profile->email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($this->profile->email)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($this->profile->email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->profile->email)) {
 			$this->addError('email.invalid');
 		} else {
 			$check_exist = App::getDb()->fetchColumn("
@@ -75,9 +72,11 @@ class AgentProfileValidator extends AbstractValidator
 		}
 
 		if ($this->profile->password) {
-			$validator = new \Orb\Validator\StringLength(array('min' => 5));
-			if (!$validator->isValid($this->profile->password)) {
-				$this->addError('password.short');
+			/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+			$password_validator = App::$container->getSystemService('password_policy_validator');
+
+			if (!$password_validator->checkPassword($this->profile->password, $this->profile->getPerson())) {
+				$this->addError('password.invalid');
 			} elseif ($this->profile->password != $this->profile->password2) {
 				$this->addError('password.mismatch');
 			}
@@ -85,7 +84,7 @@ class AgentProfileValidator extends AbstractValidator
 
 		if ($this->profile->new_emails) {
 			foreach ($this->profile->new_emails as $new_email) {
-				if (!\Orb\Validator\StringEmail::isValueValid($new_email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+				if (!\Orb\Validator\StringEmail::isValueValid($new_email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_email)) {
 					$this->addError('email.invalid');
 				} else {
 					$check_exist = App::getDb()->fetchColumn("

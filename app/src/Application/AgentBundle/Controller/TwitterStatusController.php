@@ -36,7 +36,6 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\TwitterAccount;
 use Application\DeskPRO\Entity\TwitterAccountStatus;
 use Application\DeskPRO\Entity\TwitterAccountStatusNote;

@@ -35,12 +35,21 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\Validator\ViolationApiRenderer;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * Base API controller.
  */
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
+	/**
+	 * @var \Application\ApiBundle\ApiUser
+	 */
+	public $api_user;
+
 	/**
 	 * The API key making this request
 	 *
@@ -73,7 +82,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	/**
 	 * Input reader
-	 * @var \Orb\Input\Reader\Reader
+	 * @var \Application\DeskPRO\Input\Reader
 	 */
 	public $in;
 
@@ -112,39 +121,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->cleaner  = $this->get('deskpro.core.input_cleaner');
 		$this->settings = $this->get('deskpro.core.settings');
 
-		$this->apikey = $this->get('deskpro.api.request_key');
-		$person = null;
+		/** @var \Application\ApiBundle\Request\RequestAuth $request_auth */
+		$request_auth = $this->get('deskpro.api.request_auth');
+		$this->api_user = $request_auth->getApiUser();
 
-		if ($this->apikey) {
-			$person = false;
+		$this->apikey    = $this->api_user->api_key;
+		$this->api_token = $this->api_user->api_token;
+		$this->person    = $this->api_user->person;
 
-			if (!$this->apikey->person) {
-				$as_agent_id = $this->getRequest()->headers->get('X-DeskPRO-Agent-ID', null, true);
-				if (!$as_agent_id) {
-					$as_agent_id = isset($_REQUEST['DP-AGENT-ID']) ? $_REQUEST['DP-AGENT-ID'] : 0;
-				}
-				$as_agent_id = intval($as_agent_id);
-
-				$agent = $this->em->getRepository('DeskPRO:Person')->find($as_agent_id);
-				if ($agent && $agent->is_agent) {
-					$person = $agent;
-				}
-			} else {
-				$person = $this->apikey->person;
-			}
-		}
-
-		if (!$this->apikey) {
-			$this->api_token = $this->get('deskpro.api.request_token');
-			if ($this->api_token) {
-				$person = $this->api_token->person;
-			}
-		}
-
-		if ($person && $person->is_agent && !$person->is_deleted && !$person->is_disabled) {
-			App::setCurrentPerson($person);
-
-			$this->person = $person;
+		if ($this->person && $this->person->is_agent && !$this->person->is_deleted && !$this->person->is_disabled) {
+			App::setCurrentPerson($this->person);
 
 			$this->person->loadHelper('Agent');
 			$this->person->loadHelper('AgentTeam');
@@ -152,6 +138,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$this->person->loadHelper('PermissionsManager');
 			$this->person->loadHelper('HelpMessages');
 			$this->person->loadHelper('AgentPrefs');
+
+			$this->container->get('deskpro.auditlog.manager')->setDefaultPerformer($this->person);
 		}
 	}
 
@@ -171,12 +159,53 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			return $response;
 		}
 
+		if ($this->apikey) {
+			$this->container->getTicketManager()->setAutoContextVar('api_key', $this->apikey);
+		}
+
 		if ($this->api_token && $this->api_token->date_expires && $this->api_token->date_expires->getTimestamp() < time()) {
 			return $this->createApiErrorResponse('token_expired', 'Your API token has expired. Please login again.', 403);
 		}
 
 		if (!$this->person) {
 			return $this->createApiErrorResponse('invalid_person', 'Please provide a valid agent for this request', 403);
+		}
+
+		// Verify that token requests are with sessions, and verify the session person matches
+		if ($this->api_token && $this->api_token->scope == 'session') {
+			$session = $this->api_user->session;
+
+			if (!$session || !$session->person || $session->person != $this->api_token->person) {
+				return $this->createApiErrorResponse('invalid_api_token', 'API requests via token must be with a valid session', 403);
+			}
+
+			// Validate the request token
+			if (!$this->api_user->request_token || !$this->api_user->session->checkSecurityToken('request_token', $this->api_user->request_token)) {
+				return $this->createApiErrorResponse('invalid_request_token', 'You must provide a valid request token', 403);
+			}
+
+			// Ping the 'last' date of the session
+			$this->container->getDb()->update('sessions', array(
+				'date_last' => date('Y-m-d H:i:s')
+			), array('id' => $this->api_user->session->id));
+
+			// Increase lifetime of the session token
+			$this->container->getDb()->update('api_token', array(
+				'date_expires' => date('Y-m-d H:i:s', strtotime("+1 hour"))
+			), array('id' => $this->api_token->id));
+		}
+
+		if ($this instanceof ProtectedControllerInterface) {
+			$perm_strategy = $this->getPermissionStrategy();
+			$context_info = array(
+				'controller' => $this,
+				'action'     => $action,
+				'arguments'  => $arguments,
+				'type'       => $action
+			);
+			if (!$perm_strategy->userHasPermission($this->api_user, $context_info)) {
+				return $this->createApiErrorResponse('no_permission', 'You do not have permission to use this resource', 403);
+			}
 		}
 
 		if (App::getSetting('core.api_rate_limit')) {
@@ -217,7 +246,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 
-
 	/**
 	 * Create an API error response
 	 *
@@ -234,6 +262,31 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		), $status);
 	}
 
+
+	/**
+	 * Create an API error response
+	 *
+	 * @param string $error_code The short error code
+	 * @param string $error_message The error message
+	 * @param array $data Data to return
+	 * @param int $status The HTTP status to return
+	 * @return Response
+	 */
+	public function createApiErrorInfoResponse($error_code, $error_message, array $error_info, $status = 400)
+	{
+		return $this->createApiResponse(array(
+			'error_code'    => $error_code,
+			'error_message' => $error_message,
+			'error_info'    => $error_info,
+		), $status);
+	}
+
+
+	/**
+	 * @param array $errors
+	 * @param int $status
+	 * @return Response
+	 */
 	public function createApiMultipleErrorResponse(array $errors, $status = 400)
 	{
 		return $this->createApiResponse(array(
@@ -241,7 +294,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			'errors' => $errors
 		), $status);
 	}
-
 
 
 	/**
@@ -282,13 +334,108 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 
+	/**
+	 * Creates an API success response
+	 *
+	 * @param array $extra
+	 * @param int $status
+	 * @return Response
+	 */
+	public function createApiSuccessResponse(array $extra = array(), $status = 200)
+	{
+		return $this->createApiResponse(array('success' => true) + $extra, $status);
+	}
 
+
+	/**
+	 * Create API response for after anew resource was created
+	 *
+	 * @param array $data
+	 * @param $url
+	 * @return Response
+	 */
 	public function createApiCreateResponse(array $data, $url)
 	{
 		$response = $this->createApiResponse($data, 201);
 		$response->headers->add(array('Location' => $url));
 
 		return $response;
+	}
+
+
+	/**
+	 * Creates an API response to return after a resource is deleted. Typically you should return the 'old id' in $extra.
+	 *
+	 * @param array $extra
+	 * @param int $status
+	 * @return Response
+	 */
+	public function createApiDeleteResponse(array $extra = array(), $status = 200)
+	{
+		return $this->createApiResponse(array('success' => true) + $extra, $status);
+	}
+
+
+
+	/**
+	 * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
+	 * @param array                                             $extra  Any other extra data you want to return
+	 * @param int                                               $status The HTTP status code to return
+	 * @return Response
+	 * @throws \InvalidArgumentException
+	 */
+	public function createApiValidationErrorResponse($errors, array $extra = null, $status = 400)
+	{
+		$renderer = new ViolationApiRenderer();
+
+		if ($errors instanceof ConstraintViolationList) {
+			$info = $renderer->renderViolationList($errors);
+		} else if (is_array($errors)) {
+			foreach ($errors as $k => $v) {
+				if (!is_string($k) || !($v instanceof ConstraintViolationList)) {
+					throw new \InvalidArgumentException('$errors should be a single ConstraintViolationList, or an array of key=>ConstraintViolationList');
+				}
+			}
+			$info = $renderer->renderCombinedViolationList($errors);
+		}
+
+		$data = array(
+			'error_code'    => 'validation_error',
+			'error_message' => 'One or more validation errors occurred. Your request was not processed.',
+			'errors'        => $info,
+		);
+
+		if ($extra) {
+			$data = array_merge($data, $extra);
+		}
+
+		return $this->createApiResponse($data, $status);
+	}
+
+
+	/**
+	 * @param Form       $form   A form to fetch errors from
+	 * @param array      $extra  Any other extra data you want to return
+	 * @param int        $status The HTTP status code to return
+	 * @return Response
+	 * @throws \InvalidArgumentException
+	 */
+	public function createApiFormErrorResponse(Form $form, array $extra = null, $status = 400)
+	{
+		$renderer = new ViolationApiRenderer();
+		$info = $renderer->renderFormErrorList($form);
+
+		$data = array(
+			'error_code'    => 'validation_error',
+			'error_message' => 'One or more validation errors occurred. Your request was not processed.',
+			'errors'        => $info,
+		);
+
+		if ($extra) {
+			$data = array_merge($data, $extra);
+		}
+
+		return $this->createApiResponse($data, $status);
 	}
 
 
@@ -311,7 +458,94 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		return false;
 	}
 
+	/**
+	 * @param $entity
+	 *
+	 * @return bool
+	 */
 
+	public function isEntityValid($entity)
+	{
+		return sizeof($this->get('validator')->validate($entity)) == 0;
+	}
+
+	/**
+	 * @param \Symfony\Component\Form\Form $form
+	 *
+	 * @return string
+	 */
+
+	public function getFormValidationErrorsString($form)
+	{
+		$result = array();
+		$errors = $this->get('validator')->validate($form);
+
+		if (sizeof($errors) > 0) {
+
+			foreach ($errors as $error) {
+
+				$result[] = $error->getMessage();
+			}
+		}
+
+		return implode(',', $result);
+	}
+
+	/**
+	 * If we have some form and data from request we get rid off unnecessary data
+	 * in order not to have 'This form should not contain extra fields'
+	 *
+	 * @param \Symfony\Component\Form\Form  $form
+	 * @param array $requestData
+	 * @param array|string  $keys
+	 *
+	 * @return array
+	 */
+
+	public function deleteExtraDataFromRequest(Form $form, array $requestData, $keys = null)
+	{
+		if (is_null($keys)) {
+
+			$form_data   = $form->all();
+			$requestData = array_intersect_key($requestData, $form_data);
+
+			return $requestData;
+
+		} else {
+
+			if(is_string($keys)) {
+
+				$form_data   = $form->get($keys)->all();
+				$requestData = array_intersect_key($requestData[$keys], $form_data);
+
+				return array($keys => $requestData);
+
+			} else {
+
+				$result = array();
+
+				foreach ($keys as $key) {
+
+					$form_data = $form->get($key)->all();
+
+					// this is workaround for 'collection' type - corresponding form data will be empty array
+
+					if (is_array($form_data) && empty($form_data)) {
+
+						$result[$key] = $requestData[$key];
+
+					} else {
+
+						$resultData = array_intersect_key($requestData[$key], $form_data);
+
+						$result[$key] = $resultData;
+					}
+				}
+
+				return $result;
+			}
+		}
+	}
 
 	public function getApiSearchResult($type, array $terms, array $extra, $cache_id, \Application\DeskPRO\Searcher\SearcherAbstract $searcher)
 	{
@@ -419,5 +653,29 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$message->enableQueueHint();
 			$this->container->getMailer()->send($message);
 		}
+	}
+
+	/**
+	 * @param \Exception $e
+	 * @return Response
+	 */
+	public function handleActionException(\Exception $e)
+	{
+		if ($e instanceof ValidationException) {
+			return $this->createApiResponse(
+				array(
+					'error_code' => 'validation_error',
+					'error_message' => 'There was a validation error while processing your request.',
+					'detail' => array(
+						'code'      => $e->getCode(),
+						'code_name' => $e->getCodeName(),
+						'message'   => $e->getMessage()
+					)
+				),
+				400
+			);
+		}
+
+		return null;
 	}
 }

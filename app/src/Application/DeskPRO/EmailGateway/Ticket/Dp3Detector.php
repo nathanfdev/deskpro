@@ -50,7 +50,7 @@ class Dp3Detector implements TicketDetectorInterface
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -102,8 +102,8 @@ class Dp3Detector implements TicketDetectorInterface
 	 * Subject codes like: [AAAA-0000-AAAA] [ABC123D4]
 	 * That is (1) ticket ref and (2) ticket authcode.
 	 *
-	 * @param string $subject
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * @param string $subject_text
+	 * @return \Application\DeskPRO\Entity\Ticket|null
 	 */
 	public function userMatchSubject($subject_text)
 	{
@@ -262,7 +262,7 @@ class Dp3Detector implements TicketDetectorInterface
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -271,9 +271,9 @@ class Dp3Detector implements TicketDetectorInterface
 
 
 	/**
-	 * @return bool
+	 * {@inheritDoc}
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return false;
 	}

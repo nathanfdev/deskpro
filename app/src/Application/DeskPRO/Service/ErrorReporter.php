@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Service;
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\License;
 
 class ErrorReporter
 {
@@ -123,14 +124,6 @@ class ErrorReporter
 
 		if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
 			$info['DEV_MODE'] = 1;
-		}
-
-		if (class_exists('Application\\DeskPRO\\App', false)) {
-			try {
-				$kernel = App::getKernel();
-				$info['Kernel::getEnvironment'] = $kernel->getEnvironment();
-				$info['Kernel::isDebug']        = $kernel->isDebug() ? 'true' : 'false';
-			} catch (\Exception $e) {}
 		}
 
 		if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
@@ -388,7 +381,7 @@ class ErrorReporter
 
 			$url = \DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json';
 			$client->setUri($url);
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$r = $client->send();
 
 			if (!$r->isSuccess()) {
@@ -413,7 +406,6 @@ class ErrorReporter
 			$database_stats = new \Application\DeskPRO\DBAL\DatabaseStats(App::getDb());
 			$data = array_merge($data, $database_stats->getStats());
 
-			$data['setting_core_user_mode'] = App::getSetting('core.user_mode');
 			$data['setting_core_rewrite_urls'] = App::getSetting('core.rewrite_urls');
 			$data['setting_core_site_url'] = App::getSetting('core.site_url');
 			$data['setting_core_install_time'] = App::getSetting('core.install_time');
@@ -428,7 +420,7 @@ class ErrorReporter
 			$client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/heartbeat.json');
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$r = $client->send();
 			return $r->getBody();
 		} catch (\Exception $e) {
@@ -454,7 +446,7 @@ class ErrorReporter
 			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/ping-install.json');
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$r = $client->send();
 		} catch (\Exception $e) {
 			error_log(sprintf("sendInstallStatusPing %s %s", $e->getCode(), $e->getMessage()));
@@ -475,19 +467,52 @@ class ErrorReporter
 
 		$data = array(
 			'message' => $message,
-			'name' => $person->getDisplayName(),
-			'email' => $email_address,
-			'url' => App::getSetting('core.deskpro_url'),
-			'type' => $type,
+			'name'    => $person->getDisplayName(),
+			'email'   => $email_address,
+			'url'     => App::getSetting('core.deskpro_url'),
+			'type'    => $type,
 		);
 
 		try {
 			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
 			$r = $client->send();
-		} catch (\Exception $e) {}
+			return true;
+		} catch (\Exception $e) {
+			return false;
+		}
+	}
+
+
+	/**
+	 * @static
+	 * @param $person
+	 * @param $message
+	 */
+	public static function sendSupportMessage($subject, $message, $name, $email_address)
+	{
+		$data = array(
+			'message' => $message,
+			'name'    => $name,
+			'email'   => $email_address,
+			'url'     => App::getSetting('core.deskpro_url'),
+			'lic_id'  => License::getLicense()->getLicenseId(),
+			'subject' => $subject,
+		);
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
+			$client->getRequest()->getPost()->fromArray($data);
+			$client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
+			$r = $client->send();
+			return true;
+		} catch (\Exception $e) {
+			return false;
+		}
 	}
 }

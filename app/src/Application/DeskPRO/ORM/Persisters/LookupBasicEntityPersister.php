@@ -34,16 +34,16 @@
 
 namespace Application\DeskPRO\ORM\Persisters;
 
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\PersistentCollection;
 
 class LookupBasicEntityPersister extends BasicEntityPersister
 {
-	public function load(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null)
+	public function xload(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null, array $orderBy = null)
 	{
-		$uof = $this->_em->getUnitOfWork();
-		$classname = $this->_class->getName();
+		$uof = $this->em->getUnitOfWork();
+		$classname = $this->class->getName();
 
 		// Look for ID-based entities
 		if (count($criteria) == 1 && isset($criteria['id']) && $criteria['id']) {
@@ -72,10 +72,10 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 			}
 		}
 
-		return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit);
+		return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit, $orderBy);
 	}
 
-	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
+	public function xloadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
     {
 		if ($sourceEntity->__dp_is_preloaded_repos && isset($assoc['fieldName']) && $assoc['fieldName'] == 'children') {
 			$repos = $sourceEntity->__dp_is_preloaded_repos;

@@ -10,9 +10,11 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 <header>
 	<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
-	<div style="float:right; position: relative; right: 37px; top: 6px;">
-		<button class="clean-white" id="{{baseId}}_delete_btn" data-delete-url="{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}" data-filter-id="{{ filter.id }}">{{ phrase('agent.settings.delete_filter') }}</button>
-	</div>
+	{% if filter.id %}
+		<div style="float:right; position: relative; right: 37px; top: 6px;">
+			<button class="clean-white" id="{{baseId}}_delete_btn" data-delete-url="{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}" data-filter-id="{{ filter.id }}">{{ phrase('agent.settings.delete_filter') }}</button>
+		</div>
+	{% endif %}
 	<h1>{% if filter.id %}{{ phrase('agent.settings.edit_filter') }}{% else %}{{ phrase('agent.general.new_filter') }}{% endif %}</h1>
 </header>
 <article class="padded" data-width="1100" data-height="400">

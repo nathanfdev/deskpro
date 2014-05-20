@@ -1,4 +1,4 @@
-^^^DP_BEGIN:vendor/doctrine-dbal/lib/Doctrine/DBAL/Driver/PDODblib/Connection.php^^^
+^^^DP_BEGIN:vendor/doctrine/dbal/lib/Doctrine/DBAL/Driver/PDODblib/Connection.php^^^
 <?php
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -55,7 +55,7 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
 		try {
 			$supported = true;
 			parent::beginTransaction();
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$supported = false;
 		}
 		if ($supported) {
@@ -110,7 +110,7 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
 		try {
 			$supported = true;
 			parent::lastInsertId();
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$supported = false;
 		}
 
@@ -134,8 +134,8 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
 	}
 
 }
-^^^DP_END:vendor/doctrine-dbal/lib/Doctrine/DBAL/Driver/PDODblib/Connection.php^^^
-^^^DP_BEGIN:vendor/doctrine-dbal/lib/Doctrine/DBAL/Driver/PDODblib/Driver.php^^^
+^^^DP_END:vendor/doctrine/dbal/lib/Doctrine/DBAL/Driver/PDODblib/Connection.php^^^
+^^^DP_BEGIN:vendor/doctrine/dbal/lib/Doctrine/DBAL/Driver/PDODblib/Driver.php^^^
 <?php
 /*
  *  $Id$
@@ -239,4 +239,4 @@ class Driver implements \Doctrine\DBAL\Driver {
 		return $params['dbname'];
 	}
 }
-^^^DP_END:vendor/doctrine-dbal/lib/Doctrine/DBAL/Driver/PDODblib/Driver.php^^^
+^^^DP_END:vendor/doctrine/dbal/lib/Doctrine/DBAL/Driver/PDODblib/Driver.php^^^

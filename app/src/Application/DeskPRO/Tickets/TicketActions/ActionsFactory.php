@@ -35,17 +35,9 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\Tickets\TicketActions\Mapper;
-use Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-
-use Orb\Util\Util;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Validator\StringEmail;
+use Orb\Util\Util;
 
 /**
  * Creates action objects
@@ -182,7 +174,8 @@ class ActionsFactory
 				break;
 
 			case 'set_gateway_address':
-				$options['gateway_address_id'] = $value['gateway_address_id'];
+				$e = new \RuntimeException("not supported");
+				KernelErrorHandler::logException($e, true, 'ActionsFactory::set_gateway_address');
 				break;
 
 			case 'set_from_address':

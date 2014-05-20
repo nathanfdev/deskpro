@@ -1,0 +1,87 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Task Queue Logs</h3>
+		</header>
+
+		<article class="padd" ng-if="server_task_queue.show_task_status">
+
+			<div class="well info-message">
+				There are currently tasks running in the background. These will run even if you are not connected to
+				DeskPRO.
+			</div>
+
+		</article>
+
+		<article class="padd" ng-if="!server_task_queue.tasks.length">
+
+			<div class="well info-message">
+				No tasks have been logged. (Completed task logs are removed periodically.)
+			</div>
+
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd" ng-if="server_task_queue.tasks.length">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							Title
+						</th>
+						<th>
+							Date Created
+						</th>
+						<th>
+							Status
+						</th>
+						<th>
+							Message
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="task in server_task_queue.tasks">
+						<td class="alt dp-id-col">
+							{{ ng_var('task.title') }}
+						</td>
+						<td>
+							<time class="timeago" title="{{ ng_var('task.date_runnable | fulltime') }}"></time>
+						</td>
+						<td>
+							<span ng-if="task.status == 'completed'">
+								Completed (
+								<time class="timeago" title="{{ ng_var('task.date_completed | fulltime') }}"></time>)
+							</span>
+							<span ng-if="task.status == 'running'">
+								Running (
+								<time class="timeago" title="{{ ng_var('task.date_started | fulltime') }}"></time>)
+							</span>
+							<span ng-if="task.status == 'errored'">
+								Running (
+								<time class="timeago" title="{{ ng_var('task.date_started | fulltime') }}"></time>)
+							</span>
+							<span ng-if="task.status == 'queued'">
+								Queued
+							</span>
+						</td>
+						<td>
+							<span ng-if="task.status == 'errored'">
+								{{ ng_var('task.error_text') }}
+							</span>
+							<span ng-if="task.status != 'errored'">
+								{{ ng_var('task.run_status') }}
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketSettings.save()">
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>
+				<span>Satisfaction</span>
+				<button dp-inhelp-btn="admin.ticket_settings.satisfaction"></button>
+			</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="panel-help" dp-inhelp-body="admin.ticket_settings.satisfaction">
+					<p>
+						The Satisfaction features allow the user to rate the support they received as either good, bad, or neutral.
+					</p>
+					<p>
+						From the Reporting Interface you can generate reports based on satisfaction so you can know which areas
+						of your helpdesk are doing well and which areas need to improve.
+					</p>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<label>
+								<input type="checkbox" ng-model="settings.satisfaction_enabled" />
+								<h4>Enable the ticket satisfaction survey</h4>
+							</label>
+										<span class="help-block">
+											When enabled, email notifications and the web portal will include links where users can quickly rate agent replies and leave comments.
+										</span>
+						</div>
+						<div class="inner-group" ng-show="settings.satisfaction_enabled">
+							<label>
+								<input type="checkbox" ng-model="settings.satisfaction_agentread" />
+								<h4>Allow agents to view satisfaction ratings and comments left on tickets</h4>
+							</label>
+										<span class="help-block">
+											When enabled, agents will be able to view satisfaction results on tickets from within the agent interface.
+										</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		{##################################################################################################}
+
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div dp-hide-spinning="saving">
+						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+					</div>
+					<div dp-show-spinning="saving">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+</form>
+<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

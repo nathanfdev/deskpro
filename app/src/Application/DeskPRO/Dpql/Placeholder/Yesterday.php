@@ -35,10 +35,7 @@
 namespace Application\DeskPRO\Dpql\Placeholder;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Statement\Part\Prepared;
-use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
 /**
  * Placeholder for yesterday (00:00 - 23:59), based on the current person's time zone.

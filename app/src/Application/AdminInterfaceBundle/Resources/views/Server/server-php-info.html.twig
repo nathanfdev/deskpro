@@ -1,0 +1,359 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>PHP Info</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('admin.general.setting') }}
+						</th>
+						<th>
+							Web PHP Value
+						</th>
+						<th>
+							Command-line PHP Value
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="alt dp-id-col">
+							{{ phrase('admin.server.php_version') }}
+						</td>
+						<td>
+							{{ ng_var('server_php_info.web_php.php_config.version') }}
+						</td>
+						<td>
+							<div ng-if="server_php_info.cli_php.php_config">
+								{{ ng_var('server_php_info.cli_php.php_config.php_version') }}
+							</div>
+							<div ng-if="!server_php_info.cli_php.php_config">
+								n/a
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="alt dp-id-col">
+							{{ phrase('admin.server.memory_limit') }}
+						</td>
+						<td>
+							<span ng-if="server_php_info.web_php.php_config.memory_limit_real == -1">
+								No limit
+							</span>
+							<span ng-if="server_php_info.web_php.php_config.memory_limit_real != -1">
+								{{ ng_var('server_php_info.web_php.php_config.memory_limit_real | filesize_display') }}
+							</span>
+							(<a ng-href="{{ ng_var('server_php_info.memtest_link') }}" target="_blank">
+								{{ phrase('admin.server.test_this_value') }}
+							</a>)
+							<div
+									style="font-size: 11px;"
+									ng-if="
+									server_php_info.web_php.php_config.memory_limit
+									&& server_php_info.web_php.php_config.memory_limit != server_php_info.web_php.php_config.memory_limit_real
+									">
+								Successfully changed at runtime:
+								{{ ng_var('server_php_info.web_php.php_config.memory_limit | filesize_display') }}
+							</div>
+						</td>
+						<td>
+							<div ng-if="server_php_info.cli_php.php_config">
+								<span ng-if="server_php_info.cli_php.php_config.memory_limit_real || !server_php_info.cli_php.php_config.memory_limit_real">
+									No limit
+								</span>
+
+								<div
+										style="font-size: 11px;"
+										ng-if="
+										server_php_info.web_php.php_config.memory_limit
+										&& server_php_info.web_php.php_config.memory_limit != server_php_info.web_php.php_config.memory_limit_real
+										">
+									Successfully changed at runtime:
+									{{ ng_var('server_php_info.web_php.php_config.memory_limit | filesize_display') }}
+								</div>
+							</div>
+							<div ng-if="!server_php_info.cli_php.php_config">
+								n/a
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="alt dp-id-col">Effective max attachment size</td>
+						<td>
+							Approximately {{ ng_var('server_php_info.web_php.effective_max_upload | filesize_display') }}
+							<div style="font-size: 11px;">
+								Web-uploaded files are limited by a number of settings.
+								<a href="{{ ng_href('server.file_uploads') }}">Read more about configuring file upload limits</a>.
+							</div>
+						</td>
+						<td>
+							<div style="font-size: 11px;">
+								File operations on the command-line (e.g. reading email attachments) are limited by your
+								memory limit. If you have problems
+								accepting large file attachments, try raising the memory limit.
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="alt dp-id-col">{{ phrase('admin.server.error_log') }}</td>
+						<td>
+							<span ng-if="server_php_info.web_php.php_config.error_log_real">
+								{{ ng_var('server_php_info.web_php.php_config.error_log_real') }}
+							</span>
+							<span ng-if="!server_php_info.web_php.php_config.error_log_real">
+								None
+							</span>
+							<div
+									style="font-size: 11px;"
+									ng-if="server_php_info.web_php.php_config.error_log
+									&& server_php_info.web_php.php_config.error_log != server_php_info.web_php.php_config.error_log_real">
+								Successfully changed at runtime:<br/>
+								{{ ng_var('server_php_info.web_php.php_config.error_log') }}
+							</div>
+						</td>
+						<td>
+							<span ng-if="server_php_info.cli_php.php_config.error_log_real">
+								{{ ng_var('server_php_info.cli_php.php_config.error_log_real') }}
+							</span>
+							<span ng-if="!server_php_info.cli_php.php_config.error_log_real">
+								None
+							</span>
+
+							<div
+									style="font-size: 11px;"
+									ng-if="server_php_info.cli_php.php_config.error_log
+									&& server_php_info.cli_php.php_config.error_log != server_php_info.cli_php.php_config.error_log_real">
+								Successfully changed at runtime:<br/>
+								{{ ng_var('server_php_info.cli_php.php_config.error_log') }}
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="alt dp-id-col">Path to PHP.ini</td>
+						<td>
+							<span ng-if="server_php_info.web_php.ini_path">
+								{{ ng_var('server_php_info.web_php.ini_path') }}
+							</span>
+							<span ng-if="!server_php_info.web_php.ini_path">
+								n/a
+							</span>
+						</td>
+						<td>
+							<span ng-if="server_php_info.cli_php.ini_path">
+								{{ ng_var('server_php_info.cli_php.ini_path') }}
+							</span>
+							<span ng-if="!server_php_info.cli_php.ini_path">
+								n/a
+							</span>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="alt dp-id-col">Link to PHP Info</td>
+						<td>
+							<a ng-href="{{ ng_var('server_php_info.web_php_link') }}"
+							   onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">
+								Copy link Web PHP Info
+							</a>
+						</td>
+						<td>
+							<a href="{{ ng_var('server_php_info.cli_php_link') }}"
+							   onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">
+								Copy link to Command-line PHP Info
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+				<tr>
+					<th colspan="2">
+						Config Settings
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(k, v) in server_php_info.debug_settings">
+						<td class="alt dp-id-col">{{ ng_var('k') }}</td>
+						<td>{{ ng_var('v') }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd" ng-if="server_php_info.has_apc">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th colspan="2">
+							APC
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							APC is installed and is enabled.
+							Click the link below to view statistics and cache-controls for APC.
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a ng-href="{{ ng_var('server_php_info.apc_link') }}" target="_blank">
+								{{ ng_var('server_php_info.apc_link') }}
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd" ng-if="server_php_info.has_wincache">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th colspan="2">
+							WinCache
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							WinCache is installed and is enabled.
+							Click the link below to view statistics and cache-controls for WinCache.
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a ng-href="{{ ng_var('server_php_info.wincache_link') }}" target="_blank">
+								{{ ng_var('server_php_info.wincache_link') }}
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+				<tr>
+					<th colspan="2">
+						Binary Paths
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="alt dp-id-col">
+							PHP CLI
+						</td>
+						<td>
+							<span ng-if="server_php_info.binary_paths.php">
+								{{ ng_var('server_php_info.binary_paths.php') }}
+							</span>
+							<span ng-if="!server_php_info.binary_paths.php">
+								No path is set. DeskPRO will attempt to find it automatically.
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td class="alt dp-id-col">
+							MySQL Binary
+						</td>
+						<td>
+							<span ng-if="server_php_info.binary_paths.mysql">
+								{{ ng_var('server_php_info.binary_paths.mysql') }}
+							</span>
+							<span ng-if="!server_php_info.binary_paths.mysql">
+								No path is set. DeskPRO will attempt to find it automatically.
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td class="alt dp-id-col">
+							MySQL Dump Binary
+						</td>
+						<td>
+							<span ng-if="server_php_info.binary_paths.mysqldump">
+								{{ ng_var('server_php_info.binary_paths.mysqldump') }}
+							</span>
+							<span ng-if="!server_php_info.binary_paths.mysqldump">
+								No path is set. DeskPRO will attempt to find it automatically.
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							DeskPRO requires the paths to these system binaries for some features like the automatic
+							upgrader.
+							<br/>To specify the path to these binaries, edit your config.php file.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+
+				<div class="panel-heading">
+					<h3>
+						<span>Web PHP Info</span>
+					</h3>
+				</div>
+
+				<div ng-bind-html="server_php_info.web_php.phpinfo"
+					 style="overflow: auto; overflow-x: hidden; max-width: 1000px; height: 300px;">
+				</div>
+			</div>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+
+				<div class="panel-heading">
+					<h3>
+						<span>Command-line PHP Info</span>
+					</h3>
+				</div>
+
+				<div ng-bind-html="server_php_info.cli_php.phpinfo"
+					 style="overflow: auto; overflow-x: hidden; max-width: 1000px; height: 300px;">
+				</div>
+			</div>
+		</article>
+
+	</section>
+
+{% endblock %}

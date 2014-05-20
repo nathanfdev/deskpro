@@ -34,13 +34,12 @@
 
 namespace Application\DeskPRO\Attachments;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-
-use Orb\Util\Numbers;
-use Orb\Data\ContentTypes;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Doctrine\ORM\EntityManager;
+use Orb\Data\ContentTypes;
+use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AcceptAttachment
 {

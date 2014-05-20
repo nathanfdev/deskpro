@@ -35,11 +35,9 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
-
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\DownloadSearch;
-
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 

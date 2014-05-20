@@ -56,6 +56,69 @@ abstract class AbstractBuild
 
 
 	/**
+	 * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
+	 *
+	 * @param string $tag
+	 * @param string $name
+	 * @param string|array $data Array data will be json_encoded, string data will be written as-is
+	 * @return string|false Filename written when successful, or false if failed to write
+	 */
+	public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
+	{
+		if (is_array($data)) {
+			$fname = 'updata-' . $tag . '.' . $name . '.json';
+			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
+			$data = json_encode($data);
+			if (file_put_contents($path, $data) === false) {
+				if ($throw_exception) {
+					throw new \RuntimeException("Failed to write upgrade data file to: $path");
+				}
+				return false;
+			}
+		} else {
+			$fname = 'updata-' . $tag . '.' . $name . '.dat';
+			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
+			$data = (string)$data;
+			if (file_put_contents($path, $data) === false) {
+				if ($throw_exception) {
+					throw new \RuntimeException("Failed to write upgrade data file to: $path");
+				}
+				return false;
+			}
+		}
+
+		@chmod($path, 0777);
+
+		return $path;
+	}
+
+
+	/**
+	 * Read previously saved upgrade data.
+	 *
+	 * @param string $tag
+	 * @param string $name
+	 * @return array|null|string  Array for JSON-encoded array data, string for string data or null if file could not be found
+	 */
+	public function getUpgradeData($tag, $name)
+	{
+		$name_part = 'updata-' . $tag . '.' . $name . '.';
+		$path_part = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $name_part;
+
+		if (file_exists($path_part.'json')) {
+			$data = file_get_contents($path_part.'json');
+			$data = json_decode($data, true);
+			return $data;
+		} else if (file_exists($path_part.'dat')) {
+			$data = file_get_contents($path_part.'dat');
+			return $data;
+		} else {
+			return null;
+		}
+	}
+
+
+	/**
 	 * Empty hook into the constructor.
 	 */
 	protected function init() { }

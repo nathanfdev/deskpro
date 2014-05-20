@@ -34,9 +34,6 @@
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 use Orb\Log\Logger;
 
 class ErrorHandler

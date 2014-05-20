@@ -1,0 +1,36 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock">
+		<article>
+			<div class="panel panel-innertable">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Template Name</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="tpl in ListCtrl.templates">
+							<td>
+								<i class="fa fa-code icon-22x text-middle"></i>
+								&nbsp;
+								<span class="text-middle" ng-click="ListCtrl.openEditor(tpl)">
+									<span class="linked-text">
+										<em>{{ ng_var('tpl.shortname') }}</em>
+										<i class="hovershow fa fa-cog"></i>
+									</span>
+								</span>
+							</td>
+							<td style="text-align: right;">
+								<span ng-show="tpl.is_custom" class="label uc label-info" tooltip-placement="left" tooltip="You have customized this template.">Customized</span>
+								<span ng-show="!tpl.is_custom" class="label uc label-faded" tooltip-placement="left" tooltip="You have not customized this template. The default template is being used.">Default</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</section>
+	{{ ng_tpl('AdminInterfaceBundle:Templates:modal-template-editor.html.twig') }}
+{% endblock %}

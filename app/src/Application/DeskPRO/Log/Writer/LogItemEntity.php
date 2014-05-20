@@ -36,10 +36,7 @@ namespace Application\DeskPRO\Log\Writer;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
 use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
 {

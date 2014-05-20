@@ -1,0 +1,86 @@
+<section>
+	<header>
+		<h1>Automatic Updater</h1>
+	</header>
+	<article ng-show="!card_loaded" class="loading-container">
+		<i class="spinner-editor"></i>
+	</article>
+	<article ng-show="card_loaded && !latest_version">
+		<p>
+			We could not connect to the DeskPRO servers to fetch information about the latest version.
+		</p>
+		<p>
+			Try refreshing the page to try again. If you continue to receive this message, you can install
+			updates manually as described below.
+		</p>
+	</article>
+	<article ng-show="card_loaded && latest_version">
+		<section>
+			<p>
+				You are currently running DeskPRO version #{{ ng_var('version_info.build_name') }}. The newest version available is #{{ ng_var('latest_version.build_num_base') }}.
+			</p>
+			<p>
+				The automatic updater will install the newest version of DeskPRO for you by just clicking the button below.
+			</p>
+		</section>
+		<section>
+			<h3>Backup Options</h3>
+			<p>
+				It is recommended you enable backups so that in the very unlikely event a problem occurs,
+				you will be able to revert to the backup.
+			</p>
+			<label>
+				<input type="checkbox" ng-model="opt.db_backup" /> Back up the database before installing the upgrade
+			</label>
+			<br/>
+			<label>
+				<input type="checkbox" ng-model="opt.file_backup" /> Back up the current DeskPRO source files before installing the upgrade
+			</label>
+		</section>
+		<section>
+			<h3>Time Delay</h3>
+			<p>
+				You may wish to delay the start of the automatic update. This will show an alert notice to any online agents,
+				giving them time to finish their work before the update starts.
+			</p>
+			<label>
+				<input type="radio" ng-model="opt.time_type" value="now" /> Start the update now
+			</label>
+			<label style="margin-left: 10px;">
+				<input type="radio" ng-model="opt.time_type" value="delay" /> Start the update in <span ng-show="opt.time_type != 'delay'">...</span>
+			</label>
+			<span ng-show="opt.time_type == 'delay'">
+				<input type="text" class="form-control" ng-model="opt.delay" style="padding: 1px; margin: 0; font-size: 11px; width: 45px; display: inline-block; height: auto;" /> minutes
+			</span>
+		</section>
+		<section>
+			<h3>User Offline Message</h3>
+			<p>
+				Enter the message to show on the user portal about the helpdesk being unavailable.
+			</p>
+			<input type="text" ng-model="opt.user_message" class="form-control" style="width: 80%" ng-init="opt.user_message = 'The helpdesk is undergoing routine maintenance. We will be back in about 10 minutes.'" />
+		</section>
+	</article>
+	<footer ng-show="card_loaded && latest_version">
+		<div ng-show="!is_loading">
+			<button class="btn btn-primary" ng-click="Home.startUpgrade();">Start the automatic update <i class="fa fa-arrow-circle-right"></i></button>
+		</div>
+		<div ng-show="is_loading">
+			<i class="spinner-flat"></i>
+		</div>
+	</footer>
+</section>
+<div class="alert alert-info" style="margin-top: 25px;">
+	<p>
+		The preferred way to update DeskPRO is by using the automatic update tool above. But in some server enviornments,
+		using this tool is not possible. For example, strict file permissions may prevent the automatic updater from working.
+	</p>
+	<p>
+		If you cannot use the automatic update tool, you can use the CLI update tool instead which will
+		install the updates with a single command on the command-line. Refer to the DeskPRO knowledgebase for more information:
+	</p>
+	<p>
+		<i class="fa fa-globe"></i> <a href="https://support.deskpro.com/kb/articles/156">Installing Updates</a><br/>
+		<i class="fa fa-globe"></i> <a href="https://support.deskpro.com/kb/articles/135">Manually Installing Updates</a>
+	</p>
+</div>

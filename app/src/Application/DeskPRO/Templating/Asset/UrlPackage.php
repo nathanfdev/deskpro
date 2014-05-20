@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\Templating\Asset;
 
-use Symfony\Component\Templating\Asset\UrlPackage as BaseUrlPackage;
-
 use Application\DeskPRO\App;
+use Symfony\Component\Templating\Asset\UrlPackage as BaseUrlPackage;
 
 class UrlPackage extends BaseUrlPackage
 {

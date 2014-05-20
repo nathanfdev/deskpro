@@ -35,20 +35,15 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Entity\ChatBlock;
-use Application\DeskPRO\Searcher\SearcherAbstract;
-use Application\DeskPRO\Searcher\ChatConversationSearch;
-
-use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 use Application\DeskPRO\Chat\UserChat\GroupingCounter;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
+use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
+use Application\DeskPRO\Entity\ChatBlock;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Searcher\ChatConversationSearch;
+use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
-use Orb\Util\Util;
+use Orb\Util\Strings;
 
 class UserChatController extends AbstractController
 {

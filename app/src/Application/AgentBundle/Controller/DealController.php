@@ -36,26 +36,15 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Orb\Util\Arrays;
-use Application\DeskPRO\Entity;
-
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Deal;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\DealNote;
-use Application\DeskPRO\Entity\DealStage;
-
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonContactData;
-use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
-
-
-use Application\DeskPRO\Entity\TaskComment;
-use Application\AgentBundle\Form\Type\NewTask;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Symfony\Component\HttpFoundation\Response;
 
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
 
 /**
  * Handles viewing and editing deals
@@ -90,7 +79,7 @@ class DealController extends AbstractController
         $form = $this->get('form.factory')->create($formtype, $newdeal);
 
         if ($this->get('request')->getMethod() == 'POST') {
-            $form->bindRequest($this->get('request'));
+            $form->handleRequest($this->get('request'));
             $form->isValid();
             $newdeal->save();
 

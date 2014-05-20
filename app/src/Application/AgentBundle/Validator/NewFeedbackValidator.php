@@ -36,10 +36,7 @@ namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
-use Application\AgentBundle\Form\Model\SettingsProfile;
 
 class NewFeedbackValidator extends AbstractValidator
 {

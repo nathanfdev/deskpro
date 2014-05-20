@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\ORM\EventListener;
 
-use \Doctrine\ORM\Events;
-use \Doctrine\ORM\Event\LifecycleEventArgs;
-use \Doctrine\Common\EventSubscriber;
+use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Events;
 
 /**
  * This listener automatically sets the container once an ORM entity has been laoded.

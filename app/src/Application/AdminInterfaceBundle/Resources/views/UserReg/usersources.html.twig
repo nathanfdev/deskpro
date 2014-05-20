@@ -1,0 +1,40 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Authentication and SSO</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-list-autoload>
+					<a href="{{ ng_href('crm.usersources.deskpro') }}">
+						<h4>
+							<span class="title-text">DeskPRO</span>
+						</h4>
+					</a>
+				</li>
+				<li ng-repeat="app in ListCtrl.apps" dp-state-mark="crm.usersources.app.{{ ng_var('app.id') }}">
+					<a href="{{ ng_href('crm.usersources.app', '{id: app.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('app.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('crm.usersources.newtype') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Add authentication apps to enable users to sign in with existing accounts from other services</h1>
+		<p>Install authentication apps in the Apps section so users can log in with account details from an existing database, Microsoft Active Directory, LDAP, social media accounts and many more sources.</p>
+	</header>
+	<article>
+		<section>
+			<p>Change the order of authentication apps here to change the order in which DeskPRO checks them.</p>
+		</section>
+	</article>
+{% endblock %}

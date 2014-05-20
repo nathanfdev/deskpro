@@ -1,0 +1,145 @@
+<section class="dp-paneblock dp-editpane">
+	<nav class="dp-blocktabs">
+		<ul>
+			<li class="active" dp-tab-btn="query.editor.builder"  ng-click="EditCtrl.switchToBuilder()">
+				<a href="#">
+					<i class="fa fa-pencil"></i> Builder
+				</a>
+			</li>
+			<li class="pipe">|</li>
+			<li dp-tab-btn="query.editor.query" ng-click="EditCtrl.switchToQuery()">
+				<a href="#">
+					<i class="fa fa-users"></i> Query
+				</a>
+			</li>
+		</ul>
+	</nav>
+	<article class="form-horizontal dp-form">
+		<div dp-tab-body="query.editor.builder">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<span dp-show-spinning="builder_loading">
+						<i class="spinner-flat"></i>
+					</span>
+					<div dp-hide-spinning="builder_loading" id="query-builder" class="query-editor-builder">
+						<dl>
+							<dt class="no-pad">DISPLAY</dt>
+							<dd>
+								<select ui-select2 style="min-width:70px;" ng-model="EditCtrl.query_parts.display.0">
+									<option value="BAR" ng-selected="EditCtrl.query_parts.display[0] == 'BAR'">
+										BAR
+									</option>
+									<option value="LINE" ng-selected="EditCtrl.query_parts.display[0] == 'LINE'">
+										LINE
+									</option>
+									<option value="AREA" ng-selected="EditCtrl.query_parts.display[0] == 'AREA'">
+										AREA
+									</option>
+									<option value="PIE" ng-selected="EditCtrl.query_parts.display[0] == 'PIE'">
+										PIE
+									</option>
+									<option value="TABLE" ng-selected="EditCtrl.query_parts.display[0] == 'TABLE'">
+										TABLE
+									</option>
+								</select>
+								<select ui-select2 style="min-width:70px;" ng-model="EditCtrl.query_parts.display.1">
+									<option value="BAR" ng-selected="EditCtrl.query_parts.display[1] == 'BAR'">
+										BAR
+									</option>
+									<option value="LINE" ng-selected="EditCtrl.query_parts.display[1] == 'LINE'">
+										LINE
+									</option>
+									<option value="AREA" ng-selected="EditCtrl.query_parts.display[1] == 'AREA'">
+										AREA
+									</option>
+									<option value="PIE" ng-selected="EditCtrl.query_parts.display[1] == 'PIE'">
+										PIE
+									</option>
+									<option value="TABLE" ng-selected="EditCtrl.query_parts.display[1] == 'TABLE'">
+										TABLE
+									</option>
+								</select>
+							</dd>
+						</dl>
+						<dl>
+							<dt>SELECT</dt>
+							<dd>
+								<textarea ng-model="EditCtrl.query_parts.select" class="form-control expander">
+								</textarea>
+							</dd>
+						</dl>
+						<dl>
+							<dt>FROM</dt>
+							<dd><input ng-model="EditCtrl.query_parts.from" type="text" class="form-control"></dd>
+						</dl>
+						<dl>
+							<dt>WHERE</dt>
+							<dd>
+								<textarea ng-model="EditCtrl.query_parts.where" class="form-control expander">
+								</textarea>
+							</dd>
+						</dl>
+						<dl>
+							<dt>SPLIT BY</dt>
+							<dd><input ng-model="EditCtrl.query_parts.splitBy" class="form-control" type="text"></dd>
+						</dl>
+						<dl>
+							<dt>GROUP BY</dt>
+							<dd><input ng-model="EditCtrl.query_parts.groupBy" class="form-control" type="text"></dd>
+						</dl>
+						<dl>
+							<dt>ORDER BY</dt>
+							<dd><input ng-model="EditCtrl.query_parts.orderBy" class="form-control" type="text"></dd>
+						</dl>
+						<dl class="limit">
+							<dt>LIMIT</dt>
+							<dd>
+								<input ng-model="EditCtrl.query_parts.limit" type="text" class="form-control">
+								<span>OFFSET</span>
+								<input ng-model="EditCtrl.query_parts.offset" type="text" class="form-control">
+							</dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div dp-tab-body="query.editor.query">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<span dp-show-spinning="query_loading">
+						<i class="spinner-flat"></i>
+					</span>
+					<div dp-hide-spinning="query_loading" class="query-editor-text" id="query-text">
+						<textarea name="query" class="expander form-control" ng-model="EditCtrl.report.query"
+								  style="height: 100px;">
+						</textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-fill indent">
+			<div class="panel-body">
+				<div class="query-error" ng-show="EditCtrl.query_error">
+					The following error occurred: <span id="query-error-message">
+						{{ ng_var('EditCtrl.query_error') }}
+					</span>
+				</div>
+
+				<button class="btn btn-success" ng-click="EditCtrl.testReport()" ng-if="EditCtrl.report.id">
+					Test Report
+				</button>
+
+				<button class="btn btn-warning" ng-click="EditCtrl.saveToClone()" ng-if="EditCtrl.report.id">
+					Save To Clone
+				</button>
+
+				<button class="btn btn-warning" ng-if="EditCtrl.reportType == 'custom'" dp-submit-form>
+					Save & Run
+				</button>
+			</div>
+		</div>
+
+	</article>
+</section>

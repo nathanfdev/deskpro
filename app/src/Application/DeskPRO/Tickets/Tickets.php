@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Tickets
 {
@@ -87,8 +86,6 @@ class Tickets
 		}
 
 		$options['departments'] = App::getDataService('Department')->getNames(null, false);
-		$options['gateway_addresses'] = App::getDataService('EmailGatewayAddress')->getOptions();
-		$options['gateway_accounts'] = App::getDataService('EmailGateway')->getGatewayNames();
 
 		if (App::getSetting('core.use_ticket_category')) {
 			$options['ticket_categories_hierarchy'] = App::getDataService('TicketCategory')->getInHierarchy();

@@ -1,0 +1,299 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enabled</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.enable_usersource" />
+			Yes, enable Database Authentication
+		</label>
+		<span class="help-block">Enable the app once you have verified all of your settings are correct.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Database Server</h3>
+	</div>
+	<div class="col-lg-8">
+		<div class="inner-group" style="margin-bottom: 8px;">
+			<label>
+				<h4>Connection Type</h4>
+			</label>
+			<div>
+				<select ng-model="setting_values.db_type" ng-init="setting_values.db_type = setting_values.db_type || 'pdo_mysql'" ui-select2 style="width: 300px;">
+					<option value="pdo_mysql">MySQL (pdo_mysql)</option>
+					<option value="pdo_pgsql">PostgreSQL (pdo_pgsql)</option>
+					<option value="pdo_sqlite">SQLite (pdo_sqlite)</option>
+					<option value="sqlsrv">MsSQL (sqlsrv)</option>
+					<option value="oci8">Oracle (oci8)</option>
+				</select>
+			</div>
+		</div>
+
+		<!-- ############################# -->
+		<!-- MYSQL -->
+		<!-- ############################# -->
+		<div ng-if="setting_values.db_type == 'pdo_mysql'">
+			<div class="inner-group">
+				<label>
+					<h4>Server</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_host" placeholder="Host (e.g., localhost)" style="width: 60%;" />
+					<div style="margin-top: 4px;">
+						<select ng-model="setting_values.db_use_socket" ng-init="setting_values.db_use_socket = setting_values.db_use_socket || 'port'" ui-select2 style="width: 100px;">
+							<option value="port">Port</option>
+							<option value="socket">Socket</option>
+						</select>
+
+						<input ng-if="setting_values.db_use_socket == 'port'" type="text" class="form-control" ng-model="setting_values.db_port" ng-init="setting_values.db_port = setting_values.db_port || '3306'" placeholder="Port" style="width: 100px;" />
+						<input ng-if="setting_values.db_use_socket == 'socket'" type="text" class="form-control" ng-model="setting_values.db_socket" placeholder="Socket Path" style="width: 60%" />
+					</div>
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database User</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_username" placeholder="Database Username" style="width: 35%;" />
+					<input type="password" class="form-control" ng-model="setting_values.db_password" placeholder="Database Password" style="width: 35%;" />
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database Name</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_name" placeholder="Database Name" style="width: 200px;" />
+				</div>
+			</div>
+		</div>
+
+		<!-- ############################# -->
+		<!-- POSTGRESQL -->
+		<!-- ############################# -->
+		<div ng-if="setting_values.db_type == 'pdo_pgsql'">
+			<div class="inner-group">
+				<label>
+					<h4>Server</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_host" placeholder="Host (e.g., localhost)" style="width: 60%;" />
+					<div style="margin-top: 4px;">
+						Port: <input type="text" class="form-control" ng-model="setting_values.db_port" ng-init="setting_values.db_port = setting_values.db_port || '5432'" placeholder="Port" style="width: 100px;" />
+					</div>
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database User</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_username" placeholder="Database Username" style="width: 35%;" />
+					<input type="password" class="form-control" ng-model="setting_values.db_password" placeholder="Database Password" style="width: 35%;" />
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database Name</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_name" placeholder="Database Name" style="width: 200px;" />
+				</div>
+			</div>
+		</div>
+
+		<!-- ############################# -->
+		<!-- SQLITE -->
+		<!-- ############################# -->
+		<div ng-if="setting_values.db_type == 'pdo_sqlite'">
+			<div class="inner-group">
+				<label>
+					<h4>Database File</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_path" placeholder="Absolute file path" style="width: 60%;" /><br/>
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database User</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_username" placeholder="Database Username" style="width: 35%;" />
+					<input type="password" class="form-control" ng-model="setting_values.db_password" placeholder="Database Password" style="width: 35%;" />
+				</div>
+			</div>
+		</div>
+
+		<!-- ############################# -->
+		<!-- MSSQL -->
+		<!-- ############################# -->
+		<div ng-if="setting_values.db_type == 'sqlsrv'">
+			<div class="inner-group">
+				<label>
+					<h4>Server</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_host" placeholder="Host (e.g., localhost)" style="width: 60%;" />
+					<div style="margin-top: 4px;">
+						Port: <input type="text" class="form-control" ng-model="setting_values.db_port" ng-init="setting_values.db_port = setting_values.db_port || '1433'" placeholder="Port" style="width: 100px;" />
+					</div>
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database User</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_username" placeholder="Database Username" style="width: 35%;" />
+					<input type="password" class="form-control" ng-model="setting_values.db_password" placeholder="Database Password" style="width: 35%;" />
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database Name</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_name" placeholder="Database Name" style="width: 200px;" />
+				</div>
+			</div>
+		</div>
+
+		<!-- ############################# -->
+		<!-- ORACLE -->
+		<!-- ############################# -->
+		<div ng-if="setting_values.db_type == 'oci8'">
+			<div class="inner-group">
+				<label>
+					<h4>Server</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_host" placeholder="Host (e.g., localhost)" style="width: 60%;" />
+					<div style="margin-top: 4px;">
+						Port: <input type="text" class="form-control" ng-model="setting_values.db_port" ng-init="setting_values.db_port = setting_values.db_port || '1521'" placeholder="Port" style="width: 100px;" />
+					</div>
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database User</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_username" placeholder="Database Username" style="width: 35%;" />
+					<input type="password" class="form-control" ng-model="setting_values.db_password" placeholder="Database Password" style="width: 35%;" />
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>Database Name</h4>
+				</label>
+				<div>
+					<input type="text" class="form-control" ng-model="setting_values.db_name" placeholder="Database Name" style="width: 200px;" />
+				</div>
+			</div>
+
+			<div class="inner-group">
+				<label>
+					<h4>
+						<labe><input type="checkbox" ng-model="use_service_name" ng-init="use_service_name = !!setting_values.db_service_name" ng-change="setting_values.db_service_name = use_service_name ? setting_values.db_service_name : ''" /> Service Name</labe>
+					</h4>
+				</label>
+				<div ng-show="use_service_name">
+					<input type="text" class="form-control" ng-model="setting_values.db_service_name" placeholder="Service Name" style="width: 50%;" />
+				</div>
+			</div>
+		</div>
+
+		<!-- ############################# -->
+		<!-- MISC -->
+		<!-- ############################# -->
+		<div style="margin-top: 8px;">
+			<div class="inner-group">
+				<label>
+					<h4>
+						<label>
+							<input type="checkbox" ng-model="setting_values.db_with_options" />
+							Specify custom connection options
+						</label>
+					</h4>
+				</label>
+				<div ng-if="setting_values.db_with_options">
+					<textarea class="form-control" ng-model="setting_values.db_custom_options" style="width: 90%; height: 110px; font-size: 11px; font-family: Monaco, Consolas, monospace; white-space: pre;" wrap="off"></textarea>
+					<span class="help-block">Enter options in a key=value format, one per line. Refer to the PHP manual for your chosen database driver for available options.</span>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Schema</h3>
+	</div>
+	<div class="col-lg-8">
+		<table>
+			<tr>
+				<td>Table Name (required)</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.table" placeholder="Database Table" style="width: 200px;" /></td>
+			</tr>
+			<tr>
+				<td>ID Field (required)</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.field_id" placeholder="ID Field" style="width: 200px;" /></td>
+			</tr>
+			<tr>
+				<td>Email Address Field (required)</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.field_email" placeholder="Email Field" style="width: 200px;" /></td>
+			</tr>
+			<tr>
+				<td>Password Field</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.field_password" placeholder="Password Field" style="width: 200px;" /></td>
+			</tr>
+			<tr>
+				<td>Username Field</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.field_username" placeholder="Username Field" style="width: 200px;" /></td>
+			</tr>
+			<tr>
+				<td>First Name Field</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.field_first_name" placeholder="First Name Field" style="width: 200px;" /></td>
+			</tr>
+			<tr>
+				<td>Last Name Field</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.field_last_name" placeholder="Last Name Field" style="width: 200px;" /></td>
+			</tr>
+			<tr>
+				<td>Full Name Field</td>
+				<td><input type="text" class="form-control" ng-model="setting_values.field_name" placeholder="Full Name Field" style="width: 200px;" /></td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>PHP Code</h3>
+	</div>
+	<div class="col-lg-8">
+		<textarea class="form-control" ng-model="setting_values.php_code" ng-init='setting_values.php_code = setting_values.php_code || "$is_valid = ($password_input == $password_recorded);"' style="width: 90%; height: 110px; font-size: 11px; font-family: Monaco, Consolas, monospace; white-space: pre;" wrap="off"></textarea>
+		<span class="help-block">
+			Enter the PHP code that will be used to verify an user-inputted password is correct.<br/>
+			&middot; <code>$is_valid</code> must be set to true or false, depending on if the login was correct.<br/>
+			&middot; <code>$userinfo</code> is the inputted password from the login form.<br/>
+			&middot; <code>$password_recorded</code> is the password stored in the database.<br/>
+			&middot; <code>$userinfo</code> is an array of raw user data (the full database row).<br/>
+			&middot; <code>$db</code> is a <a href="http://www.doctrine-project.org/api/dbal/2.4/index.html" target="_blank">Doctrine connection</a> for your database.<br/>
+		</span>
+	</div>
+</div>

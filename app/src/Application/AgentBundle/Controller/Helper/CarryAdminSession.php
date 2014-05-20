@@ -41,7 +41,7 @@ class CarryAdminSession
 	protected $controller;
 	protected $cookie_name;
 
-	public function __construct($controller, $cookie_name = 'dpsid-admin')
+	public function __construct($controller, $cookie_name = 'dpsid-agent')
 	{
 		$this->controller = $controller;
 		$this->cookie_name = $cookie_name;

@@ -13,15 +13,7 @@ define('DP_ROOT', realpath(__DIR__ . '/../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 require DP_ROOT . '/bin/build/php-path.php';
-
-require DP_ROOT . '/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-use Symfony\Component\ClassLoader\ClassCollectionLoader;
-
-$loader = new UniversalClassLoader();
-$loader->registerNamespaces(array('Symfony' => DP_ROOT.'/vendor/symfony/src'));
-$loader->register();
+require DP_ROOT . '/sys/autoload.php';
 
 $output_realtime = function($type, $buffer) {
 	if ($type === 'err') {
@@ -111,15 +103,19 @@ echo "\n";
 #####################################################################
 
 $time = microtime(true);
-echo "build-compiled ... ";
+echo "build-rjs ... ";
 
-$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-compiled.php', DP_ROOT.'/bin/build');
-$proc->setTimeout(600);
-$proc->run($output_realtime);
+if (in_array('--skip-assetic', $_SERVER['argv'])) {
+	echo " SKIPPED (--skip-assetic) ";
+} else {
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-rjs.php', DP_ROOT.'/bin/build');
+	$proc->setTimeout(600);
+	$proc->run($output_realtime);
 
-if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+	if (!$proc->isSuccessful()) {
+		echo ("\nDetected error. Quitting.\n");
+		exit($proc->getExitCode());
+	}
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -256,6 +252,7 @@ echo "\n";
 
 #####################################################################
 
+/*
 $time = microtime(true);
 echo "build-checkphrases ... ";
 
@@ -274,9 +271,11 @@ if ($quick) {
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
 echo "\n";
+*/
 
 #####################################################################
 
+/*
 $time = microtime(true);
 echo "build-checkphrases-vars ... ";
 
@@ -295,6 +294,7 @@ if ($quick) {
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
 echo "\n";
+*/
 
 #####################################################################
 

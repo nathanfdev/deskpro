@@ -34,10 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Doctrine\ORM\EntityRepository;
-
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\FeedbackStatusCategory as FeedbackStatusCategoryEntity;
 
 class FeedbackStatusCategory extends AbstractEntityRepository
 {

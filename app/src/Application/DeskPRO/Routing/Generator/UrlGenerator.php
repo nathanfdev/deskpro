@@ -33,13 +33,8 @@
 
 namespace Application\DeskPRO\Routing\Generator;
 
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
-use Application\DeskPRO\Routing\Generator\ObjectUrlGenerator;
-use Orb\Util\Strings;
-
 use Application\DeskPRO\App;
+use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 
 /**
@@ -77,9 +72,14 @@ class UrlGenerator extends BaseUrlGenerator
         $this->context = $context;
     }
 
+	public function getEnvMode()
+	{
+		return 'dev';
+	}
+
 	public function generate($name, $parameters = array(), $absolute = false)
 	{
-		if (App::getEnvironment() == 'dev') {
+		if ($this->getEnvMode() == 'dev') {
 			return parent::generate($name, $parameters, $absolute);
 		}
 
@@ -140,9 +140,9 @@ class UrlGenerator extends BaseUrlGenerator
 		return $url;
 	}
 
-	protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
+	protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = array())
 	{
-		$url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute);
+		$url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
 
 		// /file.php/ is a hint to say that we want to serve through the file loader,
 		// Any route that is prefixed with /file.php/ has this magic below applied
@@ -167,20 +167,4 @@ class UrlGenerator extends BaseUrlGenerator
 	{
 		return $this->getObjectUrlGenerator()->generateObjectUrl($object, $params, $context);
 	}
-
-	/*
-    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
-    {
-		if (isset($variables['_locale']) && empty($defaults['_locale'])) {
-			App::getTranslator()->getLocale()->getLocale();
-
-			// Default
-			if ($defaults['_locale'] == 'en_US') {
-				unset($defaults['_locale']);
-			}
-		}
-
-		return parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute);
-    }
-	*/
 }

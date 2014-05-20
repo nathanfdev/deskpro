@@ -89,6 +89,15 @@ class KernelErrorHandler
 	 */
 	public static function handleError($errno, $errstr, $errfile, $errline)
 	{
+		if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
+			// NFS can sometimes be a little slow and result in these stat failures during dev
+			// but they are distracting to fill error log with a giant stack trace. so just log a single line
+			if (strpos($errstr, 'filemtime(): stat failed for') !== false) {
+				error_log("$errstr ($errfile:$errline)");
+				return;
+			}
+		}
+
 		$GLOBALS['DP_LAST_ERROR'] = array('type' => $errno, 'message' => $errstr, 'file' => $errfile, 'line' => $errline);
 
 		if (!(error_reporting() & $errno)) {
@@ -250,7 +259,7 @@ class KernelErrorHandler
 	 */
 	public static function tryCleanup()
 	{
-		if (class_exists('Application\DeskPRO\App')) {
+		if (class_exists('Application\DeskPRO\App', false) && App::$container) {
 			try {
 				$db = App::getDb();
 				if ($db->isTransactionActive()) {
@@ -367,7 +376,7 @@ class KernelErrorHandler
 				$str[] = sprintf("\tURL: %s\n", $errinfo['url']);
 				$str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
 			}
-			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
+			$str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
 		} else {
 			$line = sprintf("DeskPRO Error: %s (%s line %s): %s", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
 			$str[] = sprintf("Error: %s\n", $errinfo['errstr']);
@@ -378,14 +387,19 @@ class KernelErrorHandler
 				$str[] = sprintf("\tURL: %s\n", $errinfo['url']);
 				$str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
 			}
-			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
+			$str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
 		}
 
 		$errinfo['trace'] = trim($errinfo['trace']);
 		if ($errinfo['trace']) {
 			$lines = explode("\n", $errinfo['trace']);
 			foreach ($lines as $l) {
-				$str[] = sprintf("\t-> %s\n", trim($l));
+				$l = trim($l);
+				if (substr($l, 0, 5) == '>>>>>') {
+					$str[] = sprintf("\t   %s\n", trim($l));
+				} else {
+					$str[] = sprintf("\t-> %s\n", trim($l));
+				}
 			}
 		}
 
@@ -401,6 +415,13 @@ class KernelErrorHandler
 		// Prefix each line for easier parsing
 		$str = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $str);
 		$line = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $line);
+
+		// First line of the log in the logfile must be DP_LOG.BEGIN, as that is used for the
+		// "quick" counts in admin interface
+		$pos = strpos($str, '<DP_LOG:');
+		if ($pos !== false) {
+			$str = substr_replace($str, '<DP_LOG.BEGIN:', $pos, strlen('<DP_LOG:'));
+		}
 
 		// Always write error line to standard error log
 		@error_log($line, 0);
@@ -616,7 +637,7 @@ class KernelErrorHandler
 			$url = DP_REQUEST_URL;
 		} elseif (defined('DP_INTERFACE')) {
 			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
-			if (class_exists('Application\\DeskPRO\\App')) {
+			if (class_exists('Application\\DeskPRO\\App') && App::$container) {
 				try {
 					$url = App::getRequest()->getUri();
 				} catch (\Exception $e) {}
@@ -768,10 +789,6 @@ class KernelErrorHandler
 		}
 
 		if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Cannot create Imagine instance') !== false) {
-			return true;
-		}
-
-		if ($exception instanceof \Zend\Ldap\Exception && strpos($exception->getMessage(), 'LDAP extension not loaded') !== false) {
 			return true;
 		}
 
@@ -998,17 +1015,74 @@ class KernelErrorHandler
 	{
 		$trace = '';
 
+		$longest_filename = 0;
+
+		foreach($backtrace as &$v) {
+			if (!empty($v['file'])) {
+				$v['orig_file'] = $v['file'];
+				$v['file'] = self::stripPathPrefix($v['file']);
+				$longest_filename = max($longest_filename, strlen(self::stripPathPrefix($v['file'])));
+			}
+		}
+		unset($v);
+
+		$longest_filename += 15;
+
+		$prev_line = null;
+
+		$x = 0;
 		foreach($backtrace as $k=>$v){
 
-			$prefix = "#$k ";
+			if (!empty($v['object'])) {
+				if (strpos(get_class($v['object']), 'KernelErrorHandler')) continue;
+			}
+			if (!empty($v['class'])) {
+				if (strpos($v['class'], 'KernelErrorHandler')) continue;
+			}
+
+			$x++;
+
+			$prefix = sprintf("[#%02d] ", $x);
+			$pre_line = '';
 			$line = '';
 
 			if (!empty($v['file'])) {
-				$v['file'] = self::stripPathPrefix($v['file']);
-				$prefix .= "[{$v['file']}:{$v['line']}] ";
+				$prefix .= "{$v['file']}:{$v['line']} ";
+			} else {
+				$prefix .= "<callback> ";
 			}
 
+			$show_vars_string = null;
+
 			if (isset($v['object'])) {
+				if ($v['object'] instanceof \Twig_Template && method_exists($v['object'], 'getTemplateName')) {
+					$show_vars_string = '<template_context>';
+					try {
+						$tpl = @$v['object']->getTemplateName();
+						if ($tpl) {
+							$line .= '<' . @$v['object']->getTemplateName() . '>';
+
+							if ($prev_line && method_exists($v['object'], 'getDebugInfo')) {
+								$debug_info = @$v['object']->getDebugInfo();
+								if ($debug_info) {
+									$l = $prev_line + 1;
+									while (--$l > 0) {
+										if (isset($debug_info[$l])) {
+											$pre_line = ">>>>> Template: $tpl:{$debug_info[$l]}";
+											break;
+										}
+									}
+								}
+							}
+						}
+					} catch (\Exception $e) {}
+				} else if ($v['object'] instanceof \Application\DeskPRO\Templating\Engine || $v['object'] instanceof \Symfony\Bundle\TwigBundle\Debug\TimedTwigEngine) {
+					if ($v['function'] == 'render') {
+						$show_vars_string = '<template_context>';
+					}
+				} else if ($v['function'] == 'renderView') {
+					$show_vars_string = '<template_context>';
+				}
 				$line .= get_class($v['object']) . "::";
 			} elseif (isset($v['class'])) {
 				$line .= $v['class'] . "::";
@@ -1016,13 +1090,28 @@ class KernelErrorHandler
 
 			$line .= "{$v['function']}(";
 
-			if (!empty($v['args'])) {
-				$line .= self::varToString($v['args']);
+			if ($show_vars_string) {
+				if (!empty($v['args'])) {
+					$line .= $show_vars_string;
+				}
+			} else {
+				if (!empty($v['args'])) {
+					$line .= self::varToString($v['args']);
+				}
 			}
 
 			$line .= ")";
 
-			$trace .= $prefix . ' ' . trim($line) . "\n";
+			if ($pre_line) {
+				$trace .= $pre_line."\n";
+			}
+
+			$trace .= sprintf("%-{$longest_filename}s", $prefix) . "\t---\t" . trim($line) . "\n";
+
+			$prev_line = null;
+			if (isset($v['line'])) {
+				$prev_line = $v['line'];
+			}
 		}
 
 		$trace = preg_replace('#PDO::__construct(.*?)$#m', 'PDO::__construct(...)', $trace);
@@ -1047,18 +1136,43 @@ class KernelErrorHandler
 	public static function varToString($var, $_depth = 0)
     {
         if (is_object($var)) {
-            return sprintf('[object](%s)', get_class($var));
+            return sprintf('<%s>', get_class($var));
         }
         if (is_array($var)) {
             $a = array();
+			$len = count($var);
+			$is_array = true;
+
+			for ($i = 0; $i < $len; $i++) {
+				if (!array_key_exists($i, $var)) {
+					$is_array = false;
+					break;
+				}
+			}
+
             foreach ($var as $k => $v) {
 				if ($_depth > 8) {
-					$a[] = sprintf('%s => %s', $k, '(string)');
+					if ($is_array) {
+						$a[] = '(string)';
+					} else {
+						$a[] = sprintf('%s => %s', $k, '(string)');
+					}
 				} else {
-					$a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+					if ($is_array) {
+						$a[] = self::varToString($v, $_depth+1);
+					} else {
+						if (!is_numeric($k)) {
+							$k = "'$k'";
+						}
+						$a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+					}
 				}
             }
-            return sprintf("[array](%s)", implode(', ', $a));
+			if ($_depth == 0) {
+				return implode(', ', $a);
+			} else {
+				return sprintf("array(%s)", implode(', ', $a));
+			}
         }
         if (is_resource($var)) {
             return '[resource]';

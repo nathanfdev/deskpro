@@ -14,24 +14,22 @@
 	<small>
 		{% if is_new_ticket %}
 			{% if ticket.person.id != performer.id %}
-				{{ phrase('agent.tickets.notify_new_ticket_by_for', {name: performer.name, user: ticket.person.name ~ ' (' ~ ticket.person.email_address ~ ')' }) }}
+				{{ phrase('agent.tickets.notify_new_ticket_by_for', {name: performer.display_name, user: ticket.person.display_name ~ ' (' ~ ticket.person.email_address ~ ')' }) }}
 			{% else %}
-            	{{ phrase('agent.chat.new_ticket_by', {'name':performer.name,'email':performer.primary_email_address}) }}
+            	{{ phrase('agent.chat.new_ticket_by', {'name':performer.display_name,'email':performer.primary_email_address}) }}
 			{% endif %}
+		{% elseif is_new_agent_note %}
+			{{ phrase('agent.chat.new_agent_note_by', {'name':performer.display_name}) }}
 		{% elseif is_new_agent_reply %}
-			{% if is_new_agent_note %}
-				{{ phrase('agent.chat.new_agent_note_by', {'name':performer.name}) }}
-			{% else %}
-            	{{ phrase('agent.chat.new_agent_reply_by', {'name':performer.name}) }}
-			{% endif %}
+			{{ phrase('agent.chat.new_agent_reply_by', {'name':performer.display_name}) }}
 		{% elseif is_new_user_reply %}
-            {{ phrase('agent.chat.new_user_reply_by', {'name':performer.name,'email':performer.primary_email_address}) }}
+            {{ phrase('agent.chat.new_user_reply_by', {'name':performer.display_name,'email':performer.primary_email_address}) }}
 		{% else %}
 			{% if performer %}({{ performer.display_name }}){% endif %}
 			{% for log in log_items %}
 				{% set notify_html %}{% include 'AgentBundle:TicketSearch:notify-row-log.html.twig' %}{% endset %}
 				{% if notify_html %}
-					{{ notify_html|raw }}{% if not loop.last %},{% endif %}
+					{% if not loop.first %} &middot; {% endif %}{{ notify_html|raw }}
 				{% endif %}
 			{% endfor %}
 		{% endif %}

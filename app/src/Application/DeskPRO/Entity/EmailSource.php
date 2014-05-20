@@ -34,16 +34,21 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
 
 /**
  * Raw email sources
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
+	const STATUS_INSERTED   = 'inserted';
+	const STATUS_PROCESSING = 'processing';
+	const STATUS_COMPLETE   = 'complete';
+	const STATUS_ERROR      = 'error';
+	const STATUS_REJECTED   = 'rejected';
+
 	const OBJ_TYPE_TICKET = 'ticket';
 	const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
 
@@ -93,9 +98,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	protected $blob = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
-	protected $gateway = null;
+	protected $email_account = null;
 
 	/**
 	 * The type of object this is attached to (should be the table name of
@@ -169,6 +174,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	protected $source_info = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Blob
+	 */
+	protected $log_blob = null;
+
+	/**
 	 * @var \DateTime
 	 */
 	protected $date_created;
@@ -203,6 +213,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the full raw source of the email
 	 *
+	 * @deprecated
 	 * @return string
 	 */
 	public function getRawSource()
@@ -212,6 +223,23 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
 		return $this->_raw;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSourceInfoAsString()
+	{
+		if (!$this->source_info) {
+			return '';
+		}
+
+		if (isset($this->source_info[0])) {
+			return implode("\n", $this->source_info);
+		} else {
+			return print_r($this->source_info, true);
+		}
 	}
 
 
@@ -265,29 +293,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @return string
-	 */
-	public function getSourceInfoAsString()
-	{
-		if (!$this->source_info) {
-			return '';
-		}
-
-		if (isset($this->source_info[0])) {
-			return implode("\n", $this->source_info);
-		} else {
-			return print_r($this->source_info, true);
-		}
-	}
-
-
-	/**
 	 * @param string $status
 	 */
 	public function setStatus($status)
 	{
 		$this->setModelField('status', $status);
 		$this->setModelField('date_status', new \DateTime());
+	}
+
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		if (!$deep) {
+			unset($data['source_info']);
+		}
+		return $data;
 	}
 
 
@@ -322,7 +343,30 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'gateway', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'gateway_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'blob',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'dpApi'        => true,
+			'dpApiDeep'    => true,
+			'joinColumns'  => array(array(
+				'name'                 => 'blob_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			)),
+		));
+		$metadata->mapManyToOne(array( 'fieldName' => 'email_account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'log_blob',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'dpApi'        => true,
+			'dpApiDeep'    => true,
+			'joinColumns'  => array(array(
+				'name'                 => 'log_blob_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			))
+		));
 	}
 }

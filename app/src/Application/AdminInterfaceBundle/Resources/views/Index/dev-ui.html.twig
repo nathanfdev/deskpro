@@ -1,0 +1,342 @@
+{% extends 'AdminInterfaceBundle:Layout:single-page-app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li><a href="#/dev_ui">UI Elements</a></li>
+			<li><a href="#/dev_ui_table">UI Tables</a></li>
+		</ul>
+	</nav>
+{% endblock %}
+{% block fullpane_content %}
+<section class="dp-paneblock">
+	<div style="padding: 20px;">
+			<h1>Twitter Bootstrap</h1>
+			<p>
+				For basic styles, be sure to refer to Twitter Bootstrap documentation:
+			</p>
+			<ul>
+				<li><a href="http://getbootstrap.com/css/">Basic CSS</a>: Grid system, fonts, tables, forms etc</li>
+				<li><a href="http://getbootstrap.com/css/">Components</a>: Buttons, labels, alerts, panels, wells</li>
+			</ul>
+
+			<h1>Angular Bootstrap</h1>
+			<p>
+				To use Twitter components (like modals or tooltips), refer to the documentation:
+				<a href="http://angular-ui.github.io/bootstrap/">http://angular-ui.github.io/bootstrap/</a>
+			</p>
+
+			{##################################################################################################################}
+
+			<h1>Fill Panels</h1>
+			<p>
+				These "fill" the space to 100% width with a thick line between the title and panel content.
+				Also displayed here is the sortable.
+			</p>
+			<p>
+				See:<br/>
+				&middot; <a href="https://github.com/angular-ui/ui-sortable">https://github.com/angular-ui/ui-sortable</a>
+			</p>
+			<div style="padding:20px; border: 1px solid #aaa; border-radius: 4px;"><div style="background: #fff;">
+				<div class="panel panel-fill">
+					<div class="panel-heading">
+						<h3>Title</h3>
+					</div>
+					<ul class="dp-item-list" ui-sortable>
+						<li class="with-drag-handle"><a><i class="fa fa-bars drag-handle"></i> Item</a></li>
+						<li class="with-drag-handle"><a><i class="fa fa-bars drag-handle"></i> Item</a></li>
+						<li class="with-drag-handle"><a><i class="fa fa-bars drag-handle"></i> Item</a></li>
+					</ul>
+				</div>
+			</div></div>
+
+		<pre>
+		&lt;div class=&quot;panel panel-fill&quot;&gt;
+			&lt;div class=&quot;panel-heading&quot;&gt;
+				&lt;h3&gt;Title&lt;/h3&gt;
+			&lt;/div&gt;
+			&lt;ul class=&quot;dp-item-list&quot; ui-sortable&gt;
+				&lt;li class=&quot;with-drag-handle&quot;&gt;&lt;a&gt;&lt;i class=&quot;icon-reorder drag-handle&quot;&gt;&lt;/i&gt; Item&lt;/a&gt;&lt;/li&gt;
+				&lt;li class=&quot;with-drag-handle&quot;&gt;&lt;a&gt;&lt;i class=&quot;icon-reorder drag-handle&quot;&gt;&lt;/i&gt; Item&lt;/a&gt;&lt;/li&gt;
+				&lt;li class=&quot;with-drag-handle&quot;&gt;&lt;a&gt;&lt;i class=&quot;icon-reorder drag-handle&quot;&gt;&lt;/i&gt; Item&lt;/a&gt;&lt;/li&gt;
+			&lt;/ul&gt;
+		&lt;/div&gt;
+		</pre>
+
+			{##################################################################################################################}
+
+			<h1>Main Tabs</h1>
+			<p>
+				Main Tabs are meant for tabs on the content page that go across the top of the pane. The contents of the tabs
+				can be anything (typically other panels).
+			</p>
+			<p>
+				See:<br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpTabBtn.coffee</code><br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpTabBody.coffee</code>
+			</p>
+
+			<div style="padding:20px; border: 1px solid #aaa; border-radius: 4px;"><div style="background: #fff;">
+				<nav class="dp-main-tabs">
+					<ul>
+						<li class="active" dp-tab-btn="main.tab1"><a href="#">Tab1</a></li>
+						<li dp-tab-btn="main.tab2"><a href="#">Tab2</a></li>
+					</ul>
+				</nav>
+
+				<div dp-tab-body="main.tab1">
+					<p>Tab1</p>
+				</div>
+				<div dp-tab-body="main.tab2">
+					<p>Tab2</p>
+				</div>
+			</div></div>
+
+		<pre>
+		&lt;nav class=&quot;dp-main-tabs&quot;&gt;
+			&lt;ul&gt;
+				&lt;li class=&quot;active&quot; dp-tab-btn=&quot;main.tab1&quot;&gt;&lt;a href=&quot;#&quot;&gt;Tab1&lt;/a&gt;&lt;/li&gt;
+				&lt;li dp-tab-btn=&quot;main.tab2&quot;&gt;&lt;a href=&quot;#&quot;&gt;Tab2&lt;/a&gt;&lt;/li&gt;
+			&lt;/ul&gt;
+		&lt;/nav&gt;
+
+		&lt;div dp-tab-body=&quot;main.tab1&quot;&gt;
+			&lt;p&gt;Tab1&lt;/p&gt;
+		&lt;/div&gt;
+		&lt;div dp-tab-body=&quot;main.tab2&quot;&gt;
+			&lt;p&gt;Tab2&lt;/p&gt;
+		&lt;/div&gt;
+		</pre>
+
+			{##################################################################################################################}
+
+			<h1>Panel: Table with Help</h1>
+			<p>
+				These panels feature a title with a thick underline and built-in help controls. Also displayed here
+				is the table style.
+			</p>
+			<p>
+				See:<br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpInhelpBody.coffee</code><br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpInhelpSwitch.coffee</code>
+			</p>
+
+			<div style="padding:20px; border: 1px solid #aaa; border-radius: 4px;"><div style="background: #fff;">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Title</span>
+							<button dp-inhelp-btn="admin.dev_ui.example_help_id" class="inhelp-trigger" style="display: none;"><i></i></button>
+						</h3>
+					</div>
+
+					<div class="panel-help" dp-inhelp-body="admin.dev_ui.example_help_id">
+						<p>
+							This is some help content.
+						</p>
+					</div>
+
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Header</th>
+								<th width="120" class="text-center">Header</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr><td>Cell</td><td>Cell</td></tr>
+							<tr><td>Cell</td><td>Cell</td></tr>
+							<tr><td>Cell</td><td>Cell</td></tr>
+							<tr><td>Cell</td><td>Cell</td></tr>
+							<tr><td>Cell</td><td>Cell</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div></div>
+
+		<pre>
+		&lt;div class=&quot;panel panel-innertable&quot;&gt;
+			&lt;div class=&quot;panel-heading&quot;&gt;
+				&lt;h3&gt;
+					&lt;span&gt;Title&lt;/span&gt;
+					&lt;button dp-inhelp-btn=&quot;admin.dev_ui.example_help_id&quot; class=&quot;inhelp-trigger&quot; style=&quot;display: none;&quot;&gt;&lt;i&gt;&lt;/i&gt;&lt;/button&gt;
+				&lt;/h3&gt;
+			&lt;/div&gt;
+
+			&lt;div class=&quot;panel-help&quot; dp-inhelp-body=&quot;admin.dev_ui.example_help_id&quot;&gt;
+				&lt;p&gt;
+					This is some help content.
+				&lt;/p&gt;
+			&lt;/div&gt;
+
+			&lt;table class=&quot;table table-hover&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th&gt;Header&lt;/th&gt;
+						&lt;th width=&quot;120&quot; class=&quot;text-center&quot;&gt;Header&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+				&lt;tbody&gt;
+					&lt;tr&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;/tr&gt;
+					&lt;tr&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;/tr&gt;
+					&lt;tr&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;/tr&gt;
+					&lt;tr&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;/tr&gt;
+					&lt;tr&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;td&gt;Cell&lt;/td&gt;&lt;/tr&gt;
+				&lt;/tbody&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+		</pre>
+
+			{##################################################################################################################}
+
+			<h1>Panel: Forms</h1>
+			<p>
+				Form panels have rows separated by a dotted line. Also shown here is the "inner-footer" row which typically
+				holds submit buttons.
+			</p>
+			<p>
+				See:<br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpToggleSwitch.coffee</code><br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpSubmitForm.coffee</code>
+			</p>
+			<div style="padding:20px; border: 1px solid #aaa; border-radius: 4px;"><div style="background: #fff;">
+				<form class="form-horizontal dp-form">
+					<div class="panel">
+						<div class="panel-body">
+							<div class="form-group">
+								<div class="col-lg-2">
+									<h3>Field *</h3>
+								</div>
+								<div class="col-lg-10">
+									<div class="inner-group" dp-error-class="form_props.title">
+										<input type="text" class="form-control"  style="width: 50%;" />
+										<span class="help-block">
+											Here is some help text
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-2">
+									<h3>Select Field *</h3>
+								</div>
+								<div class="col-lg-10">
+									<div class="inner-group" dp-error-class="form_props.title">
+										<select
+											ui-select2
+											style="min-width: 240px"
+										>
+											<option value="1">Option 1</option>
+											<option value="2">Option 2</option>
+											<option value="3">Option 3</option>
+										</select>
+										<span class="help-block">
+											Here is some help text
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-2">
+									<h3>Toggle Button *</h3>
+								</div>
+								<div class="col-lg-10">
+									<div class="inner-group" dp-error-class="form_props.title">
+										<button dp-toggle-switch ng-model="some_model"></button>
+										<span class="help-block">
+											Here is some help text
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="inner-footer text-center">
+						<button class="btn btn-primary" onclick="return false;">{{ phrase('agent.general.save') }}</button>
+						<button class="btn btn-default" onclick="return false;">{{ phrase('agent.general.reset') }}</button>
+					</div>
+				</form>
+			</div></div>
+		<pre>
+		&lt;form class=&quot;form-horizontal dp-form&quot;&gt;
+			&lt;div class=&quot;panel&quot;&gt;
+				&lt;div class=&quot;panel-body&quot;&gt;
+					&lt;div class=&quot;form-group&quot;&gt;
+						&lt;div class=&quot;col-lg-2&quot;&gt;
+							&lt;h3&gt;Field *&lt;/h3&gt;
+						&lt;/div&gt;
+						&lt;div class=&quot;col-lg-10&quot;&gt;
+							&lt;div class=&quot;inner-group&quot; dp-error-class=&quot;form_props.title&quot;&gt;
+								&lt;input type=&quot;text&quot; class=&quot;form-control&quot;  style=&quot;width: 50%;&quot; /&gt;
+								&lt;span class=&quot;help-block&quot;&gt;
+									Here is some help text
+								&lt;/span&gt;
+							&lt;/div&gt;
+						&lt;/div&gt;
+					&lt;/div&gt;
+
+					&lt;div class=&quot;form-group&quot;&gt;
+						&lt;div class=&quot;col-lg-2&quot;&gt;
+							&lt;h3&gt;Select Field *&lt;/h3&gt;
+						&lt;/div&gt;
+						&lt;div class=&quot;col-lg-10&quot;&gt;
+							&lt;div class=&quot;inner-group&quot; dp-error-class=&quot;form_props.title&quot;&gt;
+								&lt;select
+									ui-select2
+									style=&quot;min-width: 240px&quot;
+								&gt;
+									&lt;option value=&quot;1&quot;&gt;Option 1&lt;/option&gt;
+									&lt;option value=&quot;2&quot;&gt;Option 2&lt;/option&gt;
+									&lt;option value=&quot;3&quot;&gt;Option 3&lt;/option&gt;
+								&lt;/select&gt;
+								&lt;span class=&quot;help-block&quot;&gt;
+									Here is some help text
+								&lt;/span&gt;
+							&lt;/div&gt;
+						&lt;/div&gt;
+					&lt;/div&gt;
+
+					&lt;div class=&quot;form-group&quot;&gt;
+						&lt;div class=&quot;col-lg-2&quot;&gt;
+							&lt;h3&gt;Toggle Button *&lt;/h3&gt;
+						&lt;/div&gt;
+						&lt;div class=&quot;col-lg-10&quot;&gt;
+							&lt;div class=&quot;inner-group&quot; dp-error-class=&quot;form_props.title&quot;&gt;
+								&lt;button dp-toggle-switch ng-model=&quot;some_model&quot;&gt;&lt;/button&gt;
+								&lt;span class=&quot;help-block&quot;&gt;
+									Here is some help text
+								&lt;/span&gt;
+							&lt;/div&gt;
+						&lt;/div&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+
+			&lt;div class=&quot;inner-footer text-center&quot;&gt;
+				&lt;button class=&quot;btn btn-primary&quot; dp-submit-form&gt;{{ phrase('agent.general.save') }}&lt;/button&gt;
+			&lt;/div&gt;
+		&lt;/form&gt;
+		</pre>
+
+			{##################################################################################################################}
+
+			<h1>Help Tooltops</h1>
+			<p>
+				Here's an example of using Tooltips
+			</p>
+			<p>
+				See:<br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpToggleSwitch.coffee</code><br/>
+				&middot; <code>web/app/Admin/Main/Directive/DpSubmitForm.coffee</code>
+			</p>
+			<div style="padding:20px; border: 1px solid #aaa; border-radius: 4px;"><div style="background: #fff;">
+				<h4>Some Title <span class="help-icon" tooltip="Here is some tooltip text."></span></h4>
+			</div>
+		<pre>
+		&lt;h4&gt;Some Title &lt;span class=&quot;help-icon&quot; tooltip=&quot;Here is some tooltip text.&quot;&gt;&lt;/span&gt;&lt;/h4&gt;
+		</pre>
+	</div>
+</section>
+{% endblock %}

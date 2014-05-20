@@ -35,9 +35,8 @@
 namespace Application\DeskPRO\DBAL\Types;
 
 use Doctrine\DBAL\Types\ArrayType;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 
 class DpArrayType extends ArrayType
 {

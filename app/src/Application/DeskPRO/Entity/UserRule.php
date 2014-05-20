@@ -34,62 +34,81 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 /**
+ * @property int $id
+ * @property Organization $add_organization
+ * @property Usergroup $add_usergroup
+ * @property array $email_patterns
+ * @property int $run_order
  */
-class UserRule extends \Application\DeskPRO\Domain\DomainObject
+class UserRule extends DomainObject
 {
 	/**
 	 * The unique ID.
 	 *
 	 * @var int
 	 */
+
 	protected $id = null;
 
 	/**
-	 * An array of email addres patterns
+	 * An array of email address patterns
 	 * @var array
 	 */
+
 	protected $email_patterns = array();
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
 	 */
+
 	protected $add_organization;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Usergroup
 	 */
+
 	protected $add_usergroup;
 
 	/**
-	 * The order in which to runthis source
+	 * The order in which to run this source
 	 *
 	 * @var int
 	 */
+
 	protected $run_order = 0;
+
+	/**
+	 * @return UserRule
+	 */
+
+	public static function createUserRule()
+	{
+		return new self();
+	}
 
 	/**
 	 * @return int
 	 */
+
 	public function getId()
 	{
 		return $this->id;
 	}
-
 
 	/**
 	 * Set the patterns string which is a number of patterns separated by a newline
 	 *
 	 * @param $patterns
 	 */
+
 	public function setPatternsString($patterns)
 	{
 		$items = array();
@@ -112,6 +131,7 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return string
 	 */
+
 	public function getPatternsString()
 	{
 		return implode("\n", $this->email_patterns);
@@ -124,11 +144,19 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 	 * @param string $email_address
 	 * @return string
 	 */
+
 	public function isEmailMatch($email_address)
 	{
 		$email_address = Strings::utf8_strtolower($email_address);
 
-		foreach ($this->email_patterns as $pattern) {
+		$patterns = $this->email_patterns;
+
+		if(!is_array($patterns)) {
+
+			$patterns = explode("\n", $this->email_patterns);
+		}
+
+		foreach ($patterns as $pattern) {
 			if (Strings::isStarMatch($pattern, $email_address)) {
 				return true;
 			}
@@ -136,8 +164,6 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 
 		return false;
 	}
-
-
 
 	############################################################################
 	# Doctrine Metadata
@@ -147,13 +173,75 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\UserRule';
-		$metadata->setPrimaryTable(array( 'name' => 'user_rules', ));
+		$metadata->setPrimaryTable(array('name' => 'user_rules',));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'email_patterns', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_patterns', ));
-		$metadata->mapField(array( 'fieldName' => 'run_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_order', ));
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'id',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'id',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'email_patterns',
+				 'type'       => 'array',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'email_patterns',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'run_order',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'run_order',
+			)
+		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'add_organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'add_organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'add_usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'add_usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(
+			array(
+				 'fieldName'    => 'add_organization',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+				 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
+				 'mappedBy'     => null,
+				 'inversedBy'   => null,
+				 'joinColumns'  => array(
+					 0 => array(
+						 'name'                 => 'add_organization_id',
+						 'referencedColumnName' => 'id',
+						 'nullable'             => true,
+						 'onDelete'             => 'cascade',
+						 'columnDefinition'     => null,
+					 ),
+				 ),
+			)
+		);
+		$metadata->mapManyToOne(
+			array(
+				 'fieldName'    => 'add_usergroup',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+				 'cascade'      => array('persist', 'merge'),
+				 'mappedBy'     => null,
+				 'inversedBy'   => null,
+				 'joinColumns'  => array(
+					 0 => array(
+						 'name'                 => 'add_usergroup_id',
+						 'referencedColumnName' => 'id',
+						 'nullable'             => true,
+						 'onDelete'             => 'cascade',
+						 'columnDefinition'     => null,
+					 ),
+				 ),
+			)
+		);
 	}
 }

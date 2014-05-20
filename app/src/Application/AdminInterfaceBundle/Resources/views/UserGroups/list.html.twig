@@ -1,0 +1,37 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>User Permission Groups</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="group in ListCtrl.list" dp-state-mark="crm.groups.edit.{{ ng_var('group.id') }}" data-id="{{ ng_var('group.id') }}">
+					<a href="{{ ng_href('crm.groups.edit', '{id: group.id}') }}">
+						<h4><span class="title-text">{{ ng_var('group.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('crm.groups.gocreate') }}"
+				   ng-class="{'active': isStateActive('.create') }">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Usergroup membership determines what permissions users have.</h1>
+		<p>Agents can assign users to the usergroups you define here. Each usergroup grants a different level of permissions for the user to interact with the helpdesk.</p>
+	</header>
+	<article>
+		<section>
+			<p>Click on the name of a usergroup to edit its permissions.</p>
+			<p>The <strong>Everyone</strong> usergroup controls what can be done by users who aren't logged in. All the permissions you grant to <strong>Everyone</strong> will  be available to every other usergroup.</p>
+			<p>The <strong>Registered</strong> usergroup controls what all registered users can do. All other groups (apart from <strong>Everyone</strong>) will have the permissions you grant to <strong>Registered</strong>.</p>
+		</section>
+	</article>
+{% endblock %}

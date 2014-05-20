@@ -1,0 +1,66 @@
+<div class="panel panel-fill indent">
+	<div class="panel-body">
+		<div class="form-group">
+			<div style="float: left;">
+				<img src="{{ ng_var('Ctrl.pack.icon_64') }}" alt="Icon" />
+			</div>
+			<div style="margin-left: 69px;">
+				<h2>{{ ng_var('Ctrl.pack.title') }}</h2>
+				<p>
+					by {{ ng_var('Ctrl.pack.author_name') }} &lt;<a href="mailto:{{ ng_var('Ctrl.pack.author_email') }}">{{ ng_var('Ctrl.pack.author_email') }}</a>&gt;
+					&bull; <a ng-href="{{ ng_var('Ctrl.pack.author_link') }}">{{ ng_var('Ctrl.pack.author_link') }}</a>
+				</p>
+				<p>
+					{{ ng_var('Ctrl.pack.description') }}
+				</p>
+
+				<a ng-hide="Ctrl.pack.is_installed" class="btn btn-primary" href="{{ ng_href('apps.apps.install_package', "{name: Ctrl.pack.name+'.install'}") }}">
+					<i class="fa fa-dropbox"></i> Install App
+				</a>
+				<button ng-show="Ctrl.startDelete && !Ctrl.pack.native_name" type="button" class="btn btn-danger" ng-click="Ctrl.startDelete()">
+					<i class="fa fa-trash-o"></i> Remove App Package
+				</button>
+			</div>
+		</div>
+
+		<div class="form-group" ng-if="Ctrl.pack.is_installed">
+			<div class="col-lg-4">
+				<div ng-show="Ctrl.pack.apps.length == 1">
+					<p>
+						This application is already installed.
+					</p>
+					<a class="btn btn-default" href="{{ ng_href('apps.apps.instance', '{id: Ctrl.pack.apps[0].id}') }}">
+						View Installed Application &rarr;
+					</a>
+				</div>
+				<div ng-show="Ctrl.pack.apps.length > 1">
+					<p>
+						This application has already been installed {{ ng_var('Ctrl.pack.apps.length') }} times.
+					</p>
+					<ul>
+						<li ng-repeat="app in Ctrl.pack.apps">
+							<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}">
+								{{ ng_var('app.title') }}
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-lg-8" ng-show="Ctrl.pack.is_installed && !Ctrl.pack.is_single">
+				<p>
+					This application can be installed multiple times. Do you want to install it again?
+				</p>
+				<button class="btn btn-primary" ng-click="Ctrl.startInstall()">
+					<i class="fa fa-dropbox"></i> Install App Again
+				</button>
+			</div>
+		</div>
+
+		<div class="form-group" ng-if="Ctrl.pack.readme_html">
+			<div class="form-group">
+				<div class="col-lg-12 readme-text" ng-bind-html="Ctrl.pack.readme_html">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

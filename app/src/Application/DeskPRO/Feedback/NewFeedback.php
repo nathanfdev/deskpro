@@ -36,12 +36,12 @@ namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
-use Application\DeskPRO\Entity\Visitor;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Rating;
+use Application\DeskPRO\Entity\Visitor;
 
 /**
  * New feedback acts as the processor and domain object for a newfeedback form

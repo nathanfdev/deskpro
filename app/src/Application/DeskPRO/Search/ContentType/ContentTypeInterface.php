@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Search\ContentType;
 
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
-use Application\DeskPRO\Search\Indexer\DocumentInterface;
 
 /**
  * A content type is a type of indexed content, such as an artile or ticket or ticket message.

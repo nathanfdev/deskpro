@@ -1,0 +1,70 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Outgoing Email Log</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav class="dp-blocktabs">
+				<menu>
+					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+					<ul class="dropdown-menu pull-right">
+						<li><a ng-click="ViewSource.startDelete()"><i class="fa fa-trash-o"></i> Delete Email</a></li>
+						<li><a ng-click="ViewSource.startResend()"><i class="fa fa-repeat"></i> Reprocess Email</a></li>
+					</ul>
+				</menu>
+			</nav>
+			<h3>Outgoing Email #{{ ng_var('ViewSource.sendmail.id') }}</h3>
+		</header>
+		<table class="table">
+			<tbody>
+				<tr>
+					<th width="140">Date</th>
+					<td><span am-time-ago="ViewSource.sendmail.date_created" title="{{ ng_var('ViewSource.sendmail.date_created') }}"></span></td>
+				</tr>
+				<tr>
+					<th>Status</th>
+					<td>
+						{{ ng_var('ViewSource.sendmail.status') }}
+					</td>
+				</tr>
+				<tr>
+					<th>Is Sent?</th>
+					<td ng-class="{'bg-danger': !ViewSource.sendmail.has_sent && ViewSource.sendmail.date_status == 'error', 'bg-success': ViewSource.sendmail.has_sent}">
+						<span ng-if="ViewSource.sendmail.has_sent">Yes &middot; <span am-time-ago="ViewSource.sendmail.date_sent" title="{{ ng_var('ViewSource.sendmail.date_sent') }}"></span></span>
+						<span ng-if="!ViewSource.sendmail.has_sent">No</span>
+					</td>
+				</tr>
+				<tr>
+					<th>Attempts</th>
+					<td>
+						{{ ng_var('ViewSource.sendmail.attempts') }}
+						<span ng-if="ViewSource.sendmail.date_next_attempt">&middot; Next attempt: <span am-time-ago="ViewSource.sendmail.date_next_attempt" title="{{ ng_var('ViewSource.sendmail.date_next_attempt') }}"></span></span>
+					</td>
+				</tr>
+				<tr>
+					<th>Raw "To"</th>
+					<td>{{ ng_var('ViewSource.sendmail.to_address') }}</td>
+				</tr>
+				<tr>
+					<th>Raw "Subject"</th>
+					<td>{{ ng_var('ViewSource.sendmail.subject') }}</td>
+				</tr>
+				<tr>
+					<th>
+						Raw Source
+						<br/>
+						<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.sendmail.blob.download_url') }}" target="_blank">Download</a>
+					</th>
+					<td>
+						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.sendmail_raw') }}</textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+{% endblock %}

@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 class AgentDataService
@@ -51,12 +51,22 @@ class AgentDataService
 	/**
 	 * @var array
 	 */
+	private $agent_teams = array();
+
+	/**
+	 * @var array
+	 */
 	public $online_agent_ids;
 
 	/**
 	 * @var int[]
 	 */
 	public $ids = array();
+
+	/**
+	 * @var
+	 */
+	public $team_ids;
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -97,6 +107,10 @@ class AgentDataService
 		foreach ($this->agents as $a) {
 			$this->ids[] = $a->getId();
 		}
+
+		$this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
+		$this->agent_teams = Arrays::keyFromData($this->agent_teams, 'id');
+		$this->team_ids = array_keys($this->agent_teams);
 	}
 
 
@@ -107,6 +121,16 @@ class AgentDataService
 	{
 		$this->preload();
 		return $this->agents;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\AgentTeam[]
+	 */
+	public function getAgentTeams()
+	{
+		$this->preload();
+		return $this->agent_teams;
 	}
 
 
@@ -136,6 +160,16 @@ class AgentDataService
 	{
 		$this->preload();
 		return $this->ids;
+	}
+
+
+	/**
+	 * @return int[]
+	 */
+	public function getTeamIds()
+	{
+		$this->preload();
+		return $this->team_ids;
 	}
 
 
@@ -295,5 +329,54 @@ class AgentDataService
 	public function countOnlineAgents()
 	{
 		return count($this->online_agent_ids);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\AgentTeam
+	 */
+	public function getTeam($id)
+	{
+		$this->preload();
+
+		if (isset($this->agent_teams[$id])) {
+			return $this->agent_teams[$id];
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasTeam($id)
+	{
+		$this->preload();
+
+		return isset($this->agent_teams[$id]);
+	}
+
+
+	/**
+	 * Get an array of agents by ids
+	 *
+	 * @param array $ids
+	 * @return array
+	 */
+	public function getTeamsByIds($ids)
+	{
+		$this->preload();
+
+		$teams = array();
+
+		foreach ($ids as $id) {
+			$id = (int)$id;
+			if (isset($this->agent_teams[$id])) {
+				$teams[$id] = $this->agent_teams[$id];
+			}
+		}
+
+		return $teams;
 	}
 }

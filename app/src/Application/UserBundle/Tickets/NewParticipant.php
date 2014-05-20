@@ -35,13 +35,15 @@
 namespace Application\UserBundle\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 
-class NewParticipant
+class NewParticipant implements \ArrayAccess
 {
+	protected static $prop_names = array(
+		'first_name' => 1, 'last_name' => 1, 'email' => 1,
+	);
+
 	public $first_name;
 	public $last_name;
 	public $email;
@@ -87,4 +89,9 @@ class NewParticipant
 			$em->flush();
 		});
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

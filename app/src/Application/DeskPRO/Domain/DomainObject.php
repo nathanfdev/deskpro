@@ -35,10 +35,6 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
-
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\PropertyChangedListener;
-
 use Orb\Util\Util;
 
 /**
@@ -131,7 +127,12 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	protected function setModelField($field, $value)
 	{
-		$old = $this->$field;
+		$this->getStateChangeRecorder()->touchField($field);
+
+		$old = null;
+		if (property_exists($this, $field)) {
+			$old = $this->$field;
+		}
 
 		// Detect fields that did not change
 		if (is_null($value) && is_null($old)) {
@@ -153,6 +154,20 @@ abstract class DomainObject extends BasicDomainObject
 		$this->$field = $value;
 
 		$this->_onPropertyChanged($field, $old, $value);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$func = "set" . str_replace('_', '', $offset);
+		if (method_exists($this, $func) || $this->_isCustomCallable(strtolower($func))) {
+			$this->$func($value);
+		} else {
+			$this->setModelField($offset, $value);
+		}
 	}
 
 
@@ -197,10 +212,16 @@ abstract class DomainObject extends BasicDomainObject
 
 			$val = $this[$name];
 
-			if ($val instanceof \DateTime) {
-				$values[$name] = $val->format('Y-m-d H:i:s');
-				$values["{$name}_ts"] = $val->getTimestamp();
-				$values["{$name}_ts_ms"] = $val->getTimestamp() * 1000;
+			if ($val instanceof \DateTime || $field['type'] == 'datetime') {
+				if ($val) {
+					$values[$name] = $val->format('Y-m-d H:i:s');
+					$values["{$name}_ts"] = $val->getTimestamp();
+					$values["{$name}_ts_ms"] = $val->getTimestamp() * 1000;
+				} else {
+					$values[$name] = null;
+					$values["{$name}_ts"] = 0;
+					$values["{$name}_ts_ms"] = 0;
+				}
 			} else {
 				$values[$name] = $val;
 			}
@@ -235,6 +256,8 @@ abstract class DomainObject extends BasicDomainObject
 					}
 
 					$values[$name] = $output;
+				} else if ($val === null) {
+					$values[$name] = null;
 				}
 			}
 		}

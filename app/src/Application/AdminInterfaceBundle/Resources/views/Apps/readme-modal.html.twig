@@ -1,0 +1,12 @@
+{% extends "AdminInterfaceBundle:Layout:widget-modal.html.twig" %}
+{% block modal_title %}
+	<div style="float:left; position: relative; top: -4px; left: -5px;">
+		<img ng-src="{{ ng_var('pack.icon_32') }}" />
+	</div>
+	<h4 class="modal-title">
+		README
+	</h4>
+{% endblock %}
+{% block modal_body %}
+	<div class="readme-text" ng-bind-html="pack.readme_html"></div>
+{% endblock %}

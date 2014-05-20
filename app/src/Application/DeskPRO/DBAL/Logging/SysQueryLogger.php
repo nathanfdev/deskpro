@@ -104,20 +104,16 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	public function __construct()
 	{
 		$this->_start_time = microtime(true);
+		\DpShutdown::add(array($this, 'writeLogQuiet'));
 
 		if (!function_exists('dp_get_config')) return;
 		if (!dp_get_config('debug.page_log.enabled') || isset($GLOBALS['DP_NOSQL_LOG'])) return;
 
 		$this->_enabled = true;
-
-		\DpShutdown::add(array($this, 'writeLogQuiet'));
 	}
 
 	public function writeLogQuiet()
 	{
-		if (!$this->_enabled) return;
-		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
-
 		try {
 			$this->writeLog();
 		} catch (\Exception $e) {}
@@ -144,9 +140,6 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$GLOBALS['DP_QUERY_COUNT']++;
 		$this->_query_count++;
 
-		if (!$this->_enabled) return;
-		if ($this->_query_count > self::SAFE_MAX) return;
-
 		$trace = null;
 		if (dp_get_config('debug.page_log.save_trace')) {
 			$e = new \Exception();
@@ -154,7 +147,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		}
 
 		$this->_last_query = array(
-			'sql'            => trim($sql),
+			'sql'            => $sql,
 			'params'         => $params,
 			'time_start'     => microtime(true),
 			'time_end'       => 0,
@@ -166,28 +159,27 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function stopQuery()
 	{
+		$queryinfo = $this->_last_query;
+		$queryinfo['time_end']       = microtime(true);
+		$queryinfo['time_taken']     = $queryinfo['time_end'] - $queryinfo['time_start'];
+
+		$this->_db_time += $queryinfo['time_taken'];
+		$this->_last_query = null;
+
 		if (!$this->_enabled) return;
 		if (!$this->_last_query) return;
 		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
 
-		$queryinfo = $this->_last_query;
+		if ($this->_query_count > self::SAFE_MAX) return;
 
 		$queryinfo['params_string']  = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
-		$queryinfo['time_end']       = microtime(true);
-		$queryinfo['time_taken']     = $queryinfo['time_end'] - $queryinfo['time_start'];
-
+		$queryinfo['sql']            = trim($queryinfo['sql']);
 		$this->_queries[] = $queryinfo;
-		$this->_db_time += $queryinfo['time_taken'];
-
-		$this->_last_query = null;
 	}
 
 	public function writeLog()
 	{
-		if (!$this->_enabled) return;
-		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
-
-		$start_time = DP_START_TIME;
+		$start_time = defined('DP_START_TIME') ? DP_START_TIME : time();
 
 		$total_time = microtime(true) - $start_time;
 		$db_time    = $this->_db_time;
@@ -198,6 +190,14 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$opt_slow_db_time    = dp_get_config('debug.page_log.slow_db_time');
 		$opt_slow_php_time   = dp_get_config('debug.page_log.slow_php_time');
 		$opt_slow_page_time  = dp_get_config('debug.page_log.slow_page_time');
+
+		dp_pagelog_set('query_count', $this->_query_count);
+		dp_pagelog_set('time_php', $php_time);
+		dp_pagelog_set('time_db', $db_time);
+		dp_pagelog_set('time_end', $total_time);
+
+		if (!$this->_enabled) return;
+		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
 
 		$do_slow_query = false;
 		if ($opt_slow_query_time) {

@@ -1,0 +1,155 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Registration</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable" style="margin-top: 0;">
+				<div class="form-group">
+					<div class="labels-group">
+						<label>
+							<input type="radio" ng-model="settings.reg_enabled" ng-value="true" />
+							<h4>Enable Registration</h4>
+							<span class="help-block" ng-show="settings.reg_enabled">
+								With registration enabled, new users will be able to create accounts on your helpdesk.
+							</span>
+						</label>
+						<label>
+							<input type="radio" ng-model="settings.reg_enabled" ng-value="false" />
+							<h4>Disable Registration</h4>
+							<span class="help-block" ng-show="!settings.reg_enabled">
+								With registration <strong>disabled</strong>, no new users will be unable to create new accounts. This means
+								to submit content to the helpdesk (such as tickets or comments), users must already exist or be manually created by an agent.
+							</span>
+						</label>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article class="form-horizontal dp-form" ng-if="settings.reg_enabled">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.reg_required" />
+							<h4>Require registration</h4>
+						</label>
+						<span class="help-block">
+							Require the user to register before they can submit content. This hides the new ticket form, new feedback and
+							comment forms until the user has registered and then logged in.
+						</span>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article class="form-horizontal dp-form" ng-if="settings.reg_enabled">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.email_validation" />
+							<h4>Enable email validation for new registrations from the web portal</h4>
+						</label>
+						<span class="help-block">
+							Require email validation for users who register using the web portal registration form.
+						</span>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article class="form-horizontal dp-form" ng-if="settings.reg_enabled">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<h4>
+							Enable email validation for new users submitting tickets from
+							<input type="checkbox" ng-model="settings.email_validation_ticket_web" /> web
+							<input type="checkbox" ng-model="settings.email_validation_ticket_email" /> email
+						</h4>
+						<span class="help-block">
+							These email validation settings apply only to new users submitting new tickets.
+							These are actually triggers that you can also control from the <a href="{{ ng_href('tickets.triggers') }}">Tickets &gt; Triggers</a> section.
+						</span>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article class="form-horizontal dp-form" ng-if="settings.reg_enabled">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.agent_validation" />
+							<h4>Enable manual agent validation</h4>
+						</label>
+						<span class="help-block">
+							Require agents to manually validate every new user. If you have email validation enabled, agents are only prompted to validation users <em>after</em> they have complted
+							the first step of email validation.
+						</span>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article class="form-horizontal dp-form" ng-if="settings.reg_enabled">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.existing_account_login" />
+							<h4>Make existing users log in before accepting new tickets, comments or feedback</h4>
+						</label>
+						<span class="help-block">
+							If a user submits new content using an email address that belongs to an existing user,
+							require them to log in before processing their form.
+						</span>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.everyone_group_enabled" />
+							<h4>Enable the "Everyone" Group</h4>
+						</label>
+						<span class="help-block">
+							Guests are able to perform a number of actions defined by permissions granted by the Everyone usergroup. Turning the Everyone usergroup off will require all users to log in to do anything on the helpdesk.
+						</span>
+						<span class="help-block">
+							If you just want to manage what users can do, you can set usergroup permissions from the <a href="{{ ng_href('crm.groups') }}">User Permission Groups</a> section.
+						</span>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div dp-hide-spinning="saving">
+						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						<button class="btn btn-default" ng-click="PageCtrl.resetForm()">{{ phrase('agent.general.reset') }}</button>
+					</div>
+					<div dp-show-spinning="saving">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+</form>
+<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

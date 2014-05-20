@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewOrganization';
 pageMeta.title = '{{ phrase('agent.general.new_organization') }}';
@@ -6,7 +5,8 @@ pageMeta.title = '{{ phrase('agent.general.new_organization') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{{ agentui.scroll_containers('page-new-content') }}
+<div class="layout-content page-new-content">
+<div class="dp-page-content">
 {{ start_counter('steps') }}
 
 <a class="tab-anchor" href="#">&nbsp;</a>
@@ -71,4 +71,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 </form>
 
-{{ agentui.scroll_containers_end() }}
+</div>
+</div>

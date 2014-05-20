@@ -37,8 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
-use Orb\Util\Numbers;
-
 class OrganizationEmailDomain extends AbstractEntityRepository
 {
 	/**

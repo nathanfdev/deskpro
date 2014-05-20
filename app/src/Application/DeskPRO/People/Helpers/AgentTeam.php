@@ -36,7 +36,6 @@ namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
 use Orb\Util\Arrays;
 
 /**
@@ -70,6 +69,26 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
 		");
 
 		return $this->_agent_team_ids;
+	}
+
+	public function getAgentTeams()
+	{
+		$ids = $this->getAgentTeamIds();
+		if (!$ids) {
+			return array();
+		}
+
+		$agent_data = App::getContainer()->getAgentData();
+		$teams = array();
+
+		foreach ($ids as $id) {
+			$t = $agent_data->getTeam($id);
+			if ($t) {
+				$teams[] = $t;
+			}
+		}
+
+		return $teams;
 	}
 
 	public function getPrimaryTeamId()

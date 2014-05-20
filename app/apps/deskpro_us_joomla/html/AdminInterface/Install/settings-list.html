@@ -1,0 +1,31 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Joomla URL</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.joomla_url" />
+		<span class="help-block">This is the URL to your Joomla site (without any trailing slash).</span>
+		<p ng-show="errors.joomla_url" class="text-danger">Please enter your Joomla URL.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Joomla Secret</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.joomla_secret" />
+		<span class="help-block">Enter the Joomla Secret Key. This needs to be copied to the DeskPRO plugin on your Joomla site. In Joomla, go to Admin -> Extensions -> Plug-in Manager & Find "DeskPRO" and click on the title &gt; Click on the "Basic Options" tab.</span>
+		<p ng-show="errors.joomla_secret" class="text-danger">Please enter your Joomla Secret.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Lost Password URL</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.lost_pwd_url" />
+		<span class="help-block">URL to give the user when they request a lost password.</span>
+	</div>
+</div>

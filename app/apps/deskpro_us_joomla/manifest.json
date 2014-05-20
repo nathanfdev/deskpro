@@ -1,0 +1,39 @@
+{
+	"package_name": "deskpro_us_joomla",
+	"is_native": true,
+	"title": "Joomla Authentication",
+	"description": "Enables the Joomla usersource option for single-signon with Joomla.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "joomla_url",
+			"type": "text",
+			"label": "Joomla URL",
+			"description": "This is the URL to your Joomla site (without any trailing slash).",
+			"native_only": true
+		},
+		{
+			"name": "joomla_secret",
+			"type": "text",
+			"label": "Joomla Secret",
+			"description": "Enter the Joomla Secret Key. This needs to be copied to the DeskPRO plugin on your Joomla site. In Joomla, go to Admin -> Extensions -> Plug-in Manager & Find \"DeskPRO\" and click on the title &gt; Click on the \"Basic Options\" tab.",
+			"native_only": true
+		},
+		{
+			"name": "lost_pwd_url",
+			"type": "text",
+			"label": "Lost Password URL",
+			"description": "URL to give the user when they request a lost password.",
+			"native_only": true
+		}
+	]
+}

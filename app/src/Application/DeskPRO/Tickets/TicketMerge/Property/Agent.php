@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-
-use Orb\Util\Arrays;
 
 /**
  * The agent does a standard right/left merge for agent and team, but offers the option of adding

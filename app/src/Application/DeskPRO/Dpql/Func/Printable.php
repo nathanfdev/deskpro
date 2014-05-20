@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
-use Application\DeskPRO\Dpql\Exception;
 
 /**
  * This is used in SPLIT/GROUP BY clauses to ensure that the printed value

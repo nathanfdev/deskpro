@@ -34,20 +34,43 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Tickets\Slas\SlaCalculator;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
+use Orb\Util\TimeUnit;
+use Orb\Util\WorkHoursSet;
+use Orb\Util\WorkHoursSetAll;
 
 /**
  * Entity for an SLA record
  *
+ * @property int $id
+ * @property string $title
+ * @property string $sla_type
+ * @property string $active_time
+ * @property int $work_start
+ * @property int $work_end
+ * @property int[] $work_days
+ * @property string $work_timezone
+ * @property array $work_holidays
+ * @property string $apply_type
+ * @property TriggerTerms $apply_terms
+ * @property int $warn_time
+ * @property string $warn_time_unit
+ * @property TriggerActions $warn_actions
+ * @property int $fail_time
+ * @property string $fail_time_unit
+ * @property TriggerActions $fail_actions
  */
-class Sla extends \Application\DeskPRO\Domain\DomainObject
+class Sla extends DomainObject
 {
 	const TYPE_FIRST_RESPONSE = 'first_response';
-	const TYPE_RESOLUTION = 'resolution';
-	const TYPE_WAITING_TIME = 'waiting_time';
+	const TYPE_RESOLUTION     = 'resolution';
+	const TYPE_WAITING_TIME   = 'waiting_time';
 
 	/**
 	 * The unique ID.
@@ -114,77 +137,79 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 	protected $work_holidays = array();
 
 	/**
-	 * Controls how the SLA is applied to tickets
+	 * Controls how the SLA is applied to tickets: all, auto, manual
 	 *
 	 * @var string
 	 */
 	protected $apply_type = 'all';
 
 	/**
-	 * @var TicketTrigger
+	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
 	 */
-	protected $warning_trigger;
+	protected $apply_terms = null;
 
 	/**
-	 * @var TicketTrigger
+	 * @var int
 	 */
-	protected $fail_trigger;
+	protected $warn_time = 1;
 
 	/**
-	 * @var TicketPriority
+	 * @var string
 	 */
-	protected $apply_priority;
+	protected $warn_time_unit = 'days';
 
 	/**
-	 * @var TicketTrigger
+	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
 	 */
-	protected $apply_trigger;
+	protected $warn_actions = null;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @var int
 	 */
-	protected $people;
+	protected $fail_time = 1;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @var string
 	 */
-	protected $organizations;
+	protected $fail_time_unit = 'days';
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
 	 */
-	protected $ticket_slas;
+	protected $fail_actions = null;
+
+	/**
+	 * @var \Orb\Util\WorkHoursSet
+	 */
+	protected $_work_hours_set;
+
+
+	protected $_calc;
 
 	/**
 	 * Creates a new team.
 	 */
 	public function __construct()
 	{
-		$this->people = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->organizations = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->ticket_slas = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->apply_terms  = new TriggerTerms();
+		$this->warn_actions = new TriggerActions();
+		$this->fail_actions = new TriggerActions();
 	}
 
-	public function getWorkStartHour()
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function propertyChangedCallback($prop, $old, $new)
 	{
-		return floor($this->work_start / 3600);
+		$this->_calc = null;
 	}
 
-	public function getWorkStartMinute()
-	{
-		return floor(($this->work_start % 3600) / 60);
-	}
 
-	public function getWorkEndHour()
-	{
-		return floor($this->work_end / 3600);
-	}
-
-	public function getWorkEndMinute()
-	{
-		return floor(($this->work_end % 3600) / 60);
-	}
-
+	/**
+	 * @param array $days
+	 * @param bool $raw
+	 */
 	public function setWorkDays(array $days, $raw = false)
 	{
 		$old = $this->work_days;
@@ -200,11 +225,21 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('work_days', $old, $this->work_days);
 	}
 
+
+	/**
+	 * Resets holidays
+	 */
 	public function resetHolidays()
 	{
 		$this->setModelField('work_holidays', array());
 	}
 
+
+	/**
+	 * Removes a single holiday by index
+	 *
+	 * @param $key
+	 */
 	public function removeHolidayKey($key)
 	{
 		$old = $this->work_holidays;
@@ -212,6 +247,16 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('work_holidays', $old, $this->work_holidays);
 	}
 
+
+	/**
+	 * Adds a holiday
+	 *
+	 * @param $name
+	 * @param $day
+	 * @param $month
+	 * @param null $year
+	 * @return int|string
+	 */
 	public function addHoliday($name, $day, $month, $year = null)
 	{
 		$old = $this->work_holidays;
@@ -240,6 +285,12 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		return count($this->work_holidays) - 1;
 	}
 
+
+	/**
+	 * Gets an array of holidays, sorted by date
+	 *
+	 * @return array
+	 */
 	public function getHolidaysSorted()
 	{
 		$holidays = $this->work_holidays;
@@ -263,276 +314,57 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		return $holidays;
 	}
 
-	public function getWarningTimeText()
-	{
-		return $this->_getTriggerTimeText($this->warning_trigger);
-	}
-
-	public function getFailTimeText()
-	{
-		return $this->_getTriggerTimeText($this->fail_trigger);
-	}
-
-	protected function _getTriggerTimeText($trigger) {
-		if (!$trigger) {
-			return '';
-		}
-
-		$length = $trigger->getOptionTime();
-		$scale = $trigger->getOptionScale();
-
-		$translator = App::getTranslator();
-
-		switch ($scale) {
-			case 'minutes': return $translator->phrase('admin.general.time_x_minute', array('count' => $length));
-			case 'hours': return $translator->phrase('admin.general.time_x_hour', array('count' => $length));
-			case 'days': return $translator->phrase('admin.general.time_x_day', array('count' => $length));
-			case 'weeks': return $translator->phrase('admin.general.time_x_week', array('count' => $length));
-			case 'months': return $translator->phrase('admin.general.time_x_month', array('count' => $length));
-			default: return '';
-		}
-	}
-
-	public function setPeople($people)
-	{
-		$have_ids = array();
-		foreach ($people AS $person) {
-			$this->addPerson($person);
-			$have_ids[] = $person->id;
-		}
-
-		foreach ($this->people AS $k => $person) {
-			if (!in_array($person->id, $have_ids)) {
-				$this->people->remove($k);
-			}
-		}
-	}
-
-	public function removePerson(Person $person)
-	{
-		$this->people->removeElement($person);
-	}
-
-	public function addPerson(Person $person)
-	{
-		if (!$this->people->contains($person)) {
-			$this->people->add($person);
-		}
-	}
-
-	public function setOrganizations($organizations)
-	{
-		$have_ids = array();
-		foreach ($organizations AS $organization) {
-			$this->addOrganization($organization);
-			$have_ids[] = $organization->id;
-		}
-
-		foreach ($this->organizations AS $k => $organization) {
-			if (!in_array($organization->id, $have_ids)) {
-				$this->organizations->remove($k);
-			}
-		}
-	}
-
-	public function removeOrganization(Organization $organization)
-	{
-		$this->organizations->removeElement($organization);
-	}
-
-	public function addOrganization(Organization $organization)
-	{
-		if (!$this->organizations->contains($organization)) {
-			$this->organizations->add($organization);
-		}
-	}
-
-	public function appliesToPerson(Person $person)
-	{
-		return App::getEntityRepository('DeskPRO:Sla')->doesSlaApplyToPerson($this, $person);
-	}
-
-	public function appliesToOrganization(Organization $organization)
-	{
-		return App::getEntityRepository('DeskPRO:Sla')->doesSlaApplyToOrganization($this, $organization);
-	}
-
-	public function calculateWarnDate(Ticket $ticket)
-	{
-		if (!$this->warning_trigger) {
-			return null;
-		}
-
-		$hours_set = $this->getWorkHoursSet();
-		return $this->_calculateTriggerDate($this->warning_trigger->getOptionSeconds($hours_set), $ticket);
-	}
-
-	public function calculateFailDate(Ticket $ticket)
-	{
-		if (!$this->warning_trigger) {
-			return null;
-		}
-
-		if (!$this->fail_trigger) {
-			return null;
-		}
-
-		$hours_set = $this->getWorkHoursSet();
-		return $this->_calculateTriggerDate($this->fail_trigger->getOptionSeconds($hours_set), $ticket);
-	}
-
-	protected $_work_hours_set;
 
 	/**
 	 * @return \Orb\Util\WorkHoursSet
 	 */
 	public function getWorkHoursSet()
 	{
-		if (!$this->_work_hours_set) {
-			if ($this->active_time == 'default') {
-				$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
-				$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
-					$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
-					$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
-					$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
-				);
-			} else {
-				$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
-					$this->active_time, $this->work_start, $this->work_end,
-					$this->work_days, $this->work_timezone, $this->work_holidays
-				);
-			}
-		}
-
-		return $this->_work_hours_set;
-	}
-
-	public function calculateSlaTimeUntil($end_ts, Ticket $ticket)
-	{
-		if ($this->sla_type == self::TYPE_WAITING_TIME) {
-			$time = 0;
-			$work_hours_set = $this->getWorkHoursSet();
-			foreach ($ticket->waiting_times AS $waiting) {
-				if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
-					$time += $work_hours_set->getWorkTimeBetween($waiting['start'], min($end_ts, $waiting['end']));
-				}
-			}
-
-			return $time;
-		} else {
-			return $this->getWorkHoursSet()->getWorkTimeBetween($ticket->date_created, $end_ts);
-		}
-	}
-
-	protected function _calculateTriggerDate($delay, Ticket $ticket)
-	{
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE || $this->sla_type == self::TYPE_RESOLUTION) {
-			return $this->getWorkHoursSet()->calculateWorkHoursDelay($ticket->date_created, $delay);
-		}
-
-		if ($this->sla_type == self::TYPE_WAITING_TIME) {
-			if ($ticket->status != 'awaiting_agent') {
-				// can't know when it will expire
-				return null;
-			}
-
-			$work_hours_set = $this->getWorkHoursSet();
-
-			if ($work_hours_set->getActiveTime() == \Orb\Util\WorkHoursSet::ACTIVE_24X7) {
-				$wait_time = $ticket->total_user_waiting;
-				if ($ticket->date_user_waiting) {
-					$wait_time += time() - $ticket->date_user_waiting->getTimestamp();
-				}
-
-				return new \DateTime('+' . ($delay - $wait_time) . ' seconds', new \DateTimeZone('UTC'));
-			} else {
-				$work_day_length = $this->work_end - $this->work_start;
-				if ($work_day_length <= 0) {
-					return null;
-				}
-
-				$wait_time = 0;
-				if ($ticket->waiting_times) {
-					foreach ($ticket->waiting_times AS $waiting) {
-						if ($waiting['type'] == 'user') {
-							$wait_time += $work_hours_set->getWorkTimeBetween($waiting['start'], $waiting['end']);
-						}
-					}
-				}
-
-				if ($ticket->date_user_waiting && $ticket->status == 'awaiting_agent') {
-					// ticket is waiting but we don't have an end so add that
-					$wait_time += $work_hours_set->getWorkTimeBetween($ticket->date_user_waiting);
-				}
-
-				return $work_hours_set->calculateWorkHoursDelay(new \DateTime(), $delay - $wait_time);
-			}
+		if ($this->active_time == 'all') {
+			return new WorkHoursSetAll();
+		} else if ($this->active_time == 'work_hours') {
+			return new WorkHoursSet(
+				$this->work_start,
+				$this->work_end,
+				$this->work_days,
+				$this->work_timezone,
+				$this->work_holidays
+			);
 		}
 
 		return null;
 	}
 
-	public function calculateCompleted(Ticket $ticket)
+
+	/**
+	 * @return SlaCalculator
+	 */
+	public function getCalculator()
 	{
-		$dates = array();
+		if ($this->_calc !== null) return $this->_calc;
 
-		if ($ticket->status == 'resolved') {
-			if ($ticket->date_resolved) {
-				$dates[] = $ticket->date_resolved->getTimestamp();
-			} else {
-				$dates[] = time();
-			}
-		}
+		$this->_calc = new SlaCalculator(
+			$this->sla_type,
+			$this->getWorkHoursSet(),
+			new TimeUnit($this->warn_time, $this->warn_time_unit),
+			new TimeUnit($this->fail_time, $this->fail_time_unit)
+		);
 
-		if ($ticket->status == 'hidden' && ($ticket->hidden_status == 'spam' || $ticket->hidden_status == 'deleted')) {
-			$dates[] = time();
-		}
-
-		if ($ticket->date_closed) {
-			$dates[] = $ticket->date_closed->getTimestamp();
-		}
-
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
-			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
-				// don't auto resolve sla on ticket creation, even if created by an agent
-				$dates[] = $ticket->date_first_agent_reply->getTimestamp();
-			}
-		}
-
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
-			$dates[] = $ticket->date_status->getTimestamp();
-		}
-
-		if ($dates) {
-			return min($dates);
-		}
-
-		return null;
-	}
-
-	public function getSlaTestTime(Ticket $ticket)
-	{
-		$times = array(time());
-
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
-			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
-				// don't auto resolve sla on ticket creation, even if created by an agent
-				$times[] = $ticket->date_first_agent_reply->getTimestamp();
-			}
-		}
-
-		if ($ticket->date_closed) {
-			$times[] = $ticket->date_closed->getTimestamp();
-		}
-
-		if ($ticket->status == 'resolved' && $ticket->date_resolved) {
-			$times[] = $ticket->date_resolved->getTimestamp();
-		}
-
-		return min($times);
+		return $this->_calc;
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['apply_terms']   = $this->apply_terms->exportToArray();
+		$data['warn_actions']  = $this->warn_actions->exportToArray();
+		$data['fail_actions']  = $this->fail_actions->exportToArray();
+		return $data;
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -540,33 +372,124 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Sla';
+
 		$metadata->setPrimaryTable(array(
 			'name' => 'slas'
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'sla_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sla_type', ));
-		$metadata->mapField(array( 'fieldName' => 'active_time', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'active_time', ));
-		$metadata->mapField(array( 'fieldName' => 'work_start', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_start', ));
-		$metadata->mapField(array( 'fieldName' => 'work_end', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_end', ));
-		$metadata->mapField(array( 'fieldName' => 'work_days', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_days', ));
-		$metadata->mapField(array( 'fieldName' => 'work_timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_timezone', ));
-		$metadata->mapField(array( 'fieldName' => 'work_holidays', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_holidays', ));
-		$metadata->mapField(array( 'fieldName' => 'apply_type', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'apply_type', ));
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'title',
+			'fieldName'  => 'title',
+			'type'       => 'string',
+			'length'     => 100,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'sla_type',
+			'fieldName'  => 'sla_type',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'active_time',
+			'fieldName'  => 'active_time',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
 
-		$metadata->mapManyToOne(array( 'fieldName' => 'warning_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'warning_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'fail_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'fail_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'apply_priority', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketPriority', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'apply_priority_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'apply_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'apply_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-
-		$metadata->mapOneToMany(array( 'fieldName' => 'ticket_slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSla', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'sla', 'orphanRemoval' => true ));
-
-		$metadata->mapManyToMany(array( 'fieldName' => 'people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'sla_people', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sla_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'organizations', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'joinTable' => array( 'name' => 'sla_organizations', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sla_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
-
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapField(array(
+			'columnName' => 'work_start',
+			'fieldName'  => 'work_start',
+			'type'       => 'integer',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_end',
+			'fieldName'  => 'work_end',
+			'type'       => 'integer',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_days',
+			'fieldName'  => 'work_days',
+			'type'       => 'simple_array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_timezone',
+			'fieldName'  => 'work_timezone',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_holidays',
+			'fieldName'  => 'work_holidays',
+			'type'       => 'json_array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'apply_type',
+			'fieldName'  => 'apply_type',
+			'type'       => 'string',
+			'length'     => 25,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'apply_terms',
+			'fieldName'  => 'apply_terms',
+			'type'       => 'dp_json_obj',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'warn_time',
+			'fieldName'  => 'warn_time',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'warn_time_unit',
+			'fieldName'  => 'warn_time_unit',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'warn_actions',
+			'fieldName'  => 'warn_actions',
+			'type'       => 'dp_json_obj',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'fail_time',
+			'fieldName'  => 'fail_time',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'fail_time_unit',
+			'fieldName'  => 'fail_time_unit',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'fail_actions',
+			'fieldName'  => 'fail_actions',
+			'type'       => 'dp_json_obj',
+			'nullable'   => false,
+		));
 	}
 }

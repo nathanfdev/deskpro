@@ -35,64 +35,42 @@
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * This class fethces settings
  */
-class Settings implements \ArrayAccess
+class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 {
 	/**
-	 * An array of group=>paths
+	 * File to fetch defaults from
 	 * @var array
 	 */
-	protected $settings_paths = array();
+	private $default_settings_file = array();
 
 	/**
 	 * Array of array(group => array(settings)) for default settings read in with getDefault()
 	 * @var array
 	 */
-	protected $default_settings = array();
+	private $default_settings = null;
 
 	/**
 	 * Plain database connection for raw queries
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
-	protected $db;
-
+	private $db;
 
 	/**
 	 * Settings we've loaded so far
 	 * @var array
 	 */
-	protected $settings = array();
+	private $settings = null;
 
 	/**
 	 * @var \DateTimeZone
 	 */
-	protected $default_timezone;
-
-
-	/**
-	 * An array of groups that we need to load in the next batch
-	 * @var array
-	 */
-	protected $_pending_groups = array();
-
-
-	/**
-	 * An array of groups we've already loaded
-	 * @var array
-	 */
-	protected $_loaded_groups = array();
-
-	/**
-	 * Have loaded custom settings yet?
-	 * @var bool
-	 */
-	protected $_has_loaded_db = false;
+	private $default_timezone;
 
 	/**
 	 * Virtual settings are not real settings, but depend on other states. For example,
@@ -102,17 +80,20 @@ class Settings implements \ArrayAccess
 	 *
 	 * @var array
 	 */
-	protected $virtual_settings = array();
+	private $virtual_settings = array();
 
 
-
-	public function __construct(array $settings_paths, \Application\DeskPRO\DBAL\Connection $db = null)
+	/**
+	 * @param string     $default_settings_file
+	 * @param Connection $db
+	 */
+	public function __construct($default_settings_file, Connection $db = null)
 	{
-		$this->settings_paths = new SettingsLocator($settings_paths);
+		$this->default_settings_file = $default_settings_file;
 		$this->db = $db;
 
 		$this->virtual_settings['core.interact_require_login'] = function($settings) {
-			return in_array($settings->get('core.user_mode'), array('require_reg', 'require_reg_agent_validation', 'closed'));
+			return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
 		};
 
 		$this->virtual_settings['default_timezone'] = function($settings) {
@@ -138,86 +119,116 @@ class Settings implements \ArrayAccess
 
 
 	/**
-	 * @return \Application\DeskPRO\Settings\SettingsLocator
+	 * Loads settings
+	 *
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
-	public function getSettingsLocator()
+	private function _loadSettings()
 	{
-		return $this->settings_paths;
+		$this->settings = array();
+		$this->default_settings = array();
+
+		if ($this->default_settings_file) {
+			$this->default_settings = require($this->default_settings_file);
+		}
+
+		$this->settings = $this->default_settings;
+
+		if ($this->db) {
+			$this->settings = array_merge($this->settings, $this->db->fetchAllKeyValue("
+				SELECT name, value
+				FROM settings
+			"));
+		}
+
+		if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
+			$this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
+		}
+	}
+
+
+	/**
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
+	 */
+	public function reloadSettings()
+	{
+		$this->_loadSettings();
 	}
 
 
 	/**
 	 * Get the value of a setting
 	 *
-	 * @param  string $name The name of the setting
-	 * @return mixed
+	 * @param string $name
+	 * @return null|string
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
 	public function get($name)
 	{
-		if (!$name) return '';
+		if (!$name) return null;
 
-		if (!isset($this->settings[$name])) {
-
-			if (isset($this->virtual_settings[$name])) {
-				return call_user_func($this->virtual_settings[$name], $this, $name);
-			}
-
-			$check_group = $this->getGroupFromName($name);
-
-			if (!in_array($check_group, $this->_loaded_groups)) {
-				$this->_pending_groups[] = $check_group;
-				$this->_loadPendingGroups();
-				if (!isset($this->settings[$name])) {
-					return null;
-				}
-				return $this->settings[$name];
-			}
-
-			return null;
+		if ($this->settings === null) {
+			$this->_loadSettings();
 		}
 
-		return $this->settings[$name];
+		return isset($this->settings[$name]) ? $this->settings[$name] : null;
 	}
 
 
 	/**
 	 * This loads the default for a value as defined in the setting file
 	 *
-	 * @param $name
+	 * @param string $name
+	 * @return null
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
 	public function getDefault($name)
 	{
-		$group = $this->getGroupFromName($name);
-		$this->getDefaultGroup($group);
+		if (!$name) return null;
 
-		if (isset($this->default_settings[$group][$name])) {
-			return $this->default_settings[$group][$name];
+		if ($this->settings === null) {
+			$this->_loadSettings();
 		}
 
-		return null;
+		return isset($this->default_settings[$name]) ? $this->default_settings[$name] : null;
 	}
 
 
 	/**
 	 * Get the default values for an entire group
 	 *
-	 * @param $group
+	 * @param string $group
+	 * @param bool $short  True to strip off the group name, false to include the group name in the key
+	 * @return array
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
-	public function getDefaultGroup($group)
+	public function getDefaultGroup($group, $short = true)
 	{
-		if (!isset($this->default_settings[$group])) {
-			$group_file = $this->getGroupFile($group);
-
-			if ($group_file) {
-				$group_settings = require($group_file);
-			} else {
-				$group_settings = array();
-			}
-
-			$this->default_settings[$group] = (array)$group_settings;
+		if ($this->settings === null) {
+			$this->_loadSettings();
 		}
 
-		return $this->default_settings[$group];
+		$group_dot = $group.".";
+		$len = strlen($group_dot);
+
+		$ret = array();
+		foreach ($this->default_settings as $k => $v) {
+			if (substr($k, 0, $len) === $group_dot) {
+				if ($short) {
+					$k_short = substr($k, $len);
+					$ret[$k_short] = $v;
+				} else {
+					$ret[$k] = $v;
+				}
+			}
+		}
+
+		return $ret;
 	}
 
 
@@ -226,21 +237,23 @@ class Settings implements \ArrayAccess
 	 *
 	 * @param string $group
 	 * @return array
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
 	public function getGroup($group)
 	{
-		if (!in_array($group, $this->_loaded_groups)) {
-			$this->_pending_groups[] = $group;
-			$this->_loadPendingGroups();
+		if ($this->settings === null) {
+			$this->_loadSettings();
 		}
 
-		$ret = array();
+		$group_dot = $group.".";
+		$len = strlen($group_dot);
 
-		$off = strlen($group) + 1;
+		$ret = array();
 		foreach ($this->settings as $k => $v) {
-			if (strpos($k, $group) === 0) {
-				$new_k = substr($k, $off);
-				$ret[$new_k] = $v;
+			if (substr($k, 0, $len) === $group_dot) {
+				$k_short = substr($k, $len);
+				$ret[$k_short] = $v;
 			}
 		}
 
@@ -255,9 +268,15 @@ class Settings implements \ArrayAccess
 	 * or the like.
 	 *
 	 * @param array $settings
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
 	public function setTemporarySettingValues(array $settings)
 	{
+		if ($this->settings === null) {
+			$this->_loadSettings();
+		}
+
 		$this->settings = array_merge($this->settings, $settings);
 	}
 
@@ -267,13 +286,22 @@ class Settings implements \ArrayAccess
 	 *
 	 * @param string $setting
 	 * @param string $value
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
 	public function setSetting($setting, $value)
 	{
+		if ($this->settings === null) {
+			$this->_loadSettings();
+		}
+
 		$this->db->beginTransaction();
 		try {
 
 			if ($value !== null) {
+				if ($value === true) $value = '1';
+				else if ($value === false) $value = '0';
+
 				$this->db->executeUpdate("
 					INSERT INTO settings
 						(name, value)
@@ -293,120 +321,6 @@ class Settings implements \ArrayAccess
 		}
 
 		$this->settings[$setting] = $value;
-	}
-
-
-
-	/**
-	 * Add a group of settings we want to load.
-	 *
-	 * @param  $group
-	 */
-	public function loadGroups($group)
-	{
-		for ($i = 0, $max = func_num_args(); $i < $max; $i++) {
-			$group = func_get_arg($i);
-			if (!in_array($group, $this->_loaded_groups)) {
-				$this->pending_load[] = $group;
-			}
-		}
-	}
-
-
-	/**
-	 * Get the file a setting group is in
-	 *
-	 * @param $group
-	 * @return string
-	 */
-	public function getGroupFile($group)
-	{
-		if (strpos($group, '_') !== false) {
-			list($key, $name) = Strings::rexplode('_', $group, 2);
-		} else {
-			$key = $group;
-			$name = $group;
-		}
-
-		// We dont know about these settings?
-		if (!isset($this->settings_paths[$key])) {
-			trigger_error("Unknown settings group `$group`", \E_USER_WARNING);
-			return null;
-		}
-
-		$path = $this->settings_paths[$key] . '/' . $name . '.php';
-
-		return $path;
-	}
-
-
-	/**
-	 * When an unknown setting is encountered in a group we haven't loaded yet,
-	 * we'll load all pending groups.
-	 */
-	protected function _loadPendingGroups()
-	{
-		if (!$this->_pending_groups) {
-			return;
-		}
-
-		$this->_pending_groups = array_unique($this->_pending_groups);
-		$this->_pending_groups = Arrays::removeFalsey($this->_pending_groups);
-
-		#------------------------------
-		# Load from filesystem first
-		#------------------------------
-
-		foreach ($this->_pending_groups as $group) {
-			$path = $this->getGroupFile($group);
-			if (!$path || !file_exists($path)) continue;
-
-			$group_settings = require($path);
-			$this->settings = array_merge($group_settings, $this->settings);
-		}
-
-		unset($group_settings);
-
-		#------------------------------
-		# Load from db (user-specified overrides)
-		#------------------------------
-
-		if (!$this->_has_loaded_db) {
-
-			$this->_has_loaded_db = true;
-
-			$db_settings = $this->db->fetchAllKeyValue("
-				SELECT name, value
-				FROM settings
-			");
-
-			$this->settings = array_merge($this->settings, $db_settings);
-
-			if (!empty($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
-				$this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
-			}
-		}
-
-		$this->_loaded_groups = array_merge($this->_loaded_groups, $this->_pending_groups);
-		$this->_pending_groups = array();
-	}
-
-
-
-	/**
-	 * Get the group from the name of a setting.
-	 *
-	 * @param  string $name
-	 * @return string
-	 */
-	public function getGroupFromName($name)
-	{
-		$pos = strpos($name, '.');
-		if ($pos === false) {
-			return false;
-		}
-
-		return substr($name, 0, $pos);
 	}
 
 
@@ -447,5 +361,23 @@ class Settings implements \ArrayAccess
 	public function offsetUnset($offset)
 	{
 		throw new \BadMethodCallException('You cannot unset settings');
+	}
+
+	public function count()
+	{
+		if ($this->settings === null) {
+			$this->_loadSettings();
+		}
+
+		return count($this->settings);
+	}
+
+	public function getIterator()
+	{
+		if ($this->settings === null) {
+			$this->_loadSettings();
+		}
+
+		return new \ArrayIterator($this->settings);
 	}
 }

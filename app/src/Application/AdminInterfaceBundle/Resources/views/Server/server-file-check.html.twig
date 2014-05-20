@@ -1,0 +1,80 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>File Integrity Checks</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<button type="button" class="btn btn-success" ng-click="Ctrl.startCheck()" ng-show="!Ctrl.check_in_progress">
+				<i class="fa fa-play"></i>
+				<span>Start File Integrity Check</span>
+			</button>
+
+			<div ng-show="Ctrl.check_started">
+				<section class="dp-paneblock dp-listpane dp-check-file-integrity">
+					<header>
+						<h3>
+							Checking files:
+							{{ ng_var('Ctrl.current_check') }} of {{ ng_var('Ctrl.total_checks') }} checks performed
+						</h3>
+					</header>
+
+					<div class="progress progress-striped" ng-class="{active: Ctrl.check_in_progress}">
+						<div class="progress-bar progress-bar-success" ng-style="{width: Ctrl.current_percentage + '%'}"></div>
+					</div>
+
+					<div class="log-block">
+
+						<button type="button" class="btn btn-info" ng-click="Ctrl.toggleLog()">
+							<i class="fa fa-angle-double-down"></i>
+							<span>{{ ng_var('Ctrl.show_log_text') }}</span>
+						</button>
+
+						<article class="log" ng-show="Ctrl.show_log">
+							<ul class="dp-paneblock dp-listpane log-overflow">
+								<li ng-repeat="log in Ctrl.logs">
+									{{ ng_var('log') }}
+								</li>
+							</ul>
+						</article>
+					</div>
+
+
+				</section>
+
+			</div>
+
+			<br><br>
+
+			<div ng-show="Ctrl.has_errors">
+				<div class="danger-message well">
+					<strong>There was an error!</strong> We detected some incorrect files. This might be caused by a
+					corrupt upload or some other upload problem:
+
+					<ul class="dp-item-list" class="log-overflow">
+						<li ng-repeat="log in Ctrl.error_logs">
+							{{ ng_var('log') }}
+						</li>
+					</ul>
+
+					You should contact DeskPRO Support to get help on how to fix this error. Include the above list with
+					any message you send to us:
+
+					<br><br>
+
+					<a class="btn btn-warning" href="mailto:support@deskpro.com">Email support@deskpro.com</a>
+					<a class="btn btn-warning" href="http://support.deskpro.com/">Visit our helpdesk</a>
+				</div>
+			</div>
+
+		</article>
+
+	</section>
+
+{% endblock %}

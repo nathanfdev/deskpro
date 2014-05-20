@@ -35,17 +35,14 @@
 namespace Application\DeskPRO\Mail\Transport;
 
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Mail\Loggers\MessageLogWriter;
 use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 use Orb\Log\Filter\SimpleLineFormatter;
-use Orb\Mail\Transport\QueueTransport;
-use Orb\Mail\Message;
-use Orb\Util\Strings;
-use Orb\Util\Util;
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
-use Orb\Log\Writer\ArrayWriter as LogArrayWriter;
+use Orb\Log\Logger;
+use Orb\Mail\Message;
+use Orb\Mail\Transport\QueueTransport;
 
 /**
  * This transport takes care of initializing any other transports based on settings
@@ -77,11 +74,6 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	 * @var \Orb\Log\Logger
 	 */
 	protected $logger;
-
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\AddressMatcher
-	 */
-	protected $gateway_address_matcher;
 
 	/**
 	 * @var \Orb\Log\Writer\ArrayWriter
@@ -391,125 +383,62 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Message context: %s", $message->getContextId()));
 		}
 
-		$matcher = $this->getGatewayAddressMatcher();
-		$address = $matcher->getMatchingAddress($from_address);
+		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Finding account for %s", $from_address));
+		$email_account = $this->findAccountForEmailAddress($from_address);
 
 		// See if it matches a gateway account which can be linked to transport
-		if ($gateway_address = $matcher->getMatchingAddress($from_address)) {
-			$gateway = $gateway_address->gateway;
-			if ($gateway && $gateway->linked_transport) {
-				$this->getLogger()->logDebug("[DelegatingTransport] Matched gateway account {$gateway->id} with linked transport {$gateway->linked_transport->id}");
+		if ($email_account) {
+			$this->getLogger()->logDebug("[DelegatingTransport] Matched email account {$email_account->id}");
+		} else {
+			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address invalid. Choosing default."));
+			$email_account = $this->getEmailAccountManager()->getPrimaryEmailAccount();
+		}
 
-				$new_address = $gateway->getPrimaryEmailAddress();
-				if ($gateway->getAliasEmailAddress()) {
-					$new_address = $gateway->getAliasEmailAddress();
-				}
+		if ($email_account) {
+			$new_address = $email_account->address;
+			if ($email_account->getUseEmailAddress()) {
+				$new_address = $email_account->getUseEmailAddress();
+			}
+
+			if ($new_address != $from_address) {
 				$from = array($new_address => $from_name);
 				$message->setFrom($from);
 
 				$this->getLogger()->logDebug("[DelegatingTransport] From set to $new_address");
-
-				return $gateway->linked_transport->getTransport();
-			}
-		}
-
-		if (!App::getSetting('core.allow_arbitrary_gateway_address') && $message instanceof \Application\DeskPRO\Mail\Message && $message->getContextId() == 'ticket_gateway') {
-
-			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] ticket_gateway context, checking gateway address for %s", $from_address));
-
-			if ($address) {
-
-				$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address found, confirming transport"));
-
-				// We have an address, but that address might not have a transport. So we do this here
-				// to decide if we need to revert back to a default gateway address which is figured out next
-				$tr = $this->getTransportForFromAddress($from_address, true);
-				if ($tr) {
-					$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Got transport"));
-					return $tr;
-				} else {
-					$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address valid, but has no transport"));
-					$address = false;
-				}
 			}
 
-			// If theres no address match, then we need to choose one
-			if (!$address) {
-				$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address invalid. Choosing default."));
-				$new_address = $matcher->getDefaultTicketAccountFrom();
-				if ($new_address) {
-					$from = array($new_address => $from_name);
-					$message->setFrom($from);
-
-					$from_address = $new_address;
-
-					$this->getLogger()->logDebug("[DelegatingTransport] From set to $new_address");
-				}
-			}
-		}
-
-		$this->getLogger()->logDebug("[DelegatingTransport] From address is $from_address");
-
-		return $this->getTransportForFromAddress($from_address);
-	}
-
-
-	/**
-	 * @param string $from_address
-	 * @return null|\Swift_MailTransport
-	 */
-	public function getTransportForFromAddress($from_address, $no_default = false)
-	{
-		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage finding address: %s", $from_address));
-
-		$from_account = App::getEntityRepository('DeskPRO:EmailTransport')->findTransportForAddress($from_address);
-		if ($from_account) {
-
-			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage found transport %s", $from_account->getId()));
-
-			$tr = $from_account->getTransport();
+			$tr = $this->getEmailAccountManager()->getTransportForAccount($email_account);
 		} else {
-			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage NO ACCOUNT FOUND"));
-
-			if ($no_default) {
-				return null;
-			}
-
-			$email_trans = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport();
-			if ($email_trans) {
-				$tr = $email_trans->getTransport();
-			} else {
-				$tr = new \Application\DeskPRO\Entity\EmailTransport();
-				$tr->match_type = 'all';
-				$tr->title = '';
-				$tr->transport_type = 'mail';
-
+			if (!App::getConfig('debug.mail.disable_send')) {
 				$e = new \RuntimeException("No default transport found");
 				\DeskPRO\Kernel\KernelErrorHandler::logException($e);
-
-				$tr = $tr->getTransport();
 			}
+
+			$mail_conf = new PhpMailConfig();
+			$tr = $this->getEmailAccountManager()->getTransportFactory()->createPhpMailTransport($mail_conf);
 		}
 
-		if ($tr) {
-			$this->attachLoggerOnce($tr);
-		}
-
+		$this->attachLoggerOnce($tr);
 		return $tr;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\EmailGateway\AddressMatcher
+	 * @return \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
 	 */
-	public function getGatewayAddressMatcher()
+	public function getEmailAccountManager()
 	{
-		if ($this->gateway_address_matcher) {
-			return $this->gateway_address_matcher;
-		}
+		return App::$container->getEmailAccountManager();
+	}
 
-		$this->gateway_address_matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
 
-		return $this->gateway_address_matcher;
+	/**
+	 * @param $address
+	 * @return \Application\DeskPRO\Entity\EmailAccount|null
+	 */
+	public function findAccountForEmailAddress($address)
+	{
+		return $this->getEmailAccountManager()->findAccountForEmailAddress($address, 'is_enabled | with_transport');
 	}
 
 

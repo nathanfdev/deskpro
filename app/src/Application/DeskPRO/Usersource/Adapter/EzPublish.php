@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Orb\Auth\Identity;
-
 class EzPublish extends DbTablePhpPasswordCheck
 {
 	/**
@@ -43,6 +41,6 @@ class EzPublish extends DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\EzPublish($this->getDb(), $this->usersource->options);
+		return new \Orb\Auth\Adapter\EzPublish($this->getDbAsCallback(), $this->usersource->options);
 	}
 }

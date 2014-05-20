@@ -34,13 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 /**
  * Defines information about an external user source
@@ -94,9 +92,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\UsersourcePlugin|null
+	 * @var \Application\DeskPRO\Entity\AppInstance|null
 	 */
-	protected $usersource_plugin = null;
+	protected $app = null;
 
 	/**
 	 * @var \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
@@ -122,11 +120,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 			return $this->_adapter_instance;
 		}
 
-		if (!$this->usersource_plugin) {
-			$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\' . $this->getTypeName();
-		} else {
-			$classname = $this->usersource_plugin->adapter_class;
-		}
+		$classname = $this->source_type;
 		if (!$classname || !class_exists($classname)) {
 			throw new \RuntimeException("Unknown usersource type `$classname`");
 		}
@@ -177,44 +171,8 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getTypeName()
 	{
-		return ucfirst(Strings::underscoreToCamelCase($this->source_type));
+		return ucfirst(Strings::underscoreToCamelCase(Util::getBaseClassname($this->source_type)));
 	}
-
-	public function getFormType()
-	{
-		if (!$this->usersource_plugin) {
-			$type_name = $this->getTypeName();
-			$class = 'Application\\AdminBundle\\Form\\Usersource\\Type\\' . $type_name . 'Type';
-		} else {
-			$class = $this->usersource_plugin->form_type_class;
-		}
-
-		return new $class();
-	}
-
-	public function getFormModel()
-	{
-		if (!$this->usersource_plugin) {
-			$type_name = $this->getTypeName();
-			$class = 'Application\\AdminBundle\\Form\\Usersource\\Model\\' . $type_name . 'Model';
-		} else {
-			$class = $this->usersource_plugin->form_model_class;
-		}
-
-		return new $class($this);
-	}
-
-	public function getFormTemplate()
-	{
-		if (!$this->usersource_plugin) {
-			$template = 'AdminBundle:UserReg:usersource-edit-' . $this->source_type . '.html.twig';
-		} else {
-			$template = $this->usersource_plugin->form_template;
-		}
-
-		return $template;
-	}
-
 
 
 	############################################################################
@@ -231,11 +189,11 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'source_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'source_type', ));
 		$metadata->mapField(array( 'fieldName' => 'lost_password_url', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lost_password_url', ));
-		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
+		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'json_array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 
-		$metadata->mapManyToOne(array( 'fieldName' => 'usersource_plugin', 'targetEntity' => 'Application\\DeskPRO\\Entity\\UsersourcePlugin', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usersource_plugin_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 

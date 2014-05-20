@@ -37,8 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 
-use Orb\Util\Strings;
-
 /**
  * Detects a ticket based off of REF codes in the subject
  */
@@ -49,7 +47,11 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
 	 */
 	protected $_found_person = null;
 
+	/**
+	 * @var int
+	 */
 	protected $_time_cutoff = 0;
+
 
 	/**
 	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
@@ -59,8 +61,9 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
 		$this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -91,8 +94,9 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
 		return null;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -103,12 +107,11 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
 		return null;
 	}
 
+
 	/**
-	 * Unknown users cant be added based just on subject
-	 *
-	 * @return void
+	 * {@inheritDoc}
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return false;
 	}

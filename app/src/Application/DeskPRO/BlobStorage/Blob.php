@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\BlobStorage;
 
-use Application\DeskPRO\Dpql\Statement\Part\String;
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 

@@ -1,0 +1,87 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('adm.general.builtin_fields') }}</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-state-mark="tickets.fields.categories">
+					<a href="{{ ng_href('tickets.fields.categories') }}">
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.category">Disabled</em>
+						</div>
+						<h4><span class="title-text">{{ phrase('agent.general.categories') }}</span></h4>
+					</a>
+				</li>
+				<li dp-state-mark="tickets.fields.priorities">
+					<a href="{{ ng_href('tickets.fields.priorities') }}">
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.priority">Disabled</em>
+						</div>
+						<h4><span class="title-text">{{ phrase('agent.general.priorities') }}</span></h4>
+					</a>
+				</li>
+				<li dp-state-mark="tickets.fields.workflows">
+					<a href="{{ ng_href('tickets.fields.workflows') }}">
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.workflow">Disabled</em>
+						</div>
+						<h4><span class="title-text">{{ phrase('agent.general.workflows') }}</span></h4>
+					</a>
+				</li>
+				<li dp-state-mark="tickets.fields.products">
+					<a href="{{ ng_href('tickets.fields.products') }}">
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!TicketFieldsList.field_enabled.product">Disabled</em>
+						</div>
+						<h4><span class="title-text">{{ phrase('agent.general.products') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav class="dp-controls">
+				<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+
+			<h3 ng-pluralize count="TicketFieldsList.custom_fields.length || 0" when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
+					<a href="{{ ng_href('tickets.fields.edit', '{id: field.id}') }}">
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
+						</div>
+						<h4><span class="title-text">{{ ng_var('field.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.fields.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>You can customize the information in a ticket with optional built-in fields and custom fields.</h1>
+		<p>You can enable categories, priorities, workflows and products to help organize your helpdesk; you set the values agents can choose from. You can also define custom fields where you choose the field name as well as the possible values.</p>
+	</header>
+	<article>
+		<section>
+			<p>For each of these fields you can set a default value. You can use the  <strong>validation</strong> rules to require users or agents to select a value.</p>
+			<p>You control how these fields are displayed in the user and agent ticket creation forms by using the <strong>Layout</strong> tab in the Departments section.</p>
+			<p><strong>Categories</strong> are a general field, usually used to handle grouping tickets within a department.</p>
+			<p><strong>Priorities</strong> describe how important a ticket is. The different priority values you set have an order, from most to least important.</p>
+			<p><strong>Workflows</strong> are used to record the ticket's stage in your support process - for example "Triage", "Troubleshooting", "Follow-Up".</p>
+			<p><strong>Products</strong> usually denote a real product or service that your enterprise offers and your helpdesk supports. If enabled, products can apply to items other than tickets, such as feedback and articles.</p>
+			<p>When you define a custom field, you can choose how agents and users select values (e.g. text entry, radio buttons etc.) when creating or editing a ticket.</p>
+			<p>Once you've defined a custom field, you can update it with <strong>triggers</strong>, <strong>escalations</strong>, <strong>macros</strong> or <strong>SLAs</strong>, as well as agent input.</p>
+		</section>
+	</article>
+{% endblock %}

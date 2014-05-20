@@ -1,0 +1,20 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;"><label>{{ ng_var('type_title') }}</label></td>
+				<td>
+					<select ng-model="model.op" ui-select2>
+						<option value="add">Increase urgency by</option>
+						<option value="sub">Decrease urgency by</option>
+						<option value="set">Set urgency to</option>
+					</select>
+					<input type="text" class="form-control" ng-model="model.value" />
+					<div ng-show="model.op == 'set'">
+						<label><input type="checkbox" ng-model="mode.only_if_lower" /> Only set if urgency is lower</label>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

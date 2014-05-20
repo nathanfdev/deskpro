@@ -8,9 +8,8 @@
 			<h4>{{ phrase('agent.general.categories') }}</h4>
 		</header>
 		{# Page Containers #}
-		<div class="layout-content with-scrollbar" style="top: 21px">
-		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-		<div class="scroll-viewport"><div class="scroll-content" data-extra-height="21">
+		<div class="layout-content" style="top: 21px">
+			<div class="dp-page-content">
 		{# /Page Containers #}
 			<ul id="%baseId%_catlist">
 				<li class="category category-0" data-category="0">
@@ -29,7 +28,6 @@
 			</ul>
 	 	{# Page Containers #}
         </div></div>
-        </div>
         {# /Page Containers #}
 	</nav>
 	<div class="snippet-sections-wrap">
@@ -48,14 +46,13 @@
 			{% endif %}
 		</div>
 		{# Page Containers #}
-		<div class="layout-content with-scrollbar">
-		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-		<div class="scroll-viewport"><div class="scroll-content snippet-sections" id="%baseId%_snippet_list">
+		<div class="layout-content">
+			<div class="dp-page-content">
+				<div class="scroll-content snippet-sections" id="%baseId%_snippet_list">
 		{# /Page Containers #}
 
         {# Page Containers #}
-        </div></div>
-        </div>
+        </div></div></div>
         {# /Page Containers #}
 	</div>
 

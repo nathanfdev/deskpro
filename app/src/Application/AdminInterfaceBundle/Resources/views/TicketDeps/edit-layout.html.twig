@@ -1,0 +1,49 @@
+<div class="panel panel-fill">
+	<div class="panel-body">
+		<div class="btn-group">
+			<button type="button" class="btn btn-default" ng-class="{'active': !EditCtrl.form.use_custom_layout}" ng-click="EditCtrl.form.use_custom_layout = false">Use Default Form Layout</button>
+			<button type="button" class="btn btn-default" ng-class="{'active': EditCtrl.form.use_custom_layout}" ng-click="EditCtrl.form.use_custom_layout = true">Use Custom Form Layout for "{{ ng_var('EditCtrl.form.title') }}"</button>
+		</div>
+
+		<br/><br/>
+
+		<div ng-show="!EditCtrl.form.use_custom_layout">
+
+			<div class="alert alert-info">
+				<div ng-show="!EditCtrl.layout_info.custom.length">
+					All of your departments are using this default layout. If you make changes to this layout, it will affect all of your other departments too.
+				</div>
+				<div ng-show="EditCtrl.layout_info.default.length && EditCtrl.layout_info.custom.length">
+					<p>
+						This default layout is being used by {{ ng_var('EditCtrl.layout_info.default.length') }} other departments. If you make changes to this layout,
+						these other departments will be affected too:
+					</p>
+					<ul>
+						<li ng-repeat="dep in EditCtrl.layout_info.default">{{ ng_var('dep.title_full') }}</li>
+					</ul>
+				</div>
+				<div ng-show="!EditCtrl.layout_info.default.length && !EditCtrl.layout_info.custom.length">
+					<p>
+						This is the default layout.
+					</p>
+					<p>
+						You currently have no other defined departmentsm, but if you create other departments they will share this form layout unless they are given a custom form layout.
+					</p>
+				</div>
+			</div>
+
+			<dp-ticket-layout-editor ng-model="EditCtrl.form.default_layout" />
+		</div>
+
+		<div ng-show="EditCtrl.form.use_custom_layout">
+			<div class="alert alert-info">
+				<p>
+					This is a custom layout that applies only to this department. Any changes you make
+					to this layout will not affect any others.
+				</p>
+			</div>
+
+			<dp-ticket-layout-editor ng-model="EditCtrl.form.custom_layout" />
+		</div>
+	</div>
+</div>

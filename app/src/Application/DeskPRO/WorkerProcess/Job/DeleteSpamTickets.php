@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 
 /**
  * Goes through tickets marked as spam and deletes them
@@ -83,9 +82,6 @@ class DeleteSpamTickets extends AbstractJob
 
 				App::getDb()->delete('tickets', array('id' => $ticket['id']));
 				App::getDb()->delete('tickets_search_active', array('id' => $ticket['id']));
-				App::getDb()->delete('tickets_search_message', array('id' => $ticket['id']));
-				App::getDb()->delete('tickets_search_message_active', array('id' => $ticket['id']));
-				App::getDb()->executeUpdate("DELETE FROM tickets_search_subject WHERE id = ?", array($ticket['id']));
 
 				$ticket_count++;
 

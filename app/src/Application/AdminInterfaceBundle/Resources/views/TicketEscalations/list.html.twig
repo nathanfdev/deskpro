@@ -1,0 +1,56 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders">
+					<i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_ticket_escalations') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
+				<li class="with-drag-handle" ng-repeat="esc in ListCtrl.list"
+					dp-state-mark="tickets.ticket_escalations.edit.{{ ng_var('esc.id') }}" data-id="{{ ng_var('esc.id') }}">
+					<a href="{{ ng_href('tickets.ticket_escalations.edit', '{id: esc.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+
+						<div class="pull-right">
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode"
+								  style="margin-top: -3px;"
+								  ng-click="ListCtrl.startDelete(esc); $event.preventDefault();">
+								<i class="fa fa-trash-o"></i>
+							</span>
+						</div>
+						<h4>
+							<span class="title-text">{{ ng_var('esc.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_escalations.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('adm.ticket_escalations.new_escalation') }}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Ticket escalations run actions based on elapsed time.</h1>
+		<p>You define what state a ticket must be in for elapsed time to count, and how much time must pass before the escalation runs. You choose what <strong>actions</strong> are applied when the escalation runs.</p>
+	</header>
+	<article>
+		<section>
+			<p>When you create an escalation, you can choose if it counts:</p>
+			<ul>
+				<li><strong>time the ticket has been open for</strong>: total time the ticket has existed without being resolved</li>
+				<li><strong>time the user has been waiting</strong>: how long the ticket has been awaiting agent, counting continuously since the most recent status change i.e. if the status is changed from "awaiting agent" and then back again, the clock resets</li>
+				<li><strong>total time the user has been waiting</strong>: cumulative time the ticket has been <strong>awaiting agent</strong> over its whole life</li>
+				<li><strong>time the agent has been waiting</strong>: how long ticket has been awaiting user, counting continuously</li>
+				<li>how long <strong>the ticket has been resolved for</strong></li>
+			</ul>
+			<p>You can also set extra <strong>criteria</strong> that the ticket must meet for the escalation to run.</p>
+		</section>
+	</article>
+{% endblock %}

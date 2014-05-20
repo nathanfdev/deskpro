@@ -1,0 +1,29 @@
+<div class="modal-dialog dp-codeeditor-modal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" ng-click="dismiss()">&times;</button>
+			<h4 class="modal-title">{{ ng_var('tpl.name') }}</h4>
+		</div>
+		<div class="modal-body">
+			<div class="editor-row">
+				<div class="editor-wrap body">
+					<div class="editor" style="height: 500px;" ng-model="template_code" ui-ace="{
+						mode: 'twig',
+						useWrapMode: false,
+						theme: 'textmate',
+						onLoad: aceLoaded
+					}"></div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div ng-hide="saving_template">
+				<button class="btn btn-warning" ng-click="revert()" ng-show="tpl.is_custom"><i class="fa fa-step-backward"></i> Revert To Default</button>
+				<button class="btn btn-success" ng-click="save()"><i class="fa fa-save"></i> {{ phrase('agent.general.save') }}</button>
+			</div>
+			<div ng-show="saving_template">
+				<i class="spinner-flat"></i>
+			</div>
+		</div>
+	</div>
+</div>

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Log\ErrorLog;
 
-use Orb\Util\Dates;
-
 class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 {
 	/**
@@ -62,6 +60,11 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	 * @var int
 	 */
 	protected $count = 0;
+
+	/**
+	 * @var null|int
+	 */
+	protected $quick_count = null;
 
 	/**
 	 * @var \DateTimeZone
@@ -161,7 +164,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 			$m = null;
 			$l = trim($l);
 
-			if (!preg_match('#^<DP_LOG:([0-9A-Z]+)>\s*(.*?)$#', $l, $m)) {
+			if (!preg_match('#^<DP_LOG(?:\.BEGIN)?:([0-9A-Z]+)>\s*(.*?)$#', $l, $m)) {
 				if ($log_lines && $last_id) {
 					$this->_initItem($last_id, $log_lines);
 				}
@@ -212,7 +215,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 		$item = array(
 			'id'      => $id,
 			'summary' => \Orb\Util\Strings::extractRegexMatch('#^(Error|Exception): (.*?)$#m', $log_lines, 2),
-			'date'    => \Orb\Util\Strings::extractRegexMatch('#^Date: (.*?)$#m', $log_lines, 1),
+			'date'    => \Orb\Util\Strings::extractRegexMatch('#^Date: (.*?)(\(.*?\))?$#m', $log_lines, 1),
 			'type'    => \Orb\Util\Strings::extractRegexMatch('#^Type: (.*?)$#m', $log_lines, 1),
 			'build'   => \Orb\Util\Strings::extractRegexMatch('#^Build: (.*?)$#m', $log_lines, 1),
 			'log'     => $this->store_raw ? $log_lines : null,
@@ -277,6 +280,39 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 		throw new \BadMethodCallException();
 	}
 	/**#@-*/
+
+
+	/**
+	 * This will not parse the entire file, but just open it up and try to quickly
+	 * count the number of logged errors.
+	 */
+	public function quickCount()
+	{
+		// Already done a full parse,
+		// just return the real count
+		if ($this->items !==  null) {
+			return $this->count();
+		}
+
+		if ($this->quick_count != null) {
+			return $this->quick_count;
+		}
+
+		$this->quick_count = 0;
+		$fp = @fopen($this->path, 'r');
+		if (!$fp) {
+			return 0;
+		}
+
+		while (($l = @fgets($fp, 1024)) != false) {
+			if (strpos($l, '<DP_LOG.BEGIN:') !== false) {
+				$this->quick_count++;
+			}
+		}
+		@fclose($fp);
+
+		return $this->quick_count;
+	}
 
 
 	/**

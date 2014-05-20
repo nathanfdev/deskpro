@@ -35,16 +35,12 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Comments\NewCommentFormType;
-
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\UserBundle\Controller\Helper\ContentRating;
+use Application\DeskPRO\Entity;
 use Application\UserBundle\Controller\Helper\Comments;
-use Application\UserBundle\Controller\Helper\FacebookLike;
+use Application\UserBundle\Controller\Helper\ContentRating;
+use Orb\Util\Numbers;
 
 class DownloadsController extends AbstractController
 {
@@ -305,7 +301,7 @@ class DownloadsController extends AbstractController
 				));
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {
 				$this->session->setFlash('comment_error', $validator->getErrors(true));
@@ -317,7 +313,7 @@ class DownloadsController extends AbstractController
 			if ($form->isValid()) {
 				$comment = $new_comment->save();
 
-				App::setSkipCache(true);
+				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 				if ($new_comment->require_login) {
 					return $this->redirectRoute('user_newcomment_finishlogin', array(

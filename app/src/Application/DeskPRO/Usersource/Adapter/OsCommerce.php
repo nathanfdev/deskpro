@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Orb\Auth\Identity;
-
 class OsCommerce extends DbTablePhpPasswordCheck
 {
 	/**
@@ -43,6 +41,6 @@ class OsCommerce extends DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\OsCommerce($this->getDb(), $this->usersource->options);
+		return new \Orb\Auth\Adapter\OsCommerce($this->getDbAsCallback(), $this->usersource->options);
 	}
 }

@@ -15,25 +15,12 @@ require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
-	'AdminBundle'      => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
-	'AgentBundle'      => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-	'DeskPRO'          => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-	'ReportBundle'     => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
-	'UserBundle'       => DP_ROOT.'/src/Application/UserBundle/Resources/views',
-	'BillingBundle'    => DP_ROOT.'/src/Application/BillingBundle/Resources/views',
+	'AdminInterfaceBundle'       => DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/views',
+	'AgentBundle'                => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+	'DeskPRO'                    => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+	'ReportsInterfaceBundle'     => DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/views',
+	'UserBundle'                 => DP_ROOT.'/src/Application/UserBundle/Resources/views',
 );
-
-$plugins_dir = realpath(DP_ROOT.'/../plugins');
-$d = dir($plugins_dir);
-while ($f = $d->read()) {
-	if ($f == '.' || $f == '..') continue;
-	$p_path = $plugins_dir.'/'.$f;
-	$p_path_views = $p_path . '/Resources/views';
-
-	if (!is_dir($p_path) || !is_dir($p_path_views)) continue;
-
-	$paths[$f] = $p_path_views;
-}
 
 $tpl_info = array();
 

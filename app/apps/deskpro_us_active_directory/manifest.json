@@ -1,0 +1,87 @@
+{
+	"package_name": "deskpro_us_active_directory",
+	"is_native": true,
+	"title": "Active Directory Authentication",
+	"description": "Enables user authentication against Active Directory.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "host",
+			"type": "text",
+			"label": "Host",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "port",
+			"type": "text",
+			"label": "Port",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "secure",
+			"type": "choice",
+			"label": "Secure",
+			"description": "",
+			"native_only": true,
+			"options": [
+				{ "label": "None", "value": "" },
+				{ "label": "SSL", "value": "ssl" },
+				{ "label": "TLS", "value": "tls" }
+			]
+		},
+		{
+			"name": "base_dn",
+			"type": "text",
+			"label": "Base DN",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "service_username",
+			"type": "text",
+			"label": "Service Account Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "service_password",
+			"type": "password",
+			"label": "Service Account Password",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "domain_name",
+			"type": "text",
+			"label": "Domain Name",
+			"description": "The FQDN name for users in this directory. For example, a user alice@acme.com would have a domain of acme.com. This option is not required, but if it is not supplied, usernames in principal name form (e.g., alice@acme.com) are not supported.",
+			"native_only": true
+		},
+		{
+			"name": "short_domain_name",
+			"type": "text",
+			"label": "Short Domain Name",
+			"description": "The \"short\" domain name for users in this directory like \"ACME\". Note that there is a 1:1 mapping between this short name and the domain name above. This option should be used to specify the NetBIOS domain name for Windows networks. This option is not required but if it is not supplied, usernames in backslash form (e.g., ACME\\alice) are not supported.",
+			"native_only": true
+		}
+	]
+}

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-
 class ArrayFileCacheFactory
 {
 	public static function create($cache_name)
@@ -51,7 +49,7 @@ class ArrayFileCacheFactory
 		$cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
 
 		if ($cache_name == 'dql' && defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-			$path = DP_ROOT.'/sys/cache/' . $cache_name . '.cache';
+			$path = dp_get_cache_dir().'/' . $cache_name . '.cache';
 		} else {
 			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache';
 		}
@@ -61,6 +59,7 @@ class ArrayFileCacheFactory
 		if ($cache_name == 'dql') {
 			// Filters out queries with 'IN' components that can pollute the cache
 			$cache->setFilter(function($data) {
+				if (!is_object($data)) return false;
 				/** @var $data \Doctrine\ORM\Query\ParserResult */
 				$s = $data->getSqlExecutor()->getSqlStatements();
 				if (is_string($s)) {

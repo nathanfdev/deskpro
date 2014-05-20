@@ -35,11 +35,14 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
+use Application\DeskPRO\ORM\StateChange\StateRecorder;
+use Application\DeskPRO\Tickets\StateChangeRecorder as TicketStateChangeRecorder;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
-
-use Orb\Util\Util;
 
 /**
  * The basic entitiy class
@@ -65,12 +68,32 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	private $_custom_callables = array();
 
 	/**
+	 * @var StateChangeRecorder
+	 */
+	private $_state_recorder;
+
+	/**
+	 * @var object
+	 */
+	private $_state_clone;
+
+	/**
 	 * Special var that should be set during preload in a DataService
 	 * to help the Doctrine entity persisters from trying to query data we already have.
 	 *
 	 * @var null
 	 */
 	public $__dp_is_preloaded_repos = null;
+
+	/**
+	 * @var array
+	 */
+	private $_iterator_keys;
+
+	/**
+	 * @var int
+	 */
+	private $_iterator_pos = 0;
 
 
 	/**
@@ -263,7 +286,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 			return call_user_func($this->_custom_callables[$name_l][0], $this->_custom_callables[$name_l][1], $arguments);
 		}
 
-		$orig_name = $name;
 		$name = preg_replace('#([A-Z])#', '_$1', $name);
 
 		$match = null;
@@ -286,12 +308,13 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 				$arguments = array(null);
 			}
 
-			if (isset($this->$prop)) {
-				$old_val = $this->$prop;
-			}
-
 			$this[$prop] = $arguments[0];
 		}
+	}
+
+	protected function _isCustomCallable($name)
+	{
+		return isset($this->_custom_callables[$name]);
 	}
 
 
@@ -343,12 +366,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 	public function offsetSet($offset, $value)
 	{
-		$old_value = isset($this[$offset]) ? $this[$offset] : null;
-
 		$func = "set" . str_replace('_', '', $offset);
 		if (method_exists($this, $func) || isset($this->_custom_callables[strtolower($func)])) {
 			$this->$func($value);
 		} else {
+			$old_value = isset($this[$offset]) ? $this[$offset] : null;
 			$this->$offset = $value;
 			$this->_onPropertyChanged($offset, $old_value, $value);
 		}
@@ -464,20 +486,90 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 
 	/**
+	 * @return StateChangeRecorder
+	 */
+	public function getStateChangeRecorder()
+	{
+		if (!$this->_state_recorder) {
+			if ($this instanceof Ticket) {
+				$this->_state_recorder = new TicketStateChangeRecorder($this);
+			} else {
+				$this->_state_recorder = new StateChangeRecorder();
+			}
+
+			$this->_state_clone = clone $this;
+
+			// The clone will clone the important bits
+			// For collections, we want to create a new collection
+			// which will not be affected by add/remove ops elsewhere
+			foreach (get_object_vars($this) as $prop => $val) {
+				if ($prop[0] == '_' || !is_object($val) || !($val instanceof Collection)) {
+					continue;
+				}
+
+				$new_coll = new ArrayCollection($val->toArray());
+				$this->_state_clone->__setPropValue__($prop, $new_coll);
+			}
+		}
+
+		return $this->_state_recorder;
+	}
+
+
+	/**
+	 * Resets the state change recorder.
+	 */
+	public function resetStateChangeRecorder()
+	{
+		$this->_state_recorder = null;
+		$this->_state_clone = null;
+	}
+
+
+	/**
+	 * Returns a clone of this entity which represents the state before changes were made to it.
+	 * @return object
+	 */
+	public function getOriginalStateClone()
+	{
+		$this->getStateChangeRecorder();
+		return $this->_state_clone;
+	}
+
+
+	/**
 	 * Notify a prop has changed.
 	 *
-	 * @param string $propName
-	 * @param mixed $oldValue
-	 * @param mixed $newValue
+	 * @param string $prop
+	 * @param mixed $old
+	 * @param mixed $new
+	 * @param bool $skip_state  Do not run through state change recorder (performance opt)
 	 */
-	protected function _onPropertyChanged($prop, $old, $new)
+	protected function _onPropertyChanged($prop, $old, $new, $skip_state = false)
 	{
+		$this->getStateChangeRecorder()->touchField($prop);
+		$this->propertyChangedCallback($prop, $old, $new);
+
         if (!empty($this->_listeners['property'])) {
             foreach ($this->_listeners['property'] as $listener) {
                 $listener->propertyChanged($this, $prop, $old, $new);
             }
         }
+
+		if (!$skip_state) {
+			if ($prop[0] != '_' && property_exists($this, $prop)) {
+				if ($this->$prop instanceof Collection && $new instanceof Collection) {
+					$this->getStateChangeRecorder()
+						->recordCollection($prop, $new);
+				} else {
+					$this->getStateChangeRecorder()
+						->record($prop, $old, $new);
+				}
+			}
+		}
     }
+
+	protected function propertyChangedCallback($prop, $old, $new) {}
 
 	public function __getPropValue__($k) { return $this->$k; }
 	public function __setPropValue__($k, $v) { $this->$k = $v; }

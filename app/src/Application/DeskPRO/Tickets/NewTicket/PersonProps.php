@@ -39,8 +39,12 @@ use Application\DeskPRO\Entity;
 /**
  * This wraps up the 'person' data of a newticket.
  */
-class PersonProps
+class PersonProps implements \ArrayAccess
 {
+	protected static $prop_names = array(
+		'name' => 1, 'email' => 1
+	);
+
 	/**
 	 * A real person object, represents a logged in user
 	 * if the user is logged in. Otherwise this should be null for a guest
@@ -70,4 +74,9 @@ class PersonProps
 			$this->email = $person->getPrimaryEmailAddress();
 		}
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

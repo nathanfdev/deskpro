@@ -36,14 +36,10 @@ namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Application\DeskPRO\Tickets\NewTicket\NewTicket;
-use Application\DeskPRO\Tickets\NewTicket\PersonProps;
-use Application\DeskPRO\Tickets\NewTicket\TicketProps;
-
 use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
-
-use Orb\Util\Arrays;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use Orb\Validator\AbstractValidator;
 
 class NewTicketValidator extends AbstractValidator
@@ -75,18 +71,29 @@ class NewTicketValidator extends AbstractValidator
 	 */
 	protected $widget_mode = false;
 
+	/**
+	 * @var bool
+	 */
+	protected $edit_mode = false;
+
 	public function enableWidgetMode()
 	{
 		$this->widget_mode = true;
 	}
 
-	/**
-	 * @param array $page_data
-	 */
-	public function setPageData($page_data)
+	public function enableEditMode()
 	{
-		foreach ($page_data as $i) {
-			$this->display_fields[$i['id']] = $i['id'];
+		$this->edit_mode = true;
+	}
+
+
+	/**
+	 * @param Layout $layout
+	 */
+	public function setLayout(Layout $layout)
+	{
+		foreach ($layout as $field) {
+			$this->display_fields[$field->getId()] = $field->getId();
 		}
 	}
 
@@ -145,47 +152,19 @@ class NewTicketValidator extends AbstractValidator
 			} else {
 
 				if ($this->widget_mode) {
-					$ticket_page_display = new \Application\DeskPRO\Entity\TicketPageDisplay();
-					$ticket_page_display->zone = 'create';
-					$ticket_page_display->section = 'default';
-					$ticket_page_display->data = array(
-						array (
-							'id' => 'person_name',
-							'field_type' => 'person_name',
-						),
-						array (
-							'id' => 'ticket_department',
-							'field_type' => 'ticket_department',
-						),
-						array (
-							'id' => 'ticket_subject',
-							'field_type' => 'ticket_subject',
-						),
-						array (
-							'id' => 'message',
-							'field_type' => 'message',
-						),
-						array (
-							'id' => 'attachments',
-							'field_type' => 'attachments',
-						),
-					);
-
-					$ticket_page = new \Application\DeskPRO\PageDisplay\Page\TicketPageZone('create');
-					$ticket_page->addPageDisplay($ticket_page_display);
-
+					$layout = new Layout();
+					$layout->add(new LayoutField('user_name'));
+					$layout->add(new LayoutField('department'));
+					$layout->add(new LayoutField('subject'));
+					$layout->add(new LayoutField('message'));
+					$layout->add(new LayoutField('attachments'));
 				} else {
-					$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-					$ticket_display->addPagesFromDb();
-
-					/** @var $ticket_page \Application\DeskPRO\PageDisplay\Page\TicketPageZone */
-					$ticket_page = $ticket_display->getPage($department_id);
+					$layout = App::$container->getTicketLayoutManager()->getUserLayouts()->getLayout($department_id);
+					$layout = LayoutDisplay::createFromLayout($layout, $this->edit_mode ? LayoutDisplay::EDIT_TICKET : LayoutDisplay::NEW_TICKET);
 				}
 
-				if ($ticket_page) {
-					/** @var $page \Application\DeskPRO\Entity\TicketPageDisplay */
-					$page = $ticket_page->getPageDisplay('default');
-					$this->_traverseItems($page->data);
+				if ($layout) {
+					$this->_traverseItems($layout);
 				}
 			}
 		}
@@ -263,40 +242,21 @@ class NewTicketValidator extends AbstractValidator
 		return true;
 	}
 
-	protected function _traverseItems(array $items)
+	protected function _traverseItems(Layout $layout)
 	{
-		foreach ($items as $item) {
-			if ($item['field_type'] == 'group') {
-				if (empty($item['items'])) {
-					continue;
-				}
-
-				$this->_traverseItems($item['items']);
-			} else {
-				$this->_validateItem($item);
-			}
+		foreach ($layout as $item) {
+			$this->_validateItem($item);
 		}
 	}
 
-	protected function _validateItem($item)
+	protected function _validateItem(LayoutField $item)
 	{
-		if (!empty($item['rules'])) {
-			$terms = new \Application\DeskPRO\Tickets\TicketTerms($item['rules']);
-			if ($item['rule_match_type'] == 'any') {
-				if (!$terms->doesTicketMatchAny($this->mock_ticket)) {
-					return;
-				}
-			} else {
-				if (!$terms->doesTicketMatch($this->mock_ticket)) {
-					return;
-				}
-			}
+		if ($item->hasCriteria() && !$item->getCriteria()->isTicketMatch($this->mock_ticket)) {
+			return;
 		}
 
-		switch ($item['field_type']) {
-
-			case 'ticket_cc_emails':
-
+		switch ($item->getFieldType()) {
+			case 'cc_emails':
 				if ($this->newticket->ticket->cc_emails) {
 					$cc_emails = explode(',', $this->newticket->ticket->cc_emails);
 					foreach ($cc_emails as $cc) {
@@ -307,10 +267,9 @@ class NewTicketValidator extends AbstractValidator
 						}
 					}
 				}
-
 				break;
 
-			case 'person_name':
+			case 'user_name':
 				if ($this->newticket->person) {
 					$validator = new \Orb\Validator\StringLength(array('min' => 2));
 					if (!$validator->isValid($this->newticket->person->name)) {
@@ -319,7 +278,7 @@ class NewTicketValidator extends AbstractValidator
 				}
 				break;
 
-			case 'ticket_product':
+			case 'product':
 				if (App::getSetting('core.use_product')) {
 					$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
 						'category_repository' => App::getEntityRepository('DeskPRO:Product'),
@@ -331,7 +290,7 @@ class NewTicketValidator extends AbstractValidator
 				}
 				break;
 
-			case 'ticket_category':
+			case 'category':
 				if (App::getSetting('core.use_ticket_category')) {
 					$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
 						'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
@@ -343,7 +302,7 @@ class NewTicketValidator extends AbstractValidator
 				}
 				break;
 
-			case 'ticket_priority':
+			case 'priority':
 				if (App::getSetting('core.use_ticket_priority')) {
 					$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
 						'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_user_required')
@@ -355,11 +314,21 @@ class NewTicketValidator extends AbstractValidator
 				break;
 
 			case 'ticket_field':
-				$field = App::getSystemService('TicketFieldsManager')->getFieldFromId($item['field_id']);
+				$field = App::getSystemService('TicketFieldsManager')->getFieldFromId($item->getFieldId());
 				if ($field && $field->is_enabled) {
 					$errors = $field->getHandler()->validateFormData($this->newticket->custom_ticket_fields);
 					foreach ($errors as $code) {
 						$this->addError('ticket.' . $code);
+					}
+				}
+				break;
+
+			case 'user_field':
+				$field = App::getSystemService('PersonFieldsManager')->getFieldFromId($item->getFieldId());
+				if ($field && $field->is_enabled) {
+					$errors = $field->getHandler()->validateFormData($this->newticket->custom_ticket_fields);
+					foreach ($errors as $code) {
+						$this->addError('person.' . $code);
 					}
 				}
 				break;

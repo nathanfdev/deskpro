@@ -1,0 +1,22 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Login As Agent</h4>
+{% endblock %}
+{% block modal_body %}
+	<p>
+		Use this tool to log in to the Agent Interface as {{ ng_var('agentName') }}.
+	</p>
+	<p>
+		Caution: This will log you in completely and you will be able to do anything the agent
+		is able to do (for example, write ticket replies).
+	</p>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-show="is_loading">
+		<i class="spinner-xsmall"></i>
+		Generating a unique secure login token for you...
+	</div>
+	<div ng-hide="is_loading">
+		<a class="btn btn-primary" ng-href="/{{ path('user')|trim('/') }}agent/login/admin-login/{{ ng_var('login_token') }}" target="_blank" ng-click="dismiss();">Click here to log in as {{ ng_var('agentName') }}</a>
+	</div>
+{% endblock %}

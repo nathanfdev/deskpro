@@ -34,14 +34,15 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Application\DeskPRO\App;
 use Orb\Util\Dates;
 
 /**
  * Task entity definition
- *
+ * 
+ * @SWG\Model
  */
 class Task extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -61,6 +62,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
+	 * @SWG\Property(name="id",type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -69,6 +71,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * Whether this task is completed
 	 *
 	 * @var bool
+	 * @SWG\Property(name="is_completed",type="boolean")
 	 */
 	protected $is_completed = false;
 
@@ -76,6 +79,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The task's title
 	 *
 	 * @var string
+	 * @SWG\Property(name="title",type="string")
 	 */
 	protected $title = '';
 
@@ -83,6 +87,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The task's visibility. On of: self::PRIVATE_VISIBILITY or self::PUBLIC_VISIBILITY.
 	 *
 	 * @var int
+	 * @SWG\Property(name="visibility", type="integer")
 	 */
 	protected $visibility = 1;
 
@@ -90,6 +95,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The task's optional due date.
 	 *
 	 * @var \DateTime
+	 * @SWG\Property(name="date_due",type="integer")
 	 */
 	protected $date_due = null;
 
@@ -97,6 +103,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the task was inserted into the system
 	 *
 	 * @var \DateTime
+	 * @SWG\Property(name="date_created",type="integer")
 	 */
 	protected $date_created;
 
@@ -104,41 +111,48 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the task was completed
 	 *
 	 * @var \DateTime
+	 * @SWG\Property(name="date_completed", type="integer")
 	 */
 	protected $date_completed;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
+	 * @SWG\Property(name="person",type="Person")
 	 */
 	protected $person;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
+	 * @SWG\Property(name="assigned_agent",type="Person")
 	 */
 	protected $assigned_agent;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 * @SWG\Property(name="assigned_agent_team",type="AgentTeam")
 	 */
 	protected $assigned_agent_team;
 
 
 
-		/**
+	/**
+	 * @SWG\Property(name="labels",type="array")
 	 */
 	protected $labels;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="comments",type="array", items="$ref:TaskComment")
 	 */
 	protected $comments;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @SWG\Property(name="comments",type="array", items="$ref:TaskAssociation")
 	 */
 	protected $task_associations;
 
-		/**
+	/**
 	 * Label manager for adding/removing labels
 	 * @var \Application\DeskPRO\Labels\LabelManager
 	 */

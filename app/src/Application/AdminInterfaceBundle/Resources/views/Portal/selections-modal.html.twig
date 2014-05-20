@@ -1,0 +1,133 @@
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" ng-click="dismiss()">&times;</button>
+			<h4 class="modal-title">Content</h4>
+		</div>
+		<div class="modal-body" id="selections-form">
+			<div ng-if="widget_selections.articles"  class="dp-paneblock pull-left" style="padding-right:6px;">
+				<header>
+					<h3>Articles</h3>
+				</header>
+
+				<div ng-repeat="cat in widget_selections.article_categories"
+					 ng-style="{'margin-left': (5 * cat.depth + 6) + 'px', 'margin-bottom': '6px'}">
+					<strong>{{ ng_var('cat.title') }}</strong>
+
+					<div ng-repeat="item_id in widget_selections.article_cat_map[cat.id]">
+						<div ng-if="widget_selections.articles[item_id]"
+							 ng-style="{'margin-left': (5 * (cat.depth + 1) + 6) + 'px'}">
+							<label>
+								<input type="checkbox"
+									   ng-model="widget_selections.selections.articles[item_id]"
+									   ng-value="item_id">
+								{{ ng_var('widget_selections.articles[item_id]') }}
+							</label>
+						</div>
+					</div>
+					<div ng-if="cat.children" ng-repeat="cat_child in cat.children"
+						 ng-style="{'margin-left': (5 * cat_child.depth + 6) + 'px', 'margin-bottom': '6px'}">
+						<strong>{{ ng_var('cat_child.title') }}</strong>
+
+						<div ng-repeat="item_id_child in widget_selections.article_cat_map[cat_child.id]">
+							<div ng-if="widget_selections.articles[item_id_child]"
+								 ng-style="{'margin-left': (5 * (cat_child.depth + 1) + 6) + 'px'}">
+								<label>
+									<input type="checkbox"
+										   ng-model="widget_selections.selections.articles[item_id_child]"
+										   ng-value="item_id_child">
+									{{ ng_var('widget_selections.articles[item_id_child]') }}
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-if="widget_selections.downloads" class="dp-paneblock pull-left" style="padding-right:6px;">
+				<header>
+					<h3>Downloads</h3>
+				</header>
+
+				<div ng-repeat="cat in widget_selections.download_categories"
+					 ng-style="{'margin-left': (5 * cat.depth + 6) + 'px', 'margin-bottom': '6px'}">
+					<strong>{{ ng_var('cat.title') }}</strong>
+
+					<div ng-repeat="item_id in widget_selections.download_cat_map[cat.id]">
+						<div ng-if="widget_selections.downloads[item_id]"
+							 ng-style="{'margin-left': (5 * (cat.depth + 1) + 6) + 'px'}">
+							<label>
+								<input type="checkbox"
+									   ng-model="widget_selections.selections.downloads[item_id]"
+									   ng-value="item_id">
+								{{ ng_var('widget_selections.downloads[item_id]') }}
+							</label>
+						</div>
+					</div>
+					<div ng-if="cat.children" ng-repeat="cat_child in cat.children"
+						 ng-style="{'margin-left': (5 * cat_child.depth + 6) + 'px', 'margin-bottom': '6px'}">
+						<strong>{{ ng_var('cat_child.title') }}</strong>
+
+						<div ng-repeat="item_id_child in widget_selections.download_cat_map[cat_child.id]">
+							<div ng-if="widget_selections.downloads[item_id_child]"
+								 ng-style="{'margin-left': (5 * (cat_child.depth + 1) + 6) + 'px'}">
+								<label>
+									<input type="checkbox"
+										   ng-model="widget_selections.selections.downloads[item_id_child]"
+										   ng-value="item_id_child">
+									{{ ng_var('widget_selections.downloads[item_id_child]') }}
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-if="widget_selections.news" class="dp-paneblock pull-left" style="padding-right:6px;">
+				<header>
+					<h3>News</h3>
+				</header>
+
+				<div ng-repeat="cat in widget_selections.news_categories"
+					 ng-style="{'margin-left': (5 * cat.depth + 6) + 'px', 'margin-bottom': '6px'}">
+					<strong>{{ ng_var('cat.title') }}</strong>
+
+					<div ng-repeat="item_id in widget_selections.news_cat_map[cat.id]">
+						<div ng-if="widget_selections.news[item_id]"
+							 ng-style="{'margin-left': (5 * (cat.depth + 1) + 6) + 'px'}">
+							<label>
+								<input type="checkbox"
+									   ng-model="widget_selections.selections.news[item_id]"
+									   ng-value="item_id">
+								{{ ng_var('widget_selections.news[item_id]') }}
+							</label>
+						</div>
+					</div>
+					<div ng-if="cat.children" ng-repeat="cat_child in cat.children"
+						 ng-style="{'margin-left': (5 * cat_child.depth + 6) + 'px', 'margin-bottom': '6px'}">
+						<strong>{{ ng_var('cat_child.title') }}</strong>
+
+						<div ng-repeat="item_id_child in widget_selections.news_cat_map[cat_child.id]">
+							<div ng-if="widget_selections.news[item_id_child]"
+								 ng-style="{'margin-left': (5 * (cat_child.depth + 1) + 6) + 'px'}">
+								<label>
+									<input type="checkbox"
+										   ng-model="widget_selections.selections.news[item_id_child]"
+										   ng-value="item_id_child">
+									{{ ng_var('widget_selections.news[item_id_child]') }}
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-danger" ng-click="dismiss()">
+				<i class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}
+			</button>
+			<button class="btn btn-success" ng-click="confirm()">
+				<i class="fa fa-trash-o"></i> {{ phrase('agent.general.save') }}
+			</button>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "AppState.js",
+  "sourceRoot": "../../../../../DeskPRO/Main/Service/",
+  "sources": [
+    "AppState.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA;AAAA,EAAA,MAAA,CAAO,CAAC,6BAAD,CAAP,EAAwC,SAAC,WAAD,GAAA;AACvC,QAAA,QAAA;WAAM;AACQ,MAAA,kBAAE,UAAF,EAAe,MAAf,GAAA;AACZ,QADa,IAAC,CAAA,aAAA,UACd,CAAA;AAAA,QAD0B,IAAC,CAAA,SAAA,MAC3B,CAAA;AAAA,QAAA,WAAA,CAAY,IAAZ,CAAA,CAAA;AAAA,QACA,IAAC,CAAA,IAAD,GAAQ,EADR,CADY;MAAA,CAAb;;sBAAA;;SAFsC;EAAA,CAAxC,CAAA,CAAA;AAAA"
+}

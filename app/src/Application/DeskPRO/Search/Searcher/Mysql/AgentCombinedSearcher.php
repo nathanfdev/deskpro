@@ -36,14 +36,9 @@ namespace Application\DeskPRO\Search\Searcher\Mysql;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\People\PersonContextInterface;
-
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
-use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
-
-use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\Result;
+use Application\DeskPRO\Search\SearcherResult\ResultSet;
 
 /**
  * The combined searcher searches everything: articles, news, downloads, feedback

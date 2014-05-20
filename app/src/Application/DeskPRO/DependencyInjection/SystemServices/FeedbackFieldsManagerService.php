@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\CustomFields\FeedbackFieldManager;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class FeedbackFieldsManagerService
 {

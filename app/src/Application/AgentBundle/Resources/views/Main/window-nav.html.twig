@@ -1,79 +1,88 @@
 <!-- BEGIN NAVIGATION -->
 <div id="dp_nav">
-	<div id="dp_nav_sections" class="deskproPane">
-		<ul>
+	<div id="dp_nav_sections" class="deskproPane dp-appstrip">
+		<ul class="is-nav-section is-default">
 			{% if app.user.hasPerm('agent_tickets.use') %}
 				<li class="active" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="{{ phrase('agent.chrome.nav_tickets') }}"><span class="ticketNavIcon"></span></a>
+					<a title="{{ phrase('agent.chrome.nav_tickets') }}"><i class="app-icon app-icon-tickets"></i></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use') %}
 				<li  id="chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.UserChat">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="{{ phrase('agent.chrome.nav_userchat') }}"><span class="chatNavIcon"></span></a>
+					<a title="{{ phrase('agent.chrome.nav_userchat') }}"><i class="app-icon app-icon-chat"></i></a>
 				</li>
 			{% endif %}
 
 			{% if app.user.hasPerm('agent_people.use') %}
 				<li id="people_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.People">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="{{ phrase('agent.chrome.nav_people') }}"><span class="peopleNavIcon"></span></a>
+					<a title="{{ phrase('agent.chrome.nav_people') }}"><i class="app-icon app-icon-users"></i></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_feedback')  %}
 				<li id="feedback_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Feedback">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="{{ phrase('agent.chrome.nav_feedback') }}"><span class="feedbackNavIcon"></span></a>
+					<a title="{{ phrase('agent.chrome.nav_feedback') }}"><i class="app-icon app-icon-feedback"></i></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads') %}
 				<li id="publish_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Publish">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="{{ phrase('agent.chrome.nav_publish') }}"><span class="publishNavIcon"></span></a>
+					<a title="{{ phrase('agent.chrome.nav_publish') }}"><i class="app-icon app-icon-publish"></i></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_tasks')  %}
 				<li id="tasks_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tasks">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="{{ phrase('agent.chrome.nav_tasks') }}"><span class="tasksNavIcon"></span></a>
+					<a title="{{ phrase('agent.chrome.nav_tasks') }}"><i class="app-icon app-icon-tasks"></i></a>
 				</li>
 			{% endif %}
 
-			{% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
+			{% if (app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length) %}
 				<li id="twitter_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Twitter">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="{{ phrase('agent.interface.app-twitter') }}"><span class="twitterNavIcon"></span></a>
+					<a title="{{ phrase('agent.interface.app-twitter') }}"><i class="app-icon app-icon-twitter"></i></a>
 				</li>
 			{% endif %}
 		</ul>
 
-		<ul class="bottom">
-			{% if app.user.can_reports %}
-				<li id="reports_section" class="no-click-switch {% if app.user.can_admin %}with-can-admin{% endif %}">
-					<a title="{{ phrase('agent.chrome.nav_reports') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/reports/"><span class="reportsNavIcon"></span></a>
-				</li>
-			{% endif %}
+		<ul class="btm">
+			<li id="agents_section" class="no-click-switch section-on is-default is-nav-btn">
+				<a title="You are currently using the Agent Interface" href="#"><i class="app-icon app-icon-agent-ifce"></i></a>
+			</li>
 
-			{% if app.user.can_billing %}
-				<li id="billing_section" class="no-click-switch {% if app.user.can_admin %}with-can-admin{% endif %}">
-					<a title="{{ phrase('agent.interface.app-billing') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/billing/"><span class="billingNavIcon"></span></a>
+			{% if app.user.can_reports %}
+				<li class="no-click-switch is-nav-btn">
+					<a title="Go to Reports Interface" href="{{ app.request.getBaseUrl() }}/reports/">
+						<i class="app-icon app-icon-reports-ifce"></i>
+					</a>
 				</li>
 			{% endif %}
 
 			{% if app.user.can_admin %}
-				<li id="settings_section" class="no-click-switch">
-					<a title="{{ phrase('agent.chrome.nav_admin_settings') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span class="settingsNavIcon"></span></a>
+				<li class="no-click-switch is-nav-btn">
+					<a title="Go to Billing Interface" href="{{ app.request.getBaseUrl() }}/admin/#/license">
+						<i class="app-icon app-icon-billing-ifce"></i>
+					</a>
+				</li>
+
+				<li id="settings_section" class="no-click-switch is-nav-btn">
+					<a title="Go to Admin Interface" href="{{ app.request.getBaseUrl() }}/admin/">
+						<i class="app-icon app-icon-admin-ifce"></i>
+					</a>
 				</li>
 			{% endif %}
-			<li id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">
-				{# <span id="chat_online_count">0</span> #}
-				<span class="count-badge" style="display: none"><span></span></span>
-				<a title="{{ phrase('agent.chrome.nav_agentchat') }}"><span class="agentchatNavIcon"></span></a>
+
+			<li id="users_section" class="no-click-switch is-nav-btn">
+				<a title="Go to User Interface" href="{{ path('user') }}">
+					<i class="app-icon app-icon-user-ifce"></i>
+				</a>
 			</li>
 		</ul>
 	</div>

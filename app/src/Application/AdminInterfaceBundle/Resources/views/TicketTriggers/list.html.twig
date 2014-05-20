@@ -1,0 +1,161 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+
+	<section class="dp-paneblock dp-listpane" ng-if="TicketTriggersList.dep_triggers.length">
+		<header>
+			<h3 ng-pluralize count="TicketTriggersList.dep_triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_dep_triggers') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="trigger in TicketTriggersList.dep_triggers">
+					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: trigger.department.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('trigger.department.title_full') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane" ng-if="TicketTriggersList.email_triggers.length">
+		<header>
+			<h3 ng-pluralize count="TicketTriggersList.email_triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_email_triggers') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="trigger in TicketTriggersList.email_triggers">
+					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: trigger.email_account.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('trigger.email_account.address') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="TicketTriggersList.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
+		</header>
+		<article>
+			<p ng-if="!TicketTriggersList.triggers.length" style="padding: 15px;">
+				{{ phrase('adm.ticket_triggers.no_triggers') }}
+			</p>
+			<ul class="dp-item-list" ui-sortable="TicketTriggersList.sortedListOptions" ng-if="TicketTriggersList.triggers.length">
+				<li class="with-drag-handle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
+					<a href="{{ ng_href('tickets.triggers.edit', '{type: TicketTriggersList.eventType, id: trigger.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<div class="pull-right toggle-wrapper" ng-hide="delete_mode">
+							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="TicketTriggersList.updateTriggerEnabledState(trigger);"></button>
+						</div>
+						<div class="pull-right">
+							<em class="tag" ng-if="trigger.by_agent">
+								agent
+								<span ng-if="trigger.event_trigger_options.by_agent.length == 3"><span>&rsaquo; all</span></span>
+									<span ng-if="trigger.event_trigger_options.by_agent.length != 3">
+										&rsaquo; <span dp-comma-separated>
+											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('web') !== -1">web</span>
+											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('email') !== -1">email</span>
+											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('api') !== -1">api</span>
+										</span>
+									</span>
+							</em>
+							<em class="tag" ng-if="trigger.by_user" style="margin-left: 6px;">
+								user
+								<span ng-if="trigger.event_trigger_options.by_user.length == 5"><span>&rsaquo; all</span></span>
+									<span ng-if="trigger.event_trigger_options.by_user.length != 5">
+										&rsaquo; <span dp-comma-separated>
+											<span ng-if="trigger.event_trigger_options.by_user.indexOf('portal') !== -1 || trigger.event_trigger_options.by_user.indexOf('form') !== -1 || trigger.event_trigger_options.by_user.indexOf('widget') !== -1">web</span>
+											<span ng-if="trigger.event_trigger_options.by_user.indexOf('email') !== -1">email</span>
+											<span ng-if="trigger.event_trigger_options.by_user.indexOf('api') !== -1">api</span>
+										</span>
+									</span>
+							</em>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketTriggersList.startTriggerDelete(trigger); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+						</div>
+						<h4>
+							<span class="title-text">{{ ng_var('trigger.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.triggers.gocreate', '{type: TicketTriggersList.eventType}') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Triggers are automatic processes that perform actions in response to events when the criteria you choose are met.</h1>
+		<p ng-if="TicketTriggersList.eventType == 'newreply'">Triggers in this section check their criteria when a <strong>new reply</strong> is made by a user or agent.</p>
+		<p ng-if="TicketTriggersList.eventType == 'newticket'">Triggers in this section check their criteria when a <strong>new ticket</strong> is created.</p>
+		<p ng-if="TicketTriggersList.eventType == 'update'">Triggers in this section check their criteria when a ticket is <strong>updated</strong>.</p>
+	</header>
+
+	<article>
+		<section>
+			<p>Use the <strong>Event</strong> section to refine when the trigger is checked. You can choose to have the trigger respond only to user actions, only to agent actions, or to both; or to respond only to certain interfaces (email, web, etc.).</p>
+	
+			<p><strong>Criteria</strong> can be used to check properties of the:</p>
+			<ul>
+				<li>email</li>
+				<li>ticket</li>
+				<li>attachments</li>
+				<li>user</li>
+				<li>user's organization</li>
+				<li>the current time</li>
+			</ul>
+	
+			<p>When the right combination of events and criteria happen, your trigger will run its <strong>actions</strong>. With actions, you can automatically do most of the things you would do to a ticket in the agent interface.</p>
+			
+			<p>Actions can change ticket assignment, set the user, set ticket properties, set or change SLAs, set the value of custom fields, or delete the ticket.</p>
+			
+			<p>
+				<strong>Trigger Control</strong>: the action <strong>Stop Processing Triggers</strong> stops subsequent triggers being applied to the ticket. It does not stop other actions within the same trigger from being applied. You can also use <strong>Prevent Emails to User</strong> or <strong>Prevent Emails to Agents</strong> to prevent subsequent email notifications.
+				
+			</p>
+			
+			<p>
+			<strong>Add Agent Reply</strong> lets you enter a reply to be sent from the assigned agent.</strong>
+			</p>
+			
+			<p>
+			<strong>Call Web Hook</strong>: this action sends an HTTP request. You can use it to make calls to external software that offers a web-based API. It is useful for integrating DeskPRO with other services.
+			</p>
+				
+				
+		
+							
+		</section>
+		
+		<section>
+			
+			<h2><span>FAQ</span></h2>
+		
+			<dl>
+				<dt><em>Q:</em>My triggers aren't behaving as I expect. How do I troubleshoot them?</dt>
+				<dd><em>A:</em>
+				You can see which triggers ran and in what order using the ticket <strong>Full Log</strong> tab.
+				</dd>
+
+
+			</dl>
+		
+		</section>
+		
+		<section>
+		<h2><span>Related Knowledgebase Articles</span></h2>
+		<ul>
+			<li><a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
+			<li><a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
+			<li><a href="https://support.deskpro.com/kb/articles/194">Automatically assign agents to tickets they reply to by email</a></li>
+		</ul>
+	</section>
+</article>
+{% endblock %}

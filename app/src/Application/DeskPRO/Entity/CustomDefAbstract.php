@@ -34,19 +34,15 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 use Application\DeskPRO\App;
-use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Translate\HasPhraseName;
-use Orb\Util\Util;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
+use Application\DeskPRO\Translate\Translate;
+use Orb\Util\Numbers;
 
 /**
  * A custom field definition
  *
+ * @property int $display_order
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
@@ -58,12 +54,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 	protected $id = null;
 
 	/**
-	 * Is the field associated with a plugin?
+	 * Is the field associated with an app?
 	 * These generally cant be edited.
 	 *
-	 * @var \Application\DeskPRO\Entity\Plugin
+	 * @var \Application\DeskPRO\Entity\AppInstance
 	 */
-	protected $plugin = null;
+	protected $app = null;
 
 	/**
 	 * JS class to init
@@ -560,5 +556,39 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 		}
 
 		return $this->title;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['type_name'] = $this->getTypeName();
+
+		if ($data['type_name'] == 'choice') {
+			$data['choices'] = array();
+			foreach ($this->children as $c) {
+				$data['choices'][] = array(
+					'id'            => $c->id,
+					'title'         => $c->title,
+					'parent_id'     => $c->getOption('parent_id') ?: null,
+					'display_order' => $c->display_order
+				);
+			}
+		}
+
+		if ($data['options']) {
+			// Cast "1" to 1 so values are properly encoded to json
+			foreach ($data['options'] as &$opt) {
+				if (Numbers::isInteger($opt)) {
+					$opt = (int)$opt;
+				}
+			}
+			unset($opt);
+		}
+
+		return $data;
 	}
 }

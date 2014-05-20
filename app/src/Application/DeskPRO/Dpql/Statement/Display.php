@@ -34,11 +34,11 @@
 
 namespace Application\DeskPRO\Dpql\Statement;
 
-use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Results;
+use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
 /**
  * Object for a DISPLAY statement in DPQL.

@@ -1,0 +1,122 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_accounts') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Email Accounts</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Outgoing Email</h3>
+		</header>
+		<article class="dp-padded">
+			<div class="alert alert-info">
+				<div ng-show="!filter_open">
+					Showing all outgoing emails. <button class="btn" ng-click="filter_open = true"><i class="fa fa-filter"></i> Filter</button>
+				</div>
+				<div ng-show="filter_open">
+					<table>
+						<tr>
+							<td width="50">Status</td>
+							<td width="150">
+								<select
+										multiple
+										ui-select2
+										ng-model="ListCtrl.filter.statuses"
+										style="width: 100%;"
+										>
+									<option value="pending">Pending</option>
+									<option value="processing">Processing</option>
+									<option value="complete">Complete</option>
+									<option value="error">Error</option>
+								</select>
+							</td>
+
+							<td width="50" style="padding-left: 15px;">Date</td>
+							<td colspan="2">
+								<select
+										ui-select2
+										ng-model="ListCtrl.filter_date_mode"
+										style="width: 90px;"
+										>
+									<option value="none">&nbsp;</option>
+									<option value="before">Before</option>
+									<option value="after">After</option>
+									<option value="between">Between</option>
+								</select>
+										<span ng-if="ListCtrl.filter_date_mode == 'after' || ListCtrl.filter_date_mode == 'between'">
+											<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="ListCtrl.filter_date1" datepicker-options="{'show-weeks': false}" />
+										</span>
+										<span ng-if="ListCtrl.filter_date_mode == 'before' || ListCtrl.filter_date_mode == 'between'">
+											<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="ListCtrl.filter_date2" datepicker-options="{'show-weeks': false}" />
+										</span>
+							</td>
+						</tr>
+						<tr>
+							<td width="50">To</td>
+							<td width="150">
+								<input type="text" class="form-control" style="width: 200px; display: inline-block;"  ng-model="ListCtrl.filter.to" />
+							</td>
+
+							<td width="50" style="padding-left: 15px;">From</td>
+							<td width="150">
+								<input type="text" class="form-control" style="width: 200px; display: inline-block;"  ng-model="ListCtrl.filter.from" />
+							</td>
+
+							<td width="80" style="padding-left: 15px;">Subject</td>
+							<td width="150">
+								<input type="text" class="form-control" style="width: 200px; display: inline-block;"  ng-model="ListCtrl.filter.subject" />
+							</td>
+						</tr>
+					</table>
+					<div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
+						<button class="btn btn-primary" ng-click="ListCtrl.updateFilter()">Filter</button>
+					</div>
+				</div>
+			</div>
+
+			<table class="table">
+				<colgroup>
+					<col width="1%" />
+					<col width="1%" />
+					<col width="28%" />
+					<col width="28%" />
+					<col width="100%" />
+					<col width="1%" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Date</th>
+						<th>From</th>
+						<th>To</th>
+						<th>Subject</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error'}">
+						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.sendmailqueueview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
+						<td nowrap><span am-time-ago="result.date_created"></span></td>
+						<td class="overflow-ellipsis">{{ ng_var('result.from_address') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.to_address') }}</td>
+						<td>{{ ng_var('result.subject') }}</td>
+						<td>{{ ng_var('result.status') }}</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div style="text-align: center;" dp-show-spinning="loading_page"><i class="spinner-flat"></i></div>
+
+			<div class="dp-btn-pagination">
+				<button class="btn" ng-show="ListCtrl.page != 1" ng-click="ListCtrl.goPrevPage()">&lt; Prev</button>
+				<select ng-model="ListCtrl.page" ui-select2 style="width: 130px;">
+					<option ng-repeat="page in ListCtrl.page_nums" value="{{ ng_var('page') }}">Page {{ ng_var('page') }}</option>
+				</select>
+				<button class="btn" ng-show="ListCtrl.page < ListCtrl.num_pages" ng-click="ListCtrl.goNextPage()">Next &gt;</button>
+			</div>
+		</article>
+	</section>
+{% endblock %}

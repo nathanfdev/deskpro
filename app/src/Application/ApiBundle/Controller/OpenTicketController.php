@@ -34,10 +34,10 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\App;
 
 
 class OpenTicketController extends AbstractController
@@ -49,7 +49,9 @@ class OpenTicketController extends AbstractController
 
 	public function newTicketMessageAction()
 	{
-		if (!\Orb\Validator\StringEmail::isValueValid($this->in->getString('email')) || App::getSystemService('gateway_address_matcher')->isManagedAddress($this->in->getString('email'))) {
+		$ticket_manager = $this->container->getTicketManager();
+
+		if (!\Orb\Validator\StringEmail::isValueValid($this->in->getString('email')) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->in->getString('email'))) {
 			return $this->createApiErrorResponse('invalid_email', 'The email address supplied is invalid');
 		}
 		if (!$this->in->getString('subject')) {
@@ -66,6 +68,8 @@ class OpenTicketController extends AbstractController
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 			}
 
+			$ticket_manager->markAsManaged($ticket);
+
 			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
 			if (!$person) {
 				$person = Person::newContactPerson(array(
@@ -74,6 +78,8 @@ class OpenTicketController extends AbstractController
 				));
 				$this->em->persist($person);
 			}
+
+			$context = $ticket_manager->createUserExecutorContext($ticket->person, 'newreply', 'api');
 
 		} else {
 			// Not allowed to create new tickets using this service
@@ -95,7 +101,7 @@ class OpenTicketController extends AbstractController
 				$this->em->persist($person);
 			}
 
-			$ticket = new Ticket();
+			$ticket = $ticket_manager->createTicket();
 			$ticket['creation_system']  = Ticket::CREATED_WEB_API;
 			$ticket['person']  = $person;
 			$ticket['subject'] = $this->in->getString('subject');
@@ -110,6 +116,8 @@ class OpenTicketController extends AbstractController
 			if ($reply_service_url = $this->in->getString('my_reply_service')) {
 				$ticket->setProperty('send_reply_service', $reply_service_url);
 			}
+
+			$context = $ticket_manager->createUserExecutorContext($ticket->person, 'newticket', 'api');
 		}
 
 		$message_html = $this->in->getHtmlCore('message');
@@ -123,6 +131,8 @@ class OpenTicketController extends AbstractController
 
 		$this->em->persist($ticket);
 		$this->em->persist($ticket_message);
+
+		$ticket_manager->saveTicket($ticket, $context);
 
 		$this->em->flush();
 

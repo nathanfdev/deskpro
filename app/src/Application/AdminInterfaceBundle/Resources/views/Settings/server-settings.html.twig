@@ -1,0 +1,103 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<section class="dp-paneblock dp-listpane">
+	<header>
+		<h3>Server Settings</h3>
+	</header>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>Helpdesk Settings</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-12">
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.rewrite_urls" />
+							<h4>Enable clean URLs</h4>
+						</label>
+						<span class="help-block">
+							If your server supports it, you can enable this option to remove the <code>/index.php/</code> segment in all helpdeks URLs.
+						</span>
+					</div>
+					<div class="inner-group">
+						<label>
+							<input type="checkbox" ng-model="settings.redirect_correct_url" />
+							<h4>
+								Always redirect to helpdesk URL
+								{% if 'https://' in app.getSetting('core.deskpro_url') %}and always use a secure connection (https){% endif %}
+							</h4>
+						</label>
+						<span class="help-block">
+							When enabled, the helpdesk will ensure all users are using your helpdesk URL ({{ app.getSetting('core.deskpro_url') }}).
+							{% if 'https://' in app.getSetting('core.deskpro_url') %}
+								Since you are using secure connections (your url begins with <code>https://</code>),
+								this means any user that tries to browse your site using an insecure connection (using jsut <code>http://</code>)
+								will be automatically redirected to your secure site instead.
+							{% else %}
+								This is most useful for cases where multiple domains might map to the same site. For example, often <code>www.example.com</code>
+								and <code>example.com</code> will point to the same site. But in most cases, you want to auto-redirect 'non-www' links to the 'www'
+								link so everyone is always using the same URL.
+							{% endif %}
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>Cookie Settings</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-12">
+					<div class="inner-group">
+						<label>
+							<h4>Cookie Path</h4>
+						</label>
+						<br/>
+						<input type="text" class="form-control" ng-model="settings.cookie_path" style="width: 40%" />
+					</div>
+					<div class="inner-group">
+						<label>
+							<h4>Cookie Domain</h4>
+						</label>
+						<br/>
+						<input type="text" class="form-control" ng-model="settings.cookie_domain" style="width: 40%" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<footer>
+		<div class="dp-content">
+			<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+				<div dp-hide-spinning="saving">
+					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+					<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+				</div>
+				<div dp-show-spinning="saving">
+					<i class="spinner-flat"></i>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</section>
+	</form>
+	<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

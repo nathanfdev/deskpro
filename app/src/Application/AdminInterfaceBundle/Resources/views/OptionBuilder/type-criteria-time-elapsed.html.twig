@@ -1,0 +1,21 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap"><label style="margin-top: 3px;">{{ ng_var('type_title') }}</label></td>
+				<td width="100%">
+					<select
+						ui-select2="{dropdownAutoWidth:true}"
+						ng-model="model.op"
+						style="min-width: 50px;"
+					>
+						<option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
+						<option ng-if="operators.indexOf('gte') !== -1" value="gte">&gt;=</option>
+					</select>
+
+					<dp-time-with-unit model-type="array" ng-model="model.value" />
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

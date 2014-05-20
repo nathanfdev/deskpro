@@ -34,15 +34,10 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\Entity;
 
 /**
  * A Twitter Account contains twitter username and accesstoken
@@ -109,6 +104,15 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		$this->followers = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->searches = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->persons = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * @return TwitterAccount
+	 */
+
+	public static function createTwitterAccount()
+	{
+		return new self();
 	}
 
 	/**
@@ -389,17 +393,122 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccount';
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts', ));
+		$metadata->setPrimaryTable(array('name' => 'twitter_accounts',));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'oauth_token', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'oauth_token', 'dpApi' => false, 'dpqlAccess' => false));
-		$metadata->mapField(array( 'fieldName' => 'oauth_token_secret', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'oauth_token_secret', 'dpApi' => false, 'dpqlAccess' => false ));
-		$metadata->mapField(array( 'fieldName' => 'last_processed_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'last_processed_id', ));
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'id',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'id',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'oauth_token',
+				 'type'       => 'string',
+				 'length'     => 4000,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'oauth_token',
+				 'dpApi'      => false,
+				 'dpqlAccess' => false
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'oauth_token_secret',
+				 'type'       => 'string',
+				 'length'     => 4000,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'oauth_token_secret',
+				 'dpApi'      => false,
+				 'dpqlAccess' => false
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'last_processed_id',
+				 'type'       => 'bigint',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'last_processed_id',
+			)
+		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'account', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'friends', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFriend', 'mappedBy' => 'account',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'followers', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFollower', 'mappedBy' => 'account',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'searches', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch', 'mappedBy' => 'account',  ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'persons', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'twitter_accounts_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
+		$metadata->mapManyToOne(
+			array(
+				 'fieldName'    => 'user',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser',
+				 'mappedBy'     => null,
+				 'inversedBy'   => 'account',
+				 'joinColumns'  => array(
+					 0 => array(
+						 'name'                 => 'user_id',
+						 'referencedColumnName' => 'id',
+						 'unique'               => true,
+						 'nullable'             => true,
+						 'onDelete'             => 'cascade',
+						 'columnDefinition'     => null,
+					 ),
+				 ),
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				 'fieldName'    => 'friends',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFriend',
+				 'mappedBy'     => 'account',
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				 'fieldName'    => 'followers',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFollower',
+				 'mappedBy'     => 'account',
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				 'fieldName'    => 'searches',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch',
+				 'mappedBy'     => 'account',
+			)
+		);
+		$metadata->mapManyToMany(
+			array(
+				 'fieldName'    => 'persons',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+				 'joinTable'    => array(
+					 'name'               => 'twitter_accounts_person',
+					 'schema'             => null,
+					 'joinColumns'        => array(
+						 0 => array(
+							 'name'                 => 'account_id',
+							 'referencedColumnName' => 'id',
+							 'nullable'             => true,
+							 'onDelete'             => 'cascade',
+							 'columnDefinition'     => null,
+						 ),
+					 ),
+					 'inverseJoinColumns' => array(
+						 0 => array(
+							 'name'                 => 'person_id',
+							 'referencedColumnName' => 'id',
+							 'nullable'             => true,
+							 'onDelete'             => 'cascade',
+							 'columnDefinition'     => null,
+						 ),
+					 ),
+				 ),
+			)
+		);
 	}
 }

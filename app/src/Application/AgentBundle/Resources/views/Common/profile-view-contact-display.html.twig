@@ -14,7 +14,7 @@
 	{% if not show_only or show_only.website %}
 	{% for contact in contact_data.website %}
 		<li class="website {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			<a href="{{ contact.url }}" target="_blank">{{ contact.display }}</a>
+			<a href="{{ contact.url }}" target="_blank">{{ contact.display }}</a> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}
@@ -25,9 +25,9 @@
 	{% for contact in contact_data.twitter %}
 		<li class="twitter {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
 			{% if use_local_twitter %}
-				<a data-route="page:{{ path('agent_twitter_user_find', {'name': contact.username, 'tab': 1}) }}">{{ contact.username }}</a>
+				<a data-route="page:{{ path('agent_twitter_user_find', {'name': contact.username, 'tab': 1}) }}">{{ contact.username }}</a> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 			{% else %}
-				<a href="{{ contact.profile_url }}" target="_blank">{{ contact.username }}</a>
+				<a href="{{ contact.profile_url }}" target="_blank">{{ contact.username }}</a> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 			{% endif %}
 		</li>
 	{% endfor %}
@@ -36,7 +36,7 @@
 	{% if not show_only or show_only.linked_in %}
 	{% for contact in contact_data.linked_in %}
 		<li class="linkedin {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a>
+			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}
@@ -44,7 +44,7 @@
 	{% if not show_only or show_only.facebook %}
 	{% for contact in contact_data.facebook %}
 		<li class="facebook {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a>
+			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}
@@ -55,7 +55,7 @@
 			{% if contact.country_calling_code %}
 				<span class="country-code">+{{ contact.country_calling_code }}</span>
 			{% endif %}
-			<span class="number">{{ contact.number }}</span>
+			<span class="number">{{ contact.number }} {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}</span>
 		</li>
 	{% endfor %}
 	{% endif %}
@@ -66,7 +66,7 @@
 			{% if contact.country_calling_code %}
 				<span class="country-code">+{{ contact.country_calling_code }}</span>
 			{% endif %}
-			<span class="number">{{ contact.number }}</span>
+			<span class="number">{{ contact.number }} {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}</span>
 		</li>
 	{% endfor %}
 	{% endif %}
@@ -77,7 +77,7 @@
 			{% if contact.country_calling_code %}
 				<span class="country-code">+{{ contact.country_calling_code }}</span>
 			{% endif %}
-			<span class="number">{{ contact.number }}</span>
+			<span class="number">{{ contact.number }}</span> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}
@@ -85,7 +85,7 @@
 	{% if not show_only or show_only.instant_message %}
 	{% for contact in contact_data.instant_message %}
 		<li class="im {{ contact.service }} {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			{{ contact.username }}
+			{{ contact.username }} {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}
@@ -99,7 +99,7 @@
 		<ul>
 			{% for contact in contact_data.address %}
 				<li class="address tipped" data-tipped='{% if contact.rec.comment %}{{ contact.rec.comment }}<br />{% endif %}<img src="{{ contact.map_url }}" width="200" height="200" />' data-tipped-options="hook: 'leftmiddle'">
-					{{ contact.address_html|raw }}
+					{{ contact.address_html|raw }} <br/>{% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 				</li>
 			{% endfor %}
 		</ul>

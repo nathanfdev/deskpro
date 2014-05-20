@@ -1,0 +1,125 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="ChatSetup.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>Chat Setup</h3>
+			</header>
+
+			<article>
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>Enable / Disable Chat</span>
+						</h3>
+					</div>
+
+					<div class="form-group">
+						<button dp-toggle-switch ng-model="setup.chat_enabled" ng-change="ChatSetup.toggleChat()">
+
+						</button>
+						<h4><span class="title-text">Enable / Disable Chat</span></h4>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>"Chat with us" Tab</span>
+						</h3>
+					</div>
+
+					<button dp-inhelp-btn="admin.chat_setup.widget_chat_explain"></button>
+					<button dp-inhelp-btn="admin.chat_setup.chat_important"></button>
+
+					<div class="panel-help" dp-inhelp-body="admin.chat_setup.widget_chat_explain">
+						<p>
+							{{ phrase('admin.portal.website_widgets_chat_explain') }}
+						</p>
+					</div>
+
+					<div class="panel-help" dp-inhelp-body="admin.chat_setup.chat_important">
+						<p>
+							<strong style="color: #FF5500;">Important:</strong>
+							The chat widget only appears when there are agents available for chat in the Agent Interface.
+
+							<p ng-if="!setup.chat_online">
+								At the moment, there no agents signed in to chat so the widget will not appear.
+							</p>
+						</p>
+					</div>
+
+					<div class="inner-group">
+
+						<p>
+							Tab title: <input type="text" class="form-control" style="width: 275px;"
+											  ng-model="chat_options.start_phrase">
+						</p>
+
+						<p>
+							Tab position:
+							<select ng-model="chat_options.position" ui-select2 style="width: 160px;">
+								<option value="left">Bottom left</option>
+								<option value="right">Bottom right</option>
+							</select>
+						</p>
+						<p ng-show="Embeds.langs.length > 1">
+							Language: <select ng-model="chat_options.lang_id" ui-select2 style="width: 200px;">
+								<option value="0">Default</option>
+								<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">
+									{{ ng_var('l.title') }}
+								</option>
+							</select>
+						</p>
+						<p>
+							<label><input type="checkbox" ng-model="chat_options.show_offline"/> Show button even when
+								chat is offline</label>
+
+						<div style="padding-top: 3px;" ng-show="chat_options.show_offline">
+							Offline tab title:
+							<input type="text" class="form-control" style="width: 275px;"
+								   ng-model="chat_options.offline_phrase">
+						</div>
+						<div style="padding-top: 3px;" ng-show="chat_options.show_offline">
+							URL the button goes to when offline:
+							<input type="text" class="form-control"
+								   style="width: 275px;"
+								   ng-model="chat_options.offline_url"
+								   ng-init="chat_options.offline_url = '{{ url_full('user_tickets_new') }}'">
+						</div>
+						<div class="editor-row" style="width: 60%">
+							<div class="editor-wrap">
+								<div class="editor" ng-model="code_snippets.chat" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+									}" style="height: 220px;">
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<p>{{ phrase('admin.portal.website_widget_install') }}</p>
+
+						<p>Related articles:</p>
+						<ul class="small-detail-list">
+							<li>
+								<a href="https://support.deskpro.com/kb/articles/146" target="_blank">
+									Set language from the chat widget
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</article>
+
+		</section>
+	</form>
+	{{ ng_tpl('AdminInterface:ChatSetup:embed-code.html.twig') }}
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'AdminInterfaceBundle:Layout:single-page-app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li><a href="#/dev_ui">UI Elements</a></li>
+			<li><a href="#/dev_ui_table">UI Tables</a></li>
+		</ul>
+	</nav>
+{% endblock %}
+{% block fullpane_content %}
+<section class="dp-paneblock">
+	<article class="pane-content no-pad">
+		<div class="pane-fullpage fullwidth">
+			<article class="padd">
+				<p>
+					Use the same styles as you find with <a href="http://getbootstrap.com/css/#tables">Bootstrap</a>.
+					We have a few extra helper classes:
+				</p>
+				<ul>
+					<li><code>td.alt</code> adds a colour to the background cell (like the ID column below)</li>
+					<li><code>td.dp-id-col</code> makes the column no wider than it needs to be</li>
+					<li><code>td.title</code> with a <code>label</code> adds a background to the table cell and makes the label bold and right-aligned (like in the second table)</li>
+					<li><code>em.dp-id</code> can be used around linked ID's (like the links in the ID column below)</li>
+				</ul>
+
+				<br/><br/><br/>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Info</th>
+							<th>Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="alt dp-id-col">
+								<a href="#"><em class="dp-id">123</em></a>
+							</td>
+							<td>
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+							</td>
+							<td>
+								Ajhfr
+							</td>
+						</tr>
+						<tr>
+							<td class="alt">
+								<a href="#"><em class="dp-id">123123</em></a>
+							</td>
+							<td>
+								Sed id enim id nisi viverra rutrum condimentum ac odio. Donec suscipit, sapien at dignissim accumsan, massa massa malesuada nunc.
+							</td>
+							<td>
+								SXCR
+							</td>
+						</tr>
+						<tr>
+							<td class="alt">
+								<a href="#"><em class="dp-id">1233</em></a>
+							</td>
+							<td>
+								id commodo quam est id lorem. Nam dapibus venenatis augue, ac hendrerit felis facilisis congue.
+							</td>
+							<td>
+								Dcgt
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+
+				<br/><br/><br/>
+
+				<table class="table ">
+					<thead>
+						<tr>
+							<th colspan="2">Some heading here about the table</th>
+						</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td class="title">
+							<label>Example Title</label>
+						</td>
+						<td>
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+						</td>
+					</tr>
+					<tr>
+						<td class="title">
+							<label>Example Title</label>
+						</td>
+						<td>
+							Sed id enim id nisi viverra rutrum condimentum ac odio. Donec suscipit, sapien at dignissim accumsan, massa massa malesuada nunc.
+						</td>
+					</tr>
+					<tr>
+						<td class="title">
+							<label>Example Title</label>
+						</td>
+						<td>
+							id commodo quam est id lorem. Nam dapibus venenatis augue, ac hendrerit felis facilisis congue.
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<br/><br/><br/>
+
+				<table class="table table-bordered">
+					<thead>
+					<tr>
+						<th colspan="4">This is table.table-bordered and has a tr.success a td.danger</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td class="title">
+							<label>Example Title</label>
+						</td>
+						<td>
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+						</td>
+						<td>
+							ABC
+						</td>
+						<td>
+							DEF
+						</td>
+					</tr>
+					<tr class="success">
+						<td class="title">
+							<label>Example Title</label>
+						</td>
+						<td>
+							Sed id enim id nisi viverra rutrum condimentum ac odio. Donec suscipit, sapien at dignissim accumsan, massa massa malesuada nunc.
+						</td>
+						<td>
+							ABC
+						</td>
+						<td>
+							DEF
+						</td>
+					</tr>
+					<tr>
+						<td class="title">
+							<label>Example Title</label>
+						</td>
+						<td>
+							id commodo quam est id lorem. Nam dapibus venenatis augue, ac hendrerit felis facilisis congue.
+						</td>
+						<td class="danger">
+							ABC
+						</td>
+						<td>
+							DEF
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+		</div>
+	</article>
+</section>
+{% endblock %}

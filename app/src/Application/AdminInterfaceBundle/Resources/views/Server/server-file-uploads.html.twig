@@ -1,0 +1,359 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>File Uploads</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<h4>{{ phrase('admin.server.file_storage_mechanism') }}</h4>
+
+			<table class="table table-bordered">
+				<tbody>
+
+					<tr ng-if="data.using_file_system">
+						<td>
+							{{ phrase('admin.server.storage_mechanism') }}
+						</td>
+						<td>
+							{{ phrase('admin.server.file_storage') }}
+
+							<div style="font-size: 11px">
+
+								{{ phrase('admin.server.notice_most_efficient_storage') }}
+
+								<div ng-if="!data.moving_files.id">
+
+									Databases are not designed to store files.
+									While not recommended, you can
+									<a ng-click="Ctrl.startSwitchStorage();$event.preventDefault();" ng-href="#">
+										switch back to using database storage
+									</a>.
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr ng-if="data.using_file_system">
+						<td>{{ phrase('admin.server.storage_path') }}</td>
+						<td>{{ ng_var('data.file_storage_path') }}</td>
+					</tr>
+
+					<tr ng-if="!data.using_file_system">
+						<td>
+							{{ phrase('admin.server.storage_mechanism') }}
+						</td>
+						<td>
+							{{ phrase('admin.server.database_storage') }}
+
+							<div style="font-size: 11px">
+
+								<div ng-if="!data.moving_files.id">
+
+									Databases are not designed to store files. We recommend
+									<a ng-click="Ctrl.startSwitchStorage();$event.preventDefault();" ng-href="#">
+										switching to filesystem storage
+									</a>
+									where files are stored as files in a directory on your server.
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td ng-if="data.moving_files.id || fileTransferStarted" colspan="2" class="success">
+
+							<span dp-status-update="/server_file_uploads/switch_status"
+								  status-update-conditions="update_started"
+								  status-update-default-message="Requesting transferring status information..."
+								  status-update-completed-growl-message="Transferring of files finished"
+								  status-update-interval="15000"
+								  status-update-immediate="false"
+								  style="font-style:italic;">
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<h4>Upload Restrictions</h4>
+
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							Setting
+						</th>
+						<th>
+							Users
+						</th>
+						<th>
+							Agents
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Max Upload Size</td>
+						<td>
+							{{ ng_var('data.restrictions.attach_user_maxsize | filesize_display') }}
+						</td>
+						<td>
+							{{ ng_var('data.restrictions.attach_agent_maxsize | filesize_display') }}
+						</td>
+					</tr>
+					<tr>
+						<td>File Types</td>
+						<td>
+							<span ng-if="data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_must_exts">
+								All file types except these are allowed:
+								<br>{{ ng_var('data.restrictions.attach_user_must_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_user_not_exts && data.restrictions.attach_user_must_exts">
+								Only these file types allowed:
+								<br>{{ ng_var('data.restrictions.attach_user_not_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_not_exts">
+								All file types are allowed
+							</span>
+						</td>
+						<td>
+							<span ng-if="data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_must_exts">
+								All file types except these are allowed:
+								<br>{{ ng_var('data.restrictions.attach_agent_must_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_agent_not_exts && data.restrictions.attach_agent_must_exts">
+								Only these file types allowed:
+								<br>{{ ng_var('data.restrictions.attach_agent_not_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_not_exts">
+								All file types are allowed
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<h4>{{ phrase('admin.server.test_a_file_upload') }}</h4>
+
+
+			<form id="fileupload"
+				  method="POST"
+				  enctype="multipart/form-data"
+				  file-upload="fileUploadOptions"
+				  action="{{ ng_var('fileUploadOptions.url') }}">
+
+				<div class="fileinput-button btn btn-success" ng-show="!active() && !fileSelected">
+					<span>Select File</span>
+					<input type="file" name="file">
+				</div>
+
+				<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
+
+				<div class="pull-left" ng-show="!active() && fileSelected">
+					<button type="button" class="btn btn-warning" ng-click="submit();queue=[];">
+						<span>Upload File</span>
+					</button>
+				</div>
+
+				<div class="pull-left file-upload-cancel" ng-show="!active() && fileSelected">
+					<a href="#" class="file-upload-cancel" ng-click="$event.preventDefault();">cancel</a>
+				</div>
+
+				<div class="clearfix"></div>
+
+				<div class="file-upload-progress-block" ng-show="active() && fileSelected">
+					<div class="progress progress-striped active" file-upload-progress="progress()">
+						<div class="progress-bar progress-bar-success"
+							 ng-style="{width: num + '%'}"></div>
+					</div>
+				</div>
+			</form>
+
+			<div class="well success-message upload-message"
+				 ng-if="fileUploadResults && !fileUploadResults.upload_failed">
+				<strong>Upload was {{ phrase('admin.server.success') }}</strong><br>
+				<a ng-href="{{ ng_var('fileUploadResults.uploaded_file_url') }}" target="_blank">
+					{{ phrase('admin.server.download_attachment') }}
+				</a>
+			</div>
+
+			<div class="well danger-message upload-message"
+				 ng-if="fileUploadResults && fileUploadResults.upload_failed">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				We detected a problem while trying to upload your file. The most common reasons are:
+				<ul style="margin-top: 3px;">
+					<li style="margin-bottom: 3px;" ng-if="!fileUploadResults.is_tmp_writable">
+						The temporary storage directory (upload_tmp_dir in php.ini)
+						is currently set to {{ php_vars.upload_tmp_dir_real }}. This
+						directory
+						<strong>is not writable</strong> by the web server. This means
+						uploads can not be saved and will always fail. Edit php.ini and
+						specify a
+						path that is writable by the server, or change permissions on the
+						directory so the server can write to it.
+					</li>
+					<li style="margin-bottom: 3px;" ng-if="fileUploadResults.is_tmp_writable">
+						The temporary storage directory defined in php.ini as
+						displayed below is not set or is set to a directory
+						that the web server cannot write to. Correcting the directory or
+						making it writable may solve the problem.
+					</li>
+					<li>
+						You have chosen a file that is larger than your server
+						configuration allows. File limits are set using the
+						options in php.ini as displayed below. In addition to these limits, your
+						web server (such as IIS or Apache)
+						may also enforce its own limits. Limits enforced by the web server
+						cannot be detected by the helpdesk and will need to be
+						checked manually.
+					</li>
+				</ul>
+			</div>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('admin.server.php_settings') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.value') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.file-uploads">file_uploads</a>
+
+							<p>{{ phrase('admin.server.required_for_upload') }}</p>
+						</td>
+						<td width="200">
+							{{ ng_var('data.php_vars.file_uploads') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a>
+
+							<p>{{ phrase('admin.server.php_upload_location') }}</p>
+
+							<div ng-if="!data.php_vars.upload_tmp_dir">
+								<p>
+									<strong>Note:</strong> There is currently no value set in php.ini for
+									upload_tmp_dir. The value shown to the right
+									is your system temp directory which is used by default. If you are having problems
+									uploading files, you should
+									edit php.ini and set a specific path for upload_tmp_dir.
+								</p>
+							</div>
+						</td>
+						<td>
+							<span ng-if="data.php_vars.upload_tmp_dir">
+								{{ ng_var('data.php_vars.upload_tmp_dir') }}
+							</span>
+							<span ng-if="!data.php_vars.upload_tmp_dir">
+								{{ ng_var('data.php_vars.upload_tmp_dir_real') }}
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize">upload_max_filesize</a>
+
+							<p>{{ phrase('admin.server.max_single_file_size') }}</p>
+						</td>
+						<td>
+							{{ ng_var('data.php_vars.upload_max_filesize') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.post-max-size">post_max_size</a>
+
+							<p>{{ phrase('admin.server.max_post_size') }}</p>
+						</td>
+						<td>
+							{{ ng_var('data.php_vars.post_max_size') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.memory-limit">memory_limit</a>
+
+							<p>{{ phrase('admin.server.upload_memory_limit_explain') }}</p>
+						</td>
+						<td>
+							<span ng-if="data.php_vars.memory_limit_real == -1">
+								No limit
+							</span>
+
+							<span ng-if="data.php_vars.memory_limit_real != -1">
+								{{ ng_var('data.php_vars.memory_limit_real | filesize_display') }}
+							</span>
+
+							<div
+									style="font-size: 11px;"
+									ng-if="data.php_vars.memory_limit &&
+									 data.php_vars.memory_limit
+									  != data.php_vars.memory_limit_real
+									  ">
+								Successfully changed to
+								{{ ng_var('data.php_vars.memory_limit | filesize_display') }}
+								at runtime
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{{ phrase('admin.server.upload_effect_max') }}
+
+							<p>{{ phrase('admin.server.upload_effect_max_explain') }}</p>
+						</td>
+						<td>
+							Approximately {{ ng_var('data.effective_max_upload_size') }}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<p>
+								{{ phrase('admin.server.edit_php_ini_to_make_changes') }}
+								<a ng-href="{{ ng_var('data.url_to_learn_php_ini') }}">
+									{{ phrase('admin.server.learn_about_editing_php_ini') }}
+								</a>
+							</p>
+
+							<p ng-if="data.php_ini_path">
+								We have detected the path to your php.ini file at {{ ng_var('data.php_ini_path') }}
+							</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}

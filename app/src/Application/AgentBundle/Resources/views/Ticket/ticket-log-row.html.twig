@@ -12,6 +12,10 @@
 				{% else %}
 					<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: log.trigger_id}) }}</span>,
 				{% endif %}
+			{% elseif log.escalation_id %}
+				<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ log.escalation_id }}</span>,
+			{% elseif log.sla %}
+				<span class="trigger-id">{{ phrase('agent.general.sla') }} {{ log.sla.id }}</span>
 			{% elseif log.person %}
 				<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': log.person.id}) }}">{{ log.person.display_name }}</a>,
 			{% endif %}
@@ -31,17 +35,14 @@
 			>
 				<div class="info">
 					{% if sublog.sla %}
-						<span class="sla">{{ phrase('agent.general.sla') }} {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} (Warning){% elseif sublog.sla_status == 'fail' %} (Failed){% endif %}</span>,
+						<span class="trigger-id">{{ phrase('agent.general.sla') }} {{ sublog.sla.title }} &middot; {% if sublog.sla_status == 'warning' %} (Warning){% elseif sublog.sla_status == 'fail' %} (Failed){% endif %}</span>
 					{% elseif sublog.trigger_id %}
 						{% if sublog.details.trigger_is_escalation %}
-							<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ sublog.trigger_id }}</span>,
+							<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ sublog.trigger_id }}</span>
 						{% else %}
-							<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: sublog.trigger_id}) }}</span>,
+							<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: sublog.trigger_id}) }}</span>
 						{% endif %}
-					{% elseif sublog.person %}
-						<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': sublog.person.id}) }}">{{ sublog.person.display_name }}</a>,
 					{% endif %}
-					<time class="timeago" title="{{ sublog.date_created|date('c', 'UTC') }}">{{ sublog.date_created|date('fulltime') }}</time>
 				</div>
 
 				<div class="{{ sublog.action_type }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat 0 3px;">

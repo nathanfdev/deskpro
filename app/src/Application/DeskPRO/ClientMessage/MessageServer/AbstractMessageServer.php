@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageServer;
 
-use Application\DeskPRO\ClientMessage\Event;
-
 use Application\DeskPRO\App;
+use Application\DeskPRO\ClientMessage\Event;
 use Application\DeskPRO\Entity;
 
 

@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
@@ -52,7 +50,7 @@ class Data extends HandlerAbstract
 			$setData = $data['value'];
 		}
 
-		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array('required' => false));
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array('required' => false));
 
 		return $field;
 	}

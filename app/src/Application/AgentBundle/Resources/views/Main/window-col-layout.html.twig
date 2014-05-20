@@ -4,6 +4,22 @@
 	</div>
 	<div id="dp_source">
 		<div id="dp_source_loading"></div>
+		<div id="dp_source_footer">
+			<footer class="results-nav no-click-switch" id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
+				<div class="cursor">
+					<ul id="agent_chat_online_icons">
+						{% for agent in agents %}
+							<li
+								class="{% if agent.id == app.user.id %}agent-me{% else %}agent-{{ agent.id }}{% endif %}"
+								style="{% if agent.id != app.user.id and agent.id not in online_agent_ids %}display: none;{% endif %}"
+							>
+								<i class="agent-inline-icon" style="background-image: url({{ agent.getPictureUrl(16) }});"></i>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</footer>
+		</div>
 	</div>
 	<div id="dp_list">
 		<div id="dp_list_loading"></div>
@@ -24,7 +40,6 @@
 			<div id="tabNavSelectorRight">
 				<a class="tabSlideRight"></a>
 			</div>
-			{# <div id="tabDropdownPicker"></div> #}
 		</div>
 		<div id="dp_content_wrap">
 			<div id="dp_content_info">

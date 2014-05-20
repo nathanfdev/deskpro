@@ -215,14 +215,26 @@ class Strings
 
 
 	/**
-	 * Replaces all linebreaks with a space character, making it a single line of text
+	 * Replaces all line breaks with a space character, making it a single line of text
 	 *
-	 * @param  sstring $string The string to work on
+	 * @param  string $string The string to work on
 	 * @return string
 	 */
 	public static function removeLineBreaks($string)
 	{
 		return preg_replace('#\n|\r\n|\r#', ' ', $string);
+	}
+
+
+	/**
+	 * Replace all whitespace with a single space.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function collapseWhitespace($string)
+	{
+		return preg_replace("#\\s+#", ' ', $string);
 	}
 
 
@@ -1952,6 +1964,21 @@ class Strings
 
 
 	/**
+	 * Reduces a mutli-line string to a single line.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function implodeLines($string)
+	{
+		$string = self::trimLines($string);
+		$string = preg_replace("#[\n\r]+#", ' ', $string);
+
+		return $string;
+	}
+
+
+	/**
 	 * Does a "real" trim, triming other whitespace like non-breaking spaces.
 	 *
 	 * @param $string
@@ -2391,7 +2418,7 @@ class Strings
 
 			$time = time();
 
-			// see app/vendor/php-utf8/utils/bad.php
+			// see app/vendor-src/php-utf8/utils/bad.php
 			$UTF8_BAD =
 				'([\x00-\x7F]'.                          # ASCII (including control chars)
 				'|[\xC2-\xDF][\x80-\xBF]'.               # non-overlong 2-byte

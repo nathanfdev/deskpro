@@ -35,13 +35,17 @@
 namespace Application\UserBundle\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketAttachment;
-use Application\DeskPRO\Entity\Person;
 
-class NewReply
+class NewReply extends \ArrayObject
 {
+	protected static $prop_names = array(
+		'message' => 1, 'new_upload' => 1, 'attach_ids' => 1,
+		'attach_ids_authed' => 1
+	);
+
 	public $message;
 
 	/**
@@ -142,4 +146,9 @@ class NewReply
 	{
 		return $this->ticket_message;
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

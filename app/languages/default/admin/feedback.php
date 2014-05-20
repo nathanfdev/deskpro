@@ -9,6 +9,8 @@
 	'admin.feedback.closed_statuses'              => 'Closed Statuses',
 	'admin.feedback.confirm_delete_this'          => 'Are you sure you want to delete this status?',
 	'admin.feedback.count_feedback'               => '{{count}} feedback|{{count}} feedback',
+	'admin.feedback.count_active_statuses'        => '{{count}} active status|{{count}} active statuses',
+	'admin.feedback.count_closed_statuses'        => '{{count}} closed status|{{count}} closed statuses',
 	'admin.feedback.create_new_category'          => 'Create New Category',
 	'admin.feedback.create_new_status'            => 'Create New Status',
 	'admin.feedback.delete_category'              => 'Delete Category',

@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Notifications;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Person;
 
 class NewFeedbackNotification extends AbstractAgentNotification
 {

@@ -35,12 +35,11 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailSource;
-use Application\DeskPRO\EmailGateway\AbstractGatewayProcessor;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 
 class PreProcessor extends AbstractGatewayProcessor
 {
 	protected $error = null;
+	protected $error_type = 'rejected';
 	protected $source_info = null;
 
 	public function run()
@@ -73,20 +72,12 @@ class PreProcessor extends AbstractGatewayProcessor
 		# From is a know gateway address
 		#------------------------------
 
-		$gateway_matcher = App::getSystemService('gateway_address_matcher');
-		$match_address_id = null;
-		if ($found_gateway = $gateway_matcher->getMatchingAddress($from, null, $match_address_id)) {
+		$account_manager = App::$container->getEmailAccountManager();
+		if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
 			$this->error = EmailSource::ERR_FROM_GATEWAY;
 			$this->source_info[] = "Read from address: " . $from;
-			$this->source_info[] = "Matched gateway: " . $found_gateway->id;
-			$this->source_info[] = "Matched gateway pattern: " . $match_address_id;
-			return;
-		}
-
-		if ($gateway_matcher->isManagedAddress($from)) {
-			$this->error = EmailSource::ERR_FROM_GATEWAY;
-			$this->source_info[] = "Read from address: " . $from;
-			$this->source_info[] = "Is a registered helpdesk address";
+			$this->source_info[] = "Matched account: " . $found_account->id;
+			$this->source_info[] = "Account addresses: " . implode(', ', $found_account->getAllAddresses());
 			return;
 		}
 
@@ -121,10 +112,10 @@ class PreProcessor extends AbstractGatewayProcessor
 		# on the account
 		#------------------------------
 
-		if ($this->gateway->start_date_limit && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
-			if ($email_date < $this->gateway->start_date_limit) {
+		if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
+			if ($email_date < $this->account->date_read_start) {
 				$this->error = EmailSource::ERR_DATE_LIMIT;
-				$this->source_info[] = "Gateway date limit: " . $this->gateway->start_date_limit->format(\DateTime::RFC2822);
+				$this->source_info[] = "Gateway date limit: " . $this->account->date_read_start->format(\DateTime::RFC2822);
 				$this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
 				return;
 			}
@@ -136,6 +127,15 @@ class PreProcessor extends AbstractGatewayProcessor
 	public function isValid()
 	{
 		return $this->error === null;
+	}
+
+	/**
+	 * 'error' or 'rejected'
+	 * @return string
+	 */
+	public function getErrorType()
+	{
+		return $this->error_type;
 	}
 
 	public function getErrorCode()

@@ -34,10 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Entity\Department as DepartmentEntity;
 
 class Department extends AbstractCategoryRepository
 {
@@ -46,13 +44,94 @@ class Department extends AbstractCategoryRepository
 		return $this->getRootNodes();
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Department[]
+	 */
+
+	public function getTicketDepartments()
+	{
+		return $this->_em->createQuery("
+			SELECT d
+			FROM DeskPRO:Department d
+			WHERE d.is_tickets_enabled = true
+			ORDER BY d.display_order ASC
+		")->execute();
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Department[]
+	 */
+
+	public function getChatDepartments()
+	{
+		return $this->_em->createQuery(
+			"
+			SELECT d
+			FROM DeskPRO:Department d
+			WHERE d.is_chat_enabled = true
+			ORDER BY d.display_order ASC
+			"
+		)->execute();
+	}
+
+	/**
+	 * @param DepartmentEntity $dep
+	 *
+	 * @return array
+	 */
+
+	public function getPermissionsInfo(DepartmentEntity $dep)
+	{
+		$perms = App::getDb()->fetchAll(
+			"SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?",
+			array($dep->id)
+		);
+
+		$data = array(
+			'usergroups'  => array(),
+			'agentgroups' => array(),
+			'agents'      => array()
+		);
+
+		foreach ($perms as $perm) {
+
+			if ($perm['usergroup_id']) {
+
+				if (App::getContainer()->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
+
+					$data['agentgroups'][] = array(
+						'usergroup_id' => (int)$perm['usergroup_id'],
+						'perm_name'    => $perm['name'],
+					);
+
+				} else {
+
+					$data['usergroups'][] = array(
+						'usergroup_id' => (int)$perm['usergroup_id'],
+						'perm_name'    => $perm['name'],
+					);
+				}
+			} elseif ($perm['person_id']) {
+
+				$data['agents'][] = array(
+					'agent_id'  => (int)$perm['person_id'],
+					'perm_name' => $perm['name']
+				);
+			}
+		}
+
+		return $data;
+	}
+
 
 	/**
 	 * Get the default ticket department for a given context (ticket, chat)
 	 *
 	 * @param string $context
-	 * @return \Application\DeskPRO\Entity\Department
+	 * @return \Application\DeskPRO\Entity\Department	 *
+	 * @throws \InvalidArgumentException
 	 */
+
 	public function getDefaultDepartment($context)
 	{
 		switch ($context) {
@@ -94,6 +173,13 @@ class Department extends AbstractCategoryRepository
 		return $dep;
 	}
 
+	/**
+	 * @param $context
+	 *
+	 * @return \Application\DeskPRO\Entity\Department
+	 * @throws \InvalidArgumentException
+	 */
+
 	public function getChildDepartments($context)
 	{
 		switch ($context) {
@@ -113,93 +199,5 @@ class Department extends AbstractCategoryRepository
 			WHERE d.parent IS NOT NULL
 				AND d.$check_field = 1
 		")->execute();
-	}
-
-
-	/**
-	 * Get deps that arent linked up to a gateway
-	 *
-	 * @return array
-	 */
-	public function getUnlinkedGatewayDepartments()
-	{
-		return $this->_em->createQuery("
-			SELECT dep
-			FROM DeskPRO:Department dep
-			LEFT JOIN dep.email_gateway em
-			WHERE em IS NULL
-			ORDER BY dep.display_order ASC
-		")->execute();
-	}
-
-
-	/**
-	 * @param $department
-	 * @param $email_gateway
-	 */
-	public function linkToGateway($department, $email_gateway = null)
-	{
-		$em = $this->_em;
-
-		$old_email_gateway = $department->email_gateway;
-
-		$queries = array();
-
-		// Unlink old
-		if ($old_email_gateway) {
-			$old_email_gateway->department = null;
-			$em->persist($old_email_gateway);
-
-			$queries[] = "UPDATE email_gateways SET department_id = NULL WHERE department_id = {$department->getId()}";
-
-			$department->email_gateway = null;
-		}
-
-		if ($email_gateway && $email_gateway->department) {
-			$old_dep = $email_gateway->department;
-			$old_dep->email_gateway = null;
-			$em->persist($old_dep);
-
-			$queries[] = "UPDATE departments SET email_gateway_id = NULL WHERE id = {$old_dep->getId()}";
-
-			$email_gateway->department = null;
-		}
-
-		// Link new
-		if ($email_gateway) {
-			$department->email_gateway = $email_gateway;
-			$email_gateway->department = $department;
-			$em->persist($email_gateway);
-
-			$queries[] = "UPDATE departments SET email_gateway_id = {$email_gateway->getId()} WHERE id = {$department->getId()}";
-			$queries[] = "UPDATE email_gateways SET department_id = {$department->getId()} WHERE id = {$email_gateway->getId()}";
-		}
-
-		$em->persist($department);
-		$em->flush();
-
-		foreach ($queries as $q) {
-			$em->getConnection()->executeUpdate($q);
-		}
-
-		// validate links
-		if ($email_gateway) {
-			$em->getConnection()->executeUpdate("
-				UPDATE departments
-				SET email_gateway_id = NULL
-				WHERE id != ? AND email_gateway_id = ?
-			", array($department->getId(), $email_gateway->getId()));
-			$em->getConnection()->executeUpdate("
-				UPDATE email_gateways
-				SET department_id = NULL
-				WHERE department_id = ? AND id != ?
-			", array($department->getId(), $email_gateway->getId()));
-		} else {
-			$em->getConnection()->executeUpdate("
-				UPDATE email_gateways
-				SET department_id = NULL
-				WHERE department_id = ?
-			", array($department->getId()));
-		}
 	}
 }

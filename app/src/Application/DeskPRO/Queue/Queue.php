@@ -34,13 +34,9 @@
 
 namespace Application\DeskPRO\Queue;
 
-use Orb\Util\Strings;
-use Orb\Util\Util;
-use Application\DeskPRO\Entity\QueueItem;
-
-use \Zend\Queue\Queue as ZendQueue;
-use \Zend\Queue\Exception as QueueException;
-use \Zend\Queue\Message as ZendMessage;
+use ZendQueue\Exception as QueueException;
+use ZendQueue\Message as ZendMessage;
+use ZendQueue\Queue as ZendQueue;
 
 /**
  * Some changes to Queue to seamlessly handle messages that point to QueueItem datas.

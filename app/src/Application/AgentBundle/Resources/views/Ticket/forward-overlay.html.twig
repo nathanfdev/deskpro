@@ -68,7 +68,7 @@
 						</div>
 						--- {{ phrase('agent.tickets.forwarded_message') }} ---<br/>
 						{{ phrase('agent.general.from') }}: {{ ticket.person.getDisplayName() }} &lt;<a href="mailto:{{ ticket.person.getPrimaryEmailAddress() }}">{{ ticket.person.getPrimaryEmailAddress() }}</a>&gt;<br/>
-						{{ phrase('agent.general.to') }}: {{ ticket.getFromAddress().name }} &lt;<a href="mailto:{{ ticket.getFromAddress().email }}">{{ ticket.getFromAddress().email }}</a>&gt;<br/>
+						{% if ticket.email_account %}{{ phrase('agent.general.to') }}: &lt;<a href="mailto:{{ ticket.email_account.address }}">{{ ticket.email_account.address }}</a>&gt;<br/>{% endif %}
 						{{ phrase('agent.general.subject') }}: {{ ticket.subject }}<br/>
 						{{ phrase('agent.general.date') }}: {{ date_created|date('fulltime') }}
 					</div>

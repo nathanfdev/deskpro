@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
-use Application\DeskPRO\Dpql\Exception;
 
 /**
  * Handler for COUNT() DPQL function calls, which can work like COUNT(*) with

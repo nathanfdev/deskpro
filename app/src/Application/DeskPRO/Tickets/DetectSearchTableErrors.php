@@ -130,7 +130,7 @@ class DetectSearchTableErrors
 			`agent_id`,
 			`agent_team_id`,
 			`organization_id`,
-			`email_gateway_id`,
+			`email_account_id`,
 			`creation_system`,
 			`status`,
 			`urgency`,

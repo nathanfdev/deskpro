@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Style;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Style;
 
 class UserStyle
 {

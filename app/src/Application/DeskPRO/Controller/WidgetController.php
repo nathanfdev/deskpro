@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Util;
-use Orb\Util\Strings;
-
 class WidgetController extends AbstractController
 {
 	/**
@@ -50,7 +47,7 @@ class WidgetController extends AbstractController
 	 */
 	public function proxyAction($key)
 	{
-		if (!App::isDebug() OR $key != 'DBEUG') {
+		if (!$this->container->isDebug() OR $key != 'DBEUG') {
 			$session = $this->session;
 			$check_key = $this->session->getSessionSecret('proxy_key');
 
@@ -114,7 +111,7 @@ class WidgetController extends AbstractController
 	{
 		$session = $this->session;
 
-		if (!App::isDebug() OR $key != 'DBEUG') {
+		if (!$this->container->isDebug() OR $key != 'DBEUG') {
 			$check_key = md5($session->getId() . App::getAppSecret());
 
 			if ($check_key != $key)  {

@@ -23,6 +23,8 @@
 >
 
 <input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />
+<input type="hidden" id="{{baseId}}_is_snippet" name="options[is_snippet]" value="0" />
+<input type="hidden" id="{{baseId}}_snippet_id" name="options[snippet_id]" value="0" />
 
 <input type="hidden" id="{{replyBaseId}}_exist_agent_id" value="{{ ticket.agent.id|default(0) }}" />
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
@@ -76,7 +78,7 @@
 		<strong><span class="hide-note">{{ phrase('agent.tickets.sending_your_message') }}</span><span class="hide-reply" style="display: none">{{ phrase('agent.tickets.adding_your_note') }}</span></strong>
 	</div>
 	<header>
-		{% if app.isPluginInstalled('MicrosoftTranslator') %}
+		{% if app.isAppInstalled('deskpro_ms_translator') %}
 			<div class="translate-controls">
 				<div class="dp-not-loading">
 					<div class="dp-btn-group dp-dropdown">
@@ -89,8 +91,8 @@
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle">
 							<select class="language_id">
-								{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
-									{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+								{% for code in app.getAppService('ms_translator').getLanguagesForTranslate() %}
+									{% set name = app.getAppService('ms_translator').getSingleLanguageName(code) %}
 									<option value="{{ code }}">{{ name }}</option>
 								{% endfor %}
 							</select>
@@ -221,7 +223,7 @@
 					{% endif %}
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.general.drop_here_to_insert_image') }}</h1></div>
 				</div>
-				{% if app.isPluginInstalled('MicrosoftTranslator') %}
+				{% if app.isAppInstalled('deskpro_ms_translator') %}
 					<div class="input-wrap unreset translate-row" style="display: none;">
 						<input type="hidden" name="reply_is_trans" id="{{ replyBaseId }}_reply_is_trans" value="" />
 						<textarea placeholder="" id="{{replyBaseId}}_replybox_txt2" name="message_original" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>

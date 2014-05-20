@@ -48,7 +48,7 @@ pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}fal
 pageMeta.isClosed = {% if ticket.status == 'closed' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 {# pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %}; #}
-pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
+pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 pageMeta.agents_with_perm = {{ agents_with_perm|json_encode|raw }};
 
 pageMeta.agentMap = {{ agent_map|json_encode|raw }};
@@ -60,10 +60,17 @@ pageMeta.lang = {{ {
 	'filter_results': phrase('agent.tickets.filter_results'),
 	'search': phrase('agent.general.search'),
 }|json_encode|raw }};
+
+{% if app.getsetting('core.apps_jira.enabled') %}
+	pageMeta.jiraEnabled = true;
+	pageMeta.jiraDefaultProject = "{{ app.getSetting('core.apps_jira.defaultProject') }}";
+{% endif %}
 </script>
-<div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+{% if app.getsetting('core.apps_jira.enabled') %}
+	{% include 'AgentBundle:Jira:widget.html.twig' %}
+{% endif %}
+<div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
+<div class="dp-page-content">
 
 {% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
@@ -87,6 +94,8 @@ pageMeta.lang = {{ {
 {% endif %}
 
 <header class="main-header" id="{{ baseId }}_page_header">
+	{{ dp_app_loc(baseId, 'header.top') }}
+
 	<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
 		<div class="locked-message">
 			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">{{ phrase('agent.tickets.unlock') }}</button>
@@ -137,7 +146,7 @@ pageMeta.lang = {{ {
 	</div>
 	<div class="row author last">
 		<div class="dp-btn-group dp-dropdown">
-			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover preload user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 				<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 					{{ ticket.person.getNameWithTitle() }}
 					<span class="email" id="{{ baseId }}_user_email_text">({{ ticket.person_email.email|default(ticket.person_email_address) }})</span>
@@ -187,7 +196,7 @@ pageMeta.lang = {{ {
 			<ul class="cc-row-list" id="{{ baseId }}_cc_row_list">
 				{% for part in user_parts %}
 					{% if loop.index0 < 2 %}
-						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms, preload: true } %}
+						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 					{% else %}
 						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 					{% endif %}
@@ -226,6 +235,9 @@ pageMeta.lang = {{ {
 		</div>
 		{% endif %}
 	</div>
+
+	{{ dp_app_loc(baseId, 'header.bottom') }}
+
 	<div class="margin"></div>
 </header>
 
@@ -306,11 +318,11 @@ pageMeta.lang = {{ {
 	</ul>
 </nav>
 
-{{ dp_widgets(baseId, 'ticket', 'header', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'properties', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'header.after') }}
+{{ dp_app_loc(baseId, 'properties.before') }}
 
 <div class="header-profile-box">
-<div class="profile-box-container">
+<div class="profile-box-container dp-simpletab-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
 			<div class="controls {% if ticket.isLocked(app.user) %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
@@ -325,13 +337,30 @@ pageMeta.lang = {{ {
 		{% set sla_pips %}
 			{% for ticket_sla in ticket.ticket_slas %}<span class="sla-pip {{ ticket_sla.sla_status }}" data-sla-id="{{ ticket_sla.sla_id }}"></span>{% endfor %}
 		{% endset %}
-		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
-			(baseId ~ '_fields_display_main_wrap'): phrase('agent.general.properties'),
-			(baseId ~ '_linked_wrap'): '<i class="icon-link"></i> ' ~ phrase('agent.tickets.linked_tickets') ~' (<span id="' ~ baseId ~ '_linked_count" data-count="'~linked_tickets.count~'">' ~ linked_tickets.count ~ '</span>)',
-			(baseId ~ '_tasks_wrap'): phrase('agent.general.tasks') ~' (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)',
-			(baseId ~ '_sla_wrap'): (((addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty) ? phrase('agent.general.slas') ~ ' ' ~ sla_pips|raw : false),
-			(baseId ~ '_billing_wrap'): (app.getSetting('core_tickets.enable_billing') ? phrase('agent.tickets.billing') : false)
-		}) }}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
+				{% if linked_tickets.count %}<li data-tab-for="#{{ baseId }}_linked_wrap"><i class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span id="{{ baseId }}_linked_count" data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)</li>{% endif %}
+				<li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>
+				{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
+					<li data-tab-for="#{{ baseId }}_sla_wrap">{{ phrase('agent.general.slas') }} {{ sla_pips|raw }}</li>
+				{% endif %}
+				{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+					<li data-tab-for="#{{ baseId }}_billing_wrap">
+						{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.enable_timelog') %}
+							{{ phrase('agent.tickets.billing_and_timelog') }}
+						{% elseif app.getSetting('core_tickets.enable_timelog') %}
+							{{ phrase('agent.tickets.billing_timelog') }}
+						{% else %}
+							{{ phrase('agent.tickets.billing') }}
+						{% endif %}
+					</li>
+				{% endif %}
+				{% if app.getsetting('core.apps_jira.enabled') %}
+					<li data-tab-for="#{{ baseId }}_jira_wrap">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
+				{% endif %}
+			</ul>
+		</nav>
 	</header>
 	<section class="description-area" style="padding:0">
 		<div class="error-list {% if validator_errors %}on{% endif %}" id="{{baseId}}_field_errors" {% if not validator_errors %}style="display:none"{% endif %}>
@@ -452,14 +481,21 @@ pageMeta.lang = {{ {
 				{% include 'AgentBundle:Ticket:view-slas.html.twig' %}
 			</article>
 		{% endif %}
-		{% if app.getSetting('core_tickets.enable_billing') %}
+		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
 			<article id="{{baseId}}_billing_wrap">
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
 			</article>
 		{% endif %}
-		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
+		{% if app.getSetting('core.apps_jira.enabled') %}
+			<article id="{{baseId}}_jira_wrap">
+				<div style="width: 100%; text-align: center;"><img src="/web/images/spinners/loading-big-circle.gif"/><br/>Please wait while we fetch the latest JIRA activities on this ticket.</div>
+			</article>
+		{% endif %}
+		{{ dp_app_loc(baseId, 'properties.tab') }}
 	</section>
 </div>
+
+	{{ dp_app_loc(baseId, 'properties.after') }}
 </div>
 
 <nav class="header-nav">
@@ -498,6 +534,12 @@ pageMeta.lang = {{ {
 			{{ phrase('agent.general.actions') }}
 			<span class="dp-caret"></span>
 		</li>
+		{% if app.getsetting('core.apps_jira.enabled') %}
+			<li id="{{ baseId }}_export_jira_trigger">
+				<i class="icon-share"></i>
+				{{ phrase('agent.jira.export_jira') }}
+			</li>
+		{% endif %}
 	</ul>
 </nav>
 
@@ -522,7 +564,10 @@ pageMeta.lang = {{ {
 	<li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold" data-action="set-hold">{{ phrase('agent.tickets.hold_btn') }}</li>
 	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">{{ phrase('agent.tickets.unhold_btn') }}</li>
 	{% if ticket_perms.modify_merge %}<li data-action="split">{{ phrase('agent.tickets.split_messages_into_ticket') }}</li>{% endif %}
-	{% if app.user.hasPerm('agent_tickets.create') %}<li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
+	{% if app.user.hasPerm('agent_tickets.create') %}
+		<li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>
+		<li data-action="link_existing_ticket">Link Existing Ticket</li>
+	{% endif %}
 	<li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'view_print': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.print') }}</a></li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
@@ -530,19 +575,21 @@ pageMeta.lang = {{ {
 
 <div class="pagecontent">
 
-{{ dp_widgets(baseId, 'ticket', 'properties', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'messages', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'main.top') }}
 
 {% if app.user.getPref('agent.ticket_reverse_order') %}
 	{% if ticket_perms.reply or ticket_perms.modify_notes %}
-	<div style="position:relative;" class="ticket_reverse_order">
-		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
-		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
-			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+		{{ dp_app_loc(baseId, 'replybox.before') }}
+		<div style="position:relative;" class="ticket_reverse_order">
+			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+			<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
+				{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+			</div>
 		</div>
-	</div>
+		{{ dp_app_loc(baseId, 'replybox.after') }}
 	{% endif %}
 {% endif %}
+{{ dp_app_loc(baseId, 'messages.before') }}
 
 <div class="profile-box-container ticket-messages">
 	<header>
@@ -720,22 +767,23 @@ pageMeta.lang = {{ {
 	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
 </div>
 
-{{ dp_widgets(baseId, 'ticket', 'messages', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'reply', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'messages.after') }}
 
 {% if not app.user.getPref('agent.ticket_reverse_order') %}
 	{% if ticket_perms.reply or ticket_perms.modify_notes %}
+	{{ dp_app_loc(baseId, 'replybox.before') }}
 	<div style="position:relative;">
 		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
 			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 		</div>
 	</div>
+	{{ dp_app_loc(baseId, 'replybox.after') }}
 	{% endif %}
 {% endif %}
 
-{{ dp_widgets(baseId, 'ticket', 'reply', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'footer', 'above', ticket_api) }}
+{{ dp_app_loc(baseId, 'main.after') }}
+{{ dp_app_loc(baseId, 'footer') }}
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">
@@ -890,8 +938,6 @@ pageMeta.lang = {{ {
 
 {% include 'AgentBundle:Ticket:custom-view-include.html.twig' %}
 
-{{ dp_widgets(baseId, 'ticket', '', '', ticket_api) }}
-
 </div>
 
 <div id="{{baseId}}_pending_add" style="display:none;" data-save-url="{{ path('agent_kb_newpending') }}">
@@ -915,5 +961,4 @@ pageMeta.lang = {{ {
 	</div>
 </div>
 
-</div></div> {# /scroll #}
-</div>{# /layout #}
+</div></div>{# /layout #}

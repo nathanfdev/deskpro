@@ -37,8 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 
-use Orb\Util\Strings;
-
 /**
  * Detects a ticket based off of In-Reply-To field and the From: must
  * be from a user we know about.
@@ -52,8 +50,10 @@ class InReplyToDetector implements TicketDetectorInterface
 	 */
 	protected $_found_person = null;
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * @param AbstractReader $reader
+	 * @return Ticket|null
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -89,7 +89,7 @@ class InReplyToDetector implements TicketDetectorInterface
 		# Try to find TAC
 		#------------------------------
 
-		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$auth_len = Ticket::TAC_AUTHCODE_LEN;
 		$authcode_min_len = $auth_len + 1;
 		$authcode_max_len = $auth_len + 7;
 
@@ -131,8 +131,11 @@ class InReplyToDetector implements TicketDetectorInterface
 		return null;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * @param Ticket $ticket
+	 * @param AbstractReader $reader
+	 * @return \Application\DeskPRO\Entity\Person|\Application\DeskPRO\Entity\TicketAccessCode|null
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -148,9 +151,11 @@ class InReplyToDetector implements TicketDetectorInterface
 	 * Add unknown users, the reply code in the address is the PTAC
 	 * so basically a passowrd
 	 *
-	 * @return void
+	 * @param Ticket $ticket
+	 * @param AbstractReader $reader
+	 * @return bool
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return true;
 	}

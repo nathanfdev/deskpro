@@ -1,0 +1,12 @@
+{
+	"oid": 1,
+	"person": "admin@example.com",
+	"language": "English",
+	"title": "News item imported via Importer",
+	"content": "The commitment announced Wednesday as part of Apple's fiscal second-quarter earnings report expands on the company's previous pledge to spend $60 billion on stock buybacks by the end of next year.",
+	"total_rating": "4",
+	"num_comments": "5",
+	"num_ratings": "6",
+	"category": "Announcement",
+	"labels": ["label1", "label2"]
+}

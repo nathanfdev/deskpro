@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
-
 use DeskPRO\Kernel\License;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
@@ -66,6 +65,21 @@ class GlobalVariables extends BaseGlobalVariables
 	public function getSetting($name)
 	{
 		return App::getSetting($name);
+	}
+
+	public function getSettingDefaultGroup($id)
+	{
+		return App::get('deskpro.core.settings')->getDefaultGroup($id);
+	}
+
+	public function getRequest()
+	{
+		return App::$container->getRequest();
+	}
+
+	public function isPortalEnabled()
+	{
+		return App::$container->getSetting('user.portal_enabled');
 	}
 
 	public function getSettingGroup($group)
@@ -122,7 +136,12 @@ class GlobalVariables extends BaseGlobalVariables
 
 	public function isDebug()
 	{
-		return App::isDebug();
+		return $this->container->isDebug();
+	}
+
+	public function isTesting()
+	{
+		return isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'];
 	}
 
 	public function isDemo()
@@ -307,14 +326,19 @@ class GlobalVariables extends BaseGlobalVariables
 		return defined('DPC_IS_CLOUD');
 	}
 
-	public function isPluginInstalled($id)
+	public function getBuildTime()
 	{
-		return App::getContainer()->getPlugins()->isPluginInstalled($id);
+		return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
 	}
 
-	public function getPluginService($id)
+	public function isAppInstalled($name)
 	{
-		return App::getContainer()->getPlugins()->getPluginService($id);
+		return App::getContainer()->getAppManager()->isPackageInstalled($name);
+	}
+
+	public function getAppService($name)
+	{
+		return App::getContainer()->getAppManager()->getService($name);
 	}
 
 	public function getFullAssetUrl()

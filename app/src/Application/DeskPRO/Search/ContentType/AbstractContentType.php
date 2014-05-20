@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\Search\ContentType;
 
-use Application\DeskPRO\Search\SearcherResult\ResultInterface;
-
 use Application\DeskPRO\App;
+use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 
 abstract class AbstractContentType implements ContentTypeInterface
 {

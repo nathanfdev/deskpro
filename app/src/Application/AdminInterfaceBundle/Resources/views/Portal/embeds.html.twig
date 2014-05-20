@@ -1,0 +1,237 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Feedback and Support Tab</h3>
+		</header>
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<p>
+								The tab widget places a tab button on the left of your website. When the user clicks the tab, an overlay opens on top of your site where a user can interact with the helpdesk without ever leaving the page they are on.
+							</p>
+
+							<p>
+								Tab title: <input type="text" class="form-control" style="width: 275px;" ng-model="overlay_options.title" />
+							</p>
+							<p>
+								Tab position: <select ng-model="overlay_options.position" ui-select2 style="width: 100px;">
+									<option value="left">Left</option>
+									<option value="right">Right</option>
+								</select>
+							</p>
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="overlay_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
+
+							<div class="editor-row" style="width: 60%">
+								<div class="editor-wrap">
+									<div class="editor" ng-model="code_snippets.overlay" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 110px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	{##################################################################################################}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Show links to content by default</h3>
+		</header>
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<button class="btn btn-success" ng-click="Embeds.updateSelections()">
+								Select content to show
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	{##################################################################################################}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Chat</h3>
+		</header>
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<p>
+								The chat widget puts a small button on the bottom left of your website. When the user clicks the button, a chat window opens on top of your site and allows your visitors to chat with any online agents. Users can continue to browse around your site while the chat is active.
+							</p>
+							<p>
+								Tab title: <input type="text" class="form-control" style="width: 275px;" ng-model="chat_options.start_phrase" />
+							</p>
+							<p>
+								Tab position: <select ng-model="chat_options.position" ui-select2 style="width: 160px;">
+									<option value="left">Bottom left</option>
+									<option value="right">Bottom right</option>
+								</select>
+							</p>
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="chat_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
+							<p>
+								<label><input type="checkbox" ng-model="chat_options.show_offline" /> Show button even when chat is offline</label>
+								<div style="padding-top: 3px;" ng-show="chat_options.show_offline">
+									Offline tab title: <input type="text" class="form-control" style="width: 275px;" ng-model="chat_options.offline_phrase" />
+								</div>
+								<div style="padding-top: 3px;" ng-show="chat_options.show_offline">
+									URL the button goes to when offline: <input type="text" class="form-control" style="width: 275px;" ng-model="chat_options.offline_url" ng-init="chat_options.offline_url = '{{ url_full('user_tickets_new') }}'" />
+								</div>
+							</p>
+
+							<div class="editor-row" style="width: 60%">
+								<div class="editor-wrap">
+									<div class="editor" ng-model="code_snippets.chat" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 110px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	{##################################################################################################}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Contact Form</h3>
+		</header>
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<p>
+								Embed a contact form directly in to any web page.
+							</p>
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="form_frame_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
+							<p ng-show="Embeds.deps.length > 1">
+								Department: <select ng-model="form_frame_options.dep_id" ui-select2 style="width: 200px;">
+									<option value="0">Let the user choose</option>
+									<option ng-repeat="d in Embeds.deps" value="{{ ng_var('d.id') }}">{{ ng_var('d.title') }}</option>
+								</select>
+							</p>
+							<div class="editor-row" style="width: 60%">
+								<div class="editor-wrap">
+									<div class="editor" ng-model="code_snippets.form_frame" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 110px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	{##################################################################################################}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Embed your entire helpdesk</h3>
+		</header>
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<p>
+								This code snippet will embed your entire helpdesk into any page you choose.
+								This makes the full portal (knowledgebase, news, contact form etc.) usable from any page on your site.
+							</p>
+
+							<p>
+								<label><input type="checkbox" ng-model="iframe_options.simple_mode" /> Hide the DeskPRO sidebar and border. This makes the helpdesk blend in with whatever page you place it on.</label>
+							</p>
+
+							<p>
+								The initial helpdesk section to load: <select ng-model="iframe_options.initial_load" ui-select2 style="width: 200px">
+									<option value="">Home page</option>
+									<option value="new-ticket">New ticket</option>
+									<option value="kb">Knowledgebase</option>
+									<option value="news">News</option>
+									<option value="downloads">Downloads</option>
+									<option value="feedback">Feedback</option>
+								</select>
+							</p>
+							<p ng-show="Embeds.langs.length > 1">
+								Language: <select ng-model="iframe_options.lang_id" ui-select2 style="width: 200px;">
+									<option value="0">Default</option>
+									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</p>
+							<div class="editor-row" style="width: 60%">
+								<div class="editor-wrap">
+									<div class="editor" ng-model="code_snippets.iframe" ui-ace="{
+									mode: 'html',
+									useWrapMode: false,
+									showGutter: false,
+									theme: 'textmate',
+									onLoad: embedEditorLoaded
+								}" style="height: 110px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Code snippets to put on your website</h1>
+		<p>You can embed part or all of the user portal in your website.</p>
+	</header>
+{% endblock %}

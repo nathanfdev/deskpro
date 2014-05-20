@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Orb\Util\Util;
 
 /**
@@ -58,7 +58,7 @@ class Textarea extends Text
 		if ($data AND !empty($data['value'])) {
 			$setData = $data['value'];
 		}
-		$field = App::getFormFactory()->createNamedBuilder('textarea', $this->getFormFieldName(), $setData, array('required' => false));
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'textarea', $setData, array('required' => false));
 
 		return $field;
 	}

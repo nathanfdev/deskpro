@@ -1,0 +1,106 @@
+<div class="panel panel-fill indent">
+	<div class="panel-body">
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Name</h3>
+			</div>
+			<div class="col-lg-9">
+				<div class="inner-group">
+					<input type="text" class="form-control" name="name" ng-model="EditCtrl.form.name" style="width: 50%;" required dp-server-validation="agent.name" />
+				</div>
+
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="EditCtrl.form.enable_display_name" />
+						<h4>Display a different name to end-users</h4>
+					</label>
+					<div ng-show="EditCtrl.form.enable_display_name">
+						<input type="text" class="form-control" ng-model="EditCtrl.form.override_name" style="width: 50%;" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Email Addresses</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="EditCtrl.email_dupe_error" class="alert alert-danger">
+					<div ng-repeat="dupe in EditCtrl.email_dupe_error">&bull; The email address "{{ ng_var('dupe.email') }}" is already (by {{ ng_var('dupe.person_name') }})</div>
+				</div>
+				<input type="text" class="form-control" name="email" ng-model="EditCtrl.form.emails_list" ng-list style="width: 80%;" required dp-server-validation="agent.emails_count,agent.emails.0.email,agent.emails.1.email,agent.emails.2.email,agent.emails.3.email,agent.emails.4.email" />
+				<span class="help-block">
+					Separate multiple email addresses with a comma.
+				</span>
+
+				<div ng-show="EditCtrl.form.emails_list.length > 1" style="margin-top: 3px;">
+					Primary: <select ng-model="EditCtrl.form.email_primary">
+						<option ng-repeat="email in EditCtrl.form.emails_list" ng-value="email">{{ ng_var('email') }}</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Zones</h3>
+			</div>
+			<div class="col-lg-9">
+				<ul class="checkbox-list" style="min-width: 250px">
+					<li>
+						<label>
+							<input type="checkbox" ng-model="EditCtrl.form.zones.admin" />
+							<span>Admin Interface</span>
+						</label>
+					</li>
+					<li>
+						<label>
+							<input type="checkbox" ng-model="EditCtrl.form.zones.reports" />
+							<span>Reports Interface</span>
+						</label>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Teams</h3>
+			</div>
+			<div class="col-lg-9">
+				<ul class="checkbox-list" style="min-width: 250px">
+					<li ng-repeat="team in EditCtrl.form.teams">
+						<label>
+							<input type="checkbox" ng-model="team.value" />
+							<span>{{ ng_var('team.name') }}</span>
+							<a class="inline-edit-link" href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}"><i class="fa fa-pencil"></i><em>edit team</em></a>
+						</label>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Permission Groups</h3>
+			</div>
+			<div class="col-lg-9">
+				<ul class="checkbox-list" style="min-width: 250px">
+					<li ng-repeat="group in EditCtrl.form.agent_groups">
+						<label>
+							<input type="checkbox" ng-model="group.value" />
+							<span>{{ ng_var('group.title') }}</span>
+							<a class="inline-edit-link" href="{{ ng_href('agents.groups.edit', '{id: group.id}') }}"><i class="fa fa-pencil"></i><em>edit group</em></a>
+						</label>
+					</li>
+				</ul>
+				<span class="help-block">
+					<div ng-show="EditCtrl.hasPermOverrides">
+						<span class="fa fa-exclamation-triangle"></span>
+						This agent has permission overrides on the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab.
+					</div>
+					<div ng-show="!EditCtrl.hasPermOverrides">
+						Switch to the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab to manage permission overrides.
+					</div>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>

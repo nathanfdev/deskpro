@@ -36,17 +36,11 @@ namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
 
-use DeskPRO\Kernel\KernelErrorHandler;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
-use Orb\Util\Strings;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -67,7 +61,12 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		App::getDb()->exec("TRUNCATE TABLE cache");
 		@unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
 
-		$manager = new \Application\InstallBundle\Upgrade\Manager($this->getContainer());
+		$output->setVerbosity(4);
+		$logger = $this->getContainer()->getLoggerManager()->getLogger('upgrader', array('output' => $output));
+		$manager = new \Application\InstallBundle\Upgrade\Manager(
+			$this->getContainer(),
+			$logger
+		);
 
 		#------------------------------
 		# Info

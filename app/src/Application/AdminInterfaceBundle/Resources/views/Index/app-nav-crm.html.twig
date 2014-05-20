@@ -1,0 +1,28 @@
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="crm.reg"><a href="{{ ng_href('crm.reg') }}"><i class="fa fa-user"></i> <span>Registration</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="crm.password_settings"><a href="{{ ng_href('crm.password_settings') }}"><i class="fa fa-asterisk"></i> <span>Password Settings</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="crm.usersources"><a href="{{ ng_href('crm.usersources') }}"><i class="fa fa-key"></i> <span>Auth &amp; SSO</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="crm.groups"><a href="#/crm/groups"><i class="fa fa-group"></i> <span>Permission Groups</span><i class="fa fa-caret-right"></i></a></li>
+			<li>
+				<a href="#"><i class="fa fa-terminal"></i> <span>Fields</span> <i class="fa fa-caret-down"></i></a>
+				<ul dp-nav-subnav>
+					<li dp-state-mark="crm.user_fields"><a href="#/crm/user_fields"><i class="fa fa-user"></i> <span>Users</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="crm.org_fields"><a href="#/crm/org_fields"><i class="fa fa-group"></i> <span>Organizations</span><i class="fa fa-caret-right"></i></a></li>
+				</ul>
+			</li>
+			<li dp-state-mark="crm.rules"><a href="#/crm/rules"><i class="fa fa-tasks"></i> <span>Rules</span><i class="fa fa-caret-right"></i></a></li>
+			<li>
+				<a href="#"><i class="fa fa-tags"></i> <span>Labels</span> <i class="fa fa-caret-down"></i></a>
+				<ul dp-nav-subnav>
+					<li dp-state-mark="crm.user_labels"><a href="#/crm/user_labels"><i class="fa fa-user"></i> <span>Users</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="crm.org_labels"><a href="#/crm/org_labels"><i class="fa fa-group"></i> <span>Organizations</span><i class="fa fa-caret-right"></i></a></li>
+				</ul>
+			</li>
+			<li dp-state-mark="crm.banning"><a href="#/crm/banning"><i class="fa fa-ban"></i> <span>Banning</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="crm.import"><a href="#/crm/import"><i class="fa fa-upload"></i> <span>CSV Import</span><i class="fa fa-caret-right"></i></a></li>
+		</ul>
+	</nav>
+{% endblock %}

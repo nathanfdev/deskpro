@@ -1,0 +1,45 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Delete Agent</h4>
+{% endblock %}
+{% block modal_body %}
+	<ul class="big-option-list">
+		<li ng-class="{'active': options.method == 'user'}">
+			<div class="inner-group" dp-error-class="form_props.title">
+				<h3>
+					<label>
+						<input type="radio" ng-model="options.method" value="user" /> <span class="title">Convert to user</span>
+					</label>
+				</h3>
+				<ul>
+					<li>Converts the agent into a regular user.</li>
+					<li>Immediately unassigns all tickets currently assigned to the agent.</li>
+					<li>You can turn the user back into an agent later, but some settings (such as permissions) will be lost.</li>
+					<li>Ideal if you want the person to still have access to helpdesk (e.g., to submit tickets as an end-user).</li>
+				</ul>
+			</div>
+		</li>
+		<li ng-class="{'active': options.method == 'delete'}">
+			<h3>
+				<label>
+					<input type="radio" ng-model="options.method" value="delete" /> <span class="title">Mark as deleted</span>
+				</label>
+			</h3>
+			<ul>
+				<li>Marks the account as deleted.</li>
+				<li>The agent will not be able to log in to either the user or agent interfaces.</li>
+				<li>Tickets assigned to this agent will remain assigned until they become awaiting agent, then they will become unassigned.</li>
+				<li>You are able to fully restore the agent later.</li>
+				<li>Ideal if you want to keep reports for the agent based on their assigned tickets.</li>
+			</ul>
+		</li>
+	</ul>
+{% endblock %}
+{% block modal_footer %}
+	<button class="btn btn-danger" ng-click="doDelete(options)" ng-hide="is_loading">
+		<span ng-show="options.method == 'user'"><i class="fa fa-user"></i> Convert agent into user</span>
+		<span ng-show="options.method == 'delete'"><i class="fa fa-trash-o"></i> Mark the agent account as deleted</span>
+	</button>
+
+	<i class="spinner-flat" ng-show="is_loading"></i>
+{% endblock %}

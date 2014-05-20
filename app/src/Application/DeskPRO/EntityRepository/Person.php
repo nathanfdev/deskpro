@@ -35,11 +35,9 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
-
-use Orb\Util\Numbers;
 
 class Person extends AbstractEntityRepository
 {
@@ -78,6 +76,18 @@ class Person extends AbstractEntityRepository
 		$agents = $this->getAgents();
 
 		return isset($agents[$id]) ? $agents[$id] : null;
+	}
+
+	public function getDeletedAgents()
+	{
+		$deleted_agents = $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p INDEX BY p.id
+			WHERE p.is_agent = true AND p.is_deleted = true
+			ORDER BY p.first_name ASC, p.last_name ASC
+		")->execute();
+
+		return $deleted_agents;
 	}
 
 	public function findAgentByName($name)

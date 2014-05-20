@@ -33,6 +33,8 @@
 	'agent.tickets.attachments'                         => 'Attachments',
 	'agent.tickets.attachment_deleted'                  => 'Attachment deleted',
 	'agent.tickets.billing'                             => 'Billing',
+	'agent.tickets.billing_timelog'                     => 'Time Log',
+	'agent.tickets.billing_and_timelog'                 => 'Billing & Time Log',
 	'agent.tickets.billing_add_charge'                  => 'Add Charge',
 	'agent.tickets.billing_amount'                      => 'Amount',
 	'agent.tickets.billing_charge'                      => 'Charge',

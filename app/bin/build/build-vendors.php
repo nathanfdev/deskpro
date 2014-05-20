@@ -356,6 +356,11 @@ function deskpro_build_cleanvendors_metadata($dir)
 	deskpro_build_exec_exit_error("rm -rf tests .gitignore phpunit.xml.dist README.rst CHANGELOG.md", $dir);
 }
 
+function deskpro_build_cleanvendors_mockery($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf examples/ tests/ composer.json package.xml README.markdown .gitignore .travis.yml", $dir);
+}
+
 function deskpro_build_cleanvendors_monolog($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf doc tests CHANGELOG.mdown .gitignore composer.json phpunit.xml.dist README.mdown", $dir);

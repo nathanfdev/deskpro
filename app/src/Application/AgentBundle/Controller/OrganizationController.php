@@ -34,16 +34,13 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Searcher\TicketSearch;
-
-use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 /**
  * Handles viewing and editing an org
@@ -649,6 +646,15 @@ class OrganizationController extends AbstractController
 		}
 
 		$org = $this->getOrgOr404($organization_id);
+                
+                $organizationDeleted = new Entity\OrganizationDeleted();
+                
+                $organizationDeleted['organization_id'] = $organization_id;
+                $organizationDeleted['by_person']       = $this->getPerson();
+                $organizationDeleted['reason']          = $this->in->getString('reason');
+                
+                $this->em->persist($organizationDeleted);
+                $this->em->flush();
 
 		$edit_manager = $this->container->getSystemService('org_edit_manager');
 		$edit_manager->deleteOrganization($org);
@@ -677,7 +683,7 @@ class OrganizationController extends AbstractController
 		$field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $field_defs);
 
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'org_custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('org_custom_fields', 'form');
 		$custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		return $this->render('AgentBundle:Organization:neworganization.html.twig', array(
@@ -698,7 +704,7 @@ class OrganizationController extends AbstractController
 		$form = $this->get('form.factory')->create($formType, $neworg);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			if (!$neworg->name) {

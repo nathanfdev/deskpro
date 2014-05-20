@@ -523,6 +523,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadVis = parseInt(loadVis[1]);
 		}
 
+		var loadAdmin = false;
+		if (loadAdmin = window.location.hash.match(/#admin:(.*?)$/)) {
+			loadAdmin = loadAdmin[1];
+		}
+
+		var loadReports = false;
+		if (loadReports = window.location.hash.match(/#reports:(.*?)$/)) {
+			loadReports = loadReports[1];
+		}
+
 		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
@@ -553,7 +563,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initRoutes();
 		this._initSections();
 		this._initInterfaceServices();
-		this._initAngular();
 
 		if (window.DESKPRO_SNIPPETS_USE_CLIENT_DB) {
 			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetClientDbDriver('tickets');
@@ -567,9 +576,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('body').addClass('dp-is-retina');
 		}
 
-		$('#dp_loading').remove();
-		$('#page_loading').remove();
-		$('#loading_css').remove();
+		if (!loadAdmin && !loadReports) {
+			$('#dp_loading').remove();
+			$('#page_loading').remove();
+			$('#loading_css').remove();
+		}
 
 		if (!window.DeskPRO_FragmentRouter) {
 			DP.console.warn('window.DeskPRO_FragmentRouter is missing. Using empty router.');
@@ -687,6 +698,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				position: {
 					my: 'left center',
 					at: 'right center',
+					target: $(this)
+				},
+				content: {attr: 'title'},
+				style: {
+					classes: 'qtip-dark qtip-rounded'
+				}
+			});
+		});
+		$('#agent_chat_section').each(function() {
+			$(this).qtip({
+				position: {
+					my: 'bottom center',
+					at: 'top center',
 					target: $(this)
 				},
 				content: {attr: 'title'},
@@ -928,35 +952,112 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
-		if (loadNewTicket) {
-			DeskPRO_Window.newTicketLoader.open(function(page) {
-				var data = {
-					person_id: loadNewTicket
-				};
-				page.setNewByPerson(data);
-			});
+		if (DP_PERSON_PASSWORD_EXPIRED) {
+			var settingsInterval = setInterval(function() {
+				if (window.SETTINGS_WINDOW) {
+					clearInterval(settingsInterval);
+					settingsInterval = false;
+					$('#settingswin').trigger('dp_open');
+				}
+			}, 250);
+		} else {
+			if (loadAdmin) {
+				this.disableHashPath(function () {
+				});
+				if ($('#admin_interface_trigger').data('handler')) {
+					console.log("Loading admin: " + loadAdmin);
+					$('#admin_interface_trigger').data('handler').open(loadAdmin, function () {
+						$('#dp_loading').remove();
+						$('#page_loading').remove();
+						$('#loading_css').remove();
+					});
+				}
+			} else if (loadReports) {
+				this.disableHashPath(function () {
+				});
+				if ($('#reports_interface_trigger').data('handler')) {
+					console.log("Loading reports: " + loadReports);
+					$('#reports_interface_trigger').data('handler').open(loadReports, function () {
+						$('#dp_loading').remove();
+						$('#page_loading').remove();
+						$('#loading_css').remove();
+					});
+				}
+			} else {
+				if (loadNewTicket) {
+					DeskPRO_Window.newTicketLoader.open(function (page) {
+						var data = {
+							person_id: loadNewTicket
+						};
+						page.setNewByPerson(data);
+					});
+				}
+
+				if (loadSearchTerm) {
+					$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
+				}
+
+				if (loadVis) {
+					this.layout.enableHashUpdate = false;
+					this.setPaneVisNum(loadVis);
+					this.layout.enableHashUpdate = true;
+				}
+
+				this.cancelHashLoad = 0;
+				this.loadHashPath(startHash);
+			}
 		}
 
-		if (loadSearchTerm) {
-			$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
+		if (window.AppPlatform) {
+			this.initAppPlatform(window.AppPlatform);
 		}
 
-		if (loadVis) {
-			this.layout.enableHashUpdate = false;
-			this.setPaneVisNum(loadVis);
-			this.layout.enableHashUpdate = true;
-		}
+		$('#agents_section').on('click', function(ev) {
+			if (window['DP_FRAME_OVERLAYS']) {
+				for (var k in window['DP_FRAME_OVERLAYS']) {
+					if (window['DP_FRAME_OVERLAYS'].hasOwnProperty(k)) {
+						window['DP_FRAME_OVERLAYS'][k].close();
+					}
+				}
+			}
+		});
+	},
 
-		this.cancelHashLoad = 0;
-		this.loadHashPath(startHash);
+	initAppPlatform: function(AppPlatform) {
+		if (this.AppPlatform) return;
+		this.AppPlatform = AppPlatform;
+		this.AppPlatform.start();
+
+		this.ngModule = this.AppPlatform.getNgModule();
+		this.ngModule.dpInjector = angular.element(document).injector();
+	},
+
+	getAppPlatform: function() {
+		return this.AppPlatform || null;
 	},
 
 	addOnloadFunction: function(fn) {
 		this.onloadStack.push(fn);
 	},
 
-	loadHashPath: function(browserHash, force) {
+	disableHashPath: function(custom_handler) {
+		this.hashHandling = false;
+		this.customHashHandler = custom_handler;
+	},
 
+	enableHashPath: function() {
+		this.hashHandling = true;
+		this.cancelHashLoad = 0;
+		this.customHashHandler = null;
+	},
+
+	loadHashPath: function(browserHash) {
+
+		if (this.customHashHandler) {
+			this.customHashHandler(browserHash);
+		}
+
+		if (!this.hashHandling) return;
 		if (this.DEBUG.disableUrlFragments) return;
 
 		// This is sometimes set to prevent any of the below loading
@@ -967,11 +1068,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (this.cancelHashLoad < 0) {
 				this.cancelHashLoad = 0;
 			}
-
-			if (!force) {
-				return;
+			return;
 			}
-		}
 
 		if (!browserHash.length) {
 			return;
@@ -1127,6 +1225,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	updateWindowUrlFragment: function() {
 
+		if (this.hashHandling) return;
 		if (this.DEBUG.disableUrlFragments) return;
 		if (!jQuery.history) return;
 
@@ -2514,7 +2613,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', (function(routeData) {
 
-			if (!this.paneVis.list && !routeData.noChangePaneVis) {
+			if (!this.paneVis.list) {
 				this.setPaneVis('list', true);
 			}
 
@@ -2691,7 +2790,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			menuElement: '#create_content_menu'
 		});
 
-		var autostart = true;
+		var autostart = false;
 		if (DeskPRO_Window.DEBUG.disableSectionHandlers) {
 			autostart = false;
 		}
@@ -2968,7 +3067,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.getSectionDataStartQueue();
 
-		$('#dp_nav [data-section-handler]').each(function() {
+		$('#dp_nav [data-section-handler], #agent_chat_section').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
 				el.attr('id', Orb.getUniqueId('section_'));
@@ -3169,12 +3268,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		return popover;
-	},
-
-	_initAngular: function() {
-		this.ngModule = DeskPRO.Agent.AgentAppFactory();
-		angular.bootstrap(document, ['AgentApp']);
-		this.ngModule.dpInjector = angular.element(document).injector();
 	},
 
 	/**

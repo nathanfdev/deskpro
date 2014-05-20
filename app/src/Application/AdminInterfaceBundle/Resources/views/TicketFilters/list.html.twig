@@ -1,0 +1,90 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+
+{% block listpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders">
+					<i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}
+				</span>
+				<span class="dp-order-ctrl dropdown">
+					<a class="title dropdown-toggle" data-toggle="dropdown">
+						Showing:
+						<span ng-show="display_filter.type == 'all'">All Filters</span>
+						<span ng-show="display_filter.type == 'global'">Global Filters</span>
+						<span ng-show="display_filter.type == 'agent'">Agent Filters</span>
+						<span ng-show="display_filter.type == 'team'">Team Filters</span>
+						<i class="fa fa-caret-down"></i>
+					</a>
+					<ul class="dropdown-menu" style="width: 200px">
+						<li class="dropdown-header">Show</li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'all';">All Filters <i class="fa fa-check" ng-show="display_filter.type == 'all'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'global';">Global Filters <i class="fa fa-check" ng-show="display_filter.type == 'global'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'agent';">Agent Filters <i class="fa fa-check" ng-show="display_filter.type == 'agent'"></i></a></li>
+						<li ng-show="ListCtrl.teams"><a ng-click="$event.preventDefault(); display_filter.type = 'team';">Team Filters <i class="fa fa-check" ng-show="display_filter.type == 'team'"></i></a></li>
+
+						<li class="divider" ng-show="display_filter.type == 'agent' || display_filter.type == 'team'"></li>
+						<li class="dropdown-header" ng-show="display_filter.type == 'agent' || display_filter.type == 'team'">Filter</li>
+						<li ng-show="display_filter.type == 'agent'">
+							<select ui-select2 ng-model="display_filter.agent" style="width:185px; margin-left: 8px;">
+								<option value="0">All agent filters</option>
+								<option ng-repeat="agent in ListCtrl.agents" value="{{ ng_var('agent.id') }}">{{ ng_var('agent.display_name') }}</option>
+							</select>
+						</li>
+						<li ng-show="display_filter.type == 'team'">
+							<select ui-select2 ng-model="display_filter.team" style="width:185px; margin-left: 8px;">
+								<option value="0">All team filters</option>
+								<option ng-repeat="team in ListCtrl.teams" value="{{ ng_var('team.id') }}">{{ ng_var('team.name') }}</option>
+							</select>
+						</li>
+					</ul>
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_ticket_filters') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
+				<li class="with-drag-handle" ng-repeat="filter in filterList"
+					dp-state-mark="tickets.ticket_filters.edit.{{ ng_var('filter.id') }}"
+					data-id="{{ ng_var('filter.id') }}">
+					<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}">
+						<i class="fa fa-bars drag-handle" ng-hide="display_filter.type != 'all'"></i>
+
+						<div class="pull-right">
+							<em class="tag" style="margin-left: 6px;">
+								<span ng-if="filter.is_global">Global</span>
+								<span ng-if="!filter.is_global && filter.person">{{ ng_var('filter.person.display_name') }}</span>
+								<span ng-if="!filter.is_global && filter.agent_team">{{ ng_var('filter.agent_team.name') }}</span>
+							</em>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode"
+								  style="margin-top: -3px;"
+								  ng-click="ListCtrl.startDelete(filter); $event.preventDefault();">
+								<i class="fa fa-trash-o"></i>
+							</span>
+						</div>
+						<h4>
+							<span class="title-text">{{ ng_var('filter.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_filters.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('adm.ticket_filters.new_filter') }}</a>
+			</div>
+		</article>
+	</section>
+
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Ticket filters enable agents to view a list of all the tickets which meet a set of conditions.</h1>
+		<p>To supplement the built-in filters like <strong>My Tickets</strong>, you can define your own custom filters. Filters make it easy for agents to track specific groups of tickets without repeated searching.</p>
+	</header>
+	<article>
+		<section>
+			<p>Each filter has its own individual set of conditions and will only show tickets that match them all.</p>
+			<p>Filters can be visible to a specific agent, to a specific team, or to everyone. Agents can create their own filters; these are visible only to the agent who made them.</p>
+		</section>
+	</article>
+{% endblock %}

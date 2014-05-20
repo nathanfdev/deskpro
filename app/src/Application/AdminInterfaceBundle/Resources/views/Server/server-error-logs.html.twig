@@ -1,0 +1,97 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Error Logs</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<tbody>
+					<tr>
+						<td class="alt dp-id-col">DeskPRO Error Log</td>
+						<td>
+							<a href="{{ ng_var('server_error_logs.deskpro_error_log_url') }}" target="_blank">
+								{{ ng_var('server_error_logs.deskpro_error_log_url') }}
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td class="alt dp-id-col">Web PHP Error Log</td>
+						<td>
+							<a href="{{ ng_var('server_error_logs.web_error_log_url') }}" target="_blank">
+								{{ ng_var('server_error_logs.web_error_log_url') }}
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td class="alt dp-id-col">Command-line PHP Error Log</td>
+						<td>
+							<a href="{{ ng_var('server_error_logs.cli_error_log_url') }}" target="_blank">
+								{{ ng_var('server_error_logs.cli_error_log_url') }}
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd" ng-if="server_error_logs.logs">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<td colspan="4">
+							<div class="pull-right">
+								<button class="btn btn-danger"
+										ng-click="ServerErrorLogs.startClearAll();$event.preventDefault();">
+									Clear all logged errors
+								</button>
+							</div>
+							There are {{ ng_var('logs_size') }} logged errors.
+						</td>
+					</tr>
+					<tr>
+						<th>
+							{{ phrase('agent.general.id') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.message') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.date') }}
+						</th>
+						<th>
+							Details&nbsp;
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(key, log) in server_error_logs.logs">
+						<td class="alt dp-id-col">
+							{{ ng_var('log.id') }}
+						</td>
+						<td>
+							{{ ng_var('log.summary') }}
+						</td>
+						<td style="white-space: nowrap" nowrap>
+							{{ ng_var('log.date') }}
+						</td>
+						<td>
+							<a class="btn btn-primary" ng-href="{{ ng_href('server.error_logs.view', '{id: log.id}') }}">
+								{{ phrase('admin.general.view') }}
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}

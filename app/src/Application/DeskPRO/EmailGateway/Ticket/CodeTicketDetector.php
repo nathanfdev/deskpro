@@ -36,8 +36,8 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
 
 /**
  * Detects a ticket based off of codes in the subject or body.
@@ -47,7 +47,7 @@ use Orb\Log\Loggable;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class CodeTicketDetector implements TicketDetectorInterface, Loggable
+class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterface, TacPersonDetectorInterface, Loggable
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAccessCode
@@ -85,7 +85,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
+	 * {@inheritDoc}
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
@@ -148,7 +148,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		$search_text = array_unique($search_text);
 		$search_text = implode(' ', $search_text);
 
-		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$auth_len = Ticket::TAC_AUTHCODE_LEN;
 		$authcode_min_len = $auth_len + 1;
 		$authcode_max_len = $auth_len + 7;
 
@@ -248,8 +248,9 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		return null;
 	}
 
+
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * {@inheritDoc}
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
@@ -262,20 +263,18 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Person|null
+	 * {@inheritDoc}
 	 */
-	public function getTacPerson()
+	public function findTacPerson(AbstractReader $reader)
 	{
 		return $this->_tac_person;
 	}
 
 
 	/**
-	 * Unknown people are added as CC's. If you know the P/TAC then it's as good as a passowrd.
-	 *
-	 * @return bool
+	 * {@inheritDoc}
 	 */
-	public function canAddUnknownPerson()
+	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		return true;
 	}
@@ -289,6 +288,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 	{
 		$this->logger = $logger;
 	}
+
 
 	/**
 	 * @return \Orb\Log\Logger

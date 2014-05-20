@@ -34,11 +34,11 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
+use Symfony\Component\Debug\Exception\FlattenException;
 
 class ExceptionController extends AbstractController
 {
-	public function showAction(\Symfony\Component\HttpKernel\Exception\FlattenException $exception, \Symfony\Component\HttpKernel\Log\DebugLoggerInterface $logger = null, $format = 'html')
+	public function showAction(FlattenException $exception, \Symfony\Component\HttpKernel\Log\DebugLoggerInterface $logger = null, $format = 'html')
 	{
 		return $this->createApiErrorResponse(
 			'http_error.' . $exception->getStatusCode(),

@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PortalPageDisplay;
 
 /**
  * Renders an AJAXy KB browser in the content section, or renders a simple

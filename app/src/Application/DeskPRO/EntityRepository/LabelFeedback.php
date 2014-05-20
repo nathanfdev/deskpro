@@ -35,10 +35,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Symfony\Component\Validator\Constraints\DateTime;
-
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
 class LabelFeedback extends AbstractEntityRepository

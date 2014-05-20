@@ -35,65 +35,131 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\ORM\StateChange\Ticket\ChangeSplitFrom;
+use Application\DeskPRO\ORM\StateChange\Ticket\ChangeSplitTo;
 use Application\DeskPRO\People\PersonContextInterface;
-
-use Orb\Util\Arrays;
 
 /**
  * Splits a ticket from one message and on into a new ticket
  */
-class TicketSplit
+class TicketSplit implements PersonContextInterface
 {
-
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
-	protected $ticket;
-
-	protected $old_ticket_deleted = false;
+	private $ticket;
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
-	protected $em;
+	private  $em;
 
+	/**
+	 * @var TicketManager
+	 */
+	private $ticket_manager;
+
+	/**
+	 * @var Person
+	 */
+	private $person_context;
+
+
+	/**
+	 * @param Ticket $ticket
+	 */
 	public function __construct(Ticket $ticket)
 	{
-		$this->em = App::getOrm();
-
+		$this->em = App::$container->getEm();
+		$this->ticket_manager = App::$container->getTicketManager();
 		$this->ticket = $ticket;
 	}
 
-	public function wasOldTicketDeleted()
+
+	/**
+	 * @param Person $person
+	 */
+	public function setPersonContext(Person $person)
 	{
-		return $this->old_ticket_deleted;
+		$this->person_context = $person;
 	}
 
 
+	/**
+	 * @param string $subject
+	 * @param array $message_ids
+	 * @return Ticket
+	 * @throws \Exception
+	 */
 	public function split($subject, array $message_ids)
 	{
-		$ticket = $this->ticket;
-
 		if (!$message_ids) {
-			return;
+			throw new \InvalidArgumentException("No messages", 100);
 		}
+
+		if (!$this->person_context) {
+			throw new \InvalidArgumentException("Missing person context", 300);
+		}
+
+		$this->ticket_manager->markAsManaged($this->ticket);
+		try {
+			$this->doSplit($subject, $message_ids);
+			$this->ticket_manager->markAsUnmanaged($this->ticket);
+		} catch (\Exception $e) {
+			$this->ticket_manager->markAsUnmanaged($this->ticket);
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param string $subject
+	 * @param array $message_ids
+	 * @return Ticket
+	 * @throws \InvalidArgumentException
+	 */
+	private function doSplit($subject, array $message_ids)
+	{
+		#------------------------------
+		# Get and verify messages
+		#------------------------------
 
 		$messages = $this->em->createQuery("
 			SELECT m
 			FROM DeskPRO:TicketMessage m
-			WHERE m.id IN (?1) AND m.ticket = ?2
-		")->execute(array(1=> $message_ids, 2=> $ticket['id']));
+			WHERE m.id IN (?0) AND m.ticket = ?1
+		")->execute(array($message_ids, $this->ticket->id));
+
 		if (!count($messages)) {
+			throw new \InvalidArgumentException("No messages", 100);
 			return;
 		}
 
-		$new_ticket = $ticket->copy();
+		$count_all = $this->em->getConnection()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets_messages
+			WHERE ticket_id = ?
+		", array($this->ticket->id));
+		if ($count_all == count($messages)) {
+			throw new \InvalidArgumentException("Cannot split the entire ticket", 200);
+			return;
+		}
+
+		#------------------------------
+		# Create new ticket copy
+		#------------------------------
+
+		$new_ticket = $this->ticket_manager->createTicket();
+		$this->ticket->copyTo($new_ticket);
+
+		$message_ids = array();
+
 		$first = null;
 		foreach ($messages as $m) {
-			$ticket->messages->removeElement($m);
+			$message_ids[] = $m->id;
+			$this->ticket->messages->removeElement($m);
 			$new_ticket->addMessage($m);
 
 			if (!$first) {
@@ -130,47 +196,30 @@ class TicketSplit
 			$new_ticket->organization = $message->person->organization;
 		}
 
-		$new_ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
-		$new_ticket->getTicketLogger()->recordExtra('suppress_agent_notify', true);
-		$new_ticket->getTicketLogger()->recordExtra('ticket_split', array('old_ticket' => $ticket)); // just the split
+		#------------------------------
+		# Save new ticket
+		#------------------------------
 
-		if (count($ticket->messages) == 0) {
-			// Old ticket set to deleted so proper CM's are sent
-			$ticket->getTicketLogger()->recordExtra('bare_delete', 1);
-			$ticket->setStatus('hidden.deleted');
-			$this->em->persist($ticket);
-			$delete_ticket = true;
-		} else {
-			$this->em->persist($ticket);
-			$delete_ticket = false;
-		}
+		$context = $this->ticket_manager->createAgentExecutorContext(
+			$this->person_context,
+			'update',
+			'web'
+		);
 
-		$this->em->persist($new_ticket);
-		$this->em->flush();
+		$split_from_change = new ChangeSplitFrom('split_from', $this->ticket->id, $message_ids);
+		$new_ticket->getStateChangeRecorder()->recordChange($split_from_change);
 
-		if ($delete_ticket) {
-			$ticket->_markRemoved();
-			$ticket->setNoLog();
-			$ticket->unsetTicketLogger();
+		$this->ticket_manager->saveTicket($new_ticket, $context);
 
-			$this->em->remove($ticket);
-		} else {
-			// need to do this as we need the new ID
-			$person = App::getCurrentPerson();
-			$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\SplitTo($new_ticket, $ticket);
+		#------------------------------
+		# Save old ticket
+		#------------------------------
 
-			$ticket_log = new \Application\DeskPRO\Entity\TicketLog();
-			$ticket_log['person'] = ($person && $person->id) ? $person : null;
-			$ticket_log['ticket'] = $ticket;
-			$ticket_log['action_type'] = $action->getLogName();
-			$ticket_log['details'] = $action->getLogDetails();
+		$split_to_change = new ChangeSplitTo('split_to', $new_ticket->id, $message_ids);
+		$this->ticket->getStateChangeRecorder()->recordChange($split_to_change);
 
-			$this->em->persist($ticket_log);
-		}
+		$this->ticket_manager->saveTicket($this->ticket, $context);
 
-		$this->em->flush();
-
-		$this->old_ticket_deleted = $delete_ticket;
 
 		return $new_ticket;
 	}

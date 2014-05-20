@@ -1,0 +1,61 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="display_orders_active" class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="FeedbackStatusesList.feedback_active_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_active_statuses') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
+				<li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_active_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
+					<a href="{{ ng_href('portal.feedback_statuses.edit', '{id: status.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<h4><span class="title-text">{{ ng_var('status.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create', {type: activeType}) }" href="{{ ng_href('portal.feedback_statuses.gocreate', '{type: activeType}') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="display_orders_closed" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="FeedbackStatusesList.feedback_closed_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_closed_statuses') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
+				<li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_closed_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
+					<a href="{{ ng_href('portal.feedback_statuses.edit', '{id: status.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<h4><span class="title-text">{{ ng_var('status.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create', {type: closedType}) }" href="{{ ng_href('portal.feedback_statuses.gocreate', '{type: closedType}') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+
+	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+	<div dp-register-message="no_delete_last">{{ phrase('adm.feedback_statuses.no_delete_last') }}</div>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Each feedback item has a status which tracks what your company is doing with it.</h1>
+		<p>Customize the statuses here. Click to edit, or drag to change the order in which they are displayed to users and agents.</p>
+	</header>
+	<article>
+		<section>
+			<p>Active statuses mean your company is considering or implementing the feedback. Active statuses are visible to users on the web portal.</p>
+			<p>Closed statuses mean you are not going to act on the feedback further: either because you've rejected it, or because you've already implemented it. Feedback items with closed statuses are not displayed on the portal.</p>
+		</section>
+	</article>
+{% endblock %}

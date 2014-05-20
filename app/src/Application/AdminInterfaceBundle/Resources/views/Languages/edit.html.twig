@@ -1,0 +1,188 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="EditCtrl.doSave()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('agent.general.title') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title" style="width: 50%;" />
+									<span class="help-block">
+										The language title as it appears to users.
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Edit Phrases</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<a class="btn btn-info" href="{{ ng_href('setup.phrases', "{id: 'phrases-'+EditCtrl.pack.id}") }}"><i class="fa fa-file-text-o"></i> Edit Phrases</a>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Locale Code</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.locale">
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.locale" style="width: 100px" />
+									<span class="help-block">
+										This is the <a href="http://www.w3.org/International/articles/language-tags/">standard locale code</a> for the language.
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Flag</h3>
+							</div>
+							<div class="col-lg-9">
+								<select
+									ui-select2="select2Flag"
+									ng-model="EditCtrl.form.flag_image"
+									style="min-width: 120px"
+								>
+									<option value="ad.png">ad</option><option value="ae.png">ae</option><option value="af.png">af</option><option value="ag.png">ag</option>
+									<option value="ai.png">ai</option><option value="al.png">al</option><option value="am.png">am</option><option value="an.png">an</option>
+									<option value="ao.png">ao</option><option value="ar.png">ar</option><option value="arabic.png">arabic</option><option value="as.png">as</option>
+									<option value="at.png">at</option><option value="au.png">au</option><option value="aw.png">aw</option><option value="ax.png">ax</option>
+									<option value="az.png">az</option><option value="ba.png">ba</option><option value="bb.png">bb</option><option value="bd.png">bd</option>
+									<option value="be.png">be</option><option value="bf.png">bf</option><option value="bg.png">bg</option><option value="bh.png">bh</option>
+									<option value="bi.png">bi</option><option value="bj.png">bj</option><option value="bm.png">bm</option><option value="bn.png">bn</option>
+									<option value="bo.png">bo</option><option value="br.png">br</option><option value="bs.png">bs</option><option value="bt.png">bt</option>
+									<option value="bv.png">bv</option><option value="bw.png">bw</option><option value="by.png">by</option><option value="bz.png">bz</option>
+									<option value="ca.png">ca</option><option value="catalonia.png">catalonia</option><option value="cc.png">cc</option><option value="cd.png">cd</option>
+									<option value="cf.png">cf</option><option value="cg.png">cg</option><option value="ch.png">ch</option><option value="ci.png">ci</option>
+									<option value="ck.png">ck</option><option value="cl.png">cl</option><option value="cm.png">cm</option><option value="cn.png">cn</option>
+									<option value="co.png">co</option><option value="cr.png">cr</option><option value="cs.png">cs</option><option value="cu.png">cu</option>
+									<option value="cv.png">cv</option><option value="cx.png">cx</option><option value="cy.png">cy</option><option value="cz.png">cz</option>
+									<option value="de.png">de</option><option value="dj.png">dj</option><option value="dk.png">dk</option><option value="dm.png">dm</option>
+									<option value="do.png">do</option><option value="dz.png">dz</option><option value="ec.png">ec</option><option value="ee.png">ee</option>
+									<option value="eg.png">eg</option><option value="eh.png">eh</option><option value="england.png">england</option><option value="er.png">er</option>
+									<option value="es.png">es</option><option value="et.png">et</option><option value="europeanunion.png">europeanunion</option><option value="fam.png">fam</option>
+									<option value="fi.png">fi</option><option value="fj.png">fj</option><option value="fk.png">fk</option><option value="fm.png">fm</option>
+									<option value="fo.png">fo</option><option value="fr.png">fr</option><option value="ga.png">ga</option><option value="gb.png">gb</option>
+									<option value="gd.png">gd</option><option value="ge.png">ge</option><option value="gf.png">gf</option><option value="gh.png">gh</option>
+									<option value="gi.png">gi</option><option value="gl.png">gl</option><option value="gm.png">gm</option><option value="gn.png">gn</option>
+									<option value="gp.png">gp</option><option value="gq.png">gq</option><option value="gr.png">gr</option><option value="gs.png">gs</option>
+									<option value="gt.png">gt</option><option value="gu.png">gu</option><option value="gw.png">gw</option><option value="gy.png">gy</option>
+									<option value="hk.png">hk</option><option value="hm.png">hm</option><option value="hn.png">hn</option><option value="hr.png">hr</option>
+									<option value="ht.png">ht</option><option value="hu.png">hu</option><option value="id.png">id</option><option value="ie.png">ie</option>
+									<option value="il.png">il</option><option value="in.png">in</option><option value="io.png">io</option><option value="iq.png">iq</option>
+									<option value="ir.png">ir</option><option value="is.png">is</option><option value="it.png">it</option><option value="jm.png">jm</option>
+									<option value="jo.png">jo</option><option value="jp.png">jp</option><option value="ke.png">ke</option><option value="kg.png">kg</option>
+									<option value="kh.png">kh</option><option value="ki.png">ki</option><option value="km.png">km</option><option value="kn.png">kn</option>
+									<option value="kp.png">kp</option><option value="kr.png">kr</option><option value="kw.png">kw</option><option value="ky.png">ky</option>
+									<option value="kz.png">kz</option><option value="la.png">la</option><option value="lb.png">lb</option><option value="lc.png">lc</option>
+									<option value="li.png">li</option><option value="lk.png">lk</option><option value="lr.png">lr</option><option value="ls.png">ls</option>
+									<option value="lt.png">lt</option><option value="lu.png">lu</option><option value="lv.png">lv</option><option value="ly.png">ly</option>
+									<option value="ma.png">ma</option><option value="mc.png">mc</option><option value="md.png">md</option><option value="me.png">me</option>
+									<option value="mg.png">mg</option><option value="mh.png">mh</option><option value="mk.png">mk</option><option value="ml.png">ml</option>
+									<option value="mm.png">mm</option><option value="mn.png">mn</option><option value="mo.png">mo</option><option value="mp.png">mp</option>
+									<option value="mq.png">mq</option><option value="mr.png">mr</option><option value="ms.png">ms</option><option value="mt.png">mt</option>
+									<option value="mu.png">mu</option><option value="mv.png">mv</option><option value="mw.png">mw</option><option value="mx.png">mx</option>
+									<option value="my.png">my</option><option value="mz.png">mz</option><option value="na.png">na</option><option value="nc.png">nc</option>
+									<option value="ne.png">ne</option><option value="nf.png">nf</option><option value="ng.png">ng</option><option value="ni.png">ni</option>
+									<option value="nl.png">nl</option><option value="no.png">no</option><option value="np.png">np</option><option value="nr.png">nr</option>
+									<option value="nu.png">nu</option><option value="nz.png">nz</option><option value="om.png">om</option><option value="pa.png">pa</option>
+									<option value="pe.png">pe</option><option value="pf.png">pf</option><option value="pg.png">pg</option><option value="ph.png">ph</option>
+									<option value="pk.png">pk</option><option value="pl.png">pl</option><option value="pm.png">pm</option><option value="pn.png">pn</option>
+									<option value="pr.png">pr</option><option value="ps.png">ps</option><option value="pt.png">pt</option><option value="pw.png">pw</option>
+									<option value="py.png">py</option><option value="qa.png">qa</option><option value="re.png">re</option><option value="ro.png">ro</option>
+									<option value="rs.png">rs</option><option value="ru.png">ru</option><option value="rw.png">rw</option><option value="sa.png">sa</option>
+									<option value="sb.png">sb</option><option value="sc.png">sc</option><option value="scotland.png">scotland</option><option value="sd.png">sd</option>
+									<option value="se.png">se</option><option value="sg.png">sg</option><option value="sh.png">sh</option><option value="si.png">si</option>
+									<option value="sj.png">sj</option><option value="sk.png">sk</option><option value="sl.png">sl</option><option value="sm.png">sm</option>
+									<option value="sn.png">sn</option><option value="so.png">so</option><option value="sr.png">sr</option><option value="st.png">st</option>
+									<option value="sv.png">sv</option><option value="sy.png">sy</option><option value="sz.png">sz</option><option value="tc.png">tc</option>
+									<option value="td.png">td</option><option value="tf.png">tf</option><option value="tg.png">tg</option><option value="th.png">th</option>
+									<option value="tj.png">tj</option><option value="tk.png">tk</option><option value="tl.png">tl</option><option value="tm.png">tm</option>
+									<option value="tn.png">tn</option><option value="to.png">to</option><option value="tr.png">tr</option><option value="tt.png">tt</option>
+									<option value="tv.png">tv</option><option value="tw.png">tw</option><option value="tz.png">tz</option><option value="ua.png">ua</option>
+									<option value="ug.png">ug</option><option value="um.png">um</option><option value="us.png">us</option><option value="uy.png">uy</option>
+									<option value="uz.png">uz</option><option value="va.png">va</option><option value="vc.png">vc</option><option value="ve.png">ve</option>
+									<option value="vg.png">vg</option><option value="vi.png">vi</option><option value="vn.png">vn</option><option value="vu.png">vu</option>
+									<option value="wales.png">wales</option><option value="wf.png">wf</option><option value="ws.png">ws</option><option value="ye.png">ye</option>
+									<option value="yt.png">yt</option><option value="za.png">za</option><option value="zm.png">zm</option><option value="zw.png">zw</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Availability</h3>
+							</div>
+							<div class="col-lg-9">
+								<p>
+									This language pack has translations for the following areas:
+								</p>
+								<ul>
+									<li>The user portal and user emails</li>
+									<li ng-if="EditCtrl.pack.has_agent">The agent interface and agent email notifications</li>
+									<li ng-if="EditCtrl.pack.has_admin">The admin interface and the reporting interface</li>
+								</ul>
+
+								<div ng-if="!EditCtrl.pack.has_agent || !EditCtrl.pack.has_admin">
+									<p>The following areas are <strong>not</strong> translated in this language pack:</p>
+									<ul>
+										<li ng-if="!EditCtrl.pack.has_agent">The agent interface and agent email notifications</li>
+										<li ng-if="!EditCtrl.pack.has_admin">The admin interface and the reporting interface</li>
+									</ul>
+									<p>
+										Visit the <a href="https://languages.deskpro.com/" target="_blank">DeskPRO translation system</a> to help translate this language.
+									</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control">
+						<button ng-if="isDefaultLang()" type="button" class="btn btn-danger" tooltip="You cannot uninstall the default language." style="opacity: 0.7;" ng-click="$event.preventDefault(); EditCtrl.startUninstall();">
+							Uninstall Language
+						</button>
+						<button ng-if="!isDefaultLang()" type="button" class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.startUninstall();">
+							Uninstall Language
+						</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>
+								{{ phrase('agent.general.save') }}
+							</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_dep">{{ phrase('adm.departments.saved_dep_x_success', {title: 'ng_var(EditCtrl.form.title)'}) }}</div>
+	{{ ng_tpl('AdminInterfaceBundle:Languages:uninstall-modal.html.twig') }}
+	<div dp-register-message="no_delete_default">
+		You cannot uninstall the default language. Choose a different default language first, then try again.
+	</div>
+{% endblock %}

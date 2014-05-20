@@ -1,0 +1,28 @@
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Enabled</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.enable_usersource" />
+			Yes, enable eZ Publish Authentication
+		</label>
+		<span class="help-block">Enable the app once you have verified all of your settings are correct.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Database Server</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.db_dsn" placeholder="DSN string" style="width: 60%;" />
+		<span class="help-block">Enter the <a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">DSN string</a> for your database.</span>
+		<p ng-show="errors.db_dsn" class="text-danger">Please enter your DSN.</p>
+
+		<div style="margin: 8px 0 4px 0;">Database User</div>
+		<input type="text" class="form-control" ng-model="setting_values.db_username" placeholder="Database Username" style="width: 35%;" />
+		<input type="password" class="form-control" ng-model="setting_values.db_password" placeholder="Database Password" style="width: 35%;" />
+		<p ng-show="errors.db_username || errors.db_password" class="text-danger">Please enter your database username and password.</p>
+	</div>
+</div>

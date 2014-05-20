@@ -35,11 +35,10 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
-
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -558,22 +557,13 @@ class Ticket extends AbstractEntityRepository
 	 */
 	public function fillSearchTable()
 	{
+		$field_ids = Entity\TicketSearchActive::getFieldNames();
+		$field_ids = array_map(function($f) { return "`$f`"; }, $field_ids);
+		$field_ids = implode(', ', $field_ids);
+
 		App::getDb()->exec("TRUNCATE TABLE tickets_search_active");
 		App::getDb()->exec("
-			INSERT IGNORE INTO tickets_search_active (
-				`id`, `language_id`, `department_id`, `category_id`,
-				`priority_id`, `workflow_id`, `product_id`, `person_id`, `email_gateway_id`,
-				`agent_id`, `agent_team_id`, `organization_id`, `creation_system`, `status`, `is_hold`,
-				`urgency`, `date_created`, `date_first_agent_reply`, `date_last_agent_reply`,
-				`date_last_user_reply`, `date_agent_waiting`, `date_user_waiting`, `total_user_waiting`,
-				`total_to_first_reply`
-			) SELECT
-				`id`, `language_id`, `department_id`, `category_id`,
-				`priority_id`, `workflow_id`, `product_id`, `person_id`, `email_gateway_id`,
-				`agent_id`, `agent_team_id`, `organization_id`, `creation_system`, `status`, `is_hold`,
-				`urgency`, `date_created`, `date_first_agent_reply`, `date_last_agent_reply`,
-				`date_last_user_reply`, `date_agent_waiting`, `date_user_waiting`, `total_user_waiting`,
-				`total_to_first_reply`
+			INSERT IGNORE INTO tickets_search_active ($field_ids) SELECT $field_ids
 			FROM tickets
 			WHERE status IN ('awaiting_agent', 'awaiting_user', 'resolved')
 			ORDER BY id ASC
@@ -763,5 +753,24 @@ class Ticket extends AbstractEntityRepository
 			WHERE t.parent_ticket = ?0 AND t.status != 'hidden'
 			ORDER BY t.id ASC
 		")->execute(array($parent_ticket));
+	}
+
+	
+	/**
+	 * Runs a COUNT query against all awaiting_agent tickets and returns the number of tickets
+	 * in each urgency.
+	 *
+	 * @return array
+	 */
+	public function countTicketsByUrgency()
+	{
+		$counts = App::getDb()->fetchAllKeyValue("
+			SELECT urgency, COUNT(*) AS count
+			FROM tickets
+			WHERE status = 'awaiting_agent'
+			GROUP BY urgency
+		");
+
+		return $counts;
 	}
 }

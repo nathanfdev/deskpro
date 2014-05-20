@@ -1,0 +1,68 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.ticket_slas.count_slas') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
+				<li class="with-drag-handle" ng-repeat="sla in ListCtrl.list" dp-state-mark="tickets.slas.edit.{{ ng_var('sla.id') }}" data-id="{{ ng_var('sla.id') }}">
+					<a href="{{ ng_href('tickets.slas.edit', '{id: sla.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<div class="pull-right">
+							<em class="tag"style="margin-left: 6px;">
+								<span ng-if="sla.is_global">global</span>
+								<span ng-if="sla.person_id">{{ ng_var('sla.person.display_name') }}</span>
+							</em>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(sla); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+						</div>
+						<h4>
+							<span class="title-text">{{ ng_var('sla.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<p ng-if="!ListCtrl.list.length" style="padding: 15px;">
+				{{ phrase('adm.ticket_slas.no_slas') }}
+			</p>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.slas.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+
+	{{ ng_tpl('AdminInterfaceBundle:TicketSlas:delete-modal.html.twig') }}
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>SLAs (Service Level Agreements) track if tickets are being dealt with quickly enough.</h1>
+		<p>You can set response time goals for each SLA; tickets that are close to failing a goal enter a <strong>warning</strong> condition, and tickets that don't meet the goal have <strong>failed</strong>. SLAs can run actions on warning or failure.</p>
+	</header>
+	<article>
+		<section>
+			<p>When you create an SLA, you decide whether it tracks:</p>
+			<ul>
+				<li>time until first response</li>
+				<li>time until ticket resolution</li>
+				<li>user waiting time until ticket resolution (in total)</li>
+			</ul>
+			<p>You can use <strong>Hours</strong> to set whether time should be counted <strong>24x7</strong> (constantly), during default working hours (as defined in <strong>Tickets</strong> > <strong>Settings</strong>), or during custom hours you define.</p>
+			<p>You then define the amount of time for a <strong>warning</strong> (when the ticket is considered close to failing) and a <strong>failure</strong>.</p>
+			<p>Tickets in the warning condition are highlighted in the agent interface with an amber background. Tickets that have failed are highlighted red.</p>
+			<p>You can define actions that run automatically at warning and at failure. For example, you might want to increase the <strong>urgency</strong> of a ticket that is about to fail an SLA or assign the ticket to a more experienced team.</p>
+			<p>Use <strong>SLA Application</strong> to set which tickets are affected by the SLA:</p>
+			<ul>
+				<li><strong>Apply to all tickets</strong>: this applies the SLA to all tickets created from now on, not existing tickets</li>
+				<li><strong>Agents manually apply the SLA</strong></li>
+				<li><strong>Apply to new tickets that match certain criteria</strong>: the SLA will apply to tickets that meet any of the conditions you set</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2><span>Related Knowledgebase articles</span></h2>
+			<ul>
+				<li><a href="https://support.deskpro.com/kb/articles/110-using-ticket-slas" target="_blank">Using Ticket SLAs</a></li>
+			</ul>
+		</section>
+	</article>
+{% endblock %}

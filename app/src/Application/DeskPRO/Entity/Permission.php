@@ -34,24 +34,29 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\Strings;
 use Orb\Util\Numbers;
-use Orb\Util\Arrays;
-use Orb\Util\Web;
 
 /**
  * Permissions are flags applied groups or specific users.
  *
+ * @property int $id
+ * @property string $name
+ * @property Usergroup $usergroup
+ * @property Person $person
+ * @property boolean $value
+ *
  */
-class Permission extends \Application\DeskPRO\Domain\DomainObject
+class Permission extends DomainObject
 {
 	/**
 	 * The unique ID.
 	 *
 	 * @var int
 	 */
+
 	protected $id = null;
 
 	/**
@@ -59,22 +64,25 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
+
 	protected $name = null;
 
 	/**
 	 * The usergroup this properly belongs to. Note that a permission applies to either
 	 * a person or a usergroup, never both.
 	 *
-	 * @var Application\DeskPRO\Entity\Usergroup
+	 * @var \Application\DeskPRO\Entity\Usergroup
 	 */
+
 	protected $usergroup;
 
 	/**
 	 * The person this properly belongs to. Note that a permission applies to either
 	 * a person or a usergroup, never both.
 	 *
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
+
 	protected $person;
 
 	/**
@@ -82,11 +90,13 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var bool
 	 */
+
 	protected $value = null;
 
 	/**
 	 * @return int
 	 */
+
 	public function getId()
 	{
 		return $this->id;
@@ -95,11 +105,15 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	public function __toString()
 	{
 		$str = '[' . $this->name . ':';
+
 		if ($prop->value !== null) {
+
 			$str .= $prop->data;
 		} else {
+
 			$str .= 'NULL';
 		}
+
 		$str .= ']';
 
 		return $str;
@@ -112,28 +126,31 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * @param \Application\DeskPRO\Entity\Permission[] $perms
 	 * @return array
 	 */
+
 	public static function getEffectivePermissions(array $perms)
 	{
 		$effective_perms = array();
 
 		foreach ($perms as $perm) {
+
 			$k = $perm->name;
 			$v = $perm->value;
 
 			if (!Numbers::isInteger($v)) {
+
 				$v = (int)$v;
 			}
 
 			// If it hasnt been set yet, or the one we have is "lower",
 			// then take the new value.
 			if (!isset($effective_perms[$k]) || (is_int($v) && $effective_perms[$k] < $v)) {
+
 				$effective_perms[$k] = $v;
 			}
 		}
 
 		return $effective_perms;
 	}
-
 
 
 	############################################################################
@@ -143,13 +160,74 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'permissions', ));
+		$metadata->setPrimaryTable(array('name' => 'permissions',));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'id',
+				 'type'       => 'integer',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'id',
+				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'name',
+				 'type'       => 'string',
+				 'length'     => 50,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => false,
+				 'columnName' => 'name',
+			)
+		);
+		$metadata->mapField(
+			array(
+				 'fieldName'  => 'value',
+				 'type'       => 'text',
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => true,
+				 'columnName' => 'value',
+			)
+		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(
+			array(
+				 'fieldName'    => 'usergroup',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+				 'mappedBy'     => null,
+				 'inversedBy'   => null,
+				 'joinColumns'  => array(
+					 0 => array(
+						 'name'                 => 'usergroup_id',
+						 'referencedColumnName' => 'id',
+						 'nullable'             => true,
+						 'onDelete'             => 'cascade',
+						 'columnDefinition'     => null,
+					 ),
+				 ),
+			)
+		);
+		$metadata->mapManyToOne(
+			array(
+				 'fieldName'    => 'person',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+				 'mappedBy'     => null,
+				 'inversedBy'   => null,
+				 'joinColumns'  => array(
+					 0 => array(
+						 'name'                 => 'person_id',
+						 'referencedColumnName' => 'id',
+						 'nullable'             => true,
+						 'onDelete'             => 'cascade',
+						 'columnDefinition'     => null,
+					 ),
+				 ),
+			)
+		);
 	}
 }

@@ -1,0 +1,266 @@
+{% macro perm_toggle(typename, permname, opts) %}
+	<input
+		dp-slider-switch
+		ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
+		is-on="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }} || EditCtrl.perm_form_everyone.{{ typename }}.{{ permname }}"
+		is-locked="EditCtrl.perm_form_reg.{{ typename }}.{{ permname }} || EditCtrl.perm_form_everyone.{{ typename }}.{{ permname }}"
+		locked-tip-e="EditCtrl.perm_form_everyone.{{ typename }}.{{ permname }}? 'This permission is being granted through the Everyone usergroup' : 'This permission is being granted through the Registered usergroup.'"
+	/>
+{% endmacro %}
+
+
+<div class="panel panel-innertable">
+	<nav class="dp-tabletabs">
+		<ul>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#">Tickets</a></li>
+			{% if app.getSetting('core.apps_chat') %}
+				<li dp-tab-btn="main.perms.chat"><a href="#">Chat</a></li>
+			{% endif %}
+			<li dp-tab-btn="main.perms.feedback"><a href="#">Feedback</a></li>
+			<li dp-tab-btn="main.perms.articles"><a href="#">Articles</a></li>
+			<li dp-tab-btn="main.perms.downloads"><a href="#">Downloads</a></li>
+			<li dp-tab-btn="main.perms.news"><a href="#">News</a></li>
+		</ul>
+	</nav>
+
+	{# TICKETS PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.tickets">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_tickets') }}</td>
+				<td>
+					{{ _self.perm_toggle('ticket', 'use') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">
+					Can re-open resolved tickets
+
+					<div style="padding: 10px 0 0 25px;" ng-show="!EditCtrl.perm_form.ticket.reopen_resolved && !EditCtrl.perm_form_reg.ticket.reopen_resolved">
+						How should the helpdesk handle an email reply to a resolved ticket?<br/>
+						<div ng-if="EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
+							<label tooltip="This permission is being granted through the Everyone usergroup">
+								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" disabled="disabled" />
+								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
+							</label>
+						</div>
+						<div ng-if="!EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
+							<label>
+								<input type="radio" value="reject" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
+								<strong>Reject</strong> &middot; The message is rejected and the user is sent an auto-response
+							</label>
+							<br/>
+							<label>
+								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
+								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
+							</label>
+						</div>
+					</div>
+				</td>
+				<td>
+					{{ _self.perm_toggle('ticket', 'reopen_resolved') }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{# /TICKETS PERMISSIONS #}
+
+	{# CHAT PERMISSIONS #}
+
+	{% if app.getSetting('core.apps_chat') %}
+
+		<table class="table table-hover" dp-tab-body="main.perms.chat">
+			<tbody>
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.can_use_chat') }}</td>
+					<td>
+						{{ _self.perm_toggle('chat', 'use') }}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	{% endif %}
+
+	{# /CHAT PERMISSIONS #}
+
+	{# FEEDBACK PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.feedback">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_feedback') }}</td>
+				<td>
+					{{ _self.perm_toggle('feedback', 'use') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_feedback') }}</td>
+				<td>
+					{{ _self.perm_toggle('feedback', 'submit') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+				<td>
+					{{ _self.perm_toggle('feedback', 'no_submit_validate') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_feedback') }}</td>
+				<td>
+					{{ _self.perm_toggle('feedback', 'rate') }}
+				</td>
+			</tr>
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
+					<td>
+						{{ _self.perm_toggle('feedback', 'comment') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td>
+						{{ _self.perm_toggle('feedback', 'no_comment_validate') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+		</tbody>
+	</table>
+
+	{# /FEEDBACK PERMISSIONS #}
+
+	{# ARTICLES PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.articles">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_knowledgebase') }}</td>
+				<td>
+					{{ _self.perm_toggle('article', 'use') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_rate_articles') }}</td>
+				<td>
+					{{ _self.perm_toggle('article', 'rate') }}
+				</td>
+			</tr>
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
+					<td>
+						{{ _self.perm_toggle('article', 'comment') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td>
+						{{ _self.perm_toggle('article', 'no_comment_validate') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+		</tbody>
+	</table>
+
+	{# /ARTICLES PERMISSIONS #}
+
+	{# DOWNLOADS PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.downloads">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_downloads') }}</td>
+				<td>
+					{{ _self.perm_toggle('download', 'use') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_rate_downloads') }}</td>
+				<td>
+					{{ _self.perm_toggle('download', 'rate') }}
+				</td>
+			</tr>
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
+					<td>
+						{{ _self.perm_toggle('download', 'comment') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+			{% if app.getSetting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td>
+						{{ _self.perm_toggle('download', 'no_comment_validate') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+		</tbody>
+	</table>
+
+	{# /DOWNLOADS PERMISSIONS #}
+
+	{# NEWS PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.news">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('agent.general.news') }}</td>
+				<td>
+					{{ _self.perm_toggle('news', 'use') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_rate_news_posts') }}</td>
+				<td>
+					{{ _self.perm_toggle('news', 'rate') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.submit_new_post_comments') }}</td>
+				<td>
+					{{ _self.perm_toggle('news', 'comment') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+				<td>
+					{{ _self.perm_toggle('news', 'no_comment_validate') }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{# /NEWS PERMISSIONS #}
+
+</div>

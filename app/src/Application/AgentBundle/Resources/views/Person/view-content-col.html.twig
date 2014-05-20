@@ -1,8 +1,9 @@
-{# Box Summary #}
-{{ dp_widgets(baseId, 'profile', 'summary', 'above', person_api) }}
+{{ dp_app_loc(baseId, 'left_col.top') }}
 
+{# Box Summary #}
+{{ dp_app_loc(baseId, 'summary.before') }}
 {% if person.summary|length or perms.edit %}
-	<div class="profile-box-container summary"
+	<div class="profile-box-container dp-simpletab-container dp-simpletab-container summary"
 		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
 		data-form-save-url="{{ path('agent_people_ajaxsave', {'person_id': person.id}) }}"
 	>
@@ -14,25 +15,27 @@
 					<div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
 				</div>
 			{% endif %}
-			{{ dp_widget_tabs_header(baseId, 'profile', 'summary', {
-				(baseId ~ '_summary_body'): phrase('agent.general.summary')
-			}) }}
+			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+				<ul>
+					<li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
+				</ul>
+			</nav>
 		</header>
-		<section id="{{baseId}}_summary_body">
-			<input type="hidden" name="action" value="set-summary" />
-			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not perms.edit %}onkeydown="return false;"{% endif %}>{{ person.summary }}</textarea></div>
+		<section>
+			<div id="{{baseId}}_summary_body">
+				<input type="hidden" name="action" value="set-summary" />
+				<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not perms.edit %}onkeydown="return false;"{% endif %}>{{ person.summary }}</textarea></div>
+			</div>
+			{{ dp_app_loc(baseId, 'summary.tab') }}
 		</section>
-		{{ dp_widget_tabs(baseId, 'profile', 'summary', 'section', person_api) }}
 	</div>
 {% endif %}
-
-{{ dp_widgets(baseId, 'profile', 'summary', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'summary.after') }}
 {# /Box Summary #}
 
 {# Properties Box #}
-{{ dp_widgets(baseId, 'profile', 'properties', 'above', person_api) }}
-
-<div class="profile-box-container properties" id="{{baseId}}_properties_box">
+{{ dp_app_loc(baseId, 'properties.before') }}
+<div class="profile-box-container dp-simpletab-container properties" id="{{baseId}}_properties_box">
 	<header>
 		{% if perms.edit %}
 			<div class="controls">
@@ -42,40 +45,39 @@
 				<button class="save" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 		{% endif %}
-		{{ dp_widget_tabs_header(baseId, 'profile', 'properties', {
-			(baseId ~ '_properties_body'): phrase('agent.general.properties')
-		}) }}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{ baseId }}_properties_body">{{ phrase('agent.general.properties') }}</li>
+			</ul>
+		</nav>
 	</header>
-	<section id="{{baseId}}_properties_body">
-		<div class="table-list" id="{{baseId}}_custom_fields_rendered">
-			{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
+	<section>
+		<div id="{{baseId}}_properties_body">
+			<div class="table-list" id="{{baseId}}_custom_fields_rendered">
+				{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
+			</div>
+			{% if perms.edit %}
+			<div class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
+				{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
+			</div>
+			{% endif %}
 		</div>
-		{% if perms.edit %}
-		<div class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
-			{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
-		</div>
-		{% endif %}
+		{{ dp_app_loc(baseId, 'properties.tab') }}
 	</section>
-	{{ dp_widget_tabs(baseId, 'profile', 'properties', 'section', person_api) }}
 </div>
-
-{{ dp_widgets(baseId, 'profile', 'properties', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'properties.after') }}
 {# /Properties Box #}
 
 {# Interaction Tabs #}
-{{ dp_widgets(baseId, 'profile', 'interactions', 'above', person_api) }}
-
+{{ dp_app_loc(baseId, 'interactions.before') }}
 {% if person_tickets_count or person_chats_count or person_charges %}
-<div class="profile-box-container tabbed">
+<div class="profile-box-container dp-simpletab-container tabbed">
 	<header>
 		<nav>
 			<ul>
 				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('agent.general.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
 				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
 				{% if person_charges %}<li data-tab-for="#{{baseId}}_billing_tab">Billing <span class="count">{{ person_charge_totals.count }}</span></li>{% endif %}
-				{% for widget in dp_widgets_raw('profile', 'interactions', 'tab') %}
-					<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
-				{% endfor %}
 			</ul>
 		</nav>
 	</header>
@@ -207,28 +209,22 @@
 			</table>
 		</article>
 		{% endif %}
-
-		{{ dp_widget_tabs(baseId, 'profile', 'interactions', 'article', person_api) }}
+		{{ dp_app_loc(baseId, 'interactions.tab') }}
 	</section>
 </div>
 {% endif %}
-
-{{ dp_widgets(baseId, 'profile', 'interactions', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'interactions.after') }}
 {# /Interaction Tabs #}
 
 {# Info Tabs #}
-{{ dp_widgets(baseId, 'profile', 'info', 'above', person_api) }}
-
-<div class="profile-box-container tabbed">
+{{ dp_app_loc(baseId, 'details.before') }}
+<div class="profile-box-container dp-simpletab-container tabbed">
 	<header>
-		<nav>
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				{% if notes|length or perms.notes %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.general.detail') }}</li>
-				{% for widget in dp_widgets_raw('profile', 'info', 'tab') %}
-					<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
-				{% endfor %}
 			</ul>
 		</nav>
 	</header>
@@ -287,7 +283,7 @@
 										{% elseif action.action_type == 'new_chat' %}
 											Created a chat:
 											{% set chat = person_chats[action.details.convo_id] %}
-											<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-notabreload="1" data-route-title="@text">{{ chat.getSubjectLine() }}</a>
+											<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': action.details.convo_id}) }}" data-route-notabreload="1" data-route-title="@text">{{ chat.getSubjectLine()|default(action.details.convo_id) }}</a>
 										{% elseif action.action_type == 'new_ticket_reply' %}
 											{{ phrase('agent.people.act_replied_ticket') }}
 											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
@@ -439,9 +435,10 @@
 		</article>
 		{# /Tracking Tab #}
 
-		{{ dp_widget_tabs(baseId, 'profile', 'info', 'article', person_api) }}
+		{{ dp_app_loc(baseId, 'details.tab') }}
 	</section>
 </div>
-
-{{ dp_widgets(baseId, 'profile', 'info', 'below', person_api) }}
+{{ dp_app_loc(baseId, 'details.after') }}
 {# /Info Tabs #}
+
+{{ dp_app_loc(baseId, 'left_col.bottom') }}

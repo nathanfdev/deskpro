@@ -132,6 +132,7 @@ span.gear{
 	left: 0;
 	z-index: 2;
 	background-color: #ECEEF0;
+	overflow: auto;
 }
 #dp_content_wrap > div.tabViewDetailContent > .with-scrollbar {
 	position: absolute;
@@ -3118,6 +3119,7 @@ article.content-message .content .body-text .fade-bar {
     border: 1px solid #C9CBCB;
 
     .border-radius(3px, 3px, 3px, 3px);
+	overflow: hidden;
 }
 
 .log-row:first-child {
@@ -3128,6 +3130,10 @@ article.content-message .content .body-text .fade-bar {
     border-top: 1px solid #C9CBCB;
     padding: 3px 4px 3px 4px;
     font-size: 12px;
+
+	&.type-action_starter {
+		background-color: #e4e4e4;
+	}
 }
 
 .log-row .type {
@@ -7022,6 +7028,10 @@ tr.member-row:hover .single-click-activate {
 
 .field-holders-table .no-value {
 	display: none !important;
+}
+
+.field-holders-table .no-value.always-display {
+	display: table-row-group !important;
 }
 
 .field-holders-table.mode-edit-on .item-on.no-value {

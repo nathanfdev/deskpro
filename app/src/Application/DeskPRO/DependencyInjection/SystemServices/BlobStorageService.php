@@ -34,11 +34,11 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\AmazonS3Storage;
-use Application\DeskPRO\BlobStorage\StorageAdapter\FilesystemStorage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\DatabaseStorage;
+use Application\DeskPRO\BlobStorage\StorageAdapter\FilesystemStorage;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Aws\S3\S3Client;
 use Orb\Log\Logger;
 

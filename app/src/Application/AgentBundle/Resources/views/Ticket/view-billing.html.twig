@@ -18,21 +18,33 @@
 	<th width="80">{{ phrase('agent.tickets.billing_charge') }}</th>
 	<td>
 		<ul class="billing-types">
-			<li>
-				<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />{{ phrase('agent.tickets.billing_amount') }}:</label>
-				<input type="text" id="{{ baseId }}_billing_amount" name="amount" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
-			</li>
-			<li>
-				<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
-				<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
-					<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" />
-				</span>
-				<span class="billing-form-buttons">
-					<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>
-					<button class="clean-white" id="{{ baseId }}_billing_stop">{{ phrase('agent.general.pause') }}</button>
-					<button class="clean-white" id="{{ baseId }}_billing_reset">{{ phrase('agent.general.reset') }}</button>
-				</span>
-			</li>
+			{% if app.getSetting('core_tickets.enable_billing') %}
+				<li>
+					{% if not app.getSetting('core_tickets.enable_timelog') %}
+						<label><input type="hidden" name="{{ baseId }}_billing_type" value="amount" />{{ phrase('agent.tickets.billing_amount') }}:</label>
+					{% else %}
+						<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />{{ phrase('agent.tickets.billing_amount') }}:</label>
+					{% endif %}
+					<input type="text" id="{{ baseId }}_billing_amount" name="amount" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
+				</li>
+			{% endif %}
+			{% if app.getSetting('core_tickets.enable_timelog') %}
+				<li>
+					{% if not app.getSetting('core_tickets.enable_billing') %}
+						<label><input type="hidden" name="{{ baseId }}_billing_type" value="time" />{{ phrase('agent.tickets.billing_time') }}:</label>
+					{% else %}
+						<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
+					{% endif %}
+					<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
+						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" />
+					</span>
+					<span class="billing-form-buttons">
+						<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>
+						<button class="clean-white" id="{{ baseId }}_billing_stop">{{ phrase('agent.general.pause') }}</button>
+						<button class="clean-white" id="{{ baseId }}_billing_reset">{{ phrase('agent.general.reset') }}</button>
+					</span>
+				</li>
+			{% endif %}
 		</ul>
 		<input type="hidden" id="{{ baseId }}_billing_type_hidden" name="billing_type" value="time" />
 	</td>

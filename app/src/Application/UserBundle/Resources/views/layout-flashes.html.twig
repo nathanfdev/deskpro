@@ -2,17 +2,16 @@
  # Included at the top of the main content section of every page. It
  # used to show status messages.
  ##}
-
-{% if app.session.getFlashes() %}
+{% if app.session.hasAnyFlashes() %}
 	<div class="dp-flashes">
 		{% if app.session.getFlash('new_ticket_login') %}
 			<div class="dp-alert alert-block dp-alert-success">{{ phrase('user.tickets.flash_new_ticket_login') }}</div>
 		{% endif %}
-		{% if app.session.getFlash('new_ticket_validating_email') %}
-			<div class="dp-alert alert-block">{{ phrase('user.tickets.flash_new_ticket_validating_email', {email: app.session.getFlash('new_ticket_validating_email')}) }}</div>
+		{% if app.session.hasFlash('new_ticket_validating_email') %}
+			<div class="dp-alert alert-block">{{ phrase('user.tickets.flash_new_ticket_validating_email', {email: app.session.getFlash('new_ticket_validating_email').value }) }}</div>
 		{% endif %}
-		{% if app.session.getFlash('new_ticket_email') %}
-			<div class="dp-alert dp-alert-success">{{ phrase('user.tickets.new_ticket_email', {email: app.session.getFlash('new_ticket_email')}) }}</div>
+		{% if app.session.hasFlash('new_ticket_email') %}
+			<div class="dp-alert dp-alert-success">{{ phrase('user.tickets.new_ticket_email', {email: app.session.getFlash('new_ticket_email').value }) }}</div>
 		{% endif %}
 		{% if app.session.getFlash('register_done') %}
 			<div class="dp-alert dp-alert-success">

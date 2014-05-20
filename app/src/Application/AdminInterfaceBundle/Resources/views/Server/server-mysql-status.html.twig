@@ -1,0 +1,84 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>MySQL Status</h3>
+		</header>
+
+		<article class="padd">
+			<a ng-href="{{ ng_href('server.mysql_info') }}">MySQL Info</a> |
+			MySQL Status |
+			<a ng-href="{{ ng_href('server.mysql_sort_order') }}">Update Sort Order</a>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('agent.general.id') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.user') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.mysql_col_command') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.mysql_col_time') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.mysql_col_state') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.mysql_col_info') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="process in server_mysql_status.mysql_processes">
+						<td>{{ ng_var('process.Id') }}</td>
+						<td>{{ ng_var('process.User') }}@{{ ng_var('process.Host') }}/{{ ng_var('process.db') }}</td>
+						<td>{{ ng_var('process.Command') }}</td>
+						<td>{{ ng_var('process.Time') }}</td>
+						<td>{{ ng_var('process.State') }}</td>
+						<td>{{ ng_var('process.Info') }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('admin.general.variable_name') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.value') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(name, value) in server_mysql_status.mysql_status">
+						<td class="alt dp-id-col">
+							{{ ng_var('name') }}
+						</td>
+						<td>
+							{{ ng_var('value') }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}

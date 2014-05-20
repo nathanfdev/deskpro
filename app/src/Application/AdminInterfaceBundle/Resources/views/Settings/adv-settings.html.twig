@@ -1,0 +1,45 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<section class="dp-paneblock dp-listpane">
+	<header>
+		<h3>Advanced Settings</h3>
+	</header>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div style="width: 90%; height: 700px;" ng-grid="{
+				data: 'settings',
+				enableCellEditOnFocus: true,
+				showFilter: true,
+				enableRowSelection: false,
+				columnDefs: [
+					{field: 'name', displayName: 'Setting', enableCellEdit: false},
+					{field: 'default_value', displayName: 'Default Value', enableCellEdit: false},
+					{field: 'value', displayName: 'Current Value', enableCellEdit: true}
+				]
+			}"></div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<footer>
+		<div class="dp-content">
+			<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+				<div dp-hide-spinning="saving">
+					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+					<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+				</div>
+				<div dp-show-spinning="saving">
+					<i class="spinner-flat"></i>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</section>
+	</form>
+	<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

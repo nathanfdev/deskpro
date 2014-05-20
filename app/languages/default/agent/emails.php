@@ -77,6 +77,8 @@
 	'agent.emails.view_your_teams_tasks'                => 'View your team\'s tasks',
 	'agent.emails.view_your_tweets'                     => 'View your tweets',
 	'agent.emails.your_initial_password'                => 'Your initial password',
+	'agent.emails.name_reset_your_password'             => '{{name}} has reset your agent account password',
+	'agent.emails.change_password_instructions'         => 'To set a new password, log in to the Agent Interface and click on the "Preferences" link in the top-left corner of the screen.',
 	'agent.emails.newagent-created-account'             => 'Your colleague {{admin_name}} ({{admin_email}}) has created a DeskPRO account for you on <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.',
 	'agent.emails.newagent-about-cloud-demo'            => 'DeskPRO is the cloud-hosted helpdesk software that your organisation is trying out.',
 	'agent.emails.newagent-about-cloud'                 => 'DeskPRO is the cloud-hosted helpdesk software that your organisation uses.',

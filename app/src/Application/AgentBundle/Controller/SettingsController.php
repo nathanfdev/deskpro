@@ -35,6 +35,8 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
+use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
 
 class SettingsController extends AbstractController
@@ -49,9 +51,13 @@ class SettingsController extends AbstractController
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
+		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+		$password_validator = App::$container->getSystemService('password_policy_validator');
+
         return $this->render('AgentBundle:Settings:profile.html.twig', array(
 			'form' => $form->createView(),
-			'edit_profile' => $edit_profile
+			'edit_profile' => $edit_profile,
+			'password_expired' => $password_validator->isPasswordExpired($this->person)
 		));
     }
 
@@ -61,7 +67,7 @@ class SettingsController extends AbstractController
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 		$edit_profile->new_emails = $this->in->getCleanValueArray('new_emails', 'string', 'discard');
 		$edit_profile->remove_emails = $this->in->getCleanValueArray('remove_emails', 'uint', 'discard');
 
@@ -172,7 +178,6 @@ class SettingsController extends AbstractController
 	        'signature'          => $this->person->getSignature(),
 	        'signature_html'     => $this->person->getSignatureHtml(),
 			'tweet_signature'    => $this->person->getTweetSignature(),
-	        'can_signature_html' => $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte(),
 		));
 	}
 
@@ -182,7 +187,7 @@ class SettingsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		if ($this->in->getBool('is_html_signature') && $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte()) {
+		if ($this->in->getBool('is_html_signature')) {
 			$signature_html = $this->in->getHtmlCore('ticket_signature');
 			$signature_html = \Orb\Util\Strings::trimHtml($signature_html);
 
@@ -255,23 +260,30 @@ class SettingsController extends AbstractController
 
 	public function ticketNotificationsAction()
 	{
-		$filter_info      = App::getApi('tickets.filters')->getGroupedFiltersForPerson($this->person);
-		$all_filters      = $filter_info['all_filters'];
-		$sys_filters      = $filter_info['sys_filters'];
-		$sys_filters_hold = $filter_info['sys_filters_hold'];
-		$custom_filters   = $filter_info['custom_filters'];
+		$loader    = new AgentNotifPrefsLoader($this->person, $this->em);
+		$prefs     = $loader->getPrefs();
 
-		$my_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgent($this->person);
+		$filters = new TicketFilterCollection($this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person));
 
-		$admin_triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->findTriggersForcingNotificationForAgent($this->person);
+		$all_filters      = $filters->getAllFilters();
+		$sys_filters      = $filters->getSystemFilters();
+		$sys_filters_hold = $filters->getSystemHoldFilters();
+		$custom_filters   = $filters->getCustomFilters();
+
+		$my_subs = $prefs->getFilterSubs();
+
+		$sys_ids = array();
+		foreach ($sys_filters as $f) {
+			$sys_ids[$f->sys_name] = $f->id;
+		}
 
 		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
 			'all_filters'      => $all_filters,
 			'sys_filters'      => $sys_filters,
+			'sys_ids'          => $sys_ids,
 			'sys_filters_hold' => $sys_filters_hold,
 			'custom_filters'   => $custom_filters,
 			'my_subs'          => $my_subs,
-			'admin_triggers'   => $admin_triggers,
 		));
 	}
 

@@ -39,8 +39,6 @@ use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-use Orb\Util\Arrays;
-
 /**
  */
 class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject

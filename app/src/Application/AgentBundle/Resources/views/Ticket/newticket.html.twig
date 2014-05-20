@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = '{{ phrase('agent.general.new_ticket') }}';
@@ -12,7 +11,8 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{{ agentui.scroll_containers('page-new-ticket page-new-content') }}
+<div class="layout-content page-new-ticket page-new-content">
+<div class="dp-page-content">
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
@@ -141,9 +141,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<header>
-		<h4>{{ phrase('agent.general.properties') }}</h4>
+            <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+                <ul>
+                    <li data-tab-for="#{{baseId}}_properties_section">{{ phrase('agent.general.properties') }}</li>
+                    <li data-tab-for="#{{baseId}}_labels_section">{{ phrase('agent.general.labels') }}</li>
+                </ul>
+            </nav>
 	</header>
-	<section class="ticketreply">
+	<section class="ticketreply" id="{{baseId}}_properties_section">
 		<article id="{{baseId}}_headerbox_box_props" class="headerbox">
 			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table" id="{{baseId}}_fields_container">
 				<tbody>
@@ -160,7 +165,7 @@ pageMeta.baseId = '{{ baseId }}';
 				</tbody>
 
 				{% if app.getSetting('core.use_ticket_category') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_category inline-field" style="display: none;">
+					<tbody class="col fieldprop ticket-field item-on category inline-field" style="display: none;">
 						<th>{{ phrase('agent.general.category') }}</th>
 						<td>
 							<div>
@@ -177,7 +182,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_priority') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_priority inline-field" style="display: none;">
+					<tbody class="col fieldprop ticket-field item-on priority inline-field" style="display: none;">
 						<th>{{ phrase('agent.general.priority') }}</th>
 						<td>
 							{% include 'AgentBundle:Common:select-priority.html.twig' with {
@@ -193,7 +198,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_workflow') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_workflow inline-field" style="clear:both;display: none;">
+					<tbody class="col fieldprop ticket-field item-on workflow inline-field" style="clear:both;display: none;">
 						<th>{{ phrase('agent.general.workflow') }}</th>
 						<td>
 							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
@@ -209,7 +214,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_product') %}
-					<tbody class="col fieldprop ticket-field item-on ticket_product inline-field" style="clear:both;display: none;">
+					<tbody class="col fieldprop ticket-field item-on product inline-field" style="clear:both;display: none;">
 						<th>{{ phrase('agent.general.product') }}</th>
 						<td>
 							{% include 'AgentBundle:Common:select-product.html.twig' with {
@@ -237,6 +242,29 @@ pageMeta.baseId = '{{ baseId }}';
 			</table>
 		</article>
 	</section>
+        <section id="{{baseId}}_labels_section">
+            <article id="{{baseId}}_headerbox_box_props" class="headerbox">
+                <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
+                    <tbody class="always-bottom">
+                        <tr>
+                            <th width="80" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0;">{{ phrase('agent.general.labels') }}:</th>
+                            <td style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">
+                                <div style="width: 98%" id="{{ baseId }}_labels_wrap">
+                                    <input
+                                            type="hidden"
+                                            id="{{baseId}}_labels_input"
+                                            class="dpe_select dpe_select_noborder"
+                                            data-placeholder="Add a label"
+                                            name="labels"
+                                            value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        </article>
+        </section>
 </div>
 
 {% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_new') %}
@@ -478,4 +506,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 </form>
 
-{{ agentui.scroll_containers_end() }}
+</div>
+</div>

@@ -1,0 +1,77 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveAgent()">
+		<section class="dp-paneblock dp-editpane">
+			<nav class="dp-blocktabs">
+				<menu>
+					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+					<ul class="dropdown-menu pull-right">
+						<li><a ng-click="EditCtrl.showCopySettings()"><i class="fa fa-copy"></i> Copy settings from another agent</a></li>
+						<li ng-if="EditCtrl.agent.id" class="divider"></li>
+						<li><a ng-click="EditCtrl.showEditProfile()"><i class="fa fa-user"></i> Edit profile</a></li>
+						<li ng-if="EditCtrl.agent.id" class="divider"></li>
+						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showResetPassword()"><i class="fa fa-asterisk"></i> Reset password</a></li>
+						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this agent</a></li>
+					</ul>
+				</menu>
+				<ul>
+					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-key"></i> Permissions</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.deps"><a href="#"><i class="fa fa-key"></i> Departments</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.notif_prefs"><a href="#"><i class="fa fa-envelope"></i> Ticket Notifications</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.othernotif_prefs"><a href="#"><i class="fa fa-envelope-o"></i> Other Notifications</a></li>
+				</ul>
+			</nav>
+			<article class="form-horizontal dp-form">
+				<div dp-tab-body="main.props">
+					{% include 'AdminInterfaceBundle:Agents:edit-props.html.twig' %}
+				</div>
+				<div dp-tab-body="main.perms">
+					{% include 'AdminInterfaceBundle:Agents:edit-perms.html.twig' %}
+				</div>
+				<div dp-tab-body="main.deps">
+					{% include 'AdminInterfaceBundle:Agents:edit-deps.html.twig' %}
+				</div>
+				<div dp-tab-body="main.notif_prefs">
+					{% include 'AdminInterfaceBundle:Agents:edit-ticket-notifs.html.twig' %}
+				</div>
+				<div dp-tab-body="main.othernotif_prefs">
+					{% include 'AdminInterfaceBundle:Agents:edit-other-notifs.html.twig' %}
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+						<ul>
+							<li ng-show="form_props.name.$error.required || form_props.name.$error.not_blank">Please enter a name</li>
+							<li ng-show="form_props.email.$error.required || form_props.email.$error.emails_count || form_props.email.$error.email">Please enter a valid email address</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.agent.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	{{ ng_tpl('AdminInterfaceBundle:Agents:reset-password-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:copy-settings-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:delete-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:edit-profile-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Agents:login-as-modal.html.twig') }}
+{% endblock %}

@@ -34,12 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Ticket categories
@@ -231,6 +230,23 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 	public function __toString()
 	{
 		return $this->getFullTitle();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		if ($this->parent) {
+			$data['parent_id'] = $this->parent->getId();
+		} else {
+			$data['parent_id'] = null;
+		}
+
+		return $data;
 	}
 
 

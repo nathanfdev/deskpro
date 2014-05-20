@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Entity\Ticket;
-
 interface CollectionModifierInterface
 {
 	/**

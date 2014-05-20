@@ -35,18 +35,15 @@
 namespace Application\DeskPRO\ResourceScanner;
 
 use Application\DeskPRO\App;
-use Orb\Util\Arrays;
 
 class SettingFiles
 {
 	public function getAllSettings()
 	{
 		$check_dirs = array(
-			DP_ROOT.'/src/Application/AdminBundle/Resources/settings',
 			DP_ROOT.'/src/Application/AgentBundle/Resources/settings',
 			DP_ROOT.'/src/Application/ApiBundle/Resources/settings',
 			DP_ROOT.'/src/Application/DeskPRO/Resources/settings',
-			DP_ROOT.'/src/Application/DevBundle/Resources/settings',
 			DP_ROOT.'/src/Application/UserBundle/Resources/settings',
 		);
 

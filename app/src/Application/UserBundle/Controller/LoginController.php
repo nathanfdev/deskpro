@@ -34,13 +34,13 @@
 
 namespace Application\UserBundle\Controller;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
-
-use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\Request;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -239,7 +239,7 @@ HTML;
 		}
 	}
 
-	public function authenticateLocalAction($usersource_id)
+	public function authenticateLocalAction(Request $request, $usersource_id)
 	{
 		if ($this->request->getMethod() != 'POST') {
 			return $this->redirectRoute('user_login');
@@ -259,8 +259,7 @@ HTML;
 
 		// Form wasnt inputted (eg direct url)
 		if (!$this->in->getString('email') || !$this->in->getString('password')) {
-
-			if ($this->getRequest()->getMethod() == 'POST') {
+			if ($request->getMethod() == 'POST') {
 				$this->session->set('failed_login_name', true);
 				$this->session->save();
 				return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
@@ -270,7 +269,6 @@ HTML;
 		}
 
 		if (!$result->isValid()) {
-
 			// If this is an agent or admin and its an ldap error, show them an actual error page
 			if (isset($GLOBALS['DP_AUTH_EXCEPTION']) && isset($GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'])) {
 				$adapter = $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'];

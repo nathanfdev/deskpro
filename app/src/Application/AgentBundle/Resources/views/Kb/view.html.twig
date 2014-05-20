@@ -22,9 +22,8 @@ pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {# scroll containers #}
-<div class="layout-content with-scrollbar page-listing page-kb-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+<div class="layout-content page-listing page-kb-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="dp-page-content">
 {# /scroll containers #}
 
 <div class="delete-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
@@ -417,5 +416,6 @@ pageMeta.baseId = '{{ baseId }}';
 {{ optionbox.end(phrase('agent.general.add_category')) }}
 
 {# scroll containers #}
-</div></div></div>
+</div>
+</div>
 {# /scroll containers #}

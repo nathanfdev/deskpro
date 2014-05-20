@@ -34,12 +34,9 @@
 
 namespace Application\DeskPRO\Usersource;
 
-use Doctrine\ORM\EntityManager;
-use Orb\Util\Arrays;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Usersource;
-use Orb\Util\Strings;
+use Doctrine\ORM\EntityManager;
 
 class UsersourceManager
 {

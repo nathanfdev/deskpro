@@ -1,0 +1,54 @@
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="portal.portal_editor"><a href="{{ ng_href('portal.portal_editor') }}"><i class="fa fa-columns"></i> <span>Portal Editor</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="setup.settings">
+				<a href="{{ ng_href('portal.settings') }}">
+					<i class="fa fa-cog"></i>
+					<span>Settings</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
+			<li dp-state-mark="portal.embed">
+				<a href="{{ ng_href('portal.embeds') }}">
+					<i class="fa fa-code"></i>
+					<span>Embed</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
+			<li dp-state-mark="portal.theme"><a href="{{ ng_href('portal.templates') }}"><i class="fa fa-columns"></i> <span>Templates</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="portal.kb">
+				<a href="#"><i class="fa fa-files-o"></i> <span>Knowledgebase</span><i class="fa fa-caret-down"></i></a>
+				<ul dp-nav-subnav>
+					<li dp-state-mark="portal.kb_settings"><a href="{{ ng_href('portal.kb_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="portal.kb_labels"><a href="{{ ng_href('portal.kb_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#"><i class="fa fa-download"></i> Downloads<i class="fa fa-caret-down"></i></a>
+				<ul dp-nav-subnav>
+					<li dp-state-mark="portal.downloads_settings"><a href="{{ ng_href('portal.downloads_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="portal.downloads_labels"><a href="{{ ng_href('portal.downloads_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#"><i class="fa fa-file-text"></i> News<i class="fa fa-caret-down"></i></a>
+				<ul dp-nav-subnav>
+					<li dp-state-mark="portal.news_settings"><a href="{{ ng_href('portal.news_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="portal.news_labels"><a href="{{ ng_href('portal.news_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#"><i class="fa fa-pencil"></i> Feedback<i class="fa fa-caret-down"></i></a>
+				<ul dp-nav-subnav>
+					<li dp-state-mark="portal.feedback_settings"><a href="{{ ng_href('portal.feedback_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="portal.feedback_statuses"><a href="{{ ng_href('portal.feedback_statuses') }}"><i class="fa fa-ticket"></i> <span>Statuses</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="portal.feedback_types"><a href="{{ ng_href('portal.feedback_types') }}"><i class="fa fa-sitemap"></i> <span>Types</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="portal.feedback_categories"><a href="{{ ng_href('portal.feedback_categories') }}"><i class="fa fa-folder-open"></i> <span>Categories</span><i class="fa fa-caret-right"></i></a></li>
+					<li dp-state-mark="portal.feedback_labels"><a href="{{ ng_href('portal.feedback_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
+{% endblock %}

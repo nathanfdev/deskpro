@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EmailGateway\Storage;
 
 use Application\DeskPRO\EmailGateway\Protocol\Pop3 as Pop3Protocol;
+use Orb\Util\Arrays;
 use Zend\Mail\Protocol\Exception;
 
 class Pop3 extends \Zend\Mail\Storage\Pop3
@@ -53,12 +54,12 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
             $params = (object)$params;
         }
 
-        $this->_has['fetchPart'] = false;
-        $this->_has['top']       = null;
-        $this->_has['uniqueid']  = null;
+        $this->has['fetchPart'] = false;
+        $this->has['top']       = null;
+        $this->has['uniqueid']  = null;
 
         if ($params instanceof Pop3Protocol) {
-            $this->_protocol = $params;
+            $this->protocol = $params;
             return;
         }
 
@@ -69,24 +70,44 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         $host     = isset($params->host)     ? $params->host     : 'localhost';
         $password = isset($params->password) ? $params->password : '';
         $port     = isset($params->port)     ? $params->port     : null;
-        $ssl      = isset($params->ssl)      ? $params->ssl      : false;
+        $ssl      = isset($params->ssl)      ? strtoupper($params->ssl) : false;
 		$logger   = isset($params->logger)   ? $params->logger   : null;
 
-        $this->_protocol = new Pop3Protocol();
+        $this->protocol = new Pop3Protocol();
 		if ($logger) {
-			$this->_protocol->setLogger($logger);
+			$this->protocol->setLogger($logger);
+
+			$logger->logDebug(Arrays::implodeTemplate(array(
+				'host'     => $host,
+				'user'     => $params->user,
+				'password' => 'xxxxxx',
+				'port'     => $port,
+				'ssl'      => $ssl
+			), "[options] {KEY}: {VAL}\n"));
 		}
 
 		try {
-			$this->_protocol->connect($host, $port, $ssl, $logger);
+			$this->protocol->connect($host, $port, $ssl, $logger);
+			if ($logger) {
+				$logger->logDebug("[protocol] connect okay");
+			}
 		} catch (Exception\RuntimeException $e) {
+			if ($logger) {
+				$logger->logError("[error:protocol] " . $e->getMessage());
+			}
 			$new_e = new Exception\RuntimeException('There was an error connecting to the server: ' . $e->getMessage(), self::ERR_CONNECT, $e);
 			throw $new_e;
 		}
 
 		try {
-			$this->_protocol->login($params->user, $password);
+			$this->protocol->login($params->user, $password);
+			if ($logger) {
+				$logger->logDebug("[protocol] login okay");
+			}
 		} catch (Exception\RuntimeException $e) {
+			if ($logger) {
+				$logger->logError("[error:protocol] ({$e->getCode()}) " . $e->getMessage() . " <" . get_class($e) . ">");
+			}
 			$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
 			throw $new_e;
 		}
@@ -99,8 +120,8 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 		}
 
 		$this->capa_res = $this->getProtocol()->capa();
-		$this->capa_res = \Orb\Util\Arrays::func($this->capa_res, 'trim');
-		$this->capa_res = \Orb\Util\Arrays::removeFalsey($this->capa_res);
+		$this->capa_res = Arrays::func($this->capa_res, 'trim');
+		$this->capa_res = Arrays::removeFalsey($this->capa_res);
 
 		return $this->capa_res;
 	}
@@ -112,6 +133,6 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 
 	public function getProtocol()
 	{
-		return $this->_protocol;
+		return $this->protocol;
 	}
 }

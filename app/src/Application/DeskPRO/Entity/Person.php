@@ -34,25 +34,74 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\ORM\Util\Util as ORM_Util;
-
-use Orb\Util\Strings;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 use Orb\Util\Util;
-
-use Application\DeskPRO\Entity;
 
 /**
  * A "person" is a record in the database that stores information about a person.
  * Every person is capable of logging in, though it may be the case that many wont (ie they are just contact cards).
  *
+ * @property int $id
+ * @property Blob $picture_blob
+ * @property bool $disable_picture
+ * @property string $gravatar_url
+ * @property bool $is_contact
+ * @property bool $is_user
+ * @property bool $is_agent
+ * @property bool $was_agent
+ * @property bool $can_agent
+ * @property bool $can_admin
+ * @property bool $can_billing
+ * @property bool $can_reports
+ * @property bool $is_vacation_mode
+ * @property bool $disable_autoresponses
+ * @property string $disable_autoresponses_log
+ * @property bool $is_confirmed
+ * @property bool $is_agent_confirmed
+ * @property bool $is_deleted
+ * @property bool $is_disabled
+ * @property int $importance
+ * @property string $creation_system
+ * @property string $name
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $title_prefix
+ * @property string $override_display_name
+ * @property string $summary
+ * @property string $secret_string
+ * @property Language $language
+ * @property Organization $organization
+ * @property string $organization_position
+ * @property bool $organization_manager
+ * @property string $timezone
+ * @property string $password
+ * @property string $password_scheme
+ * @property string $salt
+ * @property PersonEmail $primary_email
+ * @property PersonEmail[] $emails
+ * @property LabelPerson[] $labels
+ * @property CustomDataPerson[] $custom_data
+ * @property PersonContactData[] $contact_data
+ * @property Usergroup[] $usergroups
+ * @property TwitterAccount[] $twitter_accounts
+ * @property TwitterUser[] $twitter_users
+ * @property PersonPref[] $preferences
+ * @property PersonUsersourceAssoc[] $usersource_assoc
+ * @property \DateTime $date_created
+ * @property \DateTime $date_last_login
+ * @property \DateTime $date_password_set
+ * @property \DateTime $date_picture_check
  */
-class Person extends \Application\DeskPRO\Domain\DomainObject
+class Person extends DomainObject implements HighlightableModelInterface
 {
 	const CREATED_WEB_PERSON = 'web.person';
 	const CREATED_WEB_AGENT = 'web.agent';
@@ -148,16 +197,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $disable_autoresponses_log = '';
 
 	/**
-	 * Has this user ever confirmed themselves via email?
-	 * Individual email addresses must be confirmed as well, but this
-	 * is an account-wide flag that says the user is at least real.
-	 *
+	 * @deprecated
 	 * @var bool
 	 */
 	protected $is_confirmed = true;
 
 	/**
 	 * Has this user ever confirmed themselves via email?
+	 *
+	 * This is set to true unless agent validation options are enabled,
+	 * in which case it is only switched to true once an agent validates.
 	 *
 	 * @var bool
 	 */
@@ -354,11 +403,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $usersource_assoc;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $slas;
-
-	/**
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
@@ -371,6 +415,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \DateTime
 	 */
 	protected $date_last_login = null;
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_password_set = null;
 
 	/**
 	 * The last time the users gravatar (or other 3rd party image) was checked.
@@ -420,6 +469,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public $email_validating;
 
 	protected $_updated_org = false;
+
+    /**
+     * The search result highlights
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
@@ -473,24 +529,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('timezone',        'UTC');
 		$this->setModelField('salt',            Strings::random(40));
 
-		// If we're loaded, then set default timezone from setting
-		if (class_exists('Application\\DeskPRO\\App')) {
-			try {
-				$this->setTimezone(App::getSetting('core.default_timezone'));
-			} catch (\Exception $e) {};
-		}
-
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_users          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->personscraper_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->slas                   = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -522,6 +569,33 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function hasPerm($name)
 	{
 		return $this->getPermissionsManager()->hasPerm($name);
+	}
+
+
+	/**
+	 * Try to guess an org name based on profile info.
+	 *
+	 * @return string
+	 */
+	public function guessOrganizationName()
+	{
+		if ($this->organization) {
+			return $this->organization->name;
+		}
+
+		foreach ($this->emails as $email) {
+			if (FreeEmailProviders::isFreeEmailDomain($email->email_domain)) {
+				continue;
+			}
+
+			$name = $email->email_domain;
+			if ($pos = strpos($name, '.')) {
+				$name = substr($name, 0, $pos);
+			}
+			return ucfirst($name);
+		}
+
+		return null;
 	}
 
 	public function getOrganizationId()
@@ -607,6 +681,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function getHelper($name)
 	{
 		return $this->getHelperManager()->getHelper($name);
+	}
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function isHelperLoader($name)
+	{
+		return $this->getHelperManager()->hasHelper($name);
 	}
 
 	protected function _onNotCallable($name, $arguments)
@@ -908,6 +991,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_set_plain_password = $plain_password;
 
 		$this->setModelField('password', $pass);
+		$this->setModelField('date_password_set', new \DateTime());
 
 		if ($this->id) {
 			$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
@@ -1777,7 +1861,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return null|string
 	 */
-	public function getPictureUrl($size = 80, $secure = null)
+	public function getPictureUrl($size = 80, $secure = null, $default = false)
 	{
 		// Null means detect
 		if ($secure === null AND App::isWebRequest()) {
@@ -1788,7 +1872,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$url = false;
-		if ($this->hasPicture()) {
+		if ($this->hasPicture() && !$default) {
 			if ($this->picture_blob && $this->picture_blob->isImage()) {
 				$url = App::get('router')->generate('serve_blob_sizefit', array(
 					'blob_auth_id' => $this->picture_blob->getAuthId(),
@@ -2083,6 +2167,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _presavePerson()
 	{
+		// If we're loaded, then set default timezone from setting
+		if (!$this->timezone && class_exists('Application\\DeskPRO\\App')) {
+			try {
+				$this->setTimezone(App::$container->getSetting('core.default_timezone'));
+			} catch (\Exception $e) {};
+		}
+
 		if ($this->_person_logger) {
 			$this->_person_logger->preSave();
 		}
@@ -2295,8 +2386,34 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		$data['display_name'] = $this->getDisplayName();
-		$data['primary_email'] = $this->getPrimaryEmailAddress();
+		foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
+			$data[$k] = $this[$k];
+		}
+
+		if ($this->primary_email) {
+			$data['primary_email'] = array(
+				'id'    => (int)$this->primary_email->id,
+				'email' => $this->primary_email->email
+			);
+		}
+
+		$data['emails'] = array();
+		foreach ($this->emails as $eml) {
+			$data['emails'][] = array('id' => $eml->id, 'email' => $eml->email);
+		}
+
+		$data['usergroup_ids']  = array();
+		$data['agentgroup_ids'] = array();
+		foreach ($this->usergroups as $ug) {
+			if ($ug->is_agent_group) {
+				$data['agentgroup_ids'][] = $ug->id;
+			} else {
+				$data['usergroup_ids'][] = $ug->id;
+			}
+		}
+
+		$data['usergroup_ids']  = Arrays::castToType($data['usergroup_ids'], 'int');
+		$data['agentgroup_ids'] = Arrays::castToType($data['agentgroup_ids'], 'int');
 
 		$data['picture_url']    = $this->getPictureUrl();
 		$data['picture_url_80'] = $this->getPictureUrl(80);
@@ -2307,12 +2424,52 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$data['picture_url_22'] = $this->getPictureUrl(22);
 		$data['picture_url_16'] = $this->getPictureUrl(16);
 
+		$data['default_picture_url']    = $this->getPictureUrl(80, null, true);
+		$data['default_picture_url_80'] = $this->getPictureUrl(80, null, true);
+		$data['default_picture_url_64'] = $this->getPictureUrl(64, null, true);
+		$data['default_picture_url_50'] = $this->getPictureUrl(50, null, true);
+		$data['default_picture_url_45'] = $this->getPictureUrl(45, null, true);
+		$data['default_picture_url_32'] = $this->getPictureUrl(32, null, true);
+		$data['default_picture_url_22'] = $this->getPictureUrl(22, null, true);
+		$data['default_picture_url_16'] = $this->getPictureUrl(16, null, true);
+
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('person_fields_manager');
 		$field_manager->addApiData($this, $data);
 
 		return $data;
 	}
+
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data
+     *
+     * @param null $field
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return null;
+            }
+        }
+    }
 
 	############################################################################
 	# Doctrine Metadata
@@ -2370,12 +2527,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'salt', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'salt', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_last_login', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_login', ));
+		$metadata->mapField(array( 'fieldName' => 'date_password_set', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_password_set', ));
 		$metadata->mapField(array( 'fieldName' => 'date_picture_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_picture_check', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), )  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
@@ -2384,7 +2542,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person',  ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'cascade' => array('persist','merge'), 'mappedBy' => 'people', 'dpApi' => true));
 		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
 	}
 }

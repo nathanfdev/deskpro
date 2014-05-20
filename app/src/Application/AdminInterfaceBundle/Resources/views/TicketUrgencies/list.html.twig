@@ -1,0 +1,42 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Urgencies</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="urgency in TicketUrgenciesList.urgencies">
+					<a>
+						<div class="pull-right">
+							<span class="badge" style="margin-top: -2px;" tooltip="The number of tickets with this urgency" tooltip-placement="left">Tickets: {{ ng_var('urgency.ticket_count') }}</span>
+						</div>
+						<span class="urgency-tag urgency-{{ ng_var('urgency.num') }}">
+							Urgency {{ ng_var('urgency.num') }}
+						</span>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>A ticket's Urgency score indicates how quickly your agents should resolve it.</h1>
+		<p>
+			Urgency can be set by agents; you can also change it with automatic processes like triggers.
+		</p>
+	</header>
+	<article>
+		<section>
+			<p>You can set, increase or decrease urgency with:</p>
+			<ul>
+				<li><strong>escalations</strong></li>
+				<li><strong>triggers</strong></li>
+				<li><strong>SLA</strong> states (warning or failure)</li>
+				<li><strong>macros</strong></li>
+			</ul>
+			<p>Carefully chosen rules to increase or decrease urgency will help your agents decide which tickets need their attention.</p>
+		</section>
+	</article>
+{% endblock %}

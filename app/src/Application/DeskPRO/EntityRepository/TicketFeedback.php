@@ -35,17 +35,16 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
-use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
 use Application\DeskPRO\Entity\TicketFeedback as TicketFeedbackEntity;
-use Doctrine\ORM\EntityRepository;
-
+use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
 use Orb\Util\Arrays;
 
 class TicketFeedback extends AbstractEntityRepository
 {
+	protected $per_page = 10;
+
 	/**
 	 * Get a feedback object for a message by a given person.
 	 */
@@ -70,6 +69,11 @@ class TicketFeedback extends AbstractEntityRepository
 		return $feedback;
 	}
 
+
+	/**
+	 * @param TicketEntity $ticket
+	 * @return array
+	 */
 	public function getFeedbackForTicket(TicketEntity $ticket)
 	{
 		$res = $this->getEntityManager()->createQuery("
@@ -86,19 +90,28 @@ class TicketFeedback extends AbstractEntityRepository
 		return $res;
 	}
 
-    public function getFeedbackForFeed($page)
+
+	/**
+	 * @param int $page
+	 * @return mixed
+	 */
+	public function getFeedbackForFeed($page)
     {
         $query = $this->getEntityManager()->createQuery("
 			SELECT f
 			FROM DeskPRO:TicketFeedback f
 			ORDER BY f.date_created DESC")
-            ->setMaxResults(20)
-            ->setFirstResult($page * 20);
+            ->setMaxResults($this->per_page)
+            ->setFirstResult($page * $this->per_page);
 
         return $query->execute();
     }
 
-    public function getCountForPaging()
+
+	/**
+	 * @return mixed
+	 */
+	public function getCountForPaging()
     {
         $query = $this->getEntityManager()->createQuery("
 			SELECT COUNT(f)
@@ -107,7 +120,24 @@ class TicketFeedback extends AbstractEntityRepository
         return $query->execute();
     }
 
-    public function getFeedbackRatingsForAgent(PersonEntity $agent, $date_range)
+
+	/**
+	 * @return float
+	 */
+	public function getFeedbackPagesCount()
+	{
+		$count = $this->getCountForPaging();
+
+		return ceil($count[0][1] / $this->per_page);
+	}
+
+
+	/**
+	 * @param PersonEntity $agent
+	 * @param              $date_range
+	 * @return array
+	 */
+	public function getFeedbackRatingsForAgent(PersonEntity $agent, $date_range)
     {
         $db = App::getDb();
 		$result = $db->fetchAll('
@@ -122,7 +152,11 @@ class TicketFeedback extends AbstractEntityRepository
         return $result;
     }
 
-    public function getFirstCreatedDate()
+
+	/**
+	 * @return mixed
+	 */
+	public function getFirstCreatedDate()
     {
         $db = App::getDb();
         $result = $db->fetchColumn('SELECT MIN(date_created) FROM ticket_feedback');

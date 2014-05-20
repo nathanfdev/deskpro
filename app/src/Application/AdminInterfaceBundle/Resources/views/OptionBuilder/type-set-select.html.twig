@@ -1,0 +1,19 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<label>{{ ng_var('type_title') }}</label>
+		<select
+			ui-select2="{dropdownAutoWidth:true}"
+			ng-model="model.value"
+			style="min-width: 240px"
+		>
+			<option value="" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+		</select>
+		<select
+			ui-select2
+			ng-model="model.value"
+			style="min-width: 240px"
+		>
+			<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+		</select>
+	</div>
+</dp-optionbuilder-row>

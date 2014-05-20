@@ -34,10 +34,9 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EmailGateway\AbstractGatewayProcessor;
 use Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
+use Application\DeskPRO\Entity;
 
 class ArticleGatewayProcessor extends AbstractGatewayProcessor
 {
@@ -83,13 +82,13 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 	public function run()
 	{
 		// Better dupe checking based on the actual email being submitted.
-		if($this->reader->hasProperty('email_source') && $this->reader->getProperty('email_source')->uid && $this->gateway) {
+		if($this->reader->hasProperty('email_source') && $this->reader->getProperty('email_source')->uid && $this->account) {
 			$has_processed = App::getDb()->fetchColumn("
 				SELECT id
 				FROM email_sources
 				WHERE uid = ? AND gateway_id = ? AND status = 'complete'
 				LIMIT 1
-			", array($this->reader->getProperty('email_source')->uid, $this->gateway->getId()));
+			", array($this->reader->getProperty('email_source')->uid, $this->account->getId()));
 
 			if ($has_processed) {
 				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
@@ -120,7 +119,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[ArticleGatewayProcessor] No person or not an agent for email: ' . $this->reader->getFromAddress()->getEmail());
 			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
 
-			if ($this->gateway) {
+			if ($this->account) {
 				$cutoff_date = gmdate('Y-m-d H:i:s', time() - 86400);
 
 				$has_processed = App::getDb()->fetchColumn("
@@ -132,7 +131,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 						AND status = 'error'
 						AND error_code = 'perm_insufficient'
 					LIMIT 1
-				", array($this->gateway->getId(), $cutoff_date, '%' . $this->reader->getFromAddress()->getEmail() . '%'));
+				", array($this->account->getId(), $cutoff_date, '%' . $this->reader->getFromAddress()->getEmail() . '%'));
 
 				if ($has_processed) {
 					return null;
@@ -150,16 +149,6 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
-		$ev = $this->createGatewayEvent(array(
-			'person' => $person,
-			'cancel' => false
-		));
-		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_RUN_ACTION, $ev);
-
-		if ($ev->cancel) {
-			return null;
-		}
-
 		if (ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
 			$this->logMessage('[ArticleGatewayProcessor] runNewForwardedArticle');
 			$ret = $this->runNewForwardedArticle($person);
@@ -167,12 +156,6 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[ArticleGatewayProcessor] runNewArticle');
 			$ret = $this->runNewArticle($person);
 		}
-
-		$ev = $this->createGatewayEvent(array(
-			'person' => $person,
-			'return' => $ret
-		));
-		$this->event_dispatcher->dispatch(self::EVENT_RUN_ACTION, $ev);
 
 		return $ret;
 	}
@@ -235,19 +218,6 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info['body'] = \Orb\Util\Strings::trimHtml($email_info['body']);
 
-		$ev = $this->createGatewayEvent(array(
-			'person' => $person,
-			'email_info' => $email_info,
-			'cancel' => false,
-		));
-		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_NEWARTICLE, $ev);
-
-		if ($ev->cancel) {
-			return null;
-		}
-
-		$email_info = $ev->email_info;
-
 		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_postclean');
 		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
 
@@ -260,8 +230,8 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 		$article->content = $email_info['body'];
 		$article->setStatusCode('hidden.draft');
 		$article->person = $person;
-		if ($this->gateway->getProcessorExtra('category_id')) {
-			$category = App::getOrm()->find('DeskPRO:ArticleCategory', $this->gateway->getProcessorExtra('category_id'));
+		if ($this->account->getProcessorExtra('category_id')) {
+			$category = App::getOrm()->find('DeskPRO:ArticleCategory', $this->account->getProcessorExtra('category_id'));
 			if ($category) {
 				$article->addToCategory($category);
 			}
@@ -290,12 +260,6 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 			throw $e;
 		}
 
-		$ev = $this->createGatewayEvent(array(
-			'article' => $article,
-			'person' => $person,
-		));
-		$this->event_dispatcher->dispatch(self::EVENT_NEWARTICLE, $ev);
-
 		return $article;
 	}
 
@@ -321,15 +285,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
 		$fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $this->cutterDef);
 
-		$ev = $this->createGatewayEvent(array(
-			'email_info' => $email_info,
-			'fwd_cutter' => $fwd_cutter,
-			'cancel' => false,
-		));
-
-		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_FWD_NEWARTICLE, $ev);
-
-		if ($ev->cancel OR !$fwd_cutter->isValid()) {
+		if (!$fwd_cutter->isValid()) {
 			$this->logMessage('[ArticleGatewayProcessor] Invalid forward');
 			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD;
 
@@ -361,8 +317,8 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 		$article->content = $email_info['body'];
 		$article->setStatusCode('hidden.draft');
 		$article->person = $agent;
-		if ($this->gateway->getProcessorExtra('category_id')) {
-			$category = App::getOrm()->find('DeskPRO:ArticleCategory', $this->gateway->getProcessorExtra('category_id'));
+		if ($this->account->getProcessorExtra('category_id')) {
+			$category = App::getOrm()->find('DeskPRO:ArticleCategory', $this->account->getProcessorExtra('category_id'));
 			if ($category) {
 				$article->addToCategory($category);
 			}
@@ -390,12 +346,6 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 			App::getDb()->rollback();
 			throw $e;
 		}
-
-		$ev = $this->createGatewayEvent(array(
-			'article' => $article,
-			'person' => $agent,
-		));
-		$this->event_dispatcher->dispatch(self::EVENT_FWD_NEWARTICLE, $ev);
 
 		return $article;
 	}

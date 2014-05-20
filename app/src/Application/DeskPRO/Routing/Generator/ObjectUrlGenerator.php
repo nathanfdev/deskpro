@@ -36,9 +36,6 @@ namespace Application\DeskPRO\Routing\Generator;
 
 use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
 
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
 /**
  * Gets the URL to the page for a resource given a context
  */

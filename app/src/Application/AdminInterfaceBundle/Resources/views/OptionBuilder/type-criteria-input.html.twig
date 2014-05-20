@@ -1,0 +1,27 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<label>{{ ng_var('type_title') }}</label>
+		<select
+			ui-select2="{dropdownAutoWidth:true}"
+			ng-model="model.op"
+			style="min-width: 50px;"
+		>
+			<option ng-if="operators.indexOf('isset') !== -1" value="isset">exists</option>
+			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
+			<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
+			<option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
+			<option ng-if="operators.indexOf('contains') !== -1" value="contains">contains</option>
+			<option ng-if="operators.indexOf('not_contains') !== -1" value="not_contains">does not contain</option>
+			<option ng-if="operators.indexOf('is_regex') !== -1" value="is_regex">matches regex</option>
+			<option ng-if="operators.indexOf('not_regex') !== -1" value="not_regex">does not match regex</option>
+			<option ng-if="operators.indexOf('changed') !== -1" value="changed">changed</option>
+			<option ng-if="operators.indexOf('changed_to') !== -1" value="changed_to">changed to</option>
+			<option ng-if="operators.indexOf('changed_from') !== -1" value="changed_from">changed from</option>
+			<option ng-if="operators.indexOf('gt') !== -1" value="gt">&gt;</option>
+			<option ng-if="operators.indexOf('gte') !== -1" value="gte">&gt;=</option>
+			<option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
+			<option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
+		</select>
+		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset'" />
+	</div>
+</dp-optionbuilder-row>

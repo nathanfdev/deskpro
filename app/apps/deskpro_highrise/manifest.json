@@ -1,0 +1,46 @@
+{
+	"package_name": "deskpro_highrise",
+	"is_native": true,
+	"title": "Highrise",
+	"description": "Integrates widgets to the ticket and profile pages in the agent interface to show information from Highrise.",
+	"tags": ["profiles"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "api_url",
+			"type": "text",
+			"label": "API URL",
+			"description": "This is the URL to your Highrise system, such as: https://example.highrisehq.com",
+			"native_only": true
+		},
+		{
+			"name": "api_token",
+			"type": "text",
+			"label": "API Token",
+			"description": "This is the API token for your user. It can be found within Highrise under My Info > API Token.",
+			"native_only": true
+		},
+		{
+			"name": "widget_ticket",
+			"type": "checkbox",
+			"label": "Ticket Widget",
+			"checkbox_label": "Enable",
+			"description": "Enable the highrise widget on tickets"
+		},
+		{
+			"name": "widget_profile",
+			"type": "checkbox",
+			"label": "Profile Widget",
+			"checkbox_label": "Enable",
+			"description": "Enable the highrise widget on user profiles"
+		}
+	]
+}

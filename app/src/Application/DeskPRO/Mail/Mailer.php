@@ -35,13 +35,12 @@
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
-
-use Orb\Log\Logger;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Log\Loggable;
-use Orb\Util\Strings;
-use Orb\Util\Util;
+use Orb\Log\Logger;
 
-require_once(DP_ROOT . '/vendor/swiftmailer/lib/swift_required.php');
+require_once(DP_ROOT . '/vendor/swiftmailer/swiftmailer/lib/swift_required.php');
 
 /**
  * This transport takes care of initializing any other transports based on settings
@@ -53,6 +52,11 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 * @var \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
 	 */
 	protected $templating;
+
+	/**
+	 * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
+	 */
+	protected $email_accounts;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -79,8 +83,16 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 */
 	protected $is_sending_queue = false;
 
-	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
+	public function __construct(
+		EmailAccountManager $email_accounts,
+		\Swift_Transport $transport,
+		\Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating,
+		Logger $logger = null
+	)
 	{
+
+		$this->email_accounts = $email_accounts;
+
 		$tmpdir = dp_get_tmp_dir() . '/swiftmailer-cache';
 		if (!is_dir(dp_get_tmp_dir() . '/swiftmailer-cache')) {
 			if (!@mkdir($tmpdir, 0777, true)) {
@@ -125,7 +137,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 				$filepath = '%log_dir%/emails';
 			}
 
-			$filepath = str_replace('%log_dir%', App::getLogDir(), $filepath);
+			$filepath = str_replace('%log_dir%', dp_get_log_dir(), $filepath);
 			if (!is_dir($filepath)) {
 				@mkdir($filepath, 0777);
 			}
@@ -139,7 +151,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 					$info_path = '%log_dir%/emails-info';
 				}
 
-				$info_path = str_replace('%log_dir%', App::getLogDir(), $info_path);
+				$info_path = str_replace('%log_dir%', dp_get_log_dir(), $info_path);
 				if (!is_dir($info_path)) {
 					@mkdir($info_path, 0777);
 				}
@@ -205,6 +217,11 @@ class Mailer extends \Swift_Mailer implements Loggable
 	public function getLogMessages()
 	{
 		return $this->messagesLog->getMessages();
+	}
+
+	public function resetLogMessages()
+	{
+		$this->messagesLog->clear();
 	}
 
 	/**
@@ -438,5 +455,29 @@ class Mailer extends \Swift_Mailer implements Loggable
 	public function sendNow(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		return parent::send($message, $failedRecipients);
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 * @return \Application\DeskPRO\Entity\EmailAccount|null
+	 */
+	public function getEmailAccountForTicket(Ticket $ticket)
+	{
+		if ($ticket->email_account) {
+			return $ticket->email_account;
+		}
+
+		return $this->email_accounts->getPrimaryEmailAccount();
+	}
+
+
+	/**
+	 * @param string $address
+	 * @return \Application\DeskPRO\Entity\EmailAccount|null
+	 */
+	public function findEmailAccountForAddress($address)
+	{
+		return $this->email_accounts->findAccountForEmailAddress($address, EmailAccountManager::IS_ENABLED & EmailAccountManager::WITH_TRANSPORT);
 	}
 }

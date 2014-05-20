@@ -1,0 +1,16 @@
+<?php
+require('DpApi.php');
+
+$api = new DpApi('http://support.example.com/', '1:APIKEYHERE');
+
+$data = array(
+    'person_email'  => 'user@example.com',
+    'person_name'   => 'John Doe',
+    'subject'       => 'Test Ticket',
+    'message'       => 'Ticket submitted via the API',
+	'department_id' => %DEPID%
+);
+
+$results = $api->createTicket($data);
+
+echo "Created ticket with ID {$results['ticket_id']}";

@@ -35,14 +35,11 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
-
-use Doctrine\ORM\Query, Doctrine\ORM\Proxy\Proxy;
-
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\FeedbackSearch;
-
+use Doctrine\ORM\Query;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -122,8 +119,30 @@ class FeedbackCategory extends AbstractCategoryRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT c
 			FROM DeskPRO:FeedbackCategory c INDEX BY c.id
-			ORDER BY c.id DESC
+			ORDER BY c.display_order ASC
 		")->execute();
+	}
+
+	/**
+	 * @param int  $id
+	 * @param bool $agent_only
+	 *
+	 * @return array
+	 */
+
+	public function getUserGroups($id, $agent_only = false)
+	{
+		return
+			$this->getEntityManager()
+			->createQuery(
+				"SELECT u.id, u.title
+				FROM DeskPRO:FeedbackCategory c
+				JOIN c.usergroups u
+				WHERE c.id = :id AND u.is_agent_group = :agent_only"
+			)
+			->setParameter('id', $id)
+			->setParameter('agent_only', $agent_only)
+			->execute();
 	}
 
 	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')

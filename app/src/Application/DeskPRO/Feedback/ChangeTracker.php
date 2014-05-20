@@ -37,8 +37,6 @@ namespace Application\DeskPRO\Feedback;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-
 class ChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 {
 	public function done()

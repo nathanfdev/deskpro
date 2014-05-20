@@ -1,0 +1,105 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+
+	{% macro code_tab(type) %}
+		<div class="form-group" ng-repeat="assets in Ctrl.asset_groups.{{ type }}">
+			<div class="col-lg-12">
+				<h3>{{ ng_var('assets.title') }}</h3>
+				<div class="editor-row" ng-if="assets.js != null">
+					<em>{{ ng_var('assets.js_name') }}</em>
+					<div class="editor-wrap">
+						<div class="editor" ng-model="assets.js" ui-ace="{
+							mode: 'javascript',
+							useWrapMode: false,
+							showGutter: false,
+							theme: 'textmate',
+							onLoad: aceLoaded
+						}" style="height: 110px;"></div>
+					</div>
+				</div>
+				<div class="editor-row" ng-if="assets.html != null">
+					<em>{{ ng_var('assets.html_name') }}</em>
+					<div class="editor-wrap">
+						<div class="editor" ng-model="assets.html" ui-ace="{
+							mode: 'html',
+							useWrapMode: false,
+							showGutter: false,
+							theme: 'textmate',
+							onLoad: aceLoaded
+						}" style="height: 110px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endmacro %}
+
+	<section class="dp-paneblock dp-editpane">
+		<nav class="dp-blocktabs">
+			<ul>
+				<li class="active" dp-tab-btn="main.def"><a href="#">App Definition</a></li>
+				<li class="pipe">|</li>
+				<li dp-tab-btn="main.ticket" ng-if="Ctrl.asset_groups.ticket.length"><a href="#">Tickets</a></li>
+				<li class="pipe" ng-if="Ctrl.asset_groups.ticket.length">|</li>
+				<li dp-tab-btn="main.user" ng-if="Ctrl.asset_groups.user.length"><a href="#">Users</a></li>
+				<li class="pipe" ng-if="Ctrl.asset_groups.user.length">|</li>
+				<li dp-tab-btn="main.org" ng-if="Ctrl.asset_groups.org.length"><a href="#">Organizations</a></li>
+				<li class="pipe" ng-if="Ctrl.asset_groups.org.length">|</li>
+			</ul>
+		</nav>
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+
+				<div dp-tab-body="main.def">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-12">
+								<h3>Title</h3>
+								<input type="text" class="form-control" ng-model="setting_values.dp_app.title" placeholder="Title" style="font-size: 140%; width: 90%;" />
+							</div>
+						</div>
+
+						{{ _self.code_tab('main') }}
+					</div>
+				</div>
+
+				<div dp-tab-body="main.ticket">
+					<div class="panel-body">
+						{{ _self.code_tab('ticket') }}
+					</div>
+				</div>
+
+				<div dp-tab-body="main.user">
+					<div class="panel-body">
+						{{ _self.code_tab('user') }}
+					</div>
+				</div>
+
+				<div dp-tab-body="main.org">
+					<div class="panel-body">
+						{{ _self.code_tab('org') }}
+					</div>
+				</div>
+
+			</div>
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-delete-control">
+					<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
+				</div>
+
+				<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div dp-hide-spinning="saving_settings">
+						<button class="btn btn-primary" ng-click="Ctrl.saveSettings();">{{ phrase('agent.general.save') }}</button>
+					</div>
+					<div dp-show-spinning="saving_settings">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+	<div dp-register-message="saved_settings">Settings were saved successfully</div>
+
+	{{ ng_tpl('AdminInterfaceBundle:Apps:readme-modal.html.twig') }}
+{% endblock %}

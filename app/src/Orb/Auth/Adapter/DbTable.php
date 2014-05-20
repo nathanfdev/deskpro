@@ -64,7 +64,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	/**
 	 * @var callable
 	 */
-	protected $db_factory;
+	protected $db_callback = null;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -91,7 +91,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 		if ($db instanceof Connection) {
 			$this->db = $db;
 		} else {
-			$this->db_factory = $db;
+			$this->db_callback = $db;
 		}
 
 		$this->initOptions();
@@ -99,21 +99,23 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	}
 
 	/**
-	 * @return Connection
+	 * @return Connection|mixed|null
 	 */
-	protected function getDb()
+	public function getDb()
 	{
 		if ($this->db) {
 			return $this->db;
-		} else {
-			try {
-				$this->db = call_user_func($this->db_factory);
-				return $this->db;
-			} catch (\Exception $e) {
-				if ($this->logger) $this->logger->logError("Exception: {$e->getCode()} {$e->getMessage()}");
-				throw $e;
-			}
 		}
+
+		try {
+			$this->db = call_user_func($this->db_callback);
+			if ($this->logger) $this->logger->logDebug("Database connection success");
+		} catch (\Exception $e) {
+			$this->logger->logDebug("Error trying to connect to database: {$e->getCode()} {$e->getMessage()}");
+			return null;
+		}
+
+		return $this->db;
 	}
 
 	protected function initOptions()
@@ -144,9 +146,11 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	public function authenticate()
 	{
 		if (!$this->set_username) {
+			if ($this->logger) $this->logger->logDebug("Missing username");
 			return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
 		}
 		if (!$this->set_password) {
+			if ($this->logger) $this->logger->logDebug("Missing password");
 			return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
 		}
 
@@ -189,6 +193,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 			}
 
 			if (!$userinfo) {
+				if ($this->logger) $this->logger->logDebug("Invalid credentials");
 				return new Result(Result::FAILURE_INVALID_CREDS);
 			}
 
@@ -291,22 +296,21 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 			return null;
 		}
 
-		$table = $this->options[self::OPT_TABLE];
-		$field = $this->options[self::OPT_FIELD_USERNAME];
-		try {
-			$db = $this->getDb();
-		} catch (\Exception $e) {
+		if (!$this->getDb()) {
 			return null;
 		}
-		$driver =  $db->getDriver()->getName();
-		if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+
+		$table = $this->options[self::OPT_TABLE];
+		$field = $this->options[self::OPT_FIELD_USERNAME];
+		$driver =  $this->db->getDriver()->getName();
+		if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv') {
           $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
         }
         else {
           $sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
         }
 
-		$result = $db->fetchAssoc($sql, array($username));
+		$result = $this->db->fetchAssoc($sql, array($username));
 		if (!$result) {
 			return null;
 		}
@@ -326,22 +330,21 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 			return null;
 		}
 
-		$table = $this->options[self::OPT_TABLE];
-		$field = $this->options[self::OPT_FIELD_EMAIL];
-		try {
-			$db = $this->getDb();
-		} catch (\Exception $e) {
+		if (!$this->getDb()) {
 			return null;
 		}
-		$driver = $db->getDriver()->getName();
-        if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+
+		$table = $this->options[self::OPT_TABLE];
+		$field = $this->options[self::OPT_FIELD_EMAIL];
+        $driver =  $this->db->getDriver()->getName();
+		if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv') {
           $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
         }
         else {
           $sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
         }
 
-		$result = $db->fetchAssoc($sql, array($email));
+		$result = $this->db->fetchAssoc($sql, array($email));
 		if (!$result) {
 			return null;
 		}
@@ -359,19 +362,19 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	{
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_ID];
-		try {
-			$db =  $this->getDb();
-		} catch (\Exception $e) {
+
+		if (!$this->getDb()) {
 			return null;
 		}
-		$driver =  $db->getDriver()->getName();
-		if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+
+		$driver =  $this->db->getDriver()->getName();
+		if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv') {
           $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
         }
         else {
 			$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
 		}
-		$result = $db->fetchAssoc($sql, array($id));
+		$result = $this->db->fetchAssoc($sql, array($id));
 		if (!$result) {
 			return null;
 		}

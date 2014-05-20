@@ -42,7 +42,7 @@ class EmailAddressValidatorService
 	public static function create(DeskproContainer $container)
 	{
 		$v = new EmailAddressValidator(
-			$container->getSystemService('gateway_address_matcher'),
+			$container->getEmailAccountManager(),
 			$container->getEm()->getRepository('DeskPRO:BanEmail')
 		);
 

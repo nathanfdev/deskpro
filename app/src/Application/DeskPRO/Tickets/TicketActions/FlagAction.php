@@ -34,11 +34,10 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PersonContextInterface;
 
 /**
  * Sets flag

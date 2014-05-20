@@ -1,0 +1,180 @@
+{
+	"package_name": "deskpro_us_db",
+	"is_native": true,
+	"title": "Database Authentication",
+	"description": "Allows users to log in using credentials from a standard database (with custom PHP password checking).",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "db_type",
+			"type": "choice",
+			"label": "Type",
+			"description": "DB Type",
+			"native_only": true,
+			"options": [
+				{ "label": "MySQL", "value": "pdo_mysql" },
+				{ "label": "PostgreSQL", "value": "pdo_pgsql" },
+				{ "label": "SQLite", "value": "pdo_sqlite" },
+				{ "label": "MsSQL", "value": "sqlsrv" },
+				{ "label": "Oracle", "value": "oci8" }
+			]
+		},
+		{
+			"name": "db_port_type",
+			"type": "text",
+			"label": "port or socket",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_host",
+			"type": "text",
+			"label": "DB Host",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_path",
+			"type": "text",
+			"label": "DB Path",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_port",
+			"type": "text",
+			"label": "DB Port",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_socket",
+			"type": "text",
+			"label": "DB Socket",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_name",
+			"type": "text",
+			"label": "DB Name",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_username",
+			"type": "text",
+			"label": "DB Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_password",
+			"type": "text",
+			"label": "DB Password",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_service_name",
+			"type": "text",
+			"label": "DB Password",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_with_options",
+			"type": "checkbox",
+			"label": "User custom options",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_custom_options",
+			"type": "textarea",
+			"label": "Custom options",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "table",
+			"type": "text",
+			"label": "Table",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_id",
+			"type": "text",
+			"label": "ID Field",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_username",
+			"type": "text",
+			"label": "Username Field",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_email",
+			"type": "text",
+			"label": "Email Field",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_password",
+			"type": "text",
+			"label": "Password Field",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_first_name",
+			"type": "text",
+			"label": "First Name Field",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_last_name",
+			"type": "text",
+			"label": "Last Name Field",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "field_name",
+			"type": "text",
+			"label": "Name Field",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "php_code",
+			"type": "textarea",
+			"label": "PHP Code",
+			"description": "",
+			"native_only": true
+		}
+	]
+}

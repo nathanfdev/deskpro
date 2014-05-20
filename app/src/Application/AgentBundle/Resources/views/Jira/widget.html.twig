@@ -1,0 +1,35 @@
+$("#" + pageMeta.baseId + "_actions_menu_trigger").after("<li data-action='export-jira'><i class=\"icon-share\"></i> {{ phrase('agent.jira.export_jira') }}</li>");
+
+{% if associatedIssues|length > 0 %}	
+	$("#" + pageMeta.baseId + "_tasks_wrap_tab").after('<li class="off" data-tab-for="#' + pageMeta.baseId + '_jira_wrap" id="' + pageMeta.baseId + '_jira_wrap_tab">JIRA (<span id="' + pageMeta.baseId + '_jira_count">{{ associatedIssues|length }}</span>)</li>');
+
+	$("#" + pageMeta.baseId + "_tasks_wrap").after('<article id="' + pageMeta.baseId + '_jira_wrap" style="display: none;" class=""><div style="width: 100%; text-align: center;"><img src="/web/images/spinners/loading-big-circle.gif"/><br/>Please wait while we fetch the latest JIRA activities on this ticket.</div></article>');
+{% endif %}
+
+$("*[data-action='export-jira']").on("click", function(){
+	var overlay = new DeskPRO.UI.Overlay({
+		destroyOnClose: true,
+		contentMethod: 'ajax',
+		contentAjax: { url: BASE_URL + 'agent/jira/export/' + pageMeta.ticket_id },
+		onOverlayOpened: function() {	
+			selectProject("{{ app.getSetting('core.apps_jira.defaultProject') }}");
+		}
+	});
+
+	overlay.open();
+});
+
+$("#" + pageMeta.baseId + "_jira_wrap_tab").click(function() {
+	//$("#" + pageMeta.baseId + "_jira_wrap").html("<h1 style='text-align: center;'>Loading . . .Please wait</h1>");
+	$("#" + pageMeta.baseId + "_jira_wrap").load(BASE_URL + 'agent/jira/issues/1', function(){
+		$("#" + pageMeta.baseId + "_jira_wrap_tab").children('span').text($("#" + pageMeta.baseId + "_jira_wrap #issue-count").text());
+	});
+
+});
+
+function format(state) 
+{
+	var originalOption = state.element;
+
+	return "<img class='icon' src='" + $(originalOption).data('icon') + "' />" + state.text;
+}

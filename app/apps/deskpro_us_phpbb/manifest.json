@@ -1,0 +1,79 @@
+{
+	"package_name": "deskpro_us_phpbb",
+	"is_native": true,
+	"title": "phpBB Authentication",
+	"description": "Allows users to log in using their phpBB profile.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "db_dsn",
+			"type": "text",
+			"label": "DSN",
+			"description": "Database DSN",
+			"native_only": true
+		},
+		{
+			"name": "db_username",
+			"type": "text",
+			"label": "DB Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_password",
+			"type": "text",
+			"label": "DB Password",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "table_prefix",
+			"type": "text",
+			"label": "DB Table Prefix",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "phpbb_version",
+			"type": "choice",
+			"label": "Version",
+			"description": "",
+			"native_only": true,
+			"options": [
+				{ "label": "2.x", "value": "2" },
+				{ "label": "3.x", "value": "3" }
+			]
+		},
+		{
+			"name": "check_service_url",
+			"type": "text",
+			"label": "DeskPRO Service URL",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "check_service_key",
+			"type": "text",
+			"label": "DeskPRO Service Key",
+			"description": "",
+			"native_only": true
+		}
+	]
+}

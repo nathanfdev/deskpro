@@ -35,10 +35,8 @@ namespace Application\DeskPRO\AgentAlert;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
-use Application\DeskPRO\ORM\EntityManager;
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Tickets\TicketActions\AgentAlertNotificationAction;
+use Application\DeskPRO\ORM\EntityManager;
 
 class AlertSender
 {
@@ -98,6 +96,57 @@ class AlertSender
 		}
 
 		return $alert;
+	}
+
+	/**
+	 * @param $agent
+	 * @param $type
+	 * @param array $data
+	 * @return AgentAlert
+	 */
+	public function createAlert($agent, $type, array $data)
+	{
+		$alert = new AgentAlert();
+		$alert->person   = $agent;
+		$alert->typename = $type;
+		$alert->data     = $data;
+
+		if (isset($data['browser_rendered'])) {
+			$alert->addTargetMap(AgentAlert::TARGET_BROWSER, array('browser_rendered'));
+		}
+
+		return $alert;
+	}
+
+
+	/**
+	 * @param $agent
+	 * @param $type
+	 * @param array $data
+	 * @param AgentAlert $alert
+	 * @return null
+	 */
+	public function createClientMessage($agent, $type, array $data, AgentAlert $alert = null)
+	{
+		if (!isset($data['browser_rendered'])) {
+			return null;
+		}
+
+		$tpl_line = $data['browser_rendered'];
+
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'agent-notify.tickets',
+			'data' => array(
+				'type'       => $type,
+				'alert_id'   => $alert ? $alert->id : null,
+				'row'        => $tpl_line
+			),
+			'for_person'        => $agent,
+			'created_by_client' => 'sys'
+		));
+		$this->em->persist($cm);
+		$this->em->flush($cm);
 	}
 
 

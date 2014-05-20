@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item;
 
-use Application\DeskPRO\PageDisplay\Item\ItemInterface;
-
 use Orb\Util\Arrays;
 
 class TicketWorkflow extends TicketItemAbstract

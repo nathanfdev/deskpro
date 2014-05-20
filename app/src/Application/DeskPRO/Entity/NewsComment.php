@@ -36,18 +36,18 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
 
 /**
  * Comments on articles
  *
+ * @SWG\Model(id="NewsComment")
  */
 class NewsComment extends CommentAbstract
 {
 	const OBJ_PROP = 'news';
 
 	/**
+	 * @SWG\Property(name="news",type="News")
 	 */
 	protected $news;
 

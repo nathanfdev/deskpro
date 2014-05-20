@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Translate;
 
-use Application\DeskPRO\Translate\Translate;
-
 /**
  * A delegate phrase object can be passed to the translator, and the translator will
  * call getPhraseText() on-demand. This allows you to pass around single objects that self-

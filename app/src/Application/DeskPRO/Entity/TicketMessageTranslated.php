@@ -34,11 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Markdown;
 
 class TicketMessageTranslated extends \Application\DeskPRO\Domain\DomainObject
 {

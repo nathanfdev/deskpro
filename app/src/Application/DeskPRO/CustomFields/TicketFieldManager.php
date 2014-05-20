@@ -35,12 +35,22 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
-
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
+use Zend\Loader\Exception\InvalidArgumentException;
 
 class TicketFieldManager extends FieldManager
 {
+	/**
+	 * @var \Application\DeskPRO\Settings\Settings
+	 */
+	private $settings;
+
+	protected function init()
+	{
+		$this->settings = $this->options->get('settings_handler');
+	}
+
 	/**
 	 * Get a collection of all top-level (parent) fields
 	 *
@@ -85,6 +95,17 @@ class TicketFieldManager extends FieldManager
 		return $this->fields;
 	}
 
+
+	/**
+	 * Get an array of all defined fields (by doing a query).
+	 *
+	 * @return array
+	 */
+	public function getDefinedFields()
+	{
+		return array_values($this->em->getRepository('DeskPRO:CustomDefTicket')->getTopFields());
+	}
+
 	public function setCustomDataOnObject($ticket, CustomDefAbstract $field_def, array $in_data)
 	{
 		if (!$ticket->getTicketLogger()) {
@@ -125,5 +146,103 @@ class TicketFieldManager extends FieldManager
 		}
 
 		return $new_value;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isProductEnabled()
+	{
+		return (bool)$this->settings->get('core.use_product');
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isPriorityEnabled()
+	{
+		return (bool)$this->settings->get('core.use_ticket_priority');
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isWorkflowEnabled()
+	{
+		return (bool)$this->settings->get('core.use_ticket_workflow');
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isCategoryEnabled()
+	{
+		return (bool)$this->settings->get('core.use_ticket_category');
+	}
+
+
+	/**
+	 * @param $enabled bool
+	 */
+	public function setIsProductEnabled($enabled = true)
+	{
+		$this->settings->setSetting('core.use_product', intval((bool)$enabled));
+	}
+
+
+	/**
+	 * @param $enabled bool
+	 */
+	public function setIsPriorityEnabled($enabled = true)
+	{
+		$this->settings->setSetting('core.use_ticket_priority', intval((bool)$enabled));
+	}
+
+
+	/**
+	 * @param $enabled bool
+	 */
+	public function setIsWorkflowEnabled($enabled = true)
+	{
+		$this->settings->setSetting('core.use_ticket_workflow', intval((bool)$enabled));
+	}
+
+
+	/**
+	 * @param $enabled bool
+	 */
+	public function setIsCategoryEnabled($enabled = true)
+	{
+		$this->settings->setSetting('core.use_ticket_category', intval((bool)$enabled));
+	}
+
+
+	/**
+	 * @param string $id
+	 * @param bool $enabled
+	 * @throws \Zend\Loader\Exception\InvalidArgumentException
+	 */
+	public function setFieldEnabledById($id, $enabled = true)
+	{
+		if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
+			$field = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
+			$field->is_enabled = $enabled;
+			$this->em->persist($field);
+			$this->em->flush($field);
+
+		} else {
+			switch ($id) {
+				case 'product':  $this->setIsProductEnabled($enabled); break;
+				case 'workflow': $this->setIsWorkflowEnabled($enabled); break;
+				case 'priority': $this->setIsPriorityEnabled($enabled); break;
+				case 'category': $this->setIsCategoryEnabled($enabled); break;
+				default:
+					throw new InvalidArgumentException("Invalid \$id");
+			}
+		}
 	}
 }

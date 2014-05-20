@@ -1,291 +1,219 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->add('proxy', new Route(
-	'/proxy/{key}',
-	array('_controller' => 'DeskPRO:Widget:proxy'),
-	array(),
-	array()
+$collection->create('proxy', array(
+	'path'        => '/proxy/{key}',
+	'controller'  => 'DeskPRO:Widget:proxy',
 ));
 
-################################################################################
-# File serving
-################################################################################
-
-$collection->add('serve_blob', new Route(
-	'/file.php/{blob_auth_id}/{filename}',
-	array('_controller' => '(see: serve_file.php)'),
-	array(),
-	array()
+$collection->create('serve_file_root', array(
+	'path'        => '/file.php',
+	'controller'  => '(see: serve_file.php)',
 ));
 
-$collection->add('serve_dp_asset', new Route(
-	'/file.php/dp-asset/{filename}',
-	array('_controller' => '(see: serve_file.php)'),
-	array(),
-	array()
+$collection->create('serve_blob', array(
+	'path'        => '/file.php/{blob_auth_id}/{filename}',
+	'controller'  => '(see: serve_file.php)',
 ));
 
-$collection->add('serve_blob_size', new Route(
-	'/file.php/size/{s}/{blob_auth_id}/{filename}',
-	array('_controller' => '(see: serve_file.php)'),
-	array(),
-	array()
+$collection->create('serve_dp_asset', array(
+	'path'        => '/file.php/dp-asset/{filename}',
+	'controller'  => '(see: serve_file.php)',
 ));
 
-$collection->add('serve_blob_sizefit', new Route(
-	'/file.php/size/{s}/size-fit/{blob_auth_id}/{filename}',
-	array('_controller' => '(see: serve_file.php)'),
-	array(),
-	array()
+$collection->create('serve_blob_size', array(
+	'path'        => '/file.php/size/{s}/{blob_auth_id}/{filename}',
+	'controller'  => '(see: serve_file.php)',
 ));
 
-$collection->add('serve_person_picture', new Route(
-	'/file.php/avatar/{person_id}',
-	array('_controller' => '(see: serve_file.php)', 'size' => 0),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('serve_blob_sizefit', array(
+	'path'        => '/file.php/size/{s}/size-fit/{blob_auth_id}/{filename}',
+	'controller'  => '(see: serve_file.php)',
 ));
 
-$collection->add('serve_person_picture_size', new Route(
-	'/file.php/avatar/{person_id}',
-	array('_controller' => '(see: serve_file.php)'),
-	array('person_id' => '\\d+', 'size' => '\\d+'),
-	array()
+$collection->create('serve_blob_app_asset', array(
+	'path'         => '/file.php/apps/{app_name}/{type}/{path}',
+	'requirements' => array('app_name' => '[a-zA-Z0-9\-\_\.]+', 'type' => '(app|js|css|html|res)', 'path' => '.*+'),
+	'controller'   => '(see: serve_file.php)',
 ));
 
-$collection->add('serve_default_picture', new Route(
-	'/file.php/avatar/{s}/default.jpg',
-	array('_controller' => '(see: serve_file.php)', 'name' => 'default_picture', 's' => '0'),
-	array(),
-	array()
+$collection->create('serve_person_picture', array(
+	'path'          => '/file.php/avatar/{person_id}',
+	'controller'    => '(see: serve_file.php)',
+	'defaults'      => array('size' => 0),
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-
-$collection->add('favicon', new Route(
-	'/favicon.ico',
-	array('_controller' => 'DeskPRO:Blob:favicon'),
-	array(),
-	array()
+$collection->create('serve_person_picture_size', array(
+	'path'          => '/file.php/avatar/{person_id}',
+	'controller'    => '(see: serve_file.php)',
+	'requirements'  => array('person_id' => '\\d+', 'size' => '\\d+'),
 ));
 
-$collection->add('serve_org_picture_default', new Route(
-	'/file.php/o-avatar/default',
-	array('_controller' => '(see: serve_file.php)'),
-	array(),
-	array()
+$collection->create('serve_default_picture', array(
+	'path'        => '/file.php/avatar/{s}/default.jpg',
+	'controller'  => '(see: serve_file.php)',
+	'defaults'    => array('name' => 'default_picture', 's' => '0'),
 ));
 
-$collection->add('serve_org_picture', new Route(
-	'/file.php/o-avatar/{org_id}',
-	array('_controller' => '(see: serve_file.php)'),
-	array('person_id' => '\\d+'),
-	array()
+$collection->create('favicon', array(
+	'path'        => '/favicon.ico',
+	'controller'  => 'DeskPRO:Blob:favicon',
 ));
 
-################################################################################
-# Error Logging
-################################################################################
-
-$collection->add('sys_log_js_error', new Route(
-	'/dp/log-js-error.json',
-	array('_controller' => 'DeskPRO:Data:logJsError'),
-	array(),
-	array()
+$collection->create('serve_org_picture_default', array(
+	'path'        => '/file.php/o-avatar/default',
+	'controller'  => '(see: serve_file.php)',
 ));
 
-$collection->add('sys_report_error', new Route(
-	'/dp/report-error.json',
-	array('_controller' => 'DeskPRO:Data:sendErrorReport'),
-	array(),
-	array()
+$collection->create('serve_org_picture', array(
+	'path'          => '/file.php/o-avatar/{org_id}',
+	'controller'    => '(see: serve_file.php)',
+	'requirements'  => array('person_id' => '\\d+'),
 ));
 
-################################################################################
-# Data
-################################################################################
-
-$collection->add('data_interface_data', new Route(
-	'/data/interface-data.{_format}',
-	array('_controller' => 'DeskPRO:Data:interfaceData', '_format' => 'js'),
-	array('_format' => 'js'),
-	array()
+$collection->create('sys_log_js_error', array(
+	'path'        => '/dp/log-js-error.json',
+	'controller'  => 'DeskPRO:Data:logJsError',
 ));
 
-################################################################################
-# DeskPRO 3 Redirects
-################################################################################
-
-$collection->add('dp3_redirect_files_php', new Route(
-	'/files.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:downloadCat'),
-	array(),
-	array()
+$collection->create('sys_report_error', array(
+	'path'        => '/dp/report-error.json',
+	'controller'  => 'DeskPRO:Data:sendErrorReport',
 ));
 
-$collection->add('dp3_redirect_attachment_files_php', new Route(
-	'/attachment_files.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:downloadView'),
-	array(),
-	array()
+$collection->create('data_interface_data', array(
+	'path'          => '/data/interface-data.{_format}',
+	'controller'    => 'DeskPRO:Data:interfaceData',
+	'defaults'      => array('_format' => 'js'),
+	'requirements'  => array('_format' => 'js'),
 ));
 
-$collection->add('dp3_redirect_ideas_php', new Route(
-	'/ideas.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:feedback'),
-	array(),
-	array()
+$collection->create('dp3_redirect_files_php', array(
+	'path'        => '/files.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:downloadCat',
 ));
 
-$collection->add('dp3_redirect_kb_article_php', new Route(
-	'/kb_article.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:articleView'),
-	array(),
-	array()
+$collection->create('dp3_redirect_attachment_files_php', array(
+	'path'        => '/attachment_files.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:downloadView',
 ));
 
-$collection->add('dp3_redirect_kb_cat_php', new Route(
-	'/kb_cat.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:articleCat'),
-	array(),
-	array()
+$collection->create('dp3_redirect_ideas_php', array(
+	'path'        => '/ideas.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:feedback',
 ));
 
-$collection->add('dp3_redirect_kb_php', new Route(
-	'/kb.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:articlesHome'),
-	array(),
-	array()
+$collection->create('dp3_redirect_kb_article_php', array(
+	'path'        => '/kb_article.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:articleView',
 ));
 
-$collection->add('dp3_redirect_login_php', new Route(
-	'/login.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:login'),
-	array(),
-	array()
+$collection->create('dp3_redirect_kb_cat_php', array(
+	'path'        => '/kb_cat.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:articleCat',
 ));
 
-$collection->add('dp3_redirect_manual_php', new Route(
-	'/manual.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:manuals'),
-	array(),
-	array()
+$collection->create('dp3_redirect_kb_php', array(
+	'path'        => '/kb.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:articlesHome',
 ));
 
-$collection->add('dp3_redirect_manual_rewritten', new Route(
-	'/manual/{manual_bit}/{page_bit}',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:rewrittenManuals', 'page_bit' => ''),
-	array(),
-	array()
+$collection->create('dp3_redirect_login_php', array(
+	'path'        => '/login.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:login',
 ));
 
-$collection->add('dp3_redirect_manual_download_php', new Route(
-	'/manual_download.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:manuals'),
-	array(),
-	array()
+$collection->create('dp3_redirect_manual_php', array(
+	'path'        => '/manual.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:manuals',
 ));
 
-$collection->add('dp3_redirect_news_archive_php', new Route(
-	'/news_archive.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:newsArchive'),
-	array(),
-	array()
+$collection->create('dp3_redirect_manual_rewritten', array(
+	'path'        => '/manual/{manual_bit}/{page_bit}',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:rewrittenManuals',
+	'defaults'    => array('page_bit' => ''),
 ));
 
-$collection->add('dp3_redirect_news_full_php', new Route(
-	'/news_full.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:newsView'),
-	array(),
-	array()
+$collection->create('dp3_redirect_manual_download_php', array(
+	'path'        => '/manual_download.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:manuals',
 ));
 
-$collection->add('dp3_redirect_news_php', new Route(
-	'/news.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:newsView'),
-	array(),
-	array()
+$collection->create('dp3_redirect_news_archive_php', array(
+	'path'        => '/news_archive.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:newsArchive',
 ));
 
-$collection->add('dp3_redirect_newticket_php', new Route(
-	'/newticket.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:newTicket'),
-	array(),
-	array()
+$collection->create('dp3_redirect_news_full_php', array(
+	'path'        => '/news_full.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:newsView',
 ));
 
-$collection->add('dp3_redirect_profile_email_php', new Route(
-	'/profile_email.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:profile'),
-	array(),
-	array()
+$collection->create('dp3_redirect_news_php', array(
+	'path'        => '/news.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:newsView',
 ));
 
-$collection->add('dp3_redirect_profile_password_php', new Route(
-	'/profile_password.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:profile'),
-	array(),
-	array()
+$collection->create('dp3_redirect_newticket_php', array(
+	'path'        => '/newticket.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:newTicket',
 ));
 
-$collection->add('dp3_redirect_profile_php', new Route(
-	'/profile.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:profile'),
-	array(),
-	array()
+$collection->create('dp3_redirect_profile_email_php', array(
+	'path'        => '/profile_email.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:profile',
 ));
 
-$collection->add('dp3_redirect_register_php', new Route(
-	'/register.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:register'),
-	array(),
-	array()
+$collection->create('dp3_redirect_profile_password_php', array(
+	'path'        => '/profile_password.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:profile',
 ));
 
-$collection->add('dp3_redirect_reset_php', new Route(
-	'/reset.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:login'),
-	array(),
-	array()
+$collection->create('dp3_redirect_profile_php', array(
+	'path'        => '/profile.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:profile',
 ));
 
-$collection->add('dp3_redirect_ticketlist_php', new Route(
-	'/ticketlist.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:ticketList'),
-	array(),
-	array()
+$collection->create('dp3_redirect_register_php', array(
+	'path'        => '/register.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:register',
 ));
 
-$collection->add('dp3_redirect_ticketlist_company_php', new Route(
-	'/ticketlist_company.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:ticketList'),
-	array(),
-	array()
+$collection->create('dp3_redirect_reset_php', array(
+	'path'        => '/reset.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:login',
 ));
 
-$collection->add('dp3_redirect_ticketlist_participate_php', new Route(
-	'/ticketlist_participate.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:ticketList'),
-	array(),
-	array()
+$collection->create('dp3_redirect_ticketlist_php', array(
+	'path'        => '/ticketlist.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:ticketList',
 ));
 
-$collection->add('dp3_redirect_troubleshooter_php', new Route(
-	'/troubleshooter.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:troubles'),
-	array(),
-	array()
+$collection->create('dp3_redirect_ticketlist_company_php', array(
+	'path'        => '/ticketlist_company.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:ticketList',
 ));
 
-$collection->add('dp3_redirect_view_php', new Route(
-	'/view.php',
-	array('_controller' => 'DeskPRO:Deskpro3Redirect:ticketView'),
-	array(),
-	array()
+$collection->create('dp3_redirect_ticketlist_participate_php', array(
+	'path'        => '/ticketlist_participate.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:ticketList',
+));
+
+$collection->create('dp3_redirect_troubleshooter_php', array(
+	'path'        => '/troubleshooter.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:troubles',
+));
+
+$collection->create('dp3_redirect_view_php', array(
+	'path'        => '/view.php',
+	'controller'  => 'DeskPRO:Deskpro3Redirect:ticketView',
 ));
 
 return $collection;

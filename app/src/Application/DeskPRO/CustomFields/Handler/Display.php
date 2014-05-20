@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
@@ -48,7 +46,7 @@ class Display extends HandlerAbstract
 	public function getFormField($data = null)
 	{
 		$setData = '';
-		$field = App::getFormFactory()->createNamedBuilder('hidden', $this->getFormFieldName(), $setData, array('required' => false));
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'hidden', $setData, array('required' => false));
 		return $field;
 	}
 

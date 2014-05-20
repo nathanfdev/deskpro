@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader as AbstractEmailReader;
-use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\ORM\EntityManager;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
@@ -125,7 +124,6 @@ class DetectInlineReply implements Loggable
 	/**
 	 * Gets the first message that we detect has changed
 	 *
-	 * @param bool $all
 	 * @return \Application\DeskPRO\Entity\TicketMessage|null
 	 */
 	public function getDifferentMessage()
