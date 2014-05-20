@@ -429,7 +429,7 @@ class TicketController extends AbstractController
 			if ($this->in->getBool('message_as_agent')) {
 				$context = $ticket_manager->createAgentExecutorContext($this->person, 'newticket', 'api');
 			} else {
-				$context = $ticket_manager->createAgentExecutorContext($ticket->person, 'newticket', 'api');
+				$context = $ticket_manager->createUserExecutorContext($ticket->person, 'newticket', 'api');
 			}
 
 			$ticket_manager->saveTicket($ticket, $context);
