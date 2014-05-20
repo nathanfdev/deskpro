@@ -68,6 +68,35 @@
 		<a href="{{ ng_href('agents.login_log') }}">View login logs &rarr;</a>
 	</div>
 
+	{% if app.getSetting('core.admin_upgrade_notice') < app.getBuildTime() %}
+		<div style="margin: 15px 15px 0 15px" id="admin_upgrade_notice" ng-if="!hide_admin_upgrade_notice">
+			<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
+				<div style="position: absolute; top: 5px; right: 11px;">
+					<a href="#" ng-click="Home.dismissUpgradeNotice({{ app.getBuildTime()|default(0) }})" title="Dismiss this message" style="color: #b94a48; font-size: 20px;"><i class="fa fa-times-circle"></i></a>
+				</div>
+				<div style="float:left">
+					<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+				</div>
+				<div style="margin-left: 50px;">
+					<h3 style="margin-top: 8px;">Upgrading Your Helpdesk</h3>
+					<p>
+						You have just successfully upgraded to a major new version of DeskPRO.
+					</p>
+					<p>
+						Along with new features and improvements, there have been some backwards-incompatible changes that
+						you may need address.
+					</p>
+					<p>
+						It is very important you read and understand these changes. <strong>You may need to manually reconfigure some aspects of your helpdesk.</strong>
+					</p>
+					<div style="margin-top: 15px;">
+						<a href="https://support.deskpro.com/kb/articles/190" class="btn btn-primary btn-lg" target="_blank">Click here to read more about what has changed &rarr;</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="dp-interface-buttons">
 		<table cellspacing="35" width="100%">
 			<tbody>

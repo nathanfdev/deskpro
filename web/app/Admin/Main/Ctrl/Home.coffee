@@ -13,6 +13,7 @@ define [
 			@online_agents = []
 			@offline_agents = []
 			@$scope.new_agent = {}
+			@$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false
 			return
 
 		initialLoad: ->
@@ -132,6 +133,16 @@ define [
 					@$scope.support_sent = true
 				)
 			)
+
+		###
+		# Dismiss ugrade notice
+		###
+		dismissUpgradeNotice: (value) ->
+			$('#admin_upgrade_notice').slideUp()
+			window.hide_admin_upgrade_notice = true
+			@Api.sendPost('/settings/values/core.admin_upgrade_notice', {
+				value: value
+			})
 
 
 	Admin_Main_Ctrl_Home.EXPORT_CTRL()

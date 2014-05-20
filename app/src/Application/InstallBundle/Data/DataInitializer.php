@@ -83,6 +83,8 @@ class DataInitializer
 
 	public function run()
 	{
+		$this->container->getDb()->replace('settings', array('name' => 'core.admin_upgrade_notice', 'value' => DP_BUILD_TIME));
+
 		$this->runSearchIndex();
 		$this->runInitPerms();
 		$this->runInitAdminNotifications();

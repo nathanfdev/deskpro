@@ -19,6 +19,7 @@
         this.online_agents = [];
         this.offline_agents = [];
         this.$scope.new_agent = {};
+        this.$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false;
       };
 
       Admin_Main_Ctrl_Home.prototype.initialLoad = function() {
@@ -150,6 +151,19 @@
             });
           };
         })(this));
+      };
+
+
+      /*
+      		 * Dismiss ugrade notice
+       */
+
+      Admin_Main_Ctrl_Home.prototype.dismissUpgradeNotice = function(value) {
+        $('#admin_upgrade_notice').slideUp();
+        window.hide_admin_upgrade_notice = true;
+        return this.Api.sendPost('/settings/values/core.admin_upgrade_notice', {
+          value: value
+        });
       };
 
       return Admin_Main_Ctrl_Home;
