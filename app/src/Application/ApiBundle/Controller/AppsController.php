@@ -373,6 +373,7 @@ class AppsController extends AbstractController
 				);
 
 				$this->em->persist($asset);
+				$this->em->flush($asset);
 				$remove_blobs[] = $old_blob;
 			}
 
@@ -541,6 +542,7 @@ class AppsController extends AbstractController
 				} else if ($type == 'org') {
 					$injects[] = '$org';
 				}
+				$injects[] = '$http';
 				$injects[] = '$el';
 				$injects[] = '$app';
 				$injects = implode(', ', $injects);
