@@ -635,6 +635,18 @@ class FilestorageLoader extends LoaderAbstract
 				$mimetype = 'application/pdf';
 				break;
 
+			case 'Admin-Manual.pdf':
+				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-manual/en_US.pdf';
+				$filename = 'Admin Manual.pdf';
+				$mimetype = 'application/pdf';
+				break;
+
+			case 'Agent-Manual.pdf':
+				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
+				$filename = 'Agent Manual.pdf';
+				$mimetype = 'application/pdf';
+				break;
+
 			default:
 				if ($this->error_mode == 'exception') {
 					throw new \Exception("File not found. (300)", 400);

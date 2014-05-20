@@ -25,6 +25,7 @@
 	'agent.chrome.create_new-tweet'               => 'New Tweet',
 	'agent.chrome.hello-user'                     => 'Hello, {{name}}',
 	'agent.chrome.help-contact-us'                => 'Contact Us',
+	'agent.chrome.help-manuals'                   => 'Manuals',
 	'agent.chrome.help-contact-us-explain'        => 'Contact us on our helpdesk at <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> or directly via email at <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
 	'agent.chrome.help-quickstart-guide-link'     => 'If you are new to DeskPRO, <a href="{{link}}">click here to download the DeskPRO Quick Start Guide</a>.',
 	'agent.chrome.kbd-change-status-agent'        => 'Change status to Awaiting Agent',
