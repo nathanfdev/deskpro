@@ -4,7 +4,8 @@ define(['DeskPRO/App/Context/TabContext/TabContext'], function(TabContext) {
 
 		getInjectables: function() {
 			return [
-				['$user', this.getFragment().meta.api_data]
+				['$person', this.getFragment().meta.api_data],
+				['$user', this.getFragment().meta.api_data],  // alias
 			]
 		}
 	});

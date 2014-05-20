@@ -539,7 +539,7 @@ class AppsController extends AbstractController
 					$injects[] = '$ticket';
 					$injects[] = '$person';
 				} else if ($type == 'user') {
-					$injects[] = '$user';
+					$injects[] = '$person';
 				} else if ($type == 'org') {
 					$injects[] = '$org';
 				}
