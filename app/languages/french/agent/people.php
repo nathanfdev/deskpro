@@ -72,7 +72,7 @@
 	'agent.people.user_is_agent'                                           => '{{name}} est un agent de cette plateforme de support.',
 	'agent.people.user_is_autoresponder'                                   => 'L\'utilisateur est un répondeur automatique. Les auto-réponses ne seront pas envoyées.',
 	'agent.people.user_landed_on_page'                                     => 'L\'utilisateur a atteri sur la page',
-	'agent.people.user_not_autoresponder'                                  => 'L\'utilisateur n\'est pas un répondeur-automatique',
+	'agent.people.user_not_autoresponder'                                  => 'L\'utilisateur n\'est pas un répondeur automatique',
 	'agent.people.user_will_be_perm_deleted'                               => 'L\'utilisateur sera supprimé définitivement.',
 	'agent.people.user_will_be_perm_deleted_banned'                        => 'L\'utilisateur sera définitivement supprimé et son adresse email sera interdite.',
 	'agent.people.view_profile'                                            => 'Voir profil',

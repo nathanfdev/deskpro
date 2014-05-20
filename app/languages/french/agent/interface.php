@@ -33,6 +33,7 @@
 	'agent.interface.kbd_new_task'                                         => 'k',
 	'agent.interface.kbd_new_ticket'                                       => 't',
 	'agent.interface.kbd_open_org_profile'                                 => 'Ouvrir le profil de l\'Organisation',
+	'agent.interface.kbd_open_send_options'                                => 'Ouvrir les options d\'action d\'envoi',
 	'agent.interface.kbd_open_snippets'                                    => 'Ouvrir les snippets',
 	'agent.interface.kbd_open_user_profile'                                => 'Ouvrir le profil utilisateur',
 	'agent.interface.kbd_send_reply'                                       => 'Répondre',

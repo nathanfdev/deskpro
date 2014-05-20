@@ -13,7 +13,7 @@
 	'agent.feedback.new_feedback'                                          => 'Nouveau feedback:',
 	'agent.feedback.newest_on_top'                                         => 'Les plus récents d\'abord',
 	'agent.feedback.no_feedback_cats_error'                                => 'Aucun type défini. Avant de pouvoir ajouter des types à la section feedback, vous devez définir un type via l\'interface administrateur.',
-	'agent.feedback.no_labels_explain'                                     => 'Vous n\'avez pas encore mis de label sur les feedback. Voir un feedback pour y ajouter des labels.',
+	'agent.feedback.no_labels_explain'                                     => 'Vous n\'avez pas encore mis de label sur les feedbacks. Voir un feedback pour y ajouter des labels.',
 	'agent.feedback.oldest_on_top'                                         => 'Les plus anciens d\'abord',
 	'agent.feedback.popularity_least_most'                                 => 'Popularité (le moins-le plus)',
 	'agent.feedback.popularity_most_least'                                 => 'Popularité (le plus-le moins)',

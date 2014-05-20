@@ -54,6 +54,7 @@
 	'agent.chat.user_is_viewing'                                           => 'L\'utilisateur regarde',
 	'agent.chat.user_typing'                                               => 'En train de taper',
 	'agent.chat.warning'                                                   => 'Avertissement',
+	'agent.chat.warning_email_address_not_unique'                          => 'L\'utilisateur n\'est pas connecté. Son identité ne peut donc pas être vérifiée. Veillez à ne pas divulguer d\'informations sensibles au cas où l\'utilisateur serait un imposteur.',
 	'agent.chat.x_by_anonymous'                                            => 'Chat {{chat_id}} par Anonyme',
 	'agent.chat.x_by_anonymousymous'                                       => 'Chat par Anonyme',
 	'agent.chat.you_have_been_invited'                                     => 'Vous avez été invité à un chat',
