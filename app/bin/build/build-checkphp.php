@@ -16,6 +16,7 @@ require DP_ROOT . '/bin/build/php-path.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
+	DP_ROOT.'/apps',
 	DP_ROOT.'/languages',
 	DP_ROOT.'/bin',
 	DP_ROOT.'/src',
@@ -32,7 +33,16 @@ if (in_array('--only-changed', $_SERVER['argv']) && file_exists(DP_ROOT.'/sys/co
 	$tmp = include(DP_ROOT.'/sys/config/changed-files.php');
 	foreach ($tmp as $file) {
 		if ($file && preg_match('#\.php$#', $file) && file_exists(DP_WEB_ROOT . '/' . $file)) {
-			$check_files[] = DP_WEB_ROOT . '/' . $file;
+			$in_dirs = false;
+			foreach ($paths as $dir) {
+				$rel = str_replace(DP_ROOT, 'app', $dir);
+				if (strpos($file, $rel) === 0) {
+					$in_dirs = true;
+				}
+			}
+			if ($in_dirs) {
+				$check_files[] = DP_WEB_ROOT . '/' . $file;
+			}
 		}
 	}
 } else {
