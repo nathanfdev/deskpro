@@ -90,9 +90,6 @@ class DataInitializer
 		$this->runInitAdminNotifications();
 		$this->runInitDefaultSla();
 		$this->runInitInitialData();
-
-		$data_proc = new DefaultDataProcessor($this->container);
-		$data_proc->runInstall();
 	}
 
 	public function runInitPerms()
