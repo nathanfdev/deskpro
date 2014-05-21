@@ -94,10 +94,9 @@
       }
 
       InterfaceHandler.prototype._initTab = function(tabType, tab) {
-        var me, ngModel, requiredFields, scope;
+        var me, ngModel, requiredFields;
         me = this;
         ngModel = this.ngModel;
-        scope = this.scope;
         requiredFields = this.required_fields[tabType];
         tab.find('.dp-layout-editor-layout-field').filter('[data-is-required]').each(function() {
           return requiredFields.push($(this).data('field-type'));
@@ -123,6 +122,26 @@
                 fid = fieldRow.data('field-id');
                 return tab.find("[data-fid=\"" + fid + "\"]").hide();
               }
+            }
+          },
+          update: function() {
+            var f, orderMap, _i, _len, _ref, _results;
+            orderMap = {};
+            tab.find('.form-worksheet').find('ul').find('li').each(function(i) {
+              var fid;
+              fid = $(this).data('field-id');
+              if (fid) {
+                return orderMap[fid] = i;
+              }
+            });
+            if (ngModel.$modelValue[tabType] && ngModel.$modelValue[tabType].length) {
+              _ref = ngModel.$modelValue[tabType];
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                f = _ref[_i];
+                _results.push(f.display_order = orderMap[f.id] || 0);
+              }
+              return _results;
             }
           }
         });

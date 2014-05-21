@@ -157,12 +157,26 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 		$user_layout  = new Layout();
 		$agent_layout = new Layout();
 
-		foreach ($this->in->getArrayValue('layout.user') as $field_info) {
+		$layout_user_array  = $this->in->getArrayValue('layout.user');
+		$layout_agent_array = $this->in->getArrayValue('layout.agent');
+
+		$fn_order = function($a, $b) {
+			$a_o = isset($a['display_order']) ? $a['display_order'] : 0;
+			$b_o = isset($b['display_order']) ? $b['display_order'] : 0;
+
+			if ($a_o == $b_o) return 0;
+			return $a_o < $b_o ? -1 : 1;
+		};
+
+		usort($layout_user_array, $fn_order);
+		usort($layout_agent_array, $fn_order);
+
+		foreach ($layout_user_array as $field_info) {
 			$field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
 			$field->setOptionsFromArray($field_info['options']);
 			$user_layout->add($field);
 		}
-		foreach ($this->in->getArrayValue('layout.agent') as $field_info) {
+		foreach ($layout_agent_array as $field_info) {
 			$field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
 			$field->setOptionsFromArray($field_info['options']);
 			$agent_layout->add($field);

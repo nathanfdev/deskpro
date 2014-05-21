@@ -80,7 +80,6 @@ define [
 		_initTab: (tabType, tab) ->
 			me = @
 			ngModel = @ngModel
-			scope = @scope
 
 			requiredFields = @required_fields[tabType]
 			tab.find('.dp-layout-editor-layout-field').filter('[data-is-required]').each(->
@@ -112,6 +111,16 @@ define [
 						if fieldRow
 							fid = fieldRow.data('field-id')
 							tab.find("[data-fid=\"#{fid}\"]").hide()
+
+				update: ->
+					orderMap = {}
+					tab.find('.form-worksheet').find('ul').find('li').each( (i) ->
+						fid = $(this).data('field-id')
+						if fid then orderMap[fid] = i
+					)
+					if ngModel.$modelValue[tabType] and ngModel.$modelValue[tabType].length
+						for f in ngModel.$modelValue[tabType]
+							f.display_order = orderMap[f.id] || 0
 			})
 
 
