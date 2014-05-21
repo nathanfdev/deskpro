@@ -34,8 +34,14 @@
 {% endif %}
 
 {% if type != 'modify' %}
+	{% if item.field_type == 'user_email' %}
+		<div data-field-id="user_email" class="ticket-display-field {{ item.id }}" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+			{% include 'UserBundle:NewTicket:field-email-address.html.twig' %}
+		</div>
+	{% endif %}
+
 	{% if item.field_type == 'user_name' %}
-		<div data-field-id="person_name" class="ticket-display-field {{ item.id }}" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+		<div data-field-id="user_name" class="ticket-display-field {{ item.id }}" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 			{% include 'UserBundle:NewTicket:field-person-name.html.twig' %}
 		</div>
 	{% endif %}

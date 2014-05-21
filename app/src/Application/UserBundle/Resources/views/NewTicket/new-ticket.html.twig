@@ -73,8 +73,6 @@ var ticketReader = (function() {
 			 # Email
 			 ###############}
 
-			{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced', context: 'newticket' } %}
-
 			{#--- FIELDS CONTAINER ---#}
 			<div id="fields_container">
 				{# First time outputs items in order and visible depending on the page data #}
