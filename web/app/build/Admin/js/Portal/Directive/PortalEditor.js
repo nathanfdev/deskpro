@@ -513,7 +513,7 @@
 		showHtmlEditor: function(name, callback) {
 			var el = $(DeskPRO_getPlainTpl($('#admin_portal_block_html_edit_tpl')));
 
-			var template_name;
+			var template_name, is_sidebar_block = false;
 			if (name == 'header') {
 				template_name = 'UserBundle::custom-header.html.twig';
 			} else if (name == 'head_include') {
@@ -529,9 +529,11 @@
 			} else if (name == 'NEW_SIDEBAR_BLOCK') {
 				// TemplatesController::saveTemplateAction knows to treat this special
 				template_name = 'UserBundle:Portal:new-sidebar-block.html.twig';
+				is_sidebar_block = true;
 			} else if (name.indexOf('EDIT_SIDEBAR_BLOCK:') !== -1) {
 				// TemplatesController knows to treat this special
 				template_name = name;
+				is_sidebar_block = true;
 			} else {
 				template_name = 'UserBundle::custom-footer.html.twig';
 			}
@@ -600,8 +602,12 @@
 							callback('reset');
 							overlay.close();
 						} else {
+							var url = DP_BASE_URL + 'api/templates/' + template_name;
+							if (is_sidebar_block) {
+								url = DP_BASE_URL + 'admin/portal-editor/sideblock-simple/' + template_name;
+							}
 							editorAjaxClient({
-								url: DP_BASE_URL + 'api/templates/' + template_name,
+								url: url,
 								context: this,
 								type: 'POST',
 								data: postData,

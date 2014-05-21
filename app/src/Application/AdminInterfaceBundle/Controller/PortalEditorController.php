@@ -34,6 +34,7 @@
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Util as DeskPRO_Util;
 use Orb\Util\Arrays;
 
@@ -299,6 +300,79 @@ class PortalEditorController extends AbstractController
 			'success' => true,
 			'pid'     => $pd->getId()
 		));
+	}
+
+	public function saveCustomBlockAction($name)
+	{
+		if ($name == 'UserBundle:Portal:new-sidebar-block.html.twig') {
+			$name = 'DeskPRO:CustomBlocks:Sidebar_' . mt_rand(1000,9999) . '_' . time() . '.html.twig';
+			$block = new \Application\DeskPRO\Entity\PortalPageDisplay();
+			$block->type = 'template';
+			$block->data = array('tpl' => $name);
+			$block->is_enabled = true;
+			$block->section = 'sidebar';
+		} elseif ($pid = \Orb\Util\Strings::extractRegexMatch('#^EDIT_SIDEBAR_BLOCK:(.*?)$#', $name)) {
+			$page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
+			if (!$page_display || $page_display->type != 'template') {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+			}
+
+			$name = $page_display->data['tpl'];
+		}
+
+		$template_code = $this->in->getRaw('template.code');
+
+		try {
+			/** @var $twig \Application\DeskPRO\Twig\Environment */
+			$twig = $this->container->get('twig');
+			$compiled = $twig->compileSource($template_code, $name);
+		} catch (\Twig_Error_Syntax $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_syntax' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+				'error_line' => $e->getTemplateLine(),
+				'source' => $template_code
+			));
+		} catch (\Twig_Error $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+				'source' => $template_code
+			));
+		}
+
+		$template = new Template();
+		$template->style = $this->container->getSystemService('style');
+		$template->name = $name;
+		$template->setTemplate($template_code, $compiled);
+
+		$ret_data = array(
+			'success' => true,
+			'name' => $name,
+		);
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($template);
+			if ($block) {
+				$this->em->persist($block);
+			}
+
+			$this->em->flush();
+			$this->db->commit();
+
+			if ($block) {
+				$ret_data['pid'] = $block->getId();
+			}
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse($ret_data);
 	}
 
 	public function saveCustomBlockSimpleAction($pid = 0)

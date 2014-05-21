@@ -47,6 +47,12 @@ $collection->create('admin_portaleditor_custom_block_delete', array(
 	'controller'  => 'AdminInterfaceBundle:PortalEditor:deleteTemplateBlock',
 ));
 
+$collection->create('admin_portaleditor_custom_sideblock_save', array(
+	'path'        => '/portal-editor/sideblock-simple/{name}',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:saveCustomBlock',
+	'methods'     => array('POST'),
+));
+
 $collection->create('admin_portaleditor_custom_sideblock_simple_get', array(
 	'path'        => '/portal-editor/sideblock-simple/{pid}.json',
 	'controller'  => 'AdminInterfaceBundle:PortalEditor:getCustomBlockSimple',
