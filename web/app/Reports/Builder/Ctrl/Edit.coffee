@@ -22,13 +22,10 @@ define [
 			@query_error = null
 			@show_query_editor = false
 
-		###
- 	#
- 	###
 		initialLoad: ->
 			promise = @reportData.loadEditReportData(@$stateParams.id || null, @$stateParams.params || null).then( (data) =>
 
-				@rendered_result = @$sce.trustAsHtml(data.rendered_result)
+				@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 				@group_params = @$scope.$parent.ListCtrl.group_params
 				@query_parts = data.query_parts
 				@report  = data.report
@@ -38,15 +35,15 @@ define [
 
 
 		###
- 	# Shows / hides query editor
- 	###
- 	toggleQueryEditor: ->
+		# Shows / hides query editor
+		###
+		toggleQueryEditor: ->
 			@show_query_editor = !@show_query_editor
 
 
 		###
- 	# This method is called when user clicks button named 'Test' in query builder form
- 	###
+		# This method is called when user clicks button named 'Test' in query builder form
+		###
 		testReport: ->
 			@startSpinner('builder_loading')
 			@startSpinner('query_loading')
@@ -60,7 +57,7 @@ define [
 
 				if data.rendered_result
 					@query_error = null
-					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
+					@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 
 				@stopSpinner('builder_loading', true)
 				@stopSpinner('query_loading', true)
@@ -118,8 +115,8 @@ define [
 
 
 		###
- 	# This method is called when user clicks on 'CSV' button
- 	###
+		# This method is called when user clicks on 'CSV' button
+		###
 		downloadCsv: ->
 			@$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + @report.id +  '/csv?API-TOKEN=' + window.DP_API_TOKEN
 
@@ -140,7 +137,7 @@ define [
 
 		###
 		# Saving report
- 	###
+		###
 		saveReport: ->
 
 			if !@report.is_custom then throw new Error('Only custom reports could be saved')
@@ -170,7 +167,7 @@ define [
 
 				if data.rendered_result
 					@query_error = null
-					@rendered_result = @$sce.trustAsHtml(data.rendered_result)
+					@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 
 				@skipDirtyState()
 				if is_new
@@ -186,7 +183,7 @@ define [
 
 		###
 		# Cloning the report
- 	###
+		###
 		saveToClone: ->
 			@startSpinner('builder_loading')
 			@startSpinner('query_loading')

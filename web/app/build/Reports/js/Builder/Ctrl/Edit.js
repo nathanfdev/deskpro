@@ -33,16 +33,11 @@
         return this.show_query_editor = false;
       };
 
-
-      /*
-       	 *
-       */
-
       Reports_Builder_Ctrl_Edit.prototype.initialLoad = function() {
         var promise;
         promise = this.reportData.loadEditReportData(this.$stateParams.id || null, this.$stateParams.params || null).then((function(_this) {
           return function(data) {
-            _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
+            _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
             _this.group_params = _this.$scope.$parent.ListCtrl.group_params;
             _this.query_parts = data.query_parts;
             _this.report = data.report;
@@ -54,7 +49,7 @@
 
 
       /*
-       	 * Shows / hides query editor
+      		 * Shows / hides query editor
        */
 
       Reports_Builder_Ctrl_Edit.prototype.toggleQueryEditor = function() {
@@ -63,7 +58,7 @@
 
 
       /*
-       	 * This method is called when user clicks button named 'Test' in query builder form
+      		 * This method is called when user clicks button named 'Test' in query builder form
        */
 
       Reports_Builder_Ctrl_Edit.prototype.testReport = function() {
@@ -80,7 +75,7 @@
             }
             if (data.rendered_result) {
               _this.query_error = null;
-              _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
+              _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
             }
             _this.stopSpinner('builder_loading', true);
             return _this.stopSpinner('query_loading', true);
@@ -148,7 +143,7 @@
 
 
       /*
-       	 * This method is called when user clicks on 'CSV' button
+      		 * This method is called when user clicks on 'CSV' button
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadCsv = function() {
@@ -207,7 +202,7 @@
             }
             if (data.rendered_result) {
               _this.query_error = null;
-              _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result);
+              _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
             }
             _this.skipDirtyState();
             if (is_new) {
