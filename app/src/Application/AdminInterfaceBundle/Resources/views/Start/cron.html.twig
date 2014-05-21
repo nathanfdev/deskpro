@@ -13,7 +13,7 @@
 				<p>
 					{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
 				</p>
-				<pre>* * * * * exampleuser {{ php_path|default('/path/to/php') }} -q {{ constant('DP_WEB_ROOT') }}/cron.php</pre>
+				<pre>* * * * * exampleuser {{ php_path|default('/path/to/php') }} {{ constant('DP_WEB_ROOT') }}/cron.php</pre>
 				<div class="alert alert-info">
 					<p>{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</p>
 				</div>
