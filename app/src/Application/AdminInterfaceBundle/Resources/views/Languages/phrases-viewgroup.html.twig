@@ -10,14 +10,22 @@
 						<th>Phrase</th>
 						<th>Default</th>
 						<th>Translation</th>
-						<th>Custom</th>
+						<th>
+							<div ng-if="EditCtrl.groupId == 'custom'" style="float:right">
+								<button class="btn btn-default btn-xs" type="button" ng-click="EditCtrl.openNewPhrase()"><i class="fa fa-plus"></i> Add Custom Phrase</button>
+							</div>
+							Custom
+						</th>
 					</tr>
 				</thead>
 				<tbody ng-if="EditCtrl.phrases.length">
 					<tr ng-repeat="phrase in EditCtrl.phrases" ng-class="{'phrase-custom': phrase.set && phrase.set != phrase.lang_default }">
 						<td class="phrase-id">
 							<span>{{ ng_var('phrase.id') }}</span>
-							<button type="button" class="btn btn-default btn-xs ng-hide" ng-show="phrase.set && phrase.set != phrase.lang_default" ng-click="phrase.set = phrase.lang_default"><i class="fa fa-undo" /> Reset</button>
+							<button type="button" class="btn btn-default btn-xs ng-hide" ng-show="phrase.set && phrase.set != phrase.lang_default" ng-click="phrase.set = phrase.lang_default">
+								<span ng-if="phrase.id.indexOf('custom.') == 0" style="padding-top:0"><i class="fa fa-trash-o" /> Delete</span>
+								<span ng-if="phrase.id.indexOf('custom.') != 0" style="padding-top:0"><i class="fa fa-undo" /> Reset</span>
+							</button>
 						</td>
 						<td class="phrase-default"><textarea ng-model="phrase.default" disabled spellcheck="false"></textarea></td>
 						<td class="phrase-translation"><textarea ng-model="phrase.lang_default" disabled spellcheck="false"></textarea></td>
@@ -46,4 +54,6 @@
 		</footer>
 	</section>
 </form>
+
+{{ ng_tpl('AdminInterfaceBundle:Languages:modal-new-phrase.html.twig') }}
 {% endblock %}

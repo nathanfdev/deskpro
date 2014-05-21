@@ -197,6 +197,16 @@ define(function() {
 	//# Phrases
 	//###
 	routes.push({
+		id: 'setup.phrases_go_viewgroup',
+		url: '/{path:phrases\\-go\\-[a-zA-Z0-9\\._]+\\-[a-zA-Z0-9\\._]+}',
+		templateName: 'Index/blank.html',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			var m = $stateParams.path.match(/^phrases\-go\-(.*?)\-(.*?)$/)
+			$state.go('setup.phrases.viewgroup', {id: 'phrases-' + m[1], groupId: m[2]});
+		}]
+	});
+
+	routes.push({
 		id: 'setup.phrases',
 		url: '/{id:phrases\\-[a-z]+}',
 		templateName: 'Languages/phrases-list.html',

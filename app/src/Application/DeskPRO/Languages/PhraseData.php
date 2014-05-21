@@ -137,7 +137,7 @@ class PhraseData
 
 			$row = array(
 				'id'      => $id,
-				'depth'   => $cat['depth'],
+				'depth'   => $cat_row['depth'],
 				'type'    => 'ticket_category',
 				'type_id' => $cat->id,
 				'default' => $cat->title,

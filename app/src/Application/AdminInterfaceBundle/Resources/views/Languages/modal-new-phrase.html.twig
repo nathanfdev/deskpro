@@ -1,0 +1,24 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Add Custom Phrase</h4>
+{% endblock %}
+{% block modal_body %}
+	<label style="margin-top: 0">Phrase Name:</label>
+	<br/>
+	custom.<input type="text" ng-model="phrase.name" class="form-control" style="width: 200px; display: inline-block" />
+	<span class="help-block">
+		Enter the name of your phrase. Valid characters are: a-z, 0-9, periods, underscores, and dashes.
+	</span>
+
+	<br/>
+	<label style="margin-top: 0">Phrase Text:</label>
+	<br/>
+	<textarea style="height: 160px;" class="form-control" ng-model="phrase.phrase"></textarea>
+{% endblock %}
+{% block modal_footer %}
+	<button class="btn btn-danger" ng-click="save()" ng-hide="is_loading">
+		<i class="fa fa-plus"></i> Add Phrase
+	</button>
+
+	<i class="spinner-flat" ng-show="is_loading"></i>
+{% endblock %}

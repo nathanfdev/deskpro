@@ -43,6 +43,61 @@
         })(this));
       };
 
+
+      /*
+        	 * Opens new phrase modal
+       */
+
+      Admin_Languages_Ctrl_PhraseGroup.prototype.openNewPhrase = function() {
+        var groupId, langId, phrasesCollection;
+        langId = this.langId;
+        groupId = this.groupId;
+        phrasesCollection = this.phrases;
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('Languages/modal-new-phrase.html'),
+          controller: [
+            '$modalInstance', '$scope', 'Api', '$state', function($modalInstance, $scope, Api, $state) {
+              $scope.phrase = {
+                name: '',
+                phrase: ''
+              };
+              $scope.$watch('phrase.name', function() {
+                $scope.phrase.name = $scope.phrase.name.toLowerCase();
+                $scope.phrase.name = $scope.phrase.name.replace(/\s/g, '-');
+                return $scope.phrase.name = $scope.phrase.name.replace(/[^a-z0-9\.\-_]/g, '');
+              });
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss('cancel');
+              };
+              return $scope.save = function() {
+                var postData;
+                $scope.is_loading = true;
+                postData = {
+                  phrases: [
+                    {
+                      name: 'custom.' + $scope.phrase.name,
+                      phrase: $scope.phrase.phrase
+                    }
+                  ]
+                };
+                return Api.sendPostJson("/langs/" + langId + "/phrases", postData).then(function() {
+                  $modalInstance.close();
+                  return $state.go('setup.phrases_go_viewgroup', {
+                    path: 'phrases-go-' + langId + '-' + groupId
+                  });
+                });
+              };
+            }
+          ]
+        }).result.then((function(_this) {
+          return function(newPhrase) {
+            if (!newPhrase) {
+
+            }
+          };
+        })(this));
+      };
+
       return Admin_Languages_Ctrl_PhraseGroup;
 
     })(Admin_Ctrl_Base);
