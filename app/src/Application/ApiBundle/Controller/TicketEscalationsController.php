@@ -38,7 +38,6 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketEscalation;
-use Application\DeskPRO\Tickets\Escalations\EscalationTerms;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
@@ -71,7 +70,6 @@ class TicketEscalationsController extends AbstractController implements Protecte
 				'id'                 => $esc->id,
 				'title'              => $esc->title,
 				'is_enabled'         => $esc->is_enabled,
-				'run_order'          => $esc->run_order,
 				'event_trigger'      => $esc->event_trigger,
 				'event_trigger_time' => $esc->event_trigger_time,
 			);
@@ -155,7 +153,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
 	# remove
 	####################################################################################################################
 
-	public function removeAction($id)
+	public function deleteAction($id)
 	{
 		$esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 

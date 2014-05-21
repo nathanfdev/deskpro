@@ -95,8 +95,8 @@
         });
         return inst.result.then((function(_this) {
           return function() {
-            return _this.escData.deleteEscalationById(esc.id).then(function() {
-              if (_this.$state.current.name === 'tickets.ticket_escalations.edit' && parseInt(_this.$state.params.id) === esc.id) {
+            return _this.escData.deleteEscalationById(esc_id).then(function() {
+              if (_this.$state.current.name === 'tickets.ticket_escalations.edit' && parseInt(_this.$state.params.id) === esc_id) {
                 return _this.$state.go('tickets.ticket_escalations');
               }
             });

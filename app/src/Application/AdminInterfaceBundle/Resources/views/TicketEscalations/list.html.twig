@@ -10,12 +10,10 @@
 			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_ticket_escalations') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
-				<li class="with-drag-handle" ng-repeat="esc in ListCtrl.list"
+			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
+				<li ng-repeat="esc in ListCtrl.list"
 					dp-state-mark="tickets.ticket_escalations.edit.{{ ng_var('esc.id') }}" data-id="{{ ng_var('esc.id') }}">
 					<a href="{{ ng_href('tickets.ticket_escalations.edit', '{id: esc.id}') }}">
-						<i class="fa fa-bars drag-handle"></i>
-
 						<div class="pull-right">
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode"
 								  style="margin-top: -3px;"

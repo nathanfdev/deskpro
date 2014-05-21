@@ -71,8 +71,8 @@ define [
 			});
 
 			inst.result.then( =>
-				@escData.deleteEscalationById(esc.id).then(=>
-					if @$state.current.name == 'tickets.ticket_escalations.edit' and parseInt(@$state.params.id) == esc.id
+				@escData.deleteEscalationById(esc_id).then(=>
+					if @$state.current.name == 'tickets.ticket_escalations.edit' and parseInt(@$state.params.id) == esc_id
 						@$state.go('tickets.ticket_escalations')
 				)
 			)
