@@ -197,7 +197,7 @@ define [
 					this.updateHeight(data.height);
 					break;
 				case 'switch_page':
-					window.location = DP_BASE_URL + 'admin/portal-editor?portal_path=' + encodeURI(data.path);
+					console.log("Switched to " + data.path)
 					break;
 				case 'enable_logo_area':
 					editorAjaxClient({
