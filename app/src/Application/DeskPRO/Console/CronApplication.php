@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Console;
 
+use Application\DeskPRO\Command\InternalUpgradeRunnerCommand;
 use Symfony\Component\Console\Application as BaseApplication;
 use Application\DeskPRO\Command\WorkerJobCommand;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -87,6 +88,7 @@ class CronApplication extends BaseApplication
 	protected function registerCommands()
 	{
 		$this->add(new WorkerJobCommand());
+		$this->add(new InternalUpgradeRunnerCommand());
 	}
 
 	protected function getDefaultCommands()

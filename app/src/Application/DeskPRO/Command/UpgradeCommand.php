@@ -50,12 +50,28 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		     ->addOption('info', null, InputOption::VALUE_NONE, 'Set this flag to get info about your current instance')
 		     ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
 		     ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
+		     ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
 		     ->setHelp("This command executes the upgrader to bring your database to the same version the filesystem is");
 	}
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 		set_time_limit(0);
+
+		if ($input->getOption('reset')) {
+			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
+			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
+			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
+			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
+			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
+			$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', null);
+
+			$output->writeln("Reset done.");
+			return 0;
+		}
 
 		// Clear caches, including doctrine query caches
 		App::getDb()->exec("TRUNCATE TABLE cache");

@@ -48,12 +48,12 @@ define [
 			@Api.sendDataGet({
 				updateStatus: '/server/updates/auto'
 			}).then((result) =>
-				if not result.data.updateStatus.is_scheduled
-					@$location.path('/')
-					return
+				if not (result.data?.error && result.data.error == 'update_running')
+					if not result.data?.updateStatus?.is_scheduled
+						@$location.path('/')
+						return
 
 				@startTime = parseInt(result.data.updateStatus.start_time)
-
 				@pollRunning = null
 				@pollTimer = @$interval(=>
 					if not @$scope.step.waiting.complete
@@ -102,9 +102,9 @@ define [
 			}).then((result) =>
 				@pollRunning = null
 
-				if result.data.updateStatus.with_perm_error
+				if result.data?.updateStatus?.with_perm_error
 					@handleError('error_write_perm')
-				else if result.data.updateStatus.is_started
+				else if result.data?.updateStatus?.is_started or (result.data?.error && result.data.error == 'update_running')
 					@finishStep('waiting')
 			, =>
 				@pollRunning = null
@@ -135,7 +135,7 @@ define [
 					if m
 						time = parseFloat(m[2])
 						if time >= last_time
-							updateStatus(m[1], m[3], m[2])
+							@updateStatus(m[1], m[3], m[2])
 
 						if m[1] == 'done' or m[1].indexOf('error_') == 0
 							restart_timer = false

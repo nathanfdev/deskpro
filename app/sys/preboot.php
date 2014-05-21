@@ -118,8 +118,8 @@ if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgra
 				exit;
 			}
 
-			if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-				header('HTTP/1.0 420 Service Unavailable');
+			if((!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || (!empty($_SERVER['HTTP_X_DESKPRO_API_TOKEN']))) {
+				header('HTTP/1.0 200 Service Unavailable');
 				header('Content-Type: application/json');
 				echo json_encode(array(
 					'error' => 'update_running'

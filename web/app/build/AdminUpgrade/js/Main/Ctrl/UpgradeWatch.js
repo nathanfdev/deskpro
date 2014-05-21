@@ -73,9 +73,12 @@
           updateStatus: '/server/updates/auto'
         }).then((function(_this) {
           return function(result) {
-            if (!result.data.updateStatus.is_scheduled) {
-              _this.$location.path('/');
-              return;
+            var _ref, _ref1, _ref2;
+            if (!(((_ref = result.data) != null ? _ref.error : void 0) && result.data.error === 'update_running')) {
+              if (!((_ref1 = result.data) != null ? (_ref2 = _ref1.updateStatus) != null ? _ref2.is_scheduled : void 0 : void 0)) {
+                _this.$location.path('/');
+                return;
+              }
             }
             _this.startTime = parseInt(result.data.updateStatus.start_time);
             _this.pollRunning = null;
@@ -134,10 +137,11 @@
           updateStatus: '/server/updates/auto'
         }).then((function(_this) {
           return function(result) {
+            var _ref, _ref1, _ref2, _ref3, _ref4;
             _this.pollRunning = null;
-            if (result.data.updateStatus.with_perm_error) {
+            if ((_ref = result.data) != null ? (_ref1 = _ref.updateStatus) != null ? _ref1.with_perm_error : void 0 : void 0) {
               return _this.handleError('error_write_perm');
-            } else if (result.data.updateStatus.is_started) {
+            } else if (((_ref2 = result.data) != null ? (_ref3 = _ref2.updateStatus) != null ? _ref3.is_started : void 0 : void 0) || (((_ref4 = result.data) != null ? _ref4.error : void 0) && result.data.error === 'update_running')) {
               return _this.finishStep('waiting');
             }
           };
@@ -177,7 +181,7 @@
               if (m) {
                 time = parseFloat(m[2]);
                 if (time >= last_time) {
-                  updateStatus(m[1], m[3], m[2]);
+                  _this.updateStatus(m[1], m[3], m[2]);
                 }
                 if (m[1] === 'done' || m[1].indexOf('error_') === 0) {
                   restart_timer = false;
