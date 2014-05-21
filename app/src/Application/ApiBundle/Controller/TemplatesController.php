@@ -38,6 +38,7 @@ use Application\DeskPRO\ResourceScanner\TemplateFiles;
 use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
+use Orb\Util\Strings;
 
 class TemplatesController extends AbstractController implements ProtectedControllerInterface
 {
@@ -96,6 +97,30 @@ class TemplatesController extends AbstractController implements ProtectedControl
 			unset($type_coll, $group_coll, $tpl);
 		}
 
+		$list['custom'] = array();
+		$list['custom']['title'] = 'Custom Emails';
+		$list['custom']['typeId'] = 'custom';
+		$list['custom']['groups'] = array();
+		$list['custom']['groups']['custom'] = array(
+			'groupId'   => 'custom',
+			'title'     => 'Custom Emails',
+			'templates' => array()
+		);
+
+		$custom_emails = $this->db->fetchAll("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_custom:%'");
+		foreach ($custom_emails as $tpl) {
+			$name = Strings::extractRegexMatch('#^DeskPRO:emails_custom:(.*?).html.twig$#', $tpl['name'], 1) . '.html';
+			$list['custom']['groups']['custom']['templates'][] = array(
+				'typeId'    => 'custom',
+				'groupId'   => 'custom',
+				'is_custom' => true,
+				'title'     => $name,
+				'desc'      => '',
+				'name'      => $tpl['name'],
+				'showName'  => 'emails_custom/' . $name,
+			);
+		}
+
 		return $this->createApiResponse(array(
 			'list'             => $list,
 			'custom_templates' => $custom_templates
@@ -136,7 +161,13 @@ class TemplatesController extends AbstractController implements ProtectedControl
 		try {
 			$template = $set->getCustomTemplate($name);
 		} catch (\InvalidArgumentException $e) {
-			throw $this->createNotFoundException();
+			if (!$this->in->getBool('create_new')) {
+				throw $this->createNotFoundException();
+			}
+		}
+
+		if (!$template) {
+			$template = $set->createCustomTemplate($name);
 		}
 
 		$template_code = $template->getTemplateCode();

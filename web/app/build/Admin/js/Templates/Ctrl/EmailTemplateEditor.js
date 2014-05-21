@@ -18,6 +18,18 @@
       Admin_Templates_Ctrl_EmailTemplateEditor.DEPS = ['$modalInstance', 'templateName'];
 
       Admin_Templates_Ctrl_EmailTemplateEditor.prototype.init = function() {
+        this.$scope.is_new_email = this.templateName === null;
+        if (this.$scope.is_new_email) {
+          this.$scope.$watch('email.email_name', (function(_this) {
+            return function() {
+              _this.$scope.email.email_name = _this.$scope.email.email_name || '';
+              _this.$scope.email.email_name = _this.$scope.email.email_name.toLowerCase();
+              _this.$scope.email.email_name = _this.$scope.email.email_name.replace(/\s/g, '-');
+              _this.$scope.email.email_name = _this.$scope.email.email_name.replace(/[^a-z0-9\-_\.]/g, '');
+              return _this.validateName();
+            };
+          })(this));
+        }
         this.$scope.dismiss = (function(_this) {
           return function() {
             return _this.$modalInstance.dismiss('cancel');
@@ -25,7 +37,7 @@
         })(this);
         this.$scope.save = (function(_this) {
           return function() {
-            var postData;
+            var postData, url;
             _this.$scope.saving_template = true;
             postData = {
               template: {
@@ -33,10 +45,17 @@
                 body: _this.editorMessage.getValue()
               }
             };
-            return _this.Api.sendPostJson("/templates/" + _this.templateName, postData).then(function() {
+            if (_this.$scope.is_new_email) {
+              url = "/templates/" + 'DeskPRO:emails_custom:' + _this.$scope.email.email_name + '.html.twig';
+              postData.create_new = true;
+            } else {
+              url = "/templates/" + _this.templateName;
+            }
+            return _this.Api.sendPostJson(url, postData).then(function(res) {
               _this.$scope.saving_template = false;
               return _this.$modalInstance.close({
-                templateName: _this.templateName,
+                templateName: res.data.name,
+                isNewEmail: _this.$scope.is_new_email,
                 mode: 'custom'
               });
             });
@@ -102,14 +121,49 @@
         })(this);
       };
 
+      Admin_Templates_Ctrl_EmailTemplateEditor.prototype.validateName = function() {
+        this.$scope.email_name_error = null;
+        if (!this.customNames) {
+          return;
+        }
+        if (this.customNames.indexOf(this.$scope.email.email_name + '.html') !== -1) {
+          return this.$scope.email_name_error = 'exists';
+        }
+      };
+
       Admin_Templates_Ctrl_EmailTemplateEditor.prototype.initialLoad = function() {
         var p;
-        p = this.Api.sendGet("/templates/" + this.templateName).success((function(_this) {
-          return function(data) {
-            return _this.initTemplateData(data);
-          };
-        })(this));
-        return p;
+        if (!this.$scope.is_new_email) {
+          p = this.Api.sendGet("/templates/" + this.templateName).success((function(_this) {
+            return function(data) {
+              return _this.initTemplateData(data);
+            };
+          })(this));
+          return p;
+        } else {
+          this.initTemplateData({
+            name: null,
+            email: {
+              email_name: '',
+              template_code: {
+                subject: '',
+                body: ''
+              }
+            }
+          });
+          p = this.Api.sendGet('/email-templates-info').success((function(_this) {
+            return function(data) {
+              return _this.initCustomNames(data.list['custom'].groups['custom'].templates);
+            };
+          })(this));
+          return p;
+        }
+      };
+
+      Admin_Templates_Ctrl_EmailTemplateEditor.prototype.initCustomNames = function(templates) {
+        this.customNames = templates.map(function(x) {
+          return x.showName.replace(/^.*?\//, '');
+        });
       };
 
       Admin_Templates_Ctrl_EmailTemplateEditor.prototype.initTemplateData = function(info) {

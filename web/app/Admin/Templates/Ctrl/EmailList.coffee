@@ -6,7 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		init: ->
 			parts = @$stateParams.groupName.split(':')
 			@typeId = parts.shift()
-			@groupId = parts.shift()
+			@groupId = parts.shift() || @typeId
 
 
 		initialLoad: ->
@@ -33,6 +33,35 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					tpl.is_custom = true
 				else if info.mode == 'revert'
 					tpl.is_custom = false
+
+					# if this is a custom template group, then revert means delete
+					if @typeId == 'custom' and @groupId == 'custom'
+						@templates = @templates.filter((x) -> x != tpl)
+			)
+
+			return modalInstance
+
+		###
+    	# Opens email editor in 'new' mode
+		###
+		createNewEmailTemplate: ->
+			modalInstance = @$modal.open({
+				templateUrl: @getTemplatePath('Templates/modal-email-editor.html'),
+				controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+				resolve: {
+					templateName: ->
+						return null
+				}
+			}).result.then( (info) =>
+				title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+				tpl = {
+					typeId: @typeId,
+					groupId: @groupId,
+					name: info.templateName,
+					title: title
+				}
+
+				@templates.push(tpl)
 			)
 
 			return modalInstance

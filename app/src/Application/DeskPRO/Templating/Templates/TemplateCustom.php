@@ -48,6 +48,11 @@ class TemplateCustom extends Template
 	private $template_file;
 
 	/**
+	 * @var string
+	 */
+	private $custom_type;
+
+	/**
 	 * @param TemplateEntity $entity
 	 * @return TemplateCustom
 	 */
@@ -141,6 +146,22 @@ class TemplateCustom extends Template
 	 */
 	public function getType()
 	{
-		return $this->template_file->getType();
+		if ($this->template_file && $this->template_file->exists()) {
+			return $this->template_file->getType();
+		} else {
+			if ($this->custom_type !== null) {
+				return $this->custom_type;
+			}
+
+			if (preg_match('#^DeskPRO:email#', $this->getName())) {
+				$this->custom_type = 'email';
+			} elseif (strpos($this->getContent(), '<dp:subject') !== false) {
+				$this->custom_type = 'email';
+			} else {
+				$this->custom_type = 'normal';
+			}
+
+			return $this->custom_type;
+		}
 	}
 }

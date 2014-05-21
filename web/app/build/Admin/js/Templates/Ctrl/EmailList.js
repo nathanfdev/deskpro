@@ -19,7 +19,7 @@
         var parts;
         parts = this.$stateParams.groupName.split(':');
         this.typeId = parts.shift();
-        return this.groupId = parts.shift();
+        return this.groupId = parts.shift() || this.typeId;
       };
 
       Admin_Templates_Ctrl_EmailList.prototype.initialLoad = function() {
@@ -54,8 +54,44 @@
             if (info.mode === 'custom') {
               return tpl.is_custom = true;
             } else if (info.mode === 'revert') {
-              return tpl.is_custom = false;
+              tpl.is_custom = false;
+              if (_this.typeId === 'custom' && _this.groupId === 'custom') {
+                return _this.templates = _this.templates.filter(function(x) {
+                  return x !== tpl;
+                });
+              }
             }
+          };
+        })(this));
+        return modalInstance;
+      };
+
+
+      /*
+        	 * Opens email editor in 'new' mode
+       */
+
+      Admin_Templates_Ctrl_EmailList.prototype.createNewEmailTemplate = function() {
+        var modalInstance;
+        modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('Templates/modal-email-editor.html'),
+          controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+          resolve: {
+            templateName: function() {
+              return null;
+            }
+          }
+        }).result.then((function(_this) {
+          return function(info) {
+            var title, tpl;
+            title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
+            tpl = {
+              typeId: _this.typeId,
+              groupId: _this.groupId,
+              name: info.templateName,
+              title: title
+            };
+            return _this.templates.push(tpl);
           };
         })(this));
         return modalInstance;

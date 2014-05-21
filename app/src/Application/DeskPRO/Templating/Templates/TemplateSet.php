@@ -120,6 +120,20 @@ class TemplateSet
 
 
 	/**
+	 * @param string $name
+	 * @return TemplateCustom
+	 */
+	public function createCustomTemplate($name)
+	{
+		$entity = new TemplateEntity();
+		$entity->style = $this->style;
+		$entity->name = $name;
+		$custom = TemplateCustom::createFromEntity($entity);
+		return $custom;
+	}
+
+
+	/**
 	 * Persists code saved in the template_code
 	 *
 	 * @param TemplateCustom $template
@@ -199,42 +213,45 @@ class TemplateSet
 	public function exportTemplateToArray(Template $template, Translate $tr = null, $replace_phrases = false)
 	{
 		$data = array();
-		$data['name'] = $template->getName();
-		$data['base_name'] = $data['name'];
-		$data['type'] = $template->getType();
-		$data['is_custom'] = $template->isCustom();
-		$data['template_code'] = array();
+		$data['name']                  = $template->getName();
+		$data['base_name']             = $data['name'];
+		$data['type']                  = $template->getType();
+		$data['is_custom']             = $template->isCustom();
+		$data['template_code']         = array();
 		$data['template_code']['code'] = $template->getTemplateCode()->getCode();
 
 		if ($template->getType() == 'email') {
 			$data['template_code']['subject'] = $template->getTemplateCode()->getSubject();
-			$data['template_code']['body'] = $template->getTemplateCode()->getBody();
+			$data['template_code']['body']    = $template->getTemplateCode()->getBody();
 		}
 
 		if ($template->getOriginalName()) {
 			$data['base_name'] = $template->getOriginalName();
-			$data['original'] = array(
-				'name' => $template->getOriginalName(),
+			$data['original']  = array(
+				'name'          => $template->getOriginalName(),
 				'template_code' => array()
 			);
 
 			$data['original']['template_code']['code'] = $template->getTemplateCode()->getCode();
 			if ($template->getType() == 'email') {
 				$data['original']['template_code']['subject'] = $template->getTemplateCode()->getSubject();
-				$data['original']['template_code']['body'] = $template->getTemplateCode()->getBody();
+				$data['original']['template_code']['body']    = $template->getTemplateCode()->getBody();
 			}
+
+			$data['original']['exists'] = $template->getOriginalContent() !== null;
 		}
 
 		if ($tr) {
-			if (preg_match('#^DeskPRO:email#', $data['name'])) {
+			if (preg_match('#^DeskPRO:email#', $data['name']) && !preg_match('#^DeskPRO:emails_custom#', $data['name'])) {
 				$tpl_desc = new EmailTemplatesDesc();
 				$info = $tpl_desc->getTplDisplayInfo(array('name' => $data['name']), $tr);
-				$data['display_title'] = $info['title'];
+				$data['display_title']       = $info['title'];
 				$data['display_description'] = $info['desc'];
 			} else {
+				$name = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1) . '.html';
 				$key = 'admin.emailtpl_desc.' . strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
-				$data['display_title'] = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : null;
-				$data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc') : null;
+				$data['display_title']       = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : $name;
+				$data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc')   : null;
 			}
 		}
 

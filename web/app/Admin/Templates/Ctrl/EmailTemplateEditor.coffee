@@ -5,6 +5,17 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS      = ['$modalInstance', 'templateName']
 
 		init: ->
+
+			@$scope.is_new_email = @templateName == null
+			if @$scope.is_new_email
+				@$scope.$watch('email.email_name', =>
+					@$scope.email.email_name = @$scope.email.email_name || ''
+					@$scope.email.email_name = @$scope.email.email_name.toLowerCase()
+					@$scope.email.email_name = @$scope.email.email_name.replace(/\s/g, '-')
+					@$scope.email.email_name = @$scope.email.email_name.replace(/[^a-z0-9\-_\.]/g, '')
+					@validateName();
+				)
+
 			@$scope.dismiss = =>
 				@$modalInstance.dismiss('cancel')
 
@@ -16,11 +27,19 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 						body: @editorMessage.getValue()
 					}
 				}
-				@Api.sendPostJson("/templates/#{@templateName}", postData).then(=>
+
+				if @$scope.is_new_email
+					url = "/templates/" + 'DeskPRO:emails_custom:' + @$scope.email.email_name + '.html.twig'
+					postData.create_new = true
+				else
+					url = "/templates/#{@templateName}"
+
+				@Api.sendPostJson(url, postData).then( (res) =>
 					@$scope.saving_template = false
 					@$modalInstance.close({
-						templateName: @templateName,
-						mode: 'custom'
+						templateName: res.data.name,
+						isNewEmail:   @$scope.is_new_email,
+						mode:         'custom'
 					})
 				)
 
@@ -70,12 +89,32 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				editor.getSession().on('change', updateH);
 				editor.setShowPrintMargin(false)
 
-		initialLoad: ->
-			p = @Api.sendGet("/templates/#{@templateName}").success( (data) =>
-				@initTemplateData(data)
-			)
+		validateName: ->
+			@$scope.email_name_error = null
+			if not @customNames then return # custom names might not be loaded yet
+			if @customNames.indexOf(@$scope.email.email_name + '.html') != -1
+				@$scope.email_name_error = 'exists'
 
-			return p
+		initialLoad: ->
+			if not @$scope.is_new_email
+				p = @Api.sendGet("/templates/#{@templateName}").success( (data) =>
+					@initTemplateData(data)
+				)
+
+				return p
+			else
+				@initTemplateData({
+					name: null,
+					email: { email_name: '', template_code: { subject: '', body: '' } }
+				})
+				p = @Api.sendGet('/email-templates-info').success( (data) =>
+					@initCustomNames(data.list['custom'].groups['custom'].templates)
+				)
+				return p
+
+		initCustomNames: (templates) ->
+			@customNames = templates.map((x) -> x.showName.replace(/^.*?\//, ''))
+			return
 
 		initTemplateData: (info) ->
 			@templateName = info.name
