@@ -523,7 +523,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'cascade' => array('persist','merge'), 'mappedBy' => 'organizations', 'dpApi' => true));
 		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization',  ));
 	}
 }
