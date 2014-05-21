@@ -800,7 +800,7 @@ define [
 							return value
 						getValue: (model = {}, data) ->
 							value = {}
-							value.type = 'webhook'
+							value.type = 'WebHook'
 							value.options = model
 							return value
 						}
@@ -838,10 +838,47 @@ define [
 							}
 						getValue: (model = {}, data) ->
 							value = {}
-							value.type = 'slas'
+							value.type = 'SetSlas'
 							value.options = {}
 							value.options.add_slas    = model.add_slas
 							value.options.remove_slas = model.remove_slas
+							return value
+					}
+			}
+
+		getAddAgentReply: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-addagentreply.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							opt = value.options || {}
+
+							by_agent_id = opt.by_agent_id || null
+							if not by_agent_id
+								by_agent_id = data.agents[0].id
+
+							by_agent_id = by_agent_id + ""
+
+							return {
+								reply_text: opt.reply_text || '',
+								by_assigned_agent: opt.by_assigned_agent || false,
+								by_agent_id: by_agent_id
+							}
+
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'AddAgentReply'
+							value.options = {}
+							value.options.reply_text = model.reply_text
+							value.options.by_assigned_agent = model.by_assigned_agent || false
+							value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0
 							return value
 					}
 			}

@@ -1041,7 +1041,7 @@
                   model = {};
                 }
                 value = {};
-                value.type = 'webhook';
+                value.type = 'WebHook';
                 value.options = model;
                 return value;
               }
@@ -1099,10 +1099,60 @@
                   model = {};
                 }
                 value = {};
-                value.type = 'slas';
+                value.type = 'SetSlas';
                 value.options = {};
                 value.options.add_slas = model.add_slas;
                 value.options.remove_slas = model.remove_slas;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getAddAgentReply = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-addagentreply.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var by_agent_id, opt;
+                if (value == null) {
+                  value = {};
+                }
+                opt = value.options || {};
+                by_agent_id = opt.by_agent_id || null;
+                if (!by_agent_id) {
+                  by_agent_id = data.agents[0].id;
+                }
+                by_agent_id = by_agent_id + "";
+                return {
+                  reply_text: opt.reply_text || '',
+                  by_assigned_agent: opt.by_assigned_agent || false,
+                  by_agent_id: by_agent_id
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'AddAgentReply';
+                value.options = {};
+                value.options.reply_text = model.reply_text;
+                value.options.by_assigned_agent = model.by_assigned_agent || false;
+                value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0;
                 return value;
               }
             };

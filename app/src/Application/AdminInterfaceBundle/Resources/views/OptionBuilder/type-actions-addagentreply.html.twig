@@ -1,0 +1,39 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap"><label>Add Agent Reply</label></td>
+				<td>
+					<table class="display-table spaced">
+						<tr>
+							<td>Author:</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px">
+									<li style="border-bottom: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.by_assigned_agent" />
+											Use the assigned agent if there is one
+											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="If the ticket is assigned to an agent, then the author will be that assigned agent. Otherwise, it will be the selected agent below."></i>
+										</label>
+									</li>
+									<li ng-repeat="agent in agents">
+										<label>
+											<input type="radio" ng-model="model.by_agent_id" ng-value="{{ ng_var('agent.id') }}" name="{{ el_uid() }}" />
+											{{ ng_var('agent.display_name') }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td width="100">Reply Text:</td>
+							<td>
+								<textarea class="form-control" style="height: 100px;" ng-model="model.reply_text"></textarea>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>
