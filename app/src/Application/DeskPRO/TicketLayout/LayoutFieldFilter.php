@@ -67,14 +67,27 @@ class LayoutFieldFilter
 	 */
 	public function isFieldValid(LayoutField $field)
 	{
-		if ($field->getFieldType() == 'ticket_field') {
-			if (!$this->ticket_fields->getFieldFromId($field->getFieldId())) {
-				return false;
-			}
-		} else if ($field->getFieldType() == 'user_field') {
-			if (!$this->user_fields->getFieldFromId($field->getFieldId())) {
-				return false;
-			}
+		switch ($field->getFieldType()) {
+			case 'ticket_field':
+				if (!$this->ticket_fields->getFieldFromId($field->getFieldId())) {
+					return false;
+				}
+				break;
+
+			case 'user_field':
+				if (!$this->user_fields->getFieldFromId($field->getFieldId())) {
+					return false;
+				}
+				break;
+
+			case 'category':
+				return $this->ticket_fields->isCategoryEnabled();
+			case 'priority':
+				return $this->ticket_fields->isPriorityEnabled();
+			case 'workflow':
+				return $this->ticket_fields->isWorkflowEnabled();
+			case 'product':
+				return $this->ticket_fields->isProductEnabled();
 		}
 
 		return true;
