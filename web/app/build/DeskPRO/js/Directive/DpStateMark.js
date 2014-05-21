@@ -61,8 +61,8 @@
               }
             }
             myStateIdRe = Strings.escapeRegex(myStateId);
-            myStateIdRe1 = new RegExp(myStateIdRe + '\\.');
-            myStateIdRe2 = new RegExp(myStateIdRe + '$');
+            myStateIdRe1 = new RegExp('^' + myStateIdRe + '\\.');
+            myStateIdRe2 = new RegExp('^' + myStateIdRe + '$');
             element.on('click', function() {
               element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active');
               element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');

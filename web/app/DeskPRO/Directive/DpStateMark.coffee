@@ -57,8 +57,8 @@ define [
 						currentStateVars.push(p)
 
 				myStateIdRe = Strings.escapeRegex(myStateId)
-				myStateIdRe1 = new RegExp(myStateIdRe + '\\.') # prefix "abc.zyx."
-				myStateIdRe2 = new RegExp(myStateIdRe + '$')   # full   "abc.xyz.1"
+				myStateIdRe1 = new RegExp('^' + myStateIdRe + '\\.') # prefix "abc.zyx."
+				myStateIdRe2 = new RegExp('^' + myStateIdRe + '$')   # full   "abc.xyz.1"
 
 				# This sets the active state immediately on click
 				# which makes the UI feel faster
