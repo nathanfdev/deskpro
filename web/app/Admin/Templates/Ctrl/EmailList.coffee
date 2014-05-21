@@ -22,7 +22,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		###
 		openEditor: (tpl) ->
 			modalInstance = @$modal.open({
-				templateUrl: 'Templates/modal-email-editor.html',
+				templateUrl: @getTemplatePath('Templates/modal-email-editor.html'),
 				controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
 				resolve: {
 					templateName: ->

@@ -42,7 +42,7 @@
       Admin_Templates_Ctrl_EmailList.prototype.openEditor = function(tpl) {
         var modalInstance;
         modalInstance = this.$modal.open({
-          templateUrl: 'Templates/modal-email-editor.html',
+          templateUrl: this.getTemplatePath('Templates/modal-email-editor.html'),
           controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
           resolve: {
             templateName: function() {
