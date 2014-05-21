@@ -15,10 +15,6 @@
 	'adm.email_templates.emails_agent_new-ticket_desc'                => 'Email sent when a new ticket is created.',
 	'adm.email_templates.emails_agent_ticket-update_title'            => 'Ticket Updated Notification',
 	'adm.email_templates.emails_agent_ticket-update_desc'             => 'Email sent when a ticket has been updated.',
-	'adm.email_templates.emails_agent_new-reply-user_title'           => 'New User Reply',
-	'adm.email_templates.emails_agent_new-reply-user_desc'            => 'Email sent when a user has replied to a ticket.',
-	'adm.email_templates.emails_agent_new-reply-agent_title'          => 'New Agent Reply',
-	'adm.email_templates.emails_agent_new-reply-agent_desc'           => 'Email sent when an agent has replied to a ticket.',
 	'adm.email_templates.agent_general'                               => 'General Email',
 	'adm.email_templates.emails_agent_new-agent-chat-message_title'   => 'New Chat Message',
 	'adm.email_templates.emails_agent_new-agent-chat-message_desc'    => 'Email sent when someone sends a chat message to an agent and they are offline.',
@@ -107,4 +103,6 @@
 	'adm.email_templates.emails_user_gateway-autoresponse-warn_desc'  => 'Email sent to a user when the helpdesk detects that they may be an auto-responder.',
 	'adm.email_templates.emails_user_email-too-big_title'             => 'Email Too-Big Error',
 	'adm.email_templates.emails_user_email-too-big_desc'              => 'Email sent to a user when they sent an email that is larger than is allowed.',
+	'adm.email_templates.emails_agent_ticket-reply_title'             => 'New Reply',
+	'adm.email_templates.emails_agent_ticket-reply_desc'              => 'Email sent when a new message is added to a ticket.',
 );

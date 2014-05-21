@@ -56,7 +56,7 @@
      */
     var DeskPRO_OptionBuilder_Controller;
     return DeskPRO_OptionBuilder_Controller = (function() {
-      function DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q) {
+      function DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) {
         this.dpTemplateManager = dpTemplateManager;
         this.$scope = $scope;
         this.$compile = $compile;
@@ -67,6 +67,7 @@
         this.$q = $q;
         this.typesDef = this.$scope.getTypesDef();
         this.options = this.$scope.getOptions() || {};
+        this.$injector = $injector;
         this.els = {};
         $transclude((function(_this) {
           return function(clone) {
@@ -192,7 +193,7 @@
        */
 
       DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId) {
-        var dataFormatter, dataPromise, def, retData, retTpl, tplPromise;
+        var dataFormatter, dataPromise, def, retData, retTpl, scopeInit, tplPromise;
         if (!this.hasLoaded) {
           return;
         }
@@ -200,6 +201,7 @@
         tplPromise = def.getTemplate();
         dataPromise = def.getData();
         dataFormatter = def.getDataFormatter();
+        scopeInit = def.scopeInit != null ? def.scopeInit : null;
         if (!this.$q.isPromise(tplPromise)) {
           retTpl = tplPromise;
           tplPromise = this.$q.fcall(function() {
@@ -251,6 +253,11 @@
                 v = data[k];
                 rowScope[k] = v;
               }
+            }
+            if (scopeInit) {
+              _this.$injector.invoke(scopeInit, _this, {
+                '$scope': rowScope
+              });
             }
             element = _this.$compile(tpl)(rowScope);
             element.find('.remove-row-trigger').on('click', function(ev) {
@@ -308,8 +315,8 @@
       };
 
       DeskPRO_OptionBuilder_Controller.FACTORY = [
-        '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', function($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q) {
-          return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q);
+        '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', function($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) {
+          return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector);
         }
       ];
 

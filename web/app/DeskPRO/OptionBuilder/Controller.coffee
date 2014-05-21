@@ -51,7 +51,7 @@ define ->
 	#
 	###
 	class DeskPRO_OptionBuilder_Controller
-		constructor: ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q) ->
+		constructor: ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) ->
 			@dpTemplateManager = dpTemplateManager
 			@$scope            = $scope
 			@$compile          = $compile
@@ -62,6 +62,7 @@ define ->
 			@$q                = $q
 			@typesDef          = @$scope.getTypesDef()
 			@options           = @$scope.getOptions() || {}
+			@$injector         = $injector
 
 			@els = {}
 
@@ -168,6 +169,7 @@ define ->
 			tplPromise    = def.getTemplate()
 			dataPromise   = def.getData()
 			dataFormatter = def.getDataFormatter()
+			scopeInit     = if def.scopeInit? then def.scopeInit else null
 
 			# They might optionally return values rather than promises
 			# so wrap in a promise to simplify the api
@@ -224,6 +226,11 @@ define ->
 					for own k, v of data
 						rowScope[k] = v
 
+				if scopeInit
+					@$injector.invoke(scopeInit, this, {
+						'$scope': rowScope
+					})
+
 				element = @$compile(tpl)(rowScope)
 				element.find('.remove-row-trigger').on('click', (ev) =>
 					ev.preventDefault()
@@ -276,6 +283,6 @@ define ->
 
 			return true
 
-		@FACTORY = [ '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q) ->
-			return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q)
+		@FACTORY = [ '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) ->
+			return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector)
 		]

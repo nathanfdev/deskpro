@@ -286,7 +286,8 @@
               'ticket_slas': '/ticket_slas',
               'email_accounts': '/email_accounts',
               'usergroups': '/user_groups',
-              'langs': '/langs'
+              'langs': '/langs',
+              'email_tpls': '/email-templates-info'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -306,6 +307,7 @@
                 options_data['email_accounts'] = data.email_accounts.email_accounts;
                 options_data['usergroups'] = data.usergroups.groups;
                 options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
+                options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
                   _ref7 = _this.options_data.ticket_fields;
@@ -788,6 +790,50 @@
           getData: function() {
             return me.loadDataOptions();
           },
+          scopeInit: [
+            '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
+              return $scope.handleTemplateChange = function() {
+                if ($scope.model.template === 'CREATE') {
+                  $scope.model.template = null;
+                  $scope.is_creating = true;
+                  return $modal.open({
+                    templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                    controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                    resolve: {
+                      templateName: function() {
+                        return null;
+                      }
+                    }
+                  }).result.then((function(_this) {
+                    return function(info) {
+                      var title, tpl, _ref;
+                      if (info.templateName) {
+                        title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
+                        tpl = {
+                          typeId: _this.typeId,
+                          groupId: _this.groupId,
+                          name: info.templateName,
+                          title: title
+                        };
+                        if (((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) {
+                          me.options_data.custom_email_tpls.push(tpl);
+                        }
+                        $scope.model.template = info.templateName;
+                        return $timeout(function() {
+                          $scope.model.template = info.templateName;
+                          return $scope.is_creating = false;
+                        }, 100);
+                      } else {
+                        return $scope.is_creating = false;
+                      }
+                    };
+                  })(this), function() {
+                    return $scope.is_creating = false;
+                  });
+                }
+              };
+            }
+          ],
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
@@ -849,6 +895,50 @@
           getData: function() {
             return me.loadDataOptions();
           },
+          scopeInit: [
+            '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
+              return $scope.handleTemplateChange = function() {
+                if ($scope.model.template === 'CREATE') {
+                  $scope.model.template = null;
+                  $scope.is_creating = true;
+                  return $modal.open({
+                    templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                    controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                    resolve: {
+                      templateName: function() {
+                        return null;
+                      }
+                    }
+                  }).result.then((function(_this) {
+                    return function(info) {
+                      var title, tpl, _ref;
+                      if (info.templateName) {
+                        title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
+                        tpl = {
+                          typeId: _this.typeId,
+                          groupId: _this.groupId,
+                          name: info.templateName,
+                          title: title
+                        };
+                        if (((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) {
+                          me.options_data.custom_email_tpls.push(tpl);
+                        }
+                        $scope.model.template = info.templateName;
+                        return $timeout(function() {
+                          $scope.model.template = info.templateName;
+                          return $scope.is_creating = false;
+                        }, 100);
+                      } else {
+                        return $scope.is_creating = false;
+                      }
+                    };
+                  })(this), function() {
+                    return $scope.is_creating = false;
+                  });
+                }
+              };
+            }
+          ],
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {

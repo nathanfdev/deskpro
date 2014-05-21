@@ -326,7 +326,8 @@ define [
 						'ticket_slas':     '/ticket_slas',
 						'email_accounts':  '/email_accounts',
 						'usergroups':      '/user_groups',
-						'langs':           '/langs'
+						'langs':           '/langs',
+						'email_tpls':      '/email-templates-info'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -344,6 +345,8 @@ define [
 						options_data['email_accounts']   = data.email_accounts.email_accounts
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
+						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -607,6 +610,43 @@ define [
 				getData: ->
 					return me.loadDataOptions()
 
+				scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+					$scope.handleTemplateChange = ->
+						if $scope.model.template == 'CREATE'
+							$scope.model.template = null
+							$scope.is_creating = true
+							$modal.open({
+								templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+								controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+								resolve: {
+									templateName: ->
+										return null
+								}
+							}).result.then( (info) =>
+								if info.templateName
+									title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+									tpl = {
+										typeId: @typeId,
+										groupId: @groupId,
+										name: info.templateName,
+										title: title
+									}
+
+									if me.options_data?.custom_email_tpls?
+										me.options_data.custom_email_tpls.push(tpl)
+
+									$scope.model.template = info.templateName
+									$timeout(->
+										$scope.model.template = info.templateName
+										$scope.is_creating = false
+									, 100)
+								else
+									$scope.is_creating = false
+							, ->
+								$scope.is_creating = false
+							)
+				]
+
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
@@ -653,6 +693,43 @@ define [
 
 				getData: ->
 					return me.loadDataOptions()
+
+				scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+					$scope.handleTemplateChange = ->
+						if $scope.model.template == 'CREATE'
+							$scope.model.template = null
+							$scope.is_creating = true
+							$modal.open({
+								templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+								controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+								resolve: {
+									templateName: ->
+										return null
+								}
+							}).result.then( (info) =>
+								if info.templateName
+									title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+									tpl = {
+										typeId: @typeId,
+										groupId: @groupId,
+										name: info.templateName,
+										title: title
+									}
+
+									if me.options_data?.custom_email_tpls?
+										me.options_data.custom_email_tpls.push(tpl)
+
+									$scope.model.template = info.templateName
+									$timeout(->
+										$scope.model.template = info.templateName
+										$scope.is_creating = false
+									, 100)
+								else
+									$scope.is_creating = false
+							, ->
+								$scope.is_creating = false
+							)
+				]
 
 				getDataFormatter: ->
 					return {

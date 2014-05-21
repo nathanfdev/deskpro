@@ -8,17 +8,23 @@
 						<tr>
 							<td>Template:</td>
 							<td>
-								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || ''">
-									{% for email in [
-										'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-										'DeskPRO:emails_user:ticket-new-byagent.html.twig',
-										'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
-										'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
-									] %}
-										<option value="{{ email }}">{{ email }}</option>
-									{% endfor %}
-									<option value="CREATE">Create a new template...</option>
+								<select ng-if="!is_creating" ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || ''" ng-change="handleTemplateChange()">
+									<optgroup label="Standard User Emails">
+										{% for email,label in {
+											'DeskPRO:emails_user:ticket-new-autoreply.html.twig': 'New Ticket Auto-Response',
+											'DeskPRO:emails_user:ticket-new-byagent.html.twig': 'New Ticket by Agent',
+											'DeskPRO:emails_user:ticket-reply-byagent.html.twig': 'New Agent Reply',
+											'DeskPRO:emails_user:ticket-reply-autoreply.html.twig': 'User Reply Auto-Response',
+										} %}
+											<option value="{{ email }}">{{ label }}</option>
+										{% endfor %}
+									</optgroup>
+									<optgroup label="Custom Emails">
+										<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
+										<option value="CREATE">Create a new template...</option>
+									</optgroup>
 								</select>
+								<span ng-if="is_creating">Creating a new template</span>
 							</td>
 						</tr>
 						<tr>

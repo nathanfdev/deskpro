@@ -43,12 +43,7 @@
 	array(
 		'typeId'         => 'agent',
 		'groupId'        => 'tickets',
-		'name'           => 'DeskPRO:emails_agent:new-reply-user.html.twig'
-	),
-	array(
-		'typeId'         => 'agent',
-		'groupId'        => 'tickets',
-		'name'           => 'DeskPRO:emails_agent:new-reply-agent.html.twig'
+		'name'           => 'DeskPRO:emails_agent:ticket-reply.html.twig'
 	),
 
 	//--------------------
