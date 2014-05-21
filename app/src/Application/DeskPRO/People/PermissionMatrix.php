@@ -213,10 +213,12 @@ class PermissionMatrix
 		foreach ($this->agent_perms as $aid => $perms) {
 			foreach ($perms as $perm_name => $perm_value) {
 				$has = false;
-				foreach ($this->agent_to_agentgroups[$aid] as $ugid) {
-					if (isset($this->agentgroup_perms[$ugid][$perm_name])) {
-						$has = true;
-						break;
+				if (isset($this->agent_to_agentgroups[$aid])) {
+					foreach ($this->agent_to_agentgroups[$aid] as $ugid) {
+						if (isset($this->agentgroup_perms[$ugid][$perm_name])) {
+							$has = true;
+							break;
+						}
 					}
 				}
 
