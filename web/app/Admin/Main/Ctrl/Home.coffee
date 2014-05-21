@@ -66,7 +66,7 @@ define [
 				else
 					@latest_version_status = "okay"
 					@latest_version = result.data.latestVersion.version_info
-					@latest_version.count_behind = 2
+					@latest_version.count_behind = parseInt(result.data.latestVersion.version_info.count_behind) || 0
 
 				if not result.data.news?.news?
 					@news_status = "error"

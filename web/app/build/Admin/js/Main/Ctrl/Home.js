@@ -75,7 +75,7 @@
             } else {
               _this.latest_version_status = "okay";
               _this.latest_version = result.data.latestVersion.version_info;
-              _this.latest_version.count_behind = 2;
+              _this.latest_version.count_behind = parseInt(result.data.latestVersion.version_info.count_behind) || 0;
             }
             if (((_ref1 = result.data.news) != null ? _ref1.news : void 0) == null) {
               return _this.news_status = "error";
