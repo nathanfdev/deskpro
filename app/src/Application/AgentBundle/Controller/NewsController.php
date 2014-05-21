@@ -65,7 +65,7 @@ class NewsController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $news);
 		$related_content = $related_finder->getRelatedEntities();
 
-		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editnews', $this->person->id);
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($news);
 		$rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
@@ -204,7 +204,7 @@ class NewsController extends AbstractController
 
 			case 'content':
 
-				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editcontent', $this->person->id);
+				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editnews', $this->person->id);
 
 				$news['content'] = $this->in->getCleanValue('content', 'string', null, array('noclean' => true));
 				$data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
