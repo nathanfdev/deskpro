@@ -183,7 +183,7 @@ class ReportsBuilderController extends AbstractController
 			);
 		} else {
 
-			$postData = $this->in->getAll('post');
+			$postData = $this->in->getAll('req');
 
 			$report_edit = new ReportEdit($report);
 

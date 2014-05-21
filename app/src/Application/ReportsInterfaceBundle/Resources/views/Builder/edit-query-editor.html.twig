@@ -119,27 +119,29 @@
 			</div>
 		</div>
 
-		<div class="panel panel-fill indent">
-			<div class="panel-body">
-				<div class="query-error" ng-show="EditCtrl.query_error">
-					The following error occurred: <span id="query-error-message">
-						{{ ng_var('EditCtrl.query_error') }}
-					</span>
+		{% if not is_new %}
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="query-error" ng-show="EditCtrl.query_error">
+						The following error occurred: <span id="query-error-message">
+							{{ ng_var('EditCtrl.query_error') }}
+						</span>
+					</div>
+
+					<button class="btn btn-success" ng-click="EditCtrl.testReport()" ng-if="EditCtrl.report.id">
+						Test Report
+					</button>
+
+					<button class="btn btn-warning" ng-click="EditCtrl.saveToClone()" ng-if="EditCtrl.report.id">
+						Save To Clone
+					</button>
+
+					<button class="btn btn-warning" ng-if="EditCtrl.reportType == 'custom'" dp-submit-form>
+						Save & Run
+					</button>
 				</div>
-
-				<button class="btn btn-success" ng-click="EditCtrl.testReport()" ng-if="EditCtrl.report.id">
-					Test Report
-				</button>
-
-				<button class="btn btn-warning" ng-click="EditCtrl.saveToClone()" ng-if="EditCtrl.report.id">
-					Save To Clone
-				</button>
-
-				<button class="btn btn-warning" ng-if="EditCtrl.reportType == 'custom'" dp-submit-form>
-					Save & Run
-				</button>
 			</div>
-		</div>
+		{% endif %}
 
 	</article>
 </section>
