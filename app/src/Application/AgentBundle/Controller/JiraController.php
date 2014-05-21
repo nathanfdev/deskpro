@@ -284,9 +284,11 @@ class JiraController extends AbstractController
 		));
 		
 		if (!count($jiraIssues)) {
-			return $this->createJsonResponse(array(
-				'message'	=> 'No Associated issues found'
-			), 400);
+			return $this->render('AgentBundle:Jira:issues-table.html.twig', array(
+				'ticket'		=> $ticket,
+				'jirabaseurl'	=> \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
+				'issues'		=> array()
+			));
 		}
 		
 		$transformedIssues = array();

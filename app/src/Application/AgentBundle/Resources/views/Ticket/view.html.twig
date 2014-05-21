@@ -65,10 +65,10 @@ pageMeta.lang = {{ {
 	pageMeta.jiraEnabled = true;
 	pageMeta.jiraDefaultProject = "{{ app.getSetting('core.apps_jira.defaultProject') }}";
 {% endif %}
-</script>
 {% if app.getsetting('core.apps_jira.enabled') %}
 	{% include 'AgentBundle:Jira:widget.html.twig' %}
 {% endif %}
+</script>
 <div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
 <div class="dp-page-content">
 
