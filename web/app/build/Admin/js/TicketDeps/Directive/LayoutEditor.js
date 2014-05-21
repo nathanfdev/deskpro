@@ -101,7 +101,13 @@
         tab.find('.dp-layout-editor-layout-field').filter('[data-is-required]').each(function() {
           return requiredFields.push($(this).data('field-type'));
         });
-        tab.find('.form-elements').find('li').draggable({
+        tab.find('.form-elements').find('li.disabled').each(function() {
+          var el, parent;
+          el = $(this);
+          parent = el.closest('ul');
+          return el.detach().appendTo(parent);
+        });
+        tab.find('.form-elements').find('li').not('.disabled').draggable({
           appendTo: 'body',
           helper: 'clone',
           connectToSortable: tab.find('.form-worksheet').find('ul')

@@ -86,7 +86,13 @@ define [
 				requiredFields.push($(this).data('field-type'))
 			)
 
-			tab.find('.form-elements').find('li').draggable({
+			# moves disabled items to end of the list
+			tab.find('.form-elements').find('li.disabled').each(->
+				el = $(this)
+				parent = el.closest('ul')
+				el.detach().appendTo(parent)
+			)
+			tab.find('.form-elements').find('li').not('.disabled').draggable({
 				appendTo: 'body',
 				helper: 'clone',
 				connectToSortable: tab.find('.form-worksheet').find('ul')

@@ -11565,6 +11565,16 @@ li.dp-layout-editor-layout-field span {
   border-radius: 5px;
 }
 
+li.dp-layout-editor-layout-field.disabled {
+  cursor: 'not-allowed';
+}
+
+li.dp-layout-editor-layout-field.disabled span {
+  color: #888;
+  background: #f5f7fa;
+  border: 1px solid #dfe1e4;
+}
+
 .dp-time-unit {
   display: inline-block;
 }
