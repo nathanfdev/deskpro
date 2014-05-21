@@ -225,7 +225,11 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 				$this->container->getDataService('Usergroup')->getAll()
 			);
 
-			$dep_edit->saveTrigger($this->em, $this->in->getArrayValue('trigger_actions'));
+			if (!count($dep->children)) {
+				$dep_edit->saveTrigger($this->em, $this->in->getArrayValue('trigger_actions'));
+			} else {
+				$dep_edit->clearTrigger($this->em);
+			}
 
 			return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
 		} else {

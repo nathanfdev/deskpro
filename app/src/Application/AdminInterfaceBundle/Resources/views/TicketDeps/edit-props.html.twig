@@ -70,7 +70,14 @@
 			<div class="col-lg-3">
 				<h3>New Ticket Trigger</h3>
 			</div>
-			<div class="col-lg-9">
+			<div class="col-lg-9" ng-if="EditCtrl.dep.has_children">
+				<p style="padding-top: 5px;">
+					Parent departments do not define triggers.
+					<i class="fa fa-question-circle qmark-icon" tooltip="Tickets can never be created into a parent department, so a trigger on a parent department would never match." tooltip-placement="left"></i>
+				</p>
+			</div>
+
+			<div class="col-lg-9" ng-if="!EditCtrl.dep.has_children">
 				<div class="inner-group" ng-if="EditCtrl.email_accounts.length">
 					Set Email account:&nbsp;
 					<select

@@ -108,6 +108,20 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 	{
 		$em->persist($this->department);
 		$em->flush();
+
+		// Make sure parent doesnt have a trigger
+		if ($this->department->parent) {
+			$trigger = $em->createQuery("
+				SELECT trigger
+				FROM DeskPRO:TicketTrigger trigger
+				WHERE trigger.department = ?0
+			")->setParameters(array($this->department->parent))->getOneOrNullResult();
+
+			if ($trigger) {
+				$em->remove($trigger);
+				$em->flush();
+			}
+		}
 	}
 
 
@@ -171,9 +185,27 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 		$trigger->terms     = $terms;
 
 		$em->persist($trigger);
-		$em->flush();
+		$em->flush($trigger);
 
 		return $trigger;
+	}
+
+
+	/**
+	 * @param EntityManager $em
+	 */
+	public function clearTrigger(EntityManager $em)
+	{
+		$trigger = $em->createQuery("
+			SELECT trigger
+			FROM DeskPRO:TicketTrigger trigger
+			WHERE trigger.department = ?0
+		")->setParameters(array($this->department))->getOneOrNullResult();
+
+		if ($trigger) {
+			$em->remove($trigger);
+			$em->flush();
+		}
 	}
 
 	############################################################################
