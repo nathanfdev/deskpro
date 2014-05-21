@@ -87,13 +87,13 @@ define [
 			postData = {
 				agent: {
 					name: Strings.trim(@$scope.new_agent.name || ''),
-					primary_email_address: Strings.trim(@$scope.new_agent.email || '')
+					emails: [Strings.trim(@$scope.new_agent.email || '')]
 				}
 			}
 
 			@$scope.new_agent.errors = {
 				name: !postData.agent.name,
-				email: postData.agent.primary_email_address.indexOf('@') == -1
+				email: postData.agent.emails[0].indexOf('@') == -1
 			}
 
 			if @$scope.new_agent.errors.name or @$scope.new_agent.errors.email

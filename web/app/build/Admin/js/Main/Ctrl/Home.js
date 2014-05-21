@@ -99,12 +99,12 @@
         postData = {
           agent: {
             name: Strings.trim(this.$scope.new_agent.name || ''),
-            primary_email_address: Strings.trim(this.$scope.new_agent.email || '')
+            emails: [Strings.trim(this.$scope.new_agent.email || '')]
           }
         };
         this.$scope.new_agent.errors = {
           name: !postData.agent.name,
-          email: postData.agent.primary_email_address.indexOf('@') === -1
+          email: postData.agent.emails[0].indexOf('@') === -1
         };
         if (this.$scope.new_agent.errors.name || this.$scope.new_agent.errors.email) {
           return;
