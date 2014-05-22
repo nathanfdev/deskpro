@@ -42,7 +42,7 @@ class TicketLayoutData extends AbstractDefaultData
 {
 	public function runInstall()
 	{
-		$exists = $this->getDb()->fetchAllCol("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+		$exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
 
 		if (!$exists) {
 			$ticket_layout               = new TicketLayout();
@@ -62,7 +62,7 @@ class TicketLayoutData extends AbstractDefaultData
 
 	public function runReset()
 	{
-		$exists = $this->getDb()->fetchAllCol("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+		$exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
 		if ($exists) {
 			$this->getDb()->delete('ticket_layouts', array('id' => $exists));
 		}
@@ -71,7 +71,7 @@ class TicketLayoutData extends AbstractDefaultData
 
 	public function runSync()
 	{
-		$exists = $this->getDb()->fetchAllCol("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+		$exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
 		if (!$exists) {
 			$this->runInstall();
 		}
