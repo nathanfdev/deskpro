@@ -9451,6 +9451,90 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   font-size: 11pt;
 }
 
+.dp-item-list li.group-section .as-open {
+  display: none !important;
+}
+
+.dp-item-list li.group-section.group-open .as-open {
+  display: block !important;
+}
+
+.dp-item-list li.group-section.group-open i.as-open {
+  display: inline-block !important;
+}
+
+.dp-item-list li.group-section.group-open .as-closed {
+  display: none !important;
+}
+
+.dp-item-list li.group-section .fa-folder,
+.dp-item-list li.group-section .fa-folder-open {
+  width: 15px;
+  font-size: 14px;
+  color: #7f7f7f;
+}
+
+.dp-item-list li.group-section > a {
+  cursor: pointer;
+}
+
+.dp-item-list li.group-section .help-box {
+  padding: 5px;
+  margin: 8px;
+  margin-bottom: 0;
+  background-color: #fff;
+  border: 1px dotted #888;
+  border-radius: 2px;
+}
+
+.dp-item-list li.group-section .group-section-wrapper {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition: all 250ms ease;
+     -moz-transition: all 250ms ease;
+      -ms-transition: all 250ms ease;
+       -o-transition: all 250ms ease;
+          transition: all 250ms ease;
+}
+
+.dp-item-list li.group-section .group-section-content {
+  overflow: hidden;
+  -webkit-transition: all 250ms ease;
+     -moz-transition: all 250ms ease;
+      -ms-transition: all 250ms ease;
+       -o-transition: all 250ms ease;
+          transition: all 250ms ease;
+}
+
+.dp-item-list li.group-section .group-section-shadow {
+  position: absolute;
+  top: 0;
+  right: -10px;
+  bottom: 0;
+  left: -10px;
+  display: none;
+  -webkit-box-shadow: inset 0 0 5px 2px rgba(116, 125, 140, 0.6);
+          box-shadow: inset 0 0 5px 2px rgba(116, 125, 140, 0.6);
+}
+
+.dp-item-list li.group-section .with-no-height {
+  height: 0 !important;
+}
+
+.dp-item-list li.group-section.group-open > a {
+  background-color: #d4e4fe;
+}
+
+.dp-item-list li.group-section.group-open .group-section-wrapper {
+  height: auto;
+  background-color: #eceef0;
+}
+
+.dp-item-list li.group-section.group-open .group-section-shadow {
+  display: block;
+}
+
 .dp-order-ctrl {
   display: inline-block;
 }

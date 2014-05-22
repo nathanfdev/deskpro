@@ -13,15 +13,17 @@
 
       Admin_TicketTriggers_Ctrl_List.CTRL_ID = 'Admin_TicketTriggers_Ctrl_List';
 
-      Admin_TicketTriggers_Ctrl_List.CTRL_AS = 'TicketTriggersList';
+      Admin_TicketTriggers_Ctrl_List.CTRL_AS = 'List';
 
-      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams'];
+      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams', '$q', 'TicketAccountsData'];
 
       Admin_TicketTriggers_Ctrl_List.prototype.init = function() {
         this.dep_triggers = [];
         this.email_triggers = [];
         this.all_triggers = [];
         this.triggers = [];
+        this.depTriggersEnabled = true;
+        this.emailTriggersEnabled = true;
         this.eventType = this.$stateParams.type;
         if (this.$stateParams.type === 'newticket') {
           this.dpTriggers = this.DataService.get('TriggersNew');
@@ -30,6 +32,7 @@
         } else {
           this.dpTriggers = this.DataService.get('TriggersUpdate');
         }
+        this.depData = this.DataService.get('TicketDeps');
         this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',
@@ -59,15 +62,26 @@
        */
 
       Admin_TicketTriggers_Ctrl_List.prototype.initialLoad = function() {
-        var promise;
-        promise = this.dpTriggers.loadList().then((function(_this) {
+        var promises;
+        promises = [];
+        promises.push(this.dpTriggers.loadList().then((function(_this) {
           return function(list) {
             window.all_triggers = list;
             _this.all_triggers = list;
             return _this.sortTriggers();
           };
-        })(this));
-        return promise;
+        })(this)));
+        promises.push(this.depData.loadList().then((function(_this) {
+          return function(list) {
+            return _this.depList = list;
+          };
+        })(this)));
+        promises.push(this.TicketAccountsData.loadList().then((function(_this) {
+          return function(recs) {
+            return _this.accounts = recs.values();
+          };
+        })(this)));
+        return this.$q.all(promises);
       };
 
 
@@ -103,6 +117,10 @@
       Admin_TicketTriggers_Ctrl_List.prototype.updateTriggerEnabledState = function(trigger) {
         return this.dpTriggers.saveEnabledStateById(trigger.id, trigger.is_enabled);
       };
+
+      Admin_TicketTriggers_Ctrl_List.prototype.updateDepTriggersEnabledState = function() {};
+
+      Admin_TicketTriggers_Ctrl_List.prototype.updateEmailTriggersEnabledState = function() {};
 
 
       /*

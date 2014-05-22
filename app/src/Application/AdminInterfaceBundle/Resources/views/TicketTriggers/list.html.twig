@@ -1,57 +1,113 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
-
-	<section class="dp-paneblock dp-listpane" ng-if="TicketTriggersList.dep_triggers.length">
-		<header>
-			<h3 ng-pluralize count="TicketTriggersList.dep_triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_dep_triggers') }}"></h3>
-		</header>
-		<article>
-			<ul class="dp-item-list">
-				<li ng-repeat="trigger in TicketTriggersList.dep_triggers">
-					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: trigger.department.id}') }}">
-						<h4>
-							<span class="title-text">{{ ng_var('trigger.department.title_full') }}</span>
-						</h4>
-					</a>
-				</li>
-			</ul>
-		</article>
-	</section>
-
-	<section class="dp-paneblock dp-listpane" ng-if="TicketTriggersList.email_triggers.length">
-		<header>
-			<h3 ng-pluralize count="TicketTriggersList.email_triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_email_triggers') }}"></h3>
-		</header>
-		<article>
-			<ul class="dp-item-list">
-				<li ng-repeat="trigger in TicketTriggersList.email_triggers">
-					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: trigger.email_account.id}') }}">
-						<h4>
-							<span class="title-text">{{ ng_var('trigger.email_account.address') }}</span>
-						</h4>
-					</a>
-				</li>
-			</ul>
-		</article>
-	</section>
-
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
 				<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
 			</nav>
-			<h3 ng-pluralize count="TicketTriggersList.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
+			<h3 ng-pluralize count="List.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
 		</header>
 		<article>
-			<p ng-if="!TicketTriggersList.triggers.length" style="padding: 15px;">
+			<p ng-if="!List.triggers.length" style="padding: 15px;">
 				{{ phrase('adm.ticket_triggers.no_triggers') }}
 			</p>
-			<ul class="dp-item-list" ui-sortable="TicketTriggersList.sortedListOptions" ng-if="TicketTriggersList.triggers.length">
-				<li class="with-drag-handle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
-					<a href="{{ ng_href('tickets.triggers.edit', '{type: TicketTriggersList.eventType, id: trigger.id}') }}">
+			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length">
+
+				{#######################}
+				{# Department Triggers #}
+				{#######################}
+
+				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length">
+					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
 						<i class="fa fa-bars drag-handle"></i>
-						<div class="pull-right toggle-wrapper" ng-hide="delete_mode">
-							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="TicketTriggersList.updateTriggerEnabledState(trigger);"></button>
+						<div class="pull-right toggle-wrapper">
+							<button dp-toggle-switch ng-model="List.depTriggersEnabled" ng-change="List.updateDepTriggersEnabledState();"></button>
+						</div>
+						<h4>
+							<i class="fa fa-folder as-closed"></i>
+							<i class="fa fa-folder-open as-open"></i>
+							<span class="title-text"><span ng-pluralize count="List.depList.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_dep_triggers') }}"></span></span>
+							&nbsp;
+							<i class="fa fa-caret-down as-closed"></i>
+							<i class="fa fa-caret-up as-open"></i>
+						</h4>
+					</a>
+					<div class="group-section-wrapper">
+						<div class="group-section-shadow"></div>
+						<div class="group-section-content">
+							<div class="help-box">
+								Use these triggers if you want to perform actions based on the department a user selects when
+								submitting a ticket from the web interface.
+							</div>
+							<ul class="dp-item-list">
+								<li ng-repeat="dep in List.depList">
+									<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
+										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+									</a>
+									<ul class="dp-item-list sublist" ng-show="dep.children.length">
+										<li ng-repeat="subdep in dep.children">
+											<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
+												<h4>
+													<span class="tree-char middle" ng-if="!$last"></span>
+													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-text">{{ ng_var('subdep.title') }}</span>
+												</h4>
+											</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+
+				{#######################}
+				{# Email Acc Triggers  #}
+				{#######################}
+
+				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length">
+					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
+						<i class="fa fa-bars drag-handle"></i>
+						<div class="pull-right toggle-wrapper">
+							<button dp-toggle-switch ng-model="List.emailTriggersEnabled" ng-change="List.updateEmailTriggersEnabledState();"></button>
+						</div>
+						<h4>
+							<i class="fa fa-folder as-closed"></i>
+							<i class="fa fa-folder-open as-open"></i>
+							<span class="title-text"><span ng-pluralize count="List.accounts.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_email_triggers') }}"></span></span>
+							&nbsp;
+							<i class="fa fa-caret-down as-closed"></i>
+							<i class="fa fa-caret-up as-open"></i>
+						</h4>
+					</a>
+					<div class="group-section-wrapper">
+						<div class="group-section-shadow"></div>
+						<div class="group-section-content">
+							<div class="help-box">
+								Use these triggers if you want to perform actions based on the email address a user sends
+								a new ticket to.
+							</div>
+
+							<ul class="dp-item-list">
+								<li ng-repeat="acc in List.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
+									<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
+										<h4><span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+
+				{#######################}
+				{# Custom Triggers     #}
+				{#######################}
+
+				<li class="with-drag-handle" ng-repeat="trigger in List.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
+					<a href="{{ ng_href('tickets.triggers.edit', '{type: List.eventType, id: trigger.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<div class="pull-right toggle-wrapper">
+							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="List.updateTriggerEnabledState(trigger);"></button>
 						</div>
 						<div class="pull-right">
 							<em class="tag" ng-if="trigger.by_agent">
@@ -76,7 +132,7 @@
 										</span>
 									</span>
 							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketTriggersList.startTriggerDelete(trigger); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="List.startTriggerDelete(trigger); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4>
 							<span class="title-text">{{ ng_var('trigger.title') }}</span>
@@ -85,7 +141,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('tickets.triggers.gocreate', '{type: TicketTriggersList.eventType}') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+				<a class="btn btn-default" href="{{ ng_href('tickets.triggers.gocreate', '{type: List.eventType}') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 		</article>
 	</section>
@@ -93,9 +149,9 @@
 {% block listpane_help %}
 	<header>
 		<h1>Triggers are automatic processes that perform actions in response to events when the criteria you choose are met.</h1>
-		<p ng-if="TicketTriggersList.eventType == 'newreply'">Triggers in this section check their criteria when a <strong>new reply</strong> is made by a user or agent.</p>
-		<p ng-if="TicketTriggersList.eventType == 'newticket'">Triggers in this section check their criteria when a <strong>new ticket</strong> is created.</p>
-		<p ng-if="TicketTriggersList.eventType == 'update'">Triggers in this section check their criteria when a ticket is <strong>updated</strong>.</p>
+		<p ng-if="List.eventType == 'newreply'">Triggers in this section check their criteria when a <strong>new reply</strong> is made by a user or agent.</p>
+		<p ng-if="List.eventType == 'newticket'">Triggers in this section check their criteria when a <strong>new ticket</strong> is created.</p>
+		<p ng-if="List.eventType == 'update'">Triggers in this section check their criteria when a ticket is <strong>updated</strong>.</p>
 	</header>
 
 	<article>

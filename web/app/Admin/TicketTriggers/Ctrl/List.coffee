@@ -7,14 +7,17 @@ define [
 ) ->
 	class Admin_TicketTriggers_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketTriggers_Ctrl_List'
-		@CTRL_AS = 'TicketTriggersList'
-		@DEPS = ['$state', '$stateParams']
+		@CTRL_AS = 'List'
+		@DEPS = ['$state', '$stateParams', '$q', 'TicketAccountsData']
 
 		init: ->
 			@dep_triggers   = []
 			@email_triggers = []
 			@all_triggers   = []
 			@triggers       = []
+
+			@depTriggersEnabled = true
+			@emailTriggersEnabled = true
 
 			@eventType = @$stateParams.type
 
@@ -24,6 +27,8 @@ define [
 				@dpTriggers = @DataService.get('TriggersReply')
 			else
 				@dpTriggers = @DataService.get('TriggersUpdate')
+
+			@depData = @DataService.get('TicketDeps')
 
 			@sortedListOptions = {
 				axis: 'y',
@@ -48,13 +53,23 @@ define [
 		# Loads the triggers list
 		###
 		initialLoad: ->
-			promise = @dpTriggers.loadList().then( (list) =>
+			promises = []
+
+			promises.push @dpTriggers.loadList().then( (list) =>
 				window.all_triggers = list
 				@all_triggers = list
 				@sortTriggers()
 			)
 
-			return promise
+			promises.push @depData.loadList().then( (list) =>
+				@depList = list
+			)
+
+			promises.push @TicketAccountsData.loadList().then( (recs) =>
+				@accounts = recs.values()
+			)
+
+			return @$q.all(promises)
 
 
 		###
@@ -80,6 +95,11 @@ define [
 		updateTriggerEnabledState: (trigger) ->
 			return @dpTriggers.saveEnabledStateById(trigger.id, trigger.is_enabled)
 
+		updateDepTriggersEnabledState: ->
+			return
+
+		updateEmailTriggersEnabledState: ->
+			return
 
 		###
 		# Show the delete dlg

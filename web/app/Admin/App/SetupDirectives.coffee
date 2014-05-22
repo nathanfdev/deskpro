@@ -21,6 +21,7 @@ define [
 	'Admin/Main/Directive/DpDevBar',
 	'Admin/Main/Directive/DpInhelpBody',
 	'Admin/Main/Directive/DpInhelpBtn',
+	'Admin/Main/Directive/DpLiGroupSection',
 	'Admin/Main/Directive/DpListAutoload',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpOrderMenu',
@@ -59,6 +60,7 @@ define [
 	Admin_Main_Directive_DpDevBar,
 	Admin_Main_Directive_DpInhelpBody,
 	Admin_Main_Directive_DpInhelpBtn,
+	Admin_Main_Directive_DpLiGroupSection,
 	Admin_Main_Directive_DpListAutoload,
 	Admin_Main_Directive_DpOpenPhraseEditor,
 	Admin_Main_Directive_DpOrderMenu,
@@ -93,6 +95,7 @@ define [
 		Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
+		Module.directive('dpLiGroupSection',               Admin_Main_Directive_DpLiGroupSection)
 		Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
 		Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated)
 		Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar)
