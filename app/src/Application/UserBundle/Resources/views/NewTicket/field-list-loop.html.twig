@@ -52,7 +52,7 @@
 		</div>
 	{% endif %}
 
-	{% if item.field_type == 'attachments' %}
+	{% if item.field_type == 'attach' %}
 		<div data-field-id="attachments" class="ticket-display-field {{ item.id }}" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 			{% include 'UserBundle:NewTicket:field-attachments.html.twig' %}
 		</div>
