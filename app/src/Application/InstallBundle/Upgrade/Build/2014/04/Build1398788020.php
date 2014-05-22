@@ -35,6 +35,7 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Templating\Templates\TemplateSet;
+use Application\InstallBundle\Data\DefaultDataProcessor;
 
 class Build1398788020 extends AbstractBuild
 {

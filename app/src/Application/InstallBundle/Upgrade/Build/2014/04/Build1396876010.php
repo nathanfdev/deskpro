@@ -34,6 +34,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Orb\Util\Strings;
+
 class Build1396876010 extends AbstractBuild
 {
 	public function run()
@@ -101,5 +103,41 @@ class Build1396876010 extends AbstractBuild
 
 		$this->out("Change data type of usersources.options");
 		$this->execMutateSql("ALTER TABLE usersources CHANGE options options LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
+
+
+		#-------------------------
+		# Mark a couple default datas as done
+		# because we insert them manually
+		#-------------------------
+
+		$row = $this->container->getDb()->fetchAssoc("SELECT id, data FROM datastore WHERE name = 'sys.install.default_data' LIMIT 1");
+		$data = null;
+		$loaded_data_id = null;
+		if ($row) {
+			$data = @unserialize($row['data']);
+			$loaded_data_id = $row['id'];
+		}
+		if (!$data) {
+			$data = array();
+		}
+
+		if (!isset($data['installed'])) {
+			$data['installed'] = array();
+		}
+
+		$data['installed'][] = 'Application\\InstallBundle\\Data\\DefaultData\\TemplateData';
+		$data['installed'][] = 'Application\\InstallBundle\\Data\\DefaultData\\TriggerData';
+
+		if ($loaded_data_id) {
+			$this->container->getDb()->update('datastore', array(
+				'data' => serialize($data)
+			), array('id' => $loaded_data_id));
+		} else {
+			$this->container->getDb()->insert('datastore', array(
+				'name' => 'sys.install.default_data',
+				'auth' => Strings::random(15),
+				'data' => serialize($data)
+			));
+		}
 	}
 }
