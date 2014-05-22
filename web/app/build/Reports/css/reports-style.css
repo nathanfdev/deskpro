@@ -13177,3 +13177,17 @@ section.report-wrapper .no-data h3 {
 .reports_agent_feedback_summary_section i.rating.negative {
   color: #A21B22;
 }
+
+.chart_parent_table td {
+  height: 24px;
+  vertical-align: middle;
+}
+
+.chart_container {
+  vertical-align: top !important;
+}
+
+.chart_container td {
+  height: 25px;
+  vertical-align: middle;
+}
