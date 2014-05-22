@@ -8426,18 +8426,18 @@ nav.dp-appnav ul li {
 }
 
 nav.dp-appnav ul > li.active > a,
-nav.dp-appnav ul > li:hover > a {
+nav.dp-appnav ul > li > a:hover {
   color: #3476BE;
   background: #D4E4FF;
 }
 
 nav.dp-appnav ul > li.active > a i.fa-caret-right,
-nav.dp-appnav ul > li:hover > a i.fa-caret-right {
+nav.dp-appnav ul > li > a:hover i.fa-caret-right {
   display: block;
 }
 
 nav.dp-appnav ul > li.active > a i.fa-caret-down,
-nav.dp-appnav ul > li:hover > a i.fa-caret-down {
+nav.dp-appnav ul > li > a:hover i.fa-caret-down {
   display: inline-block;
 }
 
@@ -9480,8 +9480,8 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .dp-item-list li.group-section .help-box {
   padding: 5px;
-  margin: 8px;
-  margin-bottom: 0;
+  margin: 9px;
+  margin-bottom: 3px;
   background-color: #fff;
   border: 1px dotted #888;
   border-radius: 2px;
@@ -9499,6 +9499,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 }
 
 .dp-item-list li.group-section .group-section-content {
+  padding: 6px 0 6px;
   overflow: hidden;
   -webkit-transition: all 250ms ease;
      -moz-transition: all 250ms ease;
@@ -9533,6 +9534,20 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .dp-item-list li.group-section.group-open .group-section-shadow {
   display: block;
+}
+
+.dp-item-list li.group-section ul.dp-item-list li {
+  margin: 3px 8px;
+}
+
+.dp-item-list li.group-section ul.dp-item-list li a {
+  padding: 6px 5px 6px 10px;
+  border-radius: 3px;
+}
+
+.dp-item-list li.group-section ul.dp-item-list li.active > a {
+  color: #000;
+  background: #dbddde;
 }
 
 .dp-order-ctrl {

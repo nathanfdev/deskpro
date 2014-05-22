@@ -69,41 +69,48 @@
               return element.addClass('state-on active');
             });
             updateMarker = function() {
-              var currentStateId, isOn, v, _j, _len1;
-              currentStateId = $state.current.name;
+              var checkStateId, checkStateId2, currentStateId, isOn, v, _j, _k, _len1, _len2, _ref1, _ref2, _results;
+              checkStateId = $state.current.name;
+              checkStateId2 = null;
+              if ((_ref1 = $state.current.data) != null ? _ref1.stateMarkId : void 0) {
+                checkStateId2 = $state.current.data.stateMarkId;
+              }
               isOn = false;
-              if (currentStateVars) {
-                for (_j = 0, _len1 = currentStateVars.length; _j < _len1; _j++) {
-                  v = currentStateVars[_j];
-                  if ($state.params[v] != null) {
-                    if (hashParams[v]) {
-                      currentStateId += '.' + Strings.murmurhash3($state.params[v]);
+              _ref2 = [checkStateId, checkStateId2];
+              _results = [];
+              for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+                currentStateId = _ref2[_j];
+                if (!currentStateId) {
+                  continue;
+                }
+                if (currentStateVars) {
+                  for (_k = 0, _len2 = currentStateVars.length; _k < _len2; _k++) {
+                    v = currentStateVars[_k];
+                    if ($state.params[v] != null) {
+                      if (hashParams[v]) {
+                        currentStateId += '.' + Strings.murmurhash3($state.params[v]);
+                      } else {
+                        currentStateId += '.' + $state.params[v];
+                      }
                     } else {
-                      currentStateId += '.' + $state.params[v];
+                      currentStateId += '.0';
                     }
-                  } else {
-                    currentStateId += '.0';
                   }
                 }
-              } else {
-                if ($state.params.type) {
-                  currentStateId += '.' + $state.params.type;
+                if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
+                  isOn = true;
                 }
-                if ($state.params.id) {
-                  currentStateId += '.' + $state.params.id;
+                if (isOn) {
+                  element.addClass('state-on active');
+                  if (element.closest('[dp-nav-subnav]')) {
+                    element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
+                  }
+                  break;
+                } else {
+                  _results.push(element.removeClass('state-on active'));
                 }
               }
-              if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
-                isOn = true;
-              }
-              if (isOn) {
-                element.addClass('state-on active');
-                if (element.closest('[dp-nav-subnav]')) {
-                  return element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
-                }
-              } else {
-                return element.removeClass('state-on active');
-              }
+              return _results;
             };
             scope.$on('$stateChangeSuccess', function() {
               return updateMarker();

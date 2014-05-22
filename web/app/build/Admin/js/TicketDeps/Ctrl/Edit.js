@@ -18,7 +18,9 @@
       Admin_TicketDeps_Ctrl_Edit.DEPS = ['$templateCache'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
-        window.DEP_CTRL = this;
+        this.dpTriggers = this.DataService.get('TriggersNew');
+        this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
+        this.criteraTypeDef.setWithChangedOps(with_changed_ops);
         this.depId = parseInt(this.$stateParams.id);
         this.depData = this.DataService.get('TicketDeps');
         this.$scope.$watch('EditCtrl.form.parent_id', (function(_this) {
@@ -47,9 +49,22 @@
         return this.form = Util.clone(this.origForm, true);
       };
 
+      Admin_TicketDeps_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
+        var opt, setCritOptions, types, _i, _len, _results;
+        types = ['web', 'web.user'];
+        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types);
+        this.$scope.criteriaOptionTypes.length = 0;
+        _results = [];
+        for (_i = 0, _len = setCritOptions.length; _i < _len; _i++) {
+          opt = setCritOptions[_i];
+          _results.push(this.$scope.criteriaOptionTypes.push(opt));
+        }
+        return _results;
+      };
+
       Admin_TicketDeps_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise;
-        promise = this.depData.getEditDepartmentData(this.depId || null).then((function(_this) {
+        var get, promise1, promise2, promise3, promises;
+        promise1 = this.depData.getEditDepartmentData(this.depId || null).then((function(_this) {
           return function(data) {
             var code, code_all, name, tpl, _i, _len, _ref, _results;
             _this.dep = data.dep;
@@ -83,7 +98,28 @@
             return _results;
           };
         })(this));
-        return promise;
+        get = {
+          customActions: '/ticket_triggers/get-custom-actions'
+        };
+        if (this.depId) {
+          get.trigger = "/ticket_triggers/departments/" + this.depId;
+        }
+        promise2 = this.Api.sendDataGet(get).then((function(_this) {
+          return function(result) {
+            var _ref, _ref1;
+            _this.customActions = result.data.customActions.action_defs;
+            if (((_ref = result.data) != null ? (_ref1 = _ref.trigger) != null ? _ref1.trigger : void 0 : void 0) != null) {
+              _this.trigger = result.data.trigger.trigger;
+              return _this.triggerId = _this.trigger.id;
+            } else {
+              _this.trigger = {};
+              return _this.triggerId = 0;
+            }
+          };
+        })(this));
+        promise3 = this.criteraTypeDef.loadDataOptions();
+        promises = [promise1, promise2, promise3];
+        return this.$q.all(promises);
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.isDirtyState = function() {

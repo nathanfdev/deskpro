@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\Tickets\Triggers\Edit\SpecialTriggerEdit;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
@@ -73,11 +74,48 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 	# get
 	####################################################################################################################
 
-	public function getAction($id)
+	public function getAction($id, $special_type = null)
 	{
-		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+		switch ($special_type) {
+			case 'departments':
+				$dep = $this->container->getTicketDepartments()->getById($id);
+				if (!$dep) {
+					throw $this->createNotFoundException();
+				}
+
+				$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('department' => $dep));
+				if (!$trigger) {
+					$trigger = new TicketTrigger();
+					$edit = SpecialTriggerEdit::createWithDepartment($dep);
+					$edit->applyToTrigger($trigger);
+					$this->em->persist($trigger);
+					$this->em->flush($trigger);
+				}
+				break;
+
+			case 'email_accounts':
+				if (!$this->container->getEmailAccountManager()->hasAcccount($id)) {
+					throw $this->createNotFoundException();
+				}
+
+				$acc = $this->container->getEmailAccountManager()->getAccount($id);
+
+				$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('email_account' => $acc));
+				if (!$trigger) {
+					$trigger = new TicketTrigger();
+					$edit = SpecialTriggerEdit::createWithEmailAccount($acc);
+					$edit->applyToTrigger($trigger);
+					$this->em->persist($trigger);
+					$this->em->flush($trigger);
+				}
+				break;
+
+			default:
+				$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+		}
+
 		if (!$trigger) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = $this->getApiData($trigger);
@@ -143,6 +181,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
 		$trigger->terms = $terms;
 		$trigger->actions = $actions;
+
+		if ($trigger->department) {
+			$edit = SpecialTriggerEdit::createWithDepartment($trigger->department);
+			$edit->applyToTrigger($trigger);
+		} else if ($trigger->email_account) {
+			$edit = SpecialTriggerEdit::createWithDepartment($trigger->email_account);
+			$edit->applyToTrigger($trigger);
+		}
 
 		$this->em->persist($trigger);
 		$this->em->flush();

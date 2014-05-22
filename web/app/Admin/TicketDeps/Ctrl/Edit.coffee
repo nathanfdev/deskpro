@@ -13,7 +13,10 @@ define [
 		@DEPS      = ['$templateCache']
 
 		init: ->
-			window.DEP_CTRL = this
+			@dpTriggers = @DataService.get('TriggersNew')
+			@criteraTypeDef = @dpObTypesDefTicketCriteria
+			@criteraTypeDef.setWithChangedOps(with_changed_ops)
+
 			@depId = parseInt(@$stateParams.id)
 			@depData = @DataService.get('TicketDeps')
 			@$scope.$watch('EditCtrl.form.parent_id', (newVal) =>
@@ -37,8 +40,15 @@ define [
 		resetForm: ->
 			@form = Util.clone(@origForm, true)
 
+		updateCriteriaOptionTypes: ->
+			types = ['web', 'web.user']
+			setCritOptions = @criteraTypeDef.getOptionsForTypes(types)
+			@$scope.criteriaOptionTypes.length = 0
+			for opt in setCritOptions
+				@$scope.criteriaOptionTypes.push(opt)
+
 		initialLoad: ->
-			promise = @depData.getEditDepartmentData(@depId || null).then( (data) =>
+			promise1 = @depData.getEditDepartmentData(@depId || null).then( (data) =>
 				@dep  = data.dep
 				@form = data.form
 				@is_custom_layout = @form.use_custom_layout
@@ -64,7 +74,28 @@ define [
 					@$scope['code_all_' + name] = code_all
 			)
 
-			return promise
+			get = {
+				customActions: '/ticket_triggers/get-custom-actions'
+			}
+			if @depId
+				get.trigger = "/ticket_triggers/departments/#{@depId}"
+
+			promise2 = @Api.sendDataGet(get).then( (result) =>
+				@customActions = result.data.customActions.action_defs
+
+				if result.data?.trigger?.trigger?
+					@trigger = result.data.trigger.trigger
+					@triggerId = @trigger.id
+				else
+					@trigger = {}
+					@triggerId = 0
+			)
+
+			promise3 = @criteraTypeDef.loadDataOptions()
+
+			promises = [promise1, promise2, promise3]
+
+			return @$q.all(promises)
 
 		isDirtyState: ->
 			return not Util.equals(@form, @origForm)

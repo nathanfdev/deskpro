@@ -463,10 +463,27 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tickets.triggers.editdep',
+		url: '/{id:department\-[0-9]+}',
+		templateName: 'TicketTriggers/edit-dep.html',
+		controller: 'Admin_TicketTriggers_Ctrl_EditDepartmentTrigger',
+		data: { stateMarkId: "tickets.triggers" }
+	});
+
+	routes.push({
+		id: 'tickets.triggers.editemailacc',
+		url: '/{id:emailaccount\-[0-9]+}',
+		templateName: 'TicketTriggers/edit-emailacc.html',
+		controller: 'Admin_TicketTriggers_Ctrl_EditEmailAccountTrigger',
+		data: { stateMarkId: "tickets.triggers" }
+	});
+
+	routes.push({
 		id: 'tickets.triggers.edit',
 		url: '/{id:[0-9]+}',
 		templateName: 'TicketTriggers/edit.html',
-		controller: 'Admin_TicketTriggers_Ctrl_Edit'
+		controller: 'Admin_TicketTriggers_Ctrl_Edit',
+		data: { stateMarkId: "tickets.triggers" }
 	});
 
 

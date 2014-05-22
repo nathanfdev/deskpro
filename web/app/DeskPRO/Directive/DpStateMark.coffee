@@ -69,34 +69,37 @@ define [
 				)
 
 				updateMarker = ->
-					currentStateId = $state.current.name
+					checkStateId = $state.current.name
+					checkStateId2 = null
+
+					if $state.current.data?.stateMarkId
+						checkStateId2 = $state.current.data.stateMarkId
 
 					isOn = false
 
-					if currentStateVars
-						for v in currentStateVars
-							if $state.params[v]?
-								if hashParams[v]
-									currentStateId += '.' + Strings.murmurhash3($state.params[v])
+					for currentStateId in [checkStateId, checkStateId2]
+						if not currentStateId then continue
+
+						if currentStateVars
+							for v in currentStateVars
+								if $state.params[v]?
+									if hashParams[v]
+										currentStateId += '.' + Strings.murmurhash3($state.params[v])
+									else
+										currentStateId += '.' + $state.params[v]
 								else
-									currentStateId += '.' + $state.params[v]
-							else
-								currentStateId += '.0'
-					else
-						if $state.params.type
-							currentStateId += '.' + $state.params.type
-						if $state.params.id
-							currentStateId += '.' + $state.params.id
+									currentStateId += '.0'
 
-					if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
-						isOn = true
+						if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
+							isOn = true
 
-					if isOn
-						element.addClass('state-on active')
-						if element.closest('[dp-nav-subnav]')
-							element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
-					else
-						element.removeClass('state-on active')
+						if isOn
+							element.addClass('state-on active')
+							if element.closest('[dp-nav-subnav]')
+								element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
+							break
+						else
+							element.removeClass('state-on active')
 
 				scope.$on('$stateChangeSuccess', ->
 					updateMarker()

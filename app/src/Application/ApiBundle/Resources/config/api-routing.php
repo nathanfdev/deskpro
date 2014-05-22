@@ -2999,6 +2999,13 @@ $collection->create('api_ticket_triggers_getcustomactions', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_triggers_getspecial', array(
+	'path'         => '/ticket_triggers/{special_type}/{id}',
+	'controller'   => 'ApiBundle:TicketTriggers:get',
+	'requirements' => array('special_type' => '(departments|email_accounts)', 'id' => '\d+'),
+	'methods'      => array('GET'),
+));
+
 $collection->create('api_ticket_triggers', array(
 	'path'         => '/ticket_triggers/{type}',
 	'controller'   => 'ApiBundle:TicketTriggers:list',

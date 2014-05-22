@@ -589,7 +589,7 @@ nav.dp-appnav {
 		}
 	}
 
-	ul > li.active > a, ul > li:hover > a {
+	ul > li.active > a, ul > li > a:hover {
 		color: #3476BE;
 		background: #D4E4FF;
 
@@ -1643,7 +1643,7 @@ section.dp-help-content-wrapper.open {
 	.help-box {
 		background-color: #fff;
 		margin: 9px;
-		margin-bottom: 0;
+		margin-bottom: 3px;
 		border: 1px dotted #888;
 		padding: 5px;
 		border-radius: 2px;
@@ -1668,6 +1668,8 @@ section.dp-help-content-wrapper.open {
 		-o-transition: all 250ms ease;
 		transition: all 250ms ease;
 		overflow: hidden;
+
+		padding: 6px 0 6px;
 	}
 
 	.group-section-shadow {
@@ -1695,6 +1697,19 @@ section.dp-help-content-wrapper.open {
 		}
 		.group-section-shadow {
 			display: block;
+		}
+	}
+
+	ul.dp-item-list {
+		li {
+			margin: 3px 8px;
+			a {
+				padding: 6px 5px 6px 10px;
+				border-radius: 3px;
+			}
+		}
+		li.active {
+			> a { background: #dbddde; color: #000; }
 		}
 	}
 }

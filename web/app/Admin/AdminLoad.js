@@ -125,6 +125,8 @@ define([
 	'Admin/TicketStatuses/Ctrl/EditHiddenSpam',
 	'Admin/TicketStatuses/Ctrl/EditHiddenValidating',
 	'Admin/TicketStatuses/Ctrl/EditResolved',
+	'Admin/TicketTriggers/Ctrl/EditDepartmentTrigger',
+	'Admin/TicketTriggers/Ctrl/EditEmailAccountTrigger',
 	'Admin/TicketTriggers/Ctrl/Edit',
 	'Admin/TicketTriggers/Ctrl/List',
 	'Admin/TicketUrgencies/Ctrl/List',

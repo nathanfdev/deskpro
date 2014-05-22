@@ -66,66 +66,76 @@
 
 		{##############################################################################################}
 
-		<div class="form-group">
-			<div class="col-lg-3">
-				<h3>New Ticket Trigger</h3>
-			</div>
-			<div class="col-lg-9" ng-if="EditCtrl.dep.has_children">
-				<p style="padding-top: 5px;">
-					Parent departments do not define triggers.
-					<i class="fa fa-question-circle qmark-icon" tooltip="Tickets can never be created into a parent department, so a trigger on a parent department would never match." tooltip-placement="left"></i>
-				</p>
-			</div>
-
-			<div class="col-lg-9" ng-if="!EditCtrl.dep.has_children">
-				<div class="inner-group" ng-if="EditCtrl.email_accounts.length">
-					Set Email account:&nbsp;
-					<select
-						name="email_gateway"
-						ui-select2="{dropdownAutoWidth:true}"
-						ng-model="EditCtrl.form.trigger_actions.SetEmailAccount.options.email_account_id"
-						style="min-width: 240px"
-						class="no-search"
-					>
-						<option value="{{ ng_var('account.id') }}" ng-repeat="account in EditCtrl.email_accounts">{{ ng_var('account.address') }}</option>
-					</select>
+		<div>
+			<div class="panel panel-innertable" style="padding: 0; margin: 0;">
+				<div class="panel-heading">
+					<h3>
+						<span>Criteria</span>
+					</h3>
 				</div>
 
-				{# Send newticket auto-response #}
-				<div class="inner-group">
-					<label style="font-weight: normal">
-						<input type="checkbox" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.enabled" value="1" />
-						Send user an auto-response confirming their new ticket
-					</label>
-					<div class="ng-hide" ng-show="EditCtrl.form.trigger_actions.SendUserEmail.enabled">
-						<table class="display-table spaced">
-							<tr>
-								<td>Template:</td>
-								<td>
-									<select ui-select2="{dropdownAutoWidth:true}" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.options.template" style="min-width: 50px;">
-										{% for email in [
-											'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-										] %}
-											<option value="{{ email }}">{{ email }}</option>
-										{% endfor %}
-										<option value="CREATE">Create a new template...</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td>From Name:</td>
-								<td>
-									<select ui-select2="{dropdownAutoWidth:true}" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.options.from_name" ng-init="" style="min-width: 50px;">
-										<option value="helpdesk_name">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
-										{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
-										<option value="custom">Enter a custom name</option>
-									</select>
-									<div style="padding-top: 3px; width: 250px;">
-										<input type="text" class="form-control" ng-model="EditCtrl.form.trigger_actions.SendUserEmail.options.from_name_custom" ng-show="EditCtrl.form.trigger_actions.SendUserEmail.options.from_name == 'custom'" />
+				<div class="dp-ob-set">
+					<div class="dp-ob-setrow">
+						<header>
+							<em class="dp-ob-row-tag if">when</em>
+							The following conditions are met:
+						</header>
+						<article>
+							<div class="dp-ob">
+								<div class="dp-ob-options">
+									<div class="dp-ob-row">
+										<div class="dp-ob-standard-row">
+											<table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
+												<tbody>
+													<tr>
+														<td style="vertical-align: middle; padding: 0; margin: 0;" width="10"><div class="dp-ob-row-tag-wrap"><em class="dp-ob-row-tag if">if</em></div></td>
+														<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
+															Department is "{{ ng_var('TicketTriggersEdit.dep.title') }}"
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
-								</td>
-							</tr>
-						</table>
+									<div class="dp-ob-row">
+										<div class="dp-ob-standard-row">
+											<table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
+												<tbody>
+													<tr>
+														<td style="vertical-align: middle; padding: 0; margin: 0;" width="10"><div class="dp-ob-row-tag-wrap"><em class="dp-ob-row-tag and">and</em></div></td>
+														<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
+															Ticket is created by a user from the web interface
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</article>
+					</div>
+				</div>
+			</div>
+
+			<div class="panel panel-innertable" style="padding: 0; margin: 0;">
+				<div class="panel-heading">
+					<h3>
+						<span>Actions</span>
+					</h3>
+				</div>
+
+				<div class="dp-ob-set">
+					<div class="dp-ob-setrow">
+						<header>
+							<em class="dp-ob-row-tag then">then</em>
+							The followings actions will run:
+						</header>
+						<article>
+							<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+								<add-btn-label>Action</add-btn-label>
+							</dp-option-builder>
+						</article>
 					</div>
 				</div>
 			</div>
