@@ -102,7 +102,6 @@ $container->loadFromExtension('framework', array(
 		'assets_base_urls' => 'CONFIG_HTTP'
 	),
 	'validation' => array('enabled' => true),
-	'session' => array(),
 	'form' => array('enabled' => true)
 ));
 

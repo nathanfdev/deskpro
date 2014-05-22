@@ -474,11 +474,13 @@ class DpKernel extends AbstractKernel
 	{
 		global $DP_CONFIG;
 
-		if (session_id() != '') {
-			if ($this->container->isServiceInitialized('session')) {
-				$this->container->get('session')->save();
+		if (!(defined('install') && DP_INTERFACE == 'install')) {
+			if (session_id() != '') {
+				if ($this->container->isServiceInitialized('session')) {
+					$this->container->get('session')->save();
+				}
+				session_write_close();
 			}
-			session_write_close();
 		}
 
 		if (isset($DP_CONFIG['debug']['enable_log_tpl_use']) && $DP_CONFIG['debug']['enable_log_tpl_use']) {
