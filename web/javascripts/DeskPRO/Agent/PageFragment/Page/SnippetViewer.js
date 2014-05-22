@@ -800,7 +800,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					if (exist[0]) {
 						exist.replaceWith(row);
 					} else {
-						self.getEl('snippet_list').prepend(row);
+						self.getEl('snippet_list').find('ul').prepend(row);
 					}
 				}
 
@@ -919,6 +919,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		editSnippetEl.find('input.snippet_id').val(snippet.id);
 		editSnippetEl.find('select.category_id').val(snippet.category_id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
+
+		if (snippet && snippet.id) {
+			editSnippetEl.find('.is-edit-snippet').show();
+			editSnippetEl.find('.is-add-snippet').hide();
+		} else {
+			editSnippetEl.find('.is-add-snippet').show();
+			editSnippetEl.find('.is-edit-snippet').hide();
+		}
 
 		Array.each(snippet.title, function(trans) {
 			editSnippetEl.find('input.title.lang-' + trans.language_id).val(trans.value);
