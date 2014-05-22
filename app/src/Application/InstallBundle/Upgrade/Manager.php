@@ -290,15 +290,10 @@ class Manager
 			return $this->build_list;
 		}
 
-		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->in(DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build')->files()->name('/Build(.*?)\.php/');
+		$manifest = require(DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php');
+		$this->build_list = array_keys($manifest);
 
-		$this->build_list = array();
-		foreach ($finder as $f) {
-			$build_id    = Strings::extractRegexMatch('/Build(.*?)\.php/', $f->getFilename(), 1);
-			$this->build_list[] = $build_id;
-		}
-
+		array_unique($this->build_list, \SORT_NUMERIC);
 		sort($this->build_list, \SORT_NUMERIC);
 
 		return $this->build_list;

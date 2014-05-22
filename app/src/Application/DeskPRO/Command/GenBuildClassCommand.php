@@ -130,13 +130,23 @@ CODE;
 		if ($input->getOption('out')) {
 			echo $tpl;
 			echo "\n";
+			echo "!!! For this build to be active, it must be added to the build-manifest.php file !!!\n\n";
 		} else {
 			file_put_contents($path, $tpl);
 
 			$build_file = DP_ROOT.'/sys/config/build-time.php';
 			file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
 
+			$manifest_file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+			$data = require($manifest_file);
+			$data[$time] = array(
+				'file' => DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/'. date('Y/m', $time) . '/Build' . $time . '.php',
+				'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $time
+			);
+			file_put_contents($manifest_file, "<?php return " . var_export($data, true) . ";");
+
 			echo "Wrote file: $path\n";
+			echo "Updated: $manifest_file\n";
 			echo "Updated: $build_file\n";
 		}
 
