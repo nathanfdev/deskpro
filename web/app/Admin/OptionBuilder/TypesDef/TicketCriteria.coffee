@@ -494,7 +494,7 @@ define [
 			return def
 
 		getCheckEmailAccount: (options = {}) ->
-			options.propName = 'gateway_ids'
+			options.propName = 'email_account_ids'
 			options.dataName = 'email_accounts'
 			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			options.optionsFormatter = (options) ->
@@ -503,7 +503,7 @@ define [
 				for acc in options
 					opts.push({
 						value: acc.id,
-						title: acc.email_address
+						title: acc.address
 					})
 
 				return opts
