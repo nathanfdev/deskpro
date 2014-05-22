@@ -242,11 +242,13 @@ class TextSnippetsController extends AbstractController
 			$title   = $this->in->getString("title.$lang_id");
 			$snippet_val = $this->in->getString("snippet.$lang_id");
 
-			$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);
-			$this->em->persist($rec);
+			if ($title || $snippet_val) {
+				$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);
+				$this->em->persist($rec);
 
-			$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'snippet', $snippet_val);
-			$this->em->persist($rec);
+				$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'snippet', $snippet_val);
+				$this->em->persist($rec);
+			}
 		}
 
 		$this->em->flush();
