@@ -50,7 +50,12 @@
 
       AdminStart_Ctrl_Email.prototype.saveAndContinue = function() {
         var postData, promise;
+        this.$scope.email_is_error = null;
         postData = this.form_model.getFormData();
+        if (!postData.address || postData.address.length < 3 || postData.address.indexOf('@') === -1) {
+          this.$scope.email_is_error = 'invalid_email';
+          return;
+        }
         this.$scope.is_loading = true;
         promise = this.Api.sendPutJson('/email_accounts', postData);
         promise.success((function(_this) {
@@ -63,7 +68,7 @@
         promise.error((function(_this) {
           return function(info, code) {
             _this.$scope.is_loading = false;
-            return _this.applyErrorResponseToView(info);
+            return _this.$scope.email_is_error = 'general';
           };
         })(this));
         return promise;

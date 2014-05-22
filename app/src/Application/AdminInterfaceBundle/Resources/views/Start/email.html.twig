@@ -35,7 +35,7 @@
 				</select>
 				<div style="margin-top: 9px;">
 					Email Address:
-					<input type="text" class="form-control" name="title" ng-model="form.address" style="width: 50%;" required />
+					<input type="text" class="form-control" name="title" ng-model="form.address" ng-change="email_is_error = false" style="width: 50%;" />
 				</div>
 			</section>
 			<section class="card-section" ng-if="form.account_type != 'outgoing'">
@@ -48,7 +48,8 @@
 	</article>
 	<footer>
 		<div ng-show="!is_loading">
-			<button class="btn btn-primary" ng-click="Card.saveAndContinue();">Save and continue <i class="fa fa-arrow-circle-right"></i></button>
+			<span ng-show="email_is_error" class="help-block"><span class="text-danger">Please enter a valid email address.</span></span>
+			<button ng-hide="email_is_error" class="btn btn-primary" ng-click="Card.saveAndContinue();">Save and continue <i class="fa fa-arrow-circle-right"></i></button>
 		</div>
 		<div ng-show="is_loading">
 			<i class="spinner-flat"></i>
