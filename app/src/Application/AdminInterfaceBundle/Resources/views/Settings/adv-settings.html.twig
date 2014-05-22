@@ -10,7 +10,15 @@
 
 	<article class="form-horizontal dp-form">
 		<div class="panel panel-innertable">
-			<div style="width: 90%; height: 700px;" ng-grid="{
+			<div class="alert alert-danger">
+				<h3>Careful!</h3>
+				<p>
+					Be careful modifying settings from this page. You can seriously damage your helpdesk by changing settings
+					listed here. You should only change values here on the advice of a DeskPRO support agent.
+				</p>
+			</div>
+
+			<div style="width: 100%; height: 600px;" ng-grid="{
 				data: 'settings',
 				enableCellEditOnFocus: true,
 				showFilter: true,

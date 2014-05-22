@@ -318,15 +318,29 @@ class SettingsController extends AbstractController implements ProtectedControll
 				$value = '<BLANK>';
 			}
 
-			$all_settings[] = array(
+			$all_settings[$name] = array(
 				'name'          => $name,
 				'default_value' => $default_value,
 				'value'         => $value,
 			);
 		}
 
+		foreach ($this->container->getSettingsHandler()->getIterator() as $name => $value) {
+			if (isset($all_settings[$name])) continue;
+
+			if ($value === true) $value = 1;
+			if ($value === false) $value = 0;
+			if ($value === null) $value = '';
+
+			$all_settings[$name] = array(
+				'name'          => $name,
+				'default_value' => '',
+				'value'         => $value
+			);
+		}
+
 		return $this->createApiResponse(array(
-			'all_settings' => $all_settings,
+			'all_settings' => array_values($all_settings),
 		));
 	}
 
