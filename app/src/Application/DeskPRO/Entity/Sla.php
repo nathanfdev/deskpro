@@ -41,6 +41,8 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 use Orb\Util\TimeUnit;
 use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
@@ -331,12 +333,25 @@ class Sla extends DomainObject
 				$this->work_holidays
 			);
 		} else {
-			$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
-			return new \Orb\Util\WorkHoursSet(
-				$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
-				$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
-				$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
-			);
+			$work_hours = App::getSetting('core_tickets.work_hours');
+			if ($work_hours && !is_array($work_hours)) {
+				$work_hours = @unserialize($work_hours);
+			}
+			if ($work_hours) {
+				$work_hours = Arrays::removeEmptyArray($work_hours);
+				$work_hours = Arrays::removeNull($work_hours);
+				$work_hours = Arrays::removeEmptyString($work_hours);
+
+				$work_hours = new OptionsArray($work_hours);
+				return new WorkHoursSet(
+					$work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
+					$work_hours->get('end_hour', 9) * 3600 + $work_hours->get('end_minute', 0) * 60,
+					$work_hours->get('work_days', array(1, 2, 3, 4, 5)),
+					$work_hours->get('holidays', array())
+				);
+			} else {
+				return new WorkHoursSetAll();
+			}
 		}
 	}
 
