@@ -226,6 +226,10 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 			if ($act) {
 				$type = $act['type'];
 
+				if (isset($act['DP_DISABLED'])) {
+					continue;
+				}
+
 				if ($action_defs->hasNamedDef($type)) {
 					$act['type_class'] = $action_defs->getNamedDef($type)->getDef()->getTriggerActionClass();
 					if (!$act['type_class']) {

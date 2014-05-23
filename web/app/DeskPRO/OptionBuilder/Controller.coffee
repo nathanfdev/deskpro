@@ -1,4 +1,4 @@
-define ->
+define ['DeskPRO/Util/Util'], (Util) ->
 	###
 	# The dpOptionBuilder directive is a component that handles a form that adds/removes rows
 	# (e.g., a search builder, an option builder etc)
@@ -63,6 +63,7 @@ define ->
 			@typesDef          = @$scope.getTypesDef()
 			@options           = @$scope.getOptions() || {}
 			@$injector         = $injector
+			@currentAddPromise = null
 
 			@els = {}
 
@@ -134,8 +135,23 @@ define ->
 
 			@els.noOptionsMessage.show()
 
+			alreadyDone = {}
+			if @options.fixedExpanded
+				for f in @options.fixedExpanded
+					exist = null
+					existId = null
+					for own rowId, term of @$scope.saveTarget
+						if term and term.type and term.type == f
+							exist = term
+							existId = rowId
+							alreadyDone[rowId] = true
+							break
+
+					@addRow(f, exist, existId, true, @options.fixOn?.indexOf(f) != -1)
+
 			if @$scope.saveTarget
 				for own rowId, term of @$scope.saveTarget
+					if alreadyDone[rowId] then continue
 					if term and term.type
 						@addRow(term.type, term, rowId)
 
@@ -162,7 +178,7 @@ define ->
     	# @param {String} type
     	# @param {Object} value
 		###
-		addRow: (type, value, existId) ->
+		addRow: (type, value, existId, isFixed, isFixedOn) ->
 			if not @hasLoaded then return
 			def = @typesDef.getDef(type)
 
@@ -183,6 +199,9 @@ define ->
 				dataPromise = @$q.fcall(->
 					return retData
 				)
+
+			placeholder = $('<div/>')
+			@els.optionList.append(placeholder)
 
 			@els.loadingOptionMessage.show().addClass('loading-on')
 			@$q.all([tplPromise, dataPromise]).then( (returns) =>
@@ -231,24 +250,53 @@ define ->
 						'$scope': rowScope
 					})
 
+				rowScope.rowOpts = {}
+				rowScope.rowOpts.rowEnabled = true
+				if isFixed
+					if existId or isFixedOn
+						rowScope.rowOpts.rowEnabled = true
+					else
+						rowScope.rowOpts.rowEnabled = false
+
+					rowScope.rowOpts.hideRemove = true
+					rowScope.rowOpts.isFixedOn = isFixedOn
+					rowScope.rowOpts.withCheck = true
+					rowScope.rowOpts.withCheckId = Util.uid('check')
+
 				element = @$compile(tpl)(rowScope)
-				element.find('.remove-row-trigger').on('click', (ev) =>
-					ev.preventDefault()
+
+				rowScope.rowFn = {}
+				rowScope.rowFn.removeRow = =>
 					@removeRow(element)
-				)
+
+				if rowScope.rowOpts.withCheckId
+					element.find('.row-label').attr('for', rowScope.rowOpts.withCheckId)
 
 				rowScope.$emit('rowAdded', this, element, rowScope)
 
 				element.data('scopeId', rowId)
 				@els.loadingOptionMessage.hide().removeClass('loading-on')
 				@els.noOptionsMessage.hide()
-				@els.optionList.append(element)
+				placeholder.replaceWith(element)
 				@rowsCount++
 				@rows[rowId] = {
 					element: element,
 					scope: rowScope
 				}
 				@$scope.saveTarget[rowId] = rowScope.value
+
+				if isFixed and not isFixedOn
+					if rowScope.rowOpts.rowEnabled
+						@$scope.saveTarget[rowId] = rowScope.value
+					else
+						@$scope.saveTarget[rowId] = {DP_DISABLED: true}
+
+					rowScope.$watch('rowOpts.rowEnabled', (rowEnabled) =>
+						if rowEnabled
+							delete rowScope.value.DP_DISABLED
+						else
+							rowScope.value.DP_DISABLED = true
+					)
 			)
 
 		###

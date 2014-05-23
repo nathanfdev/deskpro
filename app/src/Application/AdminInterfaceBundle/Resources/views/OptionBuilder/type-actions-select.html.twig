@@ -2,8 +2,8 @@
 	<div class="dp-ob-standard-row">
 		<table class="display-table">
 			<tr>
-				<td width="80" class="nowrap" style="padding-right: 8px;"><label>{{ ng_var('type_title') }}</label></td>
-				<td>
+				<td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
+				<td ng-show="rowOpts.rowEnabled">
 					<select
 							ng-if="!multiselect"
 							ui-select2

@@ -71,7 +71,7 @@
 									The followings actions will run:
 								</header>
 								<article>
-									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetDepartment', 'SendUserEmail'], fixOn: ['SetDepartment'] }" option-types="actionOptionTypes">
 										<add-btn-label>Action</add-btn-label>
 									</dp-option-builder>
 								</article>

@@ -23,7 +23,7 @@
       function() {
         return {
           restrict: 'E',
-          template: "<div class=\"dp-ob-row\">\n	<div class=\"remove-row-trigger\"><i class=\"fa fa-times-circle\"></i></div>\n	<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"margin: 0; padding: 0; border: none;\">\n		<tr>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\"><div class=\"dp-ob-row-tag-wrap\"></div></td>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\" width=\"100%\">\n				<div class=\"dp-ob-row-content\" ng-transclude></div>\n			</td>\n		</tr>\n	</table>\n</div>",
+          template: "<div class=\"dp-ob-row\">\n	<div class=\"remove-row-trigger\" ng-click=\"rowFn.removeRow()\" ng-if=\"!rowOpts.hideRemove\"><i class=\"fa fa-times-circle\"></i></div>\n	<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"margin: 0; padding: 0; border: none;\">\n		<tr>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\"><div class=\"dp-ob-row-tag-wrap\"></div></td>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\" width=\"1\"><input type=\"checkbox\" id=\"{{rowOpts.withCheckId}}\" ng-if=\"rowOpts.withCheck\" ng-model=\"rowOpts.rowEnabled\" ng-disabled=\"rowOpts.isFixedOn\" /></td>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\" width=\"100%\">\n				<div class=\"dp-ob-row-content\" ng-transclude></div>\n			</td>\n		</tr>\n	</table>\n</div>",
           replace: true,
           transclude: true,
           link: function(scope, element, attrs) {

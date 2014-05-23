@@ -77,7 +77,7 @@
 							When a new ticket is submitted through the portal in this department:
 						</header>
 						<article>
-							<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+							<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetEmailAccount', 'SendUserEmail'], fixOn: ['SetEmailAccount'] }" option-types="actionOptionTypes">
 								<add-btn-label>Action</add-btn-label>
 							</dp-option-builder>
 						</article>
@@ -97,7 +97,7 @@
 							When a ticket department is changed to this department:
 						</header>
 						<article>
-							<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="actions_form2" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+							<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="actions_form2" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetEmailAccount'], fixOn: []}" option-types="actionOptionTypes">
 								<add-btn-label>Action</add-btn-label>
 							</dp-option-builder>
 						</article>

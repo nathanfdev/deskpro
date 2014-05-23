@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(function() {
+  define(['DeskPRO/Util/Util'], function(Util) {
 
     /*
     	 * The dpOptionBuilder directive is a component that handles a form that adds/removes rows
@@ -68,6 +68,7 @@
         this.typesDef = this.$scope.getTypesDef();
         this.options = this.$scope.getOptions() || {};
         this.$injector = $injector;
+        this.currentAddPromise = null;
         this.els = {};
         $transclude((function(_this) {
           return function(clone) {
@@ -125,7 +126,7 @@
       };
 
       DeskPRO_OptionBuilder_Controller.prototype.reset = function() {
-        var id, row, rowId, term, _ref, _ref1, _results;
+        var alreadyDone, exist, existId, f, id, row, rowId, term, _i, _len, _ref, _ref1, _ref2, _ref3, _ref4, _results;
         if (!this.hasLoaded) {
           return;
         }
@@ -138,12 +139,36 @@
           delete this.rows[id];
         }
         this.els.noOptionsMessage.show();
+        alreadyDone = {};
+        if (this.options.fixedExpanded) {
+          _ref1 = this.options.fixedExpanded;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            f = _ref1[_i];
+            exist = null;
+            existId = null;
+            _ref2 = this.$scope.saveTarget;
+            for (rowId in _ref2) {
+              if (!__hasProp.call(_ref2, rowId)) continue;
+              term = _ref2[rowId];
+              if (term && term.type && term.type === f) {
+                exist = term;
+                existId = rowId;
+                alreadyDone[rowId] = true;
+                break;
+              }
+            }
+            this.addRow(f, exist, existId, true, ((_ref3 = this.options.fixOn) != null ? _ref3.indexOf(f) : void 0) !== -1);
+          }
+        }
         if (this.$scope.saveTarget) {
-          _ref1 = this.$scope.saveTarget;
+          _ref4 = this.$scope.saveTarget;
           _results = [];
-          for (rowId in _ref1) {
-            if (!__hasProp.call(_ref1, rowId)) continue;
-            term = _ref1[rowId];
+          for (rowId in _ref4) {
+            if (!__hasProp.call(_ref4, rowId)) continue;
+            term = _ref4[rowId];
+            if (alreadyDone[rowId]) {
+              continue;
+            }
             if (term && term.type) {
               _results.push(this.addRow(term.type, term, rowId));
             } else {
@@ -192,8 +217,8 @@
         	 * @param {Object} value
        */
 
-      DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId) {
-        var dataFormatter, dataPromise, def, retData, retTpl, scopeInit, tplPromise;
+      DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId, isFixed, isFixedOn) {
+        var dataFormatter, dataPromise, def, placeholder, retData, retTpl, scopeInit, tplPromise;
         if (!this.hasLoaded) {
           return;
         }
@@ -214,6 +239,8 @@
             return retData;
           });
         }
+        placeholder = $('<div/>');
+        this.els.optionList.append(placeholder);
         this.els.loadingOptionMessage.show().addClass('loading-on');
         return this.$q.all([tplPromise, dataPromise]).then((function(_this) {
           return function(returns) {
@@ -259,22 +286,54 @@
                 '$scope': rowScope
               });
             }
+            rowScope.rowOpts = {};
+            rowScope.rowOpts.rowEnabled = true;
+            if (isFixed) {
+              if (existId || isFixedOn) {
+                rowScope.rowOpts.rowEnabled = true;
+              } else {
+                rowScope.rowOpts.rowEnabled = false;
+              }
+              rowScope.rowOpts.hideRemove = true;
+              rowScope.rowOpts.isFixedOn = isFixedOn;
+              rowScope.rowOpts.withCheck = true;
+              rowScope.rowOpts.withCheckId = Util.uid('check');
+            }
             element = _this.$compile(tpl)(rowScope);
-            element.find('.remove-row-trigger').on('click', function(ev) {
-              ev.preventDefault();
+            rowScope.rowFn = {};
+            rowScope.rowFn.removeRow = function() {
               return _this.removeRow(element);
-            });
+            };
+            if (rowScope.rowOpts.withCheckId) {
+              element.find('.row-label').attr('for', rowScope.rowOpts.withCheckId);
+            }
             rowScope.$emit('rowAdded', _this, element, rowScope);
             element.data('scopeId', rowId);
             _this.els.loadingOptionMessage.hide().removeClass('loading-on');
             _this.els.noOptionsMessage.hide();
-            _this.els.optionList.append(element);
+            placeholder.replaceWith(element);
             _this.rowsCount++;
             _this.rows[rowId] = {
               element: element,
               scope: rowScope
             };
-            return _this.$scope.saveTarget[rowId] = rowScope.value;
+            _this.$scope.saveTarget[rowId] = rowScope.value;
+            if (isFixed && !isFixedOn) {
+              if (rowScope.rowOpts.rowEnabled) {
+                _this.$scope.saveTarget[rowId] = rowScope.value;
+              } else {
+                _this.$scope.saveTarget[rowId] = {
+                  DP_DISABLED: true
+                };
+              }
+              return rowScope.$watch('rowOpts.rowEnabled', function(rowEnabled) {
+                if (rowEnabled) {
+                  return delete rowScope.value.DP_DISABLED;
+                } else {
+                  return rowScope.value.DP_DISABLED = true;
+                }
+              });
+            }
           };
         })(this));
       };
