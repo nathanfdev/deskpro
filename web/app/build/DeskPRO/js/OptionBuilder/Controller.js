@@ -244,12 +244,30 @@
         this.els.loadingOptionMessage.show().addClass('loading-on');
         return this.$q.all([tplPromise, dataPromise]).then((function(_this) {
           return function(returns) {
-            var data, element, k, option_row, option_title, rowId, rowScope, tpl, v;
+            var data, element, k, option_title, rowId, rowScope, sb, tpl, v, _i, _j, _len, _len1, _ref, _ref1;
             tpl = returns[0];
             data = returns[1];
-            option_row = _this.els.select.find('option[value="' + type + '"]').first();
-            if (option_row[0]) {
-              option_title = option_row.text();
+            _ref = _this.$scope.optionTypes;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              v = _ref[_i];
+              if (v.subOptions) {
+                _ref1 = v.subOptions;
+                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                  sb = _ref1[_j];
+                  if (type === sb.value) {
+                    option_title = sb.title;
+                    break;
+                  }
+                }
+                if (option_title) {
+                  break;
+                }
+              } else {
+                if (type === v.value) {
+                  option_title = v.title;
+                  break;
+                }
+              }
             }
             rowScope = _this.$scope.$new();
             rowScope.type = type;

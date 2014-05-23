@@ -209,9 +209,17 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				tpl  = returns[0]
 				data = returns[1]
 
-				option_row = @els.select.find('option[value="'+type+'"]').first()
-				if option_row[0]
-					option_title = option_row.text()
+				for v in @$scope.optionTypes
+					if v.subOptions
+						for sb in v.subOptions
+							if type == sb.value
+								option_title = sb.title
+								break
+						if option_title then break
+					else
+						if type == v.value
+							option_title = v.title
+							break
 
 				rowScope = @$scope.$new()
 				rowScope.type = type
