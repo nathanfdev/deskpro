@@ -88,6 +88,10 @@ class LayoutUpgrader
 	{
 		$layout = new TicketLayout\Layout();
 
+		// Email used to be fixed, so must be added now
+		$field = new TicketLayout\LayoutField('user_email');
+		$layout->add($field);
+
 		foreach ($this->form_new as $old_field) {
 			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
 				continue;
