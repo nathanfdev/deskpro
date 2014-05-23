@@ -172,9 +172,9 @@
 	<header>
 
 		<h1>Triggers are automatic processes that perform actions in response to ticket events, when the <strong>criteria</strong> you define are met.</h1>
-		<p ng-if="TicketTriggersList.eventType == 'newreply'">Triggers in this section can run when a <strong>new reply</strong> is made by a user or agent.</p>
-		<p ng-if="TicketTriggersList.eventType == 'newticket'">Triggers in this section can run when a <strong>new ticket</strong> is created.</p>
-		<p ng-if="TicketTriggersList.eventType == 'update'">Triggers in this section can run when a ticket is <strong>updated</strong>.</p>
+		<p ng-if="List.eventType == 'newreply'">Triggers in this section can run when a <strong>new reply</strong> is made by a user or agent.</p>
+		<p ng-if="List.eventType == 'newticket'">Triggers in this section can run when a <strong>new ticket</strong> is created.</p>
+		<p ng-if="List.eventType == 'update'">Triggers in this section can run when a ticket is <strong>updated</strong>.</p>
 
 	</header>
 
@@ -185,13 +185,13 @@
 		
 				<p>Simple triggers (<strong>Department Triggers</strong> and <strong>Email Account Triggers</strong>) have fixed criteria. They are the same triggers you can view and edit via <strong>Tickets > Departments</strong> and <strong>Tickets > Email Accounts</strong>.</p>
 
-				<ul ng-if="TicketTriggersList.eventType == 'newreply' || TicketTriggersList.eventType == 'update'">
+				<ul ng-if="List.eventType == 'newreply' || List.eventType == 'update'">
 				
-					<li ng-if="TicketTriggersList.eventType == 'newticket'">The <strong>Email Account Triggers</strong> in this section are simple triggers that run when a ticket is created via the matching email account. 
+					<li ng-if="List.eventType == 'newticket'">The <strong>Email Account Triggers</strong> in this section are simple triggers that run when a ticket is created via the matching email account. 
 			 		</li>
-			 		<li ng-if="TicketTriggersList.eventType == 'newticket'">The <strong>Department Triggers</strong> in this section are simple triggers that run when a user creates a ticket in the matching department <em>via the web</em> (ie. the portal or an embedded form/widget).
+			 		<li ng-if="List.eventType == 'newticket'">The <strong>Department Triggers</strong> in this section are simple triggers that run when a user creates a ticket in the matching department <em>via the web</em> (ie. the portal or an embedded form/widget).
 			 		</li>
-					<li ng-if="TicketTriggersList.eventType == 'update'">The <strong>Department Triggers</strong> in this section are simple triggers that run when an existing ticket is moved into the matching department. 
+					<li ng-if="List.eventType == 'update'">The <strong>Department Triggers</strong> in this section are simple triggers that run when an existing ticket is moved into the matching department. 
 					</li>
 				</ul>
 				
