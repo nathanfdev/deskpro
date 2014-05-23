@@ -68,7 +68,7 @@
 		<a href="{{ ng_href('agents.login_log') }}">View login logs &rarr;</a>
 	</div>
 
-	{% if app.getSetting('core.admin_upgrade_notice') < app.getBuildTime() %}
+	{% if app.getSetting('core.admin_upgrade_notice') < 1400608123 %}
 		<div style="margin: 15px 15px 0 15px" id="admin_upgrade_notice" ng-if="!hide_admin_upgrade_notice">
 			<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
 				<div style="position: absolute; top: 5px; right: 11px;">
