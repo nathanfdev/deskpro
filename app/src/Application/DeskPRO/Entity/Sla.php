@@ -330,9 +330,14 @@ class Sla extends DomainObject
 				$this->work_timezone,
 				$this->work_holidays
 			);
+		} else {
+			$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
+			return new \Orb\Util\WorkHoursSet(
+				$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
+				$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
+				$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
+			);
 		}
-
-		return null;
 	}
 
 
