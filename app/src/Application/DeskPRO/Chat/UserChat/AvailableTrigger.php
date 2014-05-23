@@ -70,11 +70,24 @@ class AvailableTrigger
 			}
 
 			if ($agent_ids) {
+				$agent_ids_cs = implode(',', $agent_ids);
+
 				// At least one department needs to be allowed for the online agents
+				$ug_ids = App::getDb()->fetchAllCol("
+					SELECT DISTINCT usergroup_id
+					FROM person2usergroups
+					WHERE person_id IN ($agent_ids_cs)
+				");
+				if (!$ug_ids) {
+					$ug_ids = array(0);
+				}
+
+				$ug_ids_cs = implode(',', $ug_ids);
+
 				$dep_check = App::getDb()->fetchColumn("
 					SELECT department_id
 					FROM department_permissions
-					WHERE person_id IN (" . implode(',', $agent_ids) . ") AND app = 'chat' AND value = '1'
+					WHERE (person_id IN ($agent_ids_cs) or usergroup_id IN ($ug_ids_cs)) AND app = 'chat' AND value = '1'
 					LIMIT 1
 				");
 
