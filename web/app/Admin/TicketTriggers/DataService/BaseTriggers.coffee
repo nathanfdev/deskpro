@@ -11,6 +11,8 @@ define [
 
 			@Api.sendGet('/ticket_triggers/' + @type).success( (data) =>
 				models = data.triggers
+				@department_triggers_enabled   = data.department_triggers_enabled || false
+				@emailaccount_triggers_enabled = data.emailaccount_triggers_enabled || false
 				deferred.resolve(models)
 			, (data, status, headers, config) ->
 				deferred.reject()
@@ -76,4 +78,27 @@ define [
 					model.display_order = idx
 
 			promise = @Api.sendPostJson('/ticket_triggers/run_order', { run_orders: orders })
+			return promise
+
+
+		###
+    	# Save the enabled state of a trigger
+    	#
+    	# @param {Integer} triggerId
+    	# @param {bool} isEnabled
+    	# @return {promise}
+		###
+		saveGroupEnabledState: (type, isEnabled) ->
+			verb = if isEnabled then 'enable' else 'disable'
+
+			if type == 'departments' and @type == 'newticket'
+				promise = @Api.sendPost("/ticket_triggers/departments/#{verb}")
+				@department_triggers_enabled = isEnabled
+			if type == 'departments' and @type == 'update'
+				promise = @Api.sendPost("/ticket_triggers/departments_changed/#{verb}")
+				@department_triggers_enabled = isEnabled
+			if type == 'email_accounts' and @type == 'newticket'
+				promise = @Api.sendPost("/ticket_triggers/email_accounts/#{verb}")
+				@emailaccount_triggers_enabled = isEnabled
+
 			return promise

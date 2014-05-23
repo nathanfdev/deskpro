@@ -19,7 +19,13 @@
 
       Admin_TicketTriggers_Ctrl_EditDepartmentTrigger.prototype.customInit = function() {
         this.triggerId = 0;
-        this.depId = this.$stateParams.id.replace(/^department\-(\d+)$/, '$1');
+        if (this.$stateParams.id.indexOf('department-changed-') !== -1) {
+          this.eventType = 'update';
+          this.depId = this.$stateParams.id.replace(/^department\-changed\-(\d+)$/, '$1');
+        } else {
+          this.eventType = 'newticket';
+          this.depId = this.$stateParams.id.replace(/^department\-(\d+)$/, '$1');
+        }
         this.$scope.triggerType = this.$stateParams.type;
         this.$scope.triggerId = 0;
         return this.$scope.depId = this.depId;
@@ -34,9 +40,13 @@
         var get, promise, promise2, promise3, promises;
         get = {
           customActions: '/ticket_triggers/get-custom-actions',
-          depInfo: "/ticket_deps/" + this.depId,
-          trigger: "/ticket_triggers/departments/" + this.depId
+          depInfo: "/ticket_deps/" + this.depId
         };
+        if (this.eventType === 'newticket') {
+          get.trigger = "/ticket_triggers/departments/" + this.depId;
+        } else {
+          get.trigger = "/ticket_triggers/departments_changed/" + this.depId;
+        }
         promise = this.Api.sendDataGet(get).then((function(_this) {
           return function(result) {
             var _ref, _ref1;

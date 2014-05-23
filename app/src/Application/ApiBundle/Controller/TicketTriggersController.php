@@ -64,10 +64,26 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers($type);
 
 		$data = $this->getApiData($triggers);
+		$res = array();
+		$res['triggers'] = $data;
 
-		return $this->createApiResponse(array(
-			'triggers' => $data
-		));
+		if ($type == 'all' || $type == 'newticket' || $type == 'update') {
+			$dep_triggers_enabled = false;
+			$acc_triggers_enabled = false;
+			foreach ($triggers as $t) {
+				if ($t->department && $t->is_enabled) {
+					$dep_triggers_enabled = true;
+				}
+				if ($t->email_account && $t->is_enabled) {
+					$acc_triggers_enabled = true;
+				}
+			}
+
+			$res['department_triggers_enabled']   = $dep_triggers_enabled;
+			$res['emailaccount_triggers_enabled'] = $acc_triggers_enabled;
+		}
+
+		return $this->createApiResponse($res);
 	}
 
 	####################################################################################################################
@@ -274,6 +290,43 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		$trigger->is_enabled = $is_enabled;
 		$this->em->persist($trigger);
 		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
+	####################################################################################################################
+	# toggle-trigger-group
+	####################################################################################################################
+
+	public function toggleTriggerGroupAction($special_type, $is_enabled)
+	{
+		$is_enabled = (int)$is_enabled;
+
+		switch ($special_type) {
+			case 'departments':
+				$this->db->executeUpdate("
+					UPDATE ticket_triggers
+					SET is_enabled = ?
+					WHERE department_id IS NOT NULL AND event_trigger = 'newticket'
+				", array($is_enabled));
+				break;
+			case 'departments_changed':
+				$this->db->executeUpdate("
+					UPDATE ticket_triggers
+					SET is_enabled = ?
+					WHERE department_id IS NOT NULL AND event_trigger = 'update'
+				", array($is_enabled));
+				break;
+			case 'email_accounts':
+				$this->db->executeUpdate("
+					UPDATE ticket_triggers
+					SET is_enabled = ?
+					WHERE email_account_id IS NOT NULL AND event_trigger = 'newticket'
+				", array($is_enabled));
+				break;
+			default:
+				throw $this->createNotFoundException();
+		}
 
 		return $this->createSuccessResponse();
 	}

@@ -20,6 +20,8 @@
           return function(data) {
             var models;
             models = data.triggers;
+            _this.department_triggers_enabled = data.department_triggers_enabled || false;
+            _this.emailaccount_triggers_enabled = data.emailaccount_triggers_enabled || false;
             return deferred.resolve(models);
           };
         })(this), function(data, status, headers, config) {
@@ -99,6 +101,33 @@
         promise = this.Api.sendPostJson('/ticket_triggers/run_order', {
           run_orders: orders
         });
+        return promise;
+      };
+
+
+      /*
+        	 * Save the enabled state of a trigger
+        	 *
+        	 * @param {Integer} triggerId
+        	 * @param {bool} isEnabled
+        	 * @return {promise}
+       */
+
+      Admin_TicketTriggers_DataService_BaseTriggers.prototype.saveGroupEnabledState = function(type, isEnabled) {
+        var promise, verb;
+        verb = isEnabled ? 'enable' : 'disable';
+        if (type === 'departments' && this.type === 'newticket') {
+          promise = this.Api.sendPost("/ticket_triggers/departments/" + verb);
+          this.department_triggers_enabled = isEnabled;
+        }
+        if (type === 'departments' && this.type === 'update') {
+          promise = this.Api.sendPost("/ticket_triggers/departments_changed/" + verb);
+          this.department_triggers_enabled = isEnabled;
+        }
+        if (type === 'email_accounts' && this.type === 'newticket') {
+          promise = this.Api.sendPost("/ticket_triggers/email_accounts/" + verb);
+          this.emailaccount_triggers_enabled = isEnabled;
+        }
         return promise;
       };
 

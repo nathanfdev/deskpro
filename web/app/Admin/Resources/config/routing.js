@@ -471,6 +471,14 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tickets.triggers.editdepchanged',
+		url: '/{id:department\-changed\-[0-9]+}',
+		templateName: 'TicketTriggers/edit-dep.html',
+		controller: 'Admin_TicketTriggers_Ctrl_EditDepartmentTrigger',
+		data: { stateMarkId: "tickets.triggers" }
+	});
+
+	routes.push({
 		id: 'tickets.triggers.editemailacc',
 		url: '/{id:emailaccount\-[0-9]+}',
 		templateName: 'TicketTriggers/edit-emailacc.html',

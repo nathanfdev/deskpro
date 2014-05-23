@@ -68,19 +68,25 @@
           return function(list) {
             window.all_triggers = list;
             _this.all_triggers = list;
+            _this.depTriggersEnabled = _this.dpTriggers.department_triggers_enabled;
+            _this.emailTriggersEnabled = _this.dpTriggers.emailaccount_triggers_enabled;
             return _this.sortTriggers();
           };
         })(this)));
-        promises.push(this.depData.loadList().then((function(_this) {
-          return function(list) {
-            return _this.depList = list;
-          };
-        })(this)));
-        promises.push(this.TicketAccountsData.loadList().then((function(_this) {
-          return function(recs) {
-            return _this.accounts = recs.values();
-          };
-        })(this)));
+        if (this.eventType === 'newticket' || this.eventType === 'update') {
+          promises.push(this.depData.loadList().then((function(_this) {
+            return function(list) {
+              return _this.depList = list;
+            };
+          })(this)));
+        }
+        if (this.eventType === 'newticket') {
+          promises.push(this.TicketAccountsData.loadList().then((function(_this) {
+            return function(recs) {
+              return _this.accounts = recs.values();
+            };
+          })(this)));
+        }
         return this.$q.all(promises);
       };
 
@@ -118,9 +124,13 @@
         return this.dpTriggers.saveEnabledStateById(trigger.id, trigger.is_enabled);
       };
 
-      Admin_TicketTriggers_Ctrl_List.prototype.updateDepTriggersEnabledState = function() {};
+      Admin_TicketTriggers_Ctrl_List.prototype.updateDepTriggersEnabledState = function() {
+        this.dpTriggers.saveGroupEnabledState('departments', this.depTriggersEnabled);
+      };
 
-      Admin_TicketTriggers_Ctrl_List.prototype.updateEmailTriggersEnabledState = function() {};
+      Admin_TicketTriggers_Ctrl_List.prototype.updateEmailTriggersEnabledState = function() {
+        this.dpTriggers.saveGroupEnabledState('email_accounts', this.emailTriggersEnabled);
+      };
 
 
       /*

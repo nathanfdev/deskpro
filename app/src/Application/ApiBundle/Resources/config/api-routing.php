@@ -3034,35 +3034,56 @@ $collection->create('api_ticket_triggers_create', array(
 ));
 
 $collection->create('api_ticket_triggers_get', array(
-	'path'        => '/ticket_triggers/{id}',
-	'controller'  => 'ApiBundle:TicketTriggers:get',
-	'methods'     => array('GET'),
+	'path'         => '/ticket_triggers/{id}',
+	'controller'   => 'ApiBundle:TicketTriggers:get',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_update', array(
-	'path'        => '/ticket_triggers/{id}',
-	'controller'  => 'ApiBundle:TicketTriggers:save',
-	'methods'     => array('POST'),
+	'path'         => '/ticket_triggers/{id}',
+	'controller'   => 'ApiBundle:TicketTriggers:save',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_delete', array(
-	'path'        => '/ticket_triggers/{id}',
-	'controller'  => 'ApiBundle:TicketTriggers:delete',
-	'methods'     => array('DELETE'),
+	'path'         => '/ticket_triggers/{id}',
+	'controller'   => 'ApiBundle:TicketTriggers:delete',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('DELETE'),
+));
+
+$collection->create('api_ticket_triggers_enabletriggergroup', array(
+	'path'         => '/ticket_triggers/{special_type}/enable',
+	'defaults'     => array('is_enabled' => true),
+	'controller'   => 'ApiBundle:TicketTriggers:toggleTriggerGroup',
+	'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_ticket_triggers_disabletriggergroup', array(
+	'path'         => '/ticket_triggers/{special_type}/disable',
+	'defaults'     => array('is_enabled' => false),
+	'controller'   => 'ApiBundle:TicketTriggers:toggleTriggerGroup',
+	'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+	'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_enabletrigger', array(
-	'path'        => '/ticket_triggers/{id}/enable',
-	'defaults'    => array('is_enabled' => true),
-	'controller'  => 'ApiBundle:TicketTriggers:toggleTrigger',
-	'methods'     => array('POST'),
+	'path'         => '/ticket_triggers/{id}/enable',
+	'defaults'     => array('is_enabled' => true),
+	'controller'   => 'ApiBundle:TicketTriggers:toggleTrigger',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_disabletrigger', array(
-	'path'        => '/ticket_triggers/{id}/disable',
-	'defaults'    => array('is_enabled' => false),
-	'controller'  => 'ApiBundle:TicketTriggers:toggleTrigger',
-	'methods'     => array('POST'),
+	'path'         => '/ticket_triggers/{id}/disable',
+	'defaults'     => array('is_enabled' => false),
+	'controller'   => 'ApiBundle:TicketTriggers:toggleTrigger',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
 ));
 
 ########################################################################################################################

@@ -35,11 +35,15 @@
 					<div class="group-section-wrapper">
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
-							<div class="help-box">
+							<div class="help-box" ng-if="List.eventType == 'newticket'">
 								Use these triggers if you want to perform actions based on the department a user selects when
 								submitting a ticket from the web interface.
 							</div>
-							<ul class="dp-item-list">
+							<div class="help-box" ng-if="List.eventType == 'update'">
+								Use these triggers if you want to perform actions based on when the department is changed
+								to a new department.
+							</div>
+							<ul class="dp-item-list" ng-if="List.eventType == 'newticket'">
 								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('dep.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-' + dep.id}") }}">
 										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
@@ -47,6 +51,24 @@
 									<ul class="dp-item-list sublist" ng-show="dep.children.length">
 										<li ng-repeat="subdep in dep.children" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('subdep.id') }}">
 											<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-' + subdep.id}") }}">
+												<h4>
+													<span class="tree-char middle" ng-if="!$last"></span>
+													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-text">{{ ng_var('subdep.title') }}</span>
+												</h4>
+											</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<ul class="dp-item-list" ng-if="List.eventType == 'update'">
+								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdepchanged.department-changed-{{ ng_var('dep.id') }}">
+									<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-changed-' + dep.id}") }}">
+										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+									</a>
+									<ul class="dp-item-list sublist" ng-show="dep.children.length">
+										<li ng-repeat="subdep in dep.children" dp-state-mark="id:tickets.triggers.editdepchanged.department-changed-{{ ng_var('subdep.id') }}">
+											<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-changed-' + subdep.id}") }}">
 												<h4>
 													<span class="tree-char middle" ng-if="!$last"></span>
 													<span class="tree-char last" ng-if="$last"></span>
@@ -103,7 +125,7 @@
 				{# Custom Triggers     #}
 				{#######################}
 
-				<li class="with-drag-handle" ng-repeat="trigger in List.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
+				<li class="with-drag-handle" ng-repeat="trigger in List.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}" data-run-order="{{ ng_var('trigger.run_order') }}">
 					<a href="{{ ng_href('tickets.triggers.edit', '{type: List.eventType, id: trigger.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">

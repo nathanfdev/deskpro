@@ -58,16 +58,22 @@ define [
 			promises.push @dpTriggers.loadList().then( (list) =>
 				window.all_triggers = list
 				@all_triggers = list
+
+				@depTriggersEnabled   = @dpTriggers.department_triggers_enabled
+				@emailTriggersEnabled = @dpTriggers.emailaccount_triggers_enabled
+
 				@sortTriggers()
 			)
 
-			promises.push @depData.loadList().then( (list) =>
-				@depList = list
-			)
+			if @eventType == 'newticket' or @eventType == 'update'
+				promises.push @depData.loadList().then( (list) =>
+					@depList = list
+				)
 
-			promises.push @TicketAccountsData.loadList().then( (recs) =>
-				@accounts = recs.values()
-			)
+			if @eventType == 'newticket'
+				promises.push @TicketAccountsData.loadList().then( (recs) =>
+					@accounts = recs.values()
+				)
 
 			return @$q.all(promises)
 
@@ -96,9 +102,11 @@ define [
 			return @dpTriggers.saveEnabledStateById(trigger.id, trigger.is_enabled)
 
 		updateDepTriggersEnabledState: ->
+			@dpTriggers.saveGroupEnabledState('departments', @depTriggersEnabled)
 			return
 
 		updateEmailTriggersEnabledState: ->
+			@dpTriggers.saveGroupEnabledState('email_accounts', @emailTriggersEnabled)
 			return
 
 		###

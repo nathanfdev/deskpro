@@ -8,8 +8,11 @@
 					<div class="panel-body">
 						<div class="form-group">
 							<h3>"{{ ng_var('TicketTriggersEdit.dep.title') }}" Department Trigger</h3>
-							<p style="margin-top: 15px;">
+							<p style="margin-top: 15px;" ng-if="TicketTriggersEdit.eventType == 'newticket'">
 								This is a department trigger. It will apply when a user submits a new ticket from the web interface and selects this department.
+							</p>
+							<p style="margin-top: 15px;" ng-if="TicketTriggersEdit.eventType == 'update'">
+								This is a department trigger. It will apply when a ticket is moved into this department.
 							</p>
 						</div>
 					</div>
@@ -35,7 +38,7 @@
 								</header>
 								<article>
 									<div class="dp-ob">
-										<div class="dp-ob-options">
+										<div class="dp-ob-options" ng-if="TicketTriggersEdit.eventType == 'newticket'">
 											<div class="dp-ob-row">
 												<div class="dp-ob-standard-row">
 													<table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
@@ -58,6 +61,22 @@
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="10"><div class="dp-ob-row-tag-wrap"><em class="dp-ob-row-tag and">and</em></div></td>
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
 																	Ticket is created by a user from the web interface
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div class="dp-ob-options" ng-if="TicketTriggersEdit.eventType == 'update'">
+											<div class="dp-ob-row">
+												<div class="dp-ob-standard-row">
+													<table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
+														<tbody>
+															<tr>
+																<td style="vertical-align: middle; padding: 0; margin: 0;" width="10"><div class="dp-ob-row-tag-wrap"><em class="dp-ob-row-tag if">if</em></div></td>
+																<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
+																	Department is changed to "{{ ng_var('TicketTriggersEdit.dep.title') }}"
 																</td>
 															</tr>
 														</tbody>

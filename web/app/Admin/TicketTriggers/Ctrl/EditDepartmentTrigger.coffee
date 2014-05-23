@@ -16,7 +16,12 @@ define [
 
 		customInit: ->
 			@triggerId = 0
-			@depId = @$stateParams.id.replace(/^department\-(\d+)$/, '$1')
+			if @$stateParams.id.indexOf('department-changed-') != -1
+				@eventType = 'update'
+				@depId = @$stateParams.id.replace(/^department\-changed\-(\d+)$/, '$1')
+			else
+				@eventType = 'newticket'
+				@depId = @$stateParams.id.replace(/^department\-(\d+)$/, '$1')
 
 			@$scope.triggerType = @$stateParams.type
 			@$scope.triggerId   = 0
@@ -28,9 +33,13 @@ define [
 		initialLoad: ->
 			get = {
 				customActions: '/ticket_triggers/get-custom-actions',
-				depInfo:       "/ticket_deps/#{@depId}",
-				trigger:       "/ticket_triggers/departments/#{@depId}"
+				depInfo:       "/ticket_deps/#{@depId}"
 			}
+
+			if @eventType == 'newticket'
+				get.trigger = "/ticket_triggers/departments/#{@depId}"
+			else
+				get.trigger = "/ticket_triggers/departments_changed/#{@depId}"
 
 			promise = @Api.sendDataGet(get).then( (result) =>
 
