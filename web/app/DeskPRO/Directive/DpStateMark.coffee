@@ -89,6 +89,9 @@ define [
 										currentStateId += '.' + $state.params[v]
 								else
 									currentStateId += '.0'
+						else
+							if $state.params['id']?
+								currentStateId += '.' + $state.params['id']
 
 						if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
 							isOn = true

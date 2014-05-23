@@ -26,7 +26,7 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="captcha"><span>CAPTCHA</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="attach"><span>Attachments</span></li>
 							{% for field in app.getTicketFieldManager().getDisplayArray() %}
-								<li class="dp-layout-editor-layout-field layout-field {% if not field.is_enabled %}disabled{% endif %}" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+								<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
 							{% endfor %}
 						</ul>
 					</article>
@@ -42,7 +42,7 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
 							{% for field in app.getPersonFieldManager().getDisplayArray() %}
-								<li class="dp-layout-editor-layout-field layout-field {% if not field.is_enabled %}disabled{% endif %}" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+								<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
 							{% endfor %}
 						</ul>
 					</article>
@@ -68,7 +68,7 @@
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_workflow') %}disabled{% endif %}" data-field-type="workflow"><span>Workflow</span></li>
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_priority') %}disabled{% endif %}" data-field-type="priority"><span>Priority</span></li>
 							{% for field in app.getTicketFieldManager().getDisplayArray() %}
-								<li class="dp-layout-editor-layout-field layout-field {% if not field.is_enabled %}disabled{% endif %}" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+								<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
 							{% endfor %}
 						</ul>
 					</article>
@@ -84,7 +84,7 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
 							{% for field in app.getPersonFieldManager().getDisplayArray() %}
-								<li class="dp-layout-editor-layout-field layout-field {% if not field.is_enabled %}disabled{% endif %}" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
+								<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
 							{% endfor %}
 						</ul>
 					</article>

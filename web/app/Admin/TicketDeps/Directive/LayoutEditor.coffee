@@ -323,7 +323,7 @@ define [
 						return false
 				)
 
-				if doReorder and false
+				if doReorder
 					layoutFieldEls.detach()
 					for field, order in form_model
 						fieldEl = layoutFieldEls.filter('.field-' + field.id)

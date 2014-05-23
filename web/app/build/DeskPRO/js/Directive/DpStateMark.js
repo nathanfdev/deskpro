@@ -96,6 +96,10 @@
                       currentStateId += '.0';
                     }
                   }
+                } else {
+                  if ($state.params['id'] != null) {
+                    currentStateId += '.' + $state.params['id'];
+                  }
                 }
                 if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
                   isOn = true;

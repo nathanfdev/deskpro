@@ -368,7 +368,7 @@
               return false;
             }
           });
-          if (doReorder && false) {
+          if (doReorder) {
             layoutFieldEls.detach();
             for (order = _l = 0, _len3 = form_model.length; _l < _len3; order = ++_l) {
               field = form_model[order];

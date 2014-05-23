@@ -67,14 +67,16 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 		# Add followers
 		#--------------------
 
-		foreach ($this->getActionOption('add_agent_ids') as $agent_id) {
-			$agent = $this->getContainer()->getAgentData()->get($agent_id);
-			if (!$agent) {
-				continue;
-			}
+		if ($add_agent_ids = $this->getActionOption('add_agent_ids')) {
+			foreach ($add_agent_ids as $agent_id) {
+				$agent = $this->getContainer()->getAgentData()->get($agent_id);
+				if (!$agent) {
+					continue;
+				}
 
-			if (!$ticket->participants->contains($agent)) {
-				$ticket->addParticipantPerson($agent);
+				if (!$ticket->participants->contains($agent)) {
+					$ticket->addParticipantPerson($agent);
+				}
 			}
 		}
 
@@ -82,13 +84,15 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 		# Remove followers
 		#--------------------
 
-		foreach ($this->getActionOption('remove_agent_ids') as $agent_id) {
-			$agent = $this->getContainer()->getAgentData()->get($agent_id);
-			if (!$agent) {
-				continue;
-			}
+		if ($remove_agent_ids = $this->getActionOption('remove_agent_ids')) {
+			foreach ($remove_agent_ids as $agent_id) {
+				$agent = $this->getContainer()->getAgentData()->get($agent_id);
+				if (!$agent) {
+					continue;
+				}
 
-			$ticket->removeParticipantPerson($agent);
+				$ticket->removeParticipantPerson($agent);
+			}
 		}
 	}
 
