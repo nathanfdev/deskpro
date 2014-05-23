@@ -171,7 +171,7 @@
 {% block listpane_help %}
 	<header>
 
-		<h1>Triggers are automatic processes that perform actions in response to ticket events, when the <strong>criteria</strong> you define are met.</h1>
+		<h1>Triggers are automatic processes that perform actions in response to ticket events.</h1>
 		<p ng-if="List.eventType == 'newreply'">Triggers in this section can run when a <strong>new reply</strong> is made by a user or agent.</p>
 		<p ng-if="List.eventType == 'newticket'">Triggers in this section can run when a <strong>new ticket</strong> is created.</p>
 		<p ng-if="List.eventType == 'update'">Triggers in this section can run when a ticket is <strong>updated</strong>.</p>
@@ -183,23 +183,28 @@
 		
 				<p>Triggers have <strong>criteria</strong> they check before they run their defined <strong>actions</strong>.</p>
 		
-				<p>Simple triggers (<strong>Department Triggers</strong> and <strong>Email Account Triggers</strong>) have fixed criteria. They are the same triggers you can view and edit via <strong>Tickets > Departments</strong> and <strong>Tickets > Email Accounts</strong>.</p>
-
-
-				<ul ng-if="List.eventType == 'newticket' || List.eventType == 'update'">
-
+				<p>The triggers are checked in order from the top down. You can drag them to change the order.</p>
+			
+		
+<h2>Simple triggers</h2>		
+				<p>DeskPRO automatically creates <strong>Department Triggers</strong> for each of your departments. They run when a user creates a ticket in the matching department via the web.</p>
+			
 				
-					<li ng-if="List.eventType == 'newticket'">The <strong>Email Account Triggers</strong> in this section are simple triggers that run when a ticket is created via the matching email account. 
-			 		</li>
-			 		<li ng-if="List.eventType == 'newticket'">The <strong>Department Triggers</strong> in this section are simple triggers that run when a user creates a ticket in the matching department <em>via the web</em> (ie. the portal or an embedded form/widget).
-                    </li>
-					<li ng-if="List.eventType == 'update'">The <strong>Department Triggers</strong> in this section are simple triggers that run when an existing ticket is moved into the matching department. 
-					</li>
-				</ul>
 				
+				<p>There are also <strong>Email Account Triggers</strong> that run when a user submits a ticket via the matching email account.</p>
+				
+				<p>You can change the actions on these triggers to quickly carry out simple configuration changes like:</p>
+				
+					<ul>
+						<li>assigning all tickets from an email account to a particular agent</li>
+						<li>sending different acknowledgement emails based on department<li>
+										
+					</ul>
+								
+				<p>You can also view and edit the simple triggers from <strong>Tickets > Departments</strong> and <strong>Tickets > Email Accounts</strong>.</p>
 	
-				
-			<p>The triggers are checked in order from the top down. You can drag them to change the order.</p>
+	
+	<h2> Advanced triggers</h2>
 			
 			
 		
@@ -208,21 +213,14 @@
 			<p>If you are using an advanced trigger to send a response email, don&#39;t forget to disable the corresponding simple triggers to avoid sending the same email twice.</p>
 	
 		
-	
-			<p>When a trigger runs its <strong>actions</strong>, it can automatically do most of the things you would do to a ticket in the agent interface.</p>
+			<p><strong>Actions</strong>, it can automatically do most of the things you would do to a ticket in the agent interface.</p>
 			
-			<p><strong>Actions</strong> can change ticket assignment, set the user, set ticket properties, set or change SLAs, set the value of custom fields, or delete the ticket.</p>
 			
 			<p>
-				<strong>Trigger Control</strong>: the action <strong>Stop Processing Triggers</strong> stops subsequent triggers being applied to the ticket. It does not stop other actions within the same trigger from being applied. You can also use <strong>Prevent Emails to User</strong> or <strong>Prevent Emails to Agents</strong> to prevent subsequent email notifications.
+				Special <strong>Trigger Control</strong> actions can affect lower triggers. The Stop Processing Triggers action prevents lower triggers running. You can also use Prevent Emails to User or Prevent Emails to Agents to stop any email notifications that lower triggers try to send.
 				
 			</p>
 		
-			
-			<p>
-			The <strong>Call Web Hook</strong> action sends an HTTP request. You can use it to make calls to external software that offers a web-based API. It is useful for integrating DeskPRO with other services.
-			</p>
-				
 				
 		
 							
