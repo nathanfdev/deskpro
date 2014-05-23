@@ -72,7 +72,7 @@ abstract class AbstractAction implements ActionInterface
 
 	/**
 	 * @param string $k
-	 * @param mixedd $v
+	 * @param mixed $v
 	 */
 	public function addMetaData($k, $v)
 	{
