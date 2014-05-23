@@ -38,7 +38,8 @@ class AddAgentReplyTest extends \DpUnitTestCase
 		$action = new AddAgentReply(array(
 			'by_assigned_agent' => true,
 			'by_agent_id' => 1,
-			'reply_text' => 'Test reply ' . $tok
+			'reply_text' => 'Test reply ' . $tok,
+			'no_formatter' => true
 		));
 		$action->setContainer($this->getMockContainer());
 		$action->applyAction($ticket, $exec);
