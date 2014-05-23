@@ -117,3 +117,32 @@ define [
 
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
+
+		Module.directive('dpMoveToPos', [ '$timeout', ($timeout) ->
+			return {
+				restrict: 'A',
+				scope: {
+					dpMoveToPos: '@'
+				},
+				link: (scope, element, attrs) ->
+					scope.$on('resetDisplayOrders', ->
+						if parseInt(scope.dpMoveToPos)
+							update()
+					)
+
+					update = ->
+						toPos = parseInt(scope.dpMoveToPos || 0) || 0
+						ul = element.closest('ul')
+						use = null
+						ul.find('> li').each(->
+							ro = parseInt($(this).attr('data-run-order') || 0) || 0
+							if ro < toPos and this != element[0]
+								use = $(this)
+						)
+						element.detach()
+						if not use
+							element.detach().appendTo(ul)
+						else
+							element.detach().insertAfter(use)
+			}
+		])

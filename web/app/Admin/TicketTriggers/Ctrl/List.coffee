@@ -8,7 +8,7 @@ define [
 	class Admin_TicketTriggers_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketTriggers_Ctrl_List'
 		@CTRL_AS = 'List'
-		@DEPS = ['$state', '$stateParams', '$q', 'TicketAccountsData']
+		@DEPS = ['$state', '$stateParams', '$q', 'TicketAccountsData', '$timeout']
 
 		init: ->
 			@dep_triggers   = []
@@ -38,7 +38,15 @@ define [
 					runOrders = []
 
 					$list.find('li').each(->
-						runOrders.push(parseInt($(this).data('id')))
+						id = $(this).data('trigger-id')
+						if id
+							if id == 'departments'
+								if @eventType == 'changed' then id = 'departments_changed'
+								runOrders.push(id)
+							else if id == 'emailaccounts'
+								runOrders.push(id)
+							else
+								runOrders.push(parseInt(id))
 					)
 
 					@dpTriggers.saveRunOrder(runOrders)
@@ -63,6 +71,15 @@ define [
 				@emailTriggersEnabled = @dpTriggers.emailaccount_triggers_enabled
 
 				@sortTriggers()
+
+				@$scope.dep_order = 0
+				@$scope.emailaccount_order = 0
+
+				for t in @all_triggers
+					if not @$scope.dep_order and t.department
+						@$scope.dep_order = t.run_order
+					if not @$scope.emailaccount_order and t.email_account
+						@$scope.emailaccount_order = t.run_order
 			)
 
 			if @eventType == 'newticket' or @eventType == 'update'
@@ -75,7 +92,11 @@ define [
 					@accounts = recs.values()
 				)
 
-			return @$q.all(promises)
+			return @$q.all(promises).then(=>
+				@$timeout(=>
+					@$scope.$broadcast('resetDisplayOrders')
+				, 100)
+			)
 
 
 		###

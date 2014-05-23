@@ -17,7 +17,7 @@
 				{# Department Triggers #}
 				{#######################}
 
-				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length">
+				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length" data-trigger-id="departments" dp-move-to-pos="{{ ng_var('dep_order') }}">
 					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
@@ -87,7 +87,7 @@
 				{# Email Acc Triggers  #}
 				{#######################}
 
-				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length">
+				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length" dp-move-to-pos="{{ ng_var('emailaccount_order') }}" data-trigger-id="emailaccounts">
 					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
@@ -125,7 +125,7 @@
 				{# Custom Triggers     #}
 				{#######################}
 
-				<li class="with-drag-handle" ng-repeat="trigger in List.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}" data-run-order="{{ ng_var('trigger.run_order') }}">
+				<li class="with-drag-handle" ng-repeat="trigger in List.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-trigger-id="{{ ng_var('trigger.id') }}" data-run-order="{{ ng_var('trigger.run_order') }}">
 					<a href="{{ ng_href('tickets.triggers.edit', '{type: List.eventType, id: trigger.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">

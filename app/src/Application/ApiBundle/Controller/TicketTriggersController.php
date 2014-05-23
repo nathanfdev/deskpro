@@ -337,7 +337,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
 	public function saveRunOrderAction()
 	{
-		$run_orders = $this->in->getCleanValueArray('run_orders', 'uint', 'discard');
+		$run_orders = $this->in->getCleanValueArray('run_orders', 'string', 'discard');
 		$this->em->getRepository('DeskPRO:TicketTrigger')->updateRunOrders($run_orders);
 
 		return $this->createSuccessResponse();

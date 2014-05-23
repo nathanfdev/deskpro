@@ -82,7 +82,7 @@ class TicketTrigger extends AbstractEntityRepository
 	 */
 	public function updateRunOrders(array $run_orders)
 	{
-		$run_orders = array_keys($run_orders);
+		$run_orders = array_values($run_orders);
 
 		$db = $this->_em->getConnection();
 		$db->beginTransaction();
@@ -90,10 +90,29 @@ class TicketTrigger extends AbstractEntityRepository
 		$x = 0;
 		foreach ($run_orders as $tr_id) {
 			$x += 10;
-			$db->update('ticket_triggers', array('run_order' => $x), array('id' => $tr_id));
+			if ($tr_id == 'departments') {
+				$db->executeUpdate("
+					UPDATE ticket_triggers
+					SET run_order = ?
+					WHERE department_id IS NOT NULL AND event_trigger = 'newticket'
+				", array($x));
+			} else if ($tr_id == 'departments_changed') {
+				$db->executeUpdate("
+					UPDATE ticket_triggers
+					SET run_order = ?
+					WHERE department_id IS NOT NULL AND event_trigger = 'update'
+				", array($x));
+			} else if ($tr_id == 'emailaccounts') {
+				$db->executeUpdate("
+					UPDATE ticket_triggers
+					SET run_order = ?
+					WHERE email_account_id IS NOT NULL AND event_trigger = 'newticket'
+				", array($x));
+			} else {
+				$tr_id = (int)$tr_id;
+				$db->update('ticket_triggers', array('run_order' => $x), array('id' => $tr_id));
+			}
 		}
-
-		$db->executeUpdate("UPDATE ticket_triggers SET run_order = -100 WHERE department_id IS NOT NULL OR email_account_id IS NOT NULL");
 
 		$db->commit();
 	}

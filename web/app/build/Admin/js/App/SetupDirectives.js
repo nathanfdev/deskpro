@@ -36,7 +36,44 @@
       Module.directive('dpWorkingHours', Admin_Main_Directive_DpWorkingHours);
       Module.directive('dpPortalEditor', Admin_Portal_Directive_PortalEditor);
       Module.directive('dpTicketLayoutEditor', Admin_TicketDeps_Directive_LayoutEditor);
-      return Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
+      Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
+      return Module.directive('dpMoveToPos', [
+        '$timeout', function($timeout) {
+          return {
+            restrict: 'A',
+            scope: {
+              dpMoveToPos: '@'
+            },
+            link: function(scope, element, attrs) {
+              var update;
+              scope.$on('resetDisplayOrders', function() {
+                if (parseInt(scope.dpMoveToPos)) {
+                  return update();
+                }
+              });
+              return update = function() {
+                var toPos, ul, use;
+                toPos = parseInt(scope.dpMoveToPos || 0) || 0;
+                ul = element.closest('ul');
+                use = null;
+                ul.find('> li').each(function() {
+                  var ro;
+                  ro = parseInt($(this).attr('data-run-order') || 0) || 0;
+                  if (ro < toPos && this !== element[0]) {
+                    return use = $(this);
+                  }
+                });
+                element.detach();
+                if (!use) {
+                  return element.detach().appendTo(ul);
+                } else {
+                  return element.detach().insertAfter(use);
+                }
+              };
+            }
+          };
+        }
+      ]);
     };
   });
 

@@ -15,7 +15,7 @@
 
       Admin_TicketTriggers_Ctrl_List.CTRL_AS = 'List';
 
-      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams', '$q', 'TicketAccountsData'];
+      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams', '$q', 'TicketAccountsData', '$timeout'];
 
       Admin_TicketTriggers_Ctrl_List.prototype.init = function() {
         this.dep_triggers = [];
@@ -42,7 +42,20 @@
               $list = data.item.closest('ul');
               runOrders = [];
               $list.find('li').each(function() {
-                return runOrders.push(parseInt($(this).data('id')));
+                var id;
+                id = $(this).data('trigger-id');
+                if (id) {
+                  if (id === 'departments') {
+                    if (this.eventType === 'changed') {
+                      id = 'departments_changed';
+                    }
+                    return runOrders.push(id);
+                  } else if (id === 'emailaccounts') {
+                    return runOrders.push(id);
+                  } else {
+                    return runOrders.push(parseInt(id));
+                  }
+                }
               });
               _this.dpTriggers.saveRunOrder(runOrders);
               return _this.pingElement('run_orders');
@@ -66,11 +79,28 @@
         promises = [];
         promises.push(this.dpTriggers.loadList().then((function(_this) {
           return function(list) {
+            var t, _i, _len, _ref, _results;
             window.all_triggers = list;
             _this.all_triggers = list;
             _this.depTriggersEnabled = _this.dpTriggers.department_triggers_enabled;
             _this.emailTriggersEnabled = _this.dpTriggers.emailaccount_triggers_enabled;
-            return _this.sortTriggers();
+            _this.sortTriggers();
+            _this.$scope.dep_order = 0;
+            _this.$scope.emailaccount_order = 0;
+            _ref = _this.all_triggers;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              t = _ref[_i];
+              if (!_this.$scope.dep_order && t.department) {
+                _this.$scope.dep_order = t.run_order;
+              }
+              if (!_this.$scope.emailaccount_order && t.email_account) {
+                _results.push(_this.$scope.emailaccount_order = t.run_order);
+              } else {
+                _results.push(void 0);
+              }
+            }
+            return _results;
           };
         })(this)));
         if (this.eventType === 'newticket' || this.eventType === 'update') {
@@ -87,7 +117,13 @@
             };
           })(this)));
         }
-        return this.$q.all(promises);
+        return this.$q.all(promises).then((function(_this) {
+          return function() {
+            return _this.$timeout(function() {
+              return _this.$scope.$broadcast('resetDisplayOrders');
+            }, 100);
+          };
+        })(this));
       };
 
 
