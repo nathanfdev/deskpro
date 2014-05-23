@@ -125,7 +125,10 @@ class FilterChangeDetector
 				default: return "ticket.$field_name";
 			}
 		}, $changed_fields);
-		$changed_fields = array_combine($changed_fields, $changed_fields);
+
+		if ($changed_fields) {
+			$changed_fields = array_combine($changed_fields, $changed_fields);
+		}
 
 		$is_hidden_change = false;
 		if (isset($changed_fields['ticket.hidden_status'])) {
