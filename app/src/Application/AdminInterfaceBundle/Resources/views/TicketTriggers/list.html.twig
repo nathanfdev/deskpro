@@ -170,41 +170,55 @@
 {% endblock %}
 {% block listpane_help %}
 	<header>
-		<h1>Triggers are automatic processes that perform actions in response to events when the criteria you choose are met.</h1>
-		<p ng-if="List.eventType == 'newreply'">Triggers in this section check their criteria when a <strong>new reply</strong> is made by a user or agent.</p>
-		<p ng-if="List.eventType == 'newticket'">Triggers in this section check their criteria when a <strong>new ticket</strong> is created.</p>
-		<p ng-if="List.eventType == 'update'">Triggers in this section check their criteria when a ticket is <strong>updated</strong>.</p>
+
+		<h1>Triggers are automatic processes that perform actions in response to ticket events, when the <strong>criteria</strong> you define are met.</h1>
+		<p ng-if="TicketTriggersList.eventType == 'newreply'">Triggers in this section can run when a <strong>new reply</strong> is made by a user or agent.</p>
+		<p ng-if="TicketTriggersList.eventType == 'newticket'">Triggers in this section can run when a <strong>new ticket</strong> is created.</p>
+		<p ng-if="TicketTriggersList.eventType == 'update'">Triggers in this section can run when a ticket is <strong>updated</strong>.</p>
+
 	</header>
 
 	<article>
 		<section>
-			<p>Use the <strong>Event</strong> section to refine when the trigger is checked. You can choose to have the trigger respond only to user actions, only to agent actions, or to both; or to respond only to certain interfaces (email, web, etc.).</p>
+		
+				<p>Triggers have <strong>criteria</strong> they check before they run their defined <strong>actions</strong>.</p>
+		
+				<p>Simple triggers (<strong>Department Triggers</strong> and <strong>Email Account Triggers</strong>) have fixed criteria. They are the same triggers you can view and edit via <strong>Tickets > Departments</strong> and <strong>Tickets > Email Accounts</strong>.</p>
+
+				<ul ng-if="TicketTriggersList.eventType == 'newreply' || TicketTriggersList.eventType == 'update'">
+				
+					<li ng-if="TicketTriggersList.eventType == 'newticket'">The <strong>Email Account Triggers</strong> in this section are simple triggers that run when a ticket is created via the matching email account. 
+			 		</li>
+			 		<li ng-if="TicketTriggersList.eventType == 'newticket'">The <strong>Department Triggers</strong> in this section are simple triggers that run when a user creates a ticket in the matching department <em>via the web</em> (ie. the portal or an embedded form/widget).
+			 		</li>
+					<li ng-if="TicketTriggersList.eventType == 'update'">The <strong>Department Triggers</strong> in this section are simple triggers that run when an existing ticket is moved into this department. 
+					</li>
+				</ul>
+				
 	
-			<p><strong>Criteria</strong> can be used to check properties of the:</p>
-			<ul>
-				<li>email</li>
-				<li>ticket</li>
-				<li>attachments</li>
-				<li>user</li>
-				<li>user's organization</li>
-				<li>the current time</li>
-			</ul>
-	
-			<p>When the right combination of events and criteria happen, your trigger will run its <strong>actions</strong>. With actions, you can automatically do most of the things you would do to a ticket in the agent interface.</p>
+				
+			<p>The triggers are checked in order from the top down. You can drag them to change the order.</p>
 			
-			<p>Actions can change ticket assignment, set the user, set ticket properties, set or change SLAs, set the value of custom fields, or delete the ticket.</p>
+			
+		
+			<p>For advanced triggers, you can use the <strong>Event</strong> section to refine when the trigger is checked. You can choose to have the trigger respond only to user actions or only to agent actions; or to respond only to certain interfaces (email, web, the API etc.).</p>
+			
+			<p>If you are using an advanced trigger to send a response email, don&#39;t forget to disable the corresponding simple triggers to avoid sending the same email twice.</p>
+	
+		
+	
+			<p>When a trigger runs its <strong>actions</strong>, it can automatically do most of the things you would do to a ticket in the agent interface.</p>
+			
+			<p><strong>Actions</strong> can change ticket assignment, set the user, set ticket properties, set or change SLAs, set the value of custom fields, or delete the ticket.</p>
 			
 			<p>
 				<strong>Trigger Control</strong>: the action <strong>Stop Processing Triggers</strong> stops subsequent triggers being applied to the ticket. It does not stop other actions within the same trigger from being applied. You can also use <strong>Prevent Emails to User</strong> or <strong>Prevent Emails to Agents</strong> to prevent subsequent email notifications.
 				
 			</p>
+		
 			
 			<p>
-			<strong>Add Agent Reply</strong> lets you enter a reply to be sent from the assigned agent.</strong>
-			</p>
-			
-			<p>
-			<strong>Call Web Hook</strong>: this action sends an HTTP request. You can use it to make calls to external software that offers a web-based API. It is useful for integrating DeskPRO with other services.
+			The <strong>Call Web Hook</strong> action sends an HTTP request. You can use it to make calls to external software that offers a web-based API. It is useful for integrating DeskPRO with other services.
 			</p>
 				
 				
@@ -217,7 +231,7 @@
 			<h2><span>FAQ</span></h2>
 		
 			<dl>
-				<dt><em>Q:</em>My triggers aren't behaving as I expect. How do I troubleshoot them?</dt>
+				<dt><em>Q:</em>My triggers aren&#39;t behaving as I expect. How do I troubleshoot them?</dt>
 				<dd><em>A:</em>
 				You can see which triggers ran and in what order using the ticket <strong>Full Log</strong> tab.
 				</dd>
