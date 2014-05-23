@@ -78,15 +78,18 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 	{
 		switch ($special_type) {
 			case 'departments':
+			case 'departments_changed':
 				$dep = $this->container->getTicketDepartments()->getById($id);
 				if (!$dep) {
 					throw $this->createNotFoundException();
 				}
 
-				$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('department' => $dep));
+				$event = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
+				$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('department' => $dep, 'event_trigger' => $event));
+
 				if (!$trigger) {
 					$trigger = new TicketTrigger();
-					$edit = SpecialTriggerEdit::createWithDepartment($dep);
+					$edit = SpecialTriggerEdit::createWithDepartment($dep, $event);
 					$edit->applyToTrigger($trigger);
 					$this->em->persist($trigger);
 					$this->em->flush($trigger);
@@ -129,14 +132,53 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 	# save
 	####################################################################################################################
 
-	public function saveAction($id)
+	public function saveAction($id, $special_type = null)
 	{
 		if ($id) {
-			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-			if (!$trigger) {
-				return $this->createNotFoundException();
+			switch ($special_type) {
+				case 'departments':
+				case 'departments_changed':
+					$dep = $this->container->getTicketDepartments()->getById($id);
+					if (!$dep) {
+						throw $this->createNotFoundException();
+					}
+
+					$event = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
+
+					$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('department' => $dep, 'event_trigger' => $event));
+					if (!$trigger) {
+						$trigger = new TicketTrigger();
+						$edit = SpecialTriggerEdit::createWithDepartment($dep, $event);
+						$edit->applyToTrigger($trigger);
+						$this->em->persist($trigger);
+						$this->em->flush($trigger);
+					}
+					break;
+
+				case 'email_accounts':
+					if (!$this->container->getEmailAccountManager()->hasAcccount($id)) {
+						throw $this->createNotFoundException();
+					}
+
+					$acc = $this->container->getEmailAccountManager()->getAccount($id);
+
+					$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('email_account' => $acc));
+					if (!$trigger) {
+						$trigger = new TicketTrigger();
+						$edit = SpecialTriggerEdit::createWithEmailAccount($acc);
+						$edit->applyToTrigger($trigger);
+						$this->em->persist($trigger);
+						$this->em->flush($trigger);
+					}
+					break;
+
+				default:
+					$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
 			}
 		} else {
+			if ($special_type) {
+				throw $this->createNotFoundException();
+			}
 			$trigger = new TicketTrigger();
 		}
 
@@ -183,10 +225,11 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		$trigger->actions = $actions;
 
 		if ($trigger->department) {
-			$edit = SpecialTriggerEdit::createWithDepartment($trigger->department);
+			$event = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
+			$edit = SpecialTriggerEdit::createWithDepartment($trigger->department, $event);
 			$edit->applyToTrigger($trigger);
 		} else if ($trigger->email_account) {
-			$edit = SpecialTriggerEdit::createWithDepartment($trigger->email_account);
+			$edit = SpecialTriggerEdit::createWithEmailAccount($trigger->email_account);
 			$edit->applyToTrigger($trigger);
 		}
 

@@ -15,9 +15,12 @@
 
       Admin_TicketAccounts_Ctrl_Edit.CTRL_AS = 'TicketAccountsEdit';
 
-      Admin_TicketAccounts_Ctrl_Edit.DEPS = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal'];
+      Admin_TicketAccounts_Ctrl_Edit.DEPS = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions'];
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.init = function() {
+        this.actionsTypeDef = this.dpObTypesDefTicketActions;
+        this.$scope.actionOptionTypes = [];
+        this.$scope.actions_form = {};
         this.accountId = parseInt(this.$stateParams.id || 0);
         this.didPassTest = false;
         this.testMessageCount = 0;
@@ -30,17 +33,63 @@
         };
       };
 
+      Admin_TicketAccounts_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
+        var opt, setActionOptions, types, _i, _len, _results;
+        types = ['web', 'web.user'];
+        setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, {
+          dynamicOptions: this.customActions
+        });
+        this.$scope.actionOptionTypes.length = 0;
+        _results = [];
+        for (_i = 0, _len = setActionOptions.length; _i < _len; _i++) {
+          opt = setActionOptions[_i];
+          _results.push(this.$scope.actionOptionTypes.push(opt));
+        }
+        return _results;
+      };
+
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
-        var data_promise, dep_promise, final_promise;
+        var c, data_promise, dep_promise, final_promise, get, proms, trigger_data_promise, trigger_promise;
         dep_promise = this.DataService.get('TicketDeps').loadList().then((function(_this) {
           return function(list) {
             return _this.deps = list;
           };
         })(this));
+        get = {
+          customActions: '/ticket_triggers/get-custom-actions'
+        };
+        if (this.accountId) {
+          get.trigger = "/ticket_triggers/email_accounts/" + this.accountId;
+        }
+        trigger_promise = this.Api.sendDataGet(get).then((function(_this) {
+          return function(result) {
+            var action, rowId, _i, _len, _ref, _ref1, _ref2, _ref3, _ref4, _results;
+            _this.customActions = result.data.customActions.action_defs;
+            if (((_ref = result.data) != null ? (_ref1 = _ref.trigger) != null ? _ref1.trigger : void 0 : void 0) != null) {
+              _this.trigger = result.data.trigger.trigger;
+              _this.triggerId = _this.trigger.id;
+              if ((_ref2 = _this.trigger.actions) != null ? (_ref3 = _ref2.actions) != null ? _ref3.length : void 0 : void 0) {
+                _this.$scope.actions_form = {};
+                _ref4 = _this.trigger.actions.actions;
+                _results = [];
+                for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
+                  action = _ref4[_i];
+                  rowId = _.uniqueId('action');
+                  _results.push(_this.$scope.actions_form[rowId] = action);
+                }
+                return _results;
+              }
+            } else {
+              _this.trigger = {};
+              return _this.triggerId = 0;
+            }
+          };
+        })(this));
+        trigger_data_promise = this.actionsTypeDef.loadDataOptions();
+        proms = [trigger_promise, trigger_data_promise, dep_promise];
         if (!this.accountId) {
-          this.account = {};
+          c = {};
           this.trigger = {};
-          final_promise = dep_promise;
         } else {
           data_promise = this.Api.sendDataGet({
             'email_account': '/email_accounts/' + this.accountId
@@ -52,8 +101,9 @@
               return _this.$scope.form = _this.form_model.form;
             };
           })(this));
-          final_promise = this.$q.all([dep_promise, data_promise]);
+          proms.push(data_promise);
         }
+        final_promise = this.$q.all(proms);
         final_promise.then((function(_this) {
           return function() {
             _this.form_model = new EditTicketAccountModel(_this.account, _this.deps, _this.trigger);
@@ -61,7 +111,8 @@
               _this.form_model.form.incoming_account_type = '';
               _this.form_model.form.outgoing_account_type = 'smtp';
             }
-            return _this.$scope.form = _this.form_model.form;
+            _this.$scope.form = _this.form_model.form;
+            return _this.updateCriteriaOptionTypes();
           };
         })(this));
         return final_promise;
@@ -75,8 +126,27 @@
        */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.saveAccount = function() {
-        var is_new, postData, promise;
+        var is_new, postData, promise, triggerSaver;
         postData = this.form_model.getFormData();
+        triggerSaver = (function(_this) {
+          return function() {
+            var act, _, _ref;
+            postData = {
+              actions: []
+            };
+            if (_this.$scope.actions_form) {
+              _ref = _this.$scope.actions_form;
+              for (_ in _ref) {
+                if (!__hasProp.call(_ref, _)) continue;
+                act = _ref[_];
+                if (act.type) {
+                  postData.actions.push(act);
+                }
+              }
+            }
+            return _this.Api.sendPostJson('/ticket_triggers/email_accounts/' + _this.account.id, postData);
+          };
+        })(this);
         this.startSpinner('saving_account');
         if (this.account.id) {
           is_new = false;
@@ -87,19 +157,21 @@
         }
         promise.success((function(_this) {
           return function(result) {
-            _this.account.id = result.email_account_id || _this.account.id;
-            _this.account.is_enabled = true;
-            _this.stopSpinner('saving_account', true).then(function() {
-              return _this.Growl.success(_this.getRegisteredMessage('saved_account'));
+            return triggerSaver().then(function() {
+              _this.account.id = result.email_account_id || _this.account.id;
+              _this.account.is_enabled = true;
+              _this.stopSpinner('saving_account', true).then(function() {
+                return _this.Growl.success(_this.getRegisteredMessage('saved_account'));
+              });
+              _this.form_model.apply();
+              _this.TicketAccountsData.updateModel(_this.account);
+              _this.skipDirtyState();
+              if (is_new) {
+                return _this.$state.go('tickets.ticket_accounts.gocreate');
+              } else {
+                return _this.$state.go('tickets.ticket_accounts');
+              }
             });
-            _this.form_model.apply();
-            _this.TicketAccountsData.updateModel(_this.account);
-            _this.skipDirtyState();
-            if (is_new) {
-              return _this.$state.go('tickets.ticket_accounts.gocreate');
-            } else {
-              return _this.$state.go('tickets.ticket_accounts');
-            }
           };
         })(this));
         promise.error((function(_this) {

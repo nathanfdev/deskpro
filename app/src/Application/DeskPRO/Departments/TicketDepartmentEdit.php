@@ -137,75 +137,21 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 		$matrix->save($this->department, $em);
 	}
 
-
-	/**
-	 * @param EntityManager $em
-	 * @param array         $trigger_actions
-	 * @return TicketTrigger
-	 */
-	public function saveTrigger(EntityManager $em, array $trigger_actions)
-	{
-		$trigger = $em->createQuery("
-			SELECT trigger
-			FROM DeskPRO:TicketTrigger trigger
-			WHERE trigger.department = ?0
-		")->setParameters(array($this->department))->getOneOrNullResult();
-
-		if (!$trigger_actions) {
-			if ($trigger) {
-				$em->remove($trigger);
-				$em->flush();
-			}
-			return null;
-		}
-
-		if (!$trigger) {
-			$trigger = new TicketTrigger();
-			$trigger->department = $this->department;
-			$trigger->event_trigger = 'newticket';
-			$trigger->by_agent_mode = array('api', 'web');
-			$trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
-		}
-
-		$actions = new TriggerActions();
-		try {
-			$actions->importFromArray(array('actions' => $trigger_actions));
-		} catch (\Exception $e) {}
-
-		$terms = new TriggerTerms();
-		$terms->addTermFromArray(array(
-			'type'    => 'CheckDepartment',
-			'op'      => 'is',
-			'options' => array('department_ids' => array($this->department->id))
-		));
-
-		$trigger->title     = "New Ticket";
-		$trigger->run_order = -100;
-		$trigger->actions   = $actions;
-		$trigger->terms     = $terms;
-
-		$em->persist($trigger);
-		$em->flush($trigger);
-
-		return $trigger;
-	}
-
-
 	/**
 	 * @param EntityManager $em
 	 */
 	public function clearTrigger(EntityManager $em)
 	{
-		$trigger = $em->createQuery("
+		$triggers = $em->createQuery("
 			SELECT trigger
 			FROM DeskPRO:TicketTrigger trigger
 			WHERE trigger.department = ?0
-		")->setParameters(array($this->department))->getOneOrNullResult();
+		")->setParameters(array($this->department))->execute();
 
-		if ($trigger) {
-			$em->remove($trigger);
-			$em->flush();
+		foreach ($triggers as $t) {
+			$em->remove($t);
 		}
+		$em->flush();
 	}
 
 	############################################################################

@@ -8,9 +8,13 @@ define [
 	class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
 		@CTRL_AS = 'TicketAccountsEdit'
-		@DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal']
+		@DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions']
 
 		init: ->
+			@actionsTypeDef = @dpObTypesDefTicketActions
+			@$scope.actionOptionTypes = []
+			@$scope.actions_form = {}
+
 			@accountId = parseInt(@$stateParams.id || 0)
 			@didPassTest = false
 			@testMessageCount = 0
@@ -22,15 +26,48 @@ define [
 				message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
 			}
 
+		updateCriteriaOptionTypes: ->
+			types = ['web', 'web.user']
+			setActionOptions = @actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: @customActions })
+			@$scope.actionOptionTypes.length = 0
+			for opt in setActionOptions
+				@$scope.actionOptionTypes.push(opt)
+
 		initialLoad: ->
 			dep_promise = @DataService.get('TicketDeps').loadList().then( (list) =>
 				@deps = list
 			)
 
+			get = {
+				customActions: '/ticket_triggers/get-custom-actions'
+			}
+			if @accountId
+				get.trigger = "/ticket_triggers/email_accounts/#{@accountId}"
+
+			trigger_promise = @Api.sendDataGet(get).then( (result) =>
+				@customActions = result.data.customActions.action_defs
+
+				if result.data?.trigger?.trigger?
+					@trigger = result.data.trigger.trigger
+					@triggerId = @trigger.id
+
+					if @trigger.actions?.actions?.length
+						@$scope.actions_form = {}
+						for action in @trigger.actions.actions
+							rowId = _.uniqueId('action')
+							@$scope.actions_form[rowId] = action
+				else
+					@trigger = {}
+					@triggerId = 0
+			)
+
+			trigger_data_promise = @actionsTypeDef.loadDataOptions()
+
+			proms = [trigger_promise, trigger_data_promise, dep_promise]
+
 			if not @accountId
-				@account = {}
+				c = {}
 				@trigger = {}
-				final_promise = dep_promise
 			else
 				data_promise = @Api.sendDataGet({
 					'email_account': '/email_accounts/' + @accountId
@@ -41,7 +78,9 @@ define [
 					@$scope.form = @form_model.form
 				)
 
-				final_promise = @$q.all([dep_promise, data_promise])
+				proms.push(data_promise)
+
+			final_promise = @$q.all(proms)
 
 			final_promise.then(=>
 				@form_model = new EditTicketAccountModel(@account, @deps, @trigger)
@@ -51,6 +90,7 @@ define [
 					@form_model.form.outgoing_account_type = 'smtp'
 
 				@$scope.form = @form_model.form
+				@updateCriteriaOptionTypes()
 			)
 			return final_promise
 
@@ -63,6 +103,16 @@ define [
 		saveAccount: ->
 			postData = @form_model.getFormData()
 
+			triggerSaver = =>
+				postData = {
+					actions:       []
+				}
+				if @$scope.actions_form
+					for own _, act of @$scope.actions_form
+						if act.type
+							postData.actions.push(act)
+				@Api.sendPostJson('/ticket_triggers/email_accounts/' + @account.id, postData)
+
 			@startSpinner('saving_account')
 			if @account.id
 				is_new = false
@@ -72,20 +122,22 @@ define [
 				promise = @Api.sendPutJson('/email_accounts', postData)
 
 			promise.success( (result) =>
-				@account.id = result.email_account_id || @account.id
-				@account.is_enabled = true
-				@stopSpinner('saving_account', true).then(=>
-					@Growl.success(@getRegisteredMessage('saved_account'))
+				triggerSaver().then(=>
+					@account.id = result.email_account_id || @account.id
+					@account.is_enabled = true
+					@stopSpinner('saving_account', true).then(=>
+						@Growl.success(@getRegisteredMessage('saved_account'))
+					)
+
+					@form_model.apply()
+					@TicketAccountsData.updateModel(@account)
+
+					@skipDirtyState()
+					if is_new
+						@$state.go('tickets.ticket_accounts.gocreate')
+					else
+						@$state.go('tickets.ticket_accounts')
 				)
-
-				@form_model.apply()
-				@TicketAccountsData.updateModel(@account)
-
-				@skipDirtyState()
-				if is_new
-					@$state.go('tickets.ticket_accounts.gocreate')
-				else
-					@$state.go('tickets.ticket_accounts')
 			)
 			promise.error( (info, code) =>
 				@stopSpinner('saving_account', true)

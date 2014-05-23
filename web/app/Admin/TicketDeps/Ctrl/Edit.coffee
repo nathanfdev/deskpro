@@ -10,12 +10,13 @@ define [
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$templateCache']
+		@DEPS      = ['$templateCache', 'dpObTypesDefTicketActions']
 
 		init: ->
-			@dpTriggers = @DataService.get('TriggersNew')
-			@criteraTypeDef = @dpObTypesDefTicketCriteria
-			@criteraTypeDef.setWithChangedOps(with_changed_ops)
+			@actionsTypeDef = @dpObTypesDefTicketActions
+			@$scope.actionOptionTypes = []
+			@$scope.actions_form = {}
+			@$scope.actions_form2 = {}
 
 			@depId = parseInt(@$stateParams.id)
 			@depData = @DataService.get('TicketDeps')
@@ -42,10 +43,10 @@ define [
 
 		updateCriteriaOptionTypes: ->
 			types = ['web', 'web.user']
-			setCritOptions = @criteraTypeDef.getOptionsForTypes(types)
-			@$scope.criteriaOptionTypes.length = 0
-			for opt in setCritOptions
-				@$scope.criteriaOptionTypes.push(opt)
+			setActionOptions = @actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: @customActions })
+			@$scope.actionOptionTypes.length = 0
+			for opt in setActionOptions
+				@$scope.actionOptionTypes.push(opt)
 
 		initialLoad: ->
 			promise1 = @depData.getEditDepartmentData(@depId || null).then( (data) =>
@@ -79,6 +80,7 @@ define [
 			}
 			if @depId
 				get.trigger = "/ticket_triggers/departments/#{@depId}"
+				get.trigger2 = "/ticket_triggers/departments_changed/#{@depId}"
 
 			promise2 = @Api.sendDataGet(get).then( (result) =>
 				@customActions = result.data.customActions.action_defs
@@ -86,16 +88,37 @@ define [
 				if result.data?.trigger?.trigger?
 					@trigger = result.data.trigger.trigger
 					@triggerId = @trigger.id
+
+					if @trigger.actions?.actions?.length
+						@$scope.actions_form = {}
+						for action in @trigger.actions.actions
+							rowId = _.uniqueId('action')
+							@$scope.actions_form[rowId] = action
 				else
 					@trigger = {}
 					@triggerId = 0
+
+				if result.data?.trigger2?.trigger?
+					@trigger2 = result.data.trigger2.trigger
+					@trigger2Id = @trigger2.id
+
+					if @trigger2.actions?.actions?.length
+						@$scope.actions_form2 = {}
+						for action in @trigger2.actions.actions
+							rowId = _.uniqueId('action')
+							@$scope.actions_form2[rowId] = action
+				else
+					@trigger2 = {}
+					@trigger2Id = 0
 			)
 
-			promise3 = @criteraTypeDef.loadDataOptions()
+			promise3 = @actionsTypeDef.loadDataOptions()
 
 			promises = [promise1, promise2, promise3]
 
-			return @$q.all(promises)
+			return @$q.all(promises).then(=>
+				@updateCriteriaOptionTypes()
+			)
 
 		isDirtyState: ->
 			return not Util.equals(@form, @origForm)
@@ -116,8 +139,30 @@ define [
 
 			deferred2 = @$q.defer()
 
+			triggerSaver = =>
+				postData = {
+					actions:       []
+				}
+				if @$scope.actions_form
+					for own _, act of @$scope.actions_form
+						if act.type
+							postData.actions.push(act)
+				p1 = @Api.sendPostJson('/ticket_triggers/departments/' + @dep.id, postData)
+
+				postData = {
+					actions:       []
+				}
+				if @$scope.actions_form2
+					for own _, act of @$scope.actions_form2
+						if act.type
+							postData.actions.push(act)
+				p2 = @Api.sendPostJson('/ticket_triggers/departments_changed/' + @dep.id, postData)
+
+				return @$q.all([p1,p2])
+
 			promise = @depData.saveFormModel(@dep, @form)
 			promise.then(=>
+				triggerSaver()
 				if (@form.use_custom_layout)
 					@Api.sendPostJson("/ticket_layouts/#{@dep.id}", {layout: @form.custom_layout}).then(-> deferred2.resolve())
 				else

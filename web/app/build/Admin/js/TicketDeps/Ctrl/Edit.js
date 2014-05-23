@@ -15,12 +15,13 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$templateCache'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$templateCache', 'dpObTypesDefTicketActions'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
-        this.dpTriggers = this.DataService.get('TriggersNew');
-        this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
-        this.criteraTypeDef.setWithChangedOps(with_changed_ops);
+        this.actionsTypeDef = this.dpObTypesDefTicketActions;
+        this.$scope.actionOptionTypes = [];
+        this.$scope.actions_form = {};
+        this.$scope.actions_form2 = {};
         this.depId = parseInt(this.$stateParams.id);
         this.depData = this.DataService.get('TicketDeps');
         this.$scope.$watch('EditCtrl.form.parent_id', (function(_this) {
@@ -50,14 +51,16 @@
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
-        var opt, setCritOptions, types, _i, _len, _results;
+        var opt, setActionOptions, types, _i, _len, _results;
         types = ['web', 'web.user'];
-        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types);
-        this.$scope.criteriaOptionTypes.length = 0;
+        setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, {
+          dynamicOptions: this.customActions
+        });
+        this.$scope.actionOptionTypes.length = 0;
         _results = [];
-        for (_i = 0, _len = setCritOptions.length; _i < _len; _i++) {
-          opt = setCritOptions[_i];
-          _results.push(this.$scope.criteriaOptionTypes.push(opt));
+        for (_i = 0, _len = setActionOptions.length; _i < _len; _i++) {
+          opt = setActionOptions[_i];
+          _results.push(this.$scope.actionOptionTypes.push(opt));
         }
         return _results;
       };
@@ -103,23 +106,55 @@
         };
         if (this.depId) {
           get.trigger = "/ticket_triggers/departments/" + this.depId;
+          get.trigger2 = "/ticket_triggers/departments_changed/" + this.depId;
         }
         promise2 = this.Api.sendDataGet(get).then((function(_this) {
           return function(result) {
-            var _ref, _ref1;
+            var action, rowId, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
             _this.customActions = result.data.customActions.action_defs;
             if (((_ref = result.data) != null ? (_ref1 = _ref.trigger) != null ? _ref1.trigger : void 0 : void 0) != null) {
               _this.trigger = result.data.trigger.trigger;
-              return _this.triggerId = _this.trigger.id;
+              _this.triggerId = _this.trigger.id;
+              if ((_ref2 = _this.trigger.actions) != null ? (_ref3 = _ref2.actions) != null ? _ref3.length : void 0 : void 0) {
+                _this.$scope.actions_form = {};
+                _ref4 = _this.trigger.actions.actions;
+                for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
+                  action = _ref4[_i];
+                  rowId = _.uniqueId('action');
+                  _this.$scope.actions_form[rowId] = action;
+                }
+              }
             } else {
               _this.trigger = {};
-              return _this.triggerId = 0;
+              _this.triggerId = 0;
+            }
+            if (((_ref5 = result.data) != null ? (_ref6 = _ref5.trigger2) != null ? _ref6.trigger : void 0 : void 0) != null) {
+              _this.trigger2 = result.data.trigger2.trigger;
+              _this.trigger2Id = _this.trigger2.id;
+              if ((_ref7 = _this.trigger2.actions) != null ? (_ref8 = _ref7.actions) != null ? _ref8.length : void 0 : void 0) {
+                _this.$scope.actions_form2 = {};
+                _ref9 = _this.trigger2.actions.actions;
+                _results = [];
+                for (_j = 0, _len1 = _ref9.length; _j < _len1; _j++) {
+                  action = _ref9[_j];
+                  rowId = _.uniqueId('action');
+                  _results.push(_this.$scope.actions_form2[rowId] = action);
+                }
+                return _results;
+              }
+            } else {
+              _this.trigger2 = {};
+              return _this.trigger2Id = 0;
             }
           };
         })(this));
-        promise3 = this.criteraTypeDef.loadDataOptions();
+        promise3 = this.actionsTypeDef.loadDataOptions();
         promises = [promise1, promise2, promise3];
-        return this.$q.all(promises);
+        return this.$q.all(promises).then((function(_this) {
+          return function() {
+            return _this.updateCriteriaOptionTypes();
+          };
+        })(this));
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.isDirtyState = function() {
@@ -132,7 +167,7 @@
        */
 
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var deferred2, promise;
+        var deferred2, promise, triggerSaver;
         if (!this.$scope.form_props.$valid) {
           return;
         }
@@ -142,9 +177,44 @@
         }
         this.startSpinner('saving_dep');
         deferred2 = this.$q.defer();
+        triggerSaver = (function(_this) {
+          return function() {
+            var act, p1, p2, postData, _, _ref, _ref1;
+            postData = {
+              actions: []
+            };
+            if (_this.$scope.actions_form) {
+              _ref = _this.$scope.actions_form;
+              for (_ in _ref) {
+                if (!__hasProp.call(_ref, _)) continue;
+                act = _ref[_];
+                if (act.type) {
+                  postData.actions.push(act);
+                }
+              }
+            }
+            p1 = _this.Api.sendPostJson('/ticket_triggers/departments/' + _this.dep.id, postData);
+            postData = {
+              actions: []
+            };
+            if (_this.$scope.actions_form2) {
+              _ref1 = _this.$scope.actions_form2;
+              for (_ in _ref1) {
+                if (!__hasProp.call(_ref1, _)) continue;
+                act = _ref1[_];
+                if (act.type) {
+                  postData.actions.push(act);
+                }
+              }
+            }
+            p2 = _this.Api.sendPostJson('/ticket_triggers/departments_changed/' + _this.dep.id, postData);
+            return _this.$q.all([p1, p2]);
+          };
+        })(this);
         promise = this.depData.saveFormModel(this.dep, this.form);
         promise.then((function(_this) {
           return function() {
+            triggerSaver();
             if (_this.form.use_custom_layout) {
               _this.Api.sendPostJson("/ticket_layouts/" + _this.dep.id, {
                 layout: _this.form.custom_layout

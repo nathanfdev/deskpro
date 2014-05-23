@@ -56,14 +56,19 @@ class SpecialTriggerEdit
 	 */
 	private $obj;
 
+	/**
+	 * @var string
+	 */
+	private $event;
+
 
 	/**
 	 * @param Department $department
 	 * @return SpecialTriggerEdit
 	 */
-	public static function createWithDepartment(Department $department)
+	public static function createWithDepartment(Department $department, $event)
 	{
-		return new self(self::TYPE_DEPARTMENT, $department);
+		return new self(self::TYPE_DEPARTMENT, $department, $event);
 	}
 
 
@@ -73,7 +78,7 @@ class SpecialTriggerEdit
 	 */
 	public static function createWithEmailAccount(EmailAccount $account)
 	{
-		return new self(self::TYPE_EMAIL_ACCOUNT, $account);
+		return new self(self::TYPE_EMAIL_ACCOUNT, $account, TicketTrigger::EVENT_TYPE_NEWTICKET);
 	}
 
 
@@ -81,10 +86,11 @@ class SpecialTriggerEdit
 	 * @param string $type
 	 * @param Department|EmailAccount $obj
 	 */
-	private function __construct($type, $obj)
+	private function __construct($type, $obj, $event)
 	{
-		$this->type = $type;
-		$this->obj  = $obj;
+		$this->type  = $type;
+		$this->obj   = $obj;
+		$this->event = $event;
 	}
 
 
@@ -116,14 +122,23 @@ class SpecialTriggerEdit
 
 		$terms = new TriggerTerms();
 		$terms_set = new TriggerTermComposite();
-		$terms_set->add(new CheckDepartment('is', array('department_ids' => array($this->obj->id))));
+
+		if ($this->event == TicketTrigger::EVENT_TYPE_UPDATE) {
+			$trigger->event_trigger = 'update';
+			$trigger->by_agent_mode = array('api', 'email', 'web');
+			$trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
+
+			$terms_set->add(new CheckDepartment('changed_to', array('department_ids' => array($this->obj->id))));
+		} else {
+			$trigger->event_trigger = 'newticket';
+			$trigger->by_agent_mode = array();
+			$trigger->by_user_mode  = array('form', 'portal', 'widget');
+
+			$terms_set->add(new CheckDepartment('is', array('department_ids' => array($this->obj->id))));
+		}
+
 		$terms->addTerm($terms_set);
-
 		$trigger->terms = $terms;
-
-		$trigger->event_trigger = 'newticket';
-		$trigger->by_agent_mode = array();
-		$trigger->by_user_mode  = array('form', 'portal', 'widget');
 	}
 
 

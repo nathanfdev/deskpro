@@ -145,21 +145,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			'agents'      => array()
 		);
 
-		$trigger = null;
-		if ($dep) {
-			$trigger = $this->em->createQuery("
-				SELECT trigger
-				FROM DeskPRO:TicketTrigger trigger
-				WHERE trigger.department = ?0
-			")->setParameters(array($dep))->getOneOrNullResult();
-		}
-
-		if (!$trigger) {
-			$trigger = new TicketTrigger();
-		}
-
-		$data['trigger'] = $trigger->toApiData();
-
 		foreach ($perms as $perm) {
 			if ($perm['usergroup_id']) {
 				if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
@@ -225,10 +210,8 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 				$this->container->getDataService('Usergroup')->getAll()
 			);
 
-			if (!count($dep->children)) {
-				$dep_edit->saveTrigger($this->em, $this->in->getArrayValue('trigger_actions'));
-			} else {
-				$dep_edit->clearTrigger($this->em);
+			if (count($dep->children)) {
+				//$dep_edit->clearTrigger($this->em);
 			}
 
 			return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
