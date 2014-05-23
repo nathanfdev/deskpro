@@ -63,7 +63,7 @@ define [
 		initialLoad: ->
 			promises = []
 
-			promises.push @dpTriggers.loadList().then( (list) =>
+			promises.push @dpTriggers.loadList(true).then( (list) =>
 				window.all_triggers = list
 				@all_triggers = list
 
@@ -83,12 +83,12 @@ define [
 			)
 
 			if @eventType == 'newticket' or @eventType == 'update'
-				promises.push @depData.loadList().then( (list) =>
+				promises.push @depData.loadList(true).then( (list) =>
 					@depList = list
 				)
 
 			if @eventType == 'newticket'
-				promises.push @TicketAccountsData.loadList().then( (recs) =>
+				promises.push @TicketAccountsData.loadList(true).then( (recs) =>
 					@accounts = recs.values()
 				)
 

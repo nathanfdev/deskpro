@@ -77,7 +77,7 @@
       Admin_TicketTriggers_Ctrl_List.prototype.initialLoad = function() {
         var promises;
         promises = [];
-        promises.push(this.dpTriggers.loadList().then((function(_this) {
+        promises.push(this.dpTriggers.loadList(true).then((function(_this) {
           return function(list) {
             var t, _i, _len, _ref, _results;
             window.all_triggers = list;
@@ -104,14 +104,14 @@
           };
         })(this)));
         if (this.eventType === 'newticket' || this.eventType === 'update') {
-          promises.push(this.depData.loadList().then((function(_this) {
+          promises.push(this.depData.loadList(true).then((function(_this) {
             return function(list) {
               return _this.depList = list;
             };
           })(this)));
         }
         if (this.eventType === 'newticket') {
-          promises.push(this.TicketAccountsData.loadList().then((function(_this) {
+          promises.push(this.TicketAccountsData.loadList(true).then((function(_this) {
             return function(recs) {
               return _this.accounts = recs.values();
             };
