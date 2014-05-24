@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\ORM\EntityManager;
@@ -232,6 +233,9 @@ class EditEmailAccount
 			case 'gmail':
 				return $this->out_gmail_account;
 				break;
+
+			case 'mail':
+				return new PhpMailConfig();
 
 			default;
 				return null;
