@@ -2460,18 +2460,6 @@ class TicketSearch extends SearcherAbstract
 					if (!$this->_testStringMatch($ticket['creation_system'], $op, $choice, true, true)) return false;
 					break;
 
-				case self::TERM_GATEWAY_ADDRESS:
-					$e = new \RuntimeException("not supported");
-					KernelErrorHandler::logException($e, true);
-					return false;
-					break;
-
-				case self::TERM_RECEIVING_GATEWAY:
-					$e = new \RuntimeException("not supported");
-					KernelErrorHandler::logException($e, true);
-					return false;
-					break;
-
 				case self::TERM_DATE_CLOSED:
 					if ($ticket['status'] != Ticket::STATUS_CLOSED) return false;
 					if (!$this->_testDateMatch($ticket['date_closed'], $op, $choice)) return false;
