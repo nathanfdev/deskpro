@@ -320,7 +320,6 @@ class Build1400056735 extends AbstractBuild
 		 */
 
 		$term_sets = new TriggerTerms();
-		$term_sets->setOperator(TriggerTermComposite::OP_OR);
 
 		$terms_all = new TriggerTermComposite();
 		if (!empty($old_trigger['terms_any'])) {
