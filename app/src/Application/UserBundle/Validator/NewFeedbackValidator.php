@@ -79,7 +79,11 @@ class NewFeedbackValidator extends AbstractValidator
 			$this->addError('content.short');
 		}
 
-		$cat = App::getEntityRepository('DeskPRO:FeedbackCategory')->find($this->newfeedback->category_id);
+		$cat = null;
+		if ($this->newfeedback->category_id) {
+			$cat = App::getEntityRepository('DeskPRO:FeedbackCategory')
+				->find($this->newfeedback->category_id);
+		}
 		if (!$cat) {
 			$this->addError('category_id.invalid');
 		}
