@@ -94,7 +94,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 
         $errno  =  0;
         $errstr = '';
-        $this->socket = fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
+        $this->socket = @fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
         if (!$this->socket) {
             throw new Exception\RuntimeException('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
         }
