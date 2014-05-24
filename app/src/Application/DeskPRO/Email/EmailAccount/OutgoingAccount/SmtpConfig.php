@@ -62,10 +62,10 @@ class SmtpConfig implements AccountConfigInterface
 	public $password;
 
 	/**
-	 * 'none', 'ssl' or 'tls'
+	 * 'ssl' or 'tls'
 	 * @var null|string
 	 */
-	public $secure_mode = 'none';
+	public $secure_mode = null;
 
 	/**
 	 * @var string
