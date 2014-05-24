@@ -84,26 +84,28 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 		#------------------------------
 
 		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
-		foreach ($this->getActionOption('add_emails') as $email) {
-			if ($ticket->hasParticipantEmailAddress($email)) {
-				continue;
-			}
-
-			$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($person) {
-				$ticket->addParticipantPerson($person);
-			} else {
-				if ($reg_closed) {
+		if ($this->getActionOption('add_emails')) {
+			foreach ($this->getActionOption('add_emails') as $email) {
+				if ($ticket->hasParticipantEmailAddress($email)) {
 					continue;
 				}
-				$person_processor = new PersonFromEmailProcessor();
 
-				$eml = new EmailAddress();
-				$eml->email = $email;
-				$person = $person_processor->createPerson($eml, true);
-
+				$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
 				if ($person) {
 					$ticket->addParticipantPerson($person);
+				} else {
+					if ($reg_closed) {
+						continue;
+					}
+					$person_processor = new PersonFromEmailProcessor();
+
+					$eml = new EmailAddress();
+					$eml->email = $email;
+					$person = $person_processor->createPerson($eml, true);
+
+					if ($person) {
+						$ticket->addParticipantPerson($person);
+					}
 				}
 			}
 		}
@@ -112,10 +114,12 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 		# Remove people
 		#------------------------------
 
-		foreach ($this->getActionOption('remove_emails') as $email) {
-			foreach ($ticket->participants as $k => $p) {
-				if ($p->person->findEmailAddress($email)) {
-					$ticket->removeParticipantPerson($p->person);
+		if ($this->getActionOption('remove_emails')) {
+			foreach ($this->getActionOption('remove_emails') as $email) {
+				foreach ($ticket->participants as $k => $p) {
+					if ($p->person->findEmailAddress($email)) {
+						$ticket->removeParticipantPerson($p->person);
+					}
 				}
 			}
 		}
