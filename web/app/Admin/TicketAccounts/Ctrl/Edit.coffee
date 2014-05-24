@@ -122,9 +122,9 @@ define [
 				promise = @Api.sendPutJson('/email_accounts', postData)
 
 			promise.success( (result) =>
+				@account.id = result.email_account_id || @account.id
+				@account.is_enabled = true
 				triggerSaver().then(=>
-					@account.id = result.email_account_id || @account.id
-					@account.is_enabled = true
 					@stopSpinner('saving_account', true).then(=>
 						@Growl.success(@getRegisteredMessage('saved_account'))
 					)

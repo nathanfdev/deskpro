@@ -157,9 +157,9 @@
         }
         promise.success((function(_this) {
           return function(result) {
+            _this.account.id = result.email_account_id || _this.account.id;
+            _this.account.is_enabled = true;
             return triggerSaver().then(function() {
-              _this.account.id = result.email_account_id || _this.account.id;
-              _this.account.is_enabled = true;
               _this.stopSpinner('saving_account', true).then(function() {
                 return _this.Growl.success(_this.getRegisteredMessage('saved_account'));
               });
