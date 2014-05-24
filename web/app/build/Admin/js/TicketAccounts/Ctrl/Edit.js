@@ -49,7 +49,7 @@
       };
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
-        var c, data_promise, dep_promise, final_promise, get, proms, trigger_data_promise, trigger_promise;
+        var data_promise, dep_promise, final_promise, get, proms, trigger_data_promise, trigger_promise;
         dep_promise = this.DataService.get('TicketDeps').loadList().then((function(_this) {
           return function(list) {
             return _this.deps = list;
@@ -88,7 +88,7 @@
         trigger_data_promise = this.actionsTypeDef.loadDataOptions();
         proms = [trigger_promise, trigger_data_promise, dep_promise];
         if (!this.accountId) {
-          c = {};
+          this.account = {};
           this.trigger = {};
         } else {
           data_promise = this.Api.sendDataGet({

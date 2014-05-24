@@ -66,7 +66,7 @@ define [
 			proms = [trigger_promise, trigger_data_promise, dep_promise]
 
 			if not @accountId
-				c = {}
+				@account = {}
 				@trigger = {}
 			else
 				data_promise = @Api.sendDataGet({
