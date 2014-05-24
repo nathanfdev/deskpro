@@ -1020,11 +1020,18 @@ class Upgrade
 		$fileutil->remove(DP_ROOT.'/sys/cache/doctrine-proxies');
 		$fileutil->remove(DP_ROOT.'/sys/cache/twig-compiled');
 
+		if (file_exists(DP_ROOT.'/config.upgrade.php')) {
+			$up_conf = require(DP_ROOT.'/config.upgrade.php');
+			if (isset($up_conf['file_upgrade_exclude'])) {
+				$exclude = $up_conf['file_upgrade_exclude'];
+			}
+		}
+
 		// Copy all files over
 		$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
 			'override'        => true,
 			'copy_on_windows' => true,
-			'exclude'         => array('/web.config', '/.htaccess')
+			'exclude'         => $exclude
 		));
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
