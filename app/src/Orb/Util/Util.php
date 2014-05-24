@@ -744,7 +744,7 @@ class Util
 	 * @param mixed $value
 	 * @return int
 	 */
-	public function boolInt($value)
+	public static function boolInt($value)
 	{
 		return $value ? 1 : 0;
 	}
