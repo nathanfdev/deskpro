@@ -51,7 +51,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 	#
 	###
 	class DeskPRO_OptionBuilder_Controller
-		constructor: ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) ->
+		constructor: ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout) ->
 			@dpTemplateManager = dpTemplateManager
 			@$scope            = $scope
 			@$compile          = $compile
@@ -63,6 +63,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			@typesDef          = @$scope.getTypesDef()
 			@options           = @$scope.getOptions() || {}
 			@$injector         = $injector
+			@$timeout          = $timeout
 			@currentAddPromise = null
 
 			@els = {}
@@ -204,22 +205,27 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			@els.optionList.append(placeholder)
 
 			@els.loadingOptionMessage.show().addClass('loading-on')
-			@$q.all([tplPromise, dataPromise]).then( (returns) =>
-
-				tpl  = returns[0]
-				data = returns[1]
-
+			run = (tpl, data, isRetry) =>
+				option_title = null
 				for v in @$scope.optionTypes
 					if v.subOptions
 						for sb in v.subOptions
 							if type == sb.value
 								option_title = sb.title
 								break
-						if option_title then break
 					else
 						if type == v.value
 							option_title = v.title
-							break
+					if option_title then break
+
+				# sometimes titles may be regenerated elsewhere
+				# so we need to wait a bit then try again so we
+				# can show the proper title
+				if not option_title and (not isRetry or isRetry < 20)
+					@$timeout(->
+						run(tpl, data, if isRetry then 1 else isRetry+1)
+					, 140)
+					return
 
 				rowScope = @$scope.$new()
 				rowScope.type = type
@@ -305,6 +311,11 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						else
 							rowScope.value.DP_DISABLED = true
 					)
+
+			@$q.all([tplPromise, dataPromise]).then( (returns) =>
+				tpl  = returns[0]
+				data = returns[1]
+				run(tpl, data)
 			)
 
 		###
@@ -339,6 +350,6 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 			return true
 
-		@FACTORY = [ '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) ->
-			return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector)
+		@FACTORY = [ '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', '$timeout', ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout) ->
+			return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout)
 		]

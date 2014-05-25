@@ -56,7 +56,7 @@
      */
     var DeskPRO_OptionBuilder_Controller;
     return DeskPRO_OptionBuilder_Controller = (function() {
-      function DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) {
+      function DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout) {
         this.dpTemplateManager = dpTemplateManager;
         this.$scope = $scope;
         this.$compile = $compile;
@@ -68,6 +68,7 @@
         this.typesDef = this.$scope.getTypesDef();
         this.options = this.$scope.getOptions() || {};
         this.$injector = $injector;
+        this.$timeout = $timeout;
         this.currentAddPromise = null;
         this.els = {};
         $transclude((function(_this) {
@@ -218,7 +219,7 @@
        */
 
       DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId, isFixed, isFixedOn) {
-        var dataFormatter, dataPromise, def, placeholder, retData, retTpl, scopeInit, tplPromise;
+        var dataFormatter, dataPromise, def, placeholder, retData, retTpl, run, scopeInit, tplPromise;
         if (!this.hasLoaded) {
           return;
         }
@@ -242,11 +243,10 @@
         placeholder = $('<div/>');
         this.els.optionList.append(placeholder);
         this.els.loadingOptionMessage.show().addClass('loading-on');
-        return this.$q.all([tplPromise, dataPromise]).then((function(_this) {
-          return function(returns) {
-            var data, element, k, option_title, rowId, rowScope, sb, tpl, v, _i, _j, _len, _len1, _ref, _ref1;
-            tpl = returns[0];
-            data = returns[1];
+        run = (function(_this) {
+          return function(tpl, data, isRetry) {
+            var element, k, option_title, rowId, rowScope, sb, v, _i, _j, _len, _len1, _ref, _ref1;
+            option_title = null;
             _ref = _this.$scope.optionTypes;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               v = _ref[_i];
@@ -259,15 +259,20 @@
                     break;
                   }
                 }
-                if (option_title) {
-                  break;
-                }
               } else {
                 if (type === v.value) {
                   option_title = v.title;
-                  break;
                 }
               }
+              if (option_title) {
+                break;
+              }
+            }
+            if (!option_title && (!isRetry || isRetry < 20)) {
+              _this.$timeout(function() {
+                return run(tpl, data, isRetry ? 1 : isRetry + 1);
+              }, 140);
+              return;
             }
             rowScope = _this.$scope.$new();
             rowScope.type = type;
@@ -353,6 +358,14 @@
               });
             }
           };
+        })(this);
+        return this.$q.all([tplPromise, dataPromise]).then((function(_this) {
+          return function(returns) {
+            var data, tpl;
+            tpl = returns[0];
+            data = returns[1];
+            return run(tpl, data);
+          };
         })(this));
       };
 
@@ -392,8 +405,8 @@
       };
 
       DeskPRO_OptionBuilder_Controller.FACTORY = [
-        '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', function($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector) {
-          return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector);
+        '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', '$timeout', function($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout) {
+          return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout);
         }
       ];
 
