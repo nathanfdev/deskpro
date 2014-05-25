@@ -97,6 +97,10 @@
           value: 'CheckDepartment'
         });
         options.push({
+          title: 'Status',
+          value: 'CheckStatus'
+        });
+        options.push({
           title: 'Agent',
           value: 'CheckAgent'
         });
@@ -636,6 +640,17 @@
         options.tags = true;
         options.operators = ['contains', 'not_contains'];
         def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckStatus = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'status';
+        options.template = 'OptionBuilder/type-criteria-status.html';
+        def = this.getStandardSelect(options);
         return def;
       };
 

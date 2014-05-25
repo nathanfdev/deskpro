@@ -103,6 +103,11 @@ define [
 			})
 
 			options.push({
+				title: 'Status',
+				value: 'CheckStatus'
+			})
+
+			options.push({
 				title: 'Agent',
 				value: 'CheckAgent'
 			})
@@ -571,6 +576,12 @@ define [
 			options.tags = true
 			options.operators = ['contains', 'not_contains']
 			def = @getStandardInput(options)
+			return def
+
+		getCheckStatus: (options = {}) ->
+			options.propName = 'status'
+			options.template = 'OptionBuilder/type-criteria-status.html'
+			def = @getStandardSelect(options)
 			return def
 
 		getCheckSubject: (options = {}) ->
