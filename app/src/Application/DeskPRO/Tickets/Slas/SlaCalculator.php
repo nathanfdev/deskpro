@@ -110,11 +110,6 @@ class SlaCalculator
 
 					return new \DateTime('+' . ($delay - $wait_time) . ' seconds', new \DateTimeZone('UTC'));
 				} else {
-					$work_day_length = $this->work_end - $this->work_start;
-					if ($work_day_length <= 0) {
-						return null;
-					}
-
 					$wait_time = 0;
 					if ($ticket->waiting_times) {
 						foreach ($ticket->waiting_times AS $waiting) {
