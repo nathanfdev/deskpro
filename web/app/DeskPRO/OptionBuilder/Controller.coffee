@@ -65,6 +65,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			@$injector         = $injector
 			@$timeout          = $timeout
 			@currentAddPromise = null
+			@resetTime         = (new Date()).getTime()
 
 			@els = {}
 
@@ -126,6 +127,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			)
 
 		reset: ->
+			@resetTime = (new Date()).getTime()
 			if not @hasLoaded then return
 			@rowsCount = 0
 
@@ -204,8 +206,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			placeholder = $('<div/>')
 			@els.optionList.append(placeholder)
 
+			time = (new Date()).getTime()
 			@els.loadingOptionMessage.show().addClass('loading-on')
 			run = (tpl, data, isRetry) =>
+				# the row was added before we did our last reset
+				if time < @resetTime then return
+
 				option_title = null
 				for v in @$scope.optionTypes
 					if v.subOptions

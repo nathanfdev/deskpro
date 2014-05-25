@@ -70,6 +70,7 @@
         this.$injector = $injector;
         this.$timeout = $timeout;
         this.currentAddPromise = null;
+        this.resetTime = (new Date()).getTime();
         this.els = {};
         $transclude((function(_this) {
           return function(clone) {
@@ -128,6 +129,7 @@
 
       DeskPRO_OptionBuilder_Controller.prototype.reset = function() {
         var alreadyDone, exist, existId, f, id, row, rowId, term, _i, _len, _ref, _ref1, _ref2, _ref3, _ref4, _results;
+        this.resetTime = (new Date()).getTime();
         if (!this.hasLoaded) {
           return;
         }
@@ -219,7 +221,7 @@
        */
 
       DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId, isFixed, isFixedOn) {
-        var dataFormatter, dataPromise, def, placeholder, retData, retTpl, run, scopeInit, tplPromise;
+        var dataFormatter, dataPromise, def, placeholder, retData, retTpl, run, scopeInit, time, tplPromise;
         if (!this.hasLoaded) {
           return;
         }
@@ -242,10 +244,14 @@
         }
         placeholder = $('<div/>');
         this.els.optionList.append(placeholder);
+        time = (new Date()).getTime();
         this.els.loadingOptionMessage.show().addClass('loading-on');
         run = (function(_this) {
           return function(tpl, data, isRetry) {
             var element, k, option_title, rowId, rowScope, sb, v, _i, _j, _len, _len1, _ref, _ref1;
+            if (time < _this.resetTime) {
+              return;
+            }
             option_title = null;
             _ref = _this.$scope.optionTypes;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
