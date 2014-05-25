@@ -38,7 +38,13 @@
           return function(res) {
             var memberIds;
             _this.agents = res.data.agents.agents;
-            _this.team = res.data.team.team;
+            if (_this.teamId) {
+              _this.team = res.data.team.team;
+            } else {
+              _this.team = {
+                members: []
+              };
+            }
             memberIds = _this.team.members.map(function(x) {
               return x.id;
             });

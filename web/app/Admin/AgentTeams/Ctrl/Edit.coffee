@@ -21,7 +21,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			promise.then( (res) =>
 				@agents = res.data.agents.agents
-				@team   = res.data.team.team
+
+				if @teamId
+					@team = res.data.team.team
+				else
+					@team = {members: []}
 
 				# value=true on agents that are members
 				memberIds = @team.members.map((x) -> x.id)

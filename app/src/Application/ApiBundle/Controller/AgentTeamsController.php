@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\Entity\AgentTeam;
 use Orb\Util\Arrays;
 
 class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
