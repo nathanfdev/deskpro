@@ -100,7 +100,7 @@ class EscalationTicketMatcher
 		$this->logger->debug(sprintf("[EscalationTicketMatcher] --> Number of results: %d", count($tickets)));
 		$this->logger->debug(sprintf("[EscalationTicketMatcher] --> Took %.4fs", microtime(true) - $ms_start));
 
-		return $ticket_ids;
+		return $tickets;
 	}
 
 
