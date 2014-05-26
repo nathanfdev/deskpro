@@ -72,7 +72,7 @@ class TransportFactory
 			$tr->setUsername($config->user);
 		}
 		if (!empty($config->password)) {
-			$tr->setUsername($config->password);
+			$tr->setPassword($config->password);
 		}
 
 		$tr->setTimeout(120);
