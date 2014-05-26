@@ -290,6 +290,7 @@ class TicketManager
 			$ticket->recomputeHash();
 		}
 
+		$this->em->persist($ticket);
 		$this->em->flush();
 
 		foreach ($this->post_save_actions as $action) {
@@ -297,6 +298,7 @@ class TicketManager
 			$action->processTicket($ticket, $context);
 		}
 
+		$this->em->persist($ticket);
 		$this->em->flush();
 
 		if (!$is_noop) {
