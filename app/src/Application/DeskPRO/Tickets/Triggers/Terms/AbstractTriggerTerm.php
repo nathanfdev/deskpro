@@ -576,7 +576,11 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			$all_values = array($all_values);
 		}
 
-		$check_value_i = Strings::utf8_strtolower($check_value);
+		$check_value = is_array($check_value) ? $check_value : array();
+
+		$check_value_i = array_map(function($v) {
+			return Strings::utf8_strtolower($v);
+		}, $check_value);
 
 		$check_fn = function($value) use ($op, $check_value_i, $check_value) {
 
@@ -592,7 +596,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			switch ($op) {
 				case 'is':
 				case 'not':
-					if ($value_i == $check_value_i) {
+					if (in_array($value_i, $check_value_i)) {
 						if ($op == 'is') return true;
 					} else {
 						if ($op == 'not') return true;
@@ -601,31 +605,39 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 				case 'contains':
 				case 'notcontains':
-					// Special case: empty search string
-					// We consider 'ticket subject has ""' to be true
-					if ($check_value_i === '') {
-						if ($op == 'contains') return true;
-						else return false;
-					}
+					foreach ($check_value_i as $vi) {
+						// Special case: empty search string
+						// We consider 'ticket subject has ""' to be true
+						if ($vi === '') {
+							if ($op == 'contains') return true;
+							else return false;
+						}
 
-					if (strpos($value_i, $check_value_i) !== false) {
-						if ($op == 'contains') return true;
-					} else {
-						if ($op == 'notcontains') return true;
+						if (strpos($value_i, $vi) !== false) {
+							if ($op == 'contains') return true;
+							if ($op == 'notcontains') return false;
+						}
+					}
+					if ($op == 'notcontains') {
+						return true;
 					}
 					break;
 
 				case 'is_regex':
 				case 'not_regex':
-					$regex = Strings::getInputRegexPattern($check_value);
-					if (!$regex) {
-						return false;
-					}
+					foreach ($check_value as $v) {
+						$regex = Strings::getInputRegexPattern($v);
+						if (!$regex) {
+							return false;
+						}
 
-					if (preg_match($regex, $value)) {
-						if ($op == 'is_regex') return true;
-					} else {
-						if ($op == 'not_regex') return true;
+						if (preg_match($regex, $value)) {
+							if ($op == 'is_regex') return true;
+							if ($op == 'not_regex') return false;
+						}
+					}
+					if ($op == 'not_regex') {
+						return true;
 					}
 			}
 

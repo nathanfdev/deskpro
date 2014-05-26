@@ -9035,7 +9035,7 @@ nav.dp-tabletabs ul li:hover a {
 
 section.dp-help-content-wrapper {
   position: relative;
-  z-index: 99999;
+  z-index: 999;
   margin: 10px 90px 0 90px;
   overflow: visible;
   text-align: center;

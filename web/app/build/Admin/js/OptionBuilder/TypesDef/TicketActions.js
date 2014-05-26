@@ -596,14 +596,21 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var mode, only_if_lower;
                 if (value == null) {
                   value = {};
                 }
                 options = (value != null ? value.options : void 0) || {};
+                mode = options.mode || 'add';
+                only_if_lower = false;
+                if (mode === 'raise') {
+                  mode = 'set';
+                  only_if_lower = true;
+                }
                 return {
                   value: options.urgency,
-                  op: options.op || 'add',
-                  only_if_lower: !!options.only_if_lower
+                  op: mode,
+                  only_if_lower: only_if_lower
                 };
               },
               getValue: function(model, data) {
@@ -612,11 +619,14 @@
                   model = {};
                 }
                 value = {};
-                value.type = 'urgency';
+                value.type = 'SetUrgency';
                 value.options = {};
                 value.options.urgency = model.value;
-                value.options.op = model.op;
-                value.options.only_if_lower = !!model.only_if_lower;
+                if (model.op === 'set' && model.only_if_lower) {
+                  value.options.mode = 'raise';
+                } else {
+                  value.options.mode = model.op;
+                }
                 return value;
               }
             };
@@ -1089,8 +1099,8 @@
                   value = {};
                 }
                 return {
-                  add_slas: value.add_slas || [],
-                  remove_slas: value.remove_slas || []
+                  add_slas: value.add_sla_ids || [],
+                  remove_slas: value.remove_sla_ids || []
                 };
               },
               getValue: function(model, data) {
@@ -1101,8 +1111,8 @@
                 value = {};
                 value.type = 'SetSlas';
                 value.options = {};
-                value.options.add_slas = model.add_slas;
-                value.options.remove_slas = model.remove_slas;
+                value.options.add_sla_ids = model.add_slas;
+                value.options.remove_sla_ids = model.remove_slas;
                 return value;
               }
             };
