@@ -576,7 +576,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			$all_values = array($all_values);
 		}
 
-		$check_value = is_array($check_value) ? $check_value : array();
+		$check_value = is_array($check_value) ? $check_value : array($check_value);
 
 		$check_value_i = array_map(function($v) {
 			return Strings::utf8_strtolower($v);
@@ -596,11 +596,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			switch ($op) {
 				case 'is':
 				case 'not':
-					if (in_array($value_i, $check_value_i)) {
-						if ($op == 'is') return true;
-					} else {
-						if ($op == 'not') return true;
+					foreach ($check_value_i as $vi) {
+						if ($value_i == $vi) {
+							if ($op == 'is') return true;
+							if ($op == 'not') return false;
+						}
 					}
+					if ($op == 'not') return true;
 					break;
 
 				case 'contains':
