@@ -124,7 +124,7 @@ class Build1400056713 extends AbstractBuild
 	 * @param array $addrs
 	 * @return EmailAccount
 	 */
-	private function _convertGatewayAccount(array $gateway, array $tr, array $addrs)
+	private function _convertGatewayAccount(array $gateway, array $tr = null, array $addrs)
 	{
 		$account = new EmailAccount(EmailAccount::TYPE_TICKETS);
 
@@ -208,8 +208,13 @@ class Build1400056713 extends AbstractBuild
 	 * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
 	 * @throws \InvalidArgumentException
 	 */
-	private function _getTransportConfig(array $tr)
+	private function _getTransportConfig(array $tr = null)
 	{
+		if ($tr === null) {
+			$mail_config = new OutgoingAccount\PhpMailConfig();
+			return $mail_config;
+		}
+
 		if ($tr['transport_options']) {
 			$tr['transport_options'] = unserialize($tr['transport_options']);
 		} else {
