@@ -125,3 +125,5 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 		$this->applyAction($ticket, $context);
 	}
 }
+
+// xx bytes to prevent 4096 filesize (php bug)
