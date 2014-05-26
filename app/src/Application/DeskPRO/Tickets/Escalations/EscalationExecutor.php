@@ -62,6 +62,7 @@ class EscalationExecutor
 	{
 		$this->ticket_manager = $ticket_manager;
 		$this->logger = new NullLogger();
+		$this->action_applicator = $action_applicator;
 	}
 
 
