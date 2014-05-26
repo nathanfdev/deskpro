@@ -69,6 +69,7 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
 			return;
 		}
 
+		$context->getLogger()->debug(sprintf('[SetDepartment] Setting %d %s', $dep->id, $dep->title));
 		$ticket->department = $dep;
 	}
 
@@ -82,11 +83,13 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
 		$ticket_dep_id = $ticket->department ? $ticket->department->id : 0;
 
 		if ($ticket_dep_id == $set_dep_id) {
+			$context->getLogger()->debug('[SetDepartment] Skipping, department is the same');
 			return true;
 		}
 
 		$dep = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
 		if (!$dep) {
+			$context->getLogger()->debug('[SetDepartment] Unknown department id: ' . $set_dep_id);
 			return true;
 		}
 
