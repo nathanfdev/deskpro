@@ -70,15 +70,17 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 		# Add SLAs
 		#--------------------
 
-		foreach ($this->getActionOption('add_sla_ids') as $sla_id) {
-			$sla = $ticket_slas->getById($sla_id);
-			if (!$sla) {
-				continue;
-			}
+		if ($add_sla_ids = $this->getActionOption('add_sla_ids')) {
+			foreach ($add_sla_ids as $sla_id) {
+				$sla = $ticket_slas->getById($sla_id);
+				if (!$sla) {
+					continue;
+				}
 
-			if (!$ticket->hasSla($sla)) {
-				$ticket_sla = $ticket->addSla($sla);
-				$em->persist($ticket_sla);
+				if (!$ticket->hasSla($sla)) {
+					$ticket_sla = $ticket->addSla($sla);
+					$em->persist($ticket_sla);
+				}
 			}
 		}
 
@@ -86,15 +88,17 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 		# Remove SLAs
 		#--------------------
 
-		foreach ($this->getActionOption('remove_sla_ids') as $sla_id) {
-			$sla = $ticket_slas->getById($sla_id);
-			if (!$sla) {
-				continue;
-			}
+		if ($remove_sla_ids = $this->getActionOption('remove_sla_ids')) {
+			foreach ($remove_sla_ids as $sla_id) {
+				$sla = $ticket_slas->getById($sla_id);
+				if (!$sla) {
+					continue;
+				}
 
-			if (!$ticket->hasSla($sla)) {
-				$ticket_sla = $ticket->removeSla($sla);
-				$em->remove($ticket_sla);
+				if (!$ticket->hasSla($sla)) {
+					$ticket_sla = $ticket->removeSla($sla);
+					$em->remove($ticket_sla);
+				}
 			}
 		}
 	}

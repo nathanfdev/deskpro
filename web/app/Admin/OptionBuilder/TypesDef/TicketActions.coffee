@@ -833,15 +833,15 @@ define [
 					return {
 						getViewValue: (value = {}, data) ->
 							return {
-								add_slas: value.add_slas || [],
-								remove_slas: value.remove_slas || []
+								add_slas: value.add_sla_ids || [],
+								remove_slas: value.remove_sla_ids || []
 							}
 						getValue: (model = {}, data) ->
 							value = {}
 							value.type = 'SetSlas'
 							value.options = {}
-							value.options.add_slas    = model.add_slas
-							value.options.remove_slas = model.remove_slas
+							value.options.add_sla_ids    = model.add_slas
+							value.options.remove_sla_ids = model.remove_slas
 							return value
 					}
 			}
