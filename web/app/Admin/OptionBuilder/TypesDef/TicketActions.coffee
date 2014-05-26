@@ -504,18 +504,28 @@ define [
 					return {
 						getViewValue: (value = {}, data) ->
 							options = value?.options || {}
+
+							mode = options.mode || 'add'
+							only_if_lower = false
+							if mode == 'raise'
+								mode = 'set'
+								only_if_lower = true
+
 							return {
 								value: options.urgency,
-								op: options.op || 'add',
-								only_if_lower: !!options.only_if_lower
+								op: mode,
+								only_if_lower: only_if_lower
 							}
 						getValue: (model = {}, data) ->
 							value = {}
-							value.type = 'urgency'
+							value.type = 'SetUrgency'
 							value.options = {}
 							value.options.urgency = model.value
-							value.options.op = model.op
-							value.options.only_if_lower = !!model.only_if_lower
+
+							if model.op == 'set' and model.only_if_lower
+								value.options.mode = 'raise'
+							else
+								value.options.mode = model.op
 							return value
 						}
 			}
