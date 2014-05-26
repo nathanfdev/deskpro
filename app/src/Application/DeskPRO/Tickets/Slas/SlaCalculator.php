@@ -124,7 +124,7 @@ class SlaCalculator
 						$wait_time += $this->work_hours->getWorkTimeBetween($ticket->date_user_waiting);
 					}
 
-					return $this->work_hoursk_hours_set->calculateWorkHoursDelay(new \DateTime(), $delay - $wait_time);
+					return $this->work_hours->calculateWorkHoursDelay(new \DateTime(), $delay - $wait_time);
 				}
 				break;
 		}
