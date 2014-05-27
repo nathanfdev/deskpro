@@ -1,0 +1,27 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table" width="100%">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">Email Header</label></td>
+				<td width="100" style="padding-right: 3px;">
+					<input type="text" class="form-control" ng-model="model.name" style="width: 120px;" placeholder="Header Name" />
+				</td>
+				<td width="10" style="padding-right: 3px;">
+					<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;">
+						<option value="is">is</option>
+						<option value="not">is not</option>
+						<option value="contains">contains</option>
+						<option value="not_contains">does not contain</option>
+						<option value="is_regex">matches regex</option>
+						<option value="not_regex">does not match regex</option>
+						<option value="isset">exists</option>
+						<option value="not_isset">does not exist</option>
+					</select>
+				</td>
+				<td>
+					<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'isset' || model.op == 'not_isset'" placeholder="Header Value" />
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

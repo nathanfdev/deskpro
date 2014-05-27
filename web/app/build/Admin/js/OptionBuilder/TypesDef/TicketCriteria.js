@@ -177,29 +177,12 @@
         }
         options = [];
         options.push({
-          title: 'Has attachment',
-          value: 'CheckHasAttach'
-        });
-        options.push({
-          title: 'Has attachment type',
-          value: 'CheckHasAttachType'
-        });
-        options.push({
-          title: 'Has attachment named',
-          value: 'CheckHasAttachName'
-        });
-        set_options.push({
-          title: 'Attachment Criteria',
-          subOptions: options
-        });
-        options = [];
-        options.push({
           title: 'Name',
           value: 'CheckUserName'
         });
         options.push({
           title: 'Email Address',
-          value: 'CheckUserEmailAddress'
+          value: 'CheckUserEmail'
         });
         options.push({
           title: 'Label',
@@ -215,7 +198,7 @@
         });
         options.push({
           title: 'Is manager of organization',
-          value: 'CheckUserIsManager'
+          value: 'CheckUserOrgManager'
         });
         options.push({
           title: 'User is new',
@@ -231,7 +214,7 @@
         });
         options.push({
           title: 'Is disabled',
-          value: 'CheckPersonIsDisabled'
+          value: 'CheckUserIsDisabled'
         });
         set_options.push({
           title: 'User Criteria',
@@ -261,7 +244,7 @@
         });
         options.push({
           title: 'Label',
-          value: 'CheckOrgLabels'
+          value: 'CheckOrgLabel'
         });
         options.push({
           title: 'Email Domain',
@@ -332,10 +315,11 @@
               'user_fields': '/user_fields',
               'org_fields': '/org_fields',
               'ticket_accounts': '/email_accounts',
-              'usergroups': '/user_groups'
+              'usergroups': '/user_groups',
+              'langs': '/langs'
             }).then((function(_this) {
               return function(result) {
-                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
                 data = result.data;
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
@@ -350,26 +334,27 @@
                 options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
                 options_data['email_accounts'] = data.ticket_accounts.email_accounts;
                 options_data['usergroups'] = data.usergroups.groups;
+                options_data['langs'] = (_ref4 = data.langs) != null ? _ref4.languages : void 0;
                 _this.options_data = options_data;
-                if ((_ref4 = _this.options_data) != null ? _ref4.ticket_fields : void 0) {
-                  _ref5 = _this.options_data.ticket_fields;
-                  for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
-                    f = _ref5[_i];
+                if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
+                  _ref6 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
+                    f = _ref6[_i];
                     _this.initFieldGetter('CheckTicketField', f);
                   }
                 }
-                if ((_ref6 = _this.options_data) != null ? _ref6.user_fields : void 0) {
-                  _ref7 = _this.options_data.user_fields;
-                  for (_j = 0, _len1 = _ref7.length; _j < _len1; _j++) {
-                    f = _ref7[_j];
+                if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
+                  _ref8 = _this.options_data.user_fields;
+                  for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
+                    f = _ref8[_j];
                     _this.initFieldGetter('CheckUserField', f);
                   }
                 }
-                if ((_ref8 = _this.options_data) != null ? _ref8.org_fields : void 0) {
-                  _ref9 = _this.options_data.org_fields;
+                if ((_ref9 = _this.options_data) != null ? _ref9.org_fields : void 0) {
+                  _ref10 = _this.options_data.org_fields;
                   _results = [];
-                  for (_k = 0, _len2 = _ref9.length; _k < _len2; _k++) {
-                    f = _ref9[_k];
+                  for (_k = 0, _len2 = _ref10.length; _k < _len2; _k++) {
+                    f = _ref10[_k];
                     _results.push(_this.initFieldGetter('CheckOrgField', f));
                   }
                   return _results;
@@ -558,7 +543,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'to_name';
+        options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
@@ -569,7 +554,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'to_address';
+        options.propName = 'email';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
@@ -580,7 +565,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'from_name';
+        options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
@@ -591,43 +576,78 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'from_address';
+        options.propName = 'email';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCcAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailCcAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'cc_address';
+        options.propName = 'email';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCcName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailCcName = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'cc_name';
+        options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailHeader = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'email_header_match';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-emailheader.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var _ref, _ref1;
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is',
+                  name: ((_ref = value.options) != null ? _ref.name : void 0) || '',
+                  value: ((_ref1 = value.options) != null ? _ref1.value : void 0) || ''
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {
+                  type: 'CheckEmailHeader',
+                  op: model.op || 'is',
+                  options: {
+                    name: model.name || '',
+                    value: model.value || ''
+                  }
+                };
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckLabel = function(options) {
@@ -790,7 +810,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserEmailAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserEmail = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -830,13 +850,13 @@
           options = {};
         }
         options.propName = 'language_ids';
-        options.dataName = 'languages';
+        options.dataName = 'langs';
         options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserIsManager = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserOrgManager = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -846,7 +866,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckPersonIsDisabled = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserIsDisabled = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -897,7 +917,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgLabels = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgLabel = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -913,7 +933,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'name';
+        options.propName = 'email_domain';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;

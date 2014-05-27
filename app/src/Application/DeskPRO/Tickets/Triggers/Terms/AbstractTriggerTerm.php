@@ -594,6 +594,16 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 			$value_i = Strings::utf8_strtolower($value);
 			switch ($op) {
+				case 'isset':
+					if ($value_i !== "") return true;
+					else return false;
+					break;
+
+				case 'not_isset':
+					if ($value_i === "" || $value_i === null || $value_i === false) return true;
+					else return false;
+					break;
+
 				case 'is':
 				case 'not':
 					foreach ($check_value_i as $vi) {

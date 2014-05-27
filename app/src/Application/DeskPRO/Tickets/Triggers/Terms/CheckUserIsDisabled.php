@@ -39,11 +39,9 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users belongs to a usergroup
- *
- * @option int[] usergroup_ids
+ * Checks if the user is disabled
  */
-class CheckOrgUsergroup extends AbstractTriggerTerm
+class CheckUserIsDisabled extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -51,7 +49,6 @@ class CheckOrgUsergroup extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
 		return $options;
 	}
 
@@ -61,7 +58,14 @@ class CheckOrgUsergroup extends AbstractTriggerTerm
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'organization.usergroups[]', 'id', $options['usergroup_ids']);
+		$is_disabled = $ticket->person->is_disabled;
+
+		if ($is_disabled) {
+			if ($this->getTermOperator() == 'is') return true;
+			else return false;
+		} else {
+			if ($this->getTermOperator() == 'is') return false;
+			else return true;
+		}
 	}
 }

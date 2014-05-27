@@ -198,30 +198,6 @@ define [
 					})
 
 			#------------------------------
-			# Attachment Criteria
-			#------------------------------
-
-			options = []
-
-			options.push({
-				title: 'Has attachment',
-				value: 'CheckHasAttach'
-			})
-			options.push({
-				title: 'Has attachment type',
-				value: 'CheckHasAttachType'
-			})
-			options.push({
-				title: 'Has attachment named',
-				value: 'CheckHasAttachName'
-			})
-
-			set_options.push({
-				title: 'Attachment Criteria',
-				subOptions: options
-			})
-
-			#------------------------------
 			# Person
 			#------------------------------
 
@@ -234,7 +210,7 @@ define [
 
 			options.push({
 				title: 'Email Address',
-				value: 'CheckUserEmailAddress'
+				value: 'CheckUserEmail'
 			})
 
 			options.push({
@@ -254,7 +230,7 @@ define [
 
 			options.push({
 				title: 'Is manager of organization',
-				value: 'CheckUserIsManager'
+				value: 'CheckUserOrgManager'
 			})
 
 			options.push({
@@ -274,7 +250,7 @@ define [
 
 			options.push({
 				title: 'Is disabled',
-				value: 'CheckPersonIsDisabled'
+				value: 'CheckUserIsDisabled'
 			})
 
 			set_options.push({
@@ -314,7 +290,7 @@ define [
 
 			options.push({
 				title: 'Label',
-				value: 'CheckOrgLabels'
+				value: 'CheckOrgLabel'
 			})
 
 			options.push({
@@ -399,6 +375,7 @@ define [
 						'org_fields':      '/org_fields',
 						'ticket_accounts': '/email_accounts',
 						'usergroups':      '/user_groups',
+						'langs':           '/langs',
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -414,6 +391,7 @@ define [
 						options_data['user_fields']      = data.user_fields?.custom_fields
 						options_data['email_accounts']   = data.ticket_accounts.email_accounts
 						options_data['usergroups']       = data.usergroups.groups
+						options_data['langs']            = data.langs?.languages
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -529,46 +507,73 @@ define [
 			return def
 
 		getCheckEmailToName: (options = {}) ->
-			options.propName = 'to_name'
+			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailToAddress: (options = {}) ->
-			options.propName = 'to_address'
+			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailFromName: (options = {}) ->
-			options.propName = 'from_name'
+			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailFromAddress: (options = {}) ->
-			options.propName = 'from_address'
+			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckCcAddress: (options = {}) ->
-			options.propName = 'cc_address'
+		getCheckEmailCcAddress: (options = {}) ->
+			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckCcName: (options = {}) ->
-			options.propName = 'cc_name'
+		getCheckEmailCcName: (options = {}) ->
+			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailHeader: (options = {}) ->
-			options.propName = 'email_header_match'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-emailheader.html')
+
+				getData: ->
+					return {
+
+					}
+
+				getDataFormatter: ->
+					return {
+					getViewValue: (value = {}, data) ->
+						return {
+							op: value.op || 'is',
+							name: value.options?.name || '',
+							value: value.options?.value || '',
+						}
+
+					getValue: (model = {}, data) ->
+						value = {
+							type: 'CheckEmailHeader',
+							op: model.op || 'is',
+							options: {
+								name: model.name || ''
+								value: model.value || ''
+							}
+						}
+						return value
+					}
+				}
 
 		getCheckLabel: (options = {}) ->
 			options.propName = 'labels'
@@ -653,7 +658,7 @@ define [
 			def = @getStandardInput(options)
 			return def
 
-		getCheckUserEmailAddress: (options = {}) ->
+		getCheckUserEmail: (options = {}) ->
 			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
@@ -674,17 +679,17 @@ define [
 
 		getCheckUserLanguage: (options = {}) ->
 			options.propName = 'language_ids'
-			options.dataName = 'languages'
+			options.dataName = 'langs'
 			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckUserIsManager: (options = {}) ->
+		getCheckUserOrgManager: (options = {}) ->
 			options.propName = 'is_manager'
 			def = @getStandardIs(options)
 			return def
 
-		getCheckPersonIsDisabled: (options = {}) ->
+		getCheckUserIsDisabled: (options = {}) ->
 			options.propName = 'is_disabled'
 			def = @getStandardIs(options)
 			return def
@@ -710,14 +715,14 @@ define [
 			def = @getStandardInput(options)
 			return def
 
-		getCheckOrgLabels: (options = {}) ->
+		getCheckOrgLabel: (options = {}) ->
 			options.propName = 'labels'
 			options.operators = ['contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckOrgEmailDomain: (options = {}) ->
-			options.propName = 'name'
+			options.propName = 'email_domain'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
