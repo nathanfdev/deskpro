@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_Templates_Ctrl_EmailTemplateEditor extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Templates_Ctrl_EmailTemplateEditor'
 		@CTRL_AS   = 'EmailTemplateEditor'
-		@DEPS      = ['$modalInstance', 'templateName']
+		@DEPS      = ['$modalInstance', 'templateName', 'dpTemplateManager', 'dpObTypesDefTicketActions']
 
 		init: ->
 
@@ -36,6 +36,15 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 				@Api.sendPostJson(url, postData).then( (res) =>
 					@$scope.saving_template = false
+
+					if @$scope.is_new_email
+						if @dpObTypesDefTicketActions.options_data
+							tpl = {
+								name: res.data.name,
+								title: res.data.name.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+							}
+							@dpObTypesDefTicketActions.options_data.custom_email_tpls.push(tpl)
+
 					@$modalInstance.close({
 						templateName: res.data.name,
 						isNewEmail:   @$scope.is_new_email,

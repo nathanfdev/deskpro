@@ -636,13 +636,11 @@ define [
 								if info.templateName
 									title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
 									tpl = {
-										typeId: @typeId,
-										groupId: @groupId,
 										name: info.templateName,
 										title: title
 									}
 
-									if me.options_data?.custom_email_tpls?
+									if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
 										me.options_data.custom_email_tpls.push(tpl)
 
 									$scope.model.template = info.templateName
@@ -720,13 +718,11 @@ define [
 								if info.templateName
 									title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
 									tpl = {
-										typeId: @typeId,
-										groupId: @groupId,
 										name: info.templateName,
 										title: title
 									}
 
-									if me.options_data?.custom_email_tpls?
+									if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
 										me.options_data.custom_email_tpls.push(tpl)
 
 									$scope.model.template = info.templateName

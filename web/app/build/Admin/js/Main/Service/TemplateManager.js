@@ -57,6 +57,17 @@
 
 
       /*
+        	 * Removes a template from the cache
+        	 *
+        	 * @param {String} view
+       */
+
+      Admin_Main_Service_TemplateManager.prototype.removeTemplate = function(view) {
+        return this.$templateCache.remove(this.commonName(view));
+      };
+
+
+      /*
         	 * Execute the pending loads by ending the http request.
         	 *
         	 * @return {promise}

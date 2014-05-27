@@ -820,12 +820,10 @@
                       if (info.templateName) {
                         title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                         tpl = {
-                          typeId: _this.typeId,
-                          groupId: _this.groupId,
                           name: info.templateName,
                           title: title
                         };
-                        if (((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) {
+                        if ((((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) && me.options_data.custom_email_tpls.indexOf(tpl) === -1) {
                           me.options_data.custom_email_tpls.push(tpl);
                         }
                         $scope.model.template = info.templateName;
@@ -925,12 +923,10 @@
                       if (info.templateName) {
                         title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                         tpl = {
-                          typeId: _this.typeId,
-                          groupId: _this.groupId,
                           name: info.templateName,
                           title: title
                         };
-                        if (((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) {
+                        if ((((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) && me.options_data.custom_email_tpls.indexOf(tpl) === -1) {
                           me.options_data.custom_email_tpls.push(tpl);
                         }
                         $scope.model.template = info.templateName;

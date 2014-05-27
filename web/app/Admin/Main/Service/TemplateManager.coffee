@@ -41,6 +41,15 @@ define ->
 
 
 		###
+    	# Removes a template from the cache
+    	#
+    	# @param {String} view
+    	###
+		removeTemplate: (view) ->
+			@$templateCache.remove(@commonName(view))
+
+
+		###
     	# Execute the pending loads by ending the http request.
     	#
     	# @return {promise}

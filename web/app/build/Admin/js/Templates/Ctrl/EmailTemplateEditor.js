@@ -15,7 +15,7 @@
 
       Admin_Templates_Ctrl_EmailTemplateEditor.CTRL_AS = 'EmailTemplateEditor';
 
-      Admin_Templates_Ctrl_EmailTemplateEditor.DEPS = ['$modalInstance', 'templateName'];
+      Admin_Templates_Ctrl_EmailTemplateEditor.DEPS = ['$modalInstance', 'templateName', 'dpTemplateManager', 'dpObTypesDefTicketActions'];
 
       Admin_Templates_Ctrl_EmailTemplateEditor.prototype.init = function() {
         this.$scope.is_new_email = this.templateName === null;
@@ -52,7 +52,17 @@
               url = "/templates/" + _this.templateName;
             }
             return _this.Api.sendPostJson(url, postData).then(function(res) {
+              var tpl;
               _this.$scope.saving_template = false;
+              if (_this.$scope.is_new_email) {
+                if (_this.dpObTypesDefTicketActions.options_data) {
+                  tpl = {
+                    name: res.data.name,
+                    title: res.data.name.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+                  };
+                  _this.dpObTypesDefTicketActions.options_data.custom_email_tpls.push(tpl);
+                }
+              }
               return _this.$modalInstance.close({
                 templateName: res.data.name,
                 isNewEmail: _this.$scope.is_new_email,
