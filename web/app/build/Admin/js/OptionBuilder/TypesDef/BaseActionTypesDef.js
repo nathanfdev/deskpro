@@ -142,12 +142,16 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
-                var _ref;
+                var val, _ref, _ref1;
                 if (value == null) {
                   value = {};
                 }
+                val = ((_ref = value.options) != null ? _ref[prop_name] : void 0) || null;
+                if (val === null && data.options && prop_name) {
+                  val = ((_ref1 = data.options[0]) != null ? _ref1.value : void 0) || null;
+                }
                 return {
-                  value: ((_ref = value.options) != null ? _ref[prop_name] : void 0) || null
+                  value: val
                 };
               },
               getValue: function(model, data) {

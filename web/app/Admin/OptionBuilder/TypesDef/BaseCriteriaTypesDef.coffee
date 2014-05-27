@@ -157,8 +157,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
+							val = value.options?[prop_name] || null
+							if val == null and data.options and prop_name
+								val = data.options[0]?.value || null
+
 							return {
-								value: value.options?[prop_name] || null,
+								value: val,
 								op: value.op || _.first(data.operators)
 							}
 						getValue: (model = {}, data) ->
