@@ -78,9 +78,9 @@
        */
 
       Admin_TicketDeps_Ctrl_List.prototype.startDelete = function(for_dep_id) {
-        var dep, inst, move_deps_list;
+        var dep, inst, move_deps_list, _ref;
         dep = this.depData.findListModelById(for_dep_id);
-        if (dep.children.length) {
+        if ((_ref = dep.children) != null ? _ref.length : void 0) {
           this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
           return;
         }

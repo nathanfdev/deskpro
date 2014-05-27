@@ -53,7 +53,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			dep = @depData.findListModelById(for_dep_id)
 
-			if dep.children.length
+			if dep.children?.length
 				@showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.")
 				return
 
