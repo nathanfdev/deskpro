@@ -24,7 +24,7 @@
         this._initTab('agent', this.els.agent_tab);
         this.ngModel.$formatters.push((function(_this) {
           return function(modelValue) {
-            var f, fieldType, has, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
+            var f, fieldType, has, i, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
             if (!modelValue) {
               modelValue = {};
             }
@@ -77,6 +77,16 @@
               if (!has) {
                 modelValue.agent.push(_this.createFieldValue(fieldType));
               }
+            }
+            _ref4 = modelValue.user;
+            for (i = _m = 0, _len4 = _ref4.length; _m < _len4; i = ++_m) {
+              f = _ref4[i];
+              f.display_order = i;
+            }
+            _ref5 = modelValue.agent;
+            for (i = _n = 0, _len5 = _ref5.length; _n < _len5; i = ++_n) {
+              f = _ref5[i];
+              f.display_order = i;
             }
             return modelValue;
           };

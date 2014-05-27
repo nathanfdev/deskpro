@@ -67,6 +67,11 @@ define [
 					if not has
 						modelValue.agent.push(@createFieldValue(fieldType))
 
+				for f, i in modelValue.user
+					f.display_order = i
+				for f, i in modelValue.agent
+					f.display_order = i
+
 				return modelValue
 			)
 
