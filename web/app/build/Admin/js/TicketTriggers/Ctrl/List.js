@@ -38,15 +38,16 @@
           handle: '.drag-handle',
           update: (function(_this) {
             return function(ev, data) {
-              var $list, runOrders;
+              var $list, eventType, runOrders;
               $list = data.item.closest('ul');
               runOrders = [];
+              eventType = _this.eventType;
               $list.find('li').each(function() {
                 var id;
                 id = $(this).data('trigger-id');
                 if (id) {
                   if (id === 'departments') {
-                    if (this.eventType === 'changed') {
+                    if (eventType === 'update') {
                       id = 'departments_changed';
                     }
                     return runOrders.push(id);

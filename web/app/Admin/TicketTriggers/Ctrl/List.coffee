@@ -37,11 +37,12 @@ define [
 					$list = data.item.closest('ul')
 					runOrders = []
 
+					eventType = @eventType
 					$list.find('li').each(->
 						id = $(this).data('trigger-id')
 						if id
 							if id == 'departments'
-								if @eventType == 'changed' then id = 'departments_changed'
+								if eventType == 'update' then id = 'departments_changed'
 								runOrders.push(id)
 							else if id == 'emailaccounts'
 								runOrders.push(id)
