@@ -842,9 +842,10 @@ define [
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
+							options = value.options || {}
 							return {
-								add_slas: value.add_sla_ids || [],
-								remove_slas: value.remove_sla_ids || []
+								add_slas: options.add_sla_ids || [],
+								remove_slas: options.remove_sla_ids || []
 							}
 						getValue: (model = {}, data) ->
 							value = {}

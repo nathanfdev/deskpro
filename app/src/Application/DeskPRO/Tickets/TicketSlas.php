@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Collection\LazyCollection;
+use Orb\Util\Arrays;
 
 class TicketSlas extends LazyCollection
 {
@@ -42,7 +43,9 @@ class TicketSlas extends LazyCollection
 	 */
 	protected function loadRecords()
 	{
-		return $this->em->getRepository('DeskPRO:Sla')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:Sla')->findAll();
+		$recs = Arrays::keyFromData($recs, 'id');
+		return $recs;
 	}
 
 
@@ -51,7 +54,7 @@ class TicketSlas extends LazyCollection
 
 	/**
 	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Sla[]
+	 * @return \Application\DeskPRO\Entity\Sla
 	 */
 	public function getById($id)
 	{

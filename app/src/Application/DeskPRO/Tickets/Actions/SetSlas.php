@@ -74,12 +74,16 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 			foreach ($add_sla_ids as $sla_id) {
 				$sla = $ticket_slas->getById($sla_id);
 				if (!$sla) {
+					$context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, does not exist", $sla_id));
 					continue;
 				}
 
-				if (!$ticket->hasSla($sla)) {
+				if ($ticket->hasSla($sla)) {
+					$context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, already on ticket", $sla_id));
+				} else {
 					$ticket_sla = $ticket->addSla($sla);
 					$em->persist($ticket_sla);
+					$context->getLogger()->debug(sprintf("[SetSlas] Add %d", $sla_id));
 				}
 			}
 		}
@@ -92,12 +96,16 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 			foreach ($remove_sla_ids as $sla_id) {
 				$sla = $ticket_slas->getById($sla_id);
 				if (!$sla) {
+					$context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, does not exist", $sla_id));
 					continue;
 				}
 
 				if (!$ticket->hasSla($sla)) {
+					$context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, not on ticket", $sla_id));
+				} else {
 					$ticket_sla = $ticket->removeSla($sla);
 					$em->remove($ticket_sla);
+					$context->getLogger()->debug(sprintf("[SetSlas] Remove %d", $sla_id));
 				}
 			}
 		}
