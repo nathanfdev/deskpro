@@ -212,7 +212,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			// then we can just promote the user to be an agent
 			if (count($find_existing) == 1 && !$id) {
 				$exist = array_pop($find_existing);
-				$id = $exist->id;
+				$id = $exist['person']->id;
 
 			// In all other cases, we have a dupe email error
 			} else {
