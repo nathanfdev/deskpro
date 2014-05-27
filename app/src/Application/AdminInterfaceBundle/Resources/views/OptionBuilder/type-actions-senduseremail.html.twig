@@ -8,7 +8,7 @@
 						<tr>
 							<td>Template:</td>
 							<td>
-								<select ng-if="!is_creating" ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || ''" ng-change="handleTemplateChange()">
+								<select ng-if="!is_creating" ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig'" ng-change="handleTemplateChange()">
 									<optgroup label="Standard User Emails">
 										{% for email,label in {
 											'DeskPRO:emails_user:ticket-new-autoreply.html.twig': 'New Ticket Auto-Response',
@@ -18,6 +18,10 @@
 										} %}
 											<option value="{{ email }}">{{ label }}</option>
 										{% endfor %}
+									</optgroup>
+									<optgroup label="Other User Emails">
+										<option value="DeskPRO:emails_user:ticket-rate.html.twig">Request user feedabck</option>
+										<option value="DeskPRO:emails_user:ticket-new-validate-email.html.twig">New ticket requires validation (auto-response)</option>
 									</optgroup>
 									<optgroup label="Custom Emails">
 										<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
