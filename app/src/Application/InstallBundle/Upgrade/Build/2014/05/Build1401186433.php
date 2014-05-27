@@ -77,7 +77,7 @@ class Build1401186433 extends AbstractBuild
 
 	private function _convertFilter(array $filter)
 	{
-		$terms = @unserialize($filter['terms']);
+		$terms = json_decode($filter['terms'], true);
 		if (!$terms) return;
 
 		$new_terms = array();
@@ -123,8 +123,8 @@ class Build1401186433 extends AbstractBuild
 			$this->container->getDb()->delete('ticket_filters', array('id' => $filter['id']));
 		} else {
 			$this->container->getDb()->update('ticket_filters', array(
-					'terms' => serialize($new_terms)
-				), array('id' => $filter['id']));
+				'terms' => json_encode($new_terms)
+			), array('id' => $filter['id']));
 		}
 	}
 }

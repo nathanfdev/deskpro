@@ -2144,18 +2144,6 @@ class TicketSearch extends SearcherAbstract
 						$wheres[] = $this->_stringMatch("$tickets_table.creation_system", $op, $choice, true, true);
 						break;
 
-					case 'gateway_address':
-						$e = new \RuntimeException("not supported");
-						KernelErrorHandler::logException($e, true, 'TicketSearch::TERM_GATEWAY_ADDRESS');
-						$wheres[] = '0';
-						break;
-
-					case 'gateway_account':
-						$e = new \RuntimeException("not supported");
-						KernelErrorHandler::logException($e, true, 'TicketSearch::TERM_RECEIVING_GATEWAY');
-						$wheres[] = '0';
-						break;
-
 					case 'escalation_eliminator':
 						/** @var $trigger \Application\DeskPRO\Entity\TicketEscalation */
 						if ($choice instanceof Entity\TicketEscalation) {
