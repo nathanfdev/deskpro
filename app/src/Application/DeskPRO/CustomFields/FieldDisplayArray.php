@@ -83,7 +83,13 @@ class FieldDisplayArray implements \ArrayAccess
 
 		if ($value === null && $use_default && $default_value) {
 			if ($field_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$value = array('children' => array($default_value => array('value' => 1)));
+				$value = array('children' => array());
+				if (!is_array($default_value)) {
+					$default_value = explode(',', $default_value);
+				}
+				foreach ($default_value as $v) {
+					$value['children'][$v] = array('value' => 1);
+				}
 			} else {
 				$value = array('value' => $default_value);
 			}

@@ -42,6 +42,7 @@ abstract class CustomFieldAbstract
 	public $title;
 	public $description = '';
 	public $handler_class;
+	public $default_value;
 
 	public $required = false;
 	public $agent_required = false;
@@ -72,6 +73,7 @@ abstract class CustomFieldAbstract
 		$this->is_agent_field = $field->is_agent_field;
 		$this->is_enabled = $field->is_enabled;
 		$this->agent_validation_resolve = $field->getOption('agent_validation_resolve', false);
+		$this->default_value = $field->default_value;
 
 		if ($field->getOption('required')) {
 			$this->required = true;
@@ -105,6 +107,11 @@ abstract class CustomFieldAbstract
 		$field->description = $this->description ?: '';
 		$field->is_enabled = $this->is_enabled;
 		$field->is_agent_field = $this->is_agent_field;
+		if ($this->default_value) {
+			$field->default_value = $this->default_value;
+		} else {
+			$field->default_value = null;
+		}
 		if ($this->isNewField()) {
 			$field->handler_class = $this->handler_class;
 		}

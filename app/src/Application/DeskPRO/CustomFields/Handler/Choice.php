@@ -157,7 +157,7 @@ class Choice extends HandlerAbstract
 		}
 
 		$setData = $selected_options;
-		if (!$this->multiple) {
+		if (!$this->multiple && is_array($setData)) {
 			$setData = array_pop($setData);
 		}
 
