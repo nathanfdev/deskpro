@@ -64,10 +64,10 @@
 	</header>
 	<article>
 		<section>
-			<p>When a macro runs, the actions it contains are applied to the ticket it is run on (or to the user associated with that ticket).</p>
-			<p>Agents can run macros from the content pane using the <strong>Macros</strong> button or the <strong>Send Reply</strong> control. They can also apply a macro as a mass action from the list pane.</p>
-			<p>Macros can either be global (available to everyone), or limited to a specific agent.</p>
-			<p>Agents can create macros in the Preferences area of the agent interface. They choose whether or not their macros are shared. If you notice that several agents have created similar macros, it may be a good idea to create a global version that all agents can use.</p>
+			<p>When a macro runs, the actions it contains are applied to the ticket it is run on (or to the user associated with that ticket). 
+			<p>Macros can either be global (available to everyone), or limited to a specific agent. Agents can run macros from the content pane using the <strong>Macros</strong> button or the <strong>Send Reply</strong> control. They can also apply a macro as a mass action from the list pane.</p>
+			
+			<p>Agents can create macros in the Preferences area of the agent interface. They choose whether or not their macros are global. If you notice that several agents have created similar macros, it may be a good idea to create a global version that all agents can use.</p>
 			
 		</section>
 	
@@ -80,9 +80,20 @@
 			</dd>
 		</dl>
 		
+		<dt><em>Q:</em>How can agents use macros to quickly enter commonly-repeated text, standard greetings, canned answers etc?</dt>
+		<dd><em>A:</em>
+			In DeskPRO, the system for automatically entering text is called <strong>snippets</strong>. It is accessible from the agent interface only.
+		</dd>
+		
 			<dt><em>Q:</em>How do I add a signature to a macro reply?</dt>
 			<dd><em>A:</em>
 			Replies created by a macro do not include the agent signatures. However, you can use the following variable to insert the signature of the agent who ran the macro: <code>{{agent_signature|raw}}</code>.
+		</dd>
+		
+		<dt><em>Q:</em>Applying macros from the agent interface Reply button doesn't seem to work.</dt>
+		<dd><em>A:</em>
+			When you select a macro from the Macros drop down, the actions are applied instantly.
+When you select a macro from the reply button; the actions are only applied when the reply button itself is clicked.
 		</dd>
 
 		</section>

@@ -46,20 +46,42 @@
 				<li>time until ticket resolution</li>
 				<li>user waiting time until ticket resolution (in total)</li>
 			</ul>
-			<p>You can use <strong>Hours</strong> to set whether time should be counted <strong>24x7</strong> (constantly), during default working hours (as defined in <strong>Tickets</strong> > <strong>Settings</strong>), or during custom hours you define.</p>
-			<p>You then define the amount of time for a <strong>warning</strong> (when the ticket is considered close to failing) and a <strong>failure</strong>.</p>
+			
+			<p>You define the amount of time for a <strong>warning</strong> (when the ticket is considered close to failing) and a <strong>failure</strong>.</p>
 			<p>Tickets in the warning condition are highlighted in the agent interface with an amber background. Tickets that have failed are highlighted red.</p>
 			<p>You can define actions that run automatically at warning and at failure. For example, you might want to increase the <strong>urgency</strong> of a ticket that is about to fail an SLA or assign the ticket to a more experienced team.</p>
-			<p>Use <strong>SLA Application</strong> to set which tickets are affected by the SLA:</p>
-			<ul>
-				<li><strong>Apply to all tickets</strong>: this applies the SLA to all tickets created from now on, not existing tickets</li>
-				<li><strong>Agents manually apply the SLA</strong></li>
-				<li><strong>Apply to new tickets that match certain criteria</strong>: the SLA will apply to tickets that meet any of the conditions you set</li>
-			</ul>
+	
 		</section>
+<section>
+		<h2><span>FAQ</span></h2>
+		<dl>
+			<dt><em>Q:</em>Can I have SLAs that only apply during helpdesk working hours?</dt>
+			<dd><em>A:</em>
+				Yes, use the SLA's <strong>Hours</strong> setting to to choose if time is counted 24x7 (constantly), during default working hours (as you have defined in <strong>Tickets > Settings</strong>), or during custom working hours which apply only to that SLA.
+			</dd>
+		</dl>
+		<dt><em>Q:</em>What does the SLA Application setting mean?</dt>
+		<dd><em>A:</em>Use <strong>SLA Application</strong> to set which tickets are affected by the SLA:</p>
+			<ul>
+				<li><strong>Apply to all tickets</strong>: applies the SLA to all tickets created from now on, but <em>not</em> existing tickets</li>
+				<li><strong>Agents manually apply the SLA</strong> using a ticket's <strong>SLAs</strong> tab</li>
+				<li><strong>Apply to new tickets that match certain criteria</strong>: the SLA will apply to tickets that meet <em>any</em> of the conditions you set</li>
+			</ul>
+		</dd>
+		
+		{#
+		<dt><em>Q:</em>We have to reply to every user message within a fixed time, so I want an SLA that counts time to respond to a user message, regardless of whether it is the first message on a ticket or a later one. Can I do this?</dt>
+		<dd><em>A:</em>
+			This is not possible with SLAS alone. You can measure this by setting an escalation based on time the user has been waiting, and have it perform a <strong>Set SLA Condition Status</strong> action after the response time is exceeded.
+		</dd>
+		#}
+		
+	</dl>
+		
 
+</section>
 		<section>
-			<h2><span>Related Knowledgebase articles</span></h2>
+			<h2><span>Related Content</span></h2>
 			<ul>
 				<li><a href="https://support.deskpro.com/kb/articles/110-using-ticket-slas" target="_blank">Using Ticket SLAs</a></li>
 			</ul>

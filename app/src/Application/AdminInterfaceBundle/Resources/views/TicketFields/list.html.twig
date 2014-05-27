@@ -70,7 +70,7 @@
 {% block listpane_help %}
 	<header>
 		<h1>You can customize the information stored for a ticket with optional built-in fields and custom fields.</h1>
-		<p>You can use optional categories, priorities, workflows and products to help organize your helpdesk; you set the values agents/users can choose from. You can also define completely custom fields where you choose the field name and the type of values allowed.</p>
+		<p>Use categories, priorities, workflows and products to help organize your helpdesk; you set the values agents/users can choose from. You can also define completely custom fields where you choose the field name and the type of values allowed.</p>
 	</header>
 	<article>
 		<section>
@@ -78,12 +78,12 @@
 			<ul>
 				<li><strong>Categories</strong> are a general field, usually used to handle grouping tickets within a department.</li>
 				<li><strong>Priorities</strong> describe how important a ticket is. The different priority values you set have an order, from most to least important.</li>
-				<li><strong>Workflows</strong> are used to record the ticket&#39;s stage in your support process - for example "Triage", "Troubleshooting", "Follow-Up".</li>
+				<li><strong>Workflows</strong> are used to record the ticket's stage in your support process - for example "Triage", "Troubleshooting", "Follow-Up".</li>
 				<li><strong>Products</strong> usually denote a real product or service that your enterprise offers and your helpdesk supports. If enabled, products can apply to items other than tickets, such as feedback and articles.</li>
+				<li><strong>Custom fields</strong> are the most flexible way to store extra information. You can choose the name of the field and specify how agents and users select values (e.g. text entry, radio buttons etc.) when creating or editing a ticket.</li>
 			</ul>
-			<p>When you define a <strong>custom field</strong>, you can choose how agents and users select values (e.g. text entry, radio buttons etc.) when creating or editing a ticket.</p>
 			<p>You can specify a default value for all these fields, and set validation options that control what users/agents are allowed or required to enter.</p>
-			<p>You can control which fields are displayed in the user and agent ticket creation forms by using the <strong>Layout</strong> tab in the Departments section. The forms for different departments can include different fields.</p>
+			<p>You control which fields are displayed in the user and agent ticket creation forms by using the <strong>Layout</strong> tab in the Departments section. The forms for different departments can include different fields.</p>
 		</section>
 		
 		<section>
@@ -91,22 +91,30 @@
 		<dl>
 			<dt><em>Q:</em>I set up a field but it is not showing up on the ticket creation forms.</dt>
 			<dd><em>A:</em>
-				Make sure you have added the field in the Departments section Layout Editor.
+				Make sure you have added the field in the Departments section Layout Editor. If users can't see the field, check that the <strong>Agent Only Field</strong> setting is not enabled.
 			</dd>
 			<dt><em>Q:</em>My helpdesk uses multiple languages and some of these fields are not being translated; how do I fix this?</dt>
 			<dd><em>A:</em>
-				You need to enter a translation for the field names. Go to <strong>Setup > Languages</strong>; click on each language you have installed beyond the default, click <strong>Edit Phrases</strong>, and enter a custom translation.
+				You need to enter a translated version of any field values/names you have defined. Go to <strong>Setup > Languages</strong>; click on each language you have installed beyond the default, click <strong>Edit Phrases</strong>, and enter a custom translation.
 			</dd>
 		<dt><em>Q:</em>What does the <strong>Match regular expression</strong> setting on custom text fields do?</dt>
 		<dd><em>A:</em>
 			A regular expression lets you define a pattern that user/agent input must match. For example, if you expect an 8-digit account number starting with 9, you can use a regular expression to make sure input matches that format. See the manual section on <a href="#Custom field validation" target="_blank">Custom field validation</a> for more details.
 		</dd>
+		<dt><em>Q:</em>What's the difference between urgency and priority?</dt>
+			<dd><em>A:</em>
+				Urgency is a number from 1 to 10. Priorities are an ordered set of named priority levels such as "Routine", "Urgent", "Critical". Priorities can be set by users from the web interface, whereas urgency is for agent reference only. Trigger actions can be used to increase or decrease urgency by a relative amount (e.g. increase urgency by 5, reduce urgency by 2), whereas trigger actions can only set a particular priority.
+			</dd>
 		</dl>
 </section>
 	<section>
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL]<a href="#ticket-customization" target="_blank">Ticket customization</a></li>
+				<li>[MANUAL]<a href="#categories" target="_blank">Categories</a></li>
+				<li>[MANUAL]<a href="#priorities" target="_blank">Priorities</a></li>
+				<li>[MANUAL]<a href="#workflows" target="_blank">Workflows</a></li>
+				<li>[MANUAL]<a href="#products" target="_blank">Products</a></li>
+				<li>[MANUAL]<a href="#custom-fields" target="_blank">Custom fields</a></li>
 				<li>[MANUAL]<a href="#custom-field-validation" target="_blank">Custom field validation</a>
 				<li>[MANUAL]<a href="#ticket-form-layouts" target="_blank">Ticket form layouts</a></li>
 				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/181" target="_blank">Ticket assignment workflows in DeskPRO</a></li>
