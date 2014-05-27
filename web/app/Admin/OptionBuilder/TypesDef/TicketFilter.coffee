@@ -56,6 +56,11 @@ define [
 			})
 
 			options.push({
+				title: 'Email Account',
+				value: 'FilterEmailAccount'
+			})
+
+			options.push({
 				title: 'Subject',
 				value: 'FilterSubject'
 			})
@@ -250,7 +255,7 @@ define [
 					@options_data['ticket_pris']      = data.ticket_pris.priorities
 					@options_data['ticket_works']     = data.ticket_works.workflows
 					@options_data['ticket_prods']     = data.ticket_prods?.products
-					@options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
+					@options_data['ticket_accounts']  = data.ticket_accounts.email_accounts
 					@options_data['usergroups']       = data.usergroups.groups
 				)
 
@@ -379,7 +384,7 @@ define [
 			return def
 
 		getFilterEmailAccount: (options = {}) ->
-			options.propName = 'gateway_ids'
+			options.propName = 'email_account_ids'
 			options.dataName = 'ticket_accounts'
 			options.optionsFormatter = (options) ->
 				opts = []
@@ -387,7 +392,7 @@ define [
 				for acc in options
 					opts.push({
 						value: acc.id,
-						title: acc.email_address
+						title: acc.address
 					})
 
 				return opts

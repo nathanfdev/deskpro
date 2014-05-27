@@ -55,6 +55,10 @@
           value: 'FilterWorkflow'
         });
         options.push({
+          title: 'Email Account',
+          value: 'FilterEmailAccount'
+        });
+        options.push({
           title: 'Subject',
           value: 'FilterSubject'
         });
@@ -214,7 +218,7 @@
               _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
               _this.options_data['ticket_works'] = data.ticket_works.workflows;
               _this.options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
-              _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
+              _this.options_data['ticket_accounts'] = data.ticket_accounts.email_accounts;
               return _this.options_data['usergroups'] = data.usergroups.groups;
             };
           })(this));
@@ -458,7 +462,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'gateway_ids';
+        options.propName = 'email_account_ids';
         options.dataName = 'ticket_accounts';
         options.optionsFormatter = function(options) {
           var acc, opts, _i, _len;
@@ -467,7 +471,7 @@
             acc = options[_i];
             opts.push({
               value: acc.id,
-              title: acc.email_address
+              title: acc.address
             });
           }
           return opts;

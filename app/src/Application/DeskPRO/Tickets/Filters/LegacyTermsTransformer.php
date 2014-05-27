@@ -254,6 +254,13 @@ class LegacyTermsTransformer
 					'options' => array('workflow' => $options['workflow_ids'])
 				);
 
+			case 'FilterEmailAccount':
+				return array(
+					'type'    => 'email_account',
+					'op'      => $term->getTermOperator(),
+					'options' => array('email_account_ids' => $options['email_account_ids'])
+				);
+
 			case 'FilterSlaStatus':
 				return array(
 					'type'    => 'sla_status',
@@ -552,6 +559,16 @@ class LegacyTermsTransformer
 
 				return new Terms\FilterWorkflow($op, array(
 					'workflow_ids' => $ids
+				));
+
+			case 'email_account':
+				$ids = @$options['email_account_ids'] ?: array();
+				if (!is_array($ids)) {
+					$ids = array($ids);
+				}
+
+				return new Terms\FilterEmailAccount($op, array(
+					'email_account_ids' => $ids
 				));
 
 			case 'language':

@@ -179,6 +179,27 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('OrgFieldsManager');
 	}
 
+	public function getEmailAccounts()
+	{
+		static $accounts;
+
+		if ($accounts === null) {
+			$accounts = array_map(function ($a) {
+				return array(
+					'id'                    => $a->id,
+					'address'               => $a->address,
+					'other_addresses'       => $a->other_addresses,
+					'all_addresses'         => $a->getAllAddresses(),
+					'incoming_account_type' => $a->getIncomingAccountType(),
+					'outgoing_account_type' => $a->getOutgoingAccountType(),
+				);
+			}, App::$container->getEmailAccountManager()
+				->getAllAccounts());
+		}
+
+		return $accounts;
+	}
+
 	/**
 	 * Used only for backwards comptat
 	 * @deprecated

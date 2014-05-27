@@ -54,6 +54,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_AGENT_TEAM                = 'agent_team';
 	const TERM_STATUS                    = 'status';
 	const TERM_HIDDEN_STATUS             = 'hidden_status';
+	const TERM_EMAIL_ACCOUNT             = 'email_account';
 	const TERM_WORKFLOW                  = 'workflow';
 	const TERM_PRIORITY                  = 'priority';
 	const TERM_SUBJECT                   = 'subject';
@@ -1143,8 +1144,24 @@ class TicketSearch extends SearcherAbstract
 						}
 
 						$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice, true);
-
 						break;
+
+					case self::TERM_EMAIL_ACCOUNT:
+						$this->enableArchiveSearch();
+						$this->affected_fields[] = 'ticket.email_account_id';
+
+						if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
+							$choice = (array)$choice;
+							$choice = array_unique($choice, \SORT_NUMERIC);
+						}
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_EMAIL_ACCOUNT;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.email_account_id", $op, $choice, true);
+						break;
+
 					case self::TERM_DELETED:
 						$this->affected_fields[] = 'ticket.status';
 						$this->affected_fields[] = 'ticket.hidden_status';

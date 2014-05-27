@@ -373,6 +373,24 @@
 		</div>
 	{% endif %}
 
+	{% if 'email_account' not in no_show_fields and app.getEmailAccounts() %}
+		<div class="builder-type" title="Email Account" data-rule-type="email_account" data-term-type="GenericMenuTerm" data-term-triggers="email,account">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="email_account_ids[]" multiple="multiple">
+					{% for acc in app.getEmailAccounts() %}
+						<option value="{{acc.id}}">{{acc.address}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
 	{% if 'urgency' not in no_show_fields %}
 	<div class="builder-type" title="{{ phrase('agent.general.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 		<div class="builder-op">
