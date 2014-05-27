@@ -130,7 +130,7 @@ class Choice extends HandlerAbstract
 					$options[$child->getTitle()] = array();
 				}
 			} elseif ($child->getOption('parent_id')) {
-				if (!($this->multiple && $this->expanded)) {
+				if (!($this->multiple || $this->expanded)) {
 					$title = $children[$child->getOption('parent_id')]->getTitle();
 					if (!isset($options[$title])) {
 						$options[$title] = array();
