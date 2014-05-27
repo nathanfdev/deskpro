@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -71,6 +72,11 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
 
 		$context->getLogger()->debug(sprintf('[SetDepartment] Setting %d %s', $dep->id, $dep->title));
 		$ticket->department = $dep;
+
+		// Tmp hack until can figure out why this isn't persisted on at least one server
+		// IIS, PHP 5.4.24, WinCache 1.3.4.0
+		App::$container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
+		App::$container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
 	}
 
 
