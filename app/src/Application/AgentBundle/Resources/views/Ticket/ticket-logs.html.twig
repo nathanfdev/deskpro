@@ -63,8 +63,8 @@
 									{% else %}
 										<span class="trigger-id" title="{{ sublog.details.trigger_title }}">{{ phrase('agent.general.trigger_x', {id: sublog.trigger_id}) }}</span>
 									{% endif %}
-								{% elseif log.escalation_id %}
-									<span class="trigger-id" title="{{ sublog.details.escalation_title }}">{{ phrase('agent.general.escalation') }} {{ log.escalation_id }}</span>,
+								{% elseif sublog.escalation_id %}
+									<span class="trigger-id" title="{{ sublog.details.escalation_title }}">{{ phrase('agent.general.escalation') }} {{ sublog.escalation_id }}</span>
 								{% endif %}
 							</div>
 

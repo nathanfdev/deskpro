@@ -42,6 +42,8 @@
 						{% else %}
 							<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: sublog.trigger_id}) }}</span>
 						{% endif %}
+					{% elseif sublog.escalation_id %}
+						<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ sublog.escalation_id }}</span>
 					{% endif %}
 				</div>
 
