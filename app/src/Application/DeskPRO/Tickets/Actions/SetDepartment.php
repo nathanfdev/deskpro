@@ -75,8 +75,10 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
 
 		// Tmp hack until can figure out why this isn't persisted on at least one server
 		// IIS, PHP 5.4.24, WinCache 1.3.4.0
-		App::$container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
-		App::$container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
+		if (isset(App::$container)) { // if is to prevent this during testing
+			App::$container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
+			App::$container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
+		}
 	}
 
 

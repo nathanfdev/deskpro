@@ -35,7 +35,7 @@ class CheckOrgUsergroupTest extends AbstractEntityCheckTest
 	 */
 	protected function getCheckClass()
 	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckOrgUsergroup';
+		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckOrgUsergroups';
 	}
 
 	/**
