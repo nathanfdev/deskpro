@@ -75,7 +75,7 @@ class TicketEscalations extends AbstractJob
 		$matcher  = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
 		$matcher->setLogger($logger);
 
-		$executor = new EscalationExecutor(App::$container->getTicketManager(), new ActionApplicator(App::$container));
+		$executor = new EscalationExecutor(App::$container->getDb(), App::$container->getTicketManager(), new ActionApplicator(App::$container));
 		$executor->setLogger($logger);
 
 		$runner = new EscalationsRunner(

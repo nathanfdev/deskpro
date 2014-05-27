@@ -2494,7 +2494,8 @@ class TicketSearch extends SearcherAbstract
                 case 'time_last_user_reply':
                     $field = str_replace('time', 'date', $term);
 
-					$ticket_time = clone $ticket[$field];
+					$f = $ticket[$field];
+					$ticket_time = clone $f;
 
 					if (!empty($choice['timezone'])) {
 						$ticket_time->setTimezone(new \DateTimeZone($choice['timezone']));
