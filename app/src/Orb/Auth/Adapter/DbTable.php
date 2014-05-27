@@ -111,7 +111,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 			$this->db = call_user_func($this->db_callback);
 			if ($this->logger) $this->logger->logDebug("Database connection success");
 		} catch (\Exception $e) {
-			$this->logger->logDebug("Error trying to connect to database: {$e->getCode()} {$e->getMessage()}");
+			if ($this->logger) $this->logger->logDebug("Error trying to connect to database: {$e->getCode()} {$e->getMessage()}");
 			return null;
 		}
 
