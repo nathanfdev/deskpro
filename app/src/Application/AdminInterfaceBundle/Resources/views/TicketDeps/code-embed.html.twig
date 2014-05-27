@@ -3,7 +3,7 @@
 <script type="text/javascript">
 	var DpNewTicket_Options = DpNewTicket_Options || {};
 	DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-	DpNewTicket_Options.deskproUrl = DpNewTicket_Options.protocol + '://dp4.deskpro.dev/';
+	DpNewTicket_Options.deskproUrl = DpNewTicket_Options.protocol + '://{{ url_full('user')|url_trim_scheme|replace({'index.php': ''})|trim('/') }}/';
 	DpNewTicket_Options.initialHeight = 700;
 	DpNewTicket_Options.containerId = 'dp_newticket_form';
 	DpNewTicket_Options.departmentId = %DEPID%;
@@ -30,7 +30,7 @@
 			var scr = document.createElement('script');
 			scr.type = 'text/javascript';
 			scr.async = true;
-			scr.src = DpNewTicket_Options.protocol + '://dp4.deskpro.dev/web/javascripts/DeskPRO/User/TicketFormWidget/TicketFormWidget.js';
+			scr.src = DpNewTicket_Options.protocol + '://{{ url_full('user')|url_trim_scheme|replace({'index.php': ''})|trim('/') }}/web/javascripts/DeskPRO/User/TicketFormWidget/TicketFormWidget.js';
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 		})();
 	}
