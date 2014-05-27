@@ -30,10 +30,10 @@
 
 
       /*
-       * Remove a model
-       *
-       * @param {Integer} id
-       * @return {promise}
+      		 * Remove a model
+      		 *
+      		 * @param {Integer} id
+      		 * @return {promise}
        */
 
       UserRules.prototype.deleteUserRuleById = function(id) {
@@ -63,10 +63,10 @@
 
 
       /*
-       * Get all data needed for the edit page
-       *
-       * @param {Integer} id
-       * @return {promise}
+      		 * Get all data needed for the edit page
+      		 *
+      		 * @param {Integer} id
+      		 * @return {promise}
        */
 
       UserRules.prototype.loadEditUserRuleData = function(id) {
@@ -81,7 +81,7 @@
               var data;
               data = {};
               data.user_rule = result.data.user_rule.user_rule;
-              data.all_usergroups = result.data.usergroups.usergroups;
+              data.all_usergroups = result.data.usergroups.groups;
               data.form = _this.getFormMapper().getFormFromModel(data);
               return deferred.resolve(data);
             };
@@ -94,7 +94,7 @@
               var data;
               data = {};
               data.user_rule = {};
-              data.all_usergroups = result.data.usergroups;
+              data.all_usergroups = result.data.groups;
               data.form = _this.getFormMapper().getFormFromModel(data);
               return deferred.resolve(data);
             };
@@ -107,11 +107,11 @@
 
 
       /*
-       * Saves a form model and merges model with list data
-       *
-       * @param {Object} model user_rule model
-       	 * @param {Object} formModel  The model representing the form
-       * @return {promise}
+      		 * Saves a form model and merges model with list data
+      		 *
+      		 * @param {Object} model user_rule model
+      		 * @param {Object} formModel  The model representing the form
+      		 * @return {promise}
        */
 
       UserRules.prototype.saveFormModel = function(model, formModel) {

@@ -14,29 +14,18 @@ define [
 			@apply_log = ''
 			@apply_started = false
 
-		###
- 	#
- 	###
-
 		initialLoad: ->
 			promise = @userRulesData.loadEditUserRuleData(@$stateParams.id || null).then( (data) =>
-
 				@user_rule  = data.user_rule
 				@form = data.form
 			)
 			return promise
 
-		###
-		#
- 	###
-
 		saveForm: ->
-
 			if not @$scope.form_props.$valid
 				return
 
 			is_new = !@user_rule.id
-
 			promise = @userRulesData.saveFormModel(@user_rule, @form)
 
 			@startSpinner('saving')
@@ -51,28 +40,21 @@ define [
 			)
 
 		###
- 	# Applying current user rule to all users
+ 		# Applying current user rule to all users
 		###
-
 		applyRuleToUsers: ->
-
 			page = -1
 			@apply_started = true
 
 			doRequest = =>
-
 				page++
-
 				@Api.sendGet('/user_rules_apply/' + @user_rule.id + '/page_' + page).success( (result) =>
-
 					if !result.completed and result.success
 						@apply_log += 'Done batch #' + (page + 1) + ' ...<br>'
 						doRequest()
 					else
 						@apply_log += 'Completed<br>'
-
 				).error( =>
-
 					@apply_log = 'Error occurred<br>'
 				)
 

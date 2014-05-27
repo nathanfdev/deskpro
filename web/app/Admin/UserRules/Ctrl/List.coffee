@@ -9,23 +9,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		###
 		# Loads the list
 		###
-
 		initialLoad: ->
-
-			promise = @userRulesData.loadList().then( (list) =>
+			@userRulesData.loadList().then( (list) =>
 				@list = list
 			)
-
-			return promise
 
 		###
 		# Show the delete dlg
 		###
-
 		startDelete: (for_rule_id) ->
-
 			rule = @userRulesData.findListModelById(for_rule_id)
-
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('UserRules/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
@@ -44,14 +37,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		###
 		# Actually do the delete
 		###
-
 		deleteUserRule: (for_rule) ->
-
 			@userRulesData.deleteUserRuleById(for_rule.id).success( =>
-
 				if @$state.current.name == 'crm.rules.edit' and parseInt(@$state.params.id) == for_rule.id
 					@$state.go('crm.rules')
-
 			).error((info, code) =>
 				@applyErrorResponseToView(info)
 			)

@@ -25,9 +25,9 @@
 						</div>
 						<div class="form-group">
 							<div class="col-lg-3">
-								<h3>When matching, add user to usergroup</h3>
+								<h3>Add to group</h3>
 							</div>
-							<div class="col-lg-9" dp-error-class="form_props.usergroup">
+							<div class="col-lg-9" dp-error-class="form_props.usergroup" ng-if="EditCtrl.form.usergroups.length">
 								<select
 									ui-select2
 									name="usergroup"
@@ -36,13 +36,16 @@
 									class="no-search"
 									required
 								>
-									<option value="{{ ng_var('id') }}" ng-repeat="(id, title) in EditCtrl.form.usergroups">
-										{{ ng_var('title') }}
+									<option value="{{ ng_var('group.id') }}" ng-repeat="group in EditCtrl.form.usergroups">
+										{{ ng_var('group.title') }}
 									</option>
 								</select>
 								<span class="help-block">
-									You could select any non-system and non-agent usergroup
+									Select a permission group to add users to when this user rule matches.
 								</span>
+							</div>
+							<div class="col-lg-9" ng-if="!EditCtrl.form.usergroups.length">
+								You have not defined any custom permission groups yet. <a href="{{ ng_href('crm.groups.create') }}">Create one now &rarr;</a>
 							</div>
 						</div>
 						<div ng-if="EditCtrl.user_rule.id" class="form-group">

@@ -25,13 +25,11 @@
        */
 
       Admin_UserRules_Ctrl_List.prototype.initialLoad = function() {
-        var promise;
-        promise = this.userRulesData.loadList().then((function(_this) {
+        return this.userRulesData.loadList().then((function(_this) {
           return function(list) {
             return _this.list = list;
           };
         })(this));
-        return promise;
       };
 
 

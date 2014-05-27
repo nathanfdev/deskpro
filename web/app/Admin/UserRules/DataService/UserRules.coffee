@@ -12,7 +12,6 @@ define [
 			deferred = @$q.defer()
 
 			@Api.sendGet('/user_rules').success( (data) =>
-
 				models = data.user_rules
 				deferred.resolve(models)
 			, (data, status, headers, config) ->
@@ -22,14 +21,12 @@ define [
 			return deferred.promise
 
 		###
-  # Remove a model
-  #
-  # @param {Integer} id
-  # @return {promise}
+		# Remove a model
+		#
+		# @param {Integer} id
+		# @return {promise}
 		###
-
 		deleteUserRuleById: (id) ->
-
 			promise = @Api.sendDelete('/user_rules/' + id).success( =>
 				@removeListModelById(id)
 			)
@@ -41,7 +38,6 @@ define [
 		#
 		# @return {UserRuleEditFormMapper}
 		###
-
 		getFormMapper: ->
 
 			if @formMapper then return @formMapper
@@ -49,45 +45,33 @@ define [
 			return @formMapper
 
 		###
-  # Get all data needed for the edit page
-  #
-  # @param {Integer} id
-  # @return {promise}
+		# Get all data needed for the edit page
+		#
+		# @param {Integer} id
+		# @return {promise}
 		###
-
 		loadEditUserRuleData: (id) ->
-
 			deferred = @$q.defer()
 
 			if id
-
 				@Api.sendDataGet({
-				 user_rule: "/user_rules/#{id}"
+				 	user_rule: "/user_rules/#{id}"
 					usergroups: '/non_sys_usergroups'
 				}).then( (result) =>
-
 					data = {}
 					data.user_rule = result.data.user_rule.user_rule
-					data.all_usergroups = result.data.usergroups.usergroups
-
+					data.all_usergroups = result.data.usergroups.groups
 					data.form = @getFormMapper().getFormFromModel(data)
-
 					deferred.resolve(data)
 				, ->
 					deferred.reject()
 				)
-
 			else
-
 				@Api.sendGet('/non_sys_usergroups').then( (result) =>
-
 					data = {}
-
 					data.user_rule = {}
-					data.all_usergroups = result.data.usergroups
-
+					data.all_usergroups = result.data.groups
 					data.form = @getFormMapper().getFormFromModel(data)
-
 					deferred.resolve(data)
 				, ->
 					deferred.reject()
@@ -97,16 +81,14 @@ define [
 
 
 		###
-  # Saves a form model and merges model with list data
-  #
-  # @param {Object} model user_rule model
- 	# @param {Object} formModel  The model representing the form
-  # @return {promise}
+		# Saves a form model and merges model with list data
+		#
+		# @param {Object} model user_rule model
+		# @param {Object} formModel  The model representing the form
+		# @return {promise}
 		###
 		saveFormModel: (model, formModel) ->
-
 			mapper = @getFormMapper()
-
 			postData = mapper.getPostDataFromForm(formModel)
 
 			if model.id

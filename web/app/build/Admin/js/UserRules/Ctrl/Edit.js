@@ -24,11 +24,6 @@
         return this.apply_started = false;
       };
 
-
-      /*
-       	 *
-       */
-
       Admin_UserRules_Ctrl_Edit.prototype.initialLoad = function() {
         var promise;
         promise = this.userRulesData.loadEditUserRuleData(this.$stateParams.id || null).then((function(_this) {
@@ -39,11 +34,6 @@
         })(this));
         return promise;
       };
-
-
-      /*
-      		 *
-       */
 
       Admin_UserRules_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise;
@@ -68,7 +58,7 @@
 
 
       /*
-       	 * Applying current user rule to all users
+       		 * Applying current user rule to all users
        */
 
       Admin_UserRules_Ctrl_Edit.prototype.applyRuleToUsers = function() {
