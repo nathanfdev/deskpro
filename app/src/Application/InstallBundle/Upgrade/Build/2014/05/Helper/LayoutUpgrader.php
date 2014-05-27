@@ -92,6 +92,9 @@ class LayoutUpgrader
 		$field = new TicketLayout\LayoutField('user_email');
 		$layout->add($field);
 
+		$has_view = $this->form_view ? true : false;
+		$has_edit = $this->form_edit ? true : false;
+
 		foreach ($this->form_new as $old_field) {
 			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
 				continue;
@@ -99,6 +102,8 @@ class LayoutUpgrader
 
 			$field = $this->convertField($old_field);
 			$field->enableOnNew();
+			if (!$has_view) $field->enableOnView();
+			if (!$has_edit) $field->enableOnEdit();
 			$layout->add($field);
 		}
 		foreach ($this->form_view as $old_field) {
@@ -141,9 +146,14 @@ class LayoutUpgrader
 	{
 		$layout = new TicketLayout\Layout();
 
+		$has_view = $this->form_view ? true : false;
+		$has_edit = $this->form_edit ? true : false;
+
 		foreach ($this->form_new as $old_field) {
 			$field = $this->convertField($old_field);
 			$field->enableOnNew();
+			if (!$has_view) $field->enableOnView();
+			if (!$has_edit) $field->enableOnEdit();
 			$layout->add($field);
 		}
 		foreach ($this->form_view as $old_field) {
