@@ -347,7 +347,7 @@ class TriggerTermConverter
 	private function upgradeTerm_person_usergroup($type, $op, OptionsArray $options)
 	{
 		$opt = $this->getSingleArrayValue($options, 'usergroup');
-		return new Terms\CheckUserUsergroup($op, array('usergroup_ids' => $opt));
+		return new Terms\CheckUserUsergroups($op, array('usergroup_ids' => $opt));
 	}
 
 	private function upgradeTerm_priority($type, $op, OptionsArray $options)

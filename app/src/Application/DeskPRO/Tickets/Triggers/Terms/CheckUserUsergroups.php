@@ -43,7 +43,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int[] usergroup_ids
  */
-class CheckUserUsergroup extends AbstractTriggerTerm
+class CheckUserUsergroups extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
