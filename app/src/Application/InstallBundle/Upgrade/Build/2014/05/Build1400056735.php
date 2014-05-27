@@ -101,6 +101,11 @@ class Build1400056735 extends AbstractBuild
 			$sla['@warn_trigger']    = $sla['warning_trigger_id'] && isset($old_triggers[$sla['warning_trigger_id']]) ? $old_triggers[$sla['warning_trigger_id']] : null;
 			$sla['@fail_trigger']    = $sla['fail_trigger_id'] && isset($old_triggers[$sla['fail_trigger_id']]) ? $old_triggers[$sla['fail_trigger_id']] : null;
 
+			if ($sla['@apply_trigger']) {
+				$sla['@apply_trigger']['terms']     = @unserialize($sla['@apply_trigger']['terms']);
+				$sla['@apply_trigger']['terms_any'] = @unserialize($sla['@apply_trigger']['terms_any']);
+			}
+
 			if ($sla['@warn_trigger']) {
 				$sla['@warn_trigger']['actions'] = unserialize($sla['@warn_trigger']['actions']);
 				$sla['@warn_trigger']['event_trigger_options'] = unserialize($sla['@warn_trigger']['event_trigger_options']);
