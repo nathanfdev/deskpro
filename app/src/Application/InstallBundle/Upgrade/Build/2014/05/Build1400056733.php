@@ -330,6 +330,10 @@ class Build1400056733 extends AbstractBuild
 				$trigger->by_agent_mode = array('api');
 				$trigger->by_user_mode  = array('api');
 				break;
+			case 'new':
+				// 'new' is used by sla triggers
+				return null;
+				break;
 			default:
 				throw new \InvalidArgumentException("Unknown event trigger: {$old_trigger['event_trigger']}");
 		}
