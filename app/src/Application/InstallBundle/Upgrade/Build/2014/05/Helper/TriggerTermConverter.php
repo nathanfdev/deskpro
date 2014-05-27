@@ -189,6 +189,14 @@ class TriggerTermConverter
 		return new Terms\CheckEmailToAddress($op, array('email' => $options->get('email_address', 'NO EMAIL')));
 	}
 
+	private function upgradeTerm_email_header($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckEmailHeader($op, array(
+			'name' => $options->get('header_name', 'NO NAME'),
+			'value' => $options->get('header_value', 'NO VALUE'),
+		));
+	}
+
 	private function upgradeTerm_feedback_rating($type, $op, OptionsArray $options)
 	{
 		switch ($options->get('rating')) {
