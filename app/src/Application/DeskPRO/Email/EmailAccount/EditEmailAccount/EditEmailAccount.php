@@ -49,6 +49,11 @@ class EditEmailAccount
 	public $address;
 
 	/**
+	 * @var bool
+	 */
+	public $is_enabled;
+
+	/**
 	 * @var string
 	 */
 	public $account_type;
@@ -106,7 +111,7 @@ class EditEmailAccount
 	public function __construct(EmailAccount $account)
 	{
 		$this->account         = $account;
-
+		$this->is_enabled      = $account->is_enabled;
 		$this->address         = $account->address;
 		$this->account_type    = $account->account_type;
 		$this->other_addresses = implode(', ', $account->other_addresses ?: array());
@@ -120,7 +125,8 @@ class EditEmailAccount
 	 */
 	public function apply()
 	{
-		$this->account->address = strtolower($this->address);
+		$this->account->address      = strtolower($this->address);
+		$this->account->is_enabled   = $this->is_enabled;
 		$this->account->account_type = strtolower($this->account_type);
 
 		if ($this->other_addresses) {

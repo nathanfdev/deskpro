@@ -88,7 +88,9 @@
         trigger_data_promise = this.actionsTypeDef.loadDataOptions();
         proms = [trigger_promise, trigger_data_promise, dep_promise];
         if (!this.accountId) {
-          this.account = {};
+          this.account = {
+            is_enabled: true
+          };
           this.trigger = {};
         } else {
           data_promise = this.Api.sendDataGet({
@@ -158,7 +160,7 @@
         promise.success((function(_this) {
           return function(result) {
             _this.account.id = result.email_account_id || _this.account.id;
-            _this.account.is_enabled = true;
+            _this.account.is_enabled = _this.$scope.form.is_enabled;
             return triggerSaver().then(function() {
               _this.stopSpinner('saving_account', true).then(function() {
                 return _this.Growl.success(_this.getRegisteredMessage('saved_account'));

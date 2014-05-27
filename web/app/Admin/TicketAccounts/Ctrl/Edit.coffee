@@ -66,7 +66,7 @@ define [
 			proms = [trigger_promise, trigger_data_promise, dep_promise]
 
 			if not @accountId
-				@account = {}
+				@account = {is_enabled: true}
 				@trigger = {}
 			else
 				data_promise = @Api.sendDataGet({
@@ -123,7 +123,7 @@ define [
 
 			promise.success( (result) =>
 				@account.id = result.email_account_id || @account.id
-				@account.is_enabled = true
+				@account.is_enabled = @$scope.form.is_enabled
 				triggerSaver().then(=>
 					@stopSpinner('saving_account', true).then(=>
 						@Growl.success(@getRegisteredMessage('saved_account'))

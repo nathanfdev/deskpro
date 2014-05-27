@@ -15,7 +15,7 @@
 				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
 					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
 						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketAccountsList.startDelete(acc); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+							<em class="tag tag-warn" ng-show="!acc.is_enabled">Disabled</em>
 						</div>
 
 						<h4><i class="fa fa-inbox"></i> <span class="title-text">{{ ng_var('acc.address') }}</span></h4>

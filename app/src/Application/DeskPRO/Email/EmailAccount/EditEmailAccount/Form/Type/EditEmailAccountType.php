@@ -42,6 +42,7 @@ class EditEmailAccountType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('address',         'email', array('required' => true));
+		$builder->add('is_enabled',      'checkbox', array('required' => false));
 		$builder->add('account_type',    'text',  array('required' => true));
 		$builder->add('other_addresses', 'text',  array('required' => false));
 
