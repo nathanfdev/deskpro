@@ -125,7 +125,6 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 			return $this->_allowed_ids[$context];
 		}
 
-		$uids = array();
 		$uids = $this->person->getUsergroupIds();
 		if (!$uids) {
 			$uids[] = '0';
@@ -133,10 +132,11 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 		$uids = implode(',', $uids);
 
 		$raw = App::getDb()->fetchAll("
-			SELECT app, department_id
-			FROM department_permissions
+			SELECT dp.app, dp.department_id
+			FROM department_permissions dp
+			LEFT JOIN usergroups AS ug ON (ug.id = dp.usergroup_id)
 			WHERE
-				(person_id = ? OR usergroup_id IN ($uids))
+				(dp.person_id = ? OR (dp.usergroup_id IN ($uids) AND ug.is_agent_group = 1))
 				AND name = 'full'
 				AND value = 1
 		", array($this->person->id));
