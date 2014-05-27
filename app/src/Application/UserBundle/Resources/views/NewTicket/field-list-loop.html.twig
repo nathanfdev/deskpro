@@ -21,14 +21,14 @@
 	</div>
 {% endif %}
 
-{% if item.field_type == 'cc_emails' %}
-	<div data-field-id="ticket_cc_emails" class="ticket-display-field {{ item.id }}" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+{% if item.field_type == 'cc' %}
+	<div data-field-id="cc" class="ticket-display-field {{ item.id }}" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 		{% include 'UserBundle:NewTicket:field-cc.html.twig' %}
 	</div>
 {% endif %}
 
-{% if type == 'modify' and item.field_type == 'remove_ccs' and user_participants|length %}
-	<div data-field-id="ticket_remove_ccs" class="ticket-display-field {{ item.id }}" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+{% if type == 'modify' and item.field_type == 'cc' and user_participants|length %}
+	<div data-field-id="cc" class="ticket-display-field {{ item.id }}" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 		{% include 'UserBundle:NewTicket:field-cc-remove.html.twig' %}
 	</div>
 {% endif %}
