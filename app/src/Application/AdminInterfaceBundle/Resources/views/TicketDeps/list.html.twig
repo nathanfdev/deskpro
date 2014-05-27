@@ -60,13 +60,13 @@
 				Here are some important features of the department field:
 			</p>
 			<ul>
-				<li>Department is the default grouping field for tickets in the Agent Interface.</li>
-				<li>Agent ticket permissions are based upon departments; you can create agents that can view some tickets but not others.</li>
-				<li>User ticket permissions are based upon departments; you can set a usergroup so that it can create tickets in some departments but not others.</li>
-				<li>Departments control the fields shown in the form that a user or agent uses to create a ticket. Different departments can have different custom form layouts - change them in the <strong>Layout</strong> tab.</li>
+				<li>You can link a department (e.g. Sales) to a ticket email account (e.g. <code>sales@yourdomain.com</code>) using a new ticket trigger. Agent ticket replies will be sent from the linked account.</li>
+				<li>Departments are a way to divide up the helpdesk and control access.</li>
+				<li>Agent ticket <strong>permissions</strong> are based upon departments; you can create agents that can view some tickets but not others.</li>
+				<li>User ticket <strong>permissions</strong> are based upon departments; you can set a usergroup so that it can create tickets in some departments but not others.</li>
+				<li>Departments control the fields shown in the form that a user or agent uses to create a ticket. Different departments can have different ticket form layouts - change them in the <strong>Layout</strong> tab.</li>
 				<li>You can set a user-facing department name to be displayed only to users e.g. agents see "Terms of Service Violations", while users see "Support".</li>
-				<li>You can have a direct one-to-one link between departments (e.g. Sales) and email accounts (e.g. <code>sales@yourdomain.com</code>).</li>
-				<li>Each ticket will always have a department - it is the only required field in DeskPRO.</li>
+				<li>Each ticket will always have a department.</li>
 			</ul>
 		</section>
 
@@ -81,10 +81,10 @@
 				<dt><em>Q:</em>Can I use sub-departments/child departments?</dt>
 				<dd><em>A:</em>
 					Yes. A department can have sub-departments, e.g. the "Support" department can contain "Support Tier 1" and "Support Tier 2".<br/>
-					Note that you can't assign tickets to a department if it contains sub-departments;  you must assign to the sub-departments. In the example above, you could assign tickets to "Support Tier 1" and "Support Tier 2", but not to the parent-level "Support".
+					Note that you can&#39;t assign tickets to a department if it contains sub-departments;  you must assign to the sub-departments. In the example above, you could assign tickets to "Support Tier 1" and "Support Tier 2", but not to the parent-level "Support".
 				</dd>
 
-				<dt><em>Q:</em>I don't need departments - can I disable the field?</dt>
+				<dt><em>Q:</em>I don&#39;t need departments - can I disable the field?</dt>
 				<dd><em>A:</em>
 					Tickets always have a department, but if you only have one department defined, it will not be shown to users, effectively disabling the field.
 				</dd>
@@ -92,22 +92,32 @@
 
 				<dt><em>Q:</em>Can I have multiple departments linked to a single email address?</dt>
 				<dd><em>A:</em>
-					Yes. You can only create one-to-one links between departments and ticket accounts when managing departments, but you can use <strong>triggers</strong> to have multiple departments linked to a single email address.
+					Yes. If you want a more complicated relationship between departments and email addresses, you may need to create custom triggers in the <strong>Triggers</strong> section.
 				</dd>
 
 				<dt><em>Q:</em>What is the difference between chat departments and ticket departments?</dt>
 				<dd><em>A:</em>
 					Like the ticket department, chat departments are the key field for grouping chats. The two types of departments are not linked together - you can have different departments for tickets and chats.
 				</dd>
+				
+				
+				
+				<dt><em>Q:</em>My helpdesk uses multiple languages and some of the department names are not being translated; how do I fix this?</dt>
+				<dd><em>A:</em>
+					You need to enter a translation for the department names. Go to <strong>Setup > Languages</strong>; click on each language you have installed beyond the default, click <strong>Edit Phrases</strong>, and enter a custom translation.
+				</dd>
 			</dl>
 		</section>
 		
 		<section>
 		
-			<h2><span>Related Knowledgebase Articles</span></h2>
+			<h2><span>Related Content</span></h2>
 
 				<ul>
-    					<li><a href="https://support.deskpro.com/kb/articles/181" target="_blank">Ticket assignment workflows in DeskPRO</a></li>
+				
+				<li>[MANUAL]</li> <a href="#departments" target="_blank">Departments</a>
+				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/191-adding-custom-user-fields-to-ticket-forms" target="_blank">Adding custom user fields to ticket forms</a>
+    					<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/181" target="_blank">Ticket assignment workflows in DeskPRO</a></li>
     
 				</ul>
         	</section>

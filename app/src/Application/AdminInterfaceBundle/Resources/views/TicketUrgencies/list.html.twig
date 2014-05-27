@@ -22,13 +22,16 @@
 {% endblock %}
 {% block listpane_help %}
 	<header>
-		<h1>A ticket's Urgency score indicates how quickly your agents should resolve it.</h1>
+		<h1>A ticket&#39;s Urgency score indicates how quickly your agents should resolve it.</h1>
+		
 		<p>
-			Urgency can be set by agents; you can also change it with automatic processes like triggers.
+			Urgency scores range from 1 to 10. Urgency can be set by agents; you can also change it with automatic processes like triggers.
 		</p>
+		
 	</header>
 	<article>
 		<section>
+			<p> Urgency scores are show prominently in the agent interface. Agents can sort their tickets by urgency.</p>
 			<p>You can set, increase or decrease urgency with:</p>
 			<ul>
 				<li><strong>escalations</strong></li>
@@ -38,5 +41,27 @@
 			</ul>
 			<p>Carefully chosen rules to increase or decrease urgency will help your agents decide which tickets need their attention.</p>
 		</section>
+		<section>
+		<h2><span>FAQ</span></h2>
+		<dl>
+			<dt><em>Q:</em>What&#39;s the difference between urgency and priority?</dt>
+			<dd><em>A:</em>
+				Urgency is a number from 1 to 10. Priorities are an ordered set of named priority levels such as "Routine", "Urgent", "Critical". Priorities can be set by users from the web interface, whereas urgency is for agent reference only. Trigger actions can be used to increase or decrease urgency by a relative amount (e.g. increase urgency by 5, reduce urgency by 2), whereas trigger actions can only set a particular priority.
+			</dd>
+				
+			
+			<dt><em>Q:</em>What happens if urgency goes below 1 or above 10?</dt>
+					<dd><em>A:</em>
+					If a trigger action or other automatic process would set a ticket&#39;s urgency below 1, the urgency is set to 1. If the urgency would go above 10, it is set to 10.
+				</dd>
+			
+		</dl>
+</section>
+	<section>
+			<h2><span>Related Content</span></h2>
+			<ul>
+				<li>[MANUAL]<a href="#using-urgency-to-prioritize-tickets" target="_blank">Using urgency to prioritize tickets</a></li>
+			</ul>
+	</section>
 	</article>
 {% endblock %}
