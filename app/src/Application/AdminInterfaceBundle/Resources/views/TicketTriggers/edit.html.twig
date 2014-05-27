@@ -183,7 +183,7 @@
 					</div>
 
 					<div class="dp-delete-control" ng-if="TicketTriggersEdit.trigger.id">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketTriggersList.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.List.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">

@@ -198,7 +198,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 			$trigger = new TicketTrigger();
 		}
 
-		$is_new = (bool)$trigger->id;
+		$is_new = !((bool)$trigger->id);
 
 		$trigger->title         = $this->in->getString('title');
 		$trigger->event_trigger = $this->in->getString('event_trigger');
