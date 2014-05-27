@@ -88,7 +88,7 @@ class Build1400056713 extends AbstractBuild
 				$this->out("Skipping {$gateway['id']}: No transport");
 			}
 
-			$new_accounts[] = $this->_convertGatewayAccount($gateway, $tr, $addrs);
+			$new_accounts[$gateway['id']] = $this->_convertGatewayAccount($gateway, $tr, $addrs);
 		}
 
 		$default_tr = Arrays::findValue($transports, function($tr) {
@@ -107,14 +107,23 @@ class Build1400056713 extends AbstractBuild
 			});
 
 			if (!$addr_exists) {
-				$new_accounts[] = $tr_account;
+				$new_accounts[-1] = $tr_account;
 			}
 		}
 
-		foreach ($new_accounts as $account) {
+		foreach ($new_accounts as $want_id => $account) {
 			$em->persist($account);
+			$em->flush();
+
+			if ($want_id != -1) {
+				$this->container->getDb()->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $account->id));
+			}
 		}
-		$em->flush();
+
+		$max_id = $this->container->getDb()->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
+		if (!$max_id) $max_id = 0;
+		$max_id++;
+		$this->container->getDb()->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
 	}
 
 
@@ -195,9 +204,6 @@ class Build1400056713 extends AbstractBuild
 		}
 
 		$account->is_enabled = (bool)$gateway['is_enabled'];
-
-		// We want the same ids
-		$account->id = $gateway['id'];
 
 		return $account;
 	}
