@@ -1,5 +1,5 @@
 (function() {
-  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Strings', 'DeskPRO/Util/Arrays'], function(Util, Strings, Arrays) {
+  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Strings', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Numbers'], function(Util, Strings, Arrays, Numbers) {
     var DeskPRO_CategoryBuilder_Controller;
     return DeskPRO_CategoryBuilder_Controller = (function() {
       function DeskPRO_CategoryBuilder_Controller($scope, $element, $attrs, $compile, $q) {
@@ -208,6 +208,8 @@
         parent_id = this.$scope.new_cat_parent;
         if (!parent_id || parent_id === "" || parent_id === "0" || parent_id === 0) {
           parent_id = null;
+        } else if (Numbers.isNumeric(parent_id)) {
+          parent_id = parseInt(parent_id);
         }
         catData = {
           id: Util.uid('cb_'),

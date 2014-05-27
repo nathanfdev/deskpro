@@ -1,11 +1,13 @@
 define [
 	'DeskPRO/Util/Util',
 	'DeskPRO/Util/Strings',
-	'DeskPRO/Util/Arrays'
+	'DeskPRO/Util/Arrays',
+	'DeskPRO/Util/Numbers'
 ], (
 	Util,
 	Strings,
-	Arrays
+	Arrays,
+	Numbers
 ) ->
 	class DeskPRO_CategoryBuilder_Controller
 		constructor: (@$scope, @$element, @$attrs, @$compile, @$q) ->
@@ -193,6 +195,8 @@ define [
 			parent_id = @$scope.new_cat_parent
 			if not parent_id or parent_id == "" or parent_id == "0" or parent_id == 0
 				parent_id = null
+			else if Numbers.isNumeric(parent_id)
+				parent_id = parseInt(parent_id)
 
 			catData = {
 				id:            Util.uid('cb_'),
