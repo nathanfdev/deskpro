@@ -55,10 +55,16 @@ class FilterTerms implements \Serializable, FilterTermInterface
 	 */
 	private $criteria;
 
+	/**
+	 * @var FilterTermFactory
+	 */
+	private $term_factory;
+
 	public function __construct()
 	{
 		$this->criteria = new FilterTermComposite();
 		$this->criteria->setOperator(FilterTermComposite::OP_AND);
+		$this->term_factory = new FilterTermFactory();
 	}
 
 
@@ -112,13 +118,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
 	 */
 	private function getTermFromArray(array $term_info)
 	{
-		$class_name = "Application\\DeskPRO\\Tickets\\Filters\\Terms\\{$term_info['type']}";
-		if (!class_exists($class_name)) {
-			throw new \InvalidArgumentException("Unknown term {$term_info['type']} (could not locate class: $class_name)");
-		}
-
-		$term = new $class_name($term_info['op'], $term_info['options']);
-		return $term;
+		return $this->term_factory->createFromArray($term_info);
 	}
 
 

@@ -111,6 +111,44 @@ define [
 			})
 
 			#------------------------------
+			# Ticket Fields
+			#------------------------------
+
+			if @options_data?.ticket_fields
+				options = []
+
+				for f in @options_data.ticket_fields
+					options.push({
+						title: f.title,
+						value: @initFieldGetter('FilterTicketField', f)
+					})
+
+				if options.length
+					set_options.push({
+						title: 'Ticket Fields',
+						subOptions: options
+					})
+
+			#------------------------------
+			# User Fields
+			#------------------------------
+
+			if @options_data?.user_fields
+				options = []
+
+				for f in @options_data.user_fields
+					options.push({
+						title: f.title,
+						value: @initFieldGetter('FilterUserField', f)
+					})
+
+				if options.length
+					set_options.push({
+						title: 'Person Fields',
+						subOptions: options
+					})
+
+			#------------------------------
 			# Person
 			#------------------------------
 
@@ -244,19 +282,35 @@ define [
 					'ticket_prods':    '/ticket_prods',
 					'ticket_pris':     '/ticket_pris',
 					'ticket_works':    '/ticket_works',
+					'ticket_fields':   '/ticket_fields',
+					'user_fields':     '/user_fields',
+					'org_fields':      '/org_fields',
 					'ticket_accounts': '/email_accounts',
 					'usergroups':      '/user_groups',
 				}).then( (result) =>
 					data = result.data
-					@options_data['agents']           = data.agents.agents
-					@options_data['agent_teams']      = data.agent_teams.agent_teams
-					@options_data['ticket_deps']      = data.ticket_deps.departments
-					@options_data['ticket_cats']      = data.ticket_cats.categories
-					@options_data['ticket_pris']      = data.ticket_pris.priorities
-					@options_data['ticket_works']     = data.ticket_works.workflows
-					@options_data['ticket_prods']     = data.ticket_prods?.products
-					@options_data['ticket_accounts']  = data.ticket_accounts.email_accounts
-					@options_data['usergroups']       = data.usergroups.groups
+					options_data = {}
+					options_data['agents']           = data.agents.agents
+					options_data['agent_teams']      = data.agent_teams.agent_teams
+					options_data['ticket_deps']      = data.ticket_deps.departments
+					options_data['ticket_cats']      = data.ticket_cats.categories
+					options_data['ticket_pris']      = data.ticket_pris.priorities
+					options_data['ticket_works']     = data.ticket_works.workflows
+					options_data['ticket_fields']    = data.ticket_fields?.custom_fields
+					options_data['org_fields']       = data.org_fields?.custom_fields
+					options_data['user_fields']      = data.user_fields?.custom_fields
+					options_data['ticket_prods']     = data.ticket_prods?.products
+					options_data['ticket_accounts']  = data.ticket_accounts.email_accounts
+					options_data['usergroups']       = data.usergroups.groups
+
+					@options_data = options_data
+
+					if @options_data?.ticket_fields
+						for f in @options_data.ticket_fields
+							@initFieldGetter('FilterTicketField', f)
+					if @options_data?.user_fields
+						for f in @options_data.user_fields
+							@initFieldGetter('FilterUserField', f)
 				)
 
 			return p

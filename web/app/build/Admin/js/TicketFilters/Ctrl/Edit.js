@@ -15,7 +15,7 @@
 
       Admin_TicketFilters_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketFilters_Ctrl_Edit.DEPS = ['dpObTypesDefTicketFilter', '$stateParams'];
+      Admin_TicketFilters_Ctrl_Edit.DEPS = ['dpObTypesDefTicketFilter', '$stateParams', '$timeout'];
 
       Admin_TicketFilters_Ctrl_Edit.prototype.init = function() {
         this.filterId = parseInt(this.$stateParams.id || 0);
@@ -27,18 +27,34 @@
       };
 
       Admin_TicketFilters_Ctrl_Edit.prototype.initialLoad = function() {
-        return this.filterData.loadEditFilterData(this.filterId).then((function(_this) {
+        var p, p2;
+        p = this.filterData.loadEditFilterData(this.filterId).then((function(_this) {
           return function(data) {
-            var rowId, term, _i, _len, _ref, _results;
             _this.agents = data.agents;
             _this.teams = data.teams;
             if (!_this.teams[0]) {
               _this.teams = null;
             }
             if (data.filter) {
-              _this.filter = data.filter;
-              _this.form = _this.getFormFromModel(_this.filter);
-              _this.filter_criteria = {};
+              return _this.filter = data.filter;
+            } else {
+              return _this.filter = {
+                is_global: true
+              };
+            }
+          };
+        })(this));
+        p2 = this.criteriaTypeDef.loadDataOptions().then((function(_this) {
+          return function() {
+            return _this.criteriaOptionTypes = _this.criteriaTypeDef.getOptionsForTypes();
+          };
+        })(this));
+        return this.$q.all([p, p2]).then((function(_this) {
+          return function() {
+            var rowId, term, _i, _len, _ref, _results;
+            _this.form = _this.getFormFromModel(_this.filter);
+            _this.filter_criteria = {};
+            if (_this.filter.terms) {
               _ref = _this.filter.terms.terms;
               _results = [];
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -47,11 +63,6 @@
                 _results.push(_this.filter_criteria[rowId] = term);
               }
               return _results;
-            } else {
-              _this.filter = {
-                is_global: true
-              };
-              return _this.form = _this.getFormFromModel(_this.filter);
             }
           };
         })(this));

@@ -8,7 +8,7 @@ define [
 	class Admin_TicketFilters_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketFilters_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['dpObTypesDefTicketFilter', '$stateParams']
+		@DEPS      = ['dpObTypesDefTicketFilter', '$stateParams', '$timeout']
 
 		init: ->
 			@filterId = parseInt(@$stateParams.id || 0)
@@ -20,7 +20,7 @@ define [
 			@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
 
 		initialLoad: ->
-			return @filterData.loadEditFilterData(@filterId).then( (data) =>
+			p = @filterData.loadEditFilterData(@filterId).then( (data) =>
 				@agents = data.agents
 				@teams = data.teams
 				if not @teams[0]
@@ -28,18 +28,24 @@ define [
 
 				if data.filter
 					@filter = data.filter
-					@form = @getFormFromModel(@filter)
-
-					@filter_criteria = {}
-					for term in @filter.terms.terms
-						rowId = Util.uid('term')
-						@filter_criteria[rowId] = term
-
 				else
 					@filter = {
 						is_global: true
 					}
-					@form = @getFormFromModel(@filter)
+			)
+
+			p2 = @criteriaTypeDef.loadDataOptions().then(=>
+				@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+			)
+
+			return @$q.all([p, p2]).then(=>
+				@form = @getFormFromModel(@filter)
+
+				@filter_criteria = {}
+				if @filter.terms
+					for term in @filter.terms.terms
+						rowId = Util.uid('term')
+						@filter_criteria[rowId] = term
 			)
 
 		getFormFromModel: (filterModel) ->

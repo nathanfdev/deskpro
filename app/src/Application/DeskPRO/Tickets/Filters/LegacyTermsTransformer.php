@@ -389,6 +389,45 @@ class LegacyTermsTransformer
 						'waiting_time_unit' => $t[1]
 					)
 				);
+
+			case 'FilterTicketField':
+				$t = $term->getTermOptions();
+				$fid = $t['field_id'];
+				return array(
+					'type'    => "ticket_field[{$fid}]",
+					'op'      => $term->getTermOperator(),
+					'options' => array(
+						'custom_fields' => array(
+							"field_{$fid}" => @$t['value'] ?: null
+						)
+					)
+				);
+
+			case 'FilterUserField':
+				$t = $term->getTermOptions();
+				$fid = $t['field_id'];
+				return array(
+					'type'    => "person_field[{$fid}]",
+					'op'      => $term->getTermOperator(),
+					'options' => array(
+						'custom_fields' => array(
+							"field_{$fid}" => @$t['value'] ?: null
+						)
+					)
+				);
+
+			case 'FilterOrgField':
+				$t = $term->getTermOptions();
+				$fid = $t['field_id'];
+				return array(
+					'type'    => "org_field[{$fid}]",
+					'op'      => $term->getTermOperator(),
+					'options' => array(
+						'custom_fields' => array(
+							"field_{$fid}" => @$t['value'] ?: null
+						)
+					)
+				);
 		}
 
 		return $legacy_terms;
@@ -433,7 +472,14 @@ class LegacyTermsTransformer
 		$op = $legacy_term['op'];
 		$options = $legacy_term['options'];
 
-		switch ($legacy_term['type']) {
+		$type_name = $legacy_term['type'];
+		$type_id = null;
+		if (preg_match('#^(.*?)\[(\d+)\]$#', $type_name, $m)) {
+			$type_name = $m[1];
+			$type_id   = $m[2];
+		}
+
+		switch ($type_name) {
 			case 'subject':
 				return new Terms\FilterSubject($op, array(
 					'subject' => @$options['subject'] ?: ''
@@ -724,6 +770,24 @@ class LegacyTermsTransformer
 
 			case 'org_contact_im':
 				return new Terms\FilterOrgContactIm($op, $options);
+
+			case 'ticket_field':
+				$new_opts = array();
+				$new_opts['field_id'] = $type_id;
+				$new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+				return new Terms\FilterTicketField($op, $new_opts);
+
+			case 'person_field':
+				$new_opts = array();
+				$new_opts['field_id'] = $type_id;
+				$new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+				return new Terms\FilterUserField($op, $new_opts);
+
+			case 'org_field':
+				$new_opts = array();
+				$new_opts['field_id'] = $type_id;
+				$new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+				return new Terms\FilterOrgField($op, $new_opts);
 		}
 
 		return null;

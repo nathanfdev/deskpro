@@ -16,7 +16,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var options, set_options;
+        var f, options, set_options, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
         if (typesData == null) {
           typesData = null;
         }
@@ -98,6 +98,40 @@
           title: 'Ticket Criteria',
           subOptions: options
         });
+        if ((_ref = this.options_data) != null ? _ref.ticket_fields : void 0) {
+          options = [];
+          _ref1 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            f = _ref1[_i];
+            options.push({
+              title: f.title,
+              value: this.initFieldGetter('FilterTicketField', f)
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Ticket Fields',
+              subOptions: options
+            });
+          }
+        }
+        if ((_ref2 = this.options_data) != null ? _ref2.user_fields : void 0) {
+          options = [];
+          _ref3 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
+            f = _ref3[_j];
+            options.push({
+              title: f.title,
+              value: this.initFieldGetter('FilterUserField', f)
+            });
+          }
+          if (options.length) {
+            set_options.push({
+              title: 'Person Fields',
+              subOptions: options
+            });
+          }
+        }
         options = [];
         options.push({
           title: 'Name',
@@ -205,21 +239,45 @@
             'ticket_prods': '/ticket_prods',
             'ticket_pris': '/ticket_pris',
             'ticket_works': '/ticket_works',
+            'ticket_fields': '/ticket_fields',
+            'user_fields': '/user_fields',
+            'org_fields': '/org_fields',
             'ticket_accounts': '/email_accounts',
             'usergroups': '/user_groups'
           }).then((function(_this) {
             return function(result) {
-              var data, _ref;
+              var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results;
               data = result.data;
-              _this.options_data['agents'] = data.agents.agents;
-              _this.options_data['agent_teams'] = data.agent_teams.agent_teams;
-              _this.options_data['ticket_deps'] = data.ticket_deps.departments;
-              _this.options_data['ticket_cats'] = data.ticket_cats.categories;
-              _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
-              _this.options_data['ticket_works'] = data.ticket_works.workflows;
-              _this.options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
-              _this.options_data['ticket_accounts'] = data.ticket_accounts.email_accounts;
-              return _this.options_data['usergroups'] = data.usergroups.groups;
+              options_data = {};
+              options_data['agents'] = data.agents.agents;
+              options_data['agent_teams'] = data.agent_teams.agent_teams;
+              options_data['ticket_deps'] = data.ticket_deps.departments;
+              options_data['ticket_cats'] = data.ticket_cats.categories;
+              options_data['ticket_pris'] = data.ticket_pris.priorities;
+              options_data['ticket_works'] = data.ticket_works.workflows;
+              options_data['ticket_fields'] = (_ref = data.ticket_fields) != null ? _ref.custom_fields : void 0;
+              options_data['org_fields'] = (_ref1 = data.org_fields) != null ? _ref1.custom_fields : void 0;
+              options_data['user_fields'] = (_ref2 = data.user_fields) != null ? _ref2.custom_fields : void 0;
+              options_data['ticket_prods'] = (_ref3 = data.ticket_prods) != null ? _ref3.products : void 0;
+              options_data['ticket_accounts'] = data.ticket_accounts.email_accounts;
+              options_data['usergroups'] = data.usergroups.groups;
+              _this.options_data = options_data;
+              if ((_ref4 = _this.options_data) != null ? _ref4.ticket_fields : void 0) {
+                _ref5 = _this.options_data.ticket_fields;
+                for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
+                  f = _ref5[_i];
+                  _this.initFieldGetter('FilterTicketField', f);
+                }
+              }
+              if ((_ref6 = _this.options_data) != null ? _ref6.user_fields : void 0) {
+                _ref7 = _this.options_data.user_fields;
+                _results = [];
+                for (_j = 0, _len1 = _ref7.length; _j < _len1; _j++) {
+                  f = _ref7[_j];
+                  _results.push(_this.initFieldGetter('FilterUserField', f));
+                }
+                return _results;
+              }
             };
           })(this));
         }
