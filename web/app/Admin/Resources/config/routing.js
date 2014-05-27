@@ -880,7 +880,7 @@ define(function() {
 		url: '/go-outgoing-email/{id:[0-9]+}',
 		template: '',
 		controller: ['$state', '$stateParams', function ($state, $stateParams) {
-			$state.go('tickets.ticket_accounts.emailsourcesview', $stateParams);
+			$state.go('tickets.ticket_accounts.sendmailqueueview', $stateParams);
 		}]
 	});
 
