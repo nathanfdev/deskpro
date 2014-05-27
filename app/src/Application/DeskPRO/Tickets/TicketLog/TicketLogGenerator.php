@@ -452,11 +452,11 @@ class TicketLogGenerator
 				);
 				break;
 
-			case 'slas':
+			case 'ticket_slas':
 				return array(
 					'action_type' => 'changed_slas',
-					'added'   => array_map(function($l) { return $l->label; }, $added),
-					'removed' => array_map(function($l) { return $l->label; }, $removed)
+					'added'   => array_map(function($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $added),
+					'removed' => array_map(function($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed)
 				);
 				break;
 

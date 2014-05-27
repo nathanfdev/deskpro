@@ -262,6 +262,23 @@
 {% elseif log.action_type == 'changed_custom_field' %}
 	<span class="type">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)')|raw }}</span>
+{% elseif log.action_type == 'changed_slas' %}
+	{% if log.details.added %}
+		<div>
+			{{ phrase('agent.tickets.log_sla_added') }}:
+			{% for s in log.details.added %}
+				<span class="new-val" title="Sla #{{ s.id }}">{{ s.title }}</span>
+			{% endfor %}
+		</div>
+	{% endif %}
+	{% if log.details.removed %}
+		<div>
+			{{ phrase('agent.tickets.log_sla_removed') }}:
+			{% for s in log.details.removed %}
+				<span class="new-val" title="Sla #{{ s.id }}">{{ s.title }}</span>
+			{% endfor %}
+		</div>
+	{% endif %}
 {% elseif log.action_type == 'ticket_sla_added' %}
 	{{ phrase('agent.tickets.log_sla_added') }}: <span class="new-val">{{ log.details.title }}</span>
 	{% if log.details.sla_status != 'ok' or log.details.is_completed %}
