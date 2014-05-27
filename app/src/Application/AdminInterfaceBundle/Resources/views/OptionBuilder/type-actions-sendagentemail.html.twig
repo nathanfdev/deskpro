@@ -8,7 +8,7 @@
 						<tr>
 							<td>Template:</td>
 							<td>
-								<select ng-if="!is_creating" ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || ''" ng-change="handleTemplateChange()">
+								<select ng-if="!is_creating" ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || 'DeskPRO:emails_agent:ticket-new.html.twig'" ng-change="handleTemplateChange()">
 									<optgroup label="Standard Agent Emails">
 										{% for email,label in {
 											'DeskPRO:emails_agent:ticket-new.html.twig': 'New Ticket Notification',
@@ -29,7 +29,7 @@
 						<tr>
 							<td style="vertical-align: top;">Agents:</td>
 							<td>
-								<ul class="checkbox-list" style="min-width: 200px">
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
 									<li style="border-bottom: 1px solid #ccc;">
 										<label>
 											<input type="checkbox" ng-model="model.agent_ids.notify_list" />
