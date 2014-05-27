@@ -114,7 +114,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 				return null;
 			}
 
-			return new \SoapClient($url . '/api?wsdl');
+			return $sforce;
 		};
 
 		$tests[] = function() use (&$log, &$client, $get_client) {
