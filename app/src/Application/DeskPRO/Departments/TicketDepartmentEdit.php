@@ -111,16 +111,7 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 
 		// Make sure parent doesnt have a trigger
 		if ($this->department->parent) {
-			$trigger = $em->createQuery("
-				SELECT trigger
-				FROM DeskPRO:TicketTrigger trigger
-				WHERE trigger.department = ?0
-			")->setParameters(array($this->department->parent))->getOneOrNullResult();
-
-			if ($trigger) {
-				$em->remove($trigger);
-				$em->flush();
-			}
+			$em->getConnection()->delete('ticket_triggers', array('department_id' => $this->department->parent->id));
 		}
 	}
 
