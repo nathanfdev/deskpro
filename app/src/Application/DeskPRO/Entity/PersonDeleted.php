@@ -64,7 +64,7 @@ class PersonDeleted extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $reason;
+	protected $reason = '';
 
 	public function __construct()
 	{
