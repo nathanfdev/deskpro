@@ -440,7 +440,7 @@ class UsersourceUpgrader
 			'joomla_secret' => $this->container->getSetting('Joomla.joomla_secret'),
 		);
 
-		$app_package_name = 'deskpro_joomla';
+		$app_package_name = 'deskpro_us_joomla';
 		$app_settings = $adapter_settings;
 
 		$app = $this->createApp($app_package_name, $app_settings);
@@ -468,8 +468,10 @@ class UsersourceUpgrader
 			return;
 		}
 		$this->updateUsersource($adapter_class, $adapter_settings, $app);
-		$app->setSettings('enable_usersource', true);
-		$app->setSettings('enable_sso', $adapter_settings['sso_js']);
+		$settings = $app->getSettings();
+		$settings['enable_usersource'] = true;
+		$settings['enable_sso'] = $adapter_settings['sso_js'];
+		$app->setSettings($settings);
 		$this->container->getEm()->persist($app);
 		$this->container->getEm()->flush($app);
 	}
