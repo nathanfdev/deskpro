@@ -198,6 +198,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 			$trigger = new TicketTrigger();
 		}
 
+		$is_new = (bool)$trigger->id;
+
 		$trigger->title         = $this->in->getString('title');
 		$trigger->event_trigger = $this->in->getString('event_trigger');
 
@@ -251,6 +253,21 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		} else if ($trigger->email_account) {
 			$edit = SpecialTriggerEdit::createWithEmailAccount($trigger->email_account);
 			$edit->applyToTrigger($trigger);
+		}
+
+		if ($is_new) {
+			$ro = 0;
+			if ($trigger->department) {
+				$ro = $this->db->fetchColumn("SELECT run_order FROM ticket_triggers WHERE department_id IS NOT NULL LIMIT 1");
+			} else if ($trigger->email_account) {
+				$ro = $this->db->fetchColumn("SELECT run_order FROM ticket_triggers WHERE email_account_id IS NOT NULL LIMIT 1");
+			}
+
+			if (!$ro) {
+				$ro = $this->db->fetchColumn("SELECT run_order FROM ticket_triggers ORDER BY run_order DESC");
+			}
+
+			$trigger->run_order = $ro + 10;
 		}
 
 		$this->em->persist($trigger);

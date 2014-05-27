@@ -54,7 +54,7 @@ define [
 					@pingElement('run_orders')
 			}
 
-			@$scope.$watch('TicketTriggersList.all_triggers', =>
+			@$scope.$watch('List.all_triggers', =>
 				@sortTriggers()
 			, true)
 

@@ -63,7 +63,7 @@
             };
           })(this)
         };
-        return this.$scope.$watch('TicketTriggersList.all_triggers', (function(_this) {
+        return this.$scope.$watch('List.all_triggers', (function(_this) {
           return function() {
             return _this.sortTriggers();
           };
