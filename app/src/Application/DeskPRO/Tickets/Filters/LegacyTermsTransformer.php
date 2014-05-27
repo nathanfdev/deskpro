@@ -265,105 +265,105 @@ class LegacyTermsTransformer
 				return array(
 					'type'    => 'sla_status',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterSla':
 				return array(
 					'type'    => 'sla',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterUserContactPhone':
 				return array(
 					'type'    => 'person_contact_phone',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterUserContactAddress':
 				return array(
 					'type'    => 'person_contact_address',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterUserContactIm':
 				return array(
 					'type'    => 'person_contact_im',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterOrgContactPhone':
 				return array(
 					'type'    => 'org_contact_phone',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterOrgContactAddress':
 				return array(
 					'type'    => 'org_contact_address',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterOrgContactIm':
 				return array(
 					'type'    => 'org_contact_im',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterDateCreated':
 				return array(
 					'type'    => 'date_created',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterDateResolved':
 				return array(
 					'type'    => 'date_resolved',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterDateClosed':
 				return array(
 					'type'    => 'date_closed',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterDateLastAgentReply':
 				return array(
 					'type'    => 'date_last_agent_reply',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterDateLastUserReply':
 				return array(
 					'type'    => 'date_last_user_reply',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterUserDateCreated':
 				return array(
 					'type'    => 'person_date_created',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterOrgDateCreated':
 				return array(
 					'type'    => 'org_date_created',
 					'op'      => $term->getTermOperator(),
-					'options' => $options
+					'options' => $options->all()
 				);
 
 			case 'FilterUserWaiting':

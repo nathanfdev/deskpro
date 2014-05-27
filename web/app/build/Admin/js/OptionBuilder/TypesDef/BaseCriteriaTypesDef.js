@@ -436,10 +436,12 @@
                 } else {
                   use_relative = true;
                   if (value.options.date1_relative) {
-                    date1_relative = value.options.date1_relative.split(' ');
+                    date1_relative = [value.options.date1_relative];
+                    date1_relative[1] = value.options.date1_relative_type || 'days';
                   }
                   if (value.options.date2_relative) {
-                    date1_relative = value.options.date2_relative.split(' ');
+                    date2_relative = [value.options.date2_relative];
+                    date2_relative[1] = value.options.date2_relative_type || 'days';
                   }
                 }
                 return {
@@ -452,7 +454,7 @@
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var d1, d2, value;
                 if (model == null) {
                   model = {};
                 }
@@ -460,29 +462,33 @@
                 value.type = type;
                 value.op = model.op;
                 value.options = {};
-                if (model.use_relative) {
+                if (!model.use_relative) {
                   if (model.op === 'lte' || model.op === 'between') {
                     if (!model.date1) {
                       model.date1 = new Date();
                     }
-                    value.date1 = model.date1.getTime() / 1000;
+                    value.options.date1 = model.date1.getTime() / 1000;
                   }
                   if ((model.op === 'gte' || model.op === 'between') && model.date2) {
                     if (!model.date2) {
                       model.date2 = new Date();
                     }
-                    value.date2 = model.date2.getTime() / 1000;
+                    value.options.date2 = model.date2.getTime() / 1000;
                   }
                 } else {
                   if ((model.op === 'lte' || model.op === 'between') && model.date1_relative) {
-                    value.date1_relative = model.date1_relative || [1, 'days'];
-                    value.date1_relative = value.date1_relative.join(' ');
+                    d1 = model.date1_relative || [1, 'days'];
+                    value.options.date1_relative = d1[0];
+                    value.options.date1_relative_type = d1[1];
                   }
-                  if ((model.op === 'lte' || model.op === 'between') && model.date2_relative) {
-                    value.date2_relative = model.date2_relative || [1, 'days'];
-                    value.date2_relative = value.date2_relative.join(' ');
+                  if ((model.op === 'gte' || model.op === 'between') && model.date2_relative) {
+                    d2 = model.date2_relative || [1, 'days'];
+                    value.options.date2_relative = d2[0];
+                    value.options.date2_relative_type = d2[1];
                   }
                 }
+                console.log(model);
+                console.log(value);
                 return value;
               }
             };
