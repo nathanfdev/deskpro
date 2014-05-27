@@ -93,6 +93,7 @@
 	{# Subject #}
 	{##################################################################################################################}
 
+	{% if app.getSetting('tickets_enable_like_search') %}
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
@@ -126,15 +127,11 @@
 								<option selected="selected" value="is">{{ phrase('agent.general.contains') }}</option>
 								<option value="not">{{ phrase('agent.general.does_not_contain') }}</option>
 							</select>
-							{% if app.getSetting('tickets_enable_like_search') %}
-								<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-									<option value="and">{{ phrase('agent.general.all_words') }}</option>
-									<option value="or">{{ phrase('agent.general.any_words') }}</option>
-									<option value="{{ phrase('agent.general.phrase') }}">{{ phrase('agent.general.phrase') }}</option>
-								</select>
-							{% else %}
-								<input type="hidden" name="search_subject_type[]" value="fulltext" />
-							{% endif %}
+							<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+								<option value="and">{{ phrase('agent.general.all_words') }}</option>
+								<option value="or">{{ phrase('agent.general.any_words') }}</option>
+								<option value="{{ phrase('agent.general.phrase') }}">{{ phrase('agent.general.phrase') }}</option>
+							</select>
 						</td>
 					</tr>
 				</table>
@@ -144,11 +141,13 @@
 			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="icon-plus-sign"></i></div>
 		</div>
 	</div>
+	{% endif %}
 
 	{##################################################################################################################}
 	{# Message #}
 	{##################################################################################################################}
 
+	{% if app.getSetting('tickets_enable_like_search') %}
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
@@ -182,48 +181,40 @@
 								<option selected="selected" value="is">{{ phrase('agent.general.contains') }}</option>
 								<option value="not">{{ phrase('agent.general.does_not_contain') }}</option>
 							</select>
-							{% if app.getSetting('tickets_enable_like_search') %}
-								<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-									<option value="and">{{ phrase('agent.general.all_words') }}</option>
-									<option value="or">{{ phrase('agent.general.any_words') }}</option>
-									<option value="{{ phrase('agent.general.phrase') }}">{{ phrase('agent.general.phrase') }}</option>
-								</select>
-							{% else %}
-								<input type="hidden" name="search_message_type[]" value="fulltext" />
-								<input type="hidden" name="search_message_who[]" value="0" />
-								<input type="hidden" name="search_message_when_op[]" value="0" />
-							{% endif %}
+							<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+								<option value="and">{{ phrase('agent.general.all_words') }}</option>
+								<option value="or">{{ phrase('agent.general.any_words') }}</option>
+								<option value="{{ phrase('agent.general.phrase') }}">{{ phrase('agent.general.phrase') }}</option>
+							</select>
 						</td>
 					</tr>
-					{% if app.getSetting('tickets_enable_like_search') %}
-						<tr>
-							<td>&nbsp;</td>
-							<td>
-								<table class="layout-table v-middle" width="100%">
-									<tr>
-										<td width="100" style="padding-right: 4px;">
-											<select class="dp-select-widget-simple" name="search_message_who[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-												<option selected="selected" value="0">{{ phrase('agent.general.by_anyone') }}</option>
-												<option value="agent">{{ phrase('agent.general.by_agent') }}</option>
-												<option value="user">{{ phrase('agent.general.by_user') }}</option>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<table class="layout-table v-middle" width="100%">
+								<tr>
+									<td width="100" style="padding-right: 4px;">
+										<select class="dp-select-widget-simple" name="search_message_who[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+											<option selected="selected" value="0">{{ phrase('agent.general.by_anyone') }}</option>
+											<option value="agent">{{ phrase('agent.general.by_agent') }}</option>
+											<option value="user">{{ phrase('agent.general.by_user') }}</option>
+										</select>
+									</td>
+									<td>
+										<div class="date-term-wrap" data-base-name="search_message_when">
+											<select name="search_message_when_op[]" class="op dp-select-widget-simple" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+												<option selected="selected" value="0">{{ phrase('agent.tickets.written_any_time') }}</option>
+												<option value="lte">{{ phrase('agent.tickets.written_before') }}</option>
+												<option value="gte">{{ phrase('agent.tickets.written_after') }}</option>
+												<option value="between">{{ phrase('agent.tickets.written_between') }}</option>
 											</select>
-										</td>
-										<td>
-											<div class="date-term-wrap" data-base-name="search_message_when">
-												<select name="search_message_when_op[]" class="op dp-select-widget-simple" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-													<option selected="selected" value="0">{{ phrase('agent.tickets.written_any_time') }}</option>
-													<option value="lte">{{ phrase('agent.tickets.written_before') }}</option>
-													<option value="gte">{{ phrase('agent.tickets.written_after') }}</option>
-													<option value="between">{{ phrase('agent.tickets.written_between') }}</option>
-												</select>
-												{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-											</div>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					{% endif %}
+											{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+										</div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 				</table>
 			</div>
 		</div>
@@ -231,6 +222,7 @@
 			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="icon-plus-sign"></i></div>
 		</div>
 	</div>
+	{% endif %}
 
 	{##################################################################################################################}
 	{# User #}

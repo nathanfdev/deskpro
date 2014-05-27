@@ -174,6 +174,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 			$this->_loadSettings();
 		}
 
+		if (isset($this->virtual_settings[$name])) {
+			return call_user_func($this->virtual_settings[$name], $this);
+		}
+
 		return isset($this->settings[$name]) ? $this->settings[$name] : null;
 	}
 

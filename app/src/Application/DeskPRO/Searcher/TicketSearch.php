@@ -1103,21 +1103,6 @@ class TicketSearch extends SearcherAbstract
 						if (!$this->is_testing) $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 						break;
 
-					case self::TERM_TEXT:
-						if (is_array($choice)) {
-							$choice = array_pop($choice);
-						}
-
-						$joins[] = array(
-							'content_search',
-							"LEFT JOIN content_search AS $join_name ON ($join_name.object_type = 'ticket' AND $join_name.object_id = tickets.id)"
-						);
-
-						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDb()->quote($choice) . ")";
-
-						if (!$this->is_testing) $this->summary[] = "Ticket content matches: " . $choice;
-						break;
-
 					case self::TERM_ARCHIVE_SEARCH:
 						if ($choice) {
 							$this->enableArchiveSearch();
@@ -1809,23 +1794,13 @@ class TicketSearch extends SearcherAbstract
 
 						$type = 'and';
 
-						if (!App::getSetting('tickets_enable_like_search')) {
-							$joins[] = array(
-								'tickets_messages',
-								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
-							);
-							$field = "$join_name.content";
-
-							$wheres[] = $this->_fulltextSearch($field, $op, $string);
-						} else {
-							$this->affected_fields[] = 'ticket.message';
-							$joins[] = array(
-								'tickets_messages',
-								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
-							);
-							$field = "$join_name.message";
-							$wheres[] = $this->_stringSearch($field, $op, $string, $type);
-						}
+						$this->affected_fields[] = 'ticket.message';
+						$joins[] = array(
+							'tickets_messages',
+							"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
+						);
+						$field = "$join_name.message";
+						$wheres[] = $this->_stringSearch($field, $op, $string, $type);
 
 						if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 							if (!$this->is_testing) $this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.message'), 'value' => $string));
@@ -1839,51 +1814,41 @@ class TicketSearch extends SearcherAbstract
 						$string = $choice['query'];
 						$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
-						if (!App::getSetting('tickets_enable_like_search') || $type == 'fulltext') {
-							$joins[] = array(
-								'tickets_messages',
-								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.id = tickets.id)"
-							);
-							$field = "$join_name.content";
+						$this->affected_fields[] = 'ticket.message';
+						$joins[] = array(
+							'tickets_messages',
+							"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
+						);
+						$field = "$join_name.message";
 
-							$wheres[] = $this->_fulltextSearch($field, $op, $string);
+						if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+							if (!$this->is_testing) $this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.message'), 'value' => $string));
 						} else {
-							$this->affected_fields[] = 'ticket.message';
-							$joins[] = array(
-								'tickets_messages',
-								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
-							);
-							$field = "$join_name.message";
-
-							if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
-								if (!$this->is_testing) $this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.message'), 'value' => $string));
-							} else {
-								if (!$this->is_testing) $this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.message'), 'value' => $string));
-							}
-
-							$w = array();
-							$w[] = '('.$this->_stringSearch($field, $op, $string, $type).')';
-
-							if (!empty($choice['who'])) {
-								$join_name2 = $join_name.'_u';
-								$joins[] = array(
-									'people',
-									"LEFT JOIN people AS $join_name2 ON ($join_name2.id = $join_name.person_id)"
-								);
-
-								if ($choice['who'] == 'agent') {
-									$w[] = "($join_name2.is_agent = 1)";
-								} else {
-									$w[] = "($join_name2.is_agent = 0)";
-								}
-							}
-
-							if (!empty($choice['date_op']) && $choice['date_op']) {
-								$w[] = '(' . $this->_dateMatch("$join_name.date_created", $choice['date_op'], $choice['date']) . ')';
-							}
-
-							$wheres[] = '(' . implode(' AND ', $w) . ')';
+							if (!$this->is_testing) $this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.message'), 'value' => $string));
 						}
+
+						$w = array();
+						$w[] = '('.$this->_stringSearch($field, $op, $string, $type).')';
+
+						if (!empty($choice['who'])) {
+							$join_name2 = $join_name.'_u';
+							$joins[] = array(
+								'people',
+								"LEFT JOIN people AS $join_name2 ON ($join_name2.id = $join_name.person_id)"
+							);
+
+							if ($choice['who'] == 'agent') {
+								$w[] = "($join_name2.is_agent = 1)";
+							} else {
+								$w[] = "($join_name2.is_agent = 0)";
+							}
+						}
+
+						if (!empty($choice['date_op']) && $choice['date_op']) {
+							$w[] = '(' . $this->_dateMatch("$join_name.date_created", $choice['date_op'], $choice['date']) . ')';
+						}
+
+						$wheres[] = '(' . implode(' AND ', $w) . ')';
 						break;
 
 					case self::TERM_FLAGGED:
