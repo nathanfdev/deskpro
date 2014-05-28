@@ -2857,9 +2857,14 @@ class TicketController extends AbstractController
 
 		$account = null;
 		if ($this->container->getSetting('core_tickets.fwd_use_account')) {
-			$account = $this->container->getEmailAccountManager()->getAccount($this->container->getSetting('core_tickets.fwd_use_account'));
-			if ($account && $account->is_enabled && $account->outgoing_account) {}
-			else { $account = null; }
+			try {
+				$account = $this->container->getEmailAccountManager()->getAccount($this->container->getSetting('core_tickets.fwd_use_account'));
+				if (!($account && $account->is_enabled && $account->outgoing_account)) {
+					$account = null;
+				}
+			} catch (\OutOfBoundsException $e) {
+				$account = null;
+			}
 		}
 		if (!$account) {
 			$account = $this->container->getEmailAccountManager()->getPrimaryEmailAccount();
