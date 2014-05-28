@@ -15,6 +15,10 @@
 							</p>
 
 							<p>
+								The overlay loads a default list of content (articles, news, feedback and downloads) in the left sidebar by default. <button class="btn btn-success" ng-click="Embeds.updateSelections()">Specify the content to show</button>
+							</p>
+
+							<p>
 								Tab title: <input type="text" class="form-control" style="width: 275px;" ng-model="overlay_options.title" />
 							</p>
 							<p>
@@ -41,28 +45,6 @@
 								}" style="height: 110px;"></div>
 								</div>
 							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</article>
-	</section>
-
-	{##################################################################################################}
-
-	<section class="dp-paneblock dp-listpane">
-		<header>
-			<h3>Show links to content by default</h3>
-		</header>
-
-		<article class="form-horizontal dp-form">
-			<div class="panel panel-innertable">
-				<div class="form-group">
-					<div class="col-lg-12">
-						<div class="inner-group">
-							<button class="btn btn-success" ng-click="Embeds.updateSelections()">
-								Select content to show
-							</button>
 						</div>
 					</div>
 				</div>

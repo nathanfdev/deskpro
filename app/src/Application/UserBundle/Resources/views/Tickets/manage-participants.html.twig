@@ -18,11 +18,11 @@
 	<ul>
 		{% for part in ticket.user_participants %}
 		<li>
-			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref': ticket.ref, 'person_id': part.person.id}) }}">{{ phrase('user.tickets.remove_participant') }}</a>)</small> &nbsp;
-			{% if part.person.display_name_user != part.person.primary_email_address %}
-				{{ part.person.display_name_user }} ({{ part.person.primary_email_address }})
+			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref': ticket.ref, 'person_id': part.id}) }}">{{ phrase('user.tickets.remove_participant') }}</a>)</small> &nbsp;
+			{% if part.display_name_user != part.primary_email_address %}
+				{{ part.display_name_user }} ({{ part.primary_email_address }})
 			{% else %}
-				{{ part.person.primary_email_address }}
+				{{ part.primary_email_address }}
 			{% endif %}
 		</li>
 		{% endfor %}

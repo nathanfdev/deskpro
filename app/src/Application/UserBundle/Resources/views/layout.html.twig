@@ -348,11 +348,7 @@
 {% endif %}
 
 {% if app.getSetting('core.show_share_widget') and not app.admin_portal_controls %}
-	{% if app.getRequest().isSecure() %}
-		<script type="text/javascript" src="https://ws.sharethis.com/button/buttons.js" id="share-this-js"></script>
-	{% else %}
-		<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js" id="share-this-js"></script>
-	{% endif %}
+	<script type="text/javascript" src="https://ws.sharethis.com/button/buttons.js" id="share-this-js"></script>
 	<script type="text/javascript">stLight.options({publisher: "ur-b3c949e0-ec53-eea-51a4-2f4f16925438"}); </script>
 {% endif %}
 

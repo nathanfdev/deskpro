@@ -16,6 +16,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				lic_code = lic_code.match(/(.{1,50})/g).join("\n")
 				@$scope.lic_code = lic_code
 			)
+			old_title = window.document.title
+			window.document.title = 'DeskPRO Billing Interface'
+			@$scope.$on('$destroy', ->
+				window.document.title = old_title
+			)
 
 		reloadLicData: ->
 			data_promise = @Api.sendDataGet({

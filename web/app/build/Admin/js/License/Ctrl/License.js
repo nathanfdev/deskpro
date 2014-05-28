@@ -18,11 +18,12 @@
       Admin_License_Ctrl_License.DEPS = ['$window'];
 
       Admin_License_Ctrl_License.prototype.init = function() {
+        var old_title;
         this.license = null;
         this.ma_token = null;
         this.ma_login_url = null;
         this.lic_set_callback = null;
-        return this.$scope.$watch('lic_code', (function(_this) {
+        this.$scope.$watch('lic_code', (function(_this) {
           return function(lic_code) {
             lic_code = lic_code || '';
             lic_code = lic_code.replace(/\s/g, '');
@@ -30,6 +31,11 @@
             return _this.$scope.lic_code = lic_code;
           };
         })(this));
+        old_title = window.document.title;
+        window.document.title = 'DeskPRO Billing Interface';
+        return this.$scope.$on('$destroy', function() {
+          return window.document.title = old_title;
+        });
       };
 
       Admin_License_Ctrl_License.prototype.reloadLicData = function() {

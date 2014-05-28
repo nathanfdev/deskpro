@@ -5,20 +5,20 @@
 				<td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
 				<td ng-show="rowOpts.rowEnabled">
 					<select
-							ng-if="!multiselect"
-							ui-select2
-							ng-model="model.value"
-							style="min-width: 140px"
-							>
+						ng-if="!multiselect"
+						ui-select2="{dropdownAutoWidth:true}"
+						ng-model="model.value"
+						style="min-width: 140px"
+					>
 						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
 					</select>
 					<select
-							ng-if="multiselect"
-							multiple
-							ui-select2
-							ng-model="model.value"
-							style="width: 60%"
-							>
+						ng-if="multiselect"
+						multiple
+						ui-select2="{dropdownAutoWidth:true}"
+						ng-model="model.value"
+						style="width: 60%"
+					>
 						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
 					</select>
 				</td>

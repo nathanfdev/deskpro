@@ -6,16 +6,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
-				<li class="with-drag-handle" ng-repeat="sla in ListCtrl.list" dp-state-mark="tickets.slas.edit.{{ ng_var('sla.id') }}" data-id="{{ ng_var('sla.id') }}">
+				<li ng-repeat="sla in ListCtrl.list" dp-state-mark="tickets.slas.edit.{{ ng_var('sla.id') }}" data-id="{{ ng_var('sla.id') }}">
 					<a href="{{ ng_href('tickets.slas.edit', '{id: sla.id}') }}">
-						<i class="fa fa-bars drag-handle"></i>
-						<div class="pull-right">
-							<em class="tag"style="margin-left: 6px;">
-								<span ng-if="sla.is_global">global</span>
-								<span ng-if="sla.person_id">{{ ng_var('sla.person.display_name') }}</span>
-							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(sla); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
-						</div>
 						<h4>
 							<span class="title-text">{{ ng_var('sla.title') }}</span>
 						</h4>

@@ -13,7 +13,7 @@
 	'adm.general.builtin_fields'                     => 'Built-In Fields',
 	'adm.general.count_custom_fields'                => '{{count}} Custom Field|{{count}} Custom Fields',
 	'adm.general.count_labels'                       => '{{count}} Label|{{count}} Labels',
-	'adm.general.deskpro_admin_interface'            => 'Admin Interface',
+	'adm.general.deskpro_admin_interface'            => 'DeskPRO Admin Interface',
 	'adm.general.discard_changes_continue'           => 'Discard unsaved changes and continue',
 	'adm.general.home'                               => 'Home',
 	'adm.general.label_edit_error'                   => 'You must enter a valid label',
