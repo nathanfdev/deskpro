@@ -1648,6 +1648,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		return $this->department['id'];
 	}
 
+	public function getEmailAccountId()
+	{
+		if (!$this->email_account) {
+			return 0;
+		}
+
+		return $this->email_account->getId();
+	}
+
 	public function setDepartmentId($id)
 	{
 		if ($id) {

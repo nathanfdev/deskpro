@@ -797,6 +797,16 @@ class TicketTerms
 				if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
 				break;
 
+			case TicketSearch::TERM_EMAIL_ACCOUNT:
+				if (count($choice) == 1) $choice = array_pop($choice);
+				if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
+					$choice = (array)$choice;
+					$choice = array_unique($choice, \SORT_NUMERIC);
+				}
+				if (!$this->_testChoiceMatch($ticket['email_account_id'], $op, $choice)) return false;
+
+				break;
+
 			case TicketSearch::TERM_STATUS:
 				if (isset($choice['status'])) {
 					$choice = $choice['status'];
