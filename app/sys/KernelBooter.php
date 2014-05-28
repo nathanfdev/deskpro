@@ -39,6 +39,8 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
 use Application\DeskPRO\PageLog\PageLogger;
+use Orb\Util\Strings;
+use Orb\Util\Util;
 
 class KernelBooter
 {
@@ -275,9 +277,11 @@ class KernelBooter
 				}
 
 				if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
-					$res['content'] = KernelBooter::prepareCachedOutputForOffline($res['content']);
+					$content = KernelBooter::prepareCachedOutputForOffline($res['content']);
+				} else {
+					$content = KernelBooter::prepareCachedOutput($res);
 				}
-				echo $res['content'];
+				echo $content;
 
 				global $DP_CONFIG;
 				if (!empty($DP_CONFIG['cache']['page_cache']['enable_hit_log'])) {
@@ -556,7 +560,7 @@ class KernelBooter
 			}
 		}
 
-		if (!$logged_in && !$skip_cache && !$response->headers->has('X-DeskPRO-Private') && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
+		if (!$logged_in && !$skip_cache && !$response->headers->has('X-DeskPRO-Private') && self::$_cache_file && strpos($response->headers->get('Content-Type'), 'text/html') === 0 && $response->getStatusCode() == 200) {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			if (!is_dir($cache_dir)) {
 				@mkdir($cache_dir, 0777);
@@ -570,9 +574,10 @@ class KernelBooter
 				if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
 					// don't take any of the cookies - they'll be things like sessions etc
 					$store = array(
-						'headers' => $response->headers->all(),
-						'content' => $response->getContent(),
-						'compressed' => false
+						'app_secret'   => App::$container ? App::$container->getSetting('core.app_secret') : null,
+						'headers'      => $response->headers->all(),
+						'content'      => $response->getContent(),
+						'compressed'   => false
 					);
 					if (function_exists('gzcompress')) {
 						$store['content'] = gzcompress($store['content']);
@@ -602,6 +607,29 @@ class KernelBooter
 			'',
 			$content
 		);
+
+		return $content;
+	}
+
+
+	public static function prepareCachedOutput(array $res)
+	{
+		$content = $res['content'];
+
+		if (!empty($res['app_secret'])) {
+			require_once DP_ROOT.'/src/Orb/Util/Strings.php';
+			require_once DP_ROOT.'/src/Orb/Util/Util.php';
+			$app_secret = $res['app_secret'];
+			$content = preg_replace_callback('#<!\-\-DP_FORM_TOKEN\((.*?), (.*?)\)\-\->.*?<!\-\-DP_FORM_TOKEN_END\-\->#s', function($m) use ($app_secret) {
+				$name = $m[1];
+				$field_name = $m[2];
+
+				$html = '<input type="hidden" name="' . $field_name . '" value="STATIC_' . \Orb\Util\Util::generateStaticSecurityToken(md5($app_secret . $name), 43200) . '" />';
+				$html .= '<input type="hidden" name="_rt" value="STATIC_' . \Orb\Util\Util::generateStaticSecurityToken(md5($app_secret . 'request_token'), 43200) . '" class="dp_request_token" />';
+
+				return $html;
+			}, $content);
+		}
 
 		return $content;
 	}

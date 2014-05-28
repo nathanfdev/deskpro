@@ -761,8 +761,20 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function formToken($name = '', $field_name = '_dp_security_token')
 	{
-		$html = '<input type="hidden" name="'.$field_name.'" value="' . App::getSession()->getEntity()->generateSecurityToken($name, 43200) . '" />';
-		$html .= '<input type="hidden" name="_rt" value="' . App::getSession()->getEntity()->generateSecurityToken('request_token', 10800) . '" class="dp_request_token" />';
+		if (!App::getSession()->getEntity()->getPersonId()) {
+			$html = "<!--DP_FORM_TOKEN($name, $field_name)-->";
+		} else {
+			$html = '';
+		}
+
+		$html .= '<input type="hidden" name="' . $field_name . '" value="' . App::getSession()
+				->getEntity()
+				->generateSecurityToken($name, 43200) . '" />';
+		$html .= '<input type="hidden" name="_rt" value="' . App::getSession()
+				->getEntity()
+				->generateSecurityToken('request_token', 10800) . '" class="dp_request_token" />';
+
+		$html .= '<!--DP_FORM_TOKEN_END-->';
 
 		return $html;
 	}

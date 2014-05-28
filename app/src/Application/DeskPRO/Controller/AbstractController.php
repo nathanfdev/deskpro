@@ -93,7 +93,16 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			return false;
 		}
 
-		return $this->session->getEntity()->checkSecurityToken($name, $_REQUEST[$field_name]);
+		$v = $_REQUEST[$field_name];
+
+		if (!$this->session->getEntity()->getPersonId()) {
+			if (substr($v, 0, 7) == 'STATIC_') {
+				$v = substr($v, 7);
+				return App::$container->checkStaticSecurityToken($name, $v);
+			}
+		}
+
+		return $this->session->getEntity()->checkSecurityToken($name, $v);
 	}
 
 
