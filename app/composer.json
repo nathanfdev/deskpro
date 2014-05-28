@@ -36,8 +36,8 @@
 		"fzaninotto/faker": "1.4.*@dev"
 	},
 	"scripts": {
-		"post-update-cmd":  ["bin/clean-vendors.sh"],
-		"post-install-cmd": ["bin/clean-vendors.sh"]
+		"post-update-cmd":  ["bin/clean-vendors.sh", "bin/hack-vendors.sh"],
+		"post-install-cmd": ["bin/clean-vendors.sh", "bin/hack-vendors.sh"]
 	},
 	"preferred-install": "dist"
 }
