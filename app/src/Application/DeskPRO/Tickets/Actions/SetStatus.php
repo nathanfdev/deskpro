@@ -53,6 +53,11 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('status');
+
+		$me = $this;
+		$options->addCallbackCheckedOption('status', function($v) use ($me) {
+			return $me->isValidStatus($v);
+		});
 		return $options;
 	}
 
@@ -61,7 +66,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 	 * @param string $status
 	 * @return bool
 	 */
-	private function isValidStatus($status)
+	public function isValidStatus($status)
 	{
 		static $valid_statuses = array(
 			'awaiting_agent', 'awaiting_user', 'resolved', 'closed',

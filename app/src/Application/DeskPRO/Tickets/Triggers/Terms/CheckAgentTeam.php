@@ -52,6 +52,9 @@ class CheckAgentTeam extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('team_ids');
+		$options->addCallbackCheckedOption('team_ids', function($v) {
+			return is_array($v) && !empty($v);
+		});
 		return $options;
 	}
 

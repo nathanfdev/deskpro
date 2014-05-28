@@ -52,6 +52,9 @@ class CheckWorkflow extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('workflow_ids');
+		$options->addCallbackCheckedOption('workflow_ids', function($v) {
+			return is_array($v) && !empty($v);
+		});
 		return $options;
 	}
 

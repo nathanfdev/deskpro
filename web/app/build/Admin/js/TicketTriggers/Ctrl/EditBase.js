@@ -147,6 +147,7 @@
         if (this.$scope.form_props.$invalid) {
           return;
         }
+        this.resetErrors();
         postData = {
           title: this.$scope.form.title,
           event_trigger: this.triggerType,
@@ -231,12 +232,97 @@
           };
         })(this));
         promise.error((function(_this) {
-          return function(info, code) {
+          return function(result, code) {
             _this.stopSpinner('saving', true);
-            return _this.applyErrorResponseToView(info);
+            if ((result != null ? result.error_code : void 0) === 'invalid') {
+              return _this.showErrors(result.error_info);
+            }
           };
         })(this));
         return promise;
+      };
+
+      Admin_TicketTriggers_Ctrl_EditBase.prototype.findCriteriaTypeTitle = function(type) {
+        var option_title, sb, v, _i, _j, _len, _len1, _ref, _ref1;
+        option_title = null;
+        _ref = this.$scope.criteriaOptionTypes;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          v = _ref[_i];
+          if (v.subOptions) {
+            _ref1 = v.subOptions;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              sb = _ref1[_j];
+              if (type === sb.value) {
+                option_title = sb.title;
+                break;
+              }
+            }
+          } else {
+            if (type === v.value) {
+              option_title = v.title;
+            }
+          }
+          if (option_title) {
+            break;
+          }
+        }
+        return option_title || type;
+      };
+
+      Admin_TicketTriggers_Ctrl_EditBase.prototype.findActionTypeTitle = function(type) {
+        var option_title, sb, v, _i, _j, _len, _len1, _ref, _ref1;
+        option_title = null;
+        _ref = this.$scope.actionOptionTypes;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          v = _ref[_i];
+          if (v.subOptions) {
+            _ref1 = v.subOptions;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              sb = _ref1[_j];
+              if (type === sb.value) {
+                option_title = sb.title;
+                break;
+              }
+            }
+          } else {
+            if (type === v.value) {
+              option_title = v.title;
+            }
+          }
+          if (option_title) {
+            break;
+          }
+        }
+        return option_title || type;
+      };
+
+      Admin_TicketTriggers_Ctrl_EditBase.prototype.resetErrors = function() {
+        this.$scope.show_errors = false;
+        this.$scope.criteria_errors = null;
+        return this.$scope.action_errors = null;
+      };
+
+      Admin_TicketTriggers_Ctrl_EditBase.prototype.showErrors = function(errors) {
+        var t, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
+        this.$scope.show_errors = true;
+        if ((_ref = errors.criteria) != null ? _ref.length : void 0) {
+          this.$scope.criteria_errors = [];
+          _ref1 = errors.criteria;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            t = _ref1[_i];
+            this.$scope.criteria_errors.push(this.findCriteriaTypeTitle(t));
+          }
+        }
+        if ((_ref2 = errors.actions) != null ? _ref2.length : void 0) {
+          this.$scope.actions_errors = [];
+          _ref3 = errors.actions;
+          _results = [];
+          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
+            t = _ref3[_j];
+            _results.push(this.$scope.actions_errors.push(this.findActionTypeTitle(t)));
+          }
+          return _results;
+        }
       };
 
       return Admin_TicketTriggers_Ctrl_EditBase;

@@ -52,6 +52,9 @@ class CheckProduct extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('product_ids');
+		$options->addCallbackCheckedOption('product_ids', function($v) {
+			return is_array($v) && !empty($v);
+		});
 		return $options;
 	}
 

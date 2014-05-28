@@ -125,6 +125,8 @@ define [
 		saveTrigger: ->
 			return if @$scope.form_props.$invalid
 
+			@resetErrors()
+
 			postData = {
 				title:         @$scope.form.title,
 				event_trigger: @triggerType,
@@ -186,9 +188,58 @@ define [
 				if is_new
 					@$state.go('tickets.triggers.gocreate')
 			)
-			promise.error( (info, code) =>
+			promise.error( (result, code) =>
 				@stopSpinner('saving', true)
-				@applyErrorResponseToView(info)
+				if result?.error_code == 'invalid'
+					@showErrors(result.error_info)
 			)
 
 			return promise
+
+		findCriteriaTypeTitle: (type) ->
+			option_title = null
+			for v in @$scope.criteriaOptionTypes
+				if v.subOptions
+					for sb in v.subOptions
+						if type == sb.value
+							option_title = sb.title
+							break
+				else
+					if type == v.value
+						option_title = v.title
+				if option_title then break
+
+			return option_title || type
+
+		findActionTypeTitle: (type) ->
+			option_title = null
+			for v in @$scope.actionOptionTypes
+				if v.subOptions
+					for sb in v.subOptions
+						if type == sb.value
+							option_title = sb.title
+							break
+				else
+					if type == v.value
+						option_title = v.title
+				if option_title then break
+
+			return option_title || type
+
+		resetErrors: ->
+			@$scope.show_errors = false
+			@$scope.criteria_errors = null
+			@$scope.action_errors = null
+
+		showErrors: (errors) ->
+			@$scope.show_errors = true
+
+			if errors.criteria?.length
+				@$scope.criteria_errors = []
+				for t in errors.criteria
+					@$scope.criteria_errors.push(@findCriteriaTypeTitle(t))
+
+			if errors.actions?.length
+				@$scope.actions_errors = []
+				for t in errors.actions
+					@$scope.actions_errors.push(@findActionTypeTitle(t))

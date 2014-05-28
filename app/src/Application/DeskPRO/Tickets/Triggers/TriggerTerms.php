@@ -109,7 +109,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
 	 * @param array $term_info
 	 * @throws \InvalidArgumentException
 	 */
-	private function getTermFromArray(array $term_info)
+	public function getTermFromArray(array $term_info)
 	{
 		return $this->term_factory->createFromArray($term_info);
 	}

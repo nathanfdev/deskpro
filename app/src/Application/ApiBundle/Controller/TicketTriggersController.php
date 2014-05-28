@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Triggers\Edit\SpecialTriggerEdit;
+use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
@@ -214,10 +215,24 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		$trigger->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
 		$trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
 
+		$error_criteria = array();
+		$error_actions  = array();
+
 		$terms = new TriggerTerms();
 		foreach ($this->in->getArrayValue('criteria_sets') as $set) {
 			if ($set) {
-				$terms->addTermFromArray(array('set_terms' => $set));
+				$composite = new TriggerTermComposite(array(), TriggerTermComposite::OP_AND);
+				foreach ($set as $ti) {
+					try {
+						$t = $terms->getTermFromArray($ti);
+						$composite->add($t);
+					} catch (\Exception $e) {
+						$error_criteria[] = $ti['type'];
+					}
+				}
+				if ($composite->count()) {
+					$terms->addTerm($composite);
+				}
 			}
 		}
 
@@ -239,8 +254,26 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 					}
 				}
 
-				$actions->addActionFromArray($act);
+				try {
+					$actions->addActionFromArray($act);
+				} catch (\Exception $e) {
+					$error_actions[] = $act['type'];
+				}
 			}
+		}
+
+		$ret = array();
+
+		if ($error_criteria || $error_actions) {
+			$ret['errors'] = array();
+			if ($error_criteria) {
+				$ret['errors']['criteria'] = $error_criteria;
+			}
+			if ($error_actions) {
+				$ret['errors']['actions'] = $error_actions;
+			}
+
+			return $this->createApiErrorInfoResponse('invalid', 'One or more criteria or actions are invalid', $ret['errors']);
 		}
 
 		$trigger->terms = $terms;
@@ -273,9 +306,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		$this->em->persist($trigger);
 		$this->em->flush();
 
-		return $this->createSuccessResponse(array(
-			'trigger_id' => $trigger->id
-		));
+		$ret['trigger_id'] = $trigger->id;
+		return $this->createSuccessResponse($ret);
 	}
 
 	####################################################################################################################

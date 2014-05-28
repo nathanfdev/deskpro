@@ -181,6 +181,27 @@
 							<li ng-show="form_props.title.$error.required">Please enter a title</li>
 						</ul>
 					</div>
+					<div class="text-danger ng-hide" ng-show="show_errors">
+						<p>
+							<strong>There were errors with your trigger.</strong>
+						</p>
+						<div ng-show="criteria_errors">
+							<p>
+								The following criteria terms are invalid and must be corrected:
+							</p>
+							<ul>
+								<li ng-repeat="t in criteria_errors">{{ ng_var('t') }}</li>
+							</ul>
+						</div>
+						<div ng-show="actions_errors">
+							<p>
+								The following actions are invalid and must be corrected:
+							</p>
+							<ul>
+								<li ng-repeat="t in actions_errors">{{ ng_var('t') }}</li>
+							</ul>
+						</div>
+					</div>
 
 					<div class="dp-delete-control" ng-if="TicketTriggersEdit.trigger.id">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.List.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
@@ -188,7 +209,10 @@
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving_dep">
-							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							<button class="btn btn-primary" dp-submit-form>
+								<span ng-hide="show_errors">{{ phrase('agent.general.save') }}</span>
+								<span ng-show="show_errors">Try Again</span>
+							</button>
 						</div>
 						<div dp-show-spinning="saving_dep">
 							<i class="spinner-flat"></i>
