@@ -251,8 +251,12 @@ class FilterChangeDetector
 				$orig_match_failterm = null;
 				$new_match_failterm = null;
 
-				if ($is_new_ticket && !$agent->PermissionsManager->TicketChecker->canView($ticket)) {
-					continue;
+				// testing check
+				// there is no mock for the PermissionsManager yet
+				if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
+					if ($is_new_ticket && !$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+						continue;
+					}
 				}
 
 				if ($is_dep_change) {
