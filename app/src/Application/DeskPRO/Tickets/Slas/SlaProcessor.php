@@ -55,10 +55,16 @@ class SlaProcessor
 	 */
 	private $action_applicator;
 
-	public function __construct(EntityManager $em, ActionApplicator $action_applicator)
+	/**
+	 * @var SlaClientMessageSender
+	 */
+	private $cm_sender;
+
+	public function __construct(EntityManager $em, ActionApplicator $action_applicator, SlaClientMessageSender $cm_sender)
 	{
 		$this->em = $em;
 		$this->action_applicator = $action_applicator;
+		$this->cm_sender = $cm_sender;
 	}
 
 
@@ -140,6 +146,10 @@ class SlaProcessor
 				$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- sla_status: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $ticket_sla->sla_status));
 			}
 
+			if ($current_complete != $ticket_sla->is_completed || $current_status != $ticket_sla->sla_status) {
+				$this->cm_sender->sendMessage($ticket, $ticket_sla, $current_status, $current_complete);
+			}
+
 			if ($do_triggers) {
 				if ($current_status == TicketSla::STATUS_OK && in_array($ticket_sla->sla_status, array(TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL))) {
 					$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- Executing WARN actions', $ticket_sla->sla->id, $ticket_sla->sla->title));
@@ -151,6 +161,8 @@ class SlaProcessor
 				}
 			}
 		}
+
+		$this->cm_sender->sendQueue();
 	}
 
 
@@ -174,10 +186,17 @@ class SlaProcessor
 				continue;
 			}
 
+			$current_complete = $ticket_sla->is_completed;
+			$current_status   = $ticket_sla->sla_status;
+
 			if ($ticket_sla->sla->getCalculator()->isTicketSlaFailed($ticket_sla->ticket, $ticket_sla)) {
+
 				$ticket_sla->sla_status = TicketSla::STATUS_FAIL;
 				$this->em->persist($ticket_sla);
 				$this->em->flush($ticket_sla);
+
+				$this->cm_sender->sendMessage($ticket_sla->ticket, $ticket_sla, $current_status, $current_complete);
+				$this->cm_sender->sendQueue();
 
 				$count++;
 
@@ -215,12 +234,19 @@ class SlaProcessor
 				continue;
 			}
 
+			$current_complete = $ticket_sla->is_completed;
+			$current_status   = $ticket_sla->sla_status;
+
 			if ($ticket_sla->sla->getCalculator()->isTicketSlaWarning($ticket_sla->ticket, $ticket_sla)) {
+
 				$ticket_sla->sla_status = TicketSla::STATUS_WARNING;
 				$this->em->persist($ticket_sla);
 				$this->em->flush($ticket_sla);
 
 				$count++;
+
+				$this->cm_sender->sendMessage($ticket_sla->ticket, $ticket_sla, $current_status, $current_complete);
+				$this->cm_sender->sendQueue();
 
 				$context = $context_factory($ticket_sla->ticket, $ticket_sla->sla, $ticket_sla, 'warning');
 				if (!($context instanceof ExecutorContextInterface)) {

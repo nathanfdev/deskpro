@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\Slas\SlaProcessor;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Doctrine\ORM\EntityManager;
@@ -76,7 +77,12 @@ class RecalculateSlas implements TicketSaveActionInterface
 			return;
 		}
 
-		$proc = new SlaProcessor($this->em, $this->action_applicator);
+		$cm_sender = new SlaClientMessageSender($this->em->getConnection());
+		if ($context->getPersonContext() && $context->getPersonContext()->getId()) {
+			$cm_sender->setPersonContext($context->getPersonContext());
+		}
+
+		$proc = new SlaProcessor($this->em, $this->action_applicator, $cm_sender);
 		$proc->calculateSlas($ticket, $context);
 	}
 }

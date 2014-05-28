@@ -36,6 +36,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
+use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\Slas\SlaProcessor;
 
 /**
@@ -52,7 +53,11 @@ class TicketSlas extends AbstractJob
 	{
 		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
 
-		$proc = new SlaProcessor(App::$container->getEm(), new ActionApplicator(App::$container));
+		$proc = new SlaProcessor(
+			App::$container->getEm(),
+			new ActionApplicator(App::$container),
+			new SlaClientMessageSender(App::$container->getDb())
+		);
 
 		$context_factory = function() {
 			$context = App::$container->getTicketManager()->createSystemExecutorContext('slas');
