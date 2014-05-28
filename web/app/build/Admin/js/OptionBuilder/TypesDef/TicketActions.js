@@ -170,6 +170,10 @@
           title: 'Prevent Emails To Agents',
           value: 'ModQuietAgentEmails'
         });
+        options.push({
+          title: 'Set Trigger Variable',
+          value: 'ModSetUserVar'
+        });
         set_options.push({
           title: 'Trigger Control',
           subOptions: options
@@ -767,6 +771,49 @@
         options.propName = 'stop_triggers';
         def = this.getStandardIs(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModSetUserVar = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-var.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  name: options.name || '',
+                  value: options.value || ''
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'ModSetUserVar';
+                value.options = {
+                  name: model.name || '',
+                  value: model.value || ''
+                };
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietUserEmails = function(options) {

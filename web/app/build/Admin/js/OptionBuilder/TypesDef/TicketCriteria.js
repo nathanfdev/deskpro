@@ -292,6 +292,15 @@
           title: 'Dates',
           subOptions: options
         });
+        options = [];
+        options.push({
+          title: 'Check Trigger Variable',
+          value: 'CheckUserVar'
+        });
+        set_options.push({
+          title: 'Trigger Control',
+          subOptions: options
+        });
         return set_options;
       };
 
@@ -1052,6 +1061,51 @@
                   model = {};
                 }
                 value = {};
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserVar = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-var.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  op: value.op || 'isset',
+                  name: options.name || '',
+                  value: options.value || ''
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'CheckUserVar';
+                value.op = model.op || 'isset';
+                value.options = {
+                  name: model.name || '',
+                  value: model.value || ''
+                };
                 return value;
               }
             };

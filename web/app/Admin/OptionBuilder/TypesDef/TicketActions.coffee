@@ -220,6 +220,11 @@ define [
 				value: 'ModQuietAgentEmails'
 			})
 
+			options.push({
+				title: 'Set Trigger Variable',
+				value: 'ModSetUserVar'
+			})
+
 			set_options.push({
 				title: 'Trigger Control',
 				subOptions: options
@@ -602,6 +607,34 @@ define [
 			options.propName = 'stop_triggers'
 			def = @getStandardIs(options)
 			return def
+
+		getModSetUserVar: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-var.html')
+
+				getData: ->
+					return {}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+							return {
+								name: options.name || '',
+								value: options.value || ''
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'ModSetUserVar'
+							value.options = {
+								name: model.name || '',
+								value: model.value || ''
+							}
+							return value
+					}
+			}
 
 		getModQuietUserEmails: (options = {}) ->
 			def = @getStandardIs(options)

@@ -217,6 +217,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
 		$error_criteria = array();
 		$error_actions  = array();
+		$error_messages = array();
 
 		$terms = new TriggerTerms();
 		foreach ($this->in->getArrayValue('criteria_sets') as $set) {
@@ -228,6 +229,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 						$composite->add($t);
 					} catch (\Exception $e) {
 						$error_criteria[] = $ti['type'];
+						$error_messages[] = $e->getMessage();
 					}
 				}
 				if ($composite->count()) {
@@ -258,6 +260,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 					$actions->addActionFromArray($act);
 				} catch (\Exception $e) {
 					$error_actions[] = $act['type'];
+					$error_messages[] = $e->getMessage();
 				}
 			}
 		}
@@ -272,6 +275,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 			if ($error_actions) {
 				$ret['errors']['actions'] = $error_actions;
 			}
+			$ret['errors']['error_messages'] = $error_messages;
 
 			return $this->createApiErrorInfoResponse('invalid', 'One or more criteria or actions are invalid', $ret['errors']);
 		}

@@ -64,7 +64,7 @@ class CheckSatisfaction extends AbstractTriggerTerm
 		$op = $this->getTermOperator();
 
 		if (!$ticket->date_feedback_rating) {
-			if ($op == 'notisset') {
+			if ($op == 'not_isset') {
 				return true;
 			}
 			return false;

@@ -353,6 +353,22 @@ define [
 				subOptions: options
 			})
 
+			#------------------------------
+			# Trigger Control
+			#------------------------------
+
+			options = []
+
+			options.push({
+				title: 'Check Trigger Variable',
+				value: 'CheckUserVar'
+			})
+
+			set_options.push({
+				title: 'Trigger Control',
+				subOptions: options
+			})
+
 			return set_options
 
 		loadDataOptions: ->
@@ -802,6 +818,36 @@ define [
 
 					getValue: (model = {}, data) ->
 						value = {}
+						return value
+					}
+			}
+
+		getCheckUserVar: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-var.html')
+
+				getData: ->
+					return {}
+
+				getDataFormatter: ->
+					return {
+					getViewValue: (value = {}, data) ->
+						options = value?.options || {}
+						return {
+							op: value.op || 'isset',
+							name: options.name || '',
+							value: options.value || ''
+						}
+					getValue: (model = {}, data) ->
+						value = {}
+						value.type = 'CheckUserVar'
+						value.op = model.op || 'isset'
+						value.options = {
+							name: model.name || '',
+							value: model.value || ''
+						}
 						return value
 					}
 			}

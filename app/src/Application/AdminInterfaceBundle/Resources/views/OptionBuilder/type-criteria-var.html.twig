@@ -1,0 +1,30 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table" width="100%">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;">
+					<label class="row-label">Check Trigger Variable</label>
+				</td>
+				<td width="100" style="padding-right: 3px;">
+					<input type="text" class="form-control" ng-model="model.name" style="width: 120px;" placeholder="Variable Name" />
+				</td>
+				<td width="10" style="padding-right: 3px;">
+					<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;">
+						<option value="isset">is set</option>
+						<option value="not_isset">is not set</option>
+						<option value="is">is</option>
+						<option value="not">is not</option>
+						<option value="contains">contains</option>
+						<option value="not_contains">does not contain</option>
+						<option value="is_regex">matches regex</option>
+						<option value="not_regex">does not match regex</option>
+					</select>
+				</td>
+				<td>
+					<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'isset' || model.op == 'not_isset'" placeholder="Variable Value" />
+					&nbsp;
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>
