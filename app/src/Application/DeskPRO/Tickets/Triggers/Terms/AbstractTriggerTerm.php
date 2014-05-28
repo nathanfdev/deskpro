@@ -315,7 +315,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			return false;
 		}
 
-		if ($check_ids === null) {
+		if ($check_ids === null || empty($check_ids)) {
 			return false;
 		}
 
@@ -375,7 +375,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			$all_values = array($all_values);
 		}
 
-		if ($check_ids === null) {
+		if ($check_ids === null || empty($check_ids)) {
 			return false;
 		}
 
