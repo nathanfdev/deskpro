@@ -94,7 +94,7 @@ class SlaCalculator
 		switch ($this->type) {
 			case self::TYPE_FIRST_RESPONSE:
 			case self::TYPE_RESOLUTION:
-				return $this->work_hours->calculateWorkHoursDelay($ticket->date_created, $this->warn_time->getSecs());
+				return $this->work_hours->calculateWorkHoursDelay($ticket->date_created, $delay);
 
 			case self::TYPE_WAITING_TIME:
 				if ($ticket->status != 'awaiting_agent') {
@@ -153,6 +153,7 @@ class SlaCalculator
 	 */
 	public function calculateFailDate(Ticket $ticket)
 	{
+
 		return $this->_calculateDate($ticket, $this->fail_time->getSecs());
 	}
 
