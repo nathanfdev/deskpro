@@ -1,0 +1,36 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table" width="100%">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;">
+					<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;">
+						<option value="is">Agents have been emailed</option>
+						<option value="is">Agents have NOT been emailed</option>
+					</select>
+				</td>
+				<td width="100" class="nowrap">
+					<label><input type="checkbox" ng-model="model.with_template" /> a specific email template</label>
+				</td>
+				<td width="100%" style="padding-left: 5px;">
+					<div ng-show="model.with_template">
+						<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || 'DeskPRO:emails_agent:ticket-new.html.twig'">
+							<optgroup label="Standard Agent Emails">
+								{% for email,label in {
+									'DeskPRO:emails_agent:ticket-new.html.twig': 'New Ticket Notification',
+									'DeskPRO:emails_agent:ticket-update.html.twig': 'Ticket Updated Notification',
+									'DeskPRO:emails_agent:ticket-reply.html.twig': 'New Reply'
+								} %}
+									<option value="{{ email }}">{{ label }}</option>
+								{% endfor %}
+							</optgroup>
+							<optgroup label="Custom Emails">
+								<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
+							</optgroup>
+						</select>
+					</div>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

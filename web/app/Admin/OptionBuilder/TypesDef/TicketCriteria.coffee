@@ -360,6 +360,16 @@ define [
 			options = []
 
 			options.push({
+				title: 'Check if user was emailed',
+				value: 'CheckUserIsEmailed'
+			})
+
+			options.push({
+				title: 'Check if agents were emailed',
+				value: 'CheckAgentIsEmailed'
+			})
+
+			options.push({
 				title: 'Check Trigger Variable',
 				value: 'CheckUserVar'
 			})
@@ -392,6 +402,7 @@ define [
 						'ticket_accounts': '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
+						'email_tpls':      '/email-templates-info'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -408,6 +419,7 @@ define [
 						options_data['email_accounts']   = data.ticket_accounts.email_accounts
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
+						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -833,21 +845,57 @@ define [
 
 				getDataFormatter: ->
 					return {
-					getViewValue: (value = {}, data) ->
-						options = value?.options || {}
-						return {
-							op: value.op || 'isset',
-							name: options.name || '',
-							value: options.value || ''
-						}
-					getValue: (model = {}, data) ->
-						value = {}
-						value.type = 'CheckUserVar'
-						value.op = model.op || 'isset'
-						value.options = {
-							name: model.name || '',
-							value: model.value || ''
-						}
-						return value
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+							return {
+								op: value.op || 'isset',
+								name: options.name || '',
+								value: options.value || ''
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'CheckUserVar'
+							value.op = model.op || 'isset'
+							value.options = {
+								name: model.name || '',
+								value: model.value || ''
+							}
+							return value
 					}
 			}
+
+		getIsEmailed: (name, tpl) ->
+			me = @
+			return {
+			getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/' + tpl)
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+
+							return {
+								op: value.op || 'is',
+								template: options.template || null,
+								with_template: if options.template then true else false
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = name
+							value.op = model.op || 'is'
+							value.options = {
+								template: if model.with_template and model.template then model.template else null
+							}
+							return value
+						}
+			}
+
+		getCheckUserIsEmailed: ->
+			return @getIsEmailed('CheckUserIsEmailed', 'type-criteria-userisemailed.html')
+
+		getCheckAgentIsEmailed: ->
+			return @getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html')

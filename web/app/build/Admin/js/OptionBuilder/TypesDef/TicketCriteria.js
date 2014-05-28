@@ -294,6 +294,14 @@
         });
         options = [];
         options.push({
+          title: 'Check if user was emailed',
+          value: 'CheckUserIsEmailed'
+        });
+        options.push({
+          title: 'Check if agents were emailed',
+          value: 'CheckAgentIsEmailed'
+        });
+        options.push({
           title: 'Check Trigger Variable',
           value: 'CheckUserVar'
         });
@@ -325,7 +333,8 @@
               'org_fields': '/org_fields',
               'ticket_accounts': '/email_accounts',
               'usergroups': '/user_groups',
-              'langs': '/langs'
+              'langs': '/langs',
+              'email_tpls': '/email-templates-info'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -344,6 +353,7 @@
                 options_data['email_accounts'] = data.ticket_accounts.email_accounts;
                 options_data['usergroups'] = data.usergroups.groups;
                 options_data['langs'] = (_ref4 = data.langs) != null ? _ref4.languages : void 0;
+                options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 _this.options_data = options_data;
                 if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
                   _ref6 = _this.options_data.ticket_fields;
@@ -1111,6 +1121,56 @@
             };
           }
         };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getIsEmailed = function(name, tpl) {
+        var me;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/' + tpl);
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var options;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  op: value.op || 'is',
+                  template: options.template || null,
+                  with_template: options.template ? true : false
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = name;
+                value.op = model.op || 'is';
+                value.options = {
+                  template: model.with_template && model.template ? model.template : null
+                };
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserIsEmailed = function() {
+        return this.getIsEmailed('CheckUserIsEmailed', 'type-criteria-userisemailed.html');
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgentIsEmailed = function() {
+        return this.getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html');
       };
 
       return Admin_OptionBuilder_TypesDef_TicketCriteria;
