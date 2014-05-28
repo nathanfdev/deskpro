@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Util as DeskPROUtil;
+use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -61,7 +63,12 @@ class CheckLabel extends AbstractTriggerTerm
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'labels', 'label', $options['labels']);
+		$labels = DeskPROUtil::labelsArrayFromString($this->getTermOptions()->get('labels', ''));
+
+		if (!$labels) {
+			return false;
+		}
+
+		return $this->isEntityMatch($ticket, $context, 'labels', 'label', $labels);
 	}
 }

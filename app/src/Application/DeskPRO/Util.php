@@ -280,4 +280,33 @@ class Util
 
 		return implode('', $new_format);
 	}
+
+	/**
+	 * @param string|array $labels
+	 * @return array
+	 */
+	public static function labelsArrayFromString($labels)
+	{
+		if (!is_array($labels)) {
+			$labels = explode(',', $labels);
+		}
+
+		$labels = array_map(function($v) {
+			if (!is_scalar($v)) {
+				return null;
+			}
+			$v = trim($v);
+			if ($v === "") {
+				return null;
+			}
+
+			$v = strtolower($v);
+
+			return $v;
+		}, $labels);
+
+		$labels = Arrays::removeNull($labels);
+
+		return $labels;
+	}
 }

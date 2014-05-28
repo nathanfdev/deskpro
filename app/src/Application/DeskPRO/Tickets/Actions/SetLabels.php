@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
+use Application\DeskPRO\Util as DeskPROUtil;
 
 /**
  * Adds and removes lables from tickets.
@@ -67,22 +68,24 @@ class SetLabels extends AbstractContainerAwareAction implements ActionInterface,
 		# Add labels
 		#--------------------
 
-		$add_labels = $this->getActionOption('add_labels');
-		$add_labels = array_map(function($l) { return strtolower(trim($l)); }, $add_labels);
+		$add_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('add_labels', ''));
 
-		foreach ($add_labels as $l) {
-			$ticket->addLabelByString($l);
+		if ($add_labels) {
+			foreach ($add_labels as $l) {
+				$ticket->addLabelByString($l);
+			}
 		}
 
 		#--------------------
 		# Remove labels
 		#--------------------
 
-		$remove_labels = $this->getActionOption('remove_labels');
-		$remove_labels = array_map(function($l) { return strtolower(trim($l)); }, $remove_labels);
+		$remove_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('remove_labels', ''));
 
-		foreach ($remove_labels as $l) {
-			$ticket->removeLabelByString($l);
+		if ($remove_labels) {
+			foreach ($remove_labels as $l) {
+				$ticket->removeLabelByString($l);
+			}
 		}
 	}
 
