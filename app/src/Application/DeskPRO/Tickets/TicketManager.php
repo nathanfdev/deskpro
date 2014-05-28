@@ -296,10 +296,9 @@ class TicketManager
 		foreach ($this->post_save_actions as $action) {
 			$context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
 			$action->processTicket($ticket, $context);
+			$this->em->persist($ticket);
+			$this->em->flush();
 		}
-
-		$this->em->persist($ticket);
-		$this->em->flush();
 
 		if (!$is_noop) {
 			$logs = $context->getVars()->get('ticket_logs', array());
