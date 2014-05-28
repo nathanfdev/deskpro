@@ -145,8 +145,12 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
 	public function testNotEmptyOption()
 	{
-		$check = $this->createChecker('not', array('%OPT%' => array()));
-		$this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
+		try {
+			$check = $this->createChecker('not', array('%OPT%' => array()));
+			$this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
+		} catch (\Orb\Util\CheckedOptionsException $e) {
+			// Some optiosn dont allow empty, so dont test those checks
+		}
 	}
 
 	public function testNotInvalidOption()

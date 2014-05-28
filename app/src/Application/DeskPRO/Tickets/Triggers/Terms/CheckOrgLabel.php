@@ -53,6 +53,9 @@ class CheckOrgLabel extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('labels');
+		$options->addCallbackCheckedOption('labels', function($v) {
+			return !empty($v);
+		});
 		return $options;
 	}
 

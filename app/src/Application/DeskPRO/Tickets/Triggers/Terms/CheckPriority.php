@@ -52,6 +52,9 @@ class CheckPriority extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('priority_ids');
+		$options->addCallbackCheckedOption('priority_ids', function($v) {
+			return (is_array($v) && !empty($v));
+		});
 		return $options;
 	}
 
