@@ -38,11 +38,33 @@
 {% block listpane_help %}
 	<header>
 		<h1>You can customize the information in a chat with optional custom fields.</h1>
-		<p>When you define a custom field, you choose how agents and users select values (e.g. text entry, radio buttons etc.) when they start or edit a chat.</p>
+		<p>When you define a custom field, you choose what it's called and what sort of values it can store (text entry, a date, multiple choice etc.).</p>
 	</header>
 	<article>
 		<section>
-			<p>Once you've defined a custom chat field, you can update it with <strong>triggers</strong>, <strong>escalations</strong>, <strong>macros</strong> or <strong>SLAs</strong>, as well as agent input.</p>
+			<p>You can choose if both agents and users can view and edit the field, or if it is for agents only. You can also have the helpdesk update a custom field with <strong>triggers</strong>, <strong>escalations</strong> or <strong>SLAs</strong>.</p>
+
 		</section>
+	<section>
+		<h2><span>FAQ</span></h2>
+		<dl>
+			<dt><em>Q:</em>My helpdesk uses multiple languages and some of these fields are not being translated; how do I fix this?</dt>
+			<dd><em>A:</em>
+				You need to enter a translated version of any field values/names you have defined. Go to <strong>Setup > Languages</strong>; click on each language you have installed beyond the default, click <strong>Edit Phrases</strong>, and enter a custom translation.
+			</dd>
+
+			<dt><em>Q:</em>What does the <strong>Match regular expression</strong> setting on custom text fields do?</dt>
+			<dd><em>A:</em>
+				A regular expression lets you define a pattern that user/agent input must match. For example, if you expect an 8-digit account number starting with 9, you can use a regular expression to make sure input matches that format. See the manual section on <a href="#Custom field validation" target="_blank">Custom field validation</a> for more details.
+			</dd>
+		</dl>
+</section>
+	<section>
+			<h2><span>Related Content</span></h2>
+			<ul>
+				<li>[MANUAL]<a href="#custom-fields" target="_blank">Custom fields</a></li>
+				<li>[MANUAL]<a href="#custom-field-validation" target="_blank">Custom field validation</a>
+			</ul>
+	</section>
 	</article>
 {% endblock %}

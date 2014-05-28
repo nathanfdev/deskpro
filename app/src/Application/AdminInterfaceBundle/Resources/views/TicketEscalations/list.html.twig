@@ -45,7 +45,7 @@
 				<li><strong>time the ticket has been open for</strong>: total time the ticket has existed without being resolved</li>
 				<li><strong>time the user has been waiting</strong>: how long the ticket has been <strong>awaiting agent</strong>; this only counts time from the most recent status change, i.e. changing status to something else then back to <strong>awaiting agent</strong> resets the clock</li>
 				<li><strong>total time the user has been waiting</strong>: cumulative time the ticket has been <strong>awaiting agent</strong> over its whole life</li>
-				<li><strong>time the agent has been waiting</strong>: how long ticket has been in <strong>awaiting user</strong> status since its last status</li>
+				<li><strong>time the agent has been waiting</strong>: how long ticket has been in <strong>awaiting user</strong> status since its last status change</li>
 				<li>how long <strong>the ticket has been resolved for</strong></li>
 			</ul>
 			<p>You can also set extra <strong>criteria</strong> that the ticket must meet for the escalation to run.</p>
@@ -62,7 +62,7 @@
 		</dl>
 			<dt><em>Q:</em>If an escalation with a "stop processing other triggers" action runs, does that stop future escalations from doing anything?</dt>
 		<dd><em>A:</em>
-			No, "stop processing other triggers" only applies when two triggers/escalations/SLAs run their actions at the same time.
+			No, "stop processing other triggers" only applies when two triggers/escalations/SLAs run in response to the same event.
 		</dd>
 		</section>
 

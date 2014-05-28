@@ -34,7 +34,7 @@
 {% block listpane_help %}
 	<header>
 		<h1>User rules automatically add users to usergroups based on their email address.</h1>
-		<p>Define an <strong>email address pattern</strong> and select which usergroup to which the users who match it should be added.</p>
+		<p>Define an <strong>email address pattern</strong> and set which usergroup it adds users to.</p>
 	</header>
 	<article>
 		<section>
@@ -44,8 +44,26 @@
 				<li><code>*@example.com</code> matches all email addresses ending with <code>@example.com</code>.</li>
 				<li><code>sales@*</code> matches all email addresses beginning with <code>sales@</code>.</li>
 				<li><code>sales@*.co.uk</code> matches all email address beginning with <code>sales@</code> and ending with <code>.co.uk</code></li>
-				<li><code>*@example.*</code> matches <code>it@example.org</code> and <code>sales@example.co.uk</code> etc.</li>
+				<li><code>*@example.*</code> would match <code>it@example.org</code> and <code>sales@example.co.uk</code>, etc.</li>
 			</ul>
 		</section>
+		
+		<section>
+		<h2><span>FAQ</span></h2>
+		<dl>
+			<dt><em>Q:</em>How can I automatically add users to organizations based on email address?</dt>
+			<dd><em>A:</em>
+				This is done from the agent interface CRM app by selecting the organization's record. You can set it so that every user in an organization is automatically added to one or more usergroups.
+			</dd>
+		</dl>
+</section>
+			<section>
+			<h2><span>Related Content</span></h2>
+			<ul>
+				<li>[MANUAL]<a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#new-users" target="_blank">New Users</a></li>
+				<li>[AGENT]<a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#automatically-associating-users-with-organizations-by-email-domain"></a>Automatically associating users with organizations by email domain</li>
+				<li>[AGENT]<a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#linking-organizations-to-usergroups">Linking organizations to usergroups</a></li>
+			</ul>
+	</section>
 	</article>
 {% endblock %}

@@ -30,11 +30,27 @@
 {% block listpane_help %}
 	<header>
 		<h1>Add authentication apps to enable users to sign in with existing accounts from other services</h1>
-		<p>Install authentication apps in the Apps section so users can log in with account details from an existing database, Microsoft Active Directory, LDAP, social media accounts and many more sources.</p>
+		<p>Install authentication apps from the Apps section. Supported services include Microsoft Active Directory, LDAP, and social media accounts.</p>
 	</header>
 	<article>
 		<section>
-			<p>Change the order of authentication apps here to change the order in which DeskPRO checks them.</p>
+			{# <p>Change the order of authentication apps here to change the order in which DeskPRO checks them.</p> #}
+			<p>Supported authentication services are:</p>
+			{# should auto-generate this #}
+					<ul>
+						<li>Active Directory</li>
+						<li>Database Authentication (using an existing MySQL, PostgreSQL, SQLite, MsSQL or Oracle database)</li>
+						<li>LDAP</li>
+						<li>Facebook</li>
+						<li>Google</li>
+						<li>Twitter</li>
+						<li>Magento</li>
+						<li>Joomla</li>
+						<li>ez Publish</li>
+						<li>phpBB</li>
+						<li>vBulletin</li>
+						<li>XenForo</li>
+					</ul>
 		</section>
 	</article>
 {% endblock %}
