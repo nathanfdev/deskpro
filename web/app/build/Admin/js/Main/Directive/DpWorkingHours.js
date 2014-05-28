@@ -68,7 +68,7 @@
                 day: day,
                 name: title
               };
-              _ref = scope.holidays.holidays;
+              _ref = scope.holidays;
               for (_j = 0, _len = _ref.length; _j < _len; _j++) {
                 checkHol = _ref[_j];
                 if (holExists(hol, checkHol)) {
@@ -81,7 +81,13 @@
                 scope.show_newhold = false;
                 return;
               }
-              drawHoliday(year, month, day, repeat, title);
+              drawHoliday({
+                year: year,
+                month: month,
+                day: day,
+                repeat: repeat,
+                name: title
+              });
               scope.holidays.push(hol);
               scope.hol_new_name = '';
               scope.show_newhold = false;
@@ -89,7 +95,7 @@
             };
             drawHoliday = function(hol) {
               var d_str, day, m_str, month, repeat, rowContainer, title, y_str;
-              row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
+              row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-times-circle"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
               year = hol.year;
               month = hol.month;
               day = hol.day;
@@ -108,7 +114,7 @@
               if (title.length) {
                 row.find('.title-txt').text(title);
               }
-              row.data('holRec', hol);
+              row.data('hol-rec', hol);
               return rowContainer.append(row);
             };
             element.find('.add-btn').on('click', function(ev) {
@@ -119,8 +125,9 @@
             element.on('click', '.remove-btn', function(ev) {
               var hol, holRec, idx, _j, _len, _ref, _results;
               ev.preventDefault();
-              holRec = $(this).data('holRec');
-              $(this).closest('.hol-row').remove();
+              row = $(this).closest('.hol-row');
+              holRec = row.data('hol-rec');
+              row.remove();
               if (!scope.holidays.length) {
                 return;
               }
@@ -129,7 +136,7 @@
               for (idx = _j = 0, _len = _ref.length; _j < _len; idx = ++_j) {
                 hol = _ref[idx];
                 if (hol === holRec) {
-                  scope.holidays.slice(idx, 1);
+                  scope.holidays.splice(idx, 1);
                   break;
                 } else {
                   _results.push(void 0);
@@ -180,11 +187,14 @@
             scope.$watch('end_hour', function() {
               return updateViewValue();
             });
+            scope.$watch('end_min', function() {
+              return updateViewValue();
+            });
             scope.$watch('holidays', function() {
               return updateViewValue();
             });
             ngModel.$render = function() {
-              var hol, viewValue, _j, _len, _ref;
+              var day, enabled, hol, viewValue, _j, _k, _len, _len1, _ref, _ref1;
               element.find('.holiday-year-rows').empty();
               viewValue = ngModel.$viewValue;
               if (viewValue) {
@@ -194,11 +204,18 @@
                 scope.end_hour = viewValue.end_hour || 18;
                 scope.end_min = viewValue.end_min || 0;
                 scope.holidays = viewValue.holidays || [];
+                if (viewValue.work_days) {
+                  _ref = viewValue.work_days;
+                  for (day = _j = 0, _len = _ref.length; _j < _len; day = ++_j) {
+                    enabled = _ref[day];
+                    scope.work_days[day] = !!enabled;
+                  }
+                }
               }
               if (scope.holidays.length) {
-                _ref = scope.holidays;
-                for (_j = 0, _len = _ref.length; _j < _len; _j++) {
-                  hol = _ref[_j];
+                _ref1 = scope.holidays;
+                for (_k = 0, _len1 = _ref1.length; _k < _len1; _k++) {
+                  hol = _ref1[_k];
                   drawHoliday(hol);
                 }
               }

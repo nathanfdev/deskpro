@@ -63,6 +63,8 @@ class TicketSettings
 	public $add_agent_ccs                  = false;
 	public $gateway_max_email              = 0;
 
+	public $working_hours = null;
+
 	public $agent_defaults = array(
 		'newticket_status'      => 'awaiting_user',
 		'newticket_agent'       => 'assign',
@@ -136,6 +138,14 @@ class TicketSettings
 
 		$this->add_agent_ccs     = (bool)$this->settings->get('core_tickets.add_agent_ccs');
 		$this->gateway_max_email = (int)$this->settings->get('core.gateway_max_email');
+
+		$wh = $this->settings->get('core_tickets.work_hours');
+		if ($wh) {
+			$wh = @unserialize($wh);
+		}
+		if ($wh) {
+			$this->working_hours = $wh;
+		}
 	}
 
 
@@ -164,6 +174,7 @@ class TicketSettings
 			'agent_defaults',
 			'add_agent_ccs',
 			'gateway_max_email',
+			'working_hours',
 		) as $s) {
 			$export_settings[$s] = $this->$s;
 		}
@@ -241,5 +252,12 @@ class TicketSettings
 
 		$this->settings->setSetting('core_tickets.add_agent_ccs', $this->add_agent_ccs);
 		$this->settings->setSetting('core.gateway_max_email', $this->gateway_max_email ?: null);
+
+		$wh = $this->working_hours;
+		if ($wh) {
+			$this->settings->setSetting('core_tickets.work_hours', serialize($wh));
+		} else {
+			$this->settings->setSetting('core_tickets.work_hours', null);
+		}
 	}
 }

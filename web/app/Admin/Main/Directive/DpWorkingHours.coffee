@@ -78,7 +78,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 					exists = false
 					hol = { year: year, month: month, day: day, name: title }
 
-					for checkHol in scope.holidays.holidays
+					for checkHol in scope.holidays
 						if holExists(hol, checkHol)
 							exists = true
 							break
@@ -88,13 +88,13 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 						scope.show_newhold = false
 						return
 
-					drawHoliday(
-						year,
-						month,
-						day,
-						repeat,
-						title
-					)
+					drawHoliday({
+						year: year,
+						month: month,
+						day: day,
+						repeat: repeat,
+						name: title
+					})
 
 					scope.holidays.push(hol)
 					scope.hol_new_name = ''
@@ -102,7 +102,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 					updateYearList()
 
 				drawHoliday = (hol) ->
-					row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>')
+					row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-times-circle"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>')
 
 					year   = hol.year
 					month  = hol.month
@@ -123,7 +123,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 					if title.length
 						row.find('.title-txt').text(title)
 
-					row.data('holRec', hol)
+					row.data('hol-rec', hol)
 					rowContainer.append(row)
 
 				element.find('.add-btn').on('click', (ev) ->
@@ -134,15 +134,16 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 
 				element.on('click', '.remove-btn', (ev) ->
 					ev.preventDefault()
-					holRec = $(this).data('holRec')
-					$(this).closest('.hol-row').remove()
+					row = $(this).closest('.hol-row')
+					holRec = row.data('hol-rec')
+					row.remove()
 
 					if not scope.holidays.length
 						return
 
 					for hol, idx in scope.holidays
 						if hol == holRec
-							scope.holidays.slice(idx, 1)
+							scope.holidays.splice(idx, 1)
 							break
 				)
 
@@ -181,6 +182,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 				scope.$watch('start_hour', -> updateViewValue())
 				scope.$watch('start_min',  -> updateViewValue())
 				scope.$watch('end_hour',   -> updateViewValue())
+				scope.$watch('end_min',    -> updateViewValue())
 				scope.$watch('holidays',   -> updateViewValue())
 
 				ngModel.$render = ->
@@ -193,6 +195,10 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 						scope.end_hour       = viewValue.end_hour || 18
 						scope.end_min        = viewValue.end_min || 0
 						scope.holidays       = viewValue.holidays || []
+
+						if viewValue.work_days
+							for enabled, day in viewValue.work_days
+								scope.work_days[day] = !!enabled
 
 					if scope.holidays.length
 						for hol in scope.holidays

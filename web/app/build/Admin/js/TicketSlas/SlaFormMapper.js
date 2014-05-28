@@ -15,7 +15,7 @@
        */
 
       SlaFormMapper.prototype.getFormFromModel = function(model) {
-        var action, day, days, form, rowId, setId, term, termSet, _, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+        var action, day, days, form, rowId, setId, term, termSet, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
         form = {};
         form.title = model.title || '';
         form.sla_type = model.sla_type || 'first_response';
@@ -30,15 +30,15 @@
         if (model.active_time === 'custom') {
           days = [false, false, false, false, false, false];
           _ref = model.work_days;
-          for (day = _i = 0, _len = _ref.length; _i < _len; day = ++_i) {
-            _ = _ref[day];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            day = _ref[_i];
             days[day] = true;
           }
           form.hours_set = {
             start_hour: Math.floor(model.work_start / 3600),
             start_min: Math.floor((model.work_start % 3600) / 60),
-            end_hour: Math.floor(model.end_hour / 3600),
-            end_min: Math.floor((model.end_min % 3600) / 60),
+            end_hour: Math.floor(model.work_end / 3600),
+            end_min: Math.floor((model.work_end % 3600) / 60),
             work_days: days,
             holidays: model.work_holidays,
             timezone: model.work_timezone

@@ -25,14 +25,14 @@ define [
 
 			if model.active_time == 'custom'
 				days = [false, false, false, false, false, false]
-				for _, day in model.work_days
+				for day in model.work_days
 					days[day] = true
 
 				form.hours_set = {
 					start_hour: Math.floor(model.work_start / 3600),
 					start_min:  Math.floor((model.work_start % 3600) / 60),
-					end_hour:   Math.floor(model.end_hour / 3600),
-					end_min:    Math.floor((model.end_min % 3600) / 60),
+					end_hour:   Math.floor(model.work_end / 3600),
+					end_min:    Math.floor((model.work_end % 3600) / 60),
 					work_days:  days,
 					holidays:   model.work_holidays,
 					timezone:   model.work_timezone

@@ -146,7 +146,9 @@ class TicketSlasController extends AbstractController implements ProtectedContro
 			$sla->work_start    = $this->in->getUInt('work_start');
 			$sla->work_end      = $this->in->getUInt('work_end');
 			$sla->work_days     = $this->in->getArrayOfUInts('work_days');
-			foreach ($this->in->getArrayValue('holiayds') as $hol) {
+
+			$sla->resetHolidays();
+			foreach ($this->in->getArrayValue('holidays') as $hol) {
 				$sla->addHoliday(
 					$hol['name'],
 					$hol['day'],

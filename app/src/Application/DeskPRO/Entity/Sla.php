@@ -222,7 +222,7 @@ class Sla extends DomainObject
 			$days = array_unique($days);
 			sort($days);
 
-			$this->work_days = array_fill_keys($days, true);
+			$this->work_days = $days;
 		}
 		$this->_onPropertyChanged('work_days', $old, $this->work_days);
 	}
@@ -269,6 +269,9 @@ class Sla extends DomainObject
 			$year = intval($year);
 		}
 
+		if (!$this->work_holidays) {
+			$this->work_holidays = array();
+		}
 		foreach ($this->work_holidays AS $k => $existing) {
 			if ($existing['day'] == $day && $existing['month'] == $month && $existing['year'] === $year) {
 				return $k;
@@ -324,13 +327,13 @@ class Sla extends DomainObject
 	{
 		if ($this->active_time == 'all') {
 			return new WorkHoursSetAll();
-		} else if ($this->active_time == 'work_hours') {
+		} else if ($this->active_time == 'work_hours' || $this->active_time == 'custom') {
 			return new WorkHoursSet(
-				$this->work_start,
-				$this->work_end,
-				$this->work_days,
-				$this->work_timezone,
-				$this->work_holidays
+				$this->work_start ?: 32400,
+				$this->work_end ?: 64860,
+				$this->work_days ?: array(1, 2, 3, 4, 5),
+				$this->work_timezone ?: 'UTC',
+				$this->work_holidays ?: array()
 			);
 		} else {
 			$work_hours = App::getSetting('core_tickets.work_hours');
@@ -345,7 +348,7 @@ class Sla extends DomainObject
 				$work_hours = new OptionsArray($work_hours);
 				return new WorkHoursSet(
 					$work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
-					$work_hours->get('end_hour', 9) * 3600 + $work_hours->get('end_minute', 0) * 60,
+					$work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
 					$work_hours->get('work_days', array(1, 2, 3, 4, 5)),
 					$work_hours->get('holidays', array())
 				);
