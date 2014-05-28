@@ -2725,13 +2725,8 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		if (!$split->wasOldTicketDeleted()) {
-			$ticket->recountStats();
-			$this->em->persist($ticket);
-		}
-
+		$this->em->persist($ticket);
 		if ($new_ticket) {
-			$new_ticket->recountStats();
 			$this->em->persist($new_ticket);
 		}
 
@@ -2740,7 +2735,7 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'ticket_id' => $new_ticket ? $new_ticket['id'] : null,
-			'old_ticket_deleted' => $split->wasOldTicketDeleted()
+			'old_ticket_deleted' => false
 		));
 	}
 

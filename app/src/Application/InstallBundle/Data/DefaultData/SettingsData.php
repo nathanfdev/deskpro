@@ -42,7 +42,7 @@ class SettingsData extends AbstractDefaultData
 	{
 		$this->getDb()->replace('settings', array(
 			'name'   => 'core.app_secret',
-			'value'  => Strings::random(Strings::CHARS_KEY, 75)
+			'value'  => Strings::random(75, Strings::CHARS_KEY)
 		));
 	}
 

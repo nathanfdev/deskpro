@@ -2683,7 +2683,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		// Custom field data
 		foreach ($this->custom_data as $custom_data) {
 			$new_custom_data = clone $custom_data;
-			$new_custom_data->ticket = $alt_ticket;
+			$new_custom_data->ticket = $ticket;
 
 			$ticket->addCustomData($new_custom_data);
 		}

@@ -51,9 +51,9 @@ class CheckAgent extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('agent_ids');
+		$options->addValidNames('agent_ids');
 		$options->addCallbackCheckedOption('agent_ids', function($v) {
-			return is_array($v) && !empty($v);
+			return (is_array($v) && !empty($v));
 		});
 		return $options;
 	}
