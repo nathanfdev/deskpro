@@ -251,6 +251,10 @@ class FilterChangeDetector
 				$orig_match_failterm = null;
 				$new_match_failterm = null;
 
+				if ($is_new_ticket && !$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+					continue;
+				}
+
 				if ($is_dep_change) {
 					if (!$is_new_ticket && ($agent->isHelperLoader('AgentPermissions') && !$agent->AgentPermissions->isDepartmentAllowed($old_dep_id))) {
 						$orig_match = false;
