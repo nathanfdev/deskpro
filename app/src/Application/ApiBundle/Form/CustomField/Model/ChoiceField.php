@@ -232,6 +232,10 @@ class ChoiceField extends CustomFieldAbstract
 				$ch->setOption('parent_id', $choices[$cinfo['parent_id']]->id);
 			}
 
+			if (!empty($cinfo['title'])) {
+				$ch->title = $cinfo['title'];
+			}
+
 			$ch->display_order = (int)$cinfo['display_order'];
 			$this->_em->persist($ch);
 		}
