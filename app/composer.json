@@ -17,6 +17,7 @@
 		"monolog/monolog": "~1.0",
 		"pda/pheanstalk": "~2.1",
 		"leth/ip-address": "1.0.1",
+		"lightopenid/lightopenid": "dev-master",
 		"pear/math_biginteger": "dev-tags/RELEASE_1_0_2",
 		"symfony/monolog-bundle": "*",
 		"doctrine/doctrine-bundle": "*",

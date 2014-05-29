@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "faf6c683cc831960b55bdfc410e9ed2a",
+    "hash": "2b872c87ee79928049afc124cf74ee9f",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1913,6 +1913,33 @@
             "time": "2014-04-03 21:49:21"
         },
         {
+            "name": "lightopenid/lightopenid",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://git.gitorious.org/lightopenid/lightopenid.git",
+                "reference": "9d42dc24e4dd34121c98a6491bc3ef7933a68a19"
+            },
+            "require": {
+                "php": ">=5.2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "./"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "homepage": "http://code.google.com/p/lightopenid/",
+            "keywords": [
+                "OpenId"
+            ],
+            "time": "2013-10-27 16:25:49"
+        },
+        {
             "name": "mockery/mockery",
             "version": "dev-master",
             "source": {
@@ -3502,6 +3529,7 @@
         "doctrine/migrations": 20,
         "doctrine/doctrine-fixtures-bundle": 20,
         "mockery/mockery": 20,
+        "lightopenid/lightopenid": 20,
         "pear/math_biginteger": 20,
         "zendframework/zend-queue": 20,
         "erusev/parsedown": 5,

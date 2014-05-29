@@ -165,6 +165,10 @@ cd $DIR_VENDOR/leth/ip-address
 echo "Cleaning $(pwd)"
 rm -rf tests/
 
+cd $DIR_VENDOR/lightopenid/lightopenid
+echo "Cleaning $(pwd)"
+rm -rf provider/example-mysql.php provider/example.php example-google.php example.php
+
 cd $DIR_VENDOR/mockery/mockery
 echo "Cleaning $(pwd)"
 rm -rf docs/ examples/ tests/
