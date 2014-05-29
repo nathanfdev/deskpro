@@ -22,14 +22,6 @@
 				<div class="panel-body">
 					<div class="form-group">
 						<div class="col-sm-3">
-							<h3>{{ phrase('agent.general.id') }}</h3>
-						</div>
-						<div class="col-sm-9">
-							{{ ng_var('ServerErrorLogsView.error_log.id') }}
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-3">
 							<h3>{{ phrase('agent.general.date') }}</h3>
 						</div>
 						<div class="col-sm-9">
@@ -41,9 +33,7 @@
 							<h3>Summary</h3>
 						</div>
 						<div class="col-sm-9">
-							<textarea style="width: 600px; height: 200px;">
-								{{ ng_var('ServerErrorLogsView.error_log.summary') }}
-							</textarea>
+							<textarea style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace; white-space: pre" class="form-control">{{ ng_var('ServerErrorLogsView.error_log.summary') }}</textarea>
 						</div>
 					</div>
 					<div class="form-group">
@@ -51,9 +41,7 @@
 							<h3>Raw</h3>
 						</div>
 						<div class="col-sm-9">
-							<textarea style="width: 600px; height: 200px;">
-								{{ ng_var('ServerErrorLogsView.error_log.log') }}
-							</textarea>
+							<textarea style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace; white-space: pre" class="form-control">{{ ng_var('ServerErrorLogsView.error_log.log') }}</textarea>
 						</div>
 					</div>
 				</div>
