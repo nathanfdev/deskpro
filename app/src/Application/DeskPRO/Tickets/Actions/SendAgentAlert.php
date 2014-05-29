@@ -117,7 +117,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 				$person_context = $context->getPersonContext();
 				foreach ($notify as $n) {
 					// dont send to self
-					if ($person_context && $person_context == $n['agent']) {
+					if ($person_context && $person_context === $n['agent']) {
 						$context->getLogger()->debug("[SendAgentAlert] notify_list skipping self");
 						continue;
 					}
