@@ -9,7 +9,7 @@
 		<div class="dp-control-label">
 			<label>
 				<strong>{{f.title}} {% if f.field_def.is_required %}*{% endif %}</strong>
-				{% if f.field_def.description %}<i class="dp-help-pop dp-icon-question-sign" data-title="{{ f.title }}" data-content="{{ f.field_def.description }}"></i>{% endif %}
+				{% if f.field_def.description %}<i class="dp-help-pop dp-icon-question-sign" data-title="{{ f.title }}" data-content="{{ f.field_def.description|nl2br }}"></i>{% endif %}
 			</label>
 		</div>
 		<div class="dp-controls dp-fill">
