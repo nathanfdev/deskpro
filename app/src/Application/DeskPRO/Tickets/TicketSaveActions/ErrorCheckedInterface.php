@@ -34,46 +34,14 @@
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Doctrine\ORM\EntityManager;
-
-class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
+/**
+ * Interface added to TicketSaveActions when the actions are to be wrapped in a try/catch.
+ * This is to "sandbox" certain actions like filters/triggers.
+ *
+ * It's a precaution meant to prevent fatal errors from bubbling up and preventing a complete loss
+ * of a ticket.
+ */
+interface ErrorCheckedInterface
 {
-	/**
-	 * @var FilterChangeDetector
-	 */
-	private $filter_change_detector;
 
-	/**
-	 * @var EntityManager
-	 */
-	private $em;
-
-
-	/**
-	 * @param EntityManager        $em
-	 * @param FilterChangeDetector $filter_change_detector
-	 */
-	public function __construct(EntityManager $em, FilterChangeDetector $filter_change_detector)
-	{
-		$this->em = $em;
-		$this->filter_change_detector = $filter_change_detector;
-	}
-
-
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$change_set = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
-		$client_messages = $change_set->getListUpdateClientMessages();
-
-		foreach ($client_messages as $cm) {
-			$this->em->persist($cm);
-		}
-	}
 }

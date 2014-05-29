@@ -41,7 +41,7 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 
-class ExecTriggers implements TicketSaveActionInterface
+class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
 {
 	/**
 	 * @var TicketTriggerRepository

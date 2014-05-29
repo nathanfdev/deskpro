@@ -41,7 +41,7 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
-class RecalculateSlas implements TicketSaveActionInterface
+class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterface
 {
 	/**
 	 * @var \Doctrine\ORM\EntityManager

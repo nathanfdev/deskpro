@@ -283,7 +283,16 @@ class TicketManager
 
 		foreach ($this->save_actions as $action) {
 			$context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", Util::getBaseClassname($action)));
-			$action->processTicket($ticket, $context);
+			if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
+				try{
+					$action->processTicket($ticket, $context);
+				} catch (\Exception $e) {
+					KernelErrorHandler::logException($e);
+					$context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+				}
+			} else {
+				$action->processTicket($ticket, $context);
+			}
 		}
 
 		if (!$is_noop && !$ticket->ticket_hash) {
@@ -295,7 +304,16 @@ class TicketManager
 
 		foreach ($this->post_save_actions as $action) {
 			$context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
-			$action->processTicket($ticket, $context);
+			if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
+				try{
+					$action->processTicket($ticket, $context);
+				} catch (\Exception $e) {
+					KernelErrorHandler::logException($e);
+					$context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+				}
+			} else {
+				$action->processTicket($ticket, $context);
+			}
 			$this->em->persist($ticket);
 			$this->em->flush();
 		}
