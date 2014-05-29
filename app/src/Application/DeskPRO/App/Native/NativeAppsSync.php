@@ -92,7 +92,9 @@ class NativeAppsSync
 	public function runUpdates()
 	{
 		foreach ($this->manager->getAllPackages() as $package) {
-			$this->_updateApp($package);
+			if ($package->native_name) {
+				$this->_updateApp($package);
+			}
 		}
 	}
 
