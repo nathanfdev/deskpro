@@ -76,7 +76,7 @@
        */
 
       Admin_TicketTriggers_Ctrl_List.prototype.initialLoad = function() {
-        var promises;
+        var d, promises;
         promises = [];
         promises.push(this.dpTriggers.loadList(true).then((function(_this) {
           return function(list) {
@@ -118,13 +118,18 @@
             };
           })(this)));
         }
-        return this.$q.all(promises).then((function(_this) {
+        d = this.$q.defer();
+        this.$q.all(promises).then((function(_this) {
           return function() {
             return _this.$timeout(function() {
-              return _this.$scope.$broadcast('resetDisplayOrders');
-            }, 100);
+              _this.$scope.$broadcast('resetDisplayOrders');
+              return _this.$timeout(function() {
+                return d.resolve();
+              }, 1);
+            }, 1);
           };
         })(this));
+        return d.promise;
       };
 
 

@@ -11,13 +11,13 @@
 			<p ng-if="!List.triggers.length" style="padding: 15px;">
 				{{ phrase('adm.ticket_triggers.no_triggers') }}
 			</p>
-			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length">
+			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos>
 
 				{#######################}
 				{# Department Triggers #}
 				{#######################}
 
-				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length" data-trigger-id="departments" dp-move-to-pos="{{ ng_var('dep_order') }}">
+				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length" data-trigger-id="departments" data-move-to-pos="{{ ng_var('dep_order') }}">
 					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
@@ -87,7 +87,7 @@
 				{# Email Acc Triggers  #}
 				{#######################}
 
-				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length" dp-move-to-pos="{{ ng_var('emailaccount_order') }}" data-trigger-id="emailaccounts">
+				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length" data-move-to-pos="{{ ng_var('emailaccount_order') }}" data-trigger-id="emailaccounts">
 					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">

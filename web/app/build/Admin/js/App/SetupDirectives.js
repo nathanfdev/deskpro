@@ -37,37 +37,68 @@
       Module.directive('dpPortalEditor', Admin_Portal_Directive_PortalEditor);
       Module.directive('dpTicketLayoutEditor', Admin_TicketDeps_Directive_LayoutEditor);
       Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
-      return Module.directive('dpMoveToPos', [
+      return Module.directive('dpMoveListToPos', [
         '$timeout', function($timeout) {
           return {
             restrict: 'A',
-            scope: {
-              dpMoveToPos: '@'
-            },
+            scope: {},
             link: function(scope, element, attrs) {
-              var update;
+              var initial_run, is_running, run_again, update;
+              initial_run = false;
+              is_running = false;
+              run_again = false;
               scope.$on('resetDisplayOrders', function() {
-                if (parseInt(scope.dpMoveToPos)) {
+                if (!initial_run) {
+                  initial_run = false;
+                  run_again = true;
                   return update();
+                } else {
+                  return $timeout(function() {
+                    if (is_running) {
+                      return run_again = true;
+                    } else {
+                      return update();
+                    }
+                  }, 1);
                 }
               });
               return update = function() {
-                var toPos, ul, use;
-                toPos = parseInt(scope.dpMoveToPos || 0) || 0;
-                ul = element.closest('ul');
-                use = null;
-                ul.find('> li').each(function() {
-                  var ro;
-                  ro = parseInt($(this).attr('data-run-order') || 0) || 0;
-                  if (ro < toPos && this !== element[0]) {
-                    return use = $(this);
+                var all_lis;
+                is_running = true;
+                all_lis = element.find('> li').filter('[data-move-to-pos]');
+                all_lis.each(function() {
+                  var li, toPos, use;
+                  li = $(this);
+                  toPos = parseInt(li.data('move-to-pos') || 0) || 0;
+                  if (toPos === 0 || isNaN(toPos)) {
+                    return;
+                  }
+                  use = null;
+                  element.find('> li').each(function() {
+                    var ro;
+                    ro = parseInt($(this).attr('data-run-order') || 0) || 0;
+                    if (ro === 0 || isNaN(ro)) {
+                      return;
+                    }
+                    if (ro < toPos && this !== element[0]) {
+                      return use = $(this);
+                    }
+                  });
+                  li.detach();
+                  if (!use) {
+                    return li.detach().prependTo(element);
+                  } else {
+                    return li.detach().insertAfter(use);
                   }
                 });
-                element.detach();
-                if (!use) {
-                  return element.detach().appendTo(ul);
+                if (run_again) {
+                  is_running = true;
+                  return $timeout(function() {
+                    run_again = false;
+                    return update();
+                  }, 1);
                 } else {
-                  return element.detach().insertAfter(use);
+                  return is_running = false;
                 }
               };
             }

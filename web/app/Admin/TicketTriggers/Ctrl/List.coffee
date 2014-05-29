@@ -93,11 +93,22 @@ define [
 					@accounts = recs.values()
 				)
 
-			return @$q.all(promises).then(=>
+			d = @$q.defer()
+
+
+			# run re-order stuff (from dpMoveListToPos)
+			# while loading indicator is still spinning,
+			# eliminates the visual stutter
+			@$q.all(promises).then(=>
 				@$timeout(=>
 					@$scope.$broadcast('resetDisplayOrders')
-				, 100)
+					@$timeout(->
+						d.resolve()
+					, 1)
+				, 1)
 			)
+
+			return d.promise
 
 
 		###

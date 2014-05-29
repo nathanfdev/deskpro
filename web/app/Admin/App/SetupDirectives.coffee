@@ -118,31 +118,60 @@ define [
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
 
-		Module.directive('dpMoveToPos', [ '$timeout', ($timeout) ->
+		Module.directive('dpMoveListToPos', [ '$timeout', ($timeout) ->
 			return {
 				restrict: 'A',
-				scope: {
-					dpMoveToPos: '@'
-				},
+				scope: {},
 				link: (scope, element, attrs) ->
+					initial_run = false
+					is_running = false
+					run_again = false
 					scope.$on('resetDisplayOrders', ->
-						if parseInt(scope.dpMoveToPos)
+						if not initial_run
+							initial_run = false
+							run_again = true
 							update()
+						else
+							$timeout(->
+								if is_running
+									run_again = true
+								else
+									update()
+							, 1)
 					)
 
 					update = ->
-						toPos = parseInt(scope.dpMoveToPos || 0) || 0
-						ul = element.closest('ul')
-						use = null
-						ul.find('> li').each(->
-							ro = parseInt($(this).attr('data-run-order') || 0) || 0
-							if ro < toPos and this != element[0]
-								use = $(this)
+						is_running = true
+						all_lis = element.find('> li').filter('[data-move-to-pos]')
+
+						all_lis.each(->
+							li = $(this)
+							toPos = parseInt(li.data('move-to-pos') || 0) || 0
+							if toPos == 0 || isNaN(toPos)
+								return
+
+							use = null
+							element.find('> li').each(->
+								ro = parseInt($(this).attr('data-run-order') || 0) || 0
+								if ro == 0 || isNaN(ro)
+									return
+								if ro < toPos and this != element[0]
+									use = $(this)
+							)
+							li.detach()
+							if not use
+								li.detach().prependTo(element)
+							else
+								li.detach().insertAfter(use)
 						)
-						element.detach()
-						if not use
-							element.detach().appendTo(ul)
+
+						if run_again
+							is_running = true
+							$timeout(->
+								run_again = false
+								update()
+							, 1)
 						else
-							element.detach().insertAfter(use)
+							is_running = false
 			}
 		])
