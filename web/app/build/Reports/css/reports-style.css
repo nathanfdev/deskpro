@@ -8934,13 +8934,13 @@ nav.dp-blocktabs menu button span i {
 }
 
 @media all and (max-width: 1575px) {
-  nav.dp-blocktabs > ul li a {
+  nav.dp-blocktabs.responsive > ul li a {
     font-size: 120%;
   }
 }
 
 @media all and (max-width: 1515px) {
-  nav.dp-blocktabs > ul li a i {
+  nav.dp-blocktabs.responsive > ul li a i {
     display: none;
   }
 }
