@@ -15,7 +15,7 @@
 
       Reports_Billing_Ctrl_List.CTRL_AS = 'ListCtrl';
 
-      Reports_Billing_Ctrl_List.DEPS = ['Api'];
+      Reports_Billing_Ctrl_List.DEPS = ['Api', '$timeout'];
 
       Reports_Billing_Ctrl_List.prototype.init = function() {
         return this.reports_list = [
@@ -77,13 +77,17 @@
        */
 
       Reports_Billing_Ctrl_List.prototype.initialLoad = function() {
-        var group_params_promise;
+        var d, group_params_promise;
+        d = this.$q.defer();
         group_params_promise = this.Api.sendGet('/reports/builder/group-params').then((function(_this) {
           return function(data) {
-            return _this.group_params = data.data;
+            _this.group_params = data.data;
+            return _this.$timeout(function() {
+              return d.resolve();
+            }, 150);
           };
         })(this));
-        return this.$q.all([group_params_promise]);
+        return d.promise;
       };
 
       return Reports_Billing_Ctrl_List;

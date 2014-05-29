@@ -15,7 +15,7 @@
 
       Reports_Builder_Ctrl_List.CTRL_AS = 'ListCtrl';
 
-      Reports_Builder_Ctrl_List.DEPS = ['Api'];
+      Reports_Builder_Ctrl_List.DEPS = ['Api', '$timeout'];
 
       Reports_Builder_Ctrl_List.prototype.init = function() {
         this.customData = this.DataService.get('ReportBuilderCustom');
@@ -28,7 +28,8 @@
        */
 
       Reports_Builder_Ctrl_List.prototype.initialLoad = function() {
-        var built_in_promise, custom_promise, group_params_promise;
+        var built_in_promise, custom_promise, d, group_params_promise;
+        d = this.$q.defer();
         custom_promise = this.customData.loadList().then((function(_this) {
           return function(list) {
             return _this.custom_data_list = list;
@@ -44,7 +45,14 @@
             return _this.group_params = data.data;
           };
         })(this));
-        return this.$q.all([custom_promise, built_in_promise, group_params_promise]);
+        this.$q.all([custom_promise, built_in_promise, group_params_promise]).then((function(_this) {
+          return function() {
+            return _this.$timeout(function() {
+              return d.resolve();
+            }, 350);
+          };
+        })(this));
+        return d.promise;
       };
 
 
