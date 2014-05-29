@@ -39,7 +39,8 @@ use \Orb\Auth\Adapter\CallbackInterface;
 use \Orb\Auth\StateHandler\StateHandlerInterface;
 use \Orb\Auth\Result;
 
-use \GoogleOpenID;
+use \LightOpenID;
+use Orb\Validator\StringEmail;
 
 /**
  * Requirements:
@@ -73,21 +74,45 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 
 
 	/**
+	 * @return LightOpenID
+	 */
+	private function getLightOpenId()
+	{
+		$return_url = $this->getCallbackUrl();
+		$url_parts = parse_url($return_url);
+
+		$realm = $url_parts['scheme'] . '://' . $url_parts['host'];
+		if (!empty($url_parts['port'])) {
+			$realm .= ':' . $url_parts['port'];
+		}
+
+		$openid = new LightOpenID($url_parts['host']);
+		$openid->realm     = $realm;
+		$openid->returnUrl = $return_url;
+		$openid->identity  = 'https://www.google.com/accounts/o8/id';
+		$openid->required  = array('contact/email', 'namePerson/first', 'namePerson/last');
+
+		return $openid;
+	}
+
+
+	/**
 	 * Initialize the auth process by setting state, and returning a redirect result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
-		$ah = GoogleOpenID::getAssociationHandle();
-		$googleLogin = GoogleOpenID::createRequest($this->getCallbackUrl(), $ah, true);
+		$openid = $this->getLightOpenId();
+		$redirect_url = $openid->authUrl();
 
-		$params = $googleLogin->getArray();
+		$params = array();
 		if ($this->display == 'popup') {
 			$params['openid.ui.mode'] = 'popup';
 		}
-
-		$redirect_url = $googleLogin->endPoint() . '?' . http_build_query($params);
+		if ($params) {
+			$redirect_url .= '&' . http_build_query($params);
+		}
 
 		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 		return $result;
@@ -98,25 +123,39 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 	/**
 	 * Process the callback and return a final result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
-		$googleLogin = GoogleOpenID::getResponse();
-		$user_id = $user_email = null;
+		$openid = $this->getLightOpenId();
 
-		if($googleLogin->success()) {
-			$user_id = $googleLogin->identity();
-			$user_email = $googleLogin->email();
+		if (!$openid->mode || $openid->mode == 'cancel') {
+			return new Result(Result::FAILURE, null, array('error_code' => 'cancelled', 'error_message' => 'OpenID session cancelled'));
 		}
 
-		if ($user_id && $user_email) {
+		if (!$openid->validate()) {
+			return new Result(Result::FAILURE, null, array('error_code' => 'not_valid', 'error_message' => 'OpenID session not valid'));
+		}
 
+		$user_id    = $openid->identity;
+		$user_email = null;
+
+		$attrs = $openid->getAttributes();
+		if (!empty($attrs['contact/email'])) {
+			$user_email = $attrs['contact/email'];
+		}
+
+		if ($user_id && $user_email && StringEmail::isValueValid($user_email)) {
 			$raw = array('user_id' => $user_id, 'user_email' => $user_email);
-			foreach ($_GET as $k => $v) {
-				if (strpos($k, 'openid_') === 0) {
-					$raw[$k] = $v;
-				}
+			if (!empty($attrs['namePerson/first'])) {
+				$raw['first_name'] = $attrs['namePerson/first'];
+			}
+			if (!empty($attrs['namePerson/last'])) {
+				$raw['last_name'] = $attrs['namePerson/last'];
+			}
+			foreach ($attrs as $k => $v) {
+				$k = 'openid_' . $k;
+				$raw[$k] = $v;
 			}
 
 			$identity = new \Orb\Auth\Identity($user_id, $raw);
@@ -126,6 +165,6 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 			return $result;
 		}
 
-		return new Result(Result::FAILURE, null, array('error_code' => 'failed_session', 'error_message' => 'No OpenID session'));
+		return new Result(Result::FAILURE, null, array('error_code' => 'missing_data', 'error_message' => 'OpenID session did not return email address'));
 	}
 }

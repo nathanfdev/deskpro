@@ -50,7 +50,7 @@ class InstallerHandler implements InstallerHandlerInterface
 			'source_type'       => 'app',
 			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
 			'options'           => json_encode(array()),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'is_enabled'        => '1',
 			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Google',
 		));
 	}
@@ -75,7 +75,7 @@ class InstallerHandler implements InstallerHandlerInterface
 			'source_type'       => 'app',
 			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
 			'options'           => json_encode(array()),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'is_enabled'        => '1',
 			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Google',
 		), array('app_id' => $context->getApp()->id));
 	}
