@@ -237,6 +237,11 @@ class FilterChangeDetector
 					continue;
 				}
 
+				// Or the agent might be soft deleted, in which case we sholudnt waste time
+				if ($agent->is_deleted || $agent->is_disabled) {
+					continue;
+				}
+
 				$reset_status = false;
 				if ($filter->sys_name) {
 					// System filters are special in that we ignore status/hold
