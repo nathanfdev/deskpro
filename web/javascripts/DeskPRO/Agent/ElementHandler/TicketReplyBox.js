@@ -31,15 +31,27 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSelText   = this.getElById('agent_team_sel_text');
 		var teamSelCheck  = this.getElById('agent_team_sel_check');
 
+		var storedReplyText = '';
+		var storedNoteText = '';
+
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.el.find('textarea.signature-value-html').val() || "";
 			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
 
 			var draft = this.getElById('draft_html');
 			if (draft.length) {
-				textarea.val(draft.val());
-			} else if (sig) {
-				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
+				if (self.el.data('draft-is-note') == '1') {
+					storedNoteText = draft.val();
+					if (sig) {
+						textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
+					}
+				} else {
+					textarea.val(draft.val());
+				}
+			} else {
+				if (sig) {
+					textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
+				}
 			}
 
 			isWysiwyg = true;
@@ -274,8 +286,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var wasAgentChecked = agentSelCheck.prop('checked');
 		var wasTeamChecked  = teamSelCheck.prop('checked');
 
-		var storedReplyText = '';
-		var storedNoteText = '';
 		var replyMode = 'reply';
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
@@ -313,14 +323,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				storedNoteText = textarea.val();
 				textarea.val(storedReplyText || '');
 			}
-
-			if (self.page) {
-				var scroller = self.page.wrapper.find('div.layout-content');
-				scroller.data('scroll_handler').updateSize();
-				if (!self.page.meta.ticket_reverse_order) {
-					scroller.trigger('goscrollbottom');
-				}
-			}
 		});
 
 		this.getElById('replybox_notetab_btn').on('click', function() {
@@ -357,26 +359,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 			agentSelCheck.prop('checked', false);
 			teamSelCheck.prop('checked', false);
-
-			if (self.page) {
-				var scroller = self.page.wrapper.find('div.layout-content');
-				scroller.data('scroll_handler').updateSize();
-				if (!self.page.meta.ticket_reverse_order) {
-					scroller.trigger('goscrollbottom');
-				}
-			}
 		});
-
-		if (this.el.data('default-is-note') == '1') {
-			this.el.addClass('dp-note-on');
-			this.getElById('replybox_notetab_btn').addClass('on');
-			this.getElById('replybox_replytab_btn').removeClass('on');
-			$('.hide-note', this.el).hide();
-			$('.hide-reply', this.el).show();
-			this.getElById('is_note').val('1');
-			this.isNote = true;
-			this.hideAgentNotifyList();
-		}
 
 		//------------------------------
 		// Expanding cc row
