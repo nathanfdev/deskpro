@@ -443,7 +443,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		if ($this->in->getString('query')) {
-			$terms[] = array('type' => 'text', 'op' => 'is', 'options' => array('query' => $this->in->getString('query')));
+			$terms[] = array('type' => 'ticket_message', 'op' => 'is', 'options' => array('ticket_message' => $this->in->getString('query')));
 		}
 
 		if ($this->in->checkIsset('order')) {
