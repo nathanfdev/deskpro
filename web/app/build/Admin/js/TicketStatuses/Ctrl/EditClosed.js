@@ -52,6 +52,20 @@
         return promise;
       };
 
+      Admin_TicketStatuses_Ctrl_EditClosed.prototype.resetSearchTables = function() {
+        this.startSpinner('is_resetting');
+        return this.Api.sendPost('/ticket_statuses/closed/reset-search-tables').then((function(_this) {
+          return function() {
+            _this.$scope.reset_done = true;
+            return _this.stopSpinner('is_resetting');
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.stopSpinner('is_resetting');
+          };
+        })(this));
+      };
+
       return Admin_TicketStatuses_Ctrl_EditClosed;
 
     })(Admin_Ctrl_Base);

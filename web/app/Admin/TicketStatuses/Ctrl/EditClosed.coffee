@@ -25,7 +25,15 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			promise = @Api.sendPostJson('/ticket_statuses/closed/settings', @$scope.settings).then( =>
 				@stopSpinner('saving_settings')
 			)
-
 			return promise
+
+		resetSearchTables: ->
+			@startSpinner('is_resetting')
+			@Api.sendPost('/ticket_statuses/closed/reset-search-tables').then(=>
+				@$scope.reset_done = true
+				@stopSpinner('is_resetting')
+			, =>
+				@stopSpinner('is_resetting')
+			)
 
 	Admin_TicketStatuses_Ctrl_EditClosed.EXPORT_CTRL()

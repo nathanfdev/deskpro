@@ -2742,6 +2742,12 @@ $collection->create('api_ticket_statuses_closed_savesettings', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_ticket_statuses_closed_resetsearch', array(
+	'path'        => '/ticket_statuses/closed/reset-search-tables',
+	'controller'  => 'ApiBundle:TicketStatuses:resetSearchTables',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_ticket_statuses_deleted', array(
 	'path'        => '/ticket_statuses/deleted',
 	'controller'  => 'ApiBundle:TicketStatuses:getDeletedInfo',
