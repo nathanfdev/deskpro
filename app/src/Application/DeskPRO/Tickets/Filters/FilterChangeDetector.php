@@ -231,6 +231,12 @@ class FilterChangeDetector
 			}
 
 			foreach ($agent_scopes as $agent) {
+
+				// A filter could belong to an agent that isn't an agent anymore
+				if (!$agent->is_agent) {
+					continue;
+				}
+
 				$reset_status = false;
 				if ($filter->sys_name) {
 					// System filters are special in that we ignore status/hold
