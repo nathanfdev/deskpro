@@ -7,7 +7,7 @@
 					<div class="panel-body" ng-show="EditCtrl.field_type == '0'">
 						<div class="form-group">
 							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="text" /> Text</label></h3>
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="text" /> Single-line Text Box</label></h3>
 								<p>
 									A text box is a single-line input box that the user types text into.
 								</p>
@@ -16,7 +16,7 @@
 
 						<div class="form-group">
 							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="textarea" /> Textarea</label></h3>
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="textarea" /> Multi-line Text Box</label></h3>
 								<p>
 									A textarea box is a multi-line input box that the user types text into.
 								</p>
@@ -25,7 +25,7 @@
 
 						<div class="form-group">
 							<div class="col-lg-12">
-								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="choice" /> Choice</label></h3>
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="choice" /> Predefined Choices</label></h3>
 								<p>
 									This is a set of predefined options presented as a drop-down select menu, radio buttons or checkboxes.
 								</p>
@@ -71,6 +71,25 @@
 						</div>
 					</div>
 					<div class="panel-body" ng-show="EditCtrl.field_type != 0">
+
+						<div class="form-group with-border">
+							<div class="col-lg-3">
+								<h3>Field Type</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<p class="form-control-static" ng-switch="EditCtrl.field_type">
+										<span ng-switch-when="text">Single-line Text Box</span>
+										<span ng-switch-when="textarea">Multi-line Text Box</span>
+										<span ng-switch-when="choice">Predefined Choices</span>
+										<span ng-switch-when="toggle">Toggle (On/Off)</span>
+										<span ng-switch-when="date">Date</span>
+										<span ng-switch-when="display">Display</span>
+										<span ng-switch-when="hidden">Hidden</span>
+									</p>
+								</div>
+							</div>
+						</div>
 
 						<div class="form-group">
 							<div class="col-lg-3">
@@ -465,14 +484,7 @@
 			<footer ng-show="EditCtrl.field_type == '0'">
 				<div class="dp-btn-controls">
 					<button class="btn btn-primary" ng-click="$event.preventDefault(); EditCtrl.field_type = EditCtrl.field_type_chooser;">
-						Configure a new
-						<span ng-show="EditCtrl.field_type_chooser == 'text'">Text Field</span>
-						<span ng-show="EditCtrl.field_type_chooser == 'textarea'">Textarea Field</span>
-						<span ng-show="EditCtrl.field_type_chooser == 'toggle'">Toggle Field</span>
-						<span ng-show="EditCtrl.field_type_chooser == 'choice'">Choice Field</span>
-						<span ng-show="EditCtrl.field_type_chooser == 'date'">Date Field</span>
-						<span ng-show="EditCtrl.field_type_chooser == 'display'">Display Field</span>
-						<span ng-show="EditCtrl.field_type_chooser == 'hidden'">Hidden Field</span>
+						Configure Field
 						&nbsp;
 						<i class="fa fa-arrow-circle-right"></i>
 					</button>
