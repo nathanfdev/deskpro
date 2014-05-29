@@ -3305,11 +3305,25 @@ table.display-table.spaced {
 	input.dp-cb-input {
 		background: transparent;
 		font-size: 100%;
-		padding: 0 10px;
+		padding: 0px 10px;
 		margin: 0;
-		border: none;
+		border: 1px solid transparent;
 		height: auto;
-		border-radius: 0;
+		border-radius: 1px;
+		cursor: pointer;
+		width: 95%;
+		z-index: 1;
+		position: relative;
+
+		&:focus {
+			background: #fff;
+			border-color: #66afe9;
+			text-decoration: none !important;
+		}
+	}
+
+	.dp-cb-titlewrap:hover input.dp-cb-input {
+		text-decoration: underline;
 	}
 
 	.dp-cb-titlewrap {

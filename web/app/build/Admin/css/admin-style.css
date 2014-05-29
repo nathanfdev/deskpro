@@ -11242,13 +11242,27 @@ table.display-table.spaced > tr > td {
 }
 
 .dp-category-builder input.dp-cb-input {
+  position: relative;
+  z-index: 1;
+  width: 95%;
   height: auto;
   padding: 0 10px;
   margin: 0;
   font-size: 100%;
+  cursor: pointer;
   background: transparent;
-  border: none;
-  border-radius: 0;
+  border: 1px solid transparent;
+  border-radius: 1px;
+}
+
+.dp-category-builder input.dp-cb-input:focus {
+  text-decoration: none !important;
+  background: #fff;
+  border-color: #66afe9;
+}
+
+.dp-category-builder .dp-cb-titlewrap:hover input.dp-cb-input {
+  text-decoration: underline;
 }
 
 .dp-category-builder .dp-cb-titlewrap {
