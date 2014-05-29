@@ -40,6 +40,7 @@ use \Orb\Auth\StateHandler\StateHandlerInterface;
 use \Orb\Auth\Result;
 
 use \LightOpenID;
+use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
 /**
@@ -50,9 +51,30 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 {
 	protected $display = 'page';
 
-	public function __construct()
-	{
+	/**
+	 * @var null|string
+	 */
+	protected $apps_domain = null;
 
+
+	/**
+	 * @param null|string $apps_domain Optionally limit to a specific google apps domain
+	 */
+	public function __construct($apps_domain = null)
+	{
+		if ($apps_domain) {
+			if (preg_match('#^http#', $apps_domain)) {
+				$apps_domain = Strings::extractRegexMatch('#^https?://(.*?)/?.*?$#', $apps_domain);
+			}
+
+			$apps_domain = trim($apps_domain);
+			$apps_domain = trim($apps_domain, '/');
+
+			if (!$apps_domain) {
+				$apps_domain = null;
+			}
+		}
+		$this->apps_domain = $apps_domain;
 	}
 
 
@@ -109,6 +131,9 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 		$params = array();
 		if ($this->display == 'popup') {
 			$params['openid.ui.mode'] = 'popup';
+		}
+		if ($this->apps_domain) {
+			$params['hd'] = $this->apps_domain;
 		}
 		if ($params) {
 			$redirect_url .= '&' . http_build_query($params);

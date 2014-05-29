@@ -14,6 +14,12 @@
 		"link": "https://www.deskpro.com/"
 	},
 	"settings_def": [
-		
+		{
+			"name": "google_apps_domain",
+			"type": "text",
+			"label": "Google Apps Domain",
+			"description": "Optionally enter your Google Apps domain to only allow users from within your organisation to log in. When enabled, normal Google users (e.g., example@gmail.com) will not be allowed.",
+			"native_only": true
+		}
 	]
 }

@@ -81,6 +81,7 @@ class PackageInstaller
 		$def = $package->createAppPackage($def);
 
 		$this->em->persist($def);
+		$this->em->flush();
 		$old_blobs = array();
 
 		#------------------------------
