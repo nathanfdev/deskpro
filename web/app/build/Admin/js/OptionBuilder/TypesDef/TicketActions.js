@@ -154,7 +154,7 @@
           value: 'SendAgentEmail'
         });
         set_options.push({
-          title: 'Send Eamil',
+          title: 'Send Email',
           subOptions: options
         });
         options = [];
