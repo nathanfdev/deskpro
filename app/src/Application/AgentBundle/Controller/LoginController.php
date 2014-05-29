@@ -102,6 +102,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		if (!$url) {
 			$url = $this->generateUrl('agent', array(), true);
 		}
+
 		$has_logged_out = $this->in->checkIsset('o');
 
 		$failed_login_name = false;

@@ -997,12 +997,16 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function isHelpdeskPath($path)
 	{
-		$pathinfo = @parse_url($path);
-		if (!$pathinfo || !empty($pathinfo['host'])) {
-			return false;
+		if (!preg_match('#^/[^/]#', $path)) {
+			$pathinfo = @parse_url($path);
+			if (!$pathinfo || !empty($pathinfo['host'])) {
+				return false;
+			}
+
+			$path = $pathinfo['path'];
 		}
 
-		$path = Strings::canonicalPath($pathinfo['path']);
+		$path = Strings::canonicalPath($path);
 		$root_path = '/' . trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
 
 		if (strpos($path, $root_path) !== 0) {
