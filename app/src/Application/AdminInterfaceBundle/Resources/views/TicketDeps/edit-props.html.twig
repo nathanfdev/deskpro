@@ -34,7 +34,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" ng-if="!EditCtrl.dep.has_children">
 			<div class="col-md-3">
 				<h3>{{ phrase('agent.general.parent') }}</h3>
 			</div>
@@ -66,7 +66,7 @@
 
 		{##############################################################################################}
 
-		<div class="form-group">
+		<div class="form-group" ng-if="!EditCtrl.dep.has_children">
 			<div class="col-md-3">
 				<h3>New Ticket Trigger</h3>
 			</div>
@@ -86,7 +86,7 @@
 			</div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" ng-if="!EditCtrl.dep.has_children">
 			<div class="col-md-3">
 				<h3>Ticket Changed Trigger</h3>
 			</div>
@@ -106,5 +106,18 @@
 			</div>
 		</div>
 
+		<div ng-if="EditCtrl.dep.has_children">
+			<div class="alert alert-info">
+				<p>
+					This is a <strong>parent department</strong>. Parent departments act as simple containers for other sub-departments.
+				</p>
+				<p>
+					Tickets can never be assigned directly to a parent department.
+				</p>
+				<p>
+					Since this department is only a container, none of the other properties like permissions or layouts apply.
+				</p>
+			</div>
+		</div>
 	</div>
 </div>

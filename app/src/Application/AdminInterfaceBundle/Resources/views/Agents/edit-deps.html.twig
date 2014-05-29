@@ -37,26 +37,30 @@
 				<tr ng-repeat="dep in EditCtrl.ticketDeps">
 					<td>
 						&nbsp;
-						<span ng-if="dep.depth > 0">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span ng-if="dep.depth > 0">- - - </span>
 						{{ ng_var('dep.title') }}
 					</td>
 					<td class="text-center">
-						<input
-							dp-slider-switch
-							ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
-							is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
-							is-locked="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
-							locked-tip-e="(EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full) && 'This permission is locked because the permission is granted through an enabled agent group' || 'This permission is locked because you have enabled the Full permission'"
-						/>
+						<div ng-if="!dep.has_children">
+							<input
+								dp-slider-switch
+								ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
+								is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
+								is-locked="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
+								locked-tip-e="(EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full) && 'This permission is locked because the permission is granted through an enabled agent group' || 'This permission is locked because you have enabled the Full permission'"
+							/>
+						</div>
 					</td>
 					<td class="text-center">
-						<input
-							dp-slider-switch
-							ng-model="EditCtrl.deps_perms.tickets[dep.id].full"
-							is-on="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
-							is-locked="EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
-							locked-tip="This permission is locked because the permission is granted through an enabled agent group"
-						/>
+						<div ng-if="!dep.has_children">
+							<input
+								dp-slider-switch
+								ng-model="EditCtrl.deps_perms.tickets[dep.id].full"
+								is-on="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
+								is-locked="EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
+								locked-tip="This permission is locked because the permission is granted through an enabled agent group"
+							/>
+						</div>
 					</td>
 				</tr>
 			</tbody>
@@ -75,17 +79,19 @@
 				<tr ng-repeat="dep in EditCtrl.chatDeps">
 					<td>
 						&nbsp;
-						<span ng-if="dep.depth > 0">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span ng-if="dep.depth > 0">- - - </span>
 						{{ ng_var('dep.title') }}
 					</td>
 					<td class="text-center">
-						<input
-							dp-slider-switch
-							ng-model="EditCtrl.deps_perms.chat[dep.id].full"
-							is-on="EditCtrl.deps_perms.chat[dep.id].full || EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
-							is-locked="EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
-							locked-tip="This permission is locked because the permission is granted through an enabled agent group"
-						/>
+						<div ng-if="!dep.has_children">
+							<input
+								dp-slider-switch
+								ng-model="EditCtrl.deps_perms.chat[dep.id].full"
+								is-on="EditCtrl.deps_perms.chat[dep.id].full || EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
+								is-locked="EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
+								locked-tip="This permission is locked because the permission is granted through an enabled agent group"
+							/>
+						</div>
 					</td>
 				</tr>
 			</tbody>
