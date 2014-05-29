@@ -179,6 +179,19 @@ $collection->create('agent_login_authenticate_local', array(
 	'defaults'    => array('usersource_id' => 0),
 ));
 
+$collection->create('agent_login_authenticate', array(
+	'path'          => '/login/authenticate/{usersource_id}',
+	'controller'    => 'AgentBundle:Login:authenticate',
+	'defaults'      => array('usersource_id' => 0),
+	'requirements'  => array('usersource_id' => '\\d+'),
+));
+
+$collection->create('agent_login_callback', array(
+	'path'          => '/login/authenticate-callback/{usersource_id}',
+	'controller'    => 'AgentBundle:Login:authenticateCallback',
+	'requirements'  => array('usersource_id' => '\\d+'),
+));
+
 $collection->create('agent_login_adminlogin', array(
 	'path'        => '/login/admin-login/{code}',
 	'controller'  => 'AgentBundle:Login:authAdminLogin',

@@ -524,6 +524,11 @@ HTML;
 		# Callback types require us to redirect
 		#------------------------------
 
+		$route_type = 'user';
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+			$route_type = 'agent';
+		}
+
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$result = $adapter->authenticate();
 
@@ -540,7 +545,7 @@ HTML;
 				$this->_setupUsersourceSession($usersource, $person, $result);
 
 				if ($this->in->getString('js_tell')) {
-					$return = $this->generateUrl('user_jstell_login', array(
+					$return = $this->generateUrl($route_type . '_jstell_login', array(
 						'jstell' => $this->in->getString('js_tell'),
 						'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
 						'usersource_id' => $usersource_id
@@ -564,7 +569,7 @@ HTML;
 				$this->session->set('auth_return', $return);
 
 				if ($this->in->getString('js_tell')) {
-					$return = $this->generateUrl('user_jstell_login', array(
+					$return = $this->generateUrl($route_type . '_jstell_login', array(
 						'jstell' => $this->in->getString('js_tell'),
 						'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
 						'usersource_id' => $usersource_id
@@ -699,9 +704,14 @@ HTML;
 		}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+			$route_type = 'user';
+			if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+				$route_type = 'agent';
+			}
+
 			$adapter->setCallbackUrl(
 				rtrim($this->container->getSetting('core.deskpro_url'), '/') .
-				$this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
+				$this->generateUrl($route_type . '_login_callback', array('usersource_id' => $usersource['id']), false)
 			);
 		}
 
