@@ -1,11 +1,23 @@
 <article class="form-horizontal dp-form">
 	<div class="panel panel-fill indent">
-		<div class="panel-body">
+		<div class="panel-body" ng-if="no_soap_support">
+			<h3>Server Requirements</h3>
+			<p>
+				This app requires PHP to be compiled with SOAP support.
+			</p>
+			<p>
+				According to our tests, your server does not have the SOAP extension installed. You must install the SOAP extension before you can use the Salesforce app.
+			</p>
+			<p>
+				<a href="http://www.php.net/manual/en/book.soap.php" target="_blank" class="btn btn-default">Refer to the PHP manual for more information</a>
+			</p>
+		</div>
+		<div class="panel-body" ng-if="!no_soap_support">
 			<!--#include file="AdminInterface/Install/settings-list.html" -->
 		</div>
 	</div>
 </article>
-<footer class="dp-panelblock-footer">
+<footer class="dp-panelblock-footer" ng-if="!no_soap_support">
 	<div class="dp-content">
 		<div class="dp-btn-controls">
 			<div dp-hide-spinning="saving_settings">

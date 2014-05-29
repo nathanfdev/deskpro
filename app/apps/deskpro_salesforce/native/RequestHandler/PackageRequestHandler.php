@@ -45,12 +45,23 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	public function handleApiPackageRequest(ApiPackageRequestContext $context)
 	{
 		switch ($context->getAction()) {
+			case 'check-requirements':
+				return $this->checkRequirementsAction($context);
 			case 'test-settings':
 				return $this->testSettingsAction($context);
-				break;
 			default:
 				throw $context->createNotFoundException();
 		}
+	}
+
+
+	/**
+	 * @param ApiPackageRequestContext $context
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function checkRequirementsAction(ApiPackageRequestContext $context)
+	{
+		return $context->createJsonResponse(array('soap_support' => class_exists('\SoapClient')));
 	}
 
 
