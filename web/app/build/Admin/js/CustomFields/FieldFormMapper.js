@@ -85,11 +85,11 @@
               if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex) {
                 if (fieldModel.options.min_length) {
                   formTypeOpts.user_validation = 'required';
-                  formTypeOpts.agent_min_lengthgth = fieldModel.options.min_length;
+                  formTypeOpts.agent_min_length = fieldModel.options.min_length;
                 }
                 if (fieldModel.options.max_length) {
                   formTypeOpts.user_validation = 'required';
-                  formTypeOpts.agent_max_lengthgth = fieldModel.options.max_length;
+                  formTypeOpts.agent_max_length = fieldModel.options.max_length;
                 }
                 if (fieldModel.options.regex) {
                   formTypeOpts.user_validation = 'regex';
@@ -99,11 +99,11 @@
               if (fieldModel.options.agent_required || fieldModel.options.agent_min_length || fieldModel.options.agent_max_length || fieldModel.options.agent_regex) {
                 if (fieldModel.options.agent_min_length) {
                   formTypeOpts.agent_validation = 'required';
-                  formTypeOpts.agent_min_lengthgth = fieldModel.options.agent_min_length;
+                  formTypeOpts.agent_min_length = fieldModel.options.agent_min_length;
                 }
                 if (fieldModel.options.agent_max_length) {
                   formTypeOpts.agent_validation = 'required';
-                  formTypeOpts.agent_max_lengthgth = fieldModel.options.agent_max_length;
+                  formTypeOpts.agent_max_length = fieldModel.options.agent_max_length;
                 }
                 if (fieldModel.options.agent_regex) {
                   formTypeOpts.agent_validation = 'regex';
@@ -253,16 +253,16 @@
             postData.default_value = formTypeOpts.default_value;
             if (formTypeOpts.user_validation === 'required') {
               postData.validation_type = 'required';
-              postData.min_length = formTypeOpts.agent_min_lengthgth;
-              postData.max_length = formTypeOpts.agent_max_lengthgth;
+              postData.min_length = formTypeOpts.agent_min_length;
+              postData.max_length = formTypeOpts.agent_max_length;
             } else if (formTypeOpts.user_validation === 'regex') {
               postData.validation_type = 'regex';
               postData.regex = formTypeOpts.validation_regex;
             }
             if (formTypeOpts.agent_validation === 'required') {
               postData.agentvalidation_type = 'required';
-              postData.agent_min_length = formTypeOpts.agent_min_lengthgth;
-              postData.agent_max_length = formTypeOpts.agent_max_lengthgth;
+              postData.agent_min_length = formTypeOpts.agent_min_length;
+              postData.agent_max_length = formTypeOpts.agent_max_length;
             } else if (formTypeOpts.agent_validation === 'regex') {
               postData.agent_type = 'regex';
               postData.agent_regex = formTypeOpts.agent_regex;
