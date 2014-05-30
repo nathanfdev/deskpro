@@ -446,7 +446,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			App::getOrm()->persist($ticket);
 
 			$field_manager = App::getSystemService('ticket_fields_manager');
-			$post_custom_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
+			$post_custom_fields = $this->custom_ticket_fields;
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $ticket);
 			}
