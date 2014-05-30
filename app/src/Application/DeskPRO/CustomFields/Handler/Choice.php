@@ -172,6 +172,7 @@ class Choice extends HandlerAbstract
 			$field_opts['expanded'] = true;
 		}
 
+		$req_opt = false;
 		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 			$req_opt = $this->field_def->getOption('required');
 		} else if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
