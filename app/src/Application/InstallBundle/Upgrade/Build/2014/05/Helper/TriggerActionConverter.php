@@ -357,7 +357,7 @@ class TriggerActionConverter
 
 	private function upgradeAction_set_sla_status($type, OptionsArray $options)
 	{
-		return new Actions\SetSlaComplete(array(
+		return new Actions\SetSlasComplete(array(
 			'sla_ids' => array($options->get('sla_id')),
 			'sla_status' => $options->get('sla_status')
 		));

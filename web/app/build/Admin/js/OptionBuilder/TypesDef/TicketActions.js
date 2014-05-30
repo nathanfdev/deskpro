@@ -104,12 +104,8 @@
           value: 'SetSlas'
         });
         options.push({
-          title: 'Set SLA Condition Status (Passing/Failing)',
-          value: 'SetSlaStatus'
-        });
-        options.push({
-          title: 'Set SLA State (Waiting/Finished)',
-          value: 'SetSlaRequirements'
+          title: 'Complete SLAs',
+          value: 'SetSlasComplete'
         });
         set_options.push({
           title: 'Ticket SLAs',
@@ -1207,6 +1203,68 @@
                 value.options.reply_text = model.reply_text;
                 value.options.by_assigned_agent = model.by_assigned_agent || false;
                 value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetSlasComplete = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-setslascomplete.html');
+          },
+          getData: function() {
+            var defer;
+            defer = me.$q.defer();
+            me.loadDataOptions().then((function(_this) {
+              return function() {
+                var sla, _i, _len, _ref;
+                options = [];
+                _ref = me.options_data['ticket_slas'];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  sla = _ref[_i];
+                  options.push({
+                    title: sla.title,
+                    value: sla.id
+                  });
+                }
+                return defer.resolve({
+                  options: options
+                });
+              };
+            })(this));
+            return defer.promise;
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = value.options || {};
+                return {
+                  sla_ids: options.sla_ids || [],
+                  sla_status: options.sla_status || 'ok'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetSlasComplete';
+                value.options = {
+                  sla_ids: model.sla_ids,
+                  sla_status: model.sla_status || 'ok'
+                };
                 return value;
               }
             };

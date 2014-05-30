@@ -47,7 +47,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool  sla_status    'auto', 'nochange', 'ok', 'warning', 'fail'
  *                             auto: recalc now, nochange: do nothing, ok: set to ok, warning: set to warning, fail: set to failed
  */
-class SetSlaComplete extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
+class SetSlasComplete extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -65,6 +65,10 @@ class SetSlaComplete extends AbstractContainerAwareAction implements ActionInter
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if (!$ticket->ticket_slas || !count($ticket->ticket_slas)) {
+			return;
+		}
+
 		$sla_ids = $this->getActionOption('sla_ids');
 		$sla_ids = array_combine($sla_ids, $sla_ids);
 
@@ -107,7 +111,6 @@ class SetSlaComplete extends AbstractContainerAwareAction implements ActionInter
 			$completed_date = $calc->calculateCompletedDate($ticket);
 			$ticket_sla->setIsCompleted(true, $completed_date);
 			$this->getContainer()->getEm()->persist($ticket_sla);
-			$this->getContainer()->getEm()->flush($ticket_sla);
 		}
 	}
 

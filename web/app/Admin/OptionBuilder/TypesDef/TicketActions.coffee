@@ -123,13 +123,8 @@ define [
 			})
 
 			options.push({
-				title: 'Set SLA Condition Status (Passing/Failing)',
-				value: 'SetSlaStatus'
-			})
-
-			options.push({
-				title: 'Set SLA State (Waiting/Finished)',
-				value: 'SetSlaRequirements'
+				title: 'Complete SLAs',
+				value: 'SetSlasComplete'
 			})
 
 			set_options.push({
@@ -919,6 +914,50 @@ define [
 							value.options.reply_text = model.reply_text
 							value.options.by_assigned_agent = model.by_assigned_agent || false
 							value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0
+							return value
+					}
+			}
+
+		getSetSlasComplete: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-setslascomplete.html')
+
+				getData: ->
+					defer = me.$q.defer()
+					me.loadDataOptions().then(=>
+						options = []
+						for sla in me.options_data['ticket_slas']
+							options.push({
+								title: sla.title,
+								value: sla.id
+							})
+
+						defer.resolve({
+							options: options
+						})
+					)
+
+					return defer.promise
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
+
+							return {
+								sla_ids: options.sla_ids || [],
+								sla_status: options.sla_status || 'ok'
+							}
+
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'SetSlasComplete'
+							value.options = {
+								sla_ids: model.sla_ids,
+								sla_status: model.sla_status || 'ok'
+							}
 							return value
 					}
 			}
