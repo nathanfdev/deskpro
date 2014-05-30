@@ -20,7 +20,6 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department"><span>Department</span></li>
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_product') %}disabled{% endif %}" data-field-type="product"><span>Product</span></li>
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_category') %}disabled{% endif %}" data-field-type="category"><span>Category</span></li>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_workflow') %}disabled{% endif %}" data-field-type="workflow"><span>Workflow</span></li>
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_priority') %}disabled{% endif %}" data-field-type="priority"><span>Priority</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="cc"><span>CC</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="captcha"><span>CAPTCHA</span></li>
@@ -60,9 +59,6 @@
 					</header>
 					<article>
 						<ul>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="subject" data-is-required="1"><span>Subject</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="message" data-is-required="1"><span>Message</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department"><span>Department</span></li>
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_product') %}disabled{% endif %}" data-field-type="product"><span>Product</span></li>
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_category') %}disabled{% endif %}" data-field-type="category"><span>Category</span></li>
 							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_workflow') %}disabled{% endif %}" data-field-type="workflow"><span>Workflow</span></li>
@@ -73,24 +69,14 @@
 						</ul>
 					</article>
 				</div>
-				<div class="group">
-					<header>
-						<h3>User Fields &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
-					</header>
-					<article>
-						<ul>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_email" data-is-required="1"><span>Email</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name"><span>Name</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
-							{% for field in app.getPersonFieldManager().getDisplayArray() %}
-								<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
-							{% endfor %}
-						</ul>
-					</article>
-				</div>
 			</div>
 			<div class="form-worksheet">
+				<div style="margin: 10px 10px 4px 10px;">
+					<div class="well well-sm">
+						The agent ticket form has a few fixed fields such as subject, message, department and user properties. However you can
+						add and arrange additional fields any way you want.
+					</div>
+				</div>
 				<ul></ul>
 			</div>
 		</article>
