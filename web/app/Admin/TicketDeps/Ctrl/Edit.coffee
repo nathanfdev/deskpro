@@ -140,6 +140,7 @@ define [
 			deferred2 = @$q.defer()
 
 			triggerSaver = =>
+				if @dep.has_children then return
 				postData = {
 					actions:       []
 				}
@@ -163,6 +164,9 @@ define [
 			promise = @depData.saveFormModel(@dep, @form)
 			promise.then(=>
 				triggerSaver()
+
+				if @dep.has_children then return
+
 				if (@form.use_custom_layout)
 					@Api.sendPostJson("/ticket_layouts/#{@dep.id}", {layout: @form.custom_layout}).then(-> deferred2.resolve())
 				else

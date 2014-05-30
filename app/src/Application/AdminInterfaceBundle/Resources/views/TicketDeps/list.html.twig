@@ -12,8 +12,8 @@
 				<li class="with-drag-handle" ng-repeat="dep in ListCtrl.depList" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
-						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="$event.preventDefault(); ListCtrl.startDelete(dep);"><i class="fa fa-trash-o"></i></span>
+						<div style="float:right">
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="!dep.children.length && dep.has_layout"><i class="fa fa-columns"></i></span>
 						</div>
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
@@ -21,8 +21,8 @@
 						<li class="with-drag-handle" ng-repeat="subdep in dep.children" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
 							<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
 								<i class="fa fa-bars drag-handle"></i>
-								<div class="pull-right">
-									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="$event.preventDefault(); ListCtrl.startDelete(subdep);"><i class="fa fa-trash-o"></i></span>
+								<div style="float:right">
+									<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="subdep.has_layout"><i class="fa fa-columns"></i></span>
 								</div>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>

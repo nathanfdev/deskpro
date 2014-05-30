@@ -100,6 +100,16 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			}
 		}
 
+		$deps_with_layout = $this->db->fetchAllCol("
+			SELECT department_id
+			FROM ticket_layouts
+			WHERE department_id IS NOT NULL
+		");
+
+		if ($deps_with_layout) {
+			$deps_with_layout = array_fill_keys($deps_with_layout, true);
+		}
+
 		$deps = array();
 		foreach ($flat_array as $row) {
 			$r = $row['object']->toApiData(true, false);
@@ -111,6 +121,12 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 				} else {
 					$r['permissions'] = array();
 				}
+			}
+
+			if (isset($deps_with_layout[$r['id']])) {
+				$r['has_layout'] = true;
+			} else {
+				$r['has_layout'] = false;
 			}
 
 			$deps[] = $r;

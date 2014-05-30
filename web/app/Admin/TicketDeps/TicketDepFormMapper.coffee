@@ -163,3 +163,8 @@ define [
 				dep.parent_id = null
 			else
 				dep.parent_id = parseInt(formModel.parent_id)
+
+			if formModel.use_custom_layout
+				dep.has_layout = true
+			else
+				dep.has_layout = false

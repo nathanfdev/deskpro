@@ -172,9 +172,14 @@
           dep.display_order = 0;
         }
         if (Util.isBlank(formModel.parent_id)) {
-          return dep.parent_id = null;
+          dep.parent_id = null;
         } else {
-          return dep.parent_id = parseInt(formModel.parent_id);
+          dep.parent_id = parseInt(formModel.parent_id);
+        }
+        if (formModel.use_custom_layout) {
+          return dep.has_layout = true;
+        } else {
+          return dep.has_layout = false;
         }
       };
 
