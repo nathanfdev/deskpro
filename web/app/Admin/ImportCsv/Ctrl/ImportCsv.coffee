@@ -14,7 +14,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.importErrors = {}
 			@$scope.importStarted = false
 
-			@$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, showExtraMappings: {}}
+			@$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, welcomeEmail: false, showExtraMappings: {}}
 			@showExtraMappingsCases = [
 				'organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city',
 				'state', 'post_code', 'country', 'new_custom'
@@ -76,6 +76,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			user_filename = @$scope.fileUploadResults.user_filename
 			skip_first = @$scope.importSettings.skipFirst
+			welcome_email = @$scope.importSettings.welcomeEmail
 			filename = @$scope.fileUploadResults.filename
 
 			# sending the request and doing other actions like showing / hiding indicators etc.
@@ -87,6 +88,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				field_maps: field_maps
 				user_filename: user_filename
 				skip_first: skip_first
+				welcome_email: if welcome_email then 1 else 0,
 				filename: filename
 
 			}).then( (result) =>
