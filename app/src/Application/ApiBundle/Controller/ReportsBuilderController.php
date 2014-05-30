@@ -344,6 +344,6 @@ class ReportsBuilderController extends AbstractController
 		 */
 
 		$reports_builder = $this->container->getSystemService('reports_builder');
-		$reports_builder->outputDownloadContent($id, $type);
+		return $reports_builder->outputDownloadContent($id, $type);
 	}
 }

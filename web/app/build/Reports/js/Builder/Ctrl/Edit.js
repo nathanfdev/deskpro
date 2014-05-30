@@ -15,7 +15,7 @@
 
       Reports_Builder_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Reports_Builder_Ctrl_Edit.DEPS = ['$stateParams', '$sce', 'Api', '$window'];
+      Reports_Builder_Ctrl_Edit.DEPS = ['$stateParams', '$sce', 'Api', '$window', '$http'];
 
       Reports_Builder_Ctrl_Edit.prototype.init = function() {
         if (this.$stateParams.type === 'builtIn') {
@@ -147,7 +147,7 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadCsv = function() {
-        return this.$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + this.report.id + '/csv?API-TOKEN=' + window.DP_API_TOKEN;
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/csv'));
       };
 
 
@@ -156,7 +156,7 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadPdf = function() {
-        return this.$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + this.report.id + '/pdf?API-TOKEN=' + window.DP_API_TOKEN;
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/pdf'));
       };
 
 
