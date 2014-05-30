@@ -210,6 +210,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			if field.type_name == 'choice'
 				options.options = field.choices.map( (o) -> {title: o.title, value: o.id + ""})
 				return @getStandardSelect(options)
+			else if field.type_name == 'toggle'
+				options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
+				return @getStandardSelect(options)
 			else
 				return @getStandardInput(options)
 

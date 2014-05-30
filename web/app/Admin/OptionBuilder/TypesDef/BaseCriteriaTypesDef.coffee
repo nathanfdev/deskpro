@@ -55,6 +55,10 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			if field.type_name == 'choice'
 				options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
 				return @getStandardSelect(options)
+			else if field.type_name == 'toggle'
+				options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
+				options.single = true
+				return @getStandardSelect(options)
 			else
 				if not options.operators then options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 				return @getStandardInput(options)
@@ -136,7 +140,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						return {
 							operators: operators,
 							options: if options_formatter then options_formatter(options.options) else options.options,
-							multiselect: true
+							multiselect: !options.single
 						}
 					else if data_name
 						defer = me.$q.defer()
@@ -144,7 +148,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 							defer.resolve({
 								operators: operators,
 								options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
-								multiselect: true
+								multiselect: !options.single
 							})
 						)
 

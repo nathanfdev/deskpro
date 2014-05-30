@@ -92,6 +92,18 @@
             };
           });
           return this.getStandardSelect(options);
+        } else if (field.type_name === 'toggle') {
+          options.options = [
+            {
+              title: 'On',
+              value: "1"
+            }, {
+              title: "Off",
+              value: "0"
+            }
+          ];
+          options.single = true;
+          return this.getStandardSelect(options);
         } else {
           if (!options.operators) {
             options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
@@ -195,7 +207,7 @@
               return {
                 operators: operators,
                 options: options_formatter ? options_formatter(options.options) : options.options,
-                multiselect: true
+                multiselect: !options.single
               };
             } else if (data_name) {
               defer = me.$q.defer();
@@ -204,7 +216,7 @@
                   return defer.resolve({
                     operators: operators,
                     options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                    multiselect: true
+                    multiselect: !options.single
                   });
                 };
               })(this));

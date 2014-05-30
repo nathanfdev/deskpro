@@ -289,6 +289,17 @@
             };
           });
           return this.getStandardSelect(options);
+        } else if (field.type_name === 'toggle') {
+          options.options = [
+            {
+              title: 'On',
+              value: "1"
+            }, {
+              title: "Off",
+              value: "0"
+            }
+          ];
+          return this.getStandardSelect(options);
         } else {
           return this.getStandardInput(options);
         }
