@@ -165,7 +165,7 @@ class NewTicketController extends AbstractController
 			}
 			$field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
 			$field_form_data = $fm->createFieldDataFromArray($field_data);
-			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, true);
 		} else {
 			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
 		}
@@ -178,9 +178,9 @@ class NewTicketController extends AbstractController
 			}
 			$field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
 			$field_form_data = $ufm->createFieldDataFromArray($field_data);
-			$custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, false);
+			$custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
 		} else {
-			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form);
+			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
 		}
 
 		$captcha_html = '';
