@@ -184,6 +184,8 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Pre-validation
 		#-------------------------
 
+		$exist_person = null;
+
 		$set_emails = $this->in->getArrayOfStrings('agent.emails');
 
 		if ($this->in->getString('agent.email')) {
@@ -213,6 +215,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			if (count($find_existing) == 1 && !$id) {
 				$exist = array_pop($find_existing);
 				$id = $exist['person']->id;
+				$exist_person = $exist['person'];
 
 			// In all other cases, we have a dupe email error
 			} else {
@@ -234,7 +237,12 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		if ($id) {
 			$is_new = false;
-			$agent = $this->container->getAgentData()->get($id);
+
+			if ($exist_person) {
+				$agent = $exist_person;
+			} else {
+				$agent = $this->container->getAgentData()->get($id);
+			}
 
 			if (!$agent) {
 				throw $this->createNotFoundException();
@@ -374,7 +382,7 @@ class AgentsController extends AbstractController implements ProtectedController
 				'person_id' => $agent->id
 			), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
 		} else {
-			return $this->createSuccessResponse();
+			return $this->createSuccessResponse(array('person_id' => $agent->id));
 		}
 	}
 
