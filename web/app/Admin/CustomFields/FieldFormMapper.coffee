@@ -81,13 +81,13 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						if fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex
 							if fieldModel.options.min_length
 								formTypeOpts.user_validation = 'required'
-								formTypeOpts.agent_min_length = fieldModel.options.min_length
+								formTypeOpts.min_length = fieldModel.options.min_length
 							if fieldModel.options.max_length
 								formTypeOpts.user_validation = 'required'
-								formTypeOpts.agent_max_length = fieldModel.options.max_length
+								formTypeOpts.max_length = fieldModel.options.max_length
 							if fieldModel.options.regex
 								formTypeOpts.user_validation = 'regex'
-								formTypeOpts.agent_regex = fieldModel.options.regex
+								formTypeOpts.regex = fieldModel.options.regex
 
 						if fieldModel.options.agent_required || fieldModel.options.agent_min_length || fieldModel.options.agent_max_length || fieldModel.options.agent_regex
 							if fieldModel.options.agent_min_length
@@ -227,11 +227,11 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						postData.regex = formTypeOpts.validation_regex
 
 					if formTypeOpts.agent_validation == 'required'
-						postData.agentvalidation_type = 'required'
+						postData.agent_validation_type = 'required'
 						postData.agent_min_length = formTypeOpts.agent_min_length
 						postData.agent_max_length = formTypeOpts.agent_max_length
 					else if formTypeOpts.agent_validation == 'regex'
-						postData.agent_type = 'regex'
+						postData.agent_validation_type = 'regex'
 						postData.agent_regex = formTypeOpts.agent_regex
 
 				when "choice"
@@ -242,8 +242,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
 					if formTypeOpts.user_validation == 'required'
 						postData.validation_type = 'required'
+						postData.min_length = 1
 					if formTypeOpts.agent_validation == 'required'
-						postData.agent_type = 'required'
+						postData.agent_validation_type = 'required'
+						postData.agent_min_length = 1
 
 				when "toggle"
 					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
@@ -253,7 +255,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					if formTypeOpts.user_validation == 'required'
 						postData.validation_type = 'required'
 					if formTypeOpts.agent_validation == 'required'
-						postData.agent_type = 'required'
+						postData.agent_validation_type = 'required'
 
 				when "date"
 					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
@@ -268,7 +270,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					if formTypeOpts.user_validation == 'required'
 						postData.validation_type = 'required'
 					if formTypeOpts.agent_validation == 'required'
-						postData.agent_type = 'required'
+						postData.agent_validation_type = 'required'
 
 					if formTypeOpts.valid_dates_mode == 'date'
 						postData.date_valid_type = 'date'
