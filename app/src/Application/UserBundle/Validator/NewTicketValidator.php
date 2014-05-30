@@ -326,7 +326,7 @@ class NewTicketValidator extends AbstractValidator
 			case 'user_field':
 				$field = App::getSystemService('PersonFieldsManager')->getFieldFromId($item->getFieldId());
 				if ($field && $field->is_enabled) {
-					$errors = $field->getHandler()->validateFormData($this->newticket->custom_ticket_fields);
+					$errors = $field->getHandler()->validateFormData($this->newticket->custom_user_fields);
 					foreach ($errors as $code) {
 						$this->addError('person.' . $code);
 					}

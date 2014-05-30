@@ -49,7 +49,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 {
 	protected static $prop_names = array(
 		'person' => 1, 'ticket' => 1, 'language' => 1,
-		'custom_ticket_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
+		'custom_ticket_fields' => 1, 'custom_user_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
 		'require_login' => 1, 'attach_blobs' => 1, 'blobs_inline_ids' => 1, 'gateway' => 1, 'gateway_address' => 1,
 		'sent_to' => 1, 'logger' => 1, 'do_dupe_check' => 1
 	);
@@ -71,6 +71,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 	public $language;
 
 	public $custom_ticket_fields = array();
+	public $custom_user_fields = array();
 
 	public $new_message;
 
@@ -475,6 +476,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
 			$ticket_manager = App::$container->getTicketManager();
 			$context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+
+			$user_field_manager = App::getSystemService('PersonFieldsManager');
+			$post_custom_fields = $this->custom_user_fields;
+			if (!empty($post_custom_fields)) {
+				$user_field_manager->saveFormToObject($post_custom_fields, $person);
+			}
 
 			$ticket_manager->saveTicket($ticket, $context);
 			App::getOrm()->flush();

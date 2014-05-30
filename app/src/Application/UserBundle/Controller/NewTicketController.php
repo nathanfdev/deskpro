@@ -170,7 +170,7 @@ class NewTicketController extends AbstractController
 			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
 		}
 
-		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+		/** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
 		$ufm = $this->container->getSystemService('PersonFieldsManager');
 		if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
 			if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
@@ -180,7 +180,7 @@ class NewTicketController extends AbstractController
 			$field_form_data = $ufm->createFieldDataFromArray($field_data);
 			$custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, false);
 		} else {
-			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person);
+			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form);
 		}
 
 		$captcha_html = '';
@@ -200,6 +200,7 @@ class NewTicketController extends AbstractController
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
 			$newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
+			$newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
 
 			$trap_fail = false;
 			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
