@@ -1232,7 +1232,8 @@ class Upgrade
 		foreach (array('error.log', 'cli-phperr.log', 'server-phperr-cli.log', 'server-phperr-web.log') as $f) {
 			$path = dp_get_log_dir() . DIRECTORY_SEPARATOR . $f;
 			if (file_exists($path)) {
-				@file_put_contents('', $path);
+				@copy($path, "$path.old");
+				@file_put_contents($path, '');
 			}
 		}
 
