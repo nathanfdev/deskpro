@@ -1809,6 +1809,10 @@ em.counter, em.list-counter {
 	bottom: -20px; // -20px so the shadow doesnt appear at the bottom
 	width: @agent_nav_width;
 
+	li {
+		position: relative;
+	}
+
 	li span.count-badge {
 		display: inline-block;
 		padding: 0 3px;
@@ -1824,6 +1828,7 @@ em.counter, em.list-counter {
 		position: absolute;
 		right: 5px;
 		top: 10px;
+		z-index: 1;
 	}
 }
 
