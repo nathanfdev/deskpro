@@ -41,28 +41,48 @@
 
       Admin_Templates_Ctrl_EmailList.prototype.openEditor = function(tpl) {
         var modalInstance;
-        modalInstance = this.$modal.open({
-          templateUrl: this.getTemplatePath('Templates/modal-email-editor.html'),
-          controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-          resolve: {
-            templateName: function() {
-              return tpl.name;
-            }
-          }
-        }).result.then((function(_this) {
-          return function(info) {
-            if (info.mode === 'custom') {
-              return tpl.is_custom = true;
-            } else if (info.mode === 'revert') {
-              tpl.is_custom = false;
-              if (_this.typeId === 'custom' && _this.groupId === 'custom') {
-                return _this.templates = _this.templates.filter(function(x) {
-                  return x !== tpl;
-                });
+        if (!tpl.type || tpl.type === 'email') {
+          modalInstance = this.$modal.open({
+            templateUrl: this.getTemplatePath('Templates/modal-email-editor.html'),
+            controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+            resolve: {
+              templateName: function() {
+                return tpl.name;
               }
             }
-          };
-        })(this));
+          }).result.then((function(_this) {
+            return function(info) {
+              if (info.mode === 'custom') {
+                return tpl.is_custom = true;
+              } else if (info.mode === 'revert') {
+                tpl.is_custom = false;
+                if (_this.typeId === 'custom' && _this.groupId === 'custom') {
+                  return _this.templates = _this.templates.filter(function(x) {
+                    return x !== tpl;
+                  });
+                }
+              }
+            };
+          })(this));
+        } else {
+          modalInstance = this.$modal.open({
+            templateUrl: this.getTemplatePath('Templates/modal-template-editor.html'),
+            controller: 'Admin_Templates_Ctrl_TemplateEditor',
+            resolve: {
+              templateName: function() {
+                return tpl.name;
+              }
+            }
+          }).result.then((function(_this) {
+            return function(info) {
+              if (info.mode === 'custom') {
+                return tpl.is_custom = true;
+              } else if (info.mode === 'revert') {
+                return tpl.is_custom = false;
+              }
+            };
+          })(this));
+        }
         return modalInstance;
       };
 

@@ -2751,10 +2751,17 @@ class TicketController extends AbstractController
 		$date_created = clone $ticket->date_created;
 		$date_created->setTimezone($this->person->getDateTimezone());
 
+		$top = trim($this->renderView('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', array(
+			'agent'   => $this->person,
+			'ticket'  => $ticket,
+			'message' => $message,
+		)));
+
 		return $this->render('AgentBundle:Ticket:forward-overlay.html.twig', array(
 			'ticket'  => $ticket,
 			'message' => $message,
 			'date_created' => $date_created,
+			'top' => $top,
 		));
 	}
 
@@ -2797,15 +2804,11 @@ class TicketController extends AbstractController
 		$date_created->setTimezone($this->person->getDateTimezone());
 		$date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
 
-		$top = '';
-
-		if (!$this->container->getSetting('core_tickets.fwd_use_agent_address')) {
-			$top = '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 11px; color: #888888; padding: 0; margin: 0;">';
-			$top .= 'This message has been forwarded to you from <a href="' . $this->container->getSetting('core.deskpro_url') . '">' . $this->container->getSetting('core.deskpro_name') . '</a> ';
-			$top .= 'by ' . $this->person->getDisplayName() . ' &lt;<a href="mailto:' . $this->person->getPrimaryEmailAddress() . '">' . $this->person->getPrimaryEmailAddress() . '</a>&gt;<br/>';
-			$top .= 'Please do NOT reply to this message. If you need to reply, consider replying directly to ' . $ticket->person->getDisplayName() . ' &lt;<a href="mailto:' . $ticket->person->getPrimaryEmailAddress() . '">' . $ticket->person->getPrimaryEmailAddress() . '</a>&gt;';
-			$top .= '</div>';
-		}
+		$top = trim($this->renderView('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', array(
+			'agent'   => $this->person,
+			'ticket'  => $ticket,
+			'message' => $message,
+		)));
 
 		if ($custom_message) {
 			if ($top) {

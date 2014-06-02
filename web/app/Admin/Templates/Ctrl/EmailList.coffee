@@ -21,23 +21,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		# Open an editor
 		###
 		openEditor: (tpl) ->
-			modalInstance = @$modal.open({
-				templateUrl: @getTemplatePath('Templates/modal-email-editor.html'),
-				controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-				resolve: {
-					templateName: ->
-						return tpl.name
-				}
-			}).result.then( (info) =>
-				if info.mode == 'custom'
-					tpl.is_custom = true
-				else if info.mode == 'revert'
-					tpl.is_custom = false
+			if !tpl.type || tpl.type == 'email'
+				modalInstance = @$modal.open({
+					templateUrl: @getTemplatePath('Templates/modal-email-editor.html'),
+					controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+					resolve: {
+						templateName: ->
+							return tpl.name
+					}
+				}).result.then( (info) =>
+					if info.mode == 'custom'
+						tpl.is_custom = true
+					else if info.mode == 'revert'
+						tpl.is_custom = false
 
-					# if this is a custom template group, then revert means delete
-					if @typeId == 'custom' and @groupId == 'custom'
-						@templates = @templates.filter((x) -> x != tpl)
-			)
+						# if this is a custom template group, then revert means delete
+						if @typeId == 'custom' and @groupId == 'custom'
+							@templates = @templates.filter((x) -> x != tpl)
+				)
+			else
+				modalInstance = @$modal.open({
+					templateUrl: @getTemplatePath('Templates/modal-template-editor.html'),
+					controller: 'Admin_Templates_Ctrl_TemplateEditor',
+					resolve: {
+						templateName: ->
+							return tpl.name
+					}
+				}).result.then( (info) =>
+					if info.mode == 'custom'
+						tpl.is_custom = true
+					else if info.mode == 'revert'
+						tpl.is_custom = false
+				)
 
 			return modalInstance
 
