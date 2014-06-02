@@ -24,19 +24,19 @@
 		<p>You can change the design and layout of the portal by editing these templates and the portal phrases.</p>
 	</header>
 	<article>
-	
+	<section>
 <p>Templates use <a href="http://twig.sensiolabs.org/doc/templates.html" target="_blank">Twig syntax</a>. </p>
 <p>Each template consists of HTML containing special template code:</p>
 
 <ul>
 	<li><strong>Phrases</strong> - to insert a phrase as defined in the language pack:<br />
-		<code>{{ phrase('user.profile.choose_email') }}</code> inserts "Choose the email address you want to use" (unless custom phrase was stored)
+		<code>{{ '{{' }} phrase('user.profile.choose_email') {{ '}}' }}</code> inserts "Choose the email address you want to use" (unless custom phrase was stored)
 	</li>	
 	<li><strong>Variables</strong> - to insert information stored in DeskPRO:<br />
-		<code>{{ app.user.name }}</code> inserts name of logged-in user
+		<code>{{ '{{' }}  app.user.name  {{ '}}' }} </code> inserts name of logged-in user
 	</li>
 	<li><strong>Tags</strong> - used to choose what to display based on logical operations:<br />
-		<code>
+		<code>{% verbatim %}
     {% if app.user.isMemberOfUsergroup(3) %}
     
         Welcome, VIP!
@@ -46,6 +46,8 @@
         Welcome, average Joe!
 
     {% endif %}
+    {% endverbatim %}
+    
     </code><br />
     displays a different message to users who belong to a certain usergroup.
     </li>
@@ -55,7 +57,7 @@
 <p>You can edit template code to customize the portal. Consult the <a href="https://support.deskpro.com/downloads/files/7-admin-manual-pdf" target="_blank">admin manual</a> and the <a href="http://twig.sensiolabs.org/doc/templates.html" target="_blank">Twig documentation</a> for more details.</p>
 	
 	
-	
+	</section>
 	
 	<section>
 		<h2><span>FAQ</span></h2>
@@ -65,15 +67,15 @@
 				A good place to start is by editing the CSS templates to style the portal.
 			</dd>
 		</dl>
-</section>
+	</section>
 		<section>
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL]<a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#editing-templates">Editing Templates</a></li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/186" target="_blank">Make a cleaner portal News page by removing title & navigation</a></li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/141" target="_blank">Change welcome message based on usergroup</a></li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/144" target="_blank"></a>Customizing the embedded contact form</li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/188" target="_blank">Some of our portal is missing!</a></li>
+				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#editing-templates">Editing Templates</a></li>
+				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/186" target="_blank">Make a cleaner portal News page by removing title & navigation</a></li>
+				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/141" target="_blank">Change welcome message based on usergroup</a></li>
+				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/144" target="_blank"></a>Customizing the embedded contact form</li>
+				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/188" target="_blank">Some of our portal is missing!</a></li>
 			</ul>
 	</section>
 </article>
