@@ -1027,9 +1027,6 @@ class TicketController extends AbstractController
 			$request_message_trans = '';
 		}
 
-		dp_log($request_message_orig);
-
-
 		if (!$request_message_orig || $request_message_orig == trim($this->person->getPref('agent.ticket_signature'))) {
 			return $this->createJsonResponse(array('error' => 'no_message'));
 		}
