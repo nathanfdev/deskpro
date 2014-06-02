@@ -38,6 +38,7 @@ use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -114,13 +115,25 @@ class Manager
 	/**
 	 * Runs the next build script
 	 *
+	 * @param int $build_id
 	 * @return void
 	 */
 	public function runBuild($build_id)
 	{
 		$class = $this->getBuildClass($build_id);
-		$build = new $class($this->container);
-		$build->run();
+		$build = new $class($this->container, $this->logger);
+
+		try {
+			$build->run();
+		} catch (\Exception $e) {
+			if ($this->logger) {
+				$this->logger->error(sprintf("EXCEPTION: %s [%s] %s", get_class($e), $e->getCode(), $e->getMessage()));
+				$trace = KernelErrorHandler::formatBacktrace($e->getTrace());
+				$this->logger->debug($trace);
+			}
+
+			throw $e;
+		}
 
 		if ($build->shouldRerun()) {
 			$current_run = $build->getStatus('runcount', 0);

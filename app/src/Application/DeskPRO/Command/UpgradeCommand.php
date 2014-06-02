@@ -38,6 +38,9 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -78,7 +81,14 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		@unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
 
 		$output->setVerbosity(4);
-		$logger = $this->getContainer()->getLoggerManager()->getLogger('upgrader', array('output' => $output));
+
+		$logger = new Logger('upgrade');
+		$console_handler = new ConsoleHandler($output);
+		$logger->pushHandler($console_handler);
+
+		$stream_handler = new StreamHandler(dp_get_log_dir() . '/upgrade.log');
+		$logger->pushHandler($stream_handler);
+
 		$manager = new \Application\InstallBundle\Upgrade\Manager(
 			$this->getContainer(),
 			$logger
@@ -130,7 +140,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		#------------------------------
 
 		if (!$manager->getNextBuildId()) {
-			$output->writeln("You are all up to date!");
+			$logger->info("All up to date");
 		}
 
 		if ($input->getOption('dobuildrun')) {
@@ -145,13 +155,15 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		chdir(DP_ROOT . '/../');
 
 		while ($next_id = $manager->getNextBuildId()) {
-			$output->writeln("<info>Build #$next_id</info>");
+			$logger->info("Build #$next_id");
 
 			$cmd = dp_get_php_command('cmd.php', "dp:upgrade --dobuildrun=$next_id");
+			$logger->debug("Command: $cmd");
 			$ret = null;
 			passthru($cmd, $ret);
 
 			if ($ret) {
+				$logger->notice("--> Error status: $ret");
 				return $ret;
 			}
 
@@ -162,10 +174,11 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		# Post Run
 		#------------------------------
 
-		$output->writeln("<info>Running post scripts</info>");
+		$logger->info("Running post scripts");
 	    $manager->postUpgrade();
 
 		if (defined('DP_BUILD_TIME')) {
+			$logger->info("Setting deskpro_build = " . DP_BUILD_TIME);
 			$current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
 			if ($current < DP_BUILD_TIME) {
 				App::getDb()->replace('settings', array('value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build'));
@@ -173,7 +186,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			}
 		}
 
-		$output->writeln("<info>Done All</info>");
+		$logger->info("Upgrade complete");
 
 		return 0;
 	}

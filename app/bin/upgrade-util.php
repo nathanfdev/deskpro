@@ -334,16 +334,16 @@ class Upgrade
 
 		if (!$has_opened) {
 			// Reset log
-			@file_put_contents($this->getLogDir() . '/upgrade.log', '');
+			@file_put_contents($this->getLogDir() . '/upgrade-util.log', '');
 		}
 		$has_opened = true;
 
 		if (!$this->log_fh) {
-			$this->log_fh = fopen($this->getLogDir() . '/upgrade.log', 'a');
+			$this->log_fh = fopen($this->getLogDir() . '/upgrade-util.log', 'a');
 			if (!$this->log_fh) {
-				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade.log');
+				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade-util.log');
 			}
-			@chmod($this->getLogDir() . '/upgrade.log', 0777);
+			@chmod($this->getLogDir() . '/upgrade-util.log', 0777);
 
 			$this->registerCleanupParam('close_log_fh', $this->log_fh);
 
@@ -1690,6 +1690,7 @@ class Upgrade
 
 		} catch (\Exception $e) {}
 
+		$info['util_log'] = @file_get_contents(dp_get_log_dir() . '/upgrade-util.log');
 		$info['log'] = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
 		$info['old_build'] = defined('DP_ORIG_BUILD_TIME') ? DP_ORIG_BUILD_TIME : '0';
 		$info['new_build'] = defined('DP_NEW_BUILD_TIME') ? DP_NEW_BUILD_TIME : '0';
