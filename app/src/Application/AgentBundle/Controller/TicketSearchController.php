@@ -1356,7 +1356,6 @@ class TicketSearchController extends AbstractController
             'ref',
             'auth',
             'creation_system',
-            'notify_email',
             'ticket_hash',
             'status',
             'hidden_status',
@@ -1458,16 +1457,24 @@ class TicketSearchController extends AbstractController
                     case 'category_id':
                     case 'workflow_id':
                     case 'product_id':
-                    case 'email_account_id':
+					case 'email_account_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
-                        $entity = $ticket->{$name};
+						$entity = null;
 
-                        if($entity) {
-                            $row[] = $entity->id;
-                            $row[] = $entity->title;
-                        }
-                        else {
+						if (isset($ticket[$name])) {
+							$entity = $ticket->{$name};
+						}
+
+						if ($entity) {
+							if ($display_field == 'email_account_id') {
+								$row[] = $entity->id;
+								$row[] = $entity->address;
+							} elseif ($entity) {
+								$row[] = $entity->id;
+								$row[] = $entity->title;
+							}
+						} else {
                             $row[] = $row[] = '';
                         }
                         break;
@@ -1533,7 +1540,11 @@ class TicketSearchController extends AbstractController
 							}
                         }
                         else {
-                            $value = $ticket->{$display_field};
+							if (isset($ticket[$display_field])) {
+								$value = $ticket[$display_field];
+							} else {
+								$value = null;
+							}
 
                             if(is_scalar($value)) {
                                 $row[] = $value;
