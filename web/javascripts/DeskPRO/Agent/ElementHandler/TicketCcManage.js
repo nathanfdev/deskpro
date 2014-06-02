@@ -20,6 +20,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			addRow.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(addRow);
 
 			addRow.on('click', '.cc-saverow-trigger', function(ev) {
+				var btn = $(this);
 				var email = $('input', addRow).val().trim();
 
 				if (!email) {
@@ -39,11 +40,11 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 					success: function(data) {
 						if (data.error) {
 							if (data.error_code == 'invalid_email') {
-								DeskPRO_Window.showAlert('Please enter a valid email address');
+								DeskPRO_Window.showAlert(btn.data('msg-invalid-email'));
 							} else if (data.error_code == 'invalid_email_gatewayaccount') {
-								DeskPRO_Window.showAlert('The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot add email accounts as CCs.');
+								DeskPRO_Window.showAlert(btn.data('msg-invalid-email-isaccount'));
 							} else if (data.error_code == 'is_agent') {
-								DeskPRO_Window.showAlert('The user you specified is an agent. To add an agent to this ticket, use the "Add a follower" button in the Properties box.');
+								DeskPRO_Window.showAlert(btn.data('msg-invalid-email-isagent'));
 								self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
 									$(this).empty().html(data.cc_list || '');
 									$(this).find('li').each(function() {
@@ -55,7 +56,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 						}
 
 						if (data.is_dupe) {
-							DeskPRO_Window.showAlert('The user you specified is already on this ticket.');
+							DeskPRO_Window.showAlert(btn.data('agent.tickets.participant_already_exists'));
 							return;
 						}
 
