@@ -48,6 +48,10 @@ class Build1400056713 extends AbstractBuild
 		$db = $this->container->getDb();
 		$em = $this->container->getEm();
 
+		// Reset table
+		$db->exec("DELETE FROM email_accounts");
+		$db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = 1");
+
 		$this->out("Upgrading email accounts...");
 
 		$gateways      = $db->fetchAllKeyed("SELECT * FROM email_gateways");
@@ -94,6 +98,7 @@ class Build1400056713 extends AbstractBuild
 		$default_tr = Arrays::findValue($transports, function($tr) {
 			return $tr['match_type'] == 'all';
 		});
+		$default_account = null;
 		if ($default_tr) {
 			$default_tr_address = $this->container->getSetting('core.default_from_email');
 
@@ -107,23 +112,37 @@ class Build1400056713 extends AbstractBuild
 			});
 
 			if (!$addr_exists) {
-				$new_accounts[-1] = $tr_account;
+				$default_account = $tr_account;
 			}
 		}
 
+		$id_map = array();
+		$tmp_id = time();
 		foreach ($new_accounts as $want_id => $account) {
 			$em->persist($account);
 			$em->flush();
 
-			if ($want_id != -1) {
-				$this->container->getDb()->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $account->id));
-			}
+			// Update to a high ID that wont collide when we update again below
+			$db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($tmp_id, $account->id));
+			$id_map[$tmp_id] = $want_id;
+			$tmp_id++;
 		}
 
-		$max_id = $this->container->getDb()->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
+		foreach ($id_map as $tmp_id => $want_id) {
+			$db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $tmp_id));
+		}
+
+		$max_id = $db->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
 		if (!$max_id) $max_id = 0;
 		$max_id++;
-		$this->container->getDb()->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
+		$db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
+
+		// Then insert default account with whatever autoinc id is next,
+		// we dont care about the id
+		if ($default_account) {
+			$em->persist($default_account);
+			$em->flush();
+		}
 	}
 
 
