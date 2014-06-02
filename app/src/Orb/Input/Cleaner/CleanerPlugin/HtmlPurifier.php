@@ -236,7 +236,7 @@ class HtmlPurifier implements CleanerPlugin
 					sub,sup,blockquote,
 					table[border|cellspacing|cellpadding|width|align|summary],
 					tr,tbody,thead,tfoot,
-					td[colspan|rowspan|width|height|align|valign|scope]
+					td[colspan|rowspan|width|height|align|valign|scope],
 					th[colspan|rowspan|width|height|align|valign|scope],
 					caption,div, span, code, pre,address, h1, h2, h3, h4, h5, h6, hr[size|noshade],
 					font[face|size|color],dd,dl,dt,cite,abbr,acronym,del[cite],ins[cite],
@@ -254,7 +254,7 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_core':
-				$config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table,thead,tbody,tfoot,tr,td,th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
+				$config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table,thead,tbody,tfoot,tr,td[colspan|rowspan],th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
 				$config->set('AutoFormat.AutoParagraph', true);
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
@@ -272,8 +272,23 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_email':
-				$config->set('HTML.AllowedElements', 'em,strong,a,ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote,sup,sub,font,u,i,b');
-				$config->set('HTML.AllowedAttributes', 'a.href,*.style,*.class,font.color,font.face,font.size');
+				$config->set('HTML.Allowed', "
+					*[style|title|class|id],
+					a[rel|rev|name|href|target|title|class]
+					strong,b,em,i,strike,u,
+					p[align],ol[type|compact],ul,li,br,img[src|width|height|alt|title],
+					sub,sup,blockquote,
+					table[border|cellspacing|cellpadding|width|align|summary],
+					tr,tbody,thead,tfoot,
+					td[colspan|rowspan|width|height|align|valign|scope],
+					th[colspan|rowspan|width|height|align|valign|scope],
+					caption,div, span, code, pre,address, h1, h2, h3, h4, h5, h6, hr[size|noshade],
+					font[face|size|color],dd,dl,dt,cite,abbr,acronym,del[cite],ins[cite],
+					col[align|span|valign|width],colgroup[align|span|valign|width],
+					dfn,kbd,
+					q[cite],small,
+					tt,var,big
+				");
 				$config->set('Attr.AllowedClasses', 'MsoNormal');
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', false);

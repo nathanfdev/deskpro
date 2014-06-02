@@ -1020,12 +1020,14 @@ class TicketController extends AbstractController
 	public function ajaxSaveReplyAction($ticket_id)
 	{
 		if ($this->in->getBool('reply_is_trans')) {
-			$request_message_orig  = $this->in->getHtmlCore('message_original');
-			$request_message_trans = $this->in->getHtmlCore('message');
+			$request_message_orig  = $this->in->getHtml('message_original');
+			$request_message_trans = $this->in->getHtml('message');
 		} else {
-			$request_message_orig  = $this->in->getHtmlCore('message');
+			$request_message_orig  = $this->in->getHtml('message');
 			$request_message_trans = '';
 		}
+
+		dp_log($request_message_orig);
 
 
 		if (!$request_message_orig || $request_message_orig == trim($this->person->getPref('agent.ticket_signature'))) {
