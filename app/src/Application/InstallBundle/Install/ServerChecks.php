@@ -570,16 +570,35 @@ class ServerChecks
 		}
 
 		#------------------------------
+		# mbstring
+		#------------------------------
+
+		if ($type == 'mbstring_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking mbstring is installed", Logger::DEBUG);
+			if (function_exists('mb_convert_encoding')) {
+				$this->getLogger()->log("[OK] mbstring is installed", Logger::DEBUG);
+			} else {
+				$this->has_fatal_server_errors = true;
+				$msg = "You must install and enabled the mbstring extension";
+				$this->getLogger()->log("$msg", Logger::INFO);
+				$this->server_errors['mbstring_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
 		# iconv_ext
 		#------------------------------
 
 		if ($type == 'iconv_ext' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking iconv is installed", Logger::DEBUG);
 			if (function_exists('iconv') || function_exists('mb_convert_encoding')) {
-				$this->getLogger()->log("[OK] iconv or mb_convert_encoding is installed", Logger::DEBUG);
+				$this->getLogger()->log("[OK] iconv or mbstring is installed", Logger::DEBUG);
 			} else {
 				$this->has_fatal_server_errors = true;
-				$msg = "You must install and enabled the iconv or mb_convert_encoding extension";
+				$msg = "You must install and enabled the iconv or mbstring extension";
 				$this->getLogger()->log("$msg", Logger::INFO);
 				$this->server_errors['iconv_ext'] = array(
 					'message' => $msg,

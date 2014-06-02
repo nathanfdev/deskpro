@@ -185,6 +185,11 @@ class ServerReqs
 				'error'       => 'DeskPRO requires the PDO extension and the MySQL driver',
 				'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_pdo_ext'),
 			),
+			'mbstring_ext'              => array(
+				'description' => 'Check that <a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a> extension is installed',
+				'error'       => 'DeskPRO requires the mbstring extension to be installed and enabled.',
+				'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_mbstring_ext'),
+			),
 			'iconv_ext'              => array(
 				'description' => 'Check that the <a href="http://php.net/manual/en/iconv.installation.php">iconv</a> or <a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a> extension is installed',
 				'error'       => 'DeskPRO requires the iconv or mbstring extension to be installed and enabled.',

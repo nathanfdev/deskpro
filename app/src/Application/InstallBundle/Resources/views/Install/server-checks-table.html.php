@@ -121,6 +121,24 @@
 <tr>
 	<td>
 		<?php $failed = false ?>
+		<?php if (!isset($errors['mbstring_ext']) && !isset($errors['mbstring_ext'])): ?>
+			<span class="label success" style="float:right">OK</span>
+		<?php else: $failed = true; $failed_phpini = true; ?>
+			<span class="label important" style="float:right">FAIL</span>
+		<?php endif ?>
+		Check that <a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a> extension is installed
+		<?php if ($failed): ?>
+			<div class="alert-message block-message error">
+				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_mbstring_ext') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+				DeskPRO requires the mbstring extension to be installed and enabled.
+			</div>
+		<?php endif ?>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<?php $failed = false ?>
 		<?php if (!isset($errors['iconv_ext']) && !isset($errors['iconv_ext'])): ?>
 		<span class="label success" style="float:right">OK</span>
 		<?php else: $failed = true; $failed_phpini = true; ?>
