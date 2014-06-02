@@ -1,158 +1,79 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
-
 {% block fullpane_content %}
 
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3>File Uploads</h3>
+			<h3>Storage Mechanism</h3>
 		</header>
 
 		{##################################################################################################}
 
-		<article class="padd">
-
-			<h4>{{ phrase('admin.server.file_storage_mechanism') }}</h4>
-
-			<table class="table table-bordered">
-				<tbody>
-
-					<tr ng-if="data.using_file_system">
-						<td>
-							{{ phrase('admin.server.storage_mechanism') }}
-						</td>
-						<td>
-							{{ phrase('admin.server.file_storage') }}
-
-							<div style="font-size: 11px">
-
-								{{ phrase('admin.server.notice_most_efficient_storage') }}
-
-								<div ng-if="!data.moving_files.id">
-
-									Databases are not designed to store files.
-									While not recommended, you can
-									<a ng-click="Ctrl.startSwitchStorage();$event.preventDefault();" ng-href="#">
-										switch back to using database storage
-									</a>.
-								</div>
-							</div>
-						</td>
-					</tr>
-
-					<tr ng-if="data.using_file_system">
-						<td>{{ phrase('admin.server.storage_path') }}</td>
-						<td>{{ ng_var('data.file_storage_path') }}</td>
-					</tr>
-
-					<tr ng-if="!data.using_file_system">
-						<td>
-							{{ phrase('admin.server.storage_mechanism') }}
-						</td>
-						<td>
-							{{ phrase('admin.server.database_storage') }}
-
-							<div style="font-size: 11px">
-
-								<div ng-if="!data.moving_files.id">
-
-									Databases are not designed to store files. We recommend
-									<a ng-click="Ctrl.startSwitchStorage();$event.preventDefault();" ng-href="#">
-										switching to filesystem storage
-									</a>
-									where files are stored as files in a directory on your server.
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td ng-if="data.moving_files.id || fileTransferStarted" colspan="2" class="success">
-
-							<span dp-status-update="/server_file_uploads/switch_status"
-								  status-update-conditions="update_started"
-								  status-update-default-message="Requesting transferring status information..."
-								  status-update-completed-growl-message="Transferring of files finished"
-								  status-update-interval="15000"
-								  status-update-immediate="false"
-								  style="font-style:italic;">
-							</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-
+		<article class="padd" ng-show="updating_method">
+			<i class="spinner-editor"></i>
 		</article>
 
-		{##################################################################################################}
+		<article class="padd" ng-show="!updating_method">
+			<div ng-if="data.filestorage_method == 'db'">
+				<p>
+					You are currently using the <strong>database storage mechanism</strong> for file storage.
+				</p>
+				<p>
+					Using the database to store files is the most portable and easy to configure mechanism. However, it is very inefficient
+					and will quickly increase the size of your database.
+				</p>
+				<p>
+					If possible, we suggest switching to one of the other storage mechanisms.
+				</p>
+				<p>
+					<button class="btn btn-primary" type="button" ng-click="Ctrl.startSwitchStorage()"><i class="fa fa-files-o"></i> Change Storage Mechanism</button>
+				</p>
+			</div>
 
-		<article class="padd">
+			<div ng-if="data.filestorage_method == 'fs'">
+				<p>
+					You are currently using the <strong>filesystem storage mechanism</strong> for file storage.
+				</p>
+				<p>
+					Files are being stored at <var>{{ ng_var('data.file_storage_path') }}</var>.
+				</p>
+				<p>
+					<button class="btn btn-default" type="button" ng-click="Ctrl.startSwitchStorage()"><i class="fa fa-files-o"></i> Change Storage Mechanism</button>
+				</p>
+			</div>
 
-			<h4>Upload Restrictions</h4>
-
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							Setting
-						</th>
-						<th>
-							Users
-						</th>
-						<th>
-							Agents
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Max Upload Size</td>
-						<td>
-							{{ ng_var('data.restrictions.attach_user_maxsize | filesize_display') }}
-						</td>
-						<td>
-							{{ ng_var('data.restrictions.attach_agent_maxsize | filesize_display') }}
-						</td>
-					</tr>
-					<tr>
-						<td>File Types</td>
-						<td>
-							<span ng-if="data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_must_exts">
-								All file types except these are allowed:
-								<br>{{ ng_var('data.restrictions.attach_user_must_exts') }}
-							</span>
-							<span ng-if="!data.restrictions.attach_user_not_exts && data.restrictions.attach_user_must_exts">
-								Only these file types allowed:
-								<br>{{ ng_var('data.restrictions.attach_user_not_exts') }}
-							</span>
-							<span ng-if="!data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_not_exts">
-								All file types are allowed
-							</span>
-						</td>
-						<td>
-							<span ng-if="data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_must_exts">
-								All file types except these are allowed:
-								<br>{{ ng_var('data.restrictions.attach_agent_must_exts') }}
-							</span>
-							<span ng-if="!data.restrictions.attach_agent_not_exts && data.restrictions.attach_agent_must_exts">
-								Only these file types allowed:
-								<br>{{ ng_var('data.restrictions.attach_agent_not_exts') }}
-							</span>
-							<span ng-if="!data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_not_exts">
-								All file types are allowed
-							</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div ng-if="data.filestorage_method == 's3'">
+				<p>
+					You are currently using the <strong>Amazon S3 storage mechanism</strong> for file storage.
+				</p>
+				<p>
+					Files are being stored on AmazonS3 in the bucket named <var>{{ ng_var('data.s3_bucket') }}</var>.
+				</p>
+				<p>
+					<button class="btn btn-default" type="button" ng-click="Ctrl.startSwitchStorage()"><i class="fa fa-files-o"></i> Change Storage Mechanism</button>
+				</p>
+			</div>
 		</article>
 
-		{##################################################################################################}
+		<article class="padd" ng-if="data.moving_files.id || fileTransferStarted">
+			<span dp-status-update="/server_file_uploads/switch_status"
+				  status-update-conditions="update_started"
+				  status-update-default-message="Requesting transferring status information..."
+				  status-update-completed-growl-message="Transferring of files finished"
+				  status-update-interval="15000"
+				  status-update-immediate="false"
+				  style="font-style:italic;">
+			</span>
+		</article>
+	</section>
+
+	{##################################################################################################}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('admin.server.test_a_file_upload') }}</h3>
+		</header>
 
 		<article class="padd">
-
-			<h4>{{ phrase('admin.server.test_a_file_upload') }}</h4>
-
-
 			<form id="fileupload"
 				  method="POST"
 				  enctype="multipart/form-data"
@@ -227,12 +148,98 @@
 				</ul>
 			</div>
 		</article>
+	</section>
 
-		{##################################################################################################}
+	{##################################################################################################}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>File Upload Configuration</h3>
+		</header>
 
 		<article class="padd">
+			<p>
+				These settings control the maximum filesize allowed by your server. DeskPRO has it's own local settings that you can change from Settings
+				page, but your server will also impose hard-limits.
+			</p>
+		</article>
 
-			<table class="table table-bordered">
+		<article class="padd">
+			<h4>DeskPRO Settings</h4>
+			<p>
+				You can edit these settings from the main <a href="{{ ng_href('setup.settings') }}">Settings</a> page.
+			</p>
+			<table class="table table-bordered" style="margin-top: 15px;">
+				<thead>
+					<tr>
+						<th>
+							Setting
+						</th>
+						<th>
+							Users
+						</th>
+						<th>
+							Agents
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Max Upload Size</td>
+						<td>
+							{{ ng_var('data.restrictions.attach_user_maxsize | filesize_display') }}
+						</td>
+						<td>
+							{{ ng_var('data.restrictions.attach_agent_maxsize | filesize_display') }}
+						</td>
+					</tr>
+					<tr>
+						<td>File Types</td>
+						<td>
+						<span ng-if="data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_must_exts">
+							All file types except these are allowed:
+							<br>{{ ng_var('data.restrictions.attach_user_must_exts') }}
+						</span>
+						<span ng-if="!data.restrictions.attach_user_not_exts && data.restrictions.attach_user_must_exts">
+							Only these file types allowed:
+							<br>{{ ng_var('data.restrictions.attach_user_not_exts') }}
+						</span>
+						<span ng-if="!data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_not_exts">
+							All file types are allowed
+						</span>
+						</td>
+						<td>
+						<span ng-if="data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_must_exts">
+							All file types except these are allowed:
+							<br>{{ ng_var('data.restrictions.attach_agent_must_exts') }}
+						</span>
+						<span ng-if="!data.restrictions.attach_agent_not_exts && data.restrictions.attach_agent_must_exts">
+							Only these file types allowed:
+							<br>{{ ng_var('data.restrictions.attach_agent_not_exts') }}
+						</span>
+						<span ng-if="!data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_not_exts">
+							All file types are allowed
+						</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article class="padd">
+			<h4>Server Settings</h4>
+			<p>
+				{{ phrase('admin.server.edit_php_ini_to_make_changes') }}
+				<a ng-href="{{ ng_var('data.url_to_learn_php_ini') }}">
+					{{ phrase('admin.server.learn_about_editing_php_ini') }}
+				</a>
+			</p>
+
+			<p ng-if="data.php_ini_path">
+				We have detected the path to your php.ini file at {{ ng_var('data.php_ini_path') }}
+			</p>
+
+			<table class="table table-bordered" style="margin-top: 15px;">
 				<thead>
 					<tr>
 						<th>
@@ -336,24 +343,9 @@
 							Approximately {{ ng_var('data.effective_max_upload_size') }}
 						</td>
 					</tr>
-					<tr>
-						<td colspan="2">
-							<p>
-								{{ phrase('admin.server.edit_php_ini_to_make_changes') }}
-								<a ng-href="{{ ng_var('data.url_to_learn_php_ini') }}">
-									{{ phrase('admin.server.learn_about_editing_php_ini') }}
-								</a>
-							</p>
-
-							<p ng-if="data.php_ini_path">
-								We have detected the path to your php.ini file at {{ ng_var('data.php_ini_path') }}
-							</p>
-						</td>
-					</tr>
 				</tbody>
 			</table>
 		</article>
-
 	</section>
 
 {% endblock %}

@@ -10106,6 +10106,10 @@ ul.big-option-list > li:last-child {
   border-bottom: none;
 }
 
+ul.big-option-list > li .content-form {
+  display: none;
+}
+
 ul.big-option-list > li h3 {
   margin: 0 0 8px 0;
   font-size: 15px;
@@ -10136,6 +10140,10 @@ ul.big-option-list > li h3 input {
 ul.big-option-list > li.active {
   background: #ededed;
   border: 1px solid #ccc;
+}
+
+ul.big-option-list > li.active .content-form {
+  display: block;
 }
 
 table.inner-form-table th {
