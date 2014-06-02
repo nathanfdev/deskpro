@@ -77,8 +77,7 @@ class TicketFwdSettings
 		$this->process_agent_fwd = (bool)$this->settings->get('core_tickets.process_agent_fwd');
 
 		if (!$this->use_account || !$this->email_accounts->hasAcccount($this->use_account)) {
-			$acc = Arrays::getFirstItem($this->email_accounts->getAllActiveAccounts('with_transport')) ?: null;
-			$this->use_account = $acc ? $acc->id : null;
+			$this->use_account = null;
 		}
 	}
 
@@ -114,8 +113,7 @@ class TicketFwdSettings
 		$this->process_agent_fwd = (bool)$set_settings->get('process_agent_fwd');
 
 		if (!$this->use_account || !$this->email_accounts->hasAcccount($this->use_account)) {
-			$acc = Arrays::getFirstItem($this->email_accounts->getAllActiveAccounts('with_transport')) ?: null;
-			$this->use_account = $acc ? $acc->id : null;
+			$this->use_account = null;
 		}
 	}
 

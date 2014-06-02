@@ -2861,7 +2861,10 @@ class TicketController extends AbstractController
 				$account = null;
 			}
 		}
-		if (!$account) {
+		if (!$account || !$account->is_enabled || !$account->outgoing_account) {
+			$account = $ticket->email_account;
+		}
+		if (!$account || !$account->is_enabled || !$account->outgoing_account) {
 			$account = $this->container->getEmailAccountManager()->getPrimaryEmailAccount();
 		}
 

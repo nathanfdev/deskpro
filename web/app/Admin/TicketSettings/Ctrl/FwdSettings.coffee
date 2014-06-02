@@ -21,7 +21,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Ad
 				@$scope.settings = res.data.settings.ticket_fwd_settings
 				@settings = Util.clone(@$scope.settings)
 
-				@$scope.settings.use_account = @$scope.settings.use_account+""
+				@$scope.settings.use_account = (@$scope.settings.use_account || 0)+""
 			)
 
 			return @$q.all([data_promise])
