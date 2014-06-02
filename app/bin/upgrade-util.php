@@ -1029,17 +1029,32 @@ class Upgrade
 		}
 
 		// Copy all files over
+		$failures = array();
 		if ($exclude) {
 			$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
 				'override'        => true,
 				'copy_on_windows' => true,
 				'exclude'         => $exclude
-			));
+			), $failures);
 		} else {
 			$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
 				'override'        => true,
 				'copy_on_windows' => true,
-			));
+			), $failures);
+		}
+		if ($failures) {
+			$this->out("Failed to install these files:\n" . implode("\n", $failures));
+		}
+
+		$failures = array();
+		$fileutil->removeUnknownFiles(
+			$tmp_dir    . str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
+			DP_WEB_ROOT . str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
+			array(),
+			$failures
+		);
+		if ($failures) {
+			$this->out("Failed to delete these old files:\n" . implode("\n", $failures));
 		}
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
@@ -2154,6 +2169,46 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
 				$this->copy($file, $target, isset($options['override']) ? $options['override'] : false, $failures);
 			} else {
 				throw new \RuntimeException(sprintf('Unable to guess "%s" file type.', $file));
+			}
+		}
+	}
+
+	public function removeUnknownFiles($originDir, $targetDir, $options = array(), array &$failures = null)
+	{
+		if ($failures === null) {
+			$failures = array();
+		}
+
+		if ('/' === substr($targetDir, -1) || '\\' === substr($targetDir, -1)) {
+			$targetDir = substr($targetDir, 0, -1);
+		}
+
+		if ('/' === substr($originDir, -1) || '\\' === substr($originDir, -1)) {
+			$originDir = substr($originDir, 0, -1);
+		}
+
+		$origin_filelist = array();
+
+		$origin_iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($originDir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
+		foreach ($origin_iterator as $file) {
+			$file_rel_path = DIRECTORY_SEPARATOR . str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+			if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
+				continue;
+			}
+			$origin_filelist[$file_rel_path] = true;
+		}
+
+		$target_iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($targetDir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
+		foreach ($target_iterator as $file) {
+			$file_rel_path = DIRECTORY_SEPARATOR . str_replace($targetDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+			if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
+				continue;
+			}
+
+			if (!isset($origin_filelist[$file_rel_path])) {
+				if (!@unlink($file->getRealPath())) {
+					$failures[] = $file->getRealPath();
+				}
 			}
 		}
 	}
