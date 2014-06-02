@@ -245,8 +245,19 @@ class ProcessNew extends ProcessAbstract
 		# Create the ticket
 		#------------------------------
 
+		if ($email_info->is_no_subject) {
+			$subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', array(), $use_lang);
+		} else {
+			$subject = $email_info->subject;
+		}
+
+		$subject = trim($subject);
+		if (!$subject) {
+			$subject = '(No Subject)';
+		}
+
 		$ticket = $this->getTicketManager()->createTicket();
-		$ticket->subject       = $email_info->subject;
+		$ticket->subject       = $subject;
 		$ticket->person        = $this->person;
 		$ticket->status        = 'awaiting_agent';
 		$ticket->email_account = $this->account;
@@ -263,7 +274,7 @@ class ProcessNew extends ProcessAbstract
 		$ticket_message->person = $this->person;
 		$ticket_message->message_raw = $email_info->body_raw;
 		$ticket_message->setMessageHtml($email_info->body);
-		$ticket_message->withNewSubject = $email_info->subject;
+		$ticket_message->withNewSubject = $subject;
 
 		if ($this->reader->getProperty('email_source')) {
 			$ticket_message->email_source = $this->reader->getProperty('email_source');

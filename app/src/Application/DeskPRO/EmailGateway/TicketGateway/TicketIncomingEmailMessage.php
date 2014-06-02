@@ -49,6 +49,11 @@ class TicketIncomingEmailMessage
 	public $subject;
 
 	/**
+	 * @var bool
+	 */
+	public $is_no_subject = false;
+
+	/**
 	 * @var string
 	 */
 	public $body;
@@ -101,6 +106,11 @@ class TicketIncomingEmailMessage
 		$this->subject = $reader->getSubject()->getSubjectUtf8();
 		if (!$this->subject && $reader->getSubject()->getSubject()) {
 			$this->subject = $reader->getSubject()->getSubject();
+		}
+
+		if (!$this->subject) {
+			$this->is_no_subject = true;
+			$this->subject = '(No Subject)';
 		}
 
 		$inline_images = new InlineImageTokens($reader);
