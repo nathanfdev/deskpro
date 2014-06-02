@@ -799,9 +799,9 @@ HTML;
 				}
 
 				// No other user sources for the user
-				// Default is to just show standard message to not reveal if account exists
 				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
 					'route_prefix' => $this->route_prefix,
+					'did_send' => false
 				));
 			}
 		}
@@ -827,6 +827,7 @@ HTML;
 
 				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
 					'route_prefix' => $this->route_prefix,
+					'did_send' => true
 				));
 			}
 		}
@@ -860,6 +861,7 @@ HTML;
 
 		return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
 			'route_prefix' => $this->route_prefix,
+			'did_send' => true
 		));
 	}
 
