@@ -24,6 +24,7 @@
     "toastr": "latest",
     "underscore": "latest",
 	"momentjs": "latest",
+	"moment-timezone": "latest",
 	"angular-moment": "latest",
 	"stacktrace": "latest",
 	"blueimp-file-upload": "latest",
