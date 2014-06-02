@@ -21,6 +21,7 @@
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.actionOptionTypes = [];
         this.$scope.actions_form = {};
+        this.$scope.message_count = null;
         this.accountId = parseInt(this.$stateParams.id || 0);
         this.didPassTest = false;
         this.testMessageCount = 0;
@@ -129,6 +130,10 @@
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.saveAccount = function() {
         var is_new, postData, promise, triggerSaver;
+        if (!this.account.id && !this.new_is_confirmed) {
+          this.showNewAccountConfirm();
+          return;
+        }
         postData = this.form_model.getFormData();
         triggerSaver = (function(_this) {
           return function() {
@@ -220,7 +225,8 @@
        */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.testAccountModal = function() {
-        var inst;
+        var inst, me;
+        me = this;
         return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketAccounts/test-account-modal.html'),
           controller: [
@@ -240,13 +246,15 @@
                     $scope.is_testing = false;
                     $scope.is_success = result.is_success;
                     $scope.log = result.log;
-                    return $scope.message_count = result.message_count;
+                    $scope.message_count = result.message_count;
+                    return me.$scope.message_count = result.message_count;
                   }).error(function() {
                     $scope.showing_log = true;
                     $scope.is_testing = false;
                     $scope.is_success = false;
                     $scope.log = "Server Error";
-                    return $scope.message_count = 0;
+                    $scope.message_count = 0;
+                    return me.$scope.message_count = null;
                   });
                 };
                 testNow();
@@ -257,6 +265,35 @@
             })(this)
           ]
         });
+      };
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.showNewAccountConfirm = function() {
+        var inst, me;
+        me = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketAccounts/new-account-confirm.html'),
+          controller: [
+            '$scope', '$modalInstance', (function(_this) {
+              return function($scope, $modalInstance) {
+                $scope.message_count = me.$scope.message_count;
+                $scope.dismiss = function() {
+                  return $modalInstance.dismiss();
+                };
+                return $scope.confirm = function() {
+                  return $modalInstance.close(true);
+                };
+              };
+            })(this)
+          ]
+        });
+        return inst.result.then((function(_this) {
+          return function(r) {
+            if (r) {
+              _this.new_is_confirmed = true;
+              return _this.saveAccount();
+            }
+          };
+        })(this));
       };
 
 

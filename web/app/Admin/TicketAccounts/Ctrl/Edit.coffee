@@ -14,6 +14,7 @@ define [
 			@actionsTypeDef = @dpObTypesDefTicketActions
 			@$scope.actionOptionTypes = []
 			@$scope.actions_form = {}
+			@$scope.message_count = null
 
 			@accountId = parseInt(@$stateParams.id || 0)
 			@didPassTest = false
@@ -101,6 +102,10 @@ define [
     	# @return {promise}
 		###
 		saveAccount: ->
+			if not @account.id and not @new_is_confirmed
+				@showNewAccountConfirm()
+				return
+
 			postData = @form_model.getFormData()
 
 			triggerSaver = =>
@@ -174,6 +179,7 @@ define [
     	# Show the test account modal
 		###
 		testAccountModal: ->
+			me = @
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketAccounts/test-account-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
@@ -191,12 +197,14 @@ define [
 							$scope.is_success    = result.is_success
 							$scope.log           = result.log
 							$scope.message_count = result.message_count
+							me.$scope.message_count = result.message_count
 						).error(=>
 							$scope.showing_log   = true
 							$scope.is_testing    = false
 							$scope.is_success    = false
 							$scope.log           = "Server Error"
 							$scope.message_count = 0
+							me.$scope.message_count = null
 						)
 
 					testNow();
@@ -206,6 +214,27 @@ define [
 				]
 			});
 
+		showNewAccountConfirm: ->
+			me = @
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketAccounts/new-account-confirm.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+
+					$scope.message_count = me.$scope.message_count
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+
+					$scope.confirm = ->
+						$modalInstance.close(true);
+				]
+			})
+
+			inst.result.then( (r) =>
+				if r
+					@new_is_confirmed = true
+					@saveAccount()
+			)
 
 		###
     	# Show the test account modal
