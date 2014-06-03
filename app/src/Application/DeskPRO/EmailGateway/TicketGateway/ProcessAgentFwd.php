@@ -53,12 +53,12 @@ class ProcessAgentFwd extends ProcessAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	private $person;
+	protected $person;
 
 	/**
 	 * @var TicketIncomingEmail
 	 */
-	private $ticket_email;
+	protected $ticket_email;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailAccount
@@ -94,7 +94,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
 		$executor_context = $this->getTicketManager()->createAgentExecutorContext(
 			$this->person,
-			'new',
+			'newticket',
 			'email'
 		);
 
@@ -112,7 +112,8 @@ class ProcessAgentFwd extends ProcessAbstract
 			$email_info['body'] = Strings::html2Text($email_info['body']);
 		}
 
-		$fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $this->cutterDef);
+		$cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+		$fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
 
 		if (!$fwd_cutter->isValid()) {
 			$this->logMessage('[TicketGatewayProcessor] Invalid forward');
@@ -179,7 +180,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		# Create the ticket
 		#------------------------------
 
-		$ticket = new Ticket();
+		$ticket = $this->getTicketManager()->createTicket();
 		$ticket->subject       = $email_info['subject'];
 		$ticket->person        = $user;
 		$ticket->status        = 'awaiting_agent';
@@ -211,7 +212,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$agent_ticket_message = new TicketMessage();
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
-			$ticket->addMessage($this->person_message);
+			$ticket->addMessage($agent_ticket_message);
 			$ticket->setStatus('awaiting_user');
 		}
 
@@ -388,7 +389,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$agent_ticket_message = new TicketMessage();
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
-			$ticket->addMessage($this->person_message);
+			$ticket->addMessage($agent_ticket_message);
 			$ticket->setStatus('awaiting_user');
 		}
 
