@@ -40,7 +40,7 @@
 			<ul>
 				<li data-tab-for="#{{ baseId }}_members_tab">{{ phrase('agent.general.members') }} <span class="count" data-tag="org-members-count-{{ org.id }}" id="{{ baseId }}_members_count">{{ members_count|default(0) }}</span></li>
 				{% if org_tickets_count %}<li data-tab-for="#{{ baseId }}_tickets_tab">{{ phrase('agent.general.tickets') }} <span class="count" id="{{ baseId }}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>{% endif %}
-				{% if org_chats_count %}<li data-tab-for="#{{ baseId }}_chats_tab">{{ phrase('agent.general.chats') }}</li> <span class="count" id="{{ baseId }}_chats_count">{{ org_chats_count|default(0) }}</span>{% endif %}
+				{% if org_chats_count %}<li data-tab-for="#{{ baseId }}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count" id="{{ baseId }}_chats_count">{{ org_chats_count|default(0) }}</span></li>{% endif %}
 				{% if org_charges %}<li data-tab-for="#{{ baseId }}_billing_tab">Billing <span class="count">{{ org_charge_totals.count }}</span></li>{% endif %}
 			</ul>
 		</nav>
