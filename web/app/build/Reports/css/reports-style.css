@@ -7442,7 +7442,7 @@ button.close {
   top: 0;
   right: 0;
   left: 0;
-  z-index: 2;
+  z-index: 1000;
   height: 51px;
 }
 
@@ -7841,14 +7841,14 @@ div.info-message.well {
   white-space: nowrap;
 }
 
-.dp-app-header .user-profile ul {
+.dp-app-header .user-profile ul.nav-list {
   width: 200px;
   padding: 0;
   margin: 1px 0 0 0;
   line-height: 15px;
 }
 
-.dp-app-header .user-profile ul li {
+.dp-app-header .user-profile ul.nav-list > li {
   display: inline-block;
   margin: 0;
   margin-right: 7px;
@@ -7857,23 +7857,23 @@ div.info-message.well {
   color: #ffffff;
 }
 
-.dp-app-header .user-profile ul li:last-child {
+.dp-app-header .user-profile ul.nav-list > li:last-child {
   margin-right: 0;
 }
 
-.dp-app-header .user-profile ul li:hover {
+.dp-app-header .user-profile ul.nav-list > li:hover {
   color: #9ec3de;
   cursor: pointer;
 }
 
-.dp-app-header .user-profile ul li a {
+.dp-app-header .user-profile ul.nav-list > li > a {
   font-size: 11px;
   color: #ffffff;
   border-bottom: 1px solid #165d94;
 }
 
-.dp-app-header .user-profile ul li a:hover,
-.dp-app-header .user-profile ul li:hover a {
+.dp-app-header .user-profile ul.nav-list > li > a:hover,
+.dp-app-header .user-profile ul.nav-list > li:hover > a {
   color: #9ec3de;
 }
 
@@ -9382,6 +9382,28 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   top: -5px;
   left: -8px;
   float: left;
+}
+
+.show-title-ids .title-id {
+  display: inline-block;
+}
+
+.title-id {
+  display: none;
+  padding: 0 1px;
+  margin-right: 3px;
+  font-family: Monaco, Consolas, monospace;
+  font-size: 9px;
+  line-height: 13px;
+  color: #bbb;
+  vertical-align: top;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.title-id:hover {
+  color: #000;
 }
 
 .dp-empty-list-notice {
@@ -11270,7 +11292,7 @@ table.display-table.spaced > tr > td {
   z-index: 1;
   width: 95%;
   height: auto;
-  padding: 0 10px;
+  padding: 0 1px;
   margin: 0;
   font-size: 100%;
   cursor: pointer;

@@ -13,6 +13,7 @@
 							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to reports interface" ng-show="agent.can_reports"><i class="fa fa-bar-chart-o"></i></span>
 						</div>
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('agent.id') }}</span>
 							<span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
 							<span class="title-text">{{ ng_var('agent.display_name') }}</span>
 							<span style="display: inline-block; color: #00d800; margin-left: 5px;" tooltip-placement="right" tooltip="Agent is online" ng-show="agent.is_online_now && !agent.is_available_chat"><i class="fa fa-circle"></i></span>

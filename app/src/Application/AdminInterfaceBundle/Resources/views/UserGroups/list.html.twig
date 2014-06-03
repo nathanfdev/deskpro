@@ -8,7 +8,7 @@
 			<ul class="dp-item-list">
 				<li ng-repeat="group in ListCtrl.list" dp-state-mark="crm.groups.edit.{{ ng_var('group.id') }}" data-id="{{ ng_var('group.id') }}">
 					<a href="{{ ng_href('crm.groups.edit', '{id: group.id}') }}">
-						<h4><span class="title-text">{{ ng_var('group.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('group.id') }}</span> <span class="title-text">{{ ng_var('group.title') }}</span></h4>
 					</a>
 				</li>
 			</ul>

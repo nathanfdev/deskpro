@@ -77,7 +77,7 @@
 		}
 	</style>
 </head>
-<body>
+<body ng-controller="Admin_Main_Ctrl_MainBody">
 <div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
 
 {% if app.isDebug() %}
@@ -88,8 +88,18 @@
 	<div class="user-profile pull-left">
 		<img class="gravatar pull-left" src="{{ app.user.getPictureUrl(32) }}">
 		<div class="username">{{ phrase('agent.chrome.hello-user', {name: app.user.name}) }}</div>
-		<ul class="nav-profile">
+		<ul class="nav-list nav-profile">
 			<li onclick="window.location='{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent'; return false;"><i class="fa fa-sign-out"></i> <a>{{ phrase('agent.chrome.link_logout') }}</a></li>
+			<li dropdown>
+				<span class="dropdown-toggle">View Options <i class="fa fa-caret-down"></i></span>
+				<ul class="dropdown-menu" style="margin-left: 90px;">
+					<li><a href ng-click="do_show_ids = !do_show_ids; $event.preventDefault(); $event.stopPropagation();">
+						<i class="fa fa-check" ng-show="do_show_ids" style="width: 15px;"></i>
+						<span style="width: 15px; display: inline-block;" ng-show="!do_show_ids"></span>
+						Show IDs next to items
+					</a></li>
+				</ul>
+			</li>
 		</ul>
 	</div>
 

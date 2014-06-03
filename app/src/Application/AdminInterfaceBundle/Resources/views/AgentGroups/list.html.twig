@@ -9,6 +9,7 @@
 				<li ng-repeat="group in ListCtrl.groups" dp-state-mark="agents.groups.edit.{{ ng_var('group.id') }}">
 					<a href="{{ ng_href('agents.groups.edit', '{id: group.id}') }}">
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('group.id') }}</span>
 							<span class="title-text">{{ ng_var('group.title') }}</span>
 						</h4>
 					</a>

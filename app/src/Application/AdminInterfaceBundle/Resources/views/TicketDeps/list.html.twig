@@ -15,7 +15,7 @@
 						<div style="float:right">
 							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="!dep.children.length && dep.has_layout"><i class="fa fa-columns"></i></span>
 						</div>
-						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('dep.id') }}</span> <span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 					<ul class="dp-item-list sublist" ng-show="dep.children.length" ui-sortable="ListCtrl.sortedListOptions">
 						<li class="with-drag-handle" ng-repeat="subdep in dep.children" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
@@ -27,6 +27,7 @@
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
 									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-id" title="ID">#{{ ng_var('subdep.id') }}</span>
 									<span class="title-text">{{ ng_var('subdep.title') }}</span>
 								</h4>
 							</a>

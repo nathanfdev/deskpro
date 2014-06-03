@@ -13,7 +13,7 @@
 				<li class="with-drag-handle" ng-repeat="category in FeedbackCategoriesList.parent_data" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('category.id') }}" data-id="{{ ng_var('category.id') }}">
 					<a href="{{ ng_href('portal.feedback_categories.edit', '{id: category.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
-						<h4><span class="title-text">{{ ng_var('category.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('category.id') }}</span> <span class="title-text">{{ ng_var('category.title') }}</span></h4>
 					</a>
 					<ul class="dp-item-list sublist" ng-if="FeedbackCategoriesList.child_data[category.id]" ui-sortable="FeedbackCategoriesList.sortedListOptions">
 						<li class="with-drag-handle" ng-repeat="sub_category in FeedbackCategoriesList.child_data[category.id]" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('sub_category.id') }}" data-id="{{ ng_var('sub_category.id') }}">
@@ -22,6 +22,7 @@
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
 									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-id" title="ID">#{{ ng_var('sub_category.id') }}</span>
 									<span class="title-text">{{ ng_var('sub_category.title') }}</span>
 								</h4>
 							</a>

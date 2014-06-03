@@ -17,6 +17,7 @@
 					dp-state-mark="crm.rules.edit.{{ ng_var('user_rule.id') }}" data-id="{{ ng_var('user_rule.id') }}">
 					<a href="{{ ng_href('crm.rules.edit', '{id: user_rule.id}') }}">
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('user_rule.id') }}</span>
 							<span class="title-text">{{ ng_var('user_rule.email_patterns') }}</span>
 						</h4>
 					</a>
