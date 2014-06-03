@@ -188,6 +188,13 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 		$this->em->persist($layout);
 		$this->em->flush();
 
+		// Sanity check
+		if ($layout->department) {
+			$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?", array($layout->department->id, $layout->id));
+		} else {
+			$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?", array($layout->department->id, $layout->id));
+		}
+
 		return $this->createSuccessResponse();
 	}
 
@@ -203,11 +210,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 			throw $this->createNotFoundException();
 		}
 
-		$layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
-		if ($layout) {
-			$this->em->remove($layout);
-			$this->em->flush();
-		}
+		$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ?", array($dep->id));
 
 		return $this->createSuccessResponse();
 	}
