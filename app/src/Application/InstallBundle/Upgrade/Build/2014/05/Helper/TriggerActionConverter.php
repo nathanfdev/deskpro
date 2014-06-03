@@ -64,7 +64,13 @@ class TriggerActionConverter
 			return null;
 		}
 
-		return $this->$func($info['type'], new OptionsArray($info['options']));
+		try {
+			return $this->$func($info['type'], new OptionsArray($info['options']));
+		} catch (\Exception $e) {
+			$e = new \Exception("Invalid trigger option: " . $e->getMessage());
+			KernelErrorHandler::logException($e);
+			return null;
+		}
 	}
 
 	private function upgradeAction_add_agent_notify($type, OptionsArray $options)
@@ -251,7 +257,7 @@ class TriggerActionConverter
 			'reply_text'        => $options->get('reply_text'),
 			'by_assigned_agent' => true,
 			'by_agent_id'       => 1,
-			'with_formatter'    => true
+			'no_formatter'      => false
 		));
 	}
 
