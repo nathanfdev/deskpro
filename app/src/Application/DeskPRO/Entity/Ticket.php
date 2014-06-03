@@ -527,6 +527,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	public $__dp_auto_ticket_process = false;
 
+	/**
+	 * @var bool
+	 */
+	public $__dp_is_autogen_ref = false;
+
 	public function __construct()
 	{
 		$this->_original_id  = null;
@@ -541,6 +546,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 		// Default ref (is reset with ref generator)
 		$this->ref = Strings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
+
+		// flag used in manager to signal that we should overwrite this with a real ref generator ref
+		$this->__dp_is_autogen_ref = true;
 
 		$this['date_created'] = new \DateTime();
 		$this['date_status'] = new \DateTime();
