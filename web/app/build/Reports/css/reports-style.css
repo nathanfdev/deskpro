@@ -9174,6 +9174,26 @@ section.dp-help-content-wrapper .dp-help-content-outer2 .dp-arrow-wrap i.up {
   margin-top: 0;
 }
 
+.dp-help-content > article section.related-content ul {
+  padding-left: 16px;
+  margin-left: 0;
+  list-style-type: none;
+}
+
+.dp-help-content > article section.related-content ul li {
+  padding-left: 0;
+  margin-left: 0;
+  line-height: 18px;
+}
+
+.dp-help-content > article section.related-content ul li i {
+  width: 14px;
+  margin-right: 1px;
+  font-size: 14px;
+  text-align: center;
+  vertical-align: baseline;
+}
+
 section.dp-help-content-wrapper.open header {
   border-bottom: 1px solid #d6d1c0;
 }
