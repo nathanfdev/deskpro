@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Types\JsonObjectSerializable;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializable
@@ -68,6 +69,20 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 		}
 
 		$this->fields[$id] = $field;
+	}
+
+
+	/**
+	 * @param LayoutField $field
+	 */
+	public function prepend(LayoutField $field)
+	{
+		$id = $field->getId();
+		if (isset($this->fields[$id])) {
+			unset($this->fields[$id]);
+		}
+
+		Arrays::unshiftAssoc($this->fields, $id, $field);
 	}
 
 
