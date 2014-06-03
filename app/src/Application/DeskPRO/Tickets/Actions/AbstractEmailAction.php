@@ -59,7 +59,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 				$from_account_id = $from_account;
 				try {
 					$from_account = $this->getContainer()->getEmailAccountManager()->getAccount($from_account_id);
-				} catch (\InvalidArgumentException $e) {
+				} catch (\OutOfBoundsException $e) {
 					$context->getLogger()->debug("[AbstractEmailAction] Invalid account: $from_account_id");
 					throw new \InvalidArgumentException('invalid_account');
 				}
