@@ -5,7 +5,6 @@
 		<header>
 			<h3>
 				<span>Satisfaction</span>
-				<button dp-inhelp-btn="admin.ticket_settings.satisfaction"></button>
 			</h3>
 		</header>
 
@@ -13,15 +12,6 @@
 
 		<article class="form-horizontal dp-form">
 			<div class="panel panel-innertable">
-				<div class="panel-help" dp-inhelp-body="admin.ticket_settings.satisfaction">
-					<p>
-						The Satisfaction features allow the user to rate the support they received as either good, bad, or neutral.
-					</p>
-					<p>
-						From the Reporting Interface you can generate reports based on satisfaction so you can know which areas
-						of your helpdesk are doing well and which areas need to improve.
-					</p>
-				</div>
 				<div class="form-group">
 					<div class="col-lg-12">
 						<div class="inner-group">
@@ -65,4 +55,34 @@
 	</section>
 </form>
 <div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Satisfaction</h1>
+		<p>The Satisfaction features allow the user to rate the support they received as either good, bad, or neutral.</p>
+	</header>
+	<article>
+		<section>
+			<p>
+				The Satisfaction features allow the user to rate the support they received as either good, bad, or neutral.
+			</p>
+		</section>
+
+		<section>
+			<h2><span>FAQ</span></h2>
+			<dl>
+				<dt><em>Q:</em> ???</dt>
+				<dd><em>A:</em>
+					AAA
+				</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h2><span>Related Content</span></h2>
+			<ul>
+				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#ticket-triggers" target="_blank">Ticket triggers</a>
+			</ul>
+		</section>
+	</article>
 {% endblock %}
