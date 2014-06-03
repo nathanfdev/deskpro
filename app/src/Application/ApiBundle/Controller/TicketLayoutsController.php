@@ -192,7 +192,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 		if ($layout->department) {
 			$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?", array($layout->department->id, $layout->id));
 		} else {
-			$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?", array($layout->department->id, $layout->id));
+			$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?", array($layout->id));
 		}
 
 		return $this->createSuccessResponse();

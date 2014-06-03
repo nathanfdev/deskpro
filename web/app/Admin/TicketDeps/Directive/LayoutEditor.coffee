@@ -106,7 +106,7 @@ define [
 				items: "> li",
 				axis: 'y',
 				handle: '.drag_handle',
-				stop: (event, ui) ->
+				stop: (event, ui) =>
 					if ui.item?.hasClass('dp-layout-editor-layout-field')
 						fieldType = ui.item.data('field-type')
 						fieldId   = ui.item.data('field-id') || null
@@ -122,18 +122,23 @@ define [
 						if fieldRow
 							fid = fieldRow.data('field-id')
 							tab.find("[data-fid=\"#{fid}\"]").hide()
+							@updateOrder(tabType, tab)
 
-				update: ->
-					orderMap = {}
-					tab.find('.form-worksheet').find('ul').find('li').each( (i) ->
-						fid = $(this).data('field-id')
-						if fid then orderMap[fid] = i
-					)
-					if ngModel.$modelValue[tabType] and ngModel.$modelValue[tabType].length
-						for f in ngModel.$modelValue[tabType]
-							f.display_order = orderMap[f.id] || 0
+				update: =>
+					@updateOrder(tabType, tab)
 			})
 
+
+		updateOrder: (tabType, tab) ->
+			ngModel = @ngModel
+			orderMap = {}
+			tab.find('.form-worksheet').find('ul').find('li').each( (i) ->
+				fid = $(this).data('field-id')
+				if fid then orderMap[fid] = i
+			)
+			if ngModel.$modelValue[tabType] and ngModel.$modelValue[tabType].length
+				for f in ngModel.$modelValue[tabType]
+					f.display_order = orderMap[f.id] || 0
 
 		###
     	# Create a new field, add it to the model and also add it to the UI
