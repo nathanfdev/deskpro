@@ -9,6 +9,11 @@
         return datepickerPopupConfig.dateFormat = 'dd MMMM yyyy';
       }
     ]);
+    AdminModule.run([
+      'uiSelect2Config', function(uiSelect2Config) {
+        return uiSelect2Config.dropdownAutoWidth = true;
+      }
+    ]);
     return AdminModule;
   });
 

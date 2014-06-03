@@ -35,11 +35,13 @@
 namespace Application\DeskPRO\Email\EmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Exception\MissingConfigurationException;
 use Orb\Util\Arrays;
 
 class EmailAccountManager
@@ -80,6 +82,11 @@ class EmailAccountManager
 	 * @var \Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface[]
 	 */
 	private $loaded_fetcher_storages = array();
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailAccount
+	 */
+	private $default_out_account = null;
 
 
 	/**
@@ -299,15 +306,30 @@ class EmailAccountManager
 	 *
 	 * @return EmailAccount
 	 */
-	public function getPrimaryEmailAccount()
+	public function getPrimaryTicketAccount()
 	{
 		foreach ($this->getAllActiveAccounts() as $acc) {
-			if ($this->accountHasTransport($acc)) {
+			if ($this->accountHasFetcherStorage($acc) && $this->accountHasTransport($acc)) {
 				return $acc;
 			}
 		}
 
-		return null;
+		throw new MissingConfigurationException;
+	}
+
+
+	/**
+	 * Just like getPrimaryTicketAccount except will fallback on a non-ticket account.
+	 *
+	 * @return EmailAccount
+	 */
+	public function getPrimaryTicketAccountWithFallback()
+	{
+		try {
+			return $this->getPrimaryTicketAccount();
+		} catch (MissingConfigurationException $e) {
+			return $this->getDefaultOutAccountWithFallback();
+		}
 	}
 
 
@@ -325,6 +347,68 @@ class EmailAccountManager
 	####################################################################################################################
 	# Working with Transports
 	####################################################################################################################
+
+
+	/**
+	 * @param EmailAccount $default
+	 * @return null
+	 */
+	public function setDefaultOutAccount(EmailAccount $default)
+	{
+		if (!$default->outgoing_account || !$default->is_enabled) {
+			throw new \InvalidArgumentException();
+		}
+
+		$this->default_out_account = $default;
+	}
+
+
+	/**
+	 * @return EmailAccount
+	 */
+	public function getDefaultOutAccount()
+	{
+		if ($this->default_out_account) {
+			return $this->default_out_account;
+		}
+
+		foreach ($this->getAllActiveAccounts() as $acc) {
+			if ($this->accountHasTransport($acc)) {
+				return $acc;
+			}
+		}
+
+		throw new MissingConfigurationException;
+	}
+
+
+	/**
+	 * Just like getDefaultOutAccount except will create an anonymous mail() mailer when none exists.
+	 *
+	 * @return EmailAccount
+	 */
+	public function getDefaultOutAccountWithFallback()
+	{
+		try {
+			return $this->getDefaultOutAccount();
+		} catch (MissingConfigurationException $e) {
+			$acc = new EmailAccount('outgoing');
+
+			if (!empty($_SERVER['HOST_NAME'])) {
+				$acc->address = 'deskpro@' . $_SERVER['HOST_NAME'];
+			} elseif (@php_uname('n')) {
+				$acc->address = 'deskpro@' . php_uname('n');
+			} else {
+				$acc->address = 'deskpro@localhost';
+			}
+
+			$acc->is_enabled = true;
+			$acc->outgoing_account = new PhpMailConfig();
+
+			return $acc;
+		}
+	}
+
 
 	/**
 	 * @return TransportFactory

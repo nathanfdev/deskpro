@@ -17,11 +17,19 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
-				'settings': '/general_settings'
+				'settings': '/general_settings',
+				'email_accounts':  '/email_accounts',
 			}).then( (res) =>
 				@$scope.settings = res.data.settings.general_settings
 				@$scope.maxUploadSize = res.data.settings.max_filesize
 				@settings = angular.copy(@$scope.settings)
+
+				@$scope.email_accounts = res.data.email_accounts.email_accounts
+				@$scope.email_accounts = @$scope.email_accounts.filter( (x) -> x.outgoing_account_type != null)
+
+				if @$scope.email_accounts.length
+					if not @$scope.settings.default_from_email or not @$scope.email_accounts.filter((x) => x.address == @$scope.settings.default_from_email).length
+						@$scope.settings.default_from_email = @$scope.email_accounts[0].address
 				
 				if @settings.attach_user_must_exts.length
 					@$scope.attach_user_exts_limitmode = 'allow'

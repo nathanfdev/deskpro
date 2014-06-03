@@ -34,6 +34,7 @@
 
 namespace Orb\Mail\Plugins;
 
+use Orb\Log\Logger;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -44,11 +45,15 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 {
 	protected $from;
 	protected $name = '';
+	protected $logger;
 
-	public function __construct($from, $name = '')
+	public function __construct($from, $name = '', Logger $logger = null)
 	{
 		$this->from = $from;
 		$this->name = $name;
+		$this->logger = $logger;
+
+		if ($this->logger) $this->logger->logInfo(sprintf("[DefaultFromAddress] Default from: %s <%s>", $name, $from));
 	}
 
 	public function sendPerformed(\Swift_Events_SendEvent $evt)
@@ -60,7 +65,10 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 	{
 		$message = $evt->getMessage();
 
+		if ($this->logger) $this->logger->logInfo(sprintf("[DefaultFromAddress] Checking: %s", print_r($message->getFrom(), true)));
+
 		if (!$message->getFrom()) {
+			if ($this->logger) $this->logger->logInfo("[DefaultFromAddress] Setting name and email");
 			$message->setFrom($this->from, $this->name);
 		} else {
 			$from = $message->getFrom();
@@ -68,6 +76,7 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 			if (is_array($from)) {
 				foreach ($from as $k => &$v) {
 					if (!$v) {
+						if ($this->logger) $this->logger->logInfo("[DefaultFromAddress] Setting name");
 						$v = $this->name;
 					}
 					break;
@@ -80,6 +89,7 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 				// It's either a string of email@example.com or Name <email@example.com>
 				// So if its just an email, we want to prepend the default name
 				if (\Orb\Validator\StringEmail::isValueValid($from)) {
+					if ($this->logger) $this->logger->logInfo("[DefaultFromAddress] Setting name");
 					$from = array($from	 => $this->name);
 				}
 
