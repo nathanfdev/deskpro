@@ -1,1 +1,15 @@
-{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced', context: 'newticket' } %}
+{% if pagetype == 'iframe' %}
+	<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}" {% if hide_email_field and not error_fields[form_key_prefix ~ 'email'] %}style="display:none;"{% endif %}>
+		<div class="dp-control-label">
+			<label><strong>{{ phrase('user.general.your_email_address') }} *</strong></label>
+		</div>
+		<div class="dp-controls dp-fill">
+			<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />
+			<div class="dp-help-inline dp-error-explain">
+				{{ phrase('user.general.form_fix_email') }}
+			</div>
+		</div>
+	</div>
+{% else %}
+	{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced', context: 'newticket' } %}
+{% endif %}
