@@ -1041,9 +1041,9 @@
                 }
                 if (model.agent_ids) {
                   _ref = model.agent_ids;
-                  for (v in _ref) {
-                    if (!__hasProp.call(_ref, v)) continue;
-                    k = _ref[v];
+                  for (k in _ref) {
+                    if (!__hasProp.call(_ref, k)) continue;
+                    v = _ref[k];
                     if (v) {
                       if (k === 'notify_list') {
                         options.agent_ids.push('notify_list');

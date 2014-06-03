@@ -805,7 +805,7 @@ define [
 								options.from_name = model.from_name || ''
 
 							if model.agent_ids
-								for own v, k of model.agent_ids
+								for own k, v of model.agent_ids
 									if v
 										if k == 'notify_list'
 											options.agent_ids.push('notify_list')
