@@ -193,15 +193,20 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$structure  = $this->in->getArrayValue('categories');
 
-		$this->settings->setSetting('core.use_ticket_category', $this->in->getBoolInt('enabled'));
-
 		#------------------------------
 		# Save structure
 		#------------------------------
 
 		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketCategory');
 		$recs = $proc->getRecords($structure);
-		$proc->saveRecords($recs, true);
+		$recs = $proc->saveRecords($recs, true);
+
+		// Save status
+		if (count($recs)) {
+			$this->settings->setSetting('core.use_ticket_category', $this->in->getBoolInt('enabled'));
+		} else {
+			$this->settings->setSetting('core.use_ticket_category', '0');
+		}
 
 		#------------------------------
 		# Save default
@@ -266,15 +271,20 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$structure  = $this->in->getArrayValue('products');
 
-		$this->settings->setSetting('core.use_product', $this->in->getBoolInt('enabled'));
-
 		#------------------------------
 		# Save structure
 		#------------------------------
 
 		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:Product');
 		$recs = $proc->getRecords($structure);
-		$proc->saveRecords($recs, true);
+		$recs = $proc->saveRecords($recs, true);
+
+		// Save status
+		if (count($recs)) {
+			$this->settings->setSetting('core.use_product', $this->in->getBoolInt('enabled'));
+		} else {
+			$this->settings->setSetting('core.use_product', '0');
+		}
 
 		#------------------------------
 		# Save default
@@ -334,15 +344,20 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$structure  = $this->in->getArrayValue('workflows');
 
-		$this->settings->setSetting('core.use_product', $this->in->getBoolInt('enabled'));
-
 		#------------------------------
 		# Save structure
 		#------------------------------
 
 		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketWorkflow');
 		$recs = $proc->getRecords($structure);
-		$proc->saveRecords($recs, true);
+		$recs = $proc->saveRecords($recs, true);
+
+		// Save status
+		if (count($recs)) {
+			$this->settings->setSetting('core.use_ticket_workflow', $this->in->getBoolInt('enabled'));
+		} else {
+			$this->settings->setSetting('core.use_ticket_workflow', '0');
+		}
 
 		#------------------------------
 		# Save default
@@ -402,15 +417,20 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	{
 		$structure  = $this->in->getArrayValue('priorities');
 
-		$this->settings->setSetting('core.use_ticket_priority', $this->in->getBoolInt('enabled'));
-
 		#------------------------------
 		# Save structure
 		#------------------------------
 
 		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority');
 		$recs = $proc->getRecords($structure);
-		$proc->saveRecords($recs, true);
+		$recs = $proc->saveRecords($recs, true);
+
+		// Save status
+		if (count($recs)) {
+			$this->settings->setSetting('core.use_ticket_priority', $this->in->getBoolInt('enabled'));
+		} else {
+			$this->settings->setSetting('core.use_ticket_priority', '0');
+		}
 
 		#------------------------------
 		# Save default

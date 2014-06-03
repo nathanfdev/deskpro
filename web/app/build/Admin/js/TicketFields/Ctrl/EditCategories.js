@@ -72,6 +72,9 @@
 
       Admin_TicketFields_Ctrl_EditCategories.prototype.save = function() {
         var postData, promise;
+        if (!this.cats || !this.cats.length) {
+          this.enabled = false;
+        }
         postData = {
           categories: this.cats,
           default_id: this.default_id,

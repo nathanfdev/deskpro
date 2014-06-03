@@ -29,6 +29,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			return data_promise
 
 		save: ->
+			if not @pris or not @pris.length
+				@enabled = false
+
 			postData = {
 				priorities:     @pris,
 				default_id:     @default_id,
