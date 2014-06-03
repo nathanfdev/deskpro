@@ -30,25 +30,24 @@
 
 <ul>
 	<li><strong>Phrases</strong> - to insert a phrase as defined in the language pack:<br />
-		<code>{{ '{{' }} phrase('user.profile.choose_email') {{ '}}' }}</code> inserts "Choose the email address you want to use" (unless custom phrase was stored)
+		<code>{% verbatim %}{{ phrase('user.profile.choose_email')  }}{% endverbatim %}</code> inserts "Choose the email address you want to use" (unless custom phrase was stored)
 	</li>	
 	<li><strong>Variables</strong> - to insert information stored in DeskPRO:<br />
-		<code>{{ '{{' }}  app.user.name  {{ '}}' }} </code> inserts name of logged-in user
+		<code>{% verbatim %}{{  app.user.name  }}{% endverbatim %}</code> inserts name of logged-in user
 	</li>
-	<li><strong>Tags</strong> - used to choose what to display based on logical operations:<br />
+	<li><strong>Tags</strong> - used to choose what to display based on logical operations; for example:<br /><br />
 		<code>{% verbatim %}
     {% if app.user.isMemberOfUsergroup(3) %}
-    
+    <br /> <br />
         Welcome, VIP!
-        
+      <br /> <br />   
     {% else %}
-
+	 <br /> <br />
         Welcome, average Joe!
-
+	 <br />  <br />
     {% endif %}
     {% endverbatim %}
-    
-    </code><br />
+    </code><br /><br />
     displays a different message to users who belong to a certain usergroup.
     </li>
 </ul>    
@@ -68,13 +67,14 @@
 			</dd>
 		</dl>
 	</section>
-		<section>
+	
+	<section>
 			<h2><span>Related Content</span></h2>
 			<ul>
 				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#editing-templates">Editing Templates</a></li>
 				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/186" target="_blank">Make a cleaner portal News page by removing title & navigation</a></li>
 				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/141" target="_blank">Change welcome message based on usergroup</a></li>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/144" target="_blank"></a>Customizing the embedded contact form</li>
+				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/144" target="_blank">Customizing the embedded contact form</a></li>
 				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/188" target="_blank">Some of our portal is missing!</a></li>
 			</ul>
 	</section>
