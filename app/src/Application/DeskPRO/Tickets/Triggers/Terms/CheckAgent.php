@@ -67,7 +67,7 @@ class CheckAgent extends AbstractTriggerTerm
 		$options = $this->getTermOptions();
 
 		$agent_ids = $options['agent_ids'];
-		if ($context->getPersonContext() && in_array(-1, $agent_ids)) {
+		if ($agent_ids && $context->getPersonContext() && in_array(-1, $agent_ids)) {
 			$person = $context->getPersonContext();
 			if ($person->is_agent) {
 				$agent_ids[] = $person;
