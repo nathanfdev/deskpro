@@ -97,6 +97,36 @@
 		</div>
 	{% endif %}
 
+	<div style="margin: 15px 15px 0 15px" ng-if="http_method_errors">
+		<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<h3 style="margin-top: 8px;">Some HTTP methods are being blocked by your server</h3>
+				<p>
+					DeskPRO must handle multiple HTTP methods (GET, POST, PUT and DELETE). It appears
+					as though your server is blocking some of these requests:
+				</p>
+				<ul>
+					<li>GET <span class="label label-success" ng-show="http_method_checks.get">OK</span><span class="label label-danger" ng-show="!http_method_checks.get">FAILED</span></li>
+					<li>POST <span class="label label-success" ng-show="http_method_checks.post">OK</span><span class="label label-danger" ng-show="!http_method_checks.post">FAILED</span></li>
+					<li>PUT <span class="label label-success" ng-show="http_method_checks.put">OK</span><span class="label label-danger" ng-show="!http_method_checks.put">FAILED</span></li>
+					<li>DELETE <span class="label label-success" ng-show="http_method_checks.delete">OK</span><span class="label label-danger" ng-show="!http_method_checks.delete">FAILED</span></li>
+				</ul>
+				<p>
+					You must edit your server configuration to allow these HTTP methods. If you fail to fix this problem, many parts of the interface
+					will not function.
+				</p>
+				{% if get_instance_ability('is_windows') %}
+				<p>
+					If you are using IIS, refer to our knowledgebase article: <a href="https://support.deskpro.com/kb/articles/210" target="_blank">Configuring HTTP verbs on IIS</a>
+				</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
 	<div class="dp-interface-buttons">
 		<table cellspacing="35" width="100%">
 			<tbody>

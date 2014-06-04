@@ -15,11 +15,14 @@
 
       Admin_Main_Ctrl_Home.CTRL_AS = 'Home';
 
+      Admin_Main_Ctrl_Home.DEPS = ['$http'];
+
       Admin_Main_Ctrl_Home.prototype.init = function() {
         this.online_agents = [];
         this.offline_agents = [];
         this.$scope.new_agent = {};
         this.$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false;
+        this.loadMethodTests();
       };
 
       Admin_Main_Ctrl_Home.prototype.initialLoad = function() {
@@ -86,6 +89,60 @@
           };
         })(this));
         return promise;
+      };
+
+      Admin_Main_Ctrl_Home.prototype.loadMethodTests = function() {
+        var $http, checkUrl, http_method, makeCheck, masterP, promises;
+        promises = [];
+        http_method = {};
+        $http = this.$http;
+        checkUrl = DP_BASE_URL + 'index.php?_sys=check_http_method&x=' + ((new Date()).getTime());
+        makeCheck = function(type) {
+          var p, typeU;
+          typeU = type.toUpperCase();
+          p = $http({
+            method: typeU,
+            url: checkUrl,
+            responseType: "text",
+            cache: false
+          });
+          p.success(function(res) {
+            if (!res) {
+              res = '';
+            }
+            if (res.indexOf("HTTP_METHOD_" + typeU) !== -1) {
+              return http_method[type] = true;
+            } else {
+              return http_method[type] = false;
+            }
+          });
+          p.error(function() {
+            return http_method[type] = false;
+          });
+          return p;
+        };
+        promises.push(makeCheck('get'));
+        promises.push(makeCheck('post'));
+        promises.push(makeCheck('put'));
+        promises.push(makeCheck('delete'));
+        masterP = this.$q.all(promises);
+        return masterP.then((function(_this) {
+          return function() {
+            var any, k, v;
+            _this.$scope.http_method_checks = http_method;
+            any = false;
+            for (k in http_method) {
+              if (!__hasProp.call(http_method, k)) continue;
+              v = http_method[k];
+              if (!v) {
+                any = true;
+                break;
+              }
+            }
+            console.log(any);
+            return _this.$scope.http_method_errors = any;
+          };
+        })(this));
       };
 
 

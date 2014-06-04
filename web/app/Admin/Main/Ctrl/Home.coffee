@@ -8,12 +8,14 @@ define [
 	class Admin_Main_Ctrl_Home extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Main_Ctrl_Home'
 		@CTRL_AS   = 'Home'
+		@DEPS      = ['$http']
 
 		init: ->
 			@online_agents = []
 			@offline_agents = []
 			@$scope.new_agent = {}
 			@$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false
+			@loadMethodTests()
 			return
 
 		initialLoad: ->
@@ -77,6 +79,51 @@ define [
 
 			return promise
 
+		loadMethodTests: ->
+			promises = []
+			http_method = {}
+			$http = @$http
+
+			checkUrl = DP_BASE_URL + 'index.php?_sys=check_http_method&x=' + ((new Date()).getTime())
+
+			makeCheck = (type) ->
+				typeU = type.toUpperCase()
+				p = $http({
+					method: typeU,
+					url: checkUrl,
+					responseType: "text",
+					cache: false
+				})
+
+				p.success( (res) ->
+					if not res then res = ''
+					if res.indexOf("HTTP_METHOD_#{typeU}") != -1
+						http_method[type] = true
+					else
+						http_method[type] = false
+				)
+				p.error(-> http_method[type] = false)
+
+				return p
+
+			promises.push makeCheck('get')
+			promises.push makeCheck('post')
+			promises.push makeCheck('put')
+			promises.push makeCheck('delete')
+
+			masterP = @$q.all(promises)
+			masterP.then(=>
+				@$scope.http_method_checks = http_method
+
+				any = false
+				for own k, v of http_method
+					if not v
+						any = true
+						break
+
+				console.log(any)
+				@$scope.http_method_errors = any
+			)
 
 		###
 		# Saves new agent form
