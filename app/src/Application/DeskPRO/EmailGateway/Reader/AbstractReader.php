@@ -43,6 +43,7 @@ abstract class AbstractReader
 	protected $properties = array();
 	protected $raw_source;
 	protected $raw_headers;
+	protected $from_headers = array('from');
 
 	public function _kill()
 	{
@@ -50,6 +51,11 @@ abstract class AbstractReader
 		$this->properties  = null;
 		$this->raw_source  = null;
 		$this->raw_headers = null;
+	}
+
+	public function setFromHeaderPriority(array $headers)
+	{
+		$this->from_headers = $headers;
 	}
 
 	public function resetAll()
@@ -158,15 +164,69 @@ abstract class AbstractReader
 	}
 
 	/**
+	 * Gets the from address based on the configured 'from_headers' array.
+	 *
 	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress
 	 */
 	public function getFromAddress()
+	{
+		foreach ($this->from_headers as $header) {
+			switch ($header) {
+				case 'from':
+					$val = $this->getRealFromAddress();
+					break;
+				case 'reply-to':
+					$val = $this->getReplyToAddress();
+					break;
+				case 'x-original-from':
+					$val = $this->getOriginalFromAddress();
+					break;
+				default:
+					throw new \InvalidArgumentException("Unknown from header: $header");
+			}
+
+			if ($val) {
+				return $val;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress
+	 */
+	public function getRealFromAddress()
 	{
 		if (!isset($this->vals['from_address'])) {
 			$this->vals['from_address'] = $this->_getFromAddress();
 		}
 
 		return $this->vals['from_address'];
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress|null
+	 */
+	public function getReplyToAddress()
+	{
+		if (!isset($this->vals['reply_to_address'])) {
+			$this->vals['reply_to_address'] = $this->_getReplyToAddress();
+		}
+
+		return $this->vals['reply_to_address'] ?: null;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress|null
+	 */
+	public function getOriginalFromAddress()
+	{
+		if (!isset($this->vals['original_from_address'])) {
+			$this->vals['original_from_address'] = $this->_getOriginalFromAddress();
+		}
+
+		return $this->vals['original_from_address'] ?: null;
 	}
 
 	/**
@@ -283,6 +343,8 @@ abstract class AbstractReader
 	abstract protected function _getAttachments();
 	abstract protected function _getSubject();
 	abstract protected function _getFromAddress();
+	abstract protected function _getReplyToAddress();
+	abstract protected function _getOriginalFromAddress();
 	abstract protected function _getToAddresses();
 	abstract protected function _getCcAddresses();
 	abstract protected function _getHeader($header);
