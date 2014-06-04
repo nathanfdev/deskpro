@@ -114,7 +114,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 	/**
 	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Department
 	 */
 	public function getById($id)
 	{
@@ -132,7 +132,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 	/**
 	 * @param $obj_or_id
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Department
 	 */
 	public function getParent($obj_or_id)
 	{

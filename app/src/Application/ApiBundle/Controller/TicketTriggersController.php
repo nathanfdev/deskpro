@@ -191,6 +191,16 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
 				default:
 					$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+
+					if ($trigger->department) {
+						if ($trigger->event_trigger == 'newticket') {
+							$special_type = 'departments';
+						} else {
+							$special_type = 'departments_changed';
+						}
+					} else if ($trigger->email_account) {
+						$special_type = 'email_accounts';
+					}
 			}
 		} else {
 			if ($special_type) {
@@ -309,6 +319,21 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
 		$this->em->persist($trigger);
 		$this->em->flush();
+
+		// Sanity check
+		if ($trigger->department) {
+			$this->db->executeUpdate("
+				DELETE FROM ticket_triggers
+				WHERE department_id = ? AND event_trigger = ? AND id != ?
+			", array($trigger->department->id, $trigger->event_trigger, $trigger->id));
+		}
+		if ($trigger->email_account) {
+			$this->db->executeUpdate("
+				DELETE FROM ticket_triggers
+				WHERE email_account_id = ?
+				AND id != ?
+			", array($trigger->email_account->id, $trigger->id));
+		}
 
 		$ret['trigger_id'] = $trigger->id;
 		return $this->createSuccessResponse($ret);
