@@ -18,7 +18,7 @@
 							<em class="tag tag-warn" ng-show="!acc.is_enabled">Disabled</em>
 						</div>
 
-						<h4><i class="fa fa-inbox"></i> <span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+						<span class="title-id" title="ID">#{{ ng_var('acc.id') }}</span> <span class="title-text">{{ ng_var('acc.address') }}</span></h4>
 					</a>
 				</li>
 			</ul>
@@ -75,22 +75,23 @@
 	
 			</dl>
 		</section>
-		
-		
-		
-		<section>
+
+
+
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#set-up-ticket-email-accounts" target="_blank">Set up ticket email accounts</a></li>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#customizing-email-messages" target="_blank">Customizing email messages</a> </li>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/157" target="_blank">Why can't users or agents use email addresses that are also ticket accounts?</a></li>
-				{#	refers to old admin, update then uncomment <li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/80" target="_blank">Using a custom email address</a></li> #}
-					<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/106" target="_blank">Agent ticket forwarding</a></li>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/161" target="_blank">Email action codes</a></li>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/149" target="_blank">Viewing the raw email source for a ticket message</a></li>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/153" target="_blank">Debugging outgoing email with the send mail log</a></li>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/194" target="_blank">Automatically assign agents to tickets they reply to by email</a></li>
-				{# need to write this article <li>[ARTICLE] Sending a different auto-response email outside working hours</li> #}
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#set-up-ticket-email-accounts" target="_blank">Set up ticket email accounts</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#customizing-email-messages" target="_blank">Customizing email messages</a> </li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/157" target="_blank">Why can't users or agents use email addresses that are also ticket accounts?</a></li>
+				{#	refers to old admin, update then uncomment <li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/80" target="_blank">Using a custom email address</a></li> #}
+					<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/106" target="_blank">Agent ticket forwarding</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/161" target="_blank">Email action codes</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/149" target="_blank">Viewing the raw email source for a ticket message</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/153" target="_blank">Debugging outgoing email with the send mail log</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/194" target="_blank">Automatically assign agents to tickets they reply to by email</a></li>
+				{# need to write this article <li><i class="fa fa-file-text"></i> Sending a different auto-response email outside working hours</li> #}
+
 			</ul>
 		</section>
 	</article>

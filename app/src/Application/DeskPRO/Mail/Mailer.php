@@ -126,6 +126,16 @@ class Mailer extends \Swift_Mailer implements Loggable
 
 		parent::__construct($transport);
 
+		try {
+			$default_account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback();
+			$default = $default_account->address;
+			$name    = App::getSetting('core.deskpro_name');
+
+			if ($default) {
+				$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress($default, $name, $this->getLogger()));
+			}
+		} catch (\Exception $e) {}
+
 		if (App::getConfig('debug.mail.force_to')) {
 			$this->getLogger()->logInfo(sprintf("debug.mail.force_to on: %s", App::getConfig('debug.mail.force_to')));
 			$this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress(App::getConfig('debug.mail.force_to')));
@@ -170,27 +180,6 @@ class Mailer extends \Swift_Mailer implements Loggable
 
 			$this->registerPlugin(new \Orb\Mail\Plugins\CancelSend());
 		}
-
-		try {
-			$default = App::getSetting('core.default_from_email');
-			$name    = App::getSetting('core.deskpro_name');
-
-			if (!$default) {
-				if (!empty($_SERVER['HOST_NAME'])) {
-					$default = 'deskpro@' . $_SERVER['HOST_NAME'];
-				} elseif (@php_uname('n')) {
-					$default = 'deskpro@' . php_uname('n');
-				} else {
-					$default = 'deskpro@localhost';
-				}
-			}
-
-			$this->getLogger()->logInfo(sprintf("Default from: %s <%s>", $name, $default));
-
-			if ($default) {
-				$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress($default, $name));
-			}
-		} catch (\Exception $e) {}
 
 		// After successful runs, send queued messages
 		\DpShutdown::add(array($this, 'sendQueuedSilent'), null, 'db_done_trans_commit');
@@ -468,7 +457,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 			return $ticket->email_account;
 		}
 
-		return $this->email_accounts->getPrimaryEmailAccount();
+		return $this->email_accounts->getPrimaryTicketAccountWithFallback();
 	}
 
 

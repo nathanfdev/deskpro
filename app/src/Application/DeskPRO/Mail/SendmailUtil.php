@@ -91,7 +91,7 @@ class SendmailUtil
 
 			$account = App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_from, 'is_enabled | with_transport');
 			if (!$account) {
-				$account = App::$container->getEmailAccountManager()->getPrimaryEmailAccount();
+				$account = App::$container->getEmailAccountManager()->getPrimaryTicketAccountWithFallback();
 			}
 			$use_tr = App::$container->getEmailAccountManager()->getTransportForAccount($account);
 			unset($json['smtp_options']);

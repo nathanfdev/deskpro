@@ -256,14 +256,14 @@ div.info-message {
 			text-overflow: ellipsis;
 		}
 
-		ul {
+		ul.nav-list {
 			margin: 1px 0 0 0;
 			padding: 0;
 			line-height: 15px;
 			width: 200px;
 		}
 
-		ul li {
+		ul.nav-list > li {
 			display: inline-block;
 			margin: 0;
 			margin-right: 7px;
@@ -272,22 +272,22 @@ div.info-message {
 			color: lighten(@agent_header_userprofile_text_color, 25%);
 		}
 
-		ul li:last-child {
+		ul.nav-list > li:last-child {
 			margin-right: 0;
 		}
 
-		ul li:hover {
+		ul.nav-list > li:hover {
 			cursor: pointer;
 			color: darken(@agent_header_userprofile_text_color, 8%);
 		}
 
-		ul li a {
+		ul.nav-list > li > a {
 			font-size: 11px;
 			color: lighten(@agent_header_userprofile_text_color, 25%);
 			border-bottom: 1px solid #165d94;
 		}
 
-		ul li a:hover, ul li:hover a {
+		ul.nav-list > li > a:hover, ul.nav-list > li:hover > a {
 			color: darken(@agent_header_userprofile_text_color, 8%);
 		}
 	}
@@ -1356,6 +1356,27 @@ section.dp-help-content-wrapper {
 				}
 			}
 		}
+
+		section.related-content {
+			ul {
+				list-style-type: none;
+				margin-left: 0;
+				padding-left: 16px;
+				li {
+					margin-left: 0;
+					padding-left: 0;
+					line-height: 18px;
+
+					i {
+						font-size: 14px;
+						vertical-align: baseline;
+						width: 14px;
+						text-align: center;
+						margin-right: 1px;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -1531,6 +1552,26 @@ section.dp-help-content-wrapper.open {
 		position: relative;
 		top: -5px;
 		left: -8px;
+	}
+}
+
+.show-title-ids .title-id {
+	display: inline-block;
+}
+.title-id {
+	display: none;
+	vertical-align: top;
+	font-size: 9px;
+	font-family: Monaco, Consolas, monospace;
+	background: #fff;
+	border: 1px solid #ccc;
+	color: #bbb;
+	padding: 0 1px;
+	line-height: 13px;
+	border-radius: 3px;
+	margin-right: 3px;
+	&:hover {
+		color: #000;
 	}
 }
 
@@ -2178,7 +2219,6 @@ section.dp-help-content-wrapper.open {
 	label h4 {
 		display: inline-block;
 		margin-bottom: 0;
-		margin-left: 3px;
 	}
 }
 
@@ -3309,7 +3349,7 @@ table.display-table.spaced {
 	input.dp-cb-input {
 		background: transparent;
 		font-size: 100%;
-		padding: 0px 10px;
+		padding: 0px 1px;
 		margin: 0;
 		border: 1px solid transparent;
 		height: auto;

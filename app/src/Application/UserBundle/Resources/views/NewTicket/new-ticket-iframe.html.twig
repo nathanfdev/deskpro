@@ -98,22 +98,10 @@ var ticketReader = {
 	 # Email
 	 ###############}
 
-	<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}" {% if hide_email_field and not error_fields[form_key_prefix ~ 'email'] %}style="display:none;"{% endif %}>
-		<div class="dp-control-label">
-			<label><strong>{{ phrase('user.general.your_email_address') }} *</strong></label>
-		</div>
-		<div class="dp-controls dp-fill">
-			<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />
-			<div class="dp-help-inline dp-error-explain">
-				{{ phrase('user.general.form_fix_email') }}
-			</div>
-		</div>
-	</div>
-
 	{#--- FIELDS CONTAINER ---#}
 	<div id="fields_container">
 		{# First time outputs items in order and visible depending on the page data #}
-		{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
+		{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'mode': 'default', 'page_data_field_ids': page_data_field_ids, 'pagetype': 'iframe' }%}
 	</div>
 	{#--- FIELDS CONTAINER ---#}
 

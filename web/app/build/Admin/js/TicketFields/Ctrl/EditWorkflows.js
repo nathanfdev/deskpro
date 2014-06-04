@@ -45,8 +45,11 @@
 
       Admin_TicketFields_Ctrl_EditWorkflows.prototype.save = function() {
         var postData, promise;
+        if (!this.works || !this.works.length) {
+          this.enabled = false;
+        }
         postData = {
-          priorities: this.works,
+          workflows: this.works,
           default_id: this.default_id,
           user_required: this.user_required,
           agent_required: this.agent_required,

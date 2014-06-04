@@ -290,8 +290,8 @@
 		<span class="help-block">
 			Enter the PHP code that will be used to verify an user-inputted password is correct.<br/>
 			&middot; <code>$is_valid</code> must be set to true or false, depending on if the login was correct.<br/>
-			&middot; <code>$userinfo</code> is the inputted password from the login form.<br/>
-			&middot; <code>$password_recorded</code> is the password stored in the database.<br/>
+			&middot; <code>$password_input</code> is the inputted password from the login form.<br/>
+			&middot; <code>$password_recorded</code> is the password stored in the database (which is the same as <code>$userinfo[$password_field]</code>, the password field entered above).<br/>
 			&middot; <code>$userinfo</code> is an array of raw user data (the full database row).<br/>
 			&middot; <code>$db</code> is a <a href="http://www.doctrine-project.org/api/dbal/2.4/index.html" target="_blank">Doctrine connection</a> for your database.<br/>
 		</span>

@@ -33,6 +33,8 @@
 
 namespace Application\DeskPRO\Settings;
 
+use Orb\Util\Arrays;
+
 class TicketSettings
 {
 	/**
@@ -62,6 +64,8 @@ class TicketSettings
 
 	public $add_agent_ccs                  = false;
 	public $gateway_max_email              = 0;
+
+	public $from_email_headers;
 
 	public $working_hours = null;
 
@@ -146,6 +150,15 @@ class TicketSettings
 		if ($wh) {
 			$this->working_hours = $wh;
 		}
+
+		$this->from_email_headers = explode(',', $this->settings->get('core_email.from_email_headers'));
+		$this->from_email_headers = Arrays::func($this->from_email_headers, 'trim');
+		$this->from_email_headers = Arrays::removeFalsey($this->from_email_headers);
+		$this->from_email_headers = Arrays::func($this->from_email_headers, 'strtolower');
+
+		if (!$this->from_email_headers) {
+			$this->from_email_headers = array('from', 'reply-to', 'x-original-from');
+		}
 	}
 
 
@@ -175,6 +188,7 @@ class TicketSettings
 			'add_agent_ccs',
 			'gateway_max_email',
 			'working_hours',
+			'from_email_headers',
 		) as $s) {
 			$export_settings[$s] = $this->$s;
 		}
@@ -189,8 +203,18 @@ class TicketSettings
 	public function setArray(array $set_settings)
 	{
 		foreach ($set_settings as $s => $val) {
-			if (property_exists($this, $s)) {
-				$this->$s = $val;
+			if ($s == 'from_email_headers') {
+				$this->from_email_headers = $val;
+				$this->from_email_headers = Arrays::func($this->from_email_headers, 'trim');
+				$this->from_email_headers = Arrays::removeFalsey($this->from_email_headers);
+				$this->from_email_headers = Arrays::func($this->from_email_headers, 'strtolower');
+				if (!$this->from_email_headers) {
+					$this->from_email_headers = array('from', 'reply-to', 'x-original-from');
+				}
+			} else {
+				if (property_exists($this, $s)) {
+					$this->$s = $val;
+				}
 			}
 		}
 	}
@@ -259,5 +283,7 @@ class TicketSettings
 		} else {
 			$this->settings->setSetting('core_tickets.work_hours', null);
 		}
+
+		$this->settings->setSetting('core_email.from_email_headers', implode(',', $this->from_email_headers));
 	}
 }

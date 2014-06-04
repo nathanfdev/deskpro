@@ -45,6 +45,7 @@
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('macro.id') }}</span>
 							<span class="title-text">{{ ng_var('macro.title') }}</span>
 						</h4>
 					</a>
@@ -99,12 +100,14 @@
 	</dl>
 
 		</section>
-		
-			<section>
+
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#macros" target="_blank">Macros</a></li>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
+
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#macros" target="_blank">Macros</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
+
 			</ul>
 	</section>
 	</article>

@@ -17,6 +17,7 @@
 					dp-state-mark="crm.rules.edit.{{ ng_var('user_rule.id') }}" data-id="{{ ng_var('user_rule.id') }}">
 					<a href="{{ ng_href('crm.rules.edit', '{id: user_rule.id}') }}">
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('user_rule.id') }}</span>
 							<span class="title-text">{{ ng_var('user_rule.email_patterns') }}</span>
 						</h4>
 					</a>
@@ -57,12 +58,12 @@
 			</dd>
 		</dl>
 </section>
-			<section>
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#new-users" target="_blank">New users</a></li>
-				<li>[AGENT] <a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#automatically-associating-users-with-organizations-by-email-domain" target="_blank">Automatically associating users with organizations by email domain</a></li>
-				<li>[AGENT] <a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#linking-organizations-to-usergroups" target="_blank">Linking organizations to usergroups</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#new-users" target="_blank">New users</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#automatically-associating-users-with-organizations-by-email-domain" target="_blank">Automatically associating users with organizations by email domain</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/agent-manual/agent-manual.html#linking-organizations-to-usergroups" target="_blank">Linking organizations to usergroups</a></li>
 			</ul>
 	</section>
 	</article>

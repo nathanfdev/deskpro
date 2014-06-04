@@ -1,8 +1,6 @@
 <dp-optionbuilder-row>
 	<div class="dp-ob-standard-row">
 		<label class="row-label">{{ ng_var('type_title') }}</label>
-		<select ui-select2="{dropdownAutoWidth:true}"ng-model="model.op"
-				style="min-width: 50px;"
-				>
+		<span ng-show="rowOpts.rowEnabled">{{ ng_var('description') }}</span>
 	</div>
 </dp-optionbuilder-row>

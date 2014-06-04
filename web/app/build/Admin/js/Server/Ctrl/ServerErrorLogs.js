@@ -26,7 +26,11 @@
         var data_promise;
         data_promise = this.Api.sendGet('/server_error_logs').then((function(_this) {
           return function(res) {
+            var _ref;
             _this.$scope.server_error_logs = res.data.server_error_logs;
+            if ((_ref = _this.$scope.server_error_logs) != null ? _ref.logs : void 0) {
+              _this.$scope.server_error_logs.logs = _this.$scope.server_error_logs.logs.reverse();
+            }
             return _this.$scope.logs_size = _.size(_this.$scope.server_error_logs.logs);
           };
         })(this));
@@ -35,7 +39,7 @@
 
 
       /*
-       * Show the clear dlg
+      		 * Show the clear dlg
        */
 
       Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.prototype.startClearAll = function() {

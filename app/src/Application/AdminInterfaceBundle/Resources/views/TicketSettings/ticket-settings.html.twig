@@ -65,12 +65,31 @@
 								<label>
 									<h4>Maximum email size</h4>
 								</label>
-								<br/>
-								<dp-filesize-with-unit ng-model="settings.gateway_max_email" />
 								<span class="help-block">
 									Enter the max size for an email before it is rejected. This refers to the total size of a raw
 									email source. A raw email is roughly 35% larger than the sum of all attachments and text content.
 								</span>
+								<div><dp-filesize-with-unit ng-model="settings.gateway_max_email" /></div>
+							</div>
+							<div class="inner-group">
+								<label>
+									<h4>Priority of "From Email Address" headers</h4>
+								</label>
+								<span class="help-block">
+									DeskPRO reads these headers in all email messages to determine who the end-user is.
+									Drag and drop the headers to prioritize them. The first valid header in an email will be used.
+								</span>
+								<ul class="checkbox-list" style="min-width: 200px;" ui-sortable="TicketSettings.headerSortList">
+									<li data-value="{{ ng_var('header') }}" ng-repeat="header in settings.from_email_headers">
+										<label ng-switch="header">
+											<i class="drag-handle fa fa-bars" style="margin-right: 4px; color: #ccc; cursor: move;"></i>
+											<span ng-switch-when="from">From</span>
+											<span ng-switch-when="reply-to">Reply-To</span>
+											<span ng-switch-when="x-original-from">X-Original-From</span>
+											<span ng-switch-default>{{ ng_var('header') }}</span>
+										</label>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>

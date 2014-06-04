@@ -9,6 +9,7 @@
 				<li ng-repeat="sla in ListCtrl.list" dp-state-mark="tickets.slas.edit.{{ ng_var('sla.id') }}" data-id="{{ ng_var('sla.id') }}">
 					<a href="{{ ng_href('tickets.slas.edit', '{id: sla.id}') }}">
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('sla.id') }}</span>
 							<span class="title-text">{{ ng_var('sla.title') }}</span>
 						</h4>
 					</a>
@@ -67,10 +68,10 @@
 		
 
 </section>
-		<section>
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#slas" target="_blank">SLAs</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#slas" target="_blank">SLAs</a></li>
 			</ul>
 		</section>
 	</article>

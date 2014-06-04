@@ -31,6 +31,21 @@
             return _this.settings = angular.copy(_this.$scope.settings);
           };
         })(this));
+        this.headerSortList = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: (function(_this) {
+            return function(ev, data) {
+              var $list, newOrder;
+              $list = data.item.closest('ul');
+              newOrder = [];
+              $list.find('li').each(function() {
+                return newOrder.push($(this).data('value'));
+              });
+              return _this.$scope.settings.from_email_headers = newOrder;
+            };
+          })(this)
+        };
         return this.$q.all([data_promise]);
       };
 

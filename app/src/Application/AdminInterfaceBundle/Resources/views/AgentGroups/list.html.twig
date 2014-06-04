@@ -9,6 +9,7 @@
 				<li ng-repeat="group in ListCtrl.groups" dp-state-mark="agents.groups.edit.{{ ng_var('group.id') }}">
 					<a href="{{ ng_href('agents.groups.edit', '{id: group.id}') }}">
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('group.id') }}</span>
 							<span class="title-text">{{ ng_var('group.title') }}</span>
 						</h4>
 					</a>
@@ -57,13 +58,13 @@
 		</dl>
 </section>
 
-			<section>
+			<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
 				
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-permissions" target="_blank">Agent permissions</a></li>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#permission-overrides" target="_blank">Permission overrides</a></li>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-department-permissions" target="_blank">Agent department permissions</a>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-permissions" target="_blank">Agent permissions</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#permission-overrides" target="_blank">Permission overrides</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-department-permissions" target="_blank">Agent department permissions</a></li>
 			</ul>
 	</section>
 	</article>

@@ -18,7 +18,7 @@
 
 					<a href="{{ ng_href('chat.chat_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
-						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('dep.id') }}</span> <span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 
 					<ul class="dp-item-list sublist" ng-show="dep.children.length"
@@ -31,6 +31,7 @@
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
 									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-id" title="ID">#{{ ng_var('subdep.id') }}</span>
 									<span class="title-text">{{ ng_var('subdep.title') }}</span>
 								</h4>
 							</a>
@@ -108,10 +109,10 @@
 				</dd>
 			</dl>
 		</section>
-			<section>
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL] <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#chat" target="_blank">Chat</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#chat" target="_blank">Chat</a></li>
 			</ul>
 	</section>
 	</article>

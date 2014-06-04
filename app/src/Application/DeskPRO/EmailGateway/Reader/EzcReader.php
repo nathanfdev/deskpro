@@ -170,6 +170,51 @@ class EzcReader extends AbstractReader
 		return $email;
 	}
 
+	protected function _getReplyToAddress()
+	{
+		$val = $this->mail->getHeader('Reply-To', false);
+		if (!$val) {
+			return false;
+		}
+
+		$addrs = \ezcMailTools::parseEmailAddresses($val);
+		if (!$addrs) {
+			return false;
+		}
+
+		$addr = array_shift($addrs);
+
+		$email = new Item\EmailAddress();
+		$email->name = $addr->name ?: '';
+		$email->name = $email->name;
+		$email->email = $addr->email;
+
+		return $email;
+	}
+
+	protected function _getOriginalFromAddress()
+	{
+		$val = $this->mail->getHeader('X-Original-From', false);
+		if (!$val) {
+			return false;
+		}
+
+		$addrs = \ezcMailTools::parseEmailAddresses($val);
+		if (!$addrs) {
+			return false;
+		}
+
+		$addr = array_shift($addrs);
+
+		$email = new Item\EmailAddress();
+		$email->name = $addr->name ?: '';
+		$email->name = $email->name;
+		$email->email = $addr->email;
+
+		return $email;
+	}
+
+
 	protected function _getSubject()
 	{
 		if (!$this->mail->subject) {

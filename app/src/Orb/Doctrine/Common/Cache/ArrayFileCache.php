@@ -43,6 +43,11 @@ use \Orb\Util\Util;
 class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 {
 	/**
+	 * @var string|null
+	 */
+	protected $version_id = null;
+
+	/**
 	 * Data is array(key => array(time => timestamp, data => data, deleted => true, updated => true)
 	 *
      * @var array $data
@@ -100,10 +105,12 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
 	/**
 	 * @param string $cache_file
+	 * @param string|null $version_id
 	 */
-	public function __construct($cache_file)
+	public function __construct($cache_file, $version_id = null)
 	{
 		$this->cache_file = $cache_file;
+		$this->version_id = $version_id;
 	}
 
 	/**
@@ -190,6 +197,14 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 				$this->disabled = true;
 				return;
 			}
+
+			// Invalid version, so we should clear it out
+			if ($this->version_id && (empty($load_data['@META']['version_id']) || $load_data['@META']['version_id'] != $this->version_id)) {
+				$load_data = array();
+			}
+
+			//meta data isnt actually read in
+			unset($load_data['@META']);
 
 			$time = time();
 
@@ -329,7 +344,11 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 			return;
 		}
 
-        $result = array();
+        $result = array('@META' => array('write_time' => time()));
+		if ($this->version_id) {
+			$result['@META']['version_id'] = $this->version_id;
+		}
+
 		$time = time();
 		foreach ($this->data as $k => $v) {
 			if (!isset($v['deleted']) && (!$v['die'] || $v['die'] < $time)) {

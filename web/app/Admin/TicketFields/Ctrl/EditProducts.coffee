@@ -52,6 +52,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 			return data_promise
 
 		save: ->
+			if not @products or not @products.length
+				@enabled = false
+
 			postData = {
 				products:       @products,
 				default_id:     @default_id,

@@ -2867,7 +2867,7 @@ class TicketController extends AbstractController
 			$account = $ticket->email_account;
 		}
 		if (!$account || !$account->is_enabled || !$account->outgoing_account) {
-			$account = $this->container->getEmailAccountManager()->getPrimaryEmailAccount();
+			$account = $this->container->getEmailAccountManager()->getPrimaryTicketAccount();
 		}
 
 		if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {

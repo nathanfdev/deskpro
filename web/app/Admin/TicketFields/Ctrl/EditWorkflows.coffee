@@ -29,8 +29,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 			return data_promise
 
 		save: ->
+			if not @works or not @works.length
+				@enabled = false
+
 			postData = {
-				priorities:     @works,
+				workflows:      @works,
 				default_id:     @default_id,
 				user_required:  @user_required,
 				agent_required: @agent_required,
