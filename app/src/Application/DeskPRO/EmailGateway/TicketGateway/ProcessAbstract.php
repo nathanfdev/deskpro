@@ -232,12 +232,16 @@ abstract class ProcessAbstract
 	 *
 	 * @return \Application\DeskPRO\Entity\Blob[]
 	 */
-	protected function processBlobs()
+	protected function processBlobs($skip_attach = null)
 	{
 		if ($this->processed_blobs !== null) return $this->processed_blobs;
 		$this->processed_blobs = array();
 
 		foreach ($this->reader->getAttachments() as $attach) {
+
+			if ($skip_attach && $skip_attach === $attach) {
+				continue;
+			}
 
 			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
 				$attach->getFileContents(),

@@ -120,7 +120,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
 			$has_eml_attach = false;
 			foreach ($this->reader->getAttachments() as $attach) {
-				if ($attach->mime_type == 'message/rfc822' && $attach->file_name == 'email.eml') {
+				if ($attach->mime_type == 'message/rfc822') {
 					$has_eml_attach = $attach;
 					break;
 				}
@@ -297,7 +297,7 @@ class ProcessAgentFwd extends ProcessAbstract
 	{
 		$executor_context = $this->getTicketManager()->createAgentExecutorContext(
 			$this->person,
-			'new',
+			'newticket',
 			'email'
 		);
 
@@ -309,15 +309,17 @@ class ProcessAgentFwd extends ProcessAbstract
 		$this->logMessage('[TicketGatewayProcessor] Forwarded attached ticket by ' . $this->person->getId() . ' ' . $this->person->getDisplayContact());
 
 		if ($this->reader->getBodyHtml() && $this->reader->getBodyHtml()->body_utf8) {
+			$this->logMessage('[TicketGatewayProcessor] (Agent) Reading html');
 			$agent_reply = $this->reader->getBodyHtml()->body_utf8;
 
 			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email_preclean');
 			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email_basicclean');
 			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email');
-			$agent_reply = $this->trimHtmlWhitespace($agent_reply);
+			$agent_reply = Strings::trimHtmlAdvanced($agent_reply);
 			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email_postclean');
 
 		} else {
+			$this->logMessage('[TicketGatewayProcessor] (Agent) Reading text');
 			$agent_reply = trim($this->reader->getBodyText()->body_utf8);
 			if ($agent_reply) {
 				$agent_reply = nl2br(@htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
@@ -346,7 +348,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		# Create the ticket
 		#------------------------------
 
-		$ticket = new Ticket();
+		$ticket = $this->getTicketManager()->createTicket();
 		$ticket->subject       = $user_reader->getSubject()->getSubjectUtf8();
 		$ticket->person        = $user;
 		$ticket->status        = 'awaiting_agent';
@@ -357,19 +359,19 @@ class ProcessAgentFwd extends ProcessAbstract
 		$ticket_message->person = $user;
 
 		if ($user_reader->getBodyHtml() && $user_reader->getBodyHtml()->body_utf8) {
+			$this->logMessage('[TicketGatewayProcessor] (User) Reading html');
 			$body = $user_reader->getBodyHtml()->body_utf8;
 
 			$body = $this->cleaner->clean($body, 'html_email_preclean');
 			$body = $this->cleaner->clean($body, 'html_email_basicclean');
 			$body = $this->cleaner->clean($body, 'html_email');
-			$body = $this->trimHtmlWhitespace($body);
+			$body = Strings::trimHtmlAdvanced($body);
 			$body = $this->cleaner->clean($body, 'html_email_postclean');
-
-
 		} else {
+			$this->logMessage('[TicketGatewayProcessor] (User) Reading text');
 			$body = nl2br(@htmlspecialchars(trim($user_reader->getBodyText()->body_utf8), \ENT_QUOTES, 'UTF-8'));
 		}
-		$ticket_message->setMessageText($body);
+		$ticket_message->setMessageHtml($body);
 
 		if ($this->reader->getProperty('email_source')) {
 			$ticket_message->email_source = $this->reader->getProperty('email_source');
@@ -380,11 +382,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		// Add agent reply if there was one
 		$agent_ticket_message = null;
 		if ($agent_reply) {
-			//TODO
-			//$ticket->getTicketLogger()->recordExtra('is_fwd_reply', true);
-
 			$this->logMessage('[TicketGatewayProcessor] Adding agent reply');
-			$agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
 			$agent_ticket_message = new TicketMessage();
 			$agent_ticket_message->person = $this->person;
@@ -393,10 +391,40 @@ class ProcessAgentFwd extends ProcessAbstract
 			$ticket->setStatus('awaiting_user');
 		}
 
-		foreach ($this->processBlobs() as $blob) {
+		$processed_blobs = array();
+		$processed_blobs_cid = array();
+		foreach ($user_reader->getAttachments() as $attach) {
+			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+				$attach->getFileContents(),
+				$attach->getFileName(),
+				$attach->getMimeType()
+			);
+
+			$processed_blobs[$blob->id] = $blob;
+
+			if ($attach->getContentId()) {
+				$processed_blobs_cid[$attach->getContentId()] = $blob;
+			}
+		}
+
+		foreach ($processed_blobs as $blob) {
 			$attach = new TicketAttachment();
 			$attach['blob'] = $blob;
-			$attach['person'] = $this->person;
+			$attach['person'] = $ticket->person;
+
+			if (isset($this->inline_blobs[$blob->id])) {
+				$attach->is_inline = true;
+			}
+
+			$ticket_message->addAttachment($attach);
+			$blob->is_temp = false;
+			App::getOrm()->persist($blob);
+		}
+
+		foreach ($this->processBlobs($has_eml_attach) as $blob) {
+			$attach = new TicketAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $agent_ticket_message ? $agent_ticket_message->person : $ticket->person;
 
 			if (isset($this->inline_blobs[$blob->id])) {
 				$attach->is_inline = true;
@@ -410,17 +438,6 @@ class ProcessAgentFwd extends ProcessAbstract
 
 			$blob->is_temp = false;
 			App::getOrm()->persist($blob);
-		}
-
-		//TODO
-		$tracker_extras = array(
-			'fwd_via_agent' => $this->person
-		);
-		if ($this->person->getPref("agent_notify_override.forward.email")) {
-			$tracker_extras['force_notify_email'] = array($this->person->id);
-		}
-		if ($this->person->getPref("agent_notify_override.forward.alert")) {
-			$tracker_extras['force_notify_alert'] = array($this->person->id);
 		}
 
 		#------------------------------
