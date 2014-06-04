@@ -574,3 +574,54 @@
 </table>
 <?php endif ?>
 <?php endif ?>
+
+<?php if ($run_context == 'install'): ?>
+	<?php $http_verb_failed = false; ?>
+	<h3>HTTP Server Check</h3>
+	<table class="bordered-table zebra-striped">
+		<tbody>
+		<tr>
+			<td>
+				<span class="label success" style="float:right; display: none;" id="http_get_ok">OK</span>
+				<span class="label important" style="float:right; display: none;" id="http_get_fail">FAIL</span>
+				<span class="label" style="float:right;" id="http_get_load">LOADING</span>
+				Checking GET request
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class="label success" style="float:right; display: none;" id="http_post_ok">OK</span>
+				<span class="label important" style="float:right; display: none;" id="http_post_fail">FAIL</span>
+				<span class="label" style="float:right;" id="http_post_load">LOADING</span>
+				Checking POST request
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class="label success" style="float:right; display: none;" id="http_put_ok">OK</span>
+				<span class="label important" style="float:right; display: none;" id="http_put_fail">FAIL</span>
+				<span class="label" style="float:right;" id="http_put_load">LOADING</span>
+				Checking PUT request
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class="label success" style="float:right; display: none;" id="http_delete_ok">OK</span>
+				<span class="label important" style="float:right; display: none;" id="http_delete_fail">FAIL</span>
+				<span class="label" style="float:right;" id="http_delete_load">LOADING</span>
+				Checking DELETE request
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<div class="alert-message block-message error" id="http_method_error" style="display: none;">
+		<p>
+			DeskPRO uses multiple types of HTTP request methods including GET, POST, PUT and DELETE.
+			Your server appears to be filtering some request types. You need to fix this before you can continue.
+			<br/>
+			<br/>
+			If you are using IIS on Windows, refer to our Knowledgebase article:
+			<a href="https://support.deskpro.com/kb/articles/210" target="_blank">Configuring HTTP verbs on IIS</a>
+		</p>
+	</div>
+<?php endif; ?>
