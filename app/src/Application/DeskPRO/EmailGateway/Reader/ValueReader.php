@@ -168,6 +168,16 @@ class ValueReader extends AbstractReader
 		return $email;
 	}
 
+	protected function _getReplyToAddress()
+	{
+		return false;
+	}
+
+	protected function _getOriginalFromAddress()
+	{
+		return false;
+	}
+
 	protected function _getSubject()
 	{
 		if (!isset($this->values['subject'])) {
