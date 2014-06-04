@@ -78,13 +78,6 @@
 								<span class="help-block">
 									DeskPRO reads these headers in all email messages to determine who the end-user is.
 									Drag and drop the headers to prioritize them. The first valid header in an email will be used.
-									<i class="fa fa-question-circle qmark-icon" tooltip="The most obvious header, the 'From' header, sometimes isn't the one that you want to use.
-									<br/><br/>
-									For example, some automated systems may show a 'From' of an automated system address, but
-									then supply a users real address in 'Reply-To'.
-									<br/><br/>
-									If you wanted to get the real email address instead of
-									the automated system, you would drag the 'Reply-To' header to the top of the list so the system uses that first."></i>
 								</span>
 								<ul class="checkbox-list" style="min-width: 200px;" ui-sortable="TicketSettings.headerSortList">
 									<li data-value="{{ ng_var('header') }}" ng-repeat="header in settings.from_email_headers">

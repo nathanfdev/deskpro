@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\EmailGateway\Fetcher;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
 
@@ -94,6 +95,11 @@ class Runner
 	 * @var int
 	 */
 	private $message_count = 0;
+
+	/**
+	 * @var array
+	 */
+	protected $from_headers;
 
 	public function __construct()
 	{
@@ -301,6 +307,14 @@ class Runner
 
 		$subj = substr($reader->getSubject()->getSubject(), 0, 40);
 		$this->logger->log("[Message] To: $to :: From: $from :: Subject: $subj", 'debug');
+
+		$from_headers = $this->getFromHeaders();
+		if ($from_headers) {
+			$this->logger->logDebug(sprintf("From header priority: %s", implode(', ', $from_headers)));
+			$reader->setFromHeaderPriority($from_headers);
+			$from = $reader->getFromAddress()->getEmail();
+			$this->logger->logDebug(sprintf("[Message] Using From: %s", $from));
+		}
 
 		App::getOrm()->beginTransaction();
 
@@ -633,6 +647,26 @@ class Runner
 		), array('id' => $source->getId()));
 	}
 
+	/**
+	 * @return array
+	 */
+	private function getFromHeaders()
+	{
+		if ($this->from_headers !== null) {
+			return $this->from_headers;
+		}
+
+		$from_headers = explode(',', App::$container->getSetting('core_email.from_email_headers'));
+		$from_headers = Arrays::func($from_headers, 'trim');
+		$from_headers = Arrays::func($from_headers, 'strtolower');
+		$from_headers = Arrays::removeFalsey($from_headers);
+
+		if (!$from_headers) {
+			$from_headers = array('from');
+		}
+
+		return $from_headers;
+	}
 
 	private function createFetcher(EmailAccount $account)
 	{
