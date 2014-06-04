@@ -33,6 +33,30 @@
 				</p>
 			</section>
 		{% endif %}
+		{% if get_instance_ability('is_windows') %}
+			<section>
+				<p>
+					{{ phrase('admin.settings.cron_setup_windows') }}
+				</p>
+				<p>
+					<strong>Option 1:</strong>
+					<ul>
+						<li>Open the folder where you have installed DeskPRO: {{ constant('DP_WEB_ROOT') }}</li>
+						<li>Run the file called schedule.bat</li>
+					</ul>
+				</p>
+				<p>
+					<strong>Option 2:</strong>
+					<ul>
+						<li>Manually open Windows Scheduled Tasks</li>
+						<li>Create a scheduled task for php-win.exe to run {{ constant('DP_WEB_ROOT') }}/cron.php every minute.</li>
+					</ul>
+				</p>
+				<p>
+					<a href="{{ get_service_url('dp.kb.install.cron') }}" target="_blank">{{ phrase('admin.settings.cron_detailed_instructions') }} <i class="fa fa-globe"></i></a>
+				</p>
+			</section>
+		{% endif %}
 		<section ng-show="error_type == 'timeout'">
 			<div class="alert alert-warning">
 				<p>
