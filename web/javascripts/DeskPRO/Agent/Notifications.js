@@ -165,34 +165,28 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		this.modCount(type, '+');
 
-		if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 0 && DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
+		if (Notify.isSupported() && !Notify.needsPermission() && DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
 
 			var icon = row.data('icon') || '';
 			if (icon) {
 				icon = ASSETS_BASE_URL + '/' + icon;
 			}
 
-			var notification = window.webkitNotifications.createNotification(
-				icon, row.find('big').first().text() || 'DeskPRO', row.find('small').first().text()
-			);
-			notification.onclick = function() {
-				window.focus();
-				DeskPRO_Window.runPageRouteFromElement(row);
-				self.removeRow(row);
-			};
-			notification.onclose = function() {
-				if (!self._isRemoving && !row.data('notification-timeout')) {
+			var notification = new Notify(row.find('big').first().text() || 'DeskPRO', {
+				body: row.find('small').first().text(),
+				icon: icon,
+				notifyClick: function() {
+					window.focus();
+					DeskPRO_Window.runPageRouteFromElement(row);
 					self.removeRow(row);
-				}
-			};
-			if (DESKPRO_PERSON_NOTIFICATION_DISMISS) {
-				notification.ondisplay = function() {
-					setTimeout(function() {
-						row.data('notification-timeout', true);
-						notification.cancel();
-					}, DESKPRO_PERSON_NOTIFICATION_DISMISS * 1000);
-				};
-			}
+				},
+				notifyClose: function() {
+					if (!self._isRemoving && !row.data('notification-timeout')) {
+						self.removeRow(row);
+					}
+				},
+				timeout: DESKPRO_PERSON_NOTIFICATION_DISMISS || null
+			});
 			notification.show();
 			row.data('notification', notification);
 		}

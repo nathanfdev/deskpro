@@ -127,21 +127,32 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		});
 
-		if (window.webkitNotifications) {
+		if (Notify.isSupported()) {
 			var notificationsRow = el.find('.dp-desktop-notifications');
 			notificationsRow.show();
 
 			var enableButton = notificationsRow.find('.enable-desktop-notifications');
 
-			var permissionCallback = function() {
-				var permission = window.webkitNotifications.checkPermission();
+			var permissionCallback = function(didChange) {
+				var perm;
 
-				if (permission == 0) {
+				if (didChange) {
+					perm = didChange;
+				} else {
+					perm = !Notify.needsPermission();
+					if (Notify.needsPermission()) {
+						perm = 'none';
+					} else {
+						perm = 'granted';
+					}
+				}
+
+				if (perm == 'granted') {
 					// granted
 					enableButton.hide();
 					notificationsRow.find('.dp-desktop-notifications-enabled').show();
 					notificationsRow.find('.dp-desktop-notifications-disabled').hide();
-				} else if (permission == 1) {
+				} else if (perm == 'none') {
 					// no action
 					enableButton.show();
 					notificationsRow.find('.dp-desktop-notifications-enabled').hide();
@@ -162,19 +173,20 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 			enableButton.click(function(e) {
 				e.preventDefault();
-				window.webkitNotifications.requestPermission(permissionCallback);
+				Notify.requestPermission(
+					function() { permissionCallback('granted') },
+					function() { permissionCallback('denied') }
+				);
 			});
 
 			notificationsRow.find('.generate-test-notification').click(function(e){
 				e.preventDefault();
 
-				if (window.webkitNotifications.checkPermission() != 0) {
+				if (Notify.needsPermission()) {
 					return;
 				}
 
-				var notification = window.webkitNotifications.createNotification(
-					'', 'DeskPRO', 'This is a test DeskPRO desktop notification.'
-				);
+				var notification = new Notify('DeskPRO', { body: "This is a test notification." });
 				notification.ondisplay = function() {
 					setTimeout(function() {
 						notification.cancel();
