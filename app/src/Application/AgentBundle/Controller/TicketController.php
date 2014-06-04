@@ -2747,7 +2747,7 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		$date_created = clone $ticket->date_created;
+		$date_created = clone $message->date_created;
 		$date_created->setTimezone($this->person->getDateTimezone());
 
 		$top = trim($this->renderView('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', array(
@@ -2799,7 +2799,7 @@ class TicketController extends AbstractController
 
 		$message_raw = $message->procInlineAttach($message_raw);
 
-		$date_created = clone $ticket->date_created;
+		$date_created = clone $message->date_created;
 		$date_created->setTimezone($this->person->getDateTimezone());
 		$date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
 
