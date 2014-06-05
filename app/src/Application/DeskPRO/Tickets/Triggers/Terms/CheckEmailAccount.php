@@ -52,6 +52,9 @@ class CheckEmailAccount extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addValidNames('email_account_ids');
+		$options->addCallbackCheckedOption('email_account_ids', function($v) {
+			return (is_array($v) && !empty($v)) || (!is_array($v) && trim($v));
+		});
 		return $options;
 	}
 
