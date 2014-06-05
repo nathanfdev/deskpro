@@ -135,6 +135,10 @@ define [
 
 						Arrays.findAndRemove(rows, (v) -> v.rowScope == rowScope)
 
+						# unset options that were on the set so the model is updated
+						for own k,v of rowScope.criteria_set_row
+							delete rowScope.criteria_set_row[k]
+
 						recountRows()
 						if scope.setCount == 0
 							addRow()

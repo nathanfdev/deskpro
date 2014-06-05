@@ -125,6 +125,7 @@
                 element.addClass('empty');
               }
               element.find('.removerow_btn').on('click', function(ev) {
+                var k, v, _ref;
                 ev.preventDefault();
                 rowScope.$destroy();
                 scope.setCount -= 1;
@@ -132,6 +133,12 @@
                 Arrays.findAndRemove(rows, function(v) {
                   return v.rowScope === rowScope;
                 });
+                _ref = rowScope.criteria_set_row;
+                for (k in _ref) {
+                  if (!__hasProp.call(_ref, k)) continue;
+                  v = _ref[k];
+                  delete rowScope.criteria_set_row[k];
+                }
                 recountRows();
                 if (scope.setCount === 0) {
                   return addRow();
