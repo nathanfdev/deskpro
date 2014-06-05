@@ -101,9 +101,9 @@
               dep = _ref[_i];
               assign = false;
               full = false;
-              if ((_ref1 = dep.permissions) != null ? _ref1.users : void 0) {
+              if (_this.agentId && ((_ref1 = dep.permissions) != null ? _ref1.users : void 0)) {
                 u = dep.permissions.users.filter(function(x) {
-                  return x.id === DP_PERSON_ID;
+                  return x.id === _this.agentId;
                 })[0];
                 if (u) {
                   if (u.name === 'full') {
@@ -123,9 +123,9 @@
             for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
               dep = _ref2[_j];
               full = false;
-              if ((_ref3 = dep.permissions) != null ? _ref3.users : void 0) {
+              if (_this.agentId && ((_ref3 = dep.permissions) != null ? _ref3.users : void 0)) {
                 u = dep.permissions.users.filter(function(x) {
-                  return x.id === DP_PERSON_ID;
+                  return x.id === _this.agentId;
                 })[0];
                 if (u) {
                   full = true;

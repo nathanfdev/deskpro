@@ -96,8 +96,8 @@ define [
 					assign = false
 					full = false
 
-					if dep.permissions?.users
-						u = dep.permissions.users.filter((x) -> x.id == DP_PERSON_ID)[0]
+					if @agentId and dep.permissions?.users
+						u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
 						if u
 							if u.name == 'full' then full = true else assign = true
 
@@ -105,8 +105,8 @@ define [
 
 				for dep in @chatDeps
 					full = false
-					if dep.permissions?.users
-						u = dep.permissions.users.filter((x) -> x.id == DP_PERSON_ID)[0]
+					if @agentId and dep.permissions?.users
+						u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
 						if u
 							full = true
 

@@ -126,7 +126,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$agent_data['teams'][] = $t->toApiData();
 		}
 
-		$perm_loader = new AgentPermsPersonDbLoader($this->person, $this->em);
+		$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
 		$data = array(
 			'agent' => $agent_data,
@@ -165,7 +165,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$agent_data['teams'][] = $t->toApiData();
 		}
 
-		$perm_loader = new AgentPermsPersonDbLoader($this->person, $this->em);
+		$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
 		return $this->createApiResponse(array(
 			'agent'           => $agent_data,
@@ -316,7 +316,11 @@ class AgentsController extends AbstractController implements ProtectedController
 
 			$set_perms = array();
 			foreach ($this->in->getArrayValue('dep_perm_overrides.tickets') as $did => $p) {
-				if (!$ticket_deps->getById($did)) continue;
+				if (!($dep = $ticket_deps->getById($did))) continue;
+				if (count($dep->children)) {
+					continue;
+				}
+
 				if ($p['full']) {
 					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
 				} else if ($p['assign']) {
@@ -324,7 +328,11 @@ class AgentsController extends AbstractController implements ProtectedController
 				}
 			}
 			foreach ($this->in->getArrayValue('dep_perm_overrides.chat') as $did => $p) {
-				if (!$chat_deps->getById($did)) continue;
+				if (!($dep = $chat_deps->getById($did))) continue;
+				if (count($dep->children)) {
+					continue;
+				}
+
 				if ($p['full']) {
 					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
 				}
