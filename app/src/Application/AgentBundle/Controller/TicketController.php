@@ -1687,15 +1687,23 @@ class TicketController extends AbstractController
 				))
 			));
 		} else {
-			$ticket_log = new TicketLog();
-			$log_action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\MessageRemoved($message);
-			$ticket_log->ticket      = $ticket;
-			$ticket_log->person      = $this->person;
-			$ticket_log->action_type = $log_action->getLogName();
-			$ticket_log->id_object   = $message->getId();
-			$ticket_log->details     = $log_action->getLogDetails();
+			$m = $message;
+			$log_data = array();
+			$log_data['message_id']       = $m->id;
+			$log_data['person_id']        = $m->person->id;
+			$log_data['person_name']      = $m->person->display_name;
+			$log_data['is_agent_note']    = $m->is_agent_note;
+			$log_data['is_agent_message'] = $m->person->is_agent;
+			$log_data['old_message']      = $m->getMessageHtml();
 
-			$this->em->persist($ticket_log);
+			$log = new TicketLog();
+			$log->ticket      = $ticket;
+			$log->person      = $this->person;
+			$log->action_type = 'message_removed';
+			$log->id_before   = $m->id;
+			$log->details = $log_data;
+
+			$this->em->persist($log);
 			$this->em->remove($message);
 			$this->em->flush();
 

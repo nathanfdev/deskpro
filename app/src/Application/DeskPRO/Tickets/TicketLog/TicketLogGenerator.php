@@ -355,7 +355,7 @@ class TicketLogGenerator
 					$log_data['id_before']        = $m->id;
 					$log_data['message_id']       = $m->id;
 					$log_data['person_id']        = $m->person->id;
-					$log_data['person_name']      = $m->person->dislpay_name;
+					$log_data['person_name']      = $m->person->display_name;
 					$log_data['is_agent_note']    = $m->is_agent_note;
 					$log_data['is_agent_message'] = $m->person->is_agent;
 					$log_data['old_message']      = $m->getMessageHtml();
