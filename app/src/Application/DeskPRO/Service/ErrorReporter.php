@@ -400,6 +400,14 @@ class ErrorReporter
 			return '';
 		}
 
+		$last = App::getSetting('core.last_heartbeat');
+		if (!$last || $last > (time() - 86040)) {
+			// already sent it today
+			return;
+		}
+
+		App::$container->getSettingsHandler()->setSetting('core.last_heartbeat', time());
+
 		$data = self::getBasicData();
 
 		if (!App::getSetting('core.enable_reduced_lic_reports')) {
