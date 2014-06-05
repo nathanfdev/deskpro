@@ -10884,13 +10884,8 @@ button.toast-close-button {
   vertical-align: middle;
 }
 
-.dp-ob-select2 {
-  margin-top: -35px;
-}
-
 .dp-ob-select2.select2-drop-above {
-  margin-top: 30px;
-  margin-left: 11px;
+  margin-top: -5px !important;
 }
 
 .dp-ob-select2 li.select2-result-with-children > .select2-result-label {
