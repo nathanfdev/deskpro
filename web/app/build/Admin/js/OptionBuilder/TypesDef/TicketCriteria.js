@@ -284,10 +284,6 @@
           title: 'Time of day',
           value: 'CheckTimeOfDay'
         });
-        options.push({
-          title: 'Within working hours',
-          value: 'CheckWorkingHours'
-        });
         set_options.push({
           title: 'Dates',
           subOptions: options
