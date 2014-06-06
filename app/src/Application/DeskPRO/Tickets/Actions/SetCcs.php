@@ -35,11 +35,12 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
-use Zend\Validator\EmailAddress;
+use Orb\Validator\StringEmail;
 
 /**
  * Adds and removed CC'ed users to the ticket, creating users as necessary.
@@ -74,6 +75,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 			$managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
 			foreach ($managers AS $manager) {
 				if (!$ticket->hasParticipantPerson($manager)) {
+					$context->getLogger()->debug(sprintf("[SetCcs] Adding org manager %d %s %s", $manager->id, $manager->getDisplayName(), $manager->primary_email->email));
 					$ticket->addParticipantPerson($manager);
 				}
 			}
@@ -83,18 +85,30 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 		# Add people
 		#------------------------------
 
+		$account_manager = $this->getContainer()->getEmailAccountManager();
 		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
 		if ($this->getActionOption('add_emails')) {
 			foreach ($this->getActionOption('add_emails') as $email) {
+				if (!trim($email)) continue;
 				if ($ticket->hasParticipantEmailAddress($email)) {
+					continue;
+				}
+				if (!StringEmail::isValueValid($email)) {
+					$context->getLogger()->debug(sprintf("[SetCcs] Skipping %s because invalid email", $email));
+					continue;
+				}
+				if ($account_manager->findAccountForEmailAddress($email)) {
+					$context->getLogger()->debug(sprintf("[SetCcs] Skipping %s because email is an email account", $email));
 					continue;
 				}
 
 				$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
 				if ($person) {
+					$context->getLogger()->debug(sprintf("[SetCcs] Adding user %d %s %s", $person->id, $person->getDisplayName(), $person->primary_email->email));
 					$ticket->addParticipantPerson($person);
 				} else {
 					if ($reg_closed) {
+						$context->getLogger()->debug(sprintf("[SetCcs] Unknown user and reg is closed, skipping %s", $email));
 						continue;
 					}
 					$person_processor = new PersonFromEmailProcessor();
@@ -104,6 +118,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 					$person = $person_processor->createPerson($eml, true);
 
 					if ($person) {
+						$context->getLogger()->debug(sprintf("[SetCcs] Adding NEW user %d %s %s", $person->id, $person->getDisplayName(), $person->primary_email->email));
 						$ticket->addParticipantPerson($person);
 					}
 				}
@@ -118,6 +133,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 			foreach ($this->getActionOption('remove_emails') as $email) {
 				foreach ($ticket->participants as $k => $p) {
 					if ($p->person->findEmailAddress($email)) {
+						$context->getLogger()->debug(sprintf("[SetCcs] Removing user %d %s %s", $p->person->id, $p->person->getDisplayName(), $p->person->primary_email->email));
 						$ticket->removeParticipantPerson($p->person);
 					}
 				}
