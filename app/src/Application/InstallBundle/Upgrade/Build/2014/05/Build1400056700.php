@@ -62,5 +62,6 @@ class Build1400056700 extends AbstractBuild
 		$fn_save_table('widgets');
 		$fn_save_table('plugins');
 		$fn_save_table('usersources');
+		$fn_save_table('templates');
 	}
 }

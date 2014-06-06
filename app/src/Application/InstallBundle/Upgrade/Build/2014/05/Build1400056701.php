@@ -64,6 +64,9 @@ class Build1400056701 extends AbstractBuild
 		$this->out("Remove field templates.variant_of");
 		$db->exec("ALTER TABLE templates DROP variant_of");
 
+		$this->out("Remove agent or admin templates");
+		$db->exec("DELETE FROM templates WHERE name LIKE 'AgentBundle:' OR name LIKE 'AdminBundle:'");
+
 		$this->out("Add new ticket_actions_def table");
 		$db->exec("CREATE TABLE ticket_actions_def (id INT AUTO_INCREMENT NOT NULL, app_id INT DEFAULT NULL, action_name VARCHAR(50) NOT NULL, def_class VARCHAR(255) DEFAULT NULL, settings LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', INDEX IDX_5FEF87EF7987212D (app_id), UNIQUE INDEX action_name_idx (action_name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 
