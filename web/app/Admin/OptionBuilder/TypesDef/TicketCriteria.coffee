@@ -769,21 +769,40 @@ define [
 				return me.dpTemplateManager.get('OptionBuilder/type-criteria-dayofweek.html')
 
 			getData: ->
-				return {
-
-				}
+				return {}
 
 			getDataFormatter: ->
 				return {
-				getViewValue: (value = {}, data) ->
-					return {
-						op: value.op || 'is'
-					}
+					getViewValue: (value = {}, data) ->
+						options = value.options || {}
+						days = [null, false, false, false, false, false, false, false]
+						if options.days
+							for d in options.days
+								days[d] = true
 
-				getValue: (model = {}, data) ->
-					value = {}
-					return value
-				}
+						return {
+							op: value.op || 'is',
+							tz: options.tz || 'UTC',
+							days: days
+						}
+
+					getValue: (model = {}, data) ->
+						days = []
+						for v, k in model.days
+							if v
+								days.push(k)
+
+						value = {
+							type: 'CheckDayOfWeek',
+							op: 'is',
+							options:{
+								tz: model.tz || 'UTC',
+								days: days,
+								var: 'now'
+							}
+						}
+						return value
+					}
 			}
 
 		getCheckTimeOfDay: (options = {}) ->

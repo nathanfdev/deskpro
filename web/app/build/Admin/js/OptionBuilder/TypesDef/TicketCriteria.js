@@ -986,19 +986,47 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var d, days, _i, _len, _ref;
                 if (value == null) {
                   value = {};
                 }
+                options = value.options || {};
+                days = [null, false, false, false, false, false, false, false];
+                if (options.days) {
+                  _ref = options.days;
+                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    d = _ref[_i];
+                    days[d] = true;
+                  }
+                }
                 return {
-                  op: value.op || 'is'
+                  op: value.op || 'is',
+                  tz: options.tz || 'UTC',
+                  days: days
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var days, k, v, value, _i, _len, _ref;
                 if (model == null) {
                   model = {};
                 }
-                value = {};
+                days = [];
+                _ref = model.days;
+                for (k = _i = 0, _len = _ref.length; _i < _len; k = ++_i) {
+                  v = _ref[k];
+                  if (v) {
+                    days.push(k);
+                  }
+                }
+                value = {
+                  type: 'CheckDayOfWeek',
+                  op: 'is',
+                  options: {
+                    tz: model.tz || 'UTC',
+                    days: days,
+                    "var": 'now'
+                  }
+                };
                 return value;
               }
             };

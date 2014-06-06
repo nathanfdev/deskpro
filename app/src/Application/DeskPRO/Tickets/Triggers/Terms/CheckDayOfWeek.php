@@ -59,7 +59,7 @@ class CheckDayOfWeek extends AbstractTriggerTerm
 		$options->addRequiredNames('days', 'tz');
 		$options->addValidNames('var', 'test_date');
 		$options->addCallbackCheckedOption('var', function($v) {
-			return ($v == 'now' || $v == 'date_created' || $v === null);
+			return ($v == 'now' || $v == 'date_created' || !$v);
 		});
 		return $options;
 	}
