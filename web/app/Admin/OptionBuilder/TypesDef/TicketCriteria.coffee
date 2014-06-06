@@ -812,21 +812,40 @@ define [
 				return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html')
 
 			getData: ->
-				return {
-
-				}
+				return {}
 
 			getDataFormatter: ->
 				return {
-				getViewValue: (value = {}, data) ->
-					return {
-					op: value.op || 'is'
-					}
+					getViewValue: (value = {}, data) ->
+						options = value.options || {}
 
-				getValue: (model = {}, data) ->
-					value = {}
-					return value
-				}
+						time1 = (options.time1 || '8:0').split(':')
+						time2 = (options.time2 || '18:0').split(':')
+
+						return {
+							tz:          options.tz || 'UTC',
+							start_hour:  time1[0],
+							start_min:   time1[1],
+							end_hour:    time2[0],
+							end_min:     time2[1]
+						}
+
+					getValue: (model = {}, data) ->
+						time1 = (model.start_hour || '8') + ':' + (model.start_min || '0')
+						time2 = (model.end_hour || '18') + ':' + (model.end_min || '0')
+
+						value = {
+							type: 'CheckTimeOfDay',
+							op: 'between',
+							options: {
+								var:   'now',
+								tz:    model.tz || 'UTC',
+								time1: time1,
+								time2: time2
+							}
+						}
+						return value
+					}
 			}
 
 		getCheckWorkingHours: (options = {}) ->

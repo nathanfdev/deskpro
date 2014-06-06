@@ -1050,19 +1050,38 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var time1, time2;
                 if (value == null) {
                   value = {};
                 }
+                options = value.options || {};
+                time1 = (options.time1 || '8:0').split(':');
+                time2 = (options.time2 || '18:0').split(':');
                 return {
-                  op: value.op || 'is'
+                  tz: options.tz || 'UTC',
+                  start_hour: time1[0],
+                  start_min: time1[1],
+                  end_hour: time2[0],
+                  end_min: time2[1]
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var time1, time2, value;
                 if (model == null) {
                   model = {};
                 }
-                value = {};
+                time1 = (model.start_hour || '8') + ':' + (model.start_min || '0');
+                time2 = (model.end_hour || '18') + ':' + (model.end_min || '0');
+                value = {
+                  type: 'CheckTimeOfDay',
+                  op: 'between',
+                  options: {
+                    "var": 'now',
+                    tz: model.tz || 'UTC',
+                    time1: time1,
+                    time2: time2
+                  }
+                };
                 return value;
               }
             };
